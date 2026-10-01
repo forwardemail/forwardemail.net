@@ -431,11 +431,18 @@ const Payments = new mongoose.Schema({
   last4: String,
   stripe_session_id: { type: String, index: true },
   stripe_invoice_id: { type: String, index: true },
-  stripe_payment_intent_id: { type: String, index: true },
+  //
+  // NOTE: `stripe_payment_intent_id`, `paypal_order_id` and
+  //       `paypal_transaction_id` are indexed below with unique sparse
+  //       indexes; a plain `index: true` here takes the same index name,
+  //       is created first, and the unique index then fails to build
+  //       (so duplicates were never rejected by the database)
+  //
+  stripe_payment_intent_id: String,
   [config.userFields.stripeSubscriptionID]: { type: String, index: true },
-  paypal_order_id: { type: String, index: true },
+  paypal_order_id: String,
   [config.userFields.paypalSubscriptionID]: { type: String, index: true },
-  paypal_transaction_id: { type: String, index: true },
+  paypal_transaction_id: String,
   is_refund_credit_allowed: {
     type: Boolean,
     default: false
@@ -528,10 +535,14 @@ Payments.pre('save', async function (next) {
     }
 
     const exists = await this.constructor.exists(query);
-    if (exists)
-      throw Boom.badRequest(
-        i18n.translateError('PAYMENT_ALREADY_EXISTS', this.locale)
-      );
+    if (exists) {
+      // (the code lets race handlers tell this apart from other errors,
+      // since the message is translated)
+      const err = i18n.translateError('PAYMENT_ALREADY_EXISTS', this.locale);
+      err.code = 'PAYMENT_ALREADY_EXISTS';
+      throw Boom.badRequest(err);
+    }
+
     next();
   } catch (err) {
     next(err);

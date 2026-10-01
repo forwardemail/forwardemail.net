@@ -1,0 +1,1022 @@
+From 4ba08ba1936bcbeab9591380bcfb451925abe9e2 Mon Sep 17 00:00:00 2001
+From: titanism <101466223+titanism@users.noreply.github.com>
+Date: Thu, 1 Oct 2026 08:34:37 -0500
+Subject: [PATCH] fix(billing): stop storing one Stripe payment intent twice
+
+The unique sparse indexes on stripe_payment_intent_id, paypal_order_id
+and paypal_transaction_id were never built: each field also had
+`index: true`, which created a plain index under the same name first, so
+the unique one failed. Concurrent webhooks and the sync job then stored
+some payments twice, which added an extra period to the plan expiry and
+made every later sync fail with "too many payments".
+
+models:
+- drop `index: true` from the three fields so the unique indexes build
+- tag the pre-save duplicate error with code PAYMENT_ALREADY_EXISTS
+
+billing:
+- treat PAYMENT_ALREADY_EXISTS as a concurrent duplicate in the Stripe
+  sync, the Stripe redirect and the PayPal handlers (the old message
+  check never matched the translated message)
+- Stripe redirect rethrows when the existing payment can't be found
+
+scripts:
+- remove-duplicate-payments: keep one payment per payment intent (the
+  refunded one, otherwise the oldest), back up and delete the rest,
+  sync it from Stripe again, build the unique indexes and save the
+  affected users again
+---
+ app/controllers/api/v1/paypal.js              |   5 +-
+ .../web/my-account/retrieve-domain-billing.js |  13 +-
+ app/models/payments.js                        |  25 +-
+ helpers/remove-duplicate-payments.js          | 258 +++++++++++++
+ helpers/sync-stripe-payment-intent.js         |   5 +-
+ scripts/remove-duplicate-payments.js          | 231 ++++++++++++
+ test/helpers/sync-stripe-payment-intent.js    | 350 ++++++++++++++++++
+ 7 files changed, 863 insertions(+), 24 deletions(-)
+ create mode 100644 helpers/remove-duplicate-payments.js
+ create mode 100644 scripts/remove-duplicate-payments.js
+ create mode 100644 test/helpers/sync-stripe-payment-intent.js
+
+diff --git a/app/controllers/api/v1/paypal.js b/app/controllers/api/v1/paypal.js
+index 959e7eb..1a14221 100644
+--- a/app/controllers/api/v1/paypal.js
++++ b/app/controllers/api/v1/paypal.js
+@@ -704,10 +704,7 @@ ${encode(safeStringify(parseErr(err), null, 2))}</code></pre>`
+         } catch (err) {
+           // Handle duplicate key error from unique index on paypal_order_id
+           // (race condition: redirect handler created the payment concurrently)
+-          if (
+-            err.code === 11000 ||
+-            err.message?.includes('PAYMENT_ALREADY_EXISTS')
+-          ) {
++          if (err.code === 11000 || err.code === 'PAYMENT_ALREADY_EXISTS') {
+             ctx.logger.warn(
+               'paypal duplicate payment detected in webhook, fetching existing',
+               {
+diff --git a/app/controllers/web/my-account/retrieve-domain-billing.js b/app/controllers/web/my-account/retrieve-domain-billing.js
+index 8824f42..bccc843 100644
+--- a/app/controllers/web/my-account/retrieve-domain-billing.js
++++ b/app/controllers/web/my-account/retrieve-domain-billing.js
+@@ -814,7 +814,7 @@ async function retrieveDomainBilling(ctx) {
+               // log the payment just for sanity
+               ctx.logger.info('stripe payment created', { payment });
+             } catch (err) {
+-              if (err.code === 11000) {
++              if (err.code === 11000 || err.code === 'PAYMENT_ALREADY_EXISTS') {
+                 ctx.logger.warn(
+                   `Duplicate stripe payment prevented for payment_intent ${paymentIntentId} (concurrent creation race)`
+                 );
+@@ -822,6 +822,7 @@ async function retrieveDomainBilling(ctx) {
+                   user: ctx.state.user._id,
+                   stripe_payment_intent_id: paymentIntentId
+                 });
++                if (!payment) throw err;
+               } else {
+                 throw err;
+               }
+@@ -1150,10 +1151,7 @@ ${encode(safeStringify(parseErr(err), null, 2))}</code></pre>`
+           } catch (err) {
+             // Handle duplicate key error from unique index on paypal_order_id
+             // (race condition: webhook handler created the payment concurrently)
+-            if (
+-              err.code === 11000 ||
+-              err.message?.includes('PAYMENT_ALREADY_EXISTS')
+-            ) {
++            if (err.code === 11000 || err.code === 'PAYMENT_ALREADY_EXISTS') {
+               ctx.logger.warn(
+                 'paypal duplicate payment detected in redirect, fetching existing',
+                 {
+@@ -1438,10 +1436,7 @@ ${encode(safeStringify(parseErr(err), null, 2))}</code></pre>`
+               // log the payment just for sanity
+               ctx.logger.info('paypal payment created', { payment });
+             } catch (err) {
+-              if (
+-                err.code === 11000 ||
+-                err.message?.includes('PAYMENT_ALREADY_EXISTS')
+-              ) {
++              if (err.code === 11000 || err.code === 'PAYMENT_ALREADY_EXISTS') {
+                 ctx.logger.warn(
+                   `Duplicate paypal subscription payment prevented for transaction ${transactionId} (concurrent creation race)`
+                 );
+diff --git a/app/models/payments.js b/app/models/payments.js
+index d303ee2..ceb5327 100644
+--- a/app/models/payments.js
++++ b/app/models/payments.js
+@@ -431,11 +431,18 @@ const Payments = new mongoose.Schema({
+   last4: String,
+   stripe_session_id: { type: String, index: true },
+   stripe_invoice_id: { type: String, index: true },
+-  stripe_payment_intent_id: { type: String, index: true },
++  //
++  // NOTE: `stripe_payment_intent_id`, `paypal_order_id` and
++  //       `paypal_transaction_id` are indexed below with unique sparse
++  //       indexes; a plain `index: true` here takes the same index name,
++  //       is created first, and the unique index then fails to build
++  //       (so duplicates were never rejected by the database)
++  //
++  stripe_payment_intent_id: String,
+   [config.userFields.stripeSubscriptionID]: { type: String, index: true },
+-  paypal_order_id: { type: String, index: true },
++  paypal_order_id: String,
+   [config.userFields.paypalSubscriptionID]: { type: String, index: true },
+-  paypal_transaction_id: { type: String, index: true },
++  paypal_transaction_id: String,
+   is_refund_credit_allowed: {
+     type: Boolean,
+     default: false
+@@ -528,10 +535,14 @@ Payments.pre('save', async function (next) {
+     }
+ 
+     const exists = await this.constructor.exists(query);
+-    if (exists)
+-      throw Boom.badRequest(
+-        i18n.translateError('PAYMENT_ALREADY_EXISTS', this.locale)
+-      );
++    if (exists) {
++      // (the code lets race handlers tell this apart from other errors,
++      // since the message is translated)
++      const err = i18n.translateError('PAYMENT_ALREADY_EXISTS', this.locale);
++      err.code = 'PAYMENT_ALREADY_EXISTS';
++      throw Boom.badRequest(err);
++    }
++
+     next();
+   } catch (err) {
+     next(err);
+diff --git a/helpers/remove-duplicate-payments.js b/helpers/remove-duplicate-payments.js
+new file mode 100644
+index 0000000..536f6c7
+--- /dev/null
++++ b/helpers/remove-duplicate-payments.js
+@@ -0,0 +1,258 @@
++/**
++ * Copyright (c) Forward Email LLC
++ * SPDX-License-Identifier: BUSL-1.1
++ */
++
++//
++// Payments for one Stripe payment intent (or PayPal order or transaction)
++// must be stored once.  The unique indexes meant to enforce that were never
++// built (see `app/models/payments.js`), so concurrent webhooks and syncs
++// stored some payments twice.  Each extra copy added another period to the
++// user's plan expiry and made every later sync of that payment fail.
++//
++// `findDuplicates` lists the IDs stored more than once.
++// `removeDuplicates` keeps one payment of each ID and deletes the rest.
++// `ensureUniqueIndex` replaces the plain index with the unique one.
++//
++
++// fields with a unique sparse index on payments
++const UNIQUE_FIELDS = [
++  'stripe_payment_intent_id',
++  'paypal_order_id',
++  'paypal_transaction_id'
++];
++
++function indexName(field) {
++  return `${field}_1`;
++}
++
++// every value stored more than once (including null and empty string,
++// which a unique sparse index also rejects as duplicates)
++async function findDuplicates(Payments, field) {
++  if (!UNIQUE_FIELDS.includes(field))
++    throw new TypeError(`Unsupported field ${field}`);
++
++  const groups = await Payments.collection
++    .aggregate(
++      [
++        { $match: { [field]: { $exists: true } } },
++        {
++          $group: {
++            _id: `$${field}`,
++            count: { $sum: 1 },
++            ids: { $push: '$_id' },
++            users: { $addToSet: '$user' }
++          }
++        },
++        { $match: { count: { $gt: 1 } } },
++        { $sort: { _id: 1 } }
++      ],
++      { allowDiskUse: true }
++    )
++    .toArray();
++
++  return groups.map((group) => ({
++    value: group._id,
++    count: group.count,
++    ids: group.ids,
++    users: group.users
++  }));
++}
++
++//
++// keep one payment of each duplicated value and delete the others
++// (the one refunded the most, otherwise the oldest, which is the one the
++// user most likely got a receipt for)
++//
++// `options.onBeforeRemove(extra, keep)` is awaited before each delete
++//
++// values that are not a non-empty string, or that belong to more than one
++// user, are skipped and returned for manual review
++//
++async function removeDuplicates(Payments, field, options = {}) {
++  const { dryRun = false, logger = console } = options;
++
++  const groups = await findDuplicates(Payments, field);
++
++  const result = {
++    field,
++    groups: groups.length,
++    kept: [],
++    removed: [],
++    skipped: [],
++    userIds: []
++  };
++
++  const userIds = new Map();
++
++  for (const group of groups) {
++    if (typeof group.value !== 'string' || group.value.trim() === '') {
++      result.skipped.push({
++        value: group.value,
++        count: group.count,
++        reason: 'value is not a non-empty string'
++      });
++      continue;
++    }
++
++    if (group.users.length !== 1) {
++      result.skipped.push({
++        value: group.value,
++        count: group.count,
++        reason: 'payments belong to more than one user'
++      });
++      continue;
++    }
++
++    const payments = await Payments.find({
++      _id: { $in: group.ids },
++      [field]: group.value
++    })
++      .sort({ created_at: 1, _id: 1 })
++      .lean()
++      .exec();
++
++    // (changed since the aggregate ran)
++    if (payments.length < 2) continue;
++
++    //
++    // a refund was saved to one copy only, so the copy refunded the most
++    // is kept, otherwise the oldest
++    //
++    let keepIndex = 0;
++    for (const [i, payment] of payments.entries()) {
++      if (
++        (payment.amount_refunded || 0) >
++        (payments[keepIndex].amount_refunded || 0)
++      )
++        keepIndex = i;
++    }
++
++    const keep = payments[keepIndex];
++    const extra = payments.filter((payment, i) => i !== keepIndex);
++
++    if (
++      extra.some((payment) => payment.user.toString() !== keep.user.toString())
++    ) {
++      result.skipped.push({
++        value: group.value,
++        count: payments.length,
++        reason: 'payments belong to more than one user'
++      });
++      continue;
++    }
++
++    logger.info(
++      `${dryRun ? '[DRY RUN] ' : ''}${field} ${group.value}: keeping ${
++        keep._id
++      } (${keep.reference}), removing ${extra
++        .map((payment) => `${payment._id} (${payment.reference})`)
++        .join(', ')}`
++    );
++
++    let removed = extra;
++    if (!dryRun) {
++      // (e.g. to back up the payments before they are deleted)
++      if (typeof options.onBeforeRemove === 'function')
++        await options.onBeforeRemove(extra, keep);
++
++      // (deleted by ID and value, so a document changed meanwhile is kept)
++      await Payments.deleteMany({
++        _id: { $in: extra.map((payment) => payment._id) },
++        [field]: group.value
++      });
++
++      // (what was actually deleted)
++      const left = await Payments.find({
++        _id: { $in: extra.map((payment) => payment._id) }
++      })
++        .select('_id')
++        .lean()
++        .exec();
++      const leftIds = new Set(left.map((payment) => payment._id.toString()));
++      removed = extra.filter((payment) => !leftIds.has(payment._id.toString()));
++    }
++
++    result.kept.push(keep);
++    result.removed.push(...removed);
++    userIds.set(keep.user.toString(), keep.user);
++  }
++
++  result.userIds = [...userIds.values()];
++  return result;
++}
++
++//
++// replace the plain `<field>_1` index with a unique sparse one
++//
++// returns one of:
++// - "exists"  the unique index is already in place
++// - "created" the unique index was built
++// - "skipped" duplicates remain, so it can't be built (see `duplicates`)
++// - "dry-run" it would be built
++//
++// if the build fails (e.g. a duplicate was stored in the meantime)
++// the plain index is restored and the error is thrown
++//
++async function ensureUniqueIndex(Payments, field, options = {}) {
++  const { dryRun = false, logger = console } = options;
++
++  if (!UNIQUE_FIELDS.includes(field))
++    throw new TypeError(`Unsupported field ${field}`);
++
++  const name = indexName(field);
++  const indexes = await Payments.collection.indexes();
++  const existing = indexes.find((index) => index.name === name);
++
++  if (existing && existing.unique === true) return { status: 'exists' };
++
++  if (
++    existing &&
++    (Object.keys(existing.key).length !== 1 || existing.key[field] !== 1)
++  )
++    throw new Error(
++      `Index ${name} has an unexpected key ${JSON.stringify(existing.key)}`
++    );
++
++  const duplicates = await findDuplicates(Payments, field);
++  if (duplicates.length > 0) return { status: 'skipped', duplicates };
++
++  if (dryRun) {
++    logger.info(`[DRY RUN] would build unique index ${name}`);
++    return { status: 'dry-run' };
++  }
++
++  // (same options mongoose uses, so its own index sync is then a no-op)
++  if (existing) await Payments.collection.dropIndex(name);
++
++  try {
++    await Payments.collection.createIndex(
++      { [field]: 1 },
++      { name, unique: true, sparse: true, background: true }
++    );
++  } catch (err) {
++    if (existing) {
++      try {
++        await Payments.collection.createIndex(
++          { [field]: 1 },
++          { name, background: true }
++        );
++      } catch (err_) {
++        logger.error(err_);
++        err.message += ` (restoring the plain index ${name} also failed, so ${field} has no index: ${err_.message})`;
++      }
++    }
++
++    throw err;
++  }
++
++  logger.info(`built unique index ${name}`);
++  return { status: 'created' };
++}
++
++module.exports = {
++  UNIQUE_FIELDS,
++  findDuplicates,
++  removeDuplicates,
++  ensureUniqueIndex
++};
+diff --git a/helpers/sync-stripe-payment-intent.js b/helpers/sync-stripe-payment-intent.js
+index b1b6728..caf9868 100644
+--- a/helpers/sync-stripe-payment-intent.js
++++ b/helpers/sync-stripe-payment-intent.js
+@@ -505,10 +505,7 @@ function syncStripePaymentIntent(user) {
+           //       The Boom PAYMENT_ALREADY_EXISTS error comes from the
+           //       pre('save') hook in the Payments model which does an
+           //       exists() check before insert (also a race-condition guard).
+-          if (
+-            err.code === 11000 ||
+-            err.message?.includes('PAYMENT_ALREADY_EXISTS')
+-          ) {
++          if (err.code === 11000 || err.code === 'PAYMENT_ALREADY_EXISTS') {
+             logger.warn(
+               `Duplicate payment prevented for stripe payment_intent ${paymentIntent.id} (concurrent creation race)`
+             );
+diff --git a/scripts/remove-duplicate-payments.js b/scripts/remove-duplicate-payments.js
+new file mode 100644
+index 0000000..32a3243
+--- /dev/null
++++ b/scripts/remove-duplicate-payments.js
+@@ -0,0 +1,231 @@
++/**
++ * Copyright (c) Forward Email LLC
++ * SPDX-License-Identifier: BUSL-1.1
++ */
++
++//
++// Removes payments stored more than once for one Stripe payment intent, then
++// builds the unique indexes that stop it from happening again.
++//
++// For each duplicated payment intent:
++// 1. keeps one payment (the one refunded the most, otherwise the oldest) and
++//    deletes the others (each deleted payment is first written to a backup
++//    file, one EJSON document per line)
++// 2. syncs the kept payment from Stripe again
++// 3. saves the user again so their plan expiry is recalculated (each extra
++//    copy added another period to it)
++//
++// PayPal orders and transactions stored more than once are only listed
++// unless `--paypal` is passed.  A unique index is only built for a field once
++// it has no duplicates left.
++//
++// Usage:
++//   node scripts/remove-duplicate-payments.js --dry-run  # report only
++//   node scripts/remove-duplicate-payments.js            # apply
++//
++// Options:
++//   --dry-run          report only, change nothing
++//   --paypal           also remove duplicate PayPal orders and transactions
++//   --skip-sync        don't sync kept Stripe payments from Stripe again
++//   --backup=<path>    backup file (default: payments-removed-<time>.jsonl)
++//
++
++// eslint-disable-next-line import/no-unassigned-import
++require('#helpers/polyfill-towellformed');
++// eslint-disable-next-line import/no-unassigned-import
++require('#config/env');
++
++const fs = require('node:fs');
++const path = require('node:path');
++const process = require('node:process');
++const { parentPort } = require('node:worker_threads');
++
++// eslint-disable-next-line import/no-unassigned-import
++require('#config/mongoose');
++
++const mongoose = require('mongoose');
++const Graceful = require('@ladjs/graceful');
++
++const config = require('#config');
++const Payments = require('#models/payments');
++const Users = require('#models/users');
++const logger = require('#helpers/logger');
++const setupMongoose = require('#helpers/setup-mongoose');
++const stripe = require('#helpers/stripe');
++const syncStripePaymentIntent = require('#helpers/sync-stripe-payment-intent');
++const {
++  UNIQUE_FIELDS,
++  removeDuplicates,
++  ensureUniqueIndex
++} = require('#helpers/remove-duplicate-payments');
++
++const { EJSON } = mongoose.mongo.BSON;
++
++const graceful = new Graceful({
++  mongooses: [mongoose],
++  logger
++});
++
++graceful.listen();
++
++const DRY_RUN = process.argv.includes('--dry-run');
++const PAYPAL = process.argv.includes('--paypal');
++const SKIP_SYNC = process.argv.includes('--skip-sync');
++const backupArg = process.argv.find((arg) => arg.startsWith('--backup='));
++const BACKUP_PATH = path.resolve(
++  backupArg
++    ? backupArg.slice('--backup='.length)
++    : `payments-removed-${new Date().toISOString().replace(/[:.]/g, '-')}.jsonl`
++);
++
++function backup(payments) {
++  fs.appendFileSync(
++    BACKUP_PATH,
++    payments
++      .map((payment) => EJSON.stringify(payment, { relaxed: false }))
++      .join('\n') + '\n'
++  );
++}
++
++// sync the kept payment from Stripe again (same as the webhooks do)
++async function syncFromStripe(payment) {
++  const user = await Users.findById(payment.user).lean().exec();
++  if (!user) throw new Error(`User ${payment.user} does not exist`);
++
++  const paymentIntent = await stripe.paymentIntents.retrieve(
++    payment.stripe_payment_intent_id,
++    { expand: ['charges'] }
++  );
++  if (!paymentIntent) throw new Error('Payment intent did not exist in Stripe');
++
++  if (paymentIntent.customer !== user[config.userFields.stripeCustomerID])
++    throw new Error(
++      `Payment intent customer ${paymentIntent.customer} is not the customer of user ${user.email}`
++    );
++
++  const errorEmails = await syncStripePaymentIntent(user)([], paymentIntent);
++  if (errorEmails.length > 0) throw errorEmails[0].err;
++}
++
++(async () => {
++  await setupMongoose(logger);
++
++  const problems = [];
++  const userIds = new Map();
++  let removed = 0;
++
++  try {
++    logger.info(
++      `${DRY_RUN ? '[DRY RUN] ' : ''}removing duplicate payments${
++        DRY_RUN ? '' : ` (backup: ${BACKUP_PATH})`
++      }`
++    );
++
++    for (const field of UNIQUE_FIELDS) {
++      const isStripe = field === 'stripe_payment_intent_id';
++      const isReportOnly = !isStripe && !PAYPAL;
++
++      const result = await removeDuplicates(Payments, field, {
++        dryRun: DRY_RUN || isReportOnly,
++        logger,
++        onBeforeRemove: backup
++      });
++
++      if (isReportOnly && result.groups > 0)
++        problems.push(
++          `${result.groups} ${field} value(s) stored more than once (run with --paypal to remove)`
++        );
++
++      for (const skipped of result.skipped) {
++        problems.push(
++          `${field} ${JSON.stringify(skipped.value)} stored ${
++            skipped.count
++          } times: ${skipped.reason} (review manually)`
++        );
++      }
++
++      if (!isReportOnly) {
++        removed += result.removed.length;
++        for (const id of result.userIds) {
++          userIds.set(id.toString(), id);
++        }
++      }
++
++      // sync the kept payments from Stripe
++      if (isStripe && !DRY_RUN && !SKIP_SYNC) {
++        for (const payment of result.kept) {
++          try {
++            await syncFromStripe(payment);
++          } catch (err) {
++            logger.error(err, { payment_id: payment._id });
++            problems.push(
++              `sync of payment ${payment._id} (${payment.stripe_payment_intent_id}) failed: ${err.message}`
++            );
++          }
++        }
++      }
++
++      // build the unique index once no duplicates are left
++      try {
++        const { status, duplicates } = await ensureUniqueIndex(
++          Payments,
++          field,
++          { dryRun: DRY_RUN, logger }
++        );
++        logger.info(`unique index ${field}_1: ${status}`);
++        if (status === 'skipped' && !DRY_RUN)
++          problems.push(
++            `unique index ${field}_1 not built: ${duplicates.length} value(s) still stored more than once`
++          );
++      } catch (err) {
++        logger.error(err);
++        problems.push(`unique index ${field}_1 failed: ${err.message}`);
++      }
++    }
++
++    // save each affected user again so their plan expiry is recalculated
++    for (const id of userIds.values()) {
++      const user = await Users.findById(id);
++      if (!user) {
++        problems.push(`user ${id} does not exist`);
++        continue;
++      }
++
++      const before = user[config.userFields.planExpiresAt];
++      if (DRY_RUN) {
++        logger.info(`[DRY RUN] would save user ${user.email}`);
++        continue;
++      }
++
++      try {
++        await user.save();
++        logger.info(
++          `saved user ${user.email}: plan expiry ${
++            before ? new Date(before).toISOString() : before
++          } -> ${new Date(user[config.userFields.planExpiresAt]).toISOString()}`
++        );
++      } catch (err) {
++        logger.error(err, { user_id: id });
++        problems.push(`save of user ${user.email} failed: ${err.message}`);
++      }
++    }
++
++    logger.info(
++      `${DRY_RUN ? '[DRY RUN] ' : ''}${removed} duplicate payment(s) ${
++        DRY_RUN ? 'would be ' : ''
++      }removed for ${userIds.size} user(s)${
++        removed > 0 && !DRY_RUN ? ` (backup: ${BACKUP_PATH})` : ''
++      }`
++    );
++
++    for (const problem of problems) {
++      logger.warn(problem);
++    }
++  } catch (err) {
++    logger.error(err);
++    problems.push(err.message);
++  }
++
++  if (parentPort) parentPort.postMessage('done');
++  else process.exit(problems.length > 0 ? 1 : 0);
++})();
+diff --git a/test/helpers/sync-stripe-payment-intent.js b/test/helpers/sync-stripe-payment-intent.js
+new file mode 100644
+index 0000000..9d48787
+--- /dev/null
++++ b/test/helpers/sync-stripe-payment-intent.js
+@@ -0,0 +1,350 @@
++/**
++ * Copyright (c) Forward Email LLC
++ * SPDX-License-Identifier: BUSL-1.1
++ */
++
++//
++// Concurrent Stripe webhooks and syncs for one payment intent stored the
++// payment more than once: the unique index on `stripe_payment_intent_id`
++// was never built (a plain index took its name), so nothing rejected the
++// second insert.  Each extra copy added another period to the plan expiry,
++// and every later sync of that payment intent failed with "There are too
++// many payments in the system with stripe_payment_intent_id".
++//
++
++const { randomUUID } = require('node:crypto');
++
++const dayjs = require('dayjs-with-plugins');
++const ms = require('ms');
++const test = require('ava');
++
++const utils = require('../utils');
++
++const config = require('#config');
++const stripe = require('#helpers/stripe');
++const syncStripePaymentIntent = require('#helpers/sync-stripe-payment-intent');
++const {
++  findDuplicates,
++  removeDuplicates,
++  ensureUniqueIndex
++} = require('#helpers/remove-duplicate-payments');
++const { Payments, Users } = require('#models');
++
++const { STRIPE_MAPPING, STRIPE_PRODUCTS } = config.payments;
++
++const silent = { info() {}, warn() {}, error() {} };
++
++test.before(utils.setupMongoose);
++// (the unique indexes are built)
++test.before(async () => {
++  await Payments.init();
++});
++test.after.always(utils.teardownMongoose);
++test.beforeEach(utils.setupFactories);
++
++function stub(t, object, key, value) {
++  const original = object[key];
++  object[key] = value;
++  t.teardown(() => {
++    object[key] = original;
++  });
++}
++
++async function createUser(t, planSetAt) {
++  return t.context.userFactory
++    .withState({
++      plan: 'enhanced_protection',
++      [config.userFields.planSetAt]: planSetAt,
++      [config.userFields.stripeCustomerID]: `cus_${randomUUID()}`,
++      [config.userFields.hasVerifiedEmail]: true
++    })
++    .create();
++}
++
++async function indexStatus() {
++  const { status } = await ensureUniqueIndex(
++    Payments,
++    'stripe_payment_intent_id',
++    { logger: silent }
++  );
++  return status;
++}
++
++function paymentDoc(user, fields = {}) {
++  const now = new Date();
++  return {
++    user: user._id,
++    reference: randomUUID(),
++    amount: 300,
++    method: 'link',
++    duration: ms('30d'),
++    plan: 'enhanced_protection',
++    kind: 'one-time',
++    invoice_at: now,
++    created_at: now,
++    updated_at: now,
++    ...fields
++  };
++}
++
++test.serial(
++  'the database rejects a second payment for one payment ID',
++  async (t) => {
++    const user = await createUser(t, new Date());
++    for (const field of [
++      'stripe_payment_intent_id',
++      'paypal_order_id',
++      'paypal_transaction_id'
++    ]) {
++      const value = `${field}_${randomUUID()}`;
++      // (inserted directly, so only the index stands in the way)
++      await Payments.collection.insertOne(paymentDoc(user, { [field]: value }));
++      const err = await t.throwsAsync(
++        Payments.collection.insertOne(paymentDoc(user, { [field]: value }))
++      );
++      t.is(err.code, 11000, `${field} duplicate rejected`);
++      t.is(
++        await Payments.countDocuments({ [field]: value }),
++        1,
++        `${field} stored once`
++      );
++    }
++  }
++);
++
++test.serial(
++  'saving a second payment for one payment intent fails with a code',
++  async (t) => {
++    const user = await createUser(t, new Date());
++    const id = `pi_${randomUUID()}`;
++    await Payments.create(paymentDoc(user, { stripe_payment_intent_id: id }));
++    const err = await t.throwsAsync(
++      Payments.create(paymentDoc(user, { stripe_payment_intent_id: id }))
++    );
++    t.is(err.code, 'PAYMENT_ALREADY_EXISTS');
++    t.true(err.isBoom);
++  }
++);
++
++test.serial(
++  'concurrent syncs of one payment intent store one payment',
++  async (t) => {
++    const planSetAt = dayjs().subtract(1, 'hour').startOf('second');
++    const user = await createUser(t, planSetAt.toDate());
++
++    const created = dayjs().subtract(10, 'minutes').startOf('second');
++    const product = Object.keys(STRIPE_PRODUCTS).find(
++      (id) => STRIPE_PRODUCTS[id] === 'enhanced_protection'
++    );
++    const price = STRIPE_MAPPING.enhanced_protection['one-time']['30d'];
++    const paymentIntent = {
++      id: `pi_${randomUUID()}`,
++      object: 'payment_intent',
++      status: 'succeeded',
++      amount: 300,
++      currency: 'usd',
++      customer: user[config.userFields.stripeCustomerID],
++      created: created.unix(),
++      charges: {
++        data: [
++          {
++            id: `ch_${randomUUID()}`,
++            paid: true,
++            status: 'succeeded',
++            refunded: false,
++            amount: 300,
++            currency: 'usd',
++            balance_transaction: null,
++            payment_method_details: { type: 'link' }
++          }
++        ]
++      }
++    };
++    const session = { id: `cs_${randomUUID()}` };
++    stub(t, stripe.checkout.sessions, 'list', async () => ({
++      data: [session]
++    }));
++    stub(t, stripe.checkout.sessions, 'listLineItems', async () => ({
++      data: [{ price: { id: price, product } }]
++    }));
++
++    // as when charge.succeeded, payment_intent.succeeded and the
++    // sync job all handle the payment intent at once
++    const results = await Promise.all(
++      Array.from({ length: 5 }, () =>
++        syncStripePaymentIntent(user)([], paymentIntent)
++      )
++    );
++
++    t.deepEqual(
++      results.flat().map((e) => e.err.message),
++      []
++    );
++    t.is(
++      await Payments.countDocuments({
++        stripe_payment_intent_id: paymentIntent.id
++      }),
++      1
++    );
++
++    // and a later sync of it still works
++    t.deepEqual(await syncStripePaymentIntent(user)([], paymentIntent), []);
++
++    const doc = await Users.findById(user._id).lean();
++    t.is(
++      new Date(doc[config.userFields.planExpiresAt]).getTime(),
++      planSetAt.add(1, 'month').toDate().getTime()
++    );
++  }
++);
++
++test.serial(
++  'removes duplicates stored before the fix and builds the unique index',
++  async (t) => {
++    // the plain index production has in place of the unique one
++    await Payments.collection.dropIndex('stripe_payment_intent_id_1');
++    await Payments.collection.createIndex(
++      { stripe_payment_intent_id: 1 },
++      { name: 'stripe_payment_intent_id_1', background: true }
++    );
++    t.teardown(async () => {
++      const indexes = await Payments.collection.indexes();
++      const index = indexes.find(
++        (i) => i.name === 'stripe_payment_intent_id_1'
++      );
++      if (index?.unique) return;
++      await Payments.deleteMany({
++        stripe_payment_intent_id: { $regex: /^pi_dup_/ }
++      });
++      if (index)
++        await Payments.collection.dropIndex('stripe_payment_intent_id_1');
++      await Payments.collection.createIndex(
++        { stripe_payment_intent_id: 1 },
++        {
++          name: 'stripe_payment_intent_id_1',
++          unique: true,
++          sparse: true,
++          background: true
++        }
++      );
++    });
++
++    const planSetAt = dayjs().subtract(1, 'hour').startOf('second');
++    const user = await createUser(t, planSetAt.toDate());
++    const other = await createUser(t, planSetAt.toDate());
++
++    const id = `pi_dup_${randomUUID()}`;
++    const invoiceAt = dayjs().subtract(10, 'minutes').toDate();
++    const first = paymentDoc(user, {
++      stripe_payment_intent_id: id,
++      invoice_at: invoiceAt,
++      created_at: dayjs().subtract(3, 'minutes').toDate()
++    });
++    const second = paymentDoc(user, {
++      stripe_payment_intent_id: id,
++      invoice_at: invoiceAt,
++      created_at: dayjs().subtract(2, 'minutes').toDate()
++    });
++    const third = paymentDoc(user, {
++      stripe_payment_intent_id: id,
++      invoice_at: invoiceAt,
++      created_at: dayjs().subtract(1, 'minutes').toDate()
++    });
++    // (a refund saved to the newer copy only)
++    const refundedId = `pi_dup_${randomUUID()}`;
++    const unrefunded = paymentDoc(user, {
++      stripe_payment_intent_id: refundedId,
++      invoice_at: invoiceAt,
++      created_at: dayjs().subtract(5, 'minutes').toDate()
++    });
++    const refunded = paymentDoc(user, {
++      stripe_payment_intent_id: refundedId,
++      invoice_at: invoiceAt,
++      amount_refunded: 300,
++      refunded_at: new Date(),
++      created_at: dayjs().subtract(4, 'minutes').toDate()
++    });
++    // (payments for one intent stored for two users are left alone)
++    const shared = `pi_dup_${randomUUID()}`;
++    await Payments.collection.insertMany([
++      second,
++      first,
++      third,
++      unrefunded,
++      refunded,
++      paymentDoc(user, { stripe_payment_intent_id: shared }),
++      paymentDoc(other, { stripe_payment_intent_id: shared })
++    ]);
++
++    // each unrefunded copy added another month
++    await Users.findById(user._id).then((u) => u.save());
++    let doc = await Users.findById(user._id).lean();
++    t.is(
++      new Date(doc[config.userFields.planExpiresAt]).getTime(),
++      planSetAt.add(5, 'month').toDate().getTime()
++    );
++
++    // a dry run changes nothing
++    const dry = await removeDuplicates(Payments, 'stripe_payment_intent_id', {
++      dryRun: true,
++      logger: silent
++    });
++    t.is(dry.removed.length, 3);
++    t.is(await Payments.countDocuments({ stripe_payment_intent_id: id }), 3);
++    t.is(await indexStatus(), 'skipped');
++
++    const backedUp = [];
++    const result = await removeDuplicates(
++      Payments,
++      'stripe_payment_intent_id',
++      {
++        logger: silent,
++        onBeforeRemove(extra) {
++          backedUp.push(...extra);
++        }
++      }
++    );
++
++    // the oldest is kept, or the refunded one
++    t.is(result.kept.length, 2);
++    t.deepEqual(
++      result.kept.map((p) => p.reference).sort(),
++      [first.reference, refunded.reference].sort()
++    );
++    t.deepEqual(
++      backedUp.map((p) => p.reference).sort(),
++      [second.reference, third.reference, unrefunded.reference].sort()
++    );
++    t.is(result.removed.length, 3);
++    const left = await Payments.find({ stripe_payment_intent_id: id }).lean();
++    t.deepEqual(
++      left.map((p) => p.reference),
++      [first.reference]
++    );
++    t.deepEqual(result.userIds.map(String), [String(user._id)]);
++    t.is(result.skipped.length, 1);
++    t.is(result.skipped[0].value, shared);
++
++    // the shared one still blocks the index
++    t.is(await indexStatus(), 'skipped');
++    await Payments.deleteMany({ user: other._id });
++
++    t.is(await indexStatus(), 'created');
++    t.is(await indexStatus(), 'exists');
++    t.deepEqual(await findDuplicates(Payments, 'stripe_payment_intent_id'), []);
++    const err = await t.throwsAsync(
++      Payments.collection.insertOne(
++        paymentDoc(user, { stripe_payment_intent_id: id })
++      )
++    );
++    t.is(err.code, 11000);
++
++    // saving the user again gives back the month paid
++    await Users.findById(user._id).then((u) => u.save());
++    doc = await Users.findById(user._id).lean();
++    t.is(
++      new Date(doc[config.userFields.planExpiresAt]).getTime(),
++      planSetAt.add(2, 'month').toDate().getTime()
++    );
++  }
++);
+-- 
+2.43.0
+

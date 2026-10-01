@@ -814,7 +814,7 @@ async function retrieveDomainBilling(ctx) {
               // log the payment just for sanity
               ctx.logger.info('stripe payment created', { payment });
             } catch (err) {
-              if (err.code === 11000) {
+              if (err.code === 11000 || err.code === 'PAYMENT_ALREADY_EXISTS') {
                 ctx.logger.warn(
                   `Duplicate stripe payment prevented for payment_intent ${paymentIntentId} (concurrent creation race)`
                 );
@@ -822,6 +822,7 @@ async function retrieveDomainBilling(ctx) {
                   user: ctx.state.user._id,
                   stripe_payment_intent_id: paymentIntentId
                 });
+                if (!payment) throw err;
               } else {
                 throw err;
               }
@@ -1150,10 +1151,7 @@ ${encode(safeStringify(parseErr(err), null, 2))}</code></pre>`
           } catch (err) {
             // Handle duplicate key error from unique index on paypal_order_id
             // (race condition: webhook handler created the payment concurrently)
-            if (
-              err.code === 11000 ||
-              err.message?.includes('PAYMENT_ALREADY_EXISTS')
-            ) {
+            if (err.code === 11000 || err.code === 'PAYMENT_ALREADY_EXISTS') {
               ctx.logger.warn(
                 'paypal duplicate payment detected in redirect, fetching existing',
                 {
@@ -1438,10 +1436,7 @@ ${encode(safeStringify(parseErr(err), null, 2))}</code></pre>`
               // log the payment just for sanity
               ctx.logger.info('paypal payment created', { payment });
             } catch (err) {
-              if (
-                err.code === 11000 ||
-                err.message?.includes('PAYMENT_ALREADY_EXISTS')
-              ) {
+              if (err.code === 11000 || err.code === 'PAYMENT_ALREADY_EXISTS') {
                 ctx.logger.warn(
                   `Duplicate paypal subscription payment prevented for transaction ${transactionId} (concurrent creation race)`
                 );

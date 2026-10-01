@@ -704,10 +704,7 @@ ${encode(safeStringify(parseErr(err), null, 2))}</code></pre>`
         } catch (err) {
           // Handle duplicate key error from unique index on paypal_order_id
           // (race condition: redirect handler created the payment concurrently)
-          if (
-            err.code === 11000 ||
-            err.message?.includes('PAYMENT_ALREADY_EXISTS')
-          ) {
+          if (err.code === 11000 || err.code === 'PAYMENT_ALREADY_EXISTS') {
             ctx.logger.warn(
               'paypal duplicate payment detected in webhook, fetching existing',
               {

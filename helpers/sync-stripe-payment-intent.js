@@ -505,10 +505,7 @@ function syncStripePaymentIntent(user) {
           //       The Boom PAYMENT_ALREADY_EXISTS error comes from the
           //       pre('save') hook in the Payments model which does an
           //       exists() check before insert (also a race-condition guard).
-          if (
-            err.code === 11000 ||
-            err.message?.includes('PAYMENT_ALREADY_EXISTS')
-          ) {
+          if (err.code === 11000 || err.code === 'PAYMENT_ALREADY_EXISTS') {
             logger.warn(
               `Duplicate payment prevented for stripe payment_intent ${paymentIntent.id} (concurrent creation race)`
             );
