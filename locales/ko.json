@@ -1357,7 +1357,7 @@
   "GNOME Evolution": "그놈 에볼루션",
   "Configure OpenPGP in Evolution": "Evolution에서 OpenPGP 구성",
   "GNOME Evolution has built-in support for OpenPGP.": "GNOME Evolution에는 OpenPGP에 대한 기본 지원이 포함되어 있습니다.",
-  "Terminal": "단말기",
+  "Terminal": "터미널",
   "Configure gpg in Terminal": "터미널에서 gpg 구성",
   "You can use the open-source": "오픈소스를 사용할 수 있습니다",
   "gpg command line tool": "gpg 명령줄 도구",
@@ -23279,5 +23279,6 @@
   "Forward Email in two minutes": "2분 만에 보는 Forward Email",
   "Download the video (MP4)": "동영상 다운로드 (MP4)",
   "Forward Email in your terminal": "터미널에서 쓰는 Forward Email",
-  "Forward Email on every device": "모든 기기에서 쓰는 Forward Email"
+  "Forward Email on every device": "모든 기기에서 쓰는 Forward Email",
+  "Also see our project %s, a comparison of terminal email clients for Linux, macOS, Windows, BSD, and Android.": "Linux, macOS, Windows, BSD, Android용 터미널 이메일 클라이언트를 비교하는 저희 프로젝트 %s도 확인해 보세요."
 }

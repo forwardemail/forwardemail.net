@@ -168,6 +168,18 @@ block body
         //- recommendation that leads with our own apps, since these pages are
         //- the site's biggest third-party client listings.
         if isEmailClients
+          //- The two pages that list terminal clients (see
+          //- getServersOrClientsList) first point to Terminal Email, our own
+          //- site comparing them. The dark scheme's canvas is the same Ink as
+          //- .bg-dark, so .border-dark gives the box an edge there (and stays
+          //- Ink in the light scheme). The box stays out of print, where
+          //- .bg-dark turns white under its white text.
+          if platform === "Terminal" || platform === "Command-line (CLI)"
+            .row.mt-3.d-print-none
+              .col-12
+                p.lead.bg-dark.text-white.border.border-dark.rounded-lg.text-center.p-3.mb-0
+                  i.fas.fa-terminal.mr-2(aria-hidden="true")
+                  != t("Also see our project %s, a comparison of terminal email clients for Linux, macOS, Windows, BSD, and Android.", '<a href="https://terminalemail.com" target="_blank" rel="noopener noreferrer" class="text-white font-weight-bold text-decoration-underline notranslate">Terminal Email</a>')
           .row.mt-3
             .col-12
               .alert.alert-primary.small.text-center.mb-0

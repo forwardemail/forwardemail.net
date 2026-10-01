@@ -23279,5 +23279,6 @@
   "Forward Email in two minutes": "İki dakikada Forward Email",
   "Download the video (MP4)": "Videoyu indir (MP4)",
   "Forward Email in your terminal": "Terminalinizde Forward Email",
-  "Forward Email on every device": "Her cihazda Forward Email"
+  "Forward Email on every device": "Her cihazda Forward Email",
+  "Also see our project %s, a comparison of terminal email clients for Linux, macOS, Windows, BSD, and Android.": "Linux, macOS, Windows, BSD ve Android için terminal e-posta istemcilerini karşılaştıran %s projemize de göz atın."
 }

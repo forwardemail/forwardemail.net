@@ -83,8 +83,12 @@ mixin feDownloadHero
           i.fa.fa-globe(aria-hidden="true")
           = t("Open the web app")
 
+        //- Hidden below 768px, the fe-up(md) breakpoint, with bootstrap's
+        //- display classes. The Terminal section below still has every build.
         if downloads.groups.some((group) => group.key === "terminal")
-          a.fe-btn.fe-btn--ghost.fe-btn--lg(href="#fe-download-terminal")
+          a.fe-btn.fe-btn--ghost.fe-btn--lg.d-none.d-md-inline-flex(
+            href="#fe-download-terminal"
+          )
             i.fa.fa-terminal(aria-hidden="true")
             = t("Install in the terminal")
 

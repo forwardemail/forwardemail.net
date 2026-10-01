@@ -23279,5 +23279,6 @@
   "Forward Email in two minutes": "รู้จัก Forward Email ในสองนาที",
   "Download the video (MP4)": "ดาวน์โหลดวิดีโอ (MP4)",
   "Forward Email in your terminal": "Forward Email ในเทอร์มินัลของคุณ",
-  "Forward Email on every device": "Forward Email บนทุกอุปกรณ์"
+  "Forward Email on every device": "Forward Email บนทุกอุปกรณ์",
+  "Also see our project %s, a comparison of terminal email clients for Linux, macOS, Windows, BSD, and Android.": "ดูโปรเจกต์ %s ของเราด้วย ซึ่งเปรียบเทียบไคลเอนต์อีเมลสำหรับเทอร์มินัลบน Linux, macOS, Windows, BSD และ Android"
 }

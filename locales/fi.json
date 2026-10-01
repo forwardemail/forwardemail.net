@@ -23279,5 +23279,6 @@
   "Forward Email in two minutes": "Forward Email kahdessa minuutissa",
   "Download the video (MP4)": "Lataa video (MP4)",
   "Forward Email in your terminal": "Forward Email terminaalissasi",
-  "Forward Email on every device": "Forward Email jokaisella laitteella"
+  "Forward Email on every device": "Forward Email jokaisella laitteella",
+  "Also see our project %s, a comparison of terminal email clients for Linux, macOS, Windows, BSD, and Android.": "Katso myös projektimme %s, joka vertailee terminaalissa toimivia sähköpostiohjelmia Linuxille, macOS:lle, Windowsille, BSD:lle ja Androidille."
 }

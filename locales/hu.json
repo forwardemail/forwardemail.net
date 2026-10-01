@@ -23279,5 +23279,6 @@
   "Forward Email in two minutes": "A Forward Email két percben",
   "Download the video (MP4)": "A videó letöltése (MP4)",
   "Forward Email in your terminal": "A Forward Email a terminálban",
-  "Forward Email on every device": "A Forward Email minden eszközön"
+  "Forward Email on every device": "A Forward Email minden eszközön",
+  "Also see our project %s, a comparison of terminal email clients for Linux, macOS, Windows, BSD, and Android.": "Nézze meg a %s projektünket is, amely a terminálban futó e-mail klienseket hasonlítja össze Linuxra, macOS-re, Windowsra, BSD-re és Androidra."
 }

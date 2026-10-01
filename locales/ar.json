@@ -1357,7 +1357,7 @@
   "GNOME Evolution": "تطور جنوم",
   "Configure OpenPGP in Evolution": "تكوين OpenPGP في Evolution",
   "GNOME Evolution has built-in support for OpenPGP.": "يتضمن GNOME Evolution دعمًا مدمجًا لـ OpenPGP.",
-  "Terminal": "صالة",
+  "Terminal": "الطرفية",
   "Configure gpg in Terminal": "تكوين gpg في المحطة الطرفية",
   "You can use the open-source": "يمكنك استخدام المصدر المفتوح",
   "gpg command line tool": "أداة سطر أوامر gpg",
@@ -23279,5 +23279,6 @@
   "Forward Email in two minutes": "Forward Email في دقيقتين",
   "Download the video (MP4)": "تنزيل الفيديو (MP4)",
   "Forward Email in your terminal": "Forward Email في الطرفية",
-  "Forward Email on every device": "Forward Email على كل جهاز"
+  "Forward Email on every device": "Forward Email على كل جهاز",
+  "Also see our project %s, a comparison of terminal email clients for Linux, macOS, Windows, BSD, and Android.": "اطّلع أيضاً على مشروعنا %s، وهو مقارنة لبرامج البريد الإلكتروني التي تعمل في الطرفية على أنظمة Linux وmacOS وWindows وBSD وAndroid."
 }

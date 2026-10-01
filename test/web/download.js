@@ -202,6 +202,32 @@ test.serial("the hero's Watch link plays the apps video", async (t) => {
 });
 
 test.serial(
+  'the hero hides its terminal button on phones with display classes',
+  async (t) => {
+    const html = await getDownloadPage(t, releaseWithTerminal);
+    const { window } = new JSDOM(html);
+    t.teardown(() => window.close());
+
+    const actions = window.document.querySelector(
+      '.fe-download-hero .fe-actions'
+    );
+    const terminal = actions.querySelector('a[href="#fe-download-terminal"]');
+    t.is(terminal.textContent.trim(), 'Install in the terminal');
+    // bootstrap's display classes: none below 768px, and from 768px the
+    // inline-flex every .fe-btn has
+    t.true(terminal.classList.contains('d-none'));
+    t.true(terminal.classList.contains('d-md-inline-flex'));
+
+    // the hero's other actions show at every width
+    const others = [...actions.querySelectorAll('a')].filter(
+      (a) => a !== terminal
+    );
+    t.is(others.length, 3);
+    for (const a of others) t.false(a.classList.contains('d-none'));
+  }
+);
+
+test.serial(
   "the Terminal section's card plays the terminal app's video",
   async (t) => {
     const html = await getDownloadPage(t, releaseWithTerminal);

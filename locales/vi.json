@@ -1357,7 +1357,7 @@
   "GNOME Evolution": "Sự tiến hóa của GNOME",
   "Configure OpenPGP in Evolution": "Cấu hình OpenPGP trong Evolution",
   "GNOME Evolution has built-in support for OpenPGP.": "GNOME Evolution có hỗ trợ tích hợp cho OpenPGP.",
-  "Terminal": "Phần cuối",
+  "Terminal": "Terminal",
   "Configure gpg in Terminal": "Cấu hình gpg trong Terminal",
   "You can use the open-source": "Bạn có thể sử dụng mã nguồn mở",
   "gpg command line tool": "công cụ dòng lệnh gpg",
@@ -23279,5 +23279,6 @@
   "Forward Email in two minutes": "Forward Email trong hai phút",
   "Download the video (MP4)": "Tải video xuống (MP4)",
   "Forward Email in your terminal": "Forward Email trong terminal của bạn",
-  "Forward Email on every device": "Forward Email trên mọi thiết bị"
+  "Forward Email on every device": "Forward Email trên mọi thiết bị",
+  "Also see our project %s, a comparison of terminal email clients for Linux, macOS, Windows, BSD, and Android.": "Xem thêm dự án %s của chúng tôi, so sánh các ứng dụng email chạy trong terminal cho Linux, macOS, Windows, BSD và Android."
 }

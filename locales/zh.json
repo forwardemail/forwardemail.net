@@ -23279,5 +23279,6 @@
   "Forward Email in two minutes": "两分钟了解 Forward Email",
   "Download the video (MP4)": "下载视频（MP4）",
   "Forward Email in your terminal": "在终端中使用 Forward Email",
-  "Forward Email on every device": "在所有设备上使用 Forward Email"
+  "Forward Email on every device": "在所有设备上使用 Forward Email",
+  "Also see our project %s, a comparison of terminal email clients for Linux, macOS, Windows, BSD, and Android.": "另请参阅我们的项目 %s，它比较了适用于 Linux、macOS、Windows、BSD 和 Android 的终端电子邮件客户端。"
 }
