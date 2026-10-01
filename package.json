@@ -249,7 +249,7 @@
     "p-timeout": "4.1.0",
     "p-wait-for": "3.2.0",
     "p-whilst": "2.1.0",
-    "parse-domain": "5.0.0",
+    "parse-domain": "8.4.0",
     "parse-err": "1.0.0",
     "parse-logs": "3.0.2",
     "passport-local-mongoose": "7.1.2",
