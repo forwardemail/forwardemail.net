@@ -13,6 +13,7 @@ const markdownItGitHubAlerts = require('markdown-it-github-alerts');
 const ms = require('ms');
 const sanitizeHtml = require('sanitize-html');
 
+const getSourceHash = require('#helpers/get-source-hash');
 const logger = require('#helpers/logger');
 const singleFlightCache = require('#helpers/single-flight-cache');
 const {
@@ -20,20 +21,31 @@ const {
   splitHeadingAttr
 } = require('#helpers/get-faq-schema');
 
-// One key per locale, since each locale has its own markdown file. The `:v2`
-// is a schema version: the parsed HTML shape changed (the sanitizer now keeps
-// `id` on every element, which the guide-page scrape and in-page anchors
-// depend on), and this cache has a 12h TTL, so without a new key a deploy would
-// keep serving the old id-stripped HTML for up to 12h — leaving the guide pages
-// blank and deep links broken. Bump this whenever parseFaqIndex's output shape
-// changes so a deploy can't serve stale HTML.
+// One key per locale, since each locale has its own markdown file. Nothing
+// deletes these keys on deploy, so the full key (see getCacheKey) also carries
+// a fingerprint of the parser and of the locale's markdown. Editing the FAQ,
+// the sanitizer allowlists or the parse itself therefore moves to a new key on
+// the next request, instead of serving the old HTML until the TTL below runs
+// out. The old entry is never read again and simply expires.
 //
-// v3: each question carries an `excerpt` (plain-text opening of its answer),
-// which suggestFaq below matches against for the help form's suggestions.
+// The `v3` stays as a manual lever for changes the fingerprint cannot see,
+// such as a markdown-it or sanitize-html upgrade that changes the output: bump
+// it in that case.
 const CACHE_PREFIX = 'faq_index:v3:';
 
-// The markdown only changes on deploy, so this can be long. It exists to keep
-// the parse off the request path, not to track a moving source.
+// The parser is this module plus the heading helpers it takes from
+// get-faq-schema.js. Fingerprinted once, here at load, so the key describes
+// the code this process is actually running. Hashing them per request would
+// let a process still running the previous release, but reading this
+// release's files from disk mid-deploy, cache its old output under the new
+// key, where the new release would then keep serving it.
+const PARSER_HASH = getSourceHash(
+  __filename,
+  require.resolve('#helpers/get-faq-schema')
+);
+
+// Edits change the key, so the TTL no longer bounds staleness. It only keeps
+// the parse off the request path and lets superseded entries age out.
 const CACHE_DURATION = ms('12h');
 const CACHE_TTL_SECONDS = Math.ceil(CACHE_DURATION / 1000);
 
@@ -333,6 +345,19 @@ function faqFilePathForLocale(viewsRoot, locale) {
 }
 
 /**
+ * The cache key for a locale: prefix, locale, the parser fingerprint, then a
+ * fingerprint of the markdown that locale renders from.
+ *
+ * @param {string} viewsRoot
+ * @param {string} locale
+ * @returns {string}
+ */
+function getCacheKey(viewsRoot, locale = 'en') {
+  const markdownHash = getSourceHash(faqFilePathForLocale(viewsRoot, locale));
+  return `${CACHE_PREFIX}${locale}:${PARSER_HASH}:${markdownHash}`;
+}
+
+/**
  * The parsed index for a locale, from redis when it is there.
  *
  * The existing /faq route carries a comment that it takes 30s or more to
@@ -345,7 +370,7 @@ function faqFilePathForLocale(viewsRoot, locale) {
  * @returns {Promise<Object>}
  */
 async function getFaqIndex(client, viewsRoot, locale = 'en') {
-  const cacheKey = `${CACHE_PREFIX}${locale}`;
+  const cacheKey = getCacheKey(viewsRoot, locale);
 
   // Single-flight: the ~137-answer markdown parse is CPU-bound, so on a cold
   // key (deploy, or the 12h TTL expiring under load) one caller parses and the
@@ -558,4 +583,6 @@ module.exports.tokenize = tokenize;
 module.exports.getFaqIndex = getFaqIndex;
 module.exports.parseFaqIndex = parseFaqIndex;
 module.exports.faqFilePathForLocale = faqFilePathForLocale;
+module.exports.getCacheKey = getCacheKey;
+module.exports.CACHE_PREFIX = CACHE_PREFIX;
 module.exports.slugify = slugify;

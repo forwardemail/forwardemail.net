@@ -3,11 +3,18 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
+const fs = require('node:fs');
+const os = require('node:os');
 const path = require('node:path');
+const { randomUUID } = require('node:crypto');
 
 const test = require('ava');
+const Redis = require('ioredis-mock');
 
 const {
+  CACHE_PREFIX,
+  getCacheKey,
+  getFaqIndex,
   parseFaqIndex,
   suggestFaq,
   tokenize
@@ -167,4 +174,54 @@ test('suggestFaq ranks a heading match above an answer-only match and honours li
 test('suggestFaq matches a single meaningful word against headings', (t) => {
   const ids = suggestFaq(index, 'imap').map((r) => r.id);
   t.true(ids.includes('do-you-support-receiving-email-with-imap'));
+});
+
+//
+// Cache freshness: the parsed index is cached in redis with a long TTL and
+// nothing clears it on deploy, so an edited FAQ must land on a new key rather
+// than serve the previous parse until the TTL runs out.
+//
+test('getFaqIndex serves the edited FAQ on the next call instead of the cached parse', async (t) => {
+  const viewsRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'faq-index-'));
+  fs.mkdirSync(path.join(viewsRoot, 'faq'));
+  const filePath = path.join(viewsRoot, 'faq', 'index.md');
+  const original = fs.readFileSync(FAQ_FILE_PATH, 'utf8');
+  fs.writeFileSync(filePath, original);
+
+  const client = new Redis({ keyPrefix: randomUUID() });
+  client.setMaxListeners(0);
+  t.teardown(() => {
+    client.disconnect();
+    fs.rmSync(viewsRoot, { recursive: true, force: true });
+  });
+
+  const ids = (result) =>
+    new Set(result.categories.flatMap((c) => c.questions.map((q) => q.id)));
+
+  const before = await getFaqIndex(client, viewsRoot, 'en');
+  t.true(ids(before).has('do-you-store-error-logs'));
+  t.false(ids(before).has('do-you-keep-error-logs-forever'));
+
+  // the cache is warm: a repeat call is served from redis
+  t.truthy(await client.get(getCacheKey(viewsRoot, 'en')));
+
+  fs.writeFileSync(
+    filePath,
+    original.replace(
+      '### Do you store error logs\n',
+      '### Do you keep error logs forever\n'
+    )
+  );
+
+  const after = await getFaqIndex(client, viewsRoot, 'en');
+  t.false(ids(after).has('do-you-store-error-logs'));
+  t.true(ids(after).has('do-you-keep-error-logs-forever'));
+});
+
+test('getFaqIndex cache key is stable for unchanged sources and per locale', (t) => {
+  const viewsRoot = path.join(__dirname, '..', '..', 'app', 'views');
+  const key = getCacheKey(viewsRoot, 'en');
+  t.true(key.startsWith(`${CACHE_PREFIX}en:`));
+  t.is(getCacheKey(viewsRoot, 'en'), key);
+  t.not(getCacheKey(viewsRoot, 'es'), key);
 });

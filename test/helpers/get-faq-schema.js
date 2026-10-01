@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
+const fs = require('node:fs');
+const os = require('node:os');
 const path = require('node:path');
 const { randomUUID } = require('node:crypto');
 
@@ -16,6 +18,7 @@ const {
   buildFaqSchema,
   ensureQuestionMark,
   CACHE_KEY,
+  getCacheKey,
   CACHE_TTL_SECONDS,
   ALLOWED_TAGS,
   QUESTION_PREFIXES
@@ -362,7 +365,7 @@ test('getFaqSchema caches result in Redis', async (t) => {
   await getFaqSchema(client, FAQ_FILE_PATH);
 
   // Verify the cache was set
-  const cached = await client.get(CACHE_KEY);
+  const cached = await client.get(getCacheKey(FAQ_FILE_PATH));
   t.truthy(cached);
 
   const parsed = typeof cached === 'string' ? JSON.parse(cached) : cached;
@@ -396,7 +399,7 @@ test('getFaqSchema returns cached data on subsequent calls', async (t) => {
     ]
   };
   await client.set(
-    CACHE_KEY,
+    getCacheKey(FAQ_FILE_PATH),
     JSON.stringify(modified),
     'EX',
     CACHE_TTL_SECONDS
@@ -429,7 +432,10 @@ test('getFaqSchema ignores invalid cached data and re-parses', async (t) => {
   client.setMaxListeners(0);
 
   // Set invalid cached data
-  await client.set(CACHE_KEY, JSON.stringify({ invalid: true }));
+  await client.set(
+    getCacheKey(FAQ_FILE_PATH),
+    JSON.stringify({ invalid: true })
+  );
 
   const schema = await getFaqSchema(client, FAQ_FILE_PATH);
   t.is(schema['@type'], 'FAQPage');
@@ -445,7 +451,7 @@ test('getFaqSchema ignores cached data with empty mainEntity', async (t) => {
 
   // Set cached data with empty mainEntity
   await client.set(
-    CACHE_KEY,
+    getCacheKey(FAQ_FILE_PATH),
     JSON.stringify({
       '@context': 'https://schema.org',
       '@type': 'FAQPage',
@@ -652,4 +658,47 @@ test('full FAQ schema JSON is valid and parseable', (t) => {
     t.is(q.acceptedAnswer['@type'], 'Answer');
     t.truthy(q.acceptedAnswer.text);
   }
+});
+
+//
+// Cache freshness: nothing clears the cached schema on deploy, so an edited FAQ
+// must land on a new key rather than serve the previous schema until the TTL
+// runs out.
+//
+test('getFaqSchema serves the edited FAQ on the next call instead of the cached schema', async (t) => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'faq-schema-'));
+  const filePath = path.join(dir, 'index.md');
+  const original = fs.readFileSync(FAQ_FILE_PATH, 'utf8');
+  fs.writeFileSync(filePath, original);
+
+  const client = new Redis({ keyPrefix: randomUUID() });
+  client.setMaxListeners(0);
+  t.teardown(() => {
+    client.disconnect();
+    fs.rmSync(dir, { recursive: true, force: true });
+  });
+
+  const names = (schema) => schema.mainEntity.map((q) => q.name);
+
+  const before = await getFaqSchema(client, filePath);
+  t.true(names(before).includes('Do you store error logs?'));
+  t.truthy(await client.get(getCacheKey(filePath)));
+
+  fs.writeFileSync(
+    filePath,
+    original.replace(
+      '### Do you store error logs\n',
+      '### Do you keep error logs forever\n'
+    )
+  );
+
+  const after = await getFaqSchema(client, filePath);
+  t.false(names(after).includes('Do you store error logs?'));
+  t.true(names(after).includes('Do you keep error logs forever?'));
+});
+
+test('getCacheKey is prefixed by CACHE_KEY and stable for an unchanged file', (t) => {
+  const key = getCacheKey(FAQ_FILE_PATH);
+  t.true(key.startsWith(`${CACHE_KEY}:`));
+  t.is(getCacheKey(FAQ_FILE_PATH), key);
 });

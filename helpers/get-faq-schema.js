@@ -11,10 +11,23 @@ const markdownItGitHubAlerts = require('markdown-it-github-alerts');
 const ms = require('ms');
 const sanitizeHtml = require('sanitize-html');
 
+const getSourceHash = require('#helpers/get-source-hash');
 const singleFlightCache = require('#helpers/single-flight-cache');
 
-// Redis cache key for FAQ structured data
+// Redis cache key prefix for FAQ structured data. The full key also carries a
+// fingerprint of this parser and of the markdown (see getCacheKey), so an
+// edited FAQ or a parser change is picked up on the next request rather than
+// after the TTL. Nothing deletes these keys on deploy; the old entry just
+// expires. A dependency upgrade that changes the output (markdown-it,
+// sanitize-html) is invisible to the fingerprint, so add a version suffix here
+// in that case.
 const CACHE_KEY = 'faq_schema:json_ld';
+
+// Fingerprint of this module, which owns the parse and the sanitizer. Taken
+// once at load so the key describes the code this process is running: hashed
+// per request, a process still on the previous release could read this
+// release's file mid-deploy and cache its old output under the new key.
+const PARSER_HASH = getSourceHash(__filename);
 
 // Cache duration - 1 hour TTL
 const CACHE_DURATION = ms('1h');
@@ -267,15 +280,28 @@ function isValidFaqSchema(schema) {
   );
 }
 
+/**
+ * The cache key for a given FAQ file: the prefix, the parser fingerprint, then
+ * a fingerprint of the file.
+ *
+ * @param {string} faqFilePath
+ * @returns {string}
+ */
+function getCacheKey(faqFilePath) {
+  return `${CACHE_KEY}:${PARSER_HASH}:${getSourceHash(faqFilePath)}`;
+}
+
 async function getFaqSchema(client, faqFilePath, logger) {
+  const cacheKey = getCacheKey(faqFilePath);
+
   // Single-flight: the markdown parse + sanitize is CPU-bound, so on a cold key
   // one caller builds the schema and concurrent requests across every worker
   // wait for its result. An empty schema (e.g. the file was momentarily
   // unreadable) is returned but not cached, so a transient miss is not memoised
   // for the full TTL.
   return singleFlightCache(client, {
-    cacheKey: CACHE_KEY,
-    lockKey: `${CACHE_KEY}:lock`,
+    cacheKey,
+    lockKey: `${cacheKey}:lock`,
     ttlSeconds: CACHE_TTL_SECONDS,
     logger,
     shouldCache: isValidFaqSchema,
@@ -289,6 +315,7 @@ module.exports.parseFaqMarkdown = parseFaqMarkdown;
 module.exports.buildFaqSchema = buildFaqSchema;
 module.exports.ensureQuestionMark = ensureQuestionMark;
 module.exports.CACHE_KEY = CACHE_KEY;
+module.exports.getCacheKey = getCacheKey;
 module.exports.CACHE_DURATION = CACHE_DURATION;
 module.exports.CACHE_TTL_SECONDS = CACHE_TTL_SECONDS;
 module.exports.ALLOWED_TAGS = ALLOWED_TAGS;
