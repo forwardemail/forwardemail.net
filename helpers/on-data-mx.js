@@ -79,6 +79,8 @@ const isTimeoutError = require('#helpers/is-timeout-error');
 const isEmail = require('#helpers/is-email');
 const isGreylisted = require('#helpers/is-greylisted');
 const isHighConfidenceGenericRdnsSpam = require('#helpers/is-high-confidence-generic-rdns-spam');
+const isHighConfidenceUnconfirmedRdnsSpam = require('#helpers/is-high-confidence-unconfirmed-rdns-spam');
+const isHighConfidenceRootScriptSpam = require('#helpers/is-high-confidence-root-script-spam');
 const isHighConfidencePhpHostingSpam = require('#helpers/is-high-confidence-php-hosting-spam');
 const {
   checkMicrosoftOutboundSpamExemptLimit
@@ -2235,10 +2237,9 @@ async function onDataMX(session, headers, body) {
       );
 
       //
-      // in monitor-only mode (the default) the match is logged with the full
-      // session and counted, but the message continues through the normal
-      // path; this allows the rule to be observed against real traffic before
-      // `GENERIC_RDNS_SPAM_MONITOR_ONLY=false` turns on rejection
+      // in monitor-only mode (`GENERIC_RDNS_SPAM_MONITOR_ONLY=true`) the match
+      // is logged with the full session and counted, but the message continues
+      // through the normal path
       //
       if (config.genericRdnsSpamMonitorOnly) {
         this.client
@@ -2255,6 +2256,66 @@ async function onDataMX(session, headers, body) {
 
         throw err;
       }
+    }
+  }
+
+  //
+  // Reject unauthenticated mail from an address without forward-confirmed
+  // reverse DNS when the sending domain's own SPF does not authorize it and the
+  // HELO name cannot be checked either.
+  //
+  if (await isHighConfidenceUnconfirmedRdnsSpam(session, this.resolver)) {
+    // NOTE: a temporary rejection (rather than 550) so that a legitimate
+    //       sender's MTA keeps retrying if this rule ever has to be rolled back
+    const err = new SMTPError(
+      'The email sent has no passing authentication aligned with the From address (DKIM or DMARC), the SPF record of the sending domain does not authorize this server, and this server has neither a reverse DNS (PTR) record nor a HELO hostname that resolves back to its address; configure SPF or DKIM for your sending domain and a matching PTR record for your mail server',
+      { responseCode: 421 }
+    );
+
+    if (config.unconfirmedRdnsSpamMonitorOnly) {
+      this.client
+        .incr(`unconfirmed_rdns_spam_monitored:${session.arrivalDateFormatted}`)
+        .then()
+        .catch((err) => logger.fatal(err));
+
+      logger.warn(err, { session });
+    } else {
+      this.client
+        .incr(`unconfirmed_rdns_spam_prevented:${session.arrivalDateFormatted}`)
+        .then()
+        .catch((err) => logger.fatal(err));
+
+      throw err;
+    }
+  }
+
+  //
+  // Reject unauthenticated mail that the root user of a server submitted on
+  // that server, delivered straight to us under an unrelated From domain
+  // that publishes no SPF record.
+  //
+  if (isHighConfidenceRootScriptSpam(headers, session)) {
+    // NOTE: a temporary rejection (rather than 550) so that a legitimate
+    //       sender's MTA keeps retrying if this rule ever has to be rolled back
+    const err = new SMTPError(
+      'The email sent has no passing SPF or DKIM authentication, was submitted by the root user of the sending server, and its From domain is unrelated to that server and publishes no SPF record; send it as the server itself, or configure SPF or DKIM for the From domain',
+      { responseCode: 421 }
+    );
+
+    if (config.rootScriptSpamMonitorOnly) {
+      this.client
+        .incr(`root_script_spam_monitored:${session.arrivalDateFormatted}`)
+        .then()
+        .catch((err) => logger.fatal(err));
+
+      logger.warn(err, { session });
+    } else {
+      this.client
+        .incr(`root_script_spam_prevented:${session.arrivalDateFormatted}`)
+        .then()
+        .catch((err) => logger.fatal(err));
+
+      throw err;
     }
   }
 

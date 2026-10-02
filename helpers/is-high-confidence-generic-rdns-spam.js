@@ -181,6 +181,8 @@ function isHighConfidenceGenericRdnsSpam(session) {
 }
 
 module.exports = isHighConfidenceGenericRdnsSpam;
+module.exports.hasInconclusiveAuthentication = hasInconclusiveAuthentication;
+module.exports.hasMeaningfulSpfPass = hasMeaningfulSpfPass;
 module.exports.isExplicitlyAllowlistedHost = isExplicitlyAllowlistedHost;
 module.exports.isHeloAlignedWithFrom = isHeloAlignedWithFrom;
 module.exports.isHighConfidenceGenericRdnsSpam =

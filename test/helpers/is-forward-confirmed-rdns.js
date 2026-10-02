@@ -181,3 +181,97 @@ test('bounds the forward lookup and fails closed when it times out', async (t) =
   t.true(received.signal.aborted);
   t.true(Date.now() - start < 5000);
 });
+
+const { checkForwardConfirmedRdns } = isForwardConfirmedRdns;
+
+function rejectingResolver(code) {
+  const reject = async () => {
+    const err = new Error(`query ${code}`);
+    err.code = code;
+    throw err;
+  };
+
+  return { resolve4: reject, resolve6: reject };
+}
+
+test('check: confirmed when the hostname resolves to the client (real resolver)', async (t) => {
+  await spoof(t, 'A', ['203.0.113.7']);
+  t.is(
+    await checkForwardConfirmedRdns(
+      t.context.resolver,
+      HOSTNAME,
+      '203.0.113.7'
+    ),
+    'confirmed'
+  );
+});
+
+test('check: unconfirmed when the hostname resolves elsewhere (real resolver)', async (t) => {
+  await spoof(t, 'A', ['203.0.113.7']);
+  t.is(
+    await checkForwardConfirmedRdns(
+      t.context.resolver,
+      HOSTNAME,
+      '203.0.113.9'
+    ),
+    'unconfirmed'
+  );
+});
+
+test('check: unconfirmed when the hostname has no address records', async (t) => {
+  for (const code of ['ENOTFOUND', 'ENODATA']) {
+    t.is(
+      await checkForwardConfirmedRdns(
+        rejectingResolver(code),
+        HOSTNAME,
+        '203.0.113.7'
+      ),
+      'unconfirmed',
+      `${code}`
+    );
+  }
+});
+
+test('check: unknown when DNS gives no answer, and on invalid input', async (t) => {
+  for (const code of ['ETIMEOUT', 'ESERVFAIL', 'ECONNREFUSED', 'ABORT_ERR']) {
+    t.is(
+      await checkForwardConfirmedRdns(
+        rejectingResolver(code),
+        HOSTNAME,
+        '203.0.113.7'
+      ),
+      'unknown',
+      `${code}`
+    );
+  }
+
+  const resolver = rejectingResolver('ENOTFOUND');
+  t.is(await checkForwardConfirmedRdns(resolver, '', '203.0.113.7'), 'unknown');
+  t.is(await checkForwardConfirmedRdns(resolver, HOSTNAME, 'nope'), 'unknown');
+  t.is(
+    await checkForwardConfirmedRdns(null, HOSTNAME, '203.0.113.7'),
+    'unknown'
+  );
+});
+
+test('check: unknown when the forward lookup times out', async (t) => {
+  const resolver = {
+    resolve4: (hostname, options, abortController) =>
+      new Promise((resolve, reject) => {
+        abortController.signal.addEventListener('abort', () => {
+          const err = new Error('aborted');
+          err.code = 'ABORT_ERR';
+          reject(err);
+        });
+      }),
+    async resolve6() {
+      return [];
+    }
+  };
+  t.is(
+    await checkForwardConfirmedRdns(resolver, HOSTNAME, '203.0.113.7', {
+      timeout: 50
+    }),
+    'unknown'
+  );
+});

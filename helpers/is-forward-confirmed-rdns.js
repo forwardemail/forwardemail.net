@@ -50,11 +50,17 @@ function parseIp(value) {
 }
 
 //
+// Returns "confirmed" when the hostname resolves to the address, "unconfirmed"
+// when DNS answered and it does not (the hostname has no address records, or
+// none of them is the address), and "unknown" for anything else (bad input, a
+// timeout or a server failure). Only "unconfirmed" says anything against the
+// host, so negative checks can use it without failing on a slow nameserver.
+//
 // `options.abortController` is passed through to the resolver (Tangerine
 // accepts it as the third argument); when omitted one is created that aborts
 // after `options.timeout` milliseconds (default 5s).
 //
-async function isForwardConfirmedRdns(resolver, hostname, ip, options = {}) {
+async function checkForwardConfirmedRdns(resolver, hostname, ip, options = {}) {
   if (
     !resolver ||
     typeof resolver.resolve4 !== 'function' ||
@@ -62,10 +68,10 @@ async function isForwardConfirmedRdns(resolver, hostname, ip, options = {}) {
     typeof hostname !== 'string' ||
     hostname.length === 0
   )
-    return false;
+    return 'unknown';
 
   const parsed = parseIp(ip);
-  if (!parsed) return false;
+  if (!parsed) return 'unknown';
 
   const target = parsed.toString();
   const resolve = parsed.kind() === 'ipv6' ? 'resolve6' : 'resolve4';
@@ -85,22 +91,33 @@ async function isForwardConfirmedRdns(resolver, hostname, ip, options = {}) {
   let addresses;
   try {
     addresses = await resolver[resolve](hostname, undefined, abortController);
-  } catch {
-    return false;
+  } catch (err) {
+    // NXDOMAIN or an empty answer: the hostname has no address records
+    return err?.code === 'ENOTFOUND' || err?.code === 'ENODATA'
+      ? 'unconfirmed'
+      : 'unknown';
   } finally {
     if (timer) clearTimeout(timer);
   }
 
-  if (!Array.isArray(addresses)) return false;
+  if (!Array.isArray(addresses)) return 'unknown';
 
   for (const address of addresses) {
     const candidate = parseIp(
       typeof address === 'string' ? address : address?.address
     );
-    if (candidate && candidate.toString() === target) return true;
+    if (candidate && candidate.toString() === target) return 'confirmed';
   }
 
-  return false;
+  return 'unconfirmed';
+}
+
+async function isForwardConfirmedRdns(resolver, hostname, ip, options = {}) {
+  return (
+    (await checkForwardConfirmedRdns(resolver, hostname, ip, options)) ===
+    'confirmed'
+  );
 }
 
 module.exports = isForwardConfirmedRdns;
+module.exports.checkForwardConfirmedRdns = checkForwardConfirmedRdns;

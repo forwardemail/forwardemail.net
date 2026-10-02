@@ -23,6 +23,8 @@ const getIpBucket = require('#helpers/get-ip-bucket');
 const parseRootDomain = require('#helpers/parse-root-domain');
 const refineAndLogError = require('#helpers/refine-and-log-error');
 
+const { checkForwardConfirmedRdns } = isForwardConfirmedRdns;
+
 /**
  * OPTIMIZATION: Helper function to process and normalize hostnames
  * Extracted to avoid code duplication (lines 166-176 and 239-249)
@@ -193,9 +195,10 @@ async function onConnect(session, fn) {
 
     // lookup the client hostname
     try {
-      const [clientHostname] = await this.resolver.reverse(
+      const clientHostnames = await this.resolver.reverse(
         session.remoteAddress
       );
+      const [clientHostname] = clientHostnames;
       // OPTIMIZATION: Use helper function to process hostname
       const processed = processHostname(clientHostname);
       //
@@ -212,20 +215,47 @@ async function onConnect(session, fn) {
       if (processed) {
         session.unconfirmedClientHostname = processed.domain;
         session.unconfirmedRootClientHostname = processed.rootDomain;
-        if (
-          await isForwardConfirmedRdns(
-            this.resolver,
-            processed.domain,
-            session.remoteAddress
-          )
-        ) {
+        const fcrdns = await checkForwardConfirmedRdns(
+          this.resolver,
+          processed.domain,
+          session.remoteAddress
+        );
+        if (fcrdns === 'confirmed') {
           session.resolvedClientHostname = processed.domain;
           session.resolvedRootClientHostname = processed.rootDomain;
-        } else if (env.NODE_ENV !== 'production') {
-          this.logger.debug('Reverse hostname did not forward-confirm', {
-            hostname: processed.domain,
-            remoteAddress: session.remoteAddress
-          });
+        } else {
+          //
+          // Neither this PTR hostname nor any other the address has (FCrDNS
+          // passes if any of them resolves back) resolves to this address.
+          // Any other name that is invalid, unknown or confirms leaves this
+          // unset; only the first name is ever trusted above.
+          //
+          // (more than three names are not all checked, so nothing is concluded)
+          if (fcrdns === 'unconfirmed' && clientHostnames.length <= 3) {
+            let unconfirmed = true;
+            for (const hostname of clientHostnames.slice(1, 3)) {
+              const other = processHostname(hostname);
+              if (
+                !other ||
+                (await checkForwardConfirmedRdns(
+                  this.resolver,
+                  other.domain,
+                  session.remoteAddress
+                )) !== 'unconfirmed'
+              ) {
+                unconfirmed = false;
+                break;
+              }
+            }
+
+            if (unconfirmed) session.hasNoConfirmedReverseHostname = true;
+          }
+
+          if (env.NODE_ENV !== 'production')
+            this.logger.debug('Reverse hostname did not forward-confirm', {
+              hostname: processed.domain,
+              remoteAddress: session.remoteAddress
+            });
         }
       }
     } catch (err) {
@@ -234,6 +264,11 @@ async function onConnect(session, fn) {
       //       <https://github.com/nodejs/node/issues/3112#issuecomment-1452548779>
       //
       if (env.NODE_ENV !== 'production') this.logger.debug(err, { session });
+
+      // DNS answered that there is no PTR record (NXDOMAIN or an empty
+      // answer); a timeout or server failure says nothing either way
+      if (err?.code === 'ENOTFOUND' || err?.code === 'ENODATA')
+        session.hasNoConfirmedReverseHostname = true;
     }
 
     //
@@ -284,6 +319,8 @@ async function onConnect(session, fn) {
         delete session.resolvedRootClientHostname;
         delete session.unconfirmedClientHostname;
         delete session.unconfirmedRootClientHostname;
+        // not judged for a passthrough client (fails open)
+        delete session.hasNoConfirmedReverseHostname;
 
         // Resolve the hostname for the new client IP
         try {

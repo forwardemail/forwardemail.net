@@ -1103,6 +1103,17 @@ const config = {
   // from generic reverse DNS that impersonates its From domain
   // (see `helpers/is-high-confidence-generic-rdns-spam.js`)
   genericRdnsSpamMonitorOnly: boolean(env.GENERIC_RDNS_SPAM_MONITOR_ONLY),
+  // only log and count (rather than reject) unauthenticated mail from an
+  // address without forward-confirmed reverse DNS that its SPF does not
+  // authorize
+  // (see `helpers/is-high-confidence-unconfirmed-rdns-spam.js`)
+  unconfirmedRdnsSpamMonitorOnly: boolean(
+    env.UNCONFIRMED_RDNS_SPAM_MONITOR_ONLY
+  ),
+  // only log and count (rather than reject) unauthenticated mail submitted by
+  // root on the sending server under an unrelated From domain
+  // (see `helpers/is-high-confidence-root-script-spam.js`)
+  rootScriptSpamMonitorOnly: boolean(env.ROOT_SCRIPT_SPAM_MONITOR_ONLY),
   // Suspend domain when >= this fraction of its aliases are suspended
   smtpDomainSuspensionAliasThreshold:
     Number(env.SMTP_DOMAIN_SUSPENSION_ALIAS_THRESHOLD) || 0.25,

@@ -42,6 +42,7 @@ const config = require('#config');
 const _ = require('#helpers/lodash');
 const createWebSocketAsPromised = require('#helpers/create-websocket-as-promised');
 const env = require('#config/env');
+const getGreylistKey = require('#helpers/get-greylist-key');
 const isExpiredOrNewlyCreated = require('#helpers/is-expired-or-newly-created');
 const logger = require('#helpers/logger');
 const { getSmtpDayKey } = require('#helpers/get-smtp-day');
@@ -2267,8 +2268,8 @@ Content-Type: text/html; charset=utf-8
 
   const { genericRdnsSpamMonitorOnly } = config;
   try {
-    // scenarios 1-4 exercise enforcement (the default configuration is
-    // monitor-only, which is covered by scenario 5)
+    // scenarios 1-4 exercise enforcement (the default configuration);
+    // monitor-only mode is covered by scenario 5
     config.genericRdnsSpamMonitorOnly = false;
 
     //
@@ -2341,7 +2342,7 @@ Content-Type: text/html; charset=utf-8
     await t.context.client.del(`allowlist:${spoofedAddress}`);
 
     //
-    // 5. in monitor-only mode (the default) the same message is logged and
+    // 5. in monitor-only mode the same message is logged and
     //    counted but still delivered
     //
     config.genericRdnsSpamMonitorOnly = true;
@@ -2363,6 +2364,688 @@ Content-Type: text/html; charset=utf-8
     await t.context.client.del('allowlist:googleusercontent.com');
     await t.context.client.del(`allowlist:${spoofedAddress}`);
 
+    await server.close();
+    await smtp.close();
+  }
+});
+
+test('rejects unauthenticated mail from a host without confirmed reverse DNS that SPF disavows', async (t) => {
+  const smtp = new MX({
+    client: t.context.client,
+    wsp: t.context.wsp
+  });
+  const { resolver } = smtp;
+  if (!getPort) await pWaitFor(() => Boolean(getPort), { timeout: ms('30s') });
+  const port = await getPort();
+  await smtp.listen(port);
+
+  //
+  // The sending address is presented to the connection hook (which performs
+  // the reverse DNS lookup) and then to the SMTP transaction through
+  // smtp-server's XCLIENT extension, as in the generic reverse DNS test above.
+  //
+  const spoofedAddress = '34.120.45.67';
+  smtp.server.options.useXClient = true;
+  const { onConnect } = smtp.server;
+  smtp.server.onConnect = (session, fn) => {
+    session.remoteAddress = spoofedAddress;
+    return onConnect(session, fn);
+  };
+
+  const receivedEmails = [];
+
+  const serverPort = await getPort();
+  const server = new SMTPServer({
+    disabledCommands: ['AUTH'],
+    onRcptTo(address, session, fn) {
+      fn();
+    },
+    onConnect(session, fn) {
+      fn();
+    },
+    onData(stream, session, fn) {
+      const chunks = [];
+      const writer = new Writable({
+        write(chunk, encoding, fn) {
+          chunks.push(chunk);
+          fn();
+        }
+      });
+      stream.pipe(writer);
+      stream.on('end', () => {
+        receivedEmails.push(Buffer.concat(chunks).toString());
+        fn();
+      });
+    },
+    logger: false,
+    secure: false
+  });
+  await pify(server.listen.bind(server))(serverPort);
+
+  const user = await t.context.userFactory
+    .withState({
+      plan: 'enhanced_protection',
+      [config.userFields.planSetAt]: dayjs().startOf('day').toDate()
+    })
+    .create();
+
+  await t.context.paymentFactory
+    .withState({
+      user: user._id,
+      amount: 300,
+      invoice_at: dayjs().startOf('day').toDate(),
+      method: 'free_beta_program',
+      duration: ms('30d'),
+      plan: user.plan,
+      kind: 'one-time'
+    })
+    .create();
+
+  await user.save();
+
+  const domain = await t.context.domainFactory
+    .withState({
+      members: [{ user: user._id, group: 'admin' }],
+      plan: user.plan,
+      has_smtp: true,
+      resolver,
+      smtp_port: serverPort.toString()
+    })
+    .create();
+
+  await t.context.aliasFactory
+    .withState({
+      user: user._id,
+      domain: domain._id,
+      name: 'test',
+      recipients: [`test@${IP_ADDRESS}`],
+      is_enabled: true
+    })
+    .create();
+
+  // the From domain: SPF that does not authorize the sender (softfail) and
+  // DMARC p=none
+  const spoofedDomain = 'small-office-domain.com';
+  const ptrHostname = 'host-67.ptr-provider.net';
+  const arpaName = `${spoofedAddress
+    .split('.')
+    .reverse()
+    .join('.')}.in-addr.arpa`;
+
+  const map = new Map();
+  map.set(
+    `a:${domain.name}`,
+    resolver.spoofPacket(domain.name, 'A', [IP_ADDRESS], true)
+  );
+  map.set(
+    `mx:${domain.name}`,
+    resolver.spoofPacket(
+      domain.name,
+      'MX',
+      [{ exchange: IP_ADDRESS, priority: 0 }],
+      true,
+      ms('5m')
+    )
+  );
+  map.set(
+    `txt:${domain.name}`,
+    resolver.spoofPacket(
+      domain.name,
+      'TXT',
+      [`${config.paidPrefix}${domain.verification_record}`],
+      true
+    )
+  );
+  map.set(
+    `txt:${spoofedDomain}`,
+    resolver.spoofPacket(
+      spoofedDomain,
+      'TXT',
+      ['v=spf1 ip4:203.0.113.5 ~all'],
+      true
+    )
+  );
+  map.set(
+    `txt:_dmarc.${spoofedDomain}`,
+    resolver.spoofPacket(
+      `_dmarc.${spoofedDomain}`,
+      'TXT',
+      ['v=DMARC1; p=none;'],
+      true
+    )
+  );
+  // the PTR hostname does not resolve back to the sending address
+  map.set(
+    `ptr:${arpaName}`,
+    resolver.spoofPacket(arpaName, 'PTR', [ptrHostname], true)
+  );
+  map.set(
+    `a:${ptrHostname}`,
+    resolver.spoofPacket(ptrHostname, 'A', ['203.0.113.80'], true)
+  );
+  await resolver.options.cache.mset(map);
+
+  // the address was greylisted long enough ago to be let through
+  const greylistKey = getGreylistKey(spoofedAddress);
+  await t.context.client.set(
+    greylistKey,
+    Date.now() - config.greylistTimeout - ms('1m'),
+    'PX',
+    config.greylistTtlMs
+  );
+  await t.context.client.del(`allowlist:${spoofedAddress}`);
+
+  let attempt = 0;
+  const send = async (helo = ptrHostname) => {
+    attempt++;
+    const raw = `
+From: Mailbox Team <noreply@${spoofedDomain}>
+To: test@${domain.name}
+Subject: Mailbox notice
+Message-ID: <c3a1f0e2${attempt}@${spoofedDomain}>
+Date: ${new Date().toUTCString()}
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+
+Unauthenticated message (${attempt}).
+`;
+    const replies = await sendRawSMTP({
+      host: IP_ADDRESS,
+      port: smtp.server.address().port,
+      commands: [
+        `XCLIENT ADDR=${spoofedAddress}`,
+        `EHLO ${helo}`,
+        `MAIL FROM:<noreply@${spoofedDomain}>`,
+        `RCPT TO:<test@${domain.name}>`,
+        'DATA',
+        `${raw.trim().replace(/\r?\n/g, '\r\n')}\r\n.`,
+        'QUIT'
+      ]
+    });
+    const index = replies.findIndex((reply) => reply.command === 'DATA');
+    t.true(index !== -1, 'DATA command should have been sent');
+    t.is(replies[index].code, 354);
+    return replies[index + 1];
+  };
+
+  const counter = async (name) => {
+    let total = 0;
+    for (const date of new Set([
+      new Date().toISOString().split('T')[0],
+      new Date(Date.now() - ms('1m')).toISOString().split('T')[0]
+    ])) {
+      total +=
+        Number.parseInt(await t.context.client.get(`${name}:${date}`), 10) || 0;
+    }
+
+    return total;
+  };
+
+  const { unconfirmedRdnsSpamMonitorOnly } = config;
+  try {
+    config.unconfirmedRdnsSpamMonitorOnly = false;
+
+    // 1. a PTR hostname that resolves elsewhere, no DKIM, SPF softfail
+    const rejection = await send();
+    t.is(rejection.code, 421);
+    t.regex(
+      rejection.text,
+      /neither a reverse dns \(ptr\) record nor a helo hostname/i
+    );
+    t.is(receivedEmails.length, 0);
+    t.is(await counter('unconfirmed_rdns_spam_prevented'), 1);
+
+    // 2. no PTR record at all
+    await t.context.client.del(`tangerine:ptr:${arpaName}`);
+    await resolver.options.cache.mset(
+      new Map([
+        [`ptr:${arpaName}`, resolver.spoofPacket(arpaName, 'PTR', [], true)]
+      ])
+    );
+    const noPtr = await send();
+    t.is(noPtr.code, 421);
+    t.is(receivedEmails.length, 0);
+    t.is(await counter('unconfirmed_rdns_spam_prevented'), 2);
+
+    // 3. accepted from a server that greets with a hostname resolving to it
+    //    (a real server that is only missing its PTR record)
+    await resolver.options.cache.mset(
+      new Map([
+        [
+          'a:smtp.sender-company.com',
+          resolver.spoofPacket(
+            'smtp.sender-company.com',
+            'A',
+            [spoofedAddress],
+            true
+          )
+        ]
+      ])
+    );
+    const namedHelo = await send('smtp.sender-company.com');
+    t.is(namedHelo.code, 250);
+    await pWaitFor(() => receivedEmails.length === 1, { timeout: ms('10s') });
+    t.is(await counter('unconfirmed_rdns_spam_prevented'), 2);
+
+    // 4. an address literal HELO is not a hostname that checks out
+    const literalHelo = await send(`[${spoofedAddress}]`);
+    t.is(literalHelo.code, 421);
+    t.is(receivedEmails.length, 1);
+    t.is(await counter('unconfirmed_rdns_spam_prevented'), 3);
+
+    // 5. accepted when another of the address's PTR hostnames resolves back
+    await t.context.client.del(`tangerine:ptr:${arpaName}`);
+    await resolver.options.cache.mset(
+      new Map([
+        [
+          `ptr:${arpaName}`,
+          resolver.spoofPacket(
+            arpaName,
+            'PTR',
+            [ptrHostname, `mail.${spoofedDomain}`],
+            true
+          )
+        ],
+        [
+          `a:mail.${spoofedDomain}`,
+          resolver.spoofPacket(
+            `mail.${spoofedDomain}`,
+            'A',
+            [spoofedAddress],
+            true
+          )
+        ]
+      ])
+    );
+    const secondPtr = await send();
+    t.is(secondPtr.code, 250);
+    await pWaitFor(() => receivedEmails.length === 2, { timeout: ms('10s') });
+    t.is(await counter('unconfirmed_rdns_spam_prevented'), 3);
+
+    // 6. accepted once the From domain's SPF record authorizes the address
+    await t.context.client.del(`tangerine:ptr:${arpaName}`);
+    await resolver.options.cache.mset(
+      new Map([
+        [
+          `ptr:${arpaName}`,
+          resolver.spoofPacket(arpaName, 'PTR', [ptrHostname], true)
+        ]
+      ])
+    );
+    await resolver.options.cache.mset(
+      new Map([
+        [
+          `txt:${spoofedDomain}`,
+          resolver.spoofPacket(
+            spoofedDomain,
+            'TXT',
+            [`v=spf1 ip4:${spoofedAddress} ~all`],
+            true
+          )
+        ]
+      ])
+    );
+    const authorized = await send();
+    t.is(authorized.code, 250);
+    await pWaitFor(() => receivedEmails.length === 3, { timeout: ms('10s') });
+
+    // 7. an SPF permerror at the last term of the record (a missing space)
+    //    authorizes nothing either
+    await resolver.options.cache.mset(
+      new Map([
+        [
+          `txt:${spoofedDomain}`,
+          resolver.spoofPacket(
+            spoofedDomain,
+            'TXT',
+            ['v=spf1 ip4:203.0.113.5 include:_spf.example.net~all'],
+            true
+          )
+        ]
+      ])
+    );
+    const brokenSpf = await send();
+    t.is(brokenSpf.code, 421);
+    t.is(receivedEmails.length, 3);
+    t.is(await counter('unconfirmed_rdns_spam_prevented'), 4);
+
+    // 8. a domain with no SPF record makes no assertion, so it is accepted
+    await resolver.options.cache.mset(
+      new Map([
+        [
+          `txt:${spoofedDomain}`,
+          resolver.spoofPacket(
+            spoofedDomain,
+            'TXT',
+            ['unrelated-verification=1'],
+            true
+          )
+        ]
+      ])
+    );
+    const noSpf = await send();
+    t.is(noSpf.code, 250);
+    await pWaitFor(() => receivedEmails.length === 4, { timeout: ms('10s') });
+
+    // 9. in monitor-only mode the disavowed message is counted but delivered
+    await resolver.options.cache.mset(
+      new Map([
+        [
+          `txt:${spoofedDomain}`,
+          resolver.spoofPacket(
+            spoofedDomain,
+            'TXT',
+            ['v=spf1 ip4:203.0.113.5 ~all'],
+            true
+          )
+        ]
+      ])
+    );
+    config.unconfirmedRdnsSpamMonitorOnly = true;
+    const monitored = await send();
+    t.is(monitored.code, 250);
+    await pWaitFor(() => receivedEmails.length === 5, { timeout: ms('10s') });
+    t.is(await counter('unconfirmed_rdns_spam_monitored'), 1);
+    t.is(await counter('unconfirmed_rdns_spam_prevented'), 4);
+  } finally {
+    config.unconfirmedRdnsSpamMonitorOnly = unconfirmedRdnsSpamMonitorOnly;
+    await t.context.client.del(greylistKey);
+    await t.context.client.del(`tangerine:ptr:${arpaName}`);
+    await t.context.client.del(`tangerine:a:${ptrHostname}`);
+    await t.context.client.del(`tangerine:a:mail.${spoofedDomain}`);
+    await t.context.client.del('tangerine:a:smtp.sender-company.com');
+    await t.context.client.del(`tangerine:txt:${spoofedDomain}`);
+    await t.context.client.del(`tangerine:txt:_dmarc.${spoofedDomain}`);
+    await server.close();
+    await smtp.close();
+  }
+});
+
+test('rejects unauthenticated mail submitted by root on a server under an unrelated From domain', async (t) => {
+  const smtp = new MX({
+    client: t.context.client,
+    wsp: t.context.wsp
+  });
+  const { resolver } = smtp;
+  if (!getPort) await pWaitFor(() => Boolean(getPort), { timeout: ms('30s') });
+  const port = await getPort();
+  await smtp.listen(port);
+
+  // the compromised server's address, presented to the connection hook and
+  // the SMTP transaction as in the reverse DNS tests above
+  const spoofedAddress = '35.244.67.89';
+  smtp.server.options.useXClient = true;
+  const { onConnect } = smtp.server;
+  smtp.server.onConnect = (session, fn) => {
+    session.remoteAddress = spoofedAddress;
+    return onConnect(session, fn);
+  };
+
+  const receivedEmails = [];
+
+  const serverPort = await getPort();
+  const server = new SMTPServer({
+    disabledCommands: ['AUTH'],
+    onRcptTo(address, session, fn) {
+      fn();
+    },
+    onConnect(session, fn) {
+      fn();
+    },
+    onData(stream, session, fn) {
+      const chunks = [];
+      const writer = new Writable({
+        write(chunk, encoding, fn) {
+          chunks.push(chunk);
+          fn();
+        }
+      });
+      stream.pipe(writer);
+      stream.on('end', () => {
+        receivedEmails.push(Buffer.concat(chunks).toString());
+        fn();
+      });
+    },
+    logger: false,
+    secure: false
+  });
+  await pify(server.listen.bind(server))(serverPort);
+
+  const user = await t.context.userFactory
+    .withState({
+      plan: 'enhanced_protection',
+      [config.userFields.planSetAt]: dayjs().startOf('day').toDate()
+    })
+    .create();
+
+  await t.context.paymentFactory
+    .withState({
+      user: user._id,
+      amount: 300,
+      invoice_at: dayjs().startOf('day').toDate(),
+      method: 'free_beta_program',
+      duration: ms('30d'),
+      plan: user.plan,
+      kind: 'one-time'
+    })
+    .create();
+
+  await user.save();
+
+  const domain = await t.context.domainFactory
+    .withState({
+      members: [{ user: user._id, group: 'admin' }],
+      plan: user.plan,
+      has_smtp: true,
+      resolver,
+      smtp_port: serverPort.toString()
+    })
+    .create();
+
+  await t.context.aliasFactory
+    .withState({
+      user: user._id,
+      domain: domain._id,
+      name: 'test',
+      recipients: [`test@${IP_ADDRESS}`],
+      is_enabled: true
+    })
+    .create();
+
+  // the compromised server greets as itself and sends as root@ itself; the
+  // From domain is a hosting provider's customer hostname; no domain has SPF
+  const serverHostname = 'vm1.compromised-host.com';
+  const fromDomain = 'vm-7c41.cloud-customer.net';
+  const fromRootDomain = 'cloud-customer.net';
+  // the provider's generic reverse hostname, forward-confirmed
+  const ptrHostname = '35-244-67-89.static.cloud-provider.com';
+  const arpaName = `${spoofedAddress
+    .split('.')
+    .reverse()
+    .join('.')}.in-addr.arpa`;
+
+  const map = new Map();
+  map.set(
+    `a:${domain.name}`,
+    resolver.spoofPacket(domain.name, 'A', [IP_ADDRESS], true)
+  );
+  map.set(
+    `mx:${domain.name}`,
+    resolver.spoofPacket(
+      domain.name,
+      'MX',
+      [{ exchange: IP_ADDRESS, priority: 0 }],
+      true,
+      ms('5m')
+    )
+  );
+  map.set(
+    `txt:${domain.name}`,
+    resolver.spoofPacket(
+      domain.name,
+      'TXT',
+      [`${config.paidPrefix}${domain.verification_record}`],
+      true
+    )
+  );
+  const companyDomain = 'acme-widgets.com';
+  for (const name of [
+    serverHostname,
+    fromDomain,
+    `_dmarc.${fromDomain}`,
+    `_dmarc.${serverHostname}`,
+    '_dmarc.compromised-host.com',
+    `_dmarc.${companyDomain}`
+  ]) {
+    map.set(
+      `txt:${name}`,
+      resolver.spoofPacket(name, 'TXT', ['unrelated-verification=1'], true)
+    );
+  }
+
+  map.set(
+    `txt:_dmarc.${fromRootDomain}`,
+    resolver.spoofPacket(
+      `_dmarc.${fromRootDomain}`,
+      'TXT',
+      ['v=DMARC1; p=none;'],
+      true
+    )
+  );
+  // a company domain whose SPF record does not list the server
+  map.set(
+    `txt:${companyDomain}`,
+    resolver.spoofPacket(
+      companyDomain,
+      'TXT',
+      ['v=spf1 ip4:203.0.113.5 ~all'],
+      true
+    )
+  );
+  map.set(
+    `ptr:${arpaName}`,
+    resolver.spoofPacket(arpaName, 'PTR', [ptrHostname], true)
+  );
+  map.set(
+    `a:${ptrHostname}`,
+    resolver.spoofPacket(ptrHostname, 'A', [spoofedAddress], true)
+  );
+  await resolver.options.cache.mset(map);
+
+  // the address was greylisted long enough ago to be let through
+  const greylistKey = getGreylistKey('cloud-provider.com');
+  await t.context.client.set(
+    greylistKey,
+    Date.now() - config.greylistTimeout - ms('1m'),
+    'PX',
+    config.greylistTtlMs
+  );
+
+  let attempt = 0;
+  const send = async ({
+    userid = 0,
+    from = `Billing <billing@${fromDomain}>`
+  } = {}) => {
+    attempt++;
+    const raw = `
+Received: by ${serverHostname} (Postfix, from userid ${userid})
+\tid 4B1C2D3E4${attempt}; ${new Date().toUTCString()}
+To: test@${domain.name}
+Subject: Account notice (${attempt})
+From: ${from}
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Message-Id: <20261001120000.4B1C2D3E4${attempt}@${serverHostname}>
+Date: ${new Date().toUTCString()}
+
+Unauthenticated message (${attempt}).
+`;
+    const replies = await sendRawSMTP({
+      host: IP_ADDRESS,
+      port: smtp.server.address().port,
+      commands: [
+        `XCLIENT ADDR=${spoofedAddress}`,
+        `EHLO ${serverHostname}`,
+        `MAIL FROM:<root@${serverHostname}>`,
+        `RCPT TO:<test@${domain.name}>`,
+        'DATA',
+        `${raw.trim().replace(/\r?\n/g, '\r\n')}\r\n.`,
+        'QUIT'
+      ]
+    });
+    const index = replies.findIndex((reply) => reply.command === 'DATA');
+    t.true(index !== -1, 'DATA command should have been sent');
+    t.is(replies[index].code, 354);
+    return replies[index + 1];
+  };
+
+  const counter = async (name) => {
+    let total = 0;
+    for (const date of new Set([
+      new Date().toISOString().split('T')[0],
+      new Date(Date.now() - ms('1m')).toISOString().split('T')[0]
+    ])) {
+      total +=
+        Number.parseInt(await t.context.client.get(`${name}:${date}`), 10) || 0;
+    }
+
+    return total;
+  };
+
+  const { rootScriptSpamMonitorOnly } = config;
+  try {
+    config.rootScriptSpamMonitorOnly = false;
+
+    // 1. submitted by root, no SPF or DKIM, an unrelated From domain
+    const rejection = await send();
+    t.is(rejection.code, 421);
+    t.regex(rejection.text, /submitted by the root user/i);
+    t.is(receivedEmails.length, 0);
+    t.is(await counter('root_script_spam_prevented'), 1);
+
+    // 2. the same message submitted by a web application user is accepted
+    const webApp = await send({ userid: 33 });
+    t.is(webApp.code, 250);
+    await pWaitFor(() => receivedEmails.length === 1, { timeout: ms('10s') });
+
+    // 3. cron mail from root, sent as the server itself, is accepted
+    const cron = await send({
+      from: `Cron Daemon <root@${serverHostname}>`
+    });
+    t.is(cron.code, 250);
+    await pWaitFor(() => receivedEmails.length === 2, { timeout: ms('10s') });
+
+    // 4. a root script sending as a domain that publishes SPF is accepted
+    //    (spoofing such a domain is left to the SPF and DMARC checks)
+    const company = await send({
+      from: `Alerts <noreply@${companyDomain}>`
+    });
+    t.is(company.code, 250);
+    await pWaitFor(() => receivedEmails.length === 3, { timeout: ms('10s') });
+
+    // 5. in monitor-only mode the message is counted but delivered
+    config.rootScriptSpamMonitorOnly = true;
+    const monitored = await send();
+    t.is(monitored.code, 250);
+    await pWaitFor(() => receivedEmails.length === 4, { timeout: ms('10s') });
+    t.is(await counter('root_script_spam_monitored'), 1);
+    t.is(await counter('root_script_spam_prevented'), 1);
+  } finally {
+    config.rootScriptSpamMonitorOnly = rootScriptSpamMonitorOnly;
+    await t.context.client.del(greylistKey);
+    await t.context.client.del(`tangerine:ptr:${arpaName}`);
+    await t.context.client.del(`tangerine:a:${ptrHostname}`);
+    for (const name of [
+      serverHostname,
+      fromDomain,
+      companyDomain,
+      `_dmarc.${fromDomain}`,
+      `_dmarc.${fromRootDomain}`,
+      `_dmarc.${serverHostname}`,
+      '_dmarc.compromised-host.com',
+      `_dmarc.${companyDomain}`
+    ])
+      await t.context.client.del(`tangerine:txt:${name}`);
     await server.close();
     await smtp.close();
   }
