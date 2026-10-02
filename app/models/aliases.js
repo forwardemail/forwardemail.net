@@ -1223,6 +1223,17 @@ Aliases.pre('save', async function (next) {
         (addr) => addr === string
       );
 
+      //
+      // the lists also hold look-alike forms (e.g. "аdmin" with a Cyrillic
+      // "а"), which the ASCII-only `string` above cannot match, so the
+      // name itself (NFKC, e.g. fullwidth letters as ASCII) is checked too
+      //
+      const normalizedName = alias.name.normalize('NFKC').toLowerCase();
+      if (!reservedMatch)
+        reservedMatch =
+          reservedEmailAddressesList.find((addr) => addr === normalizedName) ||
+          reservedAdminList.find((addr) => addr === normalizedName);
+
       if (!reservedMatch) {
         if (
           domain.plan === 'team' &&
@@ -1246,9 +1257,13 @@ Aliases.pre('save', async function (next) {
         Array.isArray(domain.restricted_alias_names) &&
         domain.restricted_alias_names.length > 0
       )
-        reservedMatch = domain.restricted_alias_names.find(
-          (name) => name === string
-        );
+        reservedMatch = domain.restricted_alias_names.find((name) => {
+          if (name === normalizedName) return true;
+          // (compared like the reserved lists above, so a restricted
+          // "billing-team" also covers "billing.team" and "billingteam")
+          const restricted = name.replace(/[^\da-z]/g, '');
+          return restricted !== '' && restricted === string;
+        });
 
       if (reservedMatch) {
         const err = Boom.badRequest(

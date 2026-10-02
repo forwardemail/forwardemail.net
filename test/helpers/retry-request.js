@@ -74,3 +74,44 @@ test.serial(
     }
   }
 );
+
+//
+// With `autoSelectFamily` (the default from Node 20) the connect-time lookup
+// is called with `{ all: true }` and must answer with every address, each of
+// which is checked (on Node 18 this is opted into with the net default).
+//
+test.serial(
+  'connects when the lookup is asked for all addresses',
+  async (t) => {
+    const http = require('node:http');
+    const net = require('node:net');
+    const server = http.createServer((req, res) => res.end('ok'));
+    await new Promise((resolve) => {
+      server.listen(0, '127.0.0.1', resolve);
+    });
+    const { port } = server.address();
+    const calls = [];
+    const resolver = {
+      async lookup(hostname, options = {}) {
+        calls.push(options);
+        const address = { address: '127.0.0.1', family: 4 };
+        return options.all ? [address] : address;
+      }
+    };
+
+    const autoSelectFamily = net.getDefaultAutoSelectFamily();
+    net.setDefaultAutoSelectFamily(true);
+    try {
+      const response = await retryRequest(
+        `http://all-addresses.example.com:${port}/`,
+        { resolver, retries: 1, timeout: 5000 }
+      );
+      t.is(response.statusCode, 200);
+      t.is(await response.body.text(), 'ok');
+      t.true(calls.some((options) => options.all === true));
+    } finally {
+      net.setDefaultAutoSelectFamily(autoSelectFamily);
+      server.close();
+    }
+  }
+);

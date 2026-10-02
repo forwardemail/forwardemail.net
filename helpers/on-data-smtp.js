@@ -247,7 +247,25 @@ async function onDataSMTP(session, date, headers, body) {
   if (isEmail(session?.envelope?.mailFrom?.address))
     envelope.from = session.envelope.mailFrom.address;
 
-  // TODO: prevent users from using "return@forwardemail.net" in FROM address
+  //
+  // only our own domain may use an envelope MAIL FROM on our own domain
+  // (it is not SRS-rewritten in `process-email`, and `support@` skips the
+  // outbound phishing/virus scan in `Emails.queue`)
+  //
+  if (
+    envelope.from &&
+    punycode.toASCII(domain.name).toLowerCase() !==
+      config.webHost.toLowerCase() &&
+    punycode
+      .toASCII(envelope.from)
+      .toLowerCase()
+      .endsWith(`@${config.webHost.toLowerCase()}`)
+  )
+    throw new SMTPError(
+      `Envelope MAIL FROM of ${envelope.from} is not allowed, use an address on ${domain.name}`,
+      { responseCode: 550, ignoreHook: true }
+    );
+
   // TODO: envelope FROM needs to match From address of sending domain
 
   if (

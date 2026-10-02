@@ -439,3 +439,67 @@ test('skips local delivery for disabled alias', async (t) => {
     'Disabled alias must not receive local delivery'
   );
 });
+
+// an override (RECURRENCE-ID) of the event, as attendees receive every VEVENT
+function addOverride(ical, { organizer, uid = 'event_123', attendee }) {
+  const comp = new ICAL.Component(ICAL.parse(ical));
+  const override = new ICAL.Component(['vevent', [], []]);
+  override.addPropertyWithValue('uid', uid);
+  override.addPropertyWithValue('recurrence-id', ICAL.Time.now());
+  override.addPropertyWithValue('summary', 'Moved: see the new link');
+  override.addPropertyWithValue('dtstart', ICAL.Time.now());
+  override.addPropertyWithValue('organizer', `mailto:${organizer}`);
+  override.addPropertyWithValue('sequence', 999);
+  const prop = new ICAL.Property('attendee');
+  prop.setParameter('partstat', 'NEEDS-ACTION');
+  prop.setValue(`mailto:${attendee}`);
+  override.addProperty(prop);
+  comp.addSubcomponent(override);
+  return comp.toString();
+}
+
+test('does not deliver an override that names another organizer', async (t) => {
+  const { ctx, calendar, calendarInvitesCreate, emailsQueue } = t.context;
+  const calendarEvent = {
+    eventId: 'event_123',
+    ical: addOverride(makeVcalendar(), {
+      organizer: 'boss@example.com',
+      attendee: 'localuser@example.com'
+    })
+  };
+  await sendCalendarEmail(ctx, calendar, calendarEvent, 'REQUEST');
+  t.true(calendarInvitesCreate.notCalled);
+  t.true(emailsQueue.notCalled);
+});
+
+test('does not deliver an override with another UID', async (t) => {
+  const { ctx, calendar, calendarInvitesCreate, emailsQueue } = t.context;
+  const calendarEvent = {
+    eventId: 'event_123',
+    ical: addOverride(makeVcalendar(), {
+      organizer: 'organizer@example.com',
+      uid: 'someone-elses-event',
+      attendee: 'localuser@example.com'
+    })
+  };
+  await sendCalendarEmail(ctx, calendar, calendarEvent, 'REQUEST');
+  t.true(calendarInvitesCreate.notCalled);
+  t.true(emailsQueue.notCalled);
+});
+
+test('still delivers an override from the same organizer', async (t) => {
+  const { ctx, calendar, calendarInvitesCreate } = t.context;
+  const calendarEvent = {
+    eventId: 'event_123',
+    ical: addOverride(makeVcalendar(), {
+      organizer: 'organizer@example.com',
+      attendee: 'localuser@example.com'
+    })
+  };
+  await sendCalendarEmail(ctx, calendar, calendarEvent, 'REQUEST');
+  t.true(calendarInvitesCreate.calledOnce);
+  t.is(
+    calendarInvitesCreate.firstCall.args[0].attendeeEmail,
+    'localuser@example.com'
+  );
+});

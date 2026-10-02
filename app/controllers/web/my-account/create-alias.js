@@ -10,6 +10,7 @@ const isSANB = require('is-string-and-not-blank');
 const { boolean } = require('boolean');
 
 const config = require('#config');
+const omitAdminOnlyDomainKeys = require('#helpers/omit-admin-only-domain-keys');
 const toObject = require('#helpers/to-object');
 const { Users, Domains, Aliases } = require('#models');
 
@@ -74,9 +75,30 @@ async function createAlias(ctx, next) {
     if (ctx.api) {
       ctx.state.alias = toObject(Aliases, ctx.state.alias);
       ctx.state.alias.user = toObject(Users, ctx.state.user);
-      ctx.state.alias.domain = toObject(Domains, ctx.state.domain);
-      ctx.state.alias.domain.members = ctx.state.domain.members;
-      ctx.state.alias.domain.invites = ctx.state.domain.invites;
+      ctx.state.alias.domain = omitAdminOnlyDomainKeys(
+        toObject(Domains, ctx.state.domain),
+        ctx.state.domain,
+        ctx.state.user
+      );
+      //
+      // only admins of the domain see its other members and pending invites
+      // (same rule as `GET /v1/domains/:domain_id`); every user is a virtual
+      // member of a global domain, so without this any paid account could
+      // read the addresses and plans of that domain's real admins
+      //
+      if (ctx.state.domain.group === 'admin') {
+        ctx.state.alias.domain.members = ctx.state.domain.members;
+        ctx.state.alias.domain.invites = ctx.state.domain.invites;
+      } else {
+        ctx.state.alias.domain.members = Array.isArray(ctx.state.domain.members)
+          ? ctx.state.domain.members.filter((member) => {
+              const id = member?.user?._id || member?.user?.id || member?.user;
+              return id && String(id) === String(ctx.state.user._id);
+            })
+          : [];
+        ctx.state.alias.domain.invites = [];
+      }
+
       return next();
     }
 

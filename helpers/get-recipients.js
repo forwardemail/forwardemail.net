@@ -26,6 +26,7 @@ const matchesWildcardTLD = require('#helpers/matches-wildcard-tld');
 const parseHostFromDomainOrAddress = require('#helpers/parse-host-from-domain-or-address');
 const parseRootDomain = require('#helpers/parse-root-domain');
 const parseUsername = require('#helpers/parse-username');
+const { useSrsReverse } = require('#helpers/srs-reverse');
 const { encrypt } = require('#helpers/encrypt-decrypt');
 
 async function getRecipients(session, scan) {
@@ -432,7 +433,15 @@ async function getRecipients(session, scan) {
           webhookKey
         };
       } catch (err) {
-        if (err.notConfigured && to.srs) {
+        //
+        // an SRS address reverses to a sender elsewhere, which is only relayed
+        // to in reply to a message we forwarded (see `helpers/srs-reverse`)
+        //
+        if (
+          err.notConfigured &&
+          to.srs &&
+          (await useSrsReverse(this.client, to.srsAddress || to.address))
+        ) {
           return {
             address: to.address,
             addresses: [to.address],

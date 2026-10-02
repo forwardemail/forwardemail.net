@@ -60,11 +60,11 @@ This means every Amazon WorkMail user must migrate to another email provider bef
 
 ## Amazon WorkMail End of Support Timeline
 
-| Date                 | Event                                                                                   |
-| -------------------- | --------------------------------------------------------------------------------------- |
-| April 30, 2026       | Amazon WorkMail stops accepting new customers                                           |
-| March 31, 2027       | Full shutdown: no access to WorkMail console, web client, IMAP, SMTP, or any resources  |
-| After March 31, 2027 | All WorkMail data becomes permanently inaccessible                                      |
+| Date                 | Event                                                                                  |
+| -------------------- | -------------------------------------------------------------------------------------- |
+| April 30, 2026       | Amazon WorkMail stops accepting new customers                                          |
+| March 31, 2027       | Full shutdown: no access to WorkMail console, web client, IMAP, SMTP, or any resources |
+| After March 31, 2027 | All WorkMail data becomes permanently inaccessible                                     |
 
 > **Recommendation**: Begin your migration as soon as possible. DNS propagation, email client reconfiguration, and data transfer all take time. Starting early ensures you can test everything thoroughly before the shutdown date.
 
@@ -73,20 +73,20 @@ This means every Amazon WorkMail user must migrate to another email provider bef
 
 AWS recommends migrating to third-party solutions. [Forward Email](https://forwardemail.net) stands out as the best alternative for Amazon WorkMail users for several reasons:
 
-| Feature                             | Amazon WorkMail               | Forward Email                                                       |
-| ----------------------------------- | ----------------------------- | ------------------------------------------------------------------- |
-| Custom domain support               | Yes                           | Yes                                                                 |
-| IMAP/SMTP/POP3                      | Yes                           | Yes                                                                 |
-| CalDAV (calendars)                  | No (Exchange ActiveSync only) | Yes                                                                 |
-| CardDAV (contacts)                  | No (Exchange ActiveSync only) | Yes                                                                 |
-| End-to-end encryption (OpenPGP)     | No                            | Yes                                                                 |
-| Open source                         | No                            | Yes: [100% open source on GitHub](https://github.com/forwardemail)  |
-| Privacy-focused (no email scanning) | Partial                       | Yes: no ads, no tracking, no email scanning                         |
-| Quantum-safe encrypted storage      | No                            | Yes                                                                 |
-| Unlimited aliases                   | No                            | Yes                                                                 |
-| Email forwarding                    | No                            | Yes                                                                 |
-| Pricing                             | $4.00/user/month              | Starting at $3.00/month for unlimited domains                       |
-| Vendor lock-in                      | AWS ecosystem                 | None: standard IMAP/SMTP, export anytime                            |
+| Feature                             | Amazon WorkMail               | Forward Email                                                      |
+| ----------------------------------- | ----------------------------- | ------------------------------------------------------------------ |
+| Custom domain support               | Yes                           | Yes                                                                |
+| IMAP/SMTP/POP3                      | Yes                           | Yes                                                                |
+| CalDAV (calendars)                  | No (Exchange ActiveSync only) | Yes                                                                |
+| CardDAV (contacts)                  | No (Exchange ActiveSync only) | Yes                                                                |
+| End-to-end encryption (OpenPGP)     | No                            | Yes                                                                |
+| Open source                         | No                            | Yes: [100% open source on GitHub](https://github.com/forwardemail) |
+| Privacy-focused (no email scanning) | Partial                       | Yes: no ads, no tracking, no email scanning                        |
+| Quantum-safe encrypted storage      | No                            | Yes                                                                |
+| Unlimited aliases                   | No                            | Yes                                                                |
+| Email forwarding                    | No                            | Yes                                                                |
+| Pricing                             | $4.00/user/month              | Starting at $3.00/month for unlimited domains                      |
+| Vendor lock-in                      | AWS ecosystem                 | None: standard IMAP/SMTP, export anytime                           |
 
 Forward Email is trusted by over 1.6+ million domains including the U.S. Naval Academy, Canonical (Ubuntu), Netflix Games, The Linux Foundation, and many universities and government organizations. You can read more on our [about page](https://forwardemail.net/en/about).
 

@@ -11,6 +11,7 @@ const ms = require('ms');
 const { boolean } = require('boolean');
 const { isIP } = require('@forwardemail/validator');
 
+const _ = require('#helpers/lodash');
 const isEmail = require('#helpers/is-email');
 const config = require('#config');
 const email = require('#helpers/email');
@@ -271,7 +272,15 @@ async function remove(ctx) {
         //
         // NOTE: prefixHTMLPathBasedAnchors will add the full URL for us
         //
-        message: `<p class="text-center"><code>${ctx.state.q}</code> for <code>${ctx.state.user.email}</code></p><p class="mb-0"><a class="btn btn-lg btn-dark btn-block" href="/denylist?q=${ctx.state.q}&email=${ctx.state.user.email}">Process Removal</a></p>`
+        message: `<p class="text-center"><code>${_.escape(
+          ctx.state.q
+        )}</code> for <code>${_.escape(
+          ctx.state.user.email
+        )}</code></p><p class="mb-0"><a class="btn btn-lg btn-dark btn-block" href="/denylist?q=${encodeURIComponent(
+          ctx.state.q
+        )}&email=${encodeURIComponent(
+          ctx.state.user.email
+        )}">Process Removal</a></p>`
       }
     })
       .then()
@@ -306,7 +315,9 @@ async function remove(ctx) {
         subject: `Hard-coded Denylist Removal: ${ctx.state.q}`
       },
       locals: {
-        message: `<p class="text-center"><code>${ctx.state.q}</code> for <code>${ctx.state.user.email}</code></p>`
+        message: `<p class="text-center"><code>${_.escape(
+          ctx.state.q
+        )}</code> for <code>${_.escape(ctx.state.user.email)}</code></p>`
       }
     });
     const message = ctx.translate(

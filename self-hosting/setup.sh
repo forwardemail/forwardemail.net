@@ -498,7 +498,7 @@ update_default_env() {
   update_env_file TURNSTILE_ENABLED false
   update_env_file MX_PORT 25
   update_env_file SQLITE_STORAGE_PATH sqlite_storage
-  update_env_file SMTP_TRANSPORT_PASS "Thisisapassword123"
+  update_env_file SMTP_TRANSPORT_PASS "$(openssl rand -hex 16)"
   update_env_file SMTP_HOST smtp.{{DOMAIN}}
   update_env_file SMTP_PORT 465
   update_env_file IMAP_HOST imap.{{DOMAIN}}

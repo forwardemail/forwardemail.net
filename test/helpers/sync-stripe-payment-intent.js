@@ -15,6 +15,7 @@
 const { randomUUID } = require('node:crypto');
 
 const dayjs = require('dayjs-with-plugins');
+const mongoose = require('mongoose');
 const ms = require('ms');
 const test = require('ava');
 
@@ -72,7 +73,11 @@ async function indexStatus() {
 
 function paymentDoc(user, fields = {}) {
   const now = new Date();
+  // (inserted directly, so set the unique `id` the model sets on save)
+  const _id = new mongoose.Types.ObjectId();
   return {
+    _id,
+    id: _id.toString(),
     user: user._id,
     reference: randomUUID(),
     amount: 300,

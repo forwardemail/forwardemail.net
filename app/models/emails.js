@@ -232,8 +232,8 @@ const Emails = new mongoose.Schema(
     // deferred emails are retried directly by the send-emails job (see its finder
     // query and the lock-acquisition in helpers/process-email.js)
     locked_at: {
-      type: Date,
-      index: true
+      // (indexed below with options; a plain index here would take its name)
+      type: Date
     },
     // envelope
     envelope: {
@@ -1915,7 +1915,15 @@ Emails.statics.queue = async function (
   if (
     isSANB(info?.envelope?.from) &&
     isEmail(info.envelope.from) &&
-    config.supportEmail !== info.envelope.from.toLowerCase() &&
+    //
+    // only our own system mail (sent as support@ on our own domain) skips
+    // the scan; the envelope sender alone is client-controlled
+    //
+    !(
+      config.supportEmail === info.envelope.from.toLowerCase() &&
+      punycode.toASCII(domain.name).toLowerCase() ===
+        config.webHost.toLowerCase()
+    ) &&
     //
     // we don't want to scan messages sent with our own SMTP service
     // by our users/customers to our support@ or abuse@ email addresses

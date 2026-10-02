@@ -1614,6 +1614,36 @@ test('refuses alias auth with a domain-wide catch-all password', async (t) => {
   t.is(res.status, 200);
 });
 
+test('alias auth does not reveal an alias without a generated password', async (t) => {
+  const { api } = t.context;
+  const { user, domain } = await createTestAlias(t);
+
+  // an alias that exists but has no generated password (e.g. forwarding only)
+  const alias = await t.context.aliasFactory
+    .withState({
+      user: user._id,
+      domain: domain._id,
+      recipients: [user.email],
+      has_imap: true
+    })
+    .create();
+
+  const existing = await api
+    .get('/v1/messages')
+    .set('Authorization', createAliasAuth(`${alias.name}@${domain.name}`, 'x'));
+  const missing = await api
+    .get('/v1/messages')
+    .set(
+      'Authorization',
+      createAliasAuth(`missing-${alias.name}@${domain.name}`, 'x')
+    );
+
+  t.is(existing.status, 401);
+  t.is(missing.status, 401);
+  t.regex(existing.body.message, /Invalid username or password/);
+  t.is(existing.body.message, missing.body.message);
+});
+
 test('creates, retrieves, and deletes message with alias auth', async (t) => {
   const { api } = t.context;
   const { alias, domain, pass } = await createTestAlias(t);

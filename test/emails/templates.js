@@ -316,3 +316,34 @@ for (const [template, extra] of [
     }
   });
 }
+
+// a regex alias name may hold "<", ">" and quotes (see `Aliases`), and the
+// recipient of this email is any address the domain admin entered
+test('recipient-verification escapes the alias and recipient addresses', async (t) => {
+  const fromEmail =
+    '/<a href=https://evil.example/login>click to verify</a>/@example.com';
+  const toEmail = 'victim@example.org';
+  const html = await render('recipient-verification', {
+    fromEmail,
+    toEmail,
+    link: `${config.urls.web}/v/x`
+  });
+  t.false(html.includes('href="https://evil.example/login"'));
+  t.false(html.includes('<a href=https://evil.example/login>'));
+  t.true(html.includes('&lt;a href=https://evil.example/login&gt;'));
+});
+
+test('change-email escapes both addresses', async (t) => {
+  const html = await render('change-email', {
+    user: {
+      ...user,
+      [config.userFields.changeEmailNewAddress]:
+        '"<a href=//evil.example>x</a>"@example.org',
+      [config.userFields.changeEmailTokenExpiresAt]: new Date(
+        Date.now() + 60_000
+      )
+    }
+  });
+  t.false(html.includes('<a href=//evil.example>'));
+  t.true(html.includes('&lt;a href=//evil.example&gt;'));
+});

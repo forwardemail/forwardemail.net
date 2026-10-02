@@ -138,16 +138,36 @@ async function _anonymousRequest(url, timeout, resolver) {
               : (h, opts) => dnsLookup(h, opts);
             lookupFn(hostname, options)
               .then((result) => {
-                if (result?.address && isPrivateHost(result.address)) {
+                //
+                // NOTE: Node >= 20 calls this with `options.all` and then
+                //       an array of `{ address, family }` is returned
+                //       (every entry is checked, not only the first one)
+                //
+                const addresses = Array.isArray(result) ? result : [result];
+                if (
+                  addresses.length === 0 ||
+                  addresses.some((a) => typeof a?.address !== 'string')
+                ) {
+                  const err = new Error(`No address found for ${hostname}`);
+                  err.code = 'ENOTFOUND';
+                  cb(err);
+                  return;
+                }
+
+                const privateAddress = addresses.find((a) =>
+                  isPrivateHost(a.address)
+                );
+                if (privateAddress) {
                   const err = new Error(
-                    `Resolved IP ${result.address} is a private/reserved address`
+                    `Resolved IP ${privateAddress.address} is a private/reserved address`
                   );
                   err.code = 'EPRIVATEADDR';
                   cb(err);
                   return;
                 }
 
-                cb(null, result?.address, result?.family);
+                if (options?.all) return cb(null, addresses);
+                cb(null, addresses[0].address, addresses[0].family);
               })
               .catch((err) => cb(err));
           }

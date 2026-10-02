@@ -777,6 +777,27 @@ async function sendCalendarEmail(
       ctx.state.user.username
     )
       isValid = false;
+    //
+    // every VEVENT is sent (overrides included), and the attendees' local
+    // copies are marked as coming from the organizer, so an override with its
+    // own ORGANIZER or UID (e.g. naming another user's meeting) is not sent
+    //
+    else if (
+      vevents.some((v) => {
+        if (v === vevent) return false;
+        const uid = v.getFirstPropertyValue('uid');
+        if (uid !== vevent.getFirstPropertyValue('uid')) return true;
+        const organizer = v.getFirstPropertyValue('organizer');
+        return (
+          typeof organizer === 'string' &&
+          organizer
+            .replace(/^mailto:/i, '')
+            .trim()
+            .toLowerCase() !== ctx.state.user.username
+        );
+      })
+    )
+      isValid = false;
 
     //
     // Detect removed attendees and send CANCEL emails.

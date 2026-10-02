@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
+const punycode = require('node:punycode');
+
 const mongoose = require('mongoose');
 const ms = require('ms');
 const revHash = require('rev-hash');
@@ -65,16 +67,27 @@ function generateReportHash(report, domainId) {
  * @param {Object} client - Redis client
  * @param {string} domainId - Domain ID
  * @param {string} senderIp - Sender IP address
- * @param {boolean} isTrustedSender - Whether sender is a truth source
+ * @param {Object} options - `isTrustedSender` (a truth source) and
+ *   `isAuthenticated` (the report passed DMARC)
  * @returns {Promise<{allowed: boolean, reason?: string}>}
  */
-async function checkRateLimits(client, domainId, senderIp, isTrustedSender) {
+async function checkRateLimits(
+  client,
+  domainId,
+  senderIp,
+  { isTrustedSender = false, isAuthenticated = isTrustedSender } = {}
+) {
   const now = new Date();
   const dateKey = now.toISOString().split('T')[0]; // YYYY-MM-DD
   const hourKey = `${dateKey}:${now.getUTCHours()}`;
 
   // Check per-domain daily limit
-  const domainKey = `dmarc_rate:domain:${domainId}:${dateKey}`;
+  // (reports that did not pass DMARC count separately, so anyone sending
+  // reports to the public rua= address cannot use up the daily limit of the
+  // reports from the reporting organizations)
+  const domainKey = `dmarc_rate:domain:${domainId}:${
+    isAuthenticated ? '' : 'unauthenticated:'
+  }${dateKey}`;
   const domainCount = await client.incr(domainKey);
   if (domainCount === 1) {
     await client.pexpire(domainKey, ms('25h')); // Expire after 25 hours
@@ -189,7 +202,11 @@ async function processDmarcReport(session, raw, resolver, client) {
     const senderIp = session?.remoteAddress || session?.hostNameAppearsAs;
     const mailFrom = session?.envelope?.mailFrom?.address || '';
     const mailFromDomain = mailFrom.split('@')[1] || '';
-    const isTrustedSender = isTruthSource(mailFromDomain);
+    // (the MAIL FROM is only a truth source when SPF passed for it)
+    const isTrustedSender =
+      isTruthSource(mailFromDomain) && session?.spf?.status?.result === 'pass';
+    const isAuthenticated =
+      isTrustedSender || session?.dmarc?.status?.result === 'pass';
 
     // Check if sender is denylisted (if Redis client is available)
     if (client && !isTrustedSender) {
@@ -221,12 +238,10 @@ async function processDmarcReport(session, raw, resolver, client) {
 
     // Check rate limits (if Redis client is available)
     if (client) {
-      const rateCheck = await checkRateLimits(
-        client,
-        domainId,
-        senderIp,
-        isTrustedSender
-      );
+      const rateCheck = await checkRateLimits(client, domainId, senderIp, {
+        isTrustedSender,
+        isAuthenticated
+      });
       if (!rateCheck.allowed) {
         logger.warn('DMARC report rate limited', {
           domainId,
@@ -273,6 +288,27 @@ async function processDmarcReport(session, raw, resolver, client) {
     // An unsafe raw XML attachment is deliberately consumed at the reserved
     // DMARC recipient instead of becoming ordinary delivered mail.
     if (dmarcReport.rejected) return dmarcReport;
+
+    // a report is about the domain whose record has this rua= address (or a
+    // domain in the same organizational domain), not some other domain
+    const policyDomain = String(dmarcReport.policy_published?.domain || '')
+      .trim()
+      .toLowerCase()
+      .replace(/\.$/, '');
+    if (
+      !policyDomain ||
+      parseRootDomain(punycode.toASCII(policyDomain)) !==
+        parseRootDomain(punycode.toASCII(domain.name.toLowerCase()))
+    ) {
+      logger.warn('DMARC report is for another domain', {
+        domainId,
+        domainName: domain.name,
+        policyDomain,
+        senderIp,
+        mailFrom
+      });
+      return { rejected: true, reason: 'policy_published domain mismatch' };
+    }
 
     // Validate report content
     const validation = validateReportContent(dmarcReport, raw.length);

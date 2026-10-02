@@ -48,8 +48,8 @@ const Payments = new mongoose.Schema({
     required: true,
     trim: true,
     uppercase: true,
-    unique: true,
-    index: true
+    // (the unique index also serves exact reference lookups)
+    unique: true
   },
   currency: {
     type: String,
@@ -549,6 +549,33 @@ Payments.pre('save', async function (next) {
   }
 });
 
+//
+// the unique validator (from the unique indexes below) runs before the check
+// above and rejects the same duplicate with a plain ValidationError, so it is
+// given the same code here for the race handlers to recognize it
+//
+const PAYMENT_ID_FIELDS = new Set([
+  'stripe_payment_intent_id',
+  'paypal_transaction_id',
+  'paypal_order_id'
+]);
+Payments.post('save', function (error, doc, next) {
+  if (
+    error?.name === 'ValidationError' &&
+    error.errors &&
+    typeof error.errors === 'object' &&
+    Object.entries(error.errors).some(
+      ([path, err]) => PAYMENT_ID_FIELDS.has(path) && err?.kind === 'unique'
+    )
+  ) {
+    const err = i18n.translateError('PAYMENT_ALREADY_EXISTS', doc?.locale);
+    err.code = 'PAYMENT_ALREADY_EXISTS';
+    return next(Boom.badRequest(err));
+  }
+
+  next(error);
+});
+
 Payments.index({
   created_at: -1,
   method: 1,
@@ -573,7 +600,6 @@ Payments.index({
 }); // Refund tracking
 
 // Targeted indexes instead of broad text index
-Payments.index({ reference: 1 }); // Exact reference lookup
 Payments.index({ stripe_payment_intent_id: 1 }, { unique: true, sparse: true }); // Prevent duplicate Stripe payments (webhook + redirect race condition)
 Payments.index({ paypal_transaction_id: 1 }, { unique: true, sparse: true }); // Prevent duplicate PayPal transaction payments
 // Unique sparse indexes to prevent duplicate payments from concurrent creation

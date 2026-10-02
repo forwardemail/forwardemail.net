@@ -411,8 +411,8 @@ const Domains = new mongoose.Schema({
     index: true
   },
   smtp_suspended_sent_at: {
-    type: Date,
-    index: true
+    // (indexed below with options; a plain index here would take its name)
+    type: Date
   },
   is_smtp_suspended: {
     type: Boolean,

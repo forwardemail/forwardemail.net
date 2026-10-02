@@ -40,6 +40,55 @@ function invalidPaymentIntent(ctx) {
   return err;
 }
 
+//
+// plan changes on this GET route (downgrades, conversions, cancelling the
+// subscription) must come from a click on this site, since session cookies
+// are also sent with a top-level GET from another site; returns from Stripe
+// and PayPal carry their own ids and are verified against the provider
+// (browsers without `Sec-Fetch-Site` are checked by the Referer instead)
+//
+function isCrossSiteRequest(ctx) {
+  const site = ctx.get('Sec-Fetch-Site');
+  if (site) return ['cross-site', 'same-site'].includes(site);
+  const referrer = ctx.get('Referrer');
+  if (!referrer) return false;
+  try {
+    return new URL(referrer).origin !== new URL(config.urls.web).origin;
+  } catch {
+    return true;
+  }
+}
+
+const PLAN_NAMES = {
+  free: 'Free',
+  enhanced_protection: 'Enhanced Protection',
+  team: 'Team'
+};
+
+//
+// a plan change from another site (e.g. a link in an email opened in
+// webmail) is not made, but asked about: the button is a link on this site,
+// so the change is made once the user clicks it
+//
+function askToConfirmPlanChange(ctx, redirectTo) {
+  if (ctx.accepts('html')) {
+    ctx.flash('custom', {
+      title: ctx.request.t('Are you sure?'),
+      html: `${ctx.request.t(
+        'Change plan to:'
+      )} <a class="btn btn-dark btn-sm ml-1" href="${_.escape(
+        ctx.originalUrl
+      )}">${_.escape(ctx.request.t(PLAN_NAMES[ctx.query.plan]))}</a>`,
+      type: 'question',
+      showConfirmButton: false,
+      showCloseButton: true
+    });
+    ctx.redirect(redirectTo);
+  } else {
+    ctx.body = { redirectTo };
+  }
+}
+
 async function retrieveDomainBilling(ctx) {
   const isAccountUpgrade =
     ctx.pathWithoutLocale === '/my-account/billing/upgrade';
@@ -357,6 +406,11 @@ async function retrieveDomainBilling(ctx) {
         ctx.state.conversion[ctx.query.plan].length > 0 &&
         (ctx.state.paymentCount !== 0 || ctx.state.paymentIds.length === 0)
       ) {
+        if (isCrossSiteRequest(ctx)) {
+          askToConfirmPlanChange(ctx, redirectTo);
+          return;
+        }
+
         const now = new Date();
         ctx.state.user.plan = ctx.query.plan;
         await Domains.ensureUserHasValidPlan(ctx.state.user, ctx.locale);
@@ -412,6 +466,16 @@ async function retrieveDomainBilling(ctx) {
       }
 
       return ctx.render('my-account/domains/billing');
+    }
+
+    if (
+      isCrossSiteRequest(ctx) &&
+      !isSANB(ctx.query.session_id) &&
+      !isSANB(ctx.query.paypal_order_id) &&
+      !isSANB(ctx.query.paypal_subscription_id)
+    ) {
+      askToConfirmPlanChange(ctx, redirectTo);
+      return;
     }
 
     // set/upgrade the user or domain's plan

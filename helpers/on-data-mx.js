@@ -64,6 +64,8 @@ const getErrorCode = require('#helpers/get-error-code');
 const getGreylistKey = require('#helpers/get-greylist-key');
 const getHeaders = require('#helpers/get-headers');
 const getRecipients = require('#helpers/get-recipients');
+const { grantSrsReverse } = require('#helpers/srs-reverse');
+const readLimitedBody = require('#helpers/read-limited-body');
 const hasFingerprintExpired = require('#helpers/has-fingerprint-expired');
 const i18n = require('#helpers/i18n');
 const isAllowlisted = require('#helpers/is-allowlisted');
@@ -1223,7 +1225,8 @@ async function forward(recipient, headers, session, body) {
 
       let text = 'OK';
       if (response.statusCode === 200) {
-        text = await response.body.text();
+        // (only the start is logged, and the webhook host is not ours)
+        text = await readLimitedBody(response.body);
       } else if (
         !response?.signal?.aborted &&
         typeof response?.body?.dump === 'function'
@@ -1501,6 +1504,8 @@ async function forward(recipient, headers, session, body) {
         checkSRS(session.envelope.mailFrom.address),
         env.WEB_HOST
       );
+      // allow one reply (e.g. a bounce) to this SRS address
+      await grantSrsReverse(this.client, from);
     }
   }
 

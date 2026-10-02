@@ -11,6 +11,7 @@ const mongoose = require('mongoose');
 const { boolean } = require('boolean');
 
 const { Domains, Aliases, Users } = require('#models');
+const _ = require('#helpers/lodash');
 const emailHelper = require('#helpers/email');
 const getUbuntuMembersMap = require('#helpers/get-ubuntu-members-map');
 const isExpiredOrNewlyCreated = require('#helpers/is-expired-or-newly-created');
@@ -172,11 +173,13 @@ async function createDomain(ctx, next) {
         locals: {
           message:
             `<p>Ubuntu membership sync failed when user ` +
-            `<strong>${ctx.state.user.email}</strong> ` +
-            `(Launchpad username: <code>${ubuntuUsername}</code>) ` +
-            `attempted to add <code>${ctx.request.body.domain}</code>.</p>` +
-            `<p><strong>Error:</strong> ${err.message}</p>` +
-            `<pre><code>${err.stack}</code></pre>`
+            `<strong>${_.escape(ctx.state.user.email)}</strong> ` +
+            `(Launchpad username: <code>${_.escape(ubuntuUsername)}</code>) ` +
+            `attempted to add <code>${_.escape(
+              ctx.request.body.domain
+            )}</code>.</p>` +
+            `<p><strong>Error:</strong> ${_.escape(err.message)}</p>` +
+            `<pre><code>${_.escape(err.stack)}</code></pre>`
         }
       })
         .then()

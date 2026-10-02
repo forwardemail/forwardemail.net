@@ -283,3 +283,145 @@ test('removing a member withdraws their pending invites', async (t) => {
   t.is(res.body.invites.length, 0);
   t.false(res.body.members.some((m) => m.user.id === member.id));
 });
+
+test('a member creating an alias does not get the other members, invites or admin settings', async (t) => {
+  const { api } = t.context;
+  const admin = await createUser(t);
+  const member = await createUser(t);
+
+  const domain = await t.context.domainFactory
+    .withState({
+      members: [
+        { user: admin._id, group: 'admin' },
+        { user: member._id, group: 'user' }
+      ],
+      plan: admin.plan,
+      resolver: t.context.resolver,
+      has_smtp: true,
+      ignore_mx_check: true,
+      denylist: ['blocked-sender.example.com'],
+      restricted_alias_names: ['ceo']
+    })
+    .create();
+  const token = randomUUID();
+  domain.invites.push({
+    email: 'invited@example.com',
+    group: 'user',
+    token,
+    expires_at: dayjs().add(1, 'day').toDate()
+  });
+  await domain.save();
+
+  // the member's response only holds their own membership
+  let res = await api
+    .post(`/v1/domains/${domain.name}/aliases`)
+    .auth(member[config.userFields.apiToken])
+    .send({ name: 'member-alias', recipients: member.email });
+  t.is(res.status, 200);
+  t.is(res.body.name, 'member-alias');
+  t.is(res.body.domain.members.length, 1);
+  t.is(res.body.domain.members[0].user.id, member.id);
+  t.deepEqual(res.body.domain.invites, []);
+  t.is(res.body.domain.denylist, undefined);
+  t.is(res.body.domain.restricted_alias_names, undefined);
+  const body = JSON.stringify(res.body);
+  t.false(body.includes(admin.email));
+  t.false(body.includes(token));
+  t.false(body.includes('invited@example.com'));
+
+  // the admin still gets everything
+  res = await api
+    .post(`/v1/domains/${domain.name}/aliases`)
+    .auth(admin[config.userFields.apiToken])
+    .send({ name: 'admin-alias', recipients: admin.email });
+  t.is(res.status, 200);
+  t.is(res.body.domain.members.length, 2);
+  t.is(res.body.domain.invites.length, 1);
+  t.is(res.body.domain.invites[0].token, token);
+  t.deepEqual(res.body.domain.denylist, ['blocked-sender.example.com']);
+});
+
+test('only admins of a domain see its admin settings', async (t) => {
+  const { api } = t.context;
+  const admin = await createUser(t);
+  const member = await createUser(t);
+
+  const domain = await t.context.domainFactory
+    .withState({
+      members: [
+        { user: admin._id, group: 'admin' },
+        { user: member._id, group: 'user' }
+      ],
+      plan: admin.plan,
+      resolver: t.context.resolver,
+      ignore_mx_check: true,
+      allowlist: ['trusted-sender.example.com'],
+      denylist: ['blocked-sender.example.com'],
+      restricted_alias_names: ['ceo']
+    })
+    .create();
+
+  for (const path of ['/v1/domains', `/v1/domains/${domain.name}`]) {
+    let res = await api.get(path).auth(member[config.userFields.apiToken]);
+    t.is(res.status, 200);
+    let data = Array.isArray(res.body)
+      ? res.body.find((d) => d.name === domain.name)
+      : res.body;
+    t.is(data.name, domain.name);
+    t.is(data.allowlist, undefined);
+    t.is(data.denylist, undefined);
+    t.is(data.restricted_alias_names, undefined);
+
+    res = await api.get(path).auth(admin[config.userFields.apiToken]);
+    t.is(res.status, 200);
+    data = Array.isArray(res.body)
+      ? res.body.find((d) => d.name === domain.name)
+      : res.body;
+    t.deepEqual(data.allowlist, ['trusted-sender.example.com']);
+    t.deepEqual(data.denylist, ['blocked-sender.example.com']);
+    t.deepEqual(data.restricted_alias_names, ['ceo']);
+  }
+});
+
+test('a member cannot create a restricted or reserved name in another form', async (t) => {
+  const { api } = t.context;
+  const admin = await createUser(t);
+  const member = await createUser(t);
+  const domain = await t.context.domainFactory
+    .withState({
+      members: [
+        { user: admin._id, group: 'admin' },
+        { user: member._id, group: 'user' }
+      ],
+      plan: admin.plan,
+      resolver: t.context.resolver,
+      ignore_mx_check: true,
+      restricted_alias_names: ['billing-team', 'first.last']
+    })
+    .create();
+
+  for (const name of [
+    // restricted by the admin (with punctuation, and without it)
+    'billing-team',
+    'billingteam',
+    'first.last',
+    // reserved, with a Cyrillic "а" / "о", or fullwidth letters
+    'аdmin',
+    'pоstmaster',
+    'ｓｕｐｐｏｒｔ'
+  ]) {
+    const res = await api
+      .post(`/v1/domains/${domain.name}/aliases`)
+      .auth(member[config.userFields.apiToken])
+      .send({ name, recipients: member.email });
+    t.is(res.status, 400, `name: ${name}`);
+    t.regex(res.body.message, /admin/i, `name: ${name}`);
+  }
+
+  // other names are fine
+  const res = await api
+    .post(`/v1/domains/${domain.name}/aliases`)
+    .auth(member[config.userFields.apiToken])
+    .send({ name: 'jane-doe', recipients: member.email });
+  t.is(res.status, 200);
+});

@@ -22,6 +22,7 @@ const config = require('#config');
 const email = require('#helpers/email');
 const invalidateOtherSessions = require('#helpers/invalidate-other-sessions');
 const clearUnverifiedSignIns = require('#helpers/clear-unverified-sign-ins');
+const isEmail = require('#helpers/is-email');
 const isSafeReturnTo = require('#helpers/is-safe-return-to');
 const parseLoginSuccessRedirect = require('#helpers/parse-login-success-redirect');
 const sendVerificationEmail = require('#helpers/send-verification-email');
@@ -380,7 +381,8 @@ async function recoveryKey(ctx) {
 async function register(ctx, next) {
   const { body } = ctx.request;
 
-  if (!_.isString(body.email) || !validator.isEmail(body.email))
+  // (the same check our mail servers apply, so the address can get mail)
+  if (!_.isString(body.email) || !isEmail(body.email))
     throw Boom.badRequest(ctx.translateError('INVALID_EMAIL'));
 
   if (!isSANB(body.password))
@@ -835,7 +837,9 @@ async function verify(ctx) {
 
       // wrap with try/catch to prevent redirect looping
       // (even though the koa redirect loop package will help here)
-      if (!err.isBoom) throw err;
+      // (an address that does not accept the email is shown the error here,
+      // as redirecting would come straight back to this page)
+      if (!err.isBoom || err.is_email_rejected) throw err;
       ctx.logger.error(err);
       if (ctx.accepts('html')) {
         ctx.flash('warning', err.message);

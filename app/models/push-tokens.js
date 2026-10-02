@@ -106,8 +106,9 @@ const PushTokens = new mongoose.Schema({
   //
   expires_at: {
     type: Date,
-    required: true,
-    index: true
+    required: true
+    // (the TTL index below covers lookups; a plain index here would take its
+    // name, so the TTL index was never built)
   }
 });
 

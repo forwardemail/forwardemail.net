@@ -108,7 +108,11 @@ async function processEvent(ctx) {
             subject: `Customer banned for opening PayPal dispute: ${user.email}`
           },
           locals: {
-            message: `Customer with email ${user.email} was banned for opening dispute ID ${body.resource.dispute_id}.`
+            message: `Customer with email ${_.escape(
+              user.email
+            )} was banned for opening dispute ID ${_.escape(
+              body.resource.dispute_id
+            )}.`
           }
         });
         await user.save();

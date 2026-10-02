@@ -148,9 +148,9 @@ const Logs = new mongoose.Schema({
     unique: true
   },
   user: {
+    // (indexed below with options; a plain index here would take its name)
     type: mongoose.Schema.ObjectId,
-    ref: Users,
-    index: true
+    ref: Users
   },
   domains: [
     {

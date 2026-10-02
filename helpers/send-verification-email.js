@@ -46,7 +46,19 @@ async function sendVerificationEmail(ctx) {
     const error = Boom.badRequest(
       i18n.translateError('EMAIL_FAILED_TO_SEND', ctx.locale)
     );
-    error.has_email_failed = true;
+    //
+    // callers verify the user when the email could not be sent (e.g. our
+    // mail server is down), so a message refused for its address (a 5xx
+    // reply, or an address our mail server does not accept) must not count,
+    // or an address that cannot receive mail would be verified
+    //
+    if (
+      err?.code === 'EENVELOPE' ||
+      err?.isBoom ||
+      (err?.responseCode >= 500 && err?.responseCode < 600)
+    )
+      error.is_email_rejected = true;
+    else error.has_email_failed = true;
     throw error;
   }
 

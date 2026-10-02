@@ -10,6 +10,7 @@ const _ = require('#helpers/lodash');
 
 const config = require('#config');
 const parseRootDomain = require('#helpers/parse-root-domain');
+const omitAdminOnlyDomainKeys = require('#helpers/omit-admin-only-domain-keys');
 const populateDomainStorage = require('#helpers/populate-domain-storage');
 const toObject = require('#helpers/to-object');
 const { Users, Aliases, Domains } = require('#models');
@@ -166,7 +167,9 @@ function json(domain, isList = false) {
 }
 
 async function list(ctx) {
-  ctx.body = ctx.state.domains.map((d) => json(d, true));
+  ctx.body = ctx.state.domains.map((d) =>
+    omitAdminOnlyDomainKeys(json(d, true), d, ctx.state.user)
+  );
 }
 
 async function retrieve(ctx) {
@@ -188,6 +191,7 @@ async function retrieve(ctx) {
         )
       : [];
     data.invites = [];
+    omitAdminOnlyDomainKeys(data, ctx.state.domain, ctx.state.user);
   }
 
   ctx.body = data;

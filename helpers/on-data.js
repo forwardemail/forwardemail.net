@@ -144,7 +144,12 @@ async function onData(stream, _session, fn) {
               //
               const original = to.address;
               to.address = checkSRS(to.address, shouldThrow);
-              if (original !== to.address) to.srs = true;
+              if (original !== to.address) {
+                to.srs = true;
+                // (kept to look up the reverse delivery it was granted)
+                to.srsAddress = original;
+              }
+
               return to;
             }),
             async (to) => {

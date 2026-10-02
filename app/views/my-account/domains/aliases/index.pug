@@ -232,7 +232,7 @@ block body
             .alert.alert-success.remove-on-table-ajax-form-reloaded
               ul.list-inline.mb-0
                 li.list-inline-item.align-middle
-                  != t('You successfully created a new alias: <code class="alert-link text-decoration-underline">%s</code>', ctx.query.new)
+                  != t('You successfully created a new alias: <code class="alert-link text-decoration-underline">%s</code>', _.escape(ctx.query.new))
                 li.list-inline-item.align-middle
                   a.btn.btn-sm.btn-dark(
                     href=l(`/my-account/domains/${punycode.toASCII(domain.name)}/aliases?q=${ctx.query.new}`)

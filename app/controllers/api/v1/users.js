@@ -8,6 +8,7 @@ const mongoose = require('mongoose');
 const isSANB = require('is-string-and-not-blank');
 const _ = require('#helpers/lodash');
 
+const isEmail = require('#helpers/is-email');
 const sendVerificationEmail = require('#helpers/send-verification-email');
 const config = require('#config');
 const { Users, Aliases } = require('#models');
@@ -115,6 +116,10 @@ async function updateAliasSettingsForContext(ctx, body) {
 
 async function create(ctx) {
   const { body } = ctx.request;
+
+  // (the same check our mail servers apply, so the address can get mail)
+  if (!isSANB(body.email) || !isEmail(body.email))
+    throw Boom.badRequest(ctx.translateError('INVALID_EMAIL'));
 
   if (!isSANB(body.password))
     throw Boom.badRequest(ctx.translateError('INVALID_PASSWORD'));

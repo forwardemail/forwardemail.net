@@ -734,7 +734,11 @@ async function processEvent(ctx, event) {
             subject: `Customer banned for opening Stripe dispute: ${user.email}`
           },
           locals: {
-            message: `Customer with email ${user.email} was banned for opening dispute ID ${dispute.id}.<br><br><strong>Ban reason:</strong> ${banReason}`
+            message: `Customer with email ${_.escape(
+              user.email
+            )} was banned for opening dispute ID ${
+              dispute.id
+            }.<br><br><strong>Ban reason:</strong> ${banReason}`
           }
         });
       }
@@ -801,7 +805,15 @@ async function processEvent(ctx, event) {
             subject: `Multiple Active Stripe Subscriptions Detected: ${event.data.object.customer}`
           },
           locals: {
-            message: `<p>Detected ${activeSubscriptions.length} active or trialing Stripe subscriptions for ${user.email}. No user, payment, or subscription action was taken automatically.</p><p>Pending or unresolved subscriptions excluded from this review: ${pendingSubscriptions.length}.</p><p><a href="https://dashboard.stripe.com/customers/${event.data.object.customer}" class="btn btn-dark btn-lg" target="_blank" rel="noopener noreferrer">Review Stripe Customer</a></p>`
+            message: `<p>Detected ${
+              activeSubscriptions.length
+            } active or trialing Stripe subscriptions for ${_.escape(
+              user.email
+            )}. No user, payment, or subscription action was taken automatically.</p><p>Pending or unresolved subscriptions excluded from this review: ${
+              pendingSubscriptions.length
+            }.</p><p><a href="https://dashboard.stripe.com/customers/${
+              event.data.object.customer
+            }" class="btn btn-dark btn-lg" target="_blank" rel="noopener noreferrer">Review Stripe Customer</a></p>`
           }
         })
           .then()

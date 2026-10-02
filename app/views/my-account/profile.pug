@@ -83,7 +83,7 @@ block body
           if user[config.userFields.changeEmailNewAddress]
             .alert.alert-warning(role="alert")
               ul.list-inline.mb-0
-                li.list-inline-item.mb-3.mb-md-0!= t("Email change confirmation link has been sent to: <span class='notranslate font-weight-bold'>%s</span>", user[config.userFields.changeEmailNewAddress])
+                li.list-inline-item.mb-3.mb-md-0!= t("Email change confirmation link has been sent to: <span class='notranslate font-weight-bold'>%s</span>", _.escape(user[config.userFields.changeEmailNewAddress]))
                 li.list-inline-item
                   form.ajax-form.confirm-prompt(
                     action=`${ctx.path}/resend-email-change`,
@@ -177,7 +177,7 @@ block body
                     data-target="#modal-change-password"
                   )= t("Set a password to change your email")
                 else if user[config.userFields.changeEmailNewAddress]
-                  .alert.alert-warning.small!= t('Pending change to: <span class="notranslate font-weight-bold">%s</span>', user[config.userFields.changeEmailNewAddress])
+                  .alert.alert-warning.small!= t('Pending change to: <span class="notranslate font-weight-bold">%s</span>', _.escape(user[config.userFields.changeEmailNewAddress]))
                 else
                   button.btn.btn-secondary.btn-sm.mb-3(
                     type="button",

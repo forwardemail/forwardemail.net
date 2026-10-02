@@ -908,17 +908,10 @@ async function onAuth(auth, session, fn) {
         (alias && !Array.isArray(alias.tokens)) ||
         alias?.tokens?.length === 0
       )
-        throw new SMTPError(
-          `Alias does not have a generated password yet, go to ${
-            config.urls.web
-          }/my-account/domains/${punycode.toASCII(
-            domain.name
-          )}/aliases and click "Generate Password"`,
-          {
-            responseCode: 535,
-            ignoreHook: true,
-            imapResponse: 'AUTHENTICATIONFAILED'
-          }
+        // pre-auth: do not reveal that the alias exists
+        // (the uniform message still points at "Generate Password")
+        throw await uniformAuthFailure(
+          'Alias does not have a generated password yet'
         );
     } else if (
       alias &&
@@ -926,17 +919,9 @@ async function onAuth(auth, session, fn) {
         (alias?.tokens?.length === 0 && domain?.tokens?.length === 0))
     )
       // SMTP servers can validate against both alias and domain-wide tokens
-      throw new SMTPError(
-        `Alias does not have a generated password yet, go to ${
-          config.urls.web
-        }/my-account/domains/${punycode.toASCII(
-          domain.name
-        )}/aliases and click "Generate Password"`,
-        {
-          responseCode: 535,
-          ignoreHook: true,
-          imapResponse: 'AUTHENTICATIONFAILED'
-        }
+      // pre-auth: do not reveal that the alias exists
+      throw await uniformAuthFailure(
+        'Alias does not have a generated password yet'
       );
 
     // ensure that the token is valid

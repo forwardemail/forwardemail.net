@@ -353,7 +353,7 @@ jobs:
           } >> $GITHUB_OUTPUT
 
       - name: Send Matrix notification
-        uses: lkiesow/matrix-notification@v1
+        uses: lkiesow/matrix-notification@8c265f458bdd18351931b715c0735302df597d94 # v1.5.0
         with:
           server: matrix.org
           token: ${{ secrets.MATRIX_TOKEN }}

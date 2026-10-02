@@ -7,11 +7,13 @@ const timers = require('node:timers/promises');
 const dns = require('node:dns');
 const undici = require('undici');
 const ms = require('ms');
+const isSANB = require('is-string-and-not-blank');
 
 const TimeoutError = require('./timeout-error');
 const isRetryableError = require('./is-retryable-error');
 const logger = require('./logger');
 const isPrivateHost = require('#helpers/is-private-host');
+const readLimitedBody = require('#helpers/read-limited-body');
 
 const config = require('#config');
 
@@ -89,21 +91,45 @@ async function retryRequest(url, opts = {}, count = 1) {
             const validate = (err, address, family) => {
               if (err) return fn(err);
               //
+              // NOTE: Node >= 20 connects with `autoSelectFamily` and calls
+              //       this with `options.all`, in which case the lookup
+              //       returns an array of `{ address, family }` entries
+              //       (every entry is checked, not only the first one)
+              //
+              const addresses = Array.isArray(address)
+                ? address
+                : [{ address, family }];
+              if (
+                addresses.length === 0 ||
+                addresses.some((a) => !isSANB(a?.address))
+              ) {
+                const err = new Error(`No address found for ${hostname}`);
+                err.code = 'ENOTFOUND';
+                fn(err);
+                return;
+              }
+
+              //
               // prevent DNS rebinding attacks by validating the
               // resolved IP at connect time against private ranges
               // (mitigates TOCTOU gap between isPrivateHostResolved
               // pre-check and the actual TCP connection)
               //
-              if (config.env !== 'test' && address && isPrivateHost(address)) {
+              const privateAddress =
+                config.env === 'test'
+                  ? null
+                  : addresses.find((a) => isPrivateHost(a.address));
+              if (privateAddress) {
                 const err = new Error(
-                  `Resolved IP ${address} is a private/reserved address`
+                  `Resolved IP ${privateAddress.address} is a private/reserved address`
                 );
                 err.code = 'EPRIVATEADDR';
                 fn(err);
                 return;
               }
 
-              fn(null, address, family);
+              if (options?.all) return fn(null, addresses);
+              fn(null, addresses[0].address, addresses[0].family);
             };
 
             if (config.isSelfHosted) {
@@ -113,7 +139,11 @@ async function retryRequest(url, opts = {}, count = 1) {
 
             opts.resolver
               .lookup(hostname, options)
-              .then((result) => validate(null, result?.address, result?.family))
+              .then((result) =>
+                Array.isArray(result)
+                  ? validate(null, result)
+                  : validate(null, result?.address, result?.family)
+              )
               .catch((err) => fn(err));
           }
         }
@@ -127,7 +157,8 @@ async function retryRequest(url, opts = {}, count = 1) {
     // <https://github.com/nodejs/undici/issues/2093>
     if (response.statusCode !== 200) {
       // still need to consume body even if an error occurs
-      const body = await response.body.text();
+      // (bounded, as the host may not be ours, e.g. a webhook URL)
+      const body = await readLimitedBody(response.body, { limit: 64 * 1024 });
       // ResponseStatusCodeError was removed in undici v7 and replaced with ResponseError
       // <https://github.com/nodejs/undici/pull/4473>
       const err = new undici.errors.ResponseError(

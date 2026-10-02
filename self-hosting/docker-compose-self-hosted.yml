@@ -193,6 +193,8 @@ services:
     container_name: mongodb
     network_mode: host
     restart: unless-stopped
+    # host networking: listen on loopback only (no auth is configured)
+    command: ["--bind_ip", "127.0.0.1"]
     volumes:
       - mongo-data:/data/db
       - ./mongo-backups:/backups
@@ -202,6 +204,8 @@ services:
     container_name: redis
     network_mode: host
     restart: unless-stopped
+    # host networking: listen on loopback only (no auth is configured)
+    command: ["redis-server", "--bind", "127.0.0.1", "--protected-mode", "yes"]
     volumes:
       - ./redis-data:/data
     env_file:
