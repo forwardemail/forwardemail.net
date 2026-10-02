@@ -41,6 +41,7 @@ const test = require('ava');
 const utils = require('../utils');
 
 const Aliases = require('#models/aliases');
+const PushTokens = require('#models/push-tokens');
 const config = require('#config');
 const createTangerine = require('#helpers/create-tangerine');
 const { getAuthCacheKey } = require('#helpers/on-auth');
@@ -155,6 +156,19 @@ async function statusAs(t, { domain }, password) {
       )}`
     );
   return res.status;
+}
+
+// a device of the alias registering for push notifications with its password
+function registerDevice(t, { domain }, password, token) {
+  return t.context.api
+    .post('/v1/push-tokens')
+    .set(
+      'Authorization',
+      `Basic ${Buffer.from(`test@${domain.name}:${password}`).toString(
+        'base64'
+      )}`
+    )
+    .send({ platform: 'apns', token, device_name: 'iPhone' });
 }
 
 async function getRotationState(aliasId) {
@@ -335,6 +349,17 @@ test('a reset that cannot prove exclusivity leaves the mailbox and the previous 
   const state = await getRotationState(aliasId);
   const tokenHash = state.tokens[0].hash;
 
+  // a device signed in with the password gets push notifications
+  // (stored directly: signing in through the API opens the mailbox, which
+  // is not what this test is about)
+  await PushTokens.create({
+    alias: aliasId,
+    user: ctx.user._id,
+    platform: 'apns',
+    token: 'e1'.repeat(32),
+    expires_at: dayjs().add(1, 'year').toDate()
+  });
+
   // a connection to the mailbox in another process (its -wal proves it)
   const holder = startHolder(t, storagePath, firstPassword);
   await pWaitFor(() => holder.open, { timeout: ms('30s') });
@@ -351,6 +376,9 @@ test('a reset that cannot prove exclusivity leaves the mailbox and the previous 
   t.is(alias.tokens[0].hash, tokenHash);
   t.is(await t.context.client.get(getRekeyLockKey(aliasId)), null);
   t.is(fs.statSync(storagePath, { bigint: true }).ino, before.ino);
+
+  // and the device keeps its push notifications
+  t.is(await PushTokens.countDocuments({ alias: aliasId }), 1);
 
   holder.child.send('stop');
   await pWaitFor(() => holder.exitCode !== null, { timeout: ms('30s') });
@@ -370,6 +398,66 @@ test('a reset that cannot prove exclusivity leaves the mailbox and the previous 
     Array.isArray(await opensWith(storagePath, aliasId, second.body.password))
   );
   t.deepEqual(filesOf(storagePath), [path.basename(storagePath)]);
+
+  // the previous password no longer works, and its device no longer gets
+  // push notifications
+  t.is(await PushTokens.countDocuments({ alias: aliasId }), 0);
+});
+
+test('a new password stops the push notifications of devices signed in with the previous one', async (t) => {
+  const ctx = await createUserDomainAlias(t);
+  const { aliasId, user } = ctx;
+
+  const first = await generatePassword(t, ctx, {});
+  t.is(first.status, 200);
+
+  // two devices signed in with the password, and a device of another alias
+  const phone = await registerDevice(
+    t,
+    ctx,
+    first.body.password,
+    'f1'.repeat(32)
+  );
+  t.is(phone.status, 201);
+  const tablet = await registerDevice(
+    t,
+    ctx,
+    first.body.password,
+    'f2'.repeat(32)
+  );
+  t.is(tablet.status, 201);
+
+  const otherDevice = await PushTokens.create({
+    alias: new mongoose.Types.ObjectId(),
+    user: user._id,
+    platform: 'apns',
+    token: 'f3'.repeat(32),
+    expires_at: dayjs().add(1, 'year').toDate()
+  });
+
+  const second = await generatePassword(t, ctx, { is_override: true });
+  t.is(second.status, 200);
+  assertSettled(t, await getRotationState(aliasId));
+
+  t.is(await PushTokens.countDocuments({ alias: aliasId }), 0);
+  t.truthy(await PushTokens.findById(otherDevice._id));
+
+  // the previous password cannot register again, the new one can
+  const refused = await registerDevice(
+    t,
+    ctx,
+    first.body.password,
+    'f1'.repeat(32)
+  );
+  t.is(refused.status, 401);
+  const again = await registerDevice(
+    t,
+    ctx,
+    second.body.password,
+    'f1'.repeat(32)
+  );
+  t.is(again.status, 201);
+  t.is(await PushTokens.countDocuments({ alias: aliasId }), 1);
 });
 
 test('a reset replaces a mailbox whose -wal/-shm files outlived their connection', async (t) => {

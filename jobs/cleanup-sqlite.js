@@ -500,6 +500,14 @@ const mountDir = config.env === 'production' ? '/mnt' : tmpdir;
                     }
                   );
                 } else {
+                  // Tell the SQLite servers to drop their cached handles on
+                  // the mailbox, so the next open sets up a new mailbox in
+                  // place of reusing a handle on the deleted file.  (A handle
+                  // a request holds right now closes when the request ends.)
+                  await client
+                    .publish('db_cache_evict', id)
+                    .catch((err) => logger.error(err, { aliasId: id }));
+
                   // Actually delete local files (ONLY in normal mode)
                   for (const file of filesToDelete) {
                     try {

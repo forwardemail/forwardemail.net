@@ -142,6 +142,8 @@ Jednoduchost a efektivita tohoto řešení přitáhly pozornost významných vý
 
 **Září 2026**: Forward Email zveřejnil [druhou zprávu Cure53](/pentest-report_forward-email.pdf), v níž společnost Cure53 napsala, že rychlé reakce během testování ukázaly „profesionální a vážný přístup k bezpečnosti“. Další zabezpečení přidalo kontroly forward-confirmed reverse DNS (FCrDNS), ověřování parametru state v OAuth a přísnější zacházení se SSRF, Sieve, WKD a XML. Domovská stránka, stránka s ceníkem a FAQ prošly redesignem a nová [stránka ke stažení](/download) shromáždila nativní aplikace pro macOS, Windows, Linux, Android a iOS, přičemž ke každému instalačnímu souboru jsou zveřejněny kontrolní součty a původ sestavení (build provenance).
 
+**Říjen 2026**: Forward Email vydal [terminálovou aplikaci](/faq#do-you-have-a-terminal-app): příkaz `forwardemail` spouští webmailového klienta (poštu, kalendář, kontakty a nastavení) v terminálu na macOS, Linuxu a Windows a lze ho nainstalovat jako samostatný spustitelný soubor nebo přes npm. Společnost také představila web [TerminalEmail.com](https://terminalemail.com), který srovnává terminálové e-mailové klienty pro Linux, macOS, Windows, BSD a Android podle protokolů, funkcí a instalačních příkazů. Druhý nový web, [PrivacyRatings.com](https://privacyratings.com), hodnotí soukromí aplikací a služeb podle veřejných kritérií, s odkazy na důkazy, které si může ověřit kdokoli, a s automatizovanými bezpečnostními testy.
+
 
 ## Základní principy {#core-principles}
 

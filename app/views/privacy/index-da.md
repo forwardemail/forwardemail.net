@@ -11,6 +11,7 @@
   * [Kontooplysninger](#account-information)
   * [E-mail Opbevaring](#email-storage)
   * [Fejllogs](#error-logs)
+  * [Serverlogs](#server-logs)
   * [Udgående SMTP E-mails](#outbound-smtp-emails)
 * [Midlertidig Databehandling](#temporary-data-processing)
   * [Ratebegrænsning](#rate-limiting)
@@ -21,6 +22,12 @@
   * [Domæneindstillingsændringer](#domain-settings-changes)
 * [Cookies og Sessioner](#cookies-and-sessions)
 * [Analyse](#analytics)
+* [Apps og webmail](#apps-and-webmail)
+  * [Data på din enhed](#data-on-your-device)
+  * [Data, som appsene sender til os](#data-the-apps-send-us)
+  * [Push-notifikationer](#push-notifications)
+  * [Billeder og links i e-mails](#images-and-links-in-emails)
+  * [Andre forbindelser](#other-connections)
 * [Delte Oplysninger](#information-shared)
 * [Fjernelse af Oplysninger](#information-removal)
 * [Yderligere Oplysninger](#additional-disclosures)
@@ -33,7 +40,7 @@ Se venligst vores [Vilkår](/terms), da de gælder på hele siden.
 
 ## Information Ikke Indsamlet {#information-not-collected}
 
-**Med undtagelse af de oplysninger, der udtrykkeligt er beskrevet i denne politik (herunder [fejllogs](#error-logs), [udgående SMTP-e-mails](#outbound-smtp-emails), [kontoinformation](#account-information), [midlertidig databehandling](#temporary-data-processing), [revisionslogs](#audit-logs) og [cookies og sessioner](#cookies-and-sessions)):**
+**Med undtagelse af de oplysninger, der udtrykkeligt er beskrevet i denne politik (herunder [fejllogs](#error-logs), [serverlogs](#server-logs), [udgående SMTP-e-mails](#outbound-smtp-emails), [kontoinformation](#account-information), [midlertidig databehandling](#temporary-data-processing), [revisionslogs](#audit-logs), [cookies og sessioner](#cookies-and-sessions), [analyse](#analytics) og [apps og webmail](#apps-and-webmail)):**
 
 * Vi gemmer ikke videresendte e-mails på disk eller i databaser.
 * Vi gemmer ikke metadata om videresendte e-mails på disk eller i databaser.
@@ -60,7 +67,7 @@ For gennemsigtighed kan du til enhver tid <a href="https://github.com/forwardema
 Når du opretter en konto, gemmer vi følgende information for at forstå, hvordan brugere finder vores service:
 
 * Det henvisende websteds domæne (ikke fuld URL)
-* Den første side, du besøgte på vores site
+* Den første side, du besøgte på vores site, med værdier i dens sti såsom domænenavne, id'er og tokens erstattet af pladsholdere
 * UTM-kampagneparametre, hvis de er til stede i URL'en
 
 ### E-mail Opbevaring {#email-storage}
@@ -77,6 +84,15 @@ Når du opretter en konto, gemmer vi følgende information for at forstå, hvord
 * Fejllogs indeholder SMTP-fejlen, konvolutten og e-mail headers (vi **gemmer ikke** e-mailens indhold eller vedhæftninger).
 * Fejllogs kan indeholde IP-adresser og værtsnavne på afsendende servere til fejlfinding.
 * Fejllogs for [ratebegrænsning](/faq#do-you-have-rate-limiting) og [greylisting](/faq#do-you-have-a-greylist) er ikke tilgængelige, da forbindelsen afsluttes tidligt (f.eks. før `RCPT TO` og `MAIL FROM` kommandoer kan sendes).
+* Vi gemmer også fejllogs for web- og API-anmodninger, der fejler eller tager for lang tid, og for fejl på vores IMAP-, POP3-, CalDAV- og CardDAV-servere, i 7 dage.
+* Disse logs kan indeholde IP-adressen, anmodningens URL (herunder forespørgselsstrenge såsom søgeord), anmodningsheadere som f.eks. user agent samt den konto eller det alias, der er involveret.
+* Adgangskoder, API-tokens, cookies og anmodningsindhold fjernes fra disse logs, før de gemmes.
+
+### Serverlogs {#server-logs}
+
+* For hver web- og API-anmodning skriver vores servere en loglinje, som kan indeholde IP-adressen, anmodningens metode og URL (herunder forespørgselsstrenge), anmodningsheadere, svarstatus og den konto, der er logget ind.
+* Vi bruger disse logs til at finde og løse problemer og til at stoppe misbrug, og vi opbevarer dem i op til 30 dage.
+
 ### Udgående SMTP-e-mails {#outbound-smtp-emails}
 
 * Vi gemmer [udgående SMTP-e-mails](/faq#do-you-support-sending-email-with-smtp) i ca. 30 dage.
@@ -161,6 +177,7 @@ For domæner med flere administratorer tilbyder vi detaljeret revisionslogning f
   * Autentificering og loginstatus
   * To-faktor-autentificerings "huske mig"-funktionalitet
   * Flash-beskeder og notifikationer
+  * [Analyse](#analytics): den første side under dit besøg, henvisningsdomænet, kampagneparametre (UTM) og et sideantal
 
 
 ## Analytics {#analytics}
@@ -170,27 +187,68 @@ Vi bruger vores eget privatlivsfokuserede analyssystem til at forstå, hvordan v
 **Hvad vi IKKE indsamler:**
 
 * Vi gemmer ikke IP-adresser
-* Vi bruger ikke cookies eller vedvarende identifikatorer til analyse
+* Vi sætter ikke en separat cookie til analyse
 * Vi bruger ikke nogen tredjeparts analysetjenester
-* Vi sporer ikke brugere på tværs af dage eller sessioner
+* Vi sporer ikke besøgende på tværs af dage eller sessioner, når de ikke er logget ind
 
-**Hvad vi GØR indsamle (anonymiseret):**
+**Hvad vi GØR indsamle:**
 
 * Aggregerede sidevisninger og tjenestebrug (SMTP, IMAP, POP3, API osv.)
-* Browser- og operativsystemtype (udtrukket fra user agent, rådata kasseres)
+* Browser- og operativsystemtype og -version (udtrukket fra user agent, rådata kasseres)
 * Enhedstype (desktop, mobil, tablet)
-* Henvisningsdomæne (ikke fuld URL)
+* Henvisningsdomæne (ikke fuld URL) og kampagneparametre (UTM)
 * E-mailklienttype for mailprotokoller (f.eks. Thunderbird, Outlook)
+* Den anmodede side eller API-sti, hvor værdier såsom domænenavne, id'er og tokens er erstattet af pladsholdere, og om anmodningen lykkedes
+* Ved besøg på webstedet: den første side under besøget og et sideantal, som opbevares i din session (se [Cookies og Sessioner](#cookies-and-sessions))
+* Når du er logget ind, ID'et for din konto, dit alias eller dit domæne, så vi kan se, hvordan hver tjeneste bruges, og fejlfinde problemer
 
 **Dataopbevaring:**
 
-* Analyse-data slettes automatisk efter 30 dage
-* Sessionsidentifikatorer roteres dagligt og kan ikke bruges til at spore brugere på tværs af dage
+* Analysehændelser slettes automatisk efter 30 dage
+* Samlede tal pr. time, som ikke er knyttet til nogen konto, opbevares i 90 dage
+* Sessionsidentifikatorer roteres dagligt og kan ikke bruges til at spore besøgende på tværs af dage
+
+
+## Apps og webmail {#apps-and-webmail}
+
+Dette afsnit dækker vores e-mailapps til iOS, Android, macOS, Windows og Linux samt vores webmail på <a href="https://mail.forwardemail.net" target="_blank" rel="noopener noreferrer">mail.forwardemail.net</a>, som alle deler den samme kode. Appsene indeholder ingen reklame- eller sporingskode og ingen tredjepartsanalyse.
+
+### Data på din enhed {#data-on-your-device}
+
+* Appsene gemmer dine e-mails, kontakter, kalendere, indstillinger og loginoplysninger på din enhed, så de indlæses hurtigt og fungerer offline.
+* Hvis du slår App Lock til, krypterer appen gemt e-mailindhold, kontakter og loginoplysninger med en nøgle, der er beskyttet af din PIN-kode eller adgangsnøgle. Datoer, mapper, etiketter og flag forbliver ukrypterede, så appen kan sortere og tælle dine e-mails.
+* Når du logger ud af en konto, fjernes dens data fra din enhed.
+
+### Data, som appsene sender til os {#data-the-apps-send-us}
+
+* E-mailadressen og adgangskoden til dit alias sendes med hver anmodning for at logge dig ind.
+* De e-mails, kontakter, kalendere, etiketter og filtre, du sender, opretter eller ændrer. Vi gemmer e-mails, kontakter og kalendere som beskrevet i [E-mail Opbevaring](#email-storage), og e-mails, du sender, som beskrevet i [Udgående SMTP-e-mails](#outbound-smtp-emails).
+* Dine søgeord, så vi kan søge i din postkasse på vores servere. Søgeord er en del af anmodningens URL, så de kan optræde i [fejllogs](#error-logs) og [serverlogs](#server-logs).
+* Feedback, du vælger at sende fra appen. Den sendes som e-mail fra dit alias til vores supportteam sammen med eventuelle diagnostiske oplysninger, du vælger at medtage.
+* E-mails, du rapporterer som spam. Appen videresender dem til vores team, der håndterer misbrug (eller til en anden adresse, du angiver under Settings).
+
+### Push-notifikationer {#push-notifications}
+
+* Når du tillader notifikationer, registrerer appen et push-token hos os. Vi gemmer det sammen med platformen, det alias og den konto, det hører til, tidspunktet for dets seneste levering og et enhedsnavn fra appens user agent, som indeholder versionen af dit operativsystem og, på Android, din enhedsmodel.
+* Vi opbevarer et push-token i op til et år efter sidste brug. Vi sletter det tidligere, når du logger ud af appen, når leveringen fejler tre gange i træk, når adgangskoden til aliaset ændres, når du sletter aliaset eller din konto, eller når aliaset overgår til en anden ejer.
+* På iOS og macOS sendes notifikationer via Apple Push Notification service. I vores Android-app fra Google Play sendes de via Firebase Cloud Messaging. Notifikationer om nye e-mails indeholder afsenderens navn og adresse, emnet, en kort forhåndsvisning og mappenavnet, også for e-mails, der ankommer uden en synlig notifikation, såsom e-mails, der lægges i mappen Uønsket eller Sendt. Når e-mails, kalendere eller kontakter ændres, sender vi også lydløse notifikationer med id'er, men uden e-mailindhold, så appen forbliver opdateret.
+* Med [UnifiedPush](https://unifiedpush.org/) på Android og med notifikationer i en webbrowser krypteres hver notifikation, så kun din enhed kan læse den.
+* Vores Android-app fra Google Play indeholder Firebase Cloud Messaging, som sender Google et Firebase-installations-ID, appversionen samt enheds- og SDK-oplysninger. Vores Google-frie Android-app fra GitHub indeholder ikke Firebase.
+
+### Billeder og links i e-mails {#images-and-links-in-emails}
+
+* Billeder i e-mails indlæses fra afsenderens servere, som kan se din IP-adresse, og hvornår billederne blev indlæst.
+* Appsene blokerer sporingspixels som standard. Du kan også blokere alle eksterne billeder under Settings > Privacy & Security og derefter indlæse dem for én e-mail ad gangen.
+* Links i e-mails åbnes i din webbrowser.
+
+### Andre forbindelser {#other-connections}
+
+* Vores webmail spørger GitHub om sin seneste version, når den indlæses, når du vender tilbage til den, og hvert 10. minut, mens den er åben. About & Help spørger GitHub om den seneste desktopversion, og desktopappsene søger efter opdateringer på GitHub. GitHub modtager din IP-adresse med disse anmodninger.
 
 
 ## Information Shared {#information-shared}
 
-Vi deler ikke dine oplysninger med nogen tredjepart.
+Vi deler ikke dine oplysninger med nogen tredjepart, undtagen tjenesteudbydere, der driver dele af vores tjeneste, såsom Cloudflare (beskyttelse af webstedet og krypterede backups), Stripe og PayPal (betalinger), og de tjenester, der leverer push-notifikationer til dine enheder (se [Push-notifikationer](#push-notifications)).
 
 Vi kan være nødt til og vil efterkomme retskendte juridiske anmodninger (men husk [vi indsamler ikke oplysninger nævnt ovenfor under "Information Not Collected"](#information-not-collected), så vi vil ikke kunne levere dem til at begynde med).
 
@@ -202,6 +260,10 @@ Hvis du på noget tidspunkt ønsker at fjerne oplysninger, som du har givet os, 
 På grund af misbrugsforebyggelse og -afhjælpning kan din konto kræve manuel sletningsgennemgang af vores administratorer, hvis du sletter den inden for 5 dage efter din første betaling.
 
 Denne proces tager normalt mindre end 24 timer og blev implementeret, fordi brugere spammede med vores tjeneste og derefter hurtigt slettede deres konti – hvilket forhindrede os i at blokere deres betalingsmetodefingeraftryk i Stripe.
+
+Når du sletter din konto, slettes også de domæner, du administrerer, dine aliaser og de push-tokens, der er registreret til dem. Selve kontoposten bevares, men dens e-mailadresse, faktureringsoplysninger, adgangskode og adgangsnøgler fjernes, og dens tofaktorgodkendelse og API-token tilbagekaldes, og vi opbevarer dens betalingsposter til refusioner og regnskab. Logs og analysedata, der henviser til din konto, slettes inden for de tidsfrister, der er angivet ovenfor.
+
+For at fjerne appsenes data fra en enhed skal du logge ud af appen eller afinstallere den.
 
 
 ## Additional Disclosures {#additional-disclosures}

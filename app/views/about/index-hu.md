@@ -142,6 +142,8 @@ A megoldás egyszerűsége és hatékonysága felkeltette neves fejlesztők figy
 
 **2026. szeptember**: A Forward Email közzétette a [második Cure53-jelentést](/pentest-report_forward-email.pdf), amelyben a Cure53 azt írta, hogy a tesztelés alatti gyors reakciók „a biztonsághoz való professzionális és komoly hozzáállásról” tanúskodtak. A további megerősítés forward-confirmed reverse DNS (FCrDNS) ellenőrzéseket, az OAuth state paraméterének validálását, valamint szigorúbb SSRF-, Sieve-, WKD- és XML-kezelést hozott. Megújult a kezdőlap, az árazási oldal és a GYIK, és egy új [letöltési oldal](/download) egy helyen kínálja a natív alkalmazásokat macOS-re, Windowsra, Linuxra, Androidra és iOS-re, minden telepítőfájlhoz közzétett ellenőrzőösszegekkel és a build eredetét igazoló adatokkal (build provenance).
 
+**2026. október**: A Forward Email kiadott egy [terminálos alkalmazást](/faq#do-you-have-a-terminal-app): a `forwardemail` parancs a webmail klienst (levelezés, naptár, névjegyek és beállítások) futtatja a terminálban macOS-en, Linuxon és Windowson, és önálló futtatható fájlként vagy npm-en keresztül telepíthető. A cég elindította a [TerminalEmail.com](https://terminalemail.com) oldalt is, amely protokollok, funkciók és telepítési parancsok szerint hasonlítja össze a terminálban futó e-mail klienseket Linuxra, macOS-re, Windowsra, BSD-re és Androidra. Egy második új oldal, a [PrivacyRatings.com](https://privacyratings.com), nyilvános kritériumok alapján értékeli az alkalmazások és szolgáltatások adatvédelmét, bárki által ellenőrizhető bizonyítékokra mutató linkekkel és automatizált biztonsági tesztekkel.
+
 
 ## Alapelvek {#core-principles}
 

@@ -142,6 +142,8 @@ Forward Email נוסדה על ידי **ניקולאס באו** בשנת 2017. ל
 
 **ספטמבר 2026**: Forward Email פרסמה את [הדוח השני של Cure53](/pentest-report_forward-email.pdf), שבו כתבה Cure53 שהתגובות המהירות במהלך הבדיקות הפגינו "גישה מקצועית ורצינית לאבטחה". הקשחה נוספת הוסיפה בדיקות forward-confirmed reverse DNS (FCrDNS), אימות של פרמטר ה-state ב-OAuth וטיפול מחמיר יותר ב-SSRF, Sieve, WKD ו-XML. דף הבית, דף התמחור והשאלות הנפוצות עוצבו מחדש, ו[דף הורדות](/download) חדש ריכז את האפליקציות המקוריות ל-macOS, Windows, Linux, Android ו-iOS, עם סכומי ביקורת (checksums) מפורסמים ומידע על מקור הבנייה (build provenance) לכל קובץ התקנה.
 
+**אוקטובר 2026**: Forward Email הוציאה [יישום לטרמינל](/faq#do-you-have-a-terminal-app): הפקודה `forwardemail` מריצה את לקוח הדואר המקוון (דואר, לוח שנה, אנשי קשר והגדרות) בטרמינל ב-macOS, Linux ו-Windows, וניתן להתקין אותה כקובץ הפעלה עצמאי או דרך npm. החברה השיקה גם את [TerminalEmail.com](https://terminalemail.com), אתר שמשווה בין לקוחות דוא"ל לטרמינל עבור Linux, macOS, Windows, BSD ו-Android לפי פרוטוקולים, תכונות ופקודות התקנה. אתר חדש נוסף, [PrivacyRatings.com](https://privacyratings.com), מדרג את רמת הפרטיות של אפליקציות ושירותים לפי קריטריונים פומביים, עם קישורים לראיות שכל אחד יכול לבדוק ובדיקות אבטחה אוטומטיות.
+
 
 ## עקרונות יסוד {#core-principles}
 

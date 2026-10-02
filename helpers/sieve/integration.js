@@ -287,9 +287,15 @@ class SieveIntegration {
         });
       }
 
-      // Set flags (imap4flags)
-      if (filterResult.flags && filterResult.flags.length > 0) {
-        result.flags = filterResult.flags;
+      // Set flags (imap4flags).  A message filed into a folder gets the
+      // flags of that `fileinto`, as they were when it ran, with the ones
+      // its `:flags` names (RFC 5232); a kept one gets the flags at the end.
+      const flags = filterResult.fileinto?.[0]
+        ? filterResult.fileinto[0].flags || []
+        : filterResult.flags || [];
+
+      if (flags.length > 0) {
+        result.flags = flags;
         // Log flags action for user debugging
         logger.info('sieve flags', {
           ignore_hook: false,

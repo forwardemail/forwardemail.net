@@ -406,8 +406,9 @@ async function register(ctx, next) {
       query.signup_referrer_source = ctx.session.signup_referrer_source;
     }
 
-    if (ctx.session.signup_landing_page) {
-      query.signup_landing_page = ctx.session.signup_landing_page;
+    // (the route pattern of the landing page, see helpers/get-route-path.js)
+    if (ctx.session.signup_landing_route) {
+      query.signup_landing_page = ctx.session.signup_landing_route;
     }
 
     // Capture UTM parameters

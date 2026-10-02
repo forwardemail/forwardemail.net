@@ -11,6 +11,7 @@
   * [Kontoinformationen](#account-information)
   * [E-Mail-Speicherung](#email-storage)
   * [Fehlerprotokolle](#error-logs)
+  * [Server-Protokolle](#server-logs)
   * [Ausgehende SMTP-E-Mails](#outbound-smtp-emails)
 * [Temporäre Datenverarbeitung](#temporary-data-processing)
   * [Ratenbegrenzung](#rate-limiting)
@@ -21,6 +22,12 @@
   * [Änderungen der Domain-Einstellungen](#domain-settings-changes)
 * [Cookies und Sitzungen](#cookies-and-sessions)
 * [Analysen](#analytics)
+* [Apps und Webmail](#apps-and-webmail)
+  * [Daten auf Ihrem Gerät](#data-on-your-device)
+  * [Daten, die die Apps an uns senden](#data-the-apps-send-us)
+  * [Push-Benachrichtigungen](#push-notifications)
+  * [Bilder und Links in E-Mails](#images-and-links-in-emails)
+  * [Weitere Verbindungen](#other-connections)
 * [Geteilte Informationen](#information-shared)
 * [Informationslöschung](#information-removal)
 * [Zusätzliche Offenlegungen](#additional-disclosures)
@@ -33,7 +40,7 @@ Bitte beachten Sie unsere [Nutzungsbedingungen](/terms), da diese für die gesam
 
 ## Nicht gesammelte Informationen {#information-not-collected}
 
-**Mit Ausnahme der in dieser Richtlinie ausdrücklich beschriebenen Informationen (einschließlich [Fehlerprotokolle](#error-logs), [ausgehende SMTP-E-Mails](#outbound-smtp-emails), [Kontoinformationen](#account-information), [temporäre Datenverarbeitung](#temporary-data-processing), [Audit-Protokolle](#audit-logs) und [Cookies und Sitzungen](#cookies-and-sessions)):**
+**Mit Ausnahme der in dieser Richtlinie ausdrücklich beschriebenen Informationen (einschließlich [Fehlerprotokolle](#error-logs), [Server-Protokolle](#server-logs), [ausgehende SMTP-E-Mails](#outbound-smtp-emails), [Kontoinformationen](#account-information), [temporäre Datenverarbeitung](#temporary-data-processing), [Audit-Protokolle](#audit-logs), [Cookies und Sitzungen](#cookies-and-sessions), [Analysen](#analytics) und [Apps und Webmail](#apps-and-webmail)):**
 
 * Wir speichern keine weitergeleiteten E-Mails auf Festplatten oder in Datenbanken.
 * Wir speichern keine Metadaten über weitergeleitete E-Mails auf Festplatten oder in Datenbanken.
@@ -60,7 +67,7 @@ Zur Transparenz können Sie jederzeit <a href="https://github.com/forwardemail" 
 Wenn Sie ein Konto erstellen, speichern wir die folgenden Informationen, um zu verstehen, wie Nutzer unseren Dienst finden:
 
 * Die verweisende Website-Domain (nicht die vollständige URL)
-* Die erste Seite, die Sie auf unserer Website besucht haben
+* Die erste Seite, die Sie auf unserer Website besucht haben, wobei in ihrem Pfad enthaltene Werte wie Domainnamen, IDs und Tokens durch Platzhalter ersetzt sind
 * UTM-Kampagnenparameter, falls in der URL vorhanden
 
 ### E-Mail-Speicherung {#email-storage}
@@ -77,6 +84,15 @@ Wenn Sie ein Konto erstellen, speichern wir die folgenden Informationen, um zu v
 * Fehlerprotokolle enthalten den SMTP-Fehler, Umschlag und E-Mail-Header (wir speichern **nicht** den E-Mail-Text oder Anhänge).
 * Fehlerprotokolle können IP-Adressen und Hostnamen von sendenden Servern zu Debugging-Zwecken enthalten.
 * Fehlerprotokolle für [Ratenbegrenzung](/faq#do-you-have-rate-limiting) und [Greylisting](/faq#do-you-have-a-greylist) sind nicht zugänglich, da die Verbindung frühzeitig beendet wird (z. B. bevor `RCPT TO` und `MAIL FROM` Befehle übertragen werden können).
+* Wir speichern außerdem 7 Tage lang Fehlerprotokolle für Website- und API-Anfragen, die fehlschlagen oder zu lange dauern, sowie für Fehler auf unseren IMAP-, POP3-, CalDAV- und CardDAV-Servern.
+* Diese Protokolle können die IP-Adresse, die Anfrage-URL (einschließlich Abfrageparametern wie Suchbegriffen), Anfrage-Header wie den User-Agent sowie das beteiligte Konto oder den beteiligten Alias enthalten.
+* Passwörter, API-Tokens, Cookies und Anfrageinhalte werden in diesen Protokollen vor dem Speichern geschwärzt.
+
+### Server-Protokolle {#server-logs}
+
+* Unsere Server schreiben für jede Website- und API-Anfrage eine Protokollzeile, die die IP-Adresse, die Anfragemethode und die URL (einschließlich Abfrageparametern), Anfrage-Header, den Antwortstatus sowie das angemeldete Konto enthalten kann.
+* Wir nutzen diese Protokolle, um Probleme zu finden und zu beheben und um Missbrauch zu unterbinden, und bewahren sie bis zu 30 Tage lang auf.
+
 ### Ausgehende SMTP-E-Mails {#outbound-smtp-emails}
 
 * Wir speichern [ausgehende SMTP-E-Mails](/faq#do-you-support-sending-email-with-smtp) für ca. 30 Tage.
@@ -161,6 +177,7 @@ Für Domains mit mehreren Administratoren bieten wir detaillierte Prüfprotokoll
   * Authentifizierung und Anmeldestatus
   * Zwei-Faktor-Authentifizierung "Angemeldet bleiben"-Funktion
   * Flash-Nachrichten und Benachrichtigungen
+  * [Analysen](#analytics): die erste Seite Ihres Besuchs, die Referrer-Domain, UTM-Kampagnenparameter und ein Seitenzähler
 
 
 ## Analytics {#analytics}
@@ -170,29 +187,70 @@ Wir verwenden unser eigenes datenschutzorientiertes Analysesystem, um zu versteh
 **Was wir NICHT erfassen:**
 
 * Wir speichern keine IP-Adressen
-* Wir verwenden keine Cookies oder persistente Identifikatoren für Analysen
+* Wir setzen kein separates Cookie für Analysen
 * Wir nutzen keine Analyse-Dienste von Drittanbietern
-* Wir verfolgen Nutzer nicht über Tage oder Sitzungen hinweg
+* Wir verfolgen Besucher nicht über Tage oder Sitzungen hinweg, wenn sie nicht angemeldet sind
 
-**Was wir erfassen (anonymisiert):**
+**Was wir erfassen:**
 
 * Aggregierte Seitenaufrufe und Dienstnutzung (SMTP, IMAP, POP3, API usw.)
-* Browser- und Betriebssystemtyp (aus dem User-Agent geparst, Rohdaten werden verworfen)
+* Typ und Version von Browser und Betriebssystem (aus dem User-Agent geparst, Rohdaten werden verworfen)
 * Gerätetyp (Desktop, Mobilgerät, Tablet)
-* Referrer-Domain (nicht die vollständige URL)
+* Referrer-Domain (nicht die vollständige URL) und UTM-Kampagnenparameter
 * E-Mail-Client-Typ für Mail-Protokolle (z. B. Thunderbird, Outlook)
+* Die aufgerufene Seite oder der aufgerufene API-Pfad, wobei darin enthaltene Werte wie Domainnamen, IDs und Tokens durch Platzhalter ersetzt sind, und ob die Anfrage erfolgreich war
+* Bei Website-Besuchen die erste Seite des Besuchs und ein Seitenzähler, die in Ihrer Sitzung gespeichert werden (siehe [Cookies und Sitzungen](#cookies-and-sessions))
+* Wenn Sie angemeldet sind, die ID Ihres Kontos, Ihres Alias oder Ihrer Domain, damit wir sehen können, wie jeder Dienst genutzt wird, und Probleme beheben können
 
 **Datenaufbewahrung:**
 
-* Analysedaten werden automatisch nach 30 Tagen gelöscht
-* Sitzungskennungen rotieren täglich und können nicht verwendet werden, um Nutzer über Tage hinweg zu verfolgen
+* Analyse-Ereignisse werden automatisch nach 30 Tagen gelöscht
+* Stündliche Summen, die mit keinem Konto verknüpft sind, werden 90 Tage lang aufbewahrt
+* Sitzungskennungen rotieren täglich und können nicht verwendet werden, um Besucher über Tage hinweg zu verfolgen
+
+
+## Apps und Webmail {#apps-and-webmail}
+
+Dieser Abschnitt behandelt unsere E-Mail-Apps für iOS, Android, macOS, Windows und Linux sowie unser Webmail unter <a href="https://mail.forwardemail.net" target="_blank" rel="noopener noreferrer">mail.forwardemail.net</a>, die denselben Code nutzen. Die Apps enthalten keinen Werbe- oder Tracking-Code und keine Analysetools von Drittanbietern.
+
+### Daten auf Ihrem Gerät {#data-on-your-device}
+
+* Die Apps speichern Ihre E-Mails, Kontakte, Kalender, Einstellungen und Anmeldedaten auf Ihrem Gerät, damit sie schnell laden und offline funktionieren.
+* Wenn Sie App Lock aktivieren, verschlüsselt die App gespeicherte E-Mail-Inhalte, Kontakte und Anmeldedaten mit einem Schlüssel, der durch Ihre PIN oder Ihren Passkey geschützt ist. Datumsangaben, Ordner, Labels und Markierungen bleiben unverschlüsselt, damit die App Ihre E-Mails sortieren und zählen kann.
+* Wenn Sie sich von einem Konto abmelden, werden dessen Daten von Ihrem Gerät entfernt.
+
+### Daten, die die Apps an uns senden {#data-the-apps-send-us}
+
+* Ihre Alias-E-Mail-Adresse und Ihr Passwort bei jeder Anfrage, um Sie anzumelden.
+* Die E-Mails, Kontakte, Kalender, Labels und Filter, die Sie senden, erstellen oder ändern. Wir speichern E-Mails, Kontakte und Kalender wie unter [E-Mail-Speicherung](#email-storage) beschrieben und von Ihnen gesendete E-Mails wie unter [Ausgehende SMTP-E-Mails](#outbound-smtp-emails) beschrieben.
+* Ihre Suchbegriffe, damit wir Ihr Postfach auf unseren Servern durchsuchen können. Suchbegriffe sind Teil der Anfrage-URL und können daher in [Fehlerprotokollen](#error-logs) und [Server-Protokollen](#server-logs) erscheinen.
+* Feedback, das Sie freiwillig aus der App senden. Es wird per E-Mail von Ihrem Alias an unser Support-Team geschickt, zusammen mit den Diagnosedetails, die Sie beifügen möchten.
+* E-Mails, die Sie als Spam melden. Die App leitet sie an unser Abuse-Team weiter (oder an eine andere Adresse, die Sie in den Einstellungen festlegen).
+
+### Push-Benachrichtigungen {#push-notifications}
+
+* Wenn Sie Benachrichtigungen erlauben, registriert die App ein Push-Token bei uns. Wir speichern es zusammen mit der Plattform, dem zugehörigen Alias und Konto, dem Zeitpunkt seiner letzten Zustellung und einem Gerätenamen aus dem User-Agent der App, der Ihre Betriebssystemversion und unter Android Ihr Gerätemodell enthält.
+* Wir bewahren ein Push-Token bis zu einem Jahr nach seiner letzten Verwendung auf. Wir löschen es früher, wenn Sie sich in der App abmelden, wenn die Zustellung dreimal hintereinander fehlschlägt, wenn sich das Alias-Passwort ändert, wenn Sie den Alias oder Ihr Konto löschen oder wenn der Alias an einen anderen Inhaber übergeht.
+* Unter iOS und macOS laufen Benachrichtigungen über den Apple Push Notification service. In unserer Android-App aus Google Play laufen sie über Firebase Cloud Messaging. Benachrichtigungen über neue E-Mails enthalten den Namen und die Adresse des Absenders, den Betreff, eine kurze Vorschau und den Ordnernamen, auch für E-Mails, die ohne sichtbare Benachrichtigung eingehen, etwa solche, die im Ordner Spam oder Gesendet abgelegt werden. Wenn sich E-Mails, Kalender oder Kontakte ändern, senden wir außerdem stille Benachrichtigungen mit Kennungen, aber ohne E-Mail-Inhalt, damit die App aktuell bleibt.
+* Mit [UnifiedPush](https://unifiedpush.org/) unter Android sowie bei Benachrichtigungen in einem Webbrowser wird jede Benachrichtigung so verschlüsselt, dass nur Ihr Gerät sie lesen kann.
+* Unsere Android-App aus Google Play enthält Firebase Cloud Messaging, das eine Firebase-Installations-ID, die App-Version sowie Geräte- und SDK-Details an Google sendet. Unsere Google-freie Android-App von GitHub enthält kein Firebase.
+
+### Bilder und Links in E-Mails {#images-and-links-in-emails}
+
+* Bilder in E-Mails werden von den Servern des Absenders geladen, die Ihre IP-Adresse und den Zeitpunkt des Ladens sehen können.
+* Die Apps blockieren Tracking-Pixel standardmäßig. Sie können außerdem unter Settings > Privacy & Security alle externen Bilder blockieren und sie dann für jeweils eine E-Mail laden.
+* Links in E-Mails öffnen sich in Ihrem Webbrowser.
+
+### Weitere Verbindungen {#other-connections}
+
+* Unser Webmail fragt bei GitHub seine neueste Version ab, wenn es geladen wird, wenn Sie zu ihm zurückkehren und alle 10 Minuten, solange es geöffnet ist. About & Help fragt bei GitHub die neueste Desktop-Version ab, und die Desktop-Apps suchen bei GitHub nach Updates. GitHub erhält bei diesen Anfragen Ihre IP-Adresse.
 
 
 ## Information Shared {#information-shared}
 
-Wir geben Ihre Informationen nicht an Dritte weiter.
+Wir geben Ihre Informationen nicht an Dritte weiter, mit Ausnahme von Dienstleistern, die Teile unseres Dienstes betreiben, wie Cloudflare (Website-Schutz und verschlüsselte Backups), Stripe und PayPal (Zahlungen) sowie den Diensten, die Push-Benachrichtigungen an Ihre Geräte zustellen (siehe [Push-Benachrichtigungen](#push-notifications)).
 
-Wir können verpflichtet sein und werden gerichtlichen Anordnungen nachkommen (beachten Sie jedoch, dass [wir keine oben unter „Information Not Collected“ (#information-not-collected) genannten Informationen erfassen], sodass wir diese von vornherein nicht bereitstellen können).
+Wir können verpflichtet sein und werden gerichtlichen Anordnungen nachkommen (beachten Sie jedoch, dass [wir keine oben unter „Nicht gesammelte Informationen“ genannten Informationen erfassen](#information-not-collected), sodass wir diese von vornherein nicht bereitstellen können).
 
 
 ## Information Removal {#information-removal}
@@ -202,6 +260,10 @@ Wenn Sie zu irgendeinem Zeitpunkt Informationen, die Sie uns bereitgestellt habe
 Aus Gründen der Missbrauchsprävention und -minderung kann die Löschung Ihres Kontos eine manuelle Überprüfung durch unsere Administratoren erfordern, wenn Sie es innerhalb von 5 Tagen nach Ihrer ersten Zahlung löschen.
 
 Dieser Prozess dauert in der Regel weniger als 24 Stunden und wurde eingeführt, weil Nutzer unseren Dienst missbraucht haben, indem sie ihn spamten und dann ihre Konten schnell löschten – was uns daran hinderte, ihre Zahlungsarten-Fingerabdrücke in Stripe zu sperren.
+
+Wenn Sie Ihr Konto löschen, werden auch die von Ihnen verwalteten Domains, Ihre Aliase und die dafür registrierten Push-Tokens gelöscht. Der Kontodatensatz selbst bleibt bestehen, wobei dessen E-Mail-Adresse, Rechnungsangaben, Passwort und Passkeys entfernt und dessen Zwei-Faktor-Authentifizierung und API-Token widerrufen werden, und wir bewahren die zugehörigen Zahlungsdatensätze für Rückerstattungen und die Buchhaltung auf. Protokolle und Analysedaten, die sich auf Ihr Konto beziehen, werden gemäß den oben genannten Fristen gelöscht.
+
+Um die Daten der Apps von einem Gerät zu entfernen, melden Sie sich in der App ab oder deinstallieren Sie sie.
 
 
 ## Additional Disclosures {#additional-disclosures}

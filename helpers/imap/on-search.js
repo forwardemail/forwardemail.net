@@ -24,6 +24,7 @@ const IMAPError = require('#helpers/imap-error');
 const Mailboxes = require('#models/mailboxes');
 const env = require('#config/env');
 const escapeSqliteLike = require('#helpers/escape-sqlite-like');
+const getImapFlags = require('#helpers/get-imap-flags');
 const logger = require('#helpers/logger');
 const i18n = require('#helpers/i18n');
 const refineAndLogError = require('#helpers/refine-and-log-error');
@@ -343,11 +344,15 @@ async function onSearch(mailboxId, options, session, fn) {
                 // Decode each message's flags and filter in JavaScript,
                 // using the same set/mustIncludeIds intersection pattern
                 // as BODY/TEXT/HEADER searches.
+                //
+                // A search sees the keywords a FETCH shows: the flags and
+                // the labels (set through the API), compared without case,
+                // as IMAP compares keywords.
                 const wantPresent = term.exists ? !ne : ne;
-                const keyword = term.value;
+                const keyword = String(term.value).toLowerCase();
                 const flagSql = {
                   query:
-                    'select _id, flags from Messages where mailbox = $mailbox;',
+                    'select _id, flags, labels from Messages where mailbox = $mailbox;',
                   values: { mailbox: mailbox._id.toString() }
                 };
                 const flagRows = session.db
@@ -355,11 +360,12 @@ async function onSearch(mailboxId, options, session, fn) {
                   .all(flagSql.values);
                 const matchedIds = [];
                 for (const row of flagRows) {
-                  const decoded =
-                    decodeMetadata(row.flags, recursivelyParse) || [];
-                  const has = decoded.some(
-                    (f) => (typeof f === 'string' ? f : String(f)) === keyword
-                  );
+                  const has = getImapFlags({
+                    flags: decodeMetadata(row.flags, recursivelyParse),
+                    labels: row.labels
+                      ? decodeMetadata(row.labels, recursivelyParse)
+                      : []
+                  }).some((f) => f.toLowerCase() === keyword);
                   if (wantPresent ? has : !has) {
                     matchedIds.push(row._id);
                   }

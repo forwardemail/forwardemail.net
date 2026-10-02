@@ -142,6 +142,8 @@ La semplicità ed efficacia di questa soluzione ha attirato l'attenzione di svil
 
 **Settembre 2026**: Forward Email ha pubblicato il [secondo rapporto di Cure53](/pentest-report_forward-email.pdf), in cui Cure53 ha scritto che le risposte rapide durante i test hanno dimostrato «un approccio professionale e serio alla sicurezza». Un ulteriore rafforzamento ha aggiunto controlli di DNS inverso confermato tramite risoluzione diretta (FCrDNS), la validazione del parametro state di OAuth e una gestione più rigorosa di SSRF, Sieve, WKD e XML. La home page, la pagina dei prezzi e le FAQ sono state riprogettate, e una nuova [pagina di download](/download) ha riunito le app native per macOS, Windows, Linux, Android e iOS, con checksum pubblicati e provenienza della build per ogni programma di installazione.
 
+**Ottobre 2026**: Forward Email ha pubblicato un'[app per il terminale](/faq#do-you-have-a-terminal-app): il comando `forwardemail` esegue il client webmail (posta, calendario, contatti e impostazioni) in un terminale su macOS, Linux e Windows, e si installa come eseguibile autonomo oppure tramite npm. L'azienda ha anche lanciato [TerminalEmail.com](https://terminalemail.com), un sito che confronta i client di posta elettronica per terminale su Linux, macOS, Windows, BSD e Android in base a protocolli, funzionalità e comandi di installazione. Un secondo nuovo sito, [PrivacyRatings.com](https://privacyratings.com), valuta la privacy di app e servizi secondo criteri pubblici, con link a prove che chiunque può verificare e test di sicurezza automatizzati.
+
 
 ## Principi Fondamentali {#core-principles}
 

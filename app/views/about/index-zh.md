@@ -142,6 +142,8 @@ Forward Email 的使命是改变行业对邮件隐私和安全的态度。公司
 
 **2026年9月**：Forward Email 发布了 [Cure53 的第二份报告](/pentest-report_forward-email.pdf)，Cure53 在报告中写道，测试期间的快速响应体现了“专业而严肃的安全态度”。进一步的加固增加了正向确认反向 DNS（FCrDNS）检查、OAuth state 参数校验，以及对 SSRF、Sieve、WKD 和 XML 更严格的处理。首页、价格页面和常见问题完成了重新设计，新的[下载页面](/download)汇集了适用于 macOS、Windows、Linux、Android 和 iOS 的原生应用，并为每个安装包公布校验和与构建来源证明（build provenance）。
 
+**2026年10月**：Forward Email 发布了[终端应用](/faq#do-you-have-a-terminal-app)：`forwardemail` 命令可在 macOS、Linux 和 Windows 的终端中运行网页邮件客户端（邮件、日历、联系人和设置），并可作为独立可执行文件或通过 npm 安装。公司还上线了 [TerminalEmail.com](https://terminalemail.com)，按协议、功能和安装命令比较适用于 Linux、macOS、Windows、BSD 和 Android 的终端电子邮件客户端。另一个新网站 [PrivacyRatings.com](https://privacyratings.com) 依据公开标准评估应用和服务的隐私保护，并附有任何人都能核查的证据链接和自动化安全测试。
+
 ## 核心原则 {#core-principles}
 
 自成立以来，Forward Email 一直遵循以下隐私和安全原则：

@@ -43,6 +43,7 @@ const SMTPError = require('#helpers/smtp-error');
 const TemporaryMessages = require('#models/temporary-messages');
 const config = require('#config');
 const checkDiskSpace = require('#helpers/check-disk-space');
+const deriveLabelsFromFlags = require('#helpers/derive-labels-from-flags');
 const email = require('#helpers/email');
 const encryptMessage = require('#helpers/encrypt-message');
 const encryptMessageSMIME = require('#helpers/encrypt-message-smime');
@@ -2372,6 +2373,8 @@ async function parsePayload(data, ws) {
                     subject: headerSubject,
                     folder_path: targetFolder || 'INBOX',
                     flags: targetFlags || [],
+                    // (the labels the message gets once it is in the mailbox)
+                    labels: deriveLabelsFromFlags(targetFlags || []),
                     is_unread: !(targetFlags || []).includes('\\Seen'),
                     is_flagged: (targetFlags || []).includes('\\Flagged'),
                     is_deleted: (targetFlags || []).includes('\\Deleted'),

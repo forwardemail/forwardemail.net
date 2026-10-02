@@ -24,6 +24,7 @@ const Mailboxes = require('#models/mailboxes');
 const Messages = require('#models/messages');
 const _ = require('#helpers/lodash');
 const env = require('#config/env');
+const deriveLabelsFromFlags = require('#helpers/derive-labels-from-flags');
 const escapeSqliteLike = require('#helpers/escape-sqlite-like');
 const getImapFlags = require('#helpers/get-imap-flags');
 const getNodemailerMessageFromRequest = require('#helpers/get-nodemailer-message-from-request');
@@ -1479,6 +1480,11 @@ async function update(ctx) {
   const previousLabels = Array.isArray(message.labels)
     ? [...message.labels]
     : [];
+  const previousFlags = new Set(
+    (Array.isArray(message.flags) ? message.flags : [])
+      .filter((flag) => typeof flag === 'string')
+      .map((flag) => flag.toLowerCase())
+  );
 
   if (flagsAdd || flagsRemove) {
     //
@@ -1510,6 +1516,28 @@ async function update(ctx) {
   } else if (flags) {
     message.flags = flags;
   }
+
+  //
+  // A keyword is a label as well, as when an IMAP client or a Sieve script
+  // sets it (see on-store.js and on-append.js), so the keywords a change
+  // adds become labels too.  Of a whole list of flags, only the keywords
+  // the message did not have count: one it had and lost its label (removed
+  // with a whole list of labels, below) stays without one.  A whole list of
+  // flags removes no labels: the clients that send one leave keywords out of
+  // it, and only flags_remove takes a keyword away (above).
+  //
+  const addedKeywords = deriveLabelsFromFlags(
+    flagsAdd ||
+      (flags || []).filter(
+        (flag) =>
+          typeof flag === 'string' && !previousFlags.has(flag.toLowerCase())
+      )
+  );
+  if (addedKeywords.length > 0)
+    message.labels = deriveLabelsFromFlags([
+      ...(Array.isArray(message.labels) ? message.labels : []),
+      ...addedKeywords
+    ]);
 
   if (flagsAdd || flagsRemove || flags) {
     message.unseen = !message.flags.includes('\\Seen');

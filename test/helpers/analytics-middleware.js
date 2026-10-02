@@ -251,24 +251,59 @@ test('analyticsMiddleware falls back to ctx.path when pathWithoutLocale is not s
 // Session Attribution Tests
 // ============================================================================
 
-test('analyticsMiddleware captures signup landing page using pathWithoutLocale', async (t) => {
+test('analyticsMiddleware captures signup landing page as the route it matched', async (t) => {
   const middleware = analyticsMiddleware();
   const session = {};
 
   const ctx = createMockContext({
-    path: '/en/pricing',
-    pathWithoutLocale: '/pricing'
+    path: '/en/my-account/domains/example.com',
+    pathWithoutLocale: '/my-account/domains/example.com'
   });
   // Assign session directly to ctx for proper reference
   ctx.session = session;
 
-  await middleware(ctx, async () => {});
+  // (the router sets the layers it matched: router middleware has no
+  // methods, then the routes in the order they were registered)
+  await middleware(ctx, async () => {
+    ctx.matched = [
+      { path: '/:locale/my-account([^/]*)', methods: [] },
+      {
+        path: '/:locale/my-account/domains/:domain_id',
+        methods: ['HEAD', 'GET']
+      }
+    ];
+    ctx._matchedRoute = '/:locale/my-account([^/]*)';
+  });
 
   t.is(
-    session.signup_landing_page,
-    '/pricing',
-    'Landing page should use pathWithoutLocale'
+    session.signup_landing_route,
+    '/my-account/domains/:domain_id',
+    'Landing page should be the route without its locale'
   );
+});
+
+test('analyticsMiddleware drops a landing page that an older session stored as a path', async (t) => {
+  const middleware = analyticsMiddleware();
+  const session = {
+    signup_landing_page: '/my-account/domains/example.com',
+    signup_referrer: 'original.com',
+    _analytics_page_count: 3
+  };
+
+  const ctx = createMockContext({
+    path: '/en/faq',
+    pathWithoutLocale: '/faq',
+    referer: 'https://forwardemail.net/en'
+  });
+  ctx.session = session;
+
+  await middleware(ctx, async () => {
+    ctx.matched = [{ path: '/:locale/faq', methods: ['HEAD', 'GET'] }];
+  });
+
+  t.false('signup_landing_page' in session);
+  t.is(session.signup_landing_route, '/faq');
+  t.is(session.signup_referrer, 'original.com', 'Should keep the referrer');
 });
 
 test('analyticsMiddleware captures referrer on first visit', async (t) => {
@@ -313,7 +348,7 @@ test('analyticsMiddleware captures UTM parameters on first visit', async (t) => 
 test('analyticsMiddleware does not overwrite existing signup data', async (t) => {
   const middleware = analyticsMiddleware();
   const session = {
-    signup_landing_page: '/original-page',
+    signup_landing_route: '/original-page',
     signup_referrer: 'original.com'
   };
 
@@ -327,7 +362,7 @@ test('analyticsMiddleware does not overwrite existing signup data', async (t) =>
   await middleware(ctx, async () => {});
 
   t.is(
-    session.signup_landing_page,
+    session.signup_landing_route,
     '/original-page',
     'Should not overwrite landing page'
   );

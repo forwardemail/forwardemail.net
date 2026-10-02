@@ -6,6 +6,7 @@
 const fs = require('node:fs');
 
 const Aliases = require('#models/aliases');
+const PushTokens = require('#models/push-tokens');
 const config = require('#config');
 const isStorageAvailable = require('#helpers/is-storage-available');
 const logger = require('#helpers/logger');
@@ -145,6 +146,12 @@ async function rollbackRekey(
 // Finalize the rekey matched by `filter`: the mailbox is already encrypted
 // with the new password, so keep the new tokens and re-enable authentication.
 //
+// The previous password stops working here, and so do the push notifications
+// of the devices that signed in with it: all of the alias's push tokens are
+// deleted, also any registered with the account's API token, which can
+// register again right away.  A device that signs in with the new password
+// registers again.
+//
 // Returns the matched alias (pre-update) or `null` when nothing matched.
 //
 async function finalizeRekey(client, aliasId, { filter = {}, rekeyId } = {}) {
@@ -161,6 +168,12 @@ async function finalizeRekey(client, aliasId, { filter = {}, rekeyId } = {}) {
     .exec();
 
   if (!alias) return null;
+
+  try {
+    await PushTokens.deleteMany({ alias: aliasId });
+  } catch (err) {
+    logger.fatal(err, { alias_id: aliasId });
+  }
 
   await reopenAuthentication(client, aliasId, rekeyId);
 

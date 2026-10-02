@@ -248,9 +248,6 @@ async function generateAliasPassword(ctx) {
         alias_has_smime: alias.has_smime,
         alias_smime_certificate: alias.smime_certificate,
         alias_has_wkd_disabled: alias.has_wkd_disabled,
-        // required by `getDatabase` to send the `welcome-mailbox` email on
-        // the initial setup of the fresh mailbox built by `reset`
-        alias_has_imap: alias.has_imap,
         locale: ctx.locale,
         owner_full_email: ctx.state.user.email
       };

@@ -11,6 +11,7 @@
   * [Account Information](#account-information)
   * [Email Storage](#email-storage)
   * [Error Logs](#error-logs)
+  * [Server Logs](#server-logs)
   * [Outbound SMTP Emails](#outbound-smtp-emails)
 * [Temporary Data Processing](#temporary-data-processing)
   * [Rate Limiting](#rate-limiting)
@@ -21,6 +22,12 @@
   * [Domain Settings Changes](#domain-settings-changes)
 * [Cookies and Sessions](#cookies-and-sessions)
 * [Analytics](#analytics)
+* [Apps and Webmail](#apps-and-webmail)
+  * [Data on Your Device](#data-on-your-device)
+  * [Data the Apps Send Us](#data-the-apps-send-us)
+  * [Push Notifications](#push-notifications)
+  * [Images and Links in Emails](#images-and-links-in-emails)
+  * [Other Connections](#other-connections)
 * [Information Shared](#information-shared)
 * [Information Removal](#information-removal)
 * [Additional Disclosures](#additional-disclosures)
@@ -33,7 +40,7 @@ Please defer to our [Terms](/terms) as it applies sitewide.
 
 ## Information Not Collected
 
-**With the exception of the information expressly described in this policy (including [error logs](#error-logs), [outbound SMTP emails](#outbound-smtp-emails), [account information](#account-information), [temporary data processing](#temporary-data-processing), [audit logs](#audit-logs), and [cookies and sessions](#cookies-and-sessions)):**
+**With the exception of the information expressly described in this policy (including [error logs](#error-logs), [server logs](#server-logs), [outbound SMTP emails](#outbound-smtp-emails), [account information](#account-information), [temporary data processing](#temporary-data-processing), [audit logs](#audit-logs), [cookies and sessions](#cookies-and-sessions), [analytics](#analytics), and [apps and webmail](#apps-and-webmail)):**
 
 * We do not store any forwarded emails to disk storage nor databases.
 * We do not store any metadata about forwarded emails to disk storage nor databases.
@@ -59,7 +66,7 @@ For transparency, at any time you can <a href="https://github.com/forwardemail" 
 When you create an account, we store the following information to understand how users find our service:
 
 * The referring website domain (not full URL)
-* The first page you visited on our site
+* The first page you visited on our site, with values in its path such as domain names, IDs, and tokens replaced by placeholders
 * UTM campaign parameters if present in the URL
 
 ### Email Storage
@@ -76,6 +83,14 @@ When you create an account, we store the following information to understand how
 * Error logs contain the SMTP error, envelope, and email headers (we **do not** store the email body nor attachments).
 * Error logs may contain IP addresses and hostnames of sending servers for debugging purposes.
 * Error logs for [rate limiting](/faq#do-you-have-rate-limiting) and [greylisting](/faq#do-you-have-a-greylist) are not accessible since the connection ends early (e.g. before `RCPT TO` and `MAIL FROM` commands can be transmitted).
+* We also store error logs for website and API requests that fail or take too long, and for errors on our IMAP, POP3, CalDAV, and CardDAV servers, for 7 days.
+* These logs can contain the IP address, the request URL (including query strings such as search terms), request headers such as the user agent, and the account or alias involved.
+* Passwords, API tokens, cookies, and request bodies are redacted from these logs before they are stored.
+
+### Server Logs
+
+* Our servers write a log line for each website and API request, which may include the IP address, the request method and URL (including query strings), request headers, the response status, and the signed-in account.
+* We use these logs to find and fix problems and to stop abuse, and we keep them for up to 30 days.
 
 ### Outbound SMTP Emails
 
@@ -161,6 +176,7 @@ For domains with multiple administrators, we provide detailed audit logging to h
   * Authentication and login state
   * Two-factor authentication "remember me" functionality
   * Flash messages and notifications
+  * [Analytics](#analytics): the first page of your visit, the referrer domain, campaign (UTM) parameters, and a page count
 
 
 ## Analytics
@@ -170,27 +186,68 @@ We use our own privacy-focused analytics system to understand how our services a
 **What we do NOT collect:**
 
 * We do not store IP addresses
-* We do not use cookies or persistent identifiers for analytics
+* We do not set a separate cookie for analytics
 * We do not use any third-party analytics services
-* We do not track users across days or sessions
+* We do not track visitors across days or sessions when they are not signed in
 
-**What we DO collect (anonymized):**
+**What we DO collect:**
 
 * Aggregated page views and service usage (SMTP, IMAP, POP3, API, etc.)
-* Browser and operating system type (parsed from user agent, raw data discarded)
+* Browser and operating system type and version (parsed from user agent, raw data discarded)
 * Device type (desktop, mobile, tablet)
-* Referrer domain (not full URL)
+* Referrer domain (not full URL) and campaign (UTM) parameters
 * Email client type for mail protocols (e.g. Thunderbird, Outlook)
+* The page or API path requested, with values in it such as domain names, IDs, and tokens replaced by placeholders, and whether the request succeeded
+* For website visits, the first page of the visit and a page count, kept in your session (see [Cookies and Sessions](#cookies-and-sessions))
+* When you are signed in, the ID of your account, alias, or domain, so we can see how each service is used and troubleshoot problems
 
 **Data retention:**
 
-* Analytics data is automatically deleted after 30 days
-* Session identifiers rotate daily and cannot be used to track users across days
+* Analytics events are automatically deleted after 30 days
+* Hourly totals, which are not linked to any account, are kept for 90 days
+* Session identifiers rotate daily and cannot be used to track visitors across days
+
+
+## Apps and Webmail
+
+This section covers our email apps for iOS, Android, macOS, Windows, and Linux, and our webmail at <a href="https://mail.forwardemail.net" target="_blank" rel="noopener noreferrer">mail.forwardemail.net</a>, which share the same code. The apps contain no advertising or tracking code and no third-party analytics.
+
+### Data on Your Device
+
+* The apps store your emails, contacts, calendars, settings, and sign-in details on your device, so they load quickly and work offline.
+* If you turn on App Lock, the app encrypts stored email content, contacts, and sign-in details with a key protected by your PIN or passkey. Dates, folders, labels, and flags stay unencrypted so the app can sort and count your emails.
+* Signing out of an account removes its data from your device.
+
+### Data the Apps Send Us
+
+* Your alias email address and password, with each request, to sign you in.
+* The emails, contacts, calendars, labels, and filters you send, create, or change. We store emails, contacts, and calendars as described in [Email Storage](#email-storage), and emails you send as described in [Outbound SMTP Emails](#outbound-smtp-emails).
+* Your search terms, so we can search your mailbox on our servers. Search terms are part of the request URL, so they can appear in [error logs](#error-logs) and [server logs](#server-logs).
+* Feedback you choose to send from the app, which is emailed from your alias to our support team with any diagnostic details you choose to include.
+* Emails you report as spam, which the app forwards to our abuse team (or to another address you set in Settings).
+
+### Push Notifications
+
+* When you allow notifications, the app registers a push token with us. We store it with the platform, the alias and account it is for, the time of its last delivery, and a device name taken from the app's user agent, which includes your operating system version and, on Android, your device model.
+* We keep a push token for up to one year after its last use. We delete it sooner when you sign out of the app, when delivery fails three times in a row, when the alias password changes, when you delete the alias or your account, or when the alias moves to another owner.
+* On iOS and macOS, notifications go through Apple Push Notification service. In our Android app from Google Play, they go through Firebase Cloud Messaging. New-mail notifications include the sender's name and address, the subject, a short preview, and the folder name, also for mail that arrives without an alert, such as mail filed into Junk or Sent. When emails, calendars, or contacts change, we also send silent notifications with identifiers but no email content, so the app stays up to date.
+* With [UnifiedPush](https://unifiedpush.org/) on Android, and with notifications in a web browser, each notification is encrypted so that only your device can read it.
+* Our Android app from Google Play includes Firebase Cloud Messaging, which sends Google a Firebase installation ID, the app version, and device and SDK details. Our Google-free Android app from GitHub does not include Firebase.
+
+### Images and Links in Emails
+
+* Images in emails load from the sender's servers, which can see your IP address and when the images were loaded.
+* The apps block tracking pixels by default. You can also block all external images under Settings > Privacy & Security, then load them for one email at a time.
+* Links in emails open in your web browser.
+
+### Other Connections
+
+* Our webmail asks GitHub for its latest version when it loads, when you return to it, and every 10 minutes while it is open. About & Help asks GitHub for the latest desktop release, and the desktop apps check GitHub for updates. GitHub receives your IP address with these requests.
 
 
 ## Information Shared
 
-We do not share your information with any third parties.
+We do not share your information with any third parties, except service providers that run parts of our service, such as Cloudflare (website protection and encrypted backups), Stripe and PayPal (payments), and the services that deliver push notifications to your devices (see [Push Notifications](#push-notifications)).
 
 We may need to and will comply with court ordered legal requests (but keep in mind [we do not collect information mentioned above under "Information Not Collected"](#information-not-collected), so we will not be able to provide it to begin with).
 
@@ -202,6 +259,10 @@ If at any time if you wish to remove information that you have provided us with,
 Due to abuse prevention and mitigation, your account may require manual deletion review by our admins if you delete it within 5 days of your first payment.
 
 This process usually takes less than 24 hours and was implemented due to users were spamming with our service, and then quickly deleting their accounts – which prevented us from blocking their payment method fingerprint(s) in Stripe.
+
+Deleting your account also deletes the domains you administer, your aliases, and the push tokens registered for them. The account record itself stays, with its email address, billing details, password, and passkeys removed and its two-factor authentication and API token revoked, and we keep its payment records for refunds and accounting. Logs and analytics data that reference your account are deleted on the schedules above.
+
+To remove the apps' data from a device, sign out of the app or uninstall it.
 
 
 ## Additional Disclosures

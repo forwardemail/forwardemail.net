@@ -142,6 +142,8 @@ Ratkaisun yksinkertaisuus ja tehokkuus herättivät huomiota merkittävien kehit
 
 **Syyskuu 2026**: Forward Email julkaisi [toisen Cure53-raportin](/pentest-report_forward-email.pdf), jossa Cure53 kirjoitti, että nopeat reaktiot testauksen aikana osoittivat ”ammattimaista ja vakavaa suhtautumista tietoturvaan”. Lisäkovennukset toivat FCrDNS-tarkistukset (forward-confirmed reverse DNS), OAuthin state-parametrin validoinnin sekä tiukemman SSRF:n, Sieven, WKD:n ja XML:n käsittelyn. Etusivu, hinnoittelusivu ja UKK uudistettiin, ja uusi [lataussivu](/download) kokosi yhteen natiivisovellukset macOS:lle, Windowsille, Linuxille, Androidille ja iOS:lle, ja jokaiselle asennustiedostolle on julkaistu tarkistussummat ja käännöksen alkuperätiedot (build provenance).
 
+**Lokakuu 2026**: Forward Email julkaisi [terminaalisovelluksen](/faq#do-you-have-a-terminal-app): `forwardemail`-komento ajaa webmail-asiakasohjelmaa (posti, kalenteri, yhteystiedot ja asetukset) terminaalissa macOS:ssä, Linuxissa ja Windowsissa, ja sen voi asentaa itsenäisenä suoritettavana tiedostona tai npm:n kautta. Yhtiö avasi myös sivuston [TerminalEmail.com](https://terminalemail.com), joka vertailee terminaalissa toimivia sähköpostiohjelmia Linuxille, macOS:lle, Windowsille, BSD:lle ja Androidille protokollien, ominaisuuksien ja asennuskomentojen perusteella. Toinen uusi sivusto, [PrivacyRatings.com](https://privacyratings.com), arvioi sovellusten ja palvelujen yksityisyydensuojaa julkisten kriteerien pohjalta, ja arvioiden tukena ovat linkitetyt todisteet, jotka kuka tahansa voi tarkistaa, sekä automaattiset tietoturvatestit.
+
 
 ## Perusperiaatteet {#core-principles}
 

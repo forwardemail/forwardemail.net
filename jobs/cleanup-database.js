@@ -24,6 +24,7 @@ const Aliases = require('#models/aliases');
 const Domains = require('#models/domains');
 const Users = require('#models/users');
 const config = require('#config');
+const deleteStalePushTokens = require('#helpers/delete-stale-push-tokens');
 const logger = require('#helpers/logger');
 const setupMongoose = require('#helpers/setup-mongoose');
 const { paypalAgent } = require('#helpers/paypal');
@@ -157,6 +158,15 @@ async function deleteOrphans(Model, pipeline, message) {
         ],
         'deleted aliases for domains that did not exist'
       );
+    }
+
+    // push tokens that are expired, whose alias is gone, or that were
+    // registered while someone else owned the alias
+    try {
+      const results = await deleteStalePushTokens();
+      logger.info('deleted stale push tokens', { results });
+    } catch (err) {
+      logger.error(err);
     }
 
     const bannedUserIdSet = await Users.getBannedUserIdSet(client);

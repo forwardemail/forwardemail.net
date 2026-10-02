@@ -11,6 +11,7 @@
   * [Informasi Akun](#account-information)
   * [Penyimpanan Email](#email-storage)
   * [Log Kesalahan](#error-logs)
+  * [Log Server](#server-logs)
   * [Email SMTP Keluar](#outbound-smtp-emails)
 * [Pemrosesan Data Sementara](#temporary-data-processing)
   * [Pembatasan Laju](#rate-limiting)
@@ -21,6 +22,12 @@
   * [Perubahan Pengaturan Domain](#domain-settings-changes)
 * [Cookie dan Sesi](#cookies-and-sessions)
 * [Analitik](#analytics)
+* [Aplikasi dan Webmail](#apps-and-webmail)
+  * [Data di Perangkat Anda](#data-on-your-device)
+  * [Data yang Dikirim Aplikasi kepada Kami](#data-the-apps-send-us)
+  * [Notifikasi Push](#push-notifications)
+  * [Gambar dan Tautan dalam Email](#images-and-links-in-emails)
+  * [Koneksi Lainnya](#other-connections)
 * [Informasi yang Dibagikan](#information-shared)
 * [Penghapusan Informasi](#information-removal)
 * [Pengungkapan Tambahan](#additional-disclosures)
@@ -33,7 +40,7 @@ Silakan merujuk pada [Ketentuan](/terms) kami karena berlaku di seluruh situs.
 
 ## Informasi yang Tidak Dikumpulkan {#information-not-collected}
 
-**Kecuali untuk informasi yang secara tegas dijelaskan dalam kebijakan ini (termasuk [log kesalahan](#error-logs), [email SMTP keluar](#outbound-smtp-emails), [informasi akun](#account-information), [pemrosesan data sementara](#temporary-data-processing), [log audit](#audit-logs), dan [kuki dan sesi](#cookies-and-sessions)):**
+**Kecuali untuk informasi yang secara tegas dijelaskan dalam kebijakan ini (termasuk [log kesalahan](#error-logs), [log server](#server-logs), [email SMTP keluar](#outbound-smtp-emails), [informasi akun](#account-information), [pemrosesan data sementara](#temporary-data-processing), [log audit](#audit-logs), [kuki dan sesi](#cookies-and-sessions), [analitik](#analytics), dan [aplikasi dan webmail](#apps-and-webmail)):**
 
 * Kami tidak menyimpan email yang diteruskan ke penyimpanan disk maupun basis data.
 * Kami tidak menyimpan metadata apa pun tentang email yang diteruskan ke penyimpanan disk maupun basis data.
@@ -60,7 +67,7 @@ Untuk transparansi, kapan saja Anda dapat <a href="https://github.com/forwardema
 Saat Anda membuat akun, kami menyimpan informasi berikut untuk memahami bagaimana pengguna menemukan layanan kami:
 
 * Domain situs web perujuk (bukan URL lengkap)
-* Halaman pertama yang Anda kunjungi di situs kami
+* Halaman pertama yang Anda kunjungi di situs kami, dengan nilai di jalurnya seperti nama domain, ID, dan token diganti dengan placeholder
 * Parameter kampanye UTM jika ada di URL
 
 ### Penyimpanan Email {#email-storage}
@@ -77,6 +84,15 @@ Saat Anda membuat akun, kami menyimpan informasi berikut untuk memahami bagaiman
 * Log kesalahan berisi kesalahan SMTP, amplop, dan header email (kami **tidak** menyimpan isi email maupun lampiran).
 * Log kesalahan dapat berisi alamat IP dan nama host server pengirim untuk tujuan debugging.
 * Log kesalahan untuk [pembatasan laju](/faq#do-you-have-rate-limiting) dan [greylisting](/faq#do-you-have-a-greylist) tidak dapat diakses karena koneksi berakhir lebih awal (misalnya sebelum perintah `RCPT TO` dan `MAIL FROM` dapat dikirim).
+* Kami juga menyimpan log kesalahan untuk permintaan situs web dan API yang gagal atau memakan waktu terlalu lama, serta untuk kesalahan di server IMAP, POP3, CalDAV, dan CardDAV kami, selama 7 hari.
+* Log ini dapat berisi alamat IP, URL permintaan (termasuk string kueri seperti kata kunci pencarian), header permintaan seperti user agent, serta akun atau alias yang terlibat.
+* Kata sandi, token API, cookie, dan isi permintaan disamarkan sebelum log ini disimpan.
+
+### Log Server {#server-logs}
+
+* Server kami mencatat satu baris log untuk setiap permintaan situs web dan API, yang dapat mencakup alamat IP, metode dan URL permintaan (termasuk string kueri), header permintaan, status respons, serta akun yang sedang masuk.
+* Kami menggunakan log ini untuk menemukan dan memperbaiki masalah serta untuk menghentikan penyalahgunaan, dan kami menyimpannya hingga 30 hari.
+
 ### Email SMTP Keluar {#outbound-smtp-emails}
 
 * Kami menyimpan [email SMTP keluar](/faq#do-you-support-sending-email-with-smtp) selama \~30 hari.
@@ -161,6 +177,7 @@ Untuk domain dengan beberapa administrator, kami menyediakan pencatatan audit te
   * Autentikasi dan status masuk
   * Fungsionalitas "ingat saya" pada autentikasi dua faktor
   * Pesan kilat dan pemberitahuan
+  * [Analitik](#analytics): halaman pertama kunjungan Anda, domain perujuk, parameter kampanye (UTM), dan jumlah halaman
 
 
 ## Analytics {#analytics}
@@ -170,27 +187,68 @@ Kami menggunakan sistem analitik yang berfokus pada privasi untuk memahami bagai
 **Apa yang TIDAK kami kumpulkan:**
 
 * Kami tidak menyimpan alamat IP
-* Kami tidak menggunakan cookie atau pengenal persisten untuk analitik
+* Kami tidak memasang cookie terpisah untuk analitik
 * Kami tidak menggunakan layanan analitik pihak ketiga
-* Kami tidak melacak pengguna antar hari atau sesi
+* Kami tidak melacak pengunjung antar hari atau sesi saat mereka belum masuk
 
-**Apa yang KAMI kumpulkan (anonim):**
+**Apa yang KAMI kumpulkan:**
 
 * Tampilan halaman dan penggunaan layanan yang digabungkan (SMTP, IMAP, POP3, API, dll.)
-* Jenis browser dan sistem operasi (diurai dari user agent, data mentah dibuang)
+* Jenis dan versi browser serta sistem operasi (diurai dari user agent, data mentah dibuang)
 * Jenis perangkat (desktop, mobile, tablet)
-* Domain perujuk (bukan URL lengkap)
+* Domain perujuk (bukan URL lengkap) dan parameter kampanye (UTM)
 * Jenis klien email untuk protokol mail (misalnya Thunderbird, Outlook)
+* Halaman atau jalur API yang diminta, dengan nilai di dalamnya seperti nama domain, ID, dan token diganti dengan placeholder, dan apakah permintaan tersebut berhasil
+* Untuk kunjungan situs web, halaman pertama kunjungan dan jumlah halaman, yang disimpan di sesi Anda (lihat [Cookie dan Sesi](#cookies-and-sessions))
+* Saat Anda sudah masuk, ID akun, alias, atau domain Anda, agar kami dapat melihat bagaimana setiap layanan digunakan dan memecahkan masalah
 
 **Retensi data:**
 
-* Data analitik secara otomatis dihapus setelah 30 hari
-* Identifier sesi berganti setiap hari dan tidak dapat digunakan untuk melacak pengguna antar hari
+* Peristiwa analitik secara otomatis dihapus setelah 30 hari
+* Total per jam, yang tidak dikaitkan dengan akun mana pun, disimpan selama 90 hari
+* Identifier sesi berganti setiap hari dan tidak dapat digunakan untuk melacak pengunjung antar hari
+
+
+## Aplikasi dan Webmail {#apps-and-webmail}
+
+Bagian ini mencakup aplikasi email kami untuk iOS, Android, macOS, Windows, dan Linux, serta webmail kami di <a href="https://mail.forwardemail.net" target="_blank" rel="noopener noreferrer">mail.forwardemail.net</a>, yang menggunakan kode yang sama. Aplikasi kami tidak berisi kode iklan atau pelacakan, maupun analitik pihak ketiga.
+
+### Data di Perangkat Anda {#data-on-your-device}
+
+* Aplikasi menyimpan email, kontak, kalender, pengaturan, dan informasi masuk Anda di perangkat Anda, sehingga aplikasi dapat dimuat dengan cepat dan berfungsi secara offline.
+* Jika Anda mengaktifkan App Lock, aplikasi mengenkripsi konten email, kontak, dan informasi masuk yang tersimpan dengan kunci yang dilindungi oleh PIN atau kunci sandi Anda. Tanggal, folder, label, dan penanda tetap tidak terenkripsi agar aplikasi dapat mengurutkan dan menghitung email Anda.
+* Keluar dari sebuah akun akan menghapus data akun tersebut dari perangkat Anda.
+
+### Data yang Dikirim Aplikasi kepada Kami {#data-the-apps-send-us}
+
+* Alamat email dan kata sandi alias Anda, bersama setiap permintaan, agar Anda dapat masuk.
+* Email, kontak, kalender, label, dan filter yang Anda kirim, buat, atau ubah. Kami menyimpan email, kontak, dan kalender seperti yang dijelaskan dalam [Penyimpanan Email](#email-storage), serta email yang Anda kirim seperti yang dijelaskan dalam [Email SMTP Keluar](#outbound-smtp-emails).
+* Kata kunci pencarian Anda, agar kami dapat mencari di kotak surat Anda di server kami. Kata kunci pencarian merupakan bagian dari URL permintaan, sehingga dapat muncul di [log kesalahan](#error-logs) dan [log server](#server-logs).
+* Masukan yang Anda pilih untuk disampaikan dari aplikasi, yang dikirim melalui email dari alias Anda ke tim dukungan kami beserta detail diagnostik yang Anda pilih untuk disertakan.
+* Email yang Anda laporkan sebagai spam, yang diteruskan oleh aplikasi ke tim penyalahgunaan kami (atau ke alamat lain yang Anda atur di Settings).
+
+### Notifikasi Push {#push-notifications}
+
+* Saat Anda mengizinkan notifikasi, aplikasi mendaftarkan token push ke kami. Kami menyimpannya bersama platform, alias dan akun terkait, waktu pengiriman terakhirnya, dan nama perangkat yang diambil dari user agent aplikasi, yang mencakup versi sistem operasi Anda dan, di Android, model perangkat Anda.
+* Kami menyimpan token push hingga satu tahun setelah terakhir digunakan. Kami menghapusnya lebih cepat saat Anda keluar dari akun di aplikasi, saat pengiriman gagal tiga kali berturut-turut, saat kata sandi alias berubah, saat Anda menghapus alias atau akun Anda, atau saat alias berpindah ke pemilik lain.
+* Di iOS dan macOS, notifikasi dikirim melalui Apple Push Notification service. Di aplikasi Android kami dari Google Play, notifikasi dikirim melalui Firebase Cloud Messaging. Notifikasi email baru mencakup nama dan alamat pengirim, subjek, pratinjau singkat, dan nama folder, juga untuk email yang tiba tanpa memunculkan peringatan, seperti email yang dimasukkan ke folder Email Sampah atau folder Terkirim. Saat email, kalender, atau kontak berubah, kami juga mengirim notifikasi senyap dengan pengidentifikasi tetapi tanpa konten email, agar aplikasi tetap terkini.
+* Dengan [UnifiedPush](https://unifiedpush.org/) di Android, dan dengan notifikasi di browser web, setiap notifikasi dienkripsi sehingga hanya perangkat Anda yang dapat membacanya.
+* Aplikasi Android kami dari Google Play menyertakan Firebase Cloud Messaging, yang mengirimkan ID instalasi Firebase, versi aplikasi, serta detail perangkat dan SDK kepada Google. Aplikasi Android kami dari GitHub, yang bebas Google, tidak menyertakan Firebase.
+
+### Gambar dan Tautan dalam Email {#images-and-links-in-emails}
+
+* Gambar dalam email dimuat dari server pengirim, yang dapat melihat alamat IP Anda dan kapan gambar tersebut dimuat.
+* Aplikasi memblokir piksel pelacak secara default. Anda juga dapat memblokir semua gambar eksternal di Settings > Privacy & Security, lalu memuatnya per email.
+* Tautan dalam email dibuka di browser web Anda.
+
+### Koneksi Lainnya {#other-connections}
+
+* Webmail kami menanyakan versi terbarunya ke GitHub saat dimuat, saat Anda kembali ke webmail, dan setiap 10 menit selama masih terbuka. About & Help menanyakan rilis desktop terbaru ke GitHub, dan aplikasi desktop memeriksa pembaruan di GitHub. GitHub menerima alamat IP Anda melalui permintaan ini.
 
 
 ## Informasi yang Dibagikan {#information-shared}
 
-Kami tidak membagikan informasi Anda dengan pihak ketiga manapun.
+Kami tidak membagikan informasi Anda dengan pihak ketiga manapun, kecuali dengan penyedia layanan yang menjalankan sebagian layanan kami, seperti Cloudflare (perlindungan situs web dan cadangan terenkripsi), Stripe dan PayPal (pembayaran), serta layanan yang mengirimkan notifikasi push ke perangkat Anda (lihat [Notifikasi Push](#push-notifications)).
 
 Kami mungkin perlu dan akan mematuhi permintaan hukum yang diperintahkan pengadilan (tetapi ingat [kami tidak mengumpulkan informasi yang disebutkan di atas dalam "Informasi yang Tidak Dikumpulkan"](#information-not-collected), jadi kami tidak akan dapat memberikannya sejak awal).
 
@@ -202,6 +260,10 @@ Jika kapan saja Anda ingin menghapus informasi yang telah Anda berikan kepada ka
 Karena pencegahan dan mitigasi penyalahgunaan, akun Anda mungkin memerlukan tinjauan penghapusan manual oleh admin kami jika Anda menghapusnya dalam waktu 5 hari setelah pembayaran pertama Anda.
 
 Proses ini biasanya memakan waktu kurang dari 24 jam dan diterapkan karena pengguna menyalahgunakan layanan kami dengan spam, lalu dengan cepat menghapus akun mereka – yang mencegah kami memblokir sidik jari metode pembayaran mereka di Stripe.
+
+Menghapus akun Anda juga akan menghapus domain yang Anda kelola, alias Anda, dan token push yang terdaftar untuk alias tersebut. Catatan akun itu sendiri tetap ada, dengan alamat email, detail penagihan, kata sandi, dan kunci sandinya dihapus serta autentikasi dua faktor dan token API-nya dicabut, dan kami menyimpan catatan pembayarannya untuk pengembalian dana dan akuntansi. Log dan data analitik yang merujuk ke akun Anda dihapus sesuai jangka waktu yang disebutkan di atas.
+
+Untuk menghapus data aplikasi dari perangkat, keluar dari akun di aplikasi atau copot pemasangan aplikasi tersebut.
 
 
 ## Pengungkapan Tambahan {#additional-disclosures}

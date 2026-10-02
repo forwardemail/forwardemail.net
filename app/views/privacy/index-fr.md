@@ -11,6 +11,7 @@
   * [Informations sur le compte](#account-information)
   * [Stockage des emails](#email-storage)
   * [Journaux d'erreurs](#error-logs)
+  * [Journaux des serveurs](#server-logs)
   * [Emails SMTP sortants](#outbound-smtp-emails)
 * [Traitement temporaire des données](#temporary-data-processing)
   * [Limitation du débit](#rate-limiting)
@@ -21,6 +22,12 @@
   * [Modifications des paramètres de domaine](#domain-settings-changes)
 * [Cookies et sessions](#cookies-and-sessions)
 * [Analyses](#analytics)
+* [Applications et webmail](#apps-and-webmail)
+  * [Données sur votre appareil](#data-on-your-device)
+  * [Données que les applications nous envoient](#data-the-apps-send-us)
+  * [Notifications push](#push-notifications)
+  * [Images et liens dans les emails](#images-and-links-in-emails)
+  * [Autres connexions](#other-connections)
 * [Informations partagées](#information-shared)
 * [Suppression des informations](#information-removal)
 * [Divulgations supplémentaires](#additional-disclosures)
@@ -33,7 +40,7 @@ Veuillez vous référer à nos [Conditions](/terms) qui s'appliquent à l'ensemb
 
 ## Informations non collectées {#information-not-collected}
 
-**À l'exception des informations expressément décrites dans cette politique (y compris les [journaux d'erreurs](#error-logs), les [e-mails SMTP sortants](#outbound-smtp-emails), les [informations de compte](#account-information), le [traitement temporaire des données](#temporary-data-processing), les [journaux d'audit](#audit-logs), et les [cookies et sessions](#cookies-and-sessions) ):**
+**À l'exception des informations expressément décrites dans cette politique (y compris les [journaux d'erreurs](#error-logs), les [journaux des serveurs](#server-logs), les [e-mails SMTP sortants](#outbound-smtp-emails), les [informations de compte](#account-information), le [traitement temporaire des données](#temporary-data-processing), les [journaux d'audit](#audit-logs), les [cookies et sessions](#cookies-and-sessions), les [analyses](#analytics), et les [applications et le webmail](#apps-and-webmail) ):**
 
 * Nous ne stockons aucun e-mail transféré sur un stockage disque ni dans des bases de données.
 * Nous ne stockons aucune métadonnée concernant les e-mails transférés sur un stockage disque ni dans des bases de données.
@@ -60,7 +67,7 @@ Pour plus de transparence, vous pouvez à tout moment <a href="https://github.co
 Lorsque vous créez un compte, nous stockons les informations suivantes pour comprendre comment les utilisateurs découvrent notre service :
 
 * Le domaine du site référent (pas l'URL complète)
-* La première page que vous avez visitée sur notre site
+* La première page que vous avez visitée sur notre site, avec les valeurs de son chemin, telles que les noms de domaine, les identifiants et les jetons, remplacées par des espaces réservés
 * Les paramètres de campagne UTM s'ils sont présents dans l'URL
 
 ### Stockage des emails {#email-storage}
@@ -77,6 +84,15 @@ Lorsque vous créez un compte, nous stockons les informations suivantes pour com
 * Les journaux d'erreurs contiennent l'erreur SMTP, l'enveloppe, et les en-têtes d'email (nous **ne stockons pas** le corps de l'email ni les pièces jointes).
 * Les journaux d'erreurs peuvent contenir les adresses IP et noms d'hôtes des serveurs expéditeurs à des fins de débogage.
 * Les journaux d'erreurs pour la [limitation du débit](/faq#do-you-have-rate-limiting) et la [liste grise](/faq#do-you-have-a-greylist) ne sont pas accessibles car la connexion se termine tôt (par exemple avant que les commandes `RCPT TO` et `MAIL FROM` puissent être transmises).
+* Nous stockons également pendant 7 jours les journaux d'erreurs des requêtes vers le site web et l'API qui échouent ou prennent trop de temps, ainsi que ceux de nos serveurs IMAP, POP3, CalDAV et CardDAV.
+* Ces journaux peuvent contenir l'adresse IP, l'URL de la requête (y compris les chaînes de requête, par exemple les termes de recherche), les en-têtes de requête tels que l'agent utilisateur, ainsi que le compte ou l'alias concerné.
+* Les mots de passe, jetons API, cookies et corps de requête sont expurgés de ces journaux avant leur enregistrement.
+
+### Journaux des serveurs {#server-logs}
+
+* Pour chaque requête vers le site web et l'API, nos serveurs enregistrent une ligne de journal qui peut inclure l'adresse IP, la méthode et l'URL de la requête (y compris les chaînes de requête), les en-têtes de requête, le statut de la réponse et le compte connecté.
+* Nous utilisons ces journaux pour repérer et corriger les problèmes et pour stopper les abus, et nous les conservons jusqu'à 30 jours.
+
 ### Emails SMTP sortants {#outbound-smtp-emails}
 
 * Nous stockons les [emails SMTP sortants](/faq#do-you-support-sending-email-with-smtp) pendant environ 30 jours.
@@ -161,6 +177,7 @@ Pour les domaines avec plusieurs administrateurs, nous fournissons une journalis
   * L'authentification et l'état de connexion
   * La fonctionnalité "se souvenir de moi" de l'authentification à deux facteurs
   * Les messages flash et les notifications
+  * [Analyse](#analytics) : la première page de votre visite, le domaine référent, les paramètres de campagne UTM et un compteur de pages
 
 
 ## Analyse {#analytics}
@@ -170,27 +187,68 @@ Nous utilisons notre propre système d’analyse axé sur la confidentialité po
 **Ce que nous ne collectons PAS :**
 
 * Nous ne stockons pas les adresses IP
-* Nous n’utilisons pas de cookies ni d’identifiants persistants pour l’analyse
+* Nous ne déposons pas de cookie distinct pour l’analyse
 * Nous n’utilisons aucun service d’analyse tiers
-* Nous ne suivons pas les utilisateurs sur plusieurs jours ou sessions
+* Nous ne suivons pas les visiteurs sur plusieurs jours ou sessions lorsqu’ils ne sont pas connectés
 
-**Ce que nous collectons (anonymisé) :**
+**Ce que nous collectons :**
 
 * Vues de pages agrégées et utilisation des services (SMTP, IMAP, POP3, API, etc.)
-* Type de navigateur et système d’exploitation (analysé à partir de l’agent utilisateur, données brutes supprimées)
+* Type et version du navigateur et du système d’exploitation (analysés à partir de l’agent utilisateur, données brutes supprimées)
 * Type d’appareil (ordinateur de bureau, mobile, tablette)
-* Domaine référent (pas l’URL complète)
+* Domaine référent (pas l’URL complète) et paramètres de campagne UTM
 * Type de client mail pour les protocoles de messagerie (ex. Thunderbird, Outlook)
+* La page ou le chemin d’API demandé, dans lequel les valeurs telles que les noms de domaine, les identifiants et les jetons sont remplacées par des espaces réservés, et si la requête a réussi
+* Pour les visites du site web, la première page de la visite et un compteur de pages, conservés dans votre session (voir [Cookies et sessions](#cookies-and-sessions))
+* Lorsque vous êtes connecté, l’identifiant de votre compte, de votre alias ou de votre domaine, afin que nous puissions voir comment chaque service est utilisé et résoudre les problèmes
 
 **Conservation des données :**
 
-* Les données analytiques sont automatiquement supprimées après 30 jours
-* Les identifiants de session tournent quotidiennement et ne peuvent pas être utilisés pour suivre les utilisateurs sur plusieurs jours
+* Les événements analytiques sont automatiquement supprimés après 30 jours
+* Les totaux horaires, qui ne sont liés à aucun compte, sont conservés pendant 90 jours
+* Les identifiants de session tournent quotidiennement et ne peuvent pas être utilisés pour suivre les visiteurs sur plusieurs jours
+
+
+## Applications et webmail {#apps-and-webmail}
+
+Cette section concerne nos applications de messagerie pour iOS, Android, macOS, Windows et Linux, ainsi que notre webmail sur <a href="https://mail.forwardemail.net" target="_blank" rel="noopener noreferrer">mail.forwardemail.net</a>, qui partagent le même code. Les applications ne contiennent aucun code publicitaire ou de suivi, ni aucun outil d'analyse tiers.
+
+### Données sur votre appareil {#data-on-your-device}
+
+* Les applications stockent vos emails, contacts, calendriers, paramètres et informations de connexion sur votre appareil, afin de se charger rapidement et de fonctionner hors ligne.
+* Si vous activez App Lock, l'application chiffre le contenu des emails, les contacts et les informations de connexion stockés avec une clé protégée par votre code PIN ou votre passkey. Les dates, dossiers, libellés et indicateurs restent non chiffrés afin que l'application puisse trier et compter vos emails.
+* La déconnexion d'un compte supprime ses données de votre appareil.
+
+### Données que les applications nous envoient {#data-the-apps-send-us}
+
+* L'adresse email de votre alias et votre mot de passe, à chaque requête, pour vous connecter.
+* Les emails, contacts, calendriers, libellés et filtres que vous envoyez, créez ou modifiez. Nous stockons les emails, contacts et calendriers comme décrit dans [Stockage des emails](#email-storage), et les emails que vous envoyez comme décrit dans [Emails SMTP sortants](#outbound-smtp-emails).
+* Vos termes de recherche, afin que nous puissions effectuer des recherches dans votre boîte aux lettres sur nos serveurs. Comme les termes de recherche font partie de l'URL de la requête, ils peuvent apparaître dans les [journaux d'erreurs](#error-logs) et les [journaux des serveurs](#server-logs).
+* Les retours que vous choisissez d'envoyer depuis l'application. Ils sont transmis par email depuis votre alias à notre équipe d'assistance, avec les informations de diagnostic que vous choisissez d'inclure.
+* Les emails que vous signalez comme spam, que l'application transfère à notre équipe anti-abus (ou à une autre adresse que vous définissez dans les paramètres).
+
+### Notifications push {#push-notifications}
+
+* Lorsque vous autorisez les notifications, l'application enregistre un jeton push auprès de nous. Nous le stockons avec la plateforme, l'alias et le compte auxquels il est associé, le moment de sa dernière livraison et un nom d'appareil tiré de l'agent utilisateur de l'application, qui comprend la version de votre système d'exploitation et, sur Android, le modèle de votre appareil.
+* Nous conservons un jeton push jusqu'à un an après sa dernière utilisation. Nous le supprimons plus tôt lorsque vous vous déconnectez de l'application, lorsque la livraison échoue trois fois de suite, lorsque le mot de passe de l'alias change, lorsque vous supprimez l'alias ou votre compte, ou lorsque l'alias passe à un autre propriétaire.
+* Sur iOS et macOS, les notifications passent par Apple Push Notification service. Dans notre application Android distribuée via Google Play, elles passent par Firebase Cloud Messaging. Les notifications de nouveaux emails contiennent le nom et l'adresse de l'expéditeur, l'objet, un court aperçu et le nom du dossier, y compris pour les emails qui arrivent sans notification visible, comme ceux classés dans le dossier Indésirables ou Envoyés. Lorsque des emails, calendriers ou contacts changent, nous envoyons également des notifications silencieuses avec des identifiants mais sans contenu d'email, afin que l'application reste à jour.
+* Avec [UnifiedPush](https://unifiedpush.org/) sur Android, ainsi qu'avec les notifications dans un navigateur web, chaque notification est chiffrée de sorte que seul votre appareil puisse la lire.
+* Notre application Android distribuée via Google Play inclut Firebase Cloud Messaging, qui envoie à Google un identifiant d'installation Firebase, la version de l'application ainsi que des informations sur l'appareil et le SDK. Notre application Android sans Google, distribuée via GitHub, n'inclut pas Firebase.
+
+### Images et liens dans les emails {#images-and-links-in-emails}
+
+* Les images des emails sont chargées depuis les serveurs de l'expéditeur, qui peuvent voir votre adresse IP et le moment où les images ont été chargées.
+* Les applications bloquent les pixels de suivi par défaut. Vous pouvez aussi bloquer toutes les images externes dans Settings > Privacy & Security, puis les charger pour un email à la fois.
+* Les liens dans les emails s'ouvrent dans votre navigateur web.
+
+### Autres connexions {#other-connections}
+
+* Notre webmail demande à GitHub sa dernière version lors de son chargement, lorsque vous y revenez et toutes les 10 minutes tant qu'il est ouvert. About & Help demande à GitHub la dernière version de bureau, et les applications de bureau vérifient auprès de GitHub si des mises à jour sont disponibles. GitHub reçoit votre adresse IP lors de ces requêtes.
 
 
 ## Informations Partagées {#information-shared}
 
-Nous ne partageons pas vos informations avec des tiers.
+Nous ne partageons pas vos informations avec des tiers, à l'exception des prestataires qui assurent certaines parties de notre service, comme Cloudflare (protection du site web et sauvegardes chiffrées), Stripe et PayPal (paiements), et des services qui acheminent les notifications push vers vos appareils (voir [Notifications push](#push-notifications)).
 
 Nous pouvons être amenés à nous conformer à des demandes légales ordonnées par un tribunal (mais gardez à l’esprit que [nous ne collectons pas les informations mentionnées ci-dessus sous « Informations Non Collectées »](#information-not-collected), donc nous ne pourrons pas les fournir).
 
@@ -202,6 +260,10 @@ Si à tout moment vous souhaitez supprimer les informations que vous nous avez f
 Pour prévenir et atténuer les abus, la suppression de votre compte peut nécessiter une révision manuelle par nos administrateurs si vous le supprimez dans les 5 jours suivant votre premier paiement.
 
 Ce processus prend généralement moins de 24 heures et a été mis en place car des utilisateurs spammaient notre service, puis supprimaient rapidement leurs comptes – ce qui nous empêchait de bloquer leurs empreintes de méthode de paiement dans Stripe.
+
+La suppression de votre compte entraîne également la suppression des domaines que vous administrez, de vos alias et des jetons push enregistrés pour ceux-ci. La fiche du compte elle-même subsiste, mais son adresse email, ses informations de facturation, son mot de passe et ses clés d'accès sont supprimés, son authentification à deux facteurs et son jeton API sont révoqués, et nous conservons les données de paiement associées pour les remboursements et la comptabilité. Les journaux et les données analytiques qui font référence à votre compte sont supprimés selon les délais indiqués ci-dessus.
+
+Pour supprimer les données des applications d'un appareil, déconnectez-vous de l'application ou désinstallez-la.
 
 
 ## Divulgations Supplémentaires {#additional-disclosures}

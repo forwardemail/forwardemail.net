@@ -6,14 +6,16 @@
 const isbot = require('isbot');
 
 const analytics = require('#helpers/analytics');
+const getRoutePath = require('#helpers/get-route-path');
 
 /**
  * Koa middleware for tracking web page views and API calls
- * Privacy-focused: no IP storage, user agents parsed, bots excluded
+ * Privacy-focused: no IP storage, user agents parsed, bots excluded, and
+ * paths stored as route patterns (see helpers/get-route-path.js)
  *
  * Also captures signup attribution data in session for later use during registration:
  * - Original referrer (where the user came from)
- * - Landing page (first page visited)
+ * - Landing page (first page visited, as a route pattern)
  * - UTM parameters
  *
  * @param {Object} options - Middleware options
@@ -96,16 +98,19 @@ function analyticsMiddleware(options = {}) {
       return next();
     }
 
-    // Capture signup attribution data in session (only on first visit)
-    // This data will be used when the user registers
-    if (
-      ctx.session &&
-      service === 'web' && // Only capture on first visit (when landing page is not set)
-      !ctx.session.signup_landing_page
-    ) {
-      // Store the landing page (use pathWithoutLocale for consistency)
-      ctx.session.signup_landing_page = pathToCheck;
+    // Capture signup attribution data in session: the referrer and campaign
+    // of the first request, and the route of the first page that exists (set
+    // below). This data will be used when the user registers
+    if (ctx.session && service === 'web' && ctx.session.signup_landing_page)
+      // (older sessions hold the landing page as a path, with whatever
+      // domain names, IDs and tokens were in it)
+      delete ctx.session.signup_landing_page;
 
+    const needsLandingPage = Boolean(
+      ctx.session && service === 'web' && !ctx.session.signup_landing_route
+    );
+
+    if (needsLandingPage && !ctx.session._analytics_page_count) {
       // Store the referrer
       const referrer = ctx.get('referer') || ctx.get('referrer');
       if (referrer) {
@@ -140,21 +145,34 @@ function analyticsMiddleware(options = {}) {
       }
     }
 
-    // Determine if this is a landing page (first page view in session)
-    const isLandingPage =
-      ctx.session &&
-      service === 'web' &&
-      ctx.session.signup_landing_page === pathToCheck &&
-      !ctx.session._analytics_page_count;
-
     // Increment page count for session
     if (ctx.session && service === 'web') {
       ctx.session._analytics_page_count =
         (ctx.session._analytics_page_count || 0) + 1;
     }
 
+    // Whether this is the landing page (first page view in session)
+    let isLandingPage = false;
+
     // Execute the request first
-    await next();
+    try {
+      await next();
+    } finally {
+      //
+      // The landing page is stored as the pattern of the route it matched
+      // (known once the router ran), never as the path itself, which can
+      // carry domain names, IDs and tokens. A first request that matched no
+      // route (a page that does not exist) leaves it to the next one.
+      // (the session is gone after a logout)
+      //
+      if (needsLandingPage && ctx.session) {
+        const landingPage = getRoutePath(ctx);
+        if (landingPage) {
+          ctx.session.signup_landing_route = landingPage;
+          isLandingPage = true;
+        }
+      }
+    }
 
     // Track after the response is complete
     try {
@@ -167,11 +185,7 @@ function analyticsMiddleware(options = {}) {
         ctx.type &&
         ctx.type.includes('text/html')
       ) {
-        // Pass pathWithoutLocale to trackPageView for consistent pathname storage
-        analytics.trackPageView(ctx, {
-          is_landing_page: isLandingPage,
-          pathWithoutLocale: pathToCheck
-        });
+        analytics.trackPageView(ctx, { is_landing_page: isLandingPage });
       }
 
       // Track API calls

@@ -11,6 +11,7 @@
   * [Thông tin tài khoản](#account-information)
   * [Lưu trữ email](#email-storage)
   * [Nhật ký lỗi](#error-logs)
+  * [Nhật ký máy chủ](#server-logs)
   * [Email SMTP gửi đi](#outbound-smtp-emails)
 * [Xử lý dữ liệu tạm thời](#temporary-data-processing)
   * [Giới hạn tốc độ](#rate-limiting)
@@ -21,6 +22,12 @@
   * [Thay đổi cài đặt tên miền](#domain-settings-changes)
 * [Cookie và phiên làm việc](#cookies-and-sessions)
 * [Phân tích](#analytics)
+* [Ứng dụng và webmail](#apps-and-webmail)
+  * [Dữ liệu trên thiết bị của bạn](#data-on-your-device)
+  * [Dữ liệu ứng dụng gửi cho chúng tôi](#data-the-apps-send-us)
+  * [Thông báo đẩy](#push-notifications)
+  * [Hình ảnh và liên kết trong email](#images-and-links-in-emails)
+  * [Kết nối khác](#other-connections)
 * [Thông tin được chia sẻ](#information-shared)
 * [Xóa thông tin](#information-removal)
 * [Tiết lộ bổ sung](#additional-disclosures)
@@ -33,7 +40,7 @@ Vui lòng tham khảo [Điều khoản](/terms) của chúng tôi vì nó áp d�
 
 ## Thông tin không được thu thập {#information-not-collected}
 
-**Ngoại trừ các thông tin được mô tả rõ ràng trong chính sách này (bao gồm [nhật ký lỗi](#error-logs), [email SMTP gửi đi](#outbound-smtp-emails), [thông tin tài khoản](#account-information), [xử lý dữ liệu tạm thời](#temporary-data-processing), [nhật ký kiểm toán](#audit-logs), và [cookie và phiên](#cookies-and-sessions)):**
+**Ngoại trừ các thông tin được mô tả rõ ràng trong chính sách này (bao gồm [nhật ký lỗi](#error-logs), [nhật ký máy chủ](#server-logs), [email SMTP gửi đi](#outbound-smtp-emails), [thông tin tài khoản](#account-information), [xử lý dữ liệu tạm thời](#temporary-data-processing), [nhật ký kiểm toán](#audit-logs), [cookie và phiên](#cookies-and-sessions), [phân tích](#analytics), và [ứng dụng và webmail](#apps-and-webmail)):**
 
 * Chúng tôi không lưu trữ bất kỳ email được chuyển tiếp nào vào bộ nhớ đĩa hoặc cơ sở dữ liệu.
 * Chúng tôi không lưu trữ bất kỳ siêu dữ liệu nào về các email được chuyển tiếp vào bộ nhớ đĩa hoặc cơ sở dữ liệu.
@@ -60,7 +67,7 @@ Vui lòng tham khảo [Điều khoản](/terms) của chúng tôi vì nó áp d�
 Khi bạn tạo tài khoản, chúng tôi lưu trữ các thông tin sau để hiểu cách người dùng tìm thấy dịch vụ của chúng tôi:
 
 * Tên miền trang web giới thiệu (không phải URL đầy đủ)
-* Trang đầu tiên bạn truy cập trên trang của chúng tôi
+* Trang đầu tiên bạn truy cập trên trang của chúng tôi, trong đó các giá trị trong đường dẫn như tên miền, ID và token được thay thế bằng giá trị giữ chỗ
 * Tham số chiến dịch UTM nếu có trong URL
 
 ### Lưu trữ email {#email-storage}
@@ -77,6 +84,15 @@ Khi bạn tạo tài khoản, chúng tôi lưu trữ các thông tin sau để h
 * Nhật ký lỗi chứa lỗi SMTP, phong bì và tiêu đề email (chúng tôi **không** lưu trữ nội dung email hoặc tệp đính kèm).
 * Nhật ký lỗi có thể chứa địa chỉ IP và tên máy chủ của các máy chủ gửi để phục vụ mục đích gỡ lỗi.
 * Nhật ký lỗi cho [giới hạn tốc độ](/faq#do-you-have-rate-limiting) và [danh sách xám](/faq#do-you-have-a-greylist) không thể truy cập được vì kết nối kết thúc sớm (ví dụ: trước khi các lệnh `RCPT TO` và `MAIL FROM` được truyền).
+* Chúng tôi cũng lưu trữ nhật ký lỗi cho các yêu cầu đến trang web và API không thành công hoặc mất quá nhiều thời gian, và cho các lỗi trên máy chủ IMAP, POP3, CalDAV và CardDAV của chúng tôi, trong 7 ngày.
+* Các nhật ký này có thể chứa địa chỉ IP, URL yêu cầu (bao gồm chuỗi truy vấn như từ khóa tìm kiếm), các tiêu đề yêu cầu như user agent, và tài khoản hoặc bí danh liên quan.
+* Mật khẩu, token API, cookie và nội dung yêu cầu được làm mờ trước khi các nhật ký này được lưu trữ.
+
+### Nhật ký máy chủ {#server-logs}
+
+* Máy chủ của chúng tôi ghi một dòng nhật ký cho mỗi yêu cầu đến trang web và API, trong đó có thể bao gồm địa chỉ IP, phương thức và URL yêu cầu (bao gồm chuỗi truy vấn), các tiêu đề yêu cầu, trạng thái phản hồi, và tài khoản đã đăng nhập.
+* Chúng tôi sử dụng các nhật ký này để tìm và khắc phục sự cố cũng như ngăn chặn lạm dụng, và chúng tôi lưu giữ chúng tối đa 30 ngày.
+
 ### Email SMTP gửi đi {#outbound-smtp-emails}
 
 * Chúng tôi lưu trữ [email SMTP gửi đi](/faq#do-you-support-sending-email-with-smtp) trong khoảng \~30 ngày.
@@ -161,6 +177,7 @@ Các dữ liệu sau được xử lý tạm thời trong bộ nhớ hoặc Redi
   * Trạng thái xác thực và đăng nhập
   * Chức năng "ghi nhớ tôi" của xác thực hai yếu tố
   * Tin nhắn flash và thông báo
+  * [Phân tích](#analytics): trang đầu tiên trong lượt truy cập của bạn, tên miền giới thiệu, các tham số chiến dịch (UTM) và số lượng trang
 
 
 ## Phân tích {#analytics}
@@ -170,27 +187,68 @@ Chúng tôi sử dụng hệ thống phân tích tập trung vào quyền riêng
 **Những gì chúng tôi KHÔNG thu thập:**
 
 * Chúng tôi không lưu trữ địa chỉ IP
-* Chúng tôi không sử dụng cookie hoặc định danh bền vững cho phân tích
+* Chúng tôi không đặt cookie riêng cho phân tích
 * Chúng tôi không sử dụng bất kỳ dịch vụ phân tích bên thứ ba nào
-* Chúng tôi không theo dõi người dùng qua các ngày hoặc phiên làm việc
+* Chúng tôi không theo dõi khách truy cập qua các ngày hoặc phiên làm việc khi họ chưa đăng nhập
 
-**Những gì chúng tôi CÓ thu thập (đã ẩn danh):**
+**Những gì chúng tôi CÓ thu thập:**
 
 * Lượt xem trang tổng hợp và sử dụng dịch vụ (SMTP, IMAP, POP3, API, v.v.)
-* Loại trình duyệt và hệ điều hành (phân tích từ user agent, dữ liệu thô bị loại bỏ)
+* Loại và phiên bản của trình duyệt và hệ điều hành (phân tích từ user agent, dữ liệu thô bị loại bỏ)
 * Loại thiết bị (máy tính để bàn, di động, máy tính bảng)
-* Tên miền giới thiệu (không phải URL đầy đủ)
+* Tên miền giới thiệu (không phải URL đầy đủ) và các tham số chiến dịch (UTM)
 * Loại ứng dụng email cho các giao thức thư (ví dụ Thunderbird, Outlook)
+* Trang hoặc đường dẫn API được yêu cầu, trong đó các giá trị như tên miền, ID và token được thay thế bằng giá trị giữ chỗ, và yêu cầu có thành công hay không
+* Đối với lượt truy cập trang web, trang đầu tiên của lượt truy cập và số lượng trang, được lưu trong phiên của bạn (xem [Cookie và phiên làm việc](#cookies-and-sessions))
+* Khi bạn đã đăng nhập, ID tài khoản, bí danh hoặc tên miền của bạn, để chúng tôi có thể biết từng dịch vụ được sử dụng như thế nào và khắc phục sự cố
 
 **Lưu giữ dữ liệu:**
 
-* Dữ liệu phân tích tự động bị xóa sau 30 ngày
-* Định danh phiên làm việc được thay đổi hàng ngày và không thể dùng để theo dõi người dùng qua các ngày
+* Các sự kiện phân tích tự động bị xóa sau 30 ngày
+* Số liệu tổng theo giờ, không liên kết với bất kỳ tài khoản nào, được lưu giữ trong 90 ngày
+* Định danh phiên làm việc được thay đổi hàng ngày và không thể dùng để theo dõi khách truy cập qua các ngày
+
+
+## Ứng dụng và webmail {#apps-and-webmail}
+
+Phần này đề cập đến các ứng dụng email của chúng tôi cho iOS, Android, macOS, Windows và Linux, cùng webmail của chúng tôi tại <a href="https://mail.forwardemail.net" target="_blank" rel="noopener noreferrer">mail.forwardemail.net</a>, vốn dùng chung mã nguồn. Các ứng dụng không chứa mã quảng cáo hay mã theo dõi, và không có phân tích của bên thứ ba.
+
+### Dữ liệu trên thiết bị của bạn {#data-on-your-device}
+
+* Các ứng dụng lưu trữ email, danh bạ, lịch, cài đặt và thông tin đăng nhập của bạn trên thiết bị của bạn, để ứng dụng tải nhanh và hoạt động ngoại tuyến.
+* Nếu bạn bật App Lock, ứng dụng sẽ mã hóa nội dung email, danh bạ và thông tin đăng nhập đã lưu bằng một khóa được bảo vệ bởi mã PIN hoặc passkey của bạn. Ngày tháng, thư mục, nhãn và cờ vẫn không được mã hóa để ứng dụng có thể sắp xếp và đếm email của bạn.
+* Việc đăng xuất khỏi một tài khoản sẽ xóa dữ liệu của tài khoản đó khỏi thiết bị của bạn.
+
+### Dữ liệu ứng dụng gửi cho chúng tôi {#data-the-apps-send-us}
+
+* Địa chỉ email và mật khẩu bí danh của bạn, kèm theo mỗi yêu cầu, để đăng nhập cho bạn.
+* Email, danh bạ, lịch, nhãn và bộ lọc mà bạn gửi, tạo hoặc thay đổi. Chúng tôi lưu trữ email, danh bạ và lịch như mô tả trong [Lưu trữ email](#email-storage), và lưu trữ email bạn gửi như mô tả trong [Email SMTP gửi đi](#outbound-smtp-emails).
+* Từ khóa tìm kiếm của bạn, để chúng tôi có thể tìm kiếm trong hộp thư của bạn trên máy chủ của chúng tôi. Từ khóa tìm kiếm là một phần của URL yêu cầu, nên có thể xuất hiện trong [nhật ký lỗi](#error-logs) và [nhật ký máy chủ](#server-logs).
+* Phản hồi mà bạn chọn gửi từ ứng dụng, được gửi qua email từ bí danh của bạn đến nhóm hỗ trợ của chúng tôi, kèm theo mọi thông tin chẩn đoán mà bạn chọn đính kèm.
+* Email bạn báo cáo là spam, được ứng dụng chuyển tiếp đến nhóm xử lý vi phạm của chúng tôi (hoặc đến một địa chỉ khác mà bạn đặt trong Settings).
+
+### Thông báo đẩy {#push-notifications}
+
+* Khi bạn cho phép thông báo, ứng dụng sẽ đăng ký một token thông báo đẩy với chúng tôi. Chúng tôi lưu token này cùng với nền tảng, bí danh và tài khoản tương ứng, thời điểm gửi gần nhất và tên thiết bị lấy từ user agent của ứng dụng, trong đó có phiên bản hệ điều hành của bạn và, trên Android, mẫu thiết bị của bạn.
+* Chúng tôi giữ token thông báo đẩy tối đa một năm kể từ lần sử dụng cuối cùng. Chúng tôi xóa token sớm hơn khi bạn đăng xuất khỏi ứng dụng, khi việc gửi thất bại ba lần liên tiếp, khi mật khẩu bí danh thay đổi, khi bạn xóa bí danh hoặc tài khoản của mình, hoặc khi bí danh chuyển sang chủ sở hữu khác.
+* Trên iOS và macOS, thông báo được gửi qua Apple Push Notification service. Trong ứng dụng Android của chúng tôi từ Google Play, thông báo được gửi qua Firebase Cloud Messaging. Thông báo email mới bao gồm tên và địa chỉ của người gửi, chủ đề, một đoạn xem trước ngắn và tên thư mục, kể cả đối với email đến mà không hiển thị cảnh báo, chẳng hạn như email được đưa vào thư mục Thư rác hoặc thư mục Đã gửi. Khi email, lịch hoặc danh bạ thay đổi, chúng tôi cũng gửi thông báo im lặng chứa định danh nhưng không chứa nội dung email, để ứng dụng luôn được cập nhật.
+* Với [UnifiedPush](https://unifiedpush.org/) trên Android, và với thông báo trong trình duyệt web, mỗi thông báo đều được mã hóa để chỉ thiết bị của bạn mới đọc được.
+* Ứng dụng Android của chúng tôi từ Google Play bao gồm Firebase Cloud Messaging, thành phần này gửi cho Google ID cài đặt Firebase, phiên bản ứng dụng, cùng thông tin về thiết bị và SDK. Ứng dụng Android không phụ thuộc Google của chúng tôi từ GitHub không bao gồm Firebase.
+
+### Hình ảnh và liên kết trong email {#images-and-links-in-emails}
+
+* Hình ảnh trong email được tải từ máy chủ của người gửi, các máy chủ này có thể thấy địa chỉ IP của bạn và thời điểm hình ảnh được tải.
+* Các ứng dụng chặn pixel theo dõi theo mặc định. Bạn cũng có thể chặn tất cả hình ảnh bên ngoài trong Settings > Privacy & Security, rồi tải chúng cho từng email một.
+* Liên kết trong email được mở trong trình duyệt web của bạn.
+
+### Kết nối khác {#other-connections}
+
+* Webmail của chúng tôi hỏi GitHub về phiên bản mới nhất của mình khi được tải, khi bạn quay lại webmail và mỗi 10 phút trong lúc đang mở. About & Help hỏi GitHub về bản phát hành mới nhất dành cho máy tính, và các ứng dụng dành cho máy tính kiểm tra bản cập nhật trên GitHub. GitHub nhận được địa chỉ IP của bạn qua các yêu cầu này.
 
 
 ## Thông tin được chia sẻ {#information-shared}
 
-Chúng tôi không chia sẻ thông tin của bạn với bất kỳ bên thứ ba nào.
+Chúng tôi không chia sẻ thông tin của bạn với bất kỳ bên thứ ba nào, ngoại trừ các nhà cung cấp dịch vụ vận hành một số phần trong dịch vụ của chúng tôi, chẳng hạn như Cloudflare (bảo vệ trang web và bản sao lưu được mã hóa), Stripe và PayPal (thanh toán), và các dịch vụ gửi thông báo đẩy đến thiết bị của bạn (xem [Thông báo đẩy](#push-notifications)).
 
 Chúng tôi có thể cần và sẽ tuân thủ các yêu cầu pháp lý theo lệnh tòa án (nhưng hãy nhớ rằng [chúng tôi không thu thập thông tin được đề cập ở phần "Thông tin không được thu thập"](#information-not-collected), nên chúng tôi sẽ không thể cung cấp nó ngay từ đầu).
 
@@ -202,6 +260,10 @@ Nếu bất kỳ lúc nào bạn muốn xóa thông tin mà bạn đã cung cấ
 Do phòng chống và giảm thiểu lạm dụng, tài khoản của bạn có thể cần được quản trị viên xem xét xóa thủ công nếu bạn xóa trong vòng 5 ngày kể từ lần thanh toán đầu tiên.
 
 Quá trình này thường mất chưa đến 24 giờ và được thực hiện do có người dùng spam dịch vụ của chúng tôi, sau đó nhanh chóng xóa tài khoản – điều này ngăn chúng tôi chặn dấu vân tay phương thức thanh toán của họ trên Stripe.
+
+Việc xóa tài khoản cũng sẽ xóa các tên miền mà bạn quản trị, các bí danh của bạn và các token thông báo đẩy đã đăng ký cho chúng. Riêng bản ghi tài khoản thì vẫn còn, nhưng địa chỉ email, thông tin lập hóa đơn, mật khẩu và passkey trong đó bị xóa, còn xác thực hai yếu tố và token API của tài khoản bị thu hồi, và chúng tôi giữ lại các bản ghi thanh toán của tài khoản để phục vụ việc hoàn tiền và kế toán. Nhật ký và dữ liệu phân tích liên quan đến tài khoản của bạn sẽ bị xóa theo các thời hạn nêu trên.
+
+Để xóa dữ liệu của ứng dụng khỏi thiết bị, hãy đăng xuất khỏi ứng dụng hoặc gỡ cài đặt ứng dụng.
 
 
 ## Tiết lộ bổ sung {#additional-disclosures}

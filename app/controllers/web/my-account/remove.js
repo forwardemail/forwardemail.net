@@ -222,6 +222,15 @@ async function remove(ctx) {
   ctx.state.user[config.userFields.accountUpdates] = [];
   ctx.state.user[config.userFields.hasPendingAccountUpdates] = false;
   ctx.state.user[config.userFields.otpRecoveryKeys] = [];
+  // the remaining sign-in methods (the password and passkeys) go too
+  const { hashField = 'hash', saltField = 'salt' } =
+    config.passportLocalMongoose;
+  ctx.state.user[hashField] = undefined;
+  ctx.state.user[saltField] = undefined;
+  ctx.state.user[config.userFields.hasSetPassword] = false;
+  ctx.state.user[config.userFields.resetToken] = undefined;
+  ctx.state.user[config.userFields.resetTokenExpiresAt] = undefined;
+  ctx.state.user.passkeys = [];
   // we need to keep these so webhooks work properly for refunding transactions
   // ctx.state.user[config.userFields.paypalPayerID] = undefined;
   // ctx.state.user[config.userFields.stripeCustomerID] = undefined;

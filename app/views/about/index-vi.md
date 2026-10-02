@@ -142,6 +142,8 @@ Dịch vụ đã thu hút các nhà phát triển nổi tiếng, bao gồm [Davi
 
 **Tháng 9 năm 2026**: Forward Email công bố [báo cáo thứ hai của Cure53](/pentest-report_forward-email.pdf), trong đó Cure53 viết rằng những phản hồi nhanh chóng trong quá trình kiểm thử cho thấy "một cách tiếp cận chuyên nghiệp và nghiêm túc đối với bảo mật". Đợt tăng cường bảo mật tiếp theo đã bổ sung kiểm tra forward-confirmed reverse DNS (FCrDNS), xác thực tham số state của OAuth, và xử lý SSRF, Sieve, WKD và XML chặt chẽ hơn. Trang chủ, trang giá và trang Câu hỏi thường gặp được thiết kế lại, và [trang tải xuống](/download) mới tập hợp các ứng dụng gốc cho macOS, Windows, Linux, Android và iOS, kèm checksum được công bố và nguồn gốc bản dựng (build provenance) cho mỗi tệp cài đặt.
 
+**Tháng 10 năm 2026**: Forward Email phát hành [ứng dụng terminal](/faq#do-you-have-a-terminal-app): lệnh `forwardemail` chạy webmail (thư, lịch, danh bạ và cài đặt) trong terminal trên macOS, Linux và Windows, và có thể cài đặt dưới dạng tệp thực thi độc lập hoặc qua npm. Công ty cũng ra mắt [TerminalEmail.com](https://terminalemail.com), trang web so sánh các ứng dụng email chạy trong terminal cho Linux, macOS, Windows, BSD và Android theo giao thức, tính năng và lệnh cài đặt. Trang web mới thứ hai, [PrivacyRatings.com](https://privacyratings.com), chấm điểm quyền riêng tư của các ứng dụng và dịch vụ theo tiêu chí công khai, kèm liên kết bằng chứng mà ai cũng có thể kiểm tra và các bài kiểm thử bảo mật tự động.
+
 
 ## Nguyên Tắc Cốt Lõi {#core-principles}
 

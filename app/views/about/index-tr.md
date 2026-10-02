@@ -142,6 +142,8 @@ Bu çözümün sadeliği ve etkinliği, Ruby on Rails'in yaratıcısı [David He
 
 **Eylül 2026**: Forward Email [ikinci Cure53 raporunu](/pentest-report_forward-email.pdf) yayınladı; Cure53 bu raporda, test sırasındaki hızlı yanıtların "güvenliğe profesyonel ve ciddi bir yaklaşım" gösterdiğini yazdı. Ek sıkılaştırma çalışmaları forward-confirmed reverse DNS (FCrDNS) kontrolleri, OAuth state parametresi doğrulaması ve SSRF, Sieve, WKD ile XML için daha katı işleme ekledi. Ana sayfa, fiyatlandırma sayfası ve SSS yeniden tasarlandı ve yeni [indirme sayfası](/download) macOS, Windows, Linux, Android ve iOS için yerel uygulamaları bir araya getirdi; her yükleyici için sağlama toplamları ve derleme kaynağı kanıtları (build provenance) yayınlanıyor.
 
+**Ekim 2026**: Forward Email bir [terminal uygulaması](/faq#do-you-have-a-terminal-app) yayınladı: `forwardemail` komutu, web posta istemcisini (posta, takvim, kişiler ve ayarlar) macOS, Linux ve Windows'ta bir terminalde çalıştırır ve bağımsız çalıştırılabilir dosya olarak ya da npm üzerinden yüklenebilir. Şirket ayrıca Linux, macOS, Windows, BSD ve Android için terminal e-posta istemcilerini protokollere, özelliklere ve yükleme komutlarına göre karşılaştıran [TerminalEmail.com](https://terminalemail.com) sitesini açtı. İkinci yeni site [PrivacyRatings.com](https://privacyratings.com) ise uygulama ve hizmetlerin gizliliğini kamuya açık ölçütlere göre, herkesin kontrol edebileceği kanıt bağlantıları ve otomatik güvenlik testleriyle puanlıyor.
+
 
 ## Temel İlkeler {#core-principles}
 

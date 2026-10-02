@@ -15,6 +15,7 @@ const test = require('ava');
 const utils = require('../utils');
 
 const Aliases = require('#models/aliases');
+const PushTokens = require('#models/push-tokens');
 const { acquireRekeyLock, getRekeyLockKey } = require('#helpers/rekey-lock');
 const {
   REKEY_PROCESSING_LIST,
@@ -284,6 +285,55 @@ test.serial(
     assertStateCleared(t, alias);
     t.is(await client.get(getRekeyLockKey(_id)), null);
     t.is(await finalizeRekey(client, _id, { rekeyId }), null);
+  }
+);
+
+test.serial(
+  'a finalized rekey deletes the push tokens of the alias, a rolled back one keeps them',
+  async (t) => {
+    const { client } = t.context;
+    const expires_at = new Date(Date.now() + 24 * 60 * 60 * 1000);
+    async function registerDevice(alias, token) {
+      return PushTokens.create({
+        alias,
+        user: new mongoose.Types.ObjectId(),
+        platform: 'apns',
+        token,
+        expires_at
+      });
+    }
+
+    // the password changed: devices signed in with the previous one stop
+    // getting notifications, other aliases are not affected
+    const changed = await insertRekeyingAlias();
+    await registerDevice(changed._id, 'a1'.repeat(32));
+    await registerDevice(changed._id, 'a2'.repeat(32));
+    const other = await registerDevice(
+      new mongoose.Types.ObjectId(),
+      'b1'.repeat(32)
+    );
+
+    t.truthy(
+      await finalizeRekey(client, changed._id, { rekeyId: changed.rekeyId })
+    );
+    t.is(await PushTokens.countDocuments({ alias: changed._id }), 0);
+    t.truthy(await PushTokens.findById(other._id));
+
+    // the previous password works again: so do its devices
+    const kept = await insertRekeyingAlias();
+    await registerDevice(kept._id, 'c1'.repeat(32));
+
+    t.truthy(await rollbackRekey(client, kept._id, { rekeyId: kept.rekeyId }));
+    t.is(await PushTokens.countDocuments({ alias: kept._id }), 1);
+
+    // a rotation settled by someone else is not this call's to clean up
+    const settled = await insertRekeyingAlias({ is_rekey: false });
+    await registerDevice(settled._id, 'd1'.repeat(32));
+    t.is(
+      await finalizeRekey(client, settled._id, { rekeyId: settled.rekeyId }),
+      null
+    );
+    t.is(await PushTokens.countDocuments({ alias: settled._id }), 1);
   }
 );
 

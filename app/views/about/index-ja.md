@@ -142,6 +142,8 @@ Forward Emailのミッションは単なるメールサービスの提供を超�
 
 **2026年9月**: Forward Emailは[Cure53の2回目のレポート](/pentest-report_forward-email.pdf)を公開しました。その中でCure53は、テスト中の迅速な対応が「セキュリティに対するプロフェッショナルで真摯な姿勢」を示していると記しています。さらなる強化として、正引きで確認する逆引きDNS（FCrDNS）のチェック、OAuthのstateパラメーターの検証、そしてSSRF、Sieve、WKD、XMLのより厳格な処理が追加されました。トップページ、料金ページ、よくある質問がリデザインされ、新しい[ダウンロードページ](/download)にmacOS、Windows、Linux、Android、iOS向けのネイティブアプリがまとめられ、すべてのインストーラーについてチェックサムとビルドの来歴（ビルドプロベナンス）が公開されています。
 
+**2026年10月**: Forward Emailは[ターミナルアプリ](/faq#do-you-have-a-terminal-app)をリリースしました。`forwardemail`コマンドはWebメール（メール、カレンダー、連絡先、設定）をmacOS、Linux、Windowsのターミナルで実行し、スタンドアロンの実行ファイルとして、またはnpmからインストールできます。同社はまた、Linux、macOS、Windows、BSD、Android向けのターミナル用メールクライアントをプロトコル、機能、インストールコマンドで比較する[TerminalEmail.com](https://terminalemail.com)を公開しました。もう一つの新しいサイトである[PrivacyRatings.com](https://privacyratings.com)は、公開された基準、誰でも確認できる根拠のリンク、自動化されたセキュリティテストをもとに、アプリやサービスのプライバシーを評価しています。
+
 
 ## コア原則 {#core-principles}
 

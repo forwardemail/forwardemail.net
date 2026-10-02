@@ -57,6 +57,7 @@ const { decrypt } = require('#helpers/encrypt-decrypt');
 const { decodeMetadata } = require('#helpers/msgpack-helpers');
 const { deleteManySync } = require('#helpers/attachment-storage');
 const backfillCalendarDates = require('#helpers/backfill-calendar-dates');
+const backfillKeywordLabels = require('#helpers/backfill-keyword-labels');
 const { fixCalDAVHref } = require('#helpers/fix-caldav-href');
 
 const builder = new Builder({ bufferAsNative: true });
@@ -589,6 +590,30 @@ async function getDatabase(
         }
 
         openLockAcquired = true;
+
+        //
+        // No mailbox file at all (a new alias, or a mailbox deleted the way
+        // jobs/cleanup-sqlite.js deletes the mailbox of an alias without
+        // IMAP): drop what the checks cached for the file that was there
+        // before, so this one gets its schema, its default folders and the
+        // welcome message.  The corruption recovery below clears the same
+        // keys when it recreates a mailbox.
+        //
+        if (!dbFileExists && !customDbFilePath && !readonly)
+          await instance.client
+            .del(
+              `migrate_check:${alias.id}`,
+              `folder_check:${alias.id}`,
+              `trash_check:${alias.id}`,
+              `thread_check:${alias.id}`,
+              `vacuum_check:${alias.id}`,
+              `calendar_duplicate_check:${alias.id}`,
+              `highestmodseq_check:${alias.id}`,
+              `storage_format_check:${alias.id}`,
+              `caldav_href_check:${alias.id}`,
+              `calendar_date_check_v2:${alias.id}`
+            )
+            .catch((err) => logger.fatal(err));
       }
 
       try {
@@ -691,6 +716,7 @@ async function getDatabase(
     let storageFormatCheck = !instance.server;
     let caldavHrefCheck = !instance.server;
     let calendarDateCheck = !instance.server;
+    let keywordLabelsCheck = !instance.server;
 
     if (instance.client && instance.server) {
       try {
@@ -705,7 +731,8 @@ async function getDatabase(
           `storage_format_check:${session.user.alias_id}`,
           `caldav_href_check:${session.user.alias_id}`,
           `calendar_date_check_v2:${session.user.alias_id}`,
-          `db_swap_lock:${session.user.alias_id}`
+          `db_swap_lock:${session.user.alias_id}`,
+          `keyword_labels_check:${session.user.alias_id}`
         ]);
         migrateCheck = boolean(results[0]);
         folderCheck = boolean(results[1]);
@@ -717,6 +744,7 @@ async function getDatabase(
         storageFormatCheck = boolean(results[7]);
         caldavHrefCheck = boolean(results[8]);
         calendarDateCheck = boolean(results[9]);
+        keywordLabelsCheck = boolean(results[11]);
 
         //
         // If a file swap (VACUUM/rekey) is in progress on this alias,
@@ -1076,7 +1104,8 @@ async function getDatabase(
       !highestmodseqCheck ||
       !storageFormatCheck ||
       !caldavHrefCheck ||
-      !calendarDateCheck;
+      !calendarDateCheck ||
+      !keywordLabelsCheck;
 
     if (
       needsDeferredMaint &&
@@ -1109,6 +1138,7 @@ async function getDatabase(
           storageFormatCheck,
           caldavHrefCheck,
           calendarDateCheck,
+          keywordLabelsCheck,
           // Skip VACUUM — offloaded to sqlite-worker process
           vacuumCheck: true
         })
@@ -1288,7 +1318,8 @@ async function _runDeferredMaintenance(instance, db, session, checks) {
     highestmodseqCheck,
     storageFormatCheck,
     caldavHrefCheck,
-    calendarDateCheck
+    calendarDateCheck,
+    keywordLabelsCheck
   } = checks;
   let { vacuumCheck } = checks;
 
@@ -1919,6 +1950,66 @@ async function _runDeferredMaintenance(instance, db, session, checks) {
       );
   }
 
+  //
+  // Labels for the keywords of messages stored before keywords became labels
+  // (see helpers/backfill-keyword-labels.js), once per mailbox.  The check
+  // is marked done only after a full pass: a pass that stopped (a restart,
+  // or the handle evicted for a rekey or password reset) runs again on a
+  // later open.  One process at a time runs it.
+  //
+  _maint_t0 = Date.now();
+  if (!keywordLabelsCheck) {
+    const aliasId = session.user.alias_id;
+    try {
+      const running = await instance.client.set(
+        `keyword_labels_running:${aliasId}`,
+        true,
+        'PX',
+        ms('30m'),
+        'NX'
+      );
+      if (running) {
+        try {
+          const stats = await backfillKeywordLabels(
+            db,
+            // (a handle evicted from the map can still be open, held for
+            // this maintenance, while a rekey or vacuum copies the file)
+            () =>
+              !instance.databaseMap?.getRaw ||
+              instance.databaseMap.getRaw(aliasId) === db
+          );
+          if (stats.updated > 0)
+            logger.info('Added the labels of message keywords', {
+              session,
+              stats
+            });
+          if (stats.complete)
+            await instance.client.set(
+              `keyword_labels_check:${aliasId}`,
+              true,
+              'PX',
+              ms('365d')
+            );
+        } finally {
+          await instance.client.del(`keyword_labels_running:${aliasId}`);
+        }
+      }
+    } catch (err) {
+      logger.fatal(err, { session, resolver: instance.resolver });
+    }
+  }
+
+  if (!keywordLabelsCheck) {
+    const _d = Date.now() - _maint_t0;
+    if (_d > 500)
+      console.warn(
+        '[SLOW_MAINT] pid=%d stage=keywordLabelsCheck alias=%s duration=%dms',
+        process.pid,
+        session?.user?.alias_name,
+        _d
+      );
+  }
+
   _maint_t0 = Date.now();
   if (
     !trashCheck ||
@@ -2033,21 +2124,24 @@ async function _runDeferredMaintenance(instance, db, session, checks) {
 
 //
 // Write the welcome message into the INBOX of a mailbox that was just set up
-// (only for aliases with IMAP enabled, only once, see
-// helpers/append-welcome-message.js).
+// (see helpers/append-welcome-message.js), also when the alias does not have
+// IMAP enabled: its first password sets the mailbox up all the same.  The
+// message goes into the mailbox and is never sent, so nothing reaches the
+// recipients the alias forwards to.
 //
-// Fire-and-forget on the next tick: it appends through the same instance
-// (session.db is set, so it does not re-enter the open path) and must NOT
-// block the database open path (MongoDB can take seconds).
+// Fire-and-forget on the next tick: it appends through the same instance and
+// must NOT block the database open path (MongoDB can take seconds).
 //
 function sendWelcomeMessage(instance, session) {
-  if (config.env === 'test' || !session?.user?.alias_has_imap) return;
   setImmediate(() => {
     // lazy-loaded to avoid a require cycle (on-append -> ... -> get-database)
     const appendWelcomeMessage = require('#helpers/append-welcome-message');
+    if (!appendWelcomeMessage.enabled) return;
     appendWelcomeMessage(instance, session).catch((err) =>
       logger.warn('Failed to append welcome message', {
-        error: err.message,
+        // (refineAndLogError keeps the original message of a code bug here)
+        error: err._message || err.message,
+        code: err.code,
         alias_id: session?.user?.alias_id
       })
     );

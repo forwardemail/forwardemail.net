@@ -142,6 +142,8 @@ Forward Email의 미션은 단순히 이메일 서비스를 제공하는 것을 
 
 **2026년 9월**: Forward Email은 [Cure53의 두 번째 보고서](/pentest-report_forward-email.pdf)를 공개했으며, 이 보고서에서 Cure53은 테스트 중의 신속한 대응이 "보안에 대한 전문적이고 진지한 접근"을 보여 주었다고 밝혔습니다. 추가 보안 강화로 정방향 확인 역방향 DNS(FCrDNS) 검사, OAuth state 매개변수 검증, 그리고 SSRF, Sieve, WKD, XML에 대한 더 엄격한 처리가 추가되었습니다. 홈페이지, 요금 페이지, 자주 묻는 질문이 새롭게 디자인되었고, 새 [다운로드 페이지](/download)에서 macOS, Windows, Linux, Android, iOS용 네이티브 앱을 한곳에서 제공하며 모든 설치 파일에 대해 체크섬과 빌드 출처 증명(build provenance)을 공개합니다.
 
+**2026년 10월**: Forward Email은 [터미널 앱](/faq#do-you-have-a-terminal-app)을 출시했습니다. `forwardemail` 명령은 macOS, Linux, Windows의 터미널에서 웹메일(메일, 캘린더, 연락처, 설정)을 실행하며, 독립 실행 파일이나 npm으로 설치할 수 있습니다. 이와 함께 Linux, macOS, Windows, BSD, Android용 터미널 이메일 클라이언트를 프로토콜, 기능, 설치 명령별로 비교하는 [TerminalEmail.com](https://terminalemail.com)도 열었습니다. 또 하나의 새 사이트인 [PrivacyRatings.com](https://privacyratings.com)은 공개된 기준에 따라 앱과 서비스의 개인정보 보호 수준을 평가하며, 누구나 확인할 수 있는 근거 링크와 자동화된 보안 테스트를 함께 제공합니다.
+
 
 ## 핵심 원칙 {#core-principles}
 

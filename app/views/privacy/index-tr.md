@@ -11,6 +11,7 @@
   * [Hesap Bilgileri](#account-information)
   * [E-posta Depolama](#email-storage)
   * [Hata Kayıtları](#error-logs)
+  * [Sunucu Kayıtları](#server-logs)
   * [Giden SMTP E-postaları](#outbound-smtp-emails)
 * [Geçici Veri İşleme](#temporary-data-processing)
   * [Oran Sınırlaması](#rate-limiting)
@@ -21,6 +22,12 @@
   * [Alan Adı Ayarları Değişiklikleri](#domain-settings-changes)
 * [Çerezler ve Oturumlar](#cookies-and-sessions)
 * [Analitik](#analytics)
+* [Uygulamalar ve Webmail](#apps-and-webmail)
+  * [Cihazınızdaki Veriler](#data-on-your-device)
+  * [Uygulamaların Bize Gönderdiği Veriler](#data-the-apps-send-us)
+  * [Push Bildirimleri](#push-notifications)
+  * [E-postalardaki Görseller ve Bağlantılar](#images-and-links-in-emails)
+  * [Diğer Ağ Bağlantıları](#other-connections)
 * [Paylaşılan Bilgiler](#information-shared)
 * [Bilgi Silme](#information-removal)
 * [Ek Açıklamalar](#additional-disclosures)
@@ -33,7 +40,7 @@ Lütfen site genelinde geçerli olan [Şartlarımıza](/terms) bakınız.
 
 ## Toplanmayan Bilgiler {#information-not-collected}
 
-**Bu politikada açıkça belirtilen bilgiler ([hata günlükleri](#error-logs), [giden SMTP e-postaları](#outbound-smtp-emails), [hesap bilgileri](#account-information), [geçici veri işleme](#temporary-data-processing), [denetim günlükleri](#audit-logs) ve [çerezler ve oturumlar](#cookies-and-sessions) dahil olmak üzere) haricinde:**
+**Bu politikada açıkça belirtilen bilgiler ([hata günlükleri](#error-logs), [sunucu günlükleri](#server-logs), [giden SMTP e-postaları](#outbound-smtp-emails), [hesap bilgileri](#account-information), [geçici veri işleme](#temporary-data-processing), [denetim günlükleri](#audit-logs), [çerezler ve oturumlar](#cookies-and-sessions), [analitik](#analytics) ve [uygulamalar ve webmail](#apps-and-webmail) dahil olmak üzere) haricinde:**
 
 * Yönlendirilen hiçbir e-postayı disk depolama alanında veya veritabanlarında saklamıyoruz.
 * Yönlendirilen e-postalar hakkındaki hiçbir meta veriyi disk depolama alanında veya veritabanlarında saklamıyoruz.
@@ -60,7 +67,7 @@ Lütfen site genelinde geçerli olan [Şartlarımıza](/terms) bakınız.
 Bir hesap oluşturduğunuzda, kullanıcıların hizmetimizi nasıl bulduğunu anlamak için aşağıdaki bilgileri saklarız:
 
 * Yönlendiren web sitesi alan adı (tam URL değil)
-* Sitemizde ziyaret ettiğiniz ilk sayfa
+* Sitemizde ziyaret ettiğiniz ilk sayfa (yolundaki alan adları, kimlikler ve belirteçler gibi değerler yer tutucularla değiştirilmiş olarak)
 * URL'de mevcutsa UTM kampanya parametreleri
 
 ### E-posta Depolama {#email-storage}
@@ -77,6 +84,15 @@ Bir hesap oluşturduğunuzda, kullanıcıların hizmetimizi nasıl bulduğunu an
 * Hata kayıtları SMTP hatasını, zarfı ve e-posta başlıklarını içerir (e-posta gövdesi veya ekleri **saklanmaz**).
 * Hata kayıtları, hata ayıklama amacıyla gönderen sunucuların IP adreslerini ve ana bilgisayar adlarını içerebilir.
 * [Oran sınırlaması](/faq#do-you-have-rate-limiting) ve [gri listeleme](/faq#do-you-have-a-greylist) için hata kayıtlarına erişim yoktur çünkü bağlantı erken sona erer (örneğin `RCPT TO` ve `MAIL FROM` komutları iletilmeden önce).
+* Başarısız olan veya çok uzun süren web sitesi ve API isteklerine ait hata kayıtlarını ve IMAP, POP3, CalDAV ve CardDAV sunucularımızdaki hataların kayıtlarını da 7 gün boyunca saklarız.
+* Bu kayıtlar IP adresini, istek URL'sini (arama terimleri gibi sorgu dizeleri dahil), kullanıcı aracısı gibi istek başlıklarını ve ilgili hesabı veya takma adı içerebilir.
+* Bu kayıtlar saklanmadan önce içlerindeki şifreler, API tokenları, çerezler ve istek gövdeleri gizlenir.
+
+### Sunucu Kayıtları {#server-logs}
+
+* Sunucularımız her web sitesi ve API isteği için bir kayıt satırı yazar. Bu satır IP adresini, istek yöntemi ile URL'sini (sorgu dizeleri dahil), istek başlıklarını, yanıt durumunu ve giriş yapmış hesabı içerebilir.
+* Bu kayıtları sorunları bulup düzeltmek ve kötüye kullanımı durdurmak için kullanırız ve en fazla 30 gün saklarız.
+
 ### Giden SMTP E-postaları {#outbound-smtp-emails}
 
 * [Giden SMTP e-postalarını](/faq#do-you-support-sending-email-with-smtp) yaklaşık 30 gün saklıyoruz.
@@ -161,6 +177,7 @@ Birden fazla yöneticisi olan alan adları için, ekiplerin yapılandırma deği
   * Kimlik doğrulama ve giriş durumu
   * İki faktörlü kimlik doğrulama "beni hatırla" işlevi
   * Anlık mesajlar ve bildirimler
+  * [Analitik](#analytics): ziyaretinizin ilk sayfası, yönlendiren alan adı, kampanya (UTM) parametreleri ve sayfa sayısı
 
 
 ## Analitik {#analytics}
@@ -170,29 +187,70 @@ Hizmetlerimizin nasıl kullanıldığını anlamak için kendi gizlilik odaklı 
 **Toplamadığımız Şeyler:**
 
 * IP adreslerini saklamıyoruz
-* Analitik için çerez veya kalıcı tanımlayıcı kullanmıyoruz
+* Analitik için ayrı bir çerez yerleştirmiyoruz
 * Üçüncü taraf analitik servisleri kullanmıyoruz
-* Kullanıcıları günler veya oturumlar boyunca takip etmiyoruz
+* Giriş yapmamış ziyaretçileri günler veya oturumlar boyunca takip etmiyoruz
 
-**Topladığımız Şeyler (anonimleştirilmiş):**
+**Topladığımız Şeyler:**
 
 * Toplu sayfa görüntülemeleri ve hizmet kullanımı (SMTP, IMAP, POP3, API, vb.)
-* Tarayıcı ve işletim sistemi türü (kullanıcı aracısından ayrıştırılır, ham veri atılır)
+* Tarayıcı ve işletim sistemi türü ile sürümü (kullanıcı aracısından ayrıştırılır, ham veri atılır)
 * Cihaz türü (masaüstü, mobil, tablet)
-* Yönlendiren alan adı (tam URL değil)
+* Yönlendiren alan adı (tam URL değil) ve kampanya (UTM) parametreleri
 * E-posta protokolleri için e-posta istemcisi türü (ör. Thunderbird, Outlook)
+* İstenen sayfa veya API yolu (içindeki alan adları, kimlikler ve belirteçler gibi değerler yer tutucularla değiştirilmiş olarak) ve isteğin başarılı olup olmadığı
+* Web sitesi ziyaretlerinde, ziyaretin ilk sayfası ve sayfa sayısı; bunlar oturumunuzda tutulur (bkz. [Çerezler ve Oturumlar](#cookies-and-sessions))
+* Giriş yaptığınızda, her hizmetin nasıl kullanıldığını görmek ve sorunları gidermek için hesabınızın, takma adınızın veya alan adınızın kimliği
 
 **Veri Saklama:**
 
-* Analitik veriler otomatik olarak 30 gün sonra silinir
-* Oturum tanımlayıcıları günlük olarak döner ve kullanıcıları günler boyunca takip etmek için kullanılamaz
+* Analitik olayları otomatik olarak 30 gün sonra silinir
+* Saatlik toplamlar 90 gün boyunca saklanır; bunlar hiçbir hesapla ilişkilendirilmez
+* Oturum tanımlayıcıları günlük olarak döner ve ziyaretçileri günler boyunca takip etmek için kullanılamaz
+
+
+## Uygulamalar ve Webmail {#apps-and-webmail}
+
+Bu bölüm, iOS, Android, macOS, Windows ve Linux için e-posta uygulamalarımızı ve <a href="https://mail.forwardemail.net" target="_blank" rel="noopener noreferrer">mail.forwardemail.net</a> adresindeki webmail'imizi kapsar; bunlar aynı kodu paylaşır. Uygulamalar reklam veya izleme kodu ya da üçüncü taraf analitik içermez.
+
+### Cihazınızdaki Veriler {#data-on-your-device}
+
+* Uygulamalar, hızlı yüklenmeleri ve çevrimdışı çalışmaları için e-postalarınızı, kişilerinizi, takvimlerinizi, ayarlarınızı ve giriş bilgilerinizi cihazınızda saklar.
+* App Lock'u açarsanız uygulama, saklanan e-posta içeriğini, kişileri ve giriş bilgilerini PIN'iniz veya geçiş anahtarınızla korunan bir anahtarla şifreler. Tarihler, klasörler, etiketler ve bayraklar, uygulamanın e-postalarınızı sıralayıp sayabilmesi için şifrelenmeden kalır.
+* Bir hesaptan çıkış yapmak, o hesabın verilerini cihazınızdan kaldırır.
+
+### Uygulamaların Bize Gönderdiği Veriler {#data-the-apps-send-us}
+
+* Giriş yapmanızı sağlamak için her istekle birlikte takma adınızın e-posta adresi ve şifresi.
+* Gönderdiğiniz, oluşturduğunuz veya değiştirdiğiniz e-postalar, kişiler, takvimler, etiketler ve filtreler. E-postaları, kişileri ve takvimleri [E-posta Depolama](#email-storage) bölümünde, gönderdiğiniz e-postaları da [Giden SMTP E-postaları](#outbound-smtp-emails) bölümünde açıklandığı gibi saklarız.
+* Posta kutunuzda aramayı sunucularımızda yapabilmemiz için arama terimleriniz. Arama terimleri istek URL'sinin bir parçası olduğundan [hata kayıtlarında](#error-logs) ve [sunucu kayıtlarında](#server-logs) görünebilir.
+* Uygulamadan göndermeyi seçtiğiniz geri bildirimler; bunlar, eklemeyi seçtiğiniz tanılama ayrıntılarıyla birlikte takma adınızdan destek ekibimize e-postayla gönderilir.
+* Spam olarak bildirdiğiniz e-postalar; uygulama bunları kötüye kullanımla mücadele ekibimize (veya Settings bölümünde belirlediğiniz başka bir adrese) iletir.
+
+### Push Bildirimleri {#push-notifications}
+
+* Bildirimlere izin verdiğinizde uygulama sistemimize bir push belirteci kaydeder. Bu belirteci platform, ait olduğu takma ad ve hesap, son teslimat zamanı ve uygulamanın kullanıcı aracısından alınan bir cihaz adıyla birlikte saklarız. Bu cihaz adı işletim sistemi sürümünüzü ve Android'de cihaz modelinizi içerir.
+* Bir push belirtecini son kullanımından sonra en fazla bir yıl saklarız. Uygulamadan çıkış yaptığınızda, teslimat üst üste üç kez başarısız olduğunda, takma ad şifresi değiştiğinde, takma adı ya da hesabınızı sildiğinizde veya takma ad başka bir sahibe geçtiğinde belirteci daha erken sileriz.
+* iOS ve macOS'ta bildirimler Apple Push Notification service üzerinden iletilir. Google Play'deki Android uygulamamızda ise Firebase Cloud Messaging üzerinden iletilir. Yeni e-posta bildirimleri gönderenin adını ve adresini, konuyu, kısa bir önizlemeyi ve klasör adını içerir. Bu, Gereksiz veya Gönderilmiş klasörüne yerleştirilen e-postalar gibi uyarı olmadan gelen e-postalar için de geçerlidir. E-postalar, takvimler veya kişiler değiştiğinde, uygulamanın güncel kalması için tanımlayıcılar içeren ancak e-posta içeriği içermeyen sessiz bildirimler de göndeririz.
+* Android'de [UnifiedPush](https://unifiedpush.org/) ile ve web tarayıcısındaki bildirimlerde, her bildirim yalnızca cihazınızın okuyabileceği şekilde şifrelenir.
+* Google Play'deki Android uygulamamız Firebase Cloud Messaging içerir; bu hizmet Google'a bir Firebase kurulum kimliği, uygulama sürümü ve cihaz ile SDK ayrıntıları gönderir. GitHub'daki Google'sız Android uygulamamız Firebase içermez.
+
+### E-postalardaki Görseller ve Bağlantılar {#images-and-links-in-emails}
+
+* E-postalardaki görseller gönderenin sunucularından yüklenir; bu sunucular IP adresinizi ve görsellerin ne zaman yüklendiğini görebilir.
+* Uygulamalar izleme piksellerini varsayılan olarak engeller. Ayrıca Settings > Privacy & Security altında tüm harici görselleri engelleyebilir, ardından bunları her seferinde tek bir e-posta için yükleyebilirsiniz.
+* E-postalardaki bağlantılar web tarayıcınızda açılır.
+
+### Diğer Ağ Bağlantıları {#other-connections}
+
+* Webmail'imiz yüklendiğinde, ona geri döndüğünüzde ve açık olduğu sürece her 10 dakikada bir GitHub'dan kendi en son sürümünü ister. About & Help bölümü GitHub'dan en son masaüstü sürümünü ister, masaüstü uygulamaları da güncellemeler için GitHub'ı kontrol eder. GitHub bu isteklerle birlikte IP adresinizi alır.
 
 
 ## Paylaşılan Bilgiler {#information-shared}
 
-Bilgilerinizi üçüncü taraflarla paylaşmıyoruz.
+Hizmetimizin bazı kısımlarını yürüten Cloudflare (web sitesi koruması ve şifrelenmiş yedekler), Stripe ve PayPal (ödemeler) gibi hizmet sağlayıcılar ile cihazlarınıza push bildirimlerini ileten hizmetler (bkz. [Push Bildirimleri](#push-notifications)) dışında bilgilerinizi üçüncü taraflarla paylaşmıyoruz.
 
-Mahkeme kararıyla gelen yasal taleplere uymamız gerekebilir (ancak [“Toplanmayan Bilgiler” altında belirtilen bilgileri toplamadığımızı] (#information-not-collected) unutmayın, bu yüzden baştan sağlayamayız).
+Mahkeme kararıyla gelen yasal taleplere uymamız gerekebilir (ancak [“Toplanmayan Bilgiler” altında belirtilen bilgileri toplamadığımızı](#information-not-collected) unutmayın, bu yüzden baştan sağlayamayız).
 
 
 ## Bilgi Silme {#information-removal}
@@ -202,6 +260,10 @@ Herhangi bir zamanda bize sağladığınız bilgileri silmek isterseniz, <a href
 Kötüye kullanımı önlemek ve azaltmak amacıyla, hesabınızı ilk ödemenizden sonraki 5 gün içinde silerseniz, hesabınızın manuel silme incelemesi için yöneticilerimiz tarafından gözden geçirilmesi gerekebilir.
 
 Bu süreç genellikle 24 saatten az sürer ve kullanıcıların hizmetimizi spam yapıp ardından hesaplarını hızlıca silmeleri nedeniyle uygulanmıştır – bu durum Stripe’da ödeme yöntemi parmak izlerini engellememizi engelliyordu.
+
+Hesabınızı sildiğinizde, yönettiğiniz alan adları, takma adlarınız ve bunlar için kaydedilmiş push belirteçleri de silinir. Hesap kaydının kendisi, e-posta adresi, fatura bilgileri, şifresi ve geçiş anahtarları kaldırılmış, iki faktörlü kimlik doğrulaması ve API belirteci iptal edilmiş şekilde kalır ve hesaba ait ödeme kayıtlarını iadeler ve muhasebe için saklarız. Hesabınıza atıfta bulunan kayıtlar ve analitik veriler, yukarıda belirtilen sürelere göre silinir.
+
+Uygulamaların verilerini bir cihazdan kaldırmak için uygulamadan çıkış yapın veya uygulamayı kaldırın.
 
 
 ## Ek Açıklamalar {#additional-disclosures}

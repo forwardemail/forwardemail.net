@@ -40,6 +40,7 @@ const {
   addRevocationQueryHooks,
   revokeFromModel
 } = require('#helpers/credential-revocation');
+const PushTokens = require('#models/push-tokens');
 
 const REGEX_FLAG_ENDINGS = ['/gi', '/ig', '/g', '/i', '/'];
 
@@ -1484,6 +1485,108 @@ addRevocationQueryHooks(Aliases, (paths) =>
 );
 
 addRevocationDeleteHooks(Aliases, 'aliasIds');
+
+//
+// Push tokens follow their alias (the apps register them with
+// POST /v1/push-tokens). Deleting an alias deletes its tokens, and when an
+// alias moves to another owner (an admin who removes or demotes a member
+// takes over the member's aliases), the tokens registered while the
+// previous owner had it are deleted. The hooks cover how the code deletes and reassigns
+// aliases: `alias.remove()`, `findByIdAndRemove` and the other
+// find-and-delete queries, `deleteOne`, `deleteMany`, `save`, `updateOne`,
+// `updateMany` and `findOneAndUpdate`. helpers/delete-stale-push-tokens.js
+// (run by jobs/cleanup-database.js) deletes any token they miss.
+//
+async function deletePushTokens(aliasIds, newOwner) {
+  if (!Array.isArray(aliasIds) || aliasIds.length === 0) return;
+  const filter = { alias: { $in: aliasIds } };
+  // (a token records the alias owner when it was registered, so tokens
+  // registered under the new owner stay)
+  if (newOwner) filter.user = { $ne: newOwner };
+  try {
+    await PushTokens.deleteMany(filter);
+  } catch (err) {
+    logger.fatal(err, { aliasIds });
+  }
+}
+
+// The aliases a query matches, collected before the write (the same way as
+// the revocation hooks above). A failed lookup must not stop the write.
+async function getMatchedAliasIds(query, single = false) {
+  try {
+    if (!single) return await query.model.distinct('_id', query.getFilter());
+    // (the alias a deleteOne, updateOne or findOneAndUpdate will change)
+    const { sort } = query.getOptions();
+    const alias = await query.model
+      .findOne(query.getFilter())
+      .sort(sort)
+      .select('_id')
+      .lean()
+      .exec();
+    return alias ? [alias._id] : [];
+  } catch (err) {
+    logger.fatal(err);
+    return [];
+  }
+}
+
+Aliases.post('remove', async function (alias) {
+  await deletePushTokens([alias._id]);
+});
+
+for (const operation of ['findOneAndRemove', 'findOneAndDelete']) {
+  Aliases.post(operation, async function (alias) {
+    if (alias) await deletePushTokens([alias._id]);
+  });
+}
+
+for (const operation of ['deleteOne', 'deleteMany']) {
+  Aliases.pre(operation, async function () {
+    this._pushTokenAliasIds = await getMatchedAliasIds(
+      this,
+      operation === 'deleteOne'
+    );
+  });
+
+  Aliases.post(operation, async function () {
+    const aliasIds = this._pushTokenAliasIds;
+    this._pushTokenAliasIds = null;
+    await deletePushTokens(aliasIds);
+  });
+}
+
+Aliases.pre('save', function (next) {
+  this.$locals.newPushTokenOwner =
+    !this.isNew && this.isModified('user') ? this.user : null;
+  next();
+});
+
+Aliases.post('save', async function (alias) {
+  const newOwner = alias.$locals.newPushTokenOwner;
+  if (!newOwner) return;
+  alias.$locals.newPushTokenOwner = null;
+  await deletePushTokens([alias._id], newOwner);
+});
+
+for (const operation of ['updateOne', 'updateMany', 'findOneAndUpdate']) {
+  Aliases.pre(operation, async function () {
+    this._pushTokenOwnerChange = null;
+    const update = this.getUpdate() || {};
+    // (a top-level `user` wins over `$set.user`, as Mongoose applies it)
+    const newOwner = update.user || (update.$set && update.$set.user);
+    if (!newOwner) return;
+    this._pushTokenOwnerChange = {
+      newOwner,
+      aliasIds: await getMatchedAliasIds(this, operation !== 'updateMany')
+    };
+  });
+
+  Aliases.post(operation, async function () {
+    const change = this._pushTokenOwnerChange;
+    this._pushTokenOwnerChange = null;
+    if (change) await deletePushTokens(change.aliasIds, change.newOwner);
+  });
+}
 
 //
 // NOTE: `Aliases.getStorageUsed` below still returns pooled storage

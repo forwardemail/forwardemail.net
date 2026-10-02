@@ -9,6 +9,7 @@ const isSANB = require('is-string-and-not-blank');
 const mongoose = require('mongoose');
 
 const config = require('#config');
+const getRoutePath = require('#helpers/get-route-path');
 const logger = require('#helpers/logger');
 const parseUserAgent = require('#helpers/parse-user-agent');
 
@@ -207,7 +208,7 @@ function extractUTMParams(query) {
  * @param {string} [options.ua] - User agent string (parsed, raw NOT stored)
  * @param {Object} [options.client_hints] - Optional User-Agent Client Hints
  * @param {string} [options.referrer] - Referrer URL
- * @param {string} [options.pathname] - Page path
+ * @param {string} [options.pathname] - Route pattern of the page or API path (see helpers/get-route-path.js)
  * @param {Object} [options.query] - Query parameters (for UTM extraction)
  * @param {string} [options.user_id] - User ObjectId
  * @param {string} [options.domain_id] - Domain ObjectId
@@ -325,7 +326,6 @@ function trackAuth(options) {
  * @param {Object} ctx - Koa context
  * @param {Object} options - Additional options
  * @param {boolean} [options.is_landing_page=false] - Whether this is a landing page
- * @param {string} [options.pathWithoutLocale] - Path without locale prefix for consistent storage
  */
 function trackPageView(ctx, options = {}) {
   return trackEvent({
@@ -338,9 +338,8 @@ function trackPageView(ctx, options = {}) {
       ch_platform_version: ctx.get('sec-ch-ua-platform-version')
     },
     referrer: ctx.get('referer') || ctx.get('referrer'),
-    // Use pathWithoutLocale if provided for consistent pathname storage
-    // This ensures /en/faq, /de/faq, /zh/faq all map to /faq
-    pathname: options.pathWithoutLocale || ctx.pathWithoutLocale || ctx.path,
+    // the route pattern, without the locale (/en/faq and /de/faq are /faq)
+    pathname: getRoutePath(ctx),
     query: ctx.query,
     user_id: ctx.state?.user?.id,
     success: ctx.status < 400,
@@ -362,7 +361,7 @@ function trackAPICall(ctx) {
       ch_platform: ctx.get('sec-ch-ua-platform'),
       ch_platform_version: ctx.get('sec-ch-ua-platform-version')
     },
-    pathname: ctx.path,
+    pathname: getRoutePath(ctx),
     user_id: ctx.state?.user?.id,
     success: ctx.status < 400,
     error_code: ctx.status >= 400 ? String(ctx.status) : undefined
