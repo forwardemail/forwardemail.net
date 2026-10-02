@@ -17,6 +17,7 @@ const combineErrors = require('#helpers/combine-errors');
 const config = require('#config');
 const env = require('#config/env');
 const getErrorCode = require('#helpers/get-error-code');
+const getFingerprintKey = require('#helpers/get-fingerprint-key');
 const getForwardingAddresses = require('#helpers/get-forwarding-addresses');
 const getSettings = require('#helpers/get-settings');
 const isDenylisted = require('#helpers/is-denylisted');
@@ -26,8 +27,20 @@ const matchesWildcardTLD = require('#helpers/matches-wildcard-tld');
 const parseHostFromDomainOrAddress = require('#helpers/parse-host-from-domain-or-address');
 const parseRootDomain = require('#helpers/parse-root-domain');
 const parseUsername = require('#helpers/parse-username');
-const { useSrsReverse } = require('#helpers/srs-reverse');
+const { hasSrsReverse, useSrsReverse } = require('#helpers/srs-reverse');
 const { encrypt } = require('#helpers/encrypt-decrypt');
+
+//
+// Whether an earlier attempt of this message already relayed it to an
+// address (or is relaying it now), e.g. a reply to an SRS address that used
+// its last reverse delivery and was refused for now for another recipient,
+// so its retry is not refused for this one (it is skipped, see `forward` in
+// `helpers/on-data-mx`, and never relayed without a reverse delivery)
+//
+async function wasRelayed(session, address) {
+  if (!session?.fingerprint) return false;
+  return (await this.client.exists(getFingerprintKey(session, address))) === 1;
+}
 
 async function getRecipients(session, scan) {
   const bounces = [];
@@ -440,7 +453,12 @@ async function getRecipients(session, scan) {
         if (
           err.notConfigured &&
           to.srs &&
-          (await useSrsReverse(this.client, to.srsAddress || to.address))
+          ((await useSrsReverse(
+            this.client,
+            to.srsAddress || to.address,
+            session
+          )) ||
+            (await wasRelayed.call(this, session, to.address)))
         ) {
           return {
             address: to.address,
@@ -452,7 +470,9 @@ async function getRecipients(session, scan) {
             aliasHasWkdDisabled: false,
             vacationResponder: false,
             // TODO: only do this if MX server of sender used our service
-            srs: true
+            srs: true,
+            // (to settle the reverse delivery, see `helpers/srs-reverse`)
+            srsAddress: to.srsAddress || to.address
           };
         }
 
@@ -475,7 +495,14 @@ async function getRecipients(session, scan) {
   //       (probably unwanted, we should just merge)
   //
   // flatten the recipients and make them unique
-  recipients = _.uniqBy(_.compact(recipients.flat()), 'address');
+  // (of the SRS addresses of one sender, one that holds a reverse delivery
+  // is kept, see `helpers/srs-reverse`)
+  recipients = _.uniqBy(
+    _.sortBy(_.compact(recipients.flat()), (recipient) =>
+      recipient.srs && !hasSrsReverse(session, recipient.srsAddress) ? 1 : 0
+    ),
+    'address'
+  );
 
   // TODO: we can probably remove now
   // go through recipients and if we have a user+xyz@domain
@@ -739,7 +766,9 @@ async function getRecipients(session, scan) {
         recipient: recipient.address,
         to: [address.to],
         replacements,
-        ...(recipient.srs ? { srs: true } : {})
+        ...(recipient.srs
+          ? { srs: true, srsAddress: recipient.srsAddress }
+          : {})
       });
     }
   }

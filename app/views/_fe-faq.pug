@@ -107,7 +107,10 @@ mixin feFaq
               data-fe-faq-topic=category.slug,
               aria-labelledby=`${category.slug}-title`
             )
-              h2.fe-display-sm.fe-faq-topic__title(id=`${category.slug}-title`)= category.title
+              //- The title links to its topic, so its link can be copied or
+              //- shared (as the headings of the previous FAQ could).
+              h2.fe-display-sm.fe-faq-topic__title(id=`${category.slug}-title`)
+                a.fe-faq-topic__link(href=`#${category.slug}`)= category.title
 
               //- Prose that sits under the section heading before its first
               //- question. /faq#quick-start is linked from every pricing page,
@@ -122,8 +125,14 @@ mixin feFaq
                     //- opens with the keyboard, it is announced correctly, and
                     //- it still opens with JavaScript off.
                     details.fe-faq-answer(id=item.id)
+                      //- The question links to its answer, so its link can
+                      //- be copied, shared or opened in a new tab. A plain
+                      //- click still opens and closes the answer
+                      //- (faq-search.js); a link to it opens it.
                       summary.fe-faq-answer__q
-                        span.fe-faq-answer__text= item.question
+                        a.fe-faq-answer__text.fe-faq-answer__link(
+                          href=`#${item.id}`
+                        )= item.question
                         span.fe-faq-answer__marker(aria-hidden="true")
                           i.fa.fa-plus
                       .fe-text.fe-faq-answer__body.fe-faq-prose

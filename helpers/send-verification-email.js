@@ -47,15 +47,24 @@ async function sendVerificationEmail(ctx) {
       i18n.translateError('EMAIL_FAILED_TO_SEND', ctx.locale)
     );
     //
-    // callers verify the user when the email could not be sent (e.g. our
-    // mail server is down), so a message refused for its address (a 5xx
-    // reply, or an address our mail server does not accept) must not count,
-    // or an address that cannot receive mail would be verified
+    // the account stays unverified either way, and the error says which
+    // happened: the address refused the email for good (`is_email_rejected`:
+    // an address our mail server does not accept, a 5xx reply to RCPT TO,
+    // or nodemailer's own check of the recipient, command "API", which it
+    // also uses for an invalid sender of ours), or the email could not be
+    // sent for now (`has_email_failed`, e.g. our mail server is down or
+    // refused our own login, or a refusal of MAIL FROM or DATA, or a 4xx),
+    // so the user tries again later
     //
     if (
-      err?.code === 'EENVELOPE' ||
       err?.isBoom ||
-      (err?.responseCode >= 500 && err?.responseCode < 600)
+      (err?.code === 'EENVELOPE' &&
+        (err.command === 'RCPT TO' ||
+          err.command === undefined ||
+          (err.command === 'API' &&
+            typeof err.message === 'string' &&
+            /recipient/i.test(err.message))) &&
+        !(err.responseCode >= 400 && err.responseCode < 500))
     )
       error.is_email_rejected = true;
     else error.has_email_failed = true;

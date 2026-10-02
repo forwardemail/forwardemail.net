@@ -20,6 +20,19 @@ const ADMIN_ONLY_KEYS = [
 ];
 
 //
+// The id of a member's user, whether it is populated or not (a bare ObjectId's
+// `id` is its raw bytes, so it is not read)
+//
+function getMemberUserId(member) {
+  const user = member?.user;
+  if (!user) return null;
+  if (typeof user === 'string') return user;
+  if (user._id) return String(user._id);
+  if (typeof user.id === 'string') return user.id;
+  return null;
+}
+
+//
 // `domain.group` is set by `retrieveDomains`, but a domain that was saved or
 // fetched again afterwards (e.g. after an update) does not have it, so the
 // admin membership of the user is also checked on the domain itself
@@ -28,10 +41,9 @@ function isDomainAdmin(domain, user) {
   if (domain?.group === 'admin') return true;
   if (!user || !Array.isArray(domain?.members)) return false;
   const userId = String(user._id || user.id);
-  return domain.members.some((member) => {
-    const id = member?.user?._id || member?.user?.id || member?.user;
-    return member?.group === 'admin' && id && String(id) === userId;
-  });
+  return domain.members.some(
+    (member) => member?.group === 'admin' && getMemberUserId(member) === userId
+  );
 }
 
 function omitAdminOnlyDomainKeys(data, domain, user) {
@@ -44,3 +56,4 @@ function omitAdminOnlyDomainKeys(data, domain, user) {
 module.exports = omitAdminOnlyDomainKeys;
 module.exports.ADMIN_ONLY_KEYS = ADMIN_ONLY_KEYS;
 module.exports.isDomainAdmin = isDomainAdmin;
+module.exports.getMemberUserId = getMemberUserId;

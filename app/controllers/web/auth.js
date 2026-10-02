@@ -42,20 +42,10 @@ function signOutReturnTo(ctx) {
     : ctx.state.l();
 }
 
-async function logout(ctx) {
-  // (already signed out, e.g. the session expired: go where the link said)
-  if (!ctx.isAuthenticated()) return ctx.redirect(signOutReturnTo(ctx));
-
-  //
-  // this is a GET (the logout links in the navigation), and the session
-  // cookie is sent with a top-level navigation from any site, so another
-  // site could sign the user out; browsers that send Sec-Fetch-Site mark
-  // such a navigation "cross-site" (our own links are "same-origin", and a
-  // typed address or bookmark is "none")
-  //
-  if (ctx.get('Sec-Fetch-Site') === 'cross-site')
-    return ctx.redirect(ctx.state.l());
-
+//
+// sign the user out of this session (and forget it on the user)
+//
+async function signOut(ctx) {
   // store a reference to the session ID so we can clean it up on user model
   const { sessionId } = ctx;
   const userId = ctx.state.user._id;
@@ -75,6 +65,32 @@ async function logout(ctx) {
   }
 
   ctx.logout();
+
+  // remove from the user session array the matching value
+  Users.findByIdAndUpdate(userId, {
+    $pullAll: {
+      sessions: [sessionId]
+    }
+  })
+    .then()
+    .catch((err) => ctx.logger.fatal(err));
+}
+
+async function logout(ctx) {
+  // (already signed out, e.g. the session expired: go where the link said)
+  if (!ctx.isAuthenticated()) return ctx.redirect(signOutReturnTo(ctx));
+
+  //
+  // this is a GET (the logout links in the navigation), and the session
+  // cookie is sent with a top-level navigation from any site, so another
+  // site could sign the user out; browsers that send Sec-Fetch-Site mark
+  // such a navigation "cross-site" (our own links are "same-origin", and a
+  // typed address or bookmark is "none")
+  //
+  if (ctx.get('Sec-Fetch-Site') === 'cross-site')
+    return ctx.redirect(ctx.state.l());
+
+  await signOut(ctx);
   ctx.flash('custom', {
     title: ctx.request.t('Success'),
     text: ctx.translate('REQUEST_OK'),
@@ -88,15 +104,6 @@ async function logout(ctx) {
   // "Sign out and continue" on a team invite opened with another account
   // (invite.pug) comes back to the invite; only a path on this site
   ctx.redirect(signOutReturnTo(ctx));
-
-  // remove from the user session array the matching value
-  Users.findByIdAndUpdate(userId, {
-    $pullAll: {
-      sessions: [sessionId]
-    }
-  })
-    .then()
-    .catch((err) => ctx.logger.fatal(err));
 }
 
 function parseReturnOrRedirectTo(ctx, next) {
@@ -826,35 +833,29 @@ async function verify(ctx) {
     try {
       ctx.state.user = await sendVerificationEmail(ctx);
     } catch (err) {
-      // if email failed to send then verify the user automatically
-      // but if and only if the user was not pending recovery
-      if (
-        err.has_email_failed &&
-        !ctx.state.user[config.userFields.pendingRecovery]
-      ) {
-        ctx.logger.fatal(err);
-        ctx.state.user[config.userFields.hasVerifiedEmail] = true;
-        try {
-          ctx.state.user = await ctx.state.user.save();
-        } catch (err) {
-          ctx.logger.fatal(err);
-          ctx.flash('error', ctx.translate('UNKNOWN_ERROR'));
-        }
-
-        if (ctx.accepts('html')) {
-          ctx.redirect(redirectTo);
-        } else {
-          ctx.body = { redirectTo };
-        }
-
-        return;
-      }
-
       // wrap with try/catch to prevent redirect looping
       // (even though the koa redirect loop package will help here)
-      // (an address that does not accept the email is shown the error here,
-      // as redirecting would come straight back to this page)
-      if (!err.isBoom || err.is_email_rejected) throw err;
+      if (!err.isBoom) throw err;
+
+      //
+      // an email that could not be sent is shown on this page with its error
+      // (the error handler would redirect back to the referring page, which
+      // comes back here and sends it again): an address that does not
+      // accept it, or our mail server failing, in which case the user tries
+      // again later (an account is never verified without its code)
+      //
+      if (err.is_email_rejected || err.has_email_failed) {
+        if (err.has_email_failed) ctx.logger.fatal(err);
+        ctx.status = err.is_email_rejected ? 400 : 503;
+        if (!ctx.accepts('html')) {
+          ctx.body = { message: err.message };
+          return;
+        }
+
+        ctx.flash('error', err.message);
+        return ctx.render('verify');
+      }
+
       ctx.logger.error(err);
       if (ctx.accepts('html')) {
         ctx.flash('warning', err.message);
@@ -935,7 +936,15 @@ async function verify(ctx) {
     ? ctx.translate('PENDING_RECOVERY_VERIFICATION_SUCCESS')
     : ctx.translate('EMAIL_VERIFICATION_SUCCESS');
 
-  redirectTo = pendingRecovery ? '/logout' : redirectTo;
+  //
+  // a pending recovery is signed out here, not by redirecting to /logout:
+  // the link in the verification email is opened from another site, and the
+  // redirect would keep that "cross-site", so /logout would not sign out
+  //
+  if (pendingRecovery) {
+    await signOut(ctx);
+    redirectTo = ctx.state.l();
+  }
 
   ctx.flash('custom', {
     title: ctx.request.t('Success'),

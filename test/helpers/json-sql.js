@@ -245,4 +245,31 @@ test('operators that write into the query only take safe values', (t) => {
     message: 'Invalid SQL identifier'
   });
   t.notThrows(() => select({ uid: { $elemMatch: { value: 'a' } } }));
+  t.throws(() => select({ uid: { $elemMatch: { "x-a'": 1 } } }), {
+    message: 'Invalid SQL identifier'
+  });
+  t.throws(() => select({ uid: { $elemMatch: { 'a.b': 1 } } }), {
+    message: 'Invalid SQL identifier'
+  });
+
+  // (e.g. a vCard parameter name in a CardDAV param-filter)
+  const contacts = new Database(':memory:');
+  contacts.exec('CREATE TABLE "Contacts" ("_id" TEXT, "impp" TEXT)');
+  const insert = contacts.prepare(
+    'INSERT INTO "Contacts" ("_id", "impp") VALUES (?, ?)'
+  );
+  insert.run('a', JSON.stringify([{ 'x-service-type': 'jabber' }]));
+  insert.run('b', JSON.stringify([{ 'x-service-type': 'skype' }]));
+  t.deepEqual(
+    run(
+      contacts,
+      builder.build({
+        type: 'select',
+        table: 'Contacts',
+        fields: ['_id'],
+        condition: { impp: { $elemMatch: { 'x-service-type': 'jabber' } } }
+      })
+    ),
+    [{ _id: 'a' }]
+  );
 });

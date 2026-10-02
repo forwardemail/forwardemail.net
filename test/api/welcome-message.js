@@ -35,6 +35,7 @@ const { setTimeout: delay } = require('node:timers/promises');
 const Redis = require('ioredis-mock');
 const dayjs = require('dayjs-with-plugins');
 const ms = require('ms');
+const pWaitFor = require('p-wait-for');
 const test = require('ava');
 
 const utils = require('../utils');
@@ -360,7 +361,10 @@ test.serial(
     const password = await generatePassword(t, ctx);
     const { session, db } = await openMailbox(t, ctx, password);
     const { sqlite } = t.context;
-    t.true(sqlite.databaseMap.evictAndClose(ctx.aliasId));
+    // (closed once the work the reset left running, if any, lets go of it)
+    await pWaitFor(() => sqlite.databaseMap.evictAndClose(ctx.aliasId), {
+      timeout: ms('10s')
+    });
     t.false(db.open);
 
     appendWelcomeMessage.retries = 0;

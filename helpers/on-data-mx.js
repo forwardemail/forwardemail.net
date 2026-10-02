@@ -61,10 +61,15 @@ const env = require('#config/env');
 const getAttributes = require('#helpers/get-attributes');
 const getBounceInfo = require('#helpers/get-bounce-info');
 const getErrorCode = require('#helpers/get-error-code');
+const getFingerprintKey = require('#helpers/get-fingerprint-key');
 const getGreylistKey = require('#helpers/get-greylist-key');
 const getHeaders = require('#helpers/get-headers');
 const getRecipients = require('#helpers/get-recipients');
-const { grantSrsReverse } = require('#helpers/srs-reverse');
+const {
+  grantSrsReverseOnce,
+  hasSrsReverse,
+  spendSrsReverse
+} = require('#helpers/srs-reverse');
 const readLimitedBody = require('#helpers/read-limited-body');
 const hasFingerprintExpired = require('#helpers/has-fingerprint-expired');
 const i18n = require('#helpers/i18n');
@@ -89,8 +94,12 @@ const isSilentBanned = require('#helpers/is-silent-banned');
 const logger = require('#helpers/logger');
 const reserveAutoReply = require('#helpers/reserve-auto-reply');
 
-const { isAddressedToDomain, isAuthenticatedSender, reserveAutoReplyFor } =
-  reserveAutoReply;
+const {
+  isAddressedToDomain,
+  isAuthenticatedSender,
+  isSpfAlignedSender,
+  reserveAutoReplyFor
+} = reserveAutoReply;
 const parseError = require('#helpers/parse-error');
 const parseHostFromDomainOrAddress = require('#helpers/parse-host-from-domain-or-address');
 const parseRootDomain = require('#helpers/parse-root-domain');
@@ -503,12 +512,6 @@ function maskDestinations(message, replacements) {
   return message;
 }
 
-function getFingerprintKey(session, value) {
-  if (!session?.fingerprint) throw new TypeError('Fingerprint missing');
-  if (!value) throw new TypeError('Value missing');
-  return `${config.fingerprintPrefix}:${session.fingerprint}:${revHash(value)}`;
-}
-
 async function imap(alias, headers, session, body) {
   const accepted = [];
   const bounces = [];
@@ -626,6 +629,13 @@ async function imap(alias, headers, session, body) {
         isSANB(session.originalFromAddress) && isAuthenticatedSender(session)
           ? session.originalFromAddress.toLowerCase()
           : undefined,
+      // the From header address when SPF passed for an envelope sender on
+      // its organizational domain (as DMARC counts SPF, for a domain without
+      // DMARC or aligned DKIM), for iMIP attendee replies only
+      spfAlignedFrom:
+        isSANB(session.originalFromAddress) && isSpfAlignedSender(session)
+          ? session.originalFromAddress.toLowerCase()
+          : undefined,
       date:
         typeof session.arrivalDate === 'string'
           ? session.arrivalDate
@@ -723,6 +733,10 @@ async function checkBounceForSpam(bounce, headers, session) {
   // (and we don't want any blocking to occur)
   //
   if (bounce?.err?.isCodeBug) return;
+
+  // (nor when a reply to an SRS address was refused for now on our side,
+  // so its retry is not greylisted, see `forward`)
+  if (bounce?.err?.isSrsReverseRetry) return;
 
   //
   // NOTE: we always store the message fingerprint in our greylist database
@@ -1494,6 +1508,7 @@ async function forward(recipient, headers, session, body) {
   // <https://datatracker.ietf.org/doc/html/rfc3464#:~:text=The%20DSN%20MUST%20be,the%20MAIL%20FROM%20command.)>
   //
   let from;
+  let isSrsFrom = false;
   if (isSANB(session.envelope.mailFrom.address)) {
     if (
       session.envelope.mailFrom.address
@@ -1506,8 +1521,7 @@ async function forward(recipient, headers, session, body) {
         checkSRS(session.envelope.mailFrom.address),
         env.WEB_HOST
       );
-      // allow one reply (e.g. a bounce) to this SRS address
-      await grantSrsReverse(this.client, from);
+      isSrsFrom = true;
     }
   }
 
@@ -1548,6 +1562,20 @@ async function forward(recipient, headers, session, body) {
   });
 
   try {
+    //
+    // a reply to an SRS address is only relayed with the reverse delivery it
+    // used (e.g. not a retry resolved as already relayed, see `wasRelayed` in
+    // `helpers/get-recipients`, whose earlier attempt has since given up its
+    // claim on this destination), so it is refused for now and retried
+    //
+    if (recipient.srs && !hasSrsReverse(session, recipient.srsAddress))
+      throw new SMTPError('Try again later', {
+        responseCode: 421,
+        ignore_hook: true,
+        // (refused here, not by the destination, see `checkBounceForSpam`)
+        isSrsReverseRetry: true
+      });
+
     let info;
     try {
       // check for abuse (e.g. massive amount of domains forwarding to single email addresses)
@@ -1736,6 +1764,21 @@ async function forward(recipient, headers, session, body) {
     // NOTE: fingerprint key was already claimed atomically via SET NX PX
     // above before forwarding began — no additional write needed here.
     if (info.accepted && info.accepted.length > 0) {
+      // (a reply relayed to an SRS address spends its reverse delivery)
+      if (recipient.srs) spendSrsReverse(session, recipient.srsAddress);
+
+      // allow a few replies (e.g. a delay notice, a bounce, or an auto-reply)
+      // to the SRS address from a destination that accepted the message,
+      // once however often the message is retried (one that refused it was
+      // answered here, see `helpers/srs-reverse`)
+      if (isSrsFrom)
+        await grantSrsReverseOnce(
+          this.client,
+          from,
+          key,
+          config.srsReverseRepliesPerDestination
+        );
+
       // add the masked recipient to the final accepted array
       // (we don't want to reveal forwarding config to client SMTP servers)
       for (const replacement of Object.keys(recipient.replacements)) {

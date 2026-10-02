@@ -10,6 +10,8 @@
 // PushTokens TTL never expired tokens, and Payments failed to build at all.
 //
 
+const { randomUUID } = require('node:crypto');
+
 const mongoose = require('mongoose');
 const test = require('ava');
 
@@ -17,32 +19,55 @@ const utils = require('./utils');
 
 const models = require('#models');
 
-test.before(utils.setupMongoose);
-// (indexes are built on an empty database, as they were for a new install;
-// the app may already have written e.g. error logs while starting up)
-test.before(async () => {
-  for (const connection of mongoose.connections) {
-    if (connection.readyState !== 1 || !connection.db) continue;
+//
+// The indexes are built on an empty database of their own, as for a new
+// install: the app keeps writing to its database in the background (e.g. two
+// error logs with one hash, written before the unique `hash` index exists,
+// would fail the build of that index).
+//
+const DB_NAME = `model-indexes-${randomUUID()}`;
+const databases = new Set();
 
-    await connection.db.dropDatabase();
+function getIsolatedModel(model) {
+  const db = model.db.useDb(DB_NAME, { useCache: true });
+  databases.add(db);
+  return (
+    db.models[model.modelName] ||
+    db.model(model.modelName, model.schema, model.collection.collectionName)
+  );
+}
+
+// (models stored in each alias's SQLite database have no MongoDB indexes:
+// `helpers/mongoose-to-sqlite.js` replaces their Mongoose methods)
+function isSqliteOnly(model) {
+  return model.createIndexes !== mongoose.Model.createIndexes;
+}
+
+test.before(utils.setupMongoose);
+test.after.always(async () => {
+  for (const db of databases) {
+    try {
+      await db.dropDatabase();
+    } catch {}
   }
 });
 test.after.always(utils.teardownMongoose);
 
-// (models stored in each alias's SQLite database have no MongoDB indexes)
-const SQLITE_ONLY = /SQLite only/;
-
 test('every model builds all of its indexes', async (t) => {
+  // (the app's own connections, not the ones made here)
+  const connections = mongoose.connections.filter(
+    (connection) => connection.name !== DB_NAME
+  );
   const seen = new Set();
-  for (const connection of mongoose.connections) {
+  for (const connection of connections) {
     for (const model of Object.values(connection.models)) {
       if (seen.has(model)) continue;
       seen.add(model);
+      if (isSqliteOnly(model)) continue;
       try {
-        await model.createIndexes();
+        await getIsolatedModel(model).createIndexes();
       } catch (err) {
-        if (!SQLITE_ONLY.test(err.message))
-          t.fail(`${model.modelName}: ${err.message}`);
+        t.fail(`${model.modelName}: ${err.message}`);
       }
     }
   }
@@ -51,7 +76,9 @@ test('every model builds all of its indexes', async (t) => {
 });
 
 test('the declared TTL, unique and partial indexes exist', async (t) => {
-  const { Payments, PushTokens, Logs } = models;
+  const Payments = getIsolatedModel(models.Payments);
+  const PushTokens = getIsolatedModel(models.PushTokens);
+  const Logs = getIsolatedModel(models.Logs);
   for (const model of [Payments, PushTokens, Logs]) {
     await model.createIndexes();
   }

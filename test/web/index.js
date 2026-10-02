@@ -107,3 +107,26 @@ test('GET /:locale/help', async (t) => {
   t.is(res.status, 302);
   t.is(res.header.location, '/en/login?return_to=%2Fen%2Fhelp');
 });
+
+test('FAQ topic titles and questions link to themselves', async (t) => {
+  const { web } = t.context;
+  const res = await web.get('/en/faq');
+  t.is(res.status, 200);
+
+  // a topic title links to its topic
+  t.regex(
+    res.text,
+    /<section class="fe-faq-topic" id="([\w-]+)"[^>]*><h2[^>]*><a class="fe-faq-topic__link" href="#\1">/
+  );
+
+  // a question links to its answer
+  t.regex(
+    res.text,
+    /<details class="fe-faq-answer" id="([\w-]+)"><summary class="fe-faq-answer__q"><a class="fe-faq-answer__text fe-faq-answer__link" href="#\1">/
+  );
+  t.true(
+    res.text.includes(
+      'href="#how-do-i-increase-my-storage-or-outbound-smtp-sending-limit"'
+    )
+  );
+});

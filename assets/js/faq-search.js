@@ -50,7 +50,46 @@ function applyFilter(query) {
   return shown;
 }
 
+/**
+ * Each question is also a link to its answer, so it can be copied, shared or
+ * opened in a new tab, but a plain click opens and closes the answer as it
+ * did before (a link inside a summary does not toggle its details). The click
+ * does not reach the site's in-page link handler, which would scroll to the
+ * answer on every toggle.
+ */
+function setUpAnswerLinks() {
+  const content = document.querySelector('.fe-faq-content');
+  if (!content) return;
+  content.addEventListener('click', (ev) => {
+    const link =
+      ev.target && typeof ev.target.closest === 'function'
+        ? ev.target.closest('.fe-faq-answer__link')
+        : null;
+    if (!link) return;
+    // a new tab, a new window or a download stays a normal link
+    if (
+      ev.defaultPrevented ||
+      ev.button !== 0 ||
+      ev.metaKey ||
+      ev.ctrlKey ||
+      ev.shiftKey ||
+      ev.altKey
+    )
+      return;
+    const details = link.closest('details');
+    if (!details) return;
+    ev.preventDefault();
+    ev.stopPropagation();
+    details.open = !details.open;
+    // (the address bar points at the open answer, without a jump)
+    if (details.open && details.id)
+      window.history.replaceState(undefined, '', `#${details.id}`);
+  });
+}
+
 function setUp() {
+  setUpAnswerLinks();
+
   const input = document.querySelector('#fe-faq-q');
   if (!input) return;
 

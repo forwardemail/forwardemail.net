@@ -140,6 +140,18 @@
   border-bottom: 1px solid var(--fe-border-default);
 }
 
+// (a link to the topic, styled as the heading it is)
+.fe-faq-topic__link {
+  color: inherit;
+  text-decoration: none;
+}
+
+.fe-faq-topic__link:hover,
+.fe-faq-topic__link:focus-visible {
+  color: var(--fe-fg-link);
+  text-decoration: underline;
+}
+
 .fe-faq-topic__intro {
   min-width: 0;
   padding-block: var(--fe-space-4);
@@ -186,6 +198,18 @@
 
 .fe-faq-answer__text {
   font-weight: var(--fe-weight-medium);
+}
+
+// (a link to the answer, styled as the question it is)
+.fe-faq-answer__link {
+  color: inherit;
+  text-decoration: none;
+}
+
+.fe-faq-answer__link:hover,
+.fe-faq-answer__link:focus-visible {
+  color: inherit;
+  text-decoration: none;
 }
 
 .fe-faq-answer__marker {

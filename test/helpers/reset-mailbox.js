@@ -21,6 +21,7 @@ const Aliases = require('#models/aliases');
 const openDatabaseHandle = require('#helpers/open-database-handle');
 const resetMailbox = require('#helpers/reset-mailbox');
 const workerConfig = require('#helpers/sqlite-worker-config');
+const { canListLocks } = require('#helpers/sqlite-file-utils');
 const { encrypt } = require('#helpers/encrypt-decrypt');
 
 const OLD_PASSWORD = 'correct horse battery staple';
@@ -124,6 +125,33 @@ function assertNothingLeftBehind(t, dir, storagePath) {
     .filter((name) => name !== 'tmp')
     .sort();
   t.deepEqual(names, [path.basename(storagePath)], names.join(', '));
+}
+
+//
+// -wal/-shm files that no lock refers to are left over from a connection that
+// is gone, but held locks can only all be listed on Linux, in the initial PID
+// namespace (see `canListLocks`): anywhere else they still count as an open
+// connection, and the reset is refused without changing anything.
+//
+const CAN_LIST_LOCKS = canListLocks();
+
+async function assertResetRefused(
+  t,
+  { storagePath, aliasId, rekeyId, before }
+) {
+  const { client } = t.context;
+  const err = await t.throwsAsync(
+    resetMailbox({
+      client,
+      storagePath,
+      session: session(aliasId, NEW_PASSWORD),
+      rekeyId
+    })
+  );
+  t.is(err.code, 'SQLITE_BUSY');
+  t.true(err.isResetRetryable);
+  t.is(fs.statSync(storagePath, { bigint: true }).ino, before.ino);
+  t.is(await client.get(`db_swap_lock:${aliasId}`), null);
 }
 
 //
@@ -326,6 +354,11 @@ test.serial(
     t.true(fs.existsSync(`${storagePath}-wal`));
     t.true(fs.existsSync(`${storagePath}-shm`));
 
+    if (!CAN_LIST_LOCKS) {
+      await assertResetRefused(t, { storagePath, aliasId, rekeyId, before });
+      return;
+    }
+
     const result = await resetMailbox({
       client,
       storagePath,
@@ -359,6 +392,11 @@ test.serial(
     db.close();
     t.true(fs.existsSync(`${storagePath}-wal`));
     t.true(fs.existsSync(`${storagePath}-shm`));
+
+    if (!CAN_LIST_LOCKS) {
+      await assertResetRefused(t, { storagePath, aliasId, rekeyId, before });
+      return;
+    }
 
     const result = await resetMailbox({
       client,

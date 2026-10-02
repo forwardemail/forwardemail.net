@@ -752,6 +752,10 @@ const config = {
     // (in days, as `sender-rewriting-scheme` counts them)
     maxAge: 10
   },
+  // replies relayed to an SRS address per destination of a message we
+  // forwarded or sent (a delay notice and the final bounce from the
+  // destination's server, and an auto-reply), see `helpers/srs-reverse`
+  srsReverseRepliesPerDestination: 3,
   twilio: {
     accountSid: env.TWILIO_ACCOUNT_SID,
     authToken: env.TWILIO_AUTH_TOKEN,

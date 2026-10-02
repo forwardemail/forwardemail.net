@@ -21,6 +21,7 @@ const onDataSMTP = require('#helpers/on-data-smtp');
 const parseHostFromDomainOrAddress = require('#helpers/parse-host-from-domain-or-address');
 const parseRootDomain = require('#helpers/parse-root-domain');
 const refineAndLogError = require('#helpers/refine-and-log-error');
+const { restoreSrsReverses } = require('#helpers/srs-reverse');
 const updateSession = require('#helpers/update-session');
 
 const ONE_SECOND_AFTER_UNIX_EPOCH = new Date(1000);
@@ -245,7 +246,21 @@ async function onData(stream, _session, fn) {
     }
 
     if (this.constructor.name === 'MX') {
-      await onDataMX.call(this, session, headers, body);
+      // (per message, as a connection can send several)
+      session.srsReversesUsed = [];
+      try {
+        await onDataMX.call(this, session, headers, body);
+      } finally {
+        //
+        // the reverse deliveries to SRS addresses this message used but did
+        // not relay (e.g. refused for now and retried by its sender, refused
+        // for good, or already relayed by an earlier attempt) are given back
+        // (see `helpers/srs-reverse`)
+        //
+        if (session.srsReversesUsed.length > 0)
+          await restoreSrsReverses(this.client, session.srsReversesUsed);
+      }
+
       return setImmediate(fn);
     }
 

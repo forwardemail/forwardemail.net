@@ -304,7 +304,11 @@ async function syncPayPalSubscriptionPaymentsByUser(
                 await Payments.create(payment);
               } catch (err) {
                 // Handle duplicate key error from concurrent sync race
-                if (err.code === 11000) {
+                // (or the unique validator's PAYMENT_ALREADY_EXISTS)
+                if (
+                  err.code === 11000 ||
+                  err.code === 'PAYMENT_ALREADY_EXISTS'
+                ) {
                   logger.warn(
                     `Duplicate payment prevented for paypal_transaction_id ${transaction.id} (concurrent creation race)`
                   );

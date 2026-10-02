@@ -20,6 +20,10 @@ const isSANB = require('is-string-and-not-blank');
 const Mailboxes = require('./mailboxes');
 const Threads = require('./threads');
 const _ = require('#helpers/lodash');
+const {
+  KEYWORD_REGEX,
+  MAX_LABELS_PER_MESSAGE
+} = require('#helpers/derive-labels-from-flags');
 
 const env = require('#config/env');
 const {
@@ -35,9 +39,8 @@ mongoose.Error.messages = require('@ladjs/mongoose-error-messages');
 const Str = mongoose.Schema.Types.String;
 Str.checkRequired((v) => v !== null);
 
-// Label validation (same pattern as aliases.js label_settings)
-const MAX_LABELS_PER_MESSAGE = 10;
-const KEYWORD_REGEX = /^([A-Za-z\d]|[\\$])[\w.-]*$/;
+// Label validation (same pattern as aliases.js label_settings, and shared
+// with IMAP, which derives labels from keywords)
 
 const normalizeLabelKeyword = (keyword) =>
   String(keyword || '')

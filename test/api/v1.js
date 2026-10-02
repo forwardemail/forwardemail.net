@@ -1294,6 +1294,74 @@ test('creates email with binary attachment', async (t) => {
   t.is(res.status, 200);
 });
 
+test('creates email with 50 attachments and many form fields', async (t) => {
+  const user = await t.context.userFactory
+    .withState({
+      plan: 'enhanced_protection',
+      [config.userFields.planSetAt]: dayjs().startOf('day').toDate()
+    })
+    .create();
+
+  await t.context.paymentFactory
+    .withState({
+      user: user._id,
+      amount: 300,
+      invoice_at: dayjs().startOf('day').toDate(),
+      method: 'free_beta_program',
+      duration: ms('30d'),
+      plan: user.plan,
+      kind: 'one-time'
+    })
+    .create();
+
+  await user.save();
+
+  const domain = await t.context.domainFactory
+    .withState({
+      members: [{ user: user._id, group: 'admin' }],
+      plan: user.plan,
+      resolver,
+      has_smtp: true
+    })
+    .create();
+
+  const alias = await t.context.aliasFactory
+    .withState({
+      user: user._id,
+      domain: domain._id,
+      recipients: [user.email]
+    })
+    .create();
+
+  //
+  // the upload limits of this (authenticated) route allow 50 attachments
+  // with more than the anonymous form parser's 200 fields and parts
+  //
+  const gifBuffer = Buffer.from(
+    'R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==',
+    'base64'
+  );
+  let req = t.context.api
+    .post('/v1/emails')
+    .auth(user[config.userFields.apiToken]);
+  for (let i = 0; i < 50; i++) {
+    req = req.attach('attachments', gifBuffer, `image${i}.gif`);
+  }
+
+  req = req
+    .field('from', `${alias.name}@${domain.name}`)
+    .field('to', 'test@foo.com')
+    .field('subject', 'test')
+    .field('text', 'test message');
+  for (let i = 0; i < 200; i++) {
+    req = req.field(`headers[X-Test-${i}]`, String(i));
+  }
+
+  const res = await req;
+  t.is(res.status, 200, `${res.text}`);
+  t.true(res.body.message.includes('name=image49.gif'));
+});
+
 test('5+ day email bounce', async (t) => {
   const user = await t.context.userFactory
     .withState({

@@ -8,6 +8,7 @@ const punycode = require('node:punycode');
 
 const mongoose = require('mongoose');
 const revHash = require('rev-hash');
+const { getDomain } = require('tldts');
 
 const checkSRS = require('#helpers/check-srs');
 const config = require('#config');
@@ -163,6 +164,47 @@ function isAuthenticatedSender(session) {
     session.hadAlignedAndPassingDKIM === true ||
     session?.dmarc?.status?.result === 'pass'
   );
+}
+
+//
+// Whether the From header's domain is authenticated by SPF the way DMARC
+// counts it (relaxed alignment): the envelope sender passed SPF and its
+// domain shares the organizational domain of the From address.  This is what
+// a DMARC check would conclude for a domain that publishes no DMARC record
+// (a sender on a shared mail service cannot use an envelope sender on the
+// From domain), so it lets such a domain count where it must (iMIP replies).
+//
+function isSpfAlignedSender(session) {
+  if (!session || typeof session.originalFromAddress !== 'string') return false;
+  if (session?.spf?.status?.result !== 'pass') return false;
+  // (a DMARC check has the last word: one that failed, e.g. with strict
+  // alignment, or that could not be completed)
+  if (!['none', 'pass'].includes(session?.dmarc?.status?.result)) return false;
+  const mailFrom = session?.envelope?.mailFrom?.address;
+  if (typeof mailFrom !== 'string' || !mailFrom.includes('@')) return false;
+  const fromDomain = toASCIIDomain(
+    session.originalFromAddress.split('@').pop()
+  );
+  const envelopeDomain = toASCIIDomain(mailFrom.split('@').pop());
+  if (!fromDomain || !envelopeDomain) return false;
+  return (
+    getOrganizationalDomain(fromDomain) ===
+    getOrganizationalDomain(envelopeDomain)
+  );
+}
+
+//
+// The organizational domain of a hostname as DMARC (and mailauth) finds it,
+// with the private suffixes of the public suffix list (so `alice.eu.org` and
+// `mallory.eu.org` are not one domain), or the hostname itself when it has
+// none (e.g. an IP address literal)
+//
+function getOrganizationalDomain(hostname) {
+  try {
+    return getDomain(hostname, { allowPrivateDomains: true }) || hostname;
+  } catch {
+    return hostname;
+  }
 }
 
 //
@@ -387,6 +429,7 @@ module.exports.canSendBounceTo = canSendBounceTo;
 module.exports.getAutoReplyLimit = getAutoReplyLimit;
 module.exports.getBounceNotificationLimit = getBounceNotificationLimit;
 module.exports.isAuthenticatedSender = isAuthenticatedSender;
+module.exports.isSpfAlignedSender = isSpfAlignedSender;
 module.exports.isAddressedTo = isAddressedTo;
 module.exports.isAddressedToDomain = isAddressedToDomain;
 module.exports.reserveAutoReplyFor = reserveAutoReplyFor;

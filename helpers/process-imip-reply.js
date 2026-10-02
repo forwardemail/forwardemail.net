@@ -949,17 +949,17 @@ async function checkAndProcessImipMessage(parsedEmail, options = {}) {
     } else {
       //
       // The attendee is matched against the authenticated From address
-      // (DMARC passed or DKIM aligned with it), like the organizer check
-      // above. The envelope sender is anyone's to set, and it is empty for
-      // a message sent with a null reverse-path ("MAIL FROM:<>").
+      // (DMARC passed or DKIM aligned with it, or for a domain without them,
+      // SPF passed for an envelope sender on its organizational domain, as
+      // DMARC counts SPF). The envelope sender alone is anyone's to set, and
+      // it is empty for a message sent with a null reverse-path.
       //
       const attendeeEmail =
         imipData.attendeeEmail || imipData.attendees?.[0]?.email;
-      senderValidation = options.authenticatedFromEmail
-        ? validateSenderAttendeeMatch(
-            options.authenticatedFromEmail,
-            attendeeEmail
-          )
+      const replyFromEmail =
+        options.authenticatedFromEmail || options.spfAlignedFromEmail;
+      senderValidation = replyFromEmail
+        ? validateSenderAttendeeMatch(replyFromEmail, attendeeEmail)
         : {
             valid: false,
             code: SECURITY_CODES.SENDER_UNAUTHENTICATED,

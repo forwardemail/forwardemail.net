@@ -527,6 +527,45 @@ function matcherFor(token) {
 }
 
 /**
+ * The distinct words of a (lowercased) text, sorted, for startsWord. An
+ * answer's whole text is long, and testing a matcher against it for every
+ * word typed is most of the work of a suggestion, so suggestFaq looks a word
+ * up in these instead when a question has them (see faq-suggest.js).
+ *
+ * @param {string} text
+ * @returns {string[]}
+ */
+function getWords(text) {
+  return [
+    ...new Set(
+      String(text || '')
+        .split(/[^\p{L}\p{N}]+/u)
+        .filter(Boolean)
+    )
+  ].sort();
+}
+
+/**
+ * Whether a token starts one of the sorted words, which is what matcherFor
+ * tests on the text (a token is only letters and digits, see tokenize).
+ *
+ * @param {string[]} words - from getWords
+ * @param {string} token
+ * @returns {boolean}
+ */
+function startsWord(words, token) {
+  let low = 0;
+  let high = words.length;
+  while (low < high) {
+    const middle = Math.floor((low + high) / 2);
+    if (words[middle] < token) low = middle + 1;
+    else high = middle;
+  }
+
+  return low < words.length && words[low].startsWith(token);
+}
+
+/**
  * The questions most likely to answer a support message.
  *
  * This is what sits under the help form as someone types: unlike
@@ -558,11 +597,15 @@ function suggestFaq(index, query, options = {}) {
       const search = q.search || '';
       const excerpt = q.excerpt || '';
       const body = q.body || '';
+      const bodyWords = Array.isArray(q.bodyWords) ? q.bodyWords : null;
       let score = 0;
-      for (const matcher of matchers) {
+      for (const [i, matcher] of matchers.entries()) {
         if (matcher.test(search)) score += QUESTION_HIT;
         else if (matcher.test(excerpt)) score += EXCERPT_HIT;
-        else if (matcher.test(body)) score += BODY_HIT;
+        else if (
+          bodyWords ? startsWord(bodyWords, tokens[i]) : matcher.test(body)
+        )
+          score += BODY_HIT;
       }
 
       if (score === 0) continue;
@@ -588,6 +631,7 @@ module.exports = getFaqIndex;
 module.exports.filterFaqIndex = filterFaqIndex;
 module.exports.suggestFaq = suggestFaq;
 module.exports.tokenize = tokenize;
+module.exports.getWords = getWords;
 module.exports.getFaqIndex = getFaqIndex;
 module.exports.parseFaqIndex = parseFaqIndex;
 module.exports.faqFilePathForLocale = faqFilePathForLocale;

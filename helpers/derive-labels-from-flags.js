@@ -9,10 +9,17 @@
 
 // Custom keywords (anything not starting with "\\") are mirrored to the
 // message.labels field so the REST API and webmail UI can read them.
-// Matches the normalization performed by the Messages pre-validate hook.
+// The Messages pre-validate hook normalizes and validates labels the same
+// way (with these definitions).
 const MAX_LABELS_PER_MESSAGE = 10;
+const KEYWORD_REGEX = /^([A-Za-z\d]|[\\$])[\w.-]*$/;
 
-function deriveLabelsFromFlags(flags) {
+//
+// Only valid keywords are counted toward the limit (the model drops the
+// others, so counting them could leave out valid ones that follow).  The
+// labels a STORE removes are listed with no limit (`limit: Infinity`).
+//
+function deriveLabelsFromFlags(flags, { limit = MAX_LABELS_PER_MESSAGE } = {}) {
   if (!Array.isArray(flags)) return [];
   const out = [];
   const seen = new Set();
@@ -21,13 +28,15 @@ function deriveLabelsFromFlags(flags) {
     const trimmed = f.trim();
     if (!trimmed || trimmed.startsWith('\\')) continue;
     const normalized = trimmed.toLowerCase();
-    if (seen.has(normalized)) continue;
+    if (seen.has(normalized) || !KEYWORD_REGEX.test(normalized)) continue;
     seen.add(normalized);
     out.push(normalized);
-    if (out.length >= MAX_LABELS_PER_MESSAGE) break;
+    if (out.length >= limit) break;
   }
 
   return out;
 }
 
 module.exports = deriveLabelsFromFlags;
+module.exports.KEYWORD_REGEX = KEYWORD_REGEX;
+module.exports.MAX_LABELS_PER_MESSAGE = MAX_LABELS_PER_MESSAGE;

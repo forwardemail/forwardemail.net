@@ -1951,6 +1951,7 @@ async function parsePayload(data, ws) {
                           messageId: parsedEmailForImip.messageId,
                           fromEmail: payload.sender,
                           authenticatedFromEmail: payload.authenticatedFrom,
+                          spfAlignedFromEmail: payload.spfAlignedFrom,
                           toEmail: session.user.username,
                           client: this.client,
                           remoteAddress: payload.remoteAddress
@@ -2405,6 +2406,7 @@ async function parsePayload(data, ws) {
                       messageId: parsedEmailForImip.messageId,
                       fromEmail: payload.sender,
                       authenticatedFromEmail: payload.authenticatedFrom,
+                      spfAlignedFromEmail: payload.spfAlignedFrom,
                       toEmail: session.user.username,
                       client: this.client,
                       remoteAddress: payload.remoteAddress

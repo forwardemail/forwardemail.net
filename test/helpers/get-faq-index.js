@@ -15,6 +15,7 @@ const {
   CACHE_PREFIX,
   getCacheKey,
   getFaqIndex,
+  getWords,
   parseFaqIndex,
   suggestFaq,
   tokenize
@@ -183,6 +184,33 @@ test('suggestFaq matches a word found only deep in an answer body', (t) => {
       .map((r) => r.id)
       .includes('do-you-support-webhooks')
   );
+});
+
+test('suggestFaq gives the same suggestions from the words of the answers', (t) => {
+  // (as the help form's endpoint keeps them, see faq-suggest.js)
+  const withWords = {
+    categories: index.categories.map((category) => ({
+      ...category,
+      questions: category.questions.map((q) => {
+        const { body, ...rest } = q;
+        return { ...rest, bodyWords: getWords(body) };
+      })
+    }))
+  };
+  for (const query of [
+    'bimi',
+    'my dkim selector does not verify after changing dns',
+    'catch-all regex forwarding to a webhook',
+    'e-mail sub-processors and gdpr',
+    'how do i increase my storage or outbound smtp limit',
+    'zzzz qqqq'
+  ]) {
+    t.deepEqual(
+      suggestFaq(withWords, query, { limit: 50 }),
+      suggestFaq(index, query, { limit: 50 }),
+      `query: ${query}`
+    );
+  }
 });
 
 test('suggestFaq matches a single meaningful word against headings', (t) => {

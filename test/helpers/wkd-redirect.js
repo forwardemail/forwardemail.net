@@ -146,3 +146,22 @@ test.serial('a response larger than any key is refused', async (t) => {
   origin.server.closeAllConnections();
   origin.server.close();
 });
+
+test.serial('a response without a body is returned as it came', async (t) => {
+  const origin = await listen((req, res) => {
+    res.writeHead(Number(req.url.slice(1)));
+    res.end();
+  });
+  sinon.stub(WKD, 'isPrivateTarget').resolves(false);
+
+  const wkd = new WKD(resolver, null);
+  for (const status of [204, 304]) {
+    const response = await wkd._fetch(
+      `http://127.0.0.1:${origin.port}/${status}`
+    );
+    t.is(response.status, status);
+    t.is(response.body, null);
+  }
+
+  origin.server.close();
+});

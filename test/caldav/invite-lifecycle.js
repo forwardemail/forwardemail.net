@@ -819,7 +819,17 @@ test.serial(
       attendees: [{ email: attendee, partstat: 'ACCEPTED' }]
     });
     await createEventViaCalDAV(t, uid, storedIcs);
-    const before = await fetchEventIcs(t, uid);
+
+    // (creating it sends the attendee a REQUEST in the background, which then
+    // marks the attendee as SCHEDULE-STATUS=1.1 in the stored event)
+    let before;
+    await pWaitFor(
+      async () => {
+        before = await fetchEventIcs(t, uid);
+        return /SCHEDULE-STATUS=1\.1/.test(before || '');
+      },
+      { timeout: ms('15s') }
+    );
 
     const parsedEmail = buildParsedEmail({
       from: attendee,

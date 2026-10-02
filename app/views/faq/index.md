@@ -73,7 +73,7 @@
   * [Do you support sending email with SMTP](#do-you-support-sending-email-with-smtp)
   * [Do you support OpenPGP/MIME, end-to-end encryption ("E2EE"), and Web Key Directory ("WKD")](#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd)
   * [Do you support S/MIME encryption](#do-you-support-smime-encryption)
-  * [Do you support Sieve email filtering {#do-you-support-sieve-email-filtering}](#do-you-support-sieve-email-filtering-do-you-support-sieve-email-filtering)
+  * [Do you support Sieve email filtering](#do-you-support-sieve-email-filtering)
   * [Do you support MTA-STS](#do-you-support-mta-sts)
   * [Do you support passkeys and WebAuthn](#do-you-support-passkeys-and-webauthn)
   * [Is two-factor authentication (2FA) supported](#is-two-factor-authentication-2fa-supported)
@@ -81,7 +81,7 @@
   * [Do you support bounce webhooks](#do-you-support-bounce-webhooks)
   * [Do you support webhooks](#do-you-support-webhooks)
   * [Do you support regular expressions or regex](#do-you-support-regular-expressions-or-regex)
-  * [Can I forward email for any subdomain (wildcard subdomains) {#can-i-forward-email-for-any-subdomain-wildcard-subdomains}](#can-i-forward-email-for-any-subdomain-wildcard-subdomains-can-i-forward-email-for-any-subdomain-wildcard-subdomains)
+  * [Can I forward email for any subdomain (wildcard subdomains)](#can-i-forward-email-for-any-subdomain-wildcard-subdomains)
   * [What are your outbound SMTP limits](#what-are-your-outbound-smtp-limits)
   * [Do I need approval to enable SMTP](#do-i-need-approval-to-enable-smtp)
   * [What information do you need to approve or reinstate my outbound SMTP](#what-information-do-you-need-to-approve-or-reinstate-my-outbound-smtp)
@@ -155,7 +155,7 @@
   * [Is there a maximum limit on the number of email addresses I can forward to per alias](#is-there-a-maximum-limit-on-the-number-of-email-addresses-i-can-forward-to-per-alias)
   * [Can I recursively forward emails](#can-i-recursively-forward-emails)
   * [Can people unregister or register my email forwarding without my permission](#can-people-unregister-or-register-my-email-forwarding-without-my-permission)
-  * [How do I increase my storage or outbound SMTP sending limit {#how-do-i-increase-my-storage-or-outbound-smtp-sending-limit}](#how-do-i-increase-my-storage-or-outbound-smtp-sending-limit-how-do-i-increase-my-storage-or-outbound-smtp-sending-limit)
+  * [How do I increase my storage or outbound SMTP sending limit](#how-do-i-increase-my-storage-or-outbound-smtp-sending-limit)
   * [What is included in the Enterprise License](#what-is-included-in-the-enterprise-license)
   * [How is it free](#how-is-it-free)
   * [What is the max email size limit](#what-is-the-max-email-size-limit)
@@ -2912,7 +2912,7 @@ The following email clients have built-in S/MIME support:
   </div>
 </div>
 
-### Do you support Sieve email filtering {#do-you-support-sieve-email-filtering}
+### Do you support Sieve email filtering
 
 Yes. Forward Email supports server-side [Sieve](https://en.wikipedia.org/wiki/Sieve_\(mail_filtering_language\)) filtering based on [RFC 5228](https://datatracker.ietf.org/doc/html/rfc5228). Scripts filter incoming messages before mailbox delivery. A script is rejected if it requests an unavailable capability or uses an extension without declaring it in `require`.
 
@@ -3660,7 +3660,7 @@ If you are on the free plan, then add a new DNS <strong class="notranslate">TXT<
   </span>
 </div>
 
-### Can I forward email for any subdomain (wildcard subdomains) {#can-i-forward-email-for-any-subdomain-wildcard-subdomains}
+### Can I forward email for any subdomain (wildcard subdomains)
 
 Yes, on our **paid plans**.  You can configure a single root domain (e.g. `example.com`) so that its forwarding configuration transparently applies to **every** subdomain (e.g. `anything.example.com`, `mail.example.com`, `a.b.example.com`), without creating a separate configuration for each subdomain and without using a DNS wildcard entry such as `*.example.com`.
 
@@ -6061,7 +6061,7 @@ Yes, you can, however you still must adhere to the maximum limit.  If you have `
 
 We use MX and <strong class="notranslate">TXT</strong> record verification, therefore if you add this service's respective MX and <strong class="notranslate">TXT</strong> records, then you're registered.  If you remove them, then you're unregistered.  You have ownership of your domain and DNS management, so if someone has access to that then that's a problem.
 
-### How do I increase my storage or outbound SMTP sending limit {#how-do-i-increase-my-storage-or-outbound-smtp-sending-limit}
+### How do I increase my storage or outbound SMTP sending limit
 
 **Storage**: go to <a href="/my-account/billing" target="_blank" rel="noopener noreferrer">My Account → Billing</a> and scroll to the **Add-ons** section. Choose an amount to add (+10, +20, +30, +40, or +50 GB), or select "Other" to request a custom amount. Submitting the form sends your request to our team for review and does not charge you yet. Once we approve it, we email you a secure payment link to complete the upgrade. You can have one pending storage request at a time, and you can't submit another within 3 days of a prior request.
 

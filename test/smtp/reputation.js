@@ -3089,6 +3089,11 @@ Test`.trim()
 test.serial('thresholds reset at midnight UTC', async (t) => {
   const midnight = dayjs.utc().startOf('day').toDate();
 
+  // (only the daily threshold is under test: in the first hour of a UTC day
+  // the messages sent just before midnight are also in the last hour, and
+  // the hourly burst limit would defer the sender)
+  config.smtpVelocityHourlyShare = 2;
+
   // sent just before midnight UTC (yesterday)
   const before = await createSender(t);
   await recordSent(before, BASE, new Date(midnight.getTime() - 1));

@@ -208,7 +208,14 @@ exports.loginUser = async (t) => {
 // teardown utilities
 //
 exports.teardownMongoose = async () => {
-  await mongoose.disconnect();
+  //
+  // (forced: a connection closed normally can wait for good once a CalDAV or
+  // CardDAV request has counted its bandwidth with a Lua script on
+  // ioredis-mock, so the test worker never exits and the run times out)
+  //
+  await Promise.all(
+    mongoose.connections.map((connection) => connection.close(true))
+  );
   await Promise.all(
     mongoose.connections.map((connection) =>
       connection?.mongod?.stop === 'function' ? connection.mongod.stop() : ''

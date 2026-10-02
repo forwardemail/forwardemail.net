@@ -15,6 +15,8 @@ const populateDomainStorage = require('#helpers/populate-domain-storage');
 const toObject = require('#helpers/to-object');
 const { Users, Aliases, Domains } = require('#models');
 
+const { getMemberUserId, isDomainAdmin } = omitAdminOnlyDomainKeys;
+
 const VIRTUAL_KEYS = [
   'storage_used',
   'storage_used_by_aliases',
@@ -183,13 +185,23 @@ async function retrieve(ctx) {
   // virtual member of a global domain, so without this any account could
   // read the addresses and plans of that domain's real admins.
   //
-  if (ctx.state.domain.group !== 'admin') {
-    const userId = ctx.state.user?.id;
-    data.members = Array.isArray(data.members)
-      ? data.members.filter(
-          (member) => userId && String(member?.user?.id) === String(userId)
-        )
+  // (a domain fetched again after an update has no `group`, so admins are
+  // also found by their membership)
+  if (!isDomainAdmin(ctx.state.domain, ctx.state.user)) {
+    // (the user's own membership, matched on the domain itself, as a
+    // serialized member may not carry its user's id; `json` serializes each
+    // member in order)
+    const userId = String(ctx.state.user?._id || ctx.state.user?.id || '');
+    const members = Array.isArray(ctx.state.domain.members)
+      ? ctx.state.domain.members
       : [];
+    data.members =
+      Array.isArray(data.members) && data.members.length === members.length
+        ? data.members.filter(
+            (_member, i) =>
+              userId !== '' && getMemberUserId(members[i]) === userId
+          )
+        : [];
     data.invites = [];
     omitAdminOnlyDomainKeys(data, ctx.state.domain, ctx.state.user);
   }

@@ -7,7 +7,12 @@ const isSANB = require('is-string-and-not-blank');
 const ms = require('ms');
 
 const config = require('#config');
-const { getFaqIndex, suggestFaq, tokenize } = require('#helpers/get-faq-index');
+const {
+  getFaqIndex,
+  getWords,
+  suggestFaq,
+  tokenize
+} = require('#helpers/get-faq-index');
 
 // The help form asks this endpoint on every pause in typing. The cached index
 // in redis carries every answer's full HTML, well over a megabyte per locale,
@@ -39,7 +44,9 @@ async function getSuggestIndex(client, locale) {
         question: q.question,
         search: q.search,
         excerpt: q.excerpt,
-        body: q.body
+        // (the words of the answer, which suggestFaq looks up far faster
+        // than it searches the text, and which take less memory)
+        bodyWords: getWords(q.body)
       }))
     }))
   };

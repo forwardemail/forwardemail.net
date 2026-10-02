@@ -57,6 +57,7 @@ const { encrypt, decrypt } = require('./encrypt-decrypt');
 const shouldSendDSN = require('./should-send-dsn');
 const { isWithinGracePeriod } = require('./is-within-grace-period');
 const { canSendBounceTo } = require('./reserve-auto-reply');
+const { grantSrsReverseOnce } = require('./srs-reverse');
 
 const config = require('#config');
 const env = require('#config/env');
@@ -914,6 +915,16 @@ async function processEmail({ email, port = 25, resolver, client }) {
         : srs.forward(punycode.toASCII(email.envelope.from), srsDomain),
       to: [...email.envelope.to]
     };
+
+    // allow a few replies to the SRS address per recipient (e.g. bounces or
+    // an auto-reply to the Return-Path, see `helpers/srs-reverse`)
+    if (envelope.from !== punycode.toASCII(email.envelope.from))
+      await grantSrsReverseOnce(
+        client,
+        envelope.from,
+        String(email._id),
+        Math.max(1, envelope.to.length) * config.srsReverseRepliesPerDestination
+      );
 
     // development mode hack for passing SPF
     let ip = IP_ADDRESS;

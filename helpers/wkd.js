@@ -250,11 +250,17 @@ function WKD(resolver, client) {
 
       clearTimeout(t);
       dispatcher.close();
-      return new undici.Response(Buffer.concat(chunks), {
-        status: response.status,
-        statusText: response.statusText,
-        headers: response.headers
-      });
+      // (a response with a null body status cannot be given a body)
+      return new undici.Response(
+        [204, 205, 304].includes(response.status)
+          ? null
+          : Buffer.concat(chunks),
+        {
+          status: response.status,
+          statusText: response.statusText,
+          headers: response.headers
+        }
+      );
     } catch (err) {
       clearTimeout(t);
       dispatcher.destroy();

@@ -47,16 +47,40 @@ function invalidPaymentIntent(ctx) {
 // and PayPal carry their own ids and are verified against the provider
 // (browsers without `Sec-Fetch-Site` are checked by the Referer instead)
 //
+// A link opened while signed out is stored and followed once the user signs
+// in, from the sign-in page itself (same-origin), so a request whose Referer
+// is a sign-in page counts as coming from elsewhere too (a plan change is
+// never a click on one of those pages).
+//
+const SIGN_IN_PAGE = new RegExp(
+  `^/(?:(?:${config.i18n.locales.join(
+    '|'
+  )})/)?(?:login|register|verify|otp|forgot-password|reset-password)(?:/|$)`,
+  'i'
+);
+
 function isCrossSiteRequest(ctx) {
   const site = ctx.get('Sec-Fetch-Site');
-  if (site) return ['cross-site', 'same-site'].includes(site);
   const referrer = ctx.get('Referrer');
-  if (!referrer) return false;
-  try {
-    return new URL(referrer).origin !== new URL(config.urls.web).origin;
-  } catch {
-    return true;
+  let url;
+  if (referrer) {
+    try {
+      url = new URL(referrer);
+    } catch {
+      return true;
+    }
   }
+
+  if (
+    url &&
+    url.origin === new URL(config.urls.web).origin &&
+    SIGN_IN_PAGE.test(url.pathname)
+  )
+    return true;
+
+  if (site) return ['cross-site', 'same-site'].includes(site);
+  if (!url) return false;
+  return url.origin !== new URL(config.urls.web).origin;
 }
 
 const PLAN_NAMES = {

@@ -48,7 +48,11 @@ const fileUpload = createMultipart(
       fieldSize: bytes('51MB'),
       fileSize: bytes('51MB'),
       // one "attachment" plus up to 50 "attachments" (see `fields` below)
-      files: 51
+      files: 51,
+      // (this route is authenticated before parsing, so it keeps the higher
+      // field and part counts, which its attachments and fields can need)
+      fields: 1000,
+      parts: 1000
     }
     // fileFilter(req, file, cb) {
     //   console.log('Multer fileFilter triggered:', file.originalname); // Add this

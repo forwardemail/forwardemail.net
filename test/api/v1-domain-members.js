@@ -440,3 +440,84 @@ test('a member cannot create a restricted or reserved name in another form', asy
     .send({ name: 'jane-doe', recipients: member.email });
   t.is(res.status, 200);
 });
+
+test('a restricted name in another script does not cover an unrelated name', async (t) => {
+  const { api } = t.context;
+  const admin = await createUser(t);
+  const member = await createUser(t);
+  const domain = await t.context.domainFactory
+    .withState({
+      members: [
+        { user: admin._id, group: 'admin' },
+        { user: member._id, group: 'user' }
+      ],
+      plan: admin.plan,
+      resolver: t.context.resolver,
+      ignore_mx_check: true,
+      restricted_alias_names: ['josé', 'müller']
+    })
+    .create();
+
+  // the restricted names themselves
+  for (const name of ['josé', 'müller']) {
+    const res = await api
+      .post(`/v1/domains/${domain.name}/aliases`)
+      .auth(member[config.userFields.apiToken])
+      .send({ name, recipients: member.email });
+    t.is(res.status, 400, `name: ${name}`);
+    t.regex(res.body.message, /admin/i, `name: ${name}`);
+  }
+
+  // but not the names their ASCII letters spell
+  for (const name of ['jos', 'mller']) {
+    const res = await api
+      .post(`/v1/domains/${domain.name}/aliases`)
+      .auth(member[config.userFields.apiToken])
+      .send({ name, recipients: member.email });
+    t.is(res.status, 200, `name: ${name}: ${res.text}`);
+  }
+});
+
+test('an admin sees every member and invite in the response to an update', async (t) => {
+  const { api } = t.context;
+  const admin = await createUser(t);
+  const member = await createUser(t);
+  const domain = await t.context.domainFactory
+    .withState({
+      members: [
+        { user: admin._id, group: 'admin' },
+        { user: member._id, group: 'user' }
+      ],
+      plan: admin.plan,
+      resolver: t.context.resolver,
+      ignore_mx_check: true
+    })
+    .create();
+
+  // (these routes fetch the domain again after the change)
+  let res = await api
+    .post(`/v1/domains/${domain.name}/invites`)
+    .auth(admin[config.userFields.apiToken])
+    .send({ email: 'invited@example.com', group: 'user' });
+  t.is(res.status, 200, `${res.text}`);
+  t.is(res.body.members.length, 2);
+  t.is(res.body.invites.length, 1);
+  t.is(res.body.invites[0].email, 'invited@example.com');
+
+  res = await api
+    .put(`/v1/domains/${domain.name}/allowlist`)
+    .auth(admin[config.userFields.apiToken])
+    .send({ allowlist: ['trusted-sender.example.com'] });
+  t.is(res.status, 200, `${res.text}`);
+  t.is(res.body.members.length, 2);
+  t.is(res.body.invites.length, 1);
+  t.deepEqual(res.body.allowlist, ['trusted-sender.example.com']);
+
+  // a member still only gets their own membership
+  res = await api
+    .get(`/v1/domains/${domain.name}`)
+    .auth(member[config.userFields.apiToken]);
+  t.is(res.status, 200);
+  t.is(res.body.members.length, 1);
+  t.deepEqual(res.body.invites, []);
+});

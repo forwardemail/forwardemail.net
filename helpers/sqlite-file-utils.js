@@ -60,21 +60,48 @@ function leftoverCompanionFiles(storagePath) {
 }
 
 //
+// Whether every lock held on this host is listed in /proc/locks.  The kernel
+// only lists the locks of processes visible in the reader's PID namespace,
+// so a process in a container of its own (e.g. the `sqlite` and
+// `sqlite_worker` services of the self-hosted Docker setup, which share the
+// mailbox files but not a PID namespace) would not see the locks of another
+// one.  Only the initial PID namespace sees them all, so elsewhere leftover
+// -wal/-shm files still count as an open connection (as they always did).
+//
+const INIT_PID_NAMESPACE = 'pid:[4026531836]';
+
+function canListLocks() {
+  try {
+    return (
+      fs.readlinkSync('/proc/self/ns/pid') === INIT_PID_NAMESPACE &&
+      fs.existsSync('/proc/locks')
+    );
+  } catch {
+    return false;
+  }
+}
+
+//
 // Whether a process on this host holds a lock on the database file or on its
 // -wal/-shm files.  Every connection to a WAL-mode database, read-only or
 // not, holds a shared lock on the database file and on the -shm file for as
 // long as it is open, and the kernel drops both when the connection closes
-// or its process dies.  Resolves with `true` when the locks cannot be read
-// (no /proc/locks), so callers stay on the safe side.
+// or its process dies.  Resolves with `true` when not every lock can be
+// listed (see `canListLocks`), so callers stay on the safe side.
 //
 // Inodes are compared without their device, which can only report a lock
 // that is not there (never miss one).
 //
 function isDatabaseLocked(storagePath) {
+  if (!canListLocks()) return true;
+
   const inodes = new Set();
   for (const suffix of ['', '-wal', '-shm']) {
     try {
-      inodes.add(fs.statSync(`${storagePath}${suffix}`).ino.toString());
+      // (exact, as a large inode number does not fit in a Number)
+      inodes.add(
+        fs.statSync(`${storagePath}${suffix}`, { bigint: true }).ino.toString()
+      );
     } catch (err) {
       if (err.code !== 'ENOENT') return true;
     }
@@ -233,6 +260,7 @@ async function removeStaleSwapArtifact(
 
 module.exports = {
   COMPANION_SUFFIXES,
+  canListLocks,
   companionFileExists,
   fsyncDirectory,
   leftoverCompanionFiles,

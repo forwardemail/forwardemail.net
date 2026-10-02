@@ -744,3 +744,47 @@ END:VCALENDAR`;
   t.is(result.invite.organizerEmail, 'organizer@münchen.de');
   await CalendarInvites.deleteOne({ _id: result.invite._id });
 });
+
+test('REPLY from a sender whose domain has no DMARC or DKIM, with aligned SPF - processed', async (t) => {
+  const parsedEmail = buildParsedEmail(SAMPLE_REPLY_ACCEPTED);
+
+  // (only aligned SPF authenticated the From address)
+  const result = await checkAndProcessImipMessage(parsedEmail, {
+    fromEmail: 'attendee@external.com',
+    spfAlignedFromEmail: 'attendee@external.com',
+    toEmail: 'organizer@forwardemail.net',
+    messageId: parsedEmail.messageId
+  });
+
+  t.true(result.processed);
+  t.is(result.imipData.partstat, 'ACCEPTED');
+  await CalendarInvites.deleteOne({ _id: result.invite._id });
+});
+
+test('REPLY with aligned SPF from another sender - rejected', async (t) => {
+  const result = await checkAndProcessImipMessage(
+    buildParsedEmail(SAMPLE_REPLY_ACCEPTED),
+    {
+      fromEmail: 'attendee@external.com',
+      spfAlignedFromEmail: 'someone-else@other.example',
+      toEmail: 'organizer@forwardemail.net'
+    }
+  );
+
+  t.false(result.processed);
+  t.true(result.rejected);
+  t.is(result.code, 'sender_attendee_mismatch');
+});
+
+test('REPLY without an authenticated From address - rejected', async (t) => {
+  const result = await checkAndProcessImipMessage(
+    buildParsedEmail(SAMPLE_REPLY_ACCEPTED),
+    {
+      fromEmail: 'attendee@external.com',
+      toEmail: 'organizer@forwardemail.net'
+    }
+  );
+
+  t.false(result.processed);
+  t.true(result.rejected);
+});

@@ -81,12 +81,30 @@ test('a plan change from a link on another site is asked about, not made', async
     t.is(fresh.plan, 'enhanced_protection');
   }
 
+  // a link opened while signed out, followed from the sign-in page once
+  // signed in (same-origin), is asked about too
+  for (const page of ['/en/login', '/en/otp/login', '/login']) {
+    const res = await web
+      .get(`/en/my-account/domains/${domain.name}/billing`)
+      .query({ plan: 'free' })
+      .set('Accept', 'text/html')
+      .set('Sec-Fetch-Site', 'same-origin')
+      .set('Referer', `${config.urls.web}${page}`);
+    t.is(res.status, 302);
+    const fresh = await Domains.findById(domain._id).lean().exec();
+    t.is(fresh.plan, 'enhanced_protection', `from ${page}`);
+  }
+
   // a click on this site still changes the plan
   const res = await web
     .get(`/en/my-account/domains/${domain.name}/billing`)
     .query({ plan: 'free' })
     .set('Accept', 'text/html')
-    .set('Sec-Fetch-Site', 'same-origin');
+    .set('Sec-Fetch-Site', 'same-origin')
+    .set(
+      'Referer',
+      `${config.urls.web}/en/my-account/domains/${domain.name}/billing`
+    );
   t.is(res.status, 302);
   const fresh = await Domains.findById(domain._id).lean().exec();
   t.is(fresh.plan, 'free');

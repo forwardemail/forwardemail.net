@@ -593,7 +593,13 @@ async function create(ctx) {
     throw Boom.badRequest(ctx.translateError('CALENDAR_ID_REQUIRED'));
   }
 
-  if (body.event_id !== undefined && !isSANB(body.event_id)) {
+  // (optional: a missing, null or empty one is generated below)
+  if (
+    body.event_id !== undefined &&
+    body.event_id !== null &&
+    body.event_id !== '' &&
+    !isSANB(body.event_id)
+  ) {
     throw Boom.badRequest(ctx.translateError('CALENDAR_EVENT_INVALID_ID'));
   }
 

@@ -27,6 +27,7 @@ const createWebSocketAsPromised = require('#helpers/create-websocket-as-promised
 const Mailboxes = require('#models/mailboxes');
 const Messages = require('#models/messages');
 const getDatabase = require('#helpers/get-database');
+const { HOURLY_LIMIT } = require('#helpers/bandwidth-limiter');
 const { encrypt } = require('#helpers/encrypt-decrypt');
 
 const IP_ADDRESS = ip.address();
@@ -570,6 +571,22 @@ test('INBOX is matched in any case, as over IMAP', async (t) => {
   t.is(folders.body.filter((f) => f.path.toUpperCase() === 'INBOX').length, 1);
 });
 
+test('API requests are not counted or limited as CalDAV traffic', async (t) => {
+  // the CalDAV hourly bandwidth limit is used up
+  const now = new Date();
+  const day = now.toISOString().split('T')[0];
+  const hour = `${day}T${String(now.getUTCHours()).padStart(2, '0')}`;
+  const key = `bw_${config.env}:caldav:h:${hour}:${t.context.alias.user}`;
+  await t.context.client.set(key, String(HOURLY_LIMIT + 1));
+
+  const res = await t.context.api
+    .get('/v1/folders')
+    .set('Authorization', t.context.auth);
+  t.is(res.status, 200);
+  await setTimeout(100);
+  t.is(await t.context.client.get(key), String(HOURLY_LIMIT + 1));
+});
+
 test('renaming a folder without a new name is a bad request', async (t) => {
   const created = await t.context.api
     .post('/v1/folders')
@@ -1065,4 +1082,22 @@ test('labels given to a new message keep the labels its keywords give it', async
     });
   t.is(res.status, 200);
   t.deepEqual([...res.body.labels].sort(), ['receipts', 'work']);
+});
+
+test('labels given to a new message are kept when its keywords reach the label limit', async (t) => {
+  const keywords = Array.from({ length: 10 }, (_, i) => `keyword${i}`);
+  const res = await t.context.api
+    .post('/v1/messages')
+    .set('Authorization', t.context.auth)
+    .send({
+      to: [{ address: 'recipient@example.com' }],
+      subject: 'many keywords',
+      text: 'body',
+      folder: 'INBOX',
+      flags: keywords,
+      labels: ['work']
+    });
+  t.is(res.status, 200, `${res.text}`);
+  t.is(res.body.labels.length, 10);
+  t.true(res.body.labels.includes('work'));
 });

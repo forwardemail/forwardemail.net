@@ -723,7 +723,14 @@ async function onStore(mailboxId, update, session, fn) {
             path: mailbox.path,
             action: update.action,
             // the labels added or removed, or every label after a `set`
-            labels: deriveLabelsFromFlags(update.value),
+            // (all of the labels removed, which can be more than a message
+            // holds at once)
+            labels: deriveLabelsFromFlags(
+              update.value,
+              update.action === 'remove'
+                ? { limit: Number.POSITIVE_INFINITY }
+                : {}
+            ),
             uids: labelUids
           },
           ['uids']

@@ -274,20 +274,14 @@ async function onboard(ctx, next) {
           position: 'top'
         });
       } catch (err) {
-        // if email failed to send then verify the user automatically
-        if (err.has_email_failed) {
-          ctx.logger.fatal(err);
-          ctx.state.user[config.userFields.hasVerifiedEmail] = true;
-
-          try {
-            ctx.state.user = await ctx.state.user.save();
-          } catch (err) {
-            ctx.logger.fatal(err);
-            ctx.flash('error', ctx.translate('UNKNOWN_ERROR'));
-          }
-        } else {
-          ctx.logger.error(err);
-        }
+        //
+        // the account stays unverified until its code is sent and entered
+        // (it is sent again from the verify page), also when our mail
+        // server failed to send it
+        //
+        if (err.has_email_failed) ctx.logger.fatal(err);
+        else ctx.logger.error(err);
+        if (err.isBoom) ctx.flash('warning', err.message);
       }
     }
 

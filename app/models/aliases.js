@@ -1260,9 +1260,12 @@ Aliases.pre('save', async function (next) {
         domain.restricted_alias_names.length > 0
       )
         reservedMatch = domain.restricted_alias_names.find((name) => {
-          if (name === normalizedName) return true;
+          if (name.normalize('NFKC') === normalizedName) return true;
           // (compared like the reserved lists above, so a restricted
-          // "billing-team" also covers "billing.team" and "billingteam")
+          // "billing-team" also covers "billing.team" and "billingteam";
+          // only for an ASCII name, as stripping the letters of another
+          // script, e.g. "josé" to "jos", would cover an unrelated name)
+          if (!/^[ -~]+$/.test(name)) return false;
           const restricted = name.replace(/[^\da-z]/g, '');
           return restricted !== '' && restricted === string;
         });

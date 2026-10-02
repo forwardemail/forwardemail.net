@@ -1292,7 +1292,8 @@ async function create(ctx) {
         ? [...message.labels]
         : [];
       // with the labels the keywords in `flags` already gave it
-      message.labels = [...previousLabels, ...labels];
+      // (the requested labels first, so they are kept within the limit)
+      message.labels = [...labels, ...previousLabels];
       message.remoteAddress = ctx.ip;
       message.transaction = 'API';
       message.instance = ctx.instance;

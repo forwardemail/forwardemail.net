@@ -11,14 +11,19 @@ const { randomUUID } = require('node:crypto');
 const Database = require('better-sqlite3-multiple-ciphers');
 const mongoose = require('mongoose');
 const ms = require('ms');
+const sinon = require('sinon');
 const test = require('ava');
 
 const workerConfig = require('#helpers/sqlite-worker-config');
 const {
+  canListLocks,
   leftoverCompanionFiles,
   openConnectionCompanionFiles,
   removeStaleSwapArtifact
 } = require('#helpers/sqlite-file-utils');
+
+// (held locks can only all be listed on Linux, in the initial PID namespace)
+const CAN_LIST_LOCKS = canListLocks();
 
 test.beforeEach((t) => {
   t.context.dir = fs.mkdtempSync(path.join(os.tmpdir(), 'sqlite-file-utils-'));
@@ -67,11 +72,35 @@ test('openConnectionCompanionFiles only counts -wal/-shm files of an open connec
   // closing it as the last connection leaves its files behind
   reader.close();
   t.deepEqual(leftoverCompanionFiles(live), ['-wal', '-shm']);
-  t.deepEqual(openConnectionCompanionFiles(live), []);
+  // (where not every lock can be listed, e.g. on macOS, a lock cannot be
+  // ruled out, so the files still count as an open connection)
+  t.deepEqual(
+    openConnectionCompanionFiles(live),
+    CAN_LIST_LOCKS ? [] : ['-wal', '-shm']
+  );
 
   // a rollback journal always counts
   fs.writeFileSync(`${live}-journal`, 'x');
   t.deepEqual(openConnectionCompanionFiles(live), ['-wal', '-shm', '-journal']);
+});
+
+test('-wal/-shm files always count as an open connection outside the initial PID namespace', (t) => {
+  const live = path.join(t.context.dir, `${t.context.id}.sqlite`);
+  fs.writeFileSync(live, 'x');
+  fs.writeFileSync(`${live}-wal`, 'x');
+  fs.writeFileSync(`${live}-shm`, 'x');
+
+  // (e.g. a container of its own, which does not see the locks of a process
+  // in another container that opened the same mailbox)
+  const readlinkSync = sinon.stub(fs, 'readlinkSync');
+  readlinkSync.callThrough();
+  readlinkSync.withArgs('/proc/self/ns/pid').returns('pid:[4026532901]');
+  try {
+    t.false(canListLocks());
+    t.deepEqual(openConnectionCompanionFiles(live), ['-wal', '-shm']);
+  } finally {
+    readlinkSync.restore();
+  }
 });
 
 test('a quarantined mailbox is removed once its retention is over', async (t) => {

@@ -50,6 +50,7 @@ const isValidPassword = require('#helpers/is-valid-password');
 const openDatabaseHandle = require('#helpers/open-database-handle');
 const phrases = require('#config/phrases');
 const workerConfig = require('#helpers/sqlite-worker-config');
+const { canListLocks } = require('#helpers/sqlite-file-utils');
 const { encrypt } = require('#helpers/encrypt-decrypt');
 const {
   acquireRekeyLock,
@@ -480,6 +481,25 @@ test('a reset replaces a mailbox whose -wal/-shm files outlived their connection
   });
   t.true(fs.existsSync(`${storagePath}-wal`));
   t.true(fs.existsSync(`${storagePath}-shm`));
+
+  // (held locks can only all be listed on Linux, in the initial PID
+  // namespace: anywhere else the files still count as an open connection, so
+  // the reset is refused and rolled back, and the previous password keeps
+  // working)
+  if (!canListLocks()) {
+    const state = await getRotationState(aliasId);
+    const tokenHash = state.tokens[0].hash;
+    const failed = await generatePassword(t, ctx, { is_override: true });
+    t.is(failed.status, 409);
+    t.is(failed.body.message, phrases.MAILBOX_CREATION_FAILED);
+    const alias = await getRotationState(aliasId);
+    assertSettled(t, alias);
+    t.is(alias.tokens.length, 1);
+    t.is(alias.tokens[0].hash, tokenHash);
+    t.is(await t.context.client.get(getRekeyLockKey(aliasId)), null);
+    t.is(fs.statSync(storagePath, { bigint: true }).ino, before.ino);
+    return;
+  }
 
   const second = await generatePassword(t, ctx, { is_override: true });
   t.is(second.status, 200);

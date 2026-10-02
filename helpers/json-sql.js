@@ -50,6 +50,20 @@ function assertIdentifier(name) {
   throw err;
 }
 
+//
+// A key of a JSON path written into the query (`'$.<key>'`), e.g. a vCard
+// parameter name such as `x-service-type` (letters, digits, `_` and `-`,
+// none of which ends the string or the path step)
+//
+const RE_JSON_PATH_KEY = /^[A-Za-z_][\w-]*$/;
+
+function assertJsonPathKey(key) {
+  if (typeof key === 'string' && RE_JSON_PATH_KEY.test(key)) return;
+  const err = new TypeError('Invalid SQL identifier');
+  err.identifier = typeof key === 'string' ? key.slice(0, 100) : typeof key;
+  throw err;
+}
+
 function assertCount(name, value) {
   if (value === undefined || value === null) return;
   if (Number.isSafeInteger(value) && value >= 0) return;
@@ -143,7 +157,7 @@ if (!BaseDialect.prototype.wrapIdentifier.isHardened) {
     )
       throw new TypeError(`Invalid ${operator} value`);
     if (operator === '$elemMatch' && value && typeof value === 'object')
-      for (const key of Object.keys(value)) assertIdentifier(key);
+      for (const key of Object.keys(value)) assertJsonPathKey(key);
     return buildComparisonOperator.call(this, operator, field, value);
   };
 

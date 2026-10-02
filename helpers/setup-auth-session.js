@@ -25,6 +25,8 @@ async function onAuthPromise(auth, session) {
   });
 }
 
+const DAV_SERVICES = { CalDAV: 'caldav', CardDAV: 'carddav' };
+
 async function setupAuthSession(ctx, username, password) {
   ctx.state.session = {
     id: ctx.req.id,
@@ -103,12 +105,15 @@ async function setupAuthSession(ctx, username, password) {
   }
 
   //
-  // Requests and responses count toward the account's bandwidth limit, and
-  // requests are refused once it is used up.
+  // CalDAV and CardDAV requests and responses count toward the account's
+  // bandwidth limit, and are refused once it is used up (the REST API, which
+  // signs in aliases here too, is not counted as either)
   //
+  const service = DAV_SERVICES[this.constructor.name];
+  if (!service) return;
   const bandwidth = {
     userId: ctx.state.user?.alias_user_id,
-    service: this.constructor.name === 'CardDAV' ? 'carddav' : 'caldav'
+    service
   };
   const client = this.client || ctx.client;
   if (await isOverBandwidth(client, bandwidth))

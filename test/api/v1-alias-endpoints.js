@@ -3423,3 +3423,28 @@ test('calendar events create rejects an object event_id', async (t) => {
 
   t.is(res.status, 400);
 });
+
+test('calendar and calendar event ids sent as null are generated', async (t) => {
+  const { api } = t.context;
+  const { alias, domain, pass } = await createTestAlias(t);
+  const auth = createAliasAuth(`${alias.name}@${domain.name}`, pass);
+
+  // (as generated API clients send an optional field that was not set)
+  const calendarRes = await api
+    .post('/v1/calendars')
+    .set('Authorization', auth)
+    .send({ name: 'Null Calendar', calendar_id: null });
+  t.is(calendarRes.status, 200, `${calendarRes.text}`);
+  t.truthy(calendarRes.body.id);
+
+  const res = await api
+    .post('/v1/calendar-events')
+    .set('Authorization', auth)
+    .send({
+      calendar_id: calendarRes.body.id,
+      event_id: null,
+      ical: 'BEGIN:VCALENDAR\r\nVERSION:2.0\r\nBEGIN:VEVENT\r\nUID:null-id\r\nDTSTART:20260101T000000Z\r\nEND:VEVENT\r\nEND:VCALENDAR'
+    });
+  t.is(res.status, 200, `${res.text}`);
+  t.truthy(res.body.id);
+});

@@ -84,7 +84,13 @@ async function create(ctx) {
     throw Boom.badRequest(ctx.translateError('CALENDAR_NAME_REQUIRED'));
   }
 
-  if (body.calendar_id !== undefined && !isSANB(body.calendar_id)) {
+  // (optional: a missing, null or empty one is generated below)
+  if (
+    body.calendar_id !== undefined &&
+    body.calendar_id !== null &&
+    body.calendar_id !== '' &&
+    !isSANB(body.calendar_id)
+  ) {
     throw Boom.badRequest(ctx.translateError('CALENDAR_ID_REQUIRED'));
   }
 
