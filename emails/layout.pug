@@ -7,6 +7,10 @@ html(lang=locale)
       meta(name="viewport", content="width=device-width")
       meta(http-equiv="X-UA-Compatible", content="IE=edge")
       meta(name="x-apple-disable-message-reformatting")
+      //- the emails are designed light only; clients that honor this (Apple
+      //- Mail, iOS Mail) keep our colors instead of recoloring them for dark mode
+      meta(name="color-scheme", content="light only")
+      meta(name="supported-color-schemes", content="light only")
       title= subject
       style
         include ../build/css/app-email.css

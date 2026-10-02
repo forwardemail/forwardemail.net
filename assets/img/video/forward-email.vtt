@@ -1,0 +1,190 @@
+WEBVTT
+
+00:00:01.550 --> 00:00:02.700
+This is Forward Email.
+
+00:00:03.350 --> 00:00:04.450
+One open-source service
+
+00:00:04.550 --> 00:00:06.350
+for email on your own domain.
+
+00:00:07.000 --> 00:00:10.200
+More than 1.6 million domains already use it.
+
+00:00:10.850 --> 00:00:11.400
+Forwarding,
+
+00:00:11.500 --> 00:00:12.750
+encrypted mailboxes,
+
+00:00:13.150 --> 00:00:13.600
+calendars,
+
+00:00:13.650 --> 00:00:14.150
+contacts,
+
+00:00:14.350 --> 00:00:15.900
+sending and an API,
+
+00:00:16.100 --> 00:00:17.100
+all in one place.
+
+00:00:18.600 --> 00:00:19.550
+Start with forwarding.
+
+00:00:19.950 --> 00:00:21.650
+Point your MX records at us,
+
+00:00:21.850 --> 00:00:23.650
+add one TXT record,
+
+00:00:23.850 --> 00:00:25.350
+and mail to your domain lands
+
+00:00:25.450 --> 00:00:27.350
+in the inbox you already use.
+
+00:00:27.950 --> 00:00:28.900
+Catch-all addresses,
+
+00:00:29.500 --> 00:00:30.950
+regex rules and webhooks all
+
+00:00:31.050 --> 00:00:32.250
+work on the free plan.
+
+00:00:33.350 --> 00:00:34.750
+Mailboxes go further.
+
+00:00:35.050 --> 00:00:37.300
+Each one is its own encrypted database,
+
+00:00:37.600 --> 00:00:38.850
+opened with your password,
+
+00:00:38.950 --> 00:00:40.300
+so we can't read your mail.
+
+00:00:40.950 --> 00:00:41.700
+Use any mail app
+
+00:00:41.800 --> 00:00:43.450
+over IMAP or POP3,
+
+00:00:43.700 --> 00:00:45.750
+with 10 GB of pooled storage.
+
+00:00:47.000 --> 00:00:49.600
+Sending is unlimited on every paid plan.
+
+00:00:49.750 --> 00:00:52.650
+Use SMTP or our API,
+
+00:00:52.750 --> 00:00:53.550
+and your daily limit
+
+00:00:53.650 --> 00:00:55.300
+grows with your sender reputation.
+
+00:00:56.150 --> 00:00:57.150
+Every message is signed
+
+00:00:57.250 --> 00:00:58.650
+with DKIM and sent
+
+00:00:58.750 --> 00:00:59.950
+from IP addresses
+
+00:01:00.050 --> 00:01:02.150
+with years of sender reputation.
+
+00:01:02.450 --> 00:01:03.650
+Newsletters work too.
+
+00:01:04.700 --> 00:01:05.350
+Calendars,
+
+00:01:05.550 --> 00:01:06.650
+contacts and tasks sync
+
+00:01:06.800 --> 00:01:08.450
+over CalDAV and CardDAV,
+
+00:01:08.550 --> 00:01:09.550
+with the same login.
+
+00:01:10.650 --> 00:01:13.350
+Developers get everything as an API.
+
+00:01:13.550 --> 00:01:14.550
+Inbound mail can reach
+
+00:01:14.700 --> 00:01:16.000
+your app as a webhook,
+
+00:01:16.250 --> 00:01:18.800
+and DMARC reports arrive parsed and readable.
+
+00:01:20.000 --> 00:01:20.400
+Read your mail
+
+00:01:20.450 --> 00:01:21.700
+in our apps for Mac,
+
+00:01:21.850 --> 00:01:22.450
+Windows,
+
+00:01:22.550 --> 00:01:23.100
+Linux,
+
+00:01:23.150 --> 00:01:24.350
+Android and iOS,
+
+00:01:24.600 --> 00:01:25.250
+in your terminal,
+
+00:01:25.450 --> 00:01:26.200
+or in webmail.
+
+00:01:26.650 --> 00:01:27.550
+They work offline,
+
+00:01:27.750 --> 00:01:28.600
+with the local copy
+
+00:01:28.750 --> 00:01:31.250
+encrypted and locked behind biometrics.
+
+00:01:32.500 --> 00:01:36.000
+We're the only 100% open-source email service.
+
+00:01:36.350 --> 00:01:37.700
+Every line is on GitHub,
+
+00:01:38.150 --> 00:01:38.800
+and you can host
+
+00:01:38.850 --> 00:01:39.900
+it yourself with Docker.
+
+00:01:40.550 --> 00:01:42.550
+Our security audit is public too.
+
+00:01:43.600 --> 00:01:44.700
+Forwarding is free.
+
+00:01:45.050 --> 00:01:45.700
+Mailboxes,
+
+00:01:46.100 --> 00:01:46.800
+sending and the rest
+
+00:01:46.850 --> 00:01:48.350
+start at $3 a month,
+
+00:01:48.500 --> 00:01:50.600
+with unlimited domains and aliases.
+
+00:01:52.050 --> 00:01:54.250
+Try it free at forwardemail.net.

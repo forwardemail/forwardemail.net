@@ -249,6 +249,16 @@ document.addEventListener(
   true
 );
 
+// The jump-to handler scrolls to a link's target without following the
+// link, so the skip link (layout.pug) moves focus into the page itself
+$('body').on('click.skipLink', '.fe-skip-link', () => {
+  const main = document.querySelector('#main-content');
+  if (main) main.focus({ preventScroll: true });
+});
+
+// Share dialog (see assets/js/share.js)
+require('./share');
+
 window.addEventListener(
   'load',
   () => {

@@ -659,17 +659,17 @@ async function sendFraudAlert(severity, reports) {
       critical: {
         subject: '🚨 CRITICAL: PayPal Fraud Detection Alert',
         emoji: '🚨',
-        color: '#dc3545'
+        color: '#b91c1c'
       },
       high: {
         subject: '⚠️ HIGH RISK: PayPal Account Review Required',
         emoji: '⚠️',
-        color: '#fd7e14'
+        color: '#c2410c'
       },
       medium: {
         subject: '📊 PayPal Fraud Detection Report',
         emoji: '📊',
-        color: '#ffc107'
+        color: '#92400e'
       }
     };
 
@@ -787,7 +787,7 @@ function generateHTMLReport(reports, severity, severityConfig) {
                 ${
                   user.hasVerifiedEmail
                     ? ''
-                    : ' <span style="color: #dc3545;">[Unverified]</span>'
+                    : ' <span style="color: #b91c1c;">[Unverified]</span>'
                 }
               </li>
             `

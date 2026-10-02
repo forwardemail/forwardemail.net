@@ -138,6 +138,7 @@
   * [Bagaimana Anda melakukan pencarian DNS pada nama domain](#how-do-you-perform-dns-lookups-on-domain-names)
 * [Akun dan Penagihan](#account-and-billing)
   * [Bagaimana cara menghapus akun saya](#how-do-i-delete-my-account)
+  * [Bagaimana cara menambahkan anggota tim ke domain saya](#how-do-i-add-team-members-to-my-domain)
   * [Apakah Anda menawarkan jaminan uang kembali pada paket berbayar](#do-you-offer-a-money-back-guarantee-on-paid-plans)
   * [Jika saya mengganti paket, apakah Anda melakukan prorata dan mengembalikan selisihnya](#if-i-switch-plans-do-you-pro-rate-and-refund-the-difference)
   * [Bisakah saya hanya menggunakan layanan penerusan email ini sebagai server MX "fallback" atau "fallover"]( #can-i-just-use-this-email-forwarding-service-as-a-fallback-or-fallover-mx-server)
@@ -5640,6 +5641,26 @@ Anda dapat menghapus akun Anda kapan saja dengan mengikuti langkah-langkah berik
 </div>
 
 Jika Anda tidak dapat masuk ke akun Anda, silakan hubungi kami di <a href="mailto:support@forwardemail.net">support@forwardemail.net</a> dari alamat email yang terkait dengan akun Anda dan kami akan membantu Anda dengan penghapusan tersebut.
+
+### Bagaimana cara menambahkan anggota tim ke domain saya {#how-do-i-add-team-members-to-my-domain}
+
+Pada [paket Tim](/private-business-email?pricing=true), admin domain dapat mengundang orang lain ke domain tersebut:
+
+1. Buka [Akun Saya → Domain](/my-account/domains) dan klik **Pengaturan** di samping domain.
+2. Di bawah **Kelola Tim**, klik **Undang Anggota Baru**, masukkan alamat email orang tersebut, lalu pilih grup: **Pengguna** dapat membuat alias di domain, dan **Admin** juga dapat mengubah pengaturannya serta mengelola anggotanya.
+3. Orang tersebut menerima email berisi tautan undangan. Untuk menerimanya, ia masuk ke akun Forward Email miliknya dengan alamat yang diundang, atau membuat akun gratis dengan alamat tersebut. Dengan akun baru, ia terlebih dahulu memverifikasi alamat tersebut dengan kode yang dikirim ke alamat itu.
+
+<div class="alert my-3 alert-warning">
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Penting:
+  </strong>
+  <span>
+    Akun Forward Email terpisah dari kotak surat. Kata sandi yang dibuat untuk alias (untuk webmail, IMAP, POP3, atau SMTP) tidak dapat digunakan untuk masuk ke situs web. Jika tautan undangan dibuka saat orang tersebut masuk dengan akun lain, halaman akan menawarkan untuk keluar dan melanjutkan.
+  </span>
+</div>
+
+Undangan kedaluwarsa setelah 7 hari, dan daftar tim menandai undangan yang kedaluwarsa. Untuk mengirim tautan baru, undang kembali alamat yang sama. Untuk membatalkan undangan, klik **Hapus Undangan**.
 
 ### Apakah Anda menawarkan jaminan uang kembali pada paket berbayar {#do-you-offer-a-money-back-guarantee-on-paid-plans}
 

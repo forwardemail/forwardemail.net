@@ -205,6 +205,13 @@
   --fe-state-success: var(--fe-mint);
   --fe-state-danger: var(--fe-danger);
 
+  // Brand blue as text, and the eyebrow pill. Primary itself is 3.8:1 on
+  // Ink, so text takes the lift step and eyebrows the Signal set.
+  --fe-fg-accent: var(--fe-primary-lift);
+  --fe-eyebrow-fg: var(--fe-signal);
+  --fe-eyebrow-bg: var(--fe-signal-a10);
+  --fe-eyebrow-border: var(--fe-signal-a24);
+
   --fe-focus-ring: var(--fe-signal); // 10.9:1 on Ink
 }
 
@@ -234,6 +241,13 @@
   // -deep variants: brand Mint/Signal are ~1.8:1 on light, illegal as text.
   --fe-state-success: var(--fe-mint-deep);
   --fe-state-danger: var(--fe-danger-deep);
+
+  // Brand blue as text (5.2:1 on white), and the eyebrow pill in -deep
+  // (AA on its own 8% tint).
+  --fe-fg-accent: var(--fe-primary);
+  --fe-eyebrow-fg: var(--fe-primary-deep);
+  --fe-eyebrow-bg: var(--fe-primary-a08);
+  --fe-eyebrow-border: var(--fe-primary-a16);
 
   // A Signal ring is invisible on light grounds; primary-deep is 5.9:1+.
   --fe-focus-ring: var(--fe-primary-deep);
@@ -272,6 +286,13 @@
     // Brand Mint/Signal are legal as text on the dark ramp, like .fe-surface-dark.
     --fe-state-success: var(--fe-mint);
     --fe-state-danger: var(--fe-danger);
+
+    // The -deep blues are 1.7:1 to 2.9:1 here (the eyebrow on a raised panel
+    // read as dark blue on navy), so these take the dark set as well.
+    --fe-fg-accent: var(--fe-primary-lift);
+    --fe-eyebrow-fg: var(--fe-signal);
+    --fe-eyebrow-bg: var(--fe-signal-a10);
+    --fe-eyebrow-border: var(--fe-signal-a24);
 
     --fe-focus-ring: var(--fe-signal);
   }

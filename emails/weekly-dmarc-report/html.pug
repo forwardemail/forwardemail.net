@@ -46,11 +46,11 @@ block content
                       strong.text-primary= stats.totalMessages.toLocaleString()
                     td
                       - const spfPct = Math.round(parseFloat(stats.spfAlignedPct));
-                      - const spfColor = spfPct >= 90 ? "#28a745" : spfPct >= 70 ? "#ffc107" : "#dc3545";
+                      - const spfColor = spfPct >= 90 ? "#047857" : spfPct >= 70 ? "#92400e" : "#b91c1c";
                       strong(style=`color: ${spfColor}`)= `${spfPct}%`
                     td
                       - const dkimPct = Math.round(parseFloat(stats.dkimAlignedPct));
-                      - const dkimColor = dkimPct >= 90 ? "#28a745" : dkimPct >= 70 ? "#ffc107" : "#dc3545";
+                      - const dkimColor = dkimPct >= 90 ? "#047857" : dkimPct >= 70 ? "#92400e" : "#b91c1c";
                       strong(style=`color: ${dkimColor}`)= `${dkimPct}%`
 
             //- Message disposition breakdown
@@ -70,8 +70,8 @@ block content
                         = emoji("white_check_mark")
                         = " "
                         = t("Accepted")
-                      td.text-right(style="color: #28a745")= stats.accepted.toLocaleString()
-                      td.text-right(style="color: #28a745")
+                      td.text-right(style="color: #047857")= stats.accepted.toLocaleString()
+                      td.text-right(style="color: #047857")
                         = stats.totalMessages > 0 ? Math.round((stats.accepted / stats.totalMessages) * 100) : 0
                         = "%"
                     if stats.quarantined > 0
@@ -80,8 +80,8 @@ block content
                           = emoji("warning")
                           = " "
                           = t("Quarantined")
-                        td.text-right(style="color: #ffc107")= stats.quarantined.toLocaleString()
-                        td.text-right(style="color: #ffc107")
+                        td.text-right(style="color: #92400e")= stats.quarantined.toLocaleString()
+                        td.text-right(style="color: #92400e")
                           = Math.round((stats.quarantined / stats.totalMessages) * 100)
                           = "%"
                     if stats.rejected > 0
@@ -90,8 +90,8 @@ block content
                           = emoji("x")
                           = " "
                           = t("Rejected")
-                        td.text-right(style="color: #dc3545")= stats.rejected.toLocaleString()
-                        td.text-right(style="color: #dc3545")
+                        td.text-right(style="color: #b91c1c")= stats.rejected.toLocaleString()
+                        td.text-right(style="color: #b91c1c")
                           = Math.round((stats.rejected / stats.totalMessages) * 100)
                           = "%"
 
@@ -117,11 +117,11 @@ block content
                         td.text-right= domain.messages.toLocaleString()
                         td.text-right
                           - const domSpfPct = Math.round(parseFloat(domain.spfAlignedPct));
-                          - const domSpfColor = domSpfPct >= 90 ? "#28a745" : domSpfPct >= 70 ? "#ffc107" : "#dc3545";
+                          - const domSpfColor = domSpfPct >= 90 ? "#047857" : domSpfPct >= 70 ? "#92400e" : "#b91c1c";
                           span(style=`color: ${domSpfColor}`)= `${domSpfPct}%`
                         td.text-right
                           - const domDkimPct = Math.round(parseFloat(domain.dkimAlignedPct));
-                          - const domDkimColor = domDkimPct >= 90 ? "#28a745" : domDkimPct >= 70 ? "#ffc107" : "#dc3545";
+                          - const domDkimColor = domDkimPct >= 90 ? "#047857" : domDkimPct >= 70 ? "#92400e" : "#b91c1c";
                           span(style=`color: ${domDkimColor}`)= `${domDkimPct}%`
                     if additionalDomainsCount > 0
                       tr.text-muted
@@ -173,26 +173,26 @@ block content
                         td.text-right= issue.count.toLocaleString()
                         td.text-center
                           if issue.spfResult === 'pass'
-                            span(style="color: #28a745")= emoji("white_check_mark")
+                            span(style="color: #047857")= emoji("white_check_mark")
                           else
-                            span(style="color: #dc3545")= emoji("x")
+                            span(style="color: #b91c1c")= emoji("x")
                         td.text-center
                           if issue.dkimResult === 'pass'
-                            span(style="color: #28a745")= emoji("white_check_mark")
+                            span(style="color: #047857")= emoji("white_check_mark")
                           else
-                            span(style="color: #dc3545")= emoji("x")
+                            span(style="color: #b91c1c")= emoji("x")
                         td.text-center
                           if issue.disposition === 'reject'
                             span.badge(
-                              style="background-color: #dc3545; color: #fff"
+                              style="background-color: #fce9e9; color: #b91c1c"
                             )= t("Rejected")
                           else if issue.disposition === 'quarantine'
                             span.badge(
-                              style="background-color: #ffc107; color: #212529"
+                              style="background-color: #fdeed3; color: #92400e"
                             )= t("Quarantined")
                           else
                             span.badge(
-                              style="background-color: #28a745; color: #fff"
+                              style="background-color: #e1efeb; color: #047857"
                             )= t("Accepted")
 
             //- Actionable tips

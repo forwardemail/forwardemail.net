@@ -91,6 +91,11 @@ html.h-100.no-js(
     - const isHelp = ctx.pathWithoutLocale && ctx.pathWithoutLocale === "/help";
     - const isRegisterOrLogin = ctx.pathWithoutLocale && ["/register", config.loginRoute].includes(ctx.pathWithoutLocale);
 
+    //- skip link, the first focusable element (see _fe-nav.scss)
+    a.sr-only.sr-only-focusable.btn.btn-primary.fe-skip-link(
+      href="#main-content"
+    )= t("Skip to content")
+
     //- spinner
     block spinner
       include spinner/spinner
@@ -99,7 +104,11 @@ html.h-100.no-js(
       include _nav
 
     //- body
-    main.flex-grow-1.d-flex.flex-column.flex-grow-1(role="main")
+    //- tabindex lets the skip link move focus here
+    main#main-content.flex-grow-1.d-flex.flex-column.flex-grow-1(
+      role="main",
+      tabindex="-1"
+    )
       block body
 
     //- footer

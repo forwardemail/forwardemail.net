@@ -418,6 +418,10 @@ module.exports = (redis) => ({
       // speaker-selection) were dropped: they disabled nothing and logged an
       // "Unrecognized feature" warning on every page view.
       //
+      // web-share is allowed for our own origin: the Share button on public
+      // pages opens the device share sheet (assets/js/share.js), and Chrome
+      // refuses navigator.share() when the policy disables it.
+      //
       const youtube =
         'self "https://www.youtube-nocookie.com" "https://www.youtube.com"';
       ctx.set(
@@ -449,7 +453,7 @@ module.exports = (redis) => ({
           'serial=()',
           'storage-access=()',
           'usb=()',
-          'web-share=()',
+          'web-share=(self)',
           'window-management=()',
           'xr-spatial-tracking=()'
         ].join(', ')

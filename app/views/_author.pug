@@ -25,3 +25,16 @@ ul.fe-byline.no-search(class=bylineSurface)
   li
     span.fe-byline__label.fe-label= t("Time to read")
     span.fe-byline__value= t("Less than 5 minutes")
+  //- Opens the share dialog that _footer.pug renders on public pages
+  //- (hidden without JavaScript, which the dialog needs)
+  if typeof isNotPrivateRoute !== "undefined" && isNotPrivateRoute
+    li.no-js
+      span.fe-byline__label.fe-label= t("Share")
+      button.fe-byline__value.fe-byline__share(
+        type="button",
+        data-toggle="modal",
+        data-target="#modal-share",
+        data-share-open
+      )
+        i.fas.fa-share-alt(aria-hidden="true")
+        = t("Share this page")

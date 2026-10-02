@@ -53,6 +53,36 @@ $question: theme-color('light');
 // @import 'node_modules/highlight.js/scss/default';
 @media (prefers-color-scheme: light) {
   @import 'node_modules/highlight.js/scss/github';
+
+  // The theme's red, orange and green are 3.3:1 to 4.5:1 on the code
+  // background; these darker steps of the same hues are 5:1 or more.
+  .hljs-doctag,
+  .hljs-keyword,
+  .hljs-meta .hljs-keyword,
+  .hljs-template-tag,
+  .hljs-template-variable,
+  .hljs-type,
+  .hljs-variable.language_ {
+    color: #cf222e;
+  }
+
+  .hljs-built_in,
+  .hljs-symbol {
+    color: #953800;
+  }
+
+  .hljs-name,
+  .hljs-quote,
+  .hljs-selector-tag,
+  .hljs-selector-pseudo,
+  .hljs-addition {
+    color: #116329;
+  }
+
+  // the brand blue is 3.9:1 on the primary alert tint
+  .alert a:not(.btn):not(.badge):not(.alert-link) {
+    color: $fe-primary-deep;
+  }
 }
 
 // font awesome

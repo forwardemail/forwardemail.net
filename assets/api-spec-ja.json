@@ -6111,45 +6111,6 @@
           "$ref": "#/components/parameters/domainId"
         }
       ],
-      "get": {
-        "summary": "ドメイン招待を承認",
-        "description": "ドメインへの招待を承諾します。",
-        "tags": [
-          "招待"
-        ],
-        "security": [
-          {
-            "ApiKeyAuth": []
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Domain invite accepted successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "message": {
-                      "type": "string",
-                      "example": "Invite accepted successfully"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "401": {
-            "$ref": "#/components/responses/Unauthorized"
-          },
-          "403": {
-            "$ref": "#/components/responses/Forbidden"
-          },
-          "404": {
-            "$ref": "#/components/responses/NotFound"
-          }
-        }
-      },
       "post": {
         "summary": "ドメイン招待を作成",
         "description": ">[!IMPORTANT]\n>招待されたユーザーが、招待元の管理者が所属する他のドメインで既に承認済みのメンバーである場合、招待は自動的に承認され、メールは送信されません（`group` が `user` の場合のみ。`admin` としての招待は招待された人が承認できるよう当社がメールで送信し、そのリンクはドメインの保留中の招待には含めません）。",
@@ -6271,6 +6232,66 @@
           },
           "404": {
             "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/v1/domains/{domain_id}/invites/{token}": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/domainId"
+        },
+        {
+          "name": "token",
+          "in": "path",
+          "required": true,
+          "description": "招待リンクのトークン",
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "get": {
+        "summary": "ドメイン招待を承認",
+        "description": "ドメインへの招待を承諾します。",
+        "tags": [
+          "招待"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Domain invite accepted successfully",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string",
+                  "example": "You have successfully accepted the invite to this domain and you can now create your first alias."
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "410": {
+            "description": "Gone",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
           }
         }
       }

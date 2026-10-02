@@ -138,6 +138,7 @@
   * [Jak wykonujecie zapytania DNS na nazwach domen](#how-do-you-perform-dns-lookups-on-domain-names)
 * [Konto i rozliczenia](#account-and-billing)
   * [Jak usunąć konto](#how-do-i-delete-my-account)
+  * [Jak dodać członków zespołu do domeny](#how-do-i-add-team-members-to-my-domain)
   * [Czy oferujecie gwarancję zwrotu pieniędzy na płatnych planach](#do-you-offer-a-money-back-guarantee-on-paid-plans)
   * [Jeśli zmienię plan, czy proporcjonalnie zwracacie różnicę](#if-i-switch-plans-do-you-pro-rate-and-refund-the-difference)
   * [Czy mogę używać tej usługi przekazywania maili jako serwera MX "fallback" lub "fallover"](#can-i-just-use-this-email-forwarding-service-as-a-fallback-or-fallover-mx-server)
@@ -5639,6 +5640,26 @@ Możesz usunąć swoje konto w dowolnym momencie, wykonując następujące kroki
 </div>
 
 Jeśli nie możesz zalogować się na swoje konto, skontaktuj się z nami pod adresem <a href="mailto:support@forwardemail.net">support@forwardemail.net</a> z adresu e-mail powiązanego z Twoim kontem, a my pomożemy Ci w jego usunięciu.
+
+### Jak dodać członków zespołu do domeny {#how-do-i-add-team-members-to-my-domain}
+
+W [planie Team](/private-business-email?pricing=true) administrator domeny może zapraszać do niej inne osoby:
+
+1. Przejdź do [Moje konto → Domeny](/my-account/domains) i kliknij **Ustawienia** obok domeny.
+2. W sekcji **Zarządzaj zespołem** kliknij **Zaproś nowego członka**, wpisz adres e-mail tej osoby i wybierz grupę: **Użytkownik** może tworzyć aliasy w domenie, a **Administrator** może także zmieniać jej ustawienia i zarządzać jej członkami.
+3. Zaproszona osoba otrzyma e-mail z linkiem z zaproszeniem. Aby je przyjąć, musi zalogować się na swoje konto Forward Email z zaproszonym adresem albo utworzyć z tym adresem bezpłatne konto. W przypadku nowego konta najpierw potwierdza adres kodem wysłanym na ten adres.
+
+<div class="alert my-3 alert-warning">
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Ważne:
+  </strong>
+  <span>
+    Konto Forward Email jest niezależne od skrzynki pocztowej. Hasło wygenerowane dla aliasu (do webmaila, IMAP, POP3 lub SMTP) nie pozwala zalogować się do witryny. Jeśli link z zaproszeniem zostanie otwarty, gdy ta osoba jest zalogowana na inne konto, strona zaproponuje wylogowanie i kontynuowanie.
+  </span>
+</div>
+
+Zaproszenie wygasa po 7 dniach, a lista zespołu oznacza wygasłe zaproszenia. Aby wysłać nowy link, zaproś ponownie ten sam adres. Aby wycofać zaproszenie, kliknij **Usuń zaproszenie**.
 
 ### Czy oferujecie gwarancję zwrotu pieniędzy na płatnych planach {#do-you-offer-a-money-back-guarantee-on-paid-plans}
 

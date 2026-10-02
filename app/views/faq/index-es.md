@@ -138,6 +138,7 @@
   * [Cómo realizan consultas DNS en nombres de dominio](#how-do-you-perform-dns-lookups-on-domain-names)
 * [Cuenta y Facturación](#account-and-billing)
   * [¿Cómo elimino mi cuenta?](#how-do-i-delete-my-account)
+  * [¿Cómo agrego miembros del equipo a mi dominio?](#how-do-i-add-team-members-to-my-domain)
   * [Ofrecen garantía de devolución de dinero en planes pagos](#do-you-offer-a-money-back-guarantee-on-paid-plans)
   * [Si cambio de plan, hacen prorrateo y reembolsan la diferencia](#if-i-switch-plans-do-you-pro-rate-and-refund-the-difference)
   * [Puedo usar este servicio de reenvío de correo solo como servidor MX "de respaldo" o "fallover"](#can-i-just-use-this-email-forwarding-service-as-a-fallback-or-fallover-mx-server)
@@ -5641,6 +5642,26 @@ Puedes eliminar tu cuenta en cualquier momento siguiendo estos pasos:
 </div>
 
 Si no puedes iniciar sesión en tu cuenta, contáctanos en <a href="mailto:support@forwardemail.net">support@forwardemail.net</a> desde la dirección de correo electrónico asociada a tu cuenta y te ayudaremos con la eliminación.
+
+### ¿Cómo agrego miembros del equipo a mi dominio? {#how-do-i-add-team-members-to-my-domain}
+
+Con el [plan de equipo](/private-business-email?pricing=true), un administrador de un dominio puede invitar a otras personas:
+
+1. Ve a [Mi cuenta → Dominios](/my-account/domains) y haz clic en **Ajustes** junto al dominio.
+2. En **Gestionar equipo**, haz clic en **Invitar a un nuevo miembro**, introduce su dirección de correo electrónico y elige un grupo: un miembro del grupo **Usuario** puede crear alias en el dominio, y uno del grupo **Administración** también puede cambiar su configuración y gestionar sus miembros.
+3. La persona recibe un correo electrónico con un enlace de invitación. Para aceptarla, inicia sesión en su cuenta de Forward Email con la dirección invitada o crea una cuenta gratuita con ella. Con una cuenta nueva, primero verifica la dirección con un código que se envía a ella.
+
+<div class="alert my-3 alert-warning">
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Importante:
+  </strong>
+  <span>
+    Una cuenta de Forward Email es independiente de un buzón. La contraseña generada para un alias (para correo web, IMAP, POP3 o SMTP) no sirve para iniciar sesión en el sitio web. Si el enlace de invitación se abre mientras la persona tiene la sesión iniciada con otra cuenta, la página ofrece cerrar sesión y continuar.
+  </span>
+</div>
+
+Una invitación caduca a los 7 días, y la lista del equipo marca las que han caducado. Para enviar un nuevo enlace, vuelve a invitar a la misma dirección. Para retirar una invitación, haz clic en **Eliminar invitación**.
 
 ### ¿Ofrecen garantía de devolución de dinero en planes pagos? {#do-you-offer-a-money-back-guarantee-on-paid-plans}
 

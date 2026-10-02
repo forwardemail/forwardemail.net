@@ -344,11 +344,11 @@ function buildDigestHtml(opts) {
         </tr>
         <tr style="background: #fff5f5;">
           <td style="padding: 10px;"><strong>${flaggedLabel}</strong></td>
-          <td style="padding: 10px; color: #e65100; font-weight: bold;">${totalFlaggedDomains}</td>
+          <td style="padding: 10px; color: #c2410c; font-weight: bold;">${totalFlaggedDomains}</td>
         </tr>
         <tr>
           <td style="padding: 10px;"><strong>${usersLabel}</strong></td>
-          <td style="padding: 10px; color: #e65100; font-weight: bold;">${totalFlaggedUsers}</td>
+          <td style="padding: 10px; color: #c2410c; font-weight: bold;">${totalFlaggedUsers}</td>
         </tr>
         <tr style="background: #f9f9f9;">
           <td style="padding: 10px;"><strong>Aliases on ${
@@ -358,7 +358,7 @@ function buildDigestHtml(opts) {
         </tr>
         <tr style="background: #fff8e1;">
           <td style="padding: 10px;"><strong>Protected users skipped (flagged but not reported)</strong></td>
-          <td style="padding: 10px; color: #e65100; font-weight: bold;">${totalSkippedUsers}</td>
+          <td style="padding: 10px; color: #c2410c; font-weight: bold;">${totalSkippedUsers}</td>
         </tr>
         <tr>
           <td style="padding: 10px;"><strong>Domains for manual review</strong></td>

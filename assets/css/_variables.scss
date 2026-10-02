@@ -53,6 +53,13 @@ $red: $fe-danger-deep;
 // Aligns .bg-dark and $list-group-active-bg with the Ink navbar.
 $dark: $fe-ink;
 
+// Muted text, placeholders and floating labels. Bootstrap's #6c757d is
+// 4.45:1 on its own #f8f9fa (bg-light, wells); this grey is 5.8:1 there.
+// app-dark.scss sets its own placeholder color before it rebuilds the
+// floating labels.
+$text-muted: #5b636b;
+$input-placeholder-color: #5b636b;
+
 // Radius ramp from the fe layer, so legacy buttons/cards/inputs share the
 // redesigned pages' corner language. Kept as its own block: revert these two
 // lines to restore Bootstrap's 4px/3px if the sitewide shift reads wrong.

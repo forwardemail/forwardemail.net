@@ -8,6 +8,16 @@
 // attribute selectors survive the email CSS build). Colors come from the
 // fe palette so emails match the redesigned site.
 
+// Text colors for emails. Every one is at least 4.5:1 on each light surface
+// an email paints (white, $fe-l-100, $fe-l-200 and the badge tints), so text
+// stays readable when a client keeps our colors and drops a background, and
+// the reverse. $fe-l-500 and $fe-danger-deep fall just under that on the
+// tinted surfaces (4.48:1 and 4.13:1).
+$email-muted: #56667e;
+$email-danger: #b91c1c;
+$email-success: $fe-mint-deep;
+$email-warning: $fe-caution-deep;
+
 // <https://github.com/Automattic/juice/pull/442>
 // <https://github.com/Automattic/juice/issues/439>
 html {
@@ -97,13 +107,27 @@ body.email {
     font-size: 17px;
   }
   .text-muted {
-    color: $fe-l-500 !important;
+    color: $email-muted !important;
   }
   .text-danger {
-    color: $fe-danger-deep !important;
+    color: $email-danger !important;
   }
   .text-success {
-    color: $fe-mint-deep !important;
+    color: $email-success !important;
+  }
+  .text-warning {
+    color: $email-warning !important;
+  }
+  // Bootstrap's primary (3.98:1), info (3:1) and secondary (4.4:1 on the
+  // light panels) are under 4.5:1
+  .text-primary {
+    color: $fe-primary-deep !important;
+  }
+  .text-info {
+    color: #0e7490 !important; // 5.4:1 on white
+  }
+  .text-secondary {
+    color: $email-muted !important;
   }
 
   // cards
@@ -129,7 +153,7 @@ body.email {
   }
   .card-footer {
     padding: 14px 4%;
-    color: $fe-l-500 !important;
+    color: $email-muted !important;
     background-color: $fe-l-100;
     border-top: 1px solid $fe-l-200;
   }
@@ -139,7 +163,17 @@ body.email {
   .bg-light {
     background-color: $fe-l-100 !important;
   }
+  // white text on Bootstrap's green is 3.1:1
+  .bg-success {
+    background-color: $email-success !important;
+  }
+  .bg-danger {
+    background-color: $email-danger !important;
+  }
+  // light text set on the panel itself, so anything inside it that does not
+  // set its own color inherits a readable one
   .bg-dark {
+    color: $fe-l-000 !important;
     background-color: $fe-ink !important;
   }
   .border-dark {
@@ -170,6 +204,16 @@ body.email {
     color: $fe-l-000;
     background-color: $fe-primary;
     border-color: $fe-primary;
+  }
+  .btn-success {
+    color: $fe-l-000;
+    background-color: $email-success;
+    border-color: $email-success;
+  }
+  .btn-danger {
+    color: $fe-l-000;
+    background-color: $email-danger;
+    border-color: $email-danger;
   }
   .btn-dark {
     color: $fe-l-000;
@@ -206,7 +250,7 @@ body.email {
     background-color: #e1efeb; // 12% mint-deep on white
   }
   .badge-danger {
-    color: $fe-danger-deep;
+    color: $email-danger;
     background-color: #fce9e9; // 10% danger-deep on white
   }
   .badge-warning {
@@ -218,6 +262,12 @@ body.email {
   // wrap long lines (a long address in a dig example) instead of scrolling:
   // lines break between words, and only a word too long for the line (an
   // address, a hash) is split; break-all split every word ("Domain I" / "D")
+
+  // Code blocks are dark text on a light panel. A dark panel needed its light
+  // text color to arrive too: a client, a forward or an older build that
+  // lost the color showed dark text on the dark panel, and one that lost the
+  // background showed light text on white. Dark on light reads in both cases
+  // and in clients that invert colors for dark mode.
   pre {
     max-width: 100%;
     white-space: pre-wrap !important;
@@ -225,17 +275,23 @@ body.email {
     word-break: break-word;
     padding: 12px 16px;
     text-align: left;
-    color: $fe-l-200 !important;
-    background-color: $fe-ink !important;
+    color: $fe-l-700 !important;
+    background-color: $fe-l-100 !important;
+    border: 1px solid $fe-l-300 !important;
     border-radius: $fe-radius-md !important;
   }
+  // Bootstrap colors inline code pink (3.8:1 on white)
   code {
     overflow-wrap: anywhere;
     word-break: break-word;
+    color: $fe-l-700;
   }
-  // light text on the dark block; code outside a block keeps its color
+  // code inside a link keeps the link color
+  a code {
+    color: inherit;
+  }
   pre code {
-    color: $fe-l-200 !important;
+    color: $fe-l-700 !important;
   }
   .table {
     color: $fe-l-600;
@@ -290,6 +346,6 @@ body.email {
 
   // footer
   .email-footer a {
-    color: $fe-l-500;
+    color: $email-muted;
   }
 }

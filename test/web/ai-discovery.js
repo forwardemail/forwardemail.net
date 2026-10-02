@@ -85,6 +85,26 @@ test('robots.txt allows AI agents and points at the discovery documents', async 
   t.regex(res.text, /\/\.well-known\/ai-catalog\.json/);
 });
 
+test('robots.txt sets no crawl delay for search engines', async (t) => {
+  const res = await t.context.web.get('/robots.txt');
+  t.is(res.status, 200);
+  // a group per user agent, so the * group's Crawl-delay does not reach them
+  const groups = res.text.split(/\n\s*\n/);
+  for (const agent of [
+    'Googlebot',
+    'Bingbot',
+    'OAI-SearchBot',
+    'Claude-SearchBot',
+    'DuckAssistBot'
+  ]) {
+    const group = groups.find((g) =>
+      g.split('\n').includes(`User-agent: ${agent}`)
+    );
+    t.truthy(group, `${agent} has a group`);
+    t.notRegex(group, /^crawl-delay:/im, `${agent} has no crawl delay`);
+  }
+});
+
 test('revisioned build assets are cached as immutable for a year', async (t) => {
   const manifest = JSON.parse(fs.readFileSync(config.manifest, 'utf8'));
   const file = Object.values(manifest).find((f) =>

@@ -32,8 +32,19 @@ const { Users } = require('#models');
 const options = { length: 10, type: 'numeric' };
 const store = new SessionChallengeStore();
 
+// a path on this site to return to after signing out, or the home page
+function signOutReturnTo(ctx) {
+  const returnTo = ctx.query.return_to;
+  return isSANB(returnTo) &&
+    returnTo.startsWith('/') &&
+    isSafeReturnTo(returnTo, config.urls.web)
+    ? returnTo
+    : ctx.state.l();
+}
+
 async function logout(ctx) {
-  if (!ctx.isAuthenticated()) return ctx.redirect(ctx.state.l());
+  // (already signed out, e.g. the session expired: go where the link said)
+  if (!ctx.isAuthenticated()) return ctx.redirect(signOutReturnTo(ctx));
 
   //
   // this is a GET (the logout links in the navigation), and the session
@@ -73,7 +84,10 @@ async function logout(ctx) {
     timer: 3000,
     position: 'top'
   });
-  ctx.redirect(ctx.state.l());
+
+  // "Sign out and continue" on a team invite opened with another account
+  // (invite.pug) comes back to the invite; only a path on this site
+  ctx.redirect(signOutReturnTo(ctx));
 
   // remove from the user session array the matching value
   Users.findByIdAndUpdate(userId, {

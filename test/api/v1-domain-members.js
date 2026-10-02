@@ -250,6 +250,21 @@ test('promoting a member to admin takes them accepting it', async (t) => {
     )
   );
   t.is(updated.invites.length, 0);
+
+  // accepting the same link again says they are a member (the invite is gone)
+  res = await api
+    .get(`/v1/domains/${domain.id}/invites/${invites[0].token}`)
+    .auth(member[config.userFields.apiToken]);
+  t.is(res.status, 200);
+  t.is(res.text, phrases.INVITE_ALREADY_ACCEPTED);
+
+  // and someone who is not a member gets "not found"
+  const stranger = await createUser(t);
+  res = await api
+    .get(`/v1/domains/${domain.id}/invites/${invites[0].token}`)
+    .auth(stranger[config.userFields.apiToken]);
+  t.is(res.status, 404);
+  t.is(res.body.message, phrases.INVITE_DOES_NOT_EXIST);
 });
 
 test('removing a member withdraws their pending invites', async (t) => {

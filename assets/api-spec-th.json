@@ -6111,45 +6111,6 @@
           "$ref": "#/components/parameters/domainId"
         }
       ],
-      "get": {
-        "summary": "ยอมรับคำเชิญโดเมน",
-        "description": "ยอมรับคำเชิญเข้าร่วมโดเมน",
-        "tags": [
-          "คำเชิญ"
-        ],
-        "security": [
-          {
-            "ApiKeyAuth": []
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Domain invite accepted successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "message": {
-                      "type": "string",
-                      "example": "Invite accepted successfully"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "401": {
-            "$ref": "#/components/responses/Unauthorized"
-          },
-          "403": {
-            "$ref": "#/components/responses/Forbidden"
-          },
-          "404": {
-            "$ref": "#/components/responses/NotFound"
-          }
-        }
-      },
       "post": {
         "summary": "สร้างคำเชิญโดเมน",
         "description": ">[!IMPORTANT]\n>หากผู้ใช้ที่ได้รับคำเชิญเป็นสมาชิกที่ได้รับการยอมรับแล้วในโดเมนอื่นที่ผู้ดูแลระบบผู้เชิญเป็นสมาชิกอยู่ ระบบจะยอมรับคำเชิญโดยอัตโนมัติและจะไม่ส่งอีเมล (เฉพาะ `group` ที่เป็น `user` เท่านั้น: เราส่งคำเชิญในฐานะ `admin` ทางอีเมลเพื่อให้ผู้ได้รับเชิญยอมรับ และไม่รวมลิงก์ของคำเชิญไว้ในคำเชิญที่รอดำเนินการของโดเมน)",
@@ -6271,6 +6232,66 @@
           },
           "404": {
             "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/v1/domains/{domain_id}/invites/{token}": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/domainId"
+        },
+        {
+          "name": "token",
+          "in": "path",
+          "required": true,
+          "description": "โทเค็นจากลิงก์คำเชิญ",
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "get": {
+        "summary": "ยอมรับคำเชิญโดเมน",
+        "description": "ยอมรับคำเชิญเข้าร่วมโดเมน",
+        "tags": [
+          "คำเชิญ"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Domain invite accepted successfully",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string",
+                  "example": "You have successfully accepted the invite to this domain and you can now create your first alias."
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "410": {
+            "description": "Gone",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
           }
         }
       }

@@ -6111,45 +6111,6 @@
           "$ref": "#/components/parameters/domainId"
         }
       ],
-      "get": {
-        "summary": "قبول دعوة النطاق",
-        "description": "قبول دعوة إلى المجال.",
-        "tags": [
-          "دعوات"
-        ],
-        "security": [
-          {
-            "ApiKeyAuth": []
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Domain invite accepted successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "message": {
-                      "type": "string",
-                      "example": "Invite accepted successfully"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "401": {
-            "$ref": "#/components/responses/Unauthorized"
-          },
-          "403": {
-            "$ref": "#/components/responses/Forbidden"
-          },
-          "404": {
-            "$ref": "#/components/responses/NotFound"
-          }
-        }
-      },
       "post": {
         "summary": "إنشاء دعوة للمجال",
         "description": ">[!IMPORTANT]\n>إذا كان المستخدم المدعو عضوًا مقبولًا في أي نطاق آخر ينتمي إليه المسؤول الذي دعاه، فسيتم قبول الدعوة تلقائيًا ولن يتم إرسال بريد إلكتروني (فقط عند تعيين `group` إلى `user`: نرسل الدعوة بصفة `admin` عبر البريد الإلكتروني ليقبلها المدعو، ونستبعد رابطها من الدعوات المعلقة للنطاق).",
@@ -6271,6 +6232,66 @@
           },
           "404": {
             "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/v1/domains/{domain_id}/invites/{token}": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/domainId"
+        },
+        {
+          "name": "token",
+          "in": "path",
+          "required": true,
+          "description": "الرمز المميز من رابط الدعوة",
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "get": {
+        "summary": "قبول دعوة النطاق",
+        "description": "قبول دعوة إلى المجال.",
+        "tags": [
+          "دعوات"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Domain invite accepted successfully",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string",
+                  "example": "You have successfully accepted the invite to this domain and you can now create your first alias."
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "410": {
+            "description": "Gone",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
           }
         }
       }

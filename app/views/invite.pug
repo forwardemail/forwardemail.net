@@ -1,0 +1,37 @@
+extends layout
+
+//- A team invite link opened while signed out, or with another account
+//- (see invite-landing.js and retrieve-invite.js). The accept button itself
+//- is on my-account/accept-invite.pug, once the invitee is signed in with the
+//- invited address.
+
+block append meta
+  //- Prevent the invite token from leaking via Referer header
+  meta(name="referrer", content="no-referrer")
+
+block body
+  - const esc = (value) => String(value).replace(/[&<>"']/g, (c) => `&#${c.codePointAt(0)};`);
+  .min-vh-80.d-flex.flex-column
+    .container.py-3
+      .text-center: h1.my-3.py-3= t("Accept domain invite")
+      .row
+        .col-sm-12.col-md-8.offset-md-2.col-lg-6.offset-lg-3
+          if invite.domainName
+            p.lead.text-center: strong.notranslate= invite.domainName
+          if invite.state === 'signed-out'
+            p!= t('This invite is for <strong class="notranslate">%s</strong>. To accept it, sign in to or create a free Forward Email account with that address.', esc(invite.email))
+            .alert.alert-warning.small= t("The password we generate for a mailbox (webmail, IMAP, or SMTP) does not work here. Your Forward Email account has its own password.")
+            a.btn.btn-success.btn-lg.btn-block(
+              href=`${l("/register")}?email=${encodeURIComponent(invite.email)}&return_to=${encodeURIComponent(ctx.path)}`
+            )= t("Create account")
+            a.btn.btn-outline-dark.btn-lg.btn-block(
+              href=`${l(config.loginRoute)}?return_to=${encodeURIComponent(ctx.path)}`
+            )= t("Sign in")
+          else if invite.state === 'wrong-account'
+            p!= t('This invite is for <strong class="notranslate">%s</strong>, but you are signed in as <strong class="notranslate">%s</strong>.', esc(invite.email), esc(invite.signedInAs))
+            p= t("Sign out, then sign in or sign up with the invited address.")
+            a.btn.btn-primary.btn-lg.btn-block(
+              href=`${l("/logout")}?return_to=${encodeURIComponent(ctx.path)}`
+            )= t("Sign out and continue")
+          else if invite.state === 'expired'
+            .alert.alert-warning= t("This invite has expired. Ask an admin of the domain to send you a new one.")

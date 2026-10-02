@@ -6111,45 +6111,6 @@
           "$ref": "#/components/parameters/domainId"
         }
       ],
-      "get": {
-        "summary": "Godta domeneinvitasjon",
-        "description": "Godta en invitasjon til et domene.",
-        "tags": [
-          "Invitasjoner"
-        ],
-        "security": [
-          {
-            "ApiKeyAuth": []
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Domain invite accepted successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "message": {
-                      "type": "string",
-                      "example": "Invite accepted successfully"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "401": {
-            "$ref": "#/components/responses/Unauthorized"
-          },
-          "403": {
-            "$ref": "#/components/responses/Forbidden"
-          },
-          "404": {
-            "$ref": "#/components/responses/NotFound"
-          }
-        }
-      },
       "post": {
         "summary": "Opprett domeneinvitasjon",
         "description": ">[!IMPORTANT]\n>Hvis brukeren som inviteres allerede er et akseptert medlem av andre domener som administratoren som inviterer dem er medlem av, vil invitasjonen automatisk godtas og det sendes ikke en e-post (kun for en `group` av `user`: en invitasjon som `admin` sender vi på e-post slik at den inviterte kan godta den, og vi holder lenken utenfor domenets ventende invitasjoner).",
@@ -6271,6 +6232,66 @@
           },
           "404": {
             "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/v1/domains/{domain_id}/invites/{token}": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/domainId"
+        },
+        {
+          "name": "token",
+          "in": "path",
+          "required": true,
+          "description": "Tokenet fra invitasjonslenken",
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "get": {
+        "summary": "Godta domeneinvitasjon",
+        "description": "Godta en invitasjon til et domene.",
+        "tags": [
+          "Invitasjoner"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Domain invite accepted successfully",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string",
+                  "example": "You have successfully accepted the invite to this domain and you can now create your first alias."
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "410": {
+            "description": "Gone",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
           }
         }
       }

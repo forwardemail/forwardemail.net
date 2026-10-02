@@ -145,6 +145,7 @@
   * [How do you perform DNS lookups on domain names](#how-do-you-perform-dns-lookups-on-domain-names)
 * [Account and Billing](#account-and-billing)
   * [How do I delete my account](#how-do-i-delete-my-account)
+  * [How do I add team members to my domain](#how-do-i-add-team-members-to-my-domain)
   * [Do you offer a money back guarantee on paid plans](#do-you-offer-a-money-back-guarantee-on-paid-plans)
   * [If I switch plans do you pro-rate and refund the difference](#if-i-switch-plans-do-you-pro-rate-and-refund-the-difference)
   * [Can I just use this email forwarding service as a "fallback" or "fallover" MX server](#can-i-just-use-this-email-forwarding-service-as-a-fallback-or-fallover-mx-server)
@@ -5794,6 +5795,26 @@ You can delete your account at any time by following these steps:
 </div>
 
 If you are unable to log in to your account, please contact us at <a href="mailto:support@forwardemail.net"><support@forwardemail.net></a> from the email address associated with your account and we will assist you with the deletion.
+
+### How do I add team members to my domain
+
+On the [Team plan](/private-business-email?pricing=true), an admin of a domain can invite other people to it:
+
+1. Go to [My Account → Domains](/my-account/domains) and click **Settings** next to the domain.
+2. Under **Manage Team**, click **Invite New Member**, enter their email address, and choose a group: a **User** can create aliases on the domain, and an **Admin** can also change its settings and manage its members.
+3. They receive an email with an invite link. To accept it, they sign in to their Forward Email account with the invited address, or create a free account with it. With a new account, they verify the address first, using a code sent to it.
+
+<div class="alert my-3 alert-warning">
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Important:
+  </strong>
+  <span>
+    A Forward Email account is separate from a mailbox. The password we generate for an alias (for webmail, IMAP, POP3, or SMTP) does not sign in to the website. If they open the link while signed in with another account, they can sign out and continue from that page.
+  </span>
+</div>
+
+An invite expires after 7 days, and the team list shows an **Expired** badge next to it. To send a new link, invite the same address again. To withdraw an invite, click **Delete Invite**.
 
 ### Do you offer a money back guarantee on paid plans
 

@@ -138,6 +138,7 @@
   * [Hoe voert u DNS-zoekopdrachten uit op domeinnamen](#how-do-you-perform-dns-lookups-on-domain-names)
 * [Account en facturering](#account-and-billing)
   * [Hoe verwijder ik mijn account](#how-do-i-delete-my-account)
+  * [Hoe voeg ik teamleden toe aan mijn domein](#how-do-i-add-team-members-to-my-domain)
   * [Biedt u een geld-terug-garantie op betaalde abonnementen](#do-you-offer-a-money-back-guarantee-on-paid-plans)
   * [Als ik van abonnement wissel, past u dan pro rata aan en vergoedt u het verschil](#if-i-switch-plans-do-you-pro-rate-and-refund-the-difference)
   * [Kan ik deze e-mail forwarding dienst gewoon gebruiken als een "fallback" of "fallover" MX-server](#can-i-just-use-this-email-forwarding-service-as-a-fallback-or-fallover-mx-server)
@@ -5640,6 +5641,26 @@ Je kunt je account op elk moment verwijderen door deze stappen te volgen:
 </div>
 
 Als je niet kunt inloggen op je account, neem dan contact met ons op via <a href="mailto:support@forwardemail.net">support@forwardemail.net</a> vanaf het e-mailadres dat aan je account is gekoppeld en we zullen je helpen met de verwijdering.
+
+### Hoe voeg ik teamleden toe aan mijn domein {#how-do-i-add-team-members-to-my-domain}
+
+Met het [Team-plan](/private-business-email?pricing=true) kan een beheerder van een domein andere mensen voor dat domein uitnodigen:
+
+1. Ga naar [Mijn account → Domeinen](/my-account/domains) en klik op **Instellingen** naast het domein.
+2. Klik onder **Team beheren** op **Nieuw lid uitnodigen**, voer hun e-mailadres in en kies een groep: een **Gebruiker** kan aliassen op het domein aanmaken, en een **Beheerder** kan ook de instellingen van het domein wijzigen en de leden beheren.
+3. Ze ontvangen een e-mail met een uitnodigingslink. Om die te accepteren, melden ze zich met het uitgenodigde adres aan bij hun Forward Email-account, of maken ze met dat adres gratis een account aan. Met een nieuw account bevestigen ze eerst het adres met een code die ernaartoe wordt gestuurd.
+
+<div class="alert my-3 alert-warning">
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Belangrijk:
+  </strong>
+  <span>
+    Een Forward Email-account staat los van een mailbox. Met het wachtwoord dat voor een alias is gegenereerd (voor webmail, IMAP, POP3 of SMTP) kun je niet inloggen op de website. Als de uitnodigingslink wordt geopend terwijl ze met een ander account zijn aangemeld, biedt de pagina aan om af te melden en door te gaan.
+  </span>
+</div>
+
+Een uitnodiging verloopt na 7 dagen, en de teamlijst markeert een verlopen uitnodiging. Nodig hetzelfde adres opnieuw uit om een nieuwe link te sturen. Klik op **Uitnodiging verwijderen** om een uitnodiging in te trekken.
 
 ### Bieden jullie een geld-terug-garantie op betaalde abonnementen {#do-you-offer-a-money-back-guarantee-on-paid-plans}
 

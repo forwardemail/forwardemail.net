@@ -138,6 +138,7 @@
   * [Hur utför ni DNS-uppslag på domännamn](#how-do-you-perform-dns-lookups-on-domain-names)
 * [Konto och fakturering](#account-and-billing)
   * [Hur tar jag bort mitt konto](#how-do-i-delete-my-account)
+  * [Hur lägger jag till teammedlemmar i min domän](#how-do-i-add-team-members-to-my-domain)
   * [Erbjuder ni pengarna tillbaka-garanti på betalda planer](#do-you-offer-a-money-back-guarantee-on-paid-plans)
   * [Om jag byter plan, gör ni proportionell återbetalning av skillnaden](#if-i-switch-plans-do-you-pro-rate-and-refund-the-difference)
   * [Kan jag bara använda denna e-postvidarebefordran som en "fallback" eller "fallover" MX-server](#can-i-just-use-this-email-forwarding-service-as-a-fallback-or-fallover-mx-server)
@@ -5640,6 +5641,26 @@ Du kan när som helst ta bort ditt konto genom att följa dessa steg:
 </div>
 
 Om du inte kan logga in på ditt konto, vänligen kontakta oss på <a href="mailto:support@forwardemail.net">support@forwardemail.net</a> från den e-postadress som är kopplad till ditt konto så hjälper vi dig med borttagningen.
+
+### Hur lägger jag till teammedlemmar i min domän {#how-do-i-add-team-members-to-my-domain}
+
+Med [Team-planen](/private-business-email?pricing=true) kan en administratör för en domän bjuda in andra personer till den:
+
+1. Gå till [Mitt konto → Domäner](/my-account/domains) och klicka på **Inställningar** bredvid domänen.
+2. Under **Hantera teamet** klickar du på **Bjud in ny medlem**, anger personens e-postadress och väljer en grupp: gruppen **Användare** kan skapa alias på domänen, och gruppen **Administration** kan även ändra domänens inställningar och hantera dess medlemmar.
+3. Personen får ett e-postmeddelande med en inbjudningslänk. För att acceptera den loggar personen in på sitt Forward Email-konto med den inbjudna adressen, eller skapar ett kostnadsfritt konto med den. Med ett nytt konto verifierar personen först adressen med en kod som skickas dit.
+
+<div class="alert my-3 alert-warning">
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Viktigt:
+  </strong>
+  <span>
+    Ett Forward Email-konto är skilt från en brevlåda. Lösenordet som genererats för ett alias (för webmail, IMAP, POP3 eller SMTP) fungerar inte för att logga in på webbplatsen. Om inbjudningslänken öppnas medan personen är inloggad med ett annat konto erbjuder sidan att logga ut och fortsätta.
+  </span>
+</div>
+
+En inbjudan går ut efter 7 dagar, och teamlistan markerar en utgången inbjudan. Bjud in samma adress igen för att skicka en ny länk. Klicka på **Ta bort inbjudan** för att dra tillbaka en inbjudan.
 
 ### Erbjuder ni pengarna tillbaka-garanti på betalda planer {#do-you-offer-a-money-back-guarantee-on-paid-plans}
 

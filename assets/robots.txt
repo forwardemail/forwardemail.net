@@ -7,6 +7,16 @@ Content-Signal: search=yes, ai-input=yes, ai-train=yes
 Disallow:
 Crawl-delay: 1
 
+# Search engines crawl without a delay (a group of their own, so the
+# Crawl-delay above does not apply to them).
+User-agent: Googlebot
+Content-Signal: search=yes, ai-input=yes, ai-train=yes
+Disallow:
+
+User-agent: Bingbot
+Content-Signal: search=yes, ai-input=yes, ai-train=yes
+Disallow:
+
 # Allow all AI and LLM bots full access.
 User-agent: Google-Extended
 Disallow:

@@ -74,6 +74,19 @@
   color: var(--fe-icon-active);
 }
 
+// The Share control in the byline is a button drawn as a byline value
+.fe-byline__share {
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+}
+
+.fe-byline__share:hover,
+.fe-byline__share:focus-visible {
+  text-decoration: underline;
+}
+
 // ============================================
 // BODY SECTION
 // ============================================

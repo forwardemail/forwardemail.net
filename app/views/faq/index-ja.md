@@ -138,6 +138,7 @@
   * [ドメイン名のDNSルックアップはどのように行いますか](#how-do-you-perform-dns-lookups-on-domain-names)
 * [アカウントと請求](#account-and-billing)
   * [アカウントを削除するにはどうすればよいですか](#how-do-i-delete-my-account)
+  * [ドメインにチームメンバーを追加するにはどうすればよいですか](#how-do-i-add-team-members-to-my-domain)
   * [有料プランに返金保証はありますか](#do-you-offer-a-money-back-guarantee-on-paid-plans)
   * [プラン変更時に日割り計算や差額返金はありますか](#if-i-switch-plans-do-you-pro-rate-and-refund-the-difference)
   * [このメール転送サービスを「フォールバック」や「フォールオーバー」MXサーバーとして使えますか](#can-i-just-use-this-email-forwarding-service-as-a-fallback-or-fallover-mx-server)
@@ -5640,6 +5641,26 @@ Backscattererリストに登録される一般的な理由は、誤送信され�
 </div>
 
 アカウントにログインできない場合は、アカウントに関連付けられているメールアドレスから <a href="mailto:support@forwardemail.net">support@forwardemail.net</a> までご連絡ください。削除の手続きをサポートいたします。
+
+### ドメインにチームメンバーを追加するにはどうすればよいですか {#how-do-i-add-team-members-to-my-domain}
+
+[チームプラン](/private-business-email?pricing=true)では、ドメインの管理者が他のユーザーをドメインに招待できます。
+
+1. [私のアカウント → ドメイン](/my-account/domains) に移動し、ドメインの横にある **設定** をクリックします。
+2. **チーム管理** で **新しいメンバーを招待** をクリックし、相手のメールアドレスを入力してグループを選択します。**ユーザー** はドメインでエイリアスを作成でき、**管理者** はさらにドメインの設定を変更し、メンバーを管理できます。
+3. 相手には招待リンクが記載されたメールが届きます。招待を承諾するには、招待されたアドレスで Forward Email アカウントにサインインするか、そのアドレスで無料アカウントを作成します。新しいアカウントの場合は、先にそのアドレスに送信されるコードでアドレスを確認します。
+
+<div class="alert my-3 alert-warning">
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    重要:
+  </strong>
+  <span>
+    Forward Email アカウントはメールボックスとは別のものです。エイリアス用に生成されたパスワード（ウェブメール、IMAP、POP3、SMTP 用）では、ウェブサイトにサインインできません。別のアカウントでサインインしている状態で招待リンクを開くと、サインアウトして続行するよう案内されます。
+  </span>
+</div>
+
+招待は7日後に期限切れとなり、チームの一覧には期限切れの招待が表示されます。新しいリンクを送るには、同じアドレスを再度招待します。招待を取り消すには、**招待を削除** をクリックします。
 
 ### 有料プランに返金保証はありますか {#do-you-offer-a-money-back-guarantee-on-paid-plans}
 

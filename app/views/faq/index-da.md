@@ -138,6 +138,7 @@
   * [Hvordan udfører I DNS opslag på domænenavne](#how-do-you-perform-dns-lookups-on-domain-names)
 * [Konto og Fakturering](#account-and-billing)
   * [Hvordan sletter jeg min konto](#how-do-i-delete-my-account)
+  * [Hvordan tilføjer jeg teammedlemmer til mit domæne](#how-do-i-add-team-members-to-my-domain)
   * [Tilbyder I pengene tilbage garanti på betalte planer](#do-you-offer-a-money-back-guarantee-on-paid-plans)
   * [Hvis jeg skifter planer, pro-rater og refunderer I forskellen](#if-i-switch-plans-do-you-pro-rate-and-refund-the-difference)
   * [Kan jeg bare bruge denne email videresendelsestjeneste som en "fallback" eller "fallover" MX-server](#can-i-just-use-this-email-forwarding-service-as-a-fallback-or-fallover-mx-server)
@@ -5641,6 +5642,26 @@ Du kan til enhver tid slette din konto ved at følge disse trin:
 </div>
 
 Hvis du ikke kan logge ind på din konto, bedes du kontakte os på <a href="mailto:support@forwardemail.net">support@forwardemail.net</a> fra den e-mailadresse, der er knyttet til din konto, og vi vil hjælpe dig med sletningen.
+
+### Hvordan tilføjer jeg teammedlemmer til mit domæne {#how-do-i-add-team-members-to-my-domain}
+
+Med [Team-planen](/private-business-email?pricing=true) kan en administrator af et domæne invitere andre personer til det:
+
+1. Gå til [Min konto → Domæner](/my-account/domains), og klik på **Indstillinger** ud for domænet.
+2. Under **Administrer teamet** skal du klikke på **Inviter nyt medlem**, indtaste personens e-mailadresse og vælge en gruppe: en **Bruger** kan oprette aliasser på domænet, og en **Admin** kan også ændre dets indstillinger og administrere dets medlemmer.
+3. Personen modtager en e-mail med et invitationslink. For at acceptere den logger personen ind på sin Forward Email-konto med den inviterede adresse eller opretter en gratis konto med den. Med en ny konto bekræfter personen først adressen med en kode, der sendes til den.
+
+<div class="alert my-3 alert-warning">
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Vigtigt:
+  </strong>
+  <span>
+    En Forward Email-konto er adskilt fra en postkasse. Den adgangskode, der er genereret til et alias (til webmail, IMAP, POP3 eller SMTP), kan ikke bruges til at logge ind på hjemmesiden. Hvis invitationslinket åbnes, mens personen er logget ind med en anden konto, tilbyder siden at logge ud og fortsætte.
+  </span>
+</div>
+
+En invitation udløber efter 7 dage, og teamlisten markerer udløbne invitationer. For at sende et nyt link skal du invitere den samme adresse igen. For at trække en invitation tilbage skal du klikke på **Slet Invitation**.
 
 ### Tilbyder I pengene tilbage garanti på betalte planer {#do-you-offer-a-money-back-guarantee-on-paid-plans}
 

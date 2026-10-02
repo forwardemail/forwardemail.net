@@ -10,14 +10,18 @@
 //- preload="none" and js/video-modal.js sets its poster when the modal
 //- opens; the card's image is lazy. MP4 (H.264 + AAC) is the first source
 //- and plays in every current browser, and WebM (VP9 + Opus) covers builds
-//- without H.264. The captions are part of the picture. Without JavaScript,
-//- the button and the card are plain links to the MP4.
+//- without H.264. The captions are part of the picture. A video with a
+//- captions file also carries them as a WebVTT track, off by default so they
+//- do not double the ones in the picture, for screen readers and the
+//- player's captions menu. Without JavaScript, the button and the card are
+//- plain links to the MP4.
 //-
 //- Safari plays a video only from a server that answers byte ranges, which
 //- helpers/static-byte-ranges.js adds for static audio and video.
 
-//- Each video's files under img/video/ (an MP4, a WebM and a 1280x720
-//- poster), the title of its modal, its length, the id of its modal, and the
+//- Each video's files under img/video/ (an MP4, a WebM, a 1280x720 poster
+//- as JPEG and WebP, and for the tour a WebVTT captions file), the title of
+//- its modal, its length, the id of its modal, and the
 //- hash that opens it from a link (/#video, /download#video-terminal). The
 //- tour and the apps video are each the main video of their page, so both
 //- open from #video.
@@ -29,7 +33,8 @@
       length: "1:58",
       duration: "PT1M58S",
       modal: "modal-video",
-      hash: "video"
+      hash: "video",
+      captions: true
     },
     apps: {
       file: "forward-email-apps",
@@ -88,7 +93,7 @@ mixin feVideoCard(key)
     aria-describedby=`${video.modal}-title`
   )
     img.fe-video-card__poster(
-      src=manifest(`img/video/${video.file}.jpg`),
+      src=manifest(`img/video/${video.file}.webp`),
       alt="",
       width="1280",
       height="720",
@@ -139,6 +144,13 @@ mixin feVideoModal(key)
               src=manifest(`img/video/${video.file}.webm`),
               type="video/webm; codecs=\"vp9, opus\""
             )
+            if video.captions
+              track(
+                kind="captions",
+                srclang="en",
+                label="English",
+                src=manifest(`img/video/${video.file}.vtt`)
+              )
             a(href=manifest(`img/video/${video.file}.mp4`))= t("Download the video (MP4)")
         .modal-footer
           a.fe-video__download(

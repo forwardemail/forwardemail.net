@@ -138,6 +138,7 @@
   * [Come effettuate ricerche DNS sui nomi di dominio](#how-do-you-perform-dns-lookups-on-domain-names)
 * [Account e Fatturazione](#account-and-billing)
   * [Come posso eliminare il mio account](#how-do-i-delete-my-account)
+  * [Come posso aggiungere membri del team al mio dominio](#how-do-i-add-team-members-to-my-domain)
   * [Offrite garanzia di rimborso sui piani a pagamento](#do-you-offer-a-money-back-guarantee-on-paid-plans)
   * [Se cambio piano fate il pro-rata e rimborsate la differenza](#if-i-switch-plans-do-you-pro-rate-and-refund-the-difference)
   * [Posso usare questo servizio di inoltro email solo come server MX di "fallback" o "fallover"](#can-i-just-use-this-email-forwarding-service-as-a-fallback-or-fallover-mx-server)
@@ -5641,6 +5642,26 @@ Puoi eliminare il tuo account in qualsiasi momento seguendo questi passaggi:
 </div>
 
 Se non riesci ad accedere al tuo account, contattaci all'indirizzo <a href="mailto:support@forwardemail.net">support@forwardemail.net</a> dall'indirizzo email associato al tuo account e ti assisteremo con l'eliminazione.
+
+### Come posso aggiungere membri del team al mio dominio {#how-do-i-add-team-members-to-my-domain}
+
+Con il [piano Team](/private-business-email?pricing=true), un amministratore di un dominio può invitare altre persone:
+
+1. Vai su [Il mio conto → Domini](/my-account/domains) e fai clic su **Impostazioni** accanto al dominio.
+2. In **Gestire il team**, fai clic su **Invita un nuovo membro**, inserisci il suo indirizzo email e scegli un gruppo: un **Utente** può creare alias sul dominio, mentre un **Amministratore** può anche modificarne le impostazioni e gestirne i membri.
+3. La persona riceve un'email con un link di invito. Per accettarlo, accede al proprio account Forward Email con l'indirizzo invitato oppure crea un account gratuito con esso. Con un nuovo account, prima verifica l'indirizzo con un codice inviato a quell'indirizzo.
+
+<div class="alert my-3 alert-warning">
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Importante:
+  </strong>
+  <span>
+    Un account Forward Email è separato da una casella di posta. La password generata per un alias (per webmail, IMAP, POP3 o SMTP) non consente di accedere al sito web. Se il link di invito viene aperto mentre la persona ha effettuato l'accesso con un altro account, la pagina propone di uscire e continuare.
+  </span>
+</div>
+
+Un invito scade dopo 7 giorni e l'elenco del team segnala quelli scaduti. Per inviare un nuovo link, invita di nuovo lo stesso indirizzo. Per ritirare un invito, fai clic su **Elimina Invito**.
 
 ### Offrite una garanzia di rimborso sui piani a pagamento? {#do-you-offer-a-money-back-guarantee-on-paid-plans}
 

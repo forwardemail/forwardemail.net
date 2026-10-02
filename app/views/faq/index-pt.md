@@ -138,6 +138,7 @@
   * [Como vocês realizam consultas DNS em nomes de domínio](#how-do-you-perform-dns-lookups-on-domain-names)
 * [Conta e Faturamento](#account-and-billing)
   * [Como excluo minha conta](#how-do-i-delete-my-account)
+  * [Como adiciono membros da equipe ao meu domínio](#how-do-i-add-team-members-to-my-domain)
   * [Vocês oferecem garantia de devolução do dinheiro em planos pagos](#do-you-offer-a-money-back-guarantee-on-paid-plans)
   * [Se eu mudar de plano, vocês fazem rateio e reembolsam a diferença](#if-i-switch-plans-do-you-pro-rate-and-refund-the-difference)
   * [Posso usar este serviço de encaminhamento de email apenas como servidor MX "fallback" ou "fallover"](#can-i-just-use-this-email-forwarding-service-as-a-fallback-or-fallover-mx-server)
@@ -5640,6 +5641,26 @@ Você pode excluir sua conta a qualquer momento seguindo estas etapas:
 </div>
 
 Se você não conseguir fazer login na sua conta, entre em contato conosco em <a href="mailto:support@forwardemail.net">support@forwardemail.net</a> a partir do endereço de e-mail associado à sua conta e nós o ajudaremos com a exclusão.
+
+### Como adiciono membros da equipe ao meu domínio {#how-do-i-add-team-members-to-my-domain}
+
+No [plano Team](/private-business-email?pricing=true), um administrador de um domínio pode convidar outras pessoas para ele:
+
+1. Acesse [Minha conta → Domínios](/my-account/domains) e clique em **Configurações** ao lado do domínio.
+2. Em **Gerenciar equipe**, clique em **Convidar novo membro**, insira o endereço de e-mail da pessoa e escolha um grupo: um **Usuário** pode criar aliases no domínio, e um **Administrador** também pode alterar as configurações do domínio e gerenciar seus membros.
+3. A pessoa recebe um e-mail com um link de convite. Para aceitá-lo, ela entra na conta Forward Email dela com o endereço convidado ou cria uma conta gratuita com ele. Com uma conta nova, ela primeiro verifica o endereço com um código enviado para ele.
+
+<div class="alert my-3 alert-warning">
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Importante:
+  </strong>
+  <span>
+    Uma conta Forward Email é separada de uma caixa de correio. A senha gerada para um alias (para webmail, IMAP, POP3 ou SMTP) não serve para entrar no site. Se o link de convite for aberto enquanto a pessoa estiver conectada com outra conta, a página oferece a opção de sair e continuar.
+  </span>
+</div>
+
+Um convite expira após 7 dias, e a lista da equipe marca os convites expirados. Para enviar um novo link, convide o mesmo endereço novamente. Para cancelar um convite, clique em **Excluir Convite**.
 
 ### Vocês oferecem garantia de reembolso nos planos pagos {#do-you-offer-a-money-back-guarantee-on-paid-plans}
 

@@ -358,6 +358,19 @@ footer.fe-footer.mt-auto(aria-label=t("Footer"))
             data-placement="top"
           )
             i.fa.fa-fw.fas.fa-newspaper.fa-lg
+        //- Opens the share dialog below (on phones, the device share sheet);
+        //- hidden without JavaScript, which the dialog needs
+        if isNotPrivateRoute
+          li.list-inline-item.ml-3.no-js
+            button.btn.btn-sm.btn-outline-light(
+              type="button",
+              data-toggle="modal",
+              data-target="#modal-share",
+              data-share-open
+            )
+              i.fas.fa-share-alt(aria-hidden="true")
+              = " "
+              = t("Share")
       .mt-5.small
         ul.list-inline.mb-3
           li.list-inline-item.mb-3.mr-3
@@ -486,3 +499,7 @@ footer.fe-footer.mt-auto(aria-label=t("Footer"))
           li= t("All rights reserved. All trademarks are property of their respective owners in the US and other countries.")
           if config.env !== 'test'
             li= `v${pkgVersion}`
+
+//- The share dialog, after the footer on every public page
+if isNotPrivateRoute
+  include _share

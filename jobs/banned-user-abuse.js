@@ -403,17 +403,17 @@ async function sendAbuseAlert(severity, group) {
       critical: {
         subject: '🚨 CRITICAL: User Domain Abuse Alert',
         emoji: '🚨',
-        color: '#dc3545'
+        color: '#b91c1c'
       },
       high: {
         subject: '⚠️ HIGH RISK: User Domain Review Required',
         emoji: '⚠️',
-        color: '#fd7e14'
+        color: '#c2410c'
       },
       medium: {
         subject: '📊 User Domain Abuse Report',
         emoji: '📊',
-        color: '#ffc107'
+        color: '#92400e'
       }
     };
 
@@ -545,7 +545,7 @@ function generateHTMLReport(group, severity, severityConfig) {
 
         <div style="background: #e7f3ff; padding: 10px; border-radius: 3px; margin: 10px 0;">
           <strong>Admin Actions:</strong>
-          <a href="${adminUrl}" style="display: inline-block; background: #007bff; color: white; padding: 8px 16px; text-decoration: none; border-radius: 4px; margin: 5px 5px 5px 0;">
+          <a href="${adminUrl}" style="display: inline-block; background: #1d4ed8; color: white; padding: 8px 16px; text-decoration: none; border-radius: 4px; margin: 5px 5px 5px 0;">
             View User in Admin Dashboard
           </a>
         </div>

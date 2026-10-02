@@ -141,7 +141,16 @@ nav.navbar(class=navbarClasses.join(" "))
             )
       else
         span.sr-only.sr-only-focusable Forward Email
-        include ../../assets/img/logo-square-30-30.svg
+        //- An image rather than the inlined SVG: the inlined copy put about
+        //- 80 elements and 19 KB of gradients into every page. Decorative,
+        //- as the brand name sits beside it.
+        img.align-middle(
+          src=manifest("img/logo-square-30-30.svg"),
+          width=30,
+          height=30,
+          alt="",
+          fetchpriority="high"
+        )
         span.m-0.align-middle.no-js.ml-2.d-inline-block= "Forward Email"
     //- Event Feed Badge (only for non-bots)
     //- Red badge for new events, grey outline badge for total events when no new

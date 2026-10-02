@@ -6111,45 +6111,6 @@
           "$ref": "#/components/parameters/domainId"
         }
       ],
-      "get": {
-        "summary": "Accept domain invite",
-        "description": "Accept an invitation to a domain.",
-        "tags": [
-          "Invites"
-        ],
-        "security": [
-          {
-            "ApiKeyAuth": []
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Domain invite accepted successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "message": {
-                      "type": "string",
-                      "example": "Invite accepted successfully"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "401": {
-            "$ref": "#/components/responses/Unauthorized"
-          },
-          "403": {
-            "$ref": "#/components/responses/Forbidden"
-          },
-          "404": {
-            "$ref": "#/components/responses/NotFound"
-          }
-        }
-      },
       "post": {
         "summary": "Create domain invite",
         "description": ">[!IMPORTANT]\n>If the user being invited is already an accepted member of any other domains the admin inviting them is a member of, then it will auto-accept the invite and not send an email (only for a `group` of `user`: we email an invite as an `admin` for the invitee to accept, and leave its link out of the domain's pending invites).",
@@ -6271,6 +6232,66 @@
           },
           "404": {
             "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/v1/domains/{domain_id}/invites/{token}": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/domainId"
+        },
+        {
+          "name": "token",
+          "in": "path",
+          "required": true,
+          "description": "The token from the invite link",
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "get": {
+        "summary": "Accept domain invite",
+        "description": "Accept an invitation to a domain.",
+        "tags": [
+          "Invites"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Domain invite accepted successfully",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string",
+                  "example": "You have successfully accepted the invite to this domain and you can now create your first alias."
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "410": {
+            "description": "Gone",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
           }
         }
       }

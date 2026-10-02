@@ -16,11 +16,13 @@ mixin fePricing
         = t("Simple pricing")
 
       .fe-pricing__head
-        h2#fe-pricing-title.fe-display-lg= t("Unlimited domains at every tier.")
+        //- A question heading answered by the lede below it. The pricing page
+        //- (_fe-pricing-detail.pug) keeps "Unlimited domains at every tier."
+        h2#fe-pricing-title.fe-display-lg= t("How many domains can I use?")
         a.fe-pricing__aside(href=l("/private-business-email"))= t("Recommended for most professionals")
 
-      //- Section 7 replacement copy.
-      p.fe-lede= t("Start with forwarding, upgrade to real mailboxes, then add team controls. Every tier includes unlimited domains.")
+      //- Opens with the answer to the heading above.
+      p.fe-lede= t("Every plan includes unlimited domains, the free plan too. Start with forwarding, upgrade to mailboxes, then add team controls.")
 
       //- A ul of li, with the feature lists nested. DOM order follows price
       //- order; the mobile reordering that puts Enhanced first is done with

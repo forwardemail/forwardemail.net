@@ -305,13 +305,13 @@ function buildInviteHtml(ctx, event, links) {
     <div style="display: inline-block;">
       <a href="${
         links.accept
-      }" style="display: inline-block; background: #28a745; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; margin: 4px; font-weight: 500;">Accept</a>
+      }" style="display: inline-block; background: #047857; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; margin: 4px; font-weight: 500;">Accept</a>
       <a href="${
         links.tentative
       }" style="display: inline-block; background: #ffc107; color: #212529; padding: 12px 24px; text-decoration: none; border-radius: 6px; margin: 4px; font-weight: 500;">Tentative</a>
       <a href="${
         links.decline
-      }" style="display: inline-block; background: #dc3545; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; margin: 4px; font-weight: 500;">Decline</a>
+      }" style="display: inline-block; background: #b91c1c; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; margin: 4px; font-weight: 500;">Decline</a>
     </div>
   </div>
 

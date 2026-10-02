@@ -21,23 +21,22 @@
   border-radius: var(--fe-radius-full);
 }
 
-// Signal is legal as text on Ink. On light it is not, so the light variant
-// uses Primary instead.
-.fe-surface-dark .fe-eyebrow {
-  color: var(--fe-signal);
-  background-color: var(--fe-signal-a10);
-  border-color: var(--fe-signal-a24);
-}
-
+// Colors come from the surface (_fe-tokens.scss): Signal on dark, -deep
+// Primary on light, and Signal again on a light surface in dark mode, where
+// it is dark too. Fixed colors here left a dark blue pill on navy in dark mode.
+.fe-surface-dark .fe-eyebrow,
 .fe-surface-light .fe-eyebrow {
-  color: var(--fe-primary-deep);
-  background-color: var(--fe-primary-a08);
-  border-color: var(--fe-primary-a16);
+  color: var(--fe-eyebrow-fg);
+  background-color: var(--fe-eyebrow-bg);
+  border-color: var(--fe-eyebrow-border);
 }
 
-// Pricing eyebrow uses the mint -deep variant, which is legal as text.
-.fe-eyebrow--mint {
-  color: var(--fe-mint-deep);
+// The pricing eyebrow is mint: -deep on light, brand Mint on dark (the
+// success token). Scoped like the rule above, which outranked it before, so
+// the pill rendered blue.
+.fe-surface-dark .fe-eyebrow--mint,
+.fe-surface-light .fe-eyebrow--mint {
+  color: var(--fe-state-success);
   background-color: var(--fe-mint-a12);
   border-color: var(--fe-mint-deep-a20);
 }
@@ -385,7 +384,7 @@
 }
 
 .fe-field__step {
-  color: var(--fe-primary);
+  color: var(--fe-fg-accent);
 }
 
 .fe-field__input {

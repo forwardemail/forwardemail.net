@@ -138,6 +138,7 @@
   * [Alan adlarında DNS sorgularını nasıl yapıyorsunuz](#how-do-you-perform-dns-lookups-on-domain-names)
 * [Hesap ve Faturalandırma](#account-and-billing)
   * [Hesabımı nasıl silerim](#how-do-i-delete-my-account)
+  * [Alan adıma ekip üyelerini nasıl eklerim](#how-do-i-add-team-members-to-my-domain)
   * [Ücretli planlarda para iade garantisi sunuyor musunuz](#do-you-offer-a-money-back-guarantee-on-paid-plans)
   * [Plan değiştirirsem farkı orantılı olarak iade ediyor musunuz](#if-i-switch-plans-do-you-pro-rate-and-refund-the-difference)
   * [Bu e-posta yönlendirme hizmetini sadece "yedek" veya "fallover" MX sunucusu olarak kullanabilir miyim](#can-i-just-use-this-email-forwarding-service-as-a-fallback-or-fallover-mx-server)
@@ -5640,6 +5641,26 @@ Aşağıdaki adımları izleyerek hesabınızı istediğiniz zaman silebilirsini
 </div>
 
 Hesabınıza giriş yapamıyorsanız, lütfen hesabınızla ilişkili e-posta adresini kullanarak <a href="mailto:support@forwardemail.net">support@forwardemail.net</a> adresinden bizimle iletişime geçin; silme işlemi için size yardımcı olacağız.
+
+### Alan adıma ekip üyelerini nasıl eklerim {#how-do-i-add-team-members-to-my-domain}
+
+[Takım planında](/private-business-email?pricing=true), bir alan adının yöneticisi başka kişileri o alan adına davet edebilir:
+
+1. [Hesabım → Alan Adları](/my-account/domains) bölümüne gidin ve alan adının yanındaki **Ayarlar** seçeneğine tıklayın.
+2. **Ekibi Yönet** altında **Yeni Üye Davet Et** seçeneğine tıklayın, kişinin e-posta adresini girin ve bir grup seçin: **Kullanıcı** alan adında takma ad oluşturabilir, **Yönetici** ise ayrıca alan adının ayarlarını değiştirebilir ve üyelerini yönetebilir.
+3. Kişi, davet bağlantısı içeren bir e-posta alır. Daveti kabul etmek için davet edilen adresle Forward Email hesabında oturum açar veya bu adresle ücretsiz bir hesap oluşturur. Yeni bir hesapta önce bu adrese gönderilen bir kodla adresi doğrular.
+
+<div class="alert my-3 alert-warning">
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Önemli:
+  </strong>
+  <span>
+    Forward Email hesabı, posta kutusundan ayrıdır. Bir takma ad için oluşturulan şifre (webmail, IMAP, POP3 veya SMTP için) web sitesinde oturum açmak için kullanılamaz. Davet bağlantısı başka bir hesapla oturum açılmışken açılırsa, sayfa oturumu kapatıp devam etmeyi önerir.
+  </span>
+</div>
+
+Bir davetin süresi 7 gün sonra dolar ve ekip listesi süresi dolan daveti işaretler. Yeni bir bağlantı göndermek için aynı adresi yeniden davet edin. Bir daveti geri çekmek için **Davet Sil** seçeneğine tıklayın.
 
 ### Ücretli planlarda para iade garantisi sunuyor musunuz? {#do-you-offer-a-money-back-guarantee-on-paid-plans}
 

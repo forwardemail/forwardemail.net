@@ -250,9 +250,10 @@ test.serial(
     t.is(card.dataset.target, '#modal-video-terminal');
     // without JavaScript, the card is a link to the MP4
     t.regex(card.getAttribute('href'), terminalVideo('mp4'));
+    // the card's still is the WebP copy of the poster
     t.regex(
       card.querySelector('img').getAttribute('src'),
-      terminalVideo('jpg')
+      terminalVideo('webp')
     );
     t.is(card.querySelector('time').textContent, '1:44');
     // a screen reader hears which video it opens

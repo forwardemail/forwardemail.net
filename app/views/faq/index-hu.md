@@ -138,6 +138,7 @@
   * [Hogyan végeztek DNS lekérdezéseket domain nevekre](#how-do-you-perform-dns-lookups-on-domain-names)
 * [Fiók és Számlázás](#account-and-billing)
   * [Hogyan törölhetem a fiókomat](#how-do-i-delete-my-account)
+  * [Hogyan adhatok hozzá csapattagokat a domainemhez](#how-do-i-add-team-members-to-my-domain)
   * [Kínáltok pénzvisszafizetési garanciát a fizetős csomagokra](#do-you-offer-a-money-back-guarantee-on-paid-plans)
   * [Ha váltok csomagot, arányosan visszatérítitek a különbözetet](#if-i-switch-plans-do-you-pro-rate-and-refund-the-difference)
   * [Használhatom ezt az email továbbító szolgáltatást "tartalék" vagy "átváltó" MX szerverként](#can-i-just-use-this-email-forwarding-service-as-a-fallback-or-fallover-mx-server)
@@ -5640,6 +5641,26 @@ Bármikor törölheti fiókját az alábbi lépések követésével:
 </div>
 
 Ha nem tud bejelentkezni a fiókjába, kérjük, vegye fel velünk a kapcsolatot a <a href="mailto:support@forwardemail.net">support@forwardemail.net</a> címen a fiókjához társított e-mail címről, és segítünk a törlésben.
+
+### Hogyan adhatok hozzá csapattagokat a domainemhez {#how-do-i-add-team-members-to-my-domain}
+
+A [Csapat csomagban](/private-business-email?pricing=true) a domain adminisztrátora más személyeket is meghívhat a domainhez:
+
+1. Lépjen a [Fiókom → Domainek](/my-account/domains) oldalra, és kattintson a domain melletti **Beállítások** gombra.
+2. A **Csapat irányítása** részben kattintson az **Új tag meghívása** gombra, adja meg a személy e-mail címét, és válasszon csoportot: a **Felhasználó** aliasokat hozhat létre a domainen, az **Adminisztrátor** pedig emellett módosíthatja a domain beállításait és kezelheti a tagjait.
+3. A személy e-mailt kap egy meghívó linkkel. Az elfogadásához bejelentkezik Forward Email fiókjába a meghívott címmel, vagy ingyenes fiókot hoz létre vele. Új fiók esetén előbb a címre küldött kóddal megerősíti a címet.
+
+<div class="alert my-3 alert-warning">
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Fontos:
+  </strong>
+  <span>
+    A Forward Email fiók különálló a postafióktól. Az aliashoz generált jelszóval (webmailhez, IMAP-hoz, POP3-hoz vagy SMTP-hez) nem lehet bejelentkezni a weboldalra. Ha a meghívó link akkor nyílik meg, amikor a személy egy másik fiókkal van bejelentkezve, az oldal felajánlja a kijelentkezést és a folytatást.
+  </span>
+</div>
+
+A meghívó 7 nap után lejár, és a csapatlista megjelöli a lejárt meghívókat. Új link küldéséhez hívja meg újra ugyanazt a címet. Meghívó visszavonásához kattintson a **Meghívó törlése** gombra.
 
 ### Van pénzvisszafizetési garancia a fizetős csomagokra? {#do-you-offer-a-money-back-guarantee-on-paid-plans}
 

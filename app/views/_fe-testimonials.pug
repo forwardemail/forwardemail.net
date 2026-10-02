@@ -20,7 +20,7 @@ mixin feProofCard(card)
         loading="lazy",
         width=44,
         height=44,
-        src=manifest(`img/testimonials/${card.avatar}.jpg`),
+        src=manifest(`img/testimonials/${card.avatar}.webp`),
         alt=card.name
       )
       .fe-proof__id
@@ -36,9 +36,11 @@ mixin feTestimonials
     aria-labelledby="fe-proof-title"
   )
     .fe-container
-      p.fe-eyebrow.fe-label= t("Why people switch")
-      h2#fe-proof-title.fe-display-lg= t("Trusted for the reasons that matter.")
-      p.fe-lede= t("The claims this page makes, backed by people with no reason to flatter us, and a receipt you can check yourself.")
+      p.fe-eyebrow.fe-label= t("Testimonials")
+      //- A question heading, answered by the first sentence of the lede. The
+      //- auditor link is an outside source for the claims the cards make.
+      h2#fe-proof-title.fe-display-lg= t("Why do people switch to Forward Email?")
+      p.fe-lede!= t("Customers give three reasons: privacy built into the architecture, a migration that takes a few DNS changes, and one inbox for every address. Each quote links to proof you can check, such as the security audit by %s.", '<a href="https://cure53.de/" target="_blank" rel="noopener noreferrer">Cure53</a>')
       .fe-proof__grid
         +feProofCard({ featured: true, tone: "primary", pillar: t("Private by architecture"), avatar: "dhh", name: "DHH", handle: "@dhh", role: "Creator of Ruby on Rails, Founder & CTO at Basecamp & HEY", receiptHref: "/pentest-report_forward-email.pdf", receiptLabel: t("Read the security audit") })
           | Congrats for fully launching Forward Email – a forwarding service

@@ -138,6 +138,7 @@
   * [Kuinka teette DNS-kyselyjä domain-nimille](#how-do-you-perform-dns-lookups-on-domain-names)
 * [Tili ja laskutus](#account-and-billing)
   * [Kuinka poistan tilini](#how-do-i-delete-my-account)
+  * [Kuinka lisään tiimin jäseniä verkkotunnukseeni](#how-do-i-add-team-members-to-my-domain)
   * [Tarjoatteko rahat takaisin -takuun maksullisissa suunnitelmissa](#do-you-offer-a-money-back-guarantee-on-paid-plans)
   * [Jos vaihdan suunnitelmaa, hyvitättekö erotuksen](#if-i-switch-plans-do-you-pro-rate-and-refund-the-difference)
   * [Voinko käyttää tätä sähköpostin edelleenlähetyspalvelua "varapalvelimena" tai "varakatkaisupalvelimena" MX-palvelimena](#can-i-just-use-this-email-forwarding-service-as-a-fallback-or-fallover-mx-server)
@@ -5639,6 +5640,26 @@ Voit poistaa tilisi milloin tahansa noudattamalla näitä ohjeita:
 </div>
 
 Jos et pysty kirjautumaan tilillesi, ota meihin yhteyttä osoitteeseen <a href="mailto:support@forwardemail.net">support@forwardemail.net</a> tilillesi yhdistetystä sähköpostiosoitteesta, niin autamme sinua tilin poistamisessa.
+
+### Kuinka lisään tiimin jäseniä verkkotunnukseeni {#how-do-i-add-team-members-to-my-domain}
+
+[Tiimisuunnitelmassa](/private-business-email?pricing=true) verkkotunnuksen ylläpitäjä voi kutsua siihen muita henkilöitä:
+
+1. Siirry kohtaan [Oma tili → Verkkotunnukset](/my-account/domains) ja napsauta verkkotunnuksen vieressä **Asetukset**.
+2. Napsauta **Kutsu uusi jäsen** kohdassa **Hallitse tiimiä**, anna henkilön sähköpostiosoite ja valitse ryhmä: **Käyttäjä** voi luoda verkkotunnukselle aliaksia, ja **Ylläpitäjä** voi lisäksi muuttaa sen asetuksia ja hallita sen jäseniä.
+3. Henkilö saa sähköpostin, jossa on kutsulinkki. Hyväksyäkseen kutsun hän kirjautuu Forward Email -tililleen kutsutulla osoitteella tai luo sillä ilmaisen tilin. Uudella tilillä hän vahvistaa ensin osoitteen siihen lähetettävällä koodilla.
+
+<div class="alert my-3 alert-warning">
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Tärkeää:
+  </strong>
+  <span>
+    Forward Email -tili on eri asia kuin postilaatikko. Aliakselle luodulla salasanalla (webmailia, IMAPia, POP3:a tai SMTP:tä varten) ei voi kirjautua verkkosivustolle. Jos kutsulinkki avataan, kun henkilö on kirjautuneena toisella tilillä, sivu tarjoaa mahdollisuuden kirjautua ulos ja jatkaa.
+  </span>
+</div>
+
+Kutsu vanhenee 7 päivän kuluttua, ja tiimiluettelo merkitsee vanhentuneet kutsut. Lähetä uusi linkki kutsumalla sama osoite uudelleen. Peru kutsu napsauttamalla **Poista kutsu**.
 
 ### Tarjoatteko rahat takaisin -takuun maksullisissa suunnitelmissa {#do-you-offer-a-money-back-guarantee-on-paid-plans}
 

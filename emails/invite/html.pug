@@ -8,8 +8,16 @@ block content
           h1.h5.card-header= t("Team invite")
           .card-body
             p.card-text= t("Click the button below to accept your invite.")
+            //- An invitee who already uses a mailbox on the domain tends to
+            //- try the mailbox password on the website, which never works there
+            if typeof email === "string" && email
+              - const safeEmail = email.replace(/[&<>"']/g, (c) => `&#${c.codePointAt(0)};`);
+              p.card-text
+                != t('To accept, sign in to or create a free Forward Email account with <strong class="notranslate">%s</strong>. The password we generate for a mailbox (webmail, IMAP, or SMTP) does not work on the website.', safeEmail)
             a.btn.btn-lg.btn-block.btn-success(
               href=`${config.urls.web}/${locale}/my-account/domains/${domain.id}/invites/${inviteToken}`,
               role="button"
             )= t("Accept invite")
+            if typeof days === "number"
+              p.card-text.small.text-muted.mt-3= t("This invite expires in %d days.", days)
           .card-footer.small.text-muted= t("If you did not expect to receive this invite, then please reply to let us know.")

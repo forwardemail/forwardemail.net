@@ -517,18 +517,18 @@ async function sendSecurityAlert(severity, reports) {
         };">
   <h3 style="margin: 0 0 15px 0; padding-bottom: 10px; border-bottom: 2px solid ${
     report.severity === 'critical'
-      ? '#dc3545'
+      ? '#b91c1c'
       : report.severity === 'high'
-      ? '#fd7e14'
-      : '#6c757d'
+      ? '#c2410c'
+      : '#56667e'
   };">
     ${index + 1}. ${report.domain}
     <span style="float: right; font-size: 14px; color: ${
       report.severity === 'critical'
-        ? '#dc3545'
+        ? '#b91c1c'
         : report.severity === 'high'
-        ? '#fd7e14'
-        : '#6c757d'
+        ? '#c2410c'
+        : '#56667e'
     }; text-transform: uppercase;">${report.severity}</span>
   </h3>
 
@@ -538,9 +538,9 @@ async function sendSecurityAlert(severity, reports) {
       <td style="padding: 8px; border: 1px solid #ddd;">
         <span style="color: ${
           report.riskScore >= 80
-            ? '#dc3545'
+            ? '#b91c1c'
             : report.riskScore >= 60
-            ? '#fd7e14'
+            ? '#c2410c'
             : '#212529'
         }; font-weight: bold; font-size: 18px;">${report.riskScore}/100</span>
       </td>
@@ -587,16 +587,16 @@ async function sendSecurityAlert(severity, reports) {
         <td style="padding: 8px; border: 1px solid #ddd; text-align: center;">${
           p.threshold
         }</td>
-        <td style="padding: 8px; border: 1px solid #ddd; text-align: center; color: #dc3545;">+${
+        <td style="padding: 8px; border: 1px solid #ddd; text-align: center; color: #b91c1c;">+${
           p.exceeded
         }</td>
         <td style="padding: 8px; border: 1px solid #ddd; text-align: center;">
           <span style="color: ${
             p.severity === 'critical'
-              ? '#dc3545'
+              ? '#b91c1c'
               : p.severity === 'high'
-              ? '#fd7e14'
-              : '#6c757d'
+              ? '#c2410c'
+              : '#56667e'
           }; text-transform: uppercase; font-weight: bold;">${p.severity}</span>
         </td>
       </tr>`
@@ -658,7 +658,7 @@ async function sendSecurityAlert(severity, reports) {
         <td style="padding: 6px 8px; border: 1px solid #ddd; text-align: center;">
           <a href="${config.urls.web}/en/admin/users/${
             user.id
-          }" style="color: #007bff; text-decoration: none;">View User</a>
+          }" style="color: #1d4ed8; text-decoration: none;">View User</a>
         </td>
       </tr>`
         )
@@ -685,9 +685,9 @@ async function sendSecurityAlert(severity, reports) {
   <strong>Alert Level:</strong>
   <span style="color: ${
     severity === 'critical'
-      ? '#dc3545'
+      ? '#b91c1c'
       : severity === 'high'
-      ? '#fd7e14'
+      ? '#c2410c'
       : '#212529'
   }; font-weight: bold; text-transform: uppercase; font-size: 18px; margin-left: 10px;">${severity}</span>
 </div>
@@ -709,7 +709,7 @@ async function sendSecurityAlert(severity, reports) {
   <tr>
     <td style="padding: 10px; border: 1px solid #ddd; background: #f8f9fa;"><strong>Critical Severity</strong></td>
     <td style="padding: 10px; border: 1px solid #ddd;">
-      <span style="color: #dc3545; font-weight: bold;">${
+      <span style="color: #b91c1c; font-weight: bold;">${
         reports.filter((r) => r.severity === 'critical').length
       }</span>
     </td>
@@ -717,7 +717,7 @@ async function sendSecurityAlert(severity, reports) {
   <tr>
     <td style="padding: 10px; border: 1px solid #ddd; background: #f8f9fa;"><strong>High Severity</strong></td>
     <td style="padding: 10px; border: 1px solid #ddd;">
-      <span style="color: #fd7e14; font-weight: bold;">${
+      <span style="color: #c2410c; font-weight: bold;">${
         reports.filter((r) => r.severity === 'high').length
       }</span>
     </td>
@@ -740,7 +740,7 @@ async function sendSecurityAlert(severity, reports) {
 ${reportsHtml}
 
 <hr style="margin: 30px 0; border: none; border-top: 1px solid #dee2e6;">
-<p style="color: #6c757d; font-size: 12px;">
+<p style="color: #56667e; font-size: 12px;">
   <em>This is an automated fraud detection alert. Please review and take appropriate action manually.</em>
 </p>
     `.trim();

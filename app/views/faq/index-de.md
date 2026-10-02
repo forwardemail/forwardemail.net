@@ -138,6 +138,7 @@
   * [Wie führen Sie DNS-Abfragen für Domainnamen durch](#how-do-you-perform-dns-lookups-on-domain-names)
 * [Konto und Abrechnung](#account-and-billing)
   * [Wie lösche ich mein Konto](#how-do-i-delete-my-account)
+  * [Wie füge ich Teammitglieder zu meiner Domain hinzu](#how-do-i-add-team-members-to-my-domain)
   * [Bieten Sie eine Geld-zurück-Garantie für kostenpflichtige Pläne](#do-you-offer-a-money-back-guarantee-on-paid-plans)
   * [Wenn ich den Plan wechsle, erfolgt eine anteilige Rückerstattung](#if-i-switch-plans-do-you-pro-rate-and-refund-the-difference)
   * [Kann ich diesen E-Mail-Weiterleitungsdienst nur als "Fallback" oder "Fallover" MX-Server verwenden](#can-i-just-use-this-email-forwarding-service-as-a-fallback-or-fallover-mx-server)
@@ -5640,6 +5641,26 @@ Sie können Ihr Konto jederzeit löschen, indem Sie die folgenden Schritte ausf�
 </div>
 
 Wenn Sie sich nicht bei Ihrem Konto anmelden können, kontaktieren Sie uns bitte unter <a href="mailto:support@forwardemail.net">support@forwardemail.net</a> von der mit Ihrem Konto verknüpften E-Mail-Adresse, und wir helfen Ihnen bei der Löschung.
+
+### Wie füge ich Teammitglieder zu meiner Domain hinzu {#how-do-i-add-team-members-to-my-domain}
+
+Mit dem [Team-Plan](/private-business-email?pricing=true) kann ein Administrator einer Domain andere Personen dazu einladen:
+
+1. Gehen Sie zu [Mein Konto → Domänen](/my-account/domains) und klicken Sie neben der Domain auf **Einstellungen**.
+2. Klicken Sie unter **Team verwalten** auf **Neues Mitglied einladen**, geben Sie die E-Mail-Adresse der Person ein und wählen Sie eine Gruppe: Ein **Benutzer** kann Aliase für die Domain erstellen, und ein **Administrator** kann zusätzlich ihre Einstellungen ändern und ihre Mitglieder verwalten.
+3. Die Person erhält eine E-Mail mit einem Einladungslink. Um die Einladung anzunehmen, meldet sie sich mit der eingeladenen Adresse bei ihrem Forward Email-Konto an oder erstellt damit ein kostenloses Konto. Bei einem neuen Konto bestätigt sie zuerst die Adresse mit einem Code, der an sie gesendet wird.
+
+<div class="alert my-3 alert-warning">
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Wichtig:
+  </strong>
+  <span>
+    Ein Forward Email-Konto ist von einem Postfach getrennt. Mit dem für einen Alias generierten Passwort (für Webmail, IMAP, POP3 oder SMTP) kann man sich nicht auf der Website anmelden. Wird der Einladungslink geöffnet, während die Person mit einem anderen Konto angemeldet ist, bietet die Seite an, sich abzumelden und fortzufahren.
+  </span>
+</div>
+
+Eine Einladung läuft nach 7 Tagen ab, und die Teamliste kennzeichnet abgelaufene Einladungen. Um einen neuen Link zu senden, laden Sie dieselbe Adresse erneut ein. Um eine Einladung zurückzuziehen, klicken Sie auf **Einladung löschen**.
 
 ### Bieten Sie eine Geld-zurück-Garantie für kostenpflichtige Pläne an {#do-you-offer-a-money-back-guarantee-on-paid-plans}
 

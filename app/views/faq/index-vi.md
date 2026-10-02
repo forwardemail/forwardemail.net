@@ -138,6 +138,7 @@
   * [Bạn thực hiện tra cứu DNS trên tên miền như thế nào](#how-do-you-perform-dns-lookups-on-domain-names)
 * [Tài Khoản và Thanh Toán](#account-and-billing)
   * [Làm cách nào để xóa tài khoản của tôi](#how-do-i-delete-my-account)
+  * [Làm cách nào để thêm thành viên nhóm vào tên miền của tôi](#how-do-i-add-team-members-to-my-domain)
   * [Bạn có đảm bảo hoàn tiền cho các gói trả phí không](#do-you-offer-a-money-back-guarantee-on-paid-plans)
   * [Nếu tôi đổi gói, bạn có tính tỷ lệ và hoàn tiền phần chênh lệch không](#if-i-switch-plans-do-you-pro-rate-and-refund-the-difference)
   * [Tôi có thể chỉ sử dụng dịch vụ chuyển tiếp email này như một máy chủ MX "dự phòng" hoặc "dự phòng chuyển đổi" không](#can-i-just-use-this-email-forwarding-service-as-a-fallback-or-fallover-mx-server)
@@ -5639,6 +5640,26 @@ Bạn có thể xóa tài khoản của mình bất kỳ lúc nào bằng cách 
 </div>
 
 Nếu bạn không thể đăng nhập vào tài khoản của mình, vui lòng liên hệ với chúng tôi tại <a href="mailto:support@forwardemail.net">support@forwardemail.net</a> từ địa chỉ email được liên kết với tài khoản của bạn và chúng tôi sẽ hỗ trợ bạn việc xóa tài khoản.
+
+### Làm cách nào để thêm thành viên nhóm vào tên miền của tôi {#how-do-i-add-team-members-to-my-domain}
+
+Với [gói Nhóm](/private-business-email?pricing=true), quản trị viên của một tên miền có thể mời người khác tham gia tên miền đó:
+
+1. Đi tới [Tài khoản của tôi → Tên miền](/my-account/domains) và nhấp vào **Cài đặt** bên cạnh tên miền.
+2. Trong **Quản lý nhóm**, nhấp vào **Mời thành viên mới**, nhập địa chỉ email của người đó và chọn nhóm quyền: **Người dùng** có thể tạo bí danh trên tên miền, còn **Quản trị viên** có thể thay đổi thêm cài đặt của tên miền và quản lý các thành viên.
+3. Người đó sẽ nhận được email có liên kết mời. Để chấp nhận, họ đăng nhập vào tài khoản Forward Email bằng địa chỉ được mời hoặc tạo tài khoản miễn phí bằng địa chỉ đó. Với tài khoản mới, trước tiên họ xác minh địa chỉ bằng mã được gửi đến địa chỉ đó.
+
+<div class="alert my-3 alert-warning">
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Quan trọng:
+  </strong>
+  <span>
+    Tài khoản Forward Email tách biệt với hộp thư. Mật khẩu được tạo cho bí danh (dùng cho webmail, IMAP, POP3 hoặc SMTP) không dùng được để đăng nhập trang web. Nếu liên kết mời được mở khi họ đang đăng nhập bằng tài khoản khác, trang sẽ đề nghị đăng xuất và tiếp tục.
+  </span>
+</div>
+
+Lời mời sẽ hết hạn sau 7 ngày và danh sách nhóm sẽ đánh dấu lời mời đã hết hạn. Để gửi liên kết mới, hãy mời lại cùng địa chỉ đó. Để rút lại lời mời, hãy nhấp vào **Xóa lời mời**.
 
 ### Bạn có cung cấp đảm bảo hoàn tiền cho các gói trả phí không {#do-you-offer-a-money-back-guarantee-on-paid-plans}
 

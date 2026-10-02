@@ -60,6 +60,9 @@ router
     return next();
   })
   .use(web.myAccount.ensureNotBanned)
+  // a team invite opened while signed out explains what to sign in with
+  // (instead of the login page) and links back to the invite
+  .use(web.myAccount.inviteLanding)
   .use(policies.ensureLoggedIn)
   .use(policies.ensureOtp)
   .use(web.breadcrumbs)

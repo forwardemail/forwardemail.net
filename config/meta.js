@@ -50,8 +50,8 @@ module.exports = function (config, isSitemap = false) {
     // meta for a specific route it'd be confusing to see Home
     // in the title bar in the user's browser
     '/': [
-      `Free Email Forwarding for Custom Domains - #1 Open Source Email Service ${currentYear}`,
-      `Get free email forwarding for custom domains. Send & receive as you@yourdomain.com with unlimited aliases, 10GB storage, IMAP/POP3/SMTP & 100% open-source security. Trusted by 1.6M+ domains. Setup in 2 minutes.`
+      `Free Email Forwarding for Custom Domains - Open Source Email Service`,
+      `Get free email forwarding for custom domains. Send & receive as you@yourdomain.com with unlimited aliases, 10GB storage & 100% open-source security.`
     ],
     '/about': [
       `About Forward Email - Our Story & Mission`,

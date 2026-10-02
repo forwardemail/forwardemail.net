@@ -120,7 +120,9 @@ async function updateMember(ctx, next) {
         message: { to: email },
         locals: {
           domain: { name: ctx.state.domain.name, id: ctx.state.domain.id },
-          inviteToken
+          inviteToken,
+          email,
+          days: INVITE_TTL_MS / (24 * 60 * 60 * 1000)
         }
       });
     } catch (err) {

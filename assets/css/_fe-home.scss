@@ -345,7 +345,7 @@ html.no-js .fe-console__rail-wrap {
   font-size: var(--fe-text-display-md);
   font-weight: var(--fe-weight-bold);
   line-height: var(--fe-leading-tight);
-  color: var(--fe-primary);
+  color: var(--fe-fg-accent);
 }
 
 .fe-stats__label {
@@ -542,7 +542,7 @@ html.no-js .fe-console__rail-wrap {
 
 .fe-stepper__label {
   margin-block: 0 var(--fe-space-6);
-  color: var(--fe-primary);
+  color: var(--fe-fg-accent);
 }
 
 .fe-stepper {
@@ -561,7 +561,7 @@ html.no-js .fe-console__rail-wrap {
 .fe-stepper__num {
   display: block;
   margin-bottom: var(--fe-space-2);
-  color: var(--fe-primary);
+  color: var(--fe-fg-accent);
 }
 
 .fe-stepper__dot-row {

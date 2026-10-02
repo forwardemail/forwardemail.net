@@ -195,11 +195,13 @@
 }
 
 .fe-tti__note strong,
-.fe-tti__note a {
+.fe-tti__note a,
+.fe-tti__intro a {
   color: var(--fe-fg-primary);
 }
 
-.fe-tti__note a {
+.fe-tti__note a,
+.fe-tti__intro a {
   text-decoration: underline;
   text-underline-offset: 2px;
 }

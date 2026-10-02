@@ -6,6 +6,7 @@ form.d-block.d-md-none(action=l("/search"), method="GET")
     input#input-search-sm.form-control.form-control-sm(
       type="search",
       name="q",
+      aria-label=t("Search"),
       value=ctx.query.q
     )
     .input-group-append

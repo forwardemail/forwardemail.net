@@ -10,6 +10,7 @@ const isSANB = require('is-string-and-not-blank');
 const isEmail = require('#helpers/is-email');
 
 const emailHelper = require('#helpers/email');
+const normalizeInviteEmail = require('#helpers/normalize-invite-email');
 const { Users, Domains } = require('#models');
 
 async function createInvite(ctx, next) {
@@ -19,8 +20,13 @@ async function createInvite(ctx, next) {
   if (!isSANB(email) || !isEmail(email))
     throw Boom.badRequest(ctx.translateError('INVALID_EMAIL'));
 
-  // convert to lowercase (since we do a lookup on user model)
-  email = email.toLowerCase();
+  // accounts keep an international domain as typed (lowercase Unicode), so
+  // the account lookup below tries that form and the ASCII (xn--) form
+  const typedEmail = email.trim().toLowerCase();
+
+  // lowercase, with an international domain in ASCII form (as accounts and
+  // invites are compared, see retrieve-invite.js)
+  email = normalizeInviteEmail(email);
 
   // ctx.request.body.group
   if (
@@ -29,15 +35,24 @@ async function createInvite(ctx, next) {
   )
     throw Boom.badRequest(ctx.translateError('INVALID_GROUP'));
 
-  // ensure invite does not already exist
-  const invite = ctx.state.domain.invites.find(
-    (invite) => invite.email.toLowerCase() === email.toLowerCase()
-  );
-
-  if (invite) throw Boom.badRequest(ctx.translateError('INVITE_ALREADY_SENT'));
+  // ensure invite does not already exist (an expired one is replaced below:
+  // its link no longer works, so "copy the invite link" would not help)
+  const isExpired = (invite) =>
+    invite.expires_at && new Date(invite.expires_at) < new Date();
+  if (
+    ctx.state.domain.invites.some(
+      (invite) =>
+        normalizeInviteEmail(invite.email) === email && !isExpired(invite)
+    )
+  )
+    throw Boom.badRequest(ctx.translateError('INVITE_ALREADY_SENT'));
 
   // ensure user is not already a member
-  const user = await Users.findOne({ email }).lean().exec();
+  const user = await Users.findOne({
+    email: { $in: [...new Set([email, typedEmail])] }
+  })
+    .lean()
+    .exec();
   if (user) {
     const member = ctx.state.domain.members.find(
       (member) => member.user && member.user.id === user.id
@@ -50,6 +65,12 @@ async function createInvite(ctx, next) {
   ctx.state.domain = await Domains.findById(ctx.state.domain._id);
   if (!ctx.state.domain)
     throw Boom.notFound(ctx.translateError('DOMAIN_DOES_NOT_EXIST'));
+
+  // drop an expired invite to this address (its link has stopped working)
+  ctx.state.domain.invites = ctx.state.domain.invites.filter(
+    (invite) =>
+      !(normalizeInviteEmail(invite.email) === email && isExpired(invite))
+  );
 
   //
   // NOTE check if the user was already an accepted invitee
@@ -119,7 +140,7 @@ async function createInvite(ctx, next) {
   const INVITE_TTL_MS = 7 * 24 * 60 * 60 * 1000;
 
   ctx.state.domain.invites.push({
-    email: email.toLowerCase(),
+    email,
     group: ctx.request.body.group,
     token: inviteToken,
     expires_at: new Date(Date.now() + INVITE_TTL_MS)
@@ -141,11 +162,13 @@ async function createInvite(ctx, next) {
     await emailHelper({
       template: 'invite',
       message: {
-        to: email.toLowerCase()
+        to: email
       },
       locals: {
         domain: { name: ctx.state.domain.name, id: ctx.state.domain.id },
-        inviteToken
+        inviteToken,
+        email,
+        days: INVITE_TTL_MS / (24 * 60 * 60 * 1000)
       }
     });
   } catch (err) {

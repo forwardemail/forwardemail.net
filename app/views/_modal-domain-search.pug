@@ -43,6 +43,7 @@ mixin modalDomainSearch(attributes)
                 input#domain-search-input.form-control(
                   type="text",
                   name="q",
+                  aria-label=t("Domain Search"),
                   toolparamdescription="A full domain name to check (e.g. example.com) or a keyword to generate domain ideas from (e.g. my-startup).",
                   placeholder=t("e.g. example.com or my-startup"),
                   required,
@@ -51,8 +52,11 @@ mixin modalDomainSearch(attributes)
                   spellcheck="false"
                 )
                 .input-group-append
-                  button#domain-search-btn.btn.btn-primary(type="submit")
-                    i.fa.fa-search
+                  button#domain-search-btn.btn.btn-primary(
+                    type="submit",
+                    aria-label=t("Search")
+                  )
+                    i.fa.fa-search(aria-hidden="true")
                     span.d-none.d-sm-inline.ml-2= t("Search")
               .mb-3
                 button#domain-search-random.btn.btn-sm.btn-outline-secondary(

@@ -28,6 +28,9 @@
 // $input-bg, which must match --app-input-bg's dark value.
 $input-bg: $fe-n-000;
 $input-disabled-bg: $fe-n-100;
+// Floating labels and placeholders: the light grey from _variables.scss is
+// 3.2:1 on Ink; n-600 is 8.5:1 on the input fill
+$input-placeholder-color: $fe-n-600;
 
 @media (prefers-color-scheme: dark) {
   // Re-point the app-chrome tokens (light set lives in _app-tokens.scss).
@@ -201,7 +204,8 @@ $input-disabled-bg: $fe-n-100;
 
   // Bootstrap's #6c757d is under 3:1 on the canvas; the secondary tier keeps
   // it legible.
-  .text-muted {
+  .text-muted,
+  .text-secondary {
     color: var(--app-fg-secondary) !important;
   }
 
@@ -524,6 +528,13 @@ $input-disabled-bg: $fe-n-100;
 
   .alert .alert-link {
     color: var(--app-fg-primary);
+  }
+
+  // a plain link in an alert: the link blue is 4.4:1 on the warning tint
+  // (!important to outrank the .markdown-body a rule in the guides)
+  .alert a:not(.btn):not(.badge):not(.alert-link) {
+    // stylelint-disable-next-line scss/no-global-function-names
+    color: #{lighten($fe-primary-lift, 12%)} !important;
   }
 
   // ============================================

@@ -138,6 +138,7 @@
   * [你们如何对域名执行 DNS 查询](#how-do-you-perform-dns-lookups-on-domain-names)
 * [账户和计费](#account-and-billing)
   * [如何删除我的账户](#how-do-i-delete-my-account)
+  * [如何向我的域名添加团队成员](#how-do-i-add-team-members-to-my-domain)
   * [付费计划提供退款保证吗](#do-you-offer-a-money-back-guarantee-on-paid-plans)
   * [如果我更换计划，你们会按比例退款吗](#if-i-switch-plans-do-you-pro-rate-and-refund-the-difference)
   * [我可以仅将此邮件转发服务用作“备用”或“故障转移”MX 服务器吗](#can-i-just-use-this-email-forwarding-service-as-a-fallback-or-fallover-mx-server)
@@ -5637,6 +5638,26 @@ MX 服务器还通过速率限制限制转发给一个或多个收件人的邮�
 </div>
 
 如果您无法登录您的账户，请使用与您的账户关联的电子邮件地址通过 <a href="mailto:support@forwardemail.net">support@forwardemail.net</a> 联系我们，我们将协助您完成删除操作。
+
+### 如何向我的域名添加团队成员 {#how-do-i-add-team-members-to-my-domain}
+
+使用 [团队计划](/private-business-email?pricing=true) 时，域名管理员可以邀请其他人加入该域名：
+
+1. 前往 [我的账户 → 域](/my-account/domains)，点击该域名旁边的 **设置**。
+2. 在 **管理团队** 下点击 **邀请新成员**，输入对方的电子邮件地址并选择一个组：**用户** 组可以在该域名上创建别名，**行政** 组还可以更改该域名的设置并管理其成员。
+3. 对方会收到一封包含邀请链接的电子邮件。要接受邀请，对方需使用受邀地址登录其 Forward Email 账户，或使用该地址创建一个免费账户。如果是新账户，对方需先使用发送到该地址的验证码验证该地址。
+
+<div class="alert my-3 alert-warning">
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    重要提示：
+  </strong>
+  <span>
+    Forward Email 账户与邮箱相互独立。为别名生成的密码（用于网页版邮件、IMAP、POP3 或 SMTP）无法用于登录网站。如果对方在登录其他账户的状态下打开邀请链接，页面会提供退出登录并继续的选项。
+  </span>
+</div>
+
+邀请将在 7 天后过期，团队列表会标记已过期的邀请。要发送新链接，请再次邀请同一地址。要撤回邀请，请点击 **删除邀请**。
 
 ### 付费计划是否提供退款保证 {#do-you-offer-a-money-back-guarantee-on-paid-plans}
 

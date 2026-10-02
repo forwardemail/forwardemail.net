@@ -33,7 +33,7 @@ block content
                 .col-6.col-sm-6.col-md-3.mb-3.px-2
                   .card.h-100.shadow-sm.border-success
                     .card-body.py-3
-                      h3.h2.mb-1(style="color: #28a745")= stats.delivered.toLocaleString()
+                      h3.h2.mb-1(style="color: #047857")= stats.delivered.toLocaleString()
                       small.text-muted= t("Delivered")
                       //- Note when delivered is 0 to guide users to enable Success Logs
                       if stats.delivered === 0
@@ -48,14 +48,14 @@ block content
                 .col-6.col-sm-6.col-md-3.mb-3.px-2
                   .card.h-100.shadow-sm.border-warning
                     .card-body.py-3
-                      h3.h2.mb-1(style="color: #ffc107")= stats.spam.toLocaleString()
+                      h3.h2.mb-1(style="color: #92400e")= stats.spam.toLocaleString()
                       small.text-muted= t("Spam Blocked")
 
                 //- Viruses blocked
                 .col-6.col-sm-6.col-md-3.mb-3.px-2
                   .card.h-100.shadow-sm.border-danger
                     .card-body.py-3
-                      h3.h2.mb-1(style="color: #dc3545")= stats.virus.toLocaleString()
+                      h3.h2.mb-1(style="color: #b91c1c")= stats.virus.toLocaleString()
                       small.text-muted= t("Viruses Blocked")
 
             //- Detailed breakdown section
@@ -132,15 +132,15 @@ block content
                                 if msgIndex === 0
                                   if codeNum >= 500
                                     span.badge(
-                                      style="background-color: #dc3545; color: #fff"
+                                      style="background-color: #fce9e9; color: #b91c1c"
                                     )= code
                                   else if codeNum >= 400
                                     span.badge(
-                                      style="background-color: #ffc107; color: #212529"
+                                      style="background-color: #fdeed3; color: #92400e"
                                     )= code
                                   else
                                     span.badge(
-                                      style="background-color: #28a745; color: #fff"
+                                      style="background-color: #e1efeb; color: #047857"
                                     )= code
                               td
                                 if msg.text
@@ -172,15 +172,15 @@ block content
                             td
                               if codeNum >= 500
                                 span.badge(
-                                  style="background-color: #dc3545; color: #fff"
+                                  style="background-color: #fce9e9; color: #b91c1c"
                                 )= code
                               else if codeNum >= 400
                                 span.badge(
-                                  style="background-color: #ffc107; color: #212529"
+                                  style="background-color: #fdeed3; color: #92400e"
                                 )= code
                               else
                                 span.badge(
-                                  style="background-color: #28a745; color: #fff"
+                                  style="background-color: #e1efeb; color: #047857"
                                 )= code
                             td= t("SMTP Response")
                             td.text-right= totalCount.toLocaleString()
@@ -253,13 +253,13 @@ block content
                   = t("Forward Email protected you from")
                   = " "
                   if stats.spam > 0
-                    strong(style="color: #ffc107")= `${stats.spam.toLocaleString()} ${t("spam emails")}`
+                    strong(style="color: #92400e")= `${stats.spam.toLocaleString()} ${t("spam emails")}`
                   if stats.spam > 0 && stats.virus > 0
                     = " "
                     = t("and")
                     = " "
                   if stats.virus > 0
-                    strong(style="color: #dc3545")= `${stats.virus.toLocaleString()} ${t("viruses")}`
+                    strong(style="color: #b91c1c")= `${stats.virus.toLocaleString()} ${t("viruses")}`
                   = " "
                   = t("during this period.")
                 else

@@ -1,0 +1,113 @@
+//- Share dialog for the current page, opened by any control that targets
+//- #modal-share (the footer's Share button, and the Share button in the
+//- article and guide byline, see _author.pug). Same list and order as the
+//- share dialogs on Terminal Email and Privacy Ratings.
+//-
+//- Every target is a plain link to that network's own share page, so no
+//- script, widget or tracker from another site loads. core.js adds the
+//- device's share sheet where the browser has one (navigator.share) and asks
+//- for a Mastodon server, since Mastodon has no central share page. Copy link
+//- uses the clipboard handler core.js gives every [data-toggle="clipboard"].
+//-
+//- The link is the page's canonical URL with no query string, so a ?domain=
+//- or similar parameter in the address bar is never passed on.
+//-
+//- The dialog ships inside a <template>, so its 50 or so elements are not
+//- part of the page until someone opens it: core.js adds it to the page on
+//- the first click of a Share button. Bootstrap opens modals with JavaScript
+//- anyway, so this costs a visitor without it nothing.
+-
+  const shareUrl = canonical ? canonical : `${config.urls.web}/${locale}${ctx.pathWithoutLocale === "/" ? "" : ctx.pathWithoutLocale}`;
+  const shareText = meta && meta.title ? striptags(convert(meta.title)) : config.appName;
+  const shareU = encodeURIComponent(shareUrl);
+  const shareT = encodeURIComponent(shareText);
+  const shareBoth = encodeURIComponent(`${shareText} ${shareUrl}`);
+  const shareTargets = [
+    [t("Messages"), `sms:?&body=${shareBoth}`],
+    [t("Email"), `mailto:?subject=${shareT}&body=${shareBoth}`],
+    ["WhatsApp", `https://wa.me/?text=${shareBoth}`],
+    ["Telegram", `https://t.me/share/url?url=${shareU}&text=${shareT}`],
+    ["Mastodon", `https://mastodon.social/share?text=${shareBoth}`],
+    ["Bluesky", `https://bsky.app/intent/compose?text=${shareBoth}`],
+    ["X", `https://x.com/intent/post?text=${shareT}&url=${shareU}`],
+    ["Reddit", `https://www.reddit.com/submit?url=${shareU}&title=${shareT}`],
+    ["Hacker News", `https://news.ycombinator.com/submitlink?u=${shareU}&t=${shareT}`],
+    ["LinkedIn", `https://www.linkedin.com/sharing/share-offsite/?url=${shareU}`],
+    ["Facebook", `https://www.facebook.com/sharer/sharer.php?u=${shareU}`]
+  ];
+template#share-template
+  #modal-share.modal.fade.d-print-none(
+    tabindex="-1",
+    role="dialog",
+    aria-labelledby="modal-share-title",
+    aria-hidden="true",
+    data-share-url=shareUrl,
+    data-share-text=shareText
+  )
+    .modal-dialog.modal-dialog-centered(role="document")
+      .modal-content
+        .modal-header
+          h2#modal-share-title.modal-title.h5= t("Share")
+          button.close(
+            type="button",
+            data-dismiss="modal",
+            aria-label=t("Close")
+          )
+            span(aria-hidden="true") &times;
+        .modal-body
+          p.text-muted.small= shareText
+          button.btn.btn-primary.btn-block.mb-3(
+            type="button",
+            data-share-native,
+            hidden
+          )
+            i.fas.fa-share-alt(aria-hidden="true")
+            = " "
+            = t("Share with an app on this device")
+          .input-group.mb-3
+            input#share-url.form-control(
+              type="text",
+              value=shareUrl,
+              readonly,
+              aria-label=t("Link")
+            )
+            .input-group-append
+              button.btn.btn-outline-secondary(
+                type="button",
+                data-toggle="clipboard",
+                data-clipboard-text=shareUrl
+              )
+                i.fa.fa-link(aria-hidden="true")
+                = " "
+                = t("Copy link")
+          ul.list-unstyled.row.no-gutters.mb-0
+            each target in shareTargets
+              li.col-6.col-sm-4.p-1
+                if /^(mailto|sms):/.test(target[1])
+                  a.btn.btn-outline-secondary.btn-block.btn-sm(href=target[1])= target[0]
+                else
+                  a.btn.btn-outline-secondary.btn-block.btn-sm(
+                    href=target[1],
+                    target="_blank",
+                    rel="nofollow noopener noreferrer",
+                    data-share-mastodon=target[0] === "Mastodon" ? true : false
+                  )= target[0]
+          //- novalidate: the reader may paste https://host/ or host/@name,
+          //- which share.js trims to the host before it checks it
+          form.mt-3(data-share-mastodon-form, hidden, novalidate)
+            label(for="share-mastodon-server")= t("Your Mastodon server")
+            .input-group
+              input#share-mastodon-server.form-control(
+                type="text",
+                inputmode="url",
+                placeholder="mastodon.social",
+                autocomplete="off",
+                autocapitalize="none",
+                spellcheck="false",
+                aria-describedby="share-mastodon-error"
+              )
+              .input-group-append
+                button.btn.btn-primary(type="submit")= t("Share")
+              //- shown by share.js when the name is not a host name
+              #share-mastodon-error.invalid-feedback(role="alert")= t("Enter a server name such as mastodon.social.")
+          p.small.text-muted.mt-3.mb-0= t("Each button is a plain link to that site's own share page.")

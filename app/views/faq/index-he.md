@@ -138,6 +138,7 @@
   * [איך אתם מבצעים חיפושי DNS על שמות דומיין](#how-do-you-perform-dns-lookups-on-domain-names)
 * [חשבון וחשבוניות](#account-and-billing)
   * [כיצד אוכל למחוק את החשבון שלי](#how-do-i-delete-my-account)
+  * [כיצד אוכל להוסיף חברי צוות לדומיין שלי](#how-do-i-add-team-members-to-my-domain)
   * [האם אתם מציעים אחריות להחזר כספי בתכניות בתשלום](#do-you-offer-a-money-back-guarantee-on-paid-plans)
   * [אם אני משנה תכנית, האם אתם מחשבים פרופורציה ומחזירים את ההפרש](#if-i-switch-plans-do-you-pro-rate-and-refund-the-difference)
   * [האם אפשר להשתמש בשירות העברת הדואר הזה כשרת MX "גיבוי" או "מחליף"](#can-i-just-use-this-email-forwarding-service-as-a-fallback-or-fallover-mx-server)
@@ -5640,6 +5641,26 @@ Forward Email מסתמכת בלעדית על שני ספקי תשתית מרכז
 </div>
 
 אם אינך מצליח להיכנס לחשבונך, אנא צור איתנו קשר בכתובת <a href="mailto:support@forwardemail.net">support@forwardemail.net</a> מכתובת הדוא"ל המשויכת לחשבונך ואנו נסייע לך במחיקה.
+
+### כיצד אוכל להוסיף חברי צוות לדומיין שלי {#how-do-i-add-team-members-to-my-domain}
+
+ב[תוכנית הצוות](/private-business-email?pricing=true), מנהל של דומיין יכול להזמין אליו אנשים אחרים:
+
+1. עבור אל [החשבון שלי → דומיינים](/my-account/domains) ולחץ על **הגדרות** ליד הדומיין.
+2. תחת **ניהול צוות**, לחץ על **הזמן חבר חדש**, הזן את כתובת הדוא"ל של האדם ובחר קבוצה: **מִשׁתַמֵשׁ** יכול ליצור כינויים בדומיין, ואילו **מנהל** יכול גם לשנות את ההגדרות שלו ולנהל את החברים בו.
+3. האדם יקבל הודעת דוא"ל עם קישור הזמנה. כדי לקבל את ההזמנה, עליו להתחבר לחשבון Forward Email שלו עם הכתובת שהוזמנה, או ליצור איתה חשבון חינמי. בחשבון חדש, עליו לאמת קודם את הכתובת באמצעות קוד שיישלח אליה.
+
+<div class="alert my-3 alert-warning">
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    חשוב:
+  </strong>
+  <span>
+    חשבון Forward Email נפרד מתיבת דואר. הסיסמה שנוצרה עבור כינוי (עבור דואר אינטרנט, IMAP, POP3 או SMTP) אינה מאפשרת להתחבר לאתר. אם קישור ההזמנה נפתח כשהאדם מחובר עם חשבון אחר, הדף יציע להתנתק ולהמשיך.
+  </span>
+</div>
+
+תוקף ההזמנה פג לאחר 7 ימים, ורשימת הצוות מסמנת הזמנות שפג תוקפן. כדי לשלוח קישור חדש, הזמן שוב את אותה כתובת. כדי לבטל הזמנה, לחץ על **מחק הזמנה**.
 
 ### האם אתם מציעים אחריות להחזר כספי בתוכניות בתשלום {#do-you-offer-a-money-back-guarantee-on-paid-plans}
 

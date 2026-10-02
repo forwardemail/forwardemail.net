@@ -675,7 +675,12 @@ module.exports = {
   DOMAIN_DOES_NOT_EXIST_ANYWHERE: 'Domain does not exist.',
   DOMAIN_REQUIRES_SMTP_ACCESS: 'Domain requires SMTP access.',
   INVITE_DOES_NOT_EXIST:
-    'Invite does not exist with your email address for this domain.',
+    'We could not find this invite. You may have accepted it, or an admin of the domain deleted or replaced it.',
+  INVITE_EXPIRED:
+    'This invite has expired. Ask an admin of the domain to send you a new one.',
+  INVITE_WRONG_ACCOUNT:
+    'This invite is for <span class="notranslate">%s</span>, but you are signed in as <span class="notranslate">%s</span>. Sign out, then sign in or sign up with the invited address.',
+  INVITE_ALREADY_ACCEPTED: 'You are a member of this domain.',
   DOMAIN_ALREADY_EXISTS: 'Domain already exists on your account.',
   DOMAIN_ALREADY_EXISTS_REMOVE_FIRST:
     'Domain already exists on your account. Please remove it first and then try accepting the invite again.',

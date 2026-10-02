@@ -138,6 +138,7 @@
   * [도메인 이름에 대해 DNS 조회를 수행하는 방법](#how-do-you-perform-dns-lookups-on-domain-names)
 * [계정 및 결제](#account-and-billing)
   * [계정을 어떻게 삭제하나요?](#how-do-i-delete-my-account)
+  * [도메인에 팀원을 어떻게 추가하나요?](#how-do-i-add-team-members-to-my-domain)
   * [유료 플랜에 환불 보증이 있나요](#do-you-offer-a-money-back-guarantee-on-paid-plans)
   * [플랜 변경 시 차액을 비례 환불하나요](#if-i-switch-plans-do-you-pro-rate-and-refund-the-difference)
   * [이 이메일 전달 서비스를 "대체" 또는 "백업" MX 서버로만 사용할 수 있나요](#can-i-just-use-this-email-forwarding-service-as-a-fallback-or-fallover-mx-server)
@@ -5640,6 +5641,26 @@ Backscatterer 목록에 오르는 일반적인 이유는 잘못된 반송 또는
 </div>
 
 계정에 로그인할 수 없는 경우, 계정에 연결된 이메일 주소로 <a href="mailto:support@forwardemail.net">support@forwardemail.net</a>에 문의해 주시면 삭제를 도와드리겠습니다.
+
+### 도메인에 팀원을 어떻게 추가하나요? {#how-do-i-add-team-members-to-my-domain}
+
+[팀 플랜](/private-business-email?pricing=true)에서는 도메인 관리자가 다른 사람을 도메인에 초대할 수 있습니다:
+
+1. [내 계정 → 도메인](/my-account/domains)으로 이동하여 도메인 옆의 **설정**을 클릭합니다.
+2. **팀 관리**에서 **새로운 회원 초대**를 클릭하고, 상대방의 이메일 주소를 입력한 다음 그룹을 선택합니다. **사용자**는 도메인에서 별칭을 만들 수 있고, **관리자**는 여기에 더해 도메인 설정을 변경하고 회원을 관리할 수 있습니다.
+3. 상대방은 초대 링크가 포함된 이메일을 받습니다. 초대를 수락하려면 초대받은 주소로 Forward Email 계정에 로그인하거나, 그 주소로 무료 계정을 만들면 됩니다. 새 계정이라면 먼저 해당 주소로 전송되는 코드로 주소를 인증합니다.
+
+<div class="alert my-3 alert-warning">
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    중요:
+  </strong>
+  <span>
+    Forward Email 계정은 사서함과 별개입니다. 별칭용으로 생성된 비밀번호(웹메일, IMAP, POP3 또는 SMTP용)로는 웹사이트에 로그인할 수 없습니다. 다른 계정으로 로그인된 상태에서 초대 링크를 열면 로그아웃하고 계속할 수 있는 옵션이 페이지에 표시됩니다.
+  </span>
+</div>
+
+초대는 7일 후에 만료되며, 만료된 초대는 팀 목록에 표시됩니다. 새 링크를 보내려면 같은 주소를 다시 초대하세요. 초대를 취소하려면 **초대 삭제**를 클릭하세요.
 
 ### 유료 플랜에 환불 보증이 있나요? {#do-you-offer-a-money-back-guarantee-on-paid-plans}
 

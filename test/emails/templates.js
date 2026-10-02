@@ -3,9 +3,13 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
+const fs = require('node:fs');
+const path = require('node:path');
+
 const Email = require('email-templates');
 const nodemailer = require('nodemailer');
 const test = require('ava');
+const { JSDOM } = require('jsdom');
 
 const config = require('#config');
 
@@ -293,7 +297,7 @@ for (const [template, extra] of [
   ],
   ['dmarc-issue', { response: smtpResponse, dmarc: { result: 'fail' } }]
 ]) {
-  test(`${template} code blocks have readable text on the dark background`, async (t) => {
+  test(`${template} code blocks are dark text on a light panel`, async (t) => {
     const html = await render(template, extra);
     const blocks = [
       ...html.matchAll(
@@ -313,6 +317,11 @@ for (const [template, extra] of [
           2
         )}:1`
       );
+      // still readable in a client that drops the panel's background, and
+      // the reverse: a client that drops the text color shows its default
+      // (black) on the panel
+      t.true(contrast(color, '#ffffff') >= 7, `${color} on white`);
+      t.true(contrast('#000000', background) >= 7, `black on ${background}`);
     }
   });
 }
@@ -347,3 +356,183 @@ test('change-email escapes both addresses', async (t) => {
   t.false(html.includes('<a href=//evil.example>'));
   t.true(html.includes('&lt;a href=//evil.example&gt;'));
 });
+
+//
+// Every template, in English and in German (longer strings wrap and hit
+// more of the layout), with locals shaped like each sender's: every piece
+// of text must be at least 4.5:1 against the background it sits on. The
+// colors are read from the inlined styles the way a client reads them: a
+// text node takes the color of its nearest element that sets one, over the
+// background of its nearest element that paints one (white otherwise).
+//
+const emailsDir = path.join(__dirname, '..', '..', 'emails');
+const allTemplates = fs
+  .readdirSync(emailsDir)
+  .filter((name) => fs.existsSync(path.join(emailsDir, name, 'html.pug')));
+
+const readabilityLocals = {
+  email: outboundEmail,
+  truthSource: 'apple.com',
+  category: 'Spam',
+  responseCode: 550,
+  response:
+    '554 5.7.1 [HM08] Message rejected due to local policy. Please visit https://support.apple.com/en-us/HT204137. Txn ID 4fbc0af0-417e-4180-91d8-66754d53a162',
+  detectionCount: 3,
+  threshold: 3,
+  uniqueRecipients: 3,
+  uniqueTruthSources: 1,
+  dmarc: { result: 'fail' },
+  // system alerts carry inline code and code blocks in their message
+  message:
+    '<p>Alias <code>hello@example.com</code> failed:</p><pre><code>Alias ID: 6abd5e46f6134a99671bddca\nhttps://example.com/x</code></pre>',
+  inquiry: {
+    id: 'i1',
+    message: 'Hello\n<pre><code>dig example.com txt</code></pre>',
+    subject: 'Help',
+    created_at: now
+  },
+  accountUpdates: [
+    { name: config.passport.fields.otpEnabled, current: true },
+    { name: 'email', text: 'Email', redacted: true },
+    { name: 'has_newsletter', text: 'Newsletter', current: false }
+  ],
+  domainUpdates: [
+    {
+      name: 'has_smtp',
+      text: 'Outbound SMTP',
+      current: true,
+      previous: false,
+      changedByEmail: 'jane@example.com',
+      ip: '127.0.0.1',
+      userAgent: 'curl/8',
+      isAdmin: false,
+      isSystem: false,
+      changed_at: now
+    },
+    { name: 'secret', text: 'Secret', redacted: true, isAdmin: true },
+    { name: 'note', text: 'Note', current: 'a', previous: 'b', isSystem: true }
+  ],
+  timezone: 'UTC',
+  domainName: 'example.com',
+  alias: 'hello@example.com',
+  destination: 'bob@example.org',
+  isMailbox: false,
+  isWebhook: false,
+  status: 'bounced',
+  isRetryWindowExceeded: true,
+  retryWindow: '5 days',
+  interval: '1 day',
+  error:
+    '550 5.1.1 <bob@example.org>: Recipient address rejected: User unknown',
+  from: 'jane@example.com',
+  subject: 'Hello',
+  messageId: '<1@example.com>',
+  date: now,
+  userData: { email: 'jane@example.com', plan: 'free' },
+  kind: 'storage',
+  upgrade_option: '20 GB',
+  current_quota: '10 GB',
+  request_date: now.toISOString(),
+  admin_user_link: `${config.urls.web}/admin/users`
+};
+
+// a CSS color as [r, g, b], or null for none or transparent
+function rgb(value) {
+  if (!value) return null;
+  const color = value.trim().toLowerCase();
+  if (color === 'white') return [255, 255, 255];
+  if (color === 'black') return [0, 0, 0];
+  let match = /^#([\da-f])([\da-f])([\da-f])$/.exec(color);
+  if (match) return match.slice(1).map((h) => Number.parseInt(`${h}${h}`, 16));
+  // #rrggbb, or #rrggbbaa painted over white
+  match = /^#([\da-f]{6})([\da-f]{2})?$/.exec(color);
+  if (match) {
+    const alpha = match[2] ? Number.parseInt(match[2], 16) / 255 : 1;
+    return [0, 2, 4].map((i) => {
+      const c = Number.parseInt(match[1].slice(i, i + 2), 16);
+      return Math.round(c * alpha + 255 * (1 - alpha));
+    });
+  }
+
+  match = /^rgba?\(([^)]+)\)$/.exec(color);
+  if (match) {
+    const [r, g, b, a = 1] = match[1].split(',').map(Number);
+    if (a === 0) return null;
+    return [r, g, b].map((c) => Math.round(c * a + 255 * (1 - a)));
+  }
+
+  return null;
+}
+
+const hex = (color) =>
+  `#${color.map((c) => c.toString(16).padStart(2, '0')).join('')}`;
+
+function declaration(element, property) {
+  let value = null;
+  for (const part of (element.getAttribute('style') || '').split(';')) {
+    const i = part.indexOf(':');
+    if (i !== -1 && part.slice(0, i).trim().toLowerCase() === property)
+      value = part.slice(i + 1).replace(/!important/i, '');
+  }
+
+  return value;
+}
+
+// text that is only emoji or symbols draws in its own colors
+const PICTOGRAPHIC = /^[\p{Extended_Pictographic}️‍\s()+=]+$/u;
+
+for (const template of allTemplates) {
+  test(`${template} has readable text in English and German`, async (t) => {
+    for (const locale of ['en', 'de']) {
+      const html = await render(template, {
+        ...readabilityLocals,
+        // the support reply is an object, not an SMTP response
+        ...(template === 'inquiry-response'
+          ? {
+              response: {
+                message:
+                  'Hi\n<pre><code>dig example.com txt</code></pre>\nUse <code>inline</code>.'
+              }
+            }
+          : {}),
+        locale
+      });
+      const { window } = new JSDOM(html);
+      const { document, NodeFilter } = window;
+      const walker = document.createTreeWalker(
+        document.body,
+        NodeFilter.SHOW_TEXT
+      );
+      const failures = new Set();
+      while (walker.nextNode()) {
+        const text = walker.currentNode.textContent.trim();
+        if (!text || PICTOGRAPHIC.test(text)) continue;
+        let color = null;
+        let background = null;
+        for (
+          let element = walker.currentNode.parentElement;
+          element && (!color || !background);
+          element = element.parentElement
+        ) {
+          color ||= rgb(declaration(element, 'color'));
+          background ||=
+            rgb(declaration(element, 'background-color')) ||
+            rgb(element.getAttribute('bgcolor'));
+        }
+
+        color ||= [0, 0, 0];
+        background ||= [255, 255, 255];
+        const ratio = contrast(hex(color), hex(background));
+        if (ratio < 4.5)
+          failures.add(
+            `${locale}: "${text.slice(0, 40)}" ${hex(color)} on ${hex(
+              background
+            )} is ${ratio.toFixed(2)}:1`
+          );
+      }
+
+      window.close();
+      t.deepEqual([...failures], [], `${template} (${locale})`);
+    }
+  });
+}

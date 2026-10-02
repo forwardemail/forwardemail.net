@@ -246,3 +246,20 @@ nav.fe-nav button:focus-visible {
   outline: 0;
   background-color: var(--fe-primary-a16);
 }
+
+// ============================================
+// SKIP LINK
+// ============================================
+// The first focusable element on every page (layout.pug). Hidden until
+// focused, then pinned above the fixed bar (z-index 1030) so the bar cannot
+// cover it.
+
+a.fe-skip-link:focus {
+  position: fixed;
+  // .sr-only zeroes the button's padding and margin; focus does not restore them
+  padding: var(--fe-space-2) var(--fe-space-4);
+  margin: 0;
+  inset-block-start: var(--fe-space-3);
+  inset-inline-start: var(--fe-space-3);
+  z-index: 1090;
+}

@@ -9,15 +9,16 @@
 // re-points them under prefers-color-scheme: dark. Values are drawn from the
 // same _fe-palette.scss ramps as everything else.
 // Light values intentionally match what bootstrap renders today, so nothing
-// consuming these tokens shifts light mode.
+// consuming these tokens shifts light mode ($text-muted in _variables.scss
+// for the two greys).
 
 :root {
   --app-bg-canvas: #{$fe-l-000};
   --app-bg-raised: #{$fe-l-000};
   --app-bg-sunken: #f8f9fa;
   --app-fg-primary: #212529;
-  --app-fg-secondary: #6c757d;
-  --app-fg-muted: #6c757d;
+  --app-fg-secondary: #5b636b;
+  --app-fg-muted: #5b636b;
   --app-link: #{$fe-primary};
   // stylelint-disable-next-line scss/no-global-function-names
   --app-link-hover: #{darken($fe-primary, 15%)};

@@ -138,6 +138,7 @@
   * [Jak provádíte DNS dotazy na doménová jména](#how-do-you-perform-dns-lookups-on-domain-names)
 * [Účet a fakturace](#account-and-billing)
   * [Jak mohu smazat svůj účet](#how-do-i-delete-my-account)
+  * [Jak přidám členy týmu do své domény](#how-do-i-add-team-members-to-my-domain)
   * [Nabízíte záruku vrácení peněz u placených plánů](#do-you-offer-a-money-back-guarantee-on-paid-plans)
   * [Pokud přejdu na jiný plán, provádíte poměrné vrácení peněz](#if-i-switch-plans-do-you-pro-rate-and-refund-the-difference)
   * [Mohu používat tuto službu přeposílání emailů jako "fallback" nebo "fallover" MX server](#can-i-just-use-this-email-forwarding-service-as-a-fallback-or-fallover-mx-server)
@@ -5640,6 +5641,26 @@ Svůj účet můžete kdykoli smazat podle následujících kroků:
 </div>
 
 Pokud se nemůžete přihlásit ke svému účtu, kontaktujte nás prosím na adrese <a href="mailto:support@forwardemail.net">support@forwardemail.net</a> z e-mailové adresy spojené s vaším účtem a my vám se smazáním pomůžeme.
+
+### Jak přidám členy týmu do své domény {#how-do-i-add-team-members-to-my-domain}
+
+V [týmovém plánu](/private-business-email?pricing=true) může správce domény do ní pozvat další osoby:
+
+1. Přejděte na [Můj účet → Domény](/my-account/domains) a u domény klikněte na **Nastavení**.
+2. V části **Správa týmu** klikněte na **Pozvat nového člena**, zadejte e-mailovou adresu dané osoby a vyberte skupinu: **Uživatel** může v doméně vytvářet aliasy a **Administrátor** může navíc měnit její nastavení a spravovat její členy.
+3. Daná osoba obdrží e-mail s odkazem na pozvánku. Pro její přijetí se přihlásí ke svému účtu Forward Email s pozvanou adresou, nebo si s ní vytvoří bezplatný účet. U nového účtu nejprve adresu ověří kódem, který na ni přijde.
+
+<div class="alert my-3 alert-warning">
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Důležité:
+  </strong>
+  <span>
+    Účet Forward Email je oddělený od poštovní schránky. Heslem vygenerovaným pro alias (pro webmail, IMAP, POP3 nebo SMTP) se na web přihlásit nelze. Pokud se odkaz na pozvánku otevře, když je daná osoba přihlášena k jinému účtu, stránka nabídne odhlášení a pokračování.
+  </span>
+</div>
+
+Platnost pozvánky vyprší po 7 dnech a seznam týmu prošlé pozvánky označuje. Chcete-li odeslat nový odkaz, pozvěte stejnou adresu znovu. Chcete-li pozvánku stáhnout, klikněte na **Smazat pozvánku**.
 
 ### Nabízíte záruku vrácení peněz u placených plánů {#do-you-offer-a-money-back-guarantee-on-paid-plans}
 

@@ -761,12 +761,12 @@ curl -X DELETE BASE_URI/v1/domains/:domain_name \
 
 ### Aceptar invitación de dominio {#accept-domain-invite}
 
-> `GET /v1/domains/:domain_name/invites`
+> `GET /v1/domains/:domain_id/invites/:token`
 
 > Solicitud de ejemplo:
 
 ```sh
-curl BASE_URI/v1/domains/:domain_name/invites \
+curl BASE_URI/v1/domains/:domain_id/invites/:token \
   -u API_TOKEN:
 ```
 

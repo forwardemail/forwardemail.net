@@ -15,9 +15,17 @@ if ttiData && (isTtiPage || canRenderTti)
             h1.fe-tti__title= t("Time to Inbox")
           else
             h2.fe-tti__title= t("Time to Inbox")
+          //- The intro comes first so the heading is answered by the text
+          //- under it. Off the /tti page it also links the monitor's source,
+          //- which /tti links from its note further down. (The alert-link
+          //- variant of the sentence is the one translated in every locale.)
+          p.fe-tti__intro
+            = t("We measure these delivery times with our own open-source monitor. It sends test emails to inboxes at major email providers and records how long each one takes to arrive. Our engineers get an alert when a delivery takes longer than 10 seconds.")
+            if !isTtiPage
+              = " "
+              != t('Source code is <a href="https://github.com/forwardemail/forwardemail.net/blob/master/jobs/tti.js" target="_blank" rel="noopener noreferrer" class="alert-link">available on GitHub</a>.')
           p.fe-tti__updated
             != t('Last updated on <span class="dayjs notranslate" data-time="%d">%s</span>', ttiData.created_at.getTime(), dayjs(ttiData.created_at).format("M/D/YY h:mm A z"))
-          p.fe-tti__intro= t("We monitor how long it takes for emails sent by our service to be delivered to test inboxes at major email service providers. This monitoring helps us to ensure high-quality IP reputation and email deliverability. Our team of engineers are automatically alerted if any of these timers exceed 10 seconds.")
 
         h2.fe-tti__section-title= t("Current Delivery Times")
         ul.fe-tti__metrics

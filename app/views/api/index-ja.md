@@ -761,12 +761,12 @@ curl -X DELETE BASE_URI/v1/domains/:domain_name \
 
 ### ドメイン招待を承認 {#accept-domain-invite}
 
-> `GET /v1/domains/:domain_name/invites`
+> `GET /v1/domains/:domain_id/invites/:token`
 
 > 例のリクエスト:
 
 ```sh
-curl BASE_URI/v1/domains/:domain_name/invites \
+curl BASE_URI/v1/domains/:domain_id/invites/:token \
   -u API_TOKEN:
 ```
 

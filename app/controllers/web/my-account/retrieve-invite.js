@@ -7,9 +7,34 @@ const punycode = require('node:punycode');
 
 const Boom = require('@hapi/boom');
 const isSANB = require('is-string-and-not-blank');
+const mongoose = require('mongoose');
+const { encode } = require('html-entities');
 
 const config = require('#config');
-const { Domains, Users } = require('#models');
+const normalizeInviteEmail = require('#helpers/normalize-invite-email');
+const { Domains } = require('#models');
+
+// where a member lands: the domain for an admin, its aliases for a user
+function memberPath(ctx, domain, group) {
+  const name = punycode.toASCII(domain.name);
+  return ctx.state.l(
+    group === 'admin'
+      ? `/my-account/domains/${name}`
+      : `/my-account/domains/${name}/aliases`
+  );
+}
+
+function redirectMember(ctx, domain, group, message) {
+  if (ctx.api) {
+    ctx.body = message;
+    return;
+  }
+
+  ctx.flash('success', message);
+  const redirectTo = memberPath(ctx, domain, group);
+  if (ctx.accepts('html')) ctx.redirect(redirectTo);
+  else ctx.body = { redirectTo };
+}
 
 async function retrieveInvite(ctx) {
   if (!isSANB(ctx.params.domain_id))
@@ -25,13 +50,33 @@ async function retrieveInvite(ctx) {
   //
   const { domain_id: domainId, token: inviteToken } = ctx.params;
 
+  // (an id that is not an ObjectId would make the query below throw)
+  if (!mongoose.isValidObjectId(domainId))
+    throw Boom.notFound(ctx.translateError('INVITE_DOES_NOT_EXIST'));
+
   // Find the domain by ID AND verify it contains the invite token
   const domain = await Domains.findOne({
     _id: domainId,
     'invites.token': inviteToken
   });
 
-  if (!domain) throw Boom.notFound(ctx.translateError('INVITE_DOES_NOT_EXIST'));
+  if (!domain) {
+    // the invite is removed once accepted, so opening the link again (or
+    // accepting it twice) lands here; a member goes on to the domain
+    // (only if the route loaded the user's domains)
+    const membership = Array.isArray(ctx.state.domains)
+      ? ctx.state.domains.find((d) => d.id === domainId)
+      : undefined;
+    if (membership)
+      return redirectMember(
+        ctx,
+        membership,
+        membership.group,
+        ctx.translate('INVITE_ALREADY_ACCEPTED')
+      );
+
+    throw Boom.notFound(ctx.translateError('INVITE_DOES_NOT_EXIST'));
+  }
 
   // Find the specific invite by token
   const invite = domain.invites.find((inv) => inv.token === inviteToken);
@@ -43,15 +88,70 @@ async function retrieveInvite(ctx) {
     domain.invites = domain.invites.filter((inv) => inv.token !== inviteToken);
     domain.skip_verification = true;
     await domain.save();
-    throw Boom.notFound(ctx.translateError('INVITE_DOES_NOT_EXIST'));
+    // (the same page a signed-out visitor gets; a thrown error renders the
+    // generic error page, whose "Try again" would then find nothing)
+    if (!ctx.api && ctx.method === 'GET') {
+      ctx.status = 410;
+      ctx.state.invite = { state: 'expired', domainName: domain.name };
+      return ctx.render('invite');
+    }
+
+    throw Boom.resourceGone(ctx.translateError('INVITE_EXPIRED'));
   }
 
   //
   // Hard requirement: the authenticated user's email MUST match the invite email.
   // This prevents any user from accepting an invite meant for someone else.
   //
-  if (invite.email.toLowerCase() !== ctx.state.user.email.toLowerCase())
-    throw Boom.forbidden(ctx.translateError('INVITE_DOES_NOT_EXIST'));
+  if (
+    normalizeInviteEmail(invite.email) !==
+    normalizeInviteEmail(ctx.state.user.email)
+  ) {
+    // Often the admin opening the link to test it, or a person signed in
+    // with another account. The page says which address the invite is for
+    // and offers to sign out and continue; the link holder already has the
+    // address (the link was emailed to it).
+    //
+    // (a 200: the redirect-loop guard treats a redirect back to the URL of
+    // a page that was not a 200 as a loop, which would send "Sign out and
+    // continue" to the page before this one instead of back to the invite)
+    //
+    if (!ctx.api && ctx.method === 'GET') {
+      ctx.state.invite = {
+        state: 'wrong-account',
+        domainName: domain.name,
+        email: invite.email,
+        signedInAs: ctx.state.user.email
+      };
+      return ctx.render('invite');
+    }
+
+    throw Boom.forbidden(
+      ctx.translateError(
+        'INVITE_WRONG_ACCOUNT',
+        encode(invite.email),
+        encode(ctx.state.user.email)
+      )
+    );
+  }
+
+  //
+  // Accepting takes a verified address. The invite link can travel outside
+  // email (an admin can copy it), and the invite pages show the invited
+  // address, so whoever holds the link could otherwise sign up with that
+  // address and accept. Verifying sends a code to the invited inbox, and the
+  // verify page comes back here.
+  //
+  if (!ctx.state.user[config.userFields.hasVerifiedEmail]) {
+    if (ctx.api)
+      throw Boom.forbidden(ctx.translateError('EMAIL_VERIFICATION_REQUIRED'));
+    const redirectTo = ctx.state.l(
+      `${config.verifyRoute}?redirect_to=${encodeURIComponent(ctx.path)}`
+    );
+    if (ctx.accepts('html')) ctx.redirect(redirectTo);
+    else ctx.body = { redirectTo };
+    return;
+  }
 
   // if the user already has a domain with the same name
   // inform them to delete it first before accepting the invite
@@ -98,28 +198,14 @@ async function retrieveInvite(ctx) {
 
     // user is already a member, just redirect them
     const { group } = existingMember;
-    const message =
+    return redirectMember(
+      ctx,
+      domain,
+      group,
       group === 'admin'
         ? ctx.translate('INVITE_ACCEPTED_ADMIN')
-        : ctx.translate('INVITE_ACCEPTED_USER');
-
-    if (ctx.api) {
-      ctx.body = message;
-      return;
-    }
-
-    ctx.flash('success', message);
-
-    const redirectTo =
-      group === 'admin'
-        ? ctx.state.l(`/my-account/domains/${punycode.toASCII(domain.name)}`)
-        : ctx.state.l(
-            `/my-account/domains/${punycode.toASCII(domain.name)}/aliases`
-          );
-
-    if (ctx.accepts('html')) ctx.redirect(redirectTo);
-    else ctx.body = { redirectTo };
-    return;
+        : ctx.translate('INVITE_ACCEPTED_USER')
+    );
   }
 
   //
@@ -156,38 +242,16 @@ async function retrieveInvite(ctx) {
 
   ctx.state.domain = await domain.save();
 
-  // mark user's email as verified (accepting invite proves email access)
-  if (!ctx.state.user[config.userFields.hasVerifiedEmail]) {
-    await Users.findByIdAndUpdate(ctx.state.user._id, {
-      $set: { [config.userFields.hasVerifiedEmail]: true }
-    });
-    ctx.state.user[config.userFields.hasVerifiedEmail] = true;
-  }
-
-  // flash a message to the user telling them they've successfully accepted
-  const message =
+  // tell them they joined, and take them to the domain (admin) or to its
+  // aliases (user); an API request gets the message as the body
+  return redirectMember(
+    ctx,
+    domain,
+    group,
     group === 'admin'
       ? ctx.translate('INVITE_ACCEPTED_ADMIN')
-      : ctx.translate('INVITE_ACCEPTED_USER');
-
-  // edge case if it was an API request to simply send a string in the body
-  if (ctx.api) {
-    ctx.body = message;
-    return;
-  }
-
-  ctx.flash('success', message);
-
-  // redirect user to either alias page (if user) or admin page (if admin)
-  const redirectTo =
-    group === 'admin'
-      ? ctx.state.l(`/my-account/domains/${punycode.toASCII(domain.name)}`)
-      : ctx.state.l(
-          `/my-account/domains/${punycode.toASCII(domain.name)}/aliases`
-        );
-
-  if (ctx.accepts('html')) ctx.redirect(redirectTo);
-  else ctx.body = { redirectTo };
+      : ctx.translate('INVITE_ACCEPTED_USER')
+  );
 }
 
 module.exports = retrieveInvite;

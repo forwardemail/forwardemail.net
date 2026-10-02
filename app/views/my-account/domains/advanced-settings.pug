@@ -1102,14 +1102,21 @@ block body
                           th(scope="col")= t("Quick Links")
                         tbody
                           each invite in domain.invites
+                            - const isInviteExpired = Boolean(invite.expires_at) && new Date(invite.expires_at) < new Date();
                             tr
-                              td.align-middle= invite.email
+                              td.align-middle
+                                = invite.email
+                                //- an expired link no longer works; inviting the address again replaces it
+                                if isInviteExpired
+                                  = " "
+                                  span.badge.badge-warning= t("Expired")
                               td.align-middle= titleize(invite.group)
                               td.align-middle
                                 ul.list-inline.mb-0
                                   //- copy invite link
-                                  //- (not for an invite as an admin, whose link is only sent to the invitee)
-                                  if invite.group !== "admin"
+                                  //- (not for an invite as an admin, whose link is only sent to the invitee,
+                                  //- nor for one that expired or predates invite tokens)
+                                  if invite.group !== "admin" && invite.token && !isInviteExpired
                                     li.list-inline-item
                                       button.btn.btn-primary.copy-invite-btn(
                                         type="button",

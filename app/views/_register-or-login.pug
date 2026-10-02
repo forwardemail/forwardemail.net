@@ -25,6 +25,9 @@ mixin registerOrLogin(verb, isModal = false)
           - dataDismissModal = isRegisterOrLogin ? false : "true";
           - dataToggle = isRegisterOrLogin ? false : "modal-anchor";
           - dataTarget = isRegisterOrLogin ? false : "#modal-sign-up";
+        //- keep where the visitor was going (e.g. a team invite) when they switch forms
+        if ctx.query.return_to && typeof ctx.query.return_to === "string"
+          - anchorHref = `${anchorHref}?return_to=${encodeURIComponent(ctx.query.return_to)}`;
         a.alert.alert-warning.text-center.d-block.text-decoration-none(
           href=anchorHref,
           data-dismiss-modal=dataDismissModal,
@@ -89,7 +92,8 @@ mixin registerOrLogin(verb, isModal = false)
               required,
               name="email",
               placeholder="name@example.com",
-              autocomplete="email"
+              autocomplete="email",
+              value=verb === "sign up" && typeof ctx.query.email === "string" && ctx.query.email.length <= 320 ? ctx.query.email : undefined
             )
             label(for=`input-email-${dashify(verb)}`)= t("Email address")
           .form-group.floating-label
@@ -118,3 +122,6 @@ mixin registerOrLogin(verb, isModal = false)
           else if verb === 'sign in'
             p.mt-3.mb-1.text-center.small
               a.text-black.text-themed-50(href=l("/forgot-password"))= t("Forget your password?")
+            //- a mailbox user (e.g. a team invitee) tends to try the alias and
+            //- its generated password here, which never works on the website
+            p.mt-2.mb-1.text-center.small.text-muted!= t('Signing in to a mailbox? Use <a href="%s" target="_blank" rel="noopener noreferrer">webmail</a> with the alias and its generated password. This page takes your Forward Email account password.', "https://mail.forwardemail.net")

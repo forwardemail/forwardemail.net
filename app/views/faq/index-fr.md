@@ -138,6 +138,7 @@
   * [Comment effectuez-vous les recherches DNS sur les noms de domaine](#how-do-you-perform-dns-lookups-on-domain-names)
 * [Compte et Facturation](#account-and-billing)
   * [Comment supprimer mon compte](#how-do-i-delete-my-account)
+  * [Comment ajouter des membres d'équipe à mon domaine](#how-do-i-add-team-members-to-my-domain)
   * [Proposez-vous une garantie de remboursement sur les plans payants](#do-you-offer-a-money-back-guarantee-on-paid-plans)
   * [Si je change de plan, faites-vous un prorata et remboursez-vous la différence](#if-i-switch-plans-do-you-pro-rate-and-refund-the-difference)
   * [Puis-je utiliser ce service de transfert d'email comme serveur MX "de secours" ou "de basculement"](#can-i-just-use-this-email-forwarding-service-as-a-fallback-or-fallover-mx-server)
@@ -5641,6 +5642,26 @@ Vous pouvez supprimer votre compte à tout moment en suivant ces étapes :
 </div>
 
 Si vous ne parvenez pas à vous connecter à votre compte, veuillez nous contacter à l'adresse <a href="mailto:support@forwardemail.net">support@forwardemail.net</a> à partir de l'adresse e-mail associée à votre compte et nous vous aiderons à le supprimer.
+
+### Comment ajouter des membres d'équipe à mon domaine {#how-do-i-add-team-members-to-my-domain}
+
+Avec le [forfait Équipe](/private-business-email?pricing=true), un administrateur d'un domaine peut y inviter d'autres personnes :
+
+1. Accédez à [Mon compte → Domaines](/my-account/domains) et cliquez sur **Paramètres** à côté du domaine.
+2. Sous **Gérer l'équipe**, cliquez sur **Inviter un nouveau membre**, saisissez son adresse e-mail et choisissez un groupe : un **Utilisateur** peut créer des alias sur le domaine, et un **Administrateur** peut aussi modifier ses paramètres et gérer ses membres.
+3. La personne reçoit un e-mail contenant un lien d'invitation. Pour l'accepter, elle se connecte à son compte Forward Email avec l'adresse invitée, ou crée un compte gratuit avec celle-ci. Avec un nouveau compte, elle confirme d'abord l'adresse avec un code envoyé à celle-ci.
+
+<div class="alert my-3 alert-warning">
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Important :
+  </strong>
+  <span>
+    Un compte Forward Email est distinct d'une boîte aux lettres. Le mot de passe généré pour un alias (pour le webmail, IMAP, POP3 ou SMTP) ne permet pas de se connecter au site web. Si le lien d'invitation s'ouvre alors que la personne est connectée avec un autre compte, la page propose de se déconnecter et de continuer.
+  </span>
+</div>
+
+Une invitation expire au bout de 7 jours, et la liste de l'équipe signale les invitations expirées. Pour envoyer un nouveau lien, invitez à nouveau la même adresse. Pour retirer une invitation, cliquez sur **Supprimer l'Invitation**.
 
 ### Offrez-vous une garantie de remboursement sur les plans payants {#do-you-offer-a-money-back-guarantee-on-paid-plans}
 
