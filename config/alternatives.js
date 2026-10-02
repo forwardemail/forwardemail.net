@@ -75,7 +75,9 @@ const obj = {
     // internetnl_mail (on root domain)
     '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/aol.com/1121781/">42%</a>',
     // ssl_labs
-    'B'
+    'B',
+    // privacy_ratings (<category>/<entry> on privacyratings.com)
+    'email-providers/aol-mail'
   ],
   'AT&T': [
     // AT&T -> Yahoo
@@ -120,7 +122,9 @@ const obj = {
     // internetnl_mail (on root domain)
     '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/yahoo.com/1121778/">38/100</a>',
     // ssl_labs
-    'B'
+    'B',
+    // privacy_ratings (<category>/<entry> on privacyratings.com)
+    'email-providers/at-t-mail'
   ],
   ActiveCampaign: [
     // description
@@ -164,7 +168,9 @@ const obj = {
     // internetnl_mail (on root domain)
     '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/activecampaign.com/1121872/">60/100</a>',
     // ssl_labs
-    'A'
+    'A',
+    // privacy_ratings (<category>/<entry> on privacyratings.com)
+    'newsletters/activecampaign'
   ],
   'Amazon Workmail': [
     // description
@@ -208,7 +214,9 @@ const obj = {
     // internetnl_mail (on root domain)
     '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/amazon.com/1121876/">60/100</a>',
     // ssl_labs
-    'B'
+    'B',
+    // privacy_ratings (<category>/<entry> on privacyratings.com)
+    'email-providers/amazon-workmail'
   ],
   'Amazon Simple Email Service (SES)': [
     // description
@@ -252,7 +260,9 @@ const obj = {
     // internetnl_mail (on root domain)
     '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/amazon.com/1121876/">60/100</a>',
     // ssl_labs
-    'B'
+    'B',
+    // privacy_ratings (<category>/<entry> on privacyratings.com)
+    'email-sending/amazon-ses'
   ],
   'Apple Mail (iCloud)': [
     // description
@@ -296,7 +306,9 @@ const obj = {
     // internetnl_mail (on root domain)
     '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/apple.com/">Fail</a>',
     // ssl_labs
-    'Not_Available'
+    'Not_Available',
+    // privacy_ratings (<category>/<entry> on privacyratings.com)
+    'email-providers/icloud-mail'
   ],
   Brevo: [
     // 20K monthly outbound for $15/mo
@@ -341,7 +353,9 @@ const obj = {
     // internetnl_mail (on root domain)
     '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/brevo.com/1121849/">77/100</a>',
     // ssl_labs
-    'A+'
+    'A+',
+    // privacy_ratings (<category>/<entry> on privacyratings.com)
+    'email-sending/brevo'
   ],
   'Customer.io': [
     // description
@@ -385,7 +399,9 @@ const obj = {
     // internetnl_mail (on root domain)
     '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/customer.io/1121850/">72/100</a>',
     // ssl_labs
-    'B'
+    'B',
+    // privacy_ratings (<category>/<entry> on privacyratings.com)
+    'email-sending/customer-io'
   ],
   'Elastic Email': [
     // description
@@ -429,7 +445,9 @@ const obj = {
     // internetnl_mail (on root domain)
     '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/elasticemail.com/1121852/">72/100</a>',
     // ssl_labs
-    'A'
+    'A',
+    // privacy_ratings (<category>/<entry> on privacyratings.com)
+    'email-sending/elastic-email'
   ],
   Fastmail: [
     // description
@@ -473,7 +491,9 @@ const obj = {
     // internetnl_mail (on root domain)
     '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/fastmail.com/1121853/">44/100</a>',
     // ssl_labs
-    'A+'
+    'A+',
+    // privacy_ratings (<category>/<entry> on privacyratings.com)
+    'email-providers/fastmail'
   ],
   'Forward Email': [
     // description
@@ -517,7 +537,9 @@ const obj = {
     // internetnl_mail (on root domain)
     '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/forwardemail.net/1121856/">100/100</a>',
     // ssl_labs
-    'A+'
+    'A+',
+    // privacy_ratings (<category>/<entry> on privacyratings.com)
+    'email-providers/forward-email'
   ],
   GMX: [
     // mirror of Mail.com
@@ -562,7 +584,9 @@ const obj = {
     // internetnl_mail (on root domain)
     '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/gmx.com/1121857/">87/100</a>',
     // ssl_labs
-    'A+'
+    'A+',
+    // privacy_ratings (<category>/<entry> on privacyratings.com)
+    'email-providers/gmx'
   ],
   Gandi: [
     // description
@@ -606,7 +630,9 @@ const obj = {
     // internetnl_mail (on root domain)
     '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/gandi.net/1121858/">69/100</a>',
     // ssl_labs
-    'A'
+    'A',
+    // privacy_ratings (<category>/<entry> on privacyratings.com)
+    'email-providers/gandi-mail'
   ],
   'Get Response': [
     // description
@@ -651,7 +677,9 @@ const obj = {
     // internetnl_mail (on root domain)
     '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/getresponse.com/1121860/">65/100</a>',
     // ssl_labs
-    'A'
+    'A',
+    // privacy_ratings (<category>/<entry> on privacyratings.com)
+    'newsletters/getresponse'
   ],
   Gmail: [
     // description
@@ -695,7 +723,9 @@ const obj = {
     // internetnl_mail (on root domain)
     '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/getresponse.com/1121860/">65/100</a>',
     // ssl_labs
-    'B'
+    'B',
+    // privacy_ratings (<category>/<entry> on privacyratings.com)
+    'email-providers/gmail'
   ],
   GoDaddy: [
     // description
@@ -739,7 +769,9 @@ const obj = {
     // internetnl_mail (on root domain)
     '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/godaddy.com/1121862/">65/100</a>',
     // ssl_labs
-    'A'
+    'A',
+    // privacy_ratings (<category>/<entry> on privacyratings.com)
+    'email-providers/godaddy-email'
   ],
   HEY: [
     // description
@@ -783,7 +815,9 @@ const obj = {
     // internetnl_mail (on root domain)
     '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/hey.com/1121863/">65/100</a>',
     // ssl_labs
-    'A+'
+    'A+',
+    // privacy_ratings (<category>/<entry> on privacyratings.com)
+    'email-providers/hey'
   ],
   HubSpot: [
     // description
@@ -827,7 +861,9 @@ const obj = {
     // internetnl_mail (on root domain)
     '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/hubspot.com/1121866/">62/100</a>',
     // ssl_labs
-    'A+'
+    'A+',
+    // privacy_ratings (<category>/<entry> on privacyratings.com)
+    'newsletters/hubspot'
   ],
   ImprovMX: [
     // description
@@ -871,7 +907,9 @@ const obj = {
     // internetnl_mail (on root domain)
     '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/improvmx.com/1121867/">85/100</a>',
     // ssl_labs
-    'A+'
+    'A+',
+    // privacy_ratings (<category>/<entry> on privacyratings.com)
+    'email-forwarding/improvmx'
   ],
   Klaviyo: [
     // description
@@ -917,7 +955,9 @@ const obj = {
     // internetnl_mail (on root domain)
     '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/klaviyo.com/1121869/">72/100</a>',
     // ssl_labs
-    'A'
+    'A',
+    // privacy_ratings (<category>/<entry> on privacyratings.com)
+    'newsletters/klaviyo'
   ],
   'Mail.com': [
     // mirror of GMX
@@ -962,7 +1002,9 @@ const obj = {
     // internetnl_mail (on root domain)
     '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/mail.com/1121870/">83/100</a>',
     // ssl_labs
-    'A+'
+    'A+',
+    // privacy_ratings (<category>/<entry> on privacyratings.com)
+    'email-providers/mail-com'
   ],
   Migadu: [
     // description
@@ -1006,7 +1048,9 @@ const obj = {
     // internetnl_mail (on root domain)
     '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/migadu.com/1313797/">97/100</a>',
     // ssl_labs
-    'A'
+    'A',
+    // privacy_ratings (<category>/<entry> on privacyratings.com)
+    'email-providers/migadu'
   ],
   'mailbox.org': [
     // description
@@ -1052,7 +1096,9 @@ const obj = {
     // internetnl_mail (on root domain)
     '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/mailbox.org/1111658/">71/100</a>',
     // ssl_labs
-    'A+'
+    'A+',
+    // privacy_ratings (<category>/<entry> on privacyratings.com)
+    'email-providers/mailbox-org'
   ],
   Mailchimp: [
     // description
@@ -1097,7 +1143,9 @@ const obj = {
     // internetnl_mail (on root domain)
     '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/mailchimp.com/1121873/">77/100</a>',
     // ssl_labs
-    'A'
+    'A',
+    // privacy_ratings (<category>/<entry> on privacyratings.com)
+    'newsletters/mailchimp'
   ],
   MailerSend: [
     // description
@@ -1141,7 +1189,9 @@ const obj = {
     // internetnl_mail (on root domain)
     '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/mailersend.com/1121875/">52/100</a>',
     // ssl_labs
-    'A'
+    'A',
+    // privacy_ratings (<category>/<entry> on privacyratings.com)
+    'email-sending/mailersend'
   ],
   Mailfence: [
     // description
@@ -1185,7 +1235,9 @@ const obj = {
     // internetnl_mail (on root domain)
     '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/mailfence.com/1121878/">50/100</a>',
     // ssl_labs
-    'A+'
+    'A+',
+    // privacy_ratings (<category>/<entry> on privacyratings.com)
+    'email-providers/mailfence'
   ],
   Mailgun: [
     // description
@@ -1229,7 +1281,9 @@ const obj = {
     // internetnl_mail (on root domain)
     '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/mailgun.com/1121954/">65/100</a>',
     // ssl_labs
-    'A+'
+    'A+',
+    // privacy_ratings (<category>/<entry> on privacyratings.com)
+    'email-sending/mailgun'
   ],
   Mailjet: [
     // description
@@ -1273,7 +1327,9 @@ const obj = {
     // internetnl_mail (on root domain)
     '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/mailjet.com/1121957/">52/100</a>',
     // ssl_labs
-    'A+'
+    'A+',
+    // privacy_ratings (<category>/<entry> on privacyratings.com)
+    'email-sending/mailjet'
   ],
   Mailtrap: [
     // description
@@ -1317,7 +1373,9 @@ const obj = {
     // internetnl_mail (on root domain)
     '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/mailtrap.io/1121966/">50/100</a>',
     // ssl_labs
-    'A'
+    'A',
+    // privacy_ratings (<category>/<entry> on privacyratings.com)
+    'email-sending/mailtrap'
   ],
   Mandrill: [
     // description
@@ -1362,7 +1420,9 @@ const obj = {
     // internetnl_mail (on root domain)
     '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/mailchimp.com/1121873/">77/100</a>',
     // ssl_labs
-    'A'
+    'A',
+    // privacy_ratings (<category>/<entry> on privacyratings.com)
+    'email-sending/mailchimp-transactional'
   ],
   MessageBird: [
     // description
@@ -1406,7 +1466,9 @@ const obj = {
     // internetnl_mail (on root domain)
     '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/messagebird.com/1121967/">77/100</a>',
     // ssl_labs
-    'A+'
+    'A+',
+    // privacy_ratings (<category>/<entry> on privacyratings.com)
+    'communications-apis/bird'
   ],
   'Microsoft 365': [
     // description
@@ -1450,7 +1512,9 @@ const obj = {
     // internetnl_mail (on root domain)
     '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/microsoft.com/1122001/">65/100</a>',
     // ssl_labs
-    'A+'
+    'A+',
+    // privacy_ratings (<category>/<entry> on privacyratings.com)
+    'office-suites/microsoft-365'
   ],
   '123 Reg': [
     // description
@@ -1494,7 +1558,9 @@ const obj = {
     // internetnl_mail (on root domain)
     '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/123-reg.co.uk/1122457/">52/100</a>',
     // ssl_labs
-    'A'
+    'A',
+    // privacy_ratings (<category>/<entry> on privacyratings.com)
+    'email-providers/123-reg-email'
   ],
   Namecheap: [
     // description
@@ -1538,7 +1604,9 @@ const obj = {
     // internetnl_mail (on root domain)
     '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/namecheap.com/1122455/">62/100</a>',
     // ssl_labs
-    'A+'
+    'A+',
+    // privacy_ratings (<category>/<entry> on privacyratings.com)
+    'email-providers/namecheap-private-email'
   ],
   Pobox: [
     // description
@@ -1582,7 +1650,9 @@ const obj = {
     // internetnl_mail (on root domain)
     '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/pobox.com/1122459/">35/100</a>',
     // ssl_labs
-    'B'
+    'B',
+    // privacy_ratings (<category>/<entry> on privacyratings.com)
+    false
   ],
   // NOTE: Posteo doesn't support custom domains so we left it out
   Postmark: [
@@ -1627,7 +1697,9 @@ const obj = {
     // internetnl_mail (on root domain)
     '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/postmarkapp.com/1122464/">77/100</a>',
     // ssl_labs
-    'B'
+    'B',
+    // privacy_ratings (<category>/<entry> on privacyratings.com)
+    'email-sending/postmark'
   ],
   'Proton Mail': [
     // description
@@ -1671,7 +1743,9 @@ const obj = {
     // internetnl_mail
     '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/protonmail.com/1111619/">75/100</a>',
     // ssl_labs
-    'A+'
+    'A+',
+    // privacy_ratings (<category>/<entry> on privacyratings.com)
+    'email-providers/protonmail'
   ],
   Resend: [
     // description
@@ -1715,7 +1789,9 @@ const obj = {
     // internetnl_mail (on root domain)
     '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/resend.com/1122468/">72/100</a>',
     // ssl_labs
-    'A+'
+    'A+',
+    // privacy_ratings (<category>/<entry> on privacyratings.com)
+    'email-sending/resend'
   ],
   SMTP2GO: [
     // description
@@ -1759,7 +1835,9 @@ const obj = {
     // internetnl_mail (on root domain)
     '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/smtp2go.com/1122482/">65/100</a>',
     // ssl_labs
-    'A'
+    'A',
+    // privacy_ratings (<category>/<entry> on privacyratings.com)
+    'email-sending/smtp2go'
   ],
   Sendgrid: [
     // description
@@ -1803,7 +1881,9 @@ const obj = {
     // internetnl_mail (on root domain)
     '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/sendgrid.com/1122483/">60/100</a>',
     // ssl_labs
-    'A'
+    'A',
+    // privacy_ratings (<category>/<entry> on privacyratings.com)
+    'email-sending/sendgrid'
   ],
   // Sendinblue is now Brevo (see above)
   /*
@@ -1895,7 +1975,9 @@ const obj = {
     // internetnl_mail
     '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/startmail.com/1111613/">83/100</a>',
     // ssl_labs
-    'A+'
+    'A+',
+    // privacy_ratings (<category>/<entry> on privacyratings.com)
+    'email-providers/startmail'
   ],
   Titan: [
     // description
@@ -1939,7 +2021,9 @@ const obj = {
     // internetnl_mail (on root domain)
     '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/titan.email/1121813/">55/100</a>',
     // ssl_labs
-    'A+'
+    'A+',
+    // privacy_ratings (<category>/<entry> on privacyratings.com)
+    'email-providers/titan'
   ],
   Tutanota: [
     // description
@@ -1983,7 +2067,9 @@ const obj = {
     // internetnl_mail (on root domain)
     '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/tuta.com/1111623/">87/100</a>',
     // ssl_labs
-    'A'
+    'A',
+    // privacy_ratings (<category>/<entry> on privacyratings.com)
+    'email-providers/tuta'
   ],
   // TODO: add Vivaldi browser to list of alternatives like Thunderbird
   Yahoo: [
@@ -2028,7 +2114,9 @@ const obj = {
     // internetnl_mail (on root domain)
     '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/yahoo.com/1121778/">38/100</a>',
     // ssl_labs
-    'B'
+    'B',
+    // privacy_ratings (<category>/<entry> on privacyratings.com)
+    'email-providers/yahoo-mail'
   ],
   Yandex: [
     "An email address with your company's name is an easy way to stand out",
@@ -2071,7 +2159,9 @@ const obj = {
     // internetnl_mail (on root domain)
     '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/yandex.com/1122501/">71/100</a>',
     // ssl_labs
-    'B'
+    'B',
+    // privacy_ratings (<category>/<entry> on privacyratings.com)
+    'email-providers/yandex-mail'
   ],
   Zoho: [
     // description
@@ -2115,7 +2205,9 @@ const obj = {
     // internetnl_mail (on root domain)
     '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/zoho.com/1122504/">62/100</a>',
     // ssl_labs
-    'A+'
+    'A+',
+    // privacy_ratings (<category>/<entry> on privacyratings.com)
+    'email-providers/zoho-mail'
   ],
   'Cloudflare Email Routing': [
     // description
@@ -2159,7 +2251,9 @@ const obj = {
     // internetnl_mail (on root domain)
     '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/cloudflare.com/1122887/">62/100</a>',
     // ssl_labs
-    'B'
+    'B',
+    // privacy_ratings (<category>/<entry> on privacyratings.com)
+    'email-forwarding/cloudflare-email-routing'
   ],
   'SMTP.com': [
     // description
@@ -2203,7 +2297,9 @@ const obj = {
     // internetnl_mail (on root domain)
     '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/smtp.com/1122885/">72/100</a>',
     // ssl_labs
-    'A'
+    'A',
+    // privacy_ratings (<category>/<entry> on privacyratings.com)
+    'email-sending/smtp-com'
   ],
   SimpleLogin: [
     // description
@@ -2247,7 +2343,9 @@ const obj = {
     // internetnl_mail (on root domain)
     '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/simplelogin.io/1122888/">87/100</a>',
     // ssl_labs
-    'A+'
+    'A+',
+    // privacy_ratings (<category>/<entry> on privacyratings.com)
+    'email-forwarding/simplelogin'
   ],
   'addy.io': [
     // description
@@ -2291,7 +2389,9 @@ const obj = {
     // internetnl_mail (on root domain)
     '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/addy.io/1122890/">100/100</a>',
     // ssl_labs
-    'A+'
+    'A+',
+    // privacy_ratings (<category>/<entry> on privacyratings.com)
+    'email-forwarding/addy'
   ],
   Intercom: [
     // description
@@ -2335,7 +2435,9 @@ const obj = {
     // internetnl_mail (on root domain)
     '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/intercom.com/1122886/">72/100</a>',
     // ssl_labs
-    'A+'
+    'A+',
+    // privacy_ratings (<category>/<entry> on privacyratings.com)
+    'customer-support/intercom'
   ],
   'Drift Chat': [
     // description
@@ -2379,7 +2481,9 @@ const obj = {
     // internetnl_mail (on root domain)
     '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/drift.com/1122892/">56/100</a>',
     // ssl_labs
-    'A'
+    'A',
+    // privacy_ratings (<category>/<entry> on privacyratings.com)
+    false
   ],
   'Crisp Chat': [
     // description
@@ -2423,7 +2527,9 @@ const obj = {
     // internetnl_mail (on root domain)
     '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/crisp.chat/1122891/">80/100</a>',
     // ssl_labs
-    'B'
+    'B',
+    // privacy_ratings (<category>/<entry> on privacyratings.com)
+    false
   ],
   'Help Scout': [
     // description
@@ -2467,7 +2573,9 @@ const obj = {
     // internetnl_mail (on root domain)
     '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/helpscout.com/1122889/">68/100</a>',
     // ssl_labs
-    'A'
+    'A',
+    // privacy_ratings (<category>/<entry> on privacyratings.com)
+    'customer-support/help-scout'
   ],
   Zendesk: [
     // description
@@ -2511,7 +2619,9 @@ const obj = {
     // internetnl_mail (on root domain)
     '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/zendesk.com/1122893/">70/100</a>',
     // ssl_labs
-    'A'
+    'A',
+    // privacy_ratings (<category>/<entry> on privacyratings.com)
+    'customer-support/zendesk'
   ],
   Olark: [
     // description
@@ -2555,7 +2665,9 @@ const obj = {
     // internetnl_mail (on root domain)
     '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/olark.com/1122895/">77/100</a>',
     // ssl_labs
-    'B'
+    'B',
+    // privacy_ratings (<category>/<entry> on privacyratings.com)
+    false
   ],
   HelpCrunch: [
     // description
@@ -2599,7 +2711,9 @@ const obj = {
     // internetnl_mail (on root domain)
     '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/helpcrunch.com/1122896/">77/100</a>',
     // ssl_labs
-    'B'
+    'B',
+    // privacy_ratings (<category>/<entry> on privacyratings.com)
+    false
   ],
   Posteo: [
     // description
@@ -2643,7 +2757,9 @@ const obj = {
     // internetnl_mail (on root domain)
     '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/posteo.de/1308586/">83/100</a>',
     // ssl_labs
-    'A+'
+    'A+',
+    // privacy_ratings (<category>/<entry> on privacyratings.com)
+    'email-providers/posteo'
   ],
   Mimecast: [
     // description
@@ -2687,7 +2803,9 @@ const obj = {
     // internetnl_mail (on root domain)
     '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/mimecast.com/1308587/">52/100</a>',
     // ssl_labs
-    'A'
+    'A',
+    // privacy_ratings (<category>/<entry> on privacyratings.com)
+    'spam-filters/mimecast-advanced-email-security'
   ],
   Proofpoint: [
     // description
@@ -2731,7 +2849,9 @@ const obj = {
     // internetnl_mail (on root domain)
     '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/proofpoint.com/1308590/">60/100</a>',
     // ssl_labs
-    'A+'
+    'A+',
+    // privacy_ratings (<category>/<entry> on privacyratings.com)
+    'spam-filters/proofpoint-email-protection'
   ],
   SpamTitan: [
     // description
@@ -2775,7 +2895,9 @@ const obj = {
     // internetnl_mail (on root domain)
     '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/spamtitan.com/1308598/">40/100</a>',
     // ssl_labs
-    'A'
+    'A',
+    // privacy_ratings (<category>/<entry> on privacyratings.com)
+    'spam-filters/spamtitan-email-security'
   ],
   Barracuda: [
     // description
@@ -2819,7 +2941,9 @@ const obj = {
     // internetnl_mail (on root domain)
     '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/barracuda.com/1308599/">55/100</a>',
     // ssl_labs
-    'B'
+    'B',
+    // privacy_ratings (<category>/<entry> on privacyratings.com)
+    'spam-filters/barracuda-email-protection'
   ],
   'Cisco Secure Email Defense': [
     // description
@@ -2863,7 +2987,9 @@ const obj = {
     // internetnl_mail (on root domain)
     '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/cisco.com/1308607/">70/100</a>',
     // ssl_labs
-    'A-'
+    'A-',
+    // privacy_ratings (<category>/<entry> on privacyratings.com)
+    'spam-filters/cisco-secure-email'
   ],
   // Fortinet
   Fortinet: [
@@ -2908,7 +3034,9 @@ const obj = {
     // internetnl_mail (on root domain)
     '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/fortinet.com/1308608/">46/100</a>',
     // ssl_labs
-    'A'
+    'A',
+    // privacy_ratings (<category>/<entry> on privacyratings.com)
+    'spam-filters/fortimail'
   ],
   // Darktrace
   Darktrace: [
@@ -2953,7 +3081,9 @@ const obj = {
     // internetnl_mail (on root domain)
     '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/darktrace.com/1308606/">85/100</a>',
     // ssl_labs
-    'A+'
+    'A+',
+    // privacy_ratings (<category>/<entry> on privacyratings.com)
+    'spam-filters/darktrace-email'
   ],
   // Abnormal Security
   'Abnormal Security': [
@@ -2998,7 +3128,9 @@ const obj = {
     // internetnl_mail (on root domain)
     '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/abnormalsecurity.com/1308610/">77/100</a>',
     // ssl_labs
-    'A+'
+    'A+',
+    // privacy_ratings (<category>/<entry> on privacyratings.com)
+    'spam-filters/abnormal-inbound-email-security'
   ],
   // Spam Hero
   'Spam Hero': [
@@ -3043,7 +3175,9 @@ const obj = {
     // internetnl_mail (on root domain)
     '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/spamhero.com/1308609/">41/100</a>',
     // ssl_labs
-    'A'
+    'A',
+    // privacy_ratings (<category>/<entry> on privacyratings.com)
+    'spam-filters/spamhero'
   ],
   'Vade Secure': [
     // description
@@ -3087,7 +3221,9 @@ const obj = {
     // internetnl_mail (on root domain)
     '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/vadesecure.com/1308613/">61/100</a>',
     // ssl_labs
-    'A'
+    'A',
+    // privacy_ratings (<category>/<entry> on privacyratings.com)
+    'spam-filters/vade'
   ],
   'N‑able Mail Assure': [
     // description
@@ -3131,7 +3267,9 @@ const obj = {
     // internetnl_mail (on root domain)
     '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/n-able.com/1308615/">56/100</a>',
     // ssl_labs
-    'A'
+    'A',
+    // privacy_ratings (<category>/<entry> on privacyratings.com)
+    'spam-filters/n-able-mail-assure'
   ],
   DuoCircle: [
     // description
@@ -3175,7 +3313,9 @@ const obj = {
     // internetnl_mail (on root domain)
     '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/duocircle.com/1308620/">72/100</a>',
     // ssl_labs
-    'A'
+    'A',
+    // privacy_ratings (<category>/<entry> on privacyratings.com)
+    'spam-filters/duocircle'
   ],
   OOPSpam: [
     // description
@@ -3219,7 +3359,9 @@ const obj = {
     // internetnl_mail (on root domain)
     '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/oopspam.com/1308635/">61/100</a>',
     // ssl_labs
-    'A'
+    'A',
+    // privacy_ratings (<category>/<entry> on privacyratings.com)
+    'spam-filters/oopspam'
   ],
   Libraesva: [
     // description
@@ -3263,7 +3405,9 @@ const obj = {
     // internetnl_mail (on root domain)
     '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/libraesva.com/1308636/">62/100</a>',
     // ssl_labs
-    'A'
+    'A',
+    // privacy_ratings (<category>/<entry> on privacyratings.com)
+    'spam-filters/libraesva'
   ],
   Trustifi: [
     // description
@@ -3307,7 +3451,9 @@ const obj = {
     // internetnl_mail (on root domain)
     '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/trustifi.com/1308638/">65/100</a>',
     // ssl_labs
-    'A'
+    'A',
+    // privacy_ratings (<category>/<entry> on privacyratings.com)
+    'spam-filters/trustifi'
   ],
   'Check Point Avanan': [
     // description
@@ -3351,7 +3497,9 @@ const obj = {
     // internetnl_mail (on root domain)
     '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/avanan.com/1308639/">77/100</a>',
     // ssl_labs
-    'A+'
+    'A+',
+    // privacy_ratings (<category>/<entry> on privacyratings.com)
+    'spam-filters/check-point-harmony-email'
   ],
   Heimdal: [
     // description
@@ -3395,7 +3543,9 @@ const obj = {
     // internetnl_mail (on root domain)
     '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/heimdalsecurity.com/1308647/">65/100</a>',
     // ssl_labs
-    'A+'
+    'A+',
+    // privacy_ratings (<category>/<entry> on privacyratings.com)
+    'spam-filters/heimdal-email-security'
   ],
   Altospam: [
     // description
@@ -3439,7 +3589,9 @@ const obj = {
     // internetnl_mail (on root domain)
     '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/altospam.com/1308643/">85/100</a>',
     // ssl_labs
-    'A+'
+    'A+',
+    // privacy_ratings (<category>/<entry> on privacyratings.com)
+    false
   ],
   Mailinblack: [
     // description
@@ -3483,7 +3635,9 @@ const obj = {
     // internetnl_mail (on root domain)
     '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/mailinblack.com/1308641/">48/100</a>',
     // ssl_labs
-    'B'
+    'B',
+    // privacy_ratings (<category>/<entry> on privacyratings.com)
+    'spam-filters/mailinblack'
   ],
   Egress: [
     // description
@@ -3527,7 +3681,9 @@ const obj = {
     // internetnl_mail (on root domain)
     '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/egress.com/1308642/">61/100</a>',
     // ssl_labs
-    'A'
+    'A',
+    // privacy_ratings (<category>/<entry> on privacyratings.com)
+    'spam-filters/egress'
   ],
   'Spam Scanner': [
     // description
@@ -3571,7 +3727,9 @@ const obj = {
     // internetnl_mail (on root domain)
     '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/spamscanner.net/1308645/">65/100</a>',
     // ssl_labs
-    'A'
+    'A',
+    // privacy_ratings (<category>/<entry> on privacyratings.com)
+    'spam-filters/spamscanner'
   ]
 };
 
@@ -3598,7 +3756,8 @@ for (const name of Object.keys(obj)) {
     hardenize,
     internetnl_site,
     internetnl_mail,
-    ssl_labs
+    ssl_labs,
+    privacy_ratings
   ] = obj[name];
 
   const img = `img/alternatives/${slug(name)}.webp`;
@@ -3625,6 +3784,16 @@ for (const name of Object.keys(obj)) {
     parse(internetnl_mail).querySelector('a').innerHTML.split('/')[0],
     10
   );
+
+  // rating page and Shields.io endpoint badge on privacyratings.com
+  const privacy_ratings_href = privacy_ratings
+    ? `https://privacyratings.com/${privacy_ratings}/`
+    : false;
+  const privacy_ratings_badge = privacy_ratings
+    ? `https://img.shields.io/endpoint?url=${encodeURIComponent(
+        `https://privacyratings.com/badge/${privacy_ratings}.json`
+      )}`
+    : false;
 
   alternatives.push({
     name,
@@ -3657,6 +3826,9 @@ for (const name of Object.keys(obj)) {
     internetnl_site_value,
     internetnl_mail_href,
     internetnl_mail_value,
+    privacy_ratings,
+    privacy_ratings_href,
+    privacy_ratings_badge,
     slug: slug(name)
   });
 }
@@ -3742,7 +3914,8 @@ if (
           'hardenize',
           'internetnl_site',
           'internetnl_mail',
-          'ssl_labs'
+          'ssl_labs',
+          'privacy_ratings'
         ]) {
           if (!isSANB(a[k]) && typeof a[k] !== 'boolean')
             throw new Error(

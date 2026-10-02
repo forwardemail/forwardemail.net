@@ -294,6 +294,22 @@ block body
                                   )= a.name
                     //- Badges
                     ul.list-unstyled
+                      //- Privacy Ratings
+                      if alternatives[0].privacy_ratings
+                        li.mb-1
+                          a(
+                            aria-label="Privacy Ratings",
+                            href=alternatives[0].privacy_ratings_href,
+                            target="_blank",
+                            rel="noopener noreferrer"
+                          )
+                            img(
+                              loading=i <= 1 ? false : "lazy",
+                              alt="Privacy Ratings",
+                              height=20,
+                              src=alternatives[0].privacy_ratings_badge
+                            )
+
                       //- Hardenize
                       li.mb-1
                         a(
@@ -455,6 +471,22 @@ block body
                                   )= a.name
                     //- Badges
                     ul.list-unstyled
+                      //- Privacy Ratings
+                      if alternatives[1].privacy_ratings
+                        li.mb-1
+                          a(
+                            aria-label="Privacy Ratings",
+                            href=alternatives[1].privacy_ratings_href,
+                            target="_blank",
+                            rel="noopener noreferrer"
+                          )
+                            img(
+                              loading=i <= 1 ? false : "lazy",
+                              alt="Privacy Ratings",
+                              height=20,
+                              src=alternatives[1].privacy_ratings_badge
+                            )
+
                       //- Hardenize
                       li.mb-1
                         a(
@@ -903,6 +935,22 @@ block body
                               )= a.name
                 //- Badges
                 ul.list-unstyled
+                  //- Privacy Ratings
+                  if alternative.privacy_ratings
+                    li.mb-1
+                      a(
+                        aria-label="Privacy Ratings",
+                        href=alternative.privacy_ratings_href,
+                        target="_blank",
+                        rel="noopener noreferrer"
+                      )
+                        img(
+                          loading=i <= 1 ? false : "lazy",
+                          alt="Privacy Ratings",
+                          height=20,
+                          src=alternative.privacy_ratings_badge
+                        )
+
                   //- Hardenize
                   li.mb-1
                     a(
