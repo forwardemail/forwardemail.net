@@ -3,9 +3,16 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
+const { Buffer } = require('node:buffer');
+
 const Boom = require('@hapi/boom');
 
 const i18n = require('#helpers/i18n');
+const {
+  getBandwidthLimitMessage,
+  isOverBandwidth,
+  recordBandwidth
+} = require('#helpers/bandwidth-limiter');
 const onAuth = require('#helpers/on-auth');
 const refreshSession = require('#helpers/refresh-session');
 
@@ -94,6 +101,30 @@ async function setupAuthSession(ctx, username, password) {
     if (err.isBoom) throw err;
     throw Boom.unauthorized(err);
   }
+
+  //
+  // Requests and responses count toward the account's bandwidth limit, and
+  // requests are refused once it is used up.
+  //
+  const bandwidth = {
+    userId: ctx.state.user?.alias_user_id,
+    service: this.constructor.name === 'CardDAV' ? 'carddav' : 'caldav'
+  };
+  const client = this.client || ctx.client;
+  if (await isOverBandwidth(client, bandwidth))
+    throw Boom.tooManyRequests(getBandwidthLimitMessage(ctx.locale));
+
+  // (once per request, however many times it is authenticated)
+  if (ctx.state.bandwidthCounted) return;
+  ctx.state.bandwidthCounted = true;
+  ctx.res.once('finish', () => {
+    let size = Number(ctx.get('content-length')) || 0;
+    const { body } = ctx;
+    if (Number.isFinite(ctx.response.length)) size += ctx.response.length;
+    else if (typeof body === 'string') size += Buffer.byteLength(body);
+    else if (Buffer.isBuffer(body)) size += body.length;
+    recordBandwidth(client, { ...bandwidth, bytes: size });
+  });
 }
 
 module.exports = setupAuthSession;

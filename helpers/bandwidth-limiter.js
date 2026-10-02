@@ -25,9 +25,11 @@
  * If Redis is unavailable, rate limiting is skipped (fail-open).
  */
 
+const bytes = require('@forwardemail/bytes');
 const ms = require('ms');
 
 const config = require('#config');
+const i18n = require('#helpers/i18n');
 
 //
 // Unified daily bandwidth limit shared across all services (bytes).
@@ -101,15 +103,11 @@ async function checkBandwidth(client, { userId, service, bytes: numBytes }) {
   const hourlyKey = `bw_${config.env}:${service}:h:${hour}:${userId}`;
 
   try {
-    // Atomic increment both counters via pipeline with Lua
-    const results = await client
-      .pipeline()
-      .eval(INCRBY_SCRIPT, 1, dailyKey, numBytes, ms('1d'))
-      .eval(INCRBY_SCRIPT, 1, hourlyKey, numBytes, ms('1h'))
-      .exec();
-
-    const dailyUsed = results[0][1];
-    const hourlyUsed = results[1][1];
+    // Atomic increment of both counters with Lua
+    const [dailyUsed, hourlyUsed] = await Promise.all([
+      client.eval(INCRBY_SCRIPT, 1, dailyKey, numBytes, ms('1d')),
+      client.eval(INCRBY_SCRIPT, 1, hourlyKey, numBytes, ms('1h'))
+    ]);
 
     // Check if either limit is exceeded
     if (dailyUsed > DAILY_LIMIT || hourlyUsed > HOURLY_LIMIT) {
@@ -186,9 +184,69 @@ async function getBandwidthUsage(client, { userId, service }) {
   }
 }
 
+//
+// Whether the user has used up either limit, checked before a transfer whose
+// size is not known in advance (a FETCH or RETR, a CalDAV or CardDAV request);
+// the bytes are counted with `recordBandwidth` once they were sent.
+//
+async function isOverBandwidth(client, { userId, service }) {
+  const { dailyUsed, hourlyUsed } = await getBandwidthUsage(client, {
+    userId,
+    service
+  });
+  return dailyUsed >= DAILY_LIMIT || hourlyUsed >= HOURLY_LIMIT;
+}
+
+//
+// Count bytes already transferred.  Unlike `checkBandwidth` they are never
+// taken back: the transfer happened, so the next one is refused instead.
+//
+async function recordBandwidth(client, { userId, service, bytes: numBytes }) {
+  if (!client || !userId || !SERVICES.has(service)) return;
+  if (!Number.isFinite(numBytes) || numBytes <= 0) return;
+
+  const now = new Date();
+  const day = now.toISOString().split('T')[0];
+  const hour = `${day}T${String(now.getUTCHours()).padStart(2, '0')}`;
+
+  try {
+    await Promise.all([
+      client.eval(
+        INCRBY_SCRIPT,
+        1,
+        `bw_${config.env}:all:d:${day}:${userId}`,
+        Math.ceil(numBytes),
+        ms('1d')
+      ),
+      client.eval(
+        INCRBY_SCRIPT,
+        1,
+        `bw_${config.env}:${service}:h:${hour}:${userId}`,
+        Math.ceil(numBytes),
+        ms('1h')
+      )
+    ]);
+  } catch {
+    // (fail-open, as above)
+  }
+}
+
+// the message a transfer over the limit is refused with
+function getBandwidthLimitMessage(locale = i18n.config.defaultLocale) {
+  return i18n.translate(
+    'BANDWIDTH_LIMIT_EXCEEDED',
+    locale,
+    bytes(DAILY_LIMIT, { unitSeparator: ' ' }),
+    bytes(HOURLY_LIMIT, { unitSeparator: ' ' })
+  );
+}
+
 module.exports = {
   checkBandwidth,
+  getBandwidthLimitMessage,
   getBandwidthUsage,
+  isOverBandwidth,
+  recordBandwidth,
   DAILY_LIMIT,
   HOURLY_LIMIT,
   SERVICES

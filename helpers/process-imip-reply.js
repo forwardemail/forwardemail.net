@@ -342,13 +342,15 @@ function extractImipMessage(parsedEmail) {
   }
 
   // Check for calendar content in HTML alternatives (last resort)
-  if (!icalData && parsedEmail.html) {
-    const calMatch = parsedEmail.html.match(
-      /BEGIN:VCALENDAR[\s\S]*?END:VCALENDAR/
-    );
-    if (calMatch) {
-      icalData = calMatch[0];
-    }
+  // (found with indexOf, as a lazy regular expression over a large HTML
+  // part with many "BEGIN:VCALENDAR" and no end took time that grows with
+  // the square of its size; bounded like any other calendar data)
+  if (!icalData && typeof parsedEmail.html === 'string') {
+    const start = parsedEmail.html.indexOf('BEGIN:VCALENDAR');
+    const end =
+      start === -1 ? -1 : parsedEmail.html.indexOf('END:VCALENDAR', start);
+    if (end !== -1 && end - start <= MAX_ICS_SIZE)
+      icalData = parsedEmail.html.slice(start, end + 'END:VCALENDAR'.length);
   }
 
   if (!icalData) return null;

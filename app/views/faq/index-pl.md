@@ -5450,6 +5450,8 @@ Stosujemy limity przepustowości na użytkownika we wszystkich usługach, aby za
 | Dzienny łącznie | Wszystkie usługi razem (IMAP, POP3, SMTP, CalDAV, CardDAV) | **50 GB** |
 | Godzinowy na usługę | Na pojedynczą usługę (np. pobieranie IMAP, wysyłanie SMTP) | **10 GB** |
 
+Po osiągnięciu limitu transfery są odrzucane do czasu jego zresetowania: IMAP `FETCH` i `APPEND` odpowiadają `NO [LIMIT]`, POP3 `RETR` odpowiada `-ERR`, SMTP odpowiada tymczasowym kodem `452`, aby klient spróbował ponownie później, a CalDAV i CardDAV odpowiadają `429 Too Many Requests`.  Limit godzinowy resetuje się na początku każdej godziny, a dzienny o północy UTC.
+
 Limit dzienny to jeden wspólny budżet dla wszystkich protokołów — czy pobierasz przez IMAP, wysyłasz przez SMTP, czy synchronizujesz kalendarze przez CalDAV, wszystko liczy się do tych samych 50 GB/dzień.  Limit godzinowy na usługę to siatka bezpieczeństwa przeciwko niekontrolowanym skryptom lub skompromitowanym kontom na jednym protokole — nie coś, co legalny użytkownik powinien kiedykolwiek osiągnąć.
 
 Te limity dotyczą każdego konta użytkownika (nie aliasu ani domeny) i resetują się codziennie.  Oznacza to, że tworzenie dodatkowych aliasów nie zwiększa Twojego limitu przepustowości.  Jeśli Redis jest niedostępny, ograniczanie szybkości jest całkowicie pomijane (fail-open), więc Twoja usługa nigdy nie zostanie przerwana.

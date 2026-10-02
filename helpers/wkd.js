@@ -29,6 +29,9 @@ const DURATION = config.env === 'test' ? '5s' : '2s';
 // WKD servers may redirect (e.g. openpgpkey.example.com -> keys host), but a
 // long chain is never legitimate.
 const MAX_REDIRECTS = 3;
+
+// (a key is a few KB; certified keys with many signatures are larger)
+const MAX_WKD_RESPONSE_BYTES = 1024 * 1024;
 const REDIRECT_STATUSES = new Set([301, 302, 303, 307, 308]);
 
 //
@@ -190,8 +193,6 @@ function WKD(resolver, client) {
         await assertSafeTarget(currentUrl, resolver);
       }
 
-      clearTimeout(t);
-
       //
       // A compressed WKD response is never legitimate. `undici.fetch`
       // auto-decompresses a chained `Content-Encoding` header, and a
@@ -218,10 +219,42 @@ function WKD(resolver, client) {
         throw err;
       }
 
-      // Close the agent after the response is obtained to avoid leaking
-      // sockets.  The response body stream remains readable after close().
+      //
+      // The body is read here (the WKD client would buffer all of it with
+      // `arrayBuffer()`), up to a limit far above any key and within the
+      // same timeout, so a remote server cannot make us buffer without limit.
+      //
+      const chunks = [];
+      let size = 0;
+      if (response.body) {
+        const reader = response.body.getReader();
+        for (;;) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          size += value.length;
+          if (size > MAX_WKD_RESPONSE_BYTES) {
+            try {
+              await reader.cancel();
+            } catch {}
+
+            const err = new Error(
+              `WKD response is larger than ${MAX_WKD_RESPONSE_BYTES} bytes`
+            );
+            err.code = 'EWKDTOOLARGE';
+            throw err;
+          }
+
+          chunks.push(value);
+        }
+      }
+
+      clearTimeout(t);
       dispatcher.close();
-      return response;
+      return new undici.Response(Buffer.concat(chunks), {
+        status: response.status,
+        statusText: response.statusText,
+        headers: response.headers
+      });
     } catch (err) {
       clearTimeout(t);
       dispatcher.destroy();

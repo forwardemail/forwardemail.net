@@ -6,6 +6,7 @@
 const Aliases = require('#models/aliases');
 
 const getApnCerts = require('#helpers/get-apn-certs');
+const pushApsRegistration = require('#helpers/push-aps-registration');
 const refineAndLogError = require('#helpers/refine-and-log-error');
 
 //
@@ -89,19 +90,12 @@ async function onXAPPLEPUSHSERVICE(
     //
     // Step 2: atomically append the fresh registration entry.
     //
-    const pushResult = await Aliases.updateOne(
-      { id: aliasId },
-      {
-        $push: {
-          aps: {
-            account_id: accountID,
-            device_token: deviceToken,
-            subtopic: subTopic,
-            mailboxes
-          }
-        }
-      }
-    );
+    const pushResult = await pushApsRegistration(aliasId, {
+      account_id: accountID,
+      device_token: deviceToken,
+      subtopic: subTopic,
+      mailboxes
+    });
     if (pushResult.matchedCount === 0)
       throw new TypeError('Alias does not exist');
 

@@ -5452,6 +5452,8 @@ Vi håndhæver båndbreddebegrænsninger per bruger på tværs af alle tjenester
 | Daglig total | Alle tjenester samlet (IMAP, POP3, SMTP, CalDAV, CardDAV) | **50 GB** |
 | Pr. time pr. tjeneste | Pr. individuel tjeneste (f.eks. IMAP download, SMTP upload) | **10 GB** |
 
+Når en grænse er nået, afvises overførsler, indtil den nulstilles: IMAP `FETCH` og `APPEND` svarer `NO [LIMIT]`, POP3 `RETR` svarer `-ERR`, SMTP svarer med den midlertidige kode `452`, så din klient prøver igen senere, og CalDAV og CardDAV svarer `429 Too Many Requests`.  Timegrænsen nulstilles ved starten af hver time og den daglige grænse ved midnat UTC.
+
 Den daglige grænse er ét fælles budget på tværs af alle protokoller — uanset om du downloader via IMAP, uploader via SMTP eller synkroniserer kalendere via CalDAV, tæller det hele mod de samme 50 GB/dag.  Timegrænsen pr. tjeneste er et sikkerhedsnet mod løbske scripts eller kompromitterede konti på en enkelt protokol — ikke noget en legitim bruger nogensinde bør ramme.
 
 Disse grænser er per brugerkonto (ikke per alias eller domæne) og nulstilles dagligt.  Det betyder, at oprettelse af yderligere aliasser ikke øger din båndbreddekvote.  Hvis Redis er utilgængelig, springes hastighedsbegrænsning helt over (fail-open), så din tjeneste aldrig afbrydes.

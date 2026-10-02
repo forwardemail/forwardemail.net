@@ -815,7 +815,7 @@ function stubFindOne(Aliases, fake) {
     }
 
     if (update && update.$push && update.$push.aps) {
-      fake.aps.push(update.$push.aps);
+      fake.aps.push(...(update.$push.aps.$each || [update.$push.aps]));
       fake.updates += 1;
       return Promise.resolve({ matchedCount: 1, modifiedCount: 1 });
     }

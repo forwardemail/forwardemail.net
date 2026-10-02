@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
+const process = require('node:process');
+
 const test = require('ava');
 
 const parseUserAgent = require('#helpers/parse-user-agent');
@@ -69,4 +71,16 @@ test('returns stable Unknown fields for absent user agents', (t) => {
     client_app_label: 'Unknown',
     short: 'Unknown'
   });
+});
+
+test('parses a long user agent quickly', (t) => {
+  // (a header of up to the server's limit, built to make the protocol
+  // client patterns backtrack)
+  for (const prefix of ['macOS/', 'iOS/']) {
+    const start = process.hrtime.bigint();
+    const result = parseUserAgent(`${prefix}${'1'.repeat(15_000)}`);
+    const elapsed = Number(process.hrtime.bigint() - start) / 1e6;
+    t.true(elapsed < 50, `${prefix} took ${elapsed}ms`);
+    t.is(typeof result.short, 'string');
+  }
 });

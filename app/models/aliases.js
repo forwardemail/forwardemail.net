@@ -36,6 +36,7 @@ const logger = require('#helpers/logger');
 const { detectInvisibleUnicode } = require('#helpers/detect-invisible-unicode');
 const { guardTokenPaths } = require('#helpers/token-guard');
 const {
+  addRevocationDeleteHooks,
   addRevocationQueryHooks,
   revokeFromModel
 } = require('#helpers/credential-revocation');
@@ -1481,6 +1482,8 @@ addRevocationQueryHooks(Aliases, (paths) =>
     ? { aliasIds: true }
     : null
 );
+
+addRevocationDeleteHooks(Aliases, 'aliasIds');
 
 //
 // NOTE: `Aliases.getStorageUsed` below still returns pooled storage

@@ -38,7 +38,7 @@ async function remove(ctx) {
         (m) => m.group === 'admin' && m.user.id !== ctx.state.user.id
       )
   );
-  if (domainsWithOtherAdmins.length > 0)
+  if (domainsWithOtherAdmins)
     throw Boom.badRequest(ctx.translateError('ACCOUNT_DELETE_HAS_DOMAINS'));
 
   // safeguard in case admins were of global

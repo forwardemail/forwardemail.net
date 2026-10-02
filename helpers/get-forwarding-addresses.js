@@ -947,10 +947,10 @@ async function getForwardingAddresses(
               const message = i18n.translate(
                 'INVALID_REGEX_ALIAS_MESSAGE',
                 obj.locale,
-                domain,
-                aliasName,
-                parsedRegex,
-                err.message
+                _.escape(domain),
+                _.escape(aliasName),
+                _.escape(parsedRegex),
+                _.escape(err.message)
               );
 
               await emailHelper({

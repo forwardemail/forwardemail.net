@@ -446,6 +446,7 @@ router
     web.myAccount.retrieveAlias,
     web.myAccount.ensureAliasAdmin,
     policies.ensureTurnstile,
+    rateLimit(100, 'download backup'),
     web.myAccount.downloadAliasBackup
   )
   .get(

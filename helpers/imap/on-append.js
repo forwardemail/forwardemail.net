@@ -29,6 +29,10 @@ const { readKey } = require('openpgp');
 const ms = require('ms');
 const Aliases = require('#models/aliases');
 const IMAPError = require('#helpers/imap-error');
+const {
+  isOverBandwidth,
+  recordBandwidth
+} = require('#helpers/bandwidth-limiter');
 const deriveLabelsFromFlags = require('#helpers/derive-labels-from-flags');
 const Mailboxes = require('#models/mailboxes');
 const Messages = require('#models/messages');
@@ -56,7 +60,24 @@ async function onAppend(path, flags, date, raw, session, fn) {
   this.logger.debug('APPEND', { path, flags, date, session });
 
   if (this.wsp) {
+    // (a client's APPEND, not a message delivered or synced by the server)
+    const isUpload = !session.checkForExisting && !session.createFolder;
+    const rawSize = raw
+      ? Buffer.isBuffer(raw)
+        ? Buffer.byteLength(raw)
+        : raw.length
+      : 0;
     try {
+      // uploads stop once the account's bandwidth limit is used up
+      if (
+        isUpload &&
+        (await isOverBandwidth(this.client, {
+          userId: session?.user?.alias_user_id,
+          service: 'imap_upload'
+        }))
+      )
+        return fn(null, 'LIMIT');
+
       // do not allow messages larger than 64 MB
       if (
         raw &&
@@ -83,6 +104,13 @@ async function onAppend(path, flags, date, raw, session, fn) {
         date,
         raw
       });
+
+      if (isUpload)
+        recordBandwidth(this.client, {
+          userId: session?.user?.alias_user_id,
+          service: 'imap_upload',
+          bytes: rawSize
+        });
 
       if (
         session.selected &&

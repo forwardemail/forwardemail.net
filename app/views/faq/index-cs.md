@@ -5451,6 +5451,8 @@ Vynucujeme limity šířky pásma na uživatele napříč všemi službami, abyc
 | Denní celkem | Všechny služby dohromady (IMAP, POP3, SMTP, CalDAV, CardDAV) | **50 GB** |
 | Hodinový na službu | Na jednotlivou službu (např. IMAP stahování, SMTP nahrávání) | **10 GB** |
 
+Po dosažení limitu jsou přenosy odmítány, dokud se limit neobnoví: IMAP `FETCH` a `APPEND` odpovídají `NO [LIMIT]`, POP3 `RETR` odpovídá `-ERR`, SMTP odpovídá dočasným kódem `452`, takže to váš klient zkusí znovu později, a CalDAV a CardDAV odpovídají `429 Too Many Requests`.  Hodinový limit se obnovuje na začátku každé hodiny a denní limit o půlnoci UTC.
+
 Denní limit je jeden sdílený rozpočet napříč všemi protokoly — ať stahujete přes IMAP, nahráváte přes SMTP nebo synchronizujete kalendáře přes CalDAV, vše se počítá do stejných 50 GB/den.  Hodinový limit na službu je záchranná síť proti nekontrolovaným skriptům nebo kompromitovaným účtům na jednom protokolu — není to něco, na co by legitimní uživatel měl kdy narazit.
 
 Tyto limity jsou na uživatelský účet (nikoli na alias nebo doménu) a obnovují se denně.  To znamená, že vytváření dalších aliasů nezvyšuje váš limit šířky pásma.  Pokud je Redis nedostupný, omezování rychlosti se zcela přeskočí (fail-open), takže vaše služba nebude nikdy přerušena.

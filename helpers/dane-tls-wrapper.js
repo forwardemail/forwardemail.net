@@ -166,6 +166,65 @@ function createDaneError(message, hostname) {
 }
 
 /**
+ * DANE-TA (usage 2) and PKIX-TA (usage 0): find the trust anchor in the
+ * chain the server sent, and check that it actually issued the leaf.
+ *
+ * A TLSA match of any certificate in the chain is not enough on its own, as
+ * the chain is whatever the server sent and `rejectUnauthorized` is off for
+ * DANE: an attacker could send their own leaf followed by the (public) trust
+ * anchor certificate. So, per RFC 7671 and RFC 7672:
+ *
+ * - the matching certificate is above the leaf (index >= 1),
+ * - every certificate from the leaf up to it is signed by the next one,
+ * - the leaf is within its validity period and names the MX host, and
+ * - for PKIX-TA, the chain also validates against the system trust store.
+ *
+ * @param {tls.TLSSocket} socket
+ * @param {crypto.X509Certificate[]} chain - leaf first
+ * @param {Array} tlsaRecords
+ * @param {string} hostname
+ * @returns {boolean}
+ */
+function verifyTrustAnchorChain(socket, chain, tlsaRecords, hostname) {
+  const [leaf] = chain;
+  const now = Date.now();
+  if (
+    !leaf ||
+    Date.parse(leaf.validFrom) > now ||
+    Date.parse(leaf.validTo) < now ||
+    typeof hostname !== 'string' ||
+    !leaf.checkHost(hostname)
+  )
+    return false;
+
+  for (const record of tlsaRecords) {
+    if (!record || (record.usage !== 2 && record.usage !== 0)) continue;
+    if (record.usage === 0 && !socket.authorized) continue;
+    for (let k = 1; k < chain.length; k++) {
+      // match this certificate on its own against the record
+      const result = _verifyCertAgainstTlsa(chain[k], [
+        { ...record, usage: 3 }
+      ]);
+      if (!result || result.valid !== true || result.noRecords) continue;
+      let signed = true;
+      for (let i = 0; i < k; i++) {
+        if (
+          !chain[i].checkIssued(chain[i + 1]) ||
+          !chain[i].verify(chain[i + 1].publicKey)
+        ) {
+          signed = false;
+          break;
+        }
+      }
+
+      if (signed) return true;
+    }
+  }
+
+  return false;
+}
+
+/**
  * Perform DANE verification on a TLS socket.
  *
  * Returns `undefined` **only** on explicit success.  All other paths return
@@ -205,9 +264,8 @@ function performDaneVerification(socket, daneVerifier, hostname, tlsaRecords) {
     typeof _verifyCertAgainstTlsa === 'function'
   ) {
     try {
-      const result = _verifyCertAgainstTlsa(leaf, tlsaRecords, chain);
-      if (result && result.valid === true) {
-        return undefined; // ← success via chain match
+      if (verifyTrustAnchorChain(socket, chain, tlsaRecords, hostname)) {
+        return undefined; // ← success via a verified trust anchor chain
       }
     } catch {
       // Fall through — return the original leaf-only error (fail-closed).
@@ -239,7 +297,12 @@ function installDaneWrapper() {
   if (_wrapperInstalled) return;
   _wrapperInstalled = true;
 
-  tls.connect = function (opts, callback) {
+  tls.connect = function (opts, callback, ...rest) {
+    // (other call forms, e.g. tls.connect(port, host, options), are passed
+    // through unchanged; DANE connections always pass an options object)
+    if (!opts || typeof opts !== 'object' || rest.length > 0)
+      return Reflect.apply(_originalTlsConnect, tls, [opts, callback, ...rest]);
+
     // Read DANE properties from the per-connection options object.
     const daneVerifier = opts && opts._daneVerifier;
     const daneHostname = opts && opts._daneHostname;

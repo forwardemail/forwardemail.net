@@ -21,6 +21,11 @@ const mongoose = require('mongoose');
 const LimitedFetch = require('@zone-eu/wildduck/lib/limited-fetch');
 
 const Messages = require('#models/messages');
+const {
+  getBandwidthLimitMessage,
+  isOverBandwidth,
+  recordBandwidth
+} = require('#helpers/bandwidth-limiter');
 const refineAndLogError = require('#helpers/refine-and-log-error');
 
 async function onFetchMessage(message, session, fn) {
@@ -48,6 +53,18 @@ async function onFetchMessage(message, session, fn) {
 
     await this.refreshSession(session, 'POP3');
 
+    // downloads stop once the account's bandwidth limit is used up
+    if (
+      await isOverBandwidth(this.client, {
+        userId: session.user.alias_user_id,
+        service: 'pop3_download'
+      })
+    ) {
+      const err = new Error(getBandwidthLimitMessage(session.user.locale));
+      err.isCodeBug = false;
+      return fn(err);
+    }
+
     const msg = await Messages.findOne(
       this,
       session,
@@ -64,6 +81,12 @@ async function onFetchMessage(message, session, fn) {
 
     // mirrored to WildDuck error
     if (!msg) throw new Error('Message does not exist or is already deleted');
+
+    recordBandwidth(this.client, {
+      userId: session.user.alias_user_id,
+      service: 'pop3_download',
+      bytes: msg.size
+    });
 
     const obj = await this.indexer.rebuild(
       msg.mimeTree,

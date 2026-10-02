@@ -1616,9 +1616,12 @@ const config = {
     // on the authorize redirect and rejects any callback that does not
     // present it.
     //
+    // (`allRawEmails` gives every GitHub address with whether it was
+    // verified, see helpers/passport.js)
+    //
     strategies: {
       google: { state: true },
-      github: { state: true }
+      github: { state: true, allRawEmails: true }
     }
   },
 

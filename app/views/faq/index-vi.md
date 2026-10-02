@@ -5450,6 +5450,8 @@ Chúng tôi áp dụng giới hạn băng thông cho mỗi người dùng trên 
 | Tổng hàng ngày | Tất cả dịch vụ kết hợp (IMAP, POP3, SMTP, CalDAV, CardDAV) | **50 GB** |
 | Hàng giờ mỗi dịch vụ | Mỗi dịch vụ riêng lẻ (ví dụ: tải xuống IMAP, tải lên SMTP) | **10 GB** |
 
+Khi đạt đến giới hạn, việc truyền dữ liệu sẽ bị từ chối cho đến khi giới hạn được đặt lại: IMAP `FETCH` và `APPEND` trả lời `NO [LIMIT]`, POP3 `RETR` trả lời `-ERR`, SMTP trả lời bằng mã tạm thời `452` để ứng dụng của bạn thử lại sau, còn CalDAV và CardDAV trả lời `429 Too Many Requests`.  Giới hạn theo giờ được đặt lại vào đầu mỗi giờ và giới hạn hằng ngày vào nửa đêm UTC.
+
 Giới hạn hàng ngày là một ngân sách chung duy nhất trên tất cả các giao thức. Dù bạn tải xuống qua IMAP, tải lên qua SMTP, hay đồng bộ lịch qua CalDAV, tất cả đều tính vào cùng 50 GB/ngày.  Giới hạn hàng giờ mỗi dịch vụ là mạng lưới an toàn chống lại các script mất kiểm soát hoặc tài khoản bị xâm phạm trên một giao thức duy nhất, và người dùng hợp pháp không nên chạm tới nó.
 
 Các giới hạn này áp dụng cho mỗi tài khoản người dùng (không phải mỗi alias hoặc tên miền) và được đặt lại hàng ngày.  Điều này có nghĩa là việc tạo thêm alias không tăng hạn mức băng thông của bạn.  Nếu Redis không khả dụng, giới hạn tốc độ sẽ được bỏ qua hoàn toàn (fail-open) để dịch vụ của bạn không bao giờ bị gián đoạn.

@@ -93,6 +93,33 @@ async function getRedisTime(client) {
   return time;
 }
 
+//
+// Open IMAP, POP3 and SMTP sessions re-check their alias (enabled, user not
+// banned) only once a day (`refresh_check:<id>`, helpers/refresh-session.js),
+// so the check is cleared and `sqlite_auth_reset` closes the sessions of each
+// alias revoked, and of every alias owned by a revoked account.
+//
+async function getAliasIds(ids) {
+  const aliasIds = new Set(toIds(ids.aliasIds));
+  const accountIds = toIds(ids.accountIds);
+  if (accountIds.length > 0) {
+    // (required here: the model requires this helper)
+    const Aliases = require('#models/aliases');
+    const owned = await Aliases.distinct('_id', { user: { $in: accountIds } });
+    for (const id of toIds(owned)) aliasIds.add(id);
+  }
+
+  return [...aliasIds];
+}
+
+async function closeMailSessions(client, aliasIds) {
+  if (aliasIds.length === 0) return;
+  const multi = client.multi();
+  for (const id of aliasIds) multi.del(`refresh_check:${id}`);
+  await multi.exec();
+  for (const id of aliasIds) await client.publish('sqlite_auth_reset', id);
+}
+
 async function revokeAccess(client, ids) {
   if (!client) return;
   const subjects = getSubjects(ids);
@@ -108,6 +135,8 @@ async function revokeAccess(client, ids) {
     config.WS_REDIS_CHANNEL_NAME,
     encoder.pack({ revoke: { subjects } })
   );
+
+  await closeMailSessions(client, await getAliasIds(ids));
 }
 
 // Never throws (revocation must not break the write that triggered it).
@@ -191,7 +220,44 @@ function addRevocationQueryHooks(schema, getRevocation) {
   }
 }
 
+//
+// Deleting documents revokes them as well (e.g. an alias removed with its
+// passwords and open sessions), `field` naming what they are (`aliasIds`).
+//
+const DELETE_ONE = ['deleteOne', 'findOneAndDelete', 'findOneAndRemove'];
+
+function addRevocationDeleteHooks(schema, field) {
+  const options = { document: false, query: true };
+  for (const operation of [...DELETE_ONE, 'deleteMany']) {
+    schema.pre(operation, options, async function () {
+      this._revokeDeleted = null;
+      const filter = this.getFilter();
+      let ids;
+      if (DELETE_ONE.includes(operation)) {
+        const doc = await this.model.findOne(filter).select('_id').lean();
+        ids = toIds(doc?._id);
+      } else {
+        ids = toIds(await this.model.distinct('_id', filter));
+      }
+
+      if (ids.length > 0) this._revokeDeleted = ids;
+    });
+
+    schema.post(operation, options, async function () {
+      const ids = this._revokeDeleted;
+      if (!ids) return;
+      this._revokeDeleted = null;
+      await revokeFromModel({ [field]: ids });
+    });
+  }
+
+  schema.post('remove', { document: true, query: false }, async (doc) => {
+    await revokeFromModel({ [field]: [doc._id] });
+  });
+}
+
 module.exports = {
+  addRevocationDeleteHooks,
   addRevocationQueryHooks,
   CLOSE_CODE_REVOKED,
   REVOCATION_TTL_MS,

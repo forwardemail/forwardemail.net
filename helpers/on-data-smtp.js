@@ -28,6 +28,10 @@ const validateDomain = require('#helpers/validate-domain');
 const i18n = require('#helpers/i18n');
 const { decrypt } = require('#helpers/encrypt-decrypt');
 const checkSmtpVelocity = require('#helpers/check-smtp-velocity');
+const {
+  checkBandwidth,
+  getBandwidthLimitMessage
+} = require('#helpers/bandwidth-limiter');
 
 const { reserveAliasMessage } = checkSmtpVelocity;
 const {
@@ -591,6 +595,22 @@ async function onDataSMTP(session, date, headers, body) {
     // (a message refused here does not count toward the alias's limit)
     releaseAlias();
     throw err;
+  }
+
+  // (counted toward the account's bandwidth limit, refused once it is used up)
+  const { allowed } = await checkBandwidth(this.client, {
+    userId: user?.id || user?._id?.toString(),
+    service: 'smtp_upload',
+    bytes: headers.build().length + body.length
+  });
+  if (!allowed) {
+    releaseRecipients();
+    throw new SMTPError(
+      getBandwidthLimitMessage(
+        user?.[config.lastLocaleField] || i18n.config.defaultLocale
+      ),
+      { responseCode: 452, ignoreHook: true }
+    );
   }
 
   // queue the email

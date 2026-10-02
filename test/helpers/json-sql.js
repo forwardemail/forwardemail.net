@@ -225,3 +225,24 @@ test('condition values must be bound, never built into the query', (t) => {
     [{ 'COUNT(*)': 2 }]
   );
 });
+
+test('operators that write into the query only take safe values', (t) => {
+  const { db, builder } = setup();
+  const select = (condition) =>
+    builder.build({ type: 'select', table: 'Messages', condition });
+
+  // `$is` writes its value into the query text
+  t.throws(() => select({ uid: { $is: '1 OR 1=1' } }), {
+    message: 'Invalid $is value'
+  });
+  t.throws(() => select({ uid: { $isnot: '1 OR 1=1' } }), {
+    message: 'Invalid $isnot value'
+  });
+  t.notThrows(() => run(db, select({ uid: { $is: true } })));
+
+  // `$elemMatch` writes each key into a JSON path
+  t.throws(() => select({ uid: { $elemMatch: { "x') OR 1=1 --": 1 } } }), {
+    message: 'Invalid SQL identifier'
+  });
+  t.notThrows(() => select({ uid: { $elemMatch: { value: 'a' } } }));
+});

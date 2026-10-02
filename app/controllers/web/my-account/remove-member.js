@@ -6,6 +6,7 @@
 const Boom = require('@hapi/boom');
 const isSANB = require('is-string-and-not-blank');
 
+const _ = require('#helpers/lodash');
 const emailHelper = require('#helpers/email');
 const { Aliases, Domains, Users } = require('#models');
 
@@ -42,7 +43,7 @@ async function removeMember(ctx, next) {
       const message = `<p class="font-weight-bold">${ctx.translate(
         'REMOVED_ALIASES_FROM_OWNER'
       )}</p><ul class="mb-0 text-left"><li>${aliases
-        .map((alias) => alias.name)
+        .map((alias) => _.escape(alias.name))
         .join('</li><li>')}</li></ul>`;
 
       // flash a message if we're not on the API
@@ -72,7 +73,7 @@ async function removeMember(ctx, next) {
       const message = `<p class="font-weight-bold">${ctx.translate(
         'REASSIGNED_ALIAS_OWNERSHIP'
       )}</p><ul class="mb-0 text-left"><li>${aliases
-        .map((alias) => alias.name)
+        .map((alias) => _.escape(alias.name))
         .join('</li><li>')}</li></ul>`;
 
       // flash a message if we're not on the API

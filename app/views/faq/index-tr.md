@@ -5451,6 +5451,8 @@ Tüm hizmetlerde kullanıcı başına bant genişliği limitleri uygulayarak flo
 | Günlük toplam | Tüm hizmetler birlikte (IMAP, POP3, SMTP, CalDAV, CardDAV) | **50 GB** |
 | Saat başı hizmet başına | Bireysel hizmet başına (örn. IMAP indirme, SMTP yükleme) | **10 GB** |
 
+Bir sınıra ulaşıldığında, sınır sıfırlanana kadar aktarımlar reddedilir: IMAP `FETCH` ve `APPEND` `NO [LIMIT]`, POP3 `RETR` `-ERR` yanıtı verir, SMTP geçici `452` koduyla yanıt verir, böylece istemciniz daha sonra yeniden dener, CalDAV ve CardDAV ise `429 Too Many Requests` yanıtı verir.  Saatlik sınır her saatin başında, günlük sınır ise UTC gece yarısında sıfırlanır.
+
 Günlük limit, tüm protokollerde paylaşılan tek bir bütçedir — IMAP üzerinden indirseniz, SMTP üzerinden yükleseniz veya CalDAV üzerinden takvimleri senkronize etseniz, hepsi aynı 50 GB/gün'e sayılır.  Hizmet başına saatlik limit, tek bir protokolde kontrolden çıkan betikler veya ele geçirilmiş hesaplar için bir güvenlik ağıdır — meşru bir kullanıcının asla ulaşmaması gereken bir şey.
 
 Bu limitler kullanıcı hesabı başına uygulanır (alias veya alan adı başına değil) ve günlük olarak sıfırlanır.  Bu, ek alias oluşturmanın bant genişliği kotanızı artırmadığı anlamına gelir.  Redis kullanılamıyorsa, hız sınırlaması tamamen atlanır (fail-open) böylece hizmetiniz asla kesintiye uğramaz.

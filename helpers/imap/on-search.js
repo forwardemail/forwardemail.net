@@ -548,6 +548,13 @@ async function onSearch(mailboxId, options, session, fn) {
             {
               let op = false;
               const dateObj = new Date(term.value + ' GMT');
+              // (a date that matches the IMAP date syntax can still be
+              // invalid, e.g. "99-Jan-2020"; that is the client's error)
+              if (Number.isNaN(dateObj.getTime()))
+                throw new IMAPError(
+                  i18n.translateError('IMAP_INVALID_SEARCH'),
+                  { imapResponse: 'CANNOT' }
+                );
               // IMPORTANT: Convert Date to ISO string because SQLite cannot
               // bind Date objects (throws "can only bind numbers, strings,
               // bigints, buffers, and null"). Dates are stored as ISO strings

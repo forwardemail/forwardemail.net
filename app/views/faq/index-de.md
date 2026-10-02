@@ -5451,6 +5451,8 @@ Wir erzwingen Bandbreitenlimits pro Benutzer über alle Dienste hinweg, um Flood
 | Tägliches Gesamtlimit | Alle Dienste zusammen (IMAP, POP3, SMTP, CalDAV, CardDAV) | **50 GB** |
 | Stündlich pro Dienst | Pro einzelnen Dienst (z.B. IMAP Download, SMTP Upload) | **10 GB** |
 
+Wenn ein Limit erreicht ist, werden Übertragungen abgelehnt, bis es zurückgesetzt wird: IMAP `FETCH` und `APPEND` antworten mit `NO [LIMIT]`, POP3 `RETR` mit `-ERR`, SMTP mit dem temporären Code `452`, damit Ihr Client es später erneut versucht, und CalDAV und CardDAV mit `429 Too Many Requests`.  Das stündliche Limit wird zu Beginn jeder Stunde zurückgesetzt, das tägliche Limit um Mitternacht UTC.
+
 Das Tageslimit ist ein einziges gemeinsames Budget über alle Protokolle — ob Sie über IMAP herunterladen, über SMTP hochladen oder Kalender über CalDAV synchronisieren, alles zählt zu den gleichen 50 GB/Tag.  Das stündliche Limit pro Dienst ist ein Sicherheitsnetz gegen unkontrollierte Skripte oder kompromittierte Konten auf einem einzelnen Protokoll — nicht etwas, das ein legitimer Benutzer jemals erreichen sollte.
 
 Diese Limits gelten pro Benutzerkonto (nicht pro Alias oder Domain) und werden täglich zurückgesetzt.  Das bedeutet, dass das Erstellen zusätzlicher Aliasse Ihr Bandbreitenlimit nicht erhöht.  Wenn Redis nicht verfügbar ist, wird die Ratenbegrenzung vollständig übersprungen (Fail-Open), sodass Ihr Dienst niemals unterbrochen wird.

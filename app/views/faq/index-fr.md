@@ -5452,6 +5452,8 @@ Nous appliquons des limites de bande passante par utilisateur sur tous les servi
 | Total quotidien | Tous les services combinés (IMAP, POP3, SMTP, CalDAV, CardDAV) | **50 Go** |
 | Par heure par service | Par service individuel (ex. téléchargement IMAP, envoi SMTP) | **10 Go** |
 
+Lorsqu'une limite est atteinte, les transferts sont refusés jusqu'à sa réinitialisation : IMAP `FETCH` et `APPEND` répondent `NO [LIMIT]`, POP3 `RETR` répond `-ERR`, SMTP répond avec le code temporaire `452` pour que votre client réessaie plus tard, et CalDAV et CardDAV répondent `429 Too Many Requests`.  La limite horaire est réinitialisée au début de chaque heure et la limite quotidienne à minuit UTC.
+
 La limite quotidienne est un budget unique partagé entre tous les protocoles — que vous téléchargiez via IMAP, envoyiez via SMTP ou synchronisiez des calendriers via CalDAV, tout compte dans les mêmes 50 Go/jour.  La limite horaire par service est un filet de sécurité contre les scripts incontrôlés ou les comptes compromis sur un seul protocole — pas quelque chose qu'un utilisateur légitime devrait jamais atteindre.
 
 Ces limites sont par compte utilisateur (pas par alias ou domaine) et se réinitialisent quotidiennement.  Cela signifie que la création d'alias supplémentaires n'augmente pas votre allocation de bande passante.  Si Redis est indisponible, la limitation de débit est entièrement ignorée (fail-open) afin que votre service ne soit jamais interrompu.

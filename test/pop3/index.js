@@ -30,6 +30,7 @@ const Mailboxes = require('#models/mailboxes');
 const Messages = require('#models/messages');
 const config = require('#config');
 const createWebSocketAsPromised = require('#helpers/create-websocket-as-promised');
+const { DAILY_LIMIT } = require('#helpers/bandwidth-limiter');
 const onAppend = require('#helpers/imap/on-append');
 const { encrypt } = require('#helpers/encrypt-decrypt');
 
@@ -595,6 +596,65 @@ test('POP3 RETR and DELE are published to WebSocket and push clients', async (t)
   // reconnect for afterEach
   t.context.pop3Command = new Pop3Command({
     user: `${alias.name}@${t.context.domain.name}`,
+    password: t.context.pass,
+    host: 'localhost',
+    port: t.context.port,
+    tlsOptions
+  });
+  await t.context.pop3Command.connect();
+});
+
+test('POP3 RETR stops at the bandwidth limit', async (t) => {
+  const { session, pop3, client, user } = t.context;
+  await pop3.refreshSession(session, 'POP3');
+  await onAppendPromise.call(
+    pop3,
+    'INBOX',
+    [],
+    new Date(),
+    'Subject: POP3 Bandwidth Test\r\n\r\nBody',
+    session
+  );
+
+  const connect = async () => {
+    await t.context.pop3Command.command('QUIT');
+    t.context.pop3Command = new Pop3Command({
+      user: `${t.context.alias.name}@${t.context.domain.name}`,
+      password: t.context.pass,
+      host: 'localhost',
+      port: t.context.port,
+      tlsOptions
+    });
+    await t.context.pop3Command.connect();
+    await t.context.pop3Command.command(
+      'USER',
+      `${t.context.alias.name}@${t.context.domain.name}`
+    );
+    await t.context.pop3Command.command('PASS', t.context.pass);
+  };
+
+  const day = new Date().toISOString().split('T')[0];
+  const dailyKey = `bw_${config.env}:all:d:${day}:${user.id}`;
+
+  // under the limit the message is downloaded and counted
+  await connect();
+  // eslint-disable-next-line new-cap
+  const message = await t.context.pop3Command.RETR(1);
+  t.regex(message, /POP3 Bandwidth Test/);
+  await pWaitFor(async () => Number(await client.get(dailyKey)) > 0, {
+    timeout: ms('5s')
+  });
+
+  // once the daily limit is used up it is refused
+  await client.set(dailyKey, DAILY_LIMIT);
+  await connect();
+  // eslint-disable-next-line new-cap
+  const err = await t.throwsAsync(t.context.pop3Command.RETR(1));
+  t.regex(err.message, /Bandwidth limit reached/);
+
+  // (a fresh connection for the QUIT after the test)
+  t.context.pop3Command = new Pop3Command({
+    user: `${t.context.alias.name}@${t.context.domain.name}`,
     password: t.context.pass,
     host: 'localhost',
     port: t.context.port,

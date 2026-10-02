@@ -24,7 +24,10 @@ const IMAPError = require('#helpers/imap-error');
 const Mailboxes = require('#models/mailboxes');
 const getImapFlags = require('#helpers/get-imap-flags');
 const Messages = require('#models/messages');
-const { checkBandwidth } = require('#helpers/bandwidth-limiter');
+const {
+  isOverBandwidth,
+  recordBandwidth
+} = require('#helpers/bandwidth-limiter');
 const getQueryResponse = require('#helpers/get-query-response');
 const i18n = require('#helpers/i18n');
 const refineAndLogError = require('#helpers/refine-and-log-error');
@@ -73,6 +76,16 @@ async function onFetch(mailboxId, options, session, fn) {
 
   // Keep the connection counted while it is actively serving mailbox data.
   await renewConcurrentConnectionTTL.call(this, session);
+
+  // downloads stop once the account's bandwidth limit is used up
+  // (NO [LIMIT], RFC 5530)
+  if (
+    await isOverBandwidth(this.client, {
+      userId: session?.user?.alias_user_id,
+      service: 'imap_download'
+    })
+  )
+    return fn(null, 'LIMIT');
 
   if (this.wsp) {
     try {
@@ -403,14 +416,13 @@ async function onFetch(mailboxId, options, session, fn) {
       }
     }
 
-    // Record bandwidth usage (fire-and-forget, non-blocking)
-    if (totalBytes > 0) {
-      checkBandwidth(this.client, {
+    // Record bandwidth usage (non-blocking)
+    if (totalBytes > 0)
+      recordBandwidth(this.client, {
         userId: session.user.alias_user_id,
         service: 'imap_download',
         bytes: totalBytes
-      }).catch(() => {});
-    }
+      });
 
     // perform db operations
     if (ops.length > 0) {

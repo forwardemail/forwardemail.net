@@ -292,8 +292,7 @@ class ManageSieveServer {
 
     // Handle data
     socket.on('data', (data) => {
-      session.buffer += data.toString('utf8');
-      this.processBuffer(session);
+      this.appendToBuffer(session, data);
     });
 
     // Handle close - decrement concurrent connection counter
@@ -335,6 +334,33 @@ class ManageSieveServer {
       this.send(session, `${RESPONSE.BYE} "Connection timed out"`);
       socket.end();
     });
+  }
+
+  //
+  // Append received data to the buffer, within the size limit.
+  //
+  // FWD-02-001: the limit is enforced here as data arrives, not only in
+  // processBuffer, which first waits for the onConnect check (reverse DNS
+  // and so on, which can take many seconds); until then data from an
+  // unauthenticated client would be buffered without limit.
+  //
+  appendToBuffer(session, data) {
+    if (session.socket.destroyed) return;
+    const MAX_BUFFER_SIZE = this.maxScriptSize + 4096;
+    if (session.buffer.length + data.length > MAX_BUFFER_SIZE) {
+      this.logger.warn('ManageSieve buffer overflow, closing connection', {
+        component: 'ManageSieve',
+        sessionId: session.id,
+        bufferSize: session.buffer.length + data.length
+      });
+      session.buffer = '';
+      this.send(session, `${RESPONSE.BYE} "Buffer overflow"`);
+      session.socket.destroy();
+      return;
+    }
+
+    session.buffer += data.toString('utf8');
+    this.processBuffer(session);
   }
 
   //
@@ -863,8 +889,7 @@ class ManageSieveServer {
 
     // Re-attach event handlers
     tlsSocket.on('data', (data) => {
-      session.buffer += data.toString('utf8');
-      this.processBuffer(session);
+      this.appendToBuffer(session, data);
     });
 
     // Per RFC 5804 Section 2.2: After the TLS layer is established,

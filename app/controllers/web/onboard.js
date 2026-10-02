@@ -52,7 +52,12 @@ async function onboard(ctx, next) {
     )
       ctx.state.domainName = ctx.query.domain;
 
-    if (isSANB(ctx.query.email) && isEmail(ctx.query.email))
+    // (an address is at most 254 characters, RFC 5321)
+    if (
+      isSANB(ctx.query.email) &&
+      ctx.query.email.length <= 254 &&
+      isEmail(ctx.query.email)
+    )
       ctx.state.email = ctx.query.email;
 
     if (ctx.state.domainName && ctx.state.domainName.startsWith('www.'))
@@ -80,13 +85,18 @@ async function onboard(ctx, next) {
 
     let html = pug.renderFile(filePath, ctx.state);
 
-    if (ctx.state.domainName)
-      html = html.replace(
-        /example.com/g,
-        ctx.state.domainName.startsWith('www.')
-          ? ctx.state.domainName.replace('www.', '')
-          : ctx.state.domainName
-      );
+    if (ctx.state.domainName) {
+      //
+      // NOTE: the replacements here are functions, as a replacement string
+      //       interprets "$`", "$'" and "$&" (which an address may contain)
+      //       as the text around each match, so a short address would copy
+      //       the whole page once per match
+      //
+      const domainName = ctx.state.domainName.startsWith('www.')
+        ? ctx.state.domainName.replace('www.', '')
+        : ctx.state.domainName;
+      html = html.replace(/example.com/g, () => domainName);
+    }
 
     //
     // Only perform email address replacement on FAQ page
@@ -103,12 +113,12 @@ async function onboard(ctx, next) {
         const local = ctx.state.email.slice(0, index);
         const domain = ctx.state.email.slice(index + 1);
         html = html
-          .replace(/admin/g, local)
-          .replace(/@gmail.com/g, `@${domain}`);
+          .replace(/admin/g, () => local)
+          .replace(/@gmail.com/g, () => `@${domain}`);
       } else {
         html = html
-          .replace(/admin/g, parsed.local)
-          .replace(/@gmail.com/g, `@${parsed.domain}`);
+          .replace(/admin/g, () => parsed.local)
+          .replace(/@gmail.com/g, () => `@${parsed.domain}`);
       }
     }
 

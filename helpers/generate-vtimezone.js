@@ -261,7 +261,25 @@ function formatOffset(minutes) {
 // Find the DST transition dates for a given IANA timezone in a given year.
 // Returns an object with standard/daylight info, or null if no DST.
 //
+//
+// The scan below takes tens of milliseconds of synchronous CPU per zone, and
+// one calendar object can name many TZIDs (many distinct TZID strings resolve
+// to the same zone), so results are kept per zone and year (there are only a
+// few hundred zones), and ensureVTimezones generates a bounded number of
+// VTIMEZONEs per object.
+//
+const MAX_GENERATED_VTIMEZONES = 20;
+const transitionsCache = new Map();
+
 function findTransitions(tzid, year) {
+  const key = `${tzid}:${year}`;
+  if (transitionsCache.has(key)) return transitionsCache.get(key);
+  const result = _findTransitions(tzid, year);
+  transitionsCache.set(key, result);
+  return result;
+}
+
+function _findTransitions(tzid, year) {
   const jan1 = new Date(Date.UTC(year, 0, 1));
   const dec31 = new Date(Date.UTC(year, 11, 31, 23, 59, 59));
 
@@ -471,8 +489,9 @@ function ensureVTimezones(icsString) {
   if (missingTzids.length === 0) return icsString;
 
   // Generate and inject VTIMEZONE components
+  // (a real calendar object uses a few zones, see MAX_GENERATED_VTIMEZONES)
   let modified = false;
-  for (const tzid of missingTzids) {
+  for (const tzid of missingTzids.slice(0, MAX_GENERATED_VTIMEZONES)) {
     const vtzStr = generateVTimezone(tzid);
     if (vtzStr) {
       try {
@@ -507,6 +526,7 @@ function _collectTzids(component, tzidSet) {
 }
 
 module.exports = {
+  MAX_GENERATED_VTIMEZONES,
   generateVTimezone,
   ensureVTimezones,
   resolveToIANA,

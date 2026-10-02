@@ -72,7 +72,8 @@ async function downloadAliasBackup(ctx) {
         await ctx.client
           .pipeline()
           .incr(key)
-          .pexpire(key, config.smtpLimitAuthDuration);
+          .pexpire(key, config.smtpLimitAuthDuration)
+          .exec();
         throw Boom.forbidden(ctx.translateError('INVALID_PASSWORD'));
       }
 

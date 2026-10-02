@@ -357,7 +357,7 @@ class IMAP {
         // }
 
         if (channel === 'pgp_reload') {
-          const alias = await Aliases.findOne({ id })
+          const alias = await Aliases.findById(id)
             .select('has_pgp public_key')
             .lean()
             .exec();
@@ -373,7 +373,7 @@ class IMAP {
         }
 
         if (channel === 'smime_reload') {
-          const alias = await Aliases.findOne({ id })
+          const alias = await Aliases.findById(id)
             .select('has_smime smime_certificate')
             .lean()
             .exec();
@@ -444,7 +444,11 @@ class IMAP {
 
   async listen(port = env.IMAP_PORT, host = '::', ...args) {
     // this.subscriber.subscribe('sqlite_auth_request');
-    this.subscriber.subscribe('sqlite_auth_reset');
+    this.subscriber.subscribe(
+      'sqlite_auth_reset',
+      'pgp_reload',
+      'smime_reload'
+    );
     await pify(this.server.listen).bind(this.server)(port, host, ...args);
   }
 
@@ -456,7 +460,11 @@ class IMAP {
     }
 
     // this.subscriber.unsubscribe('sqlite_auth_request');
-    this.subscriber.unsubscribe('sqlite_auth_reset');
+    this.subscriber.unsubscribe(
+      'sqlite_auth_reset',
+      'pgp_reload',
+      'smime_reload'
+    );
     if (this.server.notifier) this.server.notifier.close();
     await pify(this.server.close).bind(this.server)();
   }

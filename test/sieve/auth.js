@@ -911,3 +911,38 @@ test('STARTTLS listener accepts AUTHENTICATE after STARTTLS', async (t) => {
   const list = await secureReader.send('LISTSCRIPTS');
   t.true(list.some((line) => line.startsWith('OK')));
 });
+
+//
+// Data from a client is limited as it arrives, also while the connection
+// check (reverse DNS and so on, which can take a while) is still running,
+// so an unauthenticated client cannot make the server buffer without limit.
+//
+test('limits buffered data while the connection check is still running', async (t) => {
+  const { managesieve, port } = t.context;
+  // (the reverse DNS lookup of the connection check never answers)
+  const { reverse } = managesieve.resolver;
+  managesieve.resolver.reverse = () => new Promise(() => {});
+  t.teardown(() => {
+    managesieve.resolver.reverse = reverse;
+  });
+
+  const socket = net.connect(port, '127.0.0.1');
+  await once(socket, 'connect');
+  socket.on('data', () => {});
+  const closed = once(socket, 'close');
+  const chunk = Buffer.alloc(64 * 1024, 'a');
+  let sent = 0;
+  const limit = config.sieve.maxScriptSize + 4096;
+  while (!socket.destroyed && sent < limit * 4) {
+    socket.write(chunk);
+    sent += chunk.length;
+
+    await delay(1);
+  }
+
+  await Promise.race([closed, delay(5000)]);
+  t.true(socket.destroyed || socket.readyState === 'closed');
+  for (const session of managesieve.connections) {
+    t.true(session.buffer.length <= limit);
+  }
+});

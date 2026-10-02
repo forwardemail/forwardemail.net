@@ -22,9 +22,16 @@ const refineAndLogError = require('#helpers/refine-and-log-error');
 const sendApn = require('#helpers/send-apn');
 const sendNotification = require('#helpers/send-notification');
 const updateStorageUsed = require('#helpers/update-storage-used');
+const validateMailboxPath = require('#helpers/imap/validate-mailbox-path');
 
 async function onCreate(path, session, fn) {
   this.logger.debug('CREATE', { path, session });
+
+  try {
+    validateMailboxPath(path, session?.user?.locale);
+  } catch (err) {
+    return fn(null, err.imapResponse);
+  }
 
   if (this.wsp) {
     try {

@@ -26,12 +26,18 @@
 //     payload expand into an unbounded line; the cap bounds that as well.
 //     A client that exceeds it is disconnected.
 //
+//  4. SEARCH terms.  Every term is evaluated against every message of the
+//     mailbox (and imap-core's own term parser takes time that grows with
+//     the square of the term count), so one SEARCH with tens of thousands
+//     of terms, which fits in one line, kept a worker busy for minutes.
+//
 
 const {
   IMAPConnection
 } = require('@zone-eu/wildduck/imap-core/lib/imap-connection');
 const { IMAPCommand } = require('@zone-eu/wildduck/imap-core/lib/imap-command');
 const { IMAPStream } = require('@zone-eu/wildduck/imap-core/lib/imap-stream');
+const searchCommand = require('@zone-eu/wildduck/imap-core/lib/commands/search');
 
 // longest command line (UID sets of large mailboxes can be long)
 const MAX_LINE_LENGTH = 1024 * 1024;
@@ -44,6 +50,25 @@ const MAX_LITERALS = 1000;
 const LITERAL_BYTES_ALLOWANCE = 1024 * 1024;
 
 const PRE_AUTH_LITERAL_COMMANDS = new Set(['LOGIN', 'ID']);
+
+// search keys, values and parentheses in one SEARCH (a client search uses
+// a handful; "OR FROM a FROM b" is 5)
+const MAX_SEARCH_TOKENS = 1000;
+
+function countTokens(elements, limit) {
+  let count = 0;
+  const stack = [elements];
+  while (stack.length > 0) {
+    const items = stack.pop();
+    for (const item of items) {
+      count++;
+      if (count > limit) return count;
+      if (Array.isArray(item)) stack.push(item);
+    }
+  }
+
+  return count;
+}
 
 const RE_COMMAND = /^(\S+)(?:\s+((?:authenticate |uid )?\S+)|$)/i;
 
@@ -123,6 +148,21 @@ function hardenImapCore() {
   hardenedAppend.isHardened = true;
   IMAPCommand.prototype.append = hardenedAppend;
 
+  const searchHandler = searchCommand.handler;
+  searchCommand.handler = function (command, callback) {
+    if (
+      countTokens([command.attributes || []].flat(), MAX_SEARCH_TOKENS) >
+      MAX_SEARCH_TOKENS
+    )
+      return callback(null, {
+        response: 'NO',
+        code: 'LIMIT',
+        message: 'Too many search terms'
+      });
+
+    return searchHandler.call(this, command, callback);
+  };
+
   //
   // The parser keeps an unterminated line in `_remainder` (see
   // imap-stream.js `_readValue`).  Checked after each chunk is processed,
@@ -161,5 +201,6 @@ hardenImapCore();
 module.exports = {
   hardenImapCore,
   MAX_LINE_LENGTH,
-  MAX_PRE_AUTH_LITERALS
+  MAX_PRE_AUTH_LITERALS,
+  MAX_SEARCH_TOKENS
 };

@@ -10,6 +10,7 @@ const isSANB = require('is-string-and-not-blank');
 const reservedAdminList = require('reserved-email-addresses-list/admin-list.json');
 const reservedEmailAddressesList = require('reserved-email-addresses-list');
 
+const _ = require('#helpers/lodash');
 const emailHelper = require('#helpers/email');
 const { Aliases, Domains, Users } = require('#models');
 
@@ -228,7 +229,7 @@ async function updateMember(ctx, next) {
           ? 'REASSIGNED_ALIASES_FROM_OWNER'
           : 'REASSIGNED_ALIAS_OWNERSHIP'
       )}</p><ul class="mb-0 text-left"><li>${updatedAliases
-        .map((alias) => alias.name)
+        .map((alias) => _.escape(alias.name))
         .join('</li><li>')}</li></ul>`;
 
       // flash a message if we're not on the API

@@ -5452,6 +5452,8 @@ Aplicamos límites de ancho de banda por usuario en todos los servicios para pre
 | Total diario | Todos los servicios combinados (IMAP, POP3, SMTP, CalDAV, CardDAV) | **50 GB** |
 | Por hora por servicio | Por servicio individual (ej. descarga IMAP, carga SMTP) | **10 GB** |
 
+Cuando se alcanza un límite, las transferencias se rechazan hasta que se restablece: IMAP `FETCH` y `APPEND` responden `NO [LIMIT]`, POP3 `RETR` responde `-ERR`, SMTP responde con el código temporal `452` para que su cliente lo intente de nuevo más tarde, y CalDAV y CardDAV responden `429 Too Many Requests`.  El límite por hora se restablece al comienzo de cada hora y el límite diario a medianoche UTC.
+
 El límite diario es un presupuesto único compartido entre todos los protocolos — ya sea que descargue vía IMAP, cargue vía SMTP o sincronice calendarios vía CalDAV, todo cuenta hacia los mismos 50 GB/día.  El límite por hora por servicio es una red de seguridad contra scripts descontrolados o cuentas comprometidas en un solo protocolo — no algo que un usuario legítimo deba alcanzar jamás.
 
 Estos límites son por cuenta de usuario (no por alias o dominio) y se restablecen diariamente.  Esto significa que crear alias adicionales no aumenta su asignación de ancho de banda.  Si Redis no está disponible, la limitación de velocidad se omite por completo (fail-open) para que su servicio nunca se interrumpa.

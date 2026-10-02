@@ -871,6 +871,55 @@ test('onCreate', async (t) => {
   });
 });
 
+test('onCreate and onRename refuse a very deeply nested path', async (t) => {
+  // (each level would be looked up and created, see validate-mailbox-path)
+  const deep = Array.from({ length: 20_000 }, () => 'a').join('/');
+  const start = Date.now();
+  const err = await t.throwsAsync(t.context.imapFlow.mailboxCreate(deep));
+  t.is(err.responseStatus, 'NO');
+  t.true(Date.now() - start < 5000);
+
+  // an ordinary nested path is still created with its parents
+  const mailbox = await t.context.imapFlow.mailboxCreate('Projects/2026/Q1');
+  t.true(mailbox.created);
+  await t.throwsAsync(
+    t.context.imapFlow.mailboxRename('Projects/2026/Q1', deep)
+  );
+});
+
+test('onSearch refuses too many terms and invalid dates', async (t) => {
+  const { imapFlow } = t.context;
+  await imapFlow.mailboxOpen('INBOX');
+
+  // (each term is checked against every message)
+  const attributes = [];
+  for (let i = 0; i < 2000; i++)
+    attributes.push(
+      { type: 'ATOM', value: 'KEYWORD' },
+      { type: 'ATOM', value: `k${i}` }
+    );
+  const start = Date.now();
+  let err = await t.throwsAsync(imapFlow.exec('SEARCH', attributes));
+  t.is(err.responseText, 'Too many search terms');
+  t.true(Date.now() - start < 5000);
+
+  // a date with the right syntax that is not a date
+  err = await t.throwsAsync(
+    imapFlow.exec('SEARCH', [
+      { type: 'ATOM', value: 'ON' },
+      { type: 'ATOM', value: '99-Jan-2020' }
+    ])
+  );
+  t.is(err.responseStatus, 'NO');
+
+  // an ordinary search still works
+  const res = await imapFlow.exec('SEARCH', [
+    { type: 'ATOM', value: 'SINCE' },
+    { type: 'ATOM', value: '1-Jan-2020' }
+  ]);
+  t.is(res.response.command, 'OK');
+});
+
 test('onFetch', async (t) => {
   const client = new ImapFlow({
     host: IP_ADDRESS,

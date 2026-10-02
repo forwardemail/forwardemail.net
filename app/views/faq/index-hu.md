@@ -5451,6 +5451,8 @@ Felhasználónkénti sávszélesség-korlátokat alkalmazunk minden szolgáltat�
 | Napi összesen | Minden szolgáltatás együtt (IMAP, POP3, SMTP, CalDAV, CardDAV) | **50 GB** |
 | Óránként szolgáltatásonként | Egyedi szolgáltatásonként (pl. IMAP letöltés, SMTP feltöltés) | **10 GB** |
 
+Ha egy korlát betelik, az átvitelek elutasításra kerülnek, amíg a korlát vissza nem áll: az IMAP `FETCH` és `APPEND` válasza `NO [LIMIT]`, a POP3 `RETR` válasza `-ERR`, az SMTP a `452` ideiglenes kóddal válaszol, így a kliens később újrapróbálkozik, a CalDAV és a CardDAV válasza pedig `429 Too Many Requests`.  Az óránkénti korlát minden óra elején, a napi korlát éjfélkor (UTC) áll vissza.
+
 A napi korlát egyetlen megosztott keret az összes protokollon — akár IMAP-on tölt le, SMTP-n tölt fel, vagy CalDAV-on szinkronizál naptárakat, minden ugyanabba az 50 GB/nap keretbe számít.  Az óránkénti korlát szolgáltatásonként biztonsági háló az elszabadult szkriptek vagy feltört fiókok ellen egyetlen protokollon — nem olyasmi, amibe egy jogszerű felhasználónak valaha bele kellene futnia.
 
 Ezek a korlátok felhasználói fiókonként érvényesek (nem aliasonként vagy domainenként) és naponta visszaállnak.  Ez azt jelenti, hogy további aliasok létrehozása nem növeli a sávszélesség-keretét.  Ha a Redis nem elérhető, a sebességkorlátozás teljesen kimarad (fail-open), így a szolgáltatás soha nem szakad meg.

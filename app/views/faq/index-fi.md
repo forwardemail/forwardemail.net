@@ -5450,6 +5450,8 @@ Sovellamme käyttäjäkohtaisia kaistanleveysrajoituksia kaikissa palveluissa tu
 | Päivittäinen kokonaisraja | Kaikki palvelut yhdessä (IMAP, POP3, SMTP, CalDAV, CardDAV) | **50 GB** |
 | Tuntikohtainen per palvelu | Per yksittäinen palvelu (esim. IMAP lataus, SMTP lähetys) | **10 GB** |
 
+Kun raja täyttyy, siirrot hylätään, kunnes raja nollautuu: IMAP `FETCH` ja `APPEND` vastaavat `NO [LIMIT]`, POP3 `RETR` vastaa `-ERR`, SMTP vastaa väliaikaisella koodilla `452`, jotta asiakasohjelmasi yrittää myöhemmin uudelleen, ja CalDAV ja CardDAV vastaavat `429 Too Many Requests`.  Tuntiraja nollautuu jokaisen tunnin alussa ja päiväraja keskiyöllä UTC-aikaa.
+
 Päiväraja on yksi jaettu budjetti kaikkien protokollien välillä — lataatpa IMAP:n kautta, lähetät SMTP:n kautta tai synkronoit kalentereita CalDAV:n kautta, kaikki lasketaan samaan 50 GB/päivä.  Tuntikohtainen raja per palvelu on turvaverkko hallitsemattomia skriptejä tai vaarantuneita tilejä vastaan yhdellä protokollalla — ei jotain, johon laillisen käyttäjän pitäisi koskaan törmätä.
 
 Nämä rajat ovat käyttäjätilikohtaisia (eivät alias- tai verkkotunnuskohtaisia) ja nollautuvat päivittäin.  Tämä tarkoittaa, että lisäaliaksien luominen ei kasvata kaistanleveysrajaasi.  Jos Redis ei ole käytettävissä, nopeuden rajoitus ohitetaan kokonaan (fail-open), joten palvelusi ei koskaan keskeydy.

@@ -25,6 +25,7 @@ const { rrulestr } = require('rrule');
 const sanitizeHtml = require('sanitize-html');
 
 const deduplicateCalendarEvents = require('#helpers/deduplicate-calendar-events');
+const ensureDavQuota = require('#helpers/ensure-dav-quota');
 const Aliases = require('#models/aliases');
 const CalendarEvents = require('#models/calendar-events');
 const Calendars = require('#models/calendars');
@@ -3206,6 +3207,12 @@ class CalDAV extends API {
       principalId,
       calendarId
     });
+    await ensureDavQuota(
+      ctx,
+      typeof ctx.request.body === 'string'
+        ? Buffer.byteLength(ctx.request.body)
+        : 0
+    );
     let calendar = await this.getCalendar(ctx, {
       calendarId,
       principalId,
@@ -3504,6 +3511,7 @@ class CalDAV extends API {
       principalId,
       calendarId
     });
+    await ensureDavQuota(ctx);
 
     const calendar = await this.getCalendar(ctx, {
       calendarId,
@@ -4201,6 +4209,8 @@ class CalDAV extends API {
             `Attachment exceeds maximum size of ${MAX_ATTACHMENT_SIZE} bytes`
           );
         }
+
+        await ensureDavQuota(ctx, contentLength || 0);
 
         const chunks = [];
         let totalBytes = 0;

@@ -8,6 +8,10 @@ const UAParser = require('ua-parser-js');
 const { Emails } = require('ua-parser-js/extensions');
 
 const UNKNOWN = 'Unknown';
+
+// (as ua-parser-js itself does: the protocol patterns below backtrack over
+// the whole value, so a long header would block the event loop)
+const UA_MAX_LENGTH = 500;
 const EMAIL_CLIENT_ALIASES = new Map([
   ['Mail', 'Apple Mail'],
   ['Microsoft Outlook', 'Outlook']
@@ -119,6 +123,8 @@ function parseUserAgent(ua, meta = {}) {
       short: UNKNOWN
     };
   }
+
+  if (ua.length > UA_MAX_LENGTH) ua = ua.slice(0, UA_MAX_LENGTH);
 
   const result = new UAParser(ua, { browser: Emails.browser }).getResult();
   const isEmailClient = result.browser.type === 'email';

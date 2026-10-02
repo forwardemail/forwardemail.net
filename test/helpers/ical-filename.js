@@ -180,3 +180,29 @@ test('quoteICSFilenames: passes through ICS without FILENAME unchanged', (t) => 
   const result = quoteICSFilenames(ics);
   t.true(result.includes('SUMMARY:Test Event'));
 });
+
+test('a long run of unquoted FILENAME values is handled quickly', (t) => {
+  // (a pattern requiring a space inside the value backtracked over this)
+  const start = Date.now();
+  quoteICSFilenames(`ATTACH;${'filename=a'.repeat(32_000)};:x`);
+  t.true(Date.now() - start < 500);
+});
+
+test('a malformed filename* escape does not throw', (t) => {
+  t.is(
+    parseContentDispositionFilename("attachment; filename*=UTF-8''%E0%A4%A"),
+    '%E0%A4%A'
+  );
+  t.is(
+    parseContentDispositionFilename(
+      "attachment; filename*=UTF-8''a%0D%0Ab.pdf"
+    ),
+    'ab.pdf'
+  );
+  t.is(
+    parseContentDispositionFilename(
+      "attachment; filename*=UTF-8''Arch%20Tickets.pdf"
+    ),
+    'Arch Tickets.pdf'
+  );
+});

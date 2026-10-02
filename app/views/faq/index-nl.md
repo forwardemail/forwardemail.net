@@ -5451,6 +5451,8 @@ We handhaven bandbreedtelimieten per gebruiker over alle diensten om flooding-aa
 | Dagelijks totaal | Alle diensten gecombineerd (IMAP, POP3, SMTP, CalDAV, CardDAV) | **50 GB** |
 | Per uur per dienst | Per individuele dienst (bijv. IMAP download, SMTP upload) | **10 GB** |
 
+Wanneer een limiet is bereikt, worden overdrachten geweigerd totdat deze wordt gereset: IMAP `FETCH` en `APPEND` antwoorden `NO [LIMIT]`, POP3 `RETR` antwoordt `-ERR`, SMTP antwoordt met de tijdelijke code `452` zodat uw client het later opnieuw probeert, en CalDAV en CardDAV antwoorden `429 Too Many Requests`.  De uurlimiet wordt aan het begin van elk uur gereset en de daglimiet om middernacht UTC.
+
 De dagelijkse limiet is één gedeeld budget over alle protocollen — of u nu downloadt via IMAP, uploadt via SMTP, of agenda's synchroniseert via CalDAV, het telt allemaal mee voor dezelfde 50 GB/dag.  De uurlimiet per dienst is een vangnet tegen op hol geslagen scripts of gecompromitteerde accounts op één protocol — niet iets dat een legitieme gebruiker ooit zou moeten bereiken.
 
 Deze limieten gelden per gebruikersaccount (niet per alias of domein) en worden dagelijks gereset.  Dit betekent dat het aanmaken van extra aliassen uw bandbreedtequotum niet verhoogt.  Als Redis niet beschikbaar is, wordt snelheidsbeperking volledig overgeslagen (fail-open) zodat uw dienst nooit wordt onderbroken.

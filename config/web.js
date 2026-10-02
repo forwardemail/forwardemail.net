@@ -42,6 +42,7 @@ const {
 } = require('#helpers/otp-remember-me');
 const _ = require('#helpers/lodash');
 const regenerateSessionOnLogin = require('#helpers/regenerate-session-on-login');
+const useVerifiedProviderEmails = require('#helpers/passport-verified-email');
 
 const Users = require('#models/users');
 const createTangerine = require('#helpers/create-tangerine');
@@ -923,6 +924,8 @@ module.exports = (redis) => ({
     });
   },
   hookBeforePassport(app) {
+    useVerifiedProviderEmails(app.context.passport);
+
     app.use(async (ctx, next) => {
       if (!ctx.api && ctx.method === 'GET' && ctx.accepts('html')) {
         // to avoid LCP lighthouse issues

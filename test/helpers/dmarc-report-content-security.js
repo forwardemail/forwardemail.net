@@ -94,3 +94,15 @@ test('DMARC content validation bounds markup inspection for large plain-text fie
   t.is(findUnsafeDmarcContent(report), null);
   t.true(validateReportContent(report, 1024).valid);
 });
+
+test('DMARC content validation scans long runs of spaces quickly', (t) => {
+  // ("<a" and long runs of spaces backtracked with the native regex engine)
+  const start = Date.now();
+  const unsafe = findUnsafeDmarcContent({
+    report_metadata: {
+      extra_contact_info: `<a${' '.repeat(1000)}`.repeat(2000)
+    }
+  });
+  t.is(unsafe, null);
+  t.true(Date.now() - start < 1000);
+});

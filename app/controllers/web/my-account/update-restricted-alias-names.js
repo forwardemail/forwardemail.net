@@ -73,7 +73,7 @@ async function updateRestrictedAliasNames(ctx, next) {
             'RESTRICTED_ALIAS_DETECTED_MESSAGE',
             locale,
             ctx.state.domain.name,
-            names.join('</li><li>')
+            names.map((name) => _.escape(name)).join('</li><li>')
           );
           emailHelper({
             template: 'alert',

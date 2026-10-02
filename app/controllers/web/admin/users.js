@@ -255,7 +255,7 @@ async function update(ctx) {
     Domains.distinct('_id', {
       members: {
         $elemMatch: {
-          user: ctx.state.user._id,
+          user: user._id,
           group: 'admin'
         }
       }

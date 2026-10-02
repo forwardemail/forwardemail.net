@@ -124,6 +124,29 @@ if (!BaseDialect.prototype.wrapIdentifier.isHardened) {
   hardenedWrapIdentifier.isHardened = true;
   BaseDialect.prototype.wrapIdentifier = hardenedWrapIdentifier;
 
+  //
+  // Two operators write part of a condition into the SQL text themselves:
+  // `$is`/`$isnot` write their value (`"a" is 1 OR 1=1`), and `$elemMatch`
+  // writes each key into a JSON path (`json_extract(value, '$.<key>')`).
+  // Only a null/boolean value and identifier keys are allowed.
+  //
+  const { buildComparisonOperator } = BaseDialect.prototype;
+  BaseDialect.prototype.buildComparisonOperator = function (
+    operator,
+    field,
+    value
+  ) {
+    if (
+      (operator === '$is' || operator === '$isnot') &&
+      value !== null &&
+      typeof value !== 'boolean'
+    )
+      throw new TypeError(`Invalid ${operator} value`);
+    if (operator === '$elemMatch' && value && typeof value === 'object')
+      for (const key of Object.keys(value)) assertIdentifier(key);
+    return buildComparisonOperator.call(this, operator, field, value);
+  };
+
   const { buildQuery } = BaseDialect.prototype;
   BaseDialect.prototype.buildQuery = function (query) {
     assertQuery(query);

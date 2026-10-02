@@ -5451,6 +5451,8 @@ Kami menerapkan batas bandwidth per pengguna di semua layanan untuk mencegah ser
 | Total harian | Semua layanan digabung (IMAP, POP3, SMTP, CalDAV, CardDAV) | **50 GB** |
 | Per jam per layanan | Per layanan individual (mis. unduh IMAP, unggah SMTP) | **10 GB** |
 
+Saat batas tercapai, transfer ditolak hingga batas tersebut direset: IMAP `FETCH` dan `APPEND` menjawab `NO [LIMIT]`, POP3 `RETR` menjawab `-ERR`, SMTP menjawab dengan kode sementara `452` agar klien Anda mencoba lagi nanti, serta CalDAV dan CardDAV menjawab `429 Too Many Requests`.  Batas per jam direset pada awal setiap jam dan batas harian pada tengah malam UTC.
+
 Batas harian adalah satu anggaran bersama di semua protokol — baik Anda mengunduh melalui IMAP, mengunggah melalui SMTP, atau menyinkronkan kalender melalui CalDAV, semuanya dihitung ke dalam 50 GB/hari yang sama.  Batas per jam per layanan adalah jaring pengaman terhadap skrip yang tidak terkendali atau akun yang disusupi pada satu protokol — bukan sesuatu yang seharusnya pernah dicapai oleh pengguna yang sah.
 
 Batas-batas ini per akun pengguna (bukan per alias atau domain) dan direset setiap hari.  Ini berarti membuat alias tambahan tidak meningkatkan kuota bandwidth Anda.  Jika Redis tidak tersedia, pembatasan laju dilewati sepenuhnya (fail-open) sehingga layanan Anda tidak pernah terganggu.

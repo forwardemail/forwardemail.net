@@ -5573,6 +5573,8 @@ We enforce per-user bandwidth limits across all services to prevent flooding att
 | Daily total        | All services combined (IMAP, POP3, SMTP, CalDAV, CardDAV) | **50 GB** |
 | Hourly per service | Per individual service (e.g. IMAP download, SMTP upload)  | **10 GB** |
 
+When a limit is reached, transfers are refused until it resets: IMAP `FETCH` and `APPEND` answer `NO [LIMIT]`, POP3 `RETR` answers `-ERR`, SMTP answers with the temporary code `452` so your client tries again later, and CalDAV and CardDAV answer `429 Too Many Requests`.  The hourly limit resets at the start of each hour and the daily limit at midnight UTC.
+
 The daily limit is a single shared budget across all protocols.  Whether you download via IMAP, upload via SMTP, or sync calendars via CalDAV, it all counts toward the same 50 GB/day.  The per-service hourly limit is a safety net against runaway scripts or compromised accounts on a single protocol, and a legitimate user should not hit it.
 
 These limits are per user account (not per alias or domain) and reset daily.  This means creating additional aliases does not increase your bandwidth allowance.  If Redis is unavailable, rate limiting is skipped entirely (fail-open) so your service is never interrupted.

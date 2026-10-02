@@ -61,6 +61,7 @@
 const { Buffer } = require('node:buffer');
 
 const Aliases = require('#models/aliases');
+const pushApsRegistration = require('#helpers/push-aps-registration');
 
 //
 // Parse subscription request fields from any of: form-encoded body,
@@ -215,7 +216,7 @@ async function davApnsSubscribe(ctx, options = {}) {
     // distinct (device_token, key) pairs each go through their own
     // $push and both persist.
     //
-    await Aliases.updateOne({ id: aliasId }, { $push: { aps: entry } });
+    await pushApsRegistration(aliasId, entry);
   }
 
   //

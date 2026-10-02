@@ -20,10 +20,17 @@ const i18n = require('#helpers/i18n');
 const refineAndLogError = require('#helpers/refine-and-log-error');
 const sendApn = require('#helpers/send-apn');
 const sendNotification = require('#helpers/send-notification');
+const validateMailboxPath = require('#helpers/imap/validate-mailbox-path');
 // const updateStorageUsed = require('#helpers/update-storage-used');
 
 async function onRename(path, newPath, session, fn) {
   this.logger.debug('RENAME', { path, newPath, session });
+
+  try {
+    validateMailboxPath(newPath, session?.user?.locale);
+  } catch (err) {
+    return fn(null, err.imapResponse);
+  }
 
   if (this.wsp) {
     try {

@@ -5452,6 +5452,8 @@ Applichiamo limiti di larghezza di banda per utente su tutti i servizi per preve
 | Totale giornaliero | Tutti i servizi combinati (IMAP, POP3, SMTP, CalDAV, CardDAV) | **50 GB** |
 | Orario per servizio | Per singolo servizio (es. download IMAP, upload SMTP) | **10 GB** |
 
+Quando un limite viene raggiunto, i trasferimenti vengono rifiutati fino al suo azzeramento: IMAP `FETCH` e `APPEND` rispondono `NO [LIMIT]`, POP3 `RETR` risponde `-ERR`, SMTP risponde con il codice temporaneo `452` così il tuo client riprova più tardi, e CalDAV e CardDAV rispondono `429 Too Many Requests`.  Il limite orario si azzera all'inizio di ogni ora e quello giornaliero a mezzanotte UTC.
+
 Il limite giornaliero è un unico budget condiviso tra tutti i protocolli — che tu scarichi via IMAP, carichi via SMTP o sincronizzi calendari via CalDAV, tutto conta verso gli stessi 50 GB/giorno.  Il limite orario per servizio è una rete di sicurezza contro script fuori controllo o account compromessi su un singolo protocollo — non qualcosa che un utente legittimo dovrebbe mai raggiungere.
 
 Questi limiti sono per account utente (non per alias o dominio) e si resettano giornalmente.  Ciò significa che la creazione di alias aggiuntivi non aumenta la tua quota di larghezza di banda.  Se Redis non è disponibile, la limitazione della velocità viene completamente saltata (fail-open) in modo che il servizio non venga mai interrotto.

@@ -4,6 +4,7 @@
  */
 
 const http = require('node:http');
+const { Buffer } = require('node:buffer');
 const { once } = require('node:events');
 
 const test = require('ava');
@@ -124,5 +125,24 @@ test.serial('redirect to an allowed target is followed', async (t) => {
   t.is(stub.callCount, 2);
 
   target.server.close();
+  origin.server.close();
+});
+
+test.serial('a response larger than any key is refused', async (t) => {
+  // (the body never ends; it must not be buffered without limit)
+  const origin = await listen((req, res) => {
+    res.writeHead(200, { 'content-type': 'application/octet-stream' });
+    const chunk = Buffer.alloc(64 * 1024, 1);
+    const timer = setInterval(() => res.write(chunk), 0);
+    res.on('close', () => clearInterval(timer));
+  });
+  sinon.stub(WKD, 'isPrivateTarget').resolves(false);
+
+  const wkd = new WKD(resolver, null);
+  const err = await t.throwsAsync(
+    wkd._fetch(`http://127.0.0.1:${origin.port}/`)
+  );
+  t.is(err.code, 'EWKDTOOLARGE');
+  origin.server.closeAllConnections();
   origin.server.close();
 });

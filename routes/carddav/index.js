@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
+const { Buffer } = require('node:buffer');
 const { randomUUID } = require('node:crypto');
 const Boom = require('@hapi/boom');
 const Router = require('@koa/router');
@@ -14,6 +15,7 @@ const Contacts = require('#models/contacts');
 const config = require('#config');
 const env = require('#config/env');
 const davApnsSubscribe = require('#helpers/dav-apns-subscribe');
+const ensureDavQuota = require('#helpers/ensure-dav-quota');
 const ensureDefaultAddressBook = require('#helpers/ensure-default-address-book');
 const getApnTopic = require('#helpers/get-apn-topic');
 const { sendApnContacts } = require('#helpers/send-apn');
@@ -341,6 +343,7 @@ davRouter.all('/:user/addressbooks/:addressbook/:contact(.+)', async (ctx) => {
 
       // Get vCard content
       const vCardContent = ctx.request.body.toString();
+      await ensureDavQuota(ctx, Buffer.byteLength(vCardContent));
 
       // Parse vCard to extract properties (this also validates the vCard)
       const vCard = xmlHelpers.parseVCard(vCardContent);
