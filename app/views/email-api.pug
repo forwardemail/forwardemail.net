@@ -105,14 +105,18 @@ html.h-100.no-js(
             id: "#{ctx.sessionId}",
           };
 
-    //- build
+    //- build, which ends with the WebMCP tools (see layout.pug)
     script(
       nonce=nonce,
       defer,
       src=manifest("js/build.js"),
       integrity=manifest("js/build.js", "integrity"),
       crossorigin="anonymous",
-      fetchpriority="low"
+      fetchpriority="low",
+      data-locale=locale,
+      data-pricing=Object.keys(planPricing)
+        .map((k) => `${k}:${Number(planPricing[k])}`)
+        .join(",")
     )
 
     //- cloudflare turnstile (hidden from bots and admins)

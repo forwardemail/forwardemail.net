@@ -46,3 +46,7 @@ mixin fePricing
                   li.fe-plan__feature
                     i.fa.fa-check.fe-plan__icon(aria-hidden="true")
                     span= feature
+              //- first-hand: two customers on this plan, each linked to its
+              //- case study
+              if plan.key === "enterprise"
+                p.fe-plan__proof!= t("We handle email for the %s across 250+ domains, and we built the @ubuntu.com member addresses for %s.", `<a href="${l("/blog/docs/linux-foundation-email-enterprise-case-study")}">Linux Foundation</a>`, `<a href="${l("/blog/docs/canonical-ubuntu-email-enterprise-case-study")}">Canonical</a>`)

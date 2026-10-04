@@ -1,9 +1,9 @@
 extends layout
 
 block append scripts
-  +script("js/domain-search.js")
-  +script("js/hero-console.js")
-  +script("js/video-modal.js")
+  //- domain-search.js, hero-console.js and video-modal.js in one file (see
+  //- bundle() in gulpfile.js)
+  +script("js/home.js")
 
 block body
   //- Inlined by pug, so feConsoleViews and the +feConsole mixin are in scope

@@ -826,21 +826,41 @@ async function bundle() {
     getFactorBundle()
   ]);
 
-  // concatenate files
+  // concatenate files, so a page requests one script instead of several
   // (polyfill.js is its own nomodule script, see layout.pug)
-  await getStream(
-    src([
-      'build/js/factor-bundle.js',
-      'build/js/uncaught.js',
-      'build/js/core.js'
-    ])
-      .pipe(sourcemaps.init({ loadMaps: true }))
-      .pipe(concat('build.js'))
-      // the maps are only served in development (helpers/block-source-maps.js)
-      .pipe(sourcemaps.write('./', { addComment: DEV }))
-      .pipe(dest(path.join(config.buildBase, 'js')))
-      .pipe(through2.obj((chunk, enc, cb) => cb()))
-  );
+  const concatenate = (files, name) =>
+    getStream(
+      src(files)
+        .pipe(sourcemaps.init({ loadMaps: true }))
+        .pipe(concat(name))
+        // the maps are only served in development (helpers/block-source-maps.js)
+        .pipe(sourcemaps.write('./', { addComment: DEV }))
+        .pipe(dest(path.join(config.buildBase, 'js')))
+        .pipe(through2.obj((chunk, enc, cb) => cb()))
+    );
+
+  await Promise.all([
+    // every page (webmcp.js reads its data attributes from this script's tag)
+    concatenate(
+      [
+        'build/js/factor-bundle.js',
+        'build/js/uncaught.js',
+        'build/js/core.js',
+        'build/js/webmcp.js'
+      ],
+      'build.js'
+    ),
+    // the home page's scripts (each is also built on its own for the other
+    // pages that load it)
+    concatenate(
+      [
+        'build/js/domain-search.js',
+        'build/js/hero-console.js',
+        'build/js/video-modal.js'
+      ],
+      'home.js'
+    )
+  ]);
 
   let stream = src('build/js/**/*.js', { base: config.buildBase, since })
     .pipe(sourcemaps.init({ loadMaps: true }))

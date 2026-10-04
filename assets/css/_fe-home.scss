@@ -600,6 +600,9 @@ html.no-js .fe-console__rail-wrap {
 
 .fe-stepper__title {
   margin-bottom: var(--fe-space-2);
+  font-family: var(--fe-font-display);
+  font-weight: var(--fe-weight-bold);
+  line-height: var(--fe-leading-tight);
 }
 
 .fe-stepper__desc {

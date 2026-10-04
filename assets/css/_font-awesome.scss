@@ -3,14 +3,46 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
-@import 'node_modules/@fortawesome/fontawesome-free/scss/solid';
-@import 'node_modules/@fortawesome/fontawesome-free/scss/brands';
+// Font Awesome 5's solid and brands faces (as in its solid.scss and
+// brands.scss), WOFF2 only: every browser the site supports takes WOFF2, so
+// the EOT, WOFF, TTF and SVG fallbacks were never loaded, only listed. The
+// build subsets these two files to the icons in use and renames them with a
+// content hash (faSubset in gulpfile.js).
+@font-face {
+  font-family: 'Font Awesome 5 Free';
+  font-style: normal;
+  font-weight: 900;
+  font-display: $fa-font-display;
+  src: url('#{$fa-font-path}/fa-solid-900.woff2') format('woff2');
+}
+
+// (icon fonts: a generic fallback family would draw letters, not icons)
+.fa,
+.fas {
+  // stylelint-disable-next-line font-family-no-missing-generic-family-keyword
+  font-family: 'Font Awesome 5 Free';
+  font-weight: 900;
+}
+
+@font-face {
+  font-family: 'Font Awesome 5 Brands';
+  font-style: normal;
+  font-weight: 400;
+  font-display: $fa-font-display;
+  src: url('#{$fa-font-path}/fa-brands-400.woff2') format('woff2');
+}
+
+.fab {
+  // stylelint-disable-next-line font-family-no-missing-generic-family-keyword
+  font-family: 'Font Awesome 5 Brands';
+  font-weight: 400;
+}
 
 // <https://www.briancoords.com/twitter-icon-font-awesome-4/>
 .fa.fa-twitter-x {
-	font-family: sans-serif;
+  font-family: sans-serif;
 }
 .fa.fa-twitter-x::before {
-	content: "𝕏";
-	font-size: 1.2em;
+  content: '𝕏';
+  font-size: 1.2em;
 }

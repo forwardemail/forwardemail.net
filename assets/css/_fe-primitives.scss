@@ -610,6 +610,20 @@
   list-style: none;
 }
 
+// A line under the features naming customers on the plan, linked to their
+// case studies.
+.fe-plan__proof {
+  margin-block: var(--fe-space-4) 0;
+  font-size: var(--fe-text-body-sm);
+  line-height: var(--fe-leading-normal);
+  color: var(--fe-fg-secondary);
+}
+
+.fe-plan__proof a {
+  font-weight: var(--fe-weight-medium);
+  color: var(--fe-fg-link);
+}
+
 .fe-plan--detail .fe-plan__features {
   flex: 1 1 auto;
   padding: var(--fe-space-5) var(--fe-space-6);

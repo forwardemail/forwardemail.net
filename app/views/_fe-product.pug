@@ -30,7 +30,8 @@ mixin feProduct
       .fe-product__intro
         //- Opens with the answer to the heading above.
         p.fe-lede= t("You run forwarding, mailboxes, sending and deliverability for your domain from one dashboard. Connect a domain, prove you own it, route its mail and watch the results.")
-        +feVideoCard
+        //- eager: the first image on the page after the logo
+        +feVideoCard("tour", "eager")
 
       hr.fe-divider
 
@@ -46,7 +47,10 @@ mixin feProduct
       .fe-features
         .fe-panel.fe-feature
           h3.fe-display-sm.fe-feature__title= t("Privacy by default")
-          p.fe-text.fe-feature__body= t("Zero-knowledge architecture, quantum-resistant encryption options, sandboxed mailboxes, and safe web lookups.")
+          p.fe-text.fe-feature__body
+            = t("Zero-knowledge architecture, quantum-resistant encryption options, sandboxed mailboxes, and safe web lookups.")
+            = " "
+            = t("Cure53 has audited our code twice.")
           ul.fe-chips
             li.fe-chip
               i.fab.fa-github(aria-hidden="true")
@@ -65,6 +69,8 @@ mixin feProduct
           h3.fe-display-sm.fe-feature__title= t("Built for developers")
           p.fe-text.fe-feature__body
             = t("Everything the dashboard does is an API call. Send with one request, receive as JSON webhooks, and script the rest.")
+            = " "
+            = t("Our webmail and apps use the same API.")
             = " "
             a.fe-feature__link(href=l("/email-api"))= t("Read the API reference")
           .fe-codeblock
@@ -98,7 +104,13 @@ mixin feProduct
             i.fa.fa-paper-plane(aria-hidden="true")
             = t("Unlimited sending")
           h3.fe-display-sm.fe-sending__title= t("Unlimited outbound email, earned by reputation.")
-          p.fe-text.fe-sending__body= t("Send with SMTP or the API on any paid plan from $%d/mo. New senders start at %d messages per day (%d on the Team plan), and the daily threshold grows as you keep paying and send clean mail.", planPricing.enhanced, feSendingTiers[0].limit, config.smtpTeamLimitMessages)
+          - const badDayRate = new Intl.NumberFormat(locale, { style: "percent", maximumFractionDigits: 2, numberingSystem: "latn" }).format(config.smtpReputationBadDayReportRate);
+          p.fe-text.fe-sending__body
+            = t("Send with SMTP or the API on any paid plan from $%d/mo. New senders start at %d messages per day (%d on the Team plan), and the daily threshold grows as you keep paying and send clean mail.", planPricing.enhanced, feSendingTiers[0].limit, config.smtpTeamLimitMessages)
+            = " "
+            != t('According to <a href="%s" target="_blank" rel="noopener noreferrer">Gmail\'s sender guidelines</a>, senders should keep their spam rate under %s.', "https://support.google.com/a/answer/81126", badDayRate)
+            = " "
+            = t("We use a similar limit: a day when large mailbox providers reject mail to %s or more of your recipients as spam or viruses can lower your threshold one step.", badDayRate)
           a.fe-feature__link(href=l("/faq#what-are-your-outbound-smtp-limits"))= t("How sending thresholds work")
         div
           ol.fe-sending__tiers(aria-label=t("Daily sending thresholds"))
@@ -117,5 +129,8 @@ mixin feStep(num, dot, title, desc)
     .fe-stepper__dot-row(aria-hidden="true")
       span.fe-stepper__dot(class=`fe-stepper__dot--${dot}`)
       span.fe-stepper__rule
-    h3.fe-display-sm.fe-stepper__title= title
+    //- A label in the ordered list. Each step is one line, so as headings
+    //- the four read as four thin sections to screen readers and machine
+    //- readers.
+    p.fe-display-sm.fe-stepper__title= title
     p.fe-text.fe-stepper__desc= desc

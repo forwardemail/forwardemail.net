@@ -23287,7 +23287,6 @@
   "Every plan includes unlimited domains, the free plan too. Start with forwarding, upgrade to mailboxes, then add team controls.": "تتضمن كل خطة عددًا غير محدود من النطاقات، بما في ذلك الخطة المجانية. ابدأ بإعادة التوجيه، ثم انتقل إلى صناديق البريد، ثم أضف أدوات التحكم للفريق.",
   "You run forwarding, mailboxes, sending and deliverability for your domain from one dashboard. Connect a domain, prove you own it, route its mail and watch the results.": "تدير إعادة التوجيه وصناديق البريد والإرسال وقابلية التسليم لنطاقك من لوحة تحكم واحدة. اربط نطاقًا، وأثبت ملكيتك له، ووجّه بريده، وتابع النتائج.",
   "Why do people switch to Forward Email?": "لماذا ينتقل الناس إلى Forward Email؟",
-  "Customers give three reasons: privacy built into the architecture, a migration that takes a few DNS changes, and one inbox for every address. Each quote links to proof you can check, such as the security audit by %s.": "يذكر العملاء ثلاثة أسباب: خصوصية مدمجة في البنية، وانتقال لا يتطلب سوى بضعة تغييرات في DNS، وصندوق وارد واحد لكل العناوين. يرتبط كل اقتباس بدليل يمكنك التحقق منه، مثل التدقيق الأمني الذي أجرته %s.",
   "We measure these delivery times with our own open-source monitor. It sends test emails to inboxes at major email providers and records how long each one takes to arrive. Our engineers get an alert when a delivery takes longer than 10 seconds.": "نقيس أوقات التسليم هذه باستخدام أداة مراقبة مفتوحة المصدر خاصة بنا. ترسل الأداة رسائل تجريبية إلى صناديق الوارد لدى كبار مزودي البريد الإلكتروني وتسجل الوقت الذي تستغرقه كل رسالة للوصول. يتلقى مهندسونا تنبيهًا عندما يستغرق التسليم أكثر من 10 ثوانٍ.",
   "Skip to content": "انتقل إلى المحتوى",
   "Share": "مشاركة",
@@ -23314,5 +23313,11 @@
   "This invite expires in %d days.": "تنتهي صلاحية هذه الدعوة خلال %d أيام.",
   "If you did not expect to receive this invite, then please reply to let us know.": "إذا لم تكن تتوقع تلقي هذه الدعوة، فيرجى الرد لإعلامنا بذلك.",
   "Signing in to a mailbox? Use <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">webmail</a> with the alias and its generated password. This page takes your Forward Email account password.": "هل تريد تسجيل الدخول إلى صندوق بريد؟ استخدم <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">البريد الإلكتروني عبر الويب</a> مع الاسم المستعار وكلمة المرور التي تم إنشاؤها له. تتطلب هذه الصفحة كلمة مرور حسابك في Forward Email.",
-  "Expired": "منتهية الصلاحية"
+  "Expired": "منتهية الصلاحية",
+  "We handle email for the %s across 250+ domains, and we built the @ubuntu.com member addresses for %s.": "نتولى البريد الإلكتروني لمؤسسة %s عبر أكثر من 250 نطاقًا، وأنشأنا عناوين ‎@ubuntu.com لأعضاء %s.",
+  "Our webmail and apps use the same API.": "يستخدم بريدنا على الويب وتطبيقاتنا واجهة API نفسها.",
+  "According to <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">Gmail's sender guidelines</a>, senders should keep their spam rate under %s.": "وفقًا لـ<a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">إرشادات المرسلين من Gmail</a>، يجب أن يبقى معدل البريد العشوائي لدى المرسلين أقل من %s.",
+  "Customers give three reasons: privacy built into the architecture, a migration that takes a few DNS changes, and one inbox for every address. Each quote links to proof you can check. %s spent 25 days auditing our code, our infrastructure and Nodemailer, with four senior testers and full access to the source, according to its report.": "يذكر العملاء ثلاثة أسباب: خصوصية مدمجة في البنية، وانتقال لا يتطلب سوى بضعة تغييرات في DNS، وصندوق وارد واحد لكل العناوين. يرتبط كل اقتباس بدليل يمكنك التحقق منه. أمضت %s خمسة وعشرين يومًا في تدقيق الشيفرة البرمجية والبنية التحتية لدينا ومكتبة Nodemailer، بأربعة مختبرين كبار ووصول كامل إلى المصدر، وفقًا لتقريرها.",
+  "Cure53 has audited our code twice.": "دققت Cure53 الشيفرة البرمجية لدينا مرتين.",
+  "We use a similar limit: a day when large mailbox providers reject mail to %s or more of your recipients as spam or viruses can lower your threshold one step.": "نطبّق حدًا مشابهًا: اليوم الذي يرفض فيه كبار مزودي صناديق البريد الرسائل الموجهة إلى %s أو أكثر من مستلميك باعتبارها بريدًا عشوائيًا أو فيروسات قد يخفض حدك درجة واحدة."
 }

@@ -285,7 +285,8 @@ function processBulkCheck(domains, ctx) {
  */
 function initDomainSearch() {
   const form = document.querySelector('#form-domain-search');
-  if (!form) return;
+  if (!form || form.dataset.feReady) return;
+  form.dataset.feReady = 'true';
 
   const input = document.querySelector('#domain-search-input');
   const resultsContainer = document.querySelector('#domain-search-results');
@@ -453,9 +454,12 @@ function initDomainSearch() {
   }
 }
 
-// Initialize when DOM is ready
+// Initialize when DOM is ready, or when the dialog joins the page on the
+// first interaction (it ships in a <template>, see assets/js/deferred.js)
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', initDomainSearch);
 } else {
   initDomainSearch();
 }
+
+document.addEventListener('fe:deferred', initDomainSearch);

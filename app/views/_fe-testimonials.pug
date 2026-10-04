@@ -16,11 +16,17 @@ mixin feProofCard(card)
     blockquote.fe-proof__quote
       block
     figcaption.fe-proof__who
+      //- 44px on screen: the 44px copy, or the 100px original on a 2x
+      //- screen. The first card's loads eagerly, as one of the page's first
+      //- three images (the rest of the page's images are lazy).
       img.fe-proof__avatar(
-        loading="lazy",
+        loading=card.eager ? "eager" : "lazy",
+        fetchpriority=card.eager ? "low" : false,
+        decoding="async",
         width=44,
         height=44,
-        src=manifest(`img/testimonials/${card.avatar}.webp`),
+        src=manifest(`img/testimonials/${card.avatar}-44.webp`),
+        srcset=`${manifest(`img/testimonials/${card.avatar}-44.webp`)} 1x, ${manifest(`img/testimonials/${card.avatar}.webp`)} 2x`,
         alt=card.name
       )
       .fe-proof__id
@@ -40,9 +46,9 @@ mixin feTestimonials
       //- A question heading, answered by the first sentence of the lede. The
       //- auditor link is an outside source for the claims the cards make.
       h2#fe-proof-title.fe-display-lg= t("Why do people switch to Forward Email?")
-      p.fe-lede!= t("Customers give three reasons: privacy built into the architecture, a migration that takes a few DNS changes, and one inbox for every address. Each quote links to proof you can check, such as the security audit by %s.", '<a href="https://cure53.de/" target="_blank" rel="noopener noreferrer">Cure53</a>')
+      p.fe-lede!= t("Customers give three reasons: privacy built into the architecture, a migration that takes a few DNS changes, and one inbox for every address. Each quote links to proof you can check. %s spent 25 days auditing our code, our infrastructure and Nodemailer, with four senior testers and full access to the source, according to its report.", '<a href="https://cure53.de/" target="_blank" rel="noopener noreferrer">Cure53</a>')
       .fe-proof__grid
-        +feProofCard({ featured: true, tone: "primary", pillar: t("Private by architecture"), avatar: "dhh", name: "DHH", handle: "@dhh", role: "Creator of Ruby on Rails, Founder & CTO at Basecamp & HEY", receiptHref: "/pentest-report_forward-email.pdf", receiptLabel: t("Read the security audit") })
+        +feProofCard({ featured: true, eager: true, tone: "primary", pillar: t("Private by architecture"), avatar: "dhh", name: "DHH", handle: "@dhh", role: "Creator of Ruby on Rails, Founder & CTO at Basecamp & HEY", receiptHref: "/pentest-report_forward-email.pdf", receiptLabel: t("Read the security audit") })
           | Congrats for fully launching Forward Email – a forwarding service
           | for email that doesn't keep logs or store emails, and which works with ARC to ensure
           | signed forwards don't trip email filters

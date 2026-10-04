@@ -2217,6 +2217,8 @@ config.views.locals.config = _.pick(config, [
   'smtpLimitMessages',
   'smtpLimitDuration',
   'smtpReputationTiers',
+  // the home page's sending section quotes the spam rate of a bad day
+  'smtpReputationBadDayReportRate',
   'smtpTeamLimitMessages',
   'smtpDomainSuspensionAliasThreshold',
   'smtpRateLimitAlertTTL',

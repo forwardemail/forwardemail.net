@@ -83,7 +83,10 @@ mixin feVideoButton(key)
     = " "
     +feVideoTime(video)
 
-mixin feVideoCard(key)
+//- The still is lazy unless the page passes "eager": the home page does, as
+//- its first image after the logo, at low priority so it never competes with
+//- the hero. A 640px copy serves phones and the two-column desktop layout.
+mixin feVideoCard(key, loading = "lazy")
   - const video = feVideo(key);
   a.fe-video-card(
     href=manifest(`img/video/${video.file}.mp4`),
@@ -94,10 +97,13 @@ mixin feVideoCard(key)
   )
     img.fe-video-card__poster(
       src=manifest(`img/video/${video.file}.webp`),
+      srcset=`${manifest(`img/video/${video.file}-640.webp`)} 640w, ${manifest(`img/video/${video.file}.webp`)} 1280w`,
+      sizes="(min-width: 992px) 40vw, 100vw",
       alt="",
       width="1280",
       height="720",
-      loading="lazy",
+      loading=loading,
+      fetchpriority=loading === "eager" ? "low" : false,
       decoding="async"
     )
     span.fe-video-card__play

@@ -1,18 +1,34 @@
+//- The dialogs below and the dropdown menus further down ship in
+//- <template data-fe-deferred>: the page as served holds a few hundred fewer
+//- elements, and the browser adds them once it is idle after load, or on the
+//- first interaction if that comes sooner (assets/js/deferred.js).
+//- The dropdown toggles are hidden without JavaScript, which they need anyway.
 if ctx.pathWithoutLocale !== '/email-api'
-  #modal-search.modal.fade(
-    tabindex="-1",
-    role="dialog",
-    aria-labelledby="modal-search-title",
-    aria-hidden="true"
-  )
-    .modal-dialog(role="document")
-      .modal-content
-        .modal-header.text-center.d-block
-          #modal-help-title.h4.d-inline-block.ml-4= t("Search for anything:")
-          button.close(type="button", data-dismiss="modal", aria-label="Close")
-            span(aria-hidden="true") &times;
-        .modal-body
-          include _search-form
+  template(data-fe-deferred)
+    #modal-search.modal.fade(
+      tabindex="-1",
+      role="dialog",
+      aria-labelledby="modal-search-title",
+      aria-hidden="true"
+    )
+      .modal-dialog(role="document")
+        .modal-content
+          .modal-header.text-center.d-block
+            #modal-search-title.h4.d-inline-block.ml-4= t("Search for anything:")
+            button.close(
+              type="button",
+              data-dismiss="modal",
+              aria-label="Close"
+            )
+              span(aria-hidden="true") &times;
+          .modal-body
+            //- /search declares the WebMCP search tool on its own form, which
+            //- is in the page from the start (this one waits in the template)
+            if ctx.pathWithoutLocale === "/search"
+              - ctx.searchToolDeclared = true;
+            include _search-form
+            if ctx.pathWithoutLocale === "/search"
+              - ctx.searchToolDeclared = false;
 if !isHelp && user
   #modal-help.modal.fade(
     tabindex="-1",
@@ -64,29 +80,30 @@ if !user && !registerOrLogin
   include _register-or-login
   if ctx.pathWithoutLocale !== '/register' && ctx.pathWithoutLocale !== config.loginRoute
     each verb in [ 'sign up', 'sign in' ]
-      .modal.fade(
-        tabindex="-1",
-        role="dialog",
-        id=`modal-${dashify(verb)}`,
-        aria-labelledby=`modal-${dashify(verb)}-title`,
-        aria-hidden="true"
-      )
-        .modal-dialog(role="document")
-          .modal-content
-            .modal-header.text-center.d-block
-              .h4.d-inline-block.ml-4(id=`modal-${dashify(verb)}-title`)
-                if verb === 'sign up'
-                  != t("Sign up now &ndash; it's free!")
-                else
-                  = t("Welcome back!")
-              button.close(
-                type="button",
-                data-dismiss="modal",
-                aria-label="Close"
-              )
-                span(aria-hidden="true") &times;
-            .modal-body
-              +registerOrLogin(verb, true)
+      template(data-fe-deferred)
+        .modal.fade(
+          tabindex="-1",
+          role="dialog",
+          id=`modal-${dashify(verb)}`,
+          aria-labelledby=`modal-${dashify(verb)}-title`,
+          aria-hidden="true"
+        )
+          .modal-dialog(role="document")
+            .modal-content
+              .modal-header.text-center.d-block
+                .h4.d-inline-block.ml-4(id=`modal-${dashify(verb)}-title`)
+                  if verb === 'sign up'
+                    != t("Sign up now &ndash; it's free!")
+                  else
+                    = t("Welcome back!")
+                button.close(
+                  type="button",
+                  data-dismiss="modal",
+                  aria-label="Close"
+                )
+                  span(aria-hidden="true") &times;
+              .modal-body
+                +registerOrLogin(verb, true)
 - const navbarClasses = [];
 //- People get the fe bar (`fe-nav`, styled by _fe-nav.scss) with one state
 //- class: `fe-nav--transparent` when the page opens on a dark fe hero (per
@@ -335,93 +352,94 @@ nav.navbar(class=navbarClasses.join(" "))
               class=isApps ? `${navLinkClass} text-decoration-underline` : navLinkClass
             )
               = t("Apps")
-            .dropdown-menu(aria-labelledby="navbar-dropdown-apps")
-              //- Download
-              a.dropdown-item(
-                href=l("/download"),
-                class=ctx.pathWithoutLocale === "/download" ? "active" : ""
-              )
-                i.fa.fa-download
-                = " "
-                = t("Download")
-              //- Webmail
-              a.dropdown-item(
-                href="https://mail.forwardemail.net",
-                rel="noopener noreferrer",
-                target="_blank"
-              )
-                i.fa.fa-inbox
-                = " "
-                = t("Webmail")
-              //- Apple
-              a.dropdown-item(
-                href=l("/blog/open-source/apple-email-clients"),
-                class=ctx.pathWithoutLocale === "/blog/open-source/apple-email-clients" ? "active" : ""
-              )
-                //- apple doesn't let you use logo
-                = "Apple"
-                != "&reg;"
-              //- Windows
-              a.dropdown-item(
-                href=l("/blog/open-source/windows-email-clients"),
-                class=ctx.pathWithoutLocale === "/blog/open-source/windows-email-clients" ? "active" : ""
-              )
-                //- msft doesn't let you use logo
-                = "Windows"
-                != "&reg;"
-              //- Android
-              a.dropdown-item(
-                href=l("/blog/open-source/android-email-clients"),
-                class=ctx.pathWithoutLocale === "/blog/open-source/android-email-clients" ? "active" : ""
-              )
-                i.fa-fw.fab.fa-android
-                = " "
-                = "Android"
-                != "&trade;"
-              //- Linux
-              a.dropdown-item(
-                href=l("/blog/open-source/linux-email-clients"),
-                class=ctx.pathWithoutLocale === "/blog/open-source/linux-email-clients" ? "active" : ""
-              )
-                i.fa-fw.fab.fa-linux
-                = " "
-                = "Linux"
-                != "&reg;"
-              //- Desktop
-              a.dropdown-item(
-                href=l("/blog/open-source/desktop-email-clients"),
-                class=ctx.pathWithoutLocale === "/blog/open-source/desktop-email-clients" ? "active" : ""
-              )
-                i.fa-fw.fas.fa-desktop
-                = " "
-                = t("Desktop")
-              //- Web
-              a.dropdown-item(
-                href=l("/blog/open-source/web-email-clients"),
-                class=ctx.pathWithoutLocale === "/blog/open-source/web-email-clients" ? "active" : ""
-              )
-                if ctx.get("User-Agent") && ctx.get("User-Agent").includes("Firefox")
-                  i.fab.fa-fw.fa-firefox-browser
+            template(data-fe-deferred)
+              .dropdown-menu(aria-labelledby="navbar-dropdown-apps")
+                //- Download
+                a.dropdown-item(
+                  href=l("/download"),
+                  class=ctx.pathWithoutLocale === "/download" ? "active" : ""
+                )
+                  i.fa.fa-download
                   = " "
-                  = "Firefox"
-                  != "&reg;"
-                else if ctx.get("User-Agent") && ctx.get("User-Agent").includes("Safari") && !ctx.get("User-Agent").includes("Chrome")
+                  = t("Download")
+                //- Webmail
+                a.dropdown-item(
+                  href="https://mail.forwardemail.net",
+                  rel="noopener noreferrer",
+                  target="_blank"
+                )
+                  i.fa.fa-inbox
                   = " "
-                  = "Safari"
+                  = t("Webmail")
+                //- Apple
+                a.dropdown-item(
+                  href=l("/blog/open-source/apple-email-clients"),
+                  class=ctx.pathWithoutLocale === "/blog/open-source/apple-email-clients" ? "active" : ""
+                )
+                  //- apple doesn't let you use logo
+                  = "Apple"
                   != "&reg;"
-                else
-                  i.fab.fa-fw.fa-chrome
+                //- Windows
+                a.dropdown-item(
+                  href=l("/blog/open-source/windows-email-clients"),
+                  class=ctx.pathWithoutLocale === "/blog/open-source/windows-email-clients" ? "active" : ""
+                )
+                  //- msft doesn't let you use logo
+                  = "Windows"
+                  != "&reg;"
+                //- Android
+                a.dropdown-item(
+                  href=l("/blog/open-source/android-email-clients"),
+                  class=ctx.pathWithoutLocale === "/blog/open-source/android-email-clients" ? "active" : ""
+                )
+                  i.fa-fw.fab.fa-android
                   = " "
-                  = "Chrome"
+                  = "Android"
+                  != "&trade;"
+                //- Linux
+                a.dropdown-item(
+                  href=l("/blog/open-source/linux-email-clients"),
+                  class=ctx.pathWithoutLocale === "/blog/open-source/linux-email-clients" ? "active" : ""
+                )
+                  i.fa-fw.fab.fa-linux
+                  = " "
+                  = "Linux"
                   != "&reg;"
-              //- Terminal
-              a.dropdown-item(
-                href=l("/blog/open-source/terminal-email-clients"),
-                class=ctx.pathWithoutLocale === "/blog/open-source/terminal-email-clients" ? "active" : ""
-              )
-                i.fa-fw.fas.fa-terminal
-                = " "
-                = "Terminal"
+                //- Desktop
+                a.dropdown-item(
+                  href=l("/blog/open-source/desktop-email-clients"),
+                  class=ctx.pathWithoutLocale === "/blog/open-source/desktop-email-clients" ? "active" : ""
+                )
+                  i.fa-fw.fas.fa-desktop
+                  = " "
+                  = t("Desktop")
+                //- Web
+                a.dropdown-item(
+                  href=l("/blog/open-source/web-email-clients"),
+                  class=ctx.pathWithoutLocale === "/blog/open-source/web-email-clients" ? "active" : ""
+                )
+                  if ctx.get("User-Agent") && ctx.get("User-Agent").includes("Firefox")
+                    i.fab.fa-fw.fa-firefox-browser
+                    = " "
+                    = "Firefox"
+                    != "&reg;"
+                  else if ctx.get("User-Agent") && ctx.get("User-Agent").includes("Safari") && !ctx.get("User-Agent").includes("Chrome")
+                    = " "
+                    = "Safari"
+                    != "&reg;"
+                  else
+                    i.fab.fa-fw.fa-chrome
+                    = " "
+                    = "Chrome"
+                    != "&reg;"
+                //- Terminal
+                a.dropdown-item(
+                  href=l("/blog/open-source/terminal-email-clients"),
+                  class=ctx.pathWithoutLocale === "/blog/open-source/terminal-email-clients" ? "active" : ""
+                )
+                  i.fa-fw.fas.fa-terminal
+                  = " "
+                  = "Terminal"
 
         //- Solutions aka Use Cases (bots only)
         //- Resources
@@ -439,68 +457,69 @@ nav.navbar(class=navbarClasses.join(" "))
               class=isResourcesPage ? `${navLinkClass} text-decoration-underline` : navLinkClass
             )
               = t("Resources")
-            .dropdown-menu(aria-labelledby="navbar-dropdown-resources")
-              if ctx.pathWithoutLocale !== '/faq'
-                a.dropdown-item.font-weight-bold(
-                  href=l("/faq#what-is-forward-email")
-                )
-                  != t('What is <span class="notranslate">Forward Email</span>?')
-              each resourcePage in resourcePages
-                if resourcePage === '/private-business-email'
-                  - let pricingPageHref = domain && domain.name ? l(`/private-business-email?domain=${domain.name}`) : l("/private-business-email");
-                  - pricingPageHref += "?pricing=true";
-                  a.dropdown-item(
-                    href=pricingPageHref,
-                    class=ctx.pathWithoutLocale === resourcePage ? "active" : ""
-                  )!= t("Features &amp; Pricing")
-                else if resourcePage === '/encrypt'
-                  a.dropdown-item(
-                    href=l(resourcePage),
-                    class=ctx.pathWithoutLocale === resourcePage ? "active" : ""
+            template(data-fe-deferred)
+              .dropdown-menu(aria-labelledby="navbar-dropdown-resources")
+                if ctx.pathWithoutLocale !== '/faq'
+                  a.dropdown-item.font-weight-bold(
+                    href=l("/faq#what-is-forward-email")
                   )
-                    != t('Encrypt Plaintext <span class="notranslate">TXT</span> Record')
-                else if resourcePage === '/tti'
-                  a.dropdown-item(
-                    href=l(resourcePage),
-                    class=ctx.pathWithoutLocale === resourcePage ? "active" : ""
-                  )
-                    != t("Time to Inbox")
-                else
-                  a.dropdown-item(
-                    href=l(resourcePage),
-                    class=ctx.pathWithoutLocale === resourcePage ? "active" : ""
-                  )
-                    if resourcePage === '/faq'
-                      = t("Frequently Asked Questions")
-                    else if resourcePage === '/denylist'
-                      = t("Denylist Removal")
-                    else
-                      = t(titleize(humanize(resourcePage.replace("/", ""))))
-              a.dropdown-item(
-                href="https://alumniemail.com",
-                target="_blank",
-                rel="noopener noreferrer"
-              ) AlumniEmail.com
-              a.dropdown-item(
-                href="https://timetoinbox.com",
-                target="_blank",
-                rel="noopener noreferrer"
-              ) TimeToInbox.com
-              a.dropdown-item(
-                href="https://serverauditing.com",
-                target="_blank",
-                rel="noopener noreferrer"
-              ) ServerAuditing.com
-              a.dropdown-item(
-                href="https://sshmonitor.com",
-                target="_blank",
-                rel="noopener noreferrer"
-              ) SSHMonitor.com
-              a.dropdown-item(
-                href="https://sslmonitor.com",
-                target="_blank",
-                rel="noopener noreferrer"
-              ) SSLMonitor.com
+                    != t('What is <span class="notranslate">Forward Email</span>?')
+                each resourcePage in resourcePages
+                  if resourcePage === '/private-business-email'
+                    - let pricingPageHref = domain && domain.name ? l(`/private-business-email?domain=${domain.name}`) : l("/private-business-email");
+                    - pricingPageHref += "?pricing=true";
+                    a.dropdown-item(
+                      href=pricingPageHref,
+                      class=ctx.pathWithoutLocale === resourcePage ? "active" : ""
+                    )!= t("Features &amp; Pricing")
+                  else if resourcePage === '/encrypt'
+                    a.dropdown-item(
+                      href=l(resourcePage),
+                      class=ctx.pathWithoutLocale === resourcePage ? "active" : ""
+                    )
+                      != t('Encrypt Plaintext <span class="notranslate">TXT</span> Record')
+                  else if resourcePage === '/tti'
+                    a.dropdown-item(
+                      href=l(resourcePage),
+                      class=ctx.pathWithoutLocale === resourcePage ? "active" : ""
+                    )
+                      != t("Time to Inbox")
+                  else
+                    a.dropdown-item(
+                      href=l(resourcePage),
+                      class=ctx.pathWithoutLocale === resourcePage ? "active" : ""
+                    )
+                      if resourcePage === '/faq'
+                        = t("Frequently Asked Questions")
+                      else if resourcePage === '/denylist'
+                        = t("Denylist Removal")
+                      else
+                        = t(titleize(humanize(resourcePage.replace("/", ""))))
+                a.dropdown-item(
+                  href="https://alumniemail.com",
+                  target="_blank",
+                  rel="noopener noreferrer"
+                ) AlumniEmail.com
+                a.dropdown-item(
+                  href="https://timetoinbox.com",
+                  target="_blank",
+                  rel="noopener noreferrer"
+                ) TimeToInbox.com
+                a.dropdown-item(
+                  href="https://serverauditing.com",
+                  target="_blank",
+                  rel="noopener noreferrer"
+                ) ServerAuditing.com
+                a.dropdown-item(
+                  href="https://sshmonitor.com",
+                  target="_blank",
+                  rel="noopener noreferrer"
+                ) SSHMonitor.com
+                a.dropdown-item(
+                  href="https://sslmonitor.com",
+                  target="_blank",
+                  rel="noopener noreferrer"
+                ) SSLMonitor.com
 
         //- Guides
         li.nav-item.dropdown.no-js
@@ -515,60 +534,63 @@ nav.navbar(class=navbarClasses.join(" "))
               class=ctx.pathWithoutLocale.startsWith("/guides") ? `${navLinkClass} text-decoration-underline` : navLinkClass
             )
               = t("Guides")
-            .dropdown-menu.dropdown-menu-xl-left(
-              class=user ? "dropdown-menu-md-right dropdown-menu-lg-right" : "dropdown-menu-md-left dropdown-menu-lg-left",
-              aria-labelledby="navbar-dropdown-guides"
-            )
-              h6.dropdown-header= t("Outbound SMTP")
-              a.dropdown-item(
-                href=l("/guides/smtp-integration"),
-                class=ctx.pathWithoutLocale === "/guides/smtp-integration" ? "active" : ""
+            template(data-fe-deferred)
+              .dropdown-menu.dropdown-menu-xl-left(
+                class=user ? "dropdown-menu-md-right dropdown-menu-lg-right" : "dropdown-menu-md-left dropdown-menu-lg-left",
+                aria-labelledby="navbar-dropdown-guides"
               )
-                = t("SMTP Integration Examples")
-              a.dropdown-item(
-                href=l("/guides/send-email-with-custom-domain-smtp"),
-                class=ctx.pathWithoutLocale === "/guides/send-email-with-custom-domain-smtp" ? "active" : ""
-              )
-                = t("Send Email with Custom Domain")
-              a.dropdown-item(
-                href=l("/guides/send-mail-as-gmail-custom-domain"),
-                class=ctx.pathWithoutLocale === "/guides/send-mail-as-gmail-custom-domain" ? "active" : ""
-              )
-                = t("Send Mail As with Gmail")
-              hr.dropdown-divider
-              h6.dropdown-header= t("Device Configurations")
-              a.dropdown-item(
-                href=l("/guides/nas-email-notifications-smtp-setup-guide-synology-qnap-truenas"),
-                class=ctx.pathWithoutLocale === "/guides/nas-email-notifications-smtp-setup-guide-synology-qnap-truenas" ? "active" : ""
-              )
-                = t("NAS Email Setup Guide")
-              a.dropdown-item(
-                href=l("/guides/printer-camera-fax-scanner-email-smtp-setup-guide-tls-compatibility"),
-                class=ctx.pathWithoutLocale === "/guides/printer-camera-fax-scanner-email-smtp-setup-guide-tls-compatibility" ? "active" : ""
-              )
-                = t("Printer, Scanner, Fax, & Camera Email Setup")
-              a.dropdown-item(
-                href=l("/guides/raspberry-pi-ftp-server-email-relay-security-camera"),
-                class=ctx.pathWithoutLocale === "/guides/raspberry-pi-ftp-server-email-relay-security-camera" ? "active" : ""
-              )
-                = t("Raspberry Pi FTP Server with Email Camera Relay")
-              hr.dropdown-divider
-              h6.dropdown-header= t("Email Setup Guides")
-              .card-columns.small
-                each provider in nsProviders
-                  - const classes = [];
-                  if ctx.pathWithoutLocale === `/guides/${provider.slug}`
-                    - classes.push("active");
-                  if provider.gif || provider.video
-                    - classes.push("font-weight-bold");
-                  a.dropdown-item(
-                    title=striptags(t('How to Setup Email with <span class="notranslate">%s</span>', provider.name)),
-                    href=domain && domain.name ? l(`/guides/${provider.slug}?domain=${domain.name}`) : l(`/guides/${provider.slug}`),
-                    class=classes.join(" ")
-                  )
-                    = provider.name
-              hr.dropdown-divider
-              a.dropdown-item(href=l("/faq#table-dns-management-by-registrar"))= t("Other providers")
+                h6.dropdown-header= t("Outbound SMTP")
+                a.dropdown-item(
+                  href=l("/guides/smtp-integration"),
+                  class=ctx.pathWithoutLocale === "/guides/smtp-integration" ? "active" : ""
+                )
+                  = t("SMTP Integration Examples")
+                a.dropdown-item(
+                  href=l("/guides/send-email-with-custom-domain-smtp"),
+                  class=ctx.pathWithoutLocale === "/guides/send-email-with-custom-domain-smtp" ? "active" : ""
+                )
+                  = t("Send Email with Custom Domain")
+                a.dropdown-item(
+                  href=l("/guides/send-mail-as-gmail-custom-domain"),
+                  class=ctx.pathWithoutLocale === "/guides/send-mail-as-gmail-custom-domain" ? "active" : ""
+                )
+                  = t("Send Mail As with Gmail")
+                hr.dropdown-divider
+                h6.dropdown-header= t("Device Configurations")
+                a.dropdown-item(
+                  href=l("/guides/nas-email-notifications-smtp-setup-guide-synology-qnap-truenas"),
+                  class=ctx.pathWithoutLocale === "/guides/nas-email-notifications-smtp-setup-guide-synology-qnap-truenas" ? "active" : ""
+                )
+                  = t("NAS Email Setup Guide")
+                a.dropdown-item(
+                  href=l("/guides/printer-camera-fax-scanner-email-smtp-setup-guide-tls-compatibility"),
+                  class=ctx.pathWithoutLocale === "/guides/printer-camera-fax-scanner-email-smtp-setup-guide-tls-compatibility" ? "active" : ""
+                )
+                  = t("Printer, Scanner, Fax, & Camera Email Setup")
+                a.dropdown-item(
+                  href=l("/guides/raspberry-pi-ftp-server-email-relay-security-camera"),
+                  class=ctx.pathWithoutLocale === "/guides/raspberry-pi-ftp-server-email-relay-security-camera" ? "active" : ""
+                )
+                  = t("Raspberry Pi FTP Server with Email Camera Relay")
+                hr.dropdown-divider
+                h6.dropdown-header= t("Email Setup Guides")
+                .card-columns.small
+                  each provider in nsProviders
+                    - const classes = [];
+                    if ctx.pathWithoutLocale === `/guides/${provider.slug}`
+                      - classes.push("active");
+                    if provider.gif || provider.video
+                      - classes.push("font-weight-bold");
+                    a.dropdown-item(
+                      title=striptags(t('How to Setup Email with <span class="notranslate">%s</span>', provider.name)),
+                      href=domain && domain.name ? l(`/guides/${provider.slug}?domain=${domain.name}`) : l(`/guides/${provider.slug}`),
+                      class=classes.join(" ")
+                    )
+                      = provider.name
+                hr.dropdown-divider
+                a.dropdown-item(
+                  href=l("/faq#table-dns-management-by-registrar")
+                )= t("Other providers")
 
         //- Developers
         li.nav-item.dropdown.no-js
@@ -586,73 +608,74 @@ nav.navbar(class=navbarClasses.join(" "))
               class=!isApps && (isEmailComparison || ctx.pathWithoutLocale === "/email-api" || ctx.pathWithoutLocale === "/free-email-webhooks" || ctx.pathWithoutLocale === "/email-forwarding-regex-pattern-filter" || ctx.pathWithoutLocale.startsWith("/blog/docs") || ctx.pathWithoutLocale.startsWith("/blog/open-source")) ? `${navLinkClass} text-decoration-underline` : navLinkClass
             )
               = t("Developers")
-            .dropdown-menu.dropdown-menu-right(
-              aria-labelledby="navbar-dropdown-docs"
-            )
-              a.dropdown-item(
-                href=l("/email-api"),
-                class=ctx.pathWithoutLocale === "/email-api" ? "active" : ""
+            template(data-fe-deferred)
+              .dropdown-menu.dropdown-menu-right(
+                aria-labelledby="navbar-dropdown-docs"
               )
-                = t("API Reference")
-              a.dropdown-item(
-                href=l("/rfc"),
-                class=ctx.pathWithoutLocale === "/blog/docs/email-protocols-rfc-compliance-imap-smtp-pop3-comparison" ? "active" : ""
-              )
-                = t("RFC Protocol Compliance")
-              a.dropdown-item(
-                href="/technical-whitepaper.pdf",
-                target="_blank"
-              )= t("Technical Whitepaper")
-              a.dropdown-item(
-                href="/pentest-report_forward-email.pdf",
-                target="_blank"
-              )= t("Security Audit")
-              a.dropdown-item(
-                href=l("/ips"),
-                class=ctx.pathWithoutLocale === "/ips" ? "active" : ""
-              )= t("IP Addresses")
-              a.dropdown-item(
-                href=l("/self-hosted"),
-                class=ctx.pathWithoutLocale === "/self-hosted" ? "active" : ""
-              )
-                = t("Self Hosted Email")
-              a.dropdown-item(
-                href=l("/faq#do-you-support-webhooks"),
-                class=ctx.pathWithoutLocale === "/free-email-webhooks" ? "active font-weight-bold" : ""
-              )
-                = t("Email Webhooks")
-              a.dropdown-item(href=l("/faq#do-you-support-bounce-webhooks"))
-                = t("Bounce Webhooks")
-              a.dropdown-item(
-                href=l("/email-forwarding-regex-pattern-filter"),
-                class=ctx.pathWithoutLocale === "/email-forwarding-regex-pattern-filter" ? "active" : ""
-              )= t("Custom Domain Regex Filtering")
-              if config.alternatives && config.alternatives.length > 0
-                hr.dropdown-divider
-                h6.dropdown-header= t("Email Service Comparison")
-                .small
-                  each str in ['best-email-service', 'best-private-email-service', 'best-open-source-email-service', 'best-transactional-email-service', 'best-email-api-developer-service', 'best-email-spam-filtering-service']
-                    a.dropdown-item(
-                      href=l(`/blog/${str}`),
-                      class=ctx.pathWithoutLocale === `/blog/${str}` ? "active" : ""
-                    )
-                      - let title = config.meta[`/blog/${str}`][0];
-                      //- Strip the number prefix, "Best " prefix, and year suffix for cleaner display
-                      - title = title.replace(/^\d+\s+/, '').replace(/^Best\s+/i, '').replace(/\s+\d{4}$/, '').split(' - ')[0];
-                      != striptags(t(title))
-              if developerDocs.length > 0
-                hr.dropdown-divider
-                h6.dropdown-header= t("Developer Articles")
-                .small
-                  each doc in developerDocs
-                    a.dropdown-item(
-                      href=l(doc.slug),
-                      class=ctx.pathWithoutLocale === doc.slug ? "active" : ""
-                    )
-                      if doc.icon
-                        i(class=doc.icon)
-                        = " "
-                      = t(doc.shortTitle || doc.title.replace("Best ", ""))
+                a.dropdown-item(
+                  href=l("/email-api"),
+                  class=ctx.pathWithoutLocale === "/email-api" ? "active" : ""
+                )
+                  = t("API Reference")
+                a.dropdown-item(
+                  href=l("/rfc"),
+                  class=ctx.pathWithoutLocale === "/blog/docs/email-protocols-rfc-compliance-imap-smtp-pop3-comparison" ? "active" : ""
+                )
+                  = t("RFC Protocol Compliance")
+                a.dropdown-item(
+                  href="/technical-whitepaper.pdf",
+                  target="_blank"
+                )= t("Technical Whitepaper")
+                a.dropdown-item(
+                  href="/pentest-report_forward-email.pdf",
+                  target="_blank"
+                )= t("Security Audit")
+                a.dropdown-item(
+                  href=l("/ips"),
+                  class=ctx.pathWithoutLocale === "/ips" ? "active" : ""
+                )= t("IP Addresses")
+                a.dropdown-item(
+                  href=l("/self-hosted"),
+                  class=ctx.pathWithoutLocale === "/self-hosted" ? "active" : ""
+                )
+                  = t("Self Hosted Email")
+                a.dropdown-item(
+                  href=l("/faq#do-you-support-webhooks"),
+                  class=ctx.pathWithoutLocale === "/free-email-webhooks" ? "active font-weight-bold" : ""
+                )
+                  = t("Email Webhooks")
+                a.dropdown-item(href=l("/faq#do-you-support-bounce-webhooks"))
+                  = t("Bounce Webhooks")
+                a.dropdown-item(
+                  href=l("/email-forwarding-regex-pattern-filter"),
+                  class=ctx.pathWithoutLocale === "/email-forwarding-regex-pattern-filter" ? "active" : ""
+                )= t("Custom Domain Regex Filtering")
+                if config.alternatives && config.alternatives.length > 0
+                  hr.dropdown-divider
+                  h6.dropdown-header= t("Email Service Comparison")
+                  .small
+                    each str in ['best-email-service', 'best-private-email-service', 'best-open-source-email-service', 'best-transactional-email-service', 'best-email-api-developer-service', 'best-email-spam-filtering-service']
+                      a.dropdown-item(
+                        href=l(`/blog/${str}`),
+                        class=ctx.pathWithoutLocale === `/blog/${str}` ? "active" : ""
+                      )
+                        - let title = config.meta[`/blog/${str}`][0];
+                        //- Strip the number prefix, "Best " prefix, and year suffix for cleaner display
+                        - title = title.replace(/^\d+\s+/, '').replace(/^Best\s+/i, '').replace(/\s+\d{4}$/, '').split(' - ')[0];
+                        != striptags(t(title))
+                if developerDocs.length > 0
+                  hr.dropdown-divider
+                  h6.dropdown-header= t("Developer Articles")
+                  .small
+                    each doc in developerDocs
+                      a.dropdown-item(
+                        href=l(doc.slug),
+                        class=ctx.pathWithoutLocale === doc.slug ? "active" : ""
+                      )
+                        if doc.icon
+                          i(class=doc.icon)
+                          = " "
+                        = t(doc.shortTitle || doc.title.replace("Best ", ""))
 
         //- Company
         - const companyPages = ["/event-feed", "/about", "/security", "/privacy", "/terms", "/gdpr", "/dpa", "/report-abuse", "/press"];
@@ -668,102 +691,103 @@ nav.navbar(class=navbarClasses.join(" "))
               class=isCompanyPage ? `${navLinkClass} text-decoration-underline` : navLinkClass
             )
               = t("Company")
-            .dropdown-menu(aria-labelledby="navbar-dropdown-company")
-              each companyPage in companyPages
+            template(data-fe-deferred)
+              .dropdown-menu(aria-labelledby="navbar-dropdown-company")
+                each companyPage in companyPages
+                  a.dropdown-item(
+                    href=l(companyPage),
+                    class=ctx.pathWithoutLocale === companyPage ? "active" : ""
+                  )
+                    if companyPage === '/gdpr'
+                      = t("GDPR")
+                    else if companyPage === '/dpa'
+                      = t("DPA")
+                    else if companyPage === '/event-feed'
+                      = t("Event Feed")
+                      = " "
+                      if eventFeedBadgeCount && eventFeedBadgeCount > 0
+                        if eventFeedHasNew
+                          span.badge.badge-pill.badge-danger.ml-1(
+                            data-toggle="tooltip",
+                            data-placement="right",
+                            title=eventFeedBadgeTooltip
+                          )= eventFeedBadgeCount
+                        else
+                          span.badge.badge-pill.badge-secondary.ml-1(
+                            data-toggle="tooltip",
+                            data-placement="right",
+                            title=eventFeedBadgeTooltip
+                          )= eventFeedBadgeCount
+                    else
+                      = t(titleize(humanize(companyPage.replace("/", ""))))
                 a.dropdown-item(
-                  href=l(companyPage),
-                  class=ctx.pathWithoutLocale === companyPage ? "active" : ""
+                  href=`mailto:careers@${config.supportEmail.split('@')[1]}`,
+                  target="_blank",
+                  rel="noopener noreferrer",
+                  data-toggle="tooltip",
+                  data-title=t("Send us an email"),
+                  data-placement="bottom"
+                )= t("Careers")
+                a.dropdown-item(
+                  href="https://status.forwardemail.net/",
+                  target="_blank",
+                  rel="noopener noreferrer",
+                  data-toggle="tooltip",
+                  data-title=statusOutage ? t("Issue Detected") : t("100% Systems Online"),
+                  data-placement="bottom"
                 )
-                  if companyPage === '/gdpr'
-                    = t("GDPR")
-                  else if companyPage === '/dpa'
-                    = t("DPA")
-                  else if companyPage === '/event-feed'
-                    = t("Event Feed")
-                    = " "
-                    if eventFeedBadgeCount && eventFeedBadgeCount > 0
-                      if eventFeedHasNew
-                        span.badge.badge-pill.badge-danger.ml-1(
-                          data-toggle="tooltip",
-                          data-placement="right",
-                          title=eventFeedBadgeTooltip
-                        )= eventFeedBadgeCount
-                      else
-                        span.badge.badge-pill.badge-secondary.ml-1(
-                          data-toggle="tooltip",
-                          data-placement="right",
-                          title=eventFeedBadgeTooltip
-                        )= eventFeedBadgeCount
+                  = t("Status Page")
+                  = " "
+                  if statusOutage
+                    span.badge.badge-pill.badge-warning.text-monospace= t("Issue")
                   else
-                    = t(titleize(humanize(companyPage.replace("/", ""))))
-              a.dropdown-item(
-                href=`mailto:careers@${config.supportEmail.split('@')[1]}`,
-                target="_blank",
-                rel="noopener noreferrer",
-                data-toggle="tooltip",
-                data-title=t("Send us an email"),
-                data-placement="bottom"
-              )= t("Careers")
-              a.dropdown-item(
-                href="https://status.forwardemail.net/",
-                target="_blank",
-                rel="noopener noreferrer",
-                data-toggle="tooltip",
-                data-title=statusOutage ? t("Issue Detected") : t("100% Systems Online"),
-                data-placement="bottom"
-              )
-                = t("Status Page")
-                = " "
-                if statusOutage
-                  span.badge.badge-pill.badge-warning.text-monospace= t("Issue")
-                else
-                  span.badge.badge-pill.badge-success.text-monospace= t("100%")
-              hr.dropdown-divider
-              h6.dropdown-header= t("Community")
-              a.dropdown-item(href=l("/my-account/profile?newsletter=true"))
-                i.fa.fa-fw.fas.fa-newspaper
-                = " "
-                = t("Newsletter")
-              a.dropdown-item(
-                href="https://github.com/forwardemail",
-                target="_blank",
-                rel="noopener noreferrer"
-              )
-                i.fa.fa-fw.fa-github
-                = " "
-                = "GitHub"
-              a.dropdown-item(
-                href="https://x.com/fwdemail",
-                target="_blank",
-                rel="noopener noreferrer"
-              )
-                i.fa.fa-fw.fa-twitter-x
-                = " "
-                = "@fwdemail"
-              a.dropdown-item(
-                href="https://matrix.to/#/#forwardemail:matrix.org",
-                target="_blank",
-                rel="noopener noreferrer"
-              )
-                i.fa-fw.fa.fa-comment
-                = " "
-                = "Matrix"
-              a.dropdown-item(
-                href="https://youtube.com/forwardemail",
-                target="_blank",
-                rel="noopener noreferrer"
-              )
-                i.fab.fa-fw.fa-youtube
-                = " "
-                = "YouTube"
-              a.dropdown-item(
-                href=`${config.urls.web}/blog/feed/atom`,
-                target="_blank",
-                rel="noopener noreferrer"
-              )
-                i.fa-fw.fas.fa-rss
-                = " "
-                = "RSS Feed"
+                    span.badge.badge-pill.badge-success.text-monospace= t("100%")
+                hr.dropdown-divider
+                h6.dropdown-header= t("Community")
+                a.dropdown-item(href=l("/my-account/profile?newsletter=true"))
+                  i.fa.fa-fw.fas.fa-newspaper
+                  = " "
+                  = t("Newsletter")
+                a.dropdown-item(
+                  href="https://github.com/forwardemail",
+                  target="_blank",
+                  rel="noopener noreferrer"
+                )
+                  i.fa.fa-fw.fa-github
+                  = " "
+                  = "GitHub"
+                a.dropdown-item(
+                  href="https://x.com/fwdemail",
+                  target="_blank",
+                  rel="noopener noreferrer"
+                )
+                  i.fa.fa-fw.fa-twitter-x
+                  = " "
+                  = "@fwdemail"
+                a.dropdown-item(
+                  href="https://matrix.to/#/#forwardemail:matrix.org",
+                  target="_blank",
+                  rel="noopener noreferrer"
+                )
+                  i.fa-fw.fa.fa-comment
+                  = " "
+                  = "Matrix"
+                a.dropdown-item(
+                  href="https://youtube.com/forwardemail",
+                  target="_blank",
+                  rel="noopener noreferrer"
+                )
+                  i.fab.fa-fw.fa-youtube
+                  = " "
+                  = "YouTube"
+                a.dropdown-item(
+                  href=`${config.urls.web}/blog/feed/atom`,
+                  target="_blank",
+                  rel="noopener noreferrer"
+                )
+                  i.fa-fw.fas.fa-rss
+                  = " "
+                  = "RSS Feed"
 
         //- links that show only if you're logged in
         if user

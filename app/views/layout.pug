@@ -192,11 +192,9 @@ html.h-100.no-js(
       //- skips a nomodule script, so it is not downloaded or run there)
       +script("js/polyfill.js", { nomodule: true, fetchpriority: "low" })
 
-      //- build
-      +script("js/build.js", { fetchpriority: "low" })
-
-      //- WebMCP tools for in-browser AI agents (no-op without WebMCP)
-      +script("js/webmcp.js", { fetchpriority: "low", "data-locale": locale, "data-pricing": Object.keys(planPricing).map((k) => `${k}:${Number(planPricing[k])}`).join(",") })
+      //- build, which ends with the WebMCP tools for in-browser AI agents
+      //- (no-op without WebMCP); they read the data attributes on this tag
+      +script("js/build.js", { fetchpriority: "low", "data-locale": locale, "data-pricing": Object.keys(planPricing).map((k) => `${k}:${Number(planPricing[k])}`).join(",") })
 
       //- related FAQ answers under the help form. The form exists only for
       //- signed in visitors: the nav modal on every page, the page at /help.

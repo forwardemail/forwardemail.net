@@ -23287,7 +23287,6 @@
   "Every plan includes unlimited domains, the free plan too. Start with forwarding, upgrade to mailboxes, then add team controls.": "無料プランを含むすべてのプランで、ドメインを無制限に利用できます。まず転送から始め、メールボックスにアップグレードし、その後チーム管理機能を追加できます。",
   "You run forwarding, mailboxes, sending and deliverability for your domain from one dashboard. Connect a domain, prove you own it, route its mail and watch the results.": "ドメインの転送、メールボックス、送信、配信性を1つのダッシュボードで管理できます。ドメインを接続し、所有権を証明し、メールをルーティングして、結果を確認しましょう。",
   "Why do people switch to Forward Email?": "Forward Email に乗り換える人が多いのはなぜですか？",
-  "Customers give three reasons: privacy built into the architecture, a migration that takes a few DNS changes, and one inbox for every address. Each quote links to proof you can check, such as the security audit by %s.": "お客様が挙げる理由は3つです。アーキテクチャに組み込まれたプライバシー、数回の DNS 変更で済む移行、そしてすべてのアドレスを1つの受信トレイで受け取れることです。各引用には、%s によるセキュリティ監査など、確認できる証拠へのリンクがあります。",
   "We measure these delivery times with our own open-source monitor. It sends test emails to inboxes at major email providers and records how long each one takes to arrive. Our engineers get an alert when a delivery takes longer than 10 seconds.": "これらの配信時間は、当社独自のオープンソースモニターで測定しています。主要なメールプロバイダーの受信トレイにテストメールを送信し、それぞれが届くまでの時間を記録します。配信に10秒を超えると、当社のエンジニアにアラートが届きます。",
   "Skip to content": "コンテンツへスキップ",
   "Share": "共有",
@@ -23314,5 +23313,11 @@
   "This invite expires in %d days.": "この招待の有効期限は残り %d 日です。",
   "If you did not expect to receive this invite, then please reply to let us know.": "この招待に心当たりがない場合は、返信してお知らせください。",
   "Signing in to a mailbox? Use <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">webmail</a> with the alias and its generated password. This page takes your Forward Email account password.": "メールボックスにサインインしますか？エイリアスとその生成されたパスワードで<a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">ウェブメール</a>をご利用ください。このページでは Forward Email アカウントのパスワードを入力します。",
-  "Expired": "期限切れ"
+  "Expired": "期限切れ",
+  "We handle email for the %s across 250+ domains, and we built the @ubuntu.com member addresses for %s.": "%s のメールを 250 以上のドメインで運用し、%s 向けに @ubuntu.com のメンバーアドレスを構築しました。",
+  "Our webmail and apps use the same API.": "当社の Web メールとアプリも同じ API を使っています。",
+  "According to <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">Gmail's sender guidelines</a>, senders should keep their spam rate under %s.": "<a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">Gmail の送信者ガイドライン</a>によると、送信者は迷惑メール率を %s 未満に保つ必要があります。",
+  "Customers give three reasons: privacy built into the architecture, a migration that takes a few DNS changes, and one inbox for every address. Each quote links to proof you can check. %s spent 25 days auditing our code, our infrastructure and Nodemailer, with four senior testers and full access to the source, according to its report.": "お客様が挙げる理由は3つです。アーキテクチャに組み込まれたプライバシー、数回の DNS 変更で済む移行、そしてすべてのアドレスを1つの受信トレイで受け取れることです。各引用には、確認できる証拠へのリンクがあります。報告書によると、%s は 4 人のシニアテスターがソースコードへの完全なアクセス権を持って、25 日間にわたり当社のコード、インフラ、Nodemailer を監査しました。",
+  "Cure53 has audited our code twice.": "Cure53 は当社のコードを 2 回監査しています。",
+  "We use a similar limit: a day when large mailbox providers reject mail to %s or more of your recipients as spam or viruses can lower your threshold one step.": "当社も同様の基準を使っています。大手メールボックス事業者が受信者の %s 以上へのメールを迷惑メールまたはウイルスとして拒否した日は、上限が 1 段階下がることがあります。"
 }

@@ -259,12 +259,31 @@ $('body').on('click.skipLink', '.fe-skip-link', () => {
 // Share dialog (see assets/js/share.js)
 require('./share');
 
+// The navbar's menus and the sign in, sign up and search dialogs, put in
+// place on the first interaction (see assets/js/deferred.js). What the page
+// sets up on load for the rest of the page is set up for them here: their
+// tooltips, and the passkey button where the browser supports passkeys.
+const stampDeferred = require('./deferred');
+
+$(document).on('fe:deferred', (ev) => {
+  const $added = $(ev.originalEvent.detail.elements);
+  $added
+    .find('[data-toggle="tooltip"]')
+    .tooltip({ boundary: 'window', container: 'body' });
+  $added.find('[data-toggle="popover"]').popover();
+  if (window.PublicKeyCredential)
+    $added.find('#webauthn-container').removeClass('d-none');
+});
+
 window.addEventListener(
   'load',
   () => {
     // <https://stackoverflow.com/a/52855084>
     if (!window.matchMedia('(any-pointer: coarse)').matches) {
       // if any input is a touch then don't use dropdown hover
+      // (the plugin binds each menu once, here, so the menus that ship in a
+      // <template> join the page first, see assets/js/deferred.js)
+      stampDeferred();
       $.fn.bootstrapDropdownHover({
         clickBehavior: 'default',
         hideTimeout: 350
@@ -361,7 +380,9 @@ window.addEventListener(
     renderDayjs();
 
     // Handle modals on anchor tags with data-target specified (preserve href)
-    $('a[data-toggle="modal-anchor"]').on('click.modalAnchor', modalAnchor);
+    // (delegated: the sign in and sign up dialogs link to each other, and
+    // join the page later, see assets/js/deferred.js)
+    $body.on('click.modalAnchor', 'a[data-toggle="modal-anchor"]', modalAnchor);
 
     //
     // NOTE: we completely disabled this since it's kind of buggy and may be

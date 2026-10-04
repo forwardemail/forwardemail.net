@@ -23287,7 +23287,6 @@
   "Every plan includes unlimited domains, the free plan too. Start with forwarding, upgrade to mailboxes, then add team controls.": "무료 플랜을 포함한 모든 플랜에서 도메인을 무제한으로 사용할 수 있습니다. 이메일 전달로 시작하고, 메일박스로 업그레이드한 다음, 팀 관리 기능을 추가하세요.",
   "You run forwarding, mailboxes, sending and deliverability for your domain from one dashboard. Connect a domain, prove you own it, route its mail and watch the results.": "하나의 대시보드에서 도메인의 이메일 전달, 메일박스, 발송 및 전달 가능성을 관리합니다. 도메인을 연결하고, 소유권을 증명하고, 메일을 라우팅하고, 결과를 확인하세요.",
   "Why do people switch to Forward Email?": "사람들이 Forward Email로 전환하는 이유는 무엇인가요?",
-  "Customers give three reasons: privacy built into the architecture, a migration that takes a few DNS changes, and one inbox for every address. Each quote links to proof you can check, such as the security audit by %s.": "고객들은 세 가지 이유를 꼽습니다. 아키텍처에 내장된 개인정보 보호, 몇 가지 DNS 변경만으로 끝나는 마이그레이션, 그리고 모든 주소를 하나의 받은편지함에서 받는 것입니다. 각 후기에는 %s의 보안 감사처럼 직접 확인할 수 있는 근거 링크가 있습니다.",
   "We measure these delivery times with our own open-source monitor. It sends test emails to inboxes at major email providers and records how long each one takes to arrive. Our engineers get an alert when a delivery takes longer than 10 seconds.": "이 전송 시간은 자체 오픈소스 모니터로 측정합니다. 주요 이메일 제공업체의 받은편지함으로 테스트 이메일을 보내고 각 이메일이 도착하는 데 걸린 시간을 기록합니다. 전송에 10초 넘게 걸리면 엔지니어에게 알림이 전송됩니다.",
   "Skip to content": "본문으로 건너뛰기",
   "Share": "공유",
@@ -23314,5 +23313,11 @@
   "This invite expires in %d days.": "이 초대는 %d일 후에 만료됩니다.",
   "If you did not expect to receive this invite, then please reply to let us know.": "이 초대를 받을 예정이 없었다면 회신하여 알려 주세요.",
   "Signing in to a mailbox? Use <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">webmail</a> with the alias and its generated password. This page takes your Forward Email account password.": "사서함에 로그인하시나요? 별칭과 해당 별칭용으로 생성된 비밀번호로 <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">웹메일</a>을 사용하세요. 이 페이지에는 Forward Email 계정 비밀번호를 입력해야 합니다.",
-  "Expired": "만료됨"
+  "Expired": "만료됨",
+  "We handle email for the %s across 250+ domains, and we built the @ubuntu.com member addresses for %s.": "저희는 %s의 이메일을 250개가 넘는 도메인에서 운영하고 있으며, %s를 위해 @ubuntu.com 멤버 주소를 구축했습니다.",
+  "Our webmail and apps use the same API.": "저희 웹메일과 앱도 같은 API를 사용합니다.",
+  "According to <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">Gmail's sender guidelines</a>, senders should keep their spam rate under %s.": "<a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">Gmail 발신자 가이드라인</a>에 따르면 발신자는 스팸 비율을 %s 미만으로 유지해야 합니다.",
+  "Customers give three reasons: privacy built into the architecture, a migration that takes a few DNS changes, and one inbox for every address. Each quote links to proof you can check. %s spent 25 days auditing our code, our infrastructure and Nodemailer, with four senior testers and full access to the source, according to its report.": "고객들은 세 가지 이유를 꼽습니다. 아키텍처에 내장된 개인정보 보호, 몇 가지 DNS 변경만으로 끝나는 마이그레이션, 그리고 모든 주소를 하나의 받은편지함에서 받는 것입니다. 각 후기에는 직접 확인할 수 있는 근거 링크가 있습니다. 보고서에 따르면 %s는 시니어 테스터 4명이 소스 코드에 대한 전체 접근 권한을 갖고 25일 동안 저희 코드와 인프라, Nodemailer를 감사했습니다.",
+  "Cure53 has audited our code twice.": "Cure53은 저희 코드를 두 번 감사했습니다.",
+  "We use a similar limit: a day when large mailbox providers reject mail to %s or more of your recipients as spam or viruses can lower your threshold one step.": "저희도 비슷한 기준을 적용합니다. 대형 메일함 제공업체가 수신자의 %s 이상에게 보낸 메일을 스팸이나 바이러스로 거부한 날에는 한도가 한 단계 내려갈 수 있습니다."
 }
