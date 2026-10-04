@@ -466,8 +466,7 @@ nav.navbar(class=navbarClasses.join(" "))
                     != t('What is <span class="notranslate">Forward Email</span>?')
                 each resourcePage in resourcePages
                   if resourcePage === '/private-business-email'
-                    - let pricingPageHref = domain && domain.name ? l(`/private-business-email?domain=${domain.name}`) : l("/private-business-email");
-                    - pricingPageHref += "?pricing=true";
+                    - let pricingPageHref = domain && domain.name ? l(`/private-business-email?domain=${encodeURIComponent(domain.name)}&pricing=true`) : l("/private-business-email?pricing=true");
                     a.dropdown-item(
                       href=pricingPageHref,
                       class=ctx.pathWithoutLocale === resourcePage ? "active" : ""

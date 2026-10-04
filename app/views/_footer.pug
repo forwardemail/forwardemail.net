@@ -132,8 +132,7 @@ footer.fe-footer.mt-auto(aria-label=t("Footer"))
               = " "
               i.fa.fa-angle-down(aria-hidden="true")
           ul#footer-col-product.list-unstyled.mb-0.mb-lg-3.collapse.d-lg-block
-            - let pricingPageHref = domain && domain.name ? l(`/private-business-email?domain=${domain.name}`) : l("/private-business-email");
-            - pricingPageHref += "?pricing=true";
+            - let pricingPageHref = domain && domain.name ? l(`/private-business-email?domain=${encodeURIComponent(domain.name)}&pricing=true`) : l("/private-business-email?pricing=true");
             li: a.d-block.py-2.py-md-0(href=pricingPageHref)
               != t("Features &amp; Pricing")
             li: a.d-block.py-2.py-md-0(href=l("/download"))= t("Download")

@@ -11,6 +11,7 @@ const nodemailer = require('nodemailer');
 const pify = require('pify');
 
 const Aliases = require('#models/aliases');
+const Messages = require('#models/messages');
 const config = require('#config');
 const getEmailLocals = require('#helpers/get-email-locals');
 const logger = require('#helpers/logger');
@@ -35,6 +36,15 @@ const renderer = new Email({
   })
 });
 
+//
+// The welcome message of an alias always has the same Message-ID, so a
+// mailbox that already has it does not get it again (e.g. an alias without
+// IMAP gets it unmarked, and IMAP is enabled while that mailbox is kept)
+//
+function getWelcomeMessageId(aliasId) {
+  return `<welcome-${aliasId}@${config.webHost}>`;
+}
+
 async function renderWelcomeMessage(session) {
   const aliasAddress = session.user.username;
   const locale = session.user.locale || 'en';
@@ -45,7 +55,10 @@ async function renderWelcomeMessage(session) {
   };
   const info = await renderer.send({
     template: 'welcome-mailbox',
-    message: { to: aliasAddress },
+    message: {
+      to: aliasAddress,
+      messageId: getWelcomeMessageId(session.user.alias_id)
+    },
     locals
   });
   return info.message;
@@ -65,7 +78,11 @@ async function storeWelcomeMessage(instance, session, raw) {
   const aliasId = session.user.alias_id;
   const welcome = {
     ...session,
-    remoteAddress: session.remoteAddress || '127.0.0.1'
+    remoteAddress: session.remoteAddress || '127.0.0.1',
+    // (an attempt after one that stored the message but then failed, e.g.
+    // while letting go of a handle, finds it instead of storing it again,
+    // see `helpers/imap/on-append.js`)
+    checkForExisting: true
   };
   const { databaseMap } = instance;
   let held;
@@ -76,6 +93,14 @@ async function storeWelcomeMessage(instance, session, raw) {
   }
 
   try {
+    // the mailbox already has the welcome message (in any folder)
+    if (welcome.db) {
+      const existing = await Messages.findOne(instance, welcome, {
+        msgid: getWelcomeMessageId(aliasId)
+      });
+      if (existing) return;
+    }
+
     await onAppendPromise.call(instance, 'INBOX', [], new Date(), raw, welcome);
   } finally {
     if (typeof databaseMap?.release === 'function') {
@@ -174,6 +199,7 @@ async function appendWelcomeMessage(instance, session) {
 }
 
 appendWelcomeMessage.renderWelcomeMessage = renderWelcomeMessage;
+appendWelcomeMessage.getWelcomeMessageId = getWelcomeMessageId;
 
 // (off in tests, which count the messages of a mailbox; a test turns it on)
 appendWelcomeMessage.enabled = config.env !== 'test';

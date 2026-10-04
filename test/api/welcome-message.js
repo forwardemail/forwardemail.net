@@ -436,3 +436,57 @@ test.serial(
     t.is(t.context.sqlite.databaseMap.activeReferences, 0);
   }
 );
+
+test.serial(
+  'an attempt after one that stored the welcome message but then failed does not store it again',
+  async (t) => {
+    const ctx = await createUserDomainAlias(t);
+    const password = await generatePassword(t, ctx);
+    const { session, db } = await openMailbox(t, ctx, password);
+
+    // the first attempt stores the message, then fails (e.g. on a handle
+    // closed while it finishes)
+    let calls = 0;
+    Messages.create = async function (...args) {
+      calls++;
+      const message = await create.apply(this, args);
+      if (calls === 1) throw new Error('Unable to finish storing the message');
+      return message;
+    };
+
+    appendWelcomeMessage.retries = 1;
+    appendWelcomeMessage.retryDelay = 100;
+
+    t.true(await appendWelcomeMessage(t.context.sqlite, { ...session, db }));
+    t.truthy(await welcomeSentAt(ctx.aliasId));
+
+    const subjects = await inboxSubjects(ctx, password);
+    t.is(subjects.length, 1);
+    t.true(subjects[0].includes(WELCOME_SUBJECT));
+    t.is(t.context.sqlite.databaseMap.activeReferences, 0);
+  }
+);
+
+test.serial(
+  'a mailbox that has the unmarked welcome message does not get another once IMAP is enabled',
+  async (t) => {
+    appendWelcomeMessage.enabled = true;
+
+    const ctx = await createUserDomainAlias(t, { hasImap: false });
+    const password = await generatePassword(t, ctx);
+    const before = await waitForInbox(ctx, password);
+    t.is(before.length, 1);
+    t.falsy(await welcomeSentAt(ctx.aliasId));
+
+    // IMAP is enabled while the mailbox is kept, and it is set up again
+    const update = await enableImap(t, ctx);
+    t.is(update.status, 200);
+    const { session, db } = await openMailbox(t, ctx, password);
+    await appendWelcomeMessage(t.context.sqlite, { ...session, db });
+
+    const subjects = await inboxSubjects(ctx, password);
+    t.is(subjects.length, 1);
+    t.true(subjects[0].includes(WELCOME_SUBJECT));
+    t.is(t.context.sqlite.databaseMap.activeReferences, 0);
+  }
+);

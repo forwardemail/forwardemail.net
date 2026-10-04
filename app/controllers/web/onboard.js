@@ -8,7 +8,6 @@ const punycode = require('node:punycode');
 const Boom = require('@hapi/boom');
 const Email = require('email-templates');
 const Meta = require('koa-meta');
-const emailAddresses = require('email-addresses');
 const isFQDN = require('is-fqdn');
 const isSANB = require('is-string-and-not-blank');
 const pug = require('pug');
@@ -19,6 +18,7 @@ const { parse } = require('node-html-parser');
 const _ = require('#helpers/lodash');
 
 const isEmail = require('#helpers/is-email');
+const personalizeExamples = require('#helpers/personalize-examples');
 const config = require('#config');
 const logger = require('#helpers/logger');
 const sendVerificationEmail = require('#helpers/send-verification-email');
@@ -83,54 +83,33 @@ async function onboard(ctx, next) {
 
     Object.assign(ctx.state.meta, data);
 
-    let html = pug.renderFile(filePath, ctx.state);
-
-    if (ctx.state.domainName) {
-      //
-      // NOTE: the replacements here are functions, as a replacement string
-      //       interprets "$`", "$'" and "$&" (which an address may contain)
-      //       as the text around each match, so a short address would copy
-      //       the whole page once per match
-      //
-      const domainName = ctx.state.domainName.startsWith('www.')
-        ? ctx.state.domainName.replace('www.', '')
-        : ctx.state.domainName;
-      html = html.replace(/example.com/g, () => domainName);
-    }
+    const html = pug.renderFile(filePath, ctx.state);
+    const root = parse(html);
 
     //
-    // Only perform email address replacement on FAQ page
-    // This prevents unintended replacements on other pages (e.g., "administrative" -> "jamesistrative")
+    // Show the examples with the visitor's domain and, on the FAQ, their
+    // address (see `helpers/personalize-examples`), except for our own admins
     //
-    if (
+    const domainName = ctx.state.domainName
+      ? ctx.state.domainName.replace(/^www\./, '')
+      : null;
+    const showEmail =
       ctx.pathWithoutLocale === '/faq' &&
       ctx.state.email &&
-      (!ctx.isAuthenticated() || ctx.state.user.group !== 'admin')
-    ) {
-      const parsed = emailAddresses.parseOneAddress(ctx.state.email);
-      if (parsed === null) {
-        const index = ctx.state.email.lastIndexOf('@');
-        const local = ctx.state.email.slice(0, index);
-        const domain = ctx.state.email.slice(index + 1);
-        html = html
-          .replace(/admin/g, () => local)
-          .replace(/@gmail.com/g, () => `@${domain}`);
-      } else {
-        html = html
-          .replace(/admin/g, () => parsed.local)
-          .replace(/@gmail.com/g, () => `@${parsed.domain}`);
-      }
-    }
+      (!ctx.isAuthenticated() || ctx.state.user.group !== 'admin');
+    personalizeExamples(root, {
+      domainName,
+      email: showEmail ? ctx.state.email : null
+    });
 
-    const root = parse(html);
     let i = 0;
     const codes = root.querySelectorAll('code');
     for (const code of codes) {
       if (
-        !code.rawText.startsWith('forward-email') ||
-        code.rawText === 'forward-email=' ||
-        code.rawText === 'forward-email-site-verification=' ||
-        code.rawText === 'forward-email-port='
+        !code.text.startsWith('forward-email') ||
+        code.text === 'forward-email=' ||
+        code.text === 'forward-email-site-verification=' ||
+        code.text === 'forward-email-port='
       )
         continue;
       const id = `code-fe-${i}`;
@@ -165,7 +144,7 @@ async function onboard(ctx, next) {
            <li class="list-inline-item">
              <form class="ajax-form confirm-prompt d-block" action="/encrypt" method="POST">
                <input type="hidden" name="input" value="${_.escape(
-                 code.rawText
+                 code.text
                )}" />
                <button type="submit" class="btn btn-dark btn-sm mt-1">
                  <i class="fas fa-user-secret"></i> ${ctx.state.t('Encrypt')}

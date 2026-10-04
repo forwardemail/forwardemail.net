@@ -319,7 +319,7 @@ if breadcrumbs.length > 1
                       = t("Logs")
                   else
                     a.btn.btn-dark(
-                      href=l(`/my-account/logs${ctx.query.domains ? `?domains=${ctx.query.domains}` : ""}`)
+                      href=l(`/my-account/logs${typeof ctx.query.domains === "string" && ctx.query.domains ? `?domains=${encodeURIComponent(ctx.query.domains)}` : ""}`)
                     )
                       i.fa.fa-fw.fa-stream
                       = " "

@@ -16,12 +16,13 @@ const source = fs.readFileSync(
   'utf8'
 );
 
-function getController(rawText) {
+function getController(text) {
   const dom = new JSDOM(
     '<!doctype html><html><body><code></code></body></html>'
   );
   const code = dom.window.document.querySelector('code');
-  Object.defineProperty(code, 'rawText', { value: rawText });
+  // (the text of the code element, decoded)
+  Object.defineProperty(code, 'text', { value: text });
   const root = {
     querySelectorAll() {
       return [code];
@@ -51,7 +52,6 @@ function getController(rawText) {
       if (id === '@hapi/boom') return { badRequest() {} };
       if (id === 'email-templates') return Email;
       if (id === 'koa-meta') return Meta;
-      if (id === 'email-addresses') return {};
       if (id === 'is-fqdn' || id === 'is-string-and-not-blank')
         return () => false;
       if (id === 'pug') return { renderFile: () => '<code></code>' };
@@ -61,6 +61,7 @@ function getController(rawText) {
       if (id === 'node-html-parser') return { parse: () => root };
       if (id === '#helpers/lodash') return lodash;
       if (id === '#helpers/is-email') return () => false;
+      if (id === '#helpers/personalize-examples') return (root) => root;
       if (id === '#config') {
         return {
           lastLocaleField: 'last_locale',

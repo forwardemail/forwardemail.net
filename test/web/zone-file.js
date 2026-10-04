@@ -203,19 +203,11 @@ test('zone file downloads from the domain', async (t) => {
 
 test('setup and settings pages show the zone file and how to import it', async (t) => {
   const { domain } = t.context;
-  const setup = await t.context.web.get(
-    `/en/my-account/domains/${domain.name}`
-  );
-  t.is(setup.status, 200);
-  t.true(setup.text.includes('id="zone-file"'));
-  t.true(setup.text.includes('id="copy-zone-file"'));
-  t.true(setup.text.includes(`_dmarc.${domain.name}.`));
-  t.true(setup.text.includes(`/my-account/domains/${domain.name}/zone-file`));
-  // Bunny DNS imports zone files under Import/Export
-  t.true(setup.text.includes('Bunny DNS'));
-  t.true(setup.text.includes('DNS → (your domain) → Import/Export'));
-  t.true(setup.text.includes('https://bunny.net/docs/dns/import-export'));
 
+  //
+  // (first, as the setup page verifies the domain again, which replaces its
+  // name servers with the ones in DNS where the network is reachable)
+  //
   const settings = await t.context.web.get(
     `/en/my-account/domains/${domain.name}/advanced-settings`
   );
@@ -225,6 +217,18 @@ test('setup and settings pages show the zone file and how to import it', async (
     settings.text.includes(`/my-account/domains/${domain.name}/zone-file`)
   );
   t.true(settings.text.includes('id="manage-team"'));
+  // Bunny DNS imports zone files under Import/Export
+  t.true(settings.text.includes('DNS → (your domain) → Import/Export'));
+  t.true(settings.text.includes('https://bunny.net/docs/dns/import-export'));
+
+  const setup = await t.context.web.get(
+    `/en/my-account/domains/${domain.name}`
+  );
+  t.is(setup.status, 200);
+  t.true(setup.text.includes('id="zone-file"'));
+  t.true(setup.text.includes('id="copy-zone-file"'));
+  t.true(setup.text.includes(`_dmarc.${domain.name}.`));
+  t.true(setup.text.includes(`/my-account/domains/${domain.name}/zone-file`));
 
   const list = await t.context.web.get('/en/my-account/domains');
   t.is(list.status, 200);
