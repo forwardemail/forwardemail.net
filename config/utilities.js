@@ -540,6 +540,17 @@ const NS_PROVIDERS = {
     'https://www.web.com/my-account/login',
     false,
     ''
+  ],
+  // nameservers kiki.bunny.net and coco.bunny.net
+  // <https://bunny.net/docs/dns/nameservers>
+  'bunny.net': [
+    'bunny-dns',
+    'Bunny DNS',
+    // <https://bunny.net/docs/dns/records> (leave the hostname empty for the
+    // root domain, and enter values without a trailing period)
+    'https://dash.bunny.net/',
+    false,
+    ''
   ]
 };
 
@@ -580,6 +591,112 @@ const DOMAIN_CONNECT_PROVIDERS = {
   }
 };
 
+//
+// How to import a zone file (see `helpers/get-zone-file`) at a DNS provider,
+// by provider slug, for the providers whose own documentation confirms it:
+//
+// - `steps`: the menu path and buttons in the provider's dashboard (their
+//   own labels, which are not translated), or the command for `cli`
+// - `paste`: the zone file is pasted as text rather than uploaded
+// - `cli`: only the provider's command line tool imports zone files
+// - `newZone`: only when the zone is created (not into an existing one)
+// - `zip`: the file has to be compressed into a .zip archive first
+// - `url`: the provider's documentation
+//
+// A provider that is not listed is shown how to add each record by hand.
+//
+const ZONE_FILE_IMPORT = {
+  'amazon-route-53': {
+    steps: 'Hosted zones → (your domain) → Import zone file → Import',
+    paste: true,
+    url: 'https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/resource-record-sets-creating-import.html'
+  },
+  azure: {
+    steps: 'DNS zones → (your domain) → Overview → Import → Browse',
+    url: 'https://learn.microsoft.com/en-us/azure/dns/dns-import-export-portal'
+  },
+  cloudflare: {
+    steps: 'DNS → Records → Import and Export → Import DNS records',
+    url: 'https://developers.cloudflare.com/dns/manage-dns-records/how-to/import-and-export/'
+  },
+  'dns-made-easy': {
+    steps:
+      'DNS → Managed DNS → (your domain) → Import Records → Zone File (Import Only) → Save',
+    paste: true,
+    url: 'https://support.dnsmadeeasy.com/hc/en-us/articles/34327299973147-Import-Records-from-a-Zone-File'
+  },
+  godaddy: {
+    steps:
+      'Domain Portfolio → (your domain) → DNS → Actions → Import Zone File → Apply Zone File',
+    url: 'https://www.godaddy.com/help/import-my-domains-zone-file-records-4167'
+  },
+  gandi: {
+    steps: 'Domain → DNS records → Advanced view → Edit zone file',
+    paste: true,
+    url: 'https://helpdesk.gandi.net/hc/en-us/articles/14001708548380-DNS-records'
+  },
+  'tencent-cloud-dnspod': {
+    steps: 'DNS → Bulk Management → Upload File',
+    zip: true,
+    url: 'https://docs.dnspod.com/dns/bulk-record-import/'
+  },
+  hetzner: {
+    steps: 'DNS → Add zone → Import zone file',
+    newZone: true,
+    url: 'https://docs.hetzner.com/networking/dns/getting-started/creating-a-zone/'
+  },
+  ovhcloud: {
+    steps:
+      'Web Cloud → Domain names → (your domain) → DNS zone → Actions on my zone → Edit in text mode → Import',
+    url: 'https://docs.ovhcloud.com/en/guides/web-cloud/domains/dns-zone-edit'
+  },
+  alibaba: {
+    steps: 'Settings → Import/Export → Upload File',
+    url: 'https://www.alibabacloud.com/help/en/alibaba-cloud-dns/latest/import-dns-records'
+  },
+  cloudns: {
+    steps: 'Zone Import → Import Zone File',
+    url: 'https://www.cloudns.net/wiki/article/355/'
+  },
+  wordpress: {
+    steps:
+      'Upgrades → Domains → (your domain) → DNS Records → Manage → Import BIND file → Import records',
+    url: 'https://wordpress.com/support/domains/custom-dns/import-dns-records/'
+  },
+  easydns: {
+    steps: 'DNS → Import',
+    url: 'https://kb.easydns.com/knowledge/adding-dns-service-for-a-domain/'
+  },
+  'oracle-cloud-dns': {
+    steps: 'Networking → DNS Management → Zones → Create Zone → Import',
+    newZone: true,
+    url: 'https://docs.oracle.com/en/learn/dns_zone_migration_cloudflare_oci/index.html'
+  },
+  hostgator: {
+    steps: 'Domains → DNS → Actions → Import DNS Zone → Apply DNS Zone',
+    url: 'https://www.hostgator.com/help/article/manage-dns-records-with-hostgatorenom'
+  },
+  'unified-layer': {
+    steps: 'DNS → Actions → Import DNS zone → Apply DNS zone',
+    url: 'https://www.bluehost.com/help/article/dm-guide-to-the-dns-tab-in-the-account-manager'
+  },
+  'bunny-dns': {
+    steps: 'DNS → (your domain) → Import/Export',
+    url: 'https://bunny.net/docs/dns/import-export'
+  },
+  vercel: {
+    steps: 'vercel dns import yourdomain.com yourdomain.com.zone',
+    cli: true,
+    url: 'https://vercel.com/docs/domains/managing-dns-records'
+  },
+  'google-cloud-dns': {
+    steps:
+      'gcloud dns record-sets import yourdomain.com.zone --zone=ZONE --zone-file-format',
+    cli: true,
+    url: 'https://cloud.google.com/dns/docs/migrating'
+  }
+};
+
 function nsProviderLookup(domain) {
   // return early if there were no NS providers set
   if (!domain.ns || domain.ns.length === 0) return;
@@ -595,6 +712,8 @@ function nsProviderLookup(domain) {
       if (DOMAIN_CONNECT_PROVIDERS[slug]) {
         provider.domainConnect = DOMAIN_CONNECT_PROVIDERS[slug];
       }
+
+      if (ZONE_FILE_IMPORT[slug]) provider.zoneImport = ZONE_FILE_IMPORT[slug];
 
       break;
     }
@@ -618,6 +737,9 @@ for (const provider of nsProviders) {
   if (DOMAIN_CONNECT_PROVIDERS[provider.slug]) {
     provider.domainConnect = DOMAIN_CONNECT_PROVIDERS[provider.slug];
   }
+
+  if (ZONE_FILE_IMPORT[provider.slug])
+    provider.zoneImport = ZONE_FILE_IMPORT[provider.slug];
 }
 
 //

@@ -627,6 +627,8 @@ curl BASE_URI/v1/domains \
 
 > `POST /v1/domains`
 
+Svaret indeholder `zone_file`, en zonefil med alle de DNS-poster, domænet har brug for (MX, verifikation, SPF, DKIM, Return-Path, DMARC og automatisk registrering), som du kan importere hos din DNS-udbyder (kun domæneadministratorer).
+
 | Body Parameter                 | Påkrævet | Type                                          | Beskrivelse                                                                                                                                                                                                                                                                                                          |
 | ------------------------------ | -------- | --------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `domain`                       | Ja       | String (FQDN eller IP)                         | Fuldt kvalificeret domænenavn ("FQDN") eller IP-adresse                                                                                                                                                                                                                                                                   |
@@ -654,6 +656,8 @@ curl -X POST BASE_URI/v1/domains \
 ### Hent domæne {#retrieve-domain}
 
 > `GET /v1/domains/DOMAIN_NAME`
+
+Svaret indeholder `zone_file`, en zonefil med alle de DNS-poster, domænet har brug for (MX, verifikation, SPF, DKIM, Return-Path, DMARC og automatisk registrering), som du kan importere hos din DNS-udbyder (kun domæneadministratorer).
 
 > Eksempel på forespørgsel:
 

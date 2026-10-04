@@ -1810,6 +1810,15 @@
       "Domain": {
         "type": "object",
         "properties": {
+          "domain_updates": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          },
+          "has_pending_domain_updates": {
+            "type": "boolean"
+          },
           "has_newsletter": {
             "type": "boolean"
           },
@@ -1886,6 +1895,18 @@
           "smtp_port": {
             "type": "string"
           },
+          "members": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          },
+          "invites": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          },
           "name": {
             "type": "string"
           },
@@ -1902,6 +1923,18 @@
             "type": "boolean"
           },
           "has_dmarc_record": {
+            "type": "boolean"
+          },
+          "has_strict_dmarc": {
+            "type": "boolean"
+          },
+          "has_spf_record": {
+            "type": "boolean"
+          },
+          "has_autoconfig_record": {
+            "type": "boolean"
+          },
+          "has_autodiscover_record": {
             "type": "boolean"
           },
           "has_recipient_verification": {
@@ -1996,6 +2029,10 @@
                 }
               }
             }
+          },
+          "zone_file": {
+            "type": "string",
+            "description": "Kaikki verkkotunnuksen tarvitsemat DNS-tietueet (MX, vahvistus, SPF, DKIM, Return-Path, DMARC ja automaattinen määritys) vyöhyketiedostona DNS-palveluntarjoajalle tuotavaksi. Mukana vain, kun verkkotunnus haetaan tai luodaan, ja vain verkkotunnuksen ylläpitäjille."
           },
           "link": {
             "type": "string",
@@ -5579,7 +5616,7 @@
       },
       "post": {
         "summary": "Luo verkkotunnus",
-        "description": "Luo järjestelmään uuden verkkotunnuksen. Tämän päätepisteen avulla voit rekisteröidä täysin pätevän verkkotunnuksen (FQDN) tai IP-osoitteen käytettäväksi alustan kanssa.\n\nValinnaisia määritysvaihtoehtoja ovat verkkotunnuksen määrittäminen olemassa olevalle tiimille, suunnitelman tyypin määrittäminen (esim. ilmainen, parannettu suojaus tai tiimi) ja lisäsuojausten, kuten roskapostisuodatuksen, virustorjunnan ja vastaanottajan vahvistuksen, määrittäminen. Voit myös määrittää, luodaanko oletusarvoisesti keräilyalias, asettaa mukautetun palautus-webhook-URL-osoitteen SMTP-virheitä varten ja määrittää tallennuskiintiörajat sähköpostialiaksille tällä verkkotunnuksella. Tämä päätepiste suorittaa verkkotunnustason validoinnin ja valmistelun. Jos `ignore_mx_check`-vaihtoehto on käytössä, MX-tietueen vahvistus ohitetaan (suositellaan vain edistyneille reititysasetuksille). Vastaus sisältää luodun verkkotunnusobjektin täydelliset tiedot, mukaan lukien konfigurointiin tarvittavat DNS-tietueet.",
+        "description": "Luo järjestelmään uuden verkkotunnuksen. Tämän päätepisteen avulla voit rekisteröidä täysin pätevän verkkotunnuksen (FQDN) tai IP-osoitteen käytettäväksi alustan kanssa.\n\nValinnaisia määritysvaihtoehtoja ovat verkkotunnuksen määrittäminen olemassa olevalle tiimille, suunnitelman tyypin määrittäminen (esim. ilmainen, parannettu suojaus tai tiimi) ja lisäsuojausten, kuten roskapostisuodatuksen, virustorjunnan ja vastaanottajan vahvistuksen, määrittäminen. Voit myös määrittää, luodaanko oletusarvoisesti keräilyalias, asettaa mukautetun palautus-webhook-URL-osoitteen SMTP-virheitä varten ja määrittää tallennuskiintiörajat sähköpostialiaksille tällä verkkotunnuksella. Tämä päätepiste suorittaa verkkotunnustason validoinnin ja valmistelun. Jos `ignore_mx_check`-vaihtoehto on käytössä, MX-tietueen vahvistus ohitetaan (suositellaan vain edistyneille reititysasetuksille). Vastaus sisältää luodun verkkotunnusobjektin täydelliset tiedot, mukaan lukien konfigurointiin tarvittavat DNS-tietueet.\n\nVastaus sisältää kentän `zone_file`, vyöhyketiedoston, jossa on kaikki verkkotunnuksen tarvitsemat DNS-tietueet (MX, vahvistus, SPF, DKIM, Return-Path, DMARC ja automaattinen määritys) ja jonka voit tuoda DNS-palveluntarjoajallesi (vain verkkotunnuksen ylläpitäjät).",
         "tags": [
           "Verkkotunnukset"
         ],
@@ -5631,7 +5668,7 @@
       ],
       "get": {
         "summary": "Hae verkkotunnus",
-        "description": "Hae tietty verkkotunnus",
+        "description": "Hae tietty verkkotunnus\n\nVastaus sisältää kentän `zone_file`, vyöhyketiedoston, jossa on kaikki verkkotunnuksen tarvitsemat DNS-tietueet (MX, vahvistus, SPF, DKIM, Return-Path, DMARC ja automaattinen määritys) ja jonka voit tuoda DNS-palveluntarjoajallesi (vain verkkotunnuksen ylläpitäjät).",
         "tags": [
           "Verkkotunnukset"
         ],

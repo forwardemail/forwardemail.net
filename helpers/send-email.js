@@ -278,7 +278,10 @@ async function sendEmail(
     client,
     publicKey,
     smimeCertificate,
-    hasWkdDisabled
+    hasWkdDisabled,
+    // the alias a forwarded message was sent for (MX), so its delivery log
+    // can be shown only to those who may see that alias
+    forwardedFor
   },
   email,
   domain
@@ -452,6 +455,7 @@ async function sendEmail(
     info.pgp = pgpResults.pgp;
     info.smime = pgpResults.smime;
     info.session = session;
+    if (forwardedFor) info.forwardedFor = forwardedFor;
     logger.info('delivered', {
       info,
       ignore_hook: false,
@@ -654,6 +658,7 @@ async function sendEmail(
         info.pgp = pgpResults.pgp;
         info.smime = pgpResults.smime;
         info.session = session;
+        if (forwardedFor) info.forwardedFor = forwardedFor;
         logger.info('delivered', {
           info,
           ignore_hook: false,

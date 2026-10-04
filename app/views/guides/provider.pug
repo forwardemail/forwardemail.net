@@ -384,6 +384,18 @@ block body
                             )
                               i.fa.fa-info-circle
             .alert.alert-warning.text-left.text-md-center.small!= t('<strong>Need a <span class="notranslate">TTL</span> value?</strong> Make it as close to <span class="notranslate text-monospace">3600</span> (60 minutes) as possible.')
+            if provider && provider.zoneImport
+              .alert.alert-secondary.text-left.small
+                strong= t("Import every record at once")
+                br
+                != t('Export a zone file with every record your domain needs from <a href="%s" class="alert-link">My Account → Domains</a>.', l("/my-account/domains"))
+                = " "
+                if provider.zoneImport.cli
+                  != t('<span class="notranslate">%s</span> imports zone files with its command line tool:', provider.name)
+                  code.d-block.mt-1.notranslate= provider.zoneImport.steps
+                else
+                  != t('In <span class="notranslate">%s</span>, go to:', provider.name)
+                  strong.d-block.mt-1.notranslate= provider.zoneImport.steps
             .alert.alert-primary.small
               = t("Need to configure more aliases on the free plan?")
               br.d-block.d-md-none

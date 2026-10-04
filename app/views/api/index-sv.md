@@ -627,6 +627,8 @@ curl BASE_URI/v1/domains \
 
 > `POST /v1/domains`
 
+Svaret innehåller `zone_file`, en zonfil med alla DNS-poster som domänen behöver (MX, verifiering, SPF, DKIM, Return-Path, DMARC och automatisk identifiering) som du kan importera hos din DNS-leverantör (endast domänadministratörer).
+
 | Body Parameter                 | Obligatorisk | Typ                                          | Beskrivning                                                                                                                                                                                                                                                                                                          |
 | ------------------------------ | ------------ | --------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `domain`                       | Ja           | Sträng (FQDN eller IP)                        | Fullständigt kvalificerat domännamn ("FQDN") eller IP-adress                                                                                                                                                                                                                                                         |
@@ -654,6 +656,8 @@ curl -X POST BASE_URI/v1/domains \
 ### Hämta domän {#retrieve-domain}
 
 > `GET /v1/domains/DOMAIN_NAME`
+
+Svaret innehåller `zone_file`, en zonfil med alla DNS-poster som domänen behöver (MX, verifiering, SPF, DKIM, Return-Path, DMARC och automatisk identifiering) som du kan importera hos din DNS-leverantör (endast domänadministratörer).
 
 > Example Request:
 

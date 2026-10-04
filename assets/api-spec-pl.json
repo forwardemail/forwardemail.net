@@ -1810,6 +1810,15 @@
       "Domain": {
         "type": "object",
         "properties": {
+          "domain_updates": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          },
+          "has_pending_domain_updates": {
+            "type": "boolean"
+          },
           "has_newsletter": {
             "type": "boolean"
           },
@@ -1886,6 +1895,18 @@
           "smtp_port": {
             "type": "string"
           },
+          "members": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          },
+          "invites": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          },
           "name": {
             "type": "string"
           },
@@ -1902,6 +1923,18 @@
             "type": "boolean"
           },
           "has_dmarc_record": {
+            "type": "boolean"
+          },
+          "has_strict_dmarc": {
+            "type": "boolean"
+          },
+          "has_spf_record": {
+            "type": "boolean"
+          },
+          "has_autoconfig_record": {
+            "type": "boolean"
+          },
+          "has_autodiscover_record": {
             "type": "boolean"
           },
           "has_recipient_verification": {
@@ -1996,6 +2029,10 @@
                 }
               }
             }
+          },
+          "zone_file": {
+            "type": "string",
+            "description": "Wszystkie rekordy DNS potrzebne domenie (MX, weryfikacja, SPF, DKIM, Return-Path, DMARC i autowykrywanie) jako plik strefy do zaimportowania u dostawcy DNS. Dołączany tylko przy pobieraniu lub tworzeniu domeny, dla administratorów domeny."
           },
           "link": {
             "type": "string",
@@ -5579,7 +5616,7 @@
       },
       "post": {
         "summary": "Utwórz domenę",
-        "description": "Tworzy nową domenę w systemie. Ten punkt końcowy umożliwia rejestrację w pełni kwalifikowanej nazwy domeny (FQDN) lub adresu IP do użytku z platformą.\n\nOpcjonalne opcje konfiguracji obejmują przypisanie domeny do istniejącego zespołu, ustawienie typu planu (np. bezpłatny, rozszerzona ochrona lub zespół) oraz skonfigurowanie zaawansowanych zabezpieczeń, takich jak filtrowanie spamu, skanowanie antywirusowe i weryfikacja odbiorców. Można również skonfigurować, czy domyślnie ma być tworzony alias typu catch-all, ustawić niestandardowy adres URL webhooka dla błędów SMTP oraz zdefiniować limity przestrzeni dyskowej dla aliasów e-mail w tej domenie. Ten punkt końcowy przeprowadza walidację i provisioning na poziomie domeny. Jeśli opcja `ignore_mx_check` jest włączona, weryfikacja rekordów MX jest pomijana (zalecane tylko w przypadku zaawansowanych konfiguracji routingu). Odpowiedź będzie zawierała pełne informacje o utworzonym obiekcie domeny, w tym rekordy DNS potrzebne do konfiguracji.",
+        "description": "Tworzy nową domenę w systemie. Ten punkt końcowy umożliwia rejestrację w pełni kwalifikowanej nazwy domeny (FQDN) lub adresu IP do użytku z platformą.\n\nOpcjonalne opcje konfiguracji obejmują przypisanie domeny do istniejącego zespołu, ustawienie typu planu (np. bezpłatny, rozszerzona ochrona lub zespół) oraz skonfigurowanie zaawansowanych zabezpieczeń, takich jak filtrowanie spamu, skanowanie antywirusowe i weryfikacja odbiorców. Można również skonfigurować, czy domyślnie ma być tworzony alias typu catch-all, ustawić niestandardowy adres URL webhooka dla błędów SMTP oraz zdefiniować limity przestrzeni dyskowej dla aliasów e-mail w tej domenie. Ten punkt końcowy przeprowadza walidację i provisioning na poziomie domeny. Jeśli opcja `ignore_mx_check` jest włączona, weryfikacja rekordów MX jest pomijana (zalecane tylko w przypadku zaawansowanych konfiguracji routingu). Odpowiedź będzie zawierała pełne informacje o utworzonym obiekcie domeny, w tym rekordy DNS potrzebne do konfiguracji.\n\nOdpowiedź zawiera `zone_file`, plik strefy ze wszystkimi rekordami DNS potrzebnymi domenie (MX, weryfikacja, SPF, DKIM, Return-Path, DMARC i autowykrywanie), który możesz zaimportować u dostawcy DNS (tylko administratorzy domeny).",
         "tags": [
           "Domeny"
         ],
@@ -5631,7 +5668,7 @@
       ],
       "get": {
         "summary": "Pobierz domenę",
-        "description": "Pobierz określoną domenę",
+        "description": "Pobierz określoną domenę\n\nOdpowiedź zawiera `zone_file`, plik strefy ze wszystkimi rekordami DNS potrzebnymi domenie (MX, weryfikacja, SPF, DKIM, Return-Path, DMARC i autowykrywanie), który możesz zaimportować u dostawcy DNS (tylko administratorzy domeny).",
         "tags": [
           "Domeny"
         ],

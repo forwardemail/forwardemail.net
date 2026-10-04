@@ -53,7 +53,7 @@ const parseRootDomain = require('#helpers/parse-root-domain');
 const retryRequest = require('#helpers/retry-request');
 const verificationRecordOptions = require('#config/verification-record');
 const checkDomainAndAct = require('#helpers/check-domain-and-act');
-const createTangerine = require('#helpers/create-tangerine');
+const createFamilyResolver = require('#helpers/create-family-resolver');
 const emailHelper = require('#helpers/email');
 const getCloudflareRadarFeedbackUrl = require('#helpers/get-cloudflare-radar-feedback-url');
 const getDomainNameRestrictions = require('#helpers/get-domain-name-restrictions');
@@ -97,9 +97,7 @@ function getDomainClient() {
 
 function getFamilyResolver() {
   if (!_familyResolver) {
-    _familyResolver = createTangerine(getDomainClient(), logger, {
-      servers: new Set(['1.1.1.3', '1.0.0.3'])
-    });
+    _familyResolver = createFamilyResolver(getDomainClient(), logger);
   }
 
   return _familyResolver;

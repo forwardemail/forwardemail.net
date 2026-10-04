@@ -627,6 +627,8 @@ curl BASE_URI/v1/domains \
 
 > `POST /v1/domains`
 
+Het antwoord bevat `zone_file`, een zonebestand met alle DNS-records die het domein nodig heeft (MX, verificatie, SPF, DKIM, Return-Path, DMARC en autodiscovery) dat u bij uw DNS-provider kunt importeren (alleen voor domeinbeheerders).
+
 | Body Parameter                 | Verplicht | Type                                          | Beschrijving                                                                                                                                                                                                                                                                                                          |
 | ------------------------------ | -------- | --------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `domain`                       | Ja      | String (FQDN of IP)                           | Volledig gekwalificeerde domeinnaam ("FQDN") of IP-adres                                                                                                                                                                                                                                                                   |
@@ -654,6 +656,8 @@ curl -X POST BASE_URI/v1/domains \
 ### Domein ophalen {#retrieve-domain}
 
 > `GET /v1/domains/DOMAIN_NAME`
+
+Het antwoord bevat `zone_file`, een zonebestand met alle DNS-records die het domein nodig heeft (MX, verificatie, SPF, DKIM, Return-Path, DMARC en autodiscovery) dat u bij uw DNS-provider kunt importeren (alleen voor domeinbeheerders).
 
 > Voorbeeldverzoek:
 

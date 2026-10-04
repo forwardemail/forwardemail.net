@@ -497,6 +497,21 @@ p.text-center.d-lg-none
                       i.fa.fa-fw.fa-tools
                       = " "
                       = t("Settings")
+                  li.list-inline-item.d-block.d-lg-inline-block
+                    a.btn.btn-sm.btn-link.text-themed(
+                      href=l(`/my-account/domains/${punycode.toASCII(domain.name)}/advanced-settings#manage-team`)
+                    )
+                      i.fa.fa-fw.fa-users
+                      = " "
+                      = t("Team")
+                  li.list-inline-item.d-block.d-lg-inline-block
+                    a.btn.btn-sm.btn-link.text-themed(
+                      href=l(`/my-account/domains/${punycode.toASCII(domain.name)}/zone-file`),
+                      download=`${punycode.toASCII(domain.name).toLowerCase()}.zone`
+                    )
+                      i.fa.fa-fw.fa-download
+                      = " "
+                      = t("Zone File")
                   //- we hide the change plan button if the plan was team
                   if domain.plan !== 'team'
                     li.list-inline-item.d-block.d-lg-inline-block

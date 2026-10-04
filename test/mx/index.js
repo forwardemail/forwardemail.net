@@ -509,10 +509,11 @@ Test`.trim()
       })
     );
 
-    t.regex(err.message, /Failed to resolve any IP addresses/);
+    // the sender is not told where the alias forwards to
+    t.false(err.message.includes('beep.com'));
     t.is(
       err.message,
-      `Message failed: 421 4.4.2 Failed to resolve any IP addresses for the Mail Exchange (MX) server associated with "beep.com"`
+      `Message failed: 421 4.4.2 Delivery to foo@${domain.name} failed temporarily, please try again later`
     );
     t.is(err.responseCode, 421);
   }

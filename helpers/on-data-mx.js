@@ -6,6 +6,7 @@
 const crypto = require('node:crypto');
 const os = require('node:os');
 const punycode = require('node:punycode');
+const { isIP } = require('node:net');
 const { Buffer } = require('node:buffer');
 
 // TODO: SMTP needs resolver option
@@ -111,7 +112,7 @@ const sendForwardingIssueEmails = require('#helpers/send-forwarding-issue-emails
 const signMessage = require('#helpers/sign-message');
 const updateHeaders = require('#helpers/update-headers');
 const { Emails, Users, SelfTests } = require('#models');
-const { decrypt } = require('#helpers/encrypt-decrypt');
+const { encrypt, decrypt } = require('#helpers/encrypt-decrypt');
 const { encoder } = require('#helpers/encoder-decoder');
 const {
   processDmarcReport,
@@ -494,6 +495,29 @@ function createVacationResponder(vacationResponder, headers, session) {
 // The destination is only replaced as a whole address or URL (not when it is
 // the tail of a longer address, e.g. "est@example.com" inside "test@example.com").
 //
+// The forms a destination can take in a reply: as configured, with its domain
+// in ASCII (punycode) or Unicode, and an IP literal without its brackets
+// (e.g. "user@[192.0.2.1]" and "user@192.0.2.1").
+function getDestinationForms(destination) {
+  const forms = new Set([destination]);
+  const at = destination.lastIndexOf('@');
+  if (at > 0 && !destination.includes('://')) {
+    const local = destination.slice(0, at);
+    const domain = destination.slice(at + 1);
+    for (const fn of [punycode.toASCII, punycode.toUnicode]) {
+      try {
+        forms.add(`${local}@${fn(domain)}`);
+      } catch {}
+    }
+
+    if (domain.startsWith('[') && domain.endsWith(']'))
+      forms.add(`${local}@${domain.slice(1, -1)}`);
+  }
+
+  // longest first, so a form is never replaced inside a longer one
+  return [...forms].sort((a, b) => b.length - a.length);
+}
+
 function maskDestinations(message, replacements) {
   if (typeof message !== 'string' || !_.isObject(replacements)) return message;
   for (const alias of Object.keys(replacements)) {
@@ -503,13 +527,120 @@ function maskDestinations(message, replacements) {
       destination.toLowerCase() === alias.toLowerCase()
     )
       continue;
-    message = message.replace(
-      new RE2(`(^|[^\\w.%+-])${escapeStringRegexp(destination)}`, 'gi'),
-      (match, prefix) => `${prefix}${alias}`
-    );
+    for (const form of getDestinationForms(destination)) {
+      message = message.replace(
+        new RE2(`(^|[^\\w.%+-])${escapeStringRegexp(form)}`, 'gi'),
+        (match, prefix) => `${prefix}${alias}`
+      );
+    }
   }
 
   return message;
+}
+
+//
+// Whether a value (e.g. one that was denylisted, lowercase and in ASCII) is
+// the forwarding destination, its host or root domain, or a webhook's host
+//
+function isDestinationValue(value, recipient) {
+  if (!isSANB(value)) return false;
+  const destination = recipient.webhook || recipient.to?.[0];
+  if (!isSANB(destination)) return false;
+  const values = new Set();
+  if (recipient.webhook) {
+    values.add(recipient.webhook.toLowerCase());
+    try {
+      values.add(new URL(recipient.webhook).hostname.toLowerCase());
+    } catch {}
+  } else {
+    for (const form of getDestinationForms(destination)) {
+      values.add(form.toLowerCase());
+    }
+
+    const host = parseHostFromDomainOrAddress(destination);
+    try {
+      values.add(punycode.toASCII(host).toLowerCase());
+    } catch {}
+  }
+
+  for (const v of values) {
+    if (isFQDN(v)) values.add(parseRootDomain(v));
+  }
+
+  return values.has(value.toLowerCase());
+}
+
+//
+// Whether an error written here while reaching a destination names it: its
+// address, domain or host, a mail server it resolved to, or an IP address.
+//
+function namesDestination(message, err, recipient) {
+  // (the aliases are named in the message on purpose)
+  let value = message.toLowerCase();
+  for (const alias of Object.keys(recipient.replacements || {})) {
+    value = value.split(alias.toLowerCase()).join(' ');
+  }
+
+  const names = [recipient.host, err.target, err.mx?.hostname, err.mx?.host];
+  for (const destination of Object.values(recipient.replacements || {})) {
+    if (!isSANB(destination)) continue;
+    for (const form of getDestinationForms(destination)) {
+      names.push(form, form.slice(form.lastIndexOf('@') + 1));
+    }
+  }
+
+  // (a whole name, e.g. "example.com" is not named by "team.example.com")
+  if (
+    names.some(
+      (name) =>
+        isSANB(name) &&
+        name.length > 3 &&
+        new RE2(
+          `(^|[^\\w.-])${escapeStringRegexp(name.toLowerCase())}($|[^\\w-])`
+        ).test(value)
+    )
+  )
+    return true;
+
+  return value
+    .split(/[^\da-f:.]+/)
+    .some((word) => isIP(word.replace(/\.$/, '')));
+}
+
+//
+// Prepare an error from forwarding to a destination for the reply to the
+// sender. A reply from the destination's mail server is passed on with the
+// destination replaced by the alias. An error written here while reaching
+// the destination (e.g. a DNS, connection or TLS failure) is passed on unless
+// it names the destination (its domain, mail servers or IP addresses), and
+// then the sender is told only that delivery to the alias failed. The
+// original is kept in `err._message` for logs and for the emails to the
+// alias owner and domain admins (see `helpers/send-forwarding-issue-emails`).
+//
+const REGEX_SMTP_REPLY = new RE2(/^[245]\d{2}(?:[\s-]|$)/);
+function maskForwardingError(err, recipient) {
+  if (typeof err?.message !== 'string') return;
+  if (!err._message) err._message = err.message;
+
+  const message = maskDestinations(err.message, recipient.replacements);
+  if (
+    (err.name === 'SMTPError' && !err.isBoom) ||
+    (typeof err.response === 'string' &&
+      REGEX_SMTP_REPLY.test(err.response.trim())) ||
+    !namesDestination(message, err, recipient)
+  ) {
+    err.message = message;
+    return;
+  }
+
+  // (the code and bounce category are decided from the original)
+  const code = getErrorCode(err);
+  if (typeof err.response !== 'string') err.response = err._message;
+  err.responseCode = code;
+  err.message =
+    code < 500
+      ? `Delivery to ${recipient.recipient} failed temporarily, please try again later`
+      : `Delivery to ${recipient.recipient} failed`;
 }
 
 async function imap(alias, headers, session, body) {
@@ -654,6 +785,27 @@ async function imap(alias, headers, session, body) {
       // convert response object error into an Error
       const err = parseError(response[alias.address]);
       err.target = env.IMAP_HOST;
+
+      //
+      // Only an SMTPError is written for the sender (e.g. mailbox quota, a
+      // rate limit, a Sieve rejection). Anything else is written for the
+      // account holder or the team (e.g. the plan or payment of the domain's
+      // admins, an internal error) and must not reach the sender in the SMTP
+      // reply or a bounce; the original is kept for logs and for the emails
+      // to the alias owner and domain admins (see send-forwarding-issue-emails).
+      //
+      if ((err.name !== 'SMTPError' || err.isBoom) && !err._message) {
+        // (the code and bounce category are decided from the original)
+        const code = getErrorCode(err);
+        err._message = err.message;
+        if (typeof err.response !== 'string') err.response = err._message;
+        err.responseCode = code;
+        err.message =
+          code < 500
+            ? `The mailbox for ${alias.address} is temporarily unavailable, please try again later.`
+            : `The mailbox for ${alias.address} is unavailable.`;
+      }
+
       bounces.push({
         address: alias.address,
         destination: alias.address,
@@ -726,6 +878,32 @@ async function imap(alias, headers, session, body) {
   return { accepted, bounces, vacationResponders };
 }
 
+//
+// Whether a bounce was the destination being out of capacity for now, e.g. a
+// full mailbox or system, too many connections, or a recipient receiving mail
+// too quickly
+//
+function isCapacityBounce(bounceInfo) {
+  return (
+    bounceInfo?.category === 'capacity' ||
+    (bounceInfo?.category === 'recipient' &&
+      typeof bounceInfo?.message === 'string' &&
+      bounceInfo.message.toLowerCase() === 'recipient overloaded')
+  );
+}
+
+//
+// How long a message that bounced is greylisted by its fingerprint (see
+// `helpers/is-greylisted.js`): briefly when the destination could not be
+// reached (network) or was out of capacity, since a retry soon after can be
+// delivered (e.g. once a full mailbox is emptied), and longer otherwise
+//
+function getBounceGreylistDuration(bounceInfo, isAllowlisted) {
+  if (bounceInfo?.category === 'network' || isCapacityBounce(bounceInfo))
+    return ms(isAllowlisted ? '1m' : '5m');
+  return ms(isAllowlisted ? '10m' : '1h');
+}
+
 async function checkBounceForSpam(bounce, headers, session) {
   //
   // if the bounce error was a code bug then
@@ -763,22 +941,15 @@ async function checkBounceForSpam(bounce, headers, session) {
     bounce.err.bounceInfo = getBounceInfo(bounce?.err);
 
   //
-  // NOTE: if it was a network (DNS) error then we greylist
+  // NOTE: if it was a network (DNS) or capacity error then we greylist
   //       for a much shorter duration as opposed to the blanket rule
+  //       (see `getBounceGreylistDuration`)
   //
   await this.client.set(
     getGreylistKey(session.fingerprint),
     true,
     'PX',
-    ms(
-      session.isAllowlisted
-        ? bounce.err.bounceInfo.category === 'network'
-          ? '1m'
-          : '10m'
-        : bounce.err.bounceInfo.category === 'network'
-        ? '5m'
-        : '1h'
-    )
+    getBounceGreylistDuration(bounce.err.bounceInfo, session.isAllowlisted)
   );
 
   //
@@ -1062,11 +1233,24 @@ async function forward(recipient, headers, session, body) {
         );
       } catch (err) {
         // store a counter
-        if (err instanceof DenylistError)
+        if (err instanceof DenylistError) {
           this.client
             .incr(`denylist_prevented:${session.arrivalDateFormatted}`)
             .then()
             .catch((err) => logger.fatal(err));
+
+          // name the alias instead of a destination that was denylisted
+          // (as `helpers/get-recipients` does)
+          if (isDestinationValue(err.denylistValue, recipient))
+            err.message = `The address ${
+              recipient.recipient
+            } is denylisted by ${
+              config.urls.web
+            } ; To request removal, you must visit ${
+              config.urls.web
+            }/denylist?q=${encrypt(err.denylistValue)} ;`;
+        }
+
         throw err;
       }
     })()
@@ -1263,6 +1447,8 @@ async function forward(recipient, headers, session, body) {
         info: {
           response: text,
           accepted: Object.keys(recipient.replacements),
+          // (so the log is only shown to those who may see these aliases)
+          forwardedFor: Object.keys(recipient.replacements),
           envelope: {
             from: session.envelope.mailFrom.address,
             to: Object.keys(recipient.replacements)
@@ -1309,6 +1495,8 @@ async function forward(recipient, headers, session, body) {
 
       // preserve webhook for admins to inspect if user needs help
       err_.webhook = recipient.webhook;
+      // (so the log is only shown to those who may see these aliases)
+      err_.forwardedFor = Object.keys(recipient.replacements);
       //
       // Add webhook error logging details for debugging
       //
@@ -1471,6 +1659,9 @@ async function forward(recipient, headers, session, body) {
           }
 
           err.message = `${friendlyMessage} for ${address}`;
+        } else if (err_.name !== 'SMTPError') {
+          // (e.g. an invalid URL, which could name the endpoint)
+          err.message = `Webhook Error for ${address}`;
         }
 
         // TODO: rewrite `err.response` and `err.message` if either/both start with diagnostic code
@@ -1638,7 +1829,8 @@ async function forward(recipient, headers, session, body) {
         client: this.client,
         publicKey: recipient.aliasPublicKey,
         smimeCertificate: recipient.aliasSmimeCertificate,
-        hasWkdDisabled: recipient.aliasHasWkdDisabled
+        hasWkdDisabled: recipient.aliasHasWkdDisabled,
+        forwardedFor: recipient.recipient
       });
     } catch (err) {
       //
@@ -1676,7 +1868,7 @@ async function forward(recipient, headers, session, body) {
             getGreylistKey(session.fingerprint),
             true,
             'PX',
-            ms(session.isAllowlisted ? '30m' : '2h')
+            getBounceGreylistDuration(err.bounceInfo, session.isAllowlisted)
           )
           .then()
           .catch((err) => logger.fatal(err));
@@ -1735,7 +1927,8 @@ async function forward(recipient, headers, session, body) {
             client: this.client,
             publicKey: recipient.aliasPublicKey,
             smimeCertificate: recipient.aliasSmimeCertificate,
-            hasWkdDisabled: recipient.aliasHasWkdDisabled
+            hasWkdDisabled: recipient.aliasHasWkdDisabled,
+            forwardedFor: recipient.recipient
           });
         } catch (err) {
           err.bounceInfo = getBounceInfo(err);
@@ -1863,9 +2056,8 @@ async function forward(recipient, headers, session, body) {
           session
         });
 
-        // mask the destination with the alias in the message sent to the sender
-        err._message = err.message;
-        err.message = maskDestinations(err.message, recipient.replacements);
+        // mask the destination in the message sent to the sender
+        maskForwardingError(err, recipient);
 
         if (!err.target) err.target = recipient.host;
 
@@ -1893,9 +2085,8 @@ async function forward(recipient, headers, session, body) {
     // re-delivery for the duration of fingerprintTTL.
     this.client.del(key).catch((err) => logger.fatal(err));
 
-    // mask the destination with the alias in the message sent to the sender
-    err._message = err.message;
-    err.message = maskDestinations(err.message, recipient.replacements);
+    // mask the destination in the message sent to the sender
+    maskForwardingError(err, recipient);
 
     if (!err.target) err.target = recipient.host;
 
@@ -2693,15 +2884,45 @@ function getDeliveryOutcome(session, accepted, bounces) {
 
   if (deferred.length === 0) return { action: 'accept' };
 
+  //
+  // An alias can be both: one of its destinations (e.g. a forwarding address)
+  // received the message while another (e.g. its mailbox) was deferred.
+  //
+  const deferredAddresses = _.uniq(
+    deferred.map((bounce) => bounce.address.toLowerCase())
+  );
+  const acceptedAddresses = _.uniq(accepted.map((a) => a.toLowerCase()));
+  const partial = deferredAddresses.filter((a) =>
+    acceptedAddresses.includes(a)
+  );
+  const delivered = acceptedAddresses.filter(
+    (a) => !deferredAddresses.includes(a)
+  );
+  const notes = [];
+  if (partial.length > 0)
+    notes.push(
+      `${listAddresses(partial)} ${
+        partial.length === 1
+          ? 'was delivered to some of its destinations'
+          : 'were delivered to some of their destinations'
+      }, which will not receive it twice`
+    );
+  if (delivered.length > 0)
+    notes.push(
+      `${listAddresses(
+        delivered
+      )} already received it and will not receive it twice`
+    );
+
   return {
     action: 'defer',
     err: combineBounceErrors(
       deferred,
       `Delivery to ${listAddresses(
-        deferred.map((bounce) => bounce.address)
-      )} was deferred and will complete when the message is retried (${listAddresses(
-        accepted
-      )} already received it and will not receive it twice)`
+        deferredAddresses
+      )} was deferred and will complete when the message is retried (${notes.join(
+        '; '
+      )})`
     )
   };
 }

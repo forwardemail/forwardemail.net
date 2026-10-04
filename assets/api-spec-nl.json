@@ -1810,6 +1810,15 @@
       "Domain": {
         "type": "object",
         "properties": {
+          "domain_updates": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          },
+          "has_pending_domain_updates": {
+            "type": "boolean"
+          },
           "has_newsletter": {
             "type": "boolean"
           },
@@ -1886,6 +1895,18 @@
           "smtp_port": {
             "type": "string"
           },
+          "members": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          },
+          "invites": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          },
           "name": {
             "type": "string"
           },
@@ -1902,6 +1923,18 @@
             "type": "boolean"
           },
           "has_dmarc_record": {
+            "type": "boolean"
+          },
+          "has_strict_dmarc": {
+            "type": "boolean"
+          },
+          "has_spf_record": {
+            "type": "boolean"
+          },
+          "has_autoconfig_record": {
+            "type": "boolean"
+          },
+          "has_autodiscover_record": {
             "type": "boolean"
           },
           "has_recipient_verification": {
@@ -1996,6 +2029,10 @@
                 }
               }
             }
+          },
+          "zone_file": {
+            "type": "string",
+            "description": "Alle DNS-records die het domein nodig heeft (MX, verificatie, SPF, DKIM, Return-Path, DMARC en autodiscovery) als zonebestand om bij een DNS-provider te importeren. Alleen aanwezig wanneer een domein wordt opgehaald of aangemaakt, voor domeinbeheerders."
           },
           "link": {
             "type": "string",
@@ -5579,7 +5616,7 @@
       },
       "post": {
         "summary": "Domein aanmaken",
-        "description": "Creëert een nieuw domein in het systeem. Met dit eindpunt kunt u een volledig gekwalificeerde domeinnaam (FQDN) of IP-adres registreren voor gebruik met het platform.\n\nOptionele configuratieopties omvatten het toewijzen van het domein aan een bestaand team, het instellen van een abonnementstype (bijv. gratis, uitgebreide beveiliging of team) en het configureren van geavanceerde beveiligingen zoals spamfiltering, virusscans en ontvangersverificatie. U kunt ook configureren of er standaard een catch-all-alias moet worden aangemaakt, een aangepaste bounce-webhook-URL instellen voor SMTP-fouten en opslagquotalimieten definiëren voor e-mailaliassen op dit domein. Dit eindpunt voert validatie en provisioning op domeinniveau uit. Als de optie `ignore_mx_check` is ingeschakeld, wordt MX-recordverificatie overgeslagen (alleen aanbevolen voor geavanceerde routeringsinstellingen). Het antwoord bevat alle details van het aangemaakte domeinobject, inclusief de DNS-records die nodig zijn voor de configuratie.",
+        "description": "Creëert een nieuw domein in het systeem. Met dit eindpunt kunt u een volledig gekwalificeerde domeinnaam (FQDN) of IP-adres registreren voor gebruik met het platform.\n\nOptionele configuratieopties omvatten het toewijzen van het domein aan een bestaand team, het instellen van een abonnementstype (bijv. gratis, uitgebreide beveiliging of team) en het configureren van geavanceerde beveiligingen zoals spamfiltering, virusscans en ontvangersverificatie. U kunt ook configureren of er standaard een catch-all-alias moet worden aangemaakt, een aangepaste bounce-webhook-URL instellen voor SMTP-fouten en opslagquotalimieten definiëren voor e-mailaliassen op dit domein. Dit eindpunt voert validatie en provisioning op domeinniveau uit. Als de optie `ignore_mx_check` is ingeschakeld, wordt MX-recordverificatie overgeslagen (alleen aanbevolen voor geavanceerde routeringsinstellingen). Het antwoord bevat alle details van het aangemaakte domeinobject, inclusief de DNS-records die nodig zijn voor de configuratie.\n\nHet antwoord bevat `zone_file`, een zonebestand met alle DNS-records die het domein nodig heeft (MX, verificatie, SPF, DKIM, Return-Path, DMARC en autodiscovery) dat u bij uw DNS-provider kunt importeren (alleen voor domeinbeheerders).",
         "tags": [
           "Domeinen"
         ],
@@ -5631,7 +5668,7 @@
       ],
       "get": {
         "summary": "Domein ophalen",
-        "description": "Een specifiek domein ophalen",
+        "description": "Een specifiek domein ophalen\n\nHet antwoord bevat `zone_file`, een zonebestand met alle DNS-records die het domein nodig heeft (MX, verificatie, SPF, DKIM, Return-Path, DMARC en autodiscovery) dat u bij uw DNS-provider kunt importeren (alleen voor domeinbeheerders).",
         "tags": [
           "Domeinen"
         ],

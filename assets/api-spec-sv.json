@@ -1810,6 +1810,15 @@
       "Domain": {
         "type": "object",
         "properties": {
+          "domain_updates": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          },
+          "has_pending_domain_updates": {
+            "type": "boolean"
+          },
           "has_newsletter": {
             "type": "boolean"
           },
@@ -1886,6 +1895,18 @@
           "smtp_port": {
             "type": "string"
           },
+          "members": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          },
+          "invites": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          },
           "name": {
             "type": "string"
           },
@@ -1902,6 +1923,18 @@
             "type": "boolean"
           },
           "has_dmarc_record": {
+            "type": "boolean"
+          },
+          "has_strict_dmarc": {
+            "type": "boolean"
+          },
+          "has_spf_record": {
+            "type": "boolean"
+          },
+          "has_autoconfig_record": {
+            "type": "boolean"
+          },
+          "has_autodiscover_record": {
             "type": "boolean"
           },
           "has_recipient_verification": {
@@ -1996,6 +2029,10 @@
                 }
               }
             }
+          },
+          "zone_file": {
+            "type": "string",
+            "description": "Alla DNS-poster som domänen behöver (MX, verifiering, SPF, DKIM, Return-Path, DMARC och automatisk identifiering) som en zonfil att importera hos en DNS-leverantör. Ingår bara när en domän hämtas eller skapas, för domänadministratörer."
           },
           "link": {
             "type": "string",
@@ -5579,7 +5616,7 @@
       },
       "post": {
         "summary": "Skapa domän",
-        "description": "Skapar en ny domän i systemet. Denna slutpunkt låter dig registrera ett fullständigt kvalificerat domännamn (FQDN) eller en IP-adress för användning med plattformen.\n\nValfria konfigurationsalternativ inkluderar att tilldela domänen till ett befintligt team, ställa in en plantyp (t.ex. gratis, utökat skydd eller team) och konfigurera avancerade skydd som skräppostfiltrering, virusskanning och mottagarverifiering. Du kan också konfigurera om ett catch-all-alias ska skapas som standard, ange en anpassad studs-webhook-URL för SMTP-fel och definiera lagringskvotgränser för e-postalias på denna domän. Denna slutpunkt utför validering och provisionering på domännivå. Om alternativet \"ignore_mx_check\" är aktiverat hoppas MX-postverifiering över (rekommenderas endast för avancerade routinginställningar). Svaret kommer att innehålla fullständig information om det skapade domänobjektet, inklusive DNS-poster som behövs för konfigurationen.",
+        "description": "Skapar en ny domän i systemet. Denna slutpunkt låter dig registrera ett fullständigt kvalificerat domännamn (FQDN) eller en IP-adress för användning med plattformen.\n\nValfria konfigurationsalternativ inkluderar att tilldela domänen till ett befintligt team, ställa in en plantyp (t.ex. gratis, utökat skydd eller team) och konfigurera avancerade skydd som skräppostfiltrering, virusskanning och mottagarverifiering. Du kan också konfigurera om ett catch-all-alias ska skapas som standard, ange en anpassad studs-webhook-URL för SMTP-fel och definiera lagringskvotgränser för e-postalias på denna domän. Denna slutpunkt utför validering och provisionering på domännivå. Om alternativet \"ignore_mx_check\" är aktiverat hoppas MX-postverifiering över (rekommenderas endast för avancerade routinginställningar). Svaret kommer att innehålla fullständig information om det skapade domänobjektet, inklusive DNS-poster som behövs för konfigurationen.\n\nSvaret innehåller `zone_file`, en zonfil med alla DNS-poster som domänen behöver (MX, verifiering, SPF, DKIM, Return-Path, DMARC och automatisk identifiering) som du kan importera hos din DNS-leverantör (endast domänadministratörer).",
         "tags": [
           "Domäner"
         ],
@@ -5631,7 +5668,7 @@
       ],
       "get": {
         "summary": "Hämta domän",
-        "description": "Hämta en specifik domän",
+        "description": "Hämta en specifik domän\n\nSvaret innehåller `zone_file`, en zonfil med alla DNS-poster som domänen behöver (MX, verifiering, SPF, DKIM, Return-Path, DMARC och automatisk identifiering) som du kan importera hos din DNS-leverantör (endast domänadministratörer).",
         "tags": [
           "Domäner"
         ],

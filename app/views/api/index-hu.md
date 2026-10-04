@@ -627,6 +627,8 @@ curl BASE_URI/v1/domains \
 
 > `POST /v1/domains`
 
+A válasz tartalmazza a `zone_file` mezőt: egy zónafájlt a domainhez szükséges összes DNS-rekorddal (MX, ellenőrzés, SPF, DKIM, Return-Path, DMARC és automatikus felderítés), amelyet importálhat a DNS-szolgáltatójánál (csak a domain adminisztrátorainak).
+
 | Törzs paraméter                | Kötelező | Típus                                          | Leírás                                                                                                                                                                                                                                                                                                            |
 | ------------------------------ | -------- | --------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | `domain`                       | Igen     | String (FQDN vagy IP)                          | Teljesen minősített tartománynév ("FQDN") vagy IP cím                                                                                                                                                                                                                                                             |
@@ -654,6 +656,8 @@ curl -X POST BASE_URI/v1/domains \
 ### Domain lekérése {#retrieve-domain}
 
 > `GET /v1/domains/DOMAIN_NAME`
+
+A válasz tartalmazza a `zone_file` mezőt: egy zónafájlt a domainhez szükséges összes DNS-rekorddal (MX, ellenőrzés, SPF, DKIM, Return-Path, DMARC és automatikus felderítés), amelyet importálhat a DNS-szolgáltatójánál (csak a domain adminisztrátorainak).
 
 > Példa kérés:
 

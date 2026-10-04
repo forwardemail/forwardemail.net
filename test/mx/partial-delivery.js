@@ -659,6 +659,69 @@ test.serial(
 );
 
 test.serial(
+  "a mailbox the sender may not be told about defers without exposing the account's billing",
+  async (t) => {
+    const ctx = await setup(t);
+
+    // one alias with both a mailbox and a forwarding address
+    await t.context.aliasFactory
+      .withState({
+        name: 'both',
+        user: ctx.admin._id,
+        domain: ctx.domain._id,
+        recipients: [ctx.addr('both-fwd')],
+        has_imap: true
+      })
+      .create();
+
+    // the domain admin's payment ended past the grace period, so storing in
+    // the mailbox fails with an error written for the account holder
+    await Users.findByIdAndUpdate(ctx.admin._id, {
+      $set: {
+        [config.userFields.planExpiresAt]: dayjs().subtract(60, 'day').toDate()
+      }
+    });
+    await clearAliasQuotaCache(t.context.client, ctx.domain._id);
+
+    const id = randomUUID();
+    const err = await t.throwsAsync(ctx.send(['both'], id));
+    t.is(err.responseCode, 421);
+    t.is(ctx.received.get(ctx.addr('both-fwd')), 1);
+
+    // one reply covers the alias: the forward was delivered and the mailbox
+    // was deferred, so it must not say the alias both was deferred and
+    // already received the message
+    const alias = `both@${ctx.domain.name}`;
+    t.regex(
+      err.response,
+      new RegExp(
+        `Delivery to ${alias.replace(
+          '.',
+          '\\.'
+        )} was deferred and will complete when the message is retried \\(${alias.replace(
+          '.',
+          '\\.'
+        )} was delivered to some of its destinations, which will not receive it twice\\)`
+      )
+    );
+    t.notRegex(err.response, /already received it/);
+
+    // the sender is not told about the account's plan or billing
+    t.regex(err.response, /mailbox .* is temporarily unavailable/i);
+    t.notRegex(
+      err.response,
+      /payment|subscription|grace period|billing|admin/i
+    );
+
+    // the retry does not deliver the forward twice
+    await ctx.clearGreylist();
+    const retry = await t.throwsAsync(ctx.send(['both'], id));
+    t.is(retry.responseCode, 421);
+    t.is(ctx.received.get(ctx.addr('both-fwd')), 1);
+  }
+);
+
+test.serial(
   'forwarding issue emails only go to the domain that the live DNS verification record proves',
   async (t) => {
     const ctx = await setup(t, {
@@ -895,5 +958,73 @@ test.serial(
     // mail to the lookalike is never routed through the real domain's aliases
     const err = await t.throwsAsync(lookup(`copied@${copycat}`));
     t.regex(err.message, /copied@copycat-/);
+  }
+);
+
+test.serial(
+  'the sender is not told the address an alias forwards to in another form',
+  async (t) => {
+    const ctx = await setup(t, {
+      // the destination's server names it without the brackets of the IP
+      // address literal it was sent to (e.g. "user@192.0.2.1")
+      rcptTo(address) {
+        const err = new Error(
+          `5.1.1 <${address.replace(
+            /\[|]/g,
+            ''
+          )}>: Recipient address rejected: User unknown`
+        );
+        err.responseCode = 550;
+        err.response = `550 ${err.message}`;
+        return err;
+      }
+    });
+
+    // a catch-all to an IP address forwards to "literal@[IP]"
+    await t.context.aliasFactory
+      .withState({
+        name: 'literal',
+        user: ctx.admin._id,
+        domain: ctx.domain._id,
+        recipients: [IP_ADDRESS]
+      })
+      .create();
+
+    const err = await t.throwsAsync(ctx.send(['literal']));
+    t.is(err.responseCode, 550);
+    t.true(err.message.includes(`literal@${ctx.domain.name}`));
+    t.regex(err.message, /User unknown/);
+    t.false(err.message.includes(IP_ADDRESS));
+  }
+);
+
+test.serial(
+  'a message the destination was out of capacity for is greylisted briefly',
+  async (t) => {
+    const ctx = await setup(t, {
+      // (as Gmail answers for a full mailbox)
+      rcptTo(address) {
+        if (address !== ctx.addr('full')) return;
+        const err = new Error(
+          "4.2.2 The recipient's inbox is out of storage space and inactive. Please direct the recipient to over quota"
+        );
+        err.responseCode = 452;
+        return err;
+      }
+    });
+    await ctx.createAlias('full', ['full']);
+    // (keys from the tests before)
+    await ctx.clearGreylist();
+
+    const err = await t.throwsAsync(ctx.send(['full']));
+    t.is(err.responseCode, 452);
+
+    // the sender may retry within a minute (allowlisted, see `setup`) rather
+    // than after 10 minutes
+    const { keyPrefix } = t.context.client.options;
+    const keys = await t.context.client.keys(`${keyPrefix}greylist:*`);
+    t.is(keys.length, 1);
+    const pttl = await t.context.client.pttl(keys[0].slice(keyPrefix.length));
+    t.true(pttl > 0 && pttl <= ms('1m'));
   }
 );

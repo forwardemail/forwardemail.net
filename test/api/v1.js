@@ -1871,7 +1871,20 @@ test('creates, retrieves, and lists domains', async (t) => {
       });
 
     t.is(res.status, 200);
-    t.deepEqual(_.sortBy(Object.keys(res.body)), keys);
+    // (a created or retrieved domain also has its DNS records as a zone file)
+    t.deepEqual(
+      _.sortBy(Object.keys(res.body)),
+      _.sortBy([...keys, 'zone_file'])
+    );
+    t.regex(
+      res.body.zone_file,
+      /^testdomain1\.com\.\s+3600 IN MX\s+0 mx1\.forwardemail\.net\.$/m
+    );
+    t.true(
+      res.body.zone_file.includes(
+        `"${config.recordPrefix}-site-verification=${res.body.verification_record}"`
+      )
+    );
   }
 
   // list domains
@@ -1901,7 +1914,11 @@ test('creates, retrieves, and lists domains', async (t) => {
       .send();
 
     t.is(res.status, 200);
-    t.deepEqual(_.sortBy(Object.keys(res.body)), keys);
+    t.deepEqual(
+      _.sortBy(Object.keys(res.body)),
+      _.sortBy([...keys, 'zone_file'])
+    );
+    t.true(res.body.zone_file.includes('_dmarc.testdomain1.com.'));
   }
 
   // update domain

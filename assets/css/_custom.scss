@@ -219,6 +219,31 @@ pre {
   white-space: pre-wrap !important;
 }
 
+// A zone file or a command (see app/views/my-account/domains/_zone-file.pug):
+// one record per line, so its columns line up and a long DKIM key scrolls
+// sideways instead of wrapping, in the app's code colors for light and dark
+// (bootstrap colors `pre` text for a light background, and the dark theme
+// removes its padding)
+.zone-file {
+  max-height: 24rem;
+  margin-bottom: 0.5rem;
+  padding: 0.75rem 1rem !important;
+  overflow: auto;
+  font-size: 0.8125rem;
+  line-height: 1.6;
+  text-align: left;
+  white-space: pre !important;
+  color: var(--app-fg-primary);
+  background-color: var(--app-code-bg);
+  border: 1px solid var(--app-border);
+  border-radius: 0.25rem;
+
+  code {
+    color: inherit;
+    white-space: inherit !important;
+  }
+}
+
 .btn.focus,
 .btn:focus {
   box-shadow: none !important;

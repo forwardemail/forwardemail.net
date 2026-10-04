@@ -1810,6 +1810,15 @@
       "Domain": {
         "type": "object",
         "properties": {
+          "domain_updates": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          },
+          "has_pending_domain_updates": {
+            "type": "boolean"
+          },
           "has_newsletter": {
             "type": "boolean"
           },
@@ -1886,6 +1895,18 @@
           "smtp_port": {
             "type": "string"
           },
+          "members": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          },
+          "invites": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          },
           "name": {
             "type": "string"
           },
@@ -1902,6 +1923,18 @@
             "type": "boolean"
           },
           "has_dmarc_record": {
+            "type": "boolean"
+          },
+          "has_strict_dmarc": {
+            "type": "boolean"
+          },
+          "has_spf_record": {
+            "type": "boolean"
+          },
+          "has_autoconfig_record": {
+            "type": "boolean"
+          },
+          "has_autodiscover_record": {
             "type": "boolean"
           },
           "has_recipient_verification": {
@@ -1996,6 +2029,10 @@
                 }
               }
             }
+          },
+          "zone_file": {
+            "type": "string",
+            "description": "Every DNS record the domain needs (MX, verification, SPF, DKIM, Return-Path, DMARC, and autodiscovery) as a zone file to import into a DNS provider. Only included when a domain is retrieved or created, for domain admins."
           },
           "link": {
             "type": "string",
@@ -5579,7 +5616,7 @@
       },
       "post": {
         "summary": "Create domain",
-        "description": "Creates a new domain in the system. This endpoint allows you to register a fully qualified domain name (FQDN) or IP address for use with the platform.\n\nOptional configuration options include assigning the domain to an existing team, setting a plan type (e.g., free, enhanced protection, or team), and configuring advanced protections such as spam filtering, virus scanning, and recipient verification. You can also configure whether a catch-all alias should be created by default, set a custom bounce webhook URL for SMTP failures, and define storage quota limits for email aliases on this domain. This endpoint performs domain-level validation and provisioning. If the `ignore_mx_check` option is enabled, MX record verification is skipped (recommended only for advanced routing setups). The response will contain full details of the created domain object, including DNS records needed for configuration.",
+        "description": "Creates a new domain in the system. This endpoint allows you to register a fully qualified domain name (FQDN) or IP address for use with the platform.\n\nOptional configuration options include assigning the domain to an existing team, setting a plan type (e.g., free, enhanced protection, or team), and configuring advanced protections such as spam filtering, virus scanning, and recipient verification. You can also configure whether a catch-all alias should be created by default, set a custom bounce webhook URL for SMTP failures, and define storage quota limits for email aliases on this domain. This endpoint performs domain-level validation and provisioning. If the `ignore_mx_check` option is enabled, MX record verification is skipped (recommended only for advanced routing setups). The response will contain full details of the created domain object, including DNS records needed for configuration.\n\nThe response includes `zone_file`, a zone file with every DNS record the domain needs (MX, verification, SPF, DKIM, Return-Path, DMARC, and autodiscovery) that you can import into your DNS provider (domain admins only).",
         "tags": [
           "Domains"
         ],
@@ -5631,7 +5668,7 @@
       ],
       "get": {
         "summary": "Retrieve domain",
-        "description": "Retrieve a specific domain",
+        "description": "Retrieve a specific domain\n\nThe response includes `zone_file`, a zone file with every DNS record the domain needs (MX, verification, SPF, DKIM, Return-Path, DMARC, and autodiscovery) that you can import into your DNS provider (domain admins only).",
         "tags": [
           "Domains"
         ],

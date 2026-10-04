@@ -1,0 +1,59 @@
+//- Download (and optionally show) every DNS record a domain needs as a zone
+//- file, with how to import it at the domain's DNS provider (see
+//- `ZONE_FILE_IMPORT` in `config/utilities.js`)
+mixin zoneFile(domain, showRecords)
+  .text-left
+    - const zoneProvider = nsProviderLookup(domain);
+    - const zoneName = punycode.toASCII(domain.name).toLowerCase();
+    - const zoneImport = zoneProvider && zoneProvider.zoneImport;
+    p.small
+      if domain.plan === 'free'
+        = t("Every record your domain needs in one zone file, ready to import into your DNS provider or to copy from.")
+      else
+        = t("Every record your domain needs, including SPF, DKIM, Return-Path, DMARC, and autodiscovery, in one zone file ready to import into your DNS provider or to copy from.")
+    if showRecords && zoneFile
+      pre#copy-zone-file.zone-file.notranslate= zoneFile
+    ul.list-inline
+      if showRecords && zoneFile
+        li.list-inline-item
+          button.btn.btn-dark.btn-sm.text-nowrap.mt-1(
+            type="button",
+            data-toggle="clipboard",
+            data-clipboard-target="#copy-zone-file"
+          )
+            i.fa.fa-clipboard
+            = " "
+            = t("Copy")
+      li.list-inline-item
+        a.btn.btn-primary.btn-sm.text-nowrap.mt-1(
+          href=l(`/my-account/domains/${zoneName}/zone-file`),
+          download=`${zoneName}.zone`
+        )
+          i.fa.fa-download
+          = " "
+          = t("Export Zone File")
+    h3.h6= t("How to import it")
+    if zoneImport && zoneImport.cli
+      p.small!= t('<span class="notranslate">%s</span> imports zone files with its command line tool:', zoneProvider.name)
+      pre.zone-file.notranslate: code= zoneImport.steps.replace(/yourdomain\.com/g, zoneName)
+    else if zoneImport
+      p.small.mb-1!= t('In <span class="notranslate">%s</span>, go to:', zoneProvider.name)
+      p.small: strong.notranslate= zoneImport.steps
+      if zoneImport.paste
+        p.small= t("Paste the contents of the zone file when asked.")
+      if zoneImport.zip
+        p.small= t("Compress the zone file into a .zip archive first.")
+      if zoneImport.newZone
+        p.small= t("This imports records only when the zone is created, so add records to an existing zone one by one.")
+    else if zoneProvider
+      p.small!= t('If <span class="notranslate">%s</span> cannot import a zone file, add each record from it one by one in its DNS settings.', zoneProvider.name)
+    else
+      p.small= t("Many DNS providers can import a zone file (look for Import in the DNS settings of your domain). Otherwise, add each record from the zone file one by one.")
+    if zoneImport && zoneImport.url
+      p.small
+        a(href=zoneImport.url, target="_blank", rel="noopener noreferrer")!= t('Read the <span class="notranslate">%s</span> documentation', zoneProvider.name)
+    if zoneProvider && zoneProvider.slug === 'cloudflare'
+      p.small!= t('Set the <span class="notranslate">"Proxy status"</span> in Cloudflare to <span class="notranslate">"DNS only"</span> and <strong class="text-decoration-underline">not</strong> <span class="notranslate">"Proxied"</span>.')
+    ul.small.pl-3.mb-0
+      li= t("Remove existing records that conflict first, such as other MX records.")
+      li= t("When adding a record by hand, most DNS providers want the name without your domain (e.g. _dmarc) and the value without the trailing period or quotes.")

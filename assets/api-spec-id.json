@@ -1810,6 +1810,15 @@
       "Domain": {
         "type": "object",
         "properties": {
+          "domain_updates": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          },
+          "has_pending_domain_updates": {
+            "type": "boolean"
+          },
           "has_newsletter": {
             "type": "boolean"
           },
@@ -1886,6 +1895,18 @@
           "smtp_port": {
             "type": "string"
           },
+          "members": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          },
+          "invites": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          },
           "name": {
             "type": "string"
           },
@@ -1902,6 +1923,18 @@
             "type": "boolean"
           },
           "has_dmarc_record": {
+            "type": "boolean"
+          },
+          "has_strict_dmarc": {
+            "type": "boolean"
+          },
+          "has_spf_record": {
+            "type": "boolean"
+          },
+          "has_autoconfig_record": {
+            "type": "boolean"
+          },
+          "has_autodiscover_record": {
             "type": "boolean"
           },
           "has_recipient_verification": {
@@ -1996,6 +2029,10 @@
                 }
               }
             }
+          },
+          "zone_file": {
+            "type": "string",
+            "description": "Semua data DNS yang dibutuhkan domain (MX, verifikasi, SPF, DKIM, Return-Path, DMARC, dan penemuan otomatis) sebagai file zona untuk diimpor ke penyedia DNS. Hanya disertakan saat domain diambil atau dibuat, untuk admin domain."
           },
           "link": {
             "type": "string",
@@ -5579,7 +5616,7 @@
       },
       "post": {
         "summary": "Buat domain",
-        "description": "Membuat domain baru di sistem. Titik akhir ini memungkinkan Anda mendaftarkan nama domain yang sepenuhnya memenuhi syarat (FQDN) atau alamat IP untuk digunakan dengan platform.\n\nOpsi konfigurasi opsional meliputi penetapan domain ke tim yang sudah ada, pengaturan jenis paket (misalnya, gratis, perlindungan yang ditingkatkan, atau tim), dan konfigurasi perlindungan lanjutan seperti penyaringan spam, pemindaian virus, dan verifikasi penerima. Anda juga dapat mengonfigurasi apakah alias catch-all harus dibuat secara default, menetapkan URL webhook bounce kustom untuk kegagalan SMTP, dan menentukan batas kuota penyimpanan untuk alias email di domain ini. Titik akhir ini melakukan validasi dan penyediaan tingkat domain. Jika opsi `ignore_mx_check` diaktifkan, verifikasi data MX akan dilewati (hanya disarankan untuk pengaturan perutean lanjutan). Respons akan berisi detail lengkap objek domain yang dibuat, termasuk data DNS yang diperlukan untuk konfigurasi.",
+        "description": "Membuat domain baru di sistem. Titik akhir ini memungkinkan Anda mendaftarkan nama domain yang sepenuhnya memenuhi syarat (FQDN) atau alamat IP untuk digunakan dengan platform.\n\nOpsi konfigurasi opsional meliputi penetapan domain ke tim yang sudah ada, pengaturan jenis paket (misalnya, gratis, perlindungan yang ditingkatkan, atau tim), dan konfigurasi perlindungan lanjutan seperti penyaringan spam, pemindaian virus, dan verifikasi penerima. Anda juga dapat mengonfigurasi apakah alias catch-all harus dibuat secara default, menetapkan URL webhook bounce kustom untuk kegagalan SMTP, dan menentukan batas kuota penyimpanan untuk alias email di domain ini. Titik akhir ini melakukan validasi dan penyediaan tingkat domain. Jika opsi `ignore_mx_check` diaktifkan, verifikasi data MX akan dilewati (hanya disarankan untuk pengaturan perutean lanjutan). Respons akan berisi detail lengkap objek domain yang dibuat, termasuk data DNS yang diperlukan untuk konfigurasi.\n\nRespons mencakup `zone_file`, file zona berisi semua data DNS yang dibutuhkan domain (MX, verifikasi, SPF, DKIM, Return-Path, DMARC, dan penemuan otomatis) yang dapat Anda impor ke penyedia DNS Anda (hanya admin domain).",
         "tags": [
           "Domain"
         ],
@@ -5631,7 +5668,7 @@
       ],
       "get": {
         "summary": "Ambil kembali domain",
-        "description": "Ambil domain tertentu",
+        "description": "Ambil domain tertentu\n\nRespons mencakup `zone_file`, file zona berisi semua data DNS yang dibutuhkan domain (MX, verifikasi, SPF, DKIM, Return-Path, DMARC, dan penemuan otomatis) yang dapat Anda impor ke penyedia DNS Anda (hanya admin domain).",
         "tags": [
           "Domain"
         ],

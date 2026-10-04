@@ -627,6 +627,8 @@ curl BASE_URI/v1/domains \
 
 > `POST /v1/domains`
 
+Yanıt, alan adının ihtiyaç duyduğu tüm DNS kayıtlarını (MX, doğrulama, SPF, DKIM, Return-Path, DMARC ve otomatik keşif) içeren ve DNS sağlayıcınıza içe aktarabileceğiniz bir bölge dosyası olan `zone_file` alanını içerir (yalnızca alan adı yöneticileri).
+
 | Gövde Parametresi               | Zorunlu | Tür                                            | Açıklama                                                                                                                                                                                                                                                                                                            |
 | ------------------------------ | ------- | ---------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | `domain`                       | Evet    | String (FQDN veya IP)                          | Tam nitelikli alan adı ("FQDN") veya IP adresi                                                                                                                                                                                                                                                                     |
@@ -654,6 +656,8 @@ curl -X POST BASE_URI/v1/domains \
 ### Alan adını al {#retrieve-domain}
 
 > `GET /v1/domains/DOMAIN_NAME`
+
+Yanıt, alan adının ihtiyaç duyduğu tüm DNS kayıtlarını (MX, doğrulama, SPF, DKIM, Return-Path, DMARC ve otomatik keşif) içeren ve DNS sağlayıcınıza içe aktarabileceğiniz bir bölge dosyası olan `zone_file` alanını içerir (yalnızca alan adı yöneticileri).
 
 > Örnek İstek:
 

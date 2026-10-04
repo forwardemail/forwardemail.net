@@ -1810,6 +1810,15 @@
       "Domain": {
         "type": "object",
         "properties": {
+          "domain_updates": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          },
+          "has_pending_domain_updates": {
+            "type": "boolean"
+          },
           "has_newsletter": {
             "type": "boolean"
           },
@@ -1886,6 +1895,18 @@
           "smtp_port": {
             "type": "string"
           },
+          "members": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          },
+          "invites": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          },
           "name": {
             "type": "string"
           },
@@ -1902,6 +1923,18 @@
             "type": "boolean"
           },
           "has_dmarc_record": {
+            "type": "boolean"
+          },
+          "has_strict_dmarc": {
+            "type": "boolean"
+          },
+          "has_spf_record": {
+            "type": "boolean"
+          },
+          "has_autoconfig_record": {
+            "type": "boolean"
+          },
+          "has_autodiscover_record": {
             "type": "boolean"
           },
           "has_recipient_verification": {
@@ -1996,6 +2029,10 @@
                 }
               }
             }
+          },
+          "zone_file": {
+            "type": "string",
+            "description": "도메인에 필요한 모든 DNS 레코드(MX, 인증, SPF, DKIM, Return-Path, DMARC, 자동 검색)를 DNS 공급자에서 가져올 수 있는 영역 파일로 제공합니다. 도메인을 조회하거나 만들 때만, 도메인 관리자에게 포함됩니다."
           },
           "link": {
             "type": "string",
@@ -5579,7 +5616,7 @@
       },
       "post": {
         "summary": "도메인 생성",
-        "description": "시스템에 새 도메인을 생성합니다. 이 엔드포인트를 사용하면 플랫폼에서 사용할 정규화된 도메인 이름(FQDN) 또는 IP 주소를 등록할 수 있습니다.\n\n선택적인 구성 옵션으로는 기존 팀에 도메인 할당, 플랜 유형 설정(예: 무료, 강화된 보호 또는 팀), 스팸 필터링, 바이러스 검사, 수신자 확인과 같은 고급 보호 기능 구성이 있습니다. 또한 기본적으로 포괄 별칭을 생성할지 여부를 구성하고, SMTP 실패 시 사용자 지정 반송 웹훅 URL을 설정하고, 이 도메인의 이메일 별칭에 대한 저장 공간 할당량 한도를 정의할 수 있습니다. 이 엔드포인트는 도메인 수준의 유효성 검사 및 프로비저닝을 수행합니다. `ignore_mx_check` 옵션을 활성화하면 MX 레코드 확인이 건너뜁니다(고급 라우팅 설정에만 권장). 응답에는 구성에 필요한 DNS 레코드를 포함하여 생성된 도메인 개체에 대한 전체 정보가 포함됩니다.",
+        "description": "시스템에 새 도메인을 생성합니다. 이 엔드포인트를 사용하면 플랫폼에서 사용할 정규화된 도메인 이름(FQDN) 또는 IP 주소를 등록할 수 있습니다.\n\n선택적인 구성 옵션으로는 기존 팀에 도메인 할당, 플랜 유형 설정(예: 무료, 강화된 보호 또는 팀), 스팸 필터링, 바이러스 검사, 수신자 확인과 같은 고급 보호 기능 구성이 있습니다. 또한 기본적으로 포괄 별칭을 생성할지 여부를 구성하고, SMTP 실패 시 사용자 지정 반송 웹훅 URL을 설정하고, 이 도메인의 이메일 별칭에 대한 저장 공간 할당량 한도를 정의할 수 있습니다. 이 엔드포인트는 도메인 수준의 유효성 검사 및 프로비저닝을 수행합니다. `ignore_mx_check` 옵션을 활성화하면 MX 레코드 확인이 건너뜁니다(고급 라우팅 설정에만 권장). 응답에는 구성에 필요한 DNS 레코드를 포함하여 생성된 도메인 개체에 대한 전체 정보가 포함됩니다.\n\n응답에는 `zone_file`이 포함됩니다. 도메인에 필요한 모든 DNS 레코드(MX, 인증, SPF, DKIM, Return-Path, DMARC, 자동 검색)가 담긴 영역 파일로, DNS 공급자에서 가져올 수 있습니다(도메인 관리자만).",
         "tags": [
           "도메인"
         ],
@@ -5631,7 +5668,7 @@
       ],
       "get": {
         "summary": "도메인 검색",
-        "description": "특정 도메인 검색",
+        "description": "특정 도메인 검색\n\n응답에는 `zone_file`이 포함됩니다. 도메인에 필요한 모든 DNS 레코드(MX, 인증, SPF, DKIM, Return-Path, DMARC, 자동 검색)가 담긴 영역 파일로, DNS 공급자에서 가져올 수 있습니다(도메인 관리자만).",
         "tags": [
           "도메인"
         ],

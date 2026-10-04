@@ -1810,6 +1810,15 @@
       "Domain": {
         "type": "object",
         "properties": {
+          "domain_updates": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          },
+          "has_pending_domain_updates": {
+            "type": "boolean"
+          },
           "has_newsletter": {
             "type": "boolean"
           },
@@ -1886,6 +1895,18 @@
           "smtp_port": {
             "type": "string"
           },
+          "members": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          },
+          "invites": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          },
           "name": {
             "type": "string"
           },
@@ -1902,6 +1923,18 @@
             "type": "boolean"
           },
           "has_dmarc_record": {
+            "type": "boolean"
+          },
+          "has_strict_dmarc": {
+            "type": "boolean"
+          },
+          "has_spf_record": {
+            "type": "boolean"
+          },
+          "has_autoconfig_record": {
+            "type": "boolean"
+          },
+          "has_autodiscover_record": {
             "type": "boolean"
           },
           "has_recipient_verification": {
@@ -1996,6 +2029,10 @@
                 }
               }
             }
+          },
+          "zone_file": {
+            "type": "string",
+            "description": "Tous les enregistrements DNS dont le domaine a besoin (MX, vérification, SPF, DKIM, Return-Path, DMARC et découverte automatique) sous forme de fichier de zone à importer chez un fournisseur DNS. Inclus uniquement lorsqu'un domaine est récupéré ou créé, pour les administrateurs du domaine."
           },
           "link": {
             "type": "string",
@@ -5579,7 +5616,7 @@
       },
       "post": {
         "summary": "Créer un domaine",
-        "description": "Crée un nouveau domaine dans le système. Ce point de terminaison permet d'enregistrer un nom de domaine pleinement qualifié (FQDN) ou une adresse IP pour l'utiliser avec la plateforme.\n\nLes options de configuration facultatives incluent l'attribution du domaine à une équipe existante, le choix d'un type d'abonnement (par exemple, gratuit, protection renforcée ou équipe) et la configuration de protections avancées telles que le filtrage anti-spam, l'analyse antivirus et la vérification des destinataires. Vous pouvez également configurer la création par défaut d'un alias générique, définir une URL de webhook de rebond personnalisée pour les échecs SMTP et définir des limites de quota de stockage pour les alias de messagerie sur ce domaine. Ce point de terminaison effectue la validation et le provisionnement au niveau du domaine. Si l'option `ignore_mx_check` est activée, la vérification des enregistrements MX est ignorée (recommandé uniquement pour les configurations de routage avancées). La réponse contiendra tous les détails de l'objet domaine créé, y compris les enregistrements DNS nécessaires à la configuration.",
+        "description": "Crée un nouveau domaine dans le système. Ce point de terminaison permet d'enregistrer un nom de domaine pleinement qualifié (FQDN) ou une adresse IP pour l'utiliser avec la plateforme.\n\nLes options de configuration facultatives incluent l'attribution du domaine à une équipe existante, le choix d'un type d'abonnement (par exemple, gratuit, protection renforcée ou équipe) et la configuration de protections avancées telles que le filtrage anti-spam, l'analyse antivirus et la vérification des destinataires. Vous pouvez également configurer la création par défaut d'un alias générique, définir une URL de webhook de rebond personnalisée pour les échecs SMTP et définir des limites de quota de stockage pour les alias de messagerie sur ce domaine. Ce point de terminaison effectue la validation et le provisionnement au niveau du domaine. Si l'option `ignore_mx_check` est activée, la vérification des enregistrements MX est ignorée (recommandé uniquement pour les configurations de routage avancées). La réponse contiendra tous les détails de l'objet domaine créé, y compris les enregistrements DNS nécessaires à la configuration.\n\nLa réponse inclut `zone_file`, un fichier de zone avec tous les enregistrements DNS dont le domaine a besoin (MX, vérification, SPF, DKIM, Return-Path, DMARC et découverte automatique), que vous pouvez importer chez votre fournisseur DNS (administrateurs du domaine uniquement).",
         "tags": [
           "Domaines"
         ],
@@ -5631,7 +5668,7 @@
       ],
       "get": {
         "summary": "Récupérer le domaine",
-        "description": "Récupérer un domaine spécifique",
+        "description": "Récupérer un domaine spécifique\n\nLa réponse inclut `zone_file`, un fichier de zone avec tous les enregistrements DNS dont le domaine a besoin (MX, vérification, SPF, DKIM, Return-Path, DMARC et découverte automatique), que vous pouvez importer chez votre fournisseur DNS (administrateurs du domaine uniquement).",
         "tags": [
           "Domaines"
         ],

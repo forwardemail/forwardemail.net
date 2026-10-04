@@ -68,7 +68,7 @@ const Domains = require('#models/domains');
 const Users = require('#models/users');
 const checkDomainAndAct = require('#helpers/check-domain-and-act');
 const config = require('#config');
-const createTangerine = require('#helpers/create-tangerine');
+const createFamilyResolver = require('#helpers/create-family-resolver');
 const csvEscape = require('#helpers/csv-escape');
 const emailHelper = require('#helpers/email');
 const forEachInBatches = require('#helpers/for-each-in-batches');
@@ -91,15 +91,9 @@ graceful.listen();
 //
 // Dedicated Tangerine resolver using Cloudflare Family DNS servers.
 // These servers return 0.0.0.0 for domains categorised as adult
-// content or malware.  Uses `createTangerine` (the standard codebase
-// helper) with a custom `servers` option.
+// content or malware (see `helpers/create-family-resolver`).
 //
-// NOTE: The correct Cloudflare Family DNS IPs are 1.1.1.3 and 1.0.0.3
-// (not 1.1.0.3 which is undocumented and may not apply family filtering).
-//
-const familyResolver = createTangerine(client, logger, {
-  servers: new Set(['1.1.1.3', '1.0.0.3'])
-});
+const familyResolver = createFamilyResolver(client, logger);
 
 // store boolean if the job is cancelled
 let isCancelled = false;

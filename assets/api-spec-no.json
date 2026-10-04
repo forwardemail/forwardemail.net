@@ -1810,6 +1810,15 @@
       "Domain": {
         "type": "object",
         "properties": {
+          "domain_updates": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          },
+          "has_pending_domain_updates": {
+            "type": "boolean"
+          },
           "has_newsletter": {
             "type": "boolean"
           },
@@ -1886,6 +1895,18 @@
           "smtp_port": {
             "type": "string"
           },
+          "members": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          },
+          "invites": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          },
           "name": {
             "type": "string"
           },
@@ -1902,6 +1923,18 @@
             "type": "boolean"
           },
           "has_dmarc_record": {
+            "type": "boolean"
+          },
+          "has_strict_dmarc": {
+            "type": "boolean"
+          },
+          "has_spf_record": {
+            "type": "boolean"
+          },
+          "has_autoconfig_record": {
+            "type": "boolean"
+          },
+          "has_autodiscover_record": {
             "type": "boolean"
           },
           "has_recipient_verification": {
@@ -1996,6 +2029,10 @@
                 }
               }
             }
+          },
+          "zone_file": {
+            "type": "string",
+            "description": "Alle DNS-postene domenet trenger (MX, verifisering, SPF, DKIM, Return-Path, DMARC og automatisk oppdagelse) som en sonefil for import hos en DNS-leverandør. Tas bare med når et domene hentes eller opprettes, for domeneadministratorer."
           },
           "link": {
             "type": "string",
@@ -5579,7 +5616,7 @@
       },
       "post": {
         "summary": "Opprett domene",
-        "description": "Oppretter et nytt domene i systemet. Dette endepunktet lar deg registrere et fullstendig kvalifisert domenenavn (FQDN) eller en IP-adresse for bruk med plattformen.\n\nValgfrie konfigurasjonsalternativer inkluderer å tilordne domenet til et eksisterende team, angi en plantype (f.eks. gratis, forbedret beskyttelse eller team) og konfigurere avansert beskyttelse som spamfiltrering, virusskanning og mottakerverifisering. Du kan også konfigurere om et catch-all-alias skal opprettes som standard, angi en tilpasset URL for avvist webhook for SMTP-feil og definere lagringskvotegrenser for e-postaliaser på dette domenet. Dette endepunktet utfører validering og klargjøring på domenenivå. Hvis alternativet `ignore_mx_check` er aktivert, hoppes MX-postverifisering over (anbefales kun for avanserte rutingsoppsett). Svaret vil inneholde fullstendige detaljer om det opprettede domeneobjektet, inkludert DNS-poster som trengs for konfigurasjon.",
+        "description": "Oppretter et nytt domene i systemet. Dette endepunktet lar deg registrere et fullstendig kvalifisert domenenavn (FQDN) eller en IP-adresse for bruk med plattformen.\n\nValgfrie konfigurasjonsalternativer inkluderer å tilordne domenet til et eksisterende team, angi en plantype (f.eks. gratis, forbedret beskyttelse eller team) og konfigurere avansert beskyttelse som spamfiltrering, virusskanning og mottakerverifisering. Du kan også konfigurere om et catch-all-alias skal opprettes som standard, angi en tilpasset URL for avvist webhook for SMTP-feil og definere lagringskvotegrenser for e-postaliaser på dette domenet. Dette endepunktet utfører validering og klargjøring på domenenivå. Hvis alternativet `ignore_mx_check` er aktivert, hoppes MX-postverifisering over (anbefales kun for avanserte rutingsoppsett). Svaret vil inneholde fullstendige detaljer om det opprettede domeneobjektet, inkludert DNS-poster som trengs for konfigurasjon.\n\nSvaret inneholder `zone_file`, en sonefil med alle DNS-postene domenet trenger (MX, verifisering, SPF, DKIM, Return-Path, DMARC og automatisk oppdagelse) som du kan importere hos DNS-leverandøren din (kun domeneadministratorer).",
         "tags": [
           "Domener"
         ],
@@ -5631,7 +5668,7 @@
       ],
       "get": {
         "summary": "Hent domene",
-        "description": "Hent et bestemt domene",
+        "description": "Hent et bestemt domene\n\nSvaret inneholder `zone_file`, en sonefil med alle DNS-postene domenet trenger (MX, verifisering, SPF, DKIM, Return-Path, DMARC og automatisk oppdagelse) som du kan importere hos DNS-leverandøren din (kun domeneadministratorer).",
         "tags": [
           "Domener"
         ],

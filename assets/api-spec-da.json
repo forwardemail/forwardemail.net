@@ -1810,6 +1810,15 @@
       "Domain": {
         "type": "object",
         "properties": {
+          "domain_updates": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          },
+          "has_pending_domain_updates": {
+            "type": "boolean"
+          },
           "has_newsletter": {
             "type": "boolean"
           },
@@ -1886,6 +1895,18 @@
           "smtp_port": {
             "type": "string"
           },
+          "members": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          },
+          "invites": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          },
           "name": {
             "type": "string"
           },
@@ -1902,6 +1923,18 @@
             "type": "boolean"
           },
           "has_dmarc_record": {
+            "type": "boolean"
+          },
+          "has_strict_dmarc": {
+            "type": "boolean"
+          },
+          "has_spf_record": {
+            "type": "boolean"
+          },
+          "has_autoconfig_record": {
+            "type": "boolean"
+          },
+          "has_autodiscover_record": {
             "type": "boolean"
           },
           "has_recipient_verification": {
@@ -1996,6 +2029,10 @@
                 }
               }
             }
+          },
+          "zone_file": {
+            "type": "string",
+            "description": "Alle de DNS-poster, domænet har brug for (MX, verifikation, SPF, DKIM, Return-Path, DMARC og automatisk registrering), som en zonefil til import hos en DNS-udbyder. Medtages kun, når et domæne hentes eller oprettes, for domæneadministratorer."
           },
           "link": {
             "type": "string",
@@ -5579,7 +5616,7 @@
       },
       "post": {
         "summary": "Opret domæne",
-        "description": "Opretter et nyt domæne i systemet. Dette slutpunkt giver dig mulighed for at registrere et fuldt kvalificeret domænenavn (FQDN) eller en IP-adresse til brug med platformen.\n\nValgfrie konfigurationsmuligheder inkluderer tildeling af domænet til et eksisterende team, indstilling af en plantype (f.eks. gratis, forbedret beskyttelse eller team) og konfiguration af avanceret beskyttelse såsom spamfiltrering, virusscanning og modtagerverifikation. Du kan også konfigurere, om et catch-all-alias skal oprettes som standard, indstille en brugerdefineret bounce webhook-URL til SMTP-fejl og definere lagerkvotegrænser for e-mail-aliasser på dette domæne. Dette slutpunkt udfører validering og klargøring på domæneniveau. Hvis indstillingen `ignore_mx_check` er aktiveret, springes MX-postverifikation over (anbefales kun til avancerede routingopsætninger). Svaret vil indeholde alle detaljer om det oprettede domæneobjekt, inklusive DNS-poster, der er nødvendige til konfiguration.",
+        "description": "Opretter et nyt domæne i systemet. Dette slutpunkt giver dig mulighed for at registrere et fuldt kvalificeret domænenavn (FQDN) eller en IP-adresse til brug med platformen.\n\nValgfrie konfigurationsmuligheder inkluderer tildeling af domænet til et eksisterende team, indstilling af en plantype (f.eks. gratis, forbedret beskyttelse eller team) og konfiguration af avanceret beskyttelse såsom spamfiltrering, virusscanning og modtagerverifikation. Du kan også konfigurere, om et catch-all-alias skal oprettes som standard, indstille en brugerdefineret bounce webhook-URL til SMTP-fejl og definere lagerkvotegrænser for e-mail-aliasser på dette domæne. Dette slutpunkt udfører validering og klargøring på domæneniveau. Hvis indstillingen `ignore_mx_check` er aktiveret, springes MX-postverifikation over (anbefales kun til avancerede routingopsætninger). Svaret vil indeholde alle detaljer om det oprettede domæneobjekt, inklusive DNS-poster, der er nødvendige til konfiguration.\n\nSvaret indeholder `zone_file`, en zonefil med alle de DNS-poster, domænet har brug for (MX, verifikation, SPF, DKIM, Return-Path, DMARC og automatisk registrering), som du kan importere hos din DNS-udbyder (kun domæneadministratorer).",
         "tags": [
           "Domæner"
         ],
@@ -5631,7 +5668,7 @@
       ],
       "get": {
         "summary": "Hent domæne",
-        "description": "Hent et specifikt domæne",
+        "description": "Hent et specifikt domæne\n\nSvaret indeholder `zone_file`, en zonefil med alle de DNS-poster, domænet har brug for (MX, verifikation, SPF, DKIM, Return-Path, DMARC og automatisk registrering), som du kan importere hos din DNS-udbyder (kun domæneadministratorer).",
         "tags": [
           "Domæner"
         ],

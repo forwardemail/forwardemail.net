@@ -627,6 +627,8 @@ curl BASE_URI/v1/domains \
 
 > `POST /v1/domains`
 
+La risposta include `zone_file`, un file di zona con tutti i record DNS di cui il dominio ha bisogno (MX, verifica, SPF, DKIM, Return-Path, DMARC e rilevamento automatico) che puoi importare nel tuo provider DNS (solo amministratori del dominio).
+
 | Parametro Body                 | Obbligatorio | Tipo                                          | Descrizione                                                                                                                                                                                                                                                                                                          |
 | ------------------------------ | ------------ | --------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `domain`                       | Sì           | Stringa (FQDN o IP)                           | Nome di dominio completamente qualificato ("FQDN") o indirizzo IP                                                                                                                                                                                                                                                    |
@@ -654,6 +656,8 @@ curl -X POST BASE_URI/v1/domains \
 ### Recupera dominio {#retrieve-domain}
 
 > `GET /v1/domains/DOMAIN_NAME`
+
+La risposta include `zone_file`, un file di zona con tutti i record DNS di cui il dominio ha bisogno (MX, verifica, SPF, DKIM, Return-Path, DMARC e rilevamento automatico) che puoi importare nel tuo provider DNS (solo amministratori del dominio).
 
 > Esempio di richiesta:
 

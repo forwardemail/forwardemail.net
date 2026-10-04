@@ -384,13 +384,13 @@ router
     rateLimit(50, 'create domain'),
     api.v1.enforcePaidPlan,
     web.myAccount.createDomain,
-    api.v1.domains.retrieve
+    api.v1.domains.retrieveWithZoneFile
   )
   .get(
     '/domains/:domain_id',
     web.myAccount.retrieveDomain,
     api.v1.enforcePaidPlan,
-    api.v1.domains.retrieve
+    api.v1.domains.retrieveWithZoneFile
   )
   .get(
     '/domains/:domain_id/verify-records',

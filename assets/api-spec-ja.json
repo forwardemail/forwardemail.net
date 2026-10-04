@@ -1810,6 +1810,15 @@
       "Domain": {
         "type": "object",
         "properties": {
+          "domain_updates": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          },
+          "has_pending_domain_updates": {
+            "type": "boolean"
+          },
           "has_newsletter": {
             "type": "boolean"
           },
@@ -1886,6 +1895,18 @@
           "smtp_port": {
             "type": "string"
           },
+          "members": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          },
+          "invites": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          },
           "name": {
             "type": "string"
           },
@@ -1902,6 +1923,18 @@
             "type": "boolean"
           },
           "has_dmarc_record": {
+            "type": "boolean"
+          },
+          "has_strict_dmarc": {
+            "type": "boolean"
+          },
+          "has_spf_record": {
+            "type": "boolean"
+          },
+          "has_autoconfig_record": {
+            "type": "boolean"
+          },
+          "has_autodiscover_record": {
             "type": "boolean"
           },
           "has_recipient_verification": {
@@ -1996,6 +2029,10 @@
                 }
               }
             }
+          },
+          "zone_file": {
+            "type": "string",
+            "description": "ドメインに必要なすべての DNS レコード (MX、確認、SPF、DKIM、Return-Path、DMARC、自動検出) を、DNS プロバイダーにインポートするためのゾーンファイルとして返します。ドメインの取得時または作成時のみ、ドメイン管理者に含まれます。"
           },
           "link": {
             "type": "string",
@@ -5579,7 +5616,7 @@
       },
       "post": {
         "summary": "ドメインを作成",
-        "description": "システムに新しいドメインを作成します。このエンドポイントでは、プラットフォームで使用する完全修飾ドメイン名 (FQDN) または IP アドレスを登録できます。\n\nオプションの設定オプションには、既存のチームへのドメインの割り当て、プランの種類 (無料、拡張保護、チームなど) の設定、スパムフィルタリング、ウイルススキャン、受信者検証などの高度な保護機能の設定などがあります。また、キャッチオールエイリアスをデフォルトで作成するかどうかの設定、SMTP エラー時のカスタムバウンス Webhook URL の設定、このドメインのメールエイリアスのストレージクォータ制限の定義も可能です。このエンドポイントは、ドメインレベルの検証とプロビジョニングを実行します。`ignore_mx_check` オプションが有効になっている場合、MX レコードの検証はスキップされます (高度なルーティング設定の場合のみ推奨)。レスポンスには、設定に必要な DNS レコードを含む、作成されたドメインオブジェクトの詳細情報が含まれます。",
+        "description": "システムに新しいドメインを作成します。このエンドポイントでは、プラットフォームで使用する完全修飾ドメイン名 (FQDN) または IP アドレスを登録できます。\n\nオプションの設定オプションには、既存のチームへのドメインの割り当て、プランの種類 (無料、拡張保護、チームなど) の設定、スパムフィルタリング、ウイルススキャン、受信者検証などの高度な保護機能の設定などがあります。また、キャッチオールエイリアスをデフォルトで作成するかどうかの設定、SMTP エラー時のカスタムバウンス Webhook URL の設定、このドメインのメールエイリアスのストレージクォータ制限の定義も可能です。このエンドポイントは、ドメインレベルの検証とプロビジョニングを実行します。`ignore_mx_check` オプションが有効になっている場合、MX レコードの検証はスキップされます (高度なルーティング設定の場合のみ推奨)。レスポンスには、設定に必要な DNS レコードを含む、作成されたドメインオブジェクトの詳細情報が含まれます。\n\nレスポンスには `zone_file` が含まれます。ドメインに必要なすべての DNS レコード (MX、確認、SPF、DKIM、Return-Path、DMARC、自動検出) を含むゾーンファイルで、DNS プロバイダーにインポートできます (ドメイン管理者のみ)。",
         "tags": [
           "ドメイン"
         ],
@@ -5631,7 +5668,7 @@
       ],
       "get": {
         "summary": "ドメインを取得",
-        "description": "特定のドメインを取得する",
+        "description": "特定のドメインを取得する\n\nレスポンスには `zone_file` が含まれます。ドメインに必要なすべての DNS レコード (MX、確認、SPF、DKIM、Return-Path、DMARC、自動検出) を含むゾーンファイルで、DNS プロバイダーにインポートできます (ドメイン管理者のみ)。",
         "tags": [
           "ドメイン"
         ],

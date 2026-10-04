@@ -1810,6 +1810,15 @@
       "Domain": {
         "type": "object",
         "properties": {
+          "domain_updates": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          },
+          "has_pending_domain_updates": {
+            "type": "boolean"
+          },
           "has_newsletter": {
             "type": "boolean"
           },
@@ -1886,6 +1895,18 @@
           "smtp_port": {
             "type": "string"
           },
+          "members": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          },
+          "invites": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          },
           "name": {
             "type": "string"
           },
@@ -1902,6 +1923,18 @@
             "type": "boolean"
           },
           "has_dmarc_record": {
+            "type": "boolean"
+          },
+          "has_strict_dmarc": {
+            "type": "boolean"
+          },
+          "has_spf_record": {
+            "type": "boolean"
+          },
+          "has_autoconfig_record": {
+            "type": "boolean"
+          },
+          "has_autodiscover_record": {
             "type": "boolean"
           },
           "has_recipient_verification": {
@@ -1996,6 +2029,10 @@
                 }
               }
             }
+          },
+          "zone_file": {
+            "type": "string",
+            "description": "Alan adının ihtiyaç duyduğu tüm DNS kayıtları (MX, doğrulama, SPF, DKIM, Return-Path, DMARC ve otomatik keşif), bir DNS sağlayıcısına içe aktarılacak bölge dosyası olarak. Yalnızca bir alan adı alındığında veya oluşturulduğunda, alan adı yöneticileri için eklenir."
           },
           "link": {
             "type": "string",
@@ -5579,7 +5616,7 @@
       },
       "post": {
         "summary": "Alan adı oluştur",
-        "description": "Sistemde yeni bir alan adı oluşturur. Bu uç nokta, platformla kullanılmak üzere tam nitelikli bir alan adı (FQDN) veya IP adresi kaydetmenize olanak tanır.\n\nİsteğe bağlı yapılandırma seçenekleri arasında alan adını mevcut bir ekibe atamak, bir plan türü belirlemek (örneğin, ücretsiz, gelişmiş koruma veya ekip) ve spam filtreleme, virüs tarama ve alıcı doğrulama gibi gelişmiş korumaları yapılandırmak bulunur. Ayrıca, varsayılan olarak her şeyi kapsayan bir takma ad oluşturulup oluşturulmayacağını yapılandırabilir, SMTP hataları için özel bir geri dönüş webhook URL'si ayarlayabilir ve bu alan adındaki e-posta takma adları için depolama kotası sınırları tanımlayabilirsiniz. Bu uç nokta, alan adı düzeyinde doğrulama ve sağlama gerçekleştirir. `ignore_mx_check` seçeneği etkinleştirilirse, MX kaydı doğrulaması atlanır (yalnızca gelişmiş yönlendirme kurulumları için önerilir). Yanıt, yapılandırma için gereken DNS kayıtları da dahil olmak üzere oluşturulan alan adı nesnesinin tüm ayrıntılarını içerir.",
+        "description": "Sistemde yeni bir alan adı oluşturur. Bu uç nokta, platformla kullanılmak üzere tam nitelikli bir alan adı (FQDN) veya IP adresi kaydetmenize olanak tanır.\n\nİsteğe bağlı yapılandırma seçenekleri arasında alan adını mevcut bir ekibe atamak, bir plan türü belirlemek (örneğin, ücretsiz, gelişmiş koruma veya ekip) ve spam filtreleme, virüs tarama ve alıcı doğrulama gibi gelişmiş korumaları yapılandırmak bulunur. Ayrıca, varsayılan olarak her şeyi kapsayan bir takma ad oluşturulup oluşturulmayacağını yapılandırabilir, SMTP hataları için özel bir geri dönüş webhook URL'si ayarlayabilir ve bu alan adındaki e-posta takma adları için depolama kotası sınırları tanımlayabilirsiniz. Bu uç nokta, alan adı düzeyinde doğrulama ve sağlama gerçekleştirir. `ignore_mx_check` seçeneği etkinleştirilirse, MX kaydı doğrulaması atlanır (yalnızca gelişmiş yönlendirme kurulumları için önerilir). Yanıt, yapılandırma için gereken DNS kayıtları da dahil olmak üzere oluşturulan alan adı nesnesinin tüm ayrıntılarını içerir.\n\nYanıt, alan adının ihtiyaç duyduğu tüm DNS kayıtlarını (MX, doğrulama, SPF, DKIM, Return-Path, DMARC ve otomatik keşif) içeren ve DNS sağlayıcınıza içe aktarabileceğiniz bir bölge dosyası olan `zone_file` alanını içerir (yalnızca alan adı yöneticileri).",
         "tags": [
           "Alan Adları"
         ],
@@ -5631,7 +5668,7 @@
       ],
       "get": {
         "summary": "Alan adını al",
-        "description": "Belirli bir etki alanını alın",
+        "description": "Belirli bir etki alanını alın\n\nYanıt, alan adının ihtiyaç duyduğu tüm DNS kayıtlarını (MX, doğrulama, SPF, DKIM, Return-Path, DMARC ve otomatik keşif) içeren ve DNS sağlayıcınıza içe aktarabileceğiniz bir bölge dosyası olan `zone_file` alanını içerir (yalnızca alan adı yöneticileri).",
         "tags": [
           "Alan Adları"
         ],

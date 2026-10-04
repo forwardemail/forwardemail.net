@@ -1810,6 +1810,15 @@
       "Domain": {
         "type": "object",
         "properties": {
+          "domain_updates": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          },
+          "has_pending_domain_updates": {
+            "type": "boolean"
+          },
           "has_newsletter": {
             "type": "boolean"
           },
@@ -1886,6 +1895,18 @@
           "smtp_port": {
             "type": "string"
           },
+          "members": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          },
+          "invites": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          },
           "name": {
             "type": "string"
           },
@@ -1902,6 +1923,18 @@
             "type": "boolean"
           },
           "has_dmarc_record": {
+            "type": "boolean"
+          },
+          "has_strict_dmarc": {
+            "type": "boolean"
+          },
+          "has_spf_record": {
+            "type": "boolean"
+          },
+          "has_autoconfig_record": {
+            "type": "boolean"
+          },
+          "has_autodiscover_record": {
             "type": "boolean"
           },
           "has_recipient_verification": {
@@ -1996,6 +2029,10 @@
                 }
               }
             }
+          },
+          "zone_file": {
+            "type": "string",
+            "description": "A domainhez szükséges összes DNS-rekord (MX, ellenőrzés, SPF, DKIM, Return-Path, DMARC és automatikus felderítés) zónafájlként, DNS-szolgáltatónál történő importáláshoz. Csak domain lekérésekor vagy létrehozásakor szerepel, a domain adminisztrátorainak."
           },
           "link": {
             "type": "string",
@@ -5579,7 +5616,7 @@
       },
       "post": {
         "summary": "Domain létrehozása",
-        "description": "Létrehoz egy új domaint a rendszerben. Ez a végpont lehetővé teszi egy teljes domainnév (FQDN) vagy IP-cím regisztrálását a platformmal való használatra.\n\n\nAz opcionális konfigurációs lehetőségek közé tartozik a domain hozzárendelése egy meglévő csapathoz, a csomag típusának beállítása (pl. ingyenes, fokozott védelem vagy csapat), valamint a speciális védelem konfigurálása, például a spam szűrés, a víruskeresés és a címzett-ellenőrzés. Azt is konfigurálhatja, hogy alapértelmezés szerint létrejöjjön-e egy gyűjtőalias, beállíthat egyéni visszapattanási webhook URL-t az SMTP-hibákhoz, és meghatározhatja a tárolási kvótakorlátokat az e-mail aliasok számára ezen a domainen. Ez a végpont domain szintű érvényesítést és kiépítést végez. Ha az `ignore_mx_check` opció engedélyezve van, az MX rekordok ellenőrzése kimarad (csak speciális útválasztási beállításokhoz ajánlott). A válasz a létrehozott domainobjektum teljes részleteit tartalmazza, beleértve a konfigurációhoz szükséges DNS-rekordokat is.",
+        "description": "Létrehoz egy új domaint a rendszerben. Ez a végpont lehetővé teszi egy teljes domainnév (FQDN) vagy IP-cím regisztrálását a platformmal való használatra.\n\n\nAz opcionális konfigurációs lehetőségek közé tartozik a domain hozzárendelése egy meglévő csapathoz, a csomag típusának beállítása (pl. ingyenes, fokozott védelem vagy csapat), valamint a speciális védelem konfigurálása, például a spam szűrés, a víruskeresés és a címzett-ellenőrzés. Azt is konfigurálhatja, hogy alapértelmezés szerint létrejöjjön-e egy gyűjtőalias, beállíthat egyéni visszapattanási webhook URL-t az SMTP-hibákhoz, és meghatározhatja a tárolási kvótakorlátokat az e-mail aliasok számára ezen a domainen. Ez a végpont domain szintű érvényesítést és kiépítést végez. Ha az `ignore_mx_check` opció engedélyezve van, az MX rekordok ellenőrzése kimarad (csak speciális útválasztási beállításokhoz ajánlott). A válasz a létrehozott domainobjektum teljes részleteit tartalmazza, beleértve a konfigurációhoz szükséges DNS-rekordokat is.\n\nA válasz tartalmazza a `zone_file` mezőt: egy zónafájlt a domainhez szükséges összes DNS-rekorddal (MX, ellenőrzés, SPF, DKIM, Return-Path, DMARC és automatikus felderítés), amelyet importálhat a DNS-szolgáltatójánál (csak a domain adminisztrátorainak).",
         "tags": [
           "Domainek"
         ],
@@ -5631,7 +5668,7 @@
       ],
       "get": {
         "summary": "Domain lekérése",
-        "description": "Egy adott domain lekérése",
+        "description": "Egy adott domain lekérése\n\nA válasz tartalmazza a `zone_file` mezőt: egy zónafájlt a domainhez szükséges összes DNS-rekorddal (MX, ellenőrzés, SPF, DKIM, Return-Path, DMARC és automatikus felderítés), amelyet importálhat a DNS-szolgáltatójánál (csak a domain adminisztrátorainak).",
         "tags": [
           "Domainek"
         ],

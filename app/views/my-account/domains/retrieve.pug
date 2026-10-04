@@ -10,6 +10,8 @@ block append scripts
       crossorigin="anonymous"
     )
 
+include _zone-file
+
 block body
   - const provider = nsProviderLookup(domain);
   if !domain.has_mx_record || !domain.has_txt_record
@@ -580,6 +582,9 @@ block body
                         if provider && provider.slug && provider.slug === 'cloudflare'
                           td.align-middle.small.text-center.user-select-none.text-nowrap DNS only
               .alert.alert-warning.text-left.text-md-center.small!= t('<strong>Need a <span class="notranslate">TTL</span> value?</strong> Make it as close to <span class="notranslate text-monospace">3600</span> (60 minutes) as possible.')
+              if domain.plan !== 'free'
+                .alert.alert-primary.text-left.text-md-center.small
+                  != t('You can add every record now, including the ones for sending email (SPF, DKIM, Return-Path, and DMARC), with the <a href="#zone-file" class="alert-link">zone file below</a>.')
 
               if domain.plan === 'free'
                 .alert.alert-primary.small
@@ -596,6 +601,12 @@ block body
                   i.fa.fa-refresh
                   = " "
                   = t("Verify")
+        if zoneFile
+          #zone-file.col-12.mt-3
+            .card
+              h2.h5.card-header.text-left.text-md-center= t("Zone File")
+              .card-body
+                +zoneFile(domain, true)
       //-.
         ul.list-inline
           li.list-inline-item

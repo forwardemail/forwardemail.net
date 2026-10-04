@@ -8,6 +8,7 @@ const isSANB = require('is-string-and-not-blank');
 const mongoose = require('mongoose');
 const isEmail = require('#helpers/is-email');
 const env = require('#config/env');
+const filterLogForViewer = require('#helpers/filter-log-for-viewer');
 
 const { Logs, Aliases } = require('#models');
 
@@ -196,6 +197,22 @@ async function retrieveLog(ctx, next) {
   // If user has no access through either MAIL FROM or RCPT TO, deny access
   //
   if (!hasAccess)
+    throw Boom.badRequest(ctx.translateError('LOG_DOES_NOT_EXIST'));
+
+  //
+  // keep the delivery details of other recipients out
+  // (where their aliases forward to and what those destinations replied)
+  //
+  if (
+    !filterLogForViewer(
+      log,
+      filterLogForViewer.createIsVisible({
+        domains: ctx.state.domains,
+        nonAdminDomainsToAliases,
+        logDomains: log.domains
+      })
+    )
+  )
     throw Boom.badRequest(ctx.translateError('LOG_DOES_NOT_EXIST'));
 
   //

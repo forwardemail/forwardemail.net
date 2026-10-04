@@ -627,6 +627,8 @@ curl BASE_URI/v1/domains \
 
 > `POST /v1/domains`
 
+Respons mencakup `zone_file`, file zona berisi semua data DNS yang dibutuhkan domain (MX, verifikasi, SPF, DKIM, Return-Path, DMARC, dan penemuan otomatis) yang dapat Anda impor ke penyedia DNS Anda (hanya admin domain).
+
 | Parameter Body                 | Wajib | Tipe                                          | Deskripsi                                                                                                                                                                                                                                                                                                          |
 | ------------------------------ | ------ | --------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `domain`                       | Ya     | String (FQDN atau IP)                         | Nama domain lengkap ("FQDN") atau alamat IP                                                                                                                                                                                                                                                                       |
@@ -654,6 +656,8 @@ curl -X POST BASE_URI/v1/domains \
 ### Ambil domain {#retrieve-domain}
 
 > `GET /v1/domains/DOMAIN_NAME`
+
+Respons mencakup `zone_file`, file zona berisi semua data DNS yang dibutuhkan domain (MX, verifikasi, SPF, DKIM, Return-Path, DMARC, dan penemuan otomatis) yang dapat Anda impor ke penyedia DNS Anda (hanya admin domain).
 
 > Contoh Permintaan:
 

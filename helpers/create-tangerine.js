@@ -54,6 +54,13 @@ function createTangerine(
 ) {
   if (!client) throw new Error('Client required');
 
+  // (a resolver with other servers keeps its answers apart from the default
+  // ones, e.g. one whose answers are filtered, see `create-family-resolver`)
+  let prefix = 'tangerine:';
+  if (options && typeof options === 'object' && options.cachePrefix) {
+    ({ cachePrefix: prefix, ...options } = options);
+  }
+
   if (!options || typeof options !== 'object')
     options = {
       // speeds up tests x2 if any DNS errors detected
@@ -66,7 +73,7 @@ function createTangerine(
     };
 
   // <https://github.com/forwardemail/tangerine#cache>
-  const cache = refix(client, 'tangerine:');
+  const cache = refix(client, prefix);
   const { set } = cache;
   cache.set = (...args) => {
     if (typeof args[1] === 'object') args[1] = JSON.stringify(args[1]);

@@ -627,6 +627,8 @@ curl BASE_URI/v1/domains \
 
 > `POST /v1/domains`
 
+Vastaus sisältää kentän `zone_file`, vyöhyketiedoston, jossa on kaikki verkkotunnuksen tarvitsemat DNS-tietueet (MX, vahvistus, SPF, DKIM, Return-Path, DMARC ja automaattinen määritys) ja jonka voit tuoda DNS-palveluntarjoajallesi (vain verkkotunnuksen ylläpitäjät).
+
 | Pyynnön parametri             | Pakollinen | Tyyppi                                         | Kuvaus                                                                                                                                                                                                                                                                                                            |
 | ----------------------------- | ---------- | ---------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | `domain`                      | Kyllä      | Merkkijono (FQDN tai IP)                       | Täysin määritelty verkkotunnus ("FQDN") tai IP-osoite                                                                                                                                                                                                                                                             |
@@ -654,6 +656,8 @@ curl -X POST BASE_URI/v1/domains \
 ### Hae domain {#retrieve-domain}
 
 > `GET /v1/domains/DOMAIN_NAME`
+
+Vastaus sisältää kentän `zone_file`, vyöhyketiedoston, jossa on kaikki verkkotunnuksen tarvitsemat DNS-tietueet (MX, vahvistus, SPF, DKIM, Return-Path, DMARC ja automaattinen määritys) ja jonka voit tuoda DNS-palveluntarjoajallesi (vain verkkotunnuksen ylläpitäjät).
 
 > Esimerkkipyyntö:
 

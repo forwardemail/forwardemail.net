@@ -1810,6 +1810,15 @@
       "Domain": {
         "type": "object",
         "properties": {
+          "domain_updates": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          },
+          "has_pending_domain_updates": {
+            "type": "boolean"
+          },
           "has_newsletter": {
             "type": "boolean"
           },
@@ -1886,6 +1895,18 @@
           "smtp_port": {
             "type": "string"
           },
+          "members": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          },
+          "invites": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          },
           "name": {
             "type": "string"
           },
@@ -1902,6 +1923,18 @@
             "type": "boolean"
           },
           "has_dmarc_record": {
+            "type": "boolean"
+          },
+          "has_strict_dmarc": {
+            "type": "boolean"
+          },
+          "has_spf_record": {
+            "type": "boolean"
+          },
+          "has_autoconfig_record": {
+            "type": "boolean"
+          },
+          "has_autodiscover_record": {
             "type": "boolean"
           },
           "has_recipient_verification": {
@@ -1996,6 +2029,10 @@
                 }
               }
             }
+          },
+          "zone_file": {
+            "type": "string",
+            "description": "该域名所需的全部 DNS 记录（MX、验证、SPF、DKIM、Return-Path、DMARC 和自动发现），以区域文件形式提供，可导入 DNS 提供商。仅在获取或创建域名时返回，且仅限域名管理员。"
           },
           "link": {
             "type": "string",
@@ -5579,7 +5616,7 @@
       },
       "post": {
         "summary": "创建域",
-        "description": "在系统中创建一个新域。此端点允许您注册一个完全限定域名 (FQDN) 或 IP 地址，以便与平台配合使用。\n\n可选配置选项包括将域分配给现有团队、设置套餐类型（例如，免费、增强保护或团队）以及配置高级保护功能，例如垃圾邮件过滤、病毒扫描和收件人验证。您还可以配置是否默认创建通配符别名、为 SMTP 失败设置自定义退信 Webhook URL，以及定义此域上电子邮件别名的存储配额限制。此端点执行域级验证和配置。如果启用 `ignore_mx_check` 选项，则会跳过 MX 记录验证（建议仅在高级路由设置中使用）。响应将包含已创建域对象的完整详细信息，包括配置所需的 DNS 记录。",
+        "description": "在系统中创建一个新域。此端点允许您注册一个完全限定域名 (FQDN) 或 IP 地址，以便与平台配合使用。\n\n可选配置选项包括将域分配给现有团队、设置套餐类型（例如，免费、增强保护或团队）以及配置高级保护功能，例如垃圾邮件过滤、病毒扫描和收件人验证。您还可以配置是否默认创建通配符别名、为 SMTP 失败设置自定义退信 Webhook URL，以及定义此域上电子邮件别名的存储配额限制。此端点执行域级验证和配置。如果启用 `ignore_mx_check` 选项，则会跳过 MX 记录验证（建议仅在高级路由设置中使用）。响应将包含已创建域对象的完整详细信息，包括配置所需的 DNS 记录。\n\n响应中包含 `zone_file`，这是一个区域文件，包含该域名所需的全部 DNS 记录（MX、验证、SPF、DKIM、Return-Path、DMARC 和自动发现），可导入您的 DNS 提供商（仅限域名管理员）。",
         "tags": [
           "域名"
         ],
@@ -5631,7 +5668,7 @@
       ],
       "get": {
         "summary": "检索域",
-        "description": "检索特定域名",
+        "description": "检索特定域名\n\n响应中包含 `zone_file`，这是一个区域文件，包含该域名所需的全部 DNS 记录（MX、验证、SPF、DKIM、Return-Path、DMARC 和自动发现），可导入您的 DNS 提供商（仅限域名管理员）。",
         "tags": [
           "域名"
         ],

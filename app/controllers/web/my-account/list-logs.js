@@ -13,6 +13,7 @@ const paginate = require('koa-ctx-paginate');
 const revHash = require('rev-hash');
 const ms = require('ms');
 const _ = require('#helpers/lodash');
+const filterLogForViewer = require('#helpers/filter-log-for-viewer');
 const isEmail = require('#helpers/is-email');
 
 const config = require('#config');
@@ -648,46 +649,6 @@ async function listLogs(ctx) {
   ctx.state.logs = logs;
   ctx.state.itemCount = itemCount;
 
-  //
-  // Deduplicate delivered logs by session fingerprint.
-  // When IMAP storage and SMTP forwarding are both configured for an alias,
-  // two "delivered" logs are created for the same inbound email
-  // (one for the IMAP append, one for the SMTP forward).
-  // Prefer the SMTP/webhook log since it has the actual delivery response.
-  //
-  {
-    const smtpFingerprints = new Set();
-
-    // first pass: find fingerprints that have non-IMAP delivery logs
-    for (const log of ctx.state.logs) {
-      if (log.message !== 'delivered') continue;
-      const fp = log?.meta?.session?.fingerprint;
-      if (!fp) continue;
-      const response = log?.meta?.info?.response;
-      if (
-        typeof response !== 'string' ||
-        !response.startsWith('Appended to INBOX')
-      ) {
-        smtpFingerprints.add(fp);
-      }
-    }
-
-    // second pass: remove IMAP logs when a non-IMAP log exists for same fingerprint
-    if (smtpFingerprints.size > 0) {
-      ctx.state.logs = ctx.state.logs.filter((log) => {
-        if (log.message !== 'delivered') return true;
-        const fp = log?.meta?.session?.fingerprint;
-        if (!fp) return true;
-        const response = log?.meta?.info?.response;
-        return !(
-          typeof response === 'string' &&
-          response.startsWith('Appended to INBOX') &&
-          smtpFingerprints.has(fp)
-        );
-      });
-    }
-  }
-
   // KEEP: Filter and sort for cleaner UI
   ctx.state.responseCodes = responseCodes
     .filter((code) => code !== null && code !== undefined)
@@ -724,6 +685,18 @@ async function listLogs(ctx) {
     //
     ctx.state.logs = _.compact(
       ctx.state.logs.map((log) => {
+        // keep the delivery details of other recipients out
+        // (where their aliases forward to and what those destinations replied)
+        log = filterLogForViewer(
+          log,
+          filterLogForViewer.createIsVisible({
+            domains: ctx.state.domains,
+            nonAdminDomainsToAliases,
+            logDomains: log.domains
+          })
+        );
+        if (!log) return null;
+
         // TODO: if user is an admin of the domain then return early with no modifications
 
         // TODO: otherwise only render the logs relevant to the user
@@ -945,6 +918,48 @@ async function listLogs(ctx) {
     //
     if (ctx.state.logs.length === 0 && ctx.state.itemCount > 0) {
       ctx.state.hideItemCount = true;
+    }
+  }
+
+  //
+  // Deduplicate delivered logs by session fingerprint.
+  // (after the logs the user may not see were filtered out above, so their
+  // own log is not dropped for a log of the same message they cannot see)
+  // When IMAP storage and SMTP forwarding are both configured for an alias,
+  // two "delivered" logs are created for the same inbound email
+  // (one for the IMAP append, one for the SMTP forward).
+  // Prefer the SMTP/webhook log since it has the actual delivery response.
+  //
+  {
+    const smtpFingerprints = new Set();
+
+    // first pass: find fingerprints that have non-IMAP delivery logs
+    for (const log of ctx.state.logs) {
+      if (log.message !== 'delivered') continue;
+      const fp = log?.meta?.session?.fingerprint;
+      if (!fp) continue;
+      const response = log?.meta?.info?.response;
+      if (
+        typeof response !== 'string' ||
+        !response.startsWith('Appended to INBOX')
+      ) {
+        smtpFingerprints.add(fp);
+      }
+    }
+
+    // second pass: remove IMAP logs when a non-IMAP log exists for same fingerprint
+    if (smtpFingerprints.size > 0) {
+      ctx.state.logs = ctx.state.logs.filter((log) => {
+        if (log.message !== 'delivered') return true;
+        const fp = log?.meta?.session?.fingerprint;
+        if (!fp) return true;
+        const response = log?.meta?.info?.response;
+        return !(
+          typeof response === 'string' &&
+          response.startsWith('Appended to INBOX') &&
+          smtpFingerprints.has(fp)
+        );
+      });
     }
   }
 

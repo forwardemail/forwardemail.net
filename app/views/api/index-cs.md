@@ -627,6 +627,8 @@ curl BASE_URI/v1/domains \
 
 > `POST /v1/domains`
 
+Odpověď obsahuje `zone_file`, soubor zóny se všemi záznamy DNS, které doména potřebuje (MX, ověření, SPF, DKIM, Return-Path, DMARC a automatické zjišťování), který můžete importovat u svého poskytovatele DNS (pouze správci domény).
+
 | Parametr těla                 | Povinný | Typ                                           | Popis                                                                                                                                                                                                                                                                                                               |
 | ----------------------------- | ------- | --------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `domain`                      | Ano     | Řetězec (FQDN nebo IP)                        | Plně kvalifikovaný název domény ("FQDN") nebo IP adresa                                                                                                                                                                                                                                                            |
@@ -654,6 +656,8 @@ curl -X POST BASE_URI/v1/domains \
 ### Získat doménu {#retrieve-domain}
 
 > `GET /v1/domains/DOMAIN_NAME`
+
+Odpověď obsahuje `zone_file`, soubor zóny se všemi záznamy DNS, které doména potřebuje (MX, ověření, SPF, DKIM, Return-Path, DMARC a automatické zjišťování), který můžete importovat u svého poskytovatele DNS (pouze správci domény).
 
 > Příklad požadavku:
 

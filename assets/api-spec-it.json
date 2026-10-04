@@ -1810,6 +1810,15 @@
       "Domain": {
         "type": "object",
         "properties": {
+          "domain_updates": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          },
+          "has_pending_domain_updates": {
+            "type": "boolean"
+          },
           "has_newsletter": {
             "type": "boolean"
           },
@@ -1886,6 +1895,18 @@
           "smtp_port": {
             "type": "string"
           },
+          "members": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          },
+          "invites": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          },
           "name": {
             "type": "string"
           },
@@ -1902,6 +1923,18 @@
             "type": "boolean"
           },
           "has_dmarc_record": {
+            "type": "boolean"
+          },
+          "has_strict_dmarc": {
+            "type": "boolean"
+          },
+          "has_spf_record": {
+            "type": "boolean"
+          },
+          "has_autoconfig_record": {
+            "type": "boolean"
+          },
+          "has_autodiscover_record": {
             "type": "boolean"
           },
           "has_recipient_verification": {
@@ -1996,6 +2029,10 @@
                 }
               }
             }
+          },
+          "zone_file": {
+            "type": "string",
+            "description": "Tutti i record DNS di cui il dominio ha bisogno (MX, verifica, SPF, DKIM, Return-Path, DMARC e rilevamento automatico) come file di zona da importare in un provider DNS. Incluso solo quando un dominio viene recuperato o creato, per gli amministratori del dominio."
           },
           "link": {
             "type": "string",
@@ -5579,7 +5616,7 @@
       },
       "post": {
         "summary": "Crea dominio",
-        "description": "Crea un nuovo dominio nel sistema. Questo endpoint consente di registrare un nome di dominio completo (FQDN) o un indirizzo IP da utilizzare con la piattaforma.\n\nLe opzioni di configurazione opzionali includono l'assegnazione del dominio a un team esistente, l'impostazione di un tipo di piano (ad esempio, gratuito, con protezione avanzata o team) e la configurazione di protezioni avanzate come il filtro antispam, la scansione antivirus e la verifica del destinatario. È inoltre possibile configurare la creazione predefinita di un alias catch-all, impostare un URL webhook di bounce personalizzato per gli errori SMTP e definire limiti di quota di archiviazione per gli alias email su questo dominio. Questo endpoint esegue la convalida e il provisioning a livello di dominio. Se l'opzione `ignore_mx_check` è abilitata, la verifica del record MX viene ignorata (consigliato solo per configurazioni di routing avanzate). La risposta conterrà i dettagli completi dell'oggetto dominio creato, inclusi i record DNS necessari per la configurazione.",
+        "description": "Crea un nuovo dominio nel sistema. Questo endpoint consente di registrare un nome di dominio completo (FQDN) o un indirizzo IP da utilizzare con la piattaforma.\n\nLe opzioni di configurazione opzionali includono l'assegnazione del dominio a un team esistente, l'impostazione di un tipo di piano (ad esempio, gratuito, con protezione avanzata o team) e la configurazione di protezioni avanzate come il filtro antispam, la scansione antivirus e la verifica del destinatario. È inoltre possibile configurare la creazione predefinita di un alias catch-all, impostare un URL webhook di bounce personalizzato per gli errori SMTP e definire limiti di quota di archiviazione per gli alias email su questo dominio. Questo endpoint esegue la convalida e il provisioning a livello di dominio. Se l'opzione `ignore_mx_check` è abilitata, la verifica del record MX viene ignorata (consigliato solo per configurazioni di routing avanzate). La risposta conterrà i dettagli completi dell'oggetto dominio creato, inclusi i record DNS necessari per la configurazione.\n\nLa risposta include `zone_file`, un file di zona con tutti i record DNS di cui il dominio ha bisogno (MX, verifica, SPF, DKIM, Return-Path, DMARC e rilevamento automatico) che puoi importare nel tuo provider DNS (solo amministratori del dominio).",
         "tags": [
           "Domini"
         ],
@@ -5631,7 +5668,7 @@
       ],
       "get": {
         "summary": "Recupera dominio",
-        "description": "Recupera un dominio specifico",
+        "description": "Recupera un dominio specifico\n\nLa risposta include `zone_file`, un file di zona con tutti i record DNS di cui il dominio ha bisogno (MX, verifica, SPF, DKIM, Return-Path, DMARC e rilevamento automatico) che puoi importare nel tuo provider DNS (solo amministratori del dominio).",
         "tags": [
           "Domini"
         ],

@@ -15,6 +15,7 @@ const humanize = require('humanize-string');
 const titleize = require('titleize');
 const _ = require('#helpers/lodash');
 const csvEscape = require('#helpers/csv-escape');
+const filterLogForViewer = require('#helpers/filter-log-for-viewer');
 
 const Logs = require('#models/logs');
 
@@ -130,6 +131,20 @@ async function getLogsCsv(
       .cursor()
       .addCursorFlag('noCursorTimeout', true)) {
       if (!log?.meta?.session?.id) continue;
+
+      // keep the delivery details of other recipients out
+      // (where their aliases forward to and what those destinations replied)
+      if (
+        !isAdmin &&
+        !filterLogForViewer(
+          log,
+          filterLogForViewer.createIsVisible({
+            domains: userDomains,
+            nonAdminDomainsToAliases
+          })
+        )
+      )
+        continue;
 
       // deduplicate IMAP vs SMTP/webhook delivery logs by fingerprint
       if (log.message === 'delivered') {

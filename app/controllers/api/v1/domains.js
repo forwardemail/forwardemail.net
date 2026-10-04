@@ -9,6 +9,7 @@ const pickOriginal = require('@ladjs/pick-original');
 const _ = require('#helpers/lodash');
 
 const config = require('#config');
+const getZoneFile = require('#helpers/get-zone-file');
 const parseRootDomain = require('#helpers/parse-root-domain');
 const omitAdminOnlyDomainKeys = require('#helpers/omit-admin-only-domain-keys');
 const populateDomainStorage = require('#helpers/populate-domain-storage');
@@ -209,6 +210,17 @@ async function retrieve(ctx) {
   ctx.body = data;
 }
 
+//
+// A domain retrieved or created also has every DNS record it needs as a zone
+// file in `zone_file` (see `helpers/get-zone-file`), for its admins only
+// (it holds the verification record)
+//
+async function retrieveWithZoneFile(ctx) {
+  await retrieve(ctx);
+  if (isDomainAdmin(ctx.state.domain, ctx.state.user))
+    ctx.body.zone_file = getZoneFile(ctx.state.domain, ctx.state.user);
+}
+
 async function listCatchAllPasswords(ctx) {
   const tokens = [];
   if (
@@ -228,6 +240,7 @@ async function listCatchAllPasswords(ctx) {
 
 module.exports = {
   list,
+  retrieveWithZoneFile,
   retrieve,
   _domainJSON: json,
   listCatchAllPasswords

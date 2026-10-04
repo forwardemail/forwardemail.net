@@ -40,6 +40,7 @@ const retrieveAliases = require('./retrieve-aliases');
 const retrieveBilling = require('./retrieve-billing');
 const sieve = require('./sieve');
 const retrieveDomain = require('./retrieve-domain');
+const retrieveZoneFile = require('./retrieve-zone-file');
 const retrieveDomainBilling = require('./retrieve-domain-billing');
 const retrieveDomains = require('./retrieve-domains');
 const retrieveInvite = require('./retrieve-invite');
@@ -117,6 +118,7 @@ module.exports = {
   retrieveAliases,
   retrieveBilling,
   retrieveDomain,
+  retrieveZoneFile,
   retrieveDomainBilling,
   retrieveDomains,
   retrieveInvite,

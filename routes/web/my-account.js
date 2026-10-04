@@ -262,6 +262,13 @@ router
     web.myAccount.removeMember
   )
   .get(
+    '/domains/:domain_id/zone-file',
+    web.myAccount.retrieveDomain,
+    web.myAccount.ensureDomainAdmin,
+    rateLimit(100, 'retrieve zone file'),
+    web.myAccount.retrieveZoneFile
+  )
+  .get(
     '/domains/:domain_id/advanced-settings',
     web.myAccount.checkVerifiedEmail,
     web.myAccount.retrieveDomain,

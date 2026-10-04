@@ -1810,6 +1810,15 @@
       "Domain": {
         "type": "object",
         "properties": {
+          "domain_updates": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          },
+          "has_pending_domain_updates": {
+            "type": "boolean"
+          },
           "has_newsletter": {
             "type": "boolean"
           },
@@ -1886,6 +1895,18 @@
           "smtp_port": {
             "type": "string"
           },
+          "members": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          },
+          "invites": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          },
           "name": {
             "type": "string"
           },
@@ -1902,6 +1923,18 @@
             "type": "boolean"
           },
           "has_dmarc_record": {
+            "type": "boolean"
+          },
+          "has_strict_dmarc": {
+            "type": "boolean"
+          },
+          "has_spf_record": {
+            "type": "boolean"
+          },
+          "has_autoconfig_record": {
+            "type": "boolean"
+          },
+          "has_autodiscover_record": {
             "type": "boolean"
           },
           "has_recipient_verification": {
@@ -1996,6 +2029,10 @@
                 }
               }
             }
+          },
+          "zone_file": {
+            "type": "string",
+            "description": "Todos los registros DNS que necesita el dominio (MX, verificación, SPF, DKIM, Return-Path, DMARC y detección automática) como archivo de zona para importar en un proveedor de DNS. Solo se incluye al obtener o crear un dominio, para los administradores del dominio."
           },
           "link": {
             "type": "string",
@@ -5579,7 +5616,7 @@
       },
       "post": {
         "summary": "Crear dominio",
-        "description": "Crea un nuevo dominio en el sistema. Este punto final permite registrar un nombre de dominio completo (FQDN) o una dirección IP para su uso con la plataforma.\n\nLas opciones de configuración incluyen la asignación del dominio a un equipo existente, la configuración de un tipo de plan (p. ej., gratuito, protección mejorada o equipo) y la configuración de protecciones avanzadas como el filtrado de spam, el análisis de virus y la verificación de destinatarios. También puede configurar si se debe crear un alias general por defecto, establecer una URL de webhook de rebote personalizada para errores de SMTP y definir límites de cuota de almacenamiento para los alias de correo electrónico en este dominio. Este punto final realiza la validación y el aprovisionamiento a nivel de dominio. Si la opción `ignore_mx_check` está habilitada, se omite la verificación de registros MX (recomendado solo para configuraciones de enrutamiento avanzadas). La respuesta contendrá todos los detalles del objeto de dominio creado, incluidos los registros DNS necesarios para la configuración.",
+        "description": "Crea un nuevo dominio en el sistema. Este punto final permite registrar un nombre de dominio completo (FQDN) o una dirección IP para su uso con la plataforma.\n\nLas opciones de configuración incluyen la asignación del dominio a un equipo existente, la configuración de un tipo de plan (p. ej., gratuito, protección mejorada o equipo) y la configuración de protecciones avanzadas como el filtrado de spam, el análisis de virus y la verificación de destinatarios. También puede configurar si se debe crear un alias general por defecto, establecer una URL de webhook de rebote personalizada para errores de SMTP y definir límites de cuota de almacenamiento para los alias de correo electrónico en este dominio. Este punto final realiza la validación y el aprovisionamiento a nivel de dominio. Si la opción `ignore_mx_check` está habilitada, se omite la verificación de registros MX (recomendado solo para configuraciones de enrutamiento avanzadas). La respuesta contendrá todos los detalles del objeto de dominio creado, incluidos los registros DNS necesarios para la configuración.\n\nLa respuesta incluye `zone_file`, un archivo de zona con todos los registros DNS que necesita el dominio (MX, verificación, SPF, DKIM, Return-Path, DMARC y detección automática) que puede importar en su proveedor de DNS (solo administradores del dominio).",
         "tags": [
           "Dominios"
         ],
@@ -5631,7 +5668,7 @@
       ],
       "get": {
         "summary": "Recuperar dominio",
-        "description": "Recuperar un dominio específico",
+        "description": "Recuperar un dominio específico\n\nLa respuesta incluye `zone_file`, un archivo de zona con todos los registros DNS que necesita el dominio (MX, verificación, SPF, DKIM, Return-Path, DMARC y detección automática) que puede importar en su proveedor de DNS (solo administradores del dominio).",
         "tags": [
           "Dominios"
         ],

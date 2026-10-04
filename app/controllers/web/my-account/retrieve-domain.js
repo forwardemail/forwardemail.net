@@ -20,6 +20,7 @@ const { Domains, Aliases } = require('#models');
 const config = require('#config');
 const logger = require('#helpers/logger');
 const parseRootDomain = require('#helpers/parse-root-domain');
+const getZoneFile = require('#helpers/get-zone-file');
 
 const meta = new Meta(config.meta, logger);
 
@@ -264,6 +265,12 @@ async function retrieveDomain(ctx, next) {
       })()
     ]);
   }
+
+  // every record the domain needs, to copy or download as a zone file
+  if (ctx.method === 'GET' && ctx.state.domain.group === 'admin')
+    ctx.state.zoneFile = getZoneFile(ctx.state.domain, ctx.state.user, {
+      existingTXT: ctx.state.existingTXT
+    });
 
   //
   // we need to import existing aliases

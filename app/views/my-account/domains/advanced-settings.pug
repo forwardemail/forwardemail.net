@@ -1,5 +1,7 @@
 extends ../../layout
 
+include _zone-file
+
 mixin deleteDomain
   if domain.group === 'admin'
     #delete-domain.card.border-themed.mb-3
@@ -360,6 +362,15 @@ block body
                       type="submit",
                       disabled=isDisabled
                     )= t("Save")
+
+      //- Zone File
+      if domain.group === 'admin' && !domain.is_global
+        #zone-file.row
+          .col
+            .card.border-themed.mb-3
+              h2.h6.card-header= t("Zone File")
+              .card-body
+                +zoneFile(domain, false)
 
       //- Catch-all Passwords
       if domain.group === 'admin' && !domain.is_global
@@ -1024,7 +1035,7 @@ block body
 
           if domain.group === 'admin'
             - const hasInvites = Array.isArray(domain.invites) && domain.invites.length > 0 && domain.plan === "team";
-            .card.border-themed.mb-3
+            #manage-team.card.border-themed.mb-3
               h2.h6.card-header= t("Manage Team")
               .card-body
                 +planRequired(true)

@@ -627,6 +627,8 @@ curl BASE_URI/v1/domains \
 
 > `POST /v1/domains`
 
+Odpowiedź zawiera `zone_file`, plik strefy ze wszystkimi rekordami DNS potrzebnymi domenie (MX, weryfikacja, SPF, DKIM, Return-Path, DMARC i autowykrywanie), który możesz zaimportować u dostawcy DNS (tylko administratorzy domeny).
+
 | Parametr w ciele żądania    | Wymagany | Typ                                           | Opis                                                                                                                                                                                                                                                                                                               |
 | --------------------------- | -------- | --------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `domain`                    | Tak      | String (FQDN lub IP)                          | W pełni kwalifikowana nazwa domeny ("FQDN") lub adres IP                                                                                                                                                                                                                                                          |
@@ -654,6 +656,8 @@ curl -X POST BASE_URI/v1/domains \
 ### Pobierz domenę {#retrieve-domain}
 
 > `GET /v1/domains/DOMAIN_NAME`
+
+Odpowiedź zawiera `zone_file`, plik strefy ze wszystkimi rekordami DNS potrzebnymi domenie (MX, weryfikacja, SPF, DKIM, Return-Path, DMARC i autowykrywanie), który możesz zaimportować u dostawcy DNS (tylko administratorzy domeny).
 
 > Przykładowe zapytanie:
 

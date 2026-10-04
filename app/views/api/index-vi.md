@@ -627,6 +627,8 @@ curl BASE_URI/v1/domains \
 
 > `POST /v1/domains`
 
+Phản hồi có `zone_file`, một tệp vùng chứa mọi bản ghi DNS mà tên miền cần (MX, xác minh, SPF, DKIM, Return-Path, DMARC và tự động phát hiện) mà bạn có thể nhập vào nhà cung cấp DNS (chỉ dành cho quản trị viên tên miền).
+
 | Tham số thân yêu cầu           | Bắt buộc | Loại                                          | Mô tả                                                                                                                                                                                                                                                                                                               |
 | ------------------------------ | -------- | --------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `domain`                       | Có       | Chuỗi (FQDN hoặc IP)                          | Tên miền đầy đủ ("FQDN") hoặc địa chỉ IP                                                                                                                                                                                                                                                                           |
@@ -654,6 +656,8 @@ curl -X POST BASE_URI/v1/domains \
 ### Lấy thông tin domain {#retrieve-domain}
 
 > `GET /v1/domains/DOMAIN_NAME`
+
+Phản hồi có `zone_file`, một tệp vùng chứa mọi bản ghi DNS mà tên miền cần (MX, xác minh, SPF, DKIM, Return-Path, DMARC và tự động phát hiện) mà bạn có thể nhập vào nhà cung cấp DNS (chỉ dành cho quản trị viên tên miền).
 
 > Ví dụ Yêu cầu:
 

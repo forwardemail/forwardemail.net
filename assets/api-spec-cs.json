@@ -1810,6 +1810,15 @@
       "Domain": {
         "type": "object",
         "properties": {
+          "domain_updates": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          },
+          "has_pending_domain_updates": {
+            "type": "boolean"
+          },
           "has_newsletter": {
             "type": "boolean"
           },
@@ -1886,6 +1895,18 @@
           "smtp_port": {
             "type": "string"
           },
+          "members": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          },
+          "invites": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          },
           "name": {
             "type": "string"
           },
@@ -1902,6 +1923,18 @@
             "type": "boolean"
           },
           "has_dmarc_record": {
+            "type": "boolean"
+          },
+          "has_strict_dmarc": {
+            "type": "boolean"
+          },
+          "has_spf_record": {
+            "type": "boolean"
+          },
+          "has_autoconfig_record": {
+            "type": "boolean"
+          },
+          "has_autodiscover_record": {
             "type": "boolean"
           },
           "has_recipient_verification": {
@@ -1996,6 +2029,10 @@
                 }
               }
             }
+          },
+          "zone_file": {
+            "type": "string",
+            "description": "Všechny záznamy DNS, které doména potřebuje (MX, ověření, SPF, DKIM, Return-Path, DMARC a automatické zjišťování), jako soubor zóny k importu u poskytovatele DNS. Zahrnuto jen při načtení nebo vytvoření domény, pro správce domény."
           },
           "link": {
             "type": "string",
@@ -5579,7 +5616,7 @@
       },
       "post": {
         "summary": "Vytvořit doménu",
-        "description": "Vytvoří v systému novou doménu. Tento koncový bod umožňuje zaregistrovat plně kvalifikovaný název domény (FQDN) nebo IP adresu pro použití s platformou.\n\nMezi volitelné možnosti konfigurace patří přiřazení domény existujícímu týmu, nastavení typu plánu (např. bezplatný, rozšířená ochrana nebo týmový) a konfigurace pokročilých ochranných opatření, jako je filtrování spamu, antivirová kontrola a ověřování příjemců. Můžete také nakonfigurovat, zda má být ve výchozím nastavení vytvořen alias typu catch-all, nastavit vlastní URL adresu webhooku pro nedoručení e-mailů pro selhání SMTP a definovat limity úložných kvót pro aliasy e-mailů v této doméně. Tento koncový bod provádí ověřování a zřizování na úrovni domény. Pokud je povolena možnost `ignore_mx_check`, ověřování záznamů MX se přeskočí (doporučeno pouze pro pokročilá nastavení směrování). Odpověď bude obsahovat úplné podrobnosti o vytvořeném objektu domény, včetně záznamů DNS potřebných pro konfiguraci.",
+        "description": "Vytvoří v systému novou doménu. Tento koncový bod umožňuje zaregistrovat plně kvalifikovaný název domény (FQDN) nebo IP adresu pro použití s platformou.\n\nMezi volitelné možnosti konfigurace patří přiřazení domény existujícímu týmu, nastavení typu plánu (např. bezplatný, rozšířená ochrana nebo týmový) a konfigurace pokročilých ochranných opatření, jako je filtrování spamu, antivirová kontrola a ověřování příjemců. Můžete také nakonfigurovat, zda má být ve výchozím nastavení vytvořen alias typu catch-all, nastavit vlastní URL adresu webhooku pro nedoručení e-mailů pro selhání SMTP a definovat limity úložných kvót pro aliasy e-mailů v této doméně. Tento koncový bod provádí ověřování a zřizování na úrovni domény. Pokud je povolena možnost `ignore_mx_check`, ověřování záznamů MX se přeskočí (doporučeno pouze pro pokročilá nastavení směrování). Odpověď bude obsahovat úplné podrobnosti o vytvořeném objektu domény, včetně záznamů DNS potřebných pro konfiguraci.\n\nOdpověď obsahuje `zone_file`, soubor zóny se všemi záznamy DNS, které doména potřebuje (MX, ověření, SPF, DKIM, Return-Path, DMARC a automatické zjišťování), který můžete importovat u svého poskytovatele DNS (pouze správci domény).",
         "tags": [
           "Domény"
         ],
@@ -5631,7 +5668,7 @@
       ],
       "get": {
         "summary": "Načíst doménu",
-        "description": "Načíst konkrétní doménu",
+        "description": "Načíst konkrétní doménu\n\nOdpověď obsahuje `zone_file`, soubor zóny se všemi záznamy DNS, které doména potřebuje (MX, ověření, SPF, DKIM, Return-Path, DMARC a automatické zjišťování), který můžete importovat u svého poskytovatele DNS (pouze správci domény).",
         "tags": [
           "Domény"
         ],
