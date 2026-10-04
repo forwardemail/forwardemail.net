@@ -361,3 +361,49 @@ test.serial(
     t.deepEqual(calls, []);
   }
 );
+
+test.serial(
+  'the footer has a chip per app that opens its card on the download page',
+  async (t) => {
+    const keys = ['macos', 'windows', 'linux', 'android', 'ios', 'terminal'];
+    const download = new JSDOM(await getDownloadPage(t, releaseWithTerminal))
+      .window.document;
+
+    for (const locale of ['en', 'es']) {
+      const res = await t.context.web
+        .get(`/${locale}/about`)
+        .set({ Accept: 'text/html' });
+      t.is(res.status, 200);
+      const { document } = new JSDOM(res.text).window;
+      const nav = document.querySelector('footer nav.fe-footer-apps');
+      t.truthy(nav, `${locale}: the footer has the app chips`);
+      t.is(
+        document.querySelector(`#${nav.getAttribute('aria-labelledby')}`)
+          .textContent,
+        locale === 'es' ? 'Aplicaciones' : 'Apps'
+      );
+
+      const links = [...nav.querySelectorAll('a.fe-chip')];
+      t.deepEqual(
+        links.map((a) => a.getAttribute('href')),
+        keys.map((key) => `/${locale}/download#fe-download-${key}`)
+      );
+      t.deepEqual(
+        links.map((a) => a.textContent.trim()),
+        ['macOS', 'Windows', 'Linux', 'Android', 'iOS', 'Terminal']
+      );
+      for (const a of links) {
+        const icon = a.querySelector('i');
+        t.is(icon.getAttribute('aria-hidden'), 'true');
+      }
+    }
+
+    // every chip lands on that platform's card, which holds its builds
+    for (const key of keys) {
+      const card = download.querySelector(`#fe-download-${key}`);
+      t.truthy(card, `the download page has a ${key} card`);
+      t.true(card.classList.contains('fe-download-card'));
+      t.truthy(card.querySelector('a[href]'), `the ${key} card has a link`);
+    }
+  }
+);

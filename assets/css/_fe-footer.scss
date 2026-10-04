@@ -169,3 +169,44 @@ footer.fe-footer hr {
   margin-block: var(--fe-space-2);
   border-top-color: var(--fe-hairline-light);
 }
+
+// App chips: the download page's platform chips, one per app, each linking to
+// that platform's card on the download page. Centered and wrapping on every
+// width, under the payment chips.
+footer.fe-footer .fe-footer-apps {
+  margin-bottom: var(--fe-space-8);
+  text-align: center;
+}
+
+footer.fe-footer .fe-footer-apps__label {
+  margin-bottom: var(--fe-space-3);
+  font-size: var(--fe-text-label);
+  font-weight: var(--fe-weight-bold);
+  letter-spacing: var(--fe-tracking-label);
+  color: var(--fe-fg-secondary);
+  text-transform: uppercase;
+}
+
+footer.fe-footer .fe-footer-apps__list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--fe-space-2);
+  justify-content: center;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+footer.fe-footer ul a.fe-footer-apps__item {
+  min-height: 2.25rem;
+  color: var(--fe-fg-primary);
+  text-decoration: none;
+  transition: color var(--fe-motion-fast) var(--fe-ease),
+    border-color var(--fe-motion-fast) var(--fe-ease);
+}
+
+footer.fe-footer ul a.fe-footer-apps__item:hover,
+footer.fe-footer ul a.fe-footer-apps__item:focus {
+  color: var(--fe-l-000);
+  border-color: var(--fe-border-strong);
+}

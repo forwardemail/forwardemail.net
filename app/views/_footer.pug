@@ -61,6 +61,18 @@ footer.fe-footer.mt-auto(aria-label=t("Footer"))
             a.badge.badge-secondary.small(
               href=l("/faq#which-payment-methods-do-you-accept")
             )= t("30+ more")
+      //- One chip per app, styled like the platform chips on the download
+      //- page; each goes to that platform's card there, with its builds.
+      nav.fe-footer-apps(aria-labelledby="footer-apps-label")
+        p#footer-apps-label.fe-footer-apps__label= t("Apps")
+        ul.fe-footer-apps__list
+          each app in [{ key: "macos", name: "macOS", icon: "fab fa-apple" }, { key: "windows", name: "Windows", icon: "fab fa-windows" }, { key: "linux", name: "Linux", icon: "fab fa-linux" }, { key: "android", name: "Android", icon: "fab fa-android" }, { key: "ios", name: "iOS", icon: "fab fa-apple" }, { key: "terminal", name: t("Terminal"), icon: "fa fa-terminal" }]
+            li
+              a.fe-chip.fe-footer-apps__item(
+                href=`${l("/download")}#fe-download-${app.key}`
+              )
+                i.fa-fw(class=app.icon, aria-hidden="true")
+                = app.name
       .d-flex.flex-column.flex-lg-row
         //- ==================================================
         //- HUMAN COLUMNS — four curated groups per the footer
