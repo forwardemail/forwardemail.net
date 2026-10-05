@@ -205,8 +205,16 @@ module.exports = (redis) => ({
   redis,
   cacheResponses: env.CACHE_RESPONSES
     ? {
+        //
+        // Kept in Redis for a year under their path, and a deploy does not
+        // clear them, so only files whose path changes with their content
+        // belong here.  Files that keep their path when they change
+        // (robots.txt, llms.txt, site.webmanifest, browserconfig.xml,
+        // opensearch.xml and /.well-known/*) are served from disk or their
+        // route on every request (browsers keep most of them for an hour,
+        // see `DISCOVERY_FILES` below).
+        //
         routes: [
-          '/.well-known/(.*)',
           '/css/(.*)',
           // everything under /img except audio and video, which stream from
           // disk instead: koa-cash keeps whole responses in Redis, so a video
@@ -214,13 +222,7 @@ module.exports = (redis) => ({
           // then fetched whole again for every range a player asks for
           '/img/((?!.+\\.(?:mp3|mp4|m4a|ogg|wav|webm)$).*)',
           '/js/(.*)',
-          '/fonts/(.*)',
-          '/browserconfig.xml',
-          '/opensearch.xml',
-          '/robots.txt',
-          '/llms.txt',
-          '/llms-full.txt',
-          '/site.webmanifest'
+          '/fonts/(.*)'
         ]
       }
     : false,
@@ -601,8 +603,8 @@ module.exports = (redis) => ({
     //
     // AI agent / API discovery documents (app/controllers/web/ai-discovery.js)
     // are public and read by browser-based agents, so allow any origin. Set
-    // here rather than in the controller because /.well-known/* responses are
-    // served from koa-cash, which does not replay custom headers.
+    // here rather than in the controller, so the static files (llms.txt,
+    // api-spec.json) get it too.
     //
     app.use(async (ctx, next) => {
       if (

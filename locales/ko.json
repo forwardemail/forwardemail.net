@@ -23337,5 +23337,9 @@
   "Zone File": "영역 파일",
   "You can add every record now, including the ones for sending email (SPF, DKIM, Return-Path, and DMARC), with the <a href=\"#zone-file\" class=\"alert-link\">zone file below</a>.": "메일 발송용 레코드(SPF, DKIM, Return-Path, DMARC)를 포함한 모든 레코드를 <a href=\"#zone-file\" class=\"alert-link\">아래 영역 파일</a>로 지금 추가할 수 있습니다.",
   "Import every record at once": "모든 레코드를 한 번에 가져오기",
-  "Export a zone file with every record your domain needs from <a href=\"%s\" class=\"alert-link\">My Account → Domains</a>.": "<a href=\"%s\" class=\"alert-link\">내 계정 → 도메인</a>에서 도메인에 필요한 모든 레코드가 담긴 영역 파일을 내보내세요."
+  "Export a zone file with every record your domain needs from <a href=\"%s\" class=\"alert-link\">My Account → Domains</a>.": "<a href=\"%s\" class=\"alert-link\">내 계정 → 도메인</a>에서 도메인에 필요한 모든 레코드가 담긴 영역 파일을 내보내세요.",
+  "Forwarded mail is processed in memory and never written to disk.": "전달된 메일은 메모리에서 처리되며 디스크에 기록되지 않습니다.",
+  "Each mailbox is its own encrypted SQLite file that only your password can open.": "각 메일함은 별도로 암호화된 SQLite 파일이며, 사용자의 비밀번호로만 열 수 있습니다.",
+  "Cure53 has audited our code twice, and <a href=\"%s\" target=\"_blank\" rel=\"noopener\">its report</a> is public.": "Cure53이 저희 코드를 두 차례 감사했으며, <a href=\"%s\" target=\"_blank\" rel=\"noopener\">감사 보고서</a>는 공개되어 있습니다.",
+  "What we store, and for how long": "저장하는 데이터와 보관 기간"
 }

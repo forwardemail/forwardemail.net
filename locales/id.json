@@ -23337,5 +23337,9 @@
   "Zone File": "File Zona",
   "You can add every record now, including the ones for sending email (SPF, DKIM, Return-Path, and DMARC), with the <a href=\"#zone-file\" class=\"alert-link\">zone file below</a>.": "Anda dapat menambahkan semua data sekarang, termasuk data untuk mengirim email (SPF, DKIM, Return-Path, dan DMARC), dengan <a href=\"#zone-file\" class=\"alert-link\">file zona di bawah</a>.",
   "Import every record at once": "Impor semua data sekaligus",
-  "Export a zone file with every record your domain needs from <a href=\"%s\" class=\"alert-link\">My Account → Domains</a>.": "Ekspor file zona berisi semua data yang dibutuhkan domain Anda dari <a href=\"%s\" class=\"alert-link\">Akun Saya → Domain</a>."
+  "Export a zone file with every record your domain needs from <a href=\"%s\" class=\"alert-link\">My Account → Domains</a>.": "Ekspor file zona berisi semua data yang dibutuhkan domain Anda dari <a href=\"%s\" class=\"alert-link\">Akun Saya → Domain</a>.",
+  "Forwarded mail is processed in memory and never written to disk.": "Email yang diteruskan diproses di memori dan tidak pernah ditulis ke disk.",
+  "Each mailbox is its own encrypted SQLite file that only your password can open.": "Setiap kotak surat adalah file SQLite terenkripsi tersendiri yang hanya bisa dibuka dengan kata sandi Anda.",
+  "Cure53 has audited our code twice, and <a href=\"%s\" target=\"_blank\" rel=\"noopener\">its report</a> is public.": "Cure53 telah mengaudit kode kami dua kali, dan <a href=\"%s\" target=\"_blank\" rel=\"noopener\">laporannya</a> terbuka untuk umum.",
+  "What we store, and for how long": "Apa yang kami simpan, dan berapa lama"
 }

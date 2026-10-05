@@ -157,7 +157,12 @@ nav.navbar(class=navbarClasses.join(" "))
               alt=t("Ubuntu One")
             )
       else
+        //- (the name for screen readers, and without JavaScript, which hides
+        //- the visible one)
         span.sr-only.sr-only-focusable Forward Email
+        //- (a leading space, which takes no room, keeps the two names apart in
+        //- the text of the page)
+        = " "
         //- An image rather than the inlined SVG: the inlined copy put about
         //- 80 elements and 19 KB of gradients into every page. Decorative,
         //- as the brand name sits beside it.
@@ -168,7 +173,7 @@ nav.navbar(class=navbarClasses.join(" "))
           alt="",
           fetchpriority="high"
         )
-        span.m-0.align-middle.no-js.ml-2.d-inline-block= "Forward Email"
+        span.m-0.align-middle.no-js.ml-2.d-inline-block(aria-hidden="true")= "Forward Email"
     //- Event Feed Badge (only for non-bots)
     //- Red badge for new events, grey outline badge for total events when no new
     if eventFeedBadgeCount && eventFeedBadgeCount > 0
@@ -918,6 +923,7 @@ nav.navbar(class=navbarClasses.join(" "))
                 data-target=isRegisterOrLogin ? false : "#modal-sign-up"
               )
                 = t("Signup")
+              = " "
               a.btn.btn-success.text-left.text-uppercase.font-weight-bold.d-none.d-lg-block(
                 href=l("/register"),
                 data-toggle=isRegisterOrLogin ? false : "modal-anchor",

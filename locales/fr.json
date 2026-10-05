@@ -23337,5 +23337,9 @@
   "Zone File": "Fichier de zone",
   "You can add every record now, including the ones for sending email (SPF, DKIM, Return-Path, and DMARC), with the <a href=\"#zone-file\" class=\"alert-link\">zone file below</a>.": "Vous pouvez ajouter tous les enregistrements dès maintenant, y compris ceux pour l'envoi d'e-mails (SPF, DKIM, Return-Path et DMARC), avec le <a href=\"#zone-file\" class=\"alert-link\">fichier de zone ci-dessous</a>.",
   "Import every record at once": "Importer tous les enregistrements en une fois",
-  "Export a zone file with every record your domain needs from <a href=\"%s\" class=\"alert-link\">My Account → Domains</a>.": "Exportez un fichier de zone avec tous les enregistrements dont votre domaine a besoin depuis <a href=\"%s\" class=\"alert-link\">Mon compte → Domaines</a>."
+  "Export a zone file with every record your domain needs from <a href=\"%s\" class=\"alert-link\">My Account → Domains</a>.": "Exportez un fichier de zone avec tous les enregistrements dont votre domaine a besoin depuis <a href=\"%s\" class=\"alert-link\">Mon compte → Domaines</a>.",
+  "Forwarded mail is processed in memory and never written to disk.": "Les e-mails transférés sont traités en mémoire et ne sont jamais écrits sur disque.",
+  "Each mailbox is its own encrypted SQLite file that only your password can open.": "Chaque boîte aux lettres est un fichier SQLite chiffré distinct, que seul votre mot de passe peut ouvrir.",
+  "Cure53 has audited our code twice, and <a href=\"%s\" target=\"_blank\" rel=\"noopener\">its report</a> is public.": "Cure53 a audité notre code deux fois, et <a href=\"%s\" target=\"_blank\" rel=\"noopener\">son rapport</a> est public.",
+  "What we store, and for how long": "Ce que nous stockons, et pendant combien de temps"
 }

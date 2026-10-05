@@ -23337,5 +23337,9 @@
   "Zone File": "Zonebestand",
   "You can add every record now, including the ones for sending email (SPF, DKIM, Return-Path, and DMARC), with the <a href=\"#zone-file\" class=\"alert-link\">zone file below</a>.": "U kunt nu alle records toevoegen, ook die voor het verzenden van e-mail (SPF, DKIM, Return-Path en DMARC), met het <a href=\"#zone-file\" class=\"alert-link\">zonebestand hieronder</a>.",
   "Import every record at once": "Alle records in één keer importeren",
-  "Export a zone file with every record your domain needs from <a href=\"%s\" class=\"alert-link\">My Account → Domains</a>.": "Exporteer een zonebestand met alle records die uw domein nodig heeft via <a href=\"%s\" class=\"alert-link\">Mijn account → Domeinen</a>."
+  "Export a zone file with every record your domain needs from <a href=\"%s\" class=\"alert-link\">My Account → Domains</a>.": "Exporteer een zonebestand met alle records die uw domein nodig heeft via <a href=\"%s\" class=\"alert-link\">Mijn account → Domeinen</a>.",
+  "Forwarded mail is processed in memory and never written to disk.": "Doorgestuurde mail wordt in het geheugen verwerkt en nooit naar schijf geschreven.",
+  "Each mailbox is its own encrypted SQLite file that only your password can open.": "Elke mailbox is een eigen versleuteld SQLite-bestand dat alleen uw wachtwoord kan openen.",
+  "Cure53 has audited our code twice, and <a href=\"%s\" target=\"_blank\" rel=\"noopener\">its report</a> is public.": "Cure53 heeft onze code twee keer gecontroleerd en <a href=\"%s\" target=\"_blank\" rel=\"noopener\">het rapport</a> is openbaar.",
+  "What we store, and for how long": "Wat we opslaan, en hoe lang"
 }

@@ -37,6 +37,7 @@ mixin fePricing
               p.fe-plan__line= plan.summary.line
               span.fe-plan__price.fe-numeral $#{ plan.price }
               span.fe-plan__period= t("/ month · unlimited domains")
+              = " "
               a.fe-plan__cta.fe-btn.fe-btn--md.fe-btn--block(
                 href=plan.href,
                 class=plan.featured ? "fe-btn--hero" : "fe-btn--subtle"

@@ -23337,5 +23337,9 @@
   "Zone File": "Bölge Dosyası",
   "You can add every record now, including the ones for sending email (SPF, DKIM, Return-Path, and DMARC), with the <a href=\"#zone-file\" class=\"alert-link\">zone file below</a>.": "E-posta göndermek için gerekenler (SPF, DKIM, Return-Path ve DMARC) dahil tüm kayıtları şimdi <a href=\"#zone-file\" class=\"alert-link\">aşağıdaki bölge dosyasıyla</a> ekleyebilirsiniz.",
   "Import every record at once": "Tüm kayıtları tek seferde içe aktar",
-  "Export a zone file with every record your domain needs from <a href=\"%s\" class=\"alert-link\">My Account → Domains</a>.": "Alan adınızın ihtiyaç duyduğu tüm kayıtları içeren bir bölge dosyasını <a href=\"%s\" class=\"alert-link\">Hesabım → Alan Adları</a> bölümünden dışa aktarın."
+  "Export a zone file with every record your domain needs from <a href=\"%s\" class=\"alert-link\">My Account → Domains</a>.": "Alan adınızın ihtiyaç duyduğu tüm kayıtları içeren bir bölge dosyasını <a href=\"%s\" class=\"alert-link\">Hesabım → Alan Adları</a> bölümünden dışa aktarın.",
+  "Forwarded mail is processed in memory and never written to disk.": "Yönlendirilen e-postalar bellekte işlenir ve asla diske yazılmaz.",
+  "Each mailbox is its own encrypted SQLite file that only your password can open.": "Her posta kutusu, yalnızca sizin parolanızın açabildiği ayrı, şifreli bir SQLite dosyasıdır.",
+  "Cure53 has audited our code twice, and <a href=\"%s\" target=\"_blank\" rel=\"noopener\">its report</a> is public.": "Cure53 kodumuzu iki kez denetledi ve <a href=\"%s\" target=\"_blank\" rel=\"noopener\">raporu</a> herkese açık.",
+  "What we store, and for how long": "Neleri ve ne kadar süreyle saklıyoruz"
 }

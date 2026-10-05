@@ -25,6 +25,7 @@ mixin feHero
             a.fe-btn.fe-btn--hero.fe-btn--lg.fe-btn--glow(href=l("/register"))
               = t("Start free")
               i.fa.fa-angle-right(aria-hidden="true")
+            = " "
             button.fe-btn.fe-btn--ghost.fe-btn--lg(
               type="button",
               data-toggle="modal",
@@ -32,6 +33,7 @@ mixin feHero
             )
               i.fa.fa-search(aria-hidden="true")
               = t("Check a domain")
+            = " "
             //- Opens the tour video (see _fe-video.pug)
             +feVideoButton
 

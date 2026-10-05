@@ -23337,5 +23337,9 @@
   "Zone File": "Файл зоны",
   "You can add every record now, including the ones for sending email (SPF, DKIM, Return-Path, and DMARC), with the <a href=\"#zone-file\" class=\"alert-link\">zone file below</a>.": "Вы можете добавить все записи сейчас, включая записи для отправки почты (SPF, DKIM, Return-Path и DMARC), с помощью <a href=\"#zone-file\" class=\"alert-link\">файла зоны ниже</a>.",
   "Import every record at once": "Импортировать все записи сразу",
-  "Export a zone file with every record your domain needs from <a href=\"%s\" class=\"alert-link\">My Account → Domains</a>.": "Экспортируйте файл зоны со всеми записями, которые нужны вашему домену, в разделе <a href=\"%s\" class=\"alert-link\">Мой счет → Домены</a>."
+  "Export a zone file with every record your domain needs from <a href=\"%s\" class=\"alert-link\">My Account → Domains</a>.": "Экспортируйте файл зоны со всеми записями, которые нужны вашему домену, в разделе <a href=\"%s\" class=\"alert-link\">Мой счет → Домены</a>.",
+  "Forwarded mail is processed in memory and never written to disk.": "Пересылаемая почта обрабатывается в памяти и никогда не записывается на диск.",
+  "Each mailbox is its own encrypted SQLite file that only your password can open.": "Каждый почтовый ящик — это отдельный зашифрованный файл SQLite, который открывается только вашим паролем.",
+  "Cure53 has audited our code twice, and <a href=\"%s\" target=\"_blank\" rel=\"noopener\">its report</a> is public.": "Cure53 дважды проводила аудит нашего кода, и <a href=\"%s\" target=\"_blank\" rel=\"noopener\">её отчёт</a> опубликован.",
+  "What we store, and for how long": "Что мы храним и как долго"
 }

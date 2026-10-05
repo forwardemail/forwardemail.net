@@ -23337,5 +23337,9 @@
   "Zone File": "Plik strefy",
   "You can add every record now, including the ones for sending email (SPF, DKIM, Return-Path, and DMARC), with the <a href=\"#zone-file\" class=\"alert-link\">zone file below</a>.": "Możesz teraz dodać wszystkie rekordy, także te do wysyłania poczty (SPF, DKIM, Return-Path i DMARC), korzystając z <a href=\"#zone-file\" class=\"alert-link\">pliku strefy poniżej</a>.",
   "Import every record at once": "Zaimportuj wszystkie rekordy naraz",
-  "Export a zone file with every record your domain needs from <a href=\"%s\" class=\"alert-link\">My Account → Domains</a>.": "Wyeksportuj plik strefy ze wszystkimi rekordami potrzebnymi Twojej domenie w <a href=\"%s\" class=\"alert-link\">Moje konto → Domeny</a>."
+  "Export a zone file with every record your domain needs from <a href=\"%s\" class=\"alert-link\">My Account → Domains</a>.": "Wyeksportuj plik strefy ze wszystkimi rekordami potrzebnymi Twojej domenie w <a href=\"%s\" class=\"alert-link\">Moje konto → Domeny</a>.",
+  "Forwarded mail is processed in memory and never written to disk.": "Przekazywana poczta jest przetwarzana w pamięci i nigdy nie jest zapisywana na dysku.",
+  "Each mailbox is its own encrypted SQLite file that only your password can open.": "Każda skrzynka pocztowa to osobny zaszyfrowany plik SQLite, który otworzy tylko Twoje hasło.",
+  "Cure53 has audited our code twice, and <a href=\"%s\" target=\"_blank\" rel=\"noopener\">its report</a> is public.": "Cure53 dwukrotnie przeprowadziło audyt naszego kodu, a <a href=\"%s\" target=\"_blank\" rel=\"noopener\">jego raport</a> jest publiczny.",
+  "What we store, and for how long": "Co przechowujemy i jak długo"
 }

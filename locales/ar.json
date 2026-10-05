@@ -23337,5 +23337,9 @@
   "Zone File": "ملف المنطقة",
   "You can add every record now, including the ones for sending email (SPF, DKIM, Return-Path, and DMARC), with the <a href=\"#zone-file\" class=\"alert-link\">zone file below</a>.": "يمكنك إضافة كل السجلات الآن، بما فيها سجلات إرسال البريد (SPF وDKIM وReturn-Path وDMARC)، باستخدام <a href=\"#zone-file\" class=\"alert-link\">ملف المنطقة أدناه</a>.",
   "Import every record at once": "استيراد كل السجلات دفعة واحدة",
-  "Export a zone file with every record your domain needs from <a href=\"%s\" class=\"alert-link\">My Account → Domains</a>.": "صدّر ملف منطقة بكل السجلات التي يحتاجها نطاقك من <a href=\"%s\" class=\"alert-link\">حسابي ← المجالات</a>."
+  "Export a zone file with every record your domain needs from <a href=\"%s\" class=\"alert-link\">My Account → Domains</a>.": "صدّر ملف منطقة بكل السجلات التي يحتاجها نطاقك من <a href=\"%s\" class=\"alert-link\">حسابي ← المجالات</a>.",
+  "Forwarded mail is processed in memory and never written to disk.": "تتم معالجة البريد المُعاد توجيهه في الذاكرة ولا يُكتب على القرص أبدًا.",
+  "Each mailbox is its own encrypted SQLite file that only your password can open.": "كل صندوق بريد هو ملف SQLite مشفّر خاص به، ولا يمكن فتحه إلا بكلمة المرور الخاصة بك.",
+  "Cure53 has audited our code twice, and <a href=\"%s\" target=\"_blank\" rel=\"noopener\">its report</a> is public.": "دقّقت Cure53 في الكود الخاص بنا مرتين، و<a href=\"%s\" target=\"_blank\" rel=\"noopener\">تقريرها</a> منشور للعموم.",
+  "What we store, and for how long": "ما الذي نخزّنه، وإلى متى"
 }

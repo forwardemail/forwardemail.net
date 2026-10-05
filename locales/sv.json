@@ -23337,5 +23337,9 @@
   "Zone File": "Zonfil",
   "You can add every record now, including the ones for sending email (SPF, DKIM, Return-Path, and DMARC), with the <a href=\"#zone-file\" class=\"alert-link\">zone file below</a>.": "Du kan lägga till alla poster nu, även de för att skicka e-post (SPF, DKIM, Return-Path och DMARC), med <a href=\"#zone-file\" class=\"alert-link\">zonfilen nedan</a>.",
   "Import every record at once": "Importera alla poster på en gång",
-  "Export a zone file with every record your domain needs from <a href=\"%s\" class=\"alert-link\">My Account → Domains</a>.": "Exportera en zonfil med alla poster som din domän behöver från <a href=\"%s\" class=\"alert-link\">Mitt konto → Domäner</a>."
+  "Export a zone file with every record your domain needs from <a href=\"%s\" class=\"alert-link\">My Account → Domains</a>.": "Exportera en zonfil med alla poster som din domän behöver från <a href=\"%s\" class=\"alert-link\">Mitt konto → Domäner</a>.",
+  "Forwarded mail is processed in memory and never written to disk.": "Vidarebefordrad e-post behandlas i minnet och skrivs aldrig till disk.",
+  "Each mailbox is its own encrypted SQLite file that only your password can open.": "Varje brevlåda är en egen krypterad SQLite-fil som bara ditt lösenord kan öppna.",
+  "Cure53 has audited our code twice, and <a href=\"%s\" target=\"_blank\" rel=\"noopener\">its report</a> is public.": "Cure53 har granskat vår kod två gånger, och <a href=\"%s\" target=\"_blank\" rel=\"noopener\">rapporten</a> är offentlig.",
+  "What we store, and for how long": "Vad vi lagrar, och hur länge"
 }

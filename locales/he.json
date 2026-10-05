@@ -23337,5 +23337,9 @@
   "Zone File": "קובץ אזור",
   "You can add every record now, including the ones for sending email (SPF, DKIM, Return-Path, and DMARC), with the <a href=\"#zone-file\" class=\"alert-link\">zone file below</a>.": "אפשר להוסיף עכשיו את כל הרשומות, כולל אלה לשליחת דואר (SPF,‏ DKIM,‏ Return-Path ו-DMARC), בעזרת <a href=\"#zone-file\" class=\"alert-link\">קובץ האזור שלמטה</a>.",
   "Import every record at once": "ייבוא כל הרשומות בבת אחת",
-  "Export a zone file with every record your domain needs from <a href=\"%s\" class=\"alert-link\">My Account → Domains</a>.": "ייצא קובץ אזור עם כל הרשומות שהדומיין שלך צריך מתוך <a href=\"%s\" class=\"alert-link\">החשבון שלי ← דומיינים</a>."
+  "Export a zone file with every record your domain needs from <a href=\"%s\" class=\"alert-link\">My Account → Domains</a>.": "ייצא קובץ אזור עם כל הרשומות שהדומיין שלך צריך מתוך <a href=\"%s\" class=\"alert-link\">החשבון שלי ← דומיינים</a>.",
+  "Forwarded mail is processed in memory and never written to disk.": "דואר מועבר מעובד בזיכרון ולעולם אינו נכתב לדיסק.",
+  "Each mailbox is its own encrypted SQLite file that only your password can open.": "כל תיבת דואר היא קובץ SQLite מוצפן משלה, שרק הסיסמה שלך יכולה לפתוח.",
+  "Cure53 has audited our code twice, and <a href=\"%s\" target=\"_blank\" rel=\"noopener\">its report</a> is public.": "Cure53 ביקרה את הקוד שלנו פעמיים, ו<a href=\"%s\" target=\"_blank\" rel=\"noopener\">הדוח שלה</a> פומבי.",
+  "What we store, and for how long": "מה אנחנו שומרים, ולכמה זמן"
 }

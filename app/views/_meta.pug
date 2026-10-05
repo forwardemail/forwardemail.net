@@ -204,6 +204,9 @@ else
 //- href=manifest("site.webmanifest"),
 //- integrity=manifest("site.webmanifest", "integrity"),
 link(rel="manifest", href="/site.webmanifest", crossorigin="anonymous")
+//- The Forward Email team writes the site (see the About page)
+if typeof isNotPrivateRoute !== "undefined" && isNotPrivateRoute
+  link(rel="author", href=config.urls.web + l("/about"))
 meta(name="apple-mobile-web-app-title", content=config.appName)
 meta(name="application-name", content=config.appName)
 meta(name="msapplication-TileColor", content=config.appColor)

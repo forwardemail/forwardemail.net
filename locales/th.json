@@ -23337,5 +23337,9 @@
   "Zone File": "ไฟล์โซน",
   "You can add every record now, including the ones for sending email (SPF, DKIM, Return-Path, and DMARC), with the <a href=\"#zone-file\" class=\"alert-link\">zone file below</a>.": "คุณเพิ่มระเบียนทั้งหมดได้เลยตอนนี้ รวมถึงระเบียนสำหรับส่งอีเมล (SPF, DKIM, Return-Path และ DMARC) ด้วย<a href=\"#zone-file\" class=\"alert-link\">ไฟล์โซนด้านล่าง</a>",
   "Import every record at once": "นำเข้าระเบียนทั้งหมดในครั้งเดียว",
-  "Export a zone file with every record your domain needs from <a href=\"%s\" class=\"alert-link\">My Account → Domains</a>.": "ส่งออกไฟล์โซนที่มีระเบียนทั้งหมดที่โดเมนของคุณต้องใช้ได้จาก <a href=\"%s\" class=\"alert-link\">บัญชีของฉัน → โดเมน</a>"
+  "Export a zone file with every record your domain needs from <a href=\"%s\" class=\"alert-link\">My Account → Domains</a>.": "ส่งออกไฟล์โซนที่มีระเบียนทั้งหมดที่โดเมนของคุณต้องใช้ได้จาก <a href=\"%s\" class=\"alert-link\">บัญชีของฉัน → โดเมน</a>",
+  "Forwarded mail is processed in memory and never written to disk.": "อีเมลที่ส่งต่อจะถูกประมวลผลในหน่วยความจำและไม่เคยถูกเขียนลงดิสก์",
+  "Each mailbox is its own encrypted SQLite file that only your password can open.": "กล่องจดหมายแต่ละกล่องเป็นไฟล์ SQLite ที่เข้ารหัสแยกกัน ซึ่งเปิดได้ด้วยรหัสผ่านของคุณเท่านั้น",
+  "Cure53 has audited our code twice, and <a href=\"%s\" target=\"_blank\" rel=\"noopener\">its report</a> is public.": "Cure53 ตรวจสอบโค้ดของเราแล้วสองครั้ง และ<a href=\"%s\" target=\"_blank\" rel=\"noopener\">รายงาน</a>เปิดเผยต่อสาธารณะ",
+  "What we store, and for how long": "เราจัดเก็บอะไรบ้าง และนานเท่าใด"
 }

@@ -16,12 +16,15 @@ mixin feProduct
         ul.fe-stats.fe-product__stats
           li
             span.fe-stats__value.fe-numeral 99.99%
+            = " "
             span.fe-stats__label.fe-label= t("Uptime")
           li
             span.fe-stats__value.fe-numeral 10 GB
+            = " "
             span.fe-stats__label.fe-label= t("Pooled storage")
           li
             span.fe-stats__value.fe-numeral $0
+            = " "
             span.fe-stats__label.fe-label= t("Per alias")
 
       //- Section 7 replacement copy. The mockup line here described the
@@ -47,10 +50,18 @@ mixin feProduct
       .fe-features
         .fe-panel.fe-feature
           h3.fe-display-sm.fe-feature__title= t("Privacy by default")
+          //- Each claim can be checked: the FAQ says what is stored where,
+          //- and the audit report is published
           p.fe-text.fe-feature__body
-            = t("Zero-knowledge architecture, quantum-resistant encryption options, sandboxed mailboxes, and safe web lookups.")
+            = t("Forwarded mail is processed in memory and never written to disk.")
             = " "
-            = t("Cure53 has audited our code twice.")
+            = t("Each mailbox is its own encrypted SQLite file that only your password can open.")
+            = " "
+            != t('Cure53 has audited our code twice, and <a href="%s" target="_blank" rel="noopener">its report</a> is public.', "/pentest-report_forward-email.pdf")
+            = " "
+            a.fe-feature__link(
+              href=l("/faq#where-is-inbound-email-for-my-domain-processed-and-stored-and-for-how-long")
+            )= t("What we store, and for how long")
           ul.fe-chips
             li.fe-chip
               i.fab.fa-github(aria-hidden="true")

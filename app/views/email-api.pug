@@ -131,7 +131,13 @@ html.h-100.no-js(
       )
 
     //- scalar API reference
-    script(nonce=nonce, src="/js/scalar.js", crossorigin="anonymous")
+    //- (the revisioned file: unrevisioned paths stay cached for a year)
+    script(
+      nonce=nonce,
+      src=manifest("js/scalar.js"),
+      integrity=manifest("js/scalar.js", "integrity"),
+      crossorigin="anonymous"
+    )
     - const API_SPEC = `${config.urls.web}/api-spec${locale === "en" ? "" : "-" + locale}.json`;
     script(nonce=nonce).
       window.API_URL = "#{config.urls.api}";

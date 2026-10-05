@@ -23337,5 +23337,9 @@
   "Zone File": "区域文件",
   "You can add every record now, including the ones for sending email (SPF, DKIM, Return-Path, and DMARC), with the <a href=\"#zone-file\" class=\"alert-link\">zone file below</a>.": "您现在就可以使用<a href=\"#zone-file\" class=\"alert-link\">下方的区域文件</a>添加所有记录，包括用于发送邮件的记录（SPF、DKIM、Return-Path 和 DMARC）。",
   "Import every record at once": "一次导入所有记录",
-  "Export a zone file with every record your domain needs from <a href=\"%s\" class=\"alert-link\">My Account → Domains</a>.": "在<a href=\"%s\" class=\"alert-link\">我的账户 → 域</a>中导出包含您域名所需全部记录的区域文件。"
+  "Export a zone file with every record your domain needs from <a href=\"%s\" class=\"alert-link\">My Account → Domains</a>.": "在<a href=\"%s\" class=\"alert-link\">我的账户 → 域</a>中导出包含您域名所需全部记录的区域文件。",
+  "Forwarded mail is processed in memory and never written to disk.": "转发的邮件在内存中处理，从不写入磁盘。",
+  "Each mailbox is its own encrypted SQLite file that only your password can open.": "每个邮箱都是独立加密的 SQLite 文件，只有您的密码才能打开。",
+  "Cure53 has audited our code twice, and <a href=\"%s\" target=\"_blank\" rel=\"noopener\">its report</a> is public.": "Cure53 已对我们的代码进行了两次审计，<a href=\"%s\" target=\"_blank\" rel=\"noopener\">审计报告</a>已公开。",
+  "What we store, and for how long": "我们存储什么，存储多久"
 }

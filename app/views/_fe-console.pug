@@ -161,6 +161,7 @@ mixin feConsole
             data-target=`#${view.id}`,
             data-fe-console-tab
           )= t(view.tab)
+          = " "
       button.fe-console__rail-control.fe-console__rail-control--next.no-js(
         type="button",
         disabled,
@@ -204,11 +205,16 @@ mixin feConsoleView(view, isFirst)
     p.fe-console__evidence.fe-code
       if view.glyph
         span.fe-console__evidence-glyph(aria-hidden="true")= view.glyph
+        = " "
       span= view.evidence
       if view.note
+        = " "
         span= t(view.note)
 
 mixin feConsoleCard(card)
   li.fe-console__card
+    //- (the spaces keep the words apart in the page's text, e.g. for
+    //- search engines and screen readers; the flex layout drops them)
     span.fe-console__card-label= t(card.label)
+    = " "
     span.fe-console__card-sub= card.subArg === undefined ? t(card.sub) : t(card.sub, card.subArg)

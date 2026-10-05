@@ -23337,5 +23337,9 @@
   "Zone File": "ゾーンファイル",
   "You can add every record now, including the ones for sending email (SPF, DKIM, Return-Path, and DMARC), with the <a href=\"#zone-file\" class=\"alert-link\">zone file below</a>.": "メール送信用のレコード (SPF、DKIM、Return-Path、DMARC) も含め、<a href=\"#zone-file\" class=\"alert-link\">下のゾーンファイル</a>ですべてのレコードを今すぐ追加できます。",
   "Import every record at once": "すべてのレコードを一度にインポート",
-  "Export a zone file with every record your domain needs from <a href=\"%s\" class=\"alert-link\">My Account → Domains</a>.": "ドメインに必要なすべてのレコードを含むゾーンファイルを <a href=\"%s\" class=\"alert-link\">私のアカウント → ドメイン</a> からエクスポートできます。"
+  "Export a zone file with every record your domain needs from <a href=\"%s\" class=\"alert-link\">My Account → Domains</a>.": "ドメインに必要なすべてのレコードを含むゾーンファイルを <a href=\"%s\" class=\"alert-link\">私のアカウント → ドメイン</a> からエクスポートできます。",
+  "Forwarded mail is processed in memory and never written to disk.": "転送メールはメモリ内で処理され、ディスクに書き込まれることはありません。",
+  "Each mailbox is its own encrypted SQLite file that only your password can open.": "各メールボックスは個別に暗号化された SQLite ファイルで、あなたのパスワードでしか開けません。",
+  "Cure53 has audited our code twice, and <a href=\"%s\" target=\"_blank\" rel=\"noopener\">its report</a> is public.": "Cure53 は当社のコードを 2 回監査しており、<a href=\"%s\" target=\"_blank\" rel=\"noopener\">そのレポート</a>は公開されています。",
+  "What we store, and for how long": "保存するデータとその保存期間"
 }

@@ -23337,5 +23337,9 @@
   "Zone File": "Sonefil",
   "You can add every record now, including the ones for sending email (SPF, DKIM, Return-Path, and DMARC), with the <a href=\"#zone-file\" class=\"alert-link\">zone file below</a>.": "Du kan legge til alle postene nå, også de for å sende e-post (SPF, DKIM, Return-Path og DMARC), med <a href=\"#zone-file\" class=\"alert-link\">sonefilen nedenfor</a>.",
   "Import every record at once": "Importer alle postene på én gang",
-  "Export a zone file with every record your domain needs from <a href=\"%s\" class=\"alert-link\">My Account → Domains</a>.": "Eksporter en sonefil med alle postene domenet ditt trenger fra <a href=\"%s\" class=\"alert-link\">Min konto → Domener</a>."
+  "Export a zone file with every record your domain needs from <a href=\"%s\" class=\"alert-link\">My Account → Domains</a>.": "Eksporter en sonefil med alle postene domenet ditt trenger fra <a href=\"%s\" class=\"alert-link\">Min konto → Domener</a>.",
+  "Forwarded mail is processed in memory and never written to disk.": "Videresendt e-post behandles i minnet og skrives aldri til disk.",
+  "Each mailbox is its own encrypted SQLite file that only your password can open.": "Hver postkasse er sin egen krypterte SQLite-fil som bare passordet ditt kan åpne.",
+  "Cure53 has audited our code twice, and <a href=\"%s\" target=\"_blank\" rel=\"noopener\">its report</a> is public.": "Cure53 har revidert koden vår to ganger, og <a href=\"%s\" target=\"_blank\" rel=\"noopener\">rapporten</a> er offentlig.",
+  "What we store, and for how long": "Hva vi lagrer, og hvor lenge"
 }

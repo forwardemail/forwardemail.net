@@ -23337,5 +23337,9 @@
   "Zone File": "Soubor zóny",
   "You can add every record now, including the ones for sending email (SPF, DKIM, Return-Path, and DMARC), with the <a href=\"#zone-file\" class=\"alert-link\">zone file below</a>.": "Všechny záznamy můžete přidat hned, včetně těch pro odesílání e-mailů (SPF, DKIM, Return-Path a DMARC), pomocí <a href=\"#zone-file\" class=\"alert-link\">souboru zóny níže</a>.",
   "Import every record at once": "Importovat všechny záznamy najednou",
-  "Export a zone file with every record your domain needs from <a href=\"%s\" class=\"alert-link\">My Account → Domains</a>.": "Exportujte soubor zóny se všemi záznamy, které vaše doména potřebuje, v <a href=\"%s\" class=\"alert-link\">Můj účet → domény</a>."
+  "Export a zone file with every record your domain needs from <a href=\"%s\" class=\"alert-link\">My Account → Domains</a>.": "Exportujte soubor zóny se všemi záznamy, které vaše doména potřebuje, v <a href=\"%s\" class=\"alert-link\">Můj účet → domény</a>.",
+  "Forwarded mail is processed in memory and never written to disk.": "Přeposílaná pošta se zpracovává v paměti a nikdy se nezapisuje na disk.",
+  "Each mailbox is its own encrypted SQLite file that only your password can open.": "Každá schránka je samostatný šifrovaný soubor SQLite, který otevře jen vaše heslo.",
+  "Cure53 has audited our code twice, and <a href=\"%s\" target=\"_blank\" rel=\"noopener\">its report</a> is public.": "Cure53 náš kód auditovala dvakrát a <a href=\"%s\" target=\"_blank\" rel=\"noopener\">její zpráva</a> je veřejná.",
+  "What we store, and for how long": "Co ukládáme a jak dlouho"
 }
