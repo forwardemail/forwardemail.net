@@ -5,7 +5,9 @@
 
 const Aliases = require('#models/aliases');
 
-const getApnCerts = require('#helpers/get-apn-certs');
+const IMAPError = require('#helpers/imap-error');
+
+const getApnTopic = require('#helpers/get-apn-topic');
 const pushApsRegistration = require('#helpers/push-aps-registration');
 const refineAndLogError = require('#helpers/refine-and-log-error');
 
@@ -37,6 +39,23 @@ const refineAndLogError = require('#helpers/refine-and-log-error');
 //   and ensures the push pipeline always uses the current account_id.
 // See helpers/dav-apns-subscribe.js for the same pattern on the DAV side.
 //
+// The reply carries the APNs topic iOS subscribes under.  It is our own
+// Apple-issued Mail topic (APNS_MAIL_TOPIC, e.g.
+// `com.apple.mobilemail.push.net.forwardemail`) when that certificate is
+// configured, otherwise the XServer Mail certificate topic.  iOS Mail
+// re-registers on every new IMAP session, so a topic change reaches each
+// device on its next connection.
+//
+// imap-core already rejects any aps-subtopic other than
+// `com.apple.mobilemail`; Calendar and Contacts register over DAV instead.
+//
+
+// APNs device tokens are 32 bytes in hex
+const DEVICE_TOKEN_REGEX = /^[\da-f]{64}$/i;
+
+// iOS sends a UUID; it is echoed back in every push payload
+const ACCOUNT_ID_REGEX = /^[\da-f]{8}(?:-[\da-f]{4}){3}-[\da-f]{12}$/i;
+
 // eslint-disable-next-line max-params
 async function onXAPPLEPUSHSERVICE(
   accountID,
@@ -58,6 +77,15 @@ async function onXAPPLEPUSHSERVICE(
 
     if (!session || !session.user || !session.user.alias_id)
       throw new TypeError('Alias does not exist');
+
+    if (
+      typeof deviceToken !== 'string' ||
+      !DEVICE_TOKEN_REGEX.test(deviceToken)
+    )
+      throw new IMAPError('Invalid device token');
+
+    if (typeof accountID !== 'string' || !ACCOUNT_ID_REGEX.test(accountID))
+      throw new IMAPError('Invalid account ID');
 
     const aliasId = session.user.alias_id;
 
@@ -99,8 +127,10 @@ async function onXAPPLEPUSHSERVICE(
     if (pushResult.matchedCount === 0)
       throw new TypeError('Alias does not exist');
 
-    const certs = await getApnCerts(this.client);
-    fn(null, certs.Mail.topic);
+    const topic = await getApnTopic(this.client, 'Mail');
+    if (!topic) throw new TypeError('APNs Mail topic unavailable');
+
+    fn(null, topic);
   } catch (err) {
     fn(refineAndLogError(err, session, true, this));
   }

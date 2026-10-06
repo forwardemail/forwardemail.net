@@ -15,6 +15,7 @@ const revHash = require('rev-hash');
 const Aliases = require('#models/aliases');
 const config = require('#config');
 const getApnCerts = require('#helpers/get-apn-certs');
+const getApnMailCert = require('#helpers/get-apn-mail-cert');
 const logger = require('#helpers/logger');
 
 //
@@ -84,8 +85,28 @@ const SERVICES = {
   }
 };
 
-let certs;
+// certificate bundle and long-lived provider per service
+const bundles = Object.create(null);
 const providers = Object.create(null);
+
+//
+// Mail uses the Apple-issued certificate for our own topic (see
+// helpers/get-apn-mail-cert.js) when configured; Calendar, Contacts and
+// Mail without it use the XServer certificate bundle.
+//
+async function getBundle(client, service) {
+  if (service.cert === 'Mail') {
+    const mailCert = getApnMailCert();
+    if (mailCert) return { Mail: mailCert, fromFile: true };
+  }
+
+  const certs = await getApnCerts(client);
+  if (!certs || !certs[service.cert] || !certs[service.cert].certificate)
+    return null;
+
+  ensureTopic(certs, service.cert);
+  return certs;
+}
 
 function ensureTopic(certBundle, certKey) {
   if (certBundle[certKey].topic) {
@@ -470,18 +491,40 @@ async function sendApnForService(serviceName, client, id, options = {}) {
   // Long-lived cached provider (one per service).  We never call
   // `provider.shutdown(fn)` because we keep the HTTP/2 connection alive.
   //
-  if (!providers[serviceName]) {
-    certs = await getApnCerts(client);
-    ensureTopic(certs, service.cert);
+  //
+  // Reconnect Mail when the Apple-issued certificate appears, is renewed or
+  // expires (getApnMailCert then returns a different object or null).
+  //
+  if (service.cert === 'Mail' && providers[serviceName]) {
+    const inUse = bundles[serviceName].fromFile
+      ? bundles[serviceName].Mail
+      : null;
+    if (getApnMailCert() !== inUse) {
+      if (providers[serviceName].client) providers[serviceName].client.close();
+      delete providers[serviceName];
+      delete bundles[serviceName];
+    }
+  }
 
+  if (!providers[serviceName]) {
+    const bundle = await getBundle(client, service);
+    if (!bundle) {
+      logger.warn('sendApnForService: no APNs certificate', {
+        service: serviceName
+      });
+      return;
+    }
+
+    bundles[serviceName] = bundle;
     providers[serviceName] = new ApnsClient(
-      certs[service.cert].certificate,
-      certs[service.cert].privateKey,
+      bundle[service.cert].certificate,
+      bundle[service.cert].privateKey,
       serviceName
     );
   }
 
   const provider = providers[serviceName];
+  const bundle = bundles[serviceName];
 
   await pMap(registrations, async (obj) => {
     try {
@@ -530,7 +573,7 @@ async function sendApnForService(serviceName, client, id, options = {}) {
       // Artificial 10s delay so multiple back-to-back mutations coalesce
       // into a single push (matches the pre-unification behaviour).
       await setTimeout(ms('10s'));
-      const note = createNote(certs, service, obj, options);
+      const note = createNote(bundle, service, obj, options);
 
       // Note they have commented out code at this below link for setting priority in note
       // <https://github.com/freswa/dovecot-xaps-daemon/blob/abce2f14cf1b5afa56329ebb4d923c9c2aebdfe3/internal/apns.go#L162-L163>
@@ -576,8 +619,38 @@ async function sendApnForService(serviceName, client, id, options = {}) {
           return;
         }
 
+        //
+        // 400 DeviceTokenNotForTopic: the device registered under another
+        // topic (e.g. the XServer topic before APNS_MAIL_TOPIC was set) and
+        // has not reconnected yet.  iOS re-registers with the topic we
+        // advertise on its next IMAP session, so keep the row.
+        //
+        const notForTopic = result.failed.filter(
+          (r) =>
+            Number.parseInt(r.status, 10) === 400 &&
+            r.response?.reason === 'DeviceTokenNotForTopic'
+        );
+
+        if (notForTopic.length === result.failed.length) {
+          logger.warn('APNs device token not registered for topic', {
+            service: serviceName,
+            topic: note.topic,
+            device: obj.device_token
+          });
+          return;
+        }
+
+        //
+        // 410 Unregistered and 400 BadDeviceToken both mean this token will
+        // never be delivered to again, so the registration is removed.
+        //
         const unregisteredDeviceTokens = result.failed
-          .filter((r) => Number.parseInt(r.status, 10) === 410)
+          .filter(
+            (r) =>
+              Number.parseInt(r.status, 10) === 410 ||
+              (Number.parseInt(r.status, 10) === 400 &&
+                r.response?.reason === 'BadDeviceToken')
+          )
           .map((r) => r.device);
 
         if (unregisteredDeviceTokens.length === 0) {
@@ -660,6 +733,12 @@ sendApn.sendApn = sendApn;
 sendApn.sendApnCalendar = sendApnCalendar;
 sendApn.sendApnContacts = sendApnContacts;
 sendApn.sendApnForService = sendApnForService;
-sendApn._test = { createNote, dedupeRegistrations, SERVICES };
+sendApn._test = {
+  createNote,
+  dedupeRegistrations,
+  SERVICES,
+  providers,
+  bundles
+};
 
 module.exports = sendApn;

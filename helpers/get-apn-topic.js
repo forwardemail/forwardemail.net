@@ -30,11 +30,18 @@ const crypto = require('node:crypto');
 const splitLines = require('split-lines');
 
 const getApnCerts = require('#helpers/get-apn-certs');
+const getApnMailCert = require('#helpers/get-apn-mail-cert');
 const logger = require('#helpers/logger');
 
 async function getApnTopic(client, service) {
   if (!['Calendar', 'Contact', 'Mail'].includes(service))
     throw new TypeError(`Unsupported APNs service: ${service}`);
+
+  // Mail uses the Apple-issued certificate for our own topic when configured
+  if (service === 'Mail') {
+    const mailCert = getApnMailCert();
+    if (mailCert) return mailCert.topic;
+  }
 
   let certs;
   try {

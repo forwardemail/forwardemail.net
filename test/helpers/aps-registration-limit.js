@@ -33,6 +33,8 @@ test.beforeEach(async (t) => {
 });
 
 const token = (i) => i.toString(16).padStart(64, '0');
+const accountId = (i) =>
+  `00000000-0000-4000-8000-${i.toString(16).padStart(12, '0')}`;
 
 async function registrations(alias) {
   const { aps } = await Aliases.findById(alias._id)
@@ -76,7 +78,7 @@ test('IMAP registrations keep only the newest', async (t) => {
     await new Promise((resolve) => {
       onXAPPLEPUSHSERVICE.call(
         server,
-        `account-${i}`,
+        accountId(i),
         token(i),
         'com.apple.mobilemail',
         ['INBOX'],

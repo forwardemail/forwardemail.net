@@ -40,6 +40,7 @@ const createTangerine = require('#helpers/create-tangerine');
 // eslint-disable-next-line import/no-unassigned-import
 require('#helpers/polyfill-towellformed');
 const env = require('#config/env');
+const getApnMailCert = require('#helpers/get-apn-mail-cert');
 const getTLSOptions = require('#helpers/get-tls-options');
 const imap = require('#helpers/imap');
 const getBackupSweepDelay = require('#helpers/backup-sweep-delay');
@@ -121,8 +122,15 @@ class IMAP {
       env.IMAP_TLS_MIN_VERSION === 'TLSv1.1';
 
     const server = new IMAPServer({
+      //
+      // XAPPLEPUSHSERVICE (iOS Mail push) needs either our Apple-issued Mail
+      // push certificate or an Apple ID for the XServer certificates; the
+      // APPLE_KEY_* token credentials are for the app and do not apply here
+      //
       aps: {
-        enabled: env.APPLE_KEY_PATH && env.APPLE_KEY_ID && env.APPLE_TEAM_ID
+        enabled: Boolean(
+          getApnMailCert() || (env.APPLE_ID && env.APPLE_ID_HASHED_PASSWORD)
+        )
       },
       secure,
       secured: false,

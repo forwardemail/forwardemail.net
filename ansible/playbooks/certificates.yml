@@ -23,6 +23,12 @@
     - name: input_firebase_service_account
       prompt: 'Optional: Leave blank or enter path to Firebase service-account JSON file (e.g. /path/to/firebase-service-account.json)'
       private: false
+    - name: input_apns_mail_cert
+      prompt: 'Optional: Leave blank or enter path to Apple Mail push certificate PEM file (e.g. /path/to/apns-mail.pem)'
+      private: false
+    - name: input_apns_mail_key
+      prompt: 'Optional: Leave blank or enter path to Apple Mail push private key PEM file (e.g. /path/to/apns-mail.key)'
+      private: false
 
   tasks:
     # Validate required inputs
@@ -97,6 +103,34 @@
         msg: 'Firebase service-account JSON file does not exist: {{ input_firebase_service_account }}'
       when: (input_firebase_service_account is defined) and (input_firebase_service_account | length > 0) and (not local_firebase_service_account_file.stat.exists)
 
+    # apns_mail_cert and apns_mail_key files (deployed together)
+    - name: Fail when only one of the Apple Mail push certificate and key is given
+      fail:
+        msg: 'Provide both the Apple Mail push certificate and its private key, or neither'
+      when: ((input_apns_mail_cert | default('') | length > 0) != (input_apns_mail_key | default('') | length > 0))
+
+    - name: Check if apns_mail_cert file exists
+      local_action: stat path={{ input_apns_mail_cert }}
+      register: local_apns_mail_cert_file
+      become: false
+      when: (input_apns_mail_cert is defined) and (input_apns_mail_cert | length > 0)
+
+    - name: Fail when local apns_mail_cert file does not exist
+      fail:
+        msg: 'Apple Mail push certificate file does not exist: {{ input_apns_mail_cert }}'
+      when: (input_apns_mail_cert is defined) and (input_apns_mail_cert | length > 0) and (not local_apns_mail_cert_file.stat.exists)
+
+    - name: Check if apns_mail_key file exists
+      local_action: stat path={{ input_apns_mail_key }}
+      register: local_apns_mail_key_file
+      become: false
+      when: (input_apns_mail_key is defined) and (input_apns_mail_key | length > 0)
+
+    - name: Fail when local apns_mail_key file does not exist
+      fail:
+        msg: 'Apple Mail push private key file does not exist: {{ input_apns_mail_key }}'
+      when: (input_apns_mail_key is defined) and (input_apns_mail_key | length > 0) and (not local_apns_mail_key_file.stat.exists)
+
     # remote dir
     - name: Check if remote dir exists
       stat:
@@ -154,6 +188,26 @@
         # https://chmodcommand.com/chmod-660/
         mode: '0660'
       when: (input_firebase_service_account is defined) and (input_firebase_service_account | length > 0)
+
+    # copy local apns_mail_cert
+    - name: Copy local apns_mail_cert file to server
+      copy:
+        src: '{{ input_apns_mail_cert }}'
+        dest: /var/www/production/apns-mail.pem
+        owner: deploy
+        # https://chmodcommand.com/chmod-660/
+        mode: '0660'
+      when: (input_apns_mail_cert is defined) and (input_apns_mail_cert | length > 0)
+
+    # copy local apns_mail_key
+    - name: Copy local apns_mail_key file to server
+      copy:
+        src: '{{ input_apns_mail_key }}'
+        dest: /var/www/production/apns-mail.key
+        owner: deploy
+        # https://chmodcommand.com/chmod-660/
+        mode: '0660'
+      when: (input_apns_mail_key is defined) and (input_apns_mail_key | length > 0)
 
 # ============================================================
 # Play 2: Deploy certificates to MongoDB servers

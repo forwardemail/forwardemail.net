@@ -9,7 +9,8 @@
 // Usage:
 //
 //   node scripts/debug-apns.js certs
-//     Print each Apple XServer certificate's subject + computed topic.
+//     Print each certificate's subject + computed topic (Mail uses the
+//     Apple-issued APNS_MAIL_CERT_PATH certificate when it is configured).
 //     This is the first thing to check when "registration succeeds but
 //     no push arrives": if the topic the server would advertise differs
 //     from the topic the APNs Provider sends on the wire, APNs replies
@@ -60,6 +61,7 @@ const splitLines = require('split-lines');
 const Aliases = require('#models/aliases');
 const Domains = require('#models/domains');
 const getApnCerts = require('#helpers/get-apn-certs');
+const getApnMailCert = require('#helpers/get-apn-mail-cert');
 const getApnTopic = require('#helpers/get-apn-topic');
 const logger = require('#helpers/logger');
 const setupMongoose = require('#helpers/setup-mongoose');
@@ -95,7 +97,13 @@ graceful.listen();
 
 async function cmdCerts() {
   console.log('Fetching cert bundle from Redis cache (or rotating it)...');
-  const certs = await getApnCerts(client);
+  const certs = { ...(await getApnCerts(client)) };
+  const mailCert = getApnMailCert();
+  if (mailCert) {
+    console.log('Mail uses APNS_MAIL_CERT_PATH, topic:', mailCert.topic);
+    certs.Mail = mailCert;
+  }
+
   console.log('Cert keys:', Object.keys(certs));
   for (const key of ['Mail', 'Calendar', 'Contact']) {
     if (!certs[key] || !certs[key].certificate) {
@@ -289,7 +297,8 @@ async function cmdPush(idOrEmail, serviceName, keyOverride) {
     return;
   }
 
-  const certs = await getApnCerts(client);
+  const mailCert = serviceName === 'Mail' ? getApnMailCert() : null;
+  const certs = mailCert ? { Mail: mailCert } : await getApnCerts(client);
   const topic = await getApnTopic(client, serviceName);
   console.log('Using topic:', topic);
   console.log(`Sending ${rows.length} push(es) for service=${serviceName}...`);

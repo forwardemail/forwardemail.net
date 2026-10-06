@@ -50,6 +50,9 @@ Adding an event to `USER_VISIBLE_PUSH_EVENTS` also needs a matching client chang
 | `APPLE_KEY_PATH`           | APNs         | Absolute server path to the downloaded shared `.p8` key                | Yes: file contents |
 | `APNS_BUNDLE_ID`           | APNs         | iOS bundle identifier; use `net.forwardemail.mail`                     | No                 |
 | `APNS_PRODUCTION`          | APNs         | `true` for distribution tokens; `false` for development/sandbox tokens | No                 |
+| `APNS_MAIL_CERT_PATH`      | iOS Mail     | Absolute server path to the Mail push certificate PEM                  | No                 |
+| `APNS_MAIL_KEY_PATH`       | iOS Mail     | Absolute server path to the Mail push private key PEM                  | Yes: file contents |
+| `APNS_MAIL_TOPIC`          | iOS Mail     | Apple-issued Mail push topic; defaults to the certificate UID          | No                 |
 | `FCM_PROJECT_ID`           | FCM          | Firebase **Project settings → General → Project ID**                   | No                 |
 | `FCM_SERVICE_ACCOUNT_PATH` | FCM          | Absolute server path to a Firebase service-account JSON key            | Yes: file contents |
 | `VAPID_SUBJECT`            | UnifiedPush  | Operator contact URI, normally `mailto:support@forwardemail.net`       | No                 |
@@ -104,6 +107,91 @@ APNS_PRODUCTION=true
 ```
 
 `APPLE_KEY_PATH` must identify the unencrypted `.p8` provider key, not an App Store Connect API key, signing certificate, provisioning profile, or `.p12` file. Keep `APNS_BUNDLE_ID` equal to the client bundle identifier. Use `APNS_PRODUCTION=false` for development-signed device builds and `APNS_PRODUCTION=true` for TestFlight, App Store, and other distribution builds.
+
+
+## iOS Mail push (IMAP XAPPLEPUSHSERVICE)
+
+iOS Mail asks for push over IMAP with the `XAPPLEPUSHSERVICE` command. The server stores the device token, account ID and mailboxes, then answers with the APNs topic the device subscribes under. New mail sends a background push on that topic.
+
+Apple issues mail providers a dedicated topic for this, for example `com.apple.mobilemail.push.net.forwardemail`. It arrives as an explicit App ID with that bundle ID in **Certificates, Identifiers & Profiles → Identifiers**. Mail push signs in to APNs with a certificate made for that App ID; the `.p8` token key above does not work for it.
+
+When `APNS_MAIL_CERT_PATH` and `APNS_MAIL_KEY_PATH` are set, the IMAP server advertises `APNS_MAIL_TOPIC` and every Mail push uses this certificate. Without them, Mail falls back to the XServer certificates obtained with `APPLE_ID`. Calendar and Contacts push always use the XServer certificates.
+
+| Variable              | Value                                                                |
+| --------------------- | -------------------------------------------------------------------- |
+| `APNS_MAIL_CERT_PATH` | `/var/www/production/apns-mail.pem` (PEM certificate)                |
+| `APNS_MAIL_KEY_PATH`  | `/var/www/production/apns-mail.key` (unencrypted PEM private key)    |
+| `APNS_MAIL_TOPIC`     | Optional; defaults to the certificate's subject UID (the bundle ID) |
+
+On startup the server checks that the key matches the certificate, the certificate has not expired, and the topic is one the certificate allows. If any check fails it logs the error and keeps using the XServer certificate.
+
+### Create the certificate
+
+1. Generate a private key and certificate signing request (CSR). Keychain Access works, but OpenSSL keeps the key out of the login keychain and skips the `.p12` export:
+
+   ```sh
+   openssl req -new -newkey rsa:2048 -nodes \
+     -keyout apns-mail.key -out apns-mail.csr \
+     -subj "/emailAddress=support@forwardemail.net/CN=Forward Email Mail Push/C=US"
+   ```
+
+   With Keychain Access instead: **Keychain Access → Certificate Assistant → Request a Certificate From a Certificate Authority**, enter the email and common name, leave the CA email empty, choose **Saved to disk**, then save the `.certSigningRequest` file.
+
+2. In **Certificates, Identifiers & Profiles → Certificates**, add a certificate of type **Apple Push Notification service SSL (Sandbox & Production)**, select the `com.apple.mobilemail.push.net.forwardemail` App ID, upload the CSR and download `aps.cer`.
+
+3. Convert the certificate to PEM and confirm the subject UID is the topic:
+
+   ```sh
+   openssl x509 -inform der -in aps.cer -out apns-mail.pem
+   openssl x509 -in apns-mail.pem -noout -subject -enddate
+   ```
+
+   With Keychain Access, export the certificate and its key as `apns-mail.p12`, then split it:
+
+   ```sh
+   openssl pkcs12 -in apns-mail.p12 -clcerts -nokeys -out apns-mail.pem
+   openssl pkcs12 -in apns-mail.p12 -nocerts -nodes -out apns-mail.key
+   ```
+
+   OpenSSL 3 may need `-legacy` to read a `.p12` exported by older macOS versions.
+
+4. Check the key matches and that APNs accepts the certificate for the topic:
+
+   ```sh
+   openssl x509 -in apns-mail.pem -noout -pubkey | openssl sha256
+   openssl pkey -in apns-mail.key -pubout | openssl sha256
+   curl -sS --http2 --cert apns-mail.pem --key apns-mail.key \
+     -H 'apns-topic: com.apple.mobilemail.push.net.forwardemail' \
+     -H 'apns-push-type: background' -d '{"aps":{}}' \
+     https://api.push.apple.com/3/device/0000000000000000000000000000000000000000000000000000000000000000
+   ```
+
+   The two hashes must be equal. APNs answering `{"reason":"BadDeviceToken"}` means it accepted the certificate and topic (the all-zero token is fake); `TopicDisallowed` or a 403 means it did not.
+
+5. Supply both paths when `ansible/playbooks/certificates.yml` prompts for the Apple Mail push certificate and key, then set:
+
+   ```env
+   APNS_MAIL_CERT_PATH=/var/www/production/apns-mail.pem
+   APNS_MAIL_KEY_PATH=/var/www/production/apns-mail.key
+   APNS_MAIL_TOPIC=com.apple.mobilemail.push.net.forwardemail
+   ```
+
+6. Deploy so every process loads the new environment, then run `node scripts/debug-apns.js certs` to confirm the Mail topic.
+
+The certificate expires after a year. Renew it with a new CSR before the date `-enddate` prints, and keep the same App ID so the topic does not change.
+
+### Moving devices to the new topic
+
+iOS registers again each time Mail opens a new IMAP session, and the server answers with the new topic. Until a device reconnects, APNs answers `400 DeviceTokenNotForTopic` for its old registration; the server logs a warning and keeps the row. `410 Unregistered` and `400 BadDeviceToken` remove the registration.
+
+### Push request
+
+Mail push headers match [dovecot-xaps-daemon](https://github.com/freswa/dovecot-xaps-daemon):
+
+* `apns-push-type: background` with no `apns-priority` header
+* body `{"aps":{"account-id":"<account id>","m":["<md5 of mailbox path>"]}}`, where `m` names the mailbox that changed
+
+Run `node scripts/debug-apns.js push <alias> Mail` to send one immediately and print the APNs response.
 
 
 ## FCM HTTP v1
