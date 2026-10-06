@@ -38,8 +38,7 @@ const renderer = new Email({
 
 //
 // The welcome message of an alias always has the same Message-ID, so a
-// mailbox that already has it does not get it again (e.g. an alias without
-// IMAP gets it unmarked, and IMAP is enabled while that mailbox is kept)
+// mailbox that already has it does not get it again
 //
 function getWelcomeMessageId(aliasId) {
   return `<welcome-${aliasId}@${config.webHost}>`;
@@ -136,18 +135,16 @@ async function storeWithRetries(instance, session, raw, attempt = 1) {
 // MX records point to us (the message would land at the previous provider),
 // and it would be subject to spam filtering and `config.email.send`.
 //
-// An alias with IMAP gets it once (`welcome_email_sent_at`).  The claim on
-// the flag comes before the append, so two concurrent initial opens cannot
-// both write it.  Nothing sets the mailbox up again later, so a failed
-// attempt gets two more, and the flag goes back only when all of them fail.
+// Only an alias with IMAP gets it, once (`welcome_email_sent_at`).  The
+// claim on the flag comes before the append, so two concurrent initial opens
+// cannot both write it.  Nothing sets the mailbox up again later, so a
+// failed attempt gets two more, and the flag goes back only when all of them
+// fail.
 //
-// An alias without IMAP gets it in its mailbox too, unmarked: its first
-// password sets the mailbox up, so the message is there when IMAP is
-// enabled soon after.  jobs/cleanup-sqlite.js deletes the mailbox of an
-// alias without IMAP within the hour, and the mailbox set up once IMAP is
-// enabled then gets the welcome message (and the flag).  A Redis key held
-// for an hour stands in for the flag, so two concurrent initial opens write
-// it once.
+// An alias without IMAP gets none: jobs/cleanup-sqlite.js deletes its
+// mailbox every hour, so anything that opened it later set up a new one,
+// and every new mailbox got another welcome message.  The mailbox set up
+// once IMAP is enabled gets it.
 //
 async function appendWelcomeMessage(instance, session) {
   const aliasId = session?.user?.alias_id;
@@ -157,27 +154,16 @@ async function appendWelcomeMessage(instance, session) {
     .select('has_imap welcome_email_sent_at')
     .lean()
     .exec();
-  if (!alias || alias.welcome_email_sent_at) return false;
+  if (!alias || !alias.has_imap || alias.welcome_email_sent_at) return false;
 
-  if (alias.has_imap) {
-    const claimed = await Aliases.findOneAndUpdate(
-      { _id: alias._id, welcome_email_sent_at: { $exists: false } },
-      { $set: { welcome_email_sent_at: new Date() } }
-    )
-      .select('_id')
-      .lean()
-      .exec();
-    if (!claimed) return false;
-  } else if (instance.client) {
-    const claimed = await instance.client.set(
-      `welcome_unmarked:${aliasId}`,
-      true,
-      'PX',
-      ms('1h'),
-      'NX'
-    );
-    if (!claimed) return false;
-  }
+  const claimed = await Aliases.findOneAndUpdate(
+    { _id: alias._id, welcome_email_sent_at: { $exists: false } },
+    { $set: { welcome_email_sent_at: new Date() } }
+  )
+    .select('_id')
+    .lean()
+    .exec();
+  if (!claimed) return false;
 
   try {
     // (render once, before holding a handle: rendering takes a while)
@@ -185,15 +171,10 @@ async function appendWelcomeMessage(instance, session) {
     await storeWithRetries(instance, session, raw);
     return true;
   } catch (err) {
-    if (alias.has_imap)
-      await Aliases.updateOne(
-        { _id: alias._id },
-        { $unset: { welcome_email_sent_at: 1 } }
-      ).catch((err) => logger.warn(err));
-    else if (instance.client)
-      await instance.client
-        .del(`welcome_unmarked:${aliasId}`)
-        .catch((err) => logger.warn(err));
+    await Aliases.updateOne(
+      { _id: alias._id },
+      { $unset: { welcome_email_sent_at: 1 } }
+    ).catch((err) => logger.warn(err));
     throw err;
   }
 }

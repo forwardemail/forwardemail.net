@@ -426,6 +426,12 @@ async function onAuth(auth, session, fn) {
           // password (including entries written without this field) as a miss.
           (isSMTP ||
             (user.alias_id && user.auth_via === AUTH_VIA_ALIAS_TOKEN)) &&
+          // An alias without IMAP may only send mail (SMTP).  Its SMTP login
+          // is cached like any other, so every other server treats it as a
+          // miss and refuses it below: a phone that sent mail and then
+          // checked for new mail opened the mailbox, and a new one after
+          // each hourly cleanup (jobs/cleanup-sqlite.js).
+          (isSMTP || user.alias_has_imap) &&
           !isRekeying
         ) {
           // when the credentials were really checked (a revocation check

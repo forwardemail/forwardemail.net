@@ -2124,8 +2124,7 @@ async function _runDeferredMaintenance(instance, db, session, checks) {
 
 //
 // Write the welcome message into the INBOX of a mailbox that was just set up
-// (see helpers/append-welcome-message.js), also when the alias does not have
-// IMAP enabled: its first password sets the mailbox up all the same.  The
+// for an alias with IMAP (see helpers/append-welcome-message.js).  The
 // message goes into the mailbox and is never sent, so nothing reaches the
 // recipients the alias forwards to.
 //

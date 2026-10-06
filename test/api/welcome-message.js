@@ -9,11 +9,11 @@
 //
 // Through the real API -> controller -> WebSocket -> SQLite server path:
 //
-//  - the first password of an alias sets up its mailbox with the welcome
-//    message in the INBOX, also when the alias does not have IMAP enabled
-//    yet (the alias shows it once IMAP is on)
-//  - a mailbox deleted the way jobs/cleanup-sqlite.js deletes the mailbox of
-//    an alias without IMAP gets its folders and the welcome message again
+//  - the first password of an alias with IMAP sets up its mailbox with the
+//    welcome message in the INBOX
+//  - an alias without IMAP gets none, also when a client signs in after
+//    each time jobs/cleanup-sqlite.js deletes its mailbox
+//  - a mailbox deleted that way gets its folders and the welcome message
 //    once IMAP is enabled
 //
 // Through the SQLite server, with the helper called as getDatabase calls it:
@@ -265,28 +265,39 @@ test.serial(
   }
 );
 
+// as jobs/cleanup-sqlite.js deletes the mailbox of an alias without IMAP:
+// the SQLite servers close their handles, then the job deletes the files
+function deleteMailbox(t, ctx) {
+  t.context.sqlite.databaseMap.evictAndClose(ctx.aliasId);
+  for (const suffix of ['', '-wal', '-shm'])
+    fs.rmSync(`${ctx.storagePath}${suffix}`, { force: true });
+}
+
 test.serial(
-  'an alias without IMAP gets the welcome message with its first password, and it is there once IMAP is enabled',
+  'an alias without IMAP gets no welcome message, also when a client signs in after each cleanup of its mailbox',
   async (t) => {
     appendWelcomeMessage.enabled = true;
 
     const ctx = await createUserDomainAlias(t, { hasImap: false });
     const password = await generatePassword(t, ctx);
 
-    const subjects = await waitForInbox(ctx, password);
-    t.is(subjects.length, 1);
-    t.true(subjects[0].includes(WELCOME_SUBJECT));
-    // (not marked: the next mailbox of the alias gets one too)
+    // (the message would be written in the background)
+    const hasMessages = async () => {
+      const subjects = await inboxSubjects(ctx, password);
+      return subjects.length > 0;
+    };
+
+    t.false(await eventually(hasMessages, Date.now() + ms('10s')));
+
+    // the mailbox is opened again after each hourly cleanup, and the SQLite
+    // server sets up a new one
+    for (let i = 0; i < 2; i++) {
+      deleteMailbox(t, ctx);
+      await openMailbox(t, ctx, password);
+      t.false(await eventually(hasMessages, Date.now() + ms('10s')));
+    }
+
     t.falsy(await welcomeSentAt(ctx.aliasId));
-
-    const update = await enableImap(t, ctx);
-    t.is(update.status, 200);
-    t.true(update.body.has_imap);
-
-    const res = await listInbox(t, ctx, password);
-    t.is(res.status, 200);
-    t.is(res.body.length, 1);
-    t.true(res.body[0].subject.includes(WELCOME_SUBJECT));
   }
 );
 
@@ -297,15 +308,7 @@ test.serial(
 
     const ctx = await createUserDomainAlias(t, { hasImap: false });
     const password = await generatePassword(t, ctx);
-    const subjects = await waitForInbox(ctx, password);
-    t.is(subjects.length, 1);
-
-    // as jobs/cleanup-sqlite.js deletes the mailbox of an alias without
-    // IMAP: the SQLite servers close their handles, then the job deletes the
-    // files
-    t.true(t.context.sqlite.databaseMap.evictAndClose(ctx.aliasId));
-    for (const suffix of ['', '-wal', '-shm'])
-      fs.rmSync(`${ctx.storagePath}${suffix}`, { force: true });
+    deleteMailbox(t, ctx);
 
     const update = await enableImap(t, ctx);
     t.is(update.status, 200);
@@ -468,21 +471,24 @@ test.serial(
 );
 
 test.serial(
-  'a mailbox that has the unmarked welcome message does not get another once IMAP is enabled',
+  'a mailbox that has the welcome message does not get another when it is set up again',
   async (t) => {
     appendWelcomeMessage.enabled = true;
 
-    const ctx = await createUserDomainAlias(t, { hasImap: false });
+    const ctx = await createUserDomainAlias(t);
     const password = await generatePassword(t, ctx);
     const before = await waitForInbox(ctx, password);
     t.is(before.length, 1);
-    t.falsy(await welcomeSentAt(ctx.aliasId));
 
-    // IMAP is enabled while the mailbox is kept, and it is set up again
-    const update = await enableImap(t, ctx);
-    t.is(update.status, 200);
+    // the alias is not marked (as after a set up whose attempts all
+    // failed), and the mailbox is set up again with a message rendered later
+    await Aliases.updateOne(
+      { _id: ctx.aliasId },
+      { $unset: { welcome_email_sent_at: 1 } }
+    );
+    await delay(1100);
     const { session, db } = await openMailbox(t, ctx, password);
-    await appendWelcomeMessage(t.context.sqlite, { ...session, db });
+    t.true(await appendWelcomeMessage(t.context.sqlite, { ...session, db }));
 
     const subjects = await inboxSubjects(ctx, password);
     t.is(subjects.length, 1);

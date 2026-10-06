@@ -361,6 +361,54 @@ test('prevents domain-wide passwords cached by a prior SMTP login', async (t) =>
   t.true(await smtpLogin());
 });
 
+test('an alias without IMAP cannot sign in with a login cached by SMTP', async (t) => {
+  const { domain, alias, pass } = t.context;
+  const username = `${alias.name}@${domain.name}`;
+
+  // the alias forwards only (IMAP disabled), and its password sends mail
+  await Aliases.findByIdAndUpdate(alias._id, { $set: { has_imap: false } });
+  await t.context.client.del(getAuthCacheKey(username, pass));
+
+  const smtp = new SMTP({ client: t.context.client }, true);
+  const smtpPort = await getPort();
+  await smtp.listen(smtpPort);
+  t.teardown(() => smtp.close());
+  const smtpLogin = () =>
+    nodemailer
+      .createTransport({
+        host: IP_ADDRESS,
+        port: smtpPort,
+        secure: true,
+        tls,
+        auth: { user: username, pass }
+      })
+      .verify();
+  t.true(await smtpLogin());
+
+  // that login is now in the auth cache shared by every server
+  await pWaitFor(
+    async () =>
+      Boolean(await t.context.client.get(getAuthCacheKey(username, pass))),
+    { timeout: ms('5s') }
+  );
+
+  // a client checking for new mail right after sending (as a phone does)
+  // must not open the mailbox
+  const imapFlow = new ImapFlow({
+    host: IP_ADDRESS,
+    port: t.context.port,
+    secure: t.context.secure,
+    logger,
+    tls,
+    auth: { user: username, pass }
+  });
+  const err = await t.throwsAsync(imapFlow.connect());
+  t.true(err.authenticationFailed);
+
+  // (SMTP keeps working)
+  t.true(await smtpLogin());
+});
+
 test('does not reveal alias existence or state on failed login', async (t) => {
   const { domain, alias, pass } = t.context;
 
