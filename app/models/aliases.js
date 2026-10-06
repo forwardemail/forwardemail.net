@@ -751,8 +751,9 @@ Aliases.pre('validate', function (next) {
     });
   }
 
-  // trim and convert to lowercase
-  this.name = this.name.trim().toLowerCase();
+  // trim, normalize Unicode (NFC) and convert to lowercase
+  // (e.g. so "blåtest" matches regardless of composed/decomposed "å")
+  this.name = this.name.trim().normalize('NFC').toLowerCase();
 
   // require alias name
   if (

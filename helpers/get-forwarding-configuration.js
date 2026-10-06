@@ -19,6 +19,7 @@ const Domains = require('#models/domains');
 const Users = require('#models/users');
 const config = require('#config');
 const email = require('#helpers/email');
+const getUsernameVariants = require('#helpers/get-username-variants');
 const i18n = require('#helpers/i18n');
 const isEmail = require('#helpers/is-email');
 const logger = require('#helpers/logger');
@@ -67,6 +68,11 @@ async function getForwardingConfiguration({
   // the verification value must have come from this domain (or a subdomain)
   if (domainName !== undefined && !isVerifiedHost(domain.name, domainName))
     return {};
+
+  // Unicode and punycode forms of username to match alias names against
+  // (e.g. "fællestest" and legacy "xn--fllestest-g3a")
+  const usernameVariants = username ? getUsernameVariants(username) : [];
+  if (username) username = usernameVariants[0];
 
   let hasMultiplePGP = false;
   let hasMultipleSMIME = false;
@@ -128,26 +134,21 @@ async function getForwardingConfiguration({
 
   //
   // NOTE: we are doing it this way for backwards compatibility for now
-  //       (in the future we should probably just to `toUnicode` some users already converted so this supports legacy)
-  //       (e.g. some users have aliases starting with "xn--" right now which means they already realized this bug)
+  //       (e.g. some users have aliases starting with "xn--" right now
+  //       since the local part was previously converted to punycode)
   //
   // if there were no aliases found but a `username` was passed
-  // then we can attempt to convert ASCII to Unicode and perform a lookup
-  if (
-    aliases.length === 0 &&
-    username &&
-    punycode.toUnicode(username) !== username
-  ) {
+  // then we can attempt a lookup with its other Unicode/punycode forms
+  if (aliases.length === 0 && usernameVariants.length > 1) {
     aliases = await Aliases.find({
       domain: domain._id,
-      name: punycode.toUnicode(username)
+      name: { $in: usernameVariants.slice(1) }
     })
       .select(
         'id user has_imap has_pgp public_key has_smime smime_certificate recipients name is_enabled error_code_if_disabled has_recipient_verification verified_recipients vacation_responder'
       )
       .lean()
       .exec();
-    if (aliases.length > 0) username = punycode.toUnicode(username);
   }
 
   if (aliases.length === 0) return {};
@@ -444,8 +445,7 @@ async function getForwardingConfiguration({
       for (const recipient of alias.recipients) {
         if (!isEmail(recipient)) continue;
         const [rcptName, rcptDomain] = recipient.split('@');
-        if (rcptName !== username && rcptName !== punycode.toUnicode(username))
-          continue;
+        if (!usernameVariants.includes(rcptName)) continue;
         if (rcptDomain !== domain.name) continue;
         const id = aliasIdsWithIMAPByName[rcptName];
         if (!id) continue;
@@ -613,10 +613,7 @@ async function getForwardingConfiguration({
         }
 
         if (regex) {
-          if (
-            regex.test(username) ||
-            regex.test(punycode.toUnicode(username))
-          ) {
+          if (usernameVariants.some((variant) => regex.test(variant))) {
             pushToBody(alias);
           }
 
@@ -625,8 +622,7 @@ async function getForwardingConfiguration({
       }
     }
 
-    if (username !== alias.name && punycode.toUnicode(username) !== alias.name)
-      continue;
+    if (!usernameVariants.includes(alias.name)) continue;
 
     pushToBody(alias);
   }
