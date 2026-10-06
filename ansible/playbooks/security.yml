@@ -348,6 +348,12 @@
         name: postfix
         state: restarted
 
+    - name: Restart certificate monitor timer
+      systemd:
+        daemon_reload: yes
+        name: ssl-certificate-monitor.timer
+        state: restarted
+
     - name: Restart monitoring services
       systemd:
         daemon_reload: yes
@@ -1532,6 +1538,21 @@
         group: root
         mode: '0755'
 
+    # Certificate expiry monitor: the public site, certificate files, the
+    # security.txt OpenPGP key, local TLS services, and the push certificates
+    # cached in Redis (files/ssl-certificate-monitor.sh). Deploy changes with
+    # --tags forwardemail-certificate-monitor.
+    - name: Install certificate monitor dependencies
+      ansible.builtin.apt:
+        name:
+          - gnupg
+          - iproute2
+          - openssl
+          - util-linux
+        state: present
+      tags:
+        - forwardemail-certificate-monitor
+
     - name: Deploy SSL certificate monitor script
       copy:
         src: "{{ playbook_dir }}/files/ssl-certificate-monitor.sh"
@@ -1539,6 +1560,8 @@
         owner: root
         group: root
         mode: '0755'
+      tags:
+        - forwardemail-certificate-monitor
 
     # Deploy systemd service units
     - name: Deploy system resource monitor service
@@ -1689,7 +1712,9 @@
         owner: root
         group: root
         mode: '0644'
-      notify: Restart monitoring services
+      notify: Restart certificate monitor timer
+      tags:
+        - forwardemail-certificate-monitor
 
     - name: Deploy SSL certificate monitor timer
       template:
@@ -1698,6 +1723,8 @@
         owner: root
         group: root
         mode: '0644'
+      tags:
+        - forwardemail-certificate-monitor
 
     # Reload systemd and enable monitoring services
     - name: Reload systemd daemon for monitoring services
@@ -1758,8 +1785,11 @@
     - name: Enable and start SSL certificate monitor timer
       systemd:
         name: ssl-certificate-monitor.timer
+        daemon_reload: yes
         enabled: yes
         state: started
+      tags:
+        - forwardemail-certificate-monitor
 
     - name: Reload udev rules for USB monitoring
       command: udevadm control --reload-rules

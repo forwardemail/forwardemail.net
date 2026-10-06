@@ -178,7 +178,7 @@ On startup the server checks that the key matches the certificate, the certifica
 
 6. Deploy so every process loads the new environment, then run `node scripts/debug-apns.js certs` to confirm the Mail topic.
 
-The certificate expires after a year. Renew it with a new CSR before the date `-enddate` prints, and keep the same App ID so the topic does not change.
+The certificate expires after a year. Renew it with a new CSR before the date `-enddate` prints, and keep the same App ID so the topic does not change. The daily certificate monitor emails a warning 30 days before it expires (see [`ansible/docs/MONITORING.md`](ansible/docs/MONITORING.md#certificate-expiry)).
 
 ### Moving devices to the new topic
 

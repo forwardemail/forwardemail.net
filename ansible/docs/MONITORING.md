@@ -111,6 +111,29 @@ Routine monitors remain email-only. They cover resource use, SSH activity, USB d
 | Audits and certificates | Daily                      |
 
 
+## Certificate expiry
+
+`ssl-certificate-monitor` runs daily on every host. It sends one email that lists every certificate it checked, with renewal steps for the ones that need attention. It warns 30 days before expiry and turns critical at 7 days. Expired or unreadable certificates are reported too.
+
+It checks:
+
+- The certificate served at `WEB_URL`.
+- Certificate files. These are the TLS certificate and CA bundle (`/var/www/production/.ssl-cert` and `.ssl-ca`, plus the MongoDB and Valkey copies), the Apple Mail push certificate for IMAP `XAPPLEPUSHSERVICE` (`apns-mail.pem`), and every `*_CERT_PATH` and `*_CA_PATH` in the app's `.env`. Every certificate in a chain or bundle is checked.
+- The OpenPGP key that signs `security.txt` (`GPG_SECURITY_KEY`). A subkey that expired and was replaced does not count.
+- The certificate each local TLS service actually serves (node, mongod, valkey), including the STARTTLS ports. A process keeps the certificate it started with, so after `certificates.yml` deploys a renewed one, this shows any process that still needs a reload.
+- The Calendar and Contacts push certificates cached in Redis (`aps_certs`), from the first `bree` host. The cache renews itself before they expire, so these are reported only when it would not.
+
+Apple `.p8` keys (Sign in with Apple, APNs token authentication), DKIM keys and Firebase service-account keys do not expire, so they are not checked.
+
+To check more files, list them in `certificate_monitor_extra_paths`. To deploy monitor changes:
+
+```bash
+node ../ansible-playbook.js playbooks/security.yml --tags forwardemail-certificate-monitor
+```
+
+Run it by hand with `systemctl start ssl-certificate-monitor.service`; the log is `/var/log/ssl-certificate-monitor.log`. It emails at most once a day, so a run within a day of the last alert only writes the log. The local test (`ansible/scripts/test-certificate-monitor.sh`) uses certificates, keys and services it creates, and sends no email.
+
+
 ## Apply an alert update
 
 A `git pull` or PM2 reload updates the application only. It does **not** update systemd alert files on servers.

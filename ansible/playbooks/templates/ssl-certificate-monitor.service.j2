@@ -1,5 +1,8 @@
+{# The push certificates cached in Redis are the same for every host, so one
+   host checks them: the first bree server, else the first http server. #}
+{% set apn_cache_host = ((groups['bree'] | default([])) + (groups['http'] | default([]))) | first | default('') %}
 [Unit]
-Description=Ssl Certificate Monitor
+Description=Certificate Expiry Monitor
 After=network.target
 Documentation=https://github.com/forwardemail/forwardemail.net
 OnFailure=failure-notification@%n.service
@@ -7,7 +10,14 @@ OnFailure=failure-notification@%n.service
 [Service]
 Type=oneshot
 Environment="WEB_URL=https://forwardemail.net"
+Environment="CERT_MONITOR_APN_CACHE={{ 'true' if inventory_hostname == apn_cache_host else 'false' }}"
+{% set extra_paths = certificate_monitor_extra_paths | default([]) %}
+{% if extra_paths is string %}{% set extra_paths = extra_paths.split() %}{% endif %}
+{% if extra_paths | length > 0 %}
+Environment="CERT_MONITOR_PATHS={{ extra_paths | join(' ') | replace('%', '%%') }}"
+{% endif %}
 ExecStart=/usr/local/bin/ssl-certificate-monitor.sh
+TimeoutStartSec=15min
 StandardOutput=journal
 StandardError=journal
 SyslogIdentifier=ssl-certificate-monitor
