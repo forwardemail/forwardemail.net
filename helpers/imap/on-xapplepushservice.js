@@ -6,6 +6,7 @@
 const Aliases = require('#models/aliases');
 
 const IMAPError = require('#helpers/imap-error');
+const apnsDebug = require('#helpers/apns-debug');
 
 const getApnTopic = require('#helpers/get-apn-topic');
 const pushApsRegistration = require('#helpers/push-aps-registration');
@@ -42,7 +43,7 @@ const refineAndLogError = require('#helpers/refine-and-log-error');
 // The reply carries the APNs topic iOS subscribes under.  It is our own
 // Apple-issued Mail topic (APNS_MAIL_TOPIC, e.g.
 // `com.apple.mobilemail.push.net.forwardemail`) when that certificate is
-// configured, otherwise the XServer Mail certificate topic.  iOS Mail
+// configured; without it the capability is not advertised.  iOS Mail
 // re-registers on every new IMAP session, so a topic change reaches each
 // device on its next connection.
 //
@@ -72,6 +73,15 @@ async function onXAPPLEPUSHSERVICE(
     mailboxes,
     session
   });
+  const debug = {
+    alias: session?.user?.alias_id,
+    accountId: accountID,
+    deviceToken: apnsDebug.maskToken(deviceToken),
+    subtopic: subTopic,
+    mailboxes
+  };
+  apnsDebug('XAPPLEPUSHSERVICE received', debug);
+
   try {
     await this.refreshSession(session, 'XAPPLEPUSHSERVICE');
 
@@ -90,13 +100,23 @@ async function onXAPPLEPUSHSERVICE(
     const aliasId = session.user.alias_id;
 
     //
+    // The topic is resolved first and stored with the registration: the
+    // device only accepts pushes on the topic it was given here, so pushes
+    // for this row must go out on it even if this process and the one that
+    // sends the push are configured differently.
+    //
+    const topic = await getApnTopic(this.client, 'Mail');
+    if (!topic) throw new TypeError('APNs Mail topic unavailable');
+
+    //
     // Step 1: atomically remove ALL existing aps[] entries for this
     // (device_token, subtopic) pair (any account_id).  APNs treats device
     // tokens as case-insensitive hex so we match both casings.  Scoping to
     // subtopic ensures that when Mail re-registers it does not wipe out the
     // Calendar or Contacts entries for the same physical device, and vice
     // versa.  This cleans up stale rows from previous registrations where iOS
-    // rotated the account_id.
+    // rotated the account_id.  Mail rows from before subtopics were stored
+    // have no subtopic at all, so those are removed with the Mail ones.
     //
     await Aliases.updateOne(
       { id: aliasId },
@@ -110,7 +130,10 @@ async function onXAPPLEPUSHSERVICE(
                 deviceToken.toUpperCase()
               ]
             },
-            subtopic: subTopic
+            subtopic:
+              subTopic === 'com.apple.mobilemail'
+                ? { $in: [subTopic, null] }
+                : subTopic
           }
         }
       }
@@ -122,16 +145,16 @@ async function onXAPPLEPUSHSERVICE(
       account_id: accountID,
       device_token: deviceToken,
       subtopic: subTopic,
-      mailboxes
+      mailboxes,
+      topic
     });
     if (pushResult.matchedCount === 0)
       throw new TypeError('Alias does not exist');
 
-    const topic = await getApnTopic(this.client, 'Mail');
-    if (!topic) throw new TypeError('APNs Mail topic unavailable');
-
+    apnsDebug('XAPPLEPUSHSERVICE registered', { ...debug, topic });
     fn(null, topic);
   } catch (err) {
+    apnsDebug('XAPPLEPUSHSERVICE failed', { ...debug, error: err.message });
     fn(refineAndLogError(err, session, true, this));
   }
 }

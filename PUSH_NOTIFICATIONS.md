@@ -53,6 +53,7 @@ Adding an event to `USER_VISIBLE_PUSH_EVENTS` also needs a matching client chang
 | `APNS_MAIL_CERT_PATH`      | iOS Mail     | Absolute server path to the Mail push certificate PEM                  | No                 |
 | `APNS_MAIL_KEY_PATH`       | iOS Mail     | Absolute server path to the Mail push private key PEM                  | Yes: file contents |
 | `APNS_MAIL_TOPIC`          | iOS Mail     | Apple-issued Mail push topic; defaults to the certificate UID          | No                 |
+| `APNS_DEBUG`               | iOS Mail     | `true` prints `[APNs]` push diagnostics to stdout                      | No                 |
 | `FCM_PROJECT_ID`           | FCM          | Firebase **Project settings → General → Project ID**                   | No                 |
 | `FCM_SERVICE_ACCOUNT_PATH` | FCM          | Absolute server path to a Firebase service-account JSON key            | Yes: file contents |
 | `VAPID_SUBJECT`            | UnifiedPush  | Operator contact URI, normally `mailto:support@forwardemail.net`       | No                 |
@@ -115,7 +116,7 @@ iOS Mail asks for push over IMAP with the `XAPPLEPUSHSERVICE` command. The serve
 
 Apple issues mail providers a dedicated topic for this, for example `com.apple.mobilemail.push.net.forwardemail`. It arrives as an explicit App ID with that bundle ID in **Certificates, Identifiers & Profiles → Identifiers**. Mail push signs in to APNs with a certificate made for that App ID; the `.p8` token key above does not work for it.
 
-When `APNS_MAIL_CERT_PATH` and `APNS_MAIL_KEY_PATH` are set, the IMAP server advertises `APNS_MAIL_TOPIC` and every Mail push uses this certificate. Without them, Mail falls back to the XServer certificates obtained with `APPLE_ID`. Calendar and Contacts push always use the XServer certificates.
+Mail push only uses this certificate. When `APNS_MAIL_CERT_PATH` and `APNS_MAIL_KEY_PATH` are set, the IMAP server advertises `XAPPLEPUSHSERVICE`, answers with `APNS_MAIL_TOPIC`, and every Mail push uses this certificate. Without them the capability is not advertised and iOS fetches on its schedule instead; there is no fallback to the XServer certificates, since iOS Mail does not take pushes on the XServer topic. Calendar and Contacts push use the XServer certificates obtained with `APPLE_ID`.
 
 | Variable              | Value                                                                |
 | --------------------- | -------------------------------------------------------------------- |
@@ -123,7 +124,7 @@ When `APNS_MAIL_CERT_PATH` and `APNS_MAIL_KEY_PATH` are set, the IMAP server adv
 | `APNS_MAIL_KEY_PATH`  | `/var/www/production/apns-mail.key` (unencrypted PEM private key)    |
 | `APNS_MAIL_TOPIC`     | Optional; defaults to the certificate's subject UID (the bundle ID) |
 
-On startup the server checks that the key matches the certificate, the certificate has not expired, and the topic is one the certificate allows. If any check fails it logs the error and keeps using the XServer certificate.
+On startup the server checks that the key matches the certificate, the certificate has not expired, and the topic is one the certificate allows. If any check fails it logs a fatal error and Mail push is off; the load is retried every 5 minutes, but the IMAP server only decides whether to advertise `XAPPLEPUSHSERVICE` when it starts, so restart it after fixing the certificate.
 
 ### Create the certificate
 
@@ -180,18 +181,49 @@ On startup the server checks that the key matches the certificate, the certifica
 
 The certificate expires after a year. Renew it with a new CSR before the date `-enddate` prints, and keep the same App ID so the topic does not change. The daily certificate monitor emails a warning 30 days before it expires (see [`ansible/docs/MONITORING.md`](ansible/docs/MONITORING.md#certificate-expiry)).
 
-### Moving devices to the new topic
+### Topics per registration
 
-iOS registers again each time Mail opens a new IMAP session, and the server answers with the new topic. Until a device reconnects, APNs answers `400 DeviceTokenNotForTopic` for its old registration; the server logs a warning and keeps the row. `410 Unregistered` and `400 BadDeviceToken` remove the registration.
+A device only accepts pushes on the topic the IMAP server gave it in its last `XAPPLEPUSHSERVICE` reply. Its device token is not tied to a topic, so APNs answers `200` for a push on any of our topics and the device drops the ones it does not listen on. A `200` therefore does not mean the push reached Mail.
+
+Each registration stores the topic it was given. Mail pushes only go out on the Apple-issued topic, so a registration that stored another topic (the XServer topic, or the topic of an earlier certificate) gets no push until the device connects over IMAP again and registers with the current one. Registrations made before topics were stored get the push on the Apple-issued topic; one still listening on the XServer topic drops it until the device registers again, which opening Mail does.
+
+`410 Unregistered` and `400 BadDeviceToken` remove a registration once every topic it was sent on refused it this way; a registration made after the time APNs gives with a `410` is kept. `400 DeviceTokenNotForTopic` keeps it. To make a device register at once, turn the account's Mail switch off and on in **Settings → Apps → Mail → Mail Accounts**, or remove and add the account.
 
 ### Push request
 
-Mail push headers match [dovecot-xaps-daemon](https://github.com/freswa/dovecot-xaps-daemon):
+Mail pushes match [dovecot-xaps-daemon](https://github.com/freswa/dovecot-xaps-daemon) and [WildDuck](https://github.com/zone-eu/wildduck):
 
 * `apns-push-type: background` with no `apns-priority` header
-* body `{"aps":{"account-id":"<account id>","m":["<md5 of mailbox path>"]}}`, where `m` names the mailbox that changed
+* body `{"aps":{"account-id":"<account id>"}}`, after which iOS Mail checks the whole account
 
-Run `node scripts/debug-apns.js push <alias> Mail` to send one immediately and print the APNs response.
+Changes are coalesced per device: the first change queues a push that is sent 10 seconds later and covers every change made in between. A change in a mailbox the device did not list in its registration (for example Drafts) sends nothing.
+
+A push APNs does not answer within 15 seconds, or a connection that does not open within 15 seconds, is retried once on a new connection, and connections idle for 5 minutes are closed; a connection dropped silently by a firewall or NAT would otherwise hold every later push. The XServer certificates for Calendar and Contacts are read from Redis again every 5 minutes, so renewed ones are used without a restart.
+
+### Troubleshooting
+
+Production logs only `error` and `fatal`, so a refused or skipped push leaves no trace by default. Set `APNS_DEBUG=true`, deploy the environment, and follow one push through the IMAP, SQLite and MX processes:
+
+```sh
+pm2 logs | grep '\[APNs\]'
+```
+
+| Line                                       | Meaning                                                                                                     |
+| ------------------------------------------ | ----------------------------------------------------------------------------------------------------------- |
+| `Mail certificate loaded`                  | The process uses `APNS_MAIL_CERT_PATH`; `not configured` or `failed to load` means Mail push is off         |
+| `XAPPLEPUSHSERVICE registered`             | iOS registered; `topic` must be the Apple-issued topic                                                      |
+| `skip: alias has no push registrations`    | iOS never sent `XAPPLEPUSHSERVICE` for this alias (account not set to Push, or capability not advertised)     |
+| `skip: mailbox not subscribed`             | The change was in a mailbox the device did not ask for                                                       |
+| `skip: registered for a topic we no longer send on` | The device registered on another topic (e.g. XServer) and must connect over IMAP again        |
+| `coalesced`                                | A push for this device is already queued and covers this change                                              |
+| `sending`                                  | `registeredTopic` is the topic the device was given (`(not stored)`: registered before topics were kept); `topic` is this push's |
+| `sent`                                     | APNs accepted the push (`apnsId` identifies it)                                                              |
+| `retrying on a new connection`             | APNs did not answer or the connection dropped                                                                |
+| `refused` with `DeviceTokenNotForTopic`    | The device is registered under another topic; reconnect it as described above                               |
+
+If a device gets `sent` on the topic it registered with and still shows nothing, check on the device: the account must be set to **Push** under **Settings → Apps → Mail → Mail Accounts → Fetch New Data**, Push must be on at the top of that screen, and Low Power Mode pauses push.
+
+`node scripts/debug-apns.js alias <alias>` lists the registrations with their topic and whether a push is queued for each; `node scripts/debug-apns.js push <alias> Mail` sends one immediately on the Apple-issued topic, like production, and prints the APNs response. Turn `APNS_DEBUG` off again afterwards, since it logs every push.
 
 
 ## FCM HTTP v1

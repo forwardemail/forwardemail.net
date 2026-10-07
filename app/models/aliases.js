@@ -127,6 +127,10 @@ const APS = new mongoose.Schema({
   },
   // Mail-only: list of mailbox paths the device is subscribed to.
   mailboxes: [String],
+  // Mail-only: APNs topic the IMAP server gave the device in its
+  // XAPPLEPUSHSERVICE reply; the device only accepts pushes on that topic,
+  // so pushes are sent on it (absent on rows registered before it was kept)
+  topic: String,
   // CalDAV/CardDAV-only: opaque push key advertised to the client via
   // <CS:pushkey>; iOS sends it back in the registration POST so the server
   // knows which collection (calendar / addressbook) to associate the

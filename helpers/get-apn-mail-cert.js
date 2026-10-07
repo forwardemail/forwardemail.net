@@ -10,6 +10,7 @@ const { Buffer } = require('node:buffer');
 const X509 = require('@peculiar/x509');
 const splitLines = require('split-lines');
 
+const apnsDebug = require('#helpers/apns-debug');
 const env = require('#config/env');
 const logger = require('#helpers/logger');
 
@@ -24,9 +25,10 @@ X509.cryptoProvider.set(crypto);
 // Production)" certificate created under that App ID in the Apple Developer
 // portal, and the topic is the UID in its subject.
 //
-// When APNS_MAIL_CERT_PATH and APNS_MAIL_KEY_PATH are set, Mail pushes use
-// this certificate and the IMAP server advertises its topic.  Calendar and
-// Contacts keep using the XServer certificates from get-apn-certs.
+// Mail push only works with this certificate: when APNS_MAIL_CERT_PATH and
+// APNS_MAIL_KEY_PATH are set, the IMAP server advertises XAPPLEPUSHSERVICE
+// with its topic and Mail pushes use it; without it there is no Mail push.
+// Calendar and Contacts use the XServer certificates from get-apn-certs.
 //
 // APNS_MAIL_TOPIC is optional; it defaults to the subject UID and must match
 // a topic the certificate allows (APNs answers TopicDisallowed otherwise).
@@ -157,9 +159,9 @@ let warnedAt = 0;
 //
 // Returns `{ certificate, privateKey, topic, validTo }` or `null` when the
 // Mail certificate is not configured, fails to load or has expired (each
-// failure is logged and the XServer certificate keeps working as a
-// fallback).  The same object is returned until it changes, so callers can
-// compare by reference to know when to reconnect.
+// failure is logged, and there is no Mail push until it loads).  The same
+// object is returned until it changes, so callers can compare by reference
+// to know when to reconnect.
 //
 function getApnMailCert() {
   const now = Date.now();
@@ -172,7 +174,8 @@ function getApnMailCert() {
         now - warnedAt > 24 * 60 * 60 * 1000
       ) {
         warnedAt = now;
-        logger.warn(
+        // error (not warn) so it reaches the production logs
+        logger.error(
           new TypeError(
             `APNs Mail certificate expires on ${cached.validTo}; renew it`
           )
@@ -188,9 +191,18 @@ function getApnMailCert() {
   loadedAt = now;
   try {
     cached = loadApnMailCert();
+    apnsDebug(
+      cached
+        ? 'Mail certificate loaded'
+        : 'Mail certificate not configured (APNS_MAIL_CERT_PATH / APNS_MAIL_KEY_PATH empty); no Mail push',
+      cached ? { topic: cached.topic, validTo: cached.validTo } : {}
+    );
   } catch (err) {
     err.isCodeBug = true;
     logger.fatal(err);
+    apnsDebug('Mail certificate failed to load; no Mail push', {
+      error: err.message
+    });
     cached = null;
   }
 

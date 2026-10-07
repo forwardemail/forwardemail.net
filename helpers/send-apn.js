@@ -5,6 +5,7 @@
 const crypto = require('node:crypto');
 const http2 = require('node:http2');
 const { Buffer } = require('node:buffer');
+const timers = require('node:timers');
 const { setTimeout } = require('node:timers/promises');
 
 const dayjs = require('dayjs-with-plugins');
@@ -13,9 +14,11 @@ const pMap = require('p-map');
 const revHash = require('rev-hash');
 
 const Aliases = require('#models/aliases');
-const config = require('#config');
+const apnsDebug = require('#helpers/apns-debug');
 const getApnCerts = require('#helpers/get-apn-certs');
 const getApnMailCert = require('#helpers/get-apn-mail-cert');
+
+const { maskToken } = apnsDebug;
 const logger = require('#helpers/logger');
 
 //
@@ -85,27 +88,162 @@ const SERVICES = {
   }
 };
 
-// certificate bundle and long-lived provider per service
-const bundles = Object.create(null);
+//
+// Timeouts, kept in one object so tests can shorten them.
+//
+//   * coalesce -- changes within this window share one push
+//   * connect  -- give up on a connection to APNs that does not open
+//   * request  -- give up on a push APNs does not answer; the connection is
+//                 then dropped and the push retried once on a new one, since
+//                 a connection a firewall or NAT dropped silently would
+//                 otherwise hold every later push forever
+//   * idle     -- close a connection after this long without traffic, so a
+//                 silently dropped one is not reused
+//   * certs    -- reuse a fetched XServer certificate bundle this long before
+//                 reading Redis again, so a renewed bundle (new certificates
+//                 and topics) is used without a restart
+//
+const TIMEOUTS = {
+  coalesce: ms('10s'),
+  connect: ms('15s'),
+  request: ms('15s'),
+  idle: ms('5m'),
+  certs: ms('5m')
+};
+
+// APNs endpoint (tests point it at a local server)
+const ORIGIN = {
+  host: 'api.push.apple.com',
+  tls: {}
+};
+
+// replaceable in tests, where the XServer certificates cannot be fetched
+const deps = { getApnCerts };
+
+function isSubscribed(mailboxes, mailboxPath) {
+  if (!Array.isArray(mailboxes) || mailboxes.length === 0) return true;
+  if (mailboxPath.toUpperCase() === 'INBOX')
+    return mailboxes.some(
+      (m) => typeof m === 'string' && m.toUpperCase() === 'INBOX'
+    );
+  return mailboxes.includes(mailboxPath);
+}
+
+// long-lived HTTP/2 provider per certificate, keyed by target name
 const providers = Object.create(null);
 
-//
-// Mail uses the Apple-issued certificate for our own topic (see
-// helpers/get-apn-mail-cert.js) when configured; Calendar, Contacts and
-// Mail without it use the XServer certificate bundle.
-//
-async function getBundle(client, service) {
-  if (service.cert === 'Mail') {
-    const mailCert = getApnMailCert();
-    if (mailCert) return { Mail: mailCert, fromFile: true };
+let xserver = { certs: null, at: 0 };
+
+async function getXServerCerts(client) {
+  if (Date.now() - xserver.at < TIMEOUTS.certs) return xserver.certs;
+  let certs = null;
+  try {
+    certs = await deps.getApnCerts(client);
+  } catch (err) {
+    // retried after TIMEOUTS.certs instead of on every push
+    logger.error(err);
   }
 
-  const certs = await getApnCerts(client);
-  if (!certs || !certs[service.cert] || !certs[service.cert].certificate)
-    return null;
-
-  ensureTopic(certs, service.cert);
+  xserver = { certs, at: Date.now() };
   return certs;
+}
+
+function getProvider(target) {
+  const existing = providers[target.name];
+  if (
+    existing &&
+    existing.cert === target.cert.certificate &&
+    existing.key === target.cert.privateKey
+  )
+    return existing;
+
+  // the certificate was renewed or replaced: drop the old connection
+  if (existing?.client) existing.client.close();
+
+  apnsDebug('provider created', {
+    name: target.name,
+    topic: target.topic,
+    certificate: target.source,
+    validTo: target.cert.validTo
+  });
+
+  providers[target.name] = new ApnsClient(
+    target.cert.certificate,
+    target.cert.privateKey,
+    target.name
+  );
+  return providers[target.name];
+}
+
+//
+// The certificate a push for this service goes out on.
+//
+// Mail only uses the Apple-issued certificate for our own topic
+// (APNS_MAIL_CERT_PATH); iOS Mail does not take pushes on the XServer Mail
+// topic.  Calendar and Contacts use the XServer certificates.
+//
+async function getTargets(client, service) {
+  const targets = [];
+
+  if (service.cert === 'Mail') {
+    const mailCert = getApnMailCert();
+    if (mailCert)
+      targets.push({
+        name: 'Mail',
+        source: 'APNS_MAIL_CERT_PATH',
+        cert: mailCert
+      });
+  } else {
+    const certs = await getXServerCerts(client);
+    if (certs?.[service.cert]?.certificate) {
+      ensureTopic(certs, service.cert);
+      targets.push({
+        name: `${service.cert}:XServer`,
+        source: 'XServer',
+        cert: certs[service.cert]
+      });
+    }
+  }
+
+  for (const target of targets) {
+    target.topic = target.cert.topic;
+    target.provider = getProvider(target);
+  }
+
+  return targets;
+}
+
+//
+// A device only accepts pushes on the topic the IMAP server gave it, so a
+// registration that stored another topic (an older certificate or the
+// XServer topic) is skipped until the device registers again.  Rows stored
+// before topics were kept, and Calendar and Contacts rows, have none and
+// get the push on the current topic.
+//
+function getTargetsFor(registration, targets) {
+  if (!registration.topic) return targets;
+  return targets.filter((target) => target.topic === registration.topic);
+}
+
+const statusOf = (failure) => Number.parseInt(failure.status, 10);
+
+// a timeout, dropped connection or APNs server error, retried once
+const isTransient = (failure) => [0, 500, 503].includes(statusOf(failure));
+
+// the token will never be delivered to on this topic again
+const isPermanent = (failure) =>
+  statusOf(failure) === 410 ||
+  (statusOf(failure) === 400 && failure.response?.reason === 'BadDeviceToken');
+
+const isNotForTopic = (failure) =>
+  statusOf(failure) === 400 &&
+  failure.response?.reason === 'DeviceTokenNotForTopic';
+
+function failure(device, status, reason, extra = {}) {
+  return {
+    sent: [],
+    failed: [{ device, status, ...extra, response: { reason } }]
+  };
 }
 
 function ensureTopic(certBundle, certKey) {
@@ -163,7 +301,6 @@ class ApnsClient {
     // are provisioned against production APNs only; the sandbox endpoint will
     // reject them with a 403 InvalidProviderToken.
     //
-    this.host = 'api.push.apple.com';
     this.client = null;
     this.connectPromise = null;
   }
@@ -178,14 +315,37 @@ class ApnsClient {
     }
 
     this.connectPromise = new Promise((resolve, reject) => {
-      const client = http2.connect(`https://${this.host}`, {
+      const client = http2.connect(`https://${ORIGIN.host}`, {
         cert: this.cert,
         key: this.key,
         ALPNProtocols: ['h2'],
-        rejectUnauthorized: true
+        rejectUnauthorized: true,
+        ...ORIGIN.tls
+      });
+
+      //
+      // One timer for the session: until it connects it bounds the connect,
+      // afterwards it closes the session once idle.  (Each setTimeout call
+      // with a callback adds a listener, so the callback is added once.)
+      //
+      let connected = false;
+      client.setTimeout(TIMEOUTS.connect, () => {
+        if (connected) {
+          apnsDebug('closing idle connection', { service: this.serviceName });
+          client.close();
+          return;
+        }
+
+        client.destroy(new Error('APNs connection timed out'));
       });
 
       client.on('connect', () => {
+        connected = true;
+        client.setTimeout(TIMEOUTS.idle);
+        apnsDebug('connected', {
+          service: this.serviceName,
+          host: ORIGIN.host
+        });
         this.client = client;
         this.connectPromise = null;
         resolve(client);
@@ -193,29 +353,55 @@ class ApnsClient {
 
       client.on('error', (err) => {
         logger.error(`APNs HTTP/2 connection error: ${err.message}`);
-        this.client = null;
+        apnsDebug('connection error', {
+          service: this.serviceName,
+          error: err.message,
+          code: err.code
+        });
+        if (this.client === client) this.client = null;
         this.connectPromise = null;
         reject(err);
       });
 
       client.on('close', () => {
-        this.client = null;
-        this.connectPromise = null;
+        if (this.client === client) this.client = null;
+        if (!connected) {
+          this.connectPromise = null;
+          // closed before connecting without an error event
+          reject(new Error('APNs connection closed'));
+        }
       });
 
-      client.on('goaway', (_errorCode, _lastStreamId, _opaqueData) => {
-        this.client = null;
-        this.connectPromise = null;
+      client.on('goaway', (errorCode, _lastStreamId, _opaqueData) => {
+        apnsDebug('goaway', { service: this.serviceName, errorCode });
+        if (this.client === client) this.client = null;
       });
     });
 
     return this.connectPromise;
   }
 
+  //
+  // Always resolves; a timeout or dropped connection resolves as status 0.
+  //
   async send(note, deviceToken) {
-    const client = await this.connect();
+    let client;
+    try {
+      client = await this.connect();
+    } catch (err) {
+      return failure(deviceToken, 0, err.message);
+    }
 
     return new Promise((resolve) => {
+      let timer = null;
+      let done = false;
+      const finish = (result) => {
+        if (done) return;
+        done = true;
+        timers.clearTimeout(timer);
+        resolve(result);
+      };
+
       const headers = {
         ':method': 'POST',
         ':path': `/3/device/${deviceToken}`,
@@ -229,13 +415,32 @@ class ApnsClient {
         headers['apns-priority'] = note.priority;
       }
 
-      const req = client.request(headers);
+      let req;
+      try {
+        req = client.request(headers);
+      } catch (err) {
+        // the session closed between connect() and now
+        finish(failure(deviceToken, 0, err.message));
+        return;
+      }
+
+      timer = timers.setTimeout(() => {
+        apnsDebug('no response from APNs; dropping the connection', {
+          service: this.serviceName,
+          timeoutMs: TIMEOUTS.request
+        });
+        req.close(http2.constants.NGHTTP2_CANCEL);
+        client.destroy();
+        finish(failure(deviceToken, 0, 'Timeout'));
+      }, TIMEOUTS.request);
 
       req.setEncoding('utf8');
 
       let status;
+      let apnsId;
       req.on('response', (resHeaders) => {
         status = resHeaders[':status'];
+        apnsId = resHeaders['apns-id'];
       });
 
       let data = '';
@@ -245,33 +450,30 @@ class ApnsClient {
 
       req.on('end', () => {
         if (status === 200) {
-          resolve({ sent: [{ device: deviceToken }], failed: [] });
-        } else {
-          let reason = 'UnknownError';
-          try {
-            if (data) {
-              reason = JSON.parse(data).reason;
-            }
-          } catch {}
-
-          resolve({
-            sent: [],
-            failed: [{ device: deviceToken, status, response: { reason } }]
-          });
+          finish({ sent: [{ device: deviceToken, apnsId }], failed: [] });
+          return;
         }
+
+        let reason = 'UnknownError';
+        let timestamp;
+        try {
+          if (data) {
+            ({ reason, timestamp } = JSON.parse(data));
+          }
+        } catch {}
+
+        finish(
+          failure(deviceToken, status ?? 0, reason, { apnsId, timestamp })
+        );
       });
 
       req.on('error', (err) => {
-        resolve({
-          sent: [],
-          failed: [
-            {
-              device: deviceToken,
-              status: 500,
-              response: { reason: err.message }
-            }
-          ]
-        });
+        finish(failure(deviceToken, 0, err.message));
+      });
+
+      // reset by the server or the connection closed before a response
+      req.on('close', () => {
+        finish(failure(deviceToken, 0, 'StreamClosed'));
       });
 
       const body = note.compile();
@@ -281,7 +483,7 @@ class ApnsClient {
   }
 }
 
-function createNote(certBundle, service, obj, options) {
+function createNote(certBundle, service, obj, _options) {
   const note = {
     topic: certBundle[service.cert].topic,
     pushType: service.pushType,
@@ -300,24 +502,21 @@ function createNote(certBundle, service, obj, options) {
     // note.priority intentionally left undefined -- ApnsClient.send() omits
     // the apns-priority header when priority is undefined.
     //
+    //
+    // Body is only `{"aps":{"account-id":"…"}}`, as sent by
+    // dovecot-xaps-daemon and WildDuck for the Apple-issued Mail topics:
+    // iOS Mail then checks the whole account.  An `aps.m` mailbox hash
+    // used to be added; one push often covers several coalesced changes in
+    // different mailboxes (e.g. a draft save followed by new mail in INBOX),
+    // and naming only the first one could make iOS skip the mailbox that
+    // actually received mail.
+    // <https://github.com/freswa/dovecot-xaps-daemon/blob/main/internal/apns.go>
+    // <https://github.com/zone-eu/wildduck/blob/master/lib/apn-client.js>
+    //
     if (obj.account_id) {
       note.aps['account-id'] = obj.account_id;
     }
 
-    //
-    // aps.m is an array containing one md5 hex string identifying the mailbox
-    // that changed.  iOS Mail uses it to refresh only that mailbox instead of
-    // doing a full-account sync.  Format confirmed from argon/push_notify
-    // (the original Apple employee reference implementation):
-    //   new Notification({aps: {"account-id": accountId, m: [mailboxHash]}})
-    // <https://github.com/argon/push_notify/blob/master/lib/controller.js>
-    //
-    note.aps.m = [
-      crypto
-        .createHash('md5')
-        .update(options.mailboxPath || 'INBOX')
-        .digest('hex')
-    ];
     note.payload.aps = note.aps;
   } else {
     //
@@ -402,12 +601,20 @@ async function sendApnForService(serviceName, client, id, options = {}) {
     throw new TypeError(`Unsupported APN service: ${serviceName}`);
   }
 
+  const debug = {
+    service: serviceName,
+    alias: id,
+    mailbox: options.mailboxPath
+  };
+
   const alias = await Aliases.findOne({ id }).lean().select('+aps').exec();
   if (!alias) {
+    apnsDebug('skip: alias not found', debug);
     return;
   }
 
   if (!Array.isArray(alias.aps) || alias.aps.length === 0) {
+    apnsDebug('skip: alias has no push registrations', debug);
     return;
   }
 
@@ -434,6 +641,10 @@ async function sendApnForService(serviceName, client, id, options = {}) {
   );
 
   if (matched.length === 0) {
+    apnsDebug('skip: no registrations for this service', {
+      ...debug,
+      subtopics: alias.aps.map((a) => a.subtopic || '(none)')
+    });
     return;
   }
 
@@ -463,10 +674,8 @@ async function sendApnForService(serviceName, client, id, options = {}) {
   //
   // Dedupe key per service:
   //   * Mail               -- lowercase(device_token) + '|' + mailboxPath
-  //                           (one push per (device, mailbox); identical
-  //                            (token, mailbox) regardless of account_id
-  //                            produces an identical Mail push payload
-  //                            because aps.m = [md5(mailboxPath)])
+  //                           (one push per device; the newest row has the
+  //                            current account_id and topic)
   //   * Calendar / Contact -- lowercase(device_token) + '|' + (key || '')
   //                           (one push per (device, collection); the wire
   //                            body's `key` is opaque and identifies the
@@ -478,63 +687,36 @@ async function sendApnForService(serviceName, client, id, options = {}) {
   //
   const registrations = dedupeRegistrations(matched, service, options);
 
-  if (matched.length !== registrations.length) {
-    logger.debug('sendApnForService deduped registrations', {
-      service: serviceName,
-      aliasId: id,
-      before: matched.length,
-      after: registrations.length
+  apnsDebug('registrations', {
+    ...debug,
+    matched: matched.length,
+    deduped: registrations.length,
+    devices: registrations.map((r) => ({
+      deviceToken: maskToken(r.device_token),
+      accountId: r.account_id,
+      subtopic: r.subtopic,
+      mailboxes: r.mailboxes,
+      updatedAt: r.updated_at
+    }))
+  });
+
+  const targets = await getTargets(client, service);
+  if (targets.length === 0) {
+    logger.warn('sendApnForService: no APNs certificate', {
+      service: serviceName
     });
+    apnsDebug('skip: no APNs certificate', debug);
+    return;
   }
-
-  //
-  // Long-lived cached provider (one per service).  We never call
-  // `provider.shutdown(fn)` because we keep the HTTP/2 connection alive.
-  //
-  //
-  // Reconnect Mail when the Apple-issued certificate appears, is renewed or
-  // expires (getApnMailCert then returns a different object or null).
-  //
-  if (service.cert === 'Mail' && providers[serviceName]) {
-    const inUse = bundles[serviceName].fromFile
-      ? bundles[serviceName].Mail
-      : null;
-    if (getApnMailCert() !== inUse) {
-      if (providers[serviceName].client) providers[serviceName].client.close();
-      delete providers[serviceName];
-      delete bundles[serviceName];
-    }
-  }
-
-  if (!providers[serviceName]) {
-    const bundle = await getBundle(client, service);
-    if (!bundle) {
-      logger.warn('sendApnForService: no APNs certificate', {
-        service: serviceName
-      });
-      return;
-    }
-
-    bundles[serviceName] = bundle;
-    providers[serviceName] = new ApnsClient(
-      bundle[service.cert].certificate,
-      bundle[service.cert].privateKey,
-      serviceName
-    );
-  }
-
-  const provider = providers[serviceName];
-  const bundle = bundles[serviceName];
 
   await pMap(registrations, async (obj) => {
     try {
       //
-      // Coalesce sends to the same registration to one per minute -- avoids
-      // piling up requests during a sync storm.  We key on (device_token,
+      // Coalesce sends to the same registration.  We key on (device_token,
       // collection-key) because account_id is OPTIONAL for CalDAV/CardDAV
       // (iOS never sends it in the registration POST); using account_id
       // here would collapse all subscriptions for the alias into a single
-      // shared lock and only one push per minute would be delivered to the
+      // shared lock and only one push per window would be delivered to the
       // alias regardless of which collection changed.
       //
       const cacheTokens = [
@@ -543,12 +725,13 @@ async function sendApnForService(serviceName, client, id, options = {}) {
         revHash(obj.key || obj.account_id || '')
       ];
       const key = cacheTokens.join(':');
-
-      const cache = await client.get(key);
-
-      if (cache) {
-        return;
-      }
+      const device = {
+        ...debug,
+        deviceToken: maskToken(obj.device_token),
+        accountId: obj.account_id,
+        registeredTopic: obj.topic || '(not stored)',
+        registeredAt: obj.updated_at
+      };
 
       //
       // Mailbox subscription filter (matches argon/push_notify behaviour).
@@ -556,157 +739,196 @@ async function sendApnForService(serviceName, client, id, options = {}) {
       // Only send the push if the changed mailbox is in that list.
       // If mailboxes is empty or absent we send unconditionally (legacy
       // registrations that pre-date per-mailbox subscription support).
+      // INBOX is case-insensitive in IMAP (RFC 3501 section 5.1).
       //
       if (
         service.cert === 'Mail' &&
-        Array.isArray(obj.mailboxes) &&
-        obj.mailboxes.length > 0 &&
-        !obj.mailboxes.includes(options.mailboxPath || 'INBOX')
+        !isSubscribed(obj.mailboxes, options.mailboxPath || 'INBOX')
       ) {
-        // Release the coalesce lock so a future push for a subscribed mailbox
-        // is not blocked by this skipped send.
-        await client.del(key);
+        apnsDebug('skip: mailbox not subscribed', {
+          ...device,
+          mailboxes: obj.mailboxes
+        });
         return;
       }
 
-      await client.set(key, true, 'PX', ms('1m'));
-      // Artificial 10s delay so multiple back-to-back mutations coalesce
-      // into a single push (matches the pre-unification behaviour).
-      await setTimeout(ms('10s'));
-      const note = createNote(bundle, service, obj, options);
-
-      // Note they have commented out code at this below link for setting priority in note
-      // <https://github.com/freswa/dovecot-xaps-daemon/blob/abce2f14cf1b5afa56329ebb4d923c9c2aebdfe3/internal/apns.go#L162-L163>
-      logger.debug('sendApnForService dispatching', {
-        service: serviceName,
-        topic: note.topic,
-        deviceToken: obj.device_token,
-        key: obj.key,
-        subtopic: obj.subtopic,
-        priority: note.priority === undefined ? '(omitted)' : note.priority,
-        pushType: note.pushType
-      });
-
-      const result = await provider.send(note, obj.device_token);
-
-      logger.debug('sendApnForService result', {
-        service: serviceName,
-        sent: Array.isArray(result.sent) ? result.sent.length : 0,
-        failed: Array.isArray(result.failed) ? result.failed.length : 0,
-        result
-      });
-
-      // NOTE: if device returns 410 then unsubscribe on our side too
-      // If the device returns 410 we unsubscribe on our side too.
-      if (Array.isArray(result.failed) && result.failed.length > 0) {
+      const routed = getTargetsFor(obj, targets);
+      if (routed.length === 0) {
         //
-        // Handle 429 TooManyRequests -- APNs rate limit, not a bug.
-        // The device will receive the next successful push and sync then.
-        // Extend the coalescing lock to 5 minutes for this device to
-        // back off and avoid hitting the rate limit again immediately.
+        // The device registered for a topic we no longer send on (e.g. the
+        // XServer Mail topic); it gets the current topic the next time it
+        // connects over IMAP.
         //
-        const rateLimited = result.failed.filter(
-          (r) => Number.parseInt(r.status, 10) === 429
-        );
-
-        if (rateLimited.length > 0) {
-          logger.warn('APNs rate limited (429 TooManyRequests)', {
-            service: serviceName,
-            device: obj.device_token,
-            count: rateLimited.length
-          });
-          await client.set(key, true, 'PX', ms('5m'));
-          return;
-        }
-
-        //
-        // 400 DeviceTokenNotForTopic: the device registered under another
-        // topic (e.g. the XServer topic before APNS_MAIL_TOPIC was set) and
-        // has not reconnected yet.  iOS re-registers with the topic we
-        // advertise on its next IMAP session, so keep the row.
-        //
-        const notForTopic = result.failed.filter(
-          (r) =>
-            Number.parseInt(r.status, 10) === 400 &&
-            r.response?.reason === 'DeviceTokenNotForTopic'
-        );
-
-        if (notForTopic.length === result.failed.length) {
-          logger.warn('APNs device token not registered for topic', {
-            service: serviceName,
-            topic: note.topic,
-            device: obj.device_token
-          });
-          return;
-        }
-
-        //
-        // 410 Unregistered and 400 BadDeviceToken both mean this token will
-        // never be delivered to again, so the registration is removed.
-        //
-        const unregisteredDeviceTokens = result.failed
-          .filter(
-            (r) =>
-              Number.parseInt(r.status, 10) === 410 ||
-              (Number.parseInt(r.status, 10) === 400 &&
-                r.response?.reason === 'BadDeviceToken')
-          )
-          .map((r) => r.device);
-
-        if (unregisteredDeviceTokens.length === 0) {
-          const err = new TypeError(service.errorLabel);
-          err.isCodeBug = true;
-          err.result = result;
-          logger.fatal(err);
-          return;
-        }
-
-        if (
-          unregisteredDeviceTokens.length === 1 &&
-          unregisteredDeviceTokens[0] === obj.device_token
-        ) {
-          const aliases = await Aliases.find({
-            // We are unsure of the likelihood of Apple issuing two identical
-            // device tokens; the pair-match filter below is the safeguard.
-            'aps.device_token': obj.device_token
-          })
-            .select('+aps')
-            .lean()
-            .exec();
-
-          await pMap(
-            aliases,
-            async (alias) => {
-              //
-              // Remove the (device_token, key) pair that returned 410.
-              // Match strictly on the pair: a single physical device may
-              // hold multiple subscriptions on this alias (one per
-              // calendar/addressbook), so we must not unsubscribe siblings
-              // that share the device_token but identify a different
-              // collection.  account_id is optional and not always present.
-              //
-              const filtered = alias.aps.filter(
-                (a) =>
-                  !(a.device_token === obj.device_token && a.key === obj.key)
-              );
-              await Aliases.findByIdAndUpdate(alias._id, {
-                $set: { aps: filtered }
-              });
-            },
-            { concurrency: config.concurrency }
-          );
-        } else {
-          throw new TypeError(
-            `Device token mismatch ${
-              obj.device_token
-            } vs. ${unregisteredDeviceTokens.join(', ')}`
-          );
-        }
+        logger.warn('APNs registration topic has no certificate', {
+          service: serviceName,
+          topic: obj.topic
+        });
+        apnsDebug('skip: registered for a topic we no longer send on', {
+          ...device,
+          available: targets.map((t) => t.topic)
+        });
+        return;
       }
+
+      //
+      // Coalesce: the first change takes the lock and sends one push when
+      // the window ends, so every change made during the window (a draft
+      // save, then new mail, then a flag change) is covered by that push.
+      // The lock lasts exactly as long as the window; it used to last a
+      // minute after a 10 second wait, which silently dropped any new mail
+      // that arrived in the 50 seconds after a push.
+      //
+      const locked = await client.set(key, true, 'PX', TIMEOUTS.coalesce, 'NX');
+
+      if (!locked) {
+        apnsDebug('coalesced: a push for this device is already queued', {
+          ...device,
+          lockMs: await client.pttl(key)
+        });
+        return;
+      }
+
+      apnsDebug('queued', { ...device, inMs: TIMEOUTS.coalesce });
+      await setTimeout(TIMEOUTS.coalesce);
+
+      const results = await pMap(routed, async (target) => {
+        const note = createNote({ [service.cert]: target.cert }, service, obj);
+
+        // Note they have commented out code at this below link for setting priority in note
+        // <https://github.com/freswa/dovecot-xaps-daemon/blob/abce2f14cf1b5afa56329ebb4d923c9c2aebdfe3/internal/apns.go#L162-L163>
+        apnsDebug('sending', {
+          ...device,
+          topic: target.topic,
+          certificate: target.source,
+          pushType: note.pushType,
+          priority: note.priority === undefined ? '(omitted)' : note.priority,
+          body: note.compile()
+        });
+
+        let result = await target.provider.send(note, obj.device_token);
+        if (result.failed.some((f) => isTransient(f))) {
+          apnsDebug('retrying on a new connection', {
+            ...device,
+            topic: target.topic,
+            reason: result.failed[0].response?.reason
+          });
+          result = await target.provider.send(note, obj.device_token);
+        }
+
+        apnsDebug(result.sent.length > 0 ? 'sent' : 'refused', {
+          ...device,
+          topic: target.topic,
+          status: result.failed[0]?.status ?? 200,
+          reason: result.failed[0]?.response?.reason,
+          apnsId: result.sent[0]?.apnsId || result.failed[0]?.apnsId
+        });
+
+        return { target, result };
+      });
+
+      // delivered on at least one topic
+      if (results.some(({ result }) => result.sent.length > 0)) return;
+
+      const failures = results.flatMap(({ target, result }) =>
+        result.failed.map((f) => ({ ...f, topic: target.topic }))
+      );
+
+      //
+      // Handle 429 TooManyRequests -- APNs rate limit, not a bug.
+      // The device will receive the next successful push and sync then.
+      // Extend the coalescing lock to 5 minutes for this device to
+      // back off and avoid hitting the rate limit again immediately.
+      //
+      if (failures.some((f) => statusOf(f) === 429)) {
+        logger.warn('APNs rate limited (429 TooManyRequests)', {
+          service: serviceName,
+          device: obj.device_token
+        });
+        await client.set(key, true, 'PX', ms('5m'));
+        apnsDebug('backing off for 5 minutes after 429', device);
+        return;
+      }
+
+      //
+      // 400 DeviceTokenNotForTopic: the device registered under another
+      // topic and has not reconnected yet.  iOS registers again with the
+      // topic we advertise on its next IMAP session, so keep the row.
+      //
+      if (failures.every((f) => isNotForTopic(f))) {
+        logger.warn('APNs device token not registered for topic', {
+          service: serviceName,
+          topics: failures.map((f) => f.topic),
+          device: obj.device_token
+        });
+        apnsDebug(
+          'device has not registered for this topic yet; it must reconnect (or re-add the account) so iOS sends XAPPLEPUSHSERVICE again',
+          device
+        );
+        return;
+      }
+
+      //
+      // 410 Unregistered and 400 BadDeviceToken both mean this token will
+      // never be delivered to on that topic again, so the registration is
+      // removed once every topic it was sent on refused it this way.
+      //
+      if (
+        !failures.every((f) => isPermanent(f) || isNotForTopic(f)) ||
+        !failures.some((f) => isPermanent(f))
+      ) {
+        const err = new TypeError(service.errorLabel);
+        err.isCodeBug = true;
+        err.result = failures;
+        logger.fatal(err);
+        return;
+      }
+
+      await removeRegistrations(
+        obj,
+        failures.filter((f) => isPermanent(f))
+      );
+      apnsDebug('removed registration refused by APNs', device);
     } catch (err) {
       logger.fatal(err, { obj });
     }
   });
+}
+
+//
+// Remove the registrations APNs refused for good, on every alias that has
+// this device.  Matched on (device_token, key) so the device's other
+// subscriptions (one per calendar or address book) are kept, on the topics
+// that refused it, and atomically with $pull so a registration made at the
+// same moment is not overwritten.  A 410 carries the time APNs last saw the
+// token become invalid; a registration made after that time is kept, since
+// the device registered again with a working token.
+//
+async function removeRegistrations(obj, permanent) {
+  const timestamps = permanent.map((f) => f.timestamp);
+  const cutoff = timestamps.every((t) => Number.isFinite(t))
+    ? new Date(Math.max(...timestamps))
+    : null;
+
+  const variants = [
+    ...new Set([
+      obj.device_token,
+      obj.device_token.toLowerCase(),
+      obj.device_token.toUpperCase()
+    ])
+  ];
+
+  const condition = {
+    device_token: { $in: variants },
+    key: obj.key || null,
+    topic: { $in: [...new Set(permanent.map((f) => f.topic)), null] }
+  };
+  // ($not also matches rows without updated_at)
+  if (cutoff) condition.updated_at = { $not: { $gt: cutoff } };
+
+  await Aliases.updateMany(
+    { 'aps.device_token': { $in: variants } },
+    { $pull: { aps: condition } }
+  );
 }
 
 // Backward-compatible default export: Mail push with optional mailboxPath.
@@ -738,7 +960,12 @@ sendApn._test = {
   dedupeRegistrations,
   SERVICES,
   providers,
-  bundles
+  deps,
+  TIMEOUTS,
+  ORIGIN,
+  resetCerts() {
+    xserver = { certs: null, at: 0 };
+  }
 };
 
 module.exports = sendApn;

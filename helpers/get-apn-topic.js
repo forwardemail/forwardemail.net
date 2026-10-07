@@ -37,11 +37,12 @@ async function getApnTopic(client, service) {
   if (!['Calendar', 'Contact', 'Mail'].includes(service))
     throw new TypeError(`Unsupported APNs service: ${service}`);
 
-  // Mail uses the Apple-issued certificate for our own topic when configured
-  if (service === 'Mail') {
-    const mailCert = getApnMailCert();
-    if (mailCert) return mailCert.topic;
-  }
+  //
+  // Mail only uses the Apple-issued certificate for our own topic; iOS Mail
+  // does not take pushes on the XServer Mail topic, so there is no Mail
+  // topic without that certificate.
+  //
+  if (service === 'Mail') return getApnMailCert()?.topic ?? null;
 
   let certs;
   try {

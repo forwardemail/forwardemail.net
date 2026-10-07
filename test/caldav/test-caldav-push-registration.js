@@ -605,13 +605,6 @@ test('send-apn: createNote (Mail) includes aps[account-id] when provided', (t) =
     { mailboxPath: 'INBOX' }
   );
   t.is(note.aps['account-id'], 'acct-uuid-XYZ');
-  t.true(Array.isArray(note.aps.m), 'aps.m must be an array');
-  t.is(note.aps.m.length, 1, 'aps.m must have exactly one element');
-  t.regex(
-    note.aps.m[0],
-    /^[\da-f]{32}$/,
-    'aps.m[0] must be a 32-hex md5 digest'
-  );
 });
 
 test('send-apn: createNote (Calendar) ignores account_id even if present on obj', (t) => {
@@ -635,10 +628,10 @@ test('send-apn: createNote (Calendar) ignores account_id even if present on obj'
 });
 
 // ---------------------------------------------------------------------------
-// Test 16: createNote (Mail) sets aps.m to md5(mailboxPath) and pushType=background
+// Test 16: createNote (Mail) sends only aps.account-id with pushType=background
 // ---------------------------------------------------------------------------
 
-test('send-apn: createNote (Mail) sets pushType background and aps.m hash', (t) => {
+test('send-apn: createNote (Mail) sets pushType background and only account-id', (t) => {
   const sendApn = require('#helpers/send-apn');
   const { createNote, SERVICES } = sendApn._test;
   const certBundle = { Mail: { topic: 'com.apple.mail.XServer.deadbeef' } };
@@ -658,15 +651,9 @@ test('send-apn: createNote (Mail) sets pushType background and aps.m hash', (t) 
     undefined,
     'Mail omits apns-priority header for immediate delivery'
   );
-  // md5("INBOX") = ... (verify shape only)
-  t.true(Array.isArray(note.aps.m), 'aps.m must be an array');
-  t.is(note.aps.m.length, 1, 'aps.m must have exactly one element');
-  t.regex(
-    note.aps.m[0],
-    /^[\da-f]{32}$/,
-    'aps.m[0] must be a 32-hex md5 digest'
-  );
-  t.is(note.aps['account-id'], 'acct-1');
+  // body is {"aps":{"account-id":"…"}} as in dovecot-xaps-daemon and
+  // WildDuck; a single mailbox hash cannot describe coalesced changes
+  t.deepEqual(JSON.parse(note.compile()), { aps: { 'account-id': 'acct-1' } });
 });
 
 // ---------------------------------------------------------------------------
@@ -1259,18 +1246,18 @@ test('send-apn (Mail): legacy aps entries without subtopic are still considered'
   // We can't actually exercise the APN provider here (no certs in test
   // env), so we verify the filter path by inspecting that the helper
   // proceeds past the registrations.length === 0 short-circuit.  We do
-  // that by stubbing getApnCerts to throw -- which only happens AFTER
-  // the filter passes.  If the filter rejects all entries, getApnCerts
-  // is never called and the throw never propagates.
+  // that by stubbing getApnMailCert (the Mail certificate, looked up only
+  // AFTER the filter passes) to record the call and report no certificate.
+  // If the filter rejects all entries, it is never called.
   const Aliases = require('#models/aliases');
-  const getApnCertsPath = require.resolve('#helpers/get-apn-certs');
-  const original = require.cache[getApnCertsPath];
-  let getApnCertsCalled = false;
-  require.cache[getApnCertsPath] = {
+  const getApnMailCertPath = require.resolve('#helpers/get-apn-mail-cert');
+  const original = require.cache[getApnMailCertPath];
+  let getApnMailCertCalled = false;
+  require.cache[getApnMailCertPath] = {
     ...original,
-    async exports() {
-      getApnCertsCalled = true;
-      throw new Error('skip-after-filter');
+    exports() {
+      getApnMailCertCalled = true;
+      return null;
     }
   };
   const sendApnPath = require.resolve('#helpers/send-apn');
@@ -1284,17 +1271,15 @@ test('send-apn (Mail): legacy aps entries without subtopic are still considered'
   });
   try {
     await sendApn(null, 'fake-id');
-  } catch {
-    // expected: skip-after-filter from stubbed getApnCerts
   } finally {
     stub.restore();
-    require.cache[getApnCertsPath] = original;
+    require.cache[getApnMailCertPath] = original;
     delete require.cache[sendApnPath];
   }
 
   t.true(
-    getApnCertsCalled,
-    'getApnCerts should have been called, proving the legacy (no-subtopic) entry passed the Mail filter'
+    getApnMailCertCalled,
+    'getApnMailCert should have been called, proving the legacy (no-subtopic) entry passed the Mail filter'
   );
 });
 

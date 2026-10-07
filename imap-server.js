@@ -123,14 +123,12 @@ class IMAP {
 
     const server = new IMAPServer({
       //
-      // XAPPLEPUSHSERVICE (iOS Mail push) needs either our Apple-issued Mail
-      // push certificate or an Apple ID for the XServer certificates; the
-      // APPLE_KEY_* token credentials are for the app and do not apply here
+      // XAPPLEPUSHSERVICE (iOS Mail push) needs our Apple-issued Mail push
+      // certificate (APNS_MAIL_CERT_PATH); without it the capability is not
+      // advertised and iOS falls back to fetching
       //
       aps: {
-        enabled: Boolean(
-          getApnMailCert() || (env.APPLE_ID && env.APPLE_ID_HASHED_PASSWORD)
-        )
+        enabled: Boolean(getApnMailCert())
       },
       secure,
       secured: false,

@@ -56,6 +56,7 @@ const Graceful = require('@ladjs/graceful');
 const Mongoose = require('@ladjs/mongoose');
 const Redis = require('@ladjs/redis');
 const sharedConfig = require('@ladjs/shared-config');
+const revHash = require('rev-hash');
 const splitLines = require('split-lines');
 
 const Aliases = require('#models/aliases');
@@ -98,10 +99,17 @@ graceful.listen();
 async function cmdCerts() {
   console.log('Fetching cert bundle from Redis cache (or rotating it)...');
   const certs = { ...(await getApnCerts(client)) };
+
+  // Mail only uses APNS_MAIL_CERT_PATH; the XServer Mail certificate is unused
   const mailCert = getApnMailCert();
   if (mailCert) {
     console.log('Mail uses APNS_MAIL_CERT_PATH, topic:', mailCert.topic);
     certs.Mail = mailCert;
+  } else {
+    console.log(
+      'Mail push is off: APNS_MAIL_CERT_PATH / APNS_MAIL_KEY_PATH not set or not loadable'
+    );
+    delete certs.Mail;
   }
 
   console.log('Cert keys:', Object.keys(certs));
@@ -203,11 +211,30 @@ async function cmdAlias(idOrEmail) {
     console.log('    subtopic:    ', row.subtopic || '(none)');
     console.log('    key:         ', row.key || '(none)');
     console.log('    account_id:  ', row.account_id || '(none)');
+    console.log('    topic:       ', row.topic || '(not stored)');
     console.log(
       '    mailboxes:   ',
       Array.isArray(row.mailboxes) ? row.mailboxes.join(', ') : '(none)'
     );
     console.log('    updated_at:  ', row.updated_at || '(none)');
+
+    // coalescing lock held by helpers/send-apn.js (a push is queued)
+    const prefix =
+      row.subtopic === 'com.apple.mobilecal'
+        ? 'aps_calendar_check'
+        : row.subtopic === 'com.apple.mobileaddressbook'
+        ? 'aps_contacts_check'
+        : 'aps_check';
+    const lockKey = [
+      prefix,
+      revHash(row.device_token || ''),
+      revHash(row.key || row.account_id || '')
+    ].join(':');
+    const pttl = await client.pttl(lockKey);
+    console.log(
+      '    push queued:',
+      pttl > 0 ? `yes, sends in ${pttl} ms` : 'no'
+    );
   }
 }
 
@@ -297,16 +324,53 @@ async function cmdPush(idOrEmail, serviceName, keyOverride) {
     return;
   }
 
-  const mailCert = serviceName === 'Mail' ? getApnMailCert() : null;
-  const certs = mailCert ? { Mail: mailCert } : await getApnCerts(client);
-  const topic = await getApnTopic(client, serviceName);
-  console.log('Using topic:', topic);
+  //
+  // Same routing as helpers/send-apn.js: Mail only on APNS_MAIL_CERT_PATH,
+  // Calendar and Contacts on XServer; a row that stored another topic is
+  // skipped, and a row without one gets the current topic.
+  //
+  const targets = [];
+  if (serviceName === 'Mail') {
+    const mailCert = getApnMailCert();
+    if (mailCert)
+      targets.push({
+        source: 'APNS_MAIL_CERT_PATH',
+        topic: mailCert.topic,
+        cert: mailCert
+      });
+  } else {
+    const certs = await getApnCerts(client);
+    if (certs?.[service.cert]?.certificate) {
+      const x509 = new crypto.X509Certificate(certs[service.cert].certificate);
+      const uid = splitLines(x509.subject).find((l) => l.startsWith('UID='));
+      targets.push({
+        source: 'XServer',
+        topic: uid ? uid.slice(4).trim() : null,
+        cert: certs[service.cert]
+      });
+    }
+  }
+
+  if (targets.length === 0) {
+    console.error(
+      serviceName === 'Mail'
+        ? 'Mail push is off: APNS_MAIL_CERT_PATH / APNS_MAIL_KEY_PATH not set or not loadable'
+        : `No XServer certificate for ${serviceName}`
+    );
+    process.exitCode = 2;
+    return;
+  }
+
+  for (const target of targets)
+    console.log(`Available topic (${target.source}):`, target.topic);
   console.log(`Sending ${rows.length} push(es) for service=${serviceName}...`);
 
   for (const row of rows) {
     console.log(`\n>> device=${row.device_token.slice(0, 16)}...`);
     console.log('   account_id:', row.account_id || '(none)');
     console.log('   subtopic:  ', row.subtopic || '(none)');
+    console.log('   topic:     ', row.topic || '(not stored)');
+    console.log('   updated_at:', row.updated_at || '(none)');
     console.log(
       '   mailboxes:',
       Array.isArray(row.mailboxes) ? row.mailboxes.join(', ') : '(none)'
@@ -316,46 +380,50 @@ async function cmdPush(idOrEmail, serviceName, keyOverride) {
     let priority;
 
     if (serviceName === 'Mail') {
-      const mailboxPath = 'INBOX';
-      const mailboxHash = crypto
-        .createHash('md5')
-        .update(mailboxPath)
-        .digest('hex');
+      // same body and headers as helpers/send-apn.js
       const aps = {};
       if (row.account_id) aps['account-id'] = row.account_id;
-      aps.m = [mailboxHash];
       payload = { aps };
       // priority omitted for Mail (matches dovecot-xaps-daemon behaviour)
       priority = undefined;
-      console.log(`   aps.m md5(${mailboxPath})=${mailboxHash}`);
     } else {
       const now = Math.floor(Date.now() / 1000);
       payload = {
         key: keyOverride || row.key || '',
         dataChangedTimestamp: now,
-        pushRequestSubmittedTimestamp: now,
-        aps: { 'content-available': 1 }
+        pushRequestSubmittedTimestamp: now
       };
       priority = 5;
     }
 
-    try {
-      const result = await sendOneApns({
-        cert: certs[service.cert].certificate,
-        key: certs[service.cert].privateKey,
-        topic,
-        pushType: service.pushType,
-        priority,
-        deviceToken: row.device_token,
-        payload
-      });
+    const routed = row.topic
+      ? targets.filter((t) => t.topic === row.topic)
+      : targets;
+    if (routed.length === 0)
       console.log(
-        `   result: status=${result.status}${
-          result.body ? ` body=${result.body}` : ''
-        }`
+        '   registered for a topic we no longer send on; the device must reconnect over IMAP to get the current one'
       );
-    } catch (err) {
-      console.error('   ERROR:', err.message);
+
+    for (const target of routed) {
+      console.log(`   -> topic ${target.topic} (${target.source})`);
+      try {
+        const result = await sendOneApns({
+          cert: target.cert.certificate,
+          key: target.cert.privateKey,
+          topic: target.topic,
+          pushType: service.pushType,
+          priority,
+          deviceToken: row.device_token,
+          payload
+        });
+        console.log(
+          `   result: status=${result.status}${
+            result.body ? ` body=${result.body}` : ''
+          }`
+        );
+      } catch (err) {
+        console.error('   ERROR:', err.message);
+      }
     }
   }
 }
