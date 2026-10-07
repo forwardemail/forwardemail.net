@@ -922,9 +922,19 @@ async function markdown() {
 */
 
 async function sri() {
+  //
+  // Only rename, never rewrite contents. By default rev-all also replaces
+  // every quoted name of another script in the same folder with its
+  // revisioned name, as though it were a reference. Nothing references
+  // another script or stylesheet by path, so it only changed code: in
+  // scalar.js the method name "build" became "build.693f86c2" (the API
+  // reference failed with "tte.build is not a function"), as did "core",
+  // "scalar", "download", "deferred" and "debounce", and in build.js
+  // "download", "logger" and "apexcharts".
+  //
   await getStream(
     src('build/**/*.{css,js}', { base: config.buildBase })
-      .pipe(RevAll.revision())
+      .pipe(RevAll.revision({ dontSearchFile: [/./] }))
       .pipe(dest(config.buildBase))
       .pipe(RevAll.manifestFile())
       .pipe(dest(config.buildBase))
