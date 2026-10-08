@@ -223,6 +223,11 @@ async function onAuth(auth, session, fn) {
     // the SMTP submission server (outbound mail), the only server that
     // accepts a domain-wide catch-all password (see `domain.tokens` below)
     const isSMTP = this?.constructor?.name === 'SMTP';
+    // `POST /v1/emails` also accepts one, but only to send: the login it
+    // returns has no alias, so it cannot open a mailbox (see
+    // `helpers/setup-auth-session.js` and `routes/api/v1/index.js`)
+    const isCatchallSend = isAPI && session?.allowCatchallSend === true;
+    const allowDomainToken = isSMTP || isCatchallSend;
     // (per address, or per /64 for IPv6, see helpers/get-ip-bucket.js)
     const ipBucket = getIpBucket(session.remoteAddress);
     const authLimitKey = `auth_limit_${config.env}:${ipBucket}`;
@@ -812,7 +817,7 @@ async function onAuth(auth, session, fn) {
     }
 
     const domain = result;
-    const alias = name === '*' ? null : result.alias;
+    let alias = name === '*' ? null : result.alias;
 
     //
     // Uniform pre-auth failure (see the note near the top of this file).
@@ -908,7 +913,7 @@ async function onAuth(auth, session, fn) {
       isManageSieve ||
       (alias && isCalDAV) ||
       (alias && isCardDAV) ||
-      (alias && isAPI)
+      (alias && isAPI && !isCatchallSend)
     ) {
       if (
         (alias && !Array.isArray(alias.tokens)) ||
@@ -948,10 +953,12 @@ async function onAuth(auth, session, fn) {
     //
     //       Any other server (IMAP, POP3, ManageSieve, CalDAV, CardDAV, API)
     //       opens the alias mailbox, which a domain-wide password must never
-    //       unlock, so it only accepts the alias's own password.
+    //       unlock, so it only accepts the alias's own password. The one
+    //       exception is `POST /v1/emails`, which only sends, and whose
+    //       catch-all login has no alias (see `isCatchallSendLogin` below).
     //
     if (
-      isSMTP &&
+      allowDomainToken &&
       !isValid &&
       Array.isArray(domain.tokens) &&
       domain.tokens.length > 0
@@ -962,6 +969,16 @@ async function onAuth(auth, session, fn) {
     }
 
     if (!isValid) throw await uniformAuthFailure('Invalid password', verified);
+
+    //
+    // A catch-all password on the API is a send-only login: drop the alias
+    // so the session has no `alias_id` and can never open its mailbox, even
+    // when the username is an existing alias (it sends like an SMTP
+    // catch-all login, from any address on the domain)
+    //
+    const isCatchallSendLogin =
+      isCatchallSend && authVia === AUTH_VIA_DOMAIN_TOKEN;
+    if (isCatchallSendLogin) alias = null;
 
     //
     // OPTIMIZATION: Parallelize independent async operations
@@ -1293,7 +1310,8 @@ async function onAuth(auth, session, fn) {
       // NOTE: this field will refresh in `refreshSession` helper
       owner_full_email: to,
       // NOTE: this gets updated every time user logs in a browser and loads a page
-      timezone: timeZone
+      timezone: timeZone,
+      ...(isCatchallSendLogin ? { catchall_send_only: true } : {})
     };
 
     //
@@ -1301,30 +1319,36 @@ async function onAuth(auth, session, fn) {
     // Use a pipeline to atomically set the cache entry and update
     // the alias index (for efficient invalidation on password change).
     //
-    try {
-      // Strip the encrypted password before storing in Redis —
-      // we re-encrypt from the request on cache hit instead.
-      const { password: _pw, ...userWithoutPassword } = user;
-      if (!authStartedAt) throw new Error('Authentication time missing');
-      const cacheValue = safeStringify({
-        ...userWithoutPassword,
-        auth_at: authStartedAt,
-        // which password verified this login (see the cache hit above)
-        auth_via: authVia
-      });
-      const pipeline = this.client.pipeline();
-      pipeline.set(authCacheKey, cacheValue, 'PX', AUTH_CACHE_TTL);
-      if (user.alias_id) {
-        const indexKey = `${AUTH_CACHE_ALIAS_PREFIX}${user.alias_id}`;
-        pipeline.sadd(indexKey, authCacheKey);
-        pipeline.pexpire(indexKey, AUTH_CACHE_TTL + ms('10s'));
-      }
+    //
+    // (a send-only API login is never cached, so a cache hit can never turn
+    // into one, or one into a mailbox session; each send checks the password)
+    //
+    if (!isCatchallSendLogin) {
+      try {
+        // Strip the encrypted password before storing in Redis —
+        // we re-encrypt from the request on cache hit instead.
+        const { password: _pw, ...userWithoutPassword } = user;
+        if (!authStartedAt) throw new Error('Authentication time missing');
+        const cacheValue = safeStringify({
+          ...userWithoutPassword,
+          auth_at: authStartedAt,
+          // which password verified this login (see the cache hit above)
+          auth_via: authVia
+        });
+        const pipeline = this.client.pipeline();
+        pipeline.set(authCacheKey, cacheValue, 'PX', AUTH_CACHE_TTL);
+        if (user.alias_id) {
+          const indexKey = `${AUTH_CACHE_ALIAS_PREFIX}${user.alias_id}`;
+          pipeline.sadd(indexKey, authCacheKey);
+          pipeline.pexpire(indexKey, AUTH_CACHE_TTL + ms('10s'));
+        }
 
-      pipeline.exec().catch((err) => {
-        this.logger.debug('auth cache write error', { err });
-      });
-    } catch (err) {
-      this.logger.debug('auth cache serialize error', { err });
+        pipeline.exec().catch((err) => {
+          this.logger.debug('auth cache write error', { err });
+        });
+      } catch (err) {
+        this.logger.debug('auth cache serialize error', { err });
+      }
     }
 
     // this response object sets `session.user` to have `domain` and `alias`

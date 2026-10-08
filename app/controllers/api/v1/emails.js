@@ -12,6 +12,9 @@ const _ = require('#helpers/lodash');
 const config = require('#config');
 const { getSmtpDayStart } = require('#helpers/get-smtp-day');
 const createSession = require('#helpers/create-session');
+const getCatchallTokenUser = require('#helpers/get-catchall-token-user');
+const validateDomain = require('#helpers/validate-domain');
+const { decrypt } = require('#helpers/encrypt-decrypt');
 const getNodemailerMessageFromRequest = require('#helpers/get-nodemailer-message-from-request');
 const smtpCodeToHttpError = require('#helpers/smtp-code-to-http-error');
 const toObject = require('#helpers/to-object');
@@ -206,6 +209,65 @@ async function limit(ctx) {
   ctx.body = { count, limit: max };
 }
 
+//
+// Queue an email sent with a domain-wide catch-all password (a send-only
+// login, see `helpers/on-auth.js`). This follows the SMTP catch-all path in
+// `helpers/on-data-smtp.js`: the password must still be valid, it sends as
+// the admin who generated it, and the From address can be any address on the
+// domain. Limits are checked by the `Emails` pre-save hook, against the
+// catch-all ('*') alias the same as over SMTP.
+//
+async function queueCatchallEmail(ctx, message) {
+  const { user: sessionUser } = ctx.state;
+  const domain = await Domains.findOne({
+    id: sessionUser.domain_id,
+    plan: { $in: ['enhanced_protection', 'team'] }
+  })
+    .populate(
+      'members.user',
+      // (what `validateDomain` and `getCatchallTokenUser` read)
+      `id email plan group ${config.userFields.isBanned} ${config.userFields.hasVerifiedEmail} ${config.userFields.planExpiresAt} ${config.userFields.stripeSubscriptionID} ${config.userFields.paypalSubscriptionID} ${config.userFields.fullEmail} ${config.lastLocaleField}`
+    )
+    .select('+tokens +tokens.hash +tokens.salt +tokens.has_pbkdf2_migration')
+    .exec();
+
+  if (!domain)
+    throw Boom.unauthorized(ctx.translateError('DOMAIN_DOES_NOT_EXIST'));
+
+  validateDomain(domain, sessionUser.domain_name);
+
+  // (also checks the password is still one of the domain's catch-all passwords)
+  const user = await getCatchallTokenUser(
+    domain,
+    decrypt(sessionUser.password),
+    { session: ctx.state.session }
+  );
+  if (!user) throw Boom.unauthorized(ctx.translateError('INVALID_USER'));
+
+  const catchAllAlias = await Aliases.findOne({
+    domain: domain._id,
+    name: '*'
+  })
+    .select('smtp_suspended_sent_at')
+    .lean()
+    .exec();
+  if (catchAllAlias && _.isDate(catchAllAlias.smtp_suspended_sent_at))
+    throw Boom.forbidden(
+      `Alias is suspended from outbound SMTP access, contact us at ${config.supportEmail}`
+    );
+
+  return Emails.queue(
+    {
+      message,
+      domain: domain._id,
+      user,
+      catchall: true,
+      dsn: message?.dsn
+    },
+    sessionUser.locale
+  );
+}
+
 async function create(ctx) {
   try {
     if (!_.isPlainObject(ctx.request.body))
@@ -258,7 +320,9 @@ async function create(ctx) {
     let email;
 
     try {
-      if (ctx.state?.session?.db) {
+      if (ctx.state?.user?.catchall_send_only) {
+        email = await queueCatchallEmail(ctx, message);
+      } else if (ctx.state?.session?.db) {
         email = await Emails.queue(
           {
             message,

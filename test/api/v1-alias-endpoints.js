@@ -16,7 +16,7 @@ const test = require('ava');
 const utils = require('../utils');
 const config = require('#config');
 const createPassword = require('#helpers/create-password');
-const { Aliases, Users } = require('#models');
+const { Aliases, Emails, Users } = require('#models');
 
 const { emoji } = config.views.locals;
 
@@ -1612,6 +1612,119 @@ test('refuses alias auth with a domain-wide catch-all password', async (t) => {
       createAliasAuth(`${alias.name}@${domain.name}`, pass)
     );
   t.is(res.status, 200);
+});
+
+// (a domain-wide catch-all password, as an admin generates it on the
+// domain's Advanced Settings page)
+async function addCatchallPassword(user, domain) {
+  const { password, salt, hash } = await createPassword();
+  domain.tokens.push({ description: 'test', salt, hash, user: user._id });
+  domain.skip_verification = true;
+  await domain.save();
+  return password;
+}
+
+test('sends email with a domain-wide catch-all password from any address on the domain', async (t) => {
+  const { api } = t.context;
+  const { user, domain, alias } = await createTestAlias(t);
+  const password = await addCatchallPassword(user, domain);
+
+  const send = (username, from) =>
+    api
+      .post('/v1/emails')
+      .set('Authorization', createAliasAuth(username, password))
+      .set('Accept', 'application/json')
+      .send({ from, to: 'foo@bar.com', subject: 'test', text: 'test' });
+
+  // an address that is not an alias
+  let res = await send(`sales@${domain.name}`, `sales@${domain.name}`);
+  t.is(res.status, 200);
+  const email = await Emails.findById(res.body.id).lean().exec();
+  // (sent as the admin who generated the password, without an alias)
+  t.is(email.user.toString(), user._id.toString());
+  t.falsy(email.alias);
+
+  // an existing alias as the username does not limit it to that alias
+  res = await send(`${alias.name}@${domain.name}`, `support@${domain.name}`);
+  t.is(res.status, 200);
+
+  // but the From address must be on the domain
+  res = await send(`sales@${domain.name}`, 'sales@example.com');
+  t.is(res.status, 403);
+  t.true(res.body.message.includes(`@${domain.name}`));
+});
+
+test('a domain-wide catch-all password is send-only on the API', async (t) => {
+  const { api } = t.context;
+  const { user, domain, alias } = await createTestAlias(t);
+  const password = await addCatchallPassword(user, domain);
+
+  for (const username of [
+    `sales@${domain.name}`,
+    `${alias.name}@${domain.name}`
+  ]) {
+    const auth = createAliasAuth(username, password);
+
+    // a send first, so a cached login could be reused below if there were one
+    const sent = await api
+      .post('/v1/emails')
+      .set('Authorization', auth)
+      .set('Accept', 'application/json')
+      .send({
+        from: `sales@${domain.name}`,
+        to: 'foo@bar.com',
+        subject: 'test',
+        text: 'test'
+      });
+    t.is(sent.status, 200, `POST /v1/emails as ${username}`);
+
+    for (const path of [
+      '/v1/emails',
+      '/v1/emails/limit',
+      `/v1/emails/${sent.body.id}`,
+      '/v1/messages',
+      '/v1/folders',
+      '/v1/account'
+    ]) {
+      const res = await api.get(path).set('Authorization', auth);
+      t.is(
+        res.status,
+        401,
+        `GET ${path} as ${username}: ${res.status} ${JSON.stringify(res.body)}`
+      );
+    }
+
+    const res = await api
+      .delete(`/v1/emails/${sent.body.id}`)
+      .set('Authorization', auth);
+    t.is(res.status, 401, `DELETE /v1/emails/:id as ${username}`);
+  }
+});
+
+test('refuses to send with a wrong or removed catch-all password', async (t) => {
+  const { api } = t.context;
+  const { user, domain } = await createTestAlias(t);
+  const password = await addCatchallPassword(user, domain);
+
+  const send = (pass) =>
+    api
+      .post('/v1/emails')
+      .set('Authorization', createAliasAuth(`sales@${domain.name}`, pass))
+      .set('Accept', 'application/json')
+      .send({
+        from: `sales@${domain.name}`,
+        to: 'foo@bar.com',
+        subject: 'test',
+        text: 'test'
+      });
+
+  let res = await send(`${password}x`);
+  t.is(res.status, 401);
+
+  domain.tokens = [];
+  await domain.save();
+  res = await send(password);
+  t.is(res.status, 401);
 });
 
 test('alias auth does not reveal an alias without a generated password', async (t) => {

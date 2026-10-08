@@ -67,23 +67,35 @@ const router = new Router({
   prefix: '/v1'
 });
 
+// (a login with an alias password, or a domain-wide catch-all password,
+// rather than an API token; these checks are for API token users, and
+// `Emails.queue` checks the domain has a paying, verified, unbanned admin)
+const isAliasOrCatchallLogin = (ctx) =>
+  Boolean(ctx.state?.session?.db || ctx.state?.user?.catchall_send_only);
+
 router.post(
   '/emails',
+  // the only route that accepts a domain-wide catch-all password besides
+  // SMTP, as a send-only login (see `helpers/on-auth.js`)
+  (ctx, next) => {
+    ctx.state.allowCatchallSend = true;
+    return next();
+  },
   ensureApiTokenOrAliasAuth,
   async (ctx, next) => {
-    if (ctx.state?.session?.db) return next();
+    if (isAliasOrCatchallLogin(ctx)) return next();
     await policies.checkVerifiedEmail(ctx, next);
   },
   async (ctx, next) => {
-    if (ctx.state?.session?.db) return next();
+    if (isAliasOrCatchallLogin(ctx)) return next();
     await web.myAccount.ensureNotBanned(ctx, next);
   },
   async (ctx, next) => {
-    if (ctx.state?.session?.db) return next();
+    if (isAliasOrCatchallLogin(ctx)) return next();
     await api.v1.enforcePaidPlan(ctx, next);
   },
   async (ctx, next) => {
-    if (ctx.state?.session?.db) return next();
+    if (isAliasOrCatchallLogin(ctx)) return next();
     await web.myAccount.ensurePaidToDate(ctx, next);
   },
   async (ctx, next) => {

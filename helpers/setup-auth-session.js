@@ -31,7 +31,9 @@ async function setupAuthSession(ctx, username, password) {
   ctx.state.session = {
     id: ctx.req.id,
     remoteAddress: ctx.ip,
-    request: ctx.request
+    request: ctx.request,
+    // set only by the `POST /v1/emails` route (see `helpers/on-auth.js`)
+    allowCatchallSend: ctx.state.allowCatchallSend === true
   };
 
   try {
@@ -91,11 +93,13 @@ async function setupAuthSession(ctx, username, password) {
     await i18n.middleware(ctx, () => Promise.resolve());
 
     // connect to db
-    await refreshSession.call(
-      this,
-      ctx.state.session,
-      this.constructor.name.toUpperCase()
-    );
+    // (a catch-all send-only login has no alias, so it has no mailbox to open)
+    if (!user.catchall_send_only)
+      await refreshSession.call(
+        this,
+        ctx.state.session,
+        this.constructor.name.toUpperCase()
+      );
   } catch (err) {
     ctx.logger.error(err);
     // if the error is already a Boom error, re-throw it directly
