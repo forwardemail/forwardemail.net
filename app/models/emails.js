@@ -1553,7 +1553,7 @@ Emails.statics.queue = async function (
       // rewrite from header to be without "+" symbol
       // so that users can send with "+" address filtering
       //
-      const name = parseUsername(addresses[0]); // converts to ASCII
+      const name = punycode.toASCII(parseUsername(addresses[0])); // converts to ASCII
       const domain = parseHostFromDomainOrAddress(addresses[0]); // converts to ASCII
       from = `${name}@${domain}`; // ASCII formatted From address header
     }

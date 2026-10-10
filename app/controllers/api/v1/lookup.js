@@ -14,7 +14,7 @@ async function lookup(ctx) {
     // domain found must be that host or a parent of it)
     domainName: isSANB(ctx.query.domain) ? ctx.query.domain : undefined,
     username: isSANB(ctx.query.username)
-      ? ctx.query.username.toLowerCase()
+      ? ctx.query.username.normalize('NFC').toLowerCase()
       : false,
     ignoreBilling: ctx.query.ignore_billing,
     client: ctx.client,
