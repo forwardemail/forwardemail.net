@@ -7,6 +7,7 @@ const Redis = require('ioredis-mock');
 const test = require('ava');
 
 const config = require('#config');
+const acquireBackupDedup = require('#helpers/acquire-backup-dedup');
 const { MAX_CONCURRENCY } = require('#helpers/sqlite-worker-config');
 
 const CHANNEL = `sqlite_backup_queue:${config.env}`;
@@ -119,6 +120,31 @@ test.serial(
 
     // Clean up
     await publisher.del(BUSY_KEY);
+  }
+);
+
+test.serial(
+  'busy worker releases the backup dedup claim for a later retry',
+  async (t) => {
+    const aliasId = 'backup-dedup-busy-alias';
+    const backupKey = `backup_dedup:${aliasId}`;
+
+    await publisher.del(BUSY_KEY, backupKey);
+    await publisher.set(BUSY_KEY, '1');
+
+    t.false(await acquireBackupDedup(publisher, aliasId));
+    t.is(
+      await publisher.get(backupKey),
+      null,
+      'busy worker must not keep the daily dedup claim'
+    );
+
+    await publisher.del(BUSY_KEY);
+
+    t.true(await acquireBackupDedup(publisher, aliasId));
+    t.is(await publisher.get(backupKey), '1');
+
+    await publisher.del(backupKey);
   }
 );
 

@@ -31,6 +31,7 @@ const Aliases = require('#models/aliases');
 const analytics = require('#helpers/analytics');
 const Domains = require('#models/domains');
 const config = require('#config');
+const acquireBackupDedup = require('#helpers/acquire-backup-dedup');
 const env = require('#config/env');
 const getQueryResponse = require('#helpers/get-query-response');
 const i18n = require('#helpers/i18n');
@@ -598,31 +599,24 @@ async function onAuth(auth, session, fn) {
 
             // daily backup (run in background)
             // Rate-limited: only fire backup once per alias per day
-            // skip if sqlite-worker is busy (Redis counter set by sqlite-worker)
-            const backupKey = `backup_dedup:${user.alias_id}`;
-            this.client
-              .set(backupKey, '1', 'PX', ms('1d'), 'NX')
+            // and release the claim when sqlite-worker is busy
+            acquireBackupDedup(this.client, user.alias_id)
               .then((locked) => {
                 if (!locked) return;
-                return this.client
-                  .get(`sqlite_worker_busy:${config.env}`)
-                  .then((count) => {
-                    if (count && Number(count) > 0) return;
-                    return this.wsp
-                      .request(
-                        {
-                          action: 'backup',
-                          backup_at: new Date().toISOString(),
-                          session: { user }
-                        },
-                        0
-                      )
-                      .then((backup) => {
-                        this.logger.debug('backup complete', {
-                          backup,
-                          session
-                        });
-                      });
+                return this.wsp
+                  .request(
+                    {
+                      action: 'backup',
+                      backup_at: new Date().toISOString(),
+                      session: { user }
+                    },
+                    0
+                  )
+                  .then((backup) => {
+                    this.logger.debug('backup complete', {
+                      backup,
+                      session
+                    });
                   });
               })
               .catch((err) => this.logger.debug(err, { session }));
@@ -1517,28 +1511,21 @@ async function onAuth(auth, session, fn) {
 
       // daily backup (run in background)
       // Rate-limited: only fire backup once per alias per day
-      // skip if sqlite-worker is busy (Redis counter set by sqlite-worker)
-      const backupKey2 = `backup_dedup:${user.alias_id}`;
-      this.client
-        .set(backupKey2, '1', 'PX', ms('1d'), 'NX')
+      // and release the claim when sqlite-worker is busy
+      acquireBackupDedup(this.client, user.alias_id)
         .then((locked) => {
           if (!locked) return;
-          return this.client
-            .get(`sqlite_worker_busy:${config.env}`)
-            .then((count) => {
-              if (count && Number(count) > 0) return;
-              return this.wsp
-                .request(
-                  {
-                    action: 'backup',
-                    backup_at: new Date().toISOString(),
-                    session: { user }
-                  },
-                  0
-                )
-                .then((backup) => {
-                  this.logger.debug('backup complete', { backup, session });
-                });
+          return this.wsp
+            .request(
+              {
+                action: 'backup',
+                backup_at: new Date().toISOString(),
+                session: { user }
+              },
+              0
+            )
+            .then((backup) => {
+              this.logger.debug('backup complete', { backup, session });
             });
         })
         .catch((err) => this.logger.debug(err, { session }));
