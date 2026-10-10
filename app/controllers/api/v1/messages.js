@@ -579,6 +579,16 @@ function notifyFlagChange(
       .catch((err) => ctx.logger.fatal(err, { alias_id: aliasId }));
 }
 
+// A header that appears more than once is parsed as an array; like
+// Threads.getThreadId, use the last one. Undefined when the header is absent.
+function lastHeaderValue(value) {
+  const last = [value || []].flat().pop();
+  if (typeof last !== 'string') return undefined;
+  // repeated headers skip WildDuck's unfolding, so collapse any line breaks
+  const unfolded = last.replace(/\s+/g, ' ').trim();
+  return unfolded || undefined;
+}
+
 async function json(ctx, message, { lightweight = false } = {}) {
   // In lightweight mode (used by list endpoint), skip the expensive
   // indexer.getContents + simpleParser call that rebuilds the full MIME tree
@@ -719,7 +729,8 @@ async function json(ctx, message, { lightweight = false } = {}) {
   };
 
   // Lightweight list responses still need the identity fields used to render
-  // mailbox rows. WildDuck already parsed these values while building mimeTree.
+  // mailbox rows, and the threading headers clients use to group them.
+  // WildDuck already parsed these values while building mimeTree.
   if (lightweight) {
     const parsedHeader = message.mimeTree?.parsedHeader || {};
     Object.assign(object, {
@@ -727,7 +738,9 @@ async function json(ctx, message, { lightweight = false } = {}) {
       to: parsedHeader.to,
       cc: parsedHeader.cc,
       bcc: parsedHeader.bcc,
-      reply_to: parsedHeader['reply-to']
+      reply_to: parsedHeader['reply-to'],
+      in_reply_to: lastHeaderValue(parsedHeader['in-reply-to']),
+      references: lastHeaderValue(parsedHeader.references)
     });
   }
 

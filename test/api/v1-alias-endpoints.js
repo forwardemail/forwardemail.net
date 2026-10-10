@@ -2030,6 +2030,9 @@ test('lightweight message lists retain identity fields without raw MIME', async 
     `Bcc: ${bcc}`,
     `Reply-To: ${replyTo}`,
     `Subject: ${subject}`,
+    'In-Reply-To: <parent@example.com>',
+    'References: <root@example.com>',
+    ' <parent@example.com>',
     '',
     'Lightweight body'
   ].join('\r\n');
@@ -2056,6 +2059,9 @@ test('lightweight message lists retain identity fields without raw MIME', async 
   t.deepEqual(listRes.body[0].bcc, [{ address: bcc, name: '' }]);
   t.deepEqual(listRes.body[0].reply_to, [{ address: replyTo, name: '' }]);
   t.is(listRes.body[0].subject, subject);
+  // threading headers, so clients can group rows into conversations
+  t.is(listRes.body[0].in_reply_to, '<parent@example.com>');
+  t.is(listRes.body[0].references, '<root@example.com> <parent@example.com>');
   t.falsy(listRes.body[0].raw);
   t.falsy(listRes.body[0].nodemailer);
 });
