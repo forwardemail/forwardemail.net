@@ -24,12 +24,14 @@ const logger = require('#helpers/logger');
 // Used by outbound SMTP and by `POST /v1/emails`, the only two places a
 // catch-all password is accepted. `domain` must be a document with `tokens`
 // selected and `members.user` populated, and `password` is the plain text
-// password the client sent.
+// password the client sent. `tokenId` is the catch-all password that login
+// matched, if known: only that one is checked again, instead of each one
+// (an argon2 verification apiece) until one matches.
 //
 async function getCatchallTokenUser(
   domain,
   password,
-  { session, resolver } = {}
+  { session, resolver, tokenId } = {}
 ) {
   let user;
   //
@@ -42,7 +44,14 @@ async function getCatchallTokenUser(
   //
   let isValid = false;
   let tokenUsed;
-  if (Array.isArray(domain.tokens) && domain.tokens.length > 0) {
+  if (tokenId && Array.isArray(domain.tokens)) {
+    // (it must still exist, and still be this password)
+    const token = domain.tokens.id(tokenId);
+    if (token) {
+      isValid = await isValidPassword([token], password, domain);
+      if (isValid) tokenUsed = token;
+    }
+  } else if (Array.isArray(domain.tokens) && domain.tokens.length > 0) {
     for (const token of domain.tokens) {
       isValid = await isValidPassword([token], password, domain);
       if (isValid) {

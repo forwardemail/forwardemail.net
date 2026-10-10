@@ -367,6 +367,32 @@ async function onAuth(auth, session, fn) {
     }
 
     //
+    // `POST /v1/emails` checks every catch-all password of the domain (up to
+    // 10 argon2 verifications), is not rate limited, and the limit above only
+    // counts distinct passwords: the same wrong password, with any username
+    // on the domain, could be sent again and again. After a few failures from
+    // this address it is refused without being checked. (Keyed on the
+    // password, not the username, which a catch-all login may choose freely;
+    // other passwords from this address are not affected.)
+    //
+    const catchallRepeatKey = isCatchallSend
+      ? `auth_catchall_repeat_${config.env}:${ipBucket}:${getPasswordDigest(
+          auth.password
+        )}`
+      : null;
+    if (catchallRepeatKey) {
+      const repeats = Number(await this.client.get(catchallRepeatKey)) || 0;
+      if (repeats >= config.apiCatchallAuthRepeatLimit) {
+        const err = new SMTPError(
+          `You have exceeded the maximum number of failed authentication attempts. Please try again later or contact us at ${config.supportEmail}`,
+          { ignoreHook: true }
+        );
+        err.isRateLimited = true;
+        throw err;
+      }
+    }
+
+    //
     // Auth cache: check if we have a valid cached result for this
     // username + password combination.  On hit we skip DNS, MongoDB,
     // and argon2 entirely.
@@ -845,6 +871,13 @@ async function onAuth(auth, session, fn) {
 
       if (!Array.isArray(previousPasswordHashes)) previousPasswordHashes = [];
 
+      if (catchallRepeatKey)
+        await this.client
+          .pipeline()
+          .incr(catchallRepeatKey)
+          .pexpire(catchallRepeatKey, config.apiCatchallAuthRepeatDuration)
+          .exec();
+
       if (!previousPasswordHashes.includes(hash)) {
         previousPasswordHashes.push(hash);
         await this.client
@@ -941,6 +974,9 @@ async function onAuth(auth, session, fn) {
     let isValid = false;
     let verified = false;
     let authVia = null;
+    // (which catch-all password matched, so a send-only API login does not
+    // check every one of them again, see `helpers/get-catchall-token-user.js`)
+    let domainTokenId;
     if (alias && Array.isArray(alias.tokens) && alias.tokens.length > 0) {
       verified = true;
       isValid = await isValidPassword(alias.tokens, auth.password, alias);
@@ -964,7 +1000,11 @@ async function onAuth(auth, session, fn) {
       domain.tokens.length > 0
     ) {
       verified = true;
-      isValid = await isValidPassword(domain.tokens, auth.password, domain);
+      isValid = await isValidPassword(domain.tokens, auth.password, domain, {
+        onMatch(token) {
+          domainTokenId = token._id;
+        }
+      });
       if (isValid) authVia = AUTH_VIA_DOMAIN_TOKEN;
     }
 
@@ -1311,7 +1351,14 @@ async function onAuth(auth, session, fn) {
       owner_full_email: to,
       // NOTE: this gets updated every time user logs in a browser and loads a page
       timezone: timeZone,
-      ...(isCatchallSendLogin ? { catchall_send_only: true } : {})
+      ...(isCatchallSendLogin
+        ? {
+            catchall_send_only: true,
+            ...(domainTokenId
+              ? { catchall_token_id: String(domainTokenId) }
+              : {})
+          }
+        : {})
     };
 
     //

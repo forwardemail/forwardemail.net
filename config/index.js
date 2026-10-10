@@ -778,6 +778,15 @@ const config = {
   smtpTeamLimitMessages: SMTP_TEAM_LIMIT_MESSAGES,
   smtpLimitAuth: env.NODE_ENV === 'test' ? Number.MAX_VALUE : 10,
   smtpLimitAuthDuration: ms('1d'),
+  //
+  // `POST /v1/emails` checks every catch-all password of the domain and is
+  // not rate limited, while the limit above only counts distinct passwords,
+  // so the same wrong password could be sent again and again; after this many
+  // failures from one address (or /64) it is refused without being checked
+  // (see `helpers/on-auth.js`)
+  //
+  apiCatchallAuthRepeatLimit: env.NODE_ENV === 'test' ? Number.MAX_VALUE : 5,
+  apiCatchallAuthRepeatDuration: ms('15m'),
   smtpLimitDuration: ms('1d'),
   smtpLimitNamespace: `smtp_auth_limit_${env.NODE_ENV.toLowerCase()}`,
 

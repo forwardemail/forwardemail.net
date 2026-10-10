@@ -240,7 +240,7 @@ async function queueCatchallEmail(ctx, message) {
   const user = await getCatchallTokenUser(
     domain,
     decrypt(sessionUser.password),
-    { session: ctx.state.session }
+    { session: ctx.state.session, tokenId: sessionUser.catchall_token_id }
   );
   if (!user) throw Boom.unauthorized(ctx.translateError('INVALID_USER'));
 

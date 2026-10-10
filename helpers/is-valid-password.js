@@ -40,7 +40,11 @@ function timingSafeCompare(a, b) {
   return crypto.timingSafeEqual(a, b);
 }
 
-async function isValidPassword(tokens = [], password, instance) {
+//
+// `options.onMatch(token)` is called with the token that matched, for callers
+// that need to know which one it was (see `helpers/on-auth.js`)
+//
+async function isValidPassword(tokens = [], password, instance, options = {}) {
   if (
     typeof tokens !== 'object' ||
     !Array.isArray(tokens) ||
@@ -117,6 +121,9 @@ async function isValidPassword(tokens = [], password, instance) {
       }
     }
   }
+
+  if (match && matchedToken && typeof options.onMatch === 'function')
+    options.onMatch(matchedToken);
 
   //
   // if match found and token needs migration, perform live migration
