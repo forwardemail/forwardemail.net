@@ -77,6 +77,11 @@ test.serial(
   'deletes expired tokens and tokens whose alias is gone or has another owner',
   async (t) => {
     // production: a plain index holds the name the TTL index needs
+    // (after the model's own index build, which can create the collection
+    // while this runs, and fails where the plain index is there already;
+    // listing the indexes of a collection that does not exist yet fails)
+    await PushTokens.init().catch(() => {});
+    await PushTokens.createCollection();
     const indexes = await PushTokens.collection.indexes();
     if (indexes.some((index) => index.name === 'expires_at_1'))
       await PushTokens.collection.dropIndex('expires_at_1');

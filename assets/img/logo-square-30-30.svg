@@ -29,10 +29,6 @@
             <stop offset="0%" stop-color="#00217D"/>
             <stop offset="100%" stop-color="#00104E"/>
         </radialGradient>
-        <radialGradient id="m" cx="50%" cy="-352.347%" r="0%" fx="50%" fy="-352.347%" gradientTransform="matrix(1 0 0 .6686 0 -1.168)">
-            <stop offset="0%" stop-color="#001F5C"/>
-            <stop offset="100%" stop-color="#000B34"/>
-        </radialGradient>
         <radialGradient id="n" cx="50.009%" cy="50.02%" r="61.13%" fx="50.009%" fy="50.02%" gradientTransform="scale(1 .7089) rotate(-76.033 .631 .603)">
             <stop offset="0%" stop-color="#FFF" stop-opacity=".4"/>
             <stop offset="100%" stop-color="#F8FAFF" stop-opacity="0"/>
@@ -85,7 +81,7 @@
                 </g>
             </g>
             <g fill-rule="nonzero">
-                <ellipse cx="1.409" cy="2.108" fill="url(#m)" rx="1.409" ry="2.108"/>
+                <ellipse cx="1.409" cy="2.108" fill="#000B34" rx="1.409" ry="2.108"/>
                 <path fill="#021B7C" d="M1.452 3.89C.793 3.89.26 3.137.26 2.206c0-.237.035-.464.098-.669-.093.24-.145.514-.145.805 0 .931.534 1.686 1.192 1.686.49 0 .912-.419 1.095-1.017-.202.525-.596.88-1.048.88Z" opacity=".73"/>
             </g>
             <circle cx="1.897" cy="1.312" r="1" fill="url(#n)" fill-rule="nonzero" transform="rotate(-26.98 1.897 1.312)"/>
@@ -100,7 +96,7 @@
                 </g>
             </g>
             <g fill-rule="nonzero">
-                <ellipse cx="1.409" cy="2.108" fill="url(#m)" rx="1.409" ry="2.108"/>
+                <ellipse cx="1.409" cy="2.108" fill="#000B34" rx="1.409" ry="2.108"/>
                 <path fill="#021B7C" d="M1.452 3.89C.793 3.89.26 3.137.26 2.206c0-.237.035-.464.098-.669-.093.24-.145.514-.145.805 0 .931.534 1.686 1.192 1.686.49 0 .912-.419 1.095-1.017-.202.525-.596.88-1.048.88Z" opacity=".73"/>
             </g>
             <circle cx="1.897" cy="1.312" r="1" fill="url(#n)" fill-rule="nonzero" transform="rotate(-26.98 1.897 1.312)"/>

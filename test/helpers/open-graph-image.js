@@ -241,3 +241,28 @@ test('right-to-left text is aligned to the right', async (t) => {
   // the address stays left to right
   t.regex(svg, /<text x="80"[^>]*>forwardemail\.net\/email-api</);
 });
+
+test('the logo is rendered with its dark eyes', async (t) => {
+  t.timeout(60_000);
+  const svg = await renderOpenGraphImage({
+    title: 'Email Forwarding FAQ',
+    description: 'Answers to all your email forwarding questions.',
+    url: '/faq',
+    stars: 1682
+  });
+  const { data, info } = await sharp(Buffer.from(svg))
+    .removeAlpha()
+    .raw()
+    .toBuffer({ resolveWithObject: true });
+
+  // the logo is drawn at (MARGIN, 56) at 48% of its 100x100 size, and the
+  // center of its eyes is at (29.7, 51.5) and (69.3, 51.5) in it
+  for (const x of [29.7, 69.3]) {
+    const px = Math.round(MARGIN + x * 0.48);
+    const py = Math.round(56 + 51.5 * 0.48);
+    const i = (py * info.width + px) * info.channels;
+    const [r, g, b] = data.subarray(i, i + 3);
+    // (#000b34, as browsers draw it, and not the light blue under it)
+    t.true(r < 40 && g < 60 && b < 110, `eye at ${px},${py}: ${r},${g},${b}`);
+  }
+});

@@ -16,17 +16,18 @@ const { parentPort } = require('node:worker_threads');
 require('#config/mongoose');
 
 const Graceful = require('@ladjs/graceful');
-const dayjs = require('dayjs-with-plugins');
 const pMap = require('p-map');
 const mongoose = require('mongoose');
-const _ = require('#helpers/lodash');
 
 const Users = require('#models/users');
-const Domains = require('#models/domains');
 const config = require('#config');
 const logger = require('#helpers/logger');
 const setupMongoose = require('#helpers/setup-mongoose');
 const email = require('#helpers/email');
+const {
+  getUserIdsToRemind,
+  shouldRemind
+} = require('#helpers/two-factor-reminder');
 
 const concurrency = os.cpus().length;
 
@@ -34,7 +35,6 @@ const graceful = new Graceful({
   mongooses: [mongoose],
   logger
 });
-const threeMonthsAgo = dayjs().subtract(3, 'months').toDate();
 
 // store boolean if the job is cancelled
 let isCancelled = false;
@@ -62,18 +62,9 @@ async function mapper(_id) {
     // user could have been deleted in the interim
     if (!user) return;
 
-    // check if they already enabled it
-    // in the interim if so return early
-    if (user[config.passport.fields.otpEnabled]) return;
-
-    // if the email was sent within the past 3 months
-    if (
-      _.isDate(user[config.userFields.twoFactorReminderSentAt]) &&
-      dayjs(user[config.userFields.twoFactorReminderSentAt]).isAfter(
-        dayjs().subtract(3, 'months')
-      )
-    )
-      return;
+    // a one-time password or a passkey set up in the interim, or a
+    // reminder sent within the past 3 months
+    if (!shouldRemind(user)) return;
 
     // send email
     await email({
@@ -98,41 +89,11 @@ async function mapper(_id) {
 (async () => {
   await setupMongoose(logger);
   try {
-    const _ids = await Domains.distinct('members.user', {
-      plan: {
-        $in: ['enhanced_protection', 'team']
-      }
-    });
+    // users without two-factor authentication (a one-time password or a
+    // passkey) set up yet
+    const userIds = await getUserIdsToRemind();
 
-    // filter for users that do not have two-factor auth set up yet
-    const userIds = await Users.distinct('_id', {
-      $and: [
-        {
-          _id: { $in: _ids },
-          [config.userFields.hasVerifiedEmail]: true,
-          [config.userFields.isBanned]: false
-        },
-        {
-          $or: [
-            {
-              [config.userFields.twoFactorReminderSentAt]: {
-                $exists: false
-              }
-            },
-            {
-              [config.userFields.twoFactorReminderSentAt]: {
-                $lte: threeMonthsAgo
-              }
-            }
-          ]
-        },
-        {
-          [config.passport.fields.otpEnabled]: false
-        }
-      ]
-    });
-
-    logger.info('sending reminders', { count: userIds.length, _ids });
+    logger.info('sending reminders', { count: userIds.length });
 
     // send emails and update `two_factor_reminder_sent_at` date
     await pMap(userIds, mapper, { concurrency });

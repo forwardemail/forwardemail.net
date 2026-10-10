@@ -29,10 +29,6 @@
             <stop offset="0%" stop-color="#00217D"/>
             <stop offset="100%" stop-color="#00104E"/>
         </radialGradient>
-        <radialGradient id="m" cx="50%" cy="-352.347%" r="0%" fx="50%" fy="-352.347%" gradientTransform="matrix(1 0 0 .6663 0 -1.176)">
-            <stop offset="0%" stop-color="#001F5C"/>
-            <stop offset="100%" stop-color="#000B34"/>
-        </radialGradient>
         <radialGradient id="n" cx="50.009%" cy="50.02%" r="61.246%" fx="50.009%" fy="50.02%" gradientTransform="matrix(.2409 -.68657 .97055 .17041 -.106 .758)">
             <stop offset="0%" stop-color="#FFF" stop-opacity=".4"/>
             <stop offset="100%" stop-color="#F8FAFF" stop-opacity="0"/>
@@ -85,7 +81,7 @@
                 </g>
             </g>
             <g fill-rule="nonzero">
-                <ellipse cx="4.698" cy="7.051" fill="url(#m)" rx="4.698" ry="7.051"/>
+                <ellipse cx="4.698" cy="7.051" fill="#000B34" rx="4.698" ry="7.051"/>
                 <path fill="#021B7C" d="M4.84 13.015c-2.195 0-3.974-2.524-3.974-5.638 0-.796.117-1.552.326-2.238A7.532 7.532 0 0 0 .71 7.83c0 3.114 1.78 5.637 3.974 5.637 1.635 0 3.038-1.4 3.648-3.4-.673 1.756-1.985 2.947-3.493 2.947Z" opacity=".73"/>
             </g>
             <ellipse cx="6.325" cy="4.389" fill="url(#n)" fill-rule="nonzero" rx="2.321" ry="3.282" transform="rotate(-26.98 6.325 4.389)"/>
@@ -100,7 +96,7 @@
                 </g>
             </g>
             <g fill-rule="nonzero">
-                <ellipse cx="4.698" cy="7.051" fill="url(#m)" rx="4.698" ry="7.051"/>
+                <ellipse cx="4.698" cy="7.051" fill="#000B34" rx="4.698" ry="7.051"/>
                 <path fill="#021B7C" d="M4.84 13.015c-2.195 0-3.974-2.524-3.974-5.638 0-.796.117-1.552.326-2.238A7.532 7.532 0 0 0 .71 7.83c0 3.114 1.78 5.637 3.974 5.637 1.635 0 3.038-1.4 3.648-3.4-.673 1.756-1.985 2.947-3.493 2.947Z" opacity=".73"/>
             </g>
             <ellipse cx="6.325" cy="4.389" fill="url(#n)" fill-rule="nonzero" rx="2.321" ry="3.282" transform="rotate(-26.98 6.325 4.389)"/>
