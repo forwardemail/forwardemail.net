@@ -17,6 +17,7 @@
   * [Apple Mail](#apple-mail)
   * [eM Client](#em-client)
   * [Do you offer a webmail client](#do-you-offer-a-webmail-client)
+  * [Can I send from any address on my domain in webmail](#can-i-send-from-any-address-on-my-domain-in-webmail)
   * [Do you have desktop and mobile apps](#do-you-have-desktop-and-mobile-apps)
   * [Do you have a terminal app](#do-you-have-a-terminal-app)
   * [Mobile Devices](#mobile-devices)
@@ -336,6 +337,14 @@ Yes.  Our official, open-source webmail client is available at <a href="https://
 It launched in February 2026 and also supports [CalDAV Scheduling Extensions (RFC 6638)](https://www.rfc-editor.org/rfc/rfc6638.html), [DANE/TLSA (RFC 6698)](https://en.wikipedia.org/wiki/DNS-based_Authentication_of_Named_Entities), and [Domain Connect](https://domainconnect.org) for 1-click DNS setup, with real-time push notifications for IMAP, CalDAV, and CardDAV delivered over WebSockets.
 
 The source code is fully open-source and available on GitHub at <a href="https://github.com/forwardemail/mail.forwardemail.net" target="_blank" rel="noopener noreferrer">github.com/forwardemail/mail.forwardemail.net</a>.
+
+Our <a href="/blog/docs/webmail">webmail guide</a> covers signing in, using several accounts, and how webmail fits with this website's dashboard.
+
+### Can I send from any address on my domain in webmail
+
+Yes.  Generate a catch-all password at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Advanced Settings <i class="fa fa-angle-right"></i> Catch-all Passwords, then save it in webmail under **Settings <i class="fa fa-angle-right"></i> General <i class="fa fa-angle-right"></i> Send from any address**.  When you compose, pick **Other address @yourdomain** in the **From** menu and type any address on that domain.
+
+You do not sign in as a catch-all or wildcard account.  The catch-all password can only send, so the copy goes to the Sent folder of the account you are using.  It is saved only on the device where you add it.  See our <a href="/blog/docs/webmail#send-from-any-address-on-your-domain">webmail guide</a> for every step.
 
 ### Do you have desktop and mobile apps
 
