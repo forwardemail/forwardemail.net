@@ -8,6 +8,7 @@ const { callbackify } = require('node:util');
 const { isIP } = require('node:net');
 
 const Axe = require('axe');
+const { boolean } = require('boolean');
 const ip = require('ip');
 const isFQDN = require('is-fqdn');
 const isSANB = require('is-string-and-not-blank');
@@ -30,6 +31,13 @@ const config = require('#config');
 
 const asyncMxConnect = pify(mxConnect);
 const maxConnectTime = ms('1m');
+
+function shouldBlockLocalAddresses() {
+  return (
+    env.NODE_ENV !== 'test' &&
+    !(boolean(env.SELF_HOSTED) && boolean(env.SMTP_ALLOW_LOCAL_MX))
+  );
+}
 
 const transporterConfig = {
   debug: config.env !== 'test',
@@ -268,11 +276,13 @@ async function getTransporter(options = {}, err) {
       // <https://github.com/zone-eu/mx-connect/blob/f9e20ceff5a4a7cfb85fba58ca2f040aaa7c2358/lib/get-connection.js#L6>
       maxConnectTime,
       dnsOptions: {
-        // NOTE: if we merge code then this will need adjusted
-        blockLocalAddresses: env.NODE_ENV !== 'test',
+        // Self-hosted installations may explicitly allow delivery to an MX
+        // address assigned to the local host (e.g. another hosted domain).
+        // The public MX guard below still rejects non-public destinations.
+        blockLocalAddresses: shouldBlockLocalAddresses(),
         // <https://github.com/zone-eu/mx-connect/pull/4>
-        // (A/AAAA answers are limited to public unicast addresses since
-        // `blockLocalAddresses` only covers the loopback and private ranges)
+        // (A/AAAA answers are limited to public unicast addresses
+        // independently of the `blockLocalAddresses` setting)
         // (this resolver is also the one used to look up and connect to the
         // MTA-STS policy host, so the policy is never fetched from an
         // internal address either)
@@ -476,3 +486,4 @@ async function getTransporter(options = {}, err) {
 }
 
 module.exports = getTransporter;
+module.exports.shouldBlockLocalAddresses = shouldBlockLocalAddresses;
