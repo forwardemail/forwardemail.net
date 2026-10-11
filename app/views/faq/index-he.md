@@ -16,6 +16,7 @@
   * [Microsoft Outlook](#microsoft-outlook)
   * [Apple Mail](#apple-mail)
   * [eM Client](#em-client)
+  * [האם אפשר לשלוח מכל כתובת בדומיין שלי ב-Webmail](#can-i-send-from-any-address-on-my-domain-in-webmail)
   * [האם יש לכם יישום לטרמינל](#do-you-have-a-terminal-app)
   * [מכשירים ניידים](#mobile-devices)
   * [הגדרת Sendmail SMTP Relay](#sendmail-smtp-relay-configuration)
@@ -315,6 +316,12 @@ Forward Email מספק הודעות עם עיכוב מינימלי, בדרך כ�
 7. eM Client יבדוק את החיבור. לאחר שהבדיקה תעבור, לחץ על **Next**.
 8. הזן את שמך ובחר שם לחשבון.
 9. לחץ על **Finish**.
+
+### האם אפשר לשלוח מכל כתובת בדומיין שלי ב-Webmail {#can-i-send-from-any-address-on-my-domain-in-webmail}
+
+כן. צור סיסמת catch-all ב-<a href="/my-account/domains" target="_blank" rel="noopener noreferrer">החשבון שלי <i class="fa fa-angle-right"></i> דומיינים</a> <i class="fa fa-angle-right"></i> הגדרות מתקדמות <i class="fa fa-angle-right"></i> סיסמאות מכוסות, ואז שמור אותה ב-Webmail תחת **Settings <i class="fa fa-angle-right"></i> General <i class="fa fa-angle-right"></i> Send from any address**. כשאתה כותב הודעה, בחר **Other address @הדומיין-שלך** בתפריט **From** והקלד כל כתובת בדומיין הזה.
+
+לא מתחברים כחשבון catch-all או wildcard. סיסמת ה-catch-all יכולה רק לשלוח, ולכן העותק נשמר בתיקיית הדואר היוצא (Sent) של החשבון שבו אתה משתמש. היא נשמרת רק במכשיר שבו הוספת אותה. ראה את <a href="/blog/docs/webmail#send-from-any-address-on-your-domain">מדריך ה-Webmail</a> שלנו לכל השלבים.
 
 ### האם יש לכם יישום לטרמינל {#do-you-have-a-terminal-app}
 

@@ -23341,5 +23341,8 @@
   "Forwarded mail is processed in memory and never written to disk.": "Vidarebefordrad e-post behandlas i minnet och skrivs aldrig till disk.",
   "Each mailbox is its own encrypted SQLite file that only your password can open.": "Varje brevlåda är en egen krypterad SQLite-fil som bara ditt lösenord kan öppna.",
   "Cure53 has audited our code twice, and <a href=\"%s\" target=\"_blank\" rel=\"noopener\">its report</a> is public.": "Cure53 har granskat vår kod två gånger, och <a href=\"%s\" target=\"_blank\" rel=\"noopener\">rapporten</a> är offentlig.",
-  "What we store, and for how long": "Vad vi lagrar, och hur länge"
+  "What we store, and for how long": "Vad vi lagrar, och hur länge",
+  "Forward Email Webmail Guide - Web, Desktop, Mobile, and Terminal": "Forward Email webbmailguide - Webb, dator, mobil och terminal",
+  "Webmail Guide": "Webbmailguide",
+  "How to sign in to Forward Email webmail, use multiple accounts, send from any address on your domain with a catch-all password, and how webmail fits with the web dashboard.": "Hur du loggar in på Forward Email webbmail, använder flera konton, skickar från valfri adress på din domän med ett allmänt (catch-all) lösenord och hur webbmailen hänger ihop med webbpanelen."
 }

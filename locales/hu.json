@@ -23341,5 +23341,8 @@
   "Forwarded mail is processed in memory and never written to disk.": "A továbbított leveleket a memóriában dolgozzuk fel, és soha nem írjuk lemezre.",
   "Each mailbox is its own encrypted SQLite file that only your password can open.": "Minden postafiók egy saját, titkosított SQLite-fájl, amelyet csak az Ön jelszava nyithat meg.",
   "Cure53 has audited our code twice, and <a href=\"%s\" target=\"_blank\" rel=\"noopener\">its report</a> is public.": "A Cure53 kétszer auditálta a kódunkat, és <a href=\"%s\" target=\"_blank\" rel=\"noopener\">a jelentése</a> nyilvános.",
-  "What we store, and for how long": "Mit tárolunk, és meddig"
+  "What we store, and for how long": "Mit tárolunk, és meddig",
+  "Forward Email Webmail Guide - Web, Desktop, Mobile, and Terminal": "Forward Email webmail útmutató – web, asztali, mobil és terminál",
+  "Webmail Guide": "Webmail útmutató",
+  "How to sign in to Forward Email webmail, use multiple accounts, send from any address on your domain with a catch-all password, and how webmail fits with the web dashboard.": "Hogyan jelentkezz be a Forward Email webmailbe, hogyan használj több fiókot, hogyan küldj bármely címről a domaineden catch-all jelszóval, és hogyan illeszkedik a webmail a webes irányítópulthoz."
 }

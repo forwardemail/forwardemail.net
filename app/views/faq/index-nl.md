@@ -16,6 +16,7 @@
   * [Microsoft Outlook](#microsoft-outlook)
   * [Apple Mail](#apple-mail)
   * [eM Client](#em-client)
+  * [Kan ik in webmail verzenden vanaf elk adres op mijn domein](#can-i-send-from-any-address-on-my-domain-in-webmail)
   * [Hebben jullie een terminal-app](#do-you-have-a-terminal-app)
   * [Mobiele apparaten](#mobile-devices)
   * [Sendmail SMTP Relay Configuratie](#sendmail-smtp-relay-configuration)
@@ -315,6 +316,12 @@ Alles gebeurt in het geheugen en [onze broncode staat op GitHub](https://github.
 7. eM Client test de verbinding. Zodra deze slaagt, klik je op **Volgende**.
 8. Voer je naam in en kies een accountnaam.
 9. Klik op **Voltooien**.
+
+### Kan ik in webmail verzenden vanaf elk adres op mijn domein {#can-i-send-from-any-address-on-my-domain-in-webmail}
+
+Ja. Genereer een catch-all-wachtwoord via <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">Mijn account <i class="fa fa-angle-right"></i> Domeinen</a> <i class="fa fa-angle-right"></i> Geavanceerde instellingen <i class="fa fa-angle-right"></i> Vangnetwachtwoorden, en sla het daarna in webmail op onder **Settings <i class="fa fa-angle-right"></i> General <i class="fa fa-angle-right"></i> Send from any address**. Kies bij het opstellen **Other address @yourdomain** in het **From**-menu en typ een willekeurig adres op dat domein.
+
+Je meldt je niet aan als catch-all- of wildcard-account. Het catch-all-wachtwoord kan alleen verzenden, dus de kopie gaat naar de map Verzonden (Sent) van het account dat je gebruikt. Het wordt alleen opgeslagen op het apparaat waar je het toevoegt. Zie onze <a href="/blog/docs/webmail#send-from-any-address-on-your-domain">webmail-handleiding</a> voor alle stappen.
 
 ### Hebben jullie een terminal-app {#do-you-have-a-terminal-app}
 

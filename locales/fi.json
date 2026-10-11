@@ -23341,5 +23341,8 @@
   "Forwarded mail is processed in memory and never written to disk.": "Edelleen lähetetty posti käsitellään muistissa, eikä sitä koskaan kirjoiteta levylle.",
   "Each mailbox is its own encrypted SQLite file that only your password can open.": "Jokainen postilaatikko on oma salattu SQLite-tiedostonsa, jonka vain salasanasi avaa.",
   "Cure53 has audited our code twice, and <a href=\"%s\" target=\"_blank\" rel=\"noopener\">its report</a> is public.": "Cure53 on auditoinut koodimme kahdesti, ja <a href=\"%s\" target=\"_blank\" rel=\"noopener\">sen raportti</a> on julkinen.",
-  "What we store, and for how long": "Mitä tallennamme ja kuinka pitkään"
+  "What we store, and for how long": "Mitä tallennamme ja kuinka pitkään",
+  "Forward Email Webmail Guide - Web, Desktop, Mobile, and Terminal": "Forward Emailin webmail-opas - Verkko, työpöytä, mobiili ja terminaali",
+  "Webmail Guide": "Webmail-opas",
+  "How to sign in to Forward Email webmail, use multiple accounts, send from any address on your domain with a catch-all password, and how webmail fits with the web dashboard.": "Näin kirjaudut Forward Emailin webmailiin, käytät useita tilejä, lähetät mistä tahansa verkkotunnuksesi osoitteesta catch-all-salasanalla ja miten webmail liittyy verkon hallintapaneeliin."
 }

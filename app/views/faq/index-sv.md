@@ -16,6 +16,7 @@
   * [Microsoft Outlook](#microsoft-outlook)
   * [Apple Mail](#apple-mail)
   * [eM Client](#em-client)
+  * [Kan jag skicka från valfri adress på min domän i webbmailen](#can-i-send-from-any-address-on-my-domain-in-webmail)
   * [Har ni en terminalapp](#do-you-have-a-terminal-app)
   * [Mobila enheter](#mobile-devices)
   * [Sendmail SMTP Relay-konfiguration](#sendmail-smtp-relay-configuration)
@@ -315,6 +316,12 @@ Allt görs i minnet och [vår källkod finns på GitHub](https://github.com/forw
 7. eM Client testar anslutningen. När den lyckas, klicka på **Nästa**.
 8. Ange ditt namn och välj ett kontonamn.
 9. Klicka på **Slutför**.
+
+### Kan jag skicka från valfri adress på min domän i webbmailen {#can-i-send-from-any-address-on-my-domain-in-webmail}
+
+Ja. Generera ett allmänt lösenord under <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">Mitt konto <i class="fa fa-angle-right"></i> Domäner</a> <i class="fa fa-angle-right"></i> Avancerade inställningar <i class="fa fa-angle-right"></i> Allmänna lösenord, och spara det sedan i webbmailen under **Settings <i class="fa fa-angle-right"></i> General <i class="fa fa-angle-right"></i> Send from any address**. När du skriver ett meddelande väljer du **Other address @dindomän** i menyn **From** och skriver valfri adress på den domänen.
+
+Du loggar inte in som ett catch-all- eller wildcard-konto. Det allmänna lösenordet kan bara skicka, så kopian hamnar i mappen Skickat för kontot du använder. Det sparas bara på enheten där du lägger till det. Se vår <a href="/blog/docs/webmail#send-from-any-address-on-your-domain">webbmailguide</a> för alla steg.
 
 ### Har ni en terminalapp {#do-you-have-a-terminal-app}
 

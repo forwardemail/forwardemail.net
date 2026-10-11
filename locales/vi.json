@@ -23341,5 +23341,8 @@
   "Forwarded mail is processed in memory and never written to disk.": "Thư được chuyển tiếp được xử lý trong bộ nhớ và không bao giờ được ghi xuống ổ đĩa.",
   "Each mailbox is its own encrypted SQLite file that only your password can open.": "Mỗi hộp thư là một tệp SQLite được mã hóa riêng, chỉ mật khẩu của bạn mới mở được.",
   "Cure53 has audited our code twice, and <a href=\"%s\" target=\"_blank\" rel=\"noopener\">its report</a> is public.": "Cure53 đã kiểm toán mã của chúng tôi hai lần, và <a href=\"%s\" target=\"_blank\" rel=\"noopener\">báo cáo</a> được công khai.",
-  "What we store, and for how long": "Chúng tôi lưu trữ gì và trong bao lâu"
+  "What we store, and for how long": "Chúng tôi lưu trữ gì và trong bao lâu",
+  "Forward Email Webmail Guide - Web, Desktop, Mobile, and Terminal": "Hướng dẫn Webmail của Forward Email - Web, Máy tính, Di động và Terminal",
+  "Webmail Guide": "Hướng dẫn Webmail",
+  "How to sign in to Forward Email webmail, use multiple accounts, send from any address on your domain with a catch-all password, and how webmail fits with the web dashboard.": "Cách đăng nhập webmail của Forward Email, dùng nhiều tài khoản, gửi từ bất kỳ địa chỉ nào trên tên miền của bạn bằng mật khẩu catch-all, và cách webmail kết hợp với bảng điều khiển web."
 }

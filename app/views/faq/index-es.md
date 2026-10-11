@@ -16,6 +16,7 @@
   * [Microsoft Outlook](#microsoft-outlook)
   * [Apple Mail](#apple-mail)
   * [eM Client](#em-client)
+  * [¿Puedo enviar desde cualquier dirección de mi dominio en el webmail?](#can-i-send-from-any-address-on-my-domain-in-webmail)
   * [¿Tienen una aplicación para terminal?](#do-you-have-a-terminal-app)
   * [Dispositivos Móviles](#mobile-devices)
   * [Configuración de Relay SMTP Sendmail](#sendmail-smtp-relay-configuration)
@@ -315,6 +316,12 @@ Todo se realiza en memoria y [nuestro código fuente está en GitHub](https://gi
 7. eM Client probará la conexión. Una vez que pase, haz clic en **Siguiente**.
 8. Ingresa tu nombre y elige un nombre para la cuenta.
 9. Haz clic en **Finalizar**.
+
+### ¿Puedo enviar desde cualquier dirección de mi dominio en el webmail? {#can-i-send-from-any-address-on-my-domain-in-webmail}
+
+Sí. Genera una contraseña catch-all en <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">Mi cuenta <i class="fa fa-angle-right"></i> Dominios</a> <i class="fa fa-angle-right"></i> Configuración avanzada <i class="fa fa-angle-right"></i> Contraseñas de captura general y luego guárdala en el webmail en **Settings <i class="fa fa-angle-right"></i> General <i class="fa fa-angle-right"></i> Send from any address**. Al redactar, elige **Other address @tudominio** en el menú **From** y escribe cualquier dirección de ese dominio.
+
+No inicias sesión como una cuenta catch-all o comodín. La contraseña catch-all solo sirve para enviar, así que la copia va a la carpeta de enviados de la cuenta que estás usando. Solo se guarda en el dispositivo donde la añades. Consulta nuestra <a href="/blog/docs/webmail#send-from-any-address-on-your-domain">guía de webmail</a> para ver todos los pasos.
 
 ### ¿Tienen una aplicación para terminal? {#do-you-have-a-terminal-app}
 

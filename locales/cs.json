@@ -23341,5 +23341,8 @@
   "Forwarded mail is processed in memory and never written to disk.": "Přeposílaná pošta se zpracovává v paměti a nikdy se nezapisuje na disk.",
   "Each mailbox is its own encrypted SQLite file that only your password can open.": "Každá schránka je samostatný šifrovaný soubor SQLite, který otevře jen vaše heslo.",
   "Cure53 has audited our code twice, and <a href=\"%s\" target=\"_blank\" rel=\"noopener\">its report</a> is public.": "Cure53 náš kód auditovala dvakrát a <a href=\"%s\" target=\"_blank\" rel=\"noopener\">její zpráva</a> je veřejná.",
-  "What we store, and for how long": "Co ukládáme a jak dlouho"
+  "What we store, and for how long": "Co ukládáme a jak dlouho",
+  "Forward Email Webmail Guide - Web, Desktop, Mobile, and Terminal": "Průvodce webmailem Forward Email - web, počítač, mobil a terminál",
+  "Webmail Guide": "Průvodce webmailem",
+  "How to sign in to Forward Email webmail, use multiple accounts, send from any address on your domain with a catch-all password, and how webmail fits with the web dashboard.": "Jak se přihlásit do webmailu Forward Email, používat více účtů, odesílat z libovolné adresy na vaší doméně pomocí catch-all hesla a jak webmail souvisí s webovým panelem."
 }

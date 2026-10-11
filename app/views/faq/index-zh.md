@@ -16,6 +16,7 @@
   * [Microsoft Outlook](#microsoft-outlook)
   * [Apple Mail](#apple-mail)
   * [eM Client](#em-client)
+  * [我可以在网页邮件中从我域名上的任意地址发送吗](#can-i-send-from-any-address-on-my-domain-in-webmail)
   * [你们有终端应用吗](#do-you-have-a-terminal-app)
   * [移动设备](#mobile-devices)
   * [Sendmail SMTP 中继配置](#sendmail-smtp-relay-configuration)
@@ -314,6 +315,12 @@ Forward Email 以极短的延迟传递邮件，通常在收到邮件后几秒内
 7. eM Client 会测试连接，测试通过后点击 **下一步**
 8. 输入您的姓名并选择账户名称
 9. 点击 **完成**
+
+### 我可以在网页邮件中从我域名上的任意地址发送吗 {#can-i-send-from-any-address-on-my-domain-in-webmail}
+
+可以。在 <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">我的账户 <i class="fa fa-angle-right"></i> 域名</a> <i class="fa fa-angle-right"></i> 高级设置 <i class="fa fa-angle-right"></i> 捕获所有密码 中生成一个通配密码，然后在网页邮件的 **Settings <i class="fa fa-angle-right"></i> General <i class="fa fa-angle-right"></i> Send from any address** 中保存它。撰写邮件时，在 **From** 菜单中选择 **Other address @yourdomain**，然后输入该域名上的任意地址。
+
+您无需以 catch-all 或通配符账户登录。通配密码只能用于发送，因此副本会存入您正在使用的账户的“已发送”文件夹。它只保存在您添加它的设备上。完整步骤请参阅我们的<a href="/blog/docs/webmail#send-from-any-address-on-your-domain">网页邮件指南</a>。
 
 ### 你们有终端应用吗 {#do-you-have-a-terminal-app}
 

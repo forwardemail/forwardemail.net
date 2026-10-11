@@ -23341,5 +23341,8 @@
   "Forwarded mail is processed in memory and never written to disk.": "דואר מועבר מעובד בזיכרון ולעולם אינו נכתב לדיסק.",
   "Each mailbox is its own encrypted SQLite file that only your password can open.": "כל תיבת דואר היא קובץ SQLite מוצפן משלה, שרק הסיסמה שלך יכולה לפתוח.",
   "Cure53 has audited our code twice, and <a href=\"%s\" target=\"_blank\" rel=\"noopener\">its report</a> is public.": "Cure53 ביקרה את הקוד שלנו פעמיים, ו<a href=\"%s\" target=\"_blank\" rel=\"noopener\">הדוח שלה</a> פומבי.",
-  "What we store, and for how long": "מה אנחנו שומרים, ולכמה זמן"
+  "What we store, and for how long": "מה אנחנו שומרים, ולכמה זמן",
+  "Forward Email Webmail Guide - Web, Desktop, Mobile, and Terminal": "מדריך ה-Webmail של Forward Email - אתר, מחשב, נייד וטרמינל",
+  "Webmail Guide": "מדריך Webmail",
+  "How to sign in to Forward Email webmail, use multiple accounts, send from any address on your domain with a catch-all password, and how webmail fits with the web dashboard.": "איך מתחברים ל-Webmail של Forward Email, משתמשים בכמה חשבונות, שולחים מכל כתובת בדומיין שלך עם סיסמת catch-all, ואיך ה-Webmail משתלב עם לוח הבקרה באתר."
 }

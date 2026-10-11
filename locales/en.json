@@ -23341,5 +23341,8 @@
   "Forwarded mail is processed in memory and never written to disk.": "Forwarded mail is processed in memory and never written to disk.",
   "Each mailbox is its own encrypted SQLite file that only your password can open.": "Each mailbox is its own encrypted SQLite file that only your password can open.",
   "Cure53 has audited our code twice, and <a href=\"%s\" target=\"_blank\" rel=\"noopener\">its report</a> is public.": "Cure53 has audited our code twice, and <a href=\"%s\" target=\"_blank\" rel=\"noopener\">its report</a> is public.",
-  "What we store, and for how long": "What we store, and for how long"
+  "What we store, and for how long": "What we store, and for how long",
+  "Forward Email Webmail Guide - Web, Desktop, Mobile, and Terminal": "Forward Email Webmail Guide - Web, Desktop, Mobile, and Terminal",
+  "Webmail Guide": "Webmail Guide",
+  "How to sign in to Forward Email webmail, use multiple accounts, send from any address on your domain with a catch-all password, and how webmail fits with the web dashboard.": "How to sign in to Forward Email webmail, use multiple accounts, send from any address on your domain with a catch-all password, and how webmail fits with the web dashboard."
 }

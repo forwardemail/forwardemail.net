@@ -16,6 +16,7 @@
   * [Microsoft Outlook](#microsoft-outlook)
   * [Apple Mail](#apple-mail)
   * [eM Client](#em-client)
+  * [Voinko lähettää webmailissa mistä tahansa verkkotunnukseni osoitteesta](#can-i-send-from-any-address-on-my-domain-in-webmail)
   * [Onko teillä terminaalisovellusta](#do-you-have-a-terminal-app)
   * [Mobiililaitteet](#mobile-devices)
   * [Sendmail SMTP -välityspalvelimen asetukset](#sendmail-smtp-relay-configuration)
@@ -315,6 +316,12 @@ Kaikki tehdään muistissa ja [lähdekoodimme on GitHubissa](https://github.com/
 7. eM Client testaa yhteyden. Kun testi onnistuu, klikkaa **Seuraava**.
 8. Syötä nimesi ja valitse tilin nimi.
 9. Klikkaa **Valmis**.
+
+### Voinko lähettää webmailissa mistä tahansa verkkotunnukseni osoitteesta {#can-i-send-from-any-address-on-my-domain-in-webmail}
+
+Kyllä. Luo catch-all-salasana kohdassa <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">Oma tili <i class="fa fa-angle-right"></i> Verkkotunnukset</a> <i class="fa fa-angle-right"></i> Lisäasetukset <i class="fa fa-angle-right"></i> Yleiset salasanat ja tallenna se sitten webmailiin kohtaan **Settings <i class="fa fa-angle-right"></i> General <i class="fa fa-angle-right"></i> Send from any address**. Kun kirjoitat viestiä, valitse **From**-valikosta **Other address @verkkotunnuksesi** ja kirjoita mikä tahansa kyseisen verkkotunnuksen osoite.
+
+Et kirjaudu catch-all- tai jokerimerkkitilinä. Catch-all-salasanalla voi vain lähettää, joten kopio menee käyttämäsi tilin Lähetetyt-kansioon. Se tallennetaan vain laitteelle, jolla lisäät sen. Katso kaikki vaiheet <a href="/blog/docs/webmail#send-from-any-address-on-your-domain">webmail-oppaastamme</a>.
 
 ### Onko teillä terminaalisovellusta {#do-you-have-a-terminal-app}
 

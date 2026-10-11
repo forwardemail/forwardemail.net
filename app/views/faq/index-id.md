@@ -16,6 +16,7 @@
   * [Microsoft Outlook](#microsoft-outlook)
   * [Apple Mail](#apple-mail)
   * [eM Client](#em-client)
+  * [Bisakah saya mengirim dari alamat apa pun di domain saya di webmail](#can-i-send-from-any-address-on-my-domain-in-webmail)
   * [Apakah Anda punya aplikasi terminal](#do-you-have-a-terminal-app)
   * [Perangkat Mobile](#mobile-devices)
   * [Konfigurasi Sendmail SMTP Relay](#sendmail-smtp-relay-configuration)
@@ -315,6 +316,12 @@ Semua dilakukan di memori dan [kode sumber kami ada di GitHub](https://github.co
 7. eM Client akan menguji koneksi. Setelah berhasil, klik **Berikutnya**.
 8. Masukkan nama Anda dan pilih nama akun.
 9. Klik **Selesai**.
+
+### Bisakah saya mengirim dari alamat apa pun di domain saya di webmail {#can-i-send-from-any-address-on-my-domain-in-webmail}
+
+Ya. Buat kata sandi catch-all di <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">Akun Saya <i class="fa fa-angle-right"></i> Domain</a> <i class="fa fa-angle-right"></i> Pengaturan Lanjutan <i class="fa fa-angle-right"></i> Kata Sandi Catch-all, lalu simpan di webmail di **Settings <i class="fa fa-angle-right"></i> General <i class="fa fa-angle-right"></i> Send from any address**. Saat menulis email, pilih **Other address @yourdomain** di menu **From** dan ketik alamat apa pun di domain tersebut.
+
+Anda tidak masuk sebagai akun catch-all atau wildcard. Kata sandi catch-all hanya bisa mengirim, jadi salinannya masuk ke folder Terkirim milik akun yang sedang Anda gunakan. Kata sandi ini hanya disimpan di perangkat tempat Anda menambahkannya. Lihat <a href="/blog/docs/webmail#send-from-any-address-on-your-domain">panduan webmail</a> kami untuk semua langkahnya.
 
 ### Apakah Anda punya aplikasi terminal {#do-you-have-a-terminal-app}
 

@@ -16,6 +16,7 @@
   * [Microsoft Outlook](#microsoft-outlook)
   * [Apple Mail](#apple-mail)
   * [eM Client](#em-client)
+  * [Mohu ve webmailu odesílat z libovolné adresy na své doméně](#can-i-send-from-any-address-on-my-domain-in-webmail)
   * [Máte terminálovou aplikaci](#do-you-have-a-terminal-app)
   * [Mobilní zařízení](#mobile-devices)
   * [Konfigurace Sendmail SMTP Relay](#sendmail-smtp-relay-configuration)
@@ -315,6 +316,12 @@ Vše probíhá v paměti a [náš zdrojový kód je na GitHubu](https://github.c
 7. eM Client otestuje připojení. Po úspěšném testu klikněte na **Další**.
 8. Zadejte své jméno a vyberte název účtu.
 9. Klikněte na **Dokončit**.
+
+### Mohu ve webmailu odesílat z libovolné adresy na své doméně {#can-i-send-from-any-address-on-my-domain-in-webmail}
+
+Ano. Vygenerujte catch-all heslo v <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">Můj účet <i class="fa fa-angle-right"></i> Domény</a> <i class="fa fa-angle-right"></i> Pokročilá nastavení <i class="fa fa-angle-right"></i> Catch-all hesla a pak ho uložte ve webmailu v **Settings <i class="fa fa-angle-right"></i> General <i class="fa fa-angle-right"></i> Send from any address**. Při psaní zprávy vyberte v nabídce **From** položku **Other address @yourdomain** a napište libovolnou adresu na této doméně.
+
+Nepřihlašujete se jako catch-all ani wildcard účet. Catch-all heslo umí jen odesílat, takže kopie se uloží do složky Odeslané účtu, který používáte. Ukládá se jen na zařízení, kde ho přidáte. Všechny kroky najdete v našem <a href="/blog/docs/webmail#send-from-any-address-on-your-domain">průvodci webmailem</a>.
 
 ### Máte terminálovou aplikaci {#do-you-have-a-terminal-app}
 

@@ -16,6 +16,7 @@
   * [Microsoft Outlook](#microsoft-outlook)
   * [Apple Mail](#apple-mail)
   * [eM Client](#em-client)
+  * [Tôi có thể gửi từ bất kỳ địa chỉ nào trên tên miền của mình trong webmail không](#can-i-send-from-any-address-on-my-domain-in-webmail)
   * [Bạn có ứng dụng terminal không](#do-you-have-a-terminal-app)
   * [Thiết Bị Di Động](#mobile-devices)
   * [Cấu Hình Sendmail SMTP Relay](#sendmail-smtp-relay-configuration)
@@ -315,6 +316,12 @@ Mọi thứ được thực hiện trong bộ nhớ và [mã nguồn của chún
 7. eM Client sẽ kiểm tra kết nối. Khi thành công, nhấn **Tiếp theo**.
 8. Nhập tên của bạn và chọn tên tài khoản.
 9. Nhấn **Hoàn tất**.
+
+### Tôi có thể gửi từ bất kỳ địa chỉ nào trên tên miền của mình trong webmail không {#can-i-send-from-any-address-on-my-domain-in-webmail}
+
+Có. Tạo một mật khẩu catch-all tại <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">Tài khoản của tôi <i class="fa fa-angle-right"></i> Tên miền</a> <i class="fa fa-angle-right"></i> Cài đặt nâng cao <i class="fa fa-angle-right"></i> Mật khẩu tổng hợp, sau đó lưu nó trong webmail tại **Settings <i class="fa fa-angle-right"></i> General <i class="fa fa-angle-right"></i> Send from any address**. Khi soạn thư, chọn **Other address @yourdomain** trong menu **From** và nhập bất kỳ địa chỉ nào trên tên miền đó.
+
+Bạn không đăng nhập bằng một tài khoản catch-all hay ký tự đại diện. Mật khẩu catch-all chỉ có thể gửi, nên bản sao được lưu vào thư mục Đã gửi của tài khoản bạn đang dùng. Mật khẩu chỉ được lưu trên thiết bị nơi bạn thêm nó. Xem <a href="/blog/docs/webmail#send-from-any-address-on-your-domain">hướng dẫn webmail</a> của chúng tôi để biết từng bước.
 
 ### Bạn có ứng dụng terminal không {#do-you-have-a-terminal-app}
 

@@ -16,6 +16,7 @@
   * [Microsoft Outlook](#microsoft-outlook)
   * [Apple Mail](#apple-mail)
   * [eM Client](#em-client)
+  * [ウェブメールでドメインの任意のアドレスから送信できますか](#can-i-send-from-any-address-on-my-domain-in-webmail)
   * [ターミナルアプリはありますか](#do-you-have-a-terminal-app)
   * [モバイルデバイス](#mobile-devices)
   * [Sendmail SMTPリレー設定](#sendmail-smtp-relay-configuration)
@@ -315,6 +316,12 @@ Forward Emailは受信後数秒以内にメッセージをほぼ遅延なく配�
 7. eM Clientが接続テストを行います。成功したら**次へ**をクリックします
 8. 名前を入力し、アカウント名を選択します
 9. **完了**をクリックします
+
+### ウェブメールでドメインの任意のアドレスから送信できますか {#can-i-send-from-any-address-on-my-domain-in-webmail}
+
+はい。<a href="/my-account/domains" target="_blank" rel="noopener noreferrer">マイアカウント <i class="fa fa-angle-right"></i> ドメイン</a> <i class="fa fa-angle-right"></i> 詳細設定 <i class="fa fa-angle-right"></i> キャッチオールパスワード でキャッチオールパスワードを生成し、ウェブメールの **Settings <i class="fa fa-angle-right"></i> General <i class="fa fa-angle-right"></i> Send from any address** に保存します。メールを作成するときに **From** メニューで **Other address @yourdomain** を選び、そのドメインの任意のアドレスを入力します。
+
+キャッチオールやワイルドカードのアカウントとしてサインインするわけではありません。キャッチオールパスワードは送信専用のため、コピーは使用中のアカウントの送信済みフォルダに保存されます。パスワードは追加したデバイスにのみ保存されます。すべての手順は<a href="/blog/docs/webmail#send-from-any-address-on-your-domain">ウェブメールガイド</a>をご覧ください。
 
 ### ターミナルアプリはありますか {#do-you-have-a-terminal-app}
 

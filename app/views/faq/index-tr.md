@@ -16,6 +16,7 @@
   * [Microsoft Outlook](#microsoft-outlook)
   * [Apple Mail](#apple-mail)
   * [eM Client](#em-client)
+  * [Webmail'de alan adımdaki herhangi bir adresten gönderebilir miyim](#can-i-send-from-any-address-on-my-domain-in-webmail)
   * [Terminal uygulamanız var mı](#do-you-have-a-terminal-app)
   * [Mobil Cihazlar](#mobile-devices)
   * [Sendmail SMTP Relay Yapılandırması](#sendmail-smtp-relay-configuration)
@@ -315,6 +316,12 @@ Her şey bellekte yapılır ve [kaynak kodumuz GitHub'da mevcuttur](https://gith
 7. eM Client bağlantıyı test edecektir. Başarılı olunca **İleri**ye tıklayın.
 8. Adınızı girin ve bir hesap adı seçin.
 9. **Bitir** butonuna tıklayın.
+
+### Webmail'de alan adımdaki herhangi bir adresten gönderebilir miyim? {#can-i-send-from-any-address-on-my-domain-in-webmail}
+
+Evet. <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">Hesabım <i class="fa fa-angle-right"></i> Alan Adları</a> <i class="fa fa-angle-right"></i> Gelişmiş Ayarlar <i class="fa fa-angle-right"></i> Tüm Parolaları Kapsayan Parolalar bölümünde bir catch-all parolası oluşturun, ardından bunu webmail'de **Settings <i class="fa fa-angle-right"></i> General <i class="fa fa-angle-right"></i> Send from any address** altına kaydedin. İleti yazarken **From** menüsünden **Other address @yourdomain** seçeneğini seçin ve o alan adındaki herhangi bir adresi yazın.
+
+Catch-all veya joker karakterli bir hesap olarak giriş yapmazsınız. Catch-all parolası yalnızca gönderebilir, bu yüzden kopya kullandığınız hesabın Gönderilenler klasörüne gider. Parola yalnızca eklediğiniz cihazda saklanır. Tüm adımlar için <a href="/blog/docs/webmail#send-from-any-address-on-your-domain">webmail kılavuzumuza</a> bakın.
 
 ### Terminal uygulamanız var mı? {#do-you-have-a-terminal-app}
 

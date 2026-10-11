@@ -16,6 +16,7 @@
   * [Microsoft Outlook](#microsoft-outlook)
   * [Apple Mail](#apple-mail)
   * [eM Client](#em-client)
+  * [Чи можу я надсилати з будь-якої адреси на моєму домені у вебпошті](#can-i-send-from-any-address-on-my-domain-in-webmail)
   * [Чи є у вас термінальний застосунок](#do-you-have-a-terminal-app)
   * [Мобільні пристрої](#mobile-devices)
   * [Конфігурація Sendmail SMTP Relay](#sendmail-smtp-relay-configuration)
@@ -315,6 +316,12 @@ Forward Email доставляє повідомлення з мінімальн�
 7. eM Client перевірить з’єднання. Після успішної перевірки натисніть **Далі**.
 8. Введіть ваше ім’я та оберіть назву облікового запису.
 9. Натисніть **Завершити**.
+
+### Чи можу я надсилати з будь-якої адреси на моєму домені у вебпошті {#can-i-send-from-any-address-on-my-domain-in-webmail}
+
+Так. Згенеруйте універсальний пароль у <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">Мій акаунт <i class="fa fa-angle-right"></i> Домени</a> <i class="fa fa-angle-right"></i> Розширені налаштування <i class="fa fa-angle-right"></i> Універсальні паролі, а потім збережіть його у вебпошті в **Settings <i class="fa fa-angle-right"></i> General <i class="fa fa-angle-right"></i> Send from any address**. Під час написання листа виберіть **Other address @yourdomain** у меню **From** і введіть будь-яку адресу на цьому домені.
+
+Ви не входите як у catch-all обліковий запис чи обліковий запис із шаблоном. Універсальний пароль може лише надсилати, тому копія потрапляє до папки «Надіслані» облікового запису, яким ви користуєтеся. Він зберігається лише на пристрої, де ви його додали. Усі кроки описано в нашому <a href="/blog/docs/webmail#send-from-any-address-on-your-domain">посібнику з вебпошти</a>.
 
 ### Чи є у вас термінальний застосунок {#do-you-have-a-terminal-app}
 

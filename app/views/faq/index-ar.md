@@ -16,6 +16,7 @@
   * [Microsoft Outlook](#microsoft-outlook)
   * [Apple Mail](#apple-mail)
   * [eM Client](#em-client)
+  * [هل يمكنني الإرسال من أي عنوان على نطاقي في بريد الويب](#can-i-send-from-any-address-on-my-domain-in-webmail)
   * [هل لديكم تطبيق للطرفية](#do-you-have-a-terminal-app)
   * [الأجهزة المحمولة](#mobile-devices)
   * [تكوين Sendmail SMTP Relay](#sendmail-smtp-relay-configuration)
@@ -315,6 +316,12 @@ Forward Email هو **مزود خدمة بريد إلكتروني متكامل ا
 7. سيختبر eM Client الاتصال. بمجرد النجاح، انقر على **التالي**.
 8. أدخل اسمك واختر اسم الحساب.
 9. انقر على **إنهاء**.
+
+### هل يمكنني الإرسال من أي عنوان على نطاقي في بريد الويب {#can-i-send-from-any-address-on-my-domain-in-webmail}
+
+نعم. أنشئ كلمة مرور شاملة (catch-all) من <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">حسابي <i class="fa fa-angle-right"></i> النطاقات</a> <i class="fa fa-angle-right"></i> الإعدادات المتقدمة <i class="fa fa-angle-right"></i> كلمات مرور شاملة، ثم احفظها في بريد الويب ضمن **Settings <i class="fa fa-angle-right"></i> General <i class="fa fa-angle-right"></i> Send from any address**. عند كتابة رسالة، اختر **Other address @yourdomain** في قائمة **From** واكتب أي عنوان على ذلك النطاق.
+
+أنت لا تسجّل الدخول كحساب شامل أو حساب بحرف بدل (wildcard). كلمة المرور الشاملة يمكنها الإرسال فقط، لذا تذهب النسخة إلى مجلد المرسل للحساب الذي تستخدمه. وتُحفظ فقط على الجهاز الذي تضيفها عليه. راجع <a href="/blog/docs/webmail#send-from-any-address-on-your-domain">دليل بريد الويب</a> لمعرفة جميع الخطوات.
 
 ### هل لديكم تطبيق للطرفية {#do-you-have-a-terminal-app}
 

@@ -1,7 +1,7 @@
 # Forward Email Webmail Guide
 
 <p class="lead mt-3">
-  <strong>TL;DR:</strong> <a href="https://mail.forwardemail.net" target="_blank" rel="noopener noreferrer">Webmail</a> is where you read and send mail. The <a href="/my-account/domains">web dashboard</a> is where you set up domains, aliases, and passwords. You sign in to webmail with an alias address and a password generated in the dashboard. Webmail is free and <a href="https://github.com/forwardemail/mail.forwardemail.net" target="_blank" rel="noopener noreferrer">open source</a>, and the same app runs in the browser, on desktop, on mobile, and in a terminal.
+  <strong>TL;DR:</strong> <a href="https://mail.forwardemail.net" target="_blank" rel="noopener noreferrer">Webmail</a> is where you read and send mail. The <a href="/my-account/domains">web dashboard</a> is where you set up domains, aliases, and passwords. You sign in to webmail with an alias address and a password generated in the dashboard. Webmail is free and <a href="/faq#do-you-offer-a-webmail-client">open source</a>, and the same app runs in the browser, on desktop, on mobile, and in a terminal.
 </p>
 
 

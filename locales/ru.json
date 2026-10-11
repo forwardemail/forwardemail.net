@@ -23341,5 +23341,8 @@
   "Forwarded mail is processed in memory and never written to disk.": "Пересылаемая почта обрабатывается в памяти и никогда не записывается на диск.",
   "Each mailbox is its own encrypted SQLite file that only your password can open.": "Каждый почтовый ящик — это отдельный зашифрованный файл SQLite, который открывается только вашим паролем.",
   "Cure53 has audited our code twice, and <a href=\"%s\" target=\"_blank\" rel=\"noopener\">its report</a> is public.": "Cure53 дважды проводила аудит нашего кода, и <a href=\"%s\" target=\"_blank\" rel=\"noopener\">её отчёт</a> опубликован.",
-  "What we store, and for how long": "Что мы храним и как долго"
+  "What we store, and for how long": "Что мы храним и как долго",
+  "Forward Email Webmail Guide - Web, Desktop, Mobile, and Terminal": "Руководство по веб-почте Forward Email - веб, компьютер, телефон и терминал",
+  "Webmail Guide": "Руководство по веб-почте",
+  "How to sign in to Forward Email webmail, use multiple accounts, send from any address on your domain with a catch-all password, and how webmail fits with the web dashboard.": "Как войти в веб-почту Forward Email, использовать несколько аккаунтов, отправлять письма с любого адреса вашего домена с помощью универсального (catch-all) пароля и как веб-почта связана с веб-панелью."
 }

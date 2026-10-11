@@ -16,6 +16,7 @@
   * [Microsoft Outlook](#microsoft-outlook)
   * [Apple Mail](#apple-mail)
   * [eM Client](#em-client)
+  * [Küldhetek bármely címről a domainemen a webmailben](#can-i-send-from-any-address-on-my-domain-in-webmail)
   * [Van terminálos alkalmazásotok](#do-you-have-a-terminal-app)
   * [Mobil Eszközök](#mobile-devices)
   * [Sendmail SMTP Relay Beállítás](#sendmail-smtp-relay-configuration)
@@ -315,6 +316,12 @@ Minden memóriában történik, és [a forráskódunk elérhető a GitHubon](htt
 7. Az eM Client teszteli a kapcsolatot. Ha sikeres, kattints a **Tovább** gombra.
 8. Írd be a neved és válassz fióknevet.
 9. Kattints a **Befejezés** gombra.
+
+### Küldhetek bármely címről a domainemen a webmailben {#can-i-send-from-any-address-on-my-domain-in-webmail}
+
+Igen. Generálj egy catch-all jelszót a <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">Saját fiók <i class="fa fa-angle-right"></i> Domainek</a> <i class="fa fa-angle-right"></i> Speciális beállítások <i class="fa fa-angle-right"></i> Gyűjtőjelszavak alatt, majd mentsd el a webmailben a **Settings <i class="fa fa-angle-right"></i> General <i class="fa fa-angle-right"></i> Send from any address** részben. Íráskor válaszd a **Other address @yourdomain** lehetőséget a **From** menüben, és írj be bármely címet azon a domainen.
+
+Nem catch-all vagy wildcard fiókként jelentkezel be. A catch-all jelszó csak küldésre jó, ezért a másolat annak a fióknak az Elküldött mappájába kerül, amelyet éppen használsz. Csak azon az eszközön van elmentve, ahol hozzáadtad. Az összes lépést a <a href="/blog/docs/webmail#send-from-any-address-on-your-domain">webmail útmutatónkban</a> találod.
 
 ### Van terminálos alkalmazásotok {#do-you-have-a-terminal-app}
 

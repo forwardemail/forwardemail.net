@@ -16,6 +16,7 @@
   * [Microsoft Outlook](#microsoft-outlook)
   * [Apple Mail](#apple-mail)
   * [eM Client](#em-client)
+  * [Czy mogę wysyłać z dowolnego adresu w mojej domenie w poczcie webowej](#can-i-send-from-any-address-on-my-domain-in-webmail)
   * [Czy macie aplikację terminalową](#do-you-have-a-terminal-app)
   * [Urządzenia mobilne](#mobile-devices)
   * [Konfiguracja Sendmail SMTP Relay](#sendmail-smtp-relay-configuration)
@@ -315,6 +316,12 @@ Wszystko odbywa się w pamięci operacyjnej, a [nasz kod źródłowy jest na Git
 7. eM Client przetestuje połączenie. Po pomyślnym teście kliknij **Dalej**.
 8. Wprowadź swoje imię i wybierz nazwę konta.
 9. Kliknij **Zakończ**.
+
+### Czy mogę wysyłać z dowolnego adresu w mojej domenie w poczcie webowej {#can-i-send-from-any-address-on-my-domain-in-webmail}
+
+Tak. Wygeneruj hasło catch-all w <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">Moje konto <i class="fa fa-angle-right"></i> Domeny</a> <i class="fa fa-angle-right"></i> Ustawienia zaawansowane <i class="fa fa-angle-right"></i> Hasła uniwersalne, a następnie zapisz je w poczcie webowej w **Settings <i class="fa fa-angle-right"></i> General <i class="fa fa-angle-right"></i> Send from any address**. Podczas pisania wiadomości wybierz **Other address @yourdomain** w menu **From** i wpisz dowolny adres w tej domenie.
+
+Nie logujesz się jako konto catch-all ani wieloznaczne. Hasło catch-all może tylko wysyłać, więc kopia trafia do folderu Wysłane (Sent) konta, którego używasz. Jest zapisywane tylko na urządzeniu, na którym je dodasz. Wszystkie kroki znajdziesz w naszym <a href="/blog/docs/webmail#send-from-any-address-on-your-domain">przewodniku po poczcie webowej</a>.
 
 ### Czy macie aplikację terminalową {#do-you-have-a-terminal-app}
 

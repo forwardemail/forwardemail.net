@@ -16,6 +16,7 @@
   * [Microsoft Outlook](#microsoft-outlook)
   * [Apple Mail](#apple-mail)
   * [eM Client](#em-client)
+  * [Kan jeg sende fra enhver adresse på mit domæne i webmail](#can-i-send-from-any-address-on-my-domain-in-webmail)
   * [Har I en terminalapp](#do-you-have-a-terminal-app)
   * [Mobile Enheder](#mobile-devices)
   * [Sendmail SMTP Relay Konfiguration](#sendmail-smtp-relay-configuration)
@@ -315,6 +316,12 @@ Alt sker i hukommelsen, og [vores kildekode er på GitHub](https://github.com/fo
 7. eM Client tester forbindelsen. Når den er godkendt, klik på **Næste**.
 8. Indtast dit navn og vælg et kontonavn.
 9. Klik på **Afslut**.
+
+### Kan jeg sende fra enhver adresse på mit domæne i webmail {#can-i-send-from-any-address-on-my-domain-in-webmail}
+
+Ja. Generer en catch-all-adgangskode under <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">Min konto <i class="fa fa-angle-right"></i> Domæner</a> <i class="fa fa-angle-right"></i> Avancerede indstillinger <i class="fa fa-angle-right"></i> Opfangende adgangskoder, og gem den derefter i webmail under **Settings <i class="fa fa-angle-right"></i> General <i class="fa fa-angle-right"></i> Send from any address**. Når du skriver en besked, skal du vælge **Other address @yourdomain** i menuen **From** og skrive en vilkårlig adresse på det domæne.
+
+Du logger ikke ind som en catch-all- eller wildcard-konto. Catch-all-adgangskoden kan kun sende, så kopien lægges i mappen Sendt på den konto, du bruger. Den gemmes kun på den enhed, hvor du tilføjer den. Se vores <a href="/blog/docs/webmail#send-from-any-address-on-your-domain">webmail-guide</a> for alle trin.
 
 ### Har I en terminalapp {#do-you-have-a-terminal-app}
 

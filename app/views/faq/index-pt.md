@@ -16,6 +16,7 @@
   * [Microsoft Outlook](#microsoft-outlook)
   * [Apple Mail](#apple-mail)
   * [eM Client](#em-client)
+  * [Posso enviar de qualquer endereço do meu domínio no webmail](#can-i-send-from-any-address-on-my-domain-in-webmail)
   * [Vocês têm um app para terminal](#do-you-have-a-terminal-app)
   * [Dispositivos Móveis](#mobile-devices)
   * [Configuração de Relay SMTP Sendmail](#sendmail-smtp-relay-configuration)
@@ -315,6 +316,12 @@ Tudo é feito em memória e [nosso código-fonte está no GitHub](https://github
 7. O eM Client testará a conexão. Quando passar, clique em **Próximo**.
 8. Insira seu nome e escolha um nome para a conta.
 9. Clique em **Concluir**.
+
+### Posso enviar de qualquer endereço do meu domínio no webmail {#can-i-send-from-any-address-on-my-domain-in-webmail}
+
+Sim. Gere uma senha genérica em <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">Minha Conta <i class="fa fa-angle-right"></i> Domínios</a> <i class="fa fa-angle-right"></i> Configurações avançadas <i class="fa fa-angle-right"></i> Senhas genéricas e depois salve-a no webmail em **Settings <i class="fa fa-angle-right"></i> General <i class="fa fa-angle-right"></i> Send from any address**. Ao escrever uma mensagem, escolha **Other address @seudominio** no menu **From** e digite qualquer endereço desse domínio.
+
+Você não entra como uma conta catch-all ou curinga. A senha genérica só pode enviar, então a cópia vai para a pasta Enviados da conta que você está usando. Ela fica salva apenas no dispositivo onde você a adiciona. Veja nosso <a href="/blog/docs/webmail#send-from-any-address-on-your-domain">guia do webmail</a> para todos os passos.
 
 ### Vocês têm um app para terminal {#do-you-have-a-terminal-app}
 

@@ -16,6 +16,7 @@
   * [Microsoft Outlook](#microsoft-outlook)
   * [Apple Mail](#apple-mail)
   * [eM Client](#em-client)
+  * [Kan jeg sende fra hvilken som helst adresse på domenet mitt i webmail](#can-i-send-from-any-address-on-my-domain-in-webmail)
   * [Har dere en terminalapp](#do-you-have-a-terminal-app)
   * [Mobile enheter](#mobile-devices)
   * [Sendmail SMTP Relay-konfigurasjon](#sendmail-smtp-relay-configuration)
@@ -315,6 +316,12 @@ Alt gjøres i minnet og [vår kildekode er på GitHub](https://github.com/forwar
 7. eM Client vil teste tilkoblingen. Når den er godkjent, klikker du **Neste**.
 8. Skriv inn navnet ditt og velg et kontonavn.
 9. Klikk **Fullfør**.
+
+### Kan jeg sende fra hvilken som helst adresse på domenet mitt i webmail {#can-i-send-from-any-address-on-my-domain-in-webmail}
+
+Ja. Generer et catch-all-passord under <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">Min konto <i class="fa fa-angle-right"></i> Domener</a> <i class="fa fa-angle-right"></i> Avanserte innstillinger <i class="fa fa-angle-right"></i> Oppfangende passord, og lagre det deretter i webmail under **Settings <i class="fa fa-angle-right"></i> General <i class="fa fa-angle-right"></i> Send from any address**. Når du skriver en melding, velger du **Other address @yourdomain** i **From**-menyen og skriver inn hvilken som helst adresse på det domenet.
+
+Du logger ikke på som en catch-all- eller jokertegnkonto. Catch-all-passordet kan bare sende, så kopien havner i Sendt-mappen (Sent) til kontoen du bruker. Det lagres bare på enheten der du legger det til. Se vår <a href="/blog/docs/webmail#send-from-any-address-on-your-domain">webmail-veiledning</a> for alle trinnene.
 
 ### Har dere en terminalapp {#do-you-have-a-terminal-app}
 

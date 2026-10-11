@@ -16,6 +16,7 @@
   * [Microsoft Outlook](#microsoft-outlook)
   * [Apple Mail](#apple-mail)
   * [eM Client](#em-client)
+  * [Можно ли отправлять письма с любого адреса моего домена в веб-почте](#can-i-send-from-any-address-on-my-domain-in-webmail)
   * [Есть ли у вас терминальное приложение](#do-you-have-a-terminal-app)
   * [Мобильные устройства](#mobile-devices)
   * [Конфигурация Sendmail SMTP Relay](#sendmail-smtp-relay-configuration)
@@ -315,6 +316,12 @@ Forward Email доставляет сообщения с минимальной 
 7. eM Client проверит соединение. После успешной проверки нажмите **Далее**.
 8. Введите ваше имя и выберите имя аккаунта.
 9. Нажмите **Завершить**.
+
+### Можно ли отправлять письма с любого адреса моего домена в веб-почте {#can-i-send-from-any-address-on-my-domain-in-webmail}
+
+Да. Сгенерируйте универсальный пароль в разделе <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">Мой аккаунт <i class="fa fa-angle-right"></i> Домены</a> <i class="fa fa-angle-right"></i> Расширенные настройки <i class="fa fa-angle-right"></i> Универсальные пароли, затем сохраните его в веб-почте в **Settings <i class="fa fa-angle-right"></i> General <i class="fa fa-angle-right"></i> Send from any address**. При написании письма выберите **Other address @вашдомен** в меню **From** и введите любой адрес на этом домене.
+
+Вы не входите как catch-all- или wildcard-аккаунт. Универсальный пароль позволяет только отправлять, поэтому копия попадает в папку «Отправленные» того аккаунта, который вы используете. Он сохраняется только на том устройстве, где вы его добавили. Все шаги описаны в нашем <a href="/blog/docs/webmail#send-from-any-address-on-your-domain">руководстве по веб-почте</a>.
 
 ### Есть ли у вас терминальное приложение {#do-you-have-a-terminal-app}
 

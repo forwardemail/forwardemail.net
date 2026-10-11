@@ -23341,5 +23341,8 @@
   "Forwarded mail is processed in memory and never written to disk.": "تتم معالجة البريد المُعاد توجيهه في الذاكرة ولا يُكتب على القرص أبدًا.",
   "Each mailbox is its own encrypted SQLite file that only your password can open.": "كل صندوق بريد هو ملف SQLite مشفّر خاص به، ولا يمكن فتحه إلا بكلمة المرور الخاصة بك.",
   "Cure53 has audited our code twice, and <a href=\"%s\" target=\"_blank\" rel=\"noopener\">its report</a> is public.": "دقّقت Cure53 في الكود الخاص بنا مرتين، و<a href=\"%s\" target=\"_blank\" rel=\"noopener\">تقريرها</a> منشور للعموم.",
-  "What we store, and for how long": "ما الذي نخزّنه، وإلى متى"
+  "What we store, and for how long": "ما الذي نخزّنه، وإلى متى",
+  "Forward Email Webmail Guide - Web, Desktop, Mobile, and Terminal": "دليل بريد الويب من Forward Email - الويب وسطح المكتب والهاتف المحمول والطرفية",
+  "Webmail Guide": "دليل بريد الويب",
+  "How to sign in to Forward Email webmail, use multiple accounts, send from any address on your domain with a catch-all password, and how webmail fits with the web dashboard.": "كيفية تسجيل الدخول إلى بريد الويب من Forward Email، واستخدام عدة حسابات، والإرسال من أي عنوان على نطاقك باستخدام كلمة مرور شاملة (catch-all)، وكيف يتكامل بريد الويب مع لوحة التحكم على الويب."
 }

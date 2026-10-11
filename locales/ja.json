@@ -23341,5 +23341,8 @@
   "Forwarded mail is processed in memory and never written to disk.": "転送メールはメモリ内で処理され、ディスクに書き込まれることはありません。",
   "Each mailbox is its own encrypted SQLite file that only your password can open.": "各メールボックスは個別に暗号化された SQLite ファイルで、あなたのパスワードでしか開けません。",
   "Cure53 has audited our code twice, and <a href=\"%s\" target=\"_blank\" rel=\"noopener\">its report</a> is public.": "Cure53 は当社のコードを 2 回監査しており、<a href=\"%s\" target=\"_blank\" rel=\"noopener\">そのレポート</a>は公開されています。",
-  "What we store, and for how long": "保存するデータとその保存期間"
+  "What we store, and for how long": "保存するデータとその保存期間",
+  "Forward Email Webmail Guide - Web, Desktop, Mobile, and Terminal": "Forward Email ウェブメールガイド - ウェブ、デスクトップ、モバイル、ターミナル",
+  "Webmail Guide": "ウェブメールガイド",
+  "How to sign in to Forward Email webmail, use multiple accounts, send from any address on your domain with a catch-all password, and how webmail fits with the web dashboard.": "Forward Email ウェブメールへのサインイン方法、複数アカウントの使い方、キャッチオールパスワードを使ってドメインの任意のアドレスから送信する方法、そしてウェブメールとウェブダッシュボードの関係について説明します。"
 }

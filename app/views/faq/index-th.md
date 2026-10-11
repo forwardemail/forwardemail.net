@@ -16,6 +16,7 @@
   * [Microsoft Outlook](#microsoft-outlook)
   * [Apple Mail](#apple-mail)
   * [eM Client](#em-client)
+  * [ฉันส่งจากที่อยู่ใดก็ได้บนโดเมนของฉันในเว็บเมลได้ไหม](#can-i-send-from-any-address-on-my-domain-in-webmail)
   * [คุณมีแอปสำหรับเทอร์มินัลไหม](#do-you-have-a-terminal-app)
   * [อุปกรณ์มือถือ](#mobile-devices)
   * [การตั้งค่า Sendmail SMTP Relay](#sendmail-smtp-relay-configuration)
@@ -315,6 +316,12 @@ Forward Email ส่งข้อความด้วยความล่าช
 7. eM Client จะทดสอบการเชื่อมต่อ เมื่อผ่านแล้ว คลิก **ถัดไป**
 8. กรอกชื่อของคุณและเลือกชื่อบัญชี
 9. คลิก **เสร็จสิ้น**
+
+### ฉันส่งจากที่อยู่ใดก็ได้บนโดเมนของฉันในเว็บเมลได้ไหม {#can-i-send-from-any-address-on-my-domain-in-webmail}
+
+ได้ สร้างรหัสผ่านแบบจับทั้งหมดที่ <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">บัญชีของฉัน <i class="fa fa-angle-right"></i> โดเมน</a> <i class="fa fa-angle-right"></i> การตั้งค่าขั้นสูง <i class="fa fa-angle-right"></i> รหัสผ่านแบบจับทั้งหมด จากนั้นบันทึกไว้ในเว็บเมลที่ **Settings <i class="fa fa-angle-right"></i> General <i class="fa fa-angle-right"></i> Send from any address** เมื่อเขียนอีเมล ให้เลือก **Other address @โดเมนของคุณ** ในเมนู **From** แล้วพิมพ์ที่อยู่ใดก็ได้บนโดเมนนั้น
+
+คุณไม่ได้ลงชื่อเข้าใช้ในฐานะบัญชี catch-all หรือ wildcard รหัสผ่านแบบจับทั้งหมดใช้ได้เฉพาะการส่ง สำเนาจึงไปอยู่ในโฟลเดอร์ส่งแล้วของบัญชีที่คุณกำลังใช้ และจะบันทึกไว้เฉพาะในอุปกรณ์ที่คุณเพิ่มเท่านั้น ดู<a href="/blog/docs/webmail#send-from-any-address-on-your-domain">คู่มือเว็บเมล</a>ของเราสำหรับขั้นตอนทั้งหมด
 
 ### คุณมีแอปสำหรับเทอร์มินัลไหม {#do-you-have-a-terminal-app}
 

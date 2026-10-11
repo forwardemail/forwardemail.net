@@ -23341,5 +23341,8 @@
   "Forwarded mail is processed in memory and never written to disk.": "转发的邮件在内存中处理，从不写入磁盘。",
   "Each mailbox is its own encrypted SQLite file that only your password can open.": "每个邮箱都是独立加密的 SQLite 文件，只有您的密码才能打开。",
   "Cure53 has audited our code twice, and <a href=\"%s\" target=\"_blank\" rel=\"noopener\">its report</a> is public.": "Cure53 已对我们的代码进行了两次审计，<a href=\"%s\" target=\"_blank\" rel=\"noopener\">审计报告</a>已公开。",
-  "What we store, and for how long": "我们存储什么，存储多久"
+  "What we store, and for how long": "我们存储什么，存储多久",
+  "Forward Email Webmail Guide - Web, Desktop, Mobile, and Terminal": "Forward Email 网页邮件指南 - 网页、桌面、移动设备和终端",
+  "Webmail Guide": "网页邮件指南",
+  "How to sign in to Forward Email webmail, use multiple accounts, send from any address on your domain with a catch-all password, and how webmail fits with the web dashboard.": "如何登录 Forward Email 网页邮件、使用多个账户、使用通配密码从您域名上的任意地址发送邮件，以及网页邮件与网页控制面板如何配合使用。"
 }

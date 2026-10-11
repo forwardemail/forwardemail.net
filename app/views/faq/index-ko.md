@@ -16,6 +16,7 @@
   * [Microsoft Outlook](#microsoft-outlook)
   * [Apple Mail](#apple-mail)
   * [eM Client](#em-client)
+  * [웹메일에서 내 도메인의 아무 주소로나 보낼 수 있나요](#can-i-send-from-any-address-on-my-domain-in-webmail)
   * [터미널 앱이 있나요](#do-you-have-a-terminal-app)
   * [모바일 기기](#mobile-devices)
   * [Sendmail SMTP 릴레이 구성](#sendmail-smtp-relay-configuration)
@@ -315,6 +316,12 @@ Forward Email은 메시지를 거의 지연 없이, 일반적으로 수신 후 �
 7. eM Client가 연결을 테스트합니다. 성공하면 **다음**을 클릭하세요.
 8. 이름을 입력하고 계정 이름을 선택하세요.
 9. **완료**를 클릭하세요.
+
+### 웹메일에서 내 도메인의 아무 주소로나 보낼 수 있나요 {#can-i-send-from-any-address-on-my-domain-in-webmail}
+
+네. <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">내 계정 <i class="fa fa-angle-right"></i> 도메인</a> <i class="fa fa-angle-right"></i> 고급 설정 <i class="fa fa-angle-right"></i> 포괄적인 비밀번호에서 catch-all 비밀번호를 생성한 다음, 웹메일의 **Settings <i class="fa fa-angle-right"></i> General <i class="fa fa-angle-right"></i> Send from any address**에 저장하세요. 메일을 작성할 때 **From** 메뉴에서 **Other address @yourdomain**을 선택하고 그 도메인의 아무 주소나 입력하면 됩니다.
+
+catch-all 계정이나 와일드카드 계정으로 로그인하는 것은 아닙니다. catch-all 비밀번호는 보내기만 할 수 있으므로, 사본은 사용 중인 계정의 보낸편지함(Sent)에 저장됩니다. 비밀번호는 추가한 기기에만 저장됩니다. 모든 단계는 <a href="/blog/docs/webmail#send-from-any-address-on-your-domain">웹메일 가이드</a>를 참고하세요.
 
 ### 터미널 앱이 있나요 {#do-you-have-a-terminal-app}
 
