@@ -29,6 +29,7 @@ const i18n = require('#helpers/i18n');
 const getForwardingConfiguration = require('#helpers/get-forwarding-configuration');
 const getKeyInfo = require('#helpers/get-key-info');
 const getMaxForwardedAddresses = require('#helpers/get-max-forwarded-addresses');
+const getUsernameVariants = require('#helpers/get-username-variants');
 const isEmail = require('#helpers/is-email');
 const isExpiredOrNewlyCreated = require('#helpers/is-expired-or-newly-created');
 const isRetryableError = require('#helpers/is-retryable-error');
@@ -468,6 +469,12 @@ async function getForwardingAddresses(
   // get username from recipient email address
   // (e.g. user@example.com => hello)
   const username = isEmail(address) ? parseUsername(address) : false;
+
+  // Unicode and punycode forms of username to match alias names against
+  // (e.g. "fællestest" and legacy "xn--fllestest-g3a")
+  const usernameVariants = username ? getUsernameVariants(username) : [];
+  const isUsername = (name) =>
+    usernameVariants.includes(name.normalize('NFC').toLowerCase());
 
   //
   // store if the domain was bad and not on paid plan (required for bad domains)
@@ -980,7 +987,11 @@ async function getForwardingAddresses(
           .catch((cacheErr) => logger.fatal(cacheErr));
       }
 
-      if (username && regex && regex.test(username.toLowerCase())) {
+      const matchedUsername = regex
+        ? usernameVariants.find((variant) => regex.test(variant))
+        : undefined;
+
+      if (matchedUsername) {
         //
         // opt-in subdomain-aware substitution:
         // replace the literal tokens %SUBDOMAIN% and %HOST% in the target
@@ -1004,7 +1015,7 @@ async function getForwardingAddresses(
         const hasDollarInterpolation = REGEX_INTERPOLATED_DOLLAR.test(target);
 
         const substitutedAlias = hasDollarInterpolation
-          ? username.toLowerCase().replace(regex, target)
+          ? matchedUsername.replace(regex, target)
           : target;
 
         // RFC 5321 limits a mailbox address to 254 octets. Enforce the bound
@@ -1078,25 +1089,19 @@ async function getForwardingAddresses(
       // check if we have a match (and if it is ignored)
       if (_.isString(addr[0]) && addr[0].indexOf('!') === 0) {
         // !!! -> 550
-        if (
-          addr[0].indexOf('!!!') === 0 &&
-          username === addr[0].toLowerCase().slice(3)
-        ) {
+        if (addr[0].indexOf('!!!') === 0 && isUsername(addr[0].slice(3))) {
           hardRejected = true;
           break;
         }
 
         // !! -> 421
-        if (
-          addr[0].indexOf('!!') === 0 &&
-          username === addr[0].toLowerCase().slice(2)
-        ) {
+        if (addr[0].indexOf('!!') === 0 && isUsername(addr[0].slice(2))) {
           softRejected = true;
           break;
         }
 
         // ! -> 250
-        if (username === addr[0].toLowerCase().slice(1)) {
+        if (isUsername(addr[0].slice(1))) {
           ignored = true;
           break;
         }
@@ -1117,7 +1122,7 @@ async function getForwardingAddresses(
           `${lowerCaseAddress} domain of ${domain} has an invalid "${config.recordPrefix}" TXT record due to an invalid email address of "${element}"`
         );
 
-      if (_.isString(addr[0]) && username === addr[0].toLowerCase()) {
+      if (_.isString(addr[0]) && isUsername(addr[0])) {
         if (isURL(addr[1], config.isURLOptions))
           forwardingAddresses.push(addr[1]);
         else forwardingAddresses.push(addr[1].toLowerCase());
