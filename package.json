@@ -284,7 +284,7 @@
     "re2": "1.22.1",
     "regex-parser": "2.3.1",
     "reserved-email-addresses-list": "2.0.16",
-    "rev-hash": "3.0.0",
+    "rev-hash": "4.1.0",
     "rrule": "2.8.1",
     "sanitize-html": "2.17.5",
     "sender-rewriting-scheme": "1.0.0",
