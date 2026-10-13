@@ -708,12 +708,17 @@ async function getForwardingAddresses(
   // and alert admins if we need to mitigate and shadow ban the user
   // (we have seen abuse actors do this on paid plans with fraudulent cards)
   //
+  // (on the free plan, a new name registered within the past 90 days is let
+  //  through; one that was in use before is not)
+  //
   logger.debug('checking root domain', { rootDomain });
 
   // wrap with try/catch in case of unknown errors with the whois lookup
   let obj;
   try {
-    obj = await isExpiredOrNewlyCreated(rootDomain, this.client);
+    obj = await isExpiredOrNewlyCreated(rootDomain, this.client, {
+      allowNewDomain: isFreePlanDomain
+    });
   } catch (err) {
     err.isCodeBug = true;
     logger.fatal(err);
@@ -724,7 +729,8 @@ async function getForwardingAddresses(
     const emails = addresses.filter((addr) => isEmail(addr));
     if (emails.length > 0) {
       if (isFreePlanDomain) {
-        pMapSeries(emails, async (addr) => {
+        // (not when it could not be checked: it is asked again)
+        pMapSeries(obj.err.isCheckUnavailable ? [] : emails, async (addr) => {
           try {
             // cache on a per email basis for 30d
             const key = `abuse_prevention:${addr.toLowerCase()}`;
@@ -738,7 +744,8 @@ async function getForwardingAddresses(
                 to: addr
               },
               locals: {
-                message: `The domain ${rootDomain} was detected via WHOIS lookup to have expired or been created within the past 90 days.  As part of our efforts working with major registrars including GoDaddy, Namecheap, and Hostgator &mdash; we unfortunately have to enforce strict abuse prevention controls to block suspicious activity.  Without this abuse prevention, our service would be blocked entirely from these registrars and we would lose significant business.  We now require you to upgrade to a paid plan for recently expired or newly registered domains.  Paid plans start at only $3/mo for unlimited domains, aliases, and more.  Learn more at: <a href="${config.urls.web}" target="_blank" rel="noopener noreferrer">${config.urls.web}</a>`,
+                // (why, as the MX server answers it)
+                message: `${obj.err.message}  Paid plans start at only $3/mo for unlimited domains, aliases, and more.`,
                 locale: 'en'
               }
             });

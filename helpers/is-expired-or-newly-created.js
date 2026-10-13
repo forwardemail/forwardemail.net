@@ -14,7 +14,16 @@ const SMTPError = require('#helpers/smtp-error');
 const _ = require('#helpers/lodash');
 const config = require('#config');
 const logger = require('#helpers/logger');
+const parseRootDomain = require('#helpers/parse-root-domain');
+const withDeadline = require('#helpers/with-deadline');
+const getPreviousDomainUse = require('#helpers/get-previous-domain-use');
 const isRdapRenewalGracePeriod = require('#helpers/is-rdap-renewal-grace-period');
+const {
+  createDomainCheckResolvers
+} = require('#helpers/create-family-resolver');
+const {
+  checkCloudflareFamilyDNS
+} = require('#helpers/get-domain-categorization');
 const normalizeRdapUrl = require('#helpers/normalize-rdap-url');
 const rdapFetch = require('#helpers/rdap-fetch');
 
@@ -76,11 +85,161 @@ async function wrappedFetch(url, options) {
   }
 }
 
+// (Cloudflare's resolvers, one set for each Redis client; quick to give up,
+//  as mail waits for them)
+const resolversByClient = new WeakMap();
+function getResolvers(client) {
+  if (!resolversByClient.has(client))
+    resolversByClient.set(
+      client,
+      createDomainCheckResolvers(client, logger, { timeout: 3000, tries: 1 })
+    );
+  return resolversByClient.get(client);
+}
+
+const REGISTRARS_BLOCKED_US =
+  'Due to major registrars such as GoDaddy, Namecheap, and Hostgator previously blocking us due to abuse &mdash; we unfortunately have to enforce strict abuse prevention controls to block suspicious activity. Without this abuse prevention, our service would be blocked entirely from these registrars.';
+
+function getNewlyCreatedError(domain) {
+  return new SMTPError(
+    `The domain ${domain} was detected as a newly created or transferred domain via WHOIS/RDAP lookup. ${REGISTRARS_BLOCKED_US} We require that you please upgrade to a paid plan at ${config.urls.web} to use our service with this domain.`,
+    { responseCode: 421 }
+  );
+}
+
+// (why a domain registered within the past 90 days is not let through)
+function getNewDomainError(domain, reason) {
+  return new SMTPError(
+    `The domain ${domain} was registered within the past 90 days, and ${reason}. ${REGISTRARS_BLOCKED_US} Please upgrade to a paid plan at ${config.urls.web} to use our service with this domain.`,
+    { responseCode: 421 }
+  );
+}
+
+// (when that cannot be told: it is not let through, and asked again later)
+function getUnavailableError(domain) {
+  const err = new SMTPError(
+    `The domain ${domain} was registered within the past 90 days, and it could not be checked right now. Please try again later, or upgrade to a paid plan at ${config.urls.web} to use our service with this domain.`,
+    { responseCode: 421 }
+  );
+  err.isCheckUnavailable = true;
+  return err;
+}
+
+// (how long a failed Cloudflare lookup is not asked again)
+const DNS_ERROR_TTL_MS = ms('5m');
+// (how long mail waits for the archive and Cloudflare)
+const WAIT_MS = 1500;
+
+/**
+ * Why a domain registered within the past 90 days cannot use the free plan,
+ * or undefined when it can: a new name, not one in use before (see
+ * `get-previous-domain-use`), on an extension that is not often abused,
+ * that Cloudflare's filter does not block.
+ *
+ * @param   {string}  domain    Its root domain
+ * @param   {object}  response  Its WHOIS/RDAP lookup
+ * @param   {object}  client    Redis client
+ * @param   {object}  [resolvers]  See `createDomainCheckResolvers`
+ * @returns {Promise<SMTPError|undefined>}
+ */
+async function checkNewDomain(domain, response, client, resolvers) {
+  if (!config.newDomainGoodDomains.some((tld) => domain.endsWith(`.${tld}`))) {
+    const tld = config.goodDomains.find((tld) => domain.endsWith(`.${tld}`));
+    return tld
+      ? getNewDomainError(
+          domain,
+          `new domains ending in .${tld} need a paid plan`
+        )
+      : getNewlyCreatedError(domain);
+  }
+
+  //
+  // (its past and Cloudflare are asked at once, and waited for 1.5 seconds
+  //  at most: mail waits for them; a lookup that takes longer goes on and
+  //  is kept, so the sender's next try has its answer)
+  //
+  const dnsErrorKey = `new_domain_dns_error:${domain}`;
+  const [history, dns] = await Promise.all([
+    getPreviousDomainUse(domain, response, client, { wait: WAIT_MS }).then(
+      (previous) => ({ previous }),
+      (err) => ({ err })
+    ),
+    (async () => {
+      if (await client.get(dnsErrorKey).catch(() => null))
+        return { dnsCategory: 'dns_error', isKept: true };
+      const { familyResolver, securityResolver, resolver } =
+        resolvers || getResolvers(client);
+      return withDeadline(
+        checkCloudflareFamilyDNS(
+          domain,
+          familyResolver,
+          securityResolver,
+          resolver
+        ),
+        WAIT_MS,
+        { dnsCategory: 'dns_error', isLate: true }
+      );
+    })()
+  ]);
+
+  if (history.err) {
+    if (history.err.code === 'ESTILLLOOKING') {
+      logger.debug(history.err.message, { domain });
+    } else {
+      // (once an hour as an error: new domains wait while the archive fails)
+      const claimed = await client
+        .set('domain_history_error_alert', '1', 'PX', ms('1h'), 'NX')
+        .catch(() => null);
+      if (claimed === 'OK') logger.error(history.err, { domain });
+      else logger.warn(history.err, { domain });
+    }
+
+    return getUnavailableError(domain);
+  }
+
+  const { previous } = history;
+  if (previous?.reason === 'drop_catch_registrar')
+    return getNewDomainError(
+      domain,
+      'a drop-catch registrar (one that registers names the moment they expire) holds it'
+    );
+  if (previous)
+    return getNewDomainError(
+      domain,
+      'it was in use before then (the Internet Archive has it from earlier)'
+    );
+
+  if (dns.dnsCategory === 'blocked_by_cloudflare_family')
+    return getNewDomainError(
+      domain,
+      "Cloudflare's filter for malware, phishing, and adult content blocks it"
+    );
+  // (its own 0.0.0.0 record hides whether Cloudflare blocks it)
+  if (dns.pointsToZeroAddress)
+    return getNewDomainError(
+      domain,
+      "it points to 0.0.0.0, which hides whether Cloudflare's filter blocks it"
+    );
+  if (dns.dnsCategory === 'dns_error') {
+    // (a failed lookup is not asked again for 5 minutes; a slow one is,
+    //  and finds its answer kept)
+    if (!dns.isKept && !dns.isLate)
+      await client
+        .set(dnsErrorKey, '1', 'PX', DNS_ERROR_TTL_MS)
+        .catch(() => null);
+    return getUnavailableError(domain);
+  }
+}
+
 //
 // NOTE: this only gets run for domains on the free plan via MX server
 //       and for newly created domains (when being created)
 //
-async function isExpiredOrNewlyCreated(input, client) {
+// `options.allowNewDomain`: whether a domain registered within the past 90
+// days can be let through (on the free plan: see `checkNewDomain`);
+// `options.resolvers`: Cloudflare's, see `createDomainCheckResolvers`
+//
+async function isExpiredOrNewlyCreated(input, client, options = {}) {
   if (typeof input !== 'string') throw new TypeError('Domain is not string');
 
   const domain = punycode.toASCII(input.trim().toLowerCase());
@@ -146,7 +305,7 @@ async function isExpiredOrNewlyCreated(input, client) {
     )
   )
     err = new SMTPError(
-      `The domain ${domain} was detected as a pending state domain via WHOIS/RDAP lookup. Due to major registrars such as GoDaddy, Namecheap, and Hostgator previously blocking us due to abuse &mdash; we unfortunately have to enforce strict abuse prevention controls to block suspicious activity. Without this abuse prevention, our service would be blocked entirely from these registrars. We require that you please upgrade to a paid plan at ${config.urls.web} to use our service with this domain.`,
+      `The domain ${domain} was detected as a pending state domain via WHOIS/RDAP lookup. ${REGISTRARS_BLOCKED_US} We require that you please upgrade to a paid plan at ${config.urls.web} to use our service with this domain.`,
       { responseCode: 421 }
     );
   // if the domain expiration date is within the past 90d
@@ -159,13 +318,14 @@ async function isExpiredOrNewlyCreated(input, client) {
     new Date(response.ts.expires).getTime() + ms('2d') >= Date.now() - ms('90d')
   )
     err = new SMTPError(
-      `The domain ${domain} was detected as a recently expired domain via WHOIS/RDAP lookup. Due to major registrars such as GoDaddy, Namecheap, and Hostgator previously blocking us due to abuse &mdash; we unfortunately have to enforce strict abuse prevention controls to block suspicious activity. Without this abuse prevention, our service would be blocked entirely from these registrars. We require that you please upgrade to a paid plan at ${config.urls.web} to use our service with this domain.`,
+      `The domain ${domain} was detected as a recently expired domain via WHOIS/RDAP lookup. ${REGISTRARS_BLOCKED_US} We require that you please upgrade to a paid plan at ${config.urls.web} to use our service with this domain.`,
       { responseCode: 421 }
     );
   //
   // if the domain was created within the past 90d
-  // (this is a massive deterrent to scammers as it makes them wait 3 months before they can use us)
-  // (this might frustrate some folks, but prevention of being blocked by massive registrars is more important)
+  // (on the paid plan's path every such domain is reported; on the free
+  //  plan a new name is let through, and one that was in use before is not,
+  //  see `checkNewDomain`)
   //
   // NOTE: in the past we have been blocked by the following registrars/providers due to expired domain takeover
   //       (e.g. scammer takes over a recently expired domain, points it at our MX service, and takes over old emails)
@@ -180,10 +340,15 @@ async function isExpiredOrNewlyCreated(input, client) {
     _.isDate(response?.ts?.created) &&
     new Date(response.ts.created).getTime() >= Date.now() - ms('90d')
   )
-    err = new SMTPError(
-      `The domain ${domain} was detected as a newly created or transferred domain via WHOIS/RDAP lookup. Due to major registrars such as GoDaddy, Namecheap, and Hostgator previously blocking us due to abuse &mdash; we unfortunately have to enforce strict abuse prevention controls to block suspicious activity. Without this abuse prevention, our service would be blocked entirely from these registrars. We require that you please upgrade to a paid plan at ${config.urls.web} to use our service with this domain.`,
-      { responseCode: 421 }
-    );
+    err = options.allowNewDomain
+      ? // (its root domain's past, not a subdomain's)
+        await checkNewDomain(
+          parseRootDomain(domain),
+          response,
+          client,
+          options.resolvers
+        )
+      : getNewlyCreatedError(domain);
 
   return { err, response };
 }

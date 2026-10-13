@@ -1673,6 +1673,7 @@ Emails.statics.queue = async function (
         const { isAutoApproved } = await checkAndAutoApproveSMTP({
           domain,
           resolver: _emailsResolver,
+          client: redis,
           userId
         });
 

@@ -9,8 +9,13 @@ const Domains = require('#models/domains');
 const Users = require('#models/users');
 const config = require('#config');
 const emailHelper = require('#helpers/email');
+const {
+  UNAVAILABLE,
+  getDomainCheckVerdict
+} = require('#helpers/domain-check-verdict');
 const i18n = require('#helpers/i18n');
 const logger = require('#helpers/logger');
+const _ = require('#helpers/lodash');
 const isTimeoutError = require('#helpers/is-timeout-error');
 
 // <https://github.com/nodejs/node/blob/08dd4b1723b20d56fbedf37d52e736fe09715f80/lib/dns.js#L296-L320>
@@ -61,6 +66,8 @@ const DNS_RETRY_CODES = new Set([
  * @param   {object}  options
  * @param   {object}  options.domain         Mongoose Domain document (must NOT be lean)
  * @param   {object}  options.resolver       Tangerine resolver instance
+ * @param   {object}  [options.client]       Redis client (the latest domain check
+ *                                           verdict, see `domain-check-verdict`)
  * @param   {string}  [options.userId]       The ObjectId (as string) of the sending user
  *                                           (required if `user` is not provided)
  * @param   {object}  [options.user]         User object with at least `has_passed_kyc`
@@ -80,11 +87,15 @@ const DNS_RETRY_CODES = new Set([
  *   - `autoconfig` {boolean}
  *   - `autodiscover` {boolean}
  *   - `hasLegitimateHosting` {boolean}
+ *   - `flaggedCategories` {Array}  What the latest domain check flagged the
+ *                                   domain for (not auto-approved unless KYC),
+ *                                   or ['domain_check_unavailable'] when
+ *                                   it could not be read
  *   - `errors` {Array}
  *   - `hasDNSError` {boolean}
  */
 async function checkAndAutoApproveSMTP(options) {
-  const { domain, resolver, userDomains } = options;
+  const { domain, resolver, userDomains, client } = options;
   let { user, userId } = options;
 
   //
@@ -132,6 +143,7 @@ async function checkAndAutoApproveSMTP(options) {
     autoconfig,
     autodiscover,
     hasLegitimateHosting,
+    flaggedCategories: [],
     errors,
     hasDNSError
   };
@@ -203,6 +215,21 @@ async function checkAndAutoApproveSMTP(options) {
     hasSomeSuspendedDomains = adminDomains.some((d) => d.is_smtp_suspended);
   }
 
+  //
+  // A domain the domain check flagged (phishing, a disposable email service,
+  // adult content, …) waits for a manual review, whatever its DNS and hosting
+  //
+  // (when it cannot be read, the domain is not approved automatically)
+  let verdict;
+  try {
+    verdict = await getDomainCheckVerdict(client, domain._id);
+  } catch (err) {
+    logger.error(err);
+    verdict = { categories: [UNAVAILABLE] };
+  }
+
+  if (verdict) result.flaggedCategories = verdict.categories;
+
   // Check if domain TLD is in config.goodDomains
   const domainTld = domain.name.split('.').pop().toLowerCase();
   const isGoodDomainTld = config.goodDomains.includes(domainTld);
@@ -214,10 +241,12 @@ async function checkAndAutoApproveSMTP(options) {
   // 1. User has passed KYC (know your customer check), OR
   // 2. Domain has a good TLD AND legitimate hosting AND no suspended domains, OR
   // 3. Domain has a good TLD AND user has other approved domains AND no suspended domains
+  // (2 and 3 only for a domain the domain check has not flagged)
   //
   const shouldAutoApprove =
     user.has_passed_kyc ||
-    (isGoodDomainTld &&
+    (!verdict &&
+      isGoodDomainTld &&
       ((hasLegitimateHosting && !hasSomeSuspendedDomains) ||
         (hasExistingApprovedDomains && !hasSomeSuspendedDomains)));
 
@@ -264,7 +293,13 @@ async function checkAndAutoApproveSMTP(options) {
       message: `
         <ul>
           <li><strong>Auto-approved:</strong> true</li>
-          <li><strong>Has passed KYC:</strong> ${user.has_passed_kyc.toString()}</li>
+          <li><strong>Has passed KYC:</strong> ${user.has_passed_kyc.toString()}</li>${
+        verdict
+          ? `<li><strong>Flagged by Domain Check:</strong> ${_.escape(
+              verdict.categories.join(', ')
+            )}</li>`
+          : ''
+      }
           <li><strong>Legitimate Hosting:</strong> ${hasLegitimateHosting.toString()}</li>
           <li><strong>Suspended Domains:</strong> ${hasSomeSuspendedDomains.toString()}</li>
           <li><strong>Approved Domains:</strong> ${hasExistingApprovedDomains.toString()}</li>

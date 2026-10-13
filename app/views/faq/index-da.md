@@ -3821,7 +3821,9 @@ Hvis du modtager en af disse meddelelser, så kontakt os på <support@forwardema
 
 ### Hvorfor kræver nyregistrerede eller nyligt udløbne domæner en betalt plan {#why-do-newly-registered-or-recently-expired-domains-require-a-paid-plan}
 
-Når du tilføjer et domæne (og løbende for domæner på den gratis plan), foretager vi et WHOIS/RDAP-opslag på det. Hvis domænet blev **oprettet inden for de seneste 90 dage**, **udløb inden for de seneste 90 dage** eller i øjeblikket har status som **afventende overførsel, opdatering eller sletning** hos sin registrator, kræver vi, at det er på en betalt plan, før du kan sende eller modtage mail med det.
+Når du tilføjer et domæne (og løbende for domæner på den gratis plan), foretager vi et WHOIS/RDAP-opslag på det. Hvis domænet **udløb inden for de seneste 90 dage** eller i øjeblikket har status som **afventende overførsel, opdatering eller sletning** hos sin registrator, kræver vi, at det er på en betalt plan, før du kan sende eller modtage mail med det.
+
+Et domæne, der er **oprettet inden for de seneste 90 dage**, kan bruge den gratis plan, hvis det er et nyt navn. Det kræver en betalt plan, indtil det er 90 dage gammelt, hvis det har været i brug før (for eksempel hvis en anden lod det udløbe, og det blev registreret igen), hvis det ligger hos en drop-catch-registrator, hvis det ender på `.cc` eller `.xyz`, eller hvis Cloudflares filter for malware, phishing og voksenindhold blokerer det. Vi tjekker for tidligere brug i [Internet Archive](https://web.archive.org/): et arkiveret øjebliksbillede af domænet fra før registreringen betyder, at det var i brug. Hvis dette tjek ikke er tilgængeligt, så prøv igen senere.
 
 Dette er en foranstaltning mod misbrug, ikke en vurdering af dig personligt — store registratorer, herunder GoDaddy, Namecheap og Hostgator, har tidligere blokeret hele vores infrastruktur på grund af misbrugsmønstre med overtagelse af nyligt udløbne domæner og svigagtigt registrerede nye domæner. Kravet om en betalt plan for disse domæner er det, der overhovedet gør det muligt for os at blive ved med at tilbyde en gratis plan uden at miste registratorernes tillid.
 

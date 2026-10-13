@@ -234,10 +234,19 @@ async function createDomain(ctx, next) {
   }
 
   try {
+    // (a team's domain is on its plan)
+    const isFreePlan = teamDomain
+      ? teamDomain.plan === 'free'
+      : ctx?.request?.body?.plan === 'free';
+
     // wrap with try/catch in case of unknown errors with the whois lookup
+    // (on the free plan, a new name registered within the past 90 days is
+    //  let through; one that was in use before is not)
     let obj;
     try {
-      obj = await isExpiredOrNewlyCreated(ctx.request.body.domain, ctx.client);
+      obj = await isExpiredOrNewlyCreated(ctx.request.body.domain, ctx.client, {
+        allowNewDomain: isFreePlan
+      });
     } catch (err) {
       if (err.message === 'Domain is not a FQDN') {
         throw Boom.badRequest('Domain must be a fully qualified domain name');
@@ -249,10 +258,7 @@ async function createDomain(ctx, next) {
       logger.warn(err);
     }
 
-    if (
-      obj?.err &&
-      (ctx?.request?.body?.plan === 'free' || teamDomain?.plan === 'free')
-    ) {
+    if (obj?.err && isFreePlan) {
       if (ctx.api) throw Boom.badRequest(obj.err.message);
       const redirectTo = ctx.state.l(
         `/my-account/billing/upgrade?plan=enhanced_protection&domain=${ctx.request.body.domain}`

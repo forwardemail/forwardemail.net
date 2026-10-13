@@ -3821,7 +3821,9 @@ Si recibe uno de estos avisos, contáctenos en <support@forwardemail.net> o abra
 
 ### ¿Por qué los dominios recién registrados o caducados recientemente requieren un plan de pago? {#why-do-newly-registered-or-recently-expired-domains-require-a-paid-plan}
 
-Cuando añade un dominio (y de forma continua para los dominios del plan gratuito), realizamos una consulta WHOIS/RDAP sobre él. Si el dominio se **creó en los últimos 90 días**, **caducó en los últimos 90 días** o se encuentra actualmente en estado de **transferencia, actualización o eliminación pendiente** con su registrador, exigimos que esté en un plan de pago antes de que pueda enviar o recibir correo con él.
+Cuando añade un dominio (y de forma continua para los dominios del plan gratuito), realizamos una consulta WHOIS/RDAP sobre él. Si el dominio **caducó en los últimos 90 días** o se encuentra actualmente en estado de **transferencia, actualización o eliminación pendiente** con su registrador, exigimos que esté en un plan de pago antes de que pueda enviar o recibir correo con él.
+
+Un dominio **creado en los últimos 90 días** puede usar el plan gratuito si es un nombre nuevo. Necesita un plan de pago hasta que tenga 90 días si ya se usó antes (por ejemplo, otra persona lo dejó caducar y se volvió a registrar), si lo tiene un registrador de tipo drop-catch, si termina en `.cc` o `.xyz`, o si el filtro de Cloudflare contra malware, phishing y contenido para adultos lo bloquea. Comprobamos si hubo un uso anterior en [Internet Archive](https://web.archive.org/): una captura del dominio anterior a su registro significa que estaba en uso. Si esa comprobación no está disponible, vuelva a intentarlo más tarde.
 
 Es una medida de prevención de abusos, no una valoración sobre usted — grandes registradores como GoDaddy, Namecheap y Hostgator han bloqueado anteriormente toda nuestra infraestructura por patrones de abuso relacionados con la apropiación de dominios caducados recientemente y con nuevos dominios registrados de forma fraudulenta. Exigir un plan de pago para estos dominios es lo que nos permite seguir ofreciendo un plan gratuito sin perder la confianza de los registradores.
 

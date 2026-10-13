@@ -22,6 +22,7 @@ const Domains = require('#models/domains');
 const Users = require('#models/users');
 const env = require('#config/env');
 const createTangerine = require('#helpers/create-tangerine');
+const { storeDisposableDomains } = require('#helpers/disposable-domains');
 const logger = require('#helpers/logger');
 const retryRequest = require('#helpers/retry-request');
 const setupMongoose = require('#helpers/setup-mongoose');
@@ -60,6 +61,18 @@ graceful.listen();
     const json = await response.body.json();
 
     const DISPOSABLE = new Set(json);
+
+    //
+    // Keep the list for the domain check, which flags a domain that is one
+    // of these (see `helpers/get-domain-categorization`)
+    //
+    if (Array.isArray(json)) {
+      try {
+        await storeDisposableDomains(client, json);
+      } catch (err) {
+        logger.error(err);
+      }
+    }
 
     //
     // Read free users from a cursor and keep only the ids of those with a

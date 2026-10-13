@@ -36,6 +36,10 @@ const _ = require('#helpers/lodash');
 const BoundedMap = require('#helpers/bounded-map');
 const CappedList = require('#helpers/capped-list');
 const config = require('#config');
+const {
+  FAMILY_SERVERS,
+  isBlockedAnswer
+} = require('#helpers/create-family-resolver');
 const setupMongoose = require('#helpers/setup-mongoose');
 const emailHelper = require('#helpers/email');
 const logger = require('#helpers/logger');
@@ -76,7 +80,8 @@ for (let i = 1; i <= DAYS; i++) {
 // every name the run resolves (several per domain) are not all kept
 const resolver = new Tangerine({
   logger,
-  servers: ['1.1.1.3', '1.1.0.3'],
+  // (Cloudflare Family DNS: a domain it blocks is not allowlisted)
+  servers: FAMILY_SERVERS,
   cache: new BoundedMap(10_000)
 });
 
@@ -160,12 +165,8 @@ async function isBadDomain(name, remember = true) {
     answer = await resolver.resolve(name);
   } catch {}
 
-  // cloudflare detects adult content or malware to be "0.0.0,0"
-  isBad =
-    answer &&
-    Array.isArray(answer) &&
-    answer.length === 1 &&
-    answer[0] === '0.0.0.0';
+  // cloudflare answers 0.0.0.0 for adult content or malware
+  isBad = isBlockedAnswer(answer);
 
   const hasARecords = answer && Array.isArray(answer) && answer.length > 0;
 

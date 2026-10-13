@@ -3819,7 +3819,9 @@ Jeśli otrzymasz jedno z tych powiadomień, skontaktuj się z nami pod adresem <
 
 ### Dlaczego nowo zarejestrowane lub niedawno wygasłe domeny wymagają płatnego planu {#why-do-newly-registered-or-recently-expired-domains-require-a-paid-plan}
 
-Gdy dodajesz domenę (a w przypadku domen w darmowym planie również na bieżąco), sprawdzamy ją w WHOIS/RDAP. Jeśli domena została **utworzona w ciągu ostatnich 90 dni**, **wygasła w ciągu ostatnich 90 dni** lub ma obecnie u rejestratora status **oczekującego transferu, aktualizacji lub usunięcia**, przed wysyłaniem lub odbieraniem z niej poczty musi mieć płatny plan.
+Gdy dodajesz domenę (a w przypadku domen w darmowym planie również na bieżąco), sprawdzamy ją w WHOIS/RDAP. Jeśli domena **wygasła w ciągu ostatnich 90 dni** lub ma obecnie u rejestratora status **oczekującego transferu, aktualizacji lub usunięcia**, przed wysyłaniem lub odbieraniem z niej poczty musi mieć płatny plan.
+
+Domena **utworzona w ciągu ostatnich 90 dni** może korzystać z darmowego planu, jeśli jest nową nazwą. Wymaga płatnego planu, dopóki nie skończy 90 dni, jeśli była wcześniej używana (na przykład ktoś inny pozwolił jej wygasnąć, a potem została zarejestrowana ponownie), jeśli należy do rejestratora typu drop-catch, jeśli kończy się na `.cc` lub `.xyz` albo jeśli blokuje ją filtr Cloudflare dotyczący złośliwego oprogramowania, phishingu i treści dla dorosłych. Wcześniejsze użycie sprawdzamy w [Internet Archive](https://web.archive.org/): kopia domeny sprzed jej rejestracji oznacza, że była używana. Jeśli to sprawdzenie jest niedostępne, spróbuj ponownie później.
 
 To środek zapobiegający nadużyciom, a nie ocena Ciebie osobiście — główni rejestratorzy, w tym GoDaddy, Namecheap i Hostgator, w przeszłości całkowicie blokowali naszą infrastrukturę z powodu nadużyć związanych z przejmowaniem niedawno wygasłych domen i nieuczciwie rejestrowanymi nowymi domenami. Wymaganie płatnego planu dla takich domen pozwala nam w ogóle nadal oferować darmowy plan bez utraty zaufania rejestratorów.
 

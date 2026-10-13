@@ -90,3 +90,72 @@ test('blocked answers are cached apart from other lookups, for at most 30 minute
   );
   t.true(pttl > 0 && pttl <= ms('30m'));
 });
+
+test('the security resolver asks 1.1.1.2, and its answers are cached apart', async (t) => {
+  const securityResolver = createFamilyResolver.createSecurityResolver(
+    t.context.client
+  );
+  t.deepEqual([...securityResolver.options.servers], ['1.1.1.2', '1.0.0.2']);
+
+  const server = await blockingServer(t);
+  securityResolver.options.protocol = 'http';
+  securityResolver.options.servers = new Set([server]);
+
+  const name = 'security-blocked-domain.example.com';
+  t.deepEqual(await securityResolver.resolve4(name), ['0.0.0.0']);
+
+  // neither the family nor the default resolver gets its answer from the cache
+  const familyResolver = createFamilyResolver(t.context.client);
+  t.falsy(await familyResolver.options.cache.get(`a:${name}`));
+  const resolver = createTangerine(t.context.client);
+  t.falsy(await resolver.options.cache.get(`a:${name}`));
+
+  const cached = await securityResolver.options.cache.get(`a:${name}`);
+  t.truthy(cached);
+  t.true(cached.ttl <= ms('30m') / 1000);
+});
+
+test('a block is 0.0.0.0, also next to other records', (t) => {
+  const { isBlockedAnswer } = createFamilyResolver;
+  t.true(isBlockedAnswer(['0.0.0.0']));
+  t.true(isBlockedAnswer(['192.0.2.1', '0.0.0.0']));
+  t.false(isBlockedAnswer(['192.0.2.1']));
+  t.false(isBlockedAnswer(undefined));
+});
+
+test('the filters ask Cloudflare Family and Security DNS', (t) => {
+  const { createSecurityResolver } = createFamilyResolver;
+  t.deepEqual(
+    [...createFamilyResolver(t.context.client).options.servers],
+    ['1.1.1.3', '1.0.0.3']
+  );
+  t.deepEqual(
+    [...createSecurityResolver(t.context.client).options.servers],
+    ['1.1.1.2', '1.0.0.2']
+  );
+});
+
+test('the domain check gets its three resolvers from one place', (t) => {
+  const { createDomainCheckResolvers } = createFamilyResolver;
+  const { familyResolver, securityResolver, resolver } =
+    createDomainCheckResolvers(t.context.client);
+  t.deepEqual([...familyResolver.options.servers], ['1.1.1.3', '1.0.0.3']);
+  t.deepEqual([...securityResolver.options.servers], ['1.1.1.2', '1.0.0.2']);
+  t.false(['1.1.1.3', '1.1.1.2'].includes([...resolver.options.servers][0]));
+});
+
+test('a caller waiting on the filters can give them up sooner', (t) => {
+  const { createDomainCheckResolvers } = createFamilyResolver;
+  const { familyResolver, securityResolver } = createDomainCheckResolvers(
+    t.context.client,
+    undefined,
+    { timeout: 3000, tries: 1 }
+  );
+  for (const filtered of [familyResolver, securityResolver]) {
+    t.is(filtered.options.timeout, 3000);
+    t.is(filtered.options.tries, 1);
+  }
+
+  // (still Cloudflare's filters)
+  t.deepEqual([...familyResolver.options.servers], ['1.1.1.3', '1.0.0.3']);
+});

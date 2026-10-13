@@ -8,6 +8,29 @@ const RE2 = require('re2');
 const config = require('#config');
 const parseRootDomain = require('#helpers/parse-root-domain');
 
+//
+// Names of disposable email services and their usual domain names. A domain
+// whose name has one is flagged for review (see `get-domain-categorization`).
+//
+const DISPOSABLE_SERVICE_NAMES = [
+  'tempmail',
+  'throwawaymail',
+  'fakeinbox',
+  'mailinator',
+  'mailnator',
+  'guerrillamail',
+  'trashmail',
+  'yopmail',
+  'sharklasers',
+  'grr.la',
+  'dispostable'
+];
+
+//
+// Words a free-plan domain name may not have (it needs an upgrade). They
+// are too common to flag a domain for review on their own ("temporary",
+// "24hour").
+//
 const REGEX_MAIL_DISPOSABLE_INBOX = new RE2(
   /disposable|temporary|10minut|24hour|minutemail|tempmail/i
 );
@@ -38,3 +61,4 @@ function getDomainNameRestrictions(domainName) {
 }
 
 module.exports = getDomainNameRestrictions;
+module.exports.DISPOSABLE_SERVICE_NAMES = DISPOSABLE_SERVICE_NAMES;

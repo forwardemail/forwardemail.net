@@ -3819,7 +3819,9 @@ Nếu bạn nhận được một trong các thông báo này, vui lòng liên h
 
 ### Tại sao các tên miền mới đăng ký hoặc mới hết hạn cần gói trả phí {#why-do-newly-registered-or-recently-expired-domains-require-a-paid-plan}
 
-Khi bạn thêm một tên miền (và định kỳ đối với các tên miền dùng gói miễn phí), chúng tôi thực hiện tra cứu WHOIS/RDAP cho tên miền đó. Nếu tên miền **được tạo trong vòng 90 ngày qua**, **hết hạn trong vòng 90 ngày qua**, hoặc đang ở trạng thái **chờ chuyển nhượng, cập nhật hoặc xóa** tại nhà đăng ký, chúng tôi yêu cầu tên miền đó phải dùng gói trả phí trước khi bạn có thể gửi hoặc nhận thư với nó.
+Khi bạn thêm một tên miền (và định kỳ đối với các tên miền dùng gói miễn phí), chúng tôi thực hiện tra cứu WHOIS/RDAP cho tên miền đó. Nếu tên miền **hết hạn trong vòng 90 ngày qua**, hoặc đang ở trạng thái **chờ chuyển nhượng, cập nhật hoặc xóa** tại nhà đăng ký, chúng tôi yêu cầu tên miền đó phải dùng gói trả phí trước khi bạn có thể gửi hoặc nhận thư với nó.
+
+Tên miền **được tạo trong vòng 90 ngày qua** có thể dùng gói miễn phí nếu đó là tên mới. Tên miền cần gói trả phí cho đến khi được 90 ngày tuổi nếu trước đây đã được sử dụng (ví dụ: người khác để nó hết hạn và nó được đăng ký lại), nếu một nhà đăng ký drop-catch đang nắm giữ nó, nếu nó có đuôi `.cc` hoặc `.xyz`, hoặc nếu bộ lọc phần mềm độc hại, lừa đảo (phishing) và nội dung người lớn của Cloudflare chặn nó. Chúng tôi kiểm tra việc sử dụng trước đây trên [Internet Archive](https://web.archive.org/): nếu có bản lưu của tên miền từ trước khi nó được đăng ký thì tên miền đó đã từng được sử dụng. Nếu không thể thực hiện việc kiểm tra này, vui lòng thử lại sau.
 
 Đây là biện pháp phòng chống lạm dụng, không phải đánh giá về cá nhân bạn — các nhà đăng ký lớn như GoDaddy, Namecheap và Hostgator trước đây đã chặn hoàn toàn hạ tầng của chúng tôi do các hành vi lạm dụng liên quan đến việc chiếm đoạt tên miền vừa hết hạn và đăng ký gian lận tên miền mới. Việc yêu cầu gói trả phí cho các tên miền này là điều giúp chúng tôi có thể tiếp tục cung cấp gói miễn phí mà không đánh mất sự tin tưởng của các nhà đăng ký.
 

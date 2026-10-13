@@ -3897,7 +3897,9 @@ If you receive one of these notices, please contact us at <support@forwardemail.
 
 ### Why do newly registered or recently expired domains require a paid plan
 
-When you add a domain (and on an ongoing basis for domains on the free plan), we run a WHOIS/RDAP lookup against it. If the domain was **created within the past 90 days**, **expired within the past 90 days**, or is currently in a **pending transfer, update, or delete** state with its registrar, we require it to be on a paid plan before you can send or receive mail with it.
+When you add a domain (and on an ongoing basis for domains on the free plan), we run a WHOIS/RDAP lookup against it. If the domain **expired within the past 90 days**, or is currently in a **pending transfer, update, or delete** state with its registrar, we require it to be on a paid plan before you can send or receive mail with it.
+
+A domain **created within the past 90 days** can use the free plan when it is a new name. It needs a paid plan until it is 90 days old if it was in use before (for example, someone else let it expire and it was registered again), if a drop-catch registrar holds it, if it ends in `.cc` or `.xyz`, or if Cloudflare's filter for malware, phishing, and adult content blocks it. We check for earlier use in the [Internet Archive](https://web.archive.org/): a capture of the domain from before it was registered means it was in use. If that check is unavailable, please try again later.
 
 This is an abuse-prevention measure.  Major registrars including GoDaddy, Namecheap, and Hostgator have previously blocked our infrastructure entirely because of abuse patterns involving recently expired domain takeovers and fraudulently registered new domains. Requiring a paid plan for these domains is what lets us keep offering a free plan at all without losing registrar trust.
 

@@ -3821,7 +3821,9 @@ Hvis du mottar et av disse varslene, kan du kontakte oss på <support@forwardema
 
 ### Hvorfor krever nylig registrerte eller nylig utløpte domener en betalt plan {#why-do-newly-registered-or-recently-expired-domains-require-a-paid-plan}
 
-Når du legger til et domene (og fortløpende for domener på gratisplanen), kjører vi et WHOIS/RDAP-oppslag på det. Hvis domenet ble **opprettet i løpet av de siste 90 dagene**, **utløp i løpet av de siste 90 dagene**, eller for øyeblikket har status som **ventende overføring, oppdatering eller sletting** hos registraren, krever vi at det er på en betalt plan før du kan sende eller motta e-post med det.
+Når du legger til et domene (og fortløpende for domener på gratisplanen), kjører vi et WHOIS/RDAP-oppslag på det. Hvis domenet **utløp i løpet av de siste 90 dagene**, eller for øyeblikket har status som **ventende overføring, oppdatering eller sletting** hos registraren, krever vi at det er på en betalt plan før du kan sende eller motta e-post med det.
+
+Et domene som ble **opprettet i løpet av de siste 90 dagene**, kan bruke gratisplanen hvis det er et nytt navn. Det trenger en betalt plan til det er 90 dager gammelt hvis det har vært i bruk før (for eksempel hvis noen andre lot det utløpe og det ble registrert på nytt), hvis en drop-catch-registrar har det, hvis det slutter på `.cc` eller `.xyz`, eller hvis Cloudflares filter for skadevare, phishing og voksent innhold blokkerer det. Vi sjekker tidligere bruk i [Internet Archive](https://web.archive.org/): et arkivert øyeblikksbilde av domenet fra før det ble registrert betyr at det var i bruk. Hvis denne sjekken ikke er tilgjengelig, kan du prøve igjen senere.
 
 Dette er et tiltak mot misbruk, ikke en vurdering av deg personlig — store registrarer, inkludert GoDaddy, Namecheap og Hostgator, har tidligere blokkert infrastrukturen vår fullstendig på grunn av misbruksmønstre med overtakelse av nylig utløpte domener og svindelregistrerte nye domener. Ved å kreve en betalt plan for disse domenene kan vi i det hele tatt fortsette å tilby en gratisplan uten å miste tilliten hos registrarene.
 

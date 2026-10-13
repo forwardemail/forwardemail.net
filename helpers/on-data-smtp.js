@@ -199,6 +199,7 @@ async function onDataSMTP(session, date, headers, body) {
         const { isAutoApproved } = await checkAndAutoApproveSMTP({
           domain,
           resolver: this.resolver,
+          client: this.client,
           userId: sendingUserId
         });
 

@@ -705,6 +705,199 @@ test('isExpiredOrNewlyCreated', async (t) => {
   }
 });
 
+test('a free-plan domain registered within 90 days can receive mail when it is a new name', async (t) => {
+  const http = require('node:http');
+  const getPreviousDomainUse = require('#helpers/get-previous-domain-use');
+  const {
+    createDomainCheckResolvers
+  } = require('#helpers/create-family-resolver');
+
+  const smtp = new MX({
+    client: t.context.client,
+    wsp: t.context.wsp
+  });
+  const { resolver } = smtp;
+  if (!getPort) await pWaitFor(() => Boolean(getPort), { timeout: ms('30s') });
+  const port = await getPort();
+  await smtp.listen(port);
+
+  // (where the mail is forwarded)
+  const received = [];
+  const serverPort = await getPort();
+  const server = new SMTPServer({
+    disabledCommands: ['AUTH'],
+    onData(stream, session, fn) {
+      stream.resume();
+      stream.on('end', () => {
+        received.push(session.envelope.rcptTo.map((rcpt) => rcpt.address));
+        fn();
+      });
+    },
+    logger: false,
+    secure: false
+  });
+  await pify(server.listen.bind(server))(serverPort);
+
+  // (the web archive's capture index: a capture, none, or an error)
+  const archive = new Map();
+  const asked = [];
+  const cdx = http.createServer((req, res) => {
+    const { searchParams } = new URL(req.url, 'http://localhost');
+    asked.push(searchParams.get('url'));
+    const answer = archive.get(searchParams.get('url'));
+    if (answer === 'error') {
+      res.writeHead(503);
+      res.end('Service Unavailable');
+      return;
+    }
+
+    res.writeHead(200, { 'content-type': 'application/json' });
+    res.end(JSON.stringify(answer ? [['timestamp'], [answer]] : []));
+  });
+  await pify(cdx.listen.bind(cdx))(await getPort(), '127.0.0.1');
+  const { CDX_URL } = getPreviousDomainUse;
+  getPreviousDomainUse.CDX_URL = `http://127.0.0.1:${cdx.address().port}/cdx`;
+
+  const cloudflare = createDomainCheckResolvers(t.context.client, logger);
+  const created = dayjs().subtract(30, 'day').toDate();
+
+  // (a domain registered 30 days ago, forwarding to our test server, that
+  //  Cloudflare does not block)
+  async function addDomain(name) {
+    const map = new Map();
+    map.set(
+      `a:${name}`,
+      resolver.spoofPacket(name, 'A', [IP_ADDRESS], true, ms('5m'))
+    );
+    map.set(
+      `mx:${name}`,
+      resolver.spoofPacket(
+        name,
+        'MX',
+        [{ exchange: IP_ADDRESS, priority: 0 }],
+        true
+      )
+    );
+    map.set(
+      `txt:${name}`,
+      resolver.spoofPacket(
+        name,
+        'TXT',
+        [
+          `forward-email-port=${serverPort.toString()}`,
+          `forward-email=test@${IP_ADDRESS}`
+        ],
+        true,
+        ms('5m')
+      )
+    );
+    await resolver.options.cache.mset(map);
+    for (const filtered of [
+      cloudflare.familyResolver,
+      cloudflare.securityResolver
+    ]) {
+      await filtered.options.cache.mset(
+        new Map([
+          [
+            `a:${name}`,
+            filtered.spoofPacket(name, 'A', [IP_ADDRESS], true, ms('5m'))
+          ]
+        ])
+      );
+    }
+
+    await t.context.client.set(
+      `whois:${name}`,
+      safeStringify({
+        found: true,
+        status: ['client transfer prohibited'],
+        registrar: { id: 1, name: 'Example Registrar, Inc.' },
+        ts: {
+          created,
+          updated: created,
+          expires: dayjs(created).add(1, 'year').toDate()
+        }
+      }),
+      'PX',
+      ms('1d')
+    );
+  }
+
+  await t.context.client.set(`allowlist:${IP_ADDRESS}`, true);
+
+  async function send(name) {
+    const mx = await asyncMxConnect({
+      target: IP_ADDRESS,
+      port: smtp.server.address().port,
+      dnsOptions: {
+        resolve: util.callbackify(resolver.resolve.bind(resolver))
+      }
+    });
+    const transporter = nodemailer.createTransport({
+      logger,
+      host: mx.host,
+      port: mx.port,
+      connection: mx.socket,
+      ignoreTLS: true,
+      secure: false,
+      tls
+    });
+    return transporter.sendMail({
+      envelope: { from: 'test@test.com', to: `hello@${name}` },
+      raw: `
+To: hello@${name}
+From: test@test.com
+Subject: test new domain
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+
+Hello.
+`.trim()
+    });
+  }
+
+  try {
+    // (a new name: no capture before it was registered)
+    const fresh = `new-${randomUUID().slice(0, 8)}.com`;
+    await addDomain(fresh);
+    await send(fresh);
+    await pWaitFor(() => received.length === 1, { timeout: ms('10s') });
+    t.deepEqual(received[0], [`test@${IP_ADDRESS}`]);
+    t.true(asked.includes(fresh));
+
+    // (when the archive cannot be asked, it is not let through, and the
+    //  recipient is not told yet)
+    const noticeKey = `abuse_prevention:test@${IP_ADDRESS}`;
+    await t.context.client.del(noticeKey);
+    const unknown = `unknown-${randomUUID().slice(0, 8)}.com`;
+    archive.set(unknown, 'error');
+    await addDomain(unknown);
+    const unavailable = await t.throwsAsync(send(unknown));
+    t.is(unavailable.responseCode, 421);
+    t.regex(unavailable.message, /could not be checked right now/);
+    t.is(await t.context.client.get(noticeKey), null);
+
+    // (a name in use before: the recipient is told why)
+    const reused = `old-${randomUUID().slice(0, 8)}.com`;
+    archive.set(reused, '20190314000000');
+    await addDomain(reused);
+    const err = await t.throwsAsync(send(reused));
+    t.is(err.responseCode, 421);
+    t.regex(err.message, /it was in use before then/);
+    await pWaitFor(async () => Boolean(await t.context.client.get(noticeKey)), {
+      timeout: ms('10s')
+    });
+    t.is(received.length, 1);
+  } finally {
+    getPreviousDomainUse.CDX_URL = CDX_URL;
+    await new Promise((resolve) => {
+      cdx.close(resolve);
+    });
+    await server.close();
+    await smtp.close();
+  }
+});
+
 // TODO: checkBounceForSpam logic
 
 //

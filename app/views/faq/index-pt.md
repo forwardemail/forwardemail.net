@@ -3820,7 +3820,9 @@ Se você receber um desses avisos, entre em contato conosco em <support@forwarde
 
 ### Por que domínios recém-registrados ou expirados recentemente exigem um plano pago {#why-do-newly-registered-or-recently-expired-domains-require-a-paid-plan}
 
-Quando você adiciona um domínio (e continuamente para domínios no plano gratuito), fazemos uma consulta WHOIS/RDAP nele. Se o domínio foi **criado nos últimos 90 dias**, **expirou nos últimos 90 dias** ou está atualmente em estado de **transferência, atualização ou exclusão pendente** no registrador, exigimos que ele esteja em um plano pago antes que você possa enviar ou receber e-mails com ele.
+Quando você adiciona um domínio (e continuamente para domínios no plano gratuito), fazemos uma consulta WHOIS/RDAP nele. Se o domínio **expirou nos últimos 90 dias** ou está atualmente em estado de **transferência, atualização ou exclusão pendente** no registrador, exigimos que ele esteja em um plano pago antes que você possa enviar ou receber e-mails com ele.
+
+Um domínio **criado nos últimos 90 dias** pode usar o plano gratuito quando é um nome novo. Ele precisa de um plano pago até completar 90 dias se já foi usado antes (por exemplo, outra pessoa o deixou expirar e ele foi registrado novamente), se um registrador de drop-catch o detém, se termina em `.cc` ou `.xyz`, ou se o filtro da Cloudflare contra malware, phishing e conteúdo adulto o bloqueia. Verificamos o uso anterior no [Internet Archive](https://web.archive.org/): uma captura do domínio anterior ao seu registro significa que ele estava em uso. Se essa verificação estiver indisponível, tente novamente mais tarde.
 
 Esta é uma medida de prevenção contra abuso, não um julgamento sobre você pessoalmente — grandes registradores, incluindo GoDaddy, Namecheap e Hostgator, já bloquearam totalmente nossa infraestrutura devido a padrões de abuso envolvendo a tomada de domínios expirados recentemente e novos domínios registrados de forma fraudulenta. Exigir um plano pago para esses domínios é o que nos permite continuar oferecendo um plano gratuito sem perder a confiança dos registradores.
 

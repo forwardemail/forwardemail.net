@@ -53,7 +53,10 @@ const parseRootDomain = require('#helpers/parse-root-domain');
 const retryRequest = require('#helpers/retry-request');
 const verificationRecordOptions = require('#config/verification-record');
 const checkDomainAndAct = require('#helpers/check-domain-and-act');
-const createFamilyResolver = require('#helpers/create-family-resolver');
+const { setDomainCheckPending } = require('#helpers/domain-check-verdict');
+const {
+  createDomainCheckResolvers
+} = require('#helpers/create-family-resolver');
 const emailHelper = require('#helpers/email');
 const getCloudflareRadarFeedbackUrl = require('#helpers/get-cloudflare-radar-feedback-url');
 const getDomainNameRestrictions = require('#helpers/get-domain-name-restrictions');
@@ -77,14 +80,14 @@ const CLOUDFLARE_PURGE_CACHE_URL = 'https://1.1.1.1/api/v1/purge';
 const USER_AGENT = `${pkg.name}/${pkg.version}`;
 
 //
-// Lazy-initialised Redis client and Cloudflare Family DNS resolver
-// for the post-save domain categorisation hook.  Initialised on first
-// use so that module loading in the test environment never opens
-// real connections.
+// Lazy-initialised Redis client and the domain check's resolvers (see
+// `helpers/create-family-resolver`) for the post-save domain categorisation
+// hook.  Initialised on first use so that module loading in the test
+// environment never opens real connections.
 // TODO: use a global redis/resolver approach like global mongoose
 //
 let _domainClient;
-let _familyResolver;
+let _domainCheckResolvers;
 
 function getDomainClient() {
   if (!_domainClient) {
@@ -95,12 +98,13 @@ function getDomainClient() {
   return _domainClient;
 }
 
-function getFamilyResolver() {
-  if (!_familyResolver) {
-    _familyResolver = createFamilyResolver(getDomainClient(), logger);
-  }
-
-  return _familyResolver;
+function getDomainCheckResolvers() {
+  if (!_domainCheckResolvers)
+    _domainCheckResolvers = createDomainCheckResolvers(
+      getDomainClient(),
+      logger
+    );
+  return _domainCheckResolvers;
 }
 
 // <https://github.com/validatorjs/validator.js/blob/master/src/lib/isEmail.js>
@@ -1890,6 +1894,11 @@ Domains.post('save', (doc, next) => {
   // errors are logged but never propagate.
   //
 
+  // (held as pending until its check ends: see `domain-check-verdict`)
+  setDomainCheckPending(getDomainClient(), doc._id).catch((err) =>
+    logger.warn(err)
+  );
+
   Promise.resolve()
     .then(async () => {
       const domainDoc = {
@@ -1907,9 +1916,9 @@ Domains.post('save', (doc, next) => {
 
       await checkDomainAndAct(domainDoc, ctx, {
         client: getDomainClient(),
-        familyResolver: getFamilyResolver(),
+        ...getDomainCheckResolvers(),
+        resolver: doc.resolver || getDomainCheckResolvers().resolver,
         logger,
-        timeout: 10_000,
         Users: conn.models.Users,
         Aliases: conn.models.Aliases
       });
@@ -1917,6 +1926,10 @@ Domains.post('save', (doc, next) => {
       //
       // If anything was flagged, send an admin alert email
       //
+      // (not for what is listed in the digest only: a Cloudflare adult
+      //  block the page does not bear out, or possible phishing)
+      //
+      ctx.reviewResults = ctx.reviewResults.filter((r) => !r.digestOnly);
       const totalFlagged =
         ctx.bannedResults.length +
         ctx.reviewResults.length +
@@ -1936,41 +1949,50 @@ Domains.post('save', (doc, next) => {
 
         //
         // Build a simple HTML summary for the alert email
+        // (escaped, as in the review alert: the alert template renders it
+        //  as HTML, and a user's email address can hold markup)
         //
+        const esc = (value) => _.escape(String(value));
         const lines = [
-          `<p>Domain <strong>${doc.name}</strong> was just created and flagged by Cloudflare Family DNS &amp; content categorisation.</p>`,
-          `<p><a href="${getCloudflareRadarFeedbackUrl(
+          `<p>Domain <strong>${esc(
             doc.name
-          )}" target="_blank" rel="noopener noreferrer">Submit a Cloudflare Radar classification change request for ${
+          )}</strong> was just created and flagged by Cloudflare Family DNS &amp; content categorisation.</p>`,
+          `<p><a href="${esc(
+            getCloudflareRadarFeedbackUrl(doc.name)
+          )}" target="_blank" rel="noopener noreferrer">Submit a Cloudflare Radar classification change request for ${esc(
             doc.name
-          }</a>.</p>`
+          )}</a>.</p>`
         ];
 
         for (const r of ctx.bannedResults) {
           lines.push(
-            `<p><strong>Flagged for Review</strong> – categories: ${r.categories.join(
-              ', '
+            `<p><strong>Flagged for Review</strong> – categories: ${esc(
+              r.categories.join(', ')
             )}` +
-              ` | users to review: ${r.bannedEmails.join(', ') || 'none'}` +
-              ` | aliases: ${r.aliasCount}</p>`
+              ` | users to review: ${esc(
+                r.bannedEmails.join(', ') || 'none'
+              )}` +
+              ` | aliases: ${esc(r.aliasCount)}</p>`
           );
         }
 
         for (const r of ctx.skippedResults) {
           lines.push(
-            `<p><strong>Protected user skipped</strong> – ${r.user.email}` +
-              ` | categories: ${r.categories.join(', ')}` +
-              ` | reasons: ${r.exclusionReasons.join('; ')}</p>`
+            `<p><strong>Protected user skipped</strong> – ${esc(
+              r.user.email
+            )}` +
+              ` | categories: ${esc(r.categories.join(', '))}` +
+              ` | reasons: ${esc(r.exclusionReasons.join('; '))}</p>`
           );
         }
 
         for (const r of ctx.reviewResults) {
           lines.push(
-            `<p><strong>Review</strong> – categories: ${r.categories.join(
-              ', '
+            `<p><strong>Review</strong> – categories: ${esc(
+              r.categories.join(', ')
             )}` +
-              ` | members: ${r.memberCount}` +
-              ` | aliases: ${r.aliasCount}</p>`
+              ` | members: ${esc(r.memberCount)}` +
+              ` | aliases: ${esc(r.aliasCount)}</p>`
           );
         }
 

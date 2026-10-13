@@ -2173,6 +2173,15 @@ const config = {
   }
 };
 
+//
+// A domain registered within the past 90 days can use the free plan on these
+// (when it is a new name: see `helpers/is-expired-or-newly-created`), but
+// not .cc or .xyz: of these, spam domains use them most after .com and .net.
+//
+config.newDomainGoodDomains = config.goodDomains.filter(
+  (tld) => tld !== 'cc' && tld !== 'xyz'
+);
+
 // arbitrarily add domains to the denylist
 for (const tld of tlds) {
   if (

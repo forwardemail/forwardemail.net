@@ -5,13 +5,17 @@
 
 //
 // This job iterates over all domains with `has_txt_record: true` OR
-// `has_mx_record: true` using a cursor (noCursorTimeout) and runs
+// `has_mx_record: true` (or waiting for SMTP approval) using a cursor
+// (noCursorTimeout) and runs
 // comprehensive categorisation on each domain via the reusable
 // `get-domain-categorization` helper:
 //
 //   1. Cloudflare Family DNS (1.1.1.3 / 1.0.0.3) – detects adult
-//      content and malware (resolver returns 0.0.0.0).
-//   2. Domain-name pattern matching – URL shortener naming, phishing
+//      content and malware (resolver returns 0.0.0.0); a block is also
+//      asked of its malware filter (1.1.1.2), to tell the two apart, and
+//      of an unfiltered resolver (a domain pointing to 0.0.0.0 itself).
+//   2. The disposable email domain list (see `jobs/check-disposable`) and
+//      domain-name pattern matching – URL shortener naming, phishing
 //      look-alikes, disposable-email patterns, etc.
 //   3. HTTP content analysis – fetches the page with undici and checks
 //      for gambling, adult, phishing, piracy, crypto-scam, parked /
@@ -21,7 +25,9 @@
 // When a domain matches one or more *bannable* categories the job
 // emails support@ for manual review instead of automatically banning
 // users or adding to the denylist.  This avoids false positives from
-// the Cloudflare Radar / Family DNS checks.
+// the Cloudflare Radar / Family DNS checks.  A domain is emailed once,
+// and again every 30 days while it is flagged, or when its categories or
+// users change (see `helpers/check-domain-and-act`).
 //
 // The following users are EXCLUDED from flagging (but still reported
 // in a separate "Skipped / Protected Users" section of the digest):
@@ -68,11 +74,12 @@ const Domains = require('#models/domains');
 const Users = require('#models/users');
 const checkDomainAndAct = require('#helpers/check-domain-and-act');
 const config = require('#config');
-const createFamilyResolver = require('#helpers/create-family-resolver');
-const csvEscape = require('#helpers/csv-escape');
+const {
+  createDomainCheckResolvers
+} = require('#helpers/create-family-resolver');
 const emailHelper = require('#helpers/email');
 const forEachInBatches = require('#helpers/for-each-in-batches');
-const getCloudflareRadarFeedbackUrl = require('#helpers/get-cloudflare-radar-feedback-url');
+const getDomainCheckDigestCsv = require('#helpers/get-domain-check-digest-csv');
 const logger = require('#helpers/logger');
 const setupMongoose = require('#helpers/setup-mongoose');
 
@@ -89,11 +96,12 @@ const graceful = new Graceful({
 graceful.listen();
 
 //
-// Dedicated Tangerine resolver using Cloudflare Family DNS servers.
-// These servers return 0.0.0.0 for domains categorised as adult
-// content or malware (see `helpers/create-family-resolver`).
+// Cloudflare Family DNS (1.1.1.3), which answers 0.0.0.0 for domains
+// categorised as adult content or malware, its malware filter (1.1.1.2) to
+// tell the two apart, and an unfiltered resolver (see
+// `helpers/create-family-resolver`)
 //
-const familyResolver = createFamilyResolver(client, logger);
+const resolvers = createDomainCheckResolvers(client, logger);
 
 // store boolean if the job is cancelled
 let isCancelled = false;
@@ -120,134 +128,14 @@ async function processDomain(domainDoc, ctx) {
   try {
     await checkDomainAndAct(domainDoc, ctx, {
       client,
-      familyResolver,
+      ...resolvers,
       logger,
-      timeout: 10_000,
       Users,
       Aliases
     });
   } catch (err) {
     logger.error(`Error processing domain ${domainDoc.name}:`, err);
   }
-}
-
-/**
- * Build a CSV string containing ALL flagged domains (flagged for review,
- * skipped, and review) with one row per entry.  This replaces the giant
- * inline HTML tables that could exceed email size limits.
- *
- * @param   {object}  opts
- * @param   {Array}   opts.bannedResults
- * @param   {Array}   opts.skippedResults
- * @param   {Array}   opts.reviewResults
- * @param   {boolean} opts.dryRun
- * @returns {string}  CSV content
- */
-function buildDigestCsv(opts) {
-  const { bannedResults, skippedResults, reviewResults, dryRun } = opts;
-
-  const headers = [
-    'Section',
-    'Domain',
-    'Cloudflare Radar Change Request',
-    'All Categories',
-    'Actionable Categories',
-    'Title',
-    'HTTP Status',
-    'Content Length (bytes)',
-    'Is Parked',
-    'Legit Hosting',
-    'User Email',
-    'User Group',
-    'KYC Passed',
-    'Account Age (days)',
-    'Exclusion Reasons',
-    'Alias Count',
-    'Dry Run'
-  ];
-
-  const rows = [headers.join(',')];
-
-  const dryRunVal = dryRun ? 'Yes' : 'No';
-
-  // Flagged domains (emailed to support@ for review) – one row per flagged user
-  for (const row of bannedResults) {
-    for (const user of row.users) {
-      rows.push(
-        [
-          csvEscape('Flagged for Review'),
-          csvEscape(row.domain),
-          csvEscape(getCloudflareRadarFeedbackUrl(row.domain)),
-          csvEscape(row.categories.join('; ')),
-          csvEscape(row.bannableCategories.join('; ')),
-          csvEscape(row.title || ''),
-          csvEscape(row.statusCode === null ? '' : row.statusCode),
-          csvEscape(row.contentLength),
-          csvEscape(row.isParked ? 'Yes' : 'No'),
-          csvEscape(row.hasLegitimateHosting ? 'Yes' : 'No'),
-          csvEscape(user.email),
-          csvEscape(''),
-          csvEscape(''),
-          csvEscape(''),
-          csvEscape(''),
-          csvEscape(row.aliasCount),
-          csvEscape(dryRunVal)
-        ].join(',')
-      );
-    }
-  }
-
-  // Skipped / protected users – one row per skipped user
-  for (const row of skippedResults) {
-    rows.push(
-      [
-        csvEscape('Skipped (Protected)'),
-        csvEscape(row.domain),
-        csvEscape(row.categories.join('; ')),
-        csvEscape(row.bannableCategories.join('; ')),
-        csvEscape(row.title || ''),
-        csvEscape(''),
-        csvEscape(''),
-        csvEscape(''),
-        csvEscape(''),
-        csvEscape(row.user.email),
-        csvEscape(row.user.group),
-        csvEscape(row.user.hasPassedKyc ? 'Yes' : 'No'),
-        csvEscape(
-          row.user.accountAgeDays === null ? '' : row.user.accountAgeDays
-        ),
-        csvEscape(row.exclusionReasons.join('; ')),
-        csvEscape(row.aliasCount),
-        csvEscape(dryRunVal)
-      ].join(',')
-    );
-  }
-
-  // Review domains – one row per domain
-  for (const row of reviewResults) {
-    rows.push(
-      [
-        csvEscape('Review'),
-        csvEscape(row.domain),
-        csvEscape(row.categories.join('; ')),
-        csvEscape(row.reviewCategories.join('; ')),
-        csvEscape(row.title || ''),
-        csvEscape(row.statusCode === null ? '' : row.statusCode),
-        csvEscape(row.contentLength),
-        csvEscape(row.isParked ? 'Yes' : 'No'),
-        csvEscape(row.hasLegitimateHosting ? 'Yes' : 'No'),
-        csvEscape(''),
-        csvEscape(''),
-        csvEscape(''),
-        csvEscape(''),
-        csvEscape(''),
-        csvEscape(row.aliasCount),
-        csvEscape(dryRunVal)
-      ].join(',')
-    );
-  }
-
-  return rows.join('\n');
 }
 
 /**
@@ -283,6 +171,10 @@ function buildDigestHtml(opts) {
     0
   );
   const totalReviewDomains = reviewResults.length;
+  // (a domain is emailed again only when its categories or users change)
+  const totalAlertsSent = dryRun
+    ? 0
+    : bannedResults.filter((r) => r.alertSent).length;
   const totalSkippedUsers = skippedResults.length;
 
   //
@@ -315,7 +207,7 @@ function buildDigestHtml(opts) {
 
   const flaggedLabel = dryRun
     ? 'Domains that would be flagged for review'
-    : 'Domains flagged for review (emailed to support@)';
+    : 'Domains flagged for review';
   const usersLabel = dryRun
     ? 'Users that would be flagged'
     : 'Users flagged for review';
@@ -340,14 +232,20 @@ function buildDigestHtml(opts) {
           <td style="padding: 10px;"><strong>${flaggedLabel}</strong></td>
           <td style="padding: 10px; color: #c2410c; font-weight: bold;">${totalFlaggedDomains}</td>
         </tr>
+${
+  dryRun
+    ? ''
+    : `<tr>
+          <td style="padding: 10px;"><strong>Review emails sent this run (new or changed findings)</strong></td>
+          <td style="padding: 10px;">${totalAlertsSent}</td>
+        </tr>`
+}
         <tr>
           <td style="padding: 10px;"><strong>${usersLabel}</strong></td>
           <td style="padding: 10px; color: #c2410c; font-weight: bold;">${totalFlaggedUsers}</td>
         </tr>
         <tr style="background: #f9f9f9;">
-          <td style="padding: 10px;"><strong>Aliases on ${
-            dryRun ? 'flagged' : 'flagged'
-          } domains</strong></td>
+          <td style="padding: 10px;"><strong>Aliases on flagged domains</strong></td>
           <td style="padding: 10px;">${totalFlaggedAliases}</td>
         </tr>
         <tr style="background: #fff8e1;">
@@ -404,7 +302,12 @@ function buildDigestHtml(opts) {
     </p>
     <p style="margin-top: 10px; background: #e8f5e9; padding: 10px; border-radius: 5px;">
       <strong>Note:</strong> No users were automatically banned or denylisted.
-      All flagged domains have been emailed to support@ for manual review.
+      Each flagged domain is emailed to support@ for manual review once, and
+      again only when its categories or users change (or after 30 days).
+      A domain Cloudflare blocks as adult content only is listed for manual
+      review here when its page was read and has no adult keyword, and so is
+      a sign-in page with pressure wording (possible_phishing); both still
+      wait for a manual review before they are approved for SMTP.
       To take action, visit the <a href="${config.urls.web}/admin/users">admin panel</a>.
     </p>
   `;
@@ -448,13 +351,30 @@ function buildDigestHtml(opts) {
     // Count the domains to check; they are then read from a cursor a batch
     // at a time (collecting every id first held ~1.6M ids for the whole run)
     //
+    // (and domains not yet approved for SMTP whose DKIM, return path and
+    //  DMARC records verify, as jobs/check-smtp last saw them: they may
+    //  have no forwarding records, and sending through SMTP or the API
+    //  approves them automatically unless their verdict holds them, see
+    //  `helpers/domain-check-verdict`)
+    //
     const query = {
       is_global: { $ne: true },
-      $or: [{ has_txt_record: true }, { has_mx_record: true }]
+      $or: [
+        { has_txt_record: true },
+        { has_mx_record: true },
+        {
+          has_smtp: false,
+          has_dkim_record: true,
+          has_return_path_record: true,
+          has_dmarc_record: true
+        }
+      ]
     };
     const total = await Domains.countDocuments(query);
 
-    logger.info(`Found ${total} domains with TXT or MX records to check`);
+    logger.info(
+      `Found ${total} domains with TXT or MX records (or waiting for SMTP) to check`
+    );
 
     if (total === 0) {
       logger.info('No domains to check – exiting');
@@ -561,7 +481,7 @@ function buildDigestHtml(opts) {
       // attach it as a gzip-compressed file (same pattern as
       // bounce-report.js) to avoid email size limit issues.
       //
-      const csv = buildDigestCsv({
+      const csv = getDomainCheckDigestCsv({
         bannedResults: ctx.bannedResults,
         skippedResults: ctx.skippedResults,
         reviewResults: ctx.reviewResults,

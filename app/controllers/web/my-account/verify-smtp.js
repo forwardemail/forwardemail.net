@@ -10,6 +10,10 @@ const _ = require('#helpers/lodash');
 
 const Domains = require('#models/domains');
 const checkAndAutoApproveSMTP = require('#helpers/check-and-auto-approve-smtp');
+const {
+  isAwaitingVerdict,
+  claimAwaitingNotice
+} = require('#helpers/domain-check-verdict');
 const config = require('#config');
 const emailHelper = require('#helpers/email');
 const i18n = require('#helpers/i18n');
@@ -39,6 +43,7 @@ async function verifySMTP(ctx) {
     const result = await checkAndAutoApproveSMTP({
       domain,
       resolver: ctx.resolver,
+      client: ctx.client,
       user: ctx.state.user,
       userDomains: ctx.state.domains
     });
@@ -53,6 +58,7 @@ async function verifySMTP(ctx) {
       autoconfig,
       autodiscover,
       hasLegitimateHosting,
+      flaggedCategories,
       errors,
       isVerified,
       isAutoApproved,
@@ -161,29 +167,46 @@ async function verifySMTP(ctx) {
           locale,
           domain.name
         );
+        //
+        // (while the domain check has no verdict yet, or it cannot be read,
+        //  only support is told, at most once in 10 minutes, and again
+        //  once it has one, so support sees the real one; the user is told
+        //  once)
+        //
+        const isAwaiting = isAwaitingVerdict(flaggedCategories);
+        const tellSupport =
+          !isAwaiting || (await claimAwaitingNotice(ctx.client, domain._id));
         await Promise.all([
-          emailHelper({
-            template: 'alert',
-            message: {
-              to,
-              subject
-            },
-            locals: {
-              message,
-              locale
-            }
-          }),
-          emailHelper({
-            template: 'alert',
-            message: {
-              to: config.supportEmail,
-              replyTo: to,
-              subject
-            },
-            locals: {
-              message: `
+          isAwaiting
+            ? null
+            : emailHelper({
+                template: 'alert',
+                message: {
+                  to,
+                  subject
+                },
+                locals: {
+                  message,
+                  locale
+                }
+              }),
+          tellSupport &&
+            emailHelper({
+              template: 'alert',
+              message: {
+                to: config.supportEmail,
+                replyTo: to,
+                subject
+              },
+              locals: {
+                message: `
               <ul>
                 <li><strong>Legitimate Hosting</strong> ${hasLegitimateHosting.toString()}</li>
+                <li><strong>Flagged by Domain Check</strong> ${
+                  flaggedCategories.length > 0
+                    ? _.escape(flaggedCategories.join(', '))
+                    : 'No'
+                }</li>
                 <li><strong>Suspended Domains</strong> ${hasSomeSuspendedDomains.toString()}</li>
                 <li><strong>Approved Domains</strong> ${hasExistingApprovedDomains.toString()}</li>
                 <li>
@@ -196,14 +219,14 @@ async function verifySMTP(ctx) {
                 </li>
               </ul>
               <a href="${config.urls.web}/admin/domains?name=${
-                domain.name
-              }" class="btn btn-dark btn-md">Review Domain</a>
+                  domain.name
+                }" class="btn btn-dark btn-md">Review Domain</a>
               `.trim(),
-              locale
-            }
-          })
+                locale
+              }
+            })
         ]);
-        domain.smtp_verified_at = new Date();
+        if (!isAwaiting) domain.smtp_verified_at = new Date();
         if (!ctx.api) ctx.flash('success', message);
       }
     } else if (

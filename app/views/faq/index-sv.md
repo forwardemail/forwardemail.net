@@ -3820,7 +3820,9 @@ Om du får någon av dessa aviseringar, kontakta oss på <support@forwardemail.n
 
 ### Varför kräver nyregistrerade eller nyligen utgångna domäner en betald plan {#why-do-newly-registered-or-recently-expired-domains-require-a-paid-plan}
 
-När du lägger till en domän (och löpande för domäner på gratisplanen) gör vi en WHOIS/RDAP-uppslagning för den. Om domänen **skapades under de senaste 90 dagarna**, **gick ut under de senaste 90 dagarna** eller för närvarande har statusen **väntande överföring, uppdatering eller radering** hos sin registrar, kräver vi att den har en betald plan innan du kan skicka eller ta emot e-post med den.
+När du lägger till en domän (och löpande för domäner på gratisplanen) gör vi en WHOIS/RDAP-uppslagning för den. Om domänen **gick ut under de senaste 90 dagarna** eller för närvarande har statusen **väntande överföring, uppdatering eller radering** hos sin registrar, kräver vi att den har en betald plan innan du kan skicka eller ta emot e-post med den.
+
+En domän som **skapades under de senaste 90 dagarna** kan använda gratisplanen om det är ett nytt namn. Den behöver en betald plan tills den är 90 dagar gammal om den har använts tidigare (till exempel om någon annan lät den gå ut och den registrerades igen), om en drop-catch-registrar innehar den, om den slutar på `.cc` eller `.xyz`, eller om Cloudflares filter för skadlig kod, nätfiske och vuxeninnehåll blockerar den. Vi kontrollerar tidigare användning i [Internet Archive](https://web.archive.org/): en arkiverad ögonblicksbild av domänen från före registreringen betyder att den har använts. Om den kontrollen inte är tillgänglig, försök igen senare.
 
 Detta är en åtgärd för att förhindra missbruk, inte ett omdöme om dig personligen — stora registrarer som GoDaddy, Namecheap och Hostgator har tidigare blockerat hela vår infrastruktur på grund av missbruksmönster med övertagande av nyligen utgångna domäner och bedrägligt registrerade nya domäner. Att kräva en betald plan för dessa domäner är det som gör att vi alls kan fortsätta erbjuda en gratisplan utan att förlora registrarernas förtroende.
 

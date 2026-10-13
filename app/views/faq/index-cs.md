@@ -3820,7 +3820,9 @@ Pokud obdržíte jedno z těchto oznámení, kontaktujte nás na <support@forwar
 
 ### Proč nově registrované nebo nedávno expirované domény vyžadují placený plán {#why-do-newly-registered-or-recently-expired-domains-require-a-paid-plan}
 
-Když přidáte doménu (a průběžně u domén v bezplatném plánu), provedeme pro ni dotaz WHOIS/RDAP. Pokud byla doména **vytvořena v posledních 90 dnech**, **expirovala v posledních 90 dnech** nebo je u svého registrátora aktuálně ve stavu **čekajícího převodu, aktualizace nebo smazání**, vyžadujeme, aby byla v placeném plánu, než s ní budete moci odesílat nebo přijímat poštu.
+Když přidáte doménu (a průběžně u domén v bezplatném plánu), provedeme pro ni dotaz WHOIS/RDAP. Pokud doména **expirovala v posledních 90 dnech** nebo je u svého registrátora aktuálně ve stavu **čekajícího převodu, aktualizace nebo smazání**, vyžadujeme, aby byla v placeném plánu, než s ní budete moci odesílat nebo přijímat poštu.
+
+Doména **vytvořená v posledních 90 dnech** může používat bezplatný plán, pokud jde o nový název. Placený plán potřebuje, dokud nebude stará 90 dní, pokud se dříve používala (například ji někdo jiný nechal expirovat a byla znovu zaregistrována), pokud ji drží registrátor zaměřený na drop-catching, pokud končí na `.cc` nebo `.xyz`, nebo pokud ji blokuje filtr Cloudflare pro malware, phishing a obsah pro dospělé. Dřívější používání ověřujeme v [Internet Archive](https://web.archive.org/): záznam domény z doby před její registrací znamená, že se používala. Pokud tato kontrola není dostupná, zkuste to prosím později.
 
 Jde o opatření proti zneužití, nikoli o hodnocení vás osobně — velcí registrátoři včetně GoDaddy, Namecheap a Hostgator v minulosti zcela zablokovali naši infrastrukturu kvůli vzorcům zneužívání spojeným s převzetím nedávno expirovaných domén a podvodně registrovanými novými doménami. Právě požadavek placeného plánu pro tyto domény nám vůbec umožňuje dál nabízet bezplatný plán, aniž bychom ztratili důvěru registrátorů.
 
