@@ -280,7 +280,7 @@
     "qrcode": "1.5.4",
     "qs": "6.15.3",
     "random-word-slugs": "0.1.7",
-    "raw-body": "3.0.0",
+    "raw-body": "4.0.0",
     "re2": "1.22.1",
     "regex-parser": "2.3.1",
     "reserved-email-addresses-list": "2.0.16",
