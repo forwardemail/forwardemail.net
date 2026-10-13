@@ -241,7 +241,7 @@
     "p-event": "4.2.0",
     "p-filter": "2.1.0",
     "p-map": "4.0.0",
-    "p-map-series": "2.1.0",
+    "p-map-series": "3.0.0",
     "p-queue": "6.6.2",
     "p-reduce": "2.1.0",
     "p-retry": "4.6.2",
