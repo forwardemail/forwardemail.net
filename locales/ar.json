@@ -23252,7 +23252,6 @@
   "Free Email Forwarding for Custom Domains - Open Source Email Service": "إعادة توجيه البريد الإلكتروني مجانًا للنطاقات المخصصة - مفتوح المصدر",
   "Get free email forwarding for custom domains. Send & receive as you@yourdomain.com with unlimited aliases, 10GB storage & 100% open-source security.": "احصل على إعادة توجيه مجانية للبريد الإلكتروني لنطاقاتك المخصصة. أرسل واستقبل باسم you@yourdomain.com مع أسماء مستعارة غير محدودة وتخزين 10GB وأمان مفتوح المصدر 100%.",
   "How many domains can I use?": "كم عدد النطاقات التي يمكنني استخدامها؟",
-  "Every plan includes unlimited domains, the free plan too. Start with forwarding, upgrade to mailboxes, then add team controls.": "تتضمن كل خطة عددًا غير محدود من النطاقات، بما في ذلك الخطة المجانية. ابدأ بإعادة التوجيه، ثم انتقل إلى صناديق البريد، ثم أضف أدوات التحكم للفريق.",
   "Why do people switch to Forward Email?": "لماذا ينتقل الناس إلى Forward Email؟",
   "We measure these delivery times with our own open-source monitor. It sends test emails to inboxes at major email providers and records how long each one takes to arrive. Our engineers get an alert when a delivery takes longer than 10 seconds.": "نقيس أوقات التسليم هذه باستخدام أداة مراقبة مفتوحة المصدر خاصة بنا. ترسل الأداة رسائل تجريبية إلى صناديق الوارد لدى كبار مزودي البريد الإلكتروني وتسجل الوقت الذي تستغرقه كل رسالة للوصول. يتلقى مهندسونا تنبيهًا عندما يستغرق التسليم أكثر من 10 ثوانٍ.",
   "Skip to content": "انتقل إلى المحتوى",
@@ -23333,7 +23332,6 @@
   "Send every address, or any regex match, to the inbox you choose.": "وجّه كل العناوين، أو أي عنوان يطابق تعبيرًا نمطيًا، إلى صندوق الوارد الذي تختاره.",
   "One alias can reach people, teams and webhooks.": "يمكن لاسم مستعار واحد أن يصل إلى أشخاص وفرق وخطافات الويب.",
   "Turn off an alias without deleting its mail.": "عطّل اسمًا مستعارًا دون حذف رسائله.",
-  "Each mailbox is its own SQLite file, encrypted at rest with ChaCha20-Poly1305. The key is your mailbox password, and only you have it.": "كل صندوق بريد ملف SQLite مستقل، مشفّر أثناء التخزين باستخدام ChaCha20-Poly1305. المفتاح هو كلمة مرور صندوق بريدك، ولا يملكه أحد سواك.",
   "Works in Apple Mail, Thunderbird and phone apps.": "يعمل مع Apple Mail وThunderbird وتطبيقات الهاتف.",
   "One storage pool for all your domains.": "مساحة تخزين واحدة لجميع نطاقاتك.",
   "Quantum-resistant encryption on every mailbox.": "تشفير مقاوم للحوسبة الكمومية لكل صندوق بريد.",
@@ -23356,7 +23354,6 @@
   "The forwardemail command, with desktop notifications.": "أمر forwardemail، مع إشعارات سطح المكتب.",
   "Turn it on to encrypt mail on the device with a PIN or passkey.": "فعّله لتشفير البريد على الجهاز باستخدام رمز PIN أو مفتاح مرور.",
   "Live delivery data": "بيانات التسليم المباشرة",
-  "Data from our latest test, which runs about every five minutes. Direct is a message from our servers to an inbox at that provider. Forwarding is a message to a Forward Email address that forwards it to that inbox.": "بيانات من أحدث اختبار لدينا، والذي يُجرى كل خمس دقائق تقريبًا. «مباشر» هي رسالة من خوادمنا إلى صندوق وارد لدى ذلك المزوّد. «إعادة التوجيه» هي رسالة إلى عنوان Forward Email يعيد توجيهها إلى صندوق الوارد ذلك.",
   "We are rated <span class=\"notranslate\">%s</span> out of 5, according to <span class=\"notranslate\">%s</span> reviews on %s.": "تقييمنا <span class=\"notranslate\">%s</span> من 5، وفقًا لـ <span class=\"notranslate\">%s</span> مراجعة على %s.",
   "Your forwarding rules live in your domain's DNS records, and you can <a href=\"%s\">encrypt them</a>. Paid plans keep them out of DNS.": "تُحفظ قواعد إعادة التوجيه في سجلات DNS لنطاقك، ويمكنك <a href=\"%s\">تشفيرها</a>. أما الخطط المدفوعة فتُبقيها خارج DNS.",
   "Your forwarding rules stay out of DNS, in our secure, backed-up database.": "تبقى قواعد إعادة التوجيه خارج DNS، في قاعدة بياناتنا الآمنة والمنسوخة احتياطيًا.",
@@ -23378,8 +23375,12 @@
   "These answers from our FAQ may help:": "قد تفيدك هذه الإجابات من FAQ الخاصة بنا:",
   "Outbound SMTP is now available!": "SMTP الصادر متاح الآن!",
   "Each domain needs a one-time review, usually within 24 hours.": "يحتاج كل نطاق إلى مراجعة لمرة واحدة، عادةً خلال 24 ساعة.",
-  "We build our own apps for desktop, mobile and the terminal. The desktop and mobile apps work offline. Apple Mail and other mail apps work too.": "نطوّر تطبيقاتنا الخاصة لسطح المكتب والهاتف المحمول والطرفية. تعمل تطبيقات سطح المكتب والهاتف المحمول دون اتصال بالإنترنت. ويعمل Apple Mail وتطبيقات البريد الأخرى أيضاً.",
   "Signed updates install themselves. Windows and macOS builds are code-signed.": "تُثبَّت التحديثات الموقّعة تلقائياً. إصدارات Windows وmacOS موقّعة رقمياً.",
   "Installers are signed. While the new certificate builds reputation, SmartScreen may still warn on first run: choose More info, then Run anyway.": "المُثبتات موقّعة. وإلى أن تكتسب الشهادة الجديدة سمعة كافية، قد يعرض SmartScreen تحذيراً عند التشغيل الأول: اختر مزيد من المعلومات، ثم تشغيل على أي حال.",
-  "The Windows executables are signed. While the new certificate builds reputation, SmartScreen may still warn on first run: choose More info, then Run anyway.": "الملفات التنفيذية لـ Windows موقّعة. وإلى أن تكتسب الشهادة الجديدة سمعة كافية، قد يعرض SmartScreen تحذيراً عند التشغيل الأول: اختر مزيد من المعلومات، ثم تشغيل على أي حال."
+  "The Windows executables are signed. While the new certificate builds reputation, SmartScreen may still warn on first run: choose More info, then Run anyway.": "الملفات التنفيذية لـ Windows موقّعة. وإلى أن تكتسب الشهادة الجديدة سمعة كافية، قد يعرض SmartScreen تحذيراً عند التشغيل الأول: اختر مزيد من المعلومات، ثم تشغيل على أي حال.",
+  "We tested delivery ourselves: these figures are data from our own monitor, which sends test messages about every %d minutes. Direct is a message from our servers to an inbox at that provider. Forwarding is a message to a Forward Email address that forwards it to that inbox.": "اختبرنا التسليم بأنفسنا: هذه الأرقام بيانات من أداة المراقبة الخاصة بنا، التي ترسل رسائل اختبار كل %d دقائق تقريبًا. «مباشر» هي رسالة من خوادمنا إلى صندوق وارد لدى ذلك المزوّد. «إعادة التوجيه» هي رسالة إلى عنوان Forward Email يعيد توجيهها إلى صندوق الوارد ذلك.",
+  "According to our latest test, every message arrived within %s.": "وفقًا لأحدث اختبار لدينا، وصلت كل رسالة خلال %s.",
+  "According to our technical whitepaper, each mailbox is its own SQLite file, encrypted at rest with ChaCha20-Poly1305. The key is your mailbox password, and only you have it.": "وفقًا للورقة البيضاء الفنية الخاصة بنا، كل صندوق بريد ملف SQLite مستقل، مشفّر أثناء التخزين باستخدام ChaCha20-Poly1305. المفتاح هو كلمة مرور صندوق بريدك، ولا يملكه أحد سواك.",
+  "We build our own apps for %d platforms, from desktop and mobile to the terminal. The desktop and mobile apps work offline. Apple Mail and other mail apps work too.": "نطوّر تطبيقاتنا الخاصة لـ %d منصات، من سطح المكتب والهاتف المحمول إلى الطرفية. تعمل تطبيقات سطح المكتب والهاتف المحمول دون اتصال بالإنترنت. ويعمل Apple Mail وتطبيقات البريد الأخرى أيضاً.",
+  "All %d plans include unlimited domains, the free plan too. Start with forwarding, upgrade to mailboxes from $%d/mo, then add team controls.": "تتضمن جميع الخطط الـ %d عددًا غير محدود من النطاقات، بما في ذلك الخطة المجانية. ابدأ بإعادة التوجيه، ثم انتقل إلى صناديق البريد بدءًا من $%d شهريًا، ثم أضف أدوات التحكم للفريق."
 }

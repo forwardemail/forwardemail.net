@@ -23252,7 +23252,6 @@
   "Free Email Forwarding for Custom Domains - Open Source Email Service": "カスタムドメイン向け無料メール転送 - オープンソースのメールサービス",
   "Get free email forwarding for custom domains. Send & receive as you@yourdomain.com with unlimited aliases, 10GB storage & 100% open-source security.": "カスタムドメイン向けの無料メール転送。you@yourdomain.com として送受信でき、エイリアス無制限、10GBのストレージ、100%オープンソースのセキュリティを備えています。",
   "How many domains can I use?": "ドメインはいくつ使えますか？",
-  "Every plan includes unlimited domains, the free plan too. Start with forwarding, upgrade to mailboxes, then add team controls.": "無料プランを含むすべてのプランで、ドメインを無制限に利用できます。まず転送から始め、メールボックスにアップグレードし、その後チーム管理機能を追加できます。",
   "Why do people switch to Forward Email?": "Forward Email に乗り換える人が多いのはなぜですか？",
   "We measure these delivery times with our own open-source monitor. It sends test emails to inboxes at major email providers and records how long each one takes to arrive. Our engineers get an alert when a delivery takes longer than 10 seconds.": "これらの配信時間は、当社独自のオープンソースモニターで測定しています。主要なメールプロバイダーの受信トレイにテストメールを送信し、それぞれが届くまでの時間を記録します。配信に10秒を超えると、当社のエンジニアにアラートが届きます。",
   "Skip to content": "コンテンツへスキップ",
@@ -23333,7 +23332,6 @@
   "Send every address, or any regex match, to the inbox you choose.": "すべてのアドレス、または正規表現に一致する任意のアドレスを、選んだ受信トレイに届けます。",
   "One alias can reach people, teams and webhooks.": "1 つのエイリアスで、個人、チーム、ウェブフックに届けられます。",
   "Turn off an alias without deleting its mail.": "メールを削除せずにエイリアスを無効にできます。",
-  "Each mailbox is its own SQLite file, encrypted at rest with ChaCha20-Poly1305. The key is your mailbox password, and only you have it.": "各メールボックスは個別の SQLite ファイルで、保存時は ChaCha20-Poly1305 で暗号化されます。鍵はメールボックスのパスワードで、それを持っているのはあなただけです。",
   "Works in Apple Mail, Thunderbird and phone apps.": "Apple Mail、Thunderbird、スマートフォンのアプリで使えます。",
   "One storage pool for all your domains.": "すべてのドメインで共有する 1 つのストレージプール。",
   "Quantum-resistant encryption on every mailbox.": "すべてのメールボックスに耐量子暗号を採用しています。",
@@ -23356,7 +23354,6 @@
   "The forwardemail command, with desktop notifications.": "デスクトップ通知に対応した forwardemail コマンド。",
   "Turn it on to encrypt mail on the device with a PIN or passkey.": "オンにすると、PIN またはパスキーでデバイス上のメールを暗号化します。",
   "Live delivery data": "リアルタイムの配信データ",
-  "Data from our latest test, which runs about every five minutes. Direct is a message from our servers to an inbox at that provider. Forwarding is a message to a Forward Email address that forwards it to that inbox.": "約 5 分ごとに実行している最新テストのデータです。「直接」は、当社のサーバーからそのプロバイダーの受信トレイへ送るメッセージです。「転送」は、Forward Email のアドレスに送り、そこからその受信トレイへ転送されるメッセージです。",
   "We are rated <span class=\"notranslate\">%s</span> out of 5, according to <span class=\"notranslate\">%s</span> reviews on %s.": "評価は 5 点満点中 <span class=\"notranslate\">%s</span> 点です。<span class=\"notranslate\">%s</span> 件のレビューに基づく %s での評価です。",
   "Your forwarding rules live in your domain's DNS records, and you can <a href=\"%s\">encrypt them</a>. Paid plans keep them out of DNS.": "転送ルールはドメインの DNS レコードに保存されます。<a href=\"%s\">暗号化する</a>こともできます。有料プランでは、ルールを DNS に置きません。",
   "Your forwarding rules stay out of DNS, in our secure, backed-up database.": "転送ルールは DNS に置かず、安全でバックアップされた当社のデータベースに保存します。",
@@ -23378,8 +23375,12 @@
   "These answers from our FAQ may help:": "FAQ の以下の回答が役立つかもしれません：",
   "Outbound SMTP is now available!": "送信SMTPが利用可能になりました！",
   "Each domain needs a one-time review, usually within 24 hours.": "各ドメインは一度だけ審査を受ける必要があります。通常は24時間以内に完了します。",
-  "We build our own apps for desktop, mobile and the terminal. The desktop and mobile apps work offline. Apple Mail and other mail apps work too.": "デスクトップ、モバイル、ターミナル向けに独自のアプリを開発しています。デスクトップアプリとモバイルアプリはオフラインでも使えます。Apple Mailなど他のメールアプリも使えます。",
   "Signed updates install themselves. Windows and macOS builds are code-signed.": "署名済みのアップデートは自動でインストールされます。WindowsとmacOSのビルドはコード署名されています。",
   "Installers are signed. While the new certificate builds reputation, SmartScreen may still warn on first run: choose More info, then Run anyway.": "インストーラーは署名済みです。新しい証明書の評価が蓄積されるまでは、初回起動時にSmartScreenが警告を表示する場合があります。「詳細情報」を選択してから「実行」を選択してください。",
-  "The Windows executables are signed. While the new certificate builds reputation, SmartScreen may still warn on first run: choose More info, then Run anyway.": "Windowsの実行ファイルは署名済みです。新しい証明書の評価が蓄積されるまでは、初回起動時にSmartScreenが警告を表示する場合があります。「詳細情報」を選択してから「実行」を選択してください。"
+  "The Windows executables are signed. While the new certificate builds reputation, SmartScreen may still warn on first run: choose More info, then Run anyway.": "Windowsの実行ファイルは署名済みです。新しい証明書の評価が蓄積されるまでは、初回起動時にSmartScreenが警告を表示する場合があります。「詳細情報」を選択してから「実行」を選択してください。",
+  "We tested delivery ourselves: these figures are data from our own monitor, which sends test messages about every %d minutes. Direct is a message from our servers to an inbox at that provider. Forwarding is a message to a Forward Email address that forwards it to that inbox.": "配信テストは当社自身で行っています。これらの数値は、約 %d 分ごとにテストメッセージを送る当社独自の監視システムのデータです。「直接」は、当社のサーバーからそのプロバイダーの受信トレイへ送るメッセージです。「転送」は、Forward Email のアドレスに送り、そこからその受信トレイへ転送されるメッセージです。",
+  "According to our latest test, every message arrived within %s.": "最新テストによると、すべてのメッセージが %s 以内に届きました。",
+  "According to our technical whitepaper, each mailbox is its own SQLite file, encrypted at rest with ChaCha20-Poly1305. The key is your mailbox password, and only you have it.": "当社の技術ホワイトペーパーによると、各メールボックスは個別の SQLite ファイルで、保存時は ChaCha20-Poly1305 で暗号化されます。鍵はメールボックスのパスワードで、それを持っているのはあなただけです。",
+  "We build our own apps for %d platforms, from desktop and mobile to the terminal. The desktop and mobile apps work offline. Apple Mail and other mail apps work too.": "デスクトップやモバイルからターミナルまで、%d つのプラットフォーム向けに独自のアプリを開発しています。デスクトップアプリとモバイルアプリはオフラインでも使えます。Apple Mailなど他のメールアプリも使えます。",
+  "All %d plans include unlimited domains, the free plan too. Start with forwarding, upgrade to mailboxes from $%d/mo, then add team controls.": "無料プランを含む全 %d プランで、ドメインを無制限に利用できます。まず転送から始め、月額 $%d からのメールボックスにアップグレードし、その後チーム管理機能を追加できます。"
 }

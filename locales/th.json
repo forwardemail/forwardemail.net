@@ -23252,7 +23252,6 @@
   "Free Email Forwarding for Custom Domains - Open Source Email Service": "ส่งต่ออีเมลฟรีสำหรับโดเมนที่กำหนดเอง - บริการอีเมลโอเพ่นซอร์ส",
   "Get free email forwarding for custom domains. Send & receive as you@yourdomain.com with unlimited aliases, 10GB storage & 100% open-source security.": "ส่งต่ออีเมลฟรีสำหรับโดเมนที่กำหนดเอง ส่งและรับอีเมลในชื่อ you@yourdomain.com พร้อมนามแฝงไม่จำกัด พื้นที่จัดเก็บ 10GB และความปลอดภัยแบบโอเพ่นซอร์ส 100%",
   "How many domains can I use?": "ฉันใช้โดเมนได้กี่โดเมน?",
-  "Every plan includes unlimited domains, the free plan too. Start with forwarding, upgrade to mailboxes, then add team controls.": "ทุกแผนรวมโดเมนไม่จำกัด รวมถึงแผนฟรีด้วย เริ่มจากการส่งต่ออีเมล อัปเกรดเป็นกล่องจดหมาย แล้วเพิ่มการควบคุมสำหรับทีม",
   "Why do people switch to Forward Email?": "ทำไมผู้คนจึงเปลี่ยนมาใช้ Forward Email?",
   "We measure these delivery times with our own open-source monitor. It sends test emails to inboxes at major email providers and records how long each one takes to arrive. Our engineers get an alert when a delivery takes longer than 10 seconds.": "เราวัดเวลาการส่งเหล่านี้ด้วยระบบตรวจสอบแบบโอเพ่นซอร์สของเราเอง ระบบจะส่งอีเมลทดสอบไปยังกล่องจดหมายเข้าของผู้ให้บริการอีเมลรายใหญ่ และบันทึกว่าแต่ละฉบับใช้เวลานานเท่าใดจึงมาถึง วิศวกรของเราจะได้รับการแจ้งเตือนเมื่อการส่งใช้เวลานานกว่า 10 วินาที",
   "Skip to content": "ข้ามไปยังเนื้อหา",
@@ -23333,7 +23332,6 @@
   "Send every address, or any regex match, to the inbox you choose.": "ส่งทุกที่อยู่ หรือที่อยู่ใดก็ได้ที่ตรงกับ regex ไปยังกล่องจดหมายที่คุณเลือก",
   "One alias can reach people, teams and webhooks.": "นามแฝงเดียวส่งถึงได้ทั้งบุคคล ทีม และเว็บฮุก",
   "Turn off an alias without deleting its mail.": "ปิดนามแฝงได้โดยไม่ต้องลบอีเมลของนามแฝงนั้น",
-  "Each mailbox is its own SQLite file, encrypted at rest with ChaCha20-Poly1305. The key is your mailbox password, and only you have it.": "แต่ละกล่องจดหมายเป็นไฟล์ SQLite ของตัวเอง และเข้ารหัสขณะจัดเก็บด้วย ChaCha20-Poly1305 คีย์คือรหัสผ่านกล่องจดหมายของคุณ และมีเพียงคุณเท่านั้นที่มี",
   "Works in Apple Mail, Thunderbird and phone apps.": "ใช้งานได้กับ Apple Mail, Thunderbird และแอปบนโทรศัพท์",
   "One storage pool for all your domains.": "พื้นที่จัดเก็บรวมเดียวสำหรับทุกโดเมนของคุณ",
   "Quantum-resistant encryption on every mailbox.": "การเข้ารหัสที่ทนทานต่อควอนตัมในทุกกล่องจดหมาย",
@@ -23356,7 +23354,6 @@
   "The forwardemail command, with desktop notifications.": "คำสั่ง forwardemail พร้อมการแจ้งเตือนบนเดสก์ท็อป",
   "Turn it on to encrypt mail on the device with a PIN or passkey.": "เปิดใช้งานเพื่อเข้ารหัสอีเมลบนอุปกรณ์ด้วย PIN หรือพาสคีย์",
   "Live delivery data": "ข้อมูลการส่งแบบเรียลไทม์",
-  "Data from our latest test, which runs about every five minutes. Direct is a message from our servers to an inbox at that provider. Forwarding is a message to a Forward Email address that forwards it to that inbox.": "ข้อมูลจากการทดสอบล่าสุดของเรา ซึ่งทำงานประมาณทุกห้านาที “โดยตรง” คือข้อความจากเซิร์ฟเวอร์ของเราไปยังกล่องจดหมายที่ผู้ให้บริการนั้น “การส่งต่อ” คือข้อความไปยังที่อยู่ Forward Email ซึ่งส่งต่อไปยังกล่องจดหมายนั้น",
   "We are rated <span class=\"notranslate\">%s</span> out of 5, according to <span class=\"notranslate\">%s</span> reviews on %s.": "เราได้รับคะแนน <span class=\"notranslate\">%s</span> จาก 5 จากรีวิว <span class=\"notranslate\">%s</span> รายการบน %s",
   "Your forwarding rules live in your domain's DNS records, and you can <a href=\"%s\">encrypt them</a>. Paid plans keep them out of DNS.": "กฎการส่งต่อของคุณอยู่ในระเบียน DNS ของโดเมน และคุณสามารถ<a href=\"%s\">เข้ารหัสกฎเหล่านั้น</a>ได้ แผนแบบชำระเงินจะเก็บกฎไว้นอก DNS",
   "Your forwarding rules stay out of DNS, in our secure, backed-up database.": "กฎการส่งต่อของคุณไม่อยู่ใน DNS แต่อยู่ในฐานข้อมูลของเราที่ปลอดภัยและมีการสำรองข้อมูล",
@@ -23378,8 +23375,12 @@
   "These answers from our FAQ may help:": "คำตอบเหล่านี้จาก FAQ ของเราอาจช่วยได้:",
   "Outbound SMTP is now available!": "SMTP ขาออกพร้อมใช้งานแล้ว!",
   "Each domain needs a one-time review, usually within 24 hours.": "แต่ละโดเมนต้องได้รับการตรวจสอบเพียงครั้งเดียว โดยปกติภายใน 24 ชั่วโมง",
-  "We build our own apps for desktop, mobile and the terminal. The desktop and mobile apps work offline. Apple Mail and other mail apps work too.": "เราสร้างแอปของเราเองสำหรับเดสก์ท็อป มือถือ และเทอร์มินัล แอปเดสก์ท็อปและมือถือใช้งานแบบออฟไลน์ได้ Apple Mail และแอปอีเมลอื่นๆ ก็ใช้ได้เช่นกัน",
   "Signed updates install themselves. Windows and macOS builds are code-signed.": "อัปเดตที่ลงนามแล้วจะติดตั้งเองโดยอัตโนมัติ บิลด์สำหรับ Windows และ macOS ลงนามโค้ดแล้ว",
   "Installers are signed. While the new certificate builds reputation, SmartScreen may still warn on first run: choose More info, then Run anyway.": "ตัวติดตั้งลงนามแล้ว ระหว่างที่ใบรับรองใหม่กำลังสร้างความน่าเชื่อถือ SmartScreen อาจยังแสดงคำเตือนเมื่อรันครั้งแรก: เลือก More info แล้วเลือก Run anyway",
-  "The Windows executables are signed. While the new certificate builds reputation, SmartScreen may still warn on first run: choose More info, then Run anyway.": "ไฟล์ปฏิบัติการสำหรับ Windows ลงนามแล้ว ระหว่างที่ใบรับรองใหม่กำลังสร้างความน่าเชื่อถือ SmartScreen อาจยังแสดงคำเตือนเมื่อรันครั้งแรก: เลือก More info แล้วเลือก Run anyway"
+  "The Windows executables are signed. While the new certificate builds reputation, SmartScreen may still warn on first run: choose More info, then Run anyway.": "ไฟล์ปฏิบัติการสำหรับ Windows ลงนามแล้ว ระหว่างที่ใบรับรองใหม่กำลังสร้างความน่าเชื่อถือ SmartScreen อาจยังแสดงคำเตือนเมื่อรันครั้งแรก: เลือก More info แล้วเลือก Run anyway",
+  "We tested delivery ourselves: these figures are data from our own monitor, which sends test messages about every %d minutes. Direct is a message from our servers to an inbox at that provider. Forwarding is a message to a Forward Email address that forwards it to that inbox.": "เราทดสอบการส่งอีเมลด้วยตัวเอง ตัวเลขเหล่านี้เป็นข้อมูลจากระบบตรวจสอบของเราเอง ซึ่งส่งข้อความทดสอบประมาณทุก %d นาที “โดยตรง” คือข้อความจากเซิร์ฟเวอร์ของเราไปยังกล่องจดหมายที่ผู้ให้บริการนั้น “การส่งต่อ” คือข้อความไปยังที่อยู่ Forward Email ซึ่งส่งต่อไปยังกล่องจดหมายนั้น",
+  "According to our latest test, every message arrived within %s.": "จากการทดสอบล่าสุดของเรา ทุกข้อความมาถึงภายใน %s",
+  "According to our technical whitepaper, each mailbox is its own SQLite file, encrypted at rest with ChaCha20-Poly1305. The key is your mailbox password, and only you have it.": "ตามเอกสารทางเทคนิคของเรา แต่ละกล่องจดหมายเป็นไฟล์ SQLite ของตัวเอง และเข้ารหัสขณะจัดเก็บด้วย ChaCha20-Poly1305 คีย์คือรหัสผ่านกล่องจดหมายของคุณ และมีเพียงคุณเท่านั้นที่มี",
+  "We build our own apps for %d platforms, from desktop and mobile to the terminal. The desktop and mobile apps work offline. Apple Mail and other mail apps work too.": "เราสร้างแอปของเราเองสำหรับ %d แพลตฟอร์ม ตั้งแต่เดสก์ท็อปและมือถือไปจนถึงเทอร์มินัล แอปเดสก์ท็อปและมือถือใช้งานแบบออฟไลน์ได้ Apple Mail และแอปอีเมลอื่นๆ ก็ใช้ได้เช่นกัน",
+  "All %d plans include unlimited domains, the free plan too. Start with forwarding, upgrade to mailboxes from $%d/mo, then add team controls.": "ทั้ง %d แผนรวมโดเมนไม่จำกัด รวมถึงแผนฟรีด้วย เริ่มจากการส่งต่ออีเมล อัปเกรดเป็นกล่องจดหมายเริ่มต้นที่ $%d/เดือน แล้วเพิ่มการควบคุมสำหรับทีม"
 }

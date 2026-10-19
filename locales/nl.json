@@ -23252,7 +23252,6 @@
   "Free Email Forwarding for Custom Domains - Open Source Email Service": "Gratis e-mail doorsturen voor aangepaste domeinen - Open source e-maildienst",
   "Get free email forwarding for custom domains. Send & receive as you@yourdomain.com with unlimited aliases, 10GB storage & 100% open-source security.": "Gratis e-mail doorsturen voor aangepaste domeinen. Verstuur en ontvang als you@yourdomain.com met onbeperkte aliassen, 10GB opslag en 100% open source beveiliging.",
   "How many domains can I use?": "Hoeveel domeinen kan ik gebruiken?",
-  "Every plan includes unlimited domains, the free plan too. Start with forwarding, upgrade to mailboxes, then add team controls.": "Elk abonnement bevat onbeperkte domeinen, ook het gratis abonnement. Begin met doorsturen, upgrade naar mailboxen en voeg daarna teambeheer toe.",
   "Why do people switch to Forward Email?": "Waarom stappen mensen over op Forward Email?",
   "We measure these delivery times with our own open-source monitor. It sends test emails to inboxes at major email providers and records how long each one takes to arrive. Our engineers get an alert when a delivery takes longer than 10 seconds.": "We meten deze bezorgtijden met onze eigen open source monitor. Deze verstuurt testmails naar inboxen bij grote e-mailproviders en registreert hoe lang elke e-mail erover doet om aan te komen. Onze engineers krijgen een melding als een bezorging langer dan 10 seconden duurt.",
   "Skip to content": "Naar inhoud springen",
@@ -23333,7 +23332,6 @@
   "Send every address, or any regex match, to the inbox you choose.": "Stuur elk adres, of elke match met een reguliere expressie, naar de inbox van uw keuze.",
   "One alias can reach people, teams and webhooks.": "Eén alias kan personen, teams en webhooks bereiken.",
   "Turn off an alias without deleting its mail.": "Schakel een alias uit zonder de e-mail ervan te verwijderen.",
-  "Each mailbox is its own SQLite file, encrypted at rest with ChaCha20-Poly1305. The key is your mailbox password, and only you have it.": "Elke mailbox is een eigen SQLite-bestand, in opslag versleuteld met ChaCha20-Poly1305. De sleutel is uw mailboxwachtwoord, en alleen u heeft die.",
   "Works in Apple Mail, Thunderbird and phone apps.": "Werkt in Apple Mail, Thunderbird en apps op uw telefoon.",
   "One storage pool for all your domains.": "Eén opslagpool voor al uw domeinen.",
   "Quantum-resistant encryption on every mailbox.": "Kwantumbestendige versleuteling op elke mailbox.",
@@ -23356,7 +23354,6 @@
   "The forwardemail command, with desktop notifications.": "Het commando forwardemail, met desktopmeldingen.",
   "Turn it on to encrypt mail on the device with a PIN or passkey.": "Schakel deze in om e-mail op het apparaat te versleutelen met een pincode of passkey.",
   "Live delivery data": "Live bezorgingsgegevens",
-  "Data from our latest test, which runs about every five minutes. Direct is a message from our servers to an inbox at that provider. Forwarding is a message to a Forward Email address that forwards it to that inbox.": "Gegevens uit onze meest recente test, die ongeveer elke vijf minuten draait. Direct is een bericht van onze servers naar een inbox bij die provider. Doorsturen is een bericht naar een Forward Email-adres dat het doorstuurt naar die inbox.",
   "We are rated <span class=\"notranslate\">%s</span> out of 5, according to <span class=\"notranslate\">%s</span> reviews on %s.": "We krijgen een <span class=\"notranslate\">%s</span> uit 5, volgens <span class=\"notranslate\">%s</span> beoordelingen op %s.",
   "Your forwarding rules live in your domain's DNS records, and you can <a href=\"%s\">encrypt them</a>. Paid plans keep them out of DNS.": "Uw doorstuurregels staan in de DNS-records van uw domein, en u kunt <a href=\"%s\">ze versleutelen</a>. Bij betaalde abonnementen staan ze niet in DNS.",
   "Your forwarding rules stay out of DNS, in our secure, backed-up database.": "Uw doorstuurregels staan niet in DNS, maar in onze beveiligde database met back-ups.",
@@ -23378,8 +23375,12 @@
   "These answers from our FAQ may help:": "Deze antwoorden uit onze FAQ kunnen helpen:",
   "Outbound SMTP is now available!": "Uitgaande SMTP is nu beschikbaar!",
   "Each domain needs a one-time review, usually within 24 hours.": "Elk domein krijgt eenmalig een controle, meestal binnen 24 uur.",
-  "We build our own apps for desktop, mobile and the terminal. The desktop and mobile apps work offline. Apple Mail and other mail apps work too.": "We bouwen onze eigen apps voor desktop, mobiel en de terminal. De desktop- en mobiele apps werken offline. Apple Mail en andere e-mailapps werken ook.",
   "Signed updates install themselves. Windows and macOS builds are code-signed.": "Ondertekende updates installeren zichzelf. De builds voor Windows en macOS zijn met code ondertekend.",
   "Installers are signed. While the new certificate builds reputation, SmartScreen may still warn on first run: choose More info, then Run anyway.": "Installers zijn ondertekend. Zolang het nieuwe certificaat nog reputatie opbouwt, kan SmartScreen bij de eerste keer starten nog een waarschuwing tonen: kies Meer informatie en daarna Toch uitvoeren.",
-  "The Windows executables are signed. While the new certificate builds reputation, SmartScreen may still warn on first run: choose More info, then Run anyway.": "De uitvoerbare Windows-bestanden zijn ondertekend. Zolang het nieuwe certificaat nog reputatie opbouwt, kan SmartScreen bij de eerste keer starten nog een waarschuwing tonen: kies Meer informatie en daarna Toch uitvoeren."
+  "The Windows executables are signed. While the new certificate builds reputation, SmartScreen may still warn on first run: choose More info, then Run anyway.": "De uitvoerbare Windows-bestanden zijn ondertekend. Zolang het nieuwe certificaat nog reputatie opbouwt, kan SmartScreen bij de eerste keer starten nog een waarschuwing tonen: kies Meer informatie en daarna Toch uitvoeren.",
+  "We tested delivery ourselves: these figures are data from our own monitor, which sends test messages about every %d minutes. Direct is a message from our servers to an inbox at that provider. Forwarding is a message to a Forward Email address that forwards it to that inbox.": "We hebben de bezorging zelf getest: deze cijfers zijn gegevens van onze eigen monitor, die ongeveer elke %d minuten testberichten verstuurt. Direct is een bericht van onze servers naar een inbox bij die provider. Doorsturen is een bericht naar een Forward Email-adres dat het doorstuurt naar die inbox.",
+  "According to our latest test, every message arrived within %s.": "Volgens onze meest recente test kwam elk bericht binnen %s aan.",
+  "According to our technical whitepaper, each mailbox is its own SQLite file, encrypted at rest with ChaCha20-Poly1305. The key is your mailbox password, and only you have it.": "Volgens ons technisch whitepaper is elke mailbox een eigen SQLite-bestand, in opslag versleuteld met ChaCha20-Poly1305. De sleutel is uw mailboxwachtwoord, en alleen u heeft die.",
+  "We build our own apps for %d platforms, from desktop and mobile to the terminal. The desktop and mobile apps work offline. Apple Mail and other mail apps work too.": "We bouwen onze eigen apps voor %d platforms, van desktop en mobiel tot de terminal. De desktop- en mobiele apps werken offline. Apple Mail en andere e-mailapps werken ook.",
+  "All %d plans include unlimited domains, the free plan too. Start with forwarding, upgrade to mailboxes from $%d/mo, then add team controls.": "Alle %d abonnementen bevatten onbeperkte domeinen, ook het gratis abonnement. Begin met doorsturen, upgrade naar mailboxen vanaf $%d/mnd en voeg daarna teambeheer toe."
 }

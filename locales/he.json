@@ -23252,7 +23252,6 @@
   "Free Email Forwarding for Custom Domains - Open Source Email Service": "העברת דוא\"ל בחינם לדומיינים מותאמים אישית - שירות דוא\"ל בקוד פתוח",
   "Get free email forwarding for custom domains. Send & receive as you@yourdomain.com with unlimited aliases, 10GB storage & 100% open-source security.": "העברת דוא\"ל בחינם לדומיינים מותאמים אישית. שלחו וקבלו בתור you@yourdomain.com עם כינויים ללא הגבלה, 10GB אחסון ואבטחה בקוד פתוח 100%.",
   "How many domains can I use?": "בכמה דומיינים אפשר להשתמש?",
-  "Every plan includes unlimited domains, the free plan too. Start with forwarding, upgrade to mailboxes, then add team controls.": "כל תוכנית כוללת דומיינים ללא הגבלה, גם התוכנית החינמית. התחל בהעברה, שדרג לתיבות דואר ואז הוסף ניהול צוות.",
   "Why do people switch to Forward Email?": "למה אנשים עוברים ל-Forward Email?",
   "We measure these delivery times with our own open-source monitor. It sends test emails to inboxes at major email providers and records how long each one takes to arrive. Our engineers get an alert when a delivery takes longer than 10 seconds.": "אנו מודדים את זמני המסירה האלה בעזרת כלי ניטור בקוד פתוח שפיתחנו. הוא שולח הודעות בדיקה לתיבות דואר אצל ספקי דוא\"ל גדולים ומתעד כמה זמן לוקח לכל הודעה להגיע. המהנדסים שלנו מקבלים התראה כשמסירה נמשכת יותר מ-10 שניות.",
   "Skip to content": "דלג לתוכן",
@@ -23333,7 +23332,6 @@
   "Send every address, or any regex match, to the inbox you choose.": "שלח כל כתובת, או כל התאמה לביטוי רגולרי, לתיבת הדואר שתבחר.",
   "One alias can reach people, teams and webhooks.": "כינוי אחד יכול להגיע לאנשים, לצוותים ול-webhooks.",
   "Turn off an alias without deleting its mail.": "השבת כינוי בלי למחוק את הדואר שלו.",
-  "Each mailbox is its own SQLite file, encrypted at rest with ChaCha20-Poly1305. The key is your mailbox password, and only you have it.": "כל תיבת דואר היא קובץ SQLite נפרד, מוצפן במנוחה באמצעות ChaCha20-Poly1305. המפתח הוא סיסמת תיבת הדואר שלך, ורק לך יש אותו.",
   "Works in Apple Mail, Thunderbird and phone apps.": "עובד ב-Apple Mail, ב-Thunderbird ובאפליקציות לטלפון.",
   "One storage pool for all your domains.": "מאגר אחסון אחד לכל הדומיינים שלך.",
   "Quantum-resistant encryption on every mailbox.": "הצפנה עמידה לקוונטים בכל תיבת דואר.",
@@ -23356,7 +23354,6 @@
   "The forwardemail command, with desktop notifications.": "הפקודה forwardemail, עם התראות בשולחן העבודה.",
   "Turn it on to encrypt mail on the device with a PIN or passkey.": "הפעל אותה כדי להצפין את הדואר במכשיר באמצעות PIN או מפתח גישה.",
   "Live delivery data": "נתוני מסירה בזמן אמת",
-  "Data from our latest test, which runs about every five minutes. Direct is a message from our servers to an inbox at that provider. Forwarding is a message to a Forward Email address that forwards it to that inbox.": "נתונים מהבדיקה האחרונה שלנו, שרצה בערך כל חמש דקות. \"ישיר\" היא הודעה מהשרתים שלנו לתיבת דואר אצל אותו ספק. \"העברה\" היא הודעה לכתובת Forward Email שמעבירה אותה לאותה תיבת דואר.",
   "We are rated <span class=\"notranslate\">%s</span> out of 5, according to <span class=\"notranslate\">%s</span> reviews on %s.": "הדירוג שלנו הוא <span class=\"notranslate\">%s</span> מתוך 5, לפי <span class=\"notranslate\">%s</span> ביקורות ב-%s.",
   "Your forwarding rules live in your domain's DNS records, and you can <a href=\"%s\">encrypt them</a>. Paid plans keep them out of DNS.": "כללי ההעברה שלך נשמרים ברשומות ה-DNS של הדומיין שלך, ואפשר <a href=\"%s\">להצפין אותם</a>. בתוכניות בתשלום הם לא נשמרים ב-DNS.",
   "Your forwarding rules stay out of DNS, in our secure, backed-up database.": "כללי ההעברה שלך לא נשמרים ב-DNS, אלא במסד הנתונים המאובטח והמגובה שלנו.",
@@ -23378,8 +23375,12 @@
   "These answers from our FAQ may help:": "התשובות הבאות מה-FAQ שלנו עשויות לעזור:",
   "Outbound SMTP is now available!": "SMTP יוצא זמין כעת!",
   "Each domain needs a one-time review, usually within 24 hours.": "כל דומיין עובר בדיקה חד-פעמית, בדרך כלל תוך 24 שעות.",
-  "We build our own apps for desktop, mobile and the terminal. The desktop and mobile apps work offline. Apple Mail and other mail apps work too.": "אנו מפתחים יישומים משלנו למחשב, לנייד ולטרמינל. יישומי המחשב והנייד עובדים גם במצב לא מקוון. גם Apple Mail ויישומי דואר אחרים עובדים.",
   "Signed updates install themselves. Windows and macOS builds are code-signed.": "עדכונים חתומים מותקנים מעצמם. גרסאות Windows ו-macOS חתומות דיגיטלית.",
   "Installers are signed. While the new certificate builds reputation, SmartScreen may still warn on first run: choose More info, then Run anyway.": "קובצי ההתקנה חתומים. כל עוד התעודה החדשה צוברת מוניטין, SmartScreen עדיין עשוי להציג אזהרה בהפעלה הראשונה: בחר מידע נוסף, ולאחר מכן הפעל בכל זאת.",
-  "The Windows executables are signed. While the new certificate builds reputation, SmartScreen may still warn on first run: choose More info, then Run anyway.": "קובצי ההפעלה של Windows חתומים. כל עוד התעודה החדשה צוברת מוניטין, SmartScreen עדיין עשוי להציג אזהרה בהפעלה הראשונה: בחר מידע נוסף, ולאחר מכן הפעל בכל זאת."
+  "The Windows executables are signed. While the new certificate builds reputation, SmartScreen may still warn on first run: choose More info, then Run anyway.": "קובצי ההפעלה של Windows חתומים. כל עוד התעודה החדשה צוברת מוניטין, SmartScreen עדיין עשוי להציג אזהרה בהפעלה הראשונה: בחר מידע נוסף, ולאחר מכן הפעל בכל זאת.",
+  "We tested delivery ourselves: these figures are data from our own monitor, which sends test messages about every %d minutes. Direct is a message from our servers to an inbox at that provider. Forwarding is a message to a Forward Email address that forwards it to that inbox.": "בדקנו את המסירה בעצמנו: הנתונים האלה מגיעים מכלי הניטור שלנו, ששולח הודעות בדיקה בערך כל %d דקות. \"ישיר\" היא הודעה מהשרתים שלנו לתיבת דואר אצל אותו ספק. \"העברה\" היא הודעה לכתובת Forward Email שמעבירה אותה לאותה תיבת דואר.",
+  "According to our latest test, every message arrived within %s.": "לפי הבדיקה האחרונה שלנו, כל הודעה הגיעה תוך %s.",
+  "According to our technical whitepaper, each mailbox is its own SQLite file, encrypted at rest with ChaCha20-Poly1305. The key is your mailbox password, and only you have it.": "לפי הנייר הטכני שלנו, כל תיבת דואר היא קובץ SQLite נפרד, מוצפן במנוחה באמצעות ChaCha20-Poly1305. המפתח הוא סיסמת תיבת הדואר שלך, ורק לך יש אותו.",
+  "We build our own apps for %d platforms, from desktop and mobile to the terminal. The desktop and mobile apps work offline. Apple Mail and other mail apps work too.": "אנו מפתחים יישומים משלנו ל-%d פלטפורמות, מהמחשב והנייד ועד הטרמינל. יישומי המחשב והנייד עובדים גם במצב לא מקוון. גם Apple Mail ויישומי דואר אחרים עובדים.",
+  "All %d plans include unlimited domains, the free plan too. Start with forwarding, upgrade to mailboxes from $%d/mo, then add team controls.": "כל %d התוכניות כוללות דומיינים ללא הגבלה, גם התוכנית החינמית. התחל בהעברה, שדרג לתיבות דואר החל מ-$%d לחודש ואז הוסף ניהול צוות."
 }

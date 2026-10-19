@@ -31,8 +31,13 @@ if ttiData && (isTtiPage || canRenderTti)
 
         h2.fe-tti__section-title= t("Current Delivery Times")
         //- what the figures measure (see jobs/tti.js: it runs again once the
-        //- last result is five minutes old)
-        p.fe-tti__legend= t("Data from our latest test, which runs about every five minutes. Direct is a message from our servers to an inbox at that provider. Forwarding is a message to a Forward Email address that forwards it to that inbox.")
+        //- last result is five minutes old), and the slowest of them
+        - const ttiSlowestMs = Math.max(...ttiData.providers.flatMap((provider) => [provider.directMs, provider.forwardingMs]));
+        p.fe-tti__legend
+          = t("We tested delivery ourselves: these figures are data from our own monitor, which sends test messages about every %d minutes. Direct is a message from our servers to an inbox at that provider. Forwarding is a message to a Forward Email address that forwards it to that inbox.", 5)
+          if Number.isFinite(ttiSlowestMs) && ttiSlowestMs > 0
+            = " "
+            = t("According to our latest test, every message arrived within %s.", prettyMilliseconds(ttiSlowestMs))
         ul.fe-tti__metrics
           each provider in ttiData.providers
             li.fe-tti__metric

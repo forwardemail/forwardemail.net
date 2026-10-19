@@ -530,6 +530,17 @@ test('the home page reads as text: one name per heading, sentences with their fa
   );
   t.true(sentences.includes('Included on every paid plan from $3/mo.'));
 
+  // the pricing lede and the apps view give their figures
+  t.is(
+    text(document.querySelector('.fe-pricing .fe-lede')),
+    'All 4 plans include unlimited domains, the free plan too. Start with forwarding, upgrade to mailboxes from $3/mo, then add team controls.'
+  );
+  t.true(
+    sentences.some((sentence) =>
+      sentence.startsWith('We build our own apps for 6 platforms')
+    )
+  );
+
   // every plan card says how it works in a sentence of its own
   const plans = [...document.querySelectorAll('.fe-pricing .fe-plan')];
   t.is(plans.length, 4);

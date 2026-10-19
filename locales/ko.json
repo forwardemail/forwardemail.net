@@ -23252,7 +23252,6 @@
   "Free Email Forwarding for Custom Domains - Open Source Email Service": "사용자 지정 도메인용 무료 이메일 전달 - 오픈소스 이메일 서비스",
   "Get free email forwarding for custom domains. Send & receive as you@yourdomain.com with unlimited aliases, 10GB storage & 100% open-source security.": "사용자 지정 도메인용 무료 이메일 전달. 무제한 별칭, 10GB 저장 공간, 100% 오픈소스 보안으로 you@yourdomain.com 주소로 이메일을 주고받으세요.",
   "How many domains can I use?": "도메인을 몇 개까지 사용할 수 있나요?",
-  "Every plan includes unlimited domains, the free plan too. Start with forwarding, upgrade to mailboxes, then add team controls.": "무료 플랜을 포함한 모든 플랜에서 도메인을 무제한으로 사용할 수 있습니다. 이메일 전달로 시작하고, 메일박스로 업그레이드한 다음, 팀 관리 기능을 추가하세요.",
   "Why do people switch to Forward Email?": "사람들이 Forward Email로 전환하는 이유는 무엇인가요?",
   "We measure these delivery times with our own open-source monitor. It sends test emails to inboxes at major email providers and records how long each one takes to arrive. Our engineers get an alert when a delivery takes longer than 10 seconds.": "이 전송 시간은 자체 오픈소스 모니터로 측정합니다. 주요 이메일 제공업체의 받은편지함으로 테스트 이메일을 보내고 각 이메일이 도착하는 데 걸린 시간을 기록합니다. 전송에 10초 넘게 걸리면 엔지니어에게 알림이 전송됩니다.",
   "Skip to content": "본문으로 건너뛰기",
@@ -23333,7 +23332,6 @@
   "Send every address, or any regex match, to the inbox you choose.": "모든 주소 또는 정규식에 일치하는 주소를 원하는 받은편지함으로 보내세요.",
   "One alias can reach people, teams and webhooks.": "하나의 별칭으로 개인, 팀, 웹훅에 전달할 수 있습니다.",
   "Turn off an alias without deleting its mail.": "메일을 삭제하지 않고 별칭을 끌 수 있습니다.",
-  "Each mailbox is its own SQLite file, encrypted at rest with ChaCha20-Poly1305. The key is your mailbox password, and only you have it.": "각 사서함은 독립된 SQLite 파일이며, 저장 시 ChaCha20-Poly1305로 암호화됩니다. 키는 사서함 비밀번호이며, 오직 본인만 가지고 있습니다.",
   "Works in Apple Mail, Thunderbird and phone apps.": "Apple Mail, Thunderbird 및 휴대폰 앱에서 사용할 수 있습니다.",
   "One storage pool for all your domains.": "모든 도메인을 위한 하나의 저장 공간 풀.",
   "Quantum-resistant encryption on every mailbox.": "모든 사서함에 양자 내성 암호화를 적용합니다.",
@@ -23356,7 +23354,6 @@
   "The forwardemail command, with desktop notifications.": "데스크톱 알림을 지원하는 forwardemail 명령.",
   "Turn it on to encrypt mail on the device with a PIN or passkey.": "켜면 PIN 또는 패스키로 기기의 메일을 암호화합니다.",
   "Live delivery data": "실시간 전송 데이터",
-  "Data from our latest test, which runs about every five minutes. Direct is a message from our servers to an inbox at that provider. Forwarding is a message to a Forward Email address that forwards it to that inbox.": "약 5분마다 실행되는 최신 테스트의 데이터입니다. '직접'은 저희 서버에서 해당 제공업체의 받은편지함으로 보낸 메시지입니다. '전달'은 Forward Email 주소로 보낸 뒤 그 주소가 해당 받은편지함으로 전달한 메시지입니다.",
   "We are rated <span class=\"notranslate\">%s</span> out of 5, according to <span class=\"notranslate\">%s</span> reviews on %s.": "평점은 5점 만점에 <span class=\"notranslate\">%s</span>점이며, <span class=\"notranslate\">%s</span>개의 %s 리뷰를 기준으로 합니다.",
   "Your forwarding rules live in your domain's DNS records, and you can <a href=\"%s\">encrypt them</a>. Paid plans keep them out of DNS.": "전달 규칙은 도메인의 DNS 레코드에 있으며, <a href=\"%s\">암호화</a>할 수도 있습니다. 유료 플랜에서는 규칙을 DNS에 두지 않습니다.",
   "Your forwarding rules stay out of DNS, in our secure, backed-up database.": "전달 규칙은 DNS가 아닌, 백업되는 안전한 저희 데이터베이스에 보관됩니다.",
@@ -23378,8 +23375,12 @@
   "These answers from our FAQ may help:": "FAQ의 다음 답변이 도움이 될 수 있습니다:",
   "Outbound SMTP is now available!": "이제 아웃바운드 SMTP를 사용할 수 있습니다!",
   "Each domain needs a one-time review, usually within 24 hours.": "각 도메인은 한 번의 검토가 필요하며, 보통 24시간 이내에 완료됩니다.",
-  "We build our own apps for desktop, mobile and the terminal. The desktop and mobile apps work offline. Apple Mail and other mail apps work too.": "데스크톱, 모바일, 터미널용 앱을 직접 만듭니다. 데스크톱 및 모바일 앱은 오프라인에서도 작동합니다. Apple Mail 및 기타 메일 앱도 사용할 수 있습니다.",
   "Signed updates install themselves. Windows and macOS builds are code-signed.": "서명된 업데이트는 자동으로 설치됩니다. Windows 및 macOS 빌드는 코드 서명되어 있습니다.",
   "Installers are signed. While the new certificate builds reputation, SmartScreen may still warn on first run: choose More info, then Run anyway.": "인스톨러는 서명되어 있습니다. 새 인증서가 평판을 쌓는 동안 처음 실행 시 SmartScreen이 여전히 경고할 수 있습니다. 추가 정보를 선택한 다음 실행을 선택하세요.",
-  "The Windows executables are signed. While the new certificate builds reputation, SmartScreen may still warn on first run: choose More info, then Run anyway.": "Windows 실행 파일은 서명되어 있습니다. 새 인증서가 평판을 쌓는 동안 처음 실행할 때 SmartScreen이 여전히 경고할 수 있습니다. 추가 정보를 선택한 다음 실행을 선택하세요."
+  "The Windows executables are signed. While the new certificate builds reputation, SmartScreen may still warn on first run: choose More info, then Run anyway.": "Windows 실행 파일은 서명되어 있습니다. 새 인증서가 평판을 쌓는 동안 처음 실행할 때 SmartScreen이 여전히 경고할 수 있습니다. 추가 정보를 선택한 다음 실행을 선택하세요.",
+  "We tested delivery ourselves: these figures are data from our own monitor, which sends test messages about every %d minutes. Direct is a message from our servers to an inbox at that provider. Forwarding is a message to a Forward Email address that forwards it to that inbox.": "메일 전송을 저희가 직접 테스트했습니다. 이 수치는 약 %d분마다 테스트 메시지를 보내는 자체 모니터링 시스템의 데이터입니다. '직접'은 저희 서버에서 해당 제공업체의 받은편지함으로 보낸 메시지입니다. '전달'은 Forward Email 주소로 보낸 뒤 그 주소가 해당 받은편지함으로 전달한 메시지입니다.",
+  "According to our latest test, every message arrived within %s.": "최신 테스트에 따르면 모든 메시지가 %s 이내에 도착했습니다.",
+  "According to our technical whitepaper, each mailbox is its own SQLite file, encrypted at rest with ChaCha20-Poly1305. The key is your mailbox password, and only you have it.": "저희 기술 백서에 따르면 각 사서함은 독립된 SQLite 파일이며, 저장 시 ChaCha20-Poly1305로 암호화됩니다. 키는 사서함 비밀번호이며, 오직 본인만 가지고 있습니다.",
+  "We build our own apps for %d platforms, from desktop and mobile to the terminal. The desktop and mobile apps work offline. Apple Mail and other mail apps work too.": "데스크톱과 모바일부터 터미널까지, %d개 플랫폼용 앱을 직접 만듭니다. 데스크톱 및 모바일 앱은 오프라인에서도 작동합니다. Apple Mail 및 기타 메일 앱도 사용할 수 있습니다.",
+  "All %d plans include unlimited domains, the free plan too. Start with forwarding, upgrade to mailboxes from $%d/mo, then add team controls.": "무료 플랜을 포함한 %d개 플랜 모두에서 도메인을 무제한으로 사용할 수 있습니다. 이메일 전달로 시작하고, 월 $%d부터 메일박스로 업그레이드한 다음, 팀 관리 기능을 추가하세요."
 }

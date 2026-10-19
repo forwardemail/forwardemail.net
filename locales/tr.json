@@ -23252,7 +23252,6 @@
   "Free Email Forwarding for Custom Domains - Open Source Email Service": "Özel Alan Adları için Ücretsiz E-posta Yönlendirme - Açık Kaynak E-posta",
   "Get free email forwarding for custom domains. Send & receive as you@yourdomain.com with unlimited aliases, 10GB storage & 100% open-source security.": "Özel alan adları için ücretsiz e-posta yönlendirme. you@yourdomain.com olarak e-posta gönderin ve alın: sınırsız takma ad, 10GB depolama ve %100 açık kaynak güvenlik.",
   "How many domains can I use?": "Kaç alan adı kullanabilirim?",
-  "Every plan includes unlimited domains, the free plan too. Start with forwarding, upgrade to mailboxes, then add team controls.": "Ücretsiz plan dahil her plan sınırsız alan adı içerir. Yönlendirmeyle başlayın, posta kutularına yükseltin, ardından ekip yönetimi ekleyin.",
   "Why do people switch to Forward Email?": "İnsanlar neden Forward Email'e geçiyor?",
   "We measure these delivery times with our own open-source monitor. It sends test emails to inboxes at major email providers and records how long each one takes to arrive. Our engineers get an alert when a delivery takes longer than 10 seconds.": "Bu teslimat sürelerini kendi açık kaynaklı izleme aracımızla ölçüyoruz. Araç, büyük e-posta sağlayıcılarındaki gelen kutularına test e-postaları gönderir ve her birinin ulaşmasının ne kadar sürdüğünü kaydeder. Bir teslimat 10 saniyeden uzun sürdüğünde mühendislerimiz uyarı alır.",
   "Skip to content": "İçeriğe atla",
@@ -23333,7 +23332,6 @@
   "Send every address, or any regex match, to the inbox you choose.": "Tüm adresleri veya herhangi bir düzenli ifade eşleşmesini seçtiğiniz gelen kutusuna yönlendirin.",
   "One alias can reach people, teams and webhooks.": "Tek bir takma ad kişilere, ekiplere ve web kancalarına ulaşabilir.",
   "Turn off an alias without deleting its mail.": "Bir takma adı, postalarını silmeden devre dışı bırakın.",
-  "Each mailbox is its own SQLite file, encrypted at rest with ChaCha20-Poly1305. The key is your mailbox password, and only you have it.": "Her posta kutusu, ChaCha20-Poly1305 ile bekleme hâlinde şifrelenen ayrı bir SQLite dosyasıdır. Anahtar, posta kutusu parolanızdır ve yalnızca sizde bulunur.",
   "Works in Apple Mail, Thunderbird and phone apps.": "Apple Mail, Thunderbird ve telefon uygulamalarında çalışır.",
   "One storage pool for all your domains.": "Tüm alan adlarınız için tek bir depolama havuzu.",
   "Quantum-resistant encryption on every mailbox.": "Her posta kutusunda kuantuma dayanıklı şifreleme.",
@@ -23356,7 +23354,6 @@
   "The forwardemail command, with desktop notifications.": "Masaüstü bildirimleriyle forwardemail komutu.",
   "Turn it on to encrypt mail on the device with a PIN or passkey.": "Cihazdaki postaları bir PIN veya geçiş anahtarı ile şifrelemek için etkinleştirin.",
   "Live delivery data": "Canlı teslimat verileri",
-  "Data from our latest test, which runs about every five minutes. Direct is a message from our servers to an inbox at that provider. Forwarding is a message to a Forward Email address that forwards it to that inbox.": "Yaklaşık beş dakikada bir çalışan son testimizden alınan veriler. Doğrudan, sunucularımızdan o sağlayıcıdaki bir gelen kutusuna giden iletidir. Yönlendirme, bir Forward Email adresine giden ve oradan o gelen kutusuna iletilen iletidir.",
   "We are rated <span class=\"notranslate\">%s</span> out of 5, according to <span class=\"notranslate\">%s</span> reviews on %s.": "Puanımız 5 üzerinden <span class=\"notranslate\">%s</span>; bu puan <span class=\"notranslate\">%s</span> %s değerlendirmesine dayanıyor.",
   "Your forwarding rules live in your domain's DNS records, and you can <a href=\"%s\">encrypt them</a>. Paid plans keep them out of DNS.": "Yönlendirme kurallarınız alan adınızın DNS kayıtlarında durur ve <a href=\"%s\">bunları şifreleyebilirsiniz</a>. Ücretli planlarda kurallar DNS'te tutulmaz.",
   "Your forwarding rules stay out of DNS, in our secure, backed-up database.": "Yönlendirme kurallarınız DNS'te değil, güvenli ve yedekli veritabanımızda durur.",
@@ -23378,8 +23375,12 @@
   "These answers from our FAQ may help:": "SSS'mizdeki bu yanıtlar yardımcı olabilir:",
   "Outbound SMTP is now available!": "Giden SMTP artık kullanılabilir!",
   "Each domain needs a one-time review, usually within 24 hours.": "Her alan adı bir kez incelenir, genellikle 24 saat içinde.",
-  "We build our own apps for desktop, mobile and the terminal. The desktop and mobile apps work offline. Apple Mail and other mail apps work too.": "Masaüstü, mobil ve terminal için kendi uygulamalarımızı geliştiriyoruz. Masaüstü ve mobil uygulamalar çevrimdışı çalışır. Apple Mail ve diğer e-posta uygulamaları da çalışır.",
   "Signed updates install themselves. Windows and macOS builds are code-signed.": "İmzalı güncellemeler kendiliğinden yüklenir. Windows ve macOS sürümleri kod imzalıdır.",
   "Installers are signed. While the new certificate builds reputation, SmartScreen may still warn on first run: choose More info, then Run anyway.": "Yükleyiciler imzalıdır. Yeni sertifika itibar kazanırken SmartScreen ilk çalıştırmada yine de uyarı verebilir: Ek bilgi'yi, ardından Yine de çalıştır'ı seçin.",
-  "The Windows executables are signed. While the new certificate builds reputation, SmartScreen may still warn on first run: choose More info, then Run anyway.": "Windows çalıştırılabilir dosyaları imzalıdır. Yeni sertifika itibar kazanırken SmartScreen ilk çalıştırmada yine de uyarı verebilir: Ek bilgi'yi, ardından Yine de çalıştır'ı seçin."
+  "The Windows executables are signed. While the new certificate builds reputation, SmartScreen may still warn on first run: choose More info, then Run anyway.": "Windows çalıştırılabilir dosyaları imzalıdır. Yeni sertifika itibar kazanırken SmartScreen ilk çalıştırmada yine de uyarı verebilir: Ek bilgi'yi, ardından Yine de çalıştır'ı seçin.",
+  "We tested delivery ourselves: these figures are data from our own monitor, which sends test messages about every %d minutes. Direct is a message from our servers to an inbox at that provider. Forwarding is a message to a Forward Email address that forwards it to that inbox.": "Teslimatı kendimiz test ettik: bu rakamlar, yaklaşık %d dakikada bir test iletisi gönderen kendi izleme sistemimizden alınan verilerdir. Doğrudan, sunucularımızdan o sağlayıcıdaki bir gelen kutusuna giden iletidir. Yönlendirme, bir Forward Email adresine giden ve oradan o gelen kutusuna iletilen iletidir.",
+  "According to our latest test, every message arrived within %s.": "Son testimize göre her ileti %s içinde ulaştı.",
+  "According to our technical whitepaper, each mailbox is its own SQLite file, encrypted at rest with ChaCha20-Poly1305. The key is your mailbox password, and only you have it.": "Teknik Beyaz Kitabımıza göre her posta kutusu, ChaCha20-Poly1305 ile bekleme hâlinde şifrelenen ayrı bir SQLite dosyasıdır. Anahtar, posta kutusu parolanızdır ve yalnızca sizde bulunur.",
+  "We build our own apps for %d platforms, from desktop and mobile to the terminal. The desktop and mobile apps work offline. Apple Mail and other mail apps work too.": "Masaüstünden mobile ve terminale kadar %d platform için kendi uygulamalarımızı geliştiriyoruz. Masaüstü ve mobil uygulamalar çevrimdışı çalışır. Apple Mail ve diğer e-posta uygulamaları da çalışır.",
+  "All %d plans include unlimited domains, the free plan too. Start with forwarding, upgrade to mailboxes from $%d/mo, then add team controls.": "Ücretsiz plan dahil %d planın tümü sınırsız alan adı içerir. Yönlendirmeyle başlayın, aylık $%d'dan başlayan fiyatlarla posta kutularına yükseltin, ardından ekip yönetimi ekleyin."
 }

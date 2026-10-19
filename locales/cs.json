@@ -23252,7 +23252,6 @@
   "Free Email Forwarding for Custom Domains - Open Source Email Service": "Bezplatné přeposílání e-mailů pro vlastní domény - open-source služba",
   "Get free email forwarding for custom domains. Send & receive as you@yourdomain.com with unlimited aliases, 10GB storage & 100% open-source security.": "Bezplatné přeposílání e-mailů pro vlastní domény. Odesílejte a přijímejte jako you@yourdomain.com s neomezenými aliasy, 10GB úložištěm a 100% open-source zabezpečením.",
   "How many domains can I use?": "Kolik domén mohu používat?",
-  "Every plan includes unlimited domains, the free plan too. Start with forwarding, upgrade to mailboxes, then add team controls.": "Každý plán zahrnuje neomezený počet domén, i ten bezplatný. Začněte přeposíláním, přejděte na poštovní schránky a pak přidejte správu týmu.",
   "Why do people switch to Forward Email?": "Proč lidé přecházejí na Forward Email?",
   "We measure these delivery times with our own open-source monitor. It sends test emails to inboxes at major email providers and records how long each one takes to arrive. Our engineers get an alert when a delivery takes longer than 10 seconds.": "Tyto doby doručení měříme vlastním open-source monitorem. Odesílá testovací e-maily do schránek u velkých poskytovatelů e-mailu a zaznamenává, jak dlouho každému trvá, než dorazí. Naši inženýři dostanou upozornění, když doručení trvá déle než 10 sekund.",
   "Skip to content": "Přejít na obsah",
@@ -23333,7 +23332,6 @@
   "Send every address, or any regex match, to the inbox you choose.": "Posílejte každou adresu nebo jakoukoli shodu s regulárním výrazem do schránky, kterou si zvolíte.",
   "One alias can reach people, teams and webhooks.": "Jeden alias může doručovat poštu lidem, týmům i webhookům.",
   "Turn off an alias without deleting its mail.": "Vypněte alias, aniž byste smazali jeho poštu.",
-  "Each mailbox is its own SQLite file, encrypted at rest with ChaCha20-Poly1305. The key is your mailbox password, and only you have it.": "Každá schránka je samostatný soubor SQLite, šifrovaný v klidu pomocí ChaCha20-Poly1305. Klíčem je heslo k vaší schránce a máte ho jen vy.",
   "Works in Apple Mail, Thunderbird and phone apps.": "Funguje s Apple Mail, Thunderbird a aplikacemi v telefonu.",
   "One storage pool for all your domains.": "Jedno úložiště pro všechny vaše domény.",
   "Quantum-resistant encryption on every mailbox.": "Šifrování odolné vůči kvantovým počítačům v každé schránce.",
@@ -23356,7 +23354,6 @@
   "The forwardemail command, with desktop notifications.": "Příkaz forwardemail s oznámeními na ploše.",
   "Turn it on to encrypt mail on the device with a PIN or passkey.": "Zapněte ho a pošta v zařízení se zašifruje pomocí PIN kódu nebo přístupového klíče.",
   "Live delivery data": "Živá data o doručování",
-  "Data from our latest test, which runs about every five minutes. Direct is a message from our servers to an inbox at that provider. Forwarding is a message to a Forward Email address that forwards it to that inbox.": "Data z našeho posledního testu, který probíhá přibližně každých pět minut. „Přímo“ je zpráva z našich serverů do schránky u daného poskytovatele. „Přeposílání“ je zpráva na adresu Forward Email, která ji přepošle do této schránky.",
   "We are rated <span class=\"notranslate\">%s</span> out of 5, according to <span class=\"notranslate\">%s</span> reviews on %s.": "Máme hodnocení <span class=\"notranslate\">%s</span> z 5 podle <span class=\"notranslate\">%s</span> recenzí na %s.",
   "Your forwarding rules live in your domain's DNS records, and you can <a href=\"%s\">encrypt them</a>. Paid plans keep them out of DNS.": "Vaše pravidla přeposílání jsou uložena v záznamech DNS vaší domény a můžete <a href=\"%s\">je zašifrovat</a>. V placených plánech v DNS vůbec nejsou.",
   "Your forwarding rules stay out of DNS, in our secure, backed-up database.": "Vaše pravidla přeposílání zůstávají mimo DNS, v naší zabezpečené a zálohované databázi.",
@@ -23378,8 +23375,12 @@
   "These answers from our FAQ may help:": "Mohou vám pomoci tyto odpovědi z našich FAQ:",
   "Outbound SMTP is now available!": "Odchozí SMTP je nyní k dispozici!",
   "Each domain needs a one-time review, usually within 24 hours.": "Každá doména projde jednorázovou kontrolou, obvykle do 24 hodin.",
-  "We build our own apps for desktop, mobile and the terminal. The desktop and mobile apps work offline. Apple Mail and other mail apps work too.": "Vyvíjíme vlastní aplikace pro desktop, mobil a terminál. Desktopové a mobilní aplikace fungují offline. Apple Mail a další poštovní aplikace fungují také.",
   "Signed updates install themselves. Windows and macOS builds are code-signed.": "Podepsané aktualizace se instalují samy. Sestavení pro Windows a macOS jsou podepsaná.",
   "Installers are signed. While the new certificate builds reputation, SmartScreen may still warn on first run: choose More info, then Run anyway.": "Instalační programy jsou podepsané. Dokud si nový certifikát nezíská reputaci, může SmartScreen při prvním spuštění stále zobrazit varování: zvolte Další informace a potom Přesto spustit.",
-  "The Windows executables are signed. While the new certificate builds reputation, SmartScreen may still warn on first run: choose More info, then Run anyway.": "Spustitelné soubory pro Windows jsou podepsané. Dokud si nový certifikát nezíská reputaci, může SmartScreen při prvním spuštění stále zobrazit varování: zvolte Další informace a potom Přesto spustit."
+  "The Windows executables are signed. While the new certificate builds reputation, SmartScreen may still warn on first run: choose More info, then Run anyway.": "Spustitelné soubory pro Windows jsou podepsané. Dokud si nový certifikát nezíská reputaci, může SmartScreen při prvním spuštění stále zobrazit varování: zvolte Další informace a potom Přesto spustit.",
+  "We tested delivery ourselves: these figures are data from our own monitor, which sends test messages about every %d minutes. Direct is a message from our servers to an inbox at that provider. Forwarding is a message to a Forward Email address that forwards it to that inbox.": "Doručování jsme otestovali sami: tato čísla jsou data z našeho vlastního monitoringu, který posílá testovací zprávy přibližně každých %d minut. „Přímo“ je zpráva z našich serverů do schránky u daného poskytovatele. „Přeposílání“ je zpráva na adresu Forward Email, která ji přepošle do této schránky.",
+  "According to our latest test, every message arrived within %s.": "Podle našeho posledního testu dorazila každá zpráva do %s.",
+  "According to our technical whitepaper, each mailbox is its own SQLite file, encrypted at rest with ChaCha20-Poly1305. The key is your mailbox password, and only you have it.": "Podle naší technické bílé knihy je každá schránka samostatným souborem SQLite, šifrovaným v klidu pomocí ChaCha20-Poly1305. Klíčem je heslo k vaší schránce a máte ho jen vy.",
+  "We build our own apps for %d platforms, from desktop and mobile to the terminal. The desktop and mobile apps work offline. Apple Mail and other mail apps work too.": "Vyvíjíme vlastní aplikace pro %d platforem, od desktopu a mobilu až po terminál. Desktopové a mobilní aplikace fungují offline. Apple Mail a další poštovní aplikace fungují také.",
+  "All %d plans include unlimited domains, the free plan too. Start with forwarding, upgrade to mailboxes from $%d/mo, then add team controls.": "Všechny %d plány zahrnují neomezený počet domén, i ten bezplatný. Začněte přeposíláním, přejděte na poštovní schránky od $%d/měsíc a pak přidejte správu týmu."
 }

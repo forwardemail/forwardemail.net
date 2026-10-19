@@ -23252,7 +23252,6 @@
   "Free Email Forwarding for Custom Domains - Open Source Email Service": "Gratis e-postvidarebefordran för egna domäner - E-post med öppen källkod",
   "Get free email forwarding for custom domains. Send & receive as you@yourdomain.com with unlimited aliases, 10GB storage & 100% open-source security.": "Gratis e-postvidarebefordran för egna domäner. Skicka och ta emot som you@yourdomain.com med obegränsade alias, 10GB lagring och säkerhet med 100 % öppen källkod.",
   "How many domains can I use?": "Hur många domäner kan jag använda?",
-  "Every plan includes unlimited domains, the free plan too. Start with forwarding, upgrade to mailboxes, then add team controls.": "Alla planer inkluderar obegränsat antal domäner, även gratisplanen. Börja med vidarebefordran, uppgradera till brevlådor och lägg sedan till teamhantering.",
   "Why do people switch to Forward Email?": "Varför byter folk till Forward Email?",
   "We measure these delivery times with our own open-source monitor. It sends test emails to inboxes at major email providers and records how long each one takes to arrive. Our engineers get an alert when a delivery takes longer than 10 seconds.": "Vi mäter leveranstiderna med vår egen övervakning med öppen källkod. Den skickar testmeddelanden till inkorgar hos stora e-postleverantörer och registrerar hur lång tid varje meddelande tar att komma fram. Våra ingenjörer får en varning när en leverans tar längre än 10 sekunder.",
   "Skip to content": "Hoppa till innehållet",
@@ -23333,7 +23332,6 @@
   "Send every address, or any regex match, to the inbox you choose.": "Skicka varje adress, eller varje träff på ett reguljärt uttryck, till den inkorg du väljer.",
   "One alias can reach people, teams and webhooks.": "Ett alias kan nå personer, team och webhooks.",
   "Turn off an alias without deleting its mail.": "Stäng av ett alias utan att radera dess e-post.",
-  "Each mailbox is its own SQLite file, encrypted at rest with ChaCha20-Poly1305. The key is your mailbox password, and only you have it.": "Varje brevlåda är en egen SQLite-fil, krypterad vid lagring med ChaCha20-Poly1305. Nyckeln är lösenordet till din brevlåda, och bara du har den.",
   "Works in Apple Mail, Thunderbird and phone apps.": "Fungerar i Apple Mail, Thunderbird och mobilappar.",
   "One storage pool for all your domains.": "En lagringspool för alla dina domäner.",
   "Quantum-resistant encryption on every mailbox.": "Kvantresistent kryptering för varje brevlåda.",
@@ -23356,7 +23354,6 @@
   "The forwardemail command, with desktop notifications.": "Kommandot forwardemail, med skrivbordsaviseringar.",
   "Turn it on to encrypt mail on the device with a PIN or passkey.": "Slå på det för att kryptera e-post på enheten med en pinkod eller lösennyckel.",
   "Live delivery data": "Leveransdata i realtid",
-  "Data from our latest test, which runs about every five minutes. Direct is a message from our servers to an inbox at that provider. Forwarding is a message to a Forward Email address that forwards it to that inbox.": "Data från vårt senaste test, som körs ungefär var femte minut. ”Direkt” är ett meddelande från våra servrar till en inkorg hos den leverantören. ”Vidarebefordran” är ett meddelande till en Forward Email-adress som vidarebefordrar det till den inkorgen.",
   "We are rated <span class=\"notranslate\">%s</span> out of 5, according to <span class=\"notranslate\">%s</span> reviews on %s.": "Vi har betyget <span class=\"notranslate\">%s</span> av 5, enligt <span class=\"notranslate\">%s</span> recensioner på %s.",
   "Your forwarding rules live in your domain's DNS records, and you can <a href=\"%s\">encrypt them</a>. Paid plans keep them out of DNS.": "Dina regler för vidarebefordran finns i din domäns DNS-poster, och du kan <a href=\"%s\">kryptera dem</a>. Betalplaner håller dem utanför DNS.",
   "Your forwarding rules stay out of DNS, in our secure, backed-up database.": "Dina regler för vidarebefordran hålls utanför DNS, i vår säkra databas med säkerhetskopior.",
@@ -23378,8 +23375,12 @@
   "These answers from our FAQ may help:": "Dessa svar från vår FAQ kan hjälpa:",
   "Outbound SMTP is now available!": "Utgående SMTP är nu tillgängligt!",
   "Each domain needs a one-time review, usually within 24 hours.": "Varje domän granskas en gång, oftast inom 24 timmar.",
-  "We build our own apps for desktop, mobile and the terminal. The desktop and mobile apps work offline. Apple Mail and other mail apps work too.": "Vi bygger egna appar för dator, mobil och terminal. Dator- och mobilapparna fungerar offline. Apple Mail och andra e-postappar fungerar också.",
   "Signed updates install themselves. Windows and macOS builds are code-signed.": "Signerade uppdateringar installeras automatiskt. Versionerna för Windows och macOS är kodsignerade.",
   "Installers are signed. While the new certificate builds reputation, SmartScreen may still warn on first run: choose More info, then Run anyway.": "Installationsprogrammen är signerade. Medan det nya certifikatet bygger upp sitt rykte kan SmartScreen fortfarande varna vid första körningen: välj Mer information och sedan Kör ändå.",
-  "The Windows executables are signed. While the new certificate builds reputation, SmartScreen may still warn on first run: choose More info, then Run anyway.": "De körbara filerna för Windows är signerade. Medan det nya certifikatet bygger upp sitt rykte kan SmartScreen fortfarande varna vid första körningen: välj Mer information och sedan Kör ändå."
+  "The Windows executables are signed. While the new certificate builds reputation, SmartScreen may still warn on first run: choose More info, then Run anyway.": "De körbara filerna för Windows är signerade. Medan det nya certifikatet bygger upp sitt rykte kan SmartScreen fortfarande varna vid första körningen: välj Mer information och sedan Kör ändå.",
+  "We tested delivery ourselves: these figures are data from our own monitor, which sends test messages about every %d minutes. Direct is a message from our servers to an inbox at that provider. Forwarding is a message to a Forward Email address that forwards it to that inbox.": "Vi har testat leveransen själva: siffrorna är data från vår egen övervakning, som skickar testmeddelanden ungefär var %d:e minut. ”Direkt” är ett meddelande från våra servrar till en inkorg hos den leverantören. ”Vidarebefordran” är ett meddelande till en Forward Email-adress som vidarebefordrar det till den inkorgen.",
+  "According to our latest test, every message arrived within %s.": "Enligt vårt senaste test kom alla meddelanden fram inom %s.",
+  "According to our technical whitepaper, each mailbox is its own SQLite file, encrypted at rest with ChaCha20-Poly1305. The key is your mailbox password, and only you have it.": "Enligt vår tekniska vitbok är varje brevlåda en egen SQLite-fil, krypterad vid lagring med ChaCha20-Poly1305. Nyckeln är lösenordet till din brevlåda, och bara du har den.",
+  "We build our own apps for %d platforms, from desktop and mobile to the terminal. The desktop and mobile apps work offline. Apple Mail and other mail apps work too.": "Vi bygger egna appar för %d plattformar, från dator och mobil till terminal. Dator- och mobilapparna fungerar offline. Apple Mail och andra e-postappar fungerar också.",
+  "All %d plans include unlimited domains, the free plan too. Start with forwarding, upgrade to mailboxes from $%d/mo, then add team controls.": "Alla %d planer inkluderar obegränsat antal domäner, även gratisplanen. Börja med vidarebefordran, uppgradera till brevlådor från $%d/mån och lägg sedan till teamhantering."
 }

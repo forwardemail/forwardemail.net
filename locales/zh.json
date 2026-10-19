@@ -23252,7 +23252,6 @@
   "Free Email Forwarding for Custom Domains - Open Source Email Service": "自定义域名免费邮件转发 - 开源电子邮件服务",
   "Get free email forwarding for custom domains. Send & receive as you@yourdomain.com with unlimited aliases, 10GB storage & 100% open-source security.": "为自定义域名提供免费邮件转发。以 you@yourdomain.com 收发邮件，享受无限别名、10GB 存储空间和 100% 开源的安全保障。",
   "How many domains can I use?": "我可以使用多少个域名？",
-  "Every plan includes unlimited domains, the free plan too. Start with forwarding, upgrade to mailboxes, then add team controls.": "每个计划都包含无限域名，免费计划也不例外。先从转发开始，再升级到邮箱，然后添加团队管理功能。",
   "Why do people switch to Forward Email?": "为什么人们会改用 Forward Email？",
   "We measure these delivery times with our own open-source monitor. It sends test emails to inboxes at major email providers and records how long each one takes to arrive. Our engineers get an alert when a delivery takes longer than 10 seconds.": "我们使用自己的开源监控工具来测量这些送达时间。它会向各大邮件服务商的收件箱发送测试邮件，并记录每封邮件到达所需的时间。当某次投递超过 10 秒时，我们的工程师会收到警报。",
   "Skip to content": "跳至内容",
@@ -23333,7 +23332,6 @@
   "Send every address, or any regex match, to the inbox you choose.": "将所有地址，或匹配任意正则表达式的地址，发送到您选择的收件箱。",
   "One alias can reach people, teams and webhooks.": "一个别名即可送达个人、团队和 Webhook。",
   "Turn off an alias without deleting its mail.": "停用别名，而不删除其邮件。",
-  "Each mailbox is its own SQLite file, encrypted at rest with ChaCha20-Poly1305. The key is your mailbox password, and only you have it.": "每个邮箱都是独立的 SQLite 文件，静态存储时使用 ChaCha20-Poly1305 加密。密钥就是您的邮箱密码，只有您拥有。",
   "Works in Apple Mail, Thunderbird and phone apps.": "支持 Apple Mail、Thunderbird 和手机应用。",
   "One storage pool for all your domains.": "所有域名共享一个存储池。",
   "Quantum-resistant encryption on every mailbox.": "每个邮箱都采用抗量子加密。",
@@ -23356,7 +23354,6 @@
   "The forwardemail command, with desktop notifications.": "forwardemail 命令，支持桌面通知。",
   "Turn it on to encrypt mail on the device with a PIN or passkey.": "开启后，可使用 PIN 或通行密钥加密设备上的邮件。",
   "Live delivery data": "实时投递数据",
-  "Data from our latest test, which runs about every five minutes. Direct is a message from our servers to an inbox at that provider. Forwarding is a message to a Forward Email address that forwards it to that inbox.": "数据来自我们最近一次测试，测试大约每五分钟运行一次。“直接”是指从我们的服务器发送到该服务商收件箱的邮件。“转发”是指发送到 Forward Email 地址、再由该地址转发到该收件箱的邮件。",
   "We are rated <span class=\"notranslate\">%s</span> out of 5, according to <span class=\"notranslate\">%s</span> reviews on %s.": "我们的评分为 <span class=\"notranslate\">%s</span> 分（满分 5 分），基于 <span class=\"notranslate\">%s</span> 条 %s 评价。",
   "Your forwarding rules live in your domain's DNS records, and you can <a href=\"%s\">encrypt them</a>. Paid plans keep them out of DNS.": "您的转发规则存放在域名的 DNS 记录中，您可以<a href=\"%s\">将其加密</a>。付费计划不会把规则放在 DNS 中。",
   "Your forwarding rules stay out of DNS, in our secure, backed-up database.": "您的转发规则不放在 DNS 中，而是保存在我们安全且有备份的数据库里。",
@@ -23378,8 +23375,12 @@
   "These answers from our FAQ may help:": "我们 FAQ 中的以下解答可能会有所帮助：",
   "Outbound SMTP is now available!": "出站 SMTP 现已推出！",
   "Each domain needs a one-time review, usually within 24 hours.": "每个域名需要一次性审核，通常在 24 小时内完成。",
-  "We build our own apps for desktop, mobile and the terminal. The desktop and mobile apps work offline. Apple Mail and other mail apps work too.": "我们自行开发适用于桌面、移动设备和终端的应用。桌面和移动应用可离线使用。Apple Mail 和其他邮件应用也可以使用。",
   "Signed updates install themselves. Windows and macOS builds are code-signed.": "已签名的更新会自动安装。Windows 和 macOS 版本均已进行代码签名。",
   "Installers are signed. While the new certificate builds reputation, SmartScreen may still warn on first run: choose More info, then Run anyway.": "安装程序已签名。在新证书建立信誉期间，SmartScreen 在首次运行时仍可能发出警告：选择“更多信息”，然后点击“仍要运行”。",
-  "The Windows executables are signed. While the new certificate builds reputation, SmartScreen may still warn on first run: choose More info, then Run anyway.": "Windows 可执行文件已签名。在新证书建立信誉期间，首次运行时 SmartScreen 仍可能发出警告：选择“更多信息”，然后点击“仍要运行”。"
+  "The Windows executables are signed. While the new certificate builds reputation, SmartScreen may still warn on first run: choose More info, then Run anyway.": "Windows 可执行文件已签名。在新证书建立信誉期间，首次运行时 SmartScreen 仍可能发出警告：选择“更多信息”，然后点击“仍要运行”。",
+  "We tested delivery ourselves: these figures are data from our own monitor, which sends test messages about every %d minutes. Direct is a message from our servers to an inbox at that provider. Forwarding is a message to a Forward Email address that forwards it to that inbox.": "我们亲自测试了邮件投递：这些数据来自我们自己的监测系统，它大约每 %d 分钟发送一次测试邮件。“直接”是指从我们的服务器发送到该服务商收件箱的邮件。“转发”是指发送到 Forward Email 地址、再由该地址转发到该收件箱的邮件。",
+  "According to our latest test, every message arrived within %s.": "根据我们最近一次测试，所有邮件都在 %s 内送达。",
+  "According to our technical whitepaper, each mailbox is its own SQLite file, encrypted at rest with ChaCha20-Poly1305. The key is your mailbox password, and only you have it.": "根据我们的技术白皮书，每个邮箱都是独立的 SQLite 文件，静态存储时使用 ChaCha20-Poly1305 加密。密钥就是您的邮箱密码，只有您拥有。",
+  "We build our own apps for %d platforms, from desktop and mobile to the terminal. The desktop and mobile apps work offline. Apple Mail and other mail apps work too.": "我们自行开发适用于 %d 个平台的应用，从桌面、移动设备到终端。桌面和移动应用可离线使用。Apple Mail 和其他邮件应用也可以使用。",
+  "All %d plans include unlimited domains, the free plan too. Start with forwarding, upgrade to mailboxes from $%d/mo, then add team controls.": "全部 %d 个计划都包含无限域名，免费计划也不例外。先从转发开始，再升级到邮箱（每月 $%d 起），然后添加团队管理功能。"
 }

@@ -91,7 +91,15 @@ test('names the section once and says what the figures measure', (t) => {
     // under "Current Delivery Times", what Direct and Forwarding are
     const legend = html.match(/<p class="fe-tti__legend">([^<]+)<\/p>/);
     t.truthy(legend, `${pathWithoutLocale}`);
-    t.true(legend[1].startsWith('Data from our latest test'));
+    t.true(legend[1].startsWith('We tested delivery ourselves'));
+    t.true(legend[1].includes('data from our own monitor'));
+    t.true(legend[1].includes('about every 5 minutes'));
+    // and the slowest figure, the Gmail forwarding time (400 ms)
+    t.true(
+      legend[1].endsWith(
+        'According to our latest test, every message arrived within 400ms.'
+      )
+    );
     t.true(legend[1].includes('Direct is a message'));
     t.true(legend[1].includes('Forwarding is a message'));
     t.true(

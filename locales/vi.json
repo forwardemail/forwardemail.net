@@ -23252,7 +23252,6 @@
   "Free Email Forwarding for Custom Domains - Open Source Email Service": "Chuyển tiếp email miễn phí cho tên miền tùy chỉnh - Dịch vụ email mã nguồn mở",
   "Get free email forwarding for custom domains. Send & receive as you@yourdomain.com with unlimited aliases, 10GB storage & 100% open-source security.": "Chuyển tiếp email miễn phí cho tên miền tùy chỉnh. Gửi và nhận thư dưới tên you@yourdomain.com với bí danh không giới hạn, 10GB lưu trữ và bảo mật mã nguồn mở 100%.",
   "How many domains can I use?": "Tôi có thể dùng bao nhiêu tên miền?",
-  "Every plan includes unlimited domains, the free plan too. Start with forwarding, upgrade to mailboxes, then add team controls.": "Mọi gói đều có tên miền không giới hạn, kể cả gói miễn phí. Bắt đầu với chuyển tiếp, nâng cấp lên hộp thư, rồi thêm tính năng quản lý nhóm.",
   "Why do people switch to Forward Email?": "Vì sao mọi người chuyển sang Forward Email?",
   "We measure these delivery times with our own open-source monitor. It sends test emails to inboxes at major email providers and records how long each one takes to arrive. Our engineers get an alert when a delivery takes longer than 10 seconds.": "Chúng tôi đo các thời gian gửi này bằng công cụ giám sát mã nguồn mở của riêng mình. Công cụ này gửi email thử nghiệm đến hộp thư đến tại các nhà cung cấp email lớn và ghi lại thời gian mỗi email cần để đến nơi. Kỹ sư của chúng tôi nhận được cảnh báo khi một lần gửi mất hơn 10 giây.",
   "Skip to content": "Chuyển đến nội dung",
@@ -23333,7 +23332,6 @@
   "Send every address, or any regex match, to the inbox you choose.": "Gửi mọi địa chỉ, hoặc bất kỳ địa chỉ nào khớp với regex, đến hộp thư bạn chọn.",
   "One alias can reach people, teams and webhooks.": "Một bí danh có thể gửi tới cá nhân, nhóm và webhook.",
   "Turn off an alias without deleting its mail.": "Tắt bí danh mà không xóa thư của nó.",
-  "Each mailbox is its own SQLite file, encrypted at rest with ChaCha20-Poly1305. The key is your mailbox password, and only you have it.": "Mỗi hộp thư là một tệp SQLite riêng, được mã hóa khi lưu trữ bằng ChaCha20-Poly1305. Khóa chính là mật khẩu hộp thư của bạn, và chỉ bạn có nó.",
   "Works in Apple Mail, Thunderbird and phone apps.": "Hoạt động với Apple Mail, Thunderbird và ứng dụng điện thoại.",
   "One storage pool for all your domains.": "Một kho lưu trữ chung cho tất cả tên miền của bạn.",
   "Quantum-resistant encryption on every mailbox.": "Mã hóa kháng lượng tử trên mọi hộp thư.",
@@ -23356,7 +23354,6 @@
   "The forwardemail command, with desktop notifications.": "Lệnh forwardemail, kèm thông báo trên máy tính.",
   "Turn it on to encrypt mail on the device with a PIN or passkey.": "Bật tính năng này để mã hóa thư trên thiết bị bằng PIN hoặc passkey.",
   "Live delivery data": "Dữ liệu gửi thư theo thời gian thực",
-  "Data from our latest test, which runs about every five minutes. Direct is a message from our servers to an inbox at that provider. Forwarding is a message to a Forward Email address that forwards it to that inbox.": "Dữ liệu từ lần kiểm tra mới nhất của chúng tôi, chạy khoảng năm phút một lần. “Trực tiếp” là thư từ máy chủ của chúng tôi tới hộp thư tại nhà cung cấp đó. “Chuyển tiếp” là thư gửi tới một địa chỉ Forward Email, rồi được chuyển tiếp tới hộp thư đó.",
   "We are rated <span class=\"notranslate\">%s</span> out of 5, according to <span class=\"notranslate\">%s</span> reviews on %s.": "Chúng tôi được đánh giá <span class=\"notranslate\">%s</span>/5, dựa trên <span class=\"notranslate\">%s</span> đánh giá trên %s.",
   "Your forwarding rules live in your domain's DNS records, and you can <a href=\"%s\">encrypt them</a>. Paid plans keep them out of DNS.": "Quy tắc chuyển tiếp của bạn nằm trong bản ghi DNS của tên miền, và bạn có thể <a href=\"%s\">mã hóa chúng</a>. Các gói trả phí giữ chúng bên ngoài DNS.",
   "Your forwarding rules stay out of DNS, in our secure, backed-up database.": "Quy tắc chuyển tiếp của bạn nằm ngoài DNS, trong cơ sở dữ liệu an toàn và có sao lưu của chúng tôi.",
@@ -23378,8 +23375,12 @@
   "These answers from our FAQ may help:": "Những câu trả lời sau từ FAQ của chúng tôi có thể hữu ích:",
   "Outbound SMTP is now available!": "SMTP gửi đi hiện đã khả dụng!",
   "Each domain needs a one-time review, usually within 24 hours.": "Mỗi tên miền cần được xem xét một lần, thường trong vòng 24 giờ.",
-  "We build our own apps for desktop, mobile and the terminal. The desktop and mobile apps work offline. Apple Mail and other mail apps work too.": "Chúng tôi tự xây dựng ứng dụng cho máy tính, di động và terminal. Ứng dụng máy tính và di động hoạt động ngoại tuyến. Apple Mail và các ứng dụng thư khác cũng dùng được.",
   "Signed updates install themselves. Windows and macOS builds are code-signed.": "Các bản cập nhật đã ký sẽ tự cài đặt. Các bản dựng cho Windows và macOS đều được ký mã.",
   "Installers are signed. While the new certificate builds reputation, SmartScreen may still warn on first run: choose More info, then Run anyway.": "Các trình cài đặt đã được ký. Trong khi chứng chỉ mới đang xây dựng uy tín, SmartScreen vẫn có thể cảnh báo khi chạy lần đầu: chọn More info, rồi Run anyway.",
-  "The Windows executables are signed. While the new certificate builds reputation, SmartScreen may still warn on first run: choose More info, then Run anyway.": "Các tệp thực thi Windows đã được ký. Trong khi chứng chỉ mới đang xây dựng uy tín, SmartScreen vẫn có thể cảnh báo khi chạy lần đầu: chọn More info, rồi Run anyway."
+  "The Windows executables are signed. While the new certificate builds reputation, SmartScreen may still warn on first run: choose More info, then Run anyway.": "Các tệp thực thi Windows đã được ký. Trong khi chứng chỉ mới đang xây dựng uy tín, SmartScreen vẫn có thể cảnh báo khi chạy lần đầu: chọn More info, rồi Run anyway.",
+  "We tested delivery ourselves: these figures are data from our own monitor, which sends test messages about every %d minutes. Direct is a message from our servers to an inbox at that provider. Forwarding is a message to a Forward Email address that forwards it to that inbox.": "Chúng tôi tự kiểm tra việc gửi thư: các số liệu này là dữ liệu từ hệ thống giám sát của riêng chúng tôi, hệ thống này gửi thư thử nghiệm khoảng %d phút một lần. “Trực tiếp” là thư từ máy chủ của chúng tôi tới hộp thư tại nhà cung cấp đó. “Chuyển tiếp” là thư gửi tới một địa chỉ Forward Email, rồi được chuyển tiếp tới hộp thư đó.",
+  "According to our latest test, every message arrived within %s.": "Theo lần kiểm tra mới nhất của chúng tôi, mọi thư đều đến trong vòng %s.",
+  "According to our technical whitepaper, each mailbox is its own SQLite file, encrypted at rest with ChaCha20-Poly1305. The key is your mailbox password, and only you have it.": "Theo sách trắng kỹ thuật của chúng tôi, mỗi hộp thư là một tệp SQLite riêng, được mã hóa khi lưu trữ bằng ChaCha20-Poly1305. Khóa chính là mật khẩu hộp thư của bạn, và chỉ bạn có nó.",
+  "We build our own apps for %d platforms, from desktop and mobile to the terminal. The desktop and mobile apps work offline. Apple Mail and other mail apps work too.": "Chúng tôi tự xây dựng ứng dụng cho %d nền tảng, từ máy tính, di động đến terminal. Ứng dụng máy tính và di động hoạt động ngoại tuyến. Apple Mail và các ứng dụng thư khác cũng dùng được.",
+  "All %d plans include unlimited domains, the free plan too. Start with forwarding, upgrade to mailboxes from $%d/mo, then add team controls.": "Cả %d gói đều có tên miền không giới hạn, kể cả gói miễn phí. Bắt đầu với chuyển tiếp, nâng cấp lên hộp thư từ $%d/tháng, rồi thêm tính năng quản lý nhóm."
 }

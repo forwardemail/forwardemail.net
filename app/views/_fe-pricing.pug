@@ -22,7 +22,7 @@ mixin fePricing
         a.fe-pricing__aside(href=l("/private-business-email"))= t("Recommended for most professionals")
 
       //- Opens with the answer to the heading above.
-      p.fe-lede= t("Every plan includes unlimited domains, the free plan too. Start with forwarding, upgrade to mailboxes, then add team controls.")
+      p.fe-lede= t("All %d plans include unlimited domains, the free plan too. Start with forwarding, upgrade to mailboxes from $%d/mo, then add team controls.", Object.keys(fePlans).length, planPricing.enhanced)
 
       //- A ul of li, with the feature lists nested. DOM order follows price
       //- order; the mobile reordering that puts Enhanced first is done with

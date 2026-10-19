@@ -49,7 +49,8 @@
       kicker: 'Store',
       tone: 'mint',
       title: 'Encrypted mailboxes',
-      promise: 'Each mailbox is its own SQLite file, encrypted at rest with ChaCha20-Poly1305. The key is your mailbox password, and only you have it.',
+      // (as the technical whitepaper, /technical-whitepaper.pdf, describes them)
+      promise: 'According to our technical whitepaper, each mailbox is its own SQLite file, encrypted at rest with ChaCha20-Poly1305. The key is your mailbox password, and only you have it.',
       cards: [
         { label: 'IMAP · POP3', sub: 'Works in Apple Mail, Thunderbird and phone apps.' },
         { label: '10 GB pooled', sub: 'One storage pool for all your domains.' },
@@ -115,7 +116,9 @@
       kicker: 'Use',
       tone: 'primary',
       title: 'Desktop, mobile and terminal apps',
-      promise: 'We build our own apps for desktop, mobile and the terminal. The desktop and mobile apps work offline. Apple Mail and other mail apps work too.',
+      promise: 'We build our own apps for %d platforms, from desktop and mobile to the terminal. The desktop and mobile apps work offline. Apple Mail and other mail apps work too.',
+      // macOS, Windows, Linux, iOS, Android and the terminal (the cards below)
+      promiseArgs: [6],
       cards: [
         { label: 'macOS · Windows · Linux', sub: 'Signed updates install themselves. Windows and macOS builds are code-signed.' },
         { label: 'iOS · Android', sub: 'Native apps with push notifications.' },

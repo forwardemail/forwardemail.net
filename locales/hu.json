@@ -23252,7 +23252,6 @@
   "Free Email Forwarding for Custom Domains - Open Source Email Service": "Ingyenes e-mail-továbbítás egyéni domainekhez - nyílt forráskódú szolgáltatás",
   "Get free email forwarding for custom domains. Send & receive as you@yourdomain.com with unlimited aliases, 10GB storage & 100% open-source security.": "Ingyenes e-mail-továbbítás egyéni domainekhez. Levelezzen you@yourdomain.com címről korlátlan álnévvel, 10GB tárhellyel és 100% nyílt forráskódú biztonsággal.",
   "How many domains can I use?": "Hány domaint használhatok?",
-  "Every plan includes unlimited domains, the free plan too. Start with forwarding, upgrade to mailboxes, then add team controls.": "Minden csomag korlátlan számú domaint tartalmaz, az ingyenes is. Kezdje továbbítással, váltson postafiókokra, majd adjon hozzá csapatkezelési funkciókat.",
   "Why do people switch to Forward Email?": "Miért váltanak sokan a Forward Email szolgáltatásra?",
   "We measure these delivery times with our own open-source monitor. It sends test emails to inboxes at major email providers and records how long each one takes to arrive. Our engineers get an alert when a delivery takes longer than 10 seconds.": "Ezeket a kézbesítési időket saját, nyílt forráskódú monitorunkkal mérjük. Tesztleveleket küld a nagy e-mail-szolgáltatók postafiókjaiba, és rögzíti, mennyi idő alatt érkezik meg mindegyik. Mérnökeink riasztást kapnak, ha egy kézbesítés 10 másodpercnél tovább tart.",
   "Skip to content": "Ugrás a tartalomhoz",
@@ -23333,7 +23332,6 @@
   "Send every address, or any regex match, to the inbox you choose.": "Irányítsa az összes címet, vagy bármely reguláris kifejezésre illeszkedőt, az Ön által választott postafiókba.",
   "One alias can reach people, teams and webhooks.": "Egy alias elérhet személyeket, csapatokat és webhookokat.",
   "Turn off an alias without deleting its mail.": "Kapcsoljon ki egy aliast a levelei törlése nélkül.",
-  "Each mailbox is its own SQLite file, encrypted at rest with ChaCha20-Poly1305. The key is your mailbox password, and only you have it.": "Minden postafiók egy önálló SQLite-fájl, tároláskor ChaCha20-Poly1305 titkosítással. A kulcs a postafiókja jelszava, és csak Önnél van meg.",
   "Works in Apple Mail, Thunderbird and phone apps.": "Működik az Apple Mailben, a Thunderbirdben és a telefonos alkalmazásokban.",
   "One storage pool for all your domains.": "Egy közös tárhely az összes domainjéhez.",
   "Quantum-resistant encryption on every mailbox.": "Kvantumálló titkosítás minden postafiókon.",
@@ -23356,7 +23354,6 @@
   "The forwardemail command, with desktop notifications.": "A forwardemail parancs, asztali értesítésekkel.",
   "Turn it on to encrypt mail on the device with a PIN or passkey.": "Kapcsolja be, hogy a leveleket PIN-kóddal vagy passkey-jel titkosítsa az eszközön.",
   "Live delivery data": "Élő kézbesítési adatok",
-  "Data from our latest test, which runs about every five minutes. Direct is a message from our servers to an inbox at that provider. Forwarding is a message to a Forward Email address that forwards it to that inbox.": "A legutóbbi, nagyjából ötpercenként futó tesztünk adatai. A „Közvetlen” egy üzenet a szervereinkről az adott szolgáltató egyik postafiókjába. A „Továbbítás” egy üzenet egy Forward Email címre, amely továbbítja azt ebbe a postafiókba.",
   "We are rated <span class=\"notranslate\">%s</span> out of 5, according to <span class=\"notranslate\">%s</span> reviews on %s.": "Értékelésünk <span class=\"notranslate\">%s</span> az 5-ből, <span class=\"notranslate\">%s</span> vélemény alapján a(z) %s oldalon.",
   "Your forwarding rules live in your domain's DNS records, and you can <a href=\"%s\">encrypt them</a>. Paid plans keep them out of DNS.": "A továbbítási szabályai a domainje DNS-rekordjaiban vannak, és <a href=\"%s\">titkosíthatja őket</a>. A fizetős csomagokban nem kerülnek a DNS-be.",
   "Your forwarding rules stay out of DNS, in our secure, backed-up database.": "A továbbítási szabályai nem a DNS-ben vannak, hanem a biztonságos, mentett adatbázisunkban.",
@@ -23378,8 +23375,12 @@
   "These answers from our FAQ may help:": "A GYIK alábbi válaszai segíthetnek:",
   "Outbound SMTP is now available!": "A kimenő SMTP már elérhető!",
   "Each domain needs a one-time review, usually within 24 hours.": "Minden domaint egyszer átnézünk, általában 24 órán belül.",
-  "We build our own apps for desktop, mobile and the terminal. The desktop and mobile apps work offline. Apple Mail and other mail apps work too.": "Saját alkalmazásokat készítünk asztali gépre, mobilra és terminálra. Az asztali és mobil alkalmazások offline is működnek. Az Apple Mail és más levelezőalkalmazások is működnek.",
   "Signed updates install themselves. Windows and macOS builds are code-signed.": "Az aláírt frissítések maguktól települnek. A Windows és macOS buildek kóddal aláírtak.",
   "Installers are signed. While the new certificate builds reputation, SmartScreen may still warn on first run: choose More info, then Run anyway.": "A telepítők alá vannak írva. Amíg az új tanúsítvány hírnevet szerez, a SmartScreen első futtatáskor még figyelmeztethet: válassza a További információ, majd a Futtatás mindenképp lehetőséget.",
-  "The Windows executables are signed. While the new certificate builds reputation, SmartScreen may still warn on first run: choose More info, then Run anyway.": "A windowsos futtatható fájlok alá vannak írva. Amíg az új tanúsítvány hírnevet szerez, a SmartScreen első futtatáskor még figyelmeztethet: válassza a További információ, majd a Futtatás mindenképp lehetőséget."
+  "The Windows executables are signed. While the new certificate builds reputation, SmartScreen may still warn on first run: choose More info, then Run anyway.": "A windowsos futtatható fájlok alá vannak írva. Amíg az új tanúsítvány hírnevet szerez, a SmartScreen első futtatáskor még figyelmeztethet: válassza a További információ, majd a Futtatás mindenképp lehetőséget.",
+  "We tested delivery ourselves: these figures are data from our own monitor, which sends test messages about every %d minutes. Direct is a message from our servers to an inbox at that provider. Forwarding is a message to a Forward Email address that forwards it to that inbox.": "A kézbesítést mi magunk teszteltük: ezek a számok a saját monitorozó rendszerünk adatai, amely nagyjából %d percenként küld tesztüzeneteket. A „Közvetlen” egy üzenet a szervereinkről az adott szolgáltató egyik postafiókjába. A „Továbbítás” egy üzenet egy Forward Email címre, amely továbbítja azt ebbe a postafiókba.",
+  "According to our latest test, every message arrived within %s.": "A legutóbbi tesztünk szerint minden üzenet legfeljebb %s alatt megérkezett.",
+  "According to our technical whitepaper, each mailbox is its own SQLite file, encrypted at rest with ChaCha20-Poly1305. The key is your mailbox password, and only you have it.": "Műszaki fehér könyvünk szerint minden postafiók egy önálló SQLite-fájl, tároláskor ChaCha20-Poly1305 titkosítással. A kulcs a postafiókja jelszava, és csak Önnél van meg.",
+  "We build our own apps for %d platforms, from desktop and mobile to the terminal. The desktop and mobile apps work offline. Apple Mail and other mail apps work too.": "Saját alkalmazásokat készítünk %d platformra, az asztali géptől és a mobiltól a terminálig. Az asztali és mobil alkalmazások offline is működnek. Az Apple Mail és más levelezőalkalmazások is működnek.",
+  "All %d plans include unlimited domains, the free plan too. Start with forwarding, upgrade to mailboxes from $%d/mo, then add team controls.": "Mind a %d csomag korlátlan számú domaint tartalmaz, az ingyenes is. Kezdje továbbítással, váltson postafiókokra $%d/hónaptól, majd adjon hozzá csapatkezelési funkciókat."
 }
