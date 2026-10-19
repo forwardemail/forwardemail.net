@@ -131,6 +131,10 @@ const CONCAT_CSS_GLOBS = CONCAT_CSS_ORDER.map(
 // Shared by css() and cssDev(): the transforms every bundle needs.
 function cssPostcssPlugins() {
   return [
+    // the highlight.js themes' banners ("Updated: 2021-05-15"), which read
+    // as the date of every page the CSS is inlined in (the license
+    // banners stay)
+    comments({ remove: (comment) => /^!\s*Theme:/.test(comment) }),
     postcss100VHFix(),
     postcssViewportHeightCorrection(),
     postcssInlineBase64(),

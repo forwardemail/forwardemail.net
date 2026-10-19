@@ -51,13 +51,14 @@ mixin feProduct
         .fe-panel.fe-feature
           h3.fe-display-sm.fe-feature__title= t("Privacy by default")
           //- Each claim can be checked: the FAQ says what is stored where,
+          //- the audits were in May and August 2026 (see the report),
           //- and the audit report is published
           p.fe-text.fe-feature__body
             = t("Forwarded mail is processed in memory and never written to disk.")
             = " "
             = t("Each mailbox is its own encrypted SQLite file that only your password can open.")
             = " "
-            != t('Cure53 has audited our code twice, and <a href="%s" target="_blank" rel="noopener">its report</a> is public.', "/pentest-report_forward-email.pdf")
+            != t('Cure53 has audited our code twice, in %s and %s, and <a href="%s" target="_blank" rel="noopener">its report</a> is public.', new Intl.DateTimeFormat(locale, { month: "long", year: "numeric", timeZone: "UTC" }).format(new Date("2026-05-01")), new Intl.DateTimeFormat(locale, { month: "long", year: "numeric", timeZone: "UTC" }).format(new Date("2026-08-01")), "/pentest-report_forward-email.pdf")
             = " "
             a.fe-feature__link(
               href=l("/faq#where-is-inbound-email-for-my-domain-processed-and-stored-and-for-how-long")
@@ -81,7 +82,7 @@ mixin feProduct
           p.fe-text.fe-feature__body
             = t("Everything the dashboard does is an API call. Send with one request, receive as JSON webhooks, and script the rest.")
             = " "
-            = t("Our webmail and apps use the same API.")
+            = t("Our webmail and our apps for %d platforms use the same API.", 6)
             = " "
             a.fe-feature__link(href=l("/email-api"))= t("Read the API reference")
           .fe-codeblock

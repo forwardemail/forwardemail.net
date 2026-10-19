@@ -55,4 +55,12 @@ mixin fePricing
               if plan.key === "free"
                 p.fe-plan__proof!= t('Your forwarding rules live in your domain\'s DNS records, and you can <a href="%s">encrypt them</a>. Paid plans keep them out of DNS.', l("/encrypt"))
               if plan.key === "enterprise"
-                p.fe-plan__proof!= t("We handle email for the %s across 250+ domains. We also built the @ubuntu.com member addresses for %s.", `<a href="${l("/blog/docs/linux-foundation-email-enterprise-case-study")}">Linux Foundation</a>`, `<a href="${l("/blog/docs/canonical-ubuntu-email-enterprise-case-study")}">Canonical</a>`)
+                //- (and what the plan includes, the FAQ answer: its anchor is the
+                //- same in every locale)
+                p.fe-plan__proof
+                  != t("Two case studies: we handle email for the %s across 250+ domains, and we built the @ubuntu.com member addresses for %s.", `<a href="${l("/blog/docs/linux-foundation-email-enterprise-case-study")}">Linux Foundation</a>`, `<a href="${l("/blog/docs/canonical-ubuntu-email-enterprise-case-study")}">Canonical</a>`)
+                  = " "
+                  a(href=l("/faq#what-is-included-in-the-enterprise-license"))
+                    = t("What is included in the Enterprise License")
+                    = " "
+                    i.fa.fa-angle-right(aria-hidden="true")

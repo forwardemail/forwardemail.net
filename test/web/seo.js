@@ -547,6 +547,37 @@ test('the home page reads as text: one name per heading, sentences with their fa
   for (const plan of plans)
     t.is(plan.querySelectorAll('.fe-plan__proof').length, 1, `${text(plan)}`);
 
+  // the about page is linked as the page about the author, the company
+  t.is(
+    document.querySelector('footer a[rel="author"]').getAttribute('href'),
+    '/en/about'
+  );
+  // each section of the product gives a figure: the audits' months, the
+  // apps' platforms, the calendars' and contacts' years, the retries,
+  // and the two case studies
+  t.regex(
+    text(document.querySelector('.fe-feature__body')),
+    /Cure53 has audited our code twice, in May 2026 and August 2026,/
+  );
+  t.true(
+    sentences.includes(
+      'Calendars, contacts and tasks use the open CalDAV and CardDAV standards. We added calendars in 2024 and contacts in 2025. Sign in with the same address and password as your mailbox.'
+    )
+  );
+  t.regex(text(document.querySelector('#api')), /retry up to 3 times/);
+  t.regex(
+    text(plans[3].querySelector('.fe-plan__proof')),
+    /^Two case studies: /
+  );
+  // the Enterprise card links the FAQ answer on what the plan includes,
+  // which the FAQ has
+  const enterpriseFaq = plans[3].querySelector(
+    'a[href="/en/faq#what-is-included-in-the-enterprise-license"]'
+  );
+  t.is(text(enterpriseFaq), 'What is included in the Enterprise License');
+  const faq = await getPage(t, '/en/faq');
+  t.truthy(faq.querySelector('#what-is-included-in-the-enterprise-license'));
+
   // and every locale has the new sentences in its own words
   const english = new Set([
     ...sentences,
@@ -563,6 +594,16 @@ test('the home page reads as text: one name per heading, sentences with their fa
     t.is(translated.length, english.size, `${locale}`);
     for (const sentence of translated)
       t.false(english.has(sentence), `${locale}: ${sentence}`);
+    // (and the Enterprise card's link to its FAQ answer)
+    t.not(
+      text(
+        page.querySelector(
+          `a[href="/${locale}/faq#what-is-included-in-the-enterprise-license"]`
+        )
+      ),
+      'What is included in the Enterprise License',
+      `${locale}`
+    );
     // (the hint under the console's tabs too, which no locale had)
     t.not(
       text(page.querySelector('.fe-console__rail-hint')),
@@ -619,5 +660,6 @@ test('every node that names the company is the same Organization', async (t) => 
     t.is(node.name, organization.name);
     t.is(node.legalName, organization.legalName);
     t.is(node.url, organization.url);
+    t.deepEqual(node.sameAs, organization.sameAs);
   }
 });

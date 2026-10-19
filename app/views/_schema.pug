@@ -27,15 +27,15 @@ if ctx.pathWithoutLocale === '/'
       "screenshot": "https://forwardemail.net/img/video/forward-email-apps.jpg",
       "softwareVersion": pkgVersion,
       "releaseNotes": "https://forwardemail.net/en/event-feed",
-      "author": { "@type": "Organization", "@id": "https://forwardemail.net/#organization", "name": "Forward Email", "legalName": "Forward Email LLC", "url": "https://forwardemail.net" },
+      "author": { "@type": "Organization", "@id": "https://forwardemail.net/#organization", "name": "Forward Email", "legalName": "Forward Email LLC", "url": "https://forwardemail.net", "sameAs": ["https://wikitia.com/wiki/Forward_Email", "https://github.com/forwardemail", "https://x.com/fwdemail", "https://news.ycombinator.com/user?id=fwdemail", "https://www.reddit.com/r/forwardemail/", "https://www.npmjs.com/~titanism", "https://www.crunchbase.com/organization/forward-email", "https://alternativeto.net/software/forward-email/", "https://www.youtube.com/forwardemail"] },
       "featureList": ["Free email forwarding", "Custom domain support", "Unlimited aliases", "IMAP and POP3 access", "SMTP sending", "End-to-end encryption", "Open source", "10GB storage", "Webhook support", "RESTful API"]
     };
   script(type="application/ld+json", nonce=nonce)!= JSON.stringify(softwareApplicationSchema).replace(/</g, "\\u003c")
 
 //- Speakable Schema (homepage)
 if ctx.pathWithoutLocale === '/'
-  script(type="application/ld+json", nonce=nonce).
-    {
+  -
+    var webPageSchema = {
       "@context": "https://schema.org",
       "@type": "WebPage",
       "name": "Forward Email - Free Email Forwarding for Custom Domains",
@@ -45,9 +45,16 @@ if ctx.pathWithoutLocale === '/'
       },
       "url": "https://forwardemail.net",
       "isPartOf": { "@id": "https://forwardemail.net/#website" },
-      "author": { "@type": "Organization", "@id": "https://forwardemail.net/#organization", "name": "Forward Email", "legalName": "Forward Email LLC", "url": "https://forwardemail.net" },
-      "publisher": { "@type": "Organization", "@id": "https://forwardemail.net/#organization", "name": "Forward Email", "legalName": "Forward Email LLC", "url": "https://forwardemail.net" }
-    }
+      "author": { "@type": "Organization", "@id": "https://forwardemail.net/#organization", "name": "Forward Email", "legalName": "Forward Email LLC", "url": "https://forwardemail.net", "sameAs": ["https://wikitia.com/wiki/Forward_Email", "https://github.com/forwardemail", "https://x.com/fwdemail", "https://news.ycombinator.com/user?id=fwdemail", "https://www.reddit.com/r/forwardemail/", "https://www.npmjs.com/~titanism", "https://www.crunchbase.com/organization/forward-email", "https://alternativeto.net/software/forward-email/", "https://www.youtube.com/forwardemail"] },
+      "publisher": { "@type": "Organization", "@id": "https://forwardemail.net/#organization", "name": "Forward Email", "legalName": "Forward Email LLC", "url": "https://forwardemail.net", "sameAs": ["https://wikitia.com/wiki/Forward_Email", "https://github.com/forwardemail", "https://x.com/fwdemail", "https://news.ycombinator.com/user?id=fwdemail", "https://www.reddit.com/r/forwardemail/", "https://www.npmjs.com/~titanism", "https://www.crunchbase.com/organization/forward-email", "https://alternativeto.net/software/forward-email/", "https://www.youtube.com/forwardemail"] }
+    };
+    // The page changes with each delivery test: its "Current Delivery
+    // Times" and their "Last updated on" date (_tti.pug, which shows them
+    // only when every figure is within 10 seconds)
+    var webPageTti = typeof tti === "undefined" ? null : tti;
+    if (webPageTti && webPageTti.created_at && Array.isArray(webPageTti.providers) && webPageTti.providers.length > 0 && webPageTti.providers.every((provider) => provider.directMs > 0 && provider.forwardingMs > 0 && 10000 >= provider.directMs && 10000 >= provider.forwardingMs))
+      webPageSchema.dateModified = new Date(webPageTti.created_at).toISOString();
+  script(type="application/ld+json", nonce=nonce)!= JSON.stringify(webPageSchema).replace(/</g, "\\u003c")
 
 //- (every node that names the company is the Organization node of
 //- _wikipedia.pug: its @id, name, legalName and url)
@@ -61,7 +68,7 @@ if ctx.pathWithoutLocale === '/email-api'
       "name": "Forward Email API",
       "description": "RESTful API for sending and managing email, domains, aliases, and more.",
       "documentation": "https://forwardemail.net/#{locale}/email-api",
-      "provider": { "@type": "Organization", "@id": "https://forwardemail.net/#organization", "name": "Forward Email", "legalName": "Forward Email LLC", "url": "https://forwardemail.net" }
+      "provider": { "@type": "Organization", "@id": "https://forwardemail.net/#organization", "name": "Forward Email", "legalName": "Forward Email LLC", "url": "https://forwardemail.net", "sameAs": ["https://wikitia.com/wiki/Forward_Email", "https://github.com/forwardemail", "https://x.com/fwdemail", "https://news.ycombinator.com/user?id=fwdemail", "https://www.reddit.com/r/forwardemail/", "https://www.npmjs.com/~titanism", "https://www.crunchbase.com/organization/forward-email", "https://alternativeto.net/software/forward-email/", "https://www.youtube.com/forwardemail"] }
     }
 
 //- WebSite Schema with SearchAction
@@ -73,7 +80,7 @@ if ctx.pathWithoutLocale === '/'
       "@id": "https://forwardemail.net/#website",
       "name": "Forward Email",
       "url": "https://forwardemail.net",
-      "publisher": { "@type": "Organization", "@id": "https://forwardemail.net/#organization", "name": "Forward Email", "legalName": "Forward Email LLC", "url": "https://forwardemail.net" },
+      "publisher": { "@type": "Organization", "@id": "https://forwardemail.net/#organization", "name": "Forward Email", "legalName": "Forward Email LLC", "url": "https://forwardemail.net", "sameAs": ["https://wikitia.com/wiki/Forward_Email", "https://github.com/forwardemail", "https://x.com/fwdemail", "https://news.ycombinator.com/user?id=fwdemail", "https://www.reddit.com/r/forwardemail/", "https://www.npmjs.com/~titanism", "https://www.crunchbase.com/organization/forward-email", "https://alternativeto.net/software/forward-email/", "https://www.youtube.com/forwardemail"] },
       "potentialAction": {
         "@type": "SearchAction",
         "target": {
@@ -157,13 +164,14 @@ if ctx.pathWithoutLocale && (ctx.pathWithoutLocale.startsWith('/blog/') || ctx.p
       "datePublished": blogPublishedISOString,
       "dateModified": blogModifiedISOString,
       "inLanguage": locale,
-      "author": { "@type": "Organization", "@id": "https://forwardemail.net/#organization", "name": "Forward Email", "legalName": "Forward Email LLC", "url": "https://forwardemail.net" },
+      "author": { "@type": "Organization", "@id": "https://forwardemail.net/#organization", "name": "Forward Email", "legalName": "Forward Email LLC", "url": "https://forwardemail.net", "sameAs": ["https://wikitia.com/wiki/Forward_Email", "https://github.com/forwardemail", "https://x.com/fwdemail", "https://news.ycombinator.com/user?id=fwdemail", "https://www.reddit.com/r/forwardemail/", "https://www.npmjs.com/~titanism", "https://www.crunchbase.com/organization/forward-email", "https://alternativeto.net/software/forward-email/", "https://www.youtube.com/forwardemail"] },
       "publisher": {
         "@type": "Organization",
         "@id": "https://forwardemail.net/#organization",
         "name": "Forward Email",
         "legalName": "Forward Email LLC",
         "url": "https://forwardemail.net",
+        "sameAs": ["https://wikitia.com/wiki/Forward_Email", "https://github.com/forwardemail", "https://x.com/fwdemail", "https://news.ycombinator.com/user?id=fwdemail", "https://www.reddit.com/r/forwardemail/", "https://www.npmjs.com/~titanism", "https://www.crunchbase.com/organization/forward-email", "https://alternativeto.net/software/forward-email/", "https://www.youtube.com/forwardemail"],
         "logo": {
           "@type": "ImageObject",
           "url": `${config.urls.web}/img/logo-square-180x180.png`

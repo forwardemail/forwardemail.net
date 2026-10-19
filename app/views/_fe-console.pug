@@ -83,7 +83,9 @@
       kicker: 'Sync',
       tone: 'vault',
       title: 'Calendars, contacts & tasks',
-      promise: 'Calendars, contacts and tasks use the open CalDAV and CardDAV standards. Sign in with the same address and password as your mailbox.',
+      // (calendars since February 2024, contacts since June 2025, see the FAQ)
+      promise: 'Calendars, contacts and tasks use the open CalDAV and CardDAV standards. We added calendars in %d and contacts in %d. Sign in with the same address and password as your mailbox.',
+      promiseArgs: [2024, 2025],
       cards: [
         { label: 'CalDAV', sub: 'Send and answer meeting invitations.' },
         { label: 'CardDAV', sub: 'The same contacts on every device.' },
@@ -100,7 +102,9 @@
       kicker: 'Observe',
       tone: 'caution',
       title: 'API, webhooks & reports',
-      promise: 'Our REST API manages domains, aliases, messages, calendars and contacts. Webhooks post inbound messages to your app as JSON.',
+      // ("Do you support webhooks" in the FAQ: up to 3 retries per attempt)
+      promise: 'Our REST API manages domains, aliases, messages, calendars and contacts. Webhooks post inbound messages to your app as JSON and retry up to %d times on each delivery attempt.',
+      promiseArgs: [3],
       cards: [
         { label: 'REST API', sub: 'Manage domains, aliases and messages, and download logs.' },
         { label: 'Webhooks', sub: 'Each inbound email arrives as a JSON request.' },

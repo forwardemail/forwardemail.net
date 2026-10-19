@@ -253,10 +253,23 @@ test('the stylesheet loads only WOFF2 fonts', async (t) => {
   }
 });
 
+test('the stylesheet declares no date but keeps its license banners', async (t) => {
+  // (the stylesheet is inlined in every page: a highlight.js theme banner
+  // "Updated: 2021-05-15" read as the date of each of them)
+  const res = await t.context.web.get('/css/app.css');
+  t.is(res.status, 200);
+  const css = res.text || res.body.toString();
+  t.false(css.includes('Theme: GitHub'));
+  t.notRegex(css, /Updated: \d{4}-\d{2}-\d{2}/);
+  t.true(css.includes('Bootstrap v4'));
+  t.true(css.includes('Font Awesome Free'));
+});
+
 test('the home page names its sources', async (t) => {
   const { document } = await getPage(t, '/en');
 
-  // the Enterprise card (the last plan) links both case studies
+  // the Enterprise card (the last plan) links both case studies and the
+  // FAQ answer on what the plan includes
   const proofs = document.querySelectorAll('.fe-plan__proof');
   const proof = proofs[proofs.length - 1];
   t.truthy(proof);
@@ -265,7 +278,9 @@ test('the home page names its sources', async (t) => {
   );
   t.deepEqual(links, [
     '/en/blog/docs/linux-foundation-email-enterprise-case-study',
-    '/en/blog/docs/canonical-ubuntu-email-enterprise-case-study'
+    '/en/blog/docs/canonical-ubuntu-email-enterprise-case-study',
+    // and what the plan includes
+    '/en/faq#what-is-included-in-the-enterprise-license'
   ]);
 
   // the sending section quotes the rate it enforces, and where it comes from
