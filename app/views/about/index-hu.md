@@ -68,7 +68,7 @@ A megoldás egyszerűsége és hatékonysága felkeltette neves fejlesztők figy
 **2020 április**: Miután számos akadályba ütköztek a meglévő spamészlelő megoldásokkal, amelyek nem tartották tiszteletben a Forward Email adatvédelmi irányelveit, a cég kiadta a Spam Scanner kezdeti alfa verzióját. Ez a teljesen ingyenes és nyílt forráskódú [spamellenes szűrő](https://en.wikipedia.org/wiki/Anti-spam_techniques "Anti-spam techniques") megoldás egy [Naive Bayes spam szűrő](https://en.wikipedia.org/wiki/Naive_Bayes_spam_filtering "Naive Bayes spam filtering") megközelítést alkalmaz, amelyet [adathalászat elleni](https://en.wikipedia.org/wiki/Phishing "Phishing") és [IDN homográf támadás](https://en.wikipedia.org/wiki/IDN_homograph_attack "IDN homograph attack") védelem egészít ki. A Forward Email emellett kiadta a [kétfaktoros hitelesítést](https://en.wikipedia.org/wiki/Multi-factor_authentication "Multi-factor authentication") (2FA) [egyszer használatos jelszavakkal](https://en.wikipedia.org/wiki/One-time_password "One-time password") (OTP) a fokozott fiókbiztonság érdekében.
 
 **2020 május**: A Forward Email lehetővé tette az egyedi [port továbbítást](https://en.wikipedia.org/wiki/Port_forwarding "Port forwarding") mint megoldást a felhasználók számára, hogy megkerüljék az internetszolgáltatójuk ([ISP](https://en.wikipedia.org/wiki/Internet_service_provider "Internet service provider")) által alkalmazott portblokkolást. A cég kiadta továbbá az ingyenes E-mail továbbító RESTful API-ját (email-api) teljes dokumentációval és valós idejű kérés-válasz példákkal, valamint webhook támogatással.
-**2020 augusztus**: A Forward Email hozzáadta a támogatást az [Authenticated Received Chain](arc) ("ARC") e-mail hitelesítési rendszerhez, tovább erősítve az e-mail biztonságot és kézbesíthetőséget.
+**2020 augusztus**: A Forward Email hozzáadta a támogatást az [Authenticated Received Chain](/faq#do-you-support-email-best-practices) ("ARC") e-mail hitelesítési rendszerhez, tovább erősítve az e-mail biztonságot és kézbesíthetőséget.
 
 **2020. november 23.**: A Forward Email nyilvánosan elindult a béta programból, jelentős mérföldkövet jelezve a platform fejlesztésében.
 
@@ -92,7 +92,7 @@ A megoldás egyszerűsége és hatékonysága felkeltette neves fejlesztők figy
 
 **2023 november**: A Forward Email elindította a [**titkosított postaláda tárolás**](/blog/docs/best-quantum-safe-encrypted-email-service) funkcióját az [IMAP támogatáshoz](/faq#do-you-support-receiving-email-with-imap), amely jelentős előrelépést jelent az e-mail magánélet és biztonság terén.
 
-**2023 december**: A cég [hozzáadta a támogatást](/faq#do-you-support-pop3) a [POP3](https://en.wikipedia.org/wiki/Post_Office_Protocol), [passkey-ekhez és WebAuthn-hoz](/faq#do-you-support-passkeys-and-webauthn), [beérkezési idő monitorozáshoz](/faq#i) és az [OpenPGP IMAP tároláshoz](/faq#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd).
+**2023 december**: A cég [hozzáadta a támogatást](/faq#do-you-support-pop3) a [POP3](https://en.wikipedia.org/wiki/Post_Office_Protocol), [passkey-ekhez és WebAuthn-hoz](/faq#do-you-support-passkeys-and-webauthn), [beérkezési idő monitorozáshoz](/tti) és az [OpenPGP IMAP tároláshoz](/faq#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd).
 
 ### 2024 - Szolgáltatás optimalizálás és fejlett funkciók {#2024---service-optimization-and-advanced-features}
 

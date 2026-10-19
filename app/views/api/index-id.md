@@ -295,6 +295,7 @@ curl -X PUT BASE_URI/v1/account \
 
 > \[!NOTE]
 > Berbeda dengan endpoint API lainnya, ini memerlukan [Autentikasi](#authentication) "username" yang sama dengan nama pengguna alias dan "password" yang sama dengan kata sandi yang dihasilkan alias sebagai header Otorisasi Dasar (Basic Authorization).
+
 > \[!WARNING]
 > Bagian endpoint ini masih dalam proses pengerjaan dan diharapkan akan dirilis pada tahun 2024. Sementara itu, silakan gunakan klien IMAP dari dropdown "Apps" di navigasi situs web kami.
 
@@ -481,7 +482,7 @@ curl BASE_URI/v1/emails/limit \
 
 Perlu dicatat bahwa endpoint ini tidak mengembalikan nilai properti untuk `message`, `headers`, maupun `rejectedErrors` dari sebuah email.
 
-Untuk mengembalikan properti dan nilainya tersebut, silakan gunakan endpoint [Retrieve email](#retrieve-email) dengan ID email.
+Untuk mengembalikan properti dan nilainya tersebut, silakan gunakan endpoint [Retrieve email](#retrieve-outbound-smtp-email) dengan ID email.
 
 > `GET /v1/emails`
 
@@ -529,7 +530,7 @@ Endpoint API ini akan secara otomatis mengkodekan emoji untuk Anda jika ditemuka
 | `inReplyTo`      | Tidak  | String           | Message-ID yang dibalas oleh pesan ini.                                                                                                                                                                                                                                                                                                                                                                                                                       |
 | `references`     | Tidak  | String atau Array| Daftar Message-ID yang dipisahkan spasi atau Array.                                                                                                                                                                                                                                                                                                                                                                                                           |
 | `attachDataUrls` | Tidak  | Boolean          | Jika `true` maka mengonversi gambar `data:` dalam konten HTML pesan menjadi lampiran yang disematkan.                                                                                                                                                                                                                                                                                                                                                         |
-| `watchHtml`      | Tidak  | String           | Versi HTML khusus Apple Watch dari pesan ([menurut dokumentasi Nodemailer](https://nodemailer.com/message/#content-options]), jam tangan terbaru tidak memerlukan ini diatur).                                                                                                                                                                                                                                                                                 |
+| `watchHtml`      | Tidak  | String           | Versi HTML khusus Apple Watch dari pesan ([menurut dokumentasi Nodemailer](https://nodemailer.com/message/#content-options), jam tangan terbaru tidak memerlukan ini diatur).                                                                                                                                                                                                                                                                                 |
 | `amp`            | Tidak  | String           | Versi HTML khusus AMP4EMAIL dari pesan (lihat [contoh Nodemailer](https://nodemailer.com/message/#amp-example)).                                                                                                                                                                                                                                                                                                                                               |
 | `icalEvent`      | Tidak  | Object           | Event iCalendar yang digunakan sebagai konten pesan alternatif (lihat [event kalender Nodemailer](https://nodemailer.com/message/calendar-events/)).                                                                                                                                                                                                                                                                                                         |
 | `alternatives`   | Tidak  | Array            | Array konten pesan alternatif (lihat [konten alternatif Nodemailer](https://nodemailer.com/message/alternatives/)).                                                                                                                                                                                                                                                                                                                                            |
@@ -584,7 +585,7 @@ curl BASE_URI/v1/emails/:id \
 
 ### Hapus email SMTP keluar {#delete-outbound-smtp-email}
 
-Penghapusan email akan mengatur status menjadi `"rejected"` (dan selanjutnya tidak memprosesnya dalam antrean) jika dan hanya jika status saat ini adalah salah satu dari `"pending"`, `"queued"`, atau `"deferred"`. Kami dapat menghapus email secara otomatis setelah 30 hari sejak dibuat dan/atau dikirim – oleh karena itu Anda harus menyimpan salinan email SMTP keluar di klien, basis data, atau aplikasi Anda. Anda dapat merujuk nilai ID email kami di basis data Anda jika diinginkan – nilai ini dikembalikan dari kedua endpoint [Buat email](#create-email) dan [Ambil email](#retrieve-email).
+Penghapusan email akan mengatur status menjadi `"rejected"` (dan selanjutnya tidak memprosesnya dalam antrean) jika dan hanya jika status saat ini adalah salah satu dari `"pending"`, `"queued"`, atau `"deferred"`. Kami dapat menghapus email secara otomatis setelah 30 hari sejak dibuat dan/atau dikirim – oleh karena itu Anda harus menyimpan salinan email SMTP keluar di klien, basis data, atau aplikasi Anda. Anda dapat merujuk nilai ID email kami di basis data Anda jika diinginkan – nilai ini dikembalikan dari kedua endpoint [Buat email](#create-outbound-smtp-email) dan [Ambil email](#retrieve-outbound-smtp-email).
 
 > `DELETE /v1/emails/:id`
 

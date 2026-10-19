@@ -295,6 +295,7 @@ curl -X PUT BASE_URI/v1/account \
 
 > \[!NOTE]
 > Contrairement aux autres points de terminaison de l’API, ceux-ci requièrent que l’[Authentification](#authentication) utilise comme "nom d’utilisateur" le nom d’utilisateur de l’alias et comme "mot de passe" le mot de passe généré de l’alias en tant qu’en-têtes d’Autorisation Basic.
+
 > \[!WARNING]
 > Cette section des points de terminaison est en cours de développement et sera publiée (espérons-le) en 2024. En attendant, veuillez utiliser un client IMAP depuis le menu déroulant "Apps" dans la navigation de notre site web.
 
@@ -481,7 +482,7 @@ curl BASE_URI/v1/emails/limit \
 
 Notez que ce point de terminaison ne renvoie pas les valeurs des propriétés pour le `message`, les `headers`, ni les `rejectedErrors` d'un email.
 
-Pour retourner ces propriétés et leurs valeurs, veuillez utiliser le point de terminaison [Récupérer un email](#retrieve-email) avec un ID d'email.
+Pour retourner ces propriétés et leurs valeurs, veuillez utiliser le point de terminaison [Récupérer un email](#retrieve-outbound-smtp-email) avec un ID d'email.
 
 > `GET /v1/emails`
 
@@ -529,7 +530,7 @@ Ce point de terminaison API encodera automatiquement les emojis pour vous s'ils 
 | `inReplyTo`       | Non         | Chaîne           | Le Message-ID auquel le message répond.                                                                                                                                                                                                                                                                                                                                                                                                                           |
 | `references`      | Non         | Chaîne ou Tableau| Liste séparée par des espaces ou un tableau de Message-ID.                                                                                                                                                                                                                                                                                                                                                                                                       |
 | `attachDataUrls`  | Non         | Booléen          | Si `true`, convertit les images `data:` dans le contenu HTML du message en pièces jointes intégrées.                                                                                                                                                                                                                                                                                                                                                             |
-| `watchHtml`       | Non         | Chaîne           | Une version HTML spécifique à Apple Watch du message ([selon la documentation Nodemailer](https://nodemailer.com/message/#content-options]), les dernières montres ne nécessitent pas que cela soit défini).                                                                                                                                                                                                                                                      |
+| `watchHtml`       | Non         | Chaîne           | Une version HTML spécifique à Apple Watch du message ([selon la documentation Nodemailer](https://nodemailer.com/message/#content-options), les dernières montres ne nécessitent pas que cela soit défini).                                                                                                                                                                                                                                                      |
 | `amp`             | Non         | Chaîne           | Une version HTML spécifique AMP4EMAIL du message (voir [l'exemple Nodemailer](https://nodemailer.com/message/#amp-example)).                                                                                                                                                                                                                                                                                                                                     |
 | `icalEvent`       | Non         | Objet            | Un événement iCalendar à utiliser comme contenu alternatif du message (voir [les événements calendrier Nodemailer](https://nodemailer.com/message/calendar-events/)).                                                                                                                                                                                                                                                                                             |
 | `alternatives`    | Non         | Tableau          | Un tableau de contenus alternatifs du message (voir [le contenu alternatif Nodemailer](https://nodemailer.com/message/alternatives/)).                                                                                                                                                                                                                                                                                                                          |
@@ -584,7 +585,7 @@ curl BASE_URI/v1/emails/:id \
 
 ### Supprimer un email SMTP sortant {#delete-outbound-smtp-email}
 
-La suppression d’un email définira le statut à `"rejected"` (et ne le traitera donc plus dans la file d’attente) si et seulement si le statut actuel est l’un des suivants : `"pending"`, `"queued"`, ou `"deferred"`. Nous pouvons purger automatiquement les emails après 30 jours suivant leur création et/ou envoi – vous devez donc conserver une copie des emails SMTP sortants dans votre client, base de données ou application. Vous pouvez référencer notre valeur d’ID d’email dans votre base de données si vous le souhaitez – cette valeur est retournée à la fois par les points d’accès [Créer un email](#create-email) et [Récupérer un email](#retrieve-email).
+La suppression d’un email définira le statut à `"rejected"` (et ne le traitera donc plus dans la file d’attente) si et seulement si le statut actuel est l’un des suivants : `"pending"`, `"queued"`, ou `"deferred"`. Nous pouvons purger automatiquement les emails après 30 jours suivant leur création et/ou envoi – vous devez donc conserver une copie des emails SMTP sortants dans votre client, base de données ou application. Vous pouvez référencer notre valeur d’ID d’email dans votre base de données si vous le souhaitez – cette valeur est retournée à la fois par les points d’accès [Créer un email](#create-outbound-smtp-email) et [Récupérer un email](#retrieve-outbound-smtp-email).
 
 > `DELETE /v1/emails/:id`
 

@@ -1,0 +1,9 @@
+//- Our rating on Trustpilot, when helpers/aggregate-rating.js has one (it is
+//- read for the home page and the alternatives pages). It is the visible
+//- side of the aggregateRating in _schema.pug: structured data may only
+//- carry a rating the page itself shows.
+mixin feRating
+  if aggregateRating
+    - const ratingFormat = new Intl.NumberFormat(locale, { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+    p.fe-rating
+      != t('Rated <span class="notranslate">%s</span> out of 5 from <span class="notranslate">%s</span> reviews on %s.', ratingFormat.format(aggregateRating.ratingValue), new Intl.NumberFormat(locale).format(aggregateRating.ratingCount), `<a href="${aggregateRating.url}" target="_blank" rel="noopener noreferrer">Trustpilot</a>`)

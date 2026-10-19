@@ -47,16 +47,19 @@ mixin registerOrLogin(verb, isModal = false)
           #webauthn-container.d-none
             noscript
               .alert.alert-danger.font-weight-bold.text-center.border-top-0.border-left-0.border-right-0.rounded-0.small!= t("Please enable JavaScript to sign in with Passkey.")
-            a.btn-webauthn-login.btn-auth.text-center.mb-3.text-decoration-none.rounded-lg(
-              href="#",
-              role="button"
+            //- (a button: it starts the sign-in here and goes to no page)
+            button.btn-webauthn-login.btn-auth.text-center.mb-3.rounded-lg.w-100(
+              type="button"
             )
               span.btn-auth-icon.btn-auth-icon-fill.btn-auth-fa-key
               span.btn-auth-text.font-weight-bold= t(`${humanize(verb)} with Passkey`)
+        //- (the sign-in links are nofollow: each page gives them a return_to of its
+        //-  own, and they only redirect to the provider)
         //- <https://developer.apple.com/design/human-interface-guidelines/sign-in-with-apple>
         if passport && passport.apple
           a.btn-auth.text-center.mb-3.text-decoration-none.rounded-lg(
             href=`/auth/apple?return_to=${encodeURIComponent(ctx.query.return_to || ctx.url)}`,
+            rel="nofollow",
             role="button"
           )
             span.btn-auth-icon.btn-auth-icon-fill.btn-auth-apple-logo
@@ -65,6 +68,7 @@ mixin registerOrLogin(verb, isModal = false)
         if passport && passport.google
           a.btn-auth.text-center.mb-3.text-decoration-none.rounded-lg(
             href=`/auth/google?return_to=${encodeURIComponent(ctx.query.return_to || ctx.url)}`,
+            rel="nofollow",
             role="button"
           )
             span.btn-auth-icon.btn-auth-google-logo
@@ -73,6 +77,7 @@ mixin registerOrLogin(verb, isModal = false)
         if passport && passport.github
           a.btn-auth.text-center.mb-3.text-decoration-none.rounded-lg(
             href=`/auth/github?return_to=${encodeURIComponent(ctx.query.return_to || ctx.url)}`,
+            rel="nofollow",
             role="button"
           )
             span.btn-auth-icon.btn-auth-icon-fill.btn-auth-github-logo

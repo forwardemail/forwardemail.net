@@ -518,7 +518,7 @@ Pokud narazíte na problémy, které zde nejsou pokryty, prosím:
 
 ## Další zdroje {#additional-resources}
 
-* [Dokumentace Forward Email](/docs)  
+* [Dokumentace Forward Email](/blog/docs)
 * [Limity a konfigurace SMTP serveru](/faq#what-are-your-outbound-smtp-limits)  
 * [Průvodce nejlepšími postupy pro e-mail](/blog/docs/best-email-forwarding-service)  
 * [Bezpečnostní postupy](/security)  

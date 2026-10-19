@@ -295,6 +295,7 @@ curl -X PUT BASE_URI/v1/account \
 
 > \[!NOTE]
 > Na rozdíl od ostatních API endpointů vyžadují tyto [Autentizaci](#authentication) s "uživatelským jménem" rovno uživatelskému jménu aliasu a "heslem" rovno vygenerovanému heslu aliasu jako Basic Authorization hlavičky.
+
 > \[!WARNING]
 > Tato sekce endpointů je ve vývoji a bude (doufejme) vydána v roce 2024. Mezitím prosím použijte IMAP klienta z rozbalovací nabídky "Apps" v navigaci na našem webu.
 
@@ -481,7 +482,7 @@ curl BASE_URI/v1/emails/limit \
 
 Všimněte si, že tento endpoint nevrací hodnoty vlastností pro `message`, `headers` ani `rejectedErrors` emailu.
 
-Pro vrácení těchto vlastností a jejich hodnot použijte prosím endpoint [Získat email](#retrieve-email) s ID emailu.
+Pro vrácení těchto vlastností a jejich hodnot použijte prosím endpoint [Získat email](#retrieve-outbound-smtp-email) s ID emailu.
 
 > `GET /v1/emails`
 
@@ -529,7 +530,7 @@ Tento API endpoint automaticky zakóduje emoji, pokud jsou nalezeny v hlavičká
 | `inReplyTo`      | Ne      | String           | Message-ID, na který zpráva odpovídá.                                                                                                                                                                                                                                                                                                                                                                                                                         |
 | `references`     | Ne      | String nebo Pole  | Mezerou oddělený seznam nebo pole Message-ID.                                                                                                                                                                                                                                                                                                                                                                                                                |
 | `attachDataUrls` | Ne      | Boolean          | Pokud `true`, převede `data:` obrázky v HTML obsahu zprávy na vložené přílohy.                                                                                                                                                                                                                                                                                                                                                                                  |
-| `watchHtml`      | Ne      | String           | Specifická HTML verze zprávy pro Apple Watch ([dle dokumentace Nodemailer](https://nodemailer.com/message/#content-options]), nejnovější hodinky toto nastavení nevyžadují).                                                                                                                                                                                                                                                                                   |
+| `watchHtml`      | Ne      | String           | Specifická HTML verze zprávy pro Apple Watch ([dle dokumentace Nodemailer](https://nodemailer.com/message/#content-options), nejnovější hodinky toto nastavení nevyžadují).                                                                                                                                                                                                                                                                                   |
 | `amp`            | Ne      | String           | Specifická AMP4EMAIL HTML verze zprávy (viz [příklad Nodemailer](https://nodemailer.com/message/#amp-example)).                                                                                                                                                                                                                                                                                                                                                |
 | `icalEvent`      | Ne      | Objekt           | Událost iCalendar použitá jako alternativní obsah zprávy (viz [kalendářové události Nodemailer](https://nodemailer.com/message/calendar-events/)).                                                                                                                                                                                                                                                                                                            |
 | `alternatives`   | Ne      | Pole             | Pole alternativního obsahu zprávy (viz [alternativní obsah Nodemailer](https://nodemailer.com/message/alternatives/)).                                                                                                                                                                                                                                                                                                                                         |
@@ -584,7 +585,7 @@ curl BASE_URI/v1/emails/:id \
 
 ### Smazání odchozího SMTP e-mailu {#delete-outbound-smtp-email}
 
-Smazání e-mailu nastaví stav na `"rejected"` (a následně jej nebude zpracovávat v frontě) pouze pokud je aktuální stav jeden z `"pending"`, `"queued"` nebo `"deferred"`. E-maily můžeme automaticky mazat po 30 dnech od jejich vytvoření a/nebo odeslání – proto byste měli uchovávat kopii odchozích SMTP e-mailů ve svém klientovi, databázi nebo aplikaci. Pokud chcete, můžete v databázi odkazovat na naši hodnotu ID e-mailu – tato hodnota je vrácena z obou endpointů [Vytvořit e-mail](#create-email) a [Získat e-mail](#retrieve-email).
+Smazání e-mailu nastaví stav na `"rejected"` (a následně jej nebude zpracovávat v frontě) pouze pokud je aktuální stav jeden z `"pending"`, `"queued"` nebo `"deferred"`. E-maily můžeme automaticky mazat po 30 dnech od jejich vytvoření a/nebo odeslání – proto byste měli uchovávat kopii odchozích SMTP e-mailů ve svém klientovi, databázi nebo aplikaci. Pokud chcete, můžete v databázi odkazovat na naši hodnotu ID e-mailu – tato hodnota je vrácena z obou endpointů [Vytvořit e-mail](#create-outbound-smtp-email) a [Získat e-mail](#retrieve-outbound-smtp-email).
 
 > `DELETE /v1/emails/:id`
 

@@ -702,3 +702,27 @@ test('getCacheKey is prefixed by CACHE_KEY and stable for an unchanged file', (t
   t.true(key.startsWith(`${CACHE_KEY}:`));
   t.is(getCacheKey(FAQ_FILE_PATH), key);
 });
+
+test('getFaqSchema adds "?" only for the English page, as the page does', async (t) => {
+  const german = FAQ_FILE_PATH.replace(/index\.md$/, 'index-de.md');
+  const names = async (...args) => {
+    const schema = await getFaqSchema(null, ...args);
+    return new Set(schema.mainEntity.map((q) => q.name));
+  };
+
+  // the German file keeps its questions as written ("Was ist" is not "what")
+  const de = await names(german, undefined, 'de');
+  t.true(de.has('Was ist Forward Email'));
+  const deByFile = await names(german);
+  t.true(deByFile.has('Was ist Forward Email'));
+  // the English file adds "?" for the English page
+  const en = await names(FAQ_FILE_PATH, undefined, 'en');
+  t.true(en.has('What is Forward Email?'));
+  const enByFile = await names(FAQ_FILE_PATH);
+  t.true(enByFile.has('What is Forward Email?'));
+  // and not for a locale that falls back to it (the page keeps them as
+  // written there), under a cache key of its own
+  const fallback = await names(FAQ_FILE_PATH, undefined, 'xx');
+  t.true(fallback.has('What is Forward Email'));
+  t.not(getCacheKey(FAQ_FILE_PATH), getCacheKey(FAQ_FILE_PATH, false));
+});

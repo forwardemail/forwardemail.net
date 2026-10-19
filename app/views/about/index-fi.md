@@ -68,7 +68,7 @@ Ratkaisun yksinkertaisuus ja tehokkuus herättivät huomiota merkittävien kehit
 **Huhtikuu 2020**: Kohdatessaan lukuisia esteitä olemassa olevien roskapostintunnistusratkaisujen kanssa, jotka eivät kunnioittaneet Forward Emailin tietosuojakäytäntöä, yritys julkaisi ensimmäisen alfa-version Spam Scannerista. Tämä täysin ilmainen ja avoimen lähdekoodin [roskapostisuodatus](https://en.wikipedia.org/wiki/Anti-spam_techniques "Anti-spam techniques") -ratkaisu käyttää [Naive Bayes -roskapostisuodatinta](https://en.wikipedia.org/wiki/Naive_Bayes_spam_filtering "Naive Bayes spam filtering") yhdistettynä [phishing-suojaukseen](https://en.wikipedia.org/wiki/Phishing "Phishing") ja [IDN-homografihyökkäyssuojaukseen](https://en.wikipedia.org/wiki/IDN_homograph_attack "IDN homograph attack"). Forward Email julkaisi myös [kaksivaiheisen tunnistautumisen](https://en.wikipedia.org/wiki/Multi-factor_authentication "Multi-factor authentication") (2FA) käyttäen [kertakäyttösalasanoja](https://en.wikipedia.org/wiki/One-time_password "One-time password") (OTP) tilien turvallisuuden parantamiseksi.
 
 **Toukokuu 2020**: Forward Email mahdollisti mukautetun [porttien edelleenlähetyksen](https://en.wikipedia.org/wiki/Port_forwarding "Port forwarding") kiertotienä käyttäjille, jotka halusivat ohittaa [ISP:n](https://en.wikipedia.org/wiki/Internet_service_provider "Internet service provider") porttien eston. Yritys julkaisi myös [Free Email Forwarding RESTful API:n](email-api) täydellisellä dokumentaatiolla ja reaaliaikaisilla pyyntö- ja vastausesimerkeillä sekä tuella webhookeille.
-**Elokuu 2020**: Forward Email lisäsi tuen [Authenticated Received Chain](arc) ("ARC") -sähköpostin todennusjärjestelmälle, vahvistaen entisestään sähköpostin turvallisuutta ja toimitettavuutta.
+**Elokuu 2020**: Forward Email lisäsi tuen [Authenticated Received Chain](/faq#do-you-support-email-best-practices) ("ARC") -sähköpostin todennusjärjestelmälle, vahvistaen entisestään sähköpostin turvallisuutta ja toimitettavuutta.
 
 **23. marraskuuta 2020**: Forward Email julkaistiin julkisesti beta-ohjelmansa jälkeen, mikä merkitsi merkittävää virstanpylvästä alustan kehityksessä.
 
@@ -92,7 +92,7 @@ Ratkaisun yksinkertaisuus ja tehokkuus herättivät huomiota merkittävien kehit
 
 **Marraskuu 2023**: Forward Email julkaisi [**salatun postilaatikon tallennuksen**](/blog/docs/best-quantum-safe-encrypted-email-service) ominaisuuden [IMAP-tuen](/faq#do-you-support-receiving-email-with-imap) yhteydessä, mikä edustaa merkittävää edistysaskelta sähköpostin yksityisyydessä ja turvallisuudessa.
 
-**Joulukuu 2023**: Yritys [lisäsi tuen](/faq#do-you-support-pop3) [POP3:lle](https://en.wikipedia.org/wiki/Post_Office_Protocol), [passkeyille ja WebAuthnille](/faq#do-you-support-passkeys-and-webauthn), [saapumisajan seurantaan](/faq#i) sekä [OpenPGP:lle IMAP-tallennuksessa](/faq#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd).
+**Joulukuu 2023**: Yritys [lisäsi tuen](/faq#do-you-support-pop3) [POP3:lle](https://en.wikipedia.org/wiki/Post_Office_Protocol), [passkeyille ja WebAuthnille](/faq#do-you-support-passkeys-and-webauthn), [saapumisajan seurantaan](/tti) sekä [OpenPGP:lle IMAP-tallennuksessa](/faq#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd).
 
 ### 2024 - Palvelun optimointi ja edistyneet ominaisuudet {#2024---service-optimization-and-advanced-features}
 

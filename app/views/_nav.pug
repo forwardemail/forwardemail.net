@@ -129,7 +129,7 @@ if ctx.pathWithoutLocale === "/email-api"
 if ['da', 'de', 'es', 'fi', 'fr', 'he', 'pt', 'sv', 'tr', 'vi'].includes(ctx.locale)
   - navbarClasses.unshift("navbar-small");
 
-nav.navbar(class=navbarClasses.join(" "))
+nav.navbar(class=navbarClasses.join(" "), aria-label=t("Main menu"))
   div(
     class=hasSidebar || ctx.pathWithoutLocale.startsWith("/admin/") || ctx.pathWithoutLocale.startsWith("/my-account/analytics") || ctx.pathWithoutLocale.startsWith("/my-account/logs") || ctx.pathWithoutLocale.startsWith("/my-account/emails") || ctx.pathWithoutLocale.startsWith("/my-account/domains") || (typeof isContainerFluid === "boolean" && isContainerFluid === true) ? "container-fluid" : "container"
   )
@@ -255,28 +255,6 @@ nav.navbar(class=navbarClasses.join(" "))
               span.sr-only
                 = " "
                 = t("Search")
-
-        //- do same for noscript
-        noscript
-          li.list-inline-item
-            a.btn.btn-link.btn-sm(
-              href=l("/private-business-email?pricing=true"),
-              class=ctx.pathWithoutLocale.startsWith("/private-business-email") ? "text-decoration-underline" : ""
-            )
-              != t("Features &amp; Pricing")
-          //-.
-            li.list-inline-item
-              a.btn.btn-link.btn-sm(
-                href=l("/email-analytics"),
-                class=ctx.pathWithoutLocale.startsWith("/email-analytics") ? "text-decoration-underline" : ""
-              )
-                != t("Email Analytics")
-          li.list-inline-item
-            a.btn.btn-link.btn-sm(
-              href=l("/faq"),
-              class=ctx.pathWithoutLocale.startsWith("/faq") ? "text-decoration-underline" : ""
-            )
-              = t("FAQ")
         if ctx.pathWithoutLocale !== config.loginRoute
           li.list-inline-item.d-none.d-md-inline-block.d-lg-none
             a.btn.btn-link.btn-sm(
@@ -296,6 +274,29 @@ nav.navbar(class=navbarClasses.join(" "))
                 = t("Register")
               else
                 = t("Signup")
+      //- (script-less visitors also get these, in a list of their own: a
+      //-  <noscript> inside a list is not a list item)
+      noscript
+        ul.list-inline.d-inline-block.d-lg-none.mb-0
+          li.list-inline-item
+            a.btn.btn-link.btn-sm(
+              href=l("/private-business-email?pricing=true"),
+              class=ctx.pathWithoutLocale.startsWith("/private-business-email") ? "text-decoration-underline" : ""
+            )
+              != t("Features &amp; Pricing")
+          //-.
+            li.list-inline-item
+              a.btn.btn-link.btn-sm(
+                href=l("/email-analytics"),
+                class=ctx.pathWithoutLocale.startsWith("/email-analytics") ? "text-decoration-underline" : ""
+              )
+                != t("Email Analytics")
+          li.list-inline-item
+            a.btn.btn-link.btn-sm(
+              href=l("/faq"),
+              class=ctx.pathWithoutLocale.startsWith("/faq") ? "text-decoration-underline" : ""
+            )
+              = t("FAQ")
       .no-js.d-inline-block.mr-3
     button.navbar-toggler.d-lg-none.no-js(
       type="button",
@@ -543,7 +544,7 @@ nav.navbar(class=navbarClasses.join(" "))
                 class=user ? "dropdown-menu-md-right dropdown-menu-lg-right" : "dropdown-menu-md-left dropdown-menu-lg-left",
                 aria-labelledby="navbar-dropdown-guides"
               )
-                h6.dropdown-header= t("Outbound SMTP")
+                .dropdown-header= t("Outbound SMTP")
                 a.dropdown-item(
                   href=l("/guides/smtp-integration"),
                   class=ctx.pathWithoutLocale === "/guides/smtp-integration" ? "active" : ""
@@ -560,7 +561,7 @@ nav.navbar(class=navbarClasses.join(" "))
                 )
                   = t("Send Mail As with Gmail")
                 hr.dropdown-divider
-                h6.dropdown-header= t("Device Configurations")
+                .dropdown-header= t("Device Configurations")
                 a.dropdown-item(
                   href=l("/guides/nas-email-notifications-smtp-setup-guide-synology-qnap-truenas"),
                   class=ctx.pathWithoutLocale === "/guides/nas-email-notifications-smtp-setup-guide-synology-qnap-truenas" ? "active" : ""
@@ -577,7 +578,7 @@ nav.navbar(class=navbarClasses.join(" "))
                 )
                   = t("Raspberry Pi FTP Server with Email Camera Relay")
                 hr.dropdown-divider
-                h6.dropdown-header= t("Email Setup Guides")
+                .dropdown-header= t("Email Setup Guides")
                 .card-columns.small
                   each provider in nsProviders
                     - const classes = [];
@@ -656,7 +657,7 @@ nav.navbar(class=navbarClasses.join(" "))
                 )= t("Custom Domain Regex Filtering")
                 if config.alternatives && config.alternatives.length > 0
                   hr.dropdown-divider
-                  h6.dropdown-header= t("Email Service Comparison")
+                  .dropdown-header= t("Email Service Comparison")
                   .small
                     each str in ['best-email-service', 'best-private-email-service', 'best-open-source-email-service', 'best-transactional-email-service', 'best-email-api-developer-service', 'best-email-spam-filtering-service']
                       a.dropdown-item(
@@ -669,7 +670,7 @@ nav.navbar(class=navbarClasses.join(" "))
                         != striptags(t(title))
                 if developerDocs.length > 0
                   hr.dropdown-divider
-                  h6.dropdown-header= t("Developer Articles")
+                  .dropdown-header= t("Developer Articles")
                   .small
                     each doc in developerDocs
                       a.dropdown-item(
@@ -747,7 +748,7 @@ nav.navbar(class=navbarClasses.join(" "))
                   else
                     span.badge.badge-pill.badge-success.text-monospace= t("100%")
                 hr.dropdown-divider
-                h6.dropdown-header= t("Community")
+                .dropdown-header= t("Community")
                 a.dropdown-item(href=l("/my-account/profile?newsletter=true"))
                   i.fa.fa-fw.fas.fa-newspaper
                   = " "

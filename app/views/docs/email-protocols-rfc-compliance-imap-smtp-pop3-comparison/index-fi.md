@@ -1328,7 +1328,7 @@ sequenceDiagram
 ManageSieve:n lisäksi Forward Email tarjoaa:
 
 * **Verkkohallintapaneeli**: Luo ja hallinnoi Sieve-skriptejä verkkokäyttöliittymän kautta kohdassa Oma tili → Domainit → Aliaset → Sieve-skriptit
-* **REST API**: Ohjelmallinen pääsy Sieve-skriptien hallintaan [Forward Email API:n](/api#sieve-scripts) kautta
+* **REST API**: Ohjelmallinen pääsy Sieve-skriptien hallintaan [Forward Email API:n](/email-api) kautta
 
 > \[!TIP]
 > Yksityiskohtaiset asennusohjeet ja asiakasohjelman asetukset löytyvät kohdasta [UKK: Tuetteko Sieve-sähköpostisuodatusta?](/faq#do-you-support-sieve-email-filtering)
@@ -1589,6 +1589,7 @@ Tämä varmistaa **nolla tietohäviön** siirryttäessä vanhoista uusiin tallen
 ### Siirtoprosessi {#migration-process}
 
 Forward Email tarjoaa automaattisen, idempotentin siirron vanhoista uusiin tallennusformaatteihin:
+```javascript
 // Seuratut migraatiotilastot:
 {
   attachmentsMigrated: 0,

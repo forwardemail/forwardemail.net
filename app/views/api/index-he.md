@@ -295,6 +295,7 @@ curl -X PUT BASE_URI/v1/account \
 
 > \[!NOTE]
 > בניגוד לנקודות קצה אחרות ב-API, אלו דורשים [אימות](#authentication) עם "שם משתמש" השווה לשם המשתמש של הכינוי ו"סיסמה" השווה לסיסמה שנוצרה לכינוי, ככותרות הרשאה בסיסית (Basic Authorization).
+
 > \[!WARNING]
 > קטע נקודת הקצה הזה נמצא בעבודה ויושק (ככל הנראה) בשנת 2024. בינתיים אנא השתמש בלקוח IMAP מתוך תפריט "Apps" בניווט באתר שלנו.
 
@@ -481,7 +482,7 @@ curl BASE_URI/v1/emails/limit \
 
 שימו לב שנקודת קצה זו אינה מחזירה ערכי נכסים עבור `message`, `headers`, או `rejectedErrors` של דוא"ל.
 
-כדי להחזיר את אותם נכסים וערכיהם, אנא השתמשו בנקודת הקצה [Retrieve email](#retrieve-email) עם מזהה הדוא"ל.
+כדי להחזיר את אותם נכסים וערכיהם, אנא השתמשו בנקודת הקצה [Retrieve email](#retrieve-outbound-smtp-email) עם מזהה הדוא"ל.
 
 > `GET /v1/emails`
 
@@ -529,7 +530,7 @@ curl BASE_URI/v1/emails?limit=1 \
 | `inReplyTo`      | לא       | מחרוזת           | מזהה ההודעה (Message-ID) שההודעה היא תגובה אליו.                                                                                                                                                                                                                                                                                                                                                                                                              |
 | `references`     | לא       | מחרוזת או מערך   | רשימה מופרדת ברווחים או מערך של מזהי הודעות (Message-ID's).                                                                                                                                                                                                                                                                                                                                                                                                  |
 | `attachDataUrls` | לא       | בוליאני          | אם `true` אז ממיר תמונות מסוג `data:` בתוכן ה-HTML של ההודעה לקבצים מצורפים מוטמעים.                                                                                                                                                                                                                                                                                                                                                                            |
-| `watchHtml`      | לא       | מחרוזת           | גרסת HTML ספציפית ל-Apple Watch של ההודעה ([לפי מסמכי Nodemailer](https://nodemailer.com/message/#content-options]), השעונים החדשים ביותר אינם דורשים הגדרה זו).                                                                                                                                                                                                                                                                                             |
+| `watchHtml`      | לא       | מחרוזת           | גרסת HTML ספציפית ל-Apple Watch של ההודעה ([לפי מסמכי Nodemailer](https://nodemailer.com/message/#content-options), השעונים החדשים ביותר אינם דורשים הגדרה זו).                                                                                                                                                                                                                                                                                             |
 | `amp`            | לא       | מחרוזת           | גרסת HTML ספציפית ל-AMP4EMAIL של ההודעה (ראה [דוגמת Nodemailer](https://nodemailer.com/message/#amp-example)).                                                                                                                                                                                                                                                                                                                                                  |
 | `icalEvent`      | לא       | אובייקט          | אירוע iCalendar לשימוש כתוכן חלופי של ההודעה (ראה [אירועי לוח שנה של Nodemailer](https://nodemailer.com/message/calendar-events/)).                                                                                                                                                                                                                                                                                                                            |
 | `alternatives`   | לא       | מערך             | מערך של תוכן חלופי להודעה (ראה [תוכן חלופי של Nodemailer](https://nodemailer.com/message/alternatives/)).                                                                                                                                                                                                                                                                                                                                                       |
@@ -584,7 +585,7 @@ curl BASE_URI/v1/emails/:id \
 
 ### מחק אימייל SMTP יוצא {#delete-outbound-smtp-email}
 
-מחיקת אימייל תגדיר את הסטטוס ל- `"rejected"` (ולא תעבד אותו בתור) אם ורק אם הסטטוס הנוכחי הוא אחד מ- `"pending"`, `"queued"`, או `"deferred"`. ייתכן שנמחק אימיילים אוטומטית לאחר 30 יום מאז שנוצרו ו/או נשלחו – לכן מומלץ לשמור עותק של אימיילי SMTP יוצאים בלקוח, במסד הנתונים או באפליקציה שלך. ניתן להתייחס לערך מזהה האימייל שלנו במסד הנתונים שלך אם תרצה – ערך זה מוחזר משני נקודות הקצה [Create email](#create-email) ו-[Retrieve email](#retrieve-email).
+מחיקת אימייל תגדיר את הסטטוס ל- `"rejected"` (ולא תעבד אותו בתור) אם ורק אם הסטטוס הנוכחי הוא אחד מ- `"pending"`, `"queued"`, או `"deferred"`. ייתכן שנמחק אימיילים אוטומטית לאחר 30 יום מאז שנוצרו ו/או נשלחו – לכן מומלץ לשמור עותק של אימיילי SMTP יוצאים בלקוח, במסד הנתונים או באפליקציה שלך. ניתן להתייחס לערך מזהה האימייל שלנו במסד הנתונים שלך אם תרצה – ערך זה מוחזר משני נקודות הקצה [Create email](#create-outbound-smtp-email) ו-[Retrieve email](#retrieve-outbound-smtp-email).
 
 > `DELETE /v1/emails/:id`
 

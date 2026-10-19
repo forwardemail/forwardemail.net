@@ -49,6 +49,7 @@ const utilities = require('./utilities');
 const payments = require('./payments');
 const metaConfig = require('./meta-config');
 const alternatives = require('./alternatives');
+const topCompetitors = require('./top-competitors');
 const _ = require('#helpers/lodash');
 const getIpBucket = require('#helpers/get-ip-bucket');
 
@@ -1009,6 +1010,14 @@ const config = {
   // victim cannot be flooded through many aliases)
   smtpAutoReplyDailyLimitPerRecipient: 20,
   supportEmail: env.EMAIL_DEFAULT_FROM_EMAIL,
+
+  // Our Trustpilot page, and the free TrustBox ("Review Collector") whose
+  // public data holds our review counts (see helpers/aggregate-rating.js)
+  trustpilot: {
+    profileUrl: 'https://www.trustpilot.com/review/forwardemail.net',
+    businessUnitId: '61eab8173b2fe47d1d21fec0',
+    templateId: '56278e9abfbbba0bdcd568bc'
+  },
   alertsEmail: env.EMAIL_ALERTS_FROM_EMAIL,
   maxRecipients: env.MAX_RECIPIENTS,
   paidPrefix: `${env.TXT_RECORD_PREFIX}-site-verification=`,
@@ -2223,6 +2232,7 @@ config.views.locals.manifest = manifestRev({
 });
 
 config.alternatives = alternatives;
+config.topCompetitors = topCompetitors;
 
 config.views.locals.pkgVersion =
   env.NODE_ENV === 'test' ? '0.0.1' : pkg.version;
@@ -2231,6 +2241,7 @@ config.views.locals.pkgVersion =
 config.views.locals.config = _.pick(config, [
   'smtpMessageMaxSize',
   'alternatives',
+  'topCompetitors',
   'argon2',
   'smtpLimitMessages',
   'smtpLimitDuration',

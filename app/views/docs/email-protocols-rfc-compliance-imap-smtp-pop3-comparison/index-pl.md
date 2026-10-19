@@ -1328,7 +1328,7 @@ sequenceDiagram
 Oprócz ManageSieve, Forward Email oferuje:
 
 * **Panel webowy**: Twórz i zarządzaj skryptami Sieve przez interfejs webowy w Moje konto → Domeny → Aliasy → Skrypty Sieve
-* **REST API**: Programowy dostęp do zarządzania skryptami Sieve przez [Forward Email API](/api#sieve-scripts)
+* **REST API**: Programowy dostęp do zarządzania skryptami Sieve przez [Forward Email API](/email-api)
 
 > \[!TIP]
 > Szczegółowe instrukcje konfiguracji i ustawień klienta znajdziesz w [FAQ: Czy obsługujecie filtrowanie emaili za pomocą Sieve?](/faq#do-you-support-sieve-email-filtering)
@@ -1589,6 +1589,7 @@ Zapewnia to **brak utraty danych** podczas migracji ze starych do nowych format�
 ### Proces migracji {#migration-process}
 
 Forward Email zapewnia automatyczną, idempotentną migrację ze starych do nowych formatów przechowywania:
+```javascript
 // Statystyki migracji śledzone:
 {
   attachmentsMigrated: 0,

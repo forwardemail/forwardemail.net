@@ -518,7 +518,7 @@ Jeśli napotkasz problemy nieopisane tutaj, prosimy:
 
 ## Dodatkowe zasoby {#additional-resources}
 
-* [Dokumentacja Forward Email](/docs)  
+* [Dokumentacja Forward Email](/blog/docs)
 * [Limity i konfiguracja serwera SMTP](/faq#what-are-your-outbound-smtp-limits)  
 * [Przewodnik najlepszych praktyk e-mail](/blog/docs/best-email-forwarding-service)  
 * [Praktyki bezpieczeństwa](/security)  

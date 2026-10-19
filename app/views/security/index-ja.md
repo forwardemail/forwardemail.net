@@ -73,7 +73,7 @@ Forward Emailでは、セキュリティを最優先事項としています。�
 * **包括的保護**：保存時暗号化、メモリ内暗号化、通信中暗号化を実装
 
 > \[!NOTE]
-> 当社は世界初かつ唯一の**[量子耐性かつ個別に暗号化されたSQLiteメールボックス](https://forwardemail.net/en/blog/docs/best-quantum-safe-encrypted-email-service)**を使用するメールサービスです。
+> 当社は世界初かつ唯一の<strong>[量子耐性かつ個別に暗号化されたSQLiteメールボックス](https://forwardemail.net/en/blog/docs/best-quantum-safe-encrypted-email-service)</strong>を使用するメールサービスです。
 
 ### 認証と認可 {#authentication-and-authorization}
 

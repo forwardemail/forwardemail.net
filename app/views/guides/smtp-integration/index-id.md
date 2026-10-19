@@ -518,7 +518,7 @@ Jika Anda mengalami masalah yang tidak tercakup di sini, silakan:
 
 ## Sumber Daya Tambahan {#additional-resources}
 
-* [Dokumentasi Forward Email](/docs)  
+* [Dokumentasi Forward Email](/blog/docs)
 * [Batas dan Konfigurasi Server SMTP](/faq#what-are-your-outbound-smtp-limits)  
 * [Panduan Praktik Terbaik Email](/blog/docs/best-email-forwarding-service)  
 * [Praktik Keamanan](/security)  

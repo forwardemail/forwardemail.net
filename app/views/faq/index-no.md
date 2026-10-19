@@ -16,7 +16,9 @@
   * [Microsoft Outlook](#microsoft-outlook)
   * [Apple Mail](#apple-mail)
   * [eM Client](#em-client)
+  * [Tilbyr dere en webmail-klient](#do-you-offer-a-webmail-client)
   * [Kan jeg sende fra hvilken som helst adresse på domenet mitt i webmail](#can-i-send-from-any-address-on-my-domain-in-webmail)
+  * [Har dere skrivebords- og mobilapper](#do-you-have-desktop-and-mobile-apps)
   * [Har dere en terminalapp](#do-you-have-a-terminal-app)
   * [Mobile enheter](#mobile-devices)
   * [Sendmail SMTP Relay-konfigurasjon](#sendmail-smtp-relay-configuration)
@@ -75,6 +77,7 @@
   * [Støtter dere Sieve e-postfiltrering](#do-you-support-sieve-email-filtering)
   * [Støtter dere MTA-STS](#do-you-support-mta-sts)
   * [Støtter dere passordnøkler og WebAuthn](#do-you-support-passkeys-and-webauthn)
+  * [Støttes tofaktorautentisering (2FA)](#is-two-factor-authentication-2fa-supported)
   * [Støtter dere beste praksis for e-post](#do-you-support-email-best-practices)
   * [Støtter dere bounce webhooks](#do-you-support-bounce-webhooks)
   * [Støtter dere webhooks](#do-you-support-webhooks)
@@ -95,6 +98,7 @@
   * [Bevarer dere e-postautentiseringsoverskrifter](#do-you-preserve-email-authentication-headers)
   * [Bevarer dere originale e-postoverskrifter og forhindrer spoofing](#do-you-preserve-original-email-headers-and-prevent-spoofing)
   * [Hvordan beskytter dere mot spam og misbruk](#how-do-you-protect-against-spam-and-abuse)
+  * [Kan jeg deaktivere skanning for voksent innhold, phishing, kjørbare filer eller virus](#can-i-disable-adult-content-phishing-executable-or-virus-scanning)
   * [Lagrer dere e-postinnhold på disk](#do-you-store-email-content-on-disk)
   * [Kan e-postinnhold eksponeres under systemkrasj](#can-email-content-be-exposed-during-system-crashes)
   * [Hvem har tilgang til deres e-postinfrastruktur](#who-has-access-to-your-email-infrastructure)
@@ -104,6 +108,7 @@
 * [Hvor blir innkommende e-post for domenet mitt behandlet og lagret, og hvor lenge](#where-is-inbound-email-for-my-domain-processed-and-stored-and-for-how-long)
 * [Hvordan oppgir jeg Forward Email som underbehandler i min egen DPA](#how-do-i-list-forward-email-as-a-subprocessor-in-my-own-dpa)
   * [Hvordan håndterer dere varsler om datainnbrudd](#how-do-you-handle-data-breach-notifications)
+  * [Hvordan rapporterer jeg en sikkerhetssårbarhet](#how-do-i-report-a-security-vulnerability)
   * [Tilbyr dere et testmiljø](#do-you-offer-a-test-environment)
   * [Tilbyr dere overvåkings- og varslingsverktøy](#do-you-provide-monitoring-and-alerting-tools)
   * [Hvordan sikrer dere høy tilgjengelighet](#how-do-you-ensure-high-availability)
@@ -136,6 +141,7 @@
   * [Er dette godt testet](#is-this-well-tested)
   * [Sender dere videre SMTP-responsmeldinger og -koder](#do-you-pass-along-smtp-response-messages-and-codes)
   * [Hvordan forhindrer dere spammere og sikrer godt omdømme for e-postvideresending](#how-do-you-prevent-spammers-and-ensure-good-email-forwarding-reputation)
+  * [Hvordan kan jeg bekrefte at et domene faktisk bruker Forward Email](#how-can-i-verify-a-domain-is-using-forward-email)
   * [Hvordan utfører dere DNS-oppslag på domenenavn](#how-do-you-perform-dns-lookups-on-domain-names)
 * [Konto og fakturering](#account-and-billing)
   * [Hvordan sletter jeg kontoen min](#how-do-i-delete-my-account)
@@ -317,11 +323,31 @@ Alt gjøres i minnet og [vår kildekode er på GitHub](https://github.com/forwar
 8. Skriv inn navnet ditt og velg et kontonavn.
 9. Klikk **Fullfør**.
 
+### Tilbyr dere en webmail-klient {#do-you-offer-a-webmail-client}
+
+Ja.  Vår offisielle webmail-klient med åpen kildekode er tilgjengelig på <a href="https://mail.forwardemail.net" target="_blank" rel="noopener noreferrer">mail.forwardemail.net</a>.  Ingen installasjon er nødvendig: logg på fra hvilken som helst nettleser med en aliasadresse og det genererte passordet for den (samme legitimasjon som brukes for IMAP, SMTP og POP3).
+
+Den ble lansert i februar 2026 og støtter også [CalDAV-planleggingsutvidelser (RFC 6638)](https://www.rfc-editor.org/rfc/rfc6638.html), [DANE/TLSA (RFC 6698)](https://en.wikipedia.org/wiki/DNS-based_Authentication_of_Named_Entities) og [Domain Connect](https://domainconnect.org) for DNS-oppsett med ett klikk, med push-varsler i sanntid for IMAP, CalDAV og CardDAV levert over WebSockets.
+
+Kildekoden er helt åpen og tilgjengelig på GitHub på <a href="https://github.com/forwardemail/mail.forwardemail.net" target="_blank" rel="noopener noreferrer">github.com/forwardemail/mail.forwardemail.net</a>.
+
+Vår <a href="/blog/docs/webmail">webmail-veiledning</a> dekker pålogging, bruk av flere kontoer og hvordan webmail henger sammen med dashbordet på dette nettstedet.
+
 ### Kan jeg sende fra hvilken som helst adresse på domenet mitt i webmail {#can-i-send-from-any-address-on-my-domain-in-webmail}
 
 Ja. Generer et catch-all-passord under <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">Min konto <i class="fa fa-angle-right"></i> Domener</a> <i class="fa fa-angle-right"></i> Avanserte innstillinger <i class="fa fa-angle-right"></i> Oppfangende passord, og lagre det deretter i webmail under **Settings <i class="fa fa-angle-right"></i> General <i class="fa fa-angle-right"></i> Send from any address**. Når du skriver en melding, velger du **Other address @yourdomain** i **From**-menyen og skriver inn hvilken som helst adresse på det domenet.
 
 Du logger ikke på som en catch-all- eller jokertegnkonto. Catch-all-passordet kan bare sende, så kopien havner i Sendt-mappen (Sent) til kontoen du bruker. Det lagres bare på enheten der du legger det til. Se vår <a href="/blog/docs/webmail#send-from-any-address-on-your-domain">webmail-veiledning</a> for alle trinnene.
+
+### Har dere skrivebords- og mobilapper {#do-you-have-desktop-and-mobile-apps}
+
+Ja.  Native apper er tilgjengelige for skrivebord og mobil, bygget fra det samme prosjektet med åpen kildekode som webmail-klienten vår, og alle kan lastes ned fra <a href="/download" target="_blank" rel="noopener noreferrer">nedlastingssiden</a> vår:
+
+* **Skrivebord**: macOS (Apple Silicon og Intel), Windows (x64 og ARM64, som enten `.exe`- eller `.msi`-installasjonsprogram) og Linux (AppImage, `.deb`, `.rpm` og Snap, hver for x64 og ARM64).
+* **Mobil**: Android (APK, med en alternativ F-Droid-versjon) og iOS.
+* **Terminal**: kommandoen `forwardemail` for macOS, Linux og Windows (x64 og ARM64). Se [Har dere en terminalapp](#do-you-have-a-terminal-app).
+
+Alle utgivelsesversjoner publiseres på GitHub på <a href="https://github.com/forwardemail/mail.forwardemail.net/releases" target="_blank" rel="noopener noreferrer">github.com/forwardemail/mail.forwardemail.net/releases</a>, og på nedlastingssiden kan du verifisere sjekksummene for utgivelsene mot `SHA256SUMS.txt`.
 
 ### Har dere en terminalapp {#do-you-have-a-terminal-app}
 
@@ -1918,7 +1944,7 @@ Avanserte innstillinger <i class="fa fa-angle-right"></i> Egne poster</td>
     <br />
     <code>forward-email=hello:first@gmail.com,second@gmail.com</code>
     <br />
-    E-poster sendt til <code>hello@example.com</code> vil **ikke** bli videresendt til <code>second@gmail.com</code> (fang-alle) med denne konfigurasjonen, og vil i stedet kun bli levert til <code>first@gmail.com</code>.
+    E-poster sendt til <code>hello@example.com</code> vil <strong>ikke</strong> bli videresendt til <code>second@gmail.com</code> (fang-alle) med denne konfigurasjonen, og vil i stedet kun bli levert til <code>first@gmail.com</code>.
   </span>
 </div>
 
@@ -2655,7 +2681,7 @@ Ja. Alle betalte planer inkluderer utgående SMTP, og det er **ubegrenset**: den
     Viktig:
   </strong>
   <span>
-    Vi godkjenner utgående SMTP for hvert domene for å beskytte IP-omdømmet vårt og leveringsevnen din. Mange domener blir godkjent med en gang DNS-oppføringene deres er verifisert, og teamet vårt gjennomgår resten, vanligvis innen 24 timer. Se [Trenger jeg godkjenning for å aktivere SMTP](#do-i-need-approval-to-enable-smtp).
+    Vi godkjenner utgående SMTP for hvert domene for å beskytte IP-omdømmet vårt og leveringsevnen din. Mange domener blir godkjent med en gang DNS-oppføringene deres er verifisert, og teamet vårt gjennomgår resten, vanligvis innen 24 timer. Se <a href="/faq#do-i-need-approval-to-enable-smtp">Trenger jeg godkjenning for å aktivere SMTP</a>.
   </span>
 </div>
 
@@ -2936,7 +2962,7 @@ Du kan administrere Sieve-skript på flere måter:
 
 2. **ManageSieve-protokoll**: Koble til med en hvilken som helst ManageSieve-kompatibel klient, som Thunderbirds Sieve-tillegg eller [sieve-connect](https://github.com/philpennock/sieve-connect), til `imap.forwardemail.net`. Bruk port `2190` med STARTTLS eller port `4190` med implisitt TLS.
 
-3. **API**: Bruk [REST API](/api#sieve-scripts) for å administrere skript programmatisk.
+3. **API**: Bruk [REST API](/email-api) for å administrere skript programmatisk.
 
 <div class="alert my-3 alert-primary">
   <i class="fa fa-info-circle font-weight-bold"></i>
@@ -2979,6 +3005,12 @@ Lær mer om passkeys på følgende lenker:
 * [Logg inn på apper og nettsteder med passkeys](https://support.google.com/android/answer/14124480?hl=en) (Google)
 * [Bruk passkeys for å logge inn på apper og nettsteder på iPhone](https://support.apple.com/guide/iphone/use-passkeys-to-sign-in-to-apps-and-websites-iphf538ea8d0/ios) (Apple)
 * [Wikipedia-artikkel om Passkeys](https://en.wikipedia.org/wiki/Passkey_\(credential\))
+### Støttes tofaktorautentisering (2FA) {#is-two-factor-authentication-2fa-supported}
+
+Ja, for pålogging på kontoen din (inkludert <a href="https://mail.forwardemail.net" target="_blank" rel="noopener noreferrer">webmail</a>) via engangskoder, sikret med gjenopprettingsnøkler.
+
+2FA gjelder selve påloggingen på kontoen din, ikke IMAP-, SMTP-, POP3-, CalDAV- eller CardDAV-tilkoblinger fra tredjepartsklienter (Thunderbird, Apple Mail osv.).  Disse klientene autentiserer i stedet med et generert passord som er spesifikt for aliaset, så det finnes foreløpig ingen 2FA-tilsvarende standard for denne typen klienter. Hvis du ønsker at dette skal endres, kan du opprette en funksjonsforespørsel på GitHub.
+
 ### Støtter dere beste praksis for e-post {#do-you-support-email-best-practices}
 
 Ja. Vi har innebygd støtte for SPF, DKIM, DMARC, ARC og SRS i alle planer. Vi har også jobbet tett med de opprinnelige forfatterne av disse spesifikasjonene og andre e-posteksperter for å sikre perfeksjon og høy leveringsgrad.
@@ -4074,6 +4106,17 @@ Kilder:
 * <https://www.datapacket.com/datacenters/denver> (Detaljer om DDoS-beskyttelse)
 * <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/abuse-prevention-by-user-id.js>
 
+### Kan jeg deaktivere skanning for voksent innhold, phishing, kjørbare filer eller virus {#can-i-disable-adult-content-phishing-executable-or-virus-scanning}
+
+Ja. Hvert domene skanner innkommende lenker og vedlegg med <a href="https://spamscanner.net" target="_blank" rel="noopener noreferrer">Spam Scanner</a>, beskyttelsen mot spam, phishing og virus med åpen kildekode som vi har bygget selv (og som følger de samme retningslinjene om personvern først og null logging som resten av Forward Email). Fire kategorier kan hver for seg slås av eller på under <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">Min konto <i class="fa fa-angle-right"></i> Domener</a> <i class="fa fa-angle-right"></i> Avanserte innstillinger:
+
+* **Beskyttelse mot voksent innhold**: hvis deaktivert, skannes ikke lenker for voksenrelatert innhold.
+* **Phishing-beskyttelse**: hvis deaktivert, skannes ikke lenker for skadevare, domenebytte, IDN-homografangrep eller phishing generelt.
+* **Beskyttelse mot kjørbare filer**: hvis deaktivert, skannes ikke lenker og vedlegg for potensielt skadelige kjørbare filtyper, filendelser, navn, headere eller IDN-homografangrep.
+* **Virusbeskyttelse**: hvis deaktivert, skannes ikke vedlegg for trojanere, virus, skadevare eller andre ondsinnede trusler (via ClamAV).
+
+Alle fire er aktivert som standard. Å deaktivere én slår bare av skanningen for den bestemte kategorien.  Det deaktiverer ikke spamfiltreringen som helhet, og det er noe annet enn å [deaktivere et bestemt alias](#can-i-disable-specific-aliases). Den vanligste grunnen til å deaktivere en kategori er et mønster av falske positiver som er spesifikt for trafikken din (f.eks. at skanning for voksent innhold flagger legitime e-postlister for et utested eller en virksomhet med voksentema).
+
 ### Lagrer dere e-postinnhold på disk {#do-you-store-email-content-on-disk}
 
 > \[!IMPORTANT]
@@ -4296,6 +4339,10 @@ Kilder:
 * <https://forwardemail.net/technical-whitepaper.pdf#page=59>
 * <https://forwardemail.net/gdpr>
 
+### Hvordan rapporterer jeg en sikkerhetssårbarhet {#how-do-i-report-a-security-vulnerability}
+
+Hvis du oppdager en sikkerhetssårbarhet, ber vi deg rapportere den umiddelbart til <security@forwardemail.net>. Dette er en egen adresse for rapporter om sårbarheter og feil, atskilt fra generell brukerstøtte.  Når du sender e-post direkte dit, kommer rapporten din frem til teamet som har ansvaret for å håndtere den.
+
 ### Tilbyr dere et testmiljø {#do-you-offer-a-test-environment}
 
 Forward Emails tekniske dokumentasjon beskriver ikke eksplisitt en dedikert sandkassemodus. Mulige testtilnærminger inkluderer imidlertid:
@@ -4436,7 +4483,7 @@ Denne seksjonen beskriver vår prosess knyttet til SMTP-protokollkommandoen `DAT
    * Rekursivt går vi gjennom den hentede videresendingskonfigurasjonen for å bestemme global videresending, regex-basert videresending og alle andre støttede videresendingskonfigurasjoner – som nå er kjent som våre "Videresendingsadresser".
    * For hver Videresendingsadresse støtter vi ett rekursivt oppslag (som vil starte denne serien av operasjoner på den gitte adressen). Hvis et rekursivt treff ble funnet, vil foreldreresultatet bli fjernet fra Videresendingsadresser, og barna lagt til.
    * Videresendingsadresser blir analysert for unikhet (siden vi ikke ønsker å sende duplikater til én adresse eller opprette unødvendige ekstra SMTP-klienttilkoblinger).
-   * For hver Videresendingsadresse slår vi opp domenenavnet mot vårt API-endepunkt `/v1/max-forwarded-addresses` (for å avgjøre hvor mange adresser domenet har lov til å videresende e-post til per alias, f.eks. 10 som standard – se seksjonen om [maksgrense for videresending per alias](#is-there-a-limit-on-the-number-of-email-addresses-i-can-forward-to-per-alias)). Hvis denne grensen overskrides, vil en 550-feil oppstå og avsenderen vil motta en avvisning for denne mottakeren.
+   * For hver Videresendingsadresse slår vi opp domenenavnet mot vårt API-endepunkt `/v1/max-forwarded-addresses` (for å avgjøre hvor mange adresser domenet har lov til å videresende e-post til per alias, f.eks. 10 som standard – se seksjonen om [maksgrense for videresending per alias](#is-there-a-maximum-limit-on-the-number-of-email-addresses-i-can-forward-to-per-alias)). Hvis denne grensen overskrides, vil en 550-feil oppstå og avsenderen vil motta en avvisning for denne mottakeren.
    * Vi slår opp innstillingene til den opprinnelige mottakeren mot vårt API-endepunkt `/v1/settings`, som støtter oppslag for betalende brukere (med fallback for gratisbrukere). Dette returnerer et konfigurasjonsobjekt for avanserte innstillinger for `port` (Nummer, f.eks. `25`), `has_adult_content_protection` (Boolean), `has_phishing_protection` (Boolean), `has_executable_protection` (Boolean), og `has_virus_protection` (Boolean).
    * Basert på disse innstillingene sjekker vi deretter mot Spam Scanner-resultater, og hvis noen feil oppstår, blir meldingen avvist med en 554-feilkode (f.eks. hvis `has_virus_protection` er aktivert, vil vi sjekke Spam Scanner-resultatene for virus). Merk at alle brukere på gratisplan automatisk er med på sjekker mot vokseninnhold, phishing, kjørbare filer og virus. Som standard er alle betalende brukere også med, men denne konfigurasjonen kan endres under Innstillinger-siden for et domene i Forward Email-dashboardet).
 
@@ -4756,6 +4803,7 @@ Følgende domenenavnutvidelser anses som tillatt som standard (uavhengig av om d
   <li class="list-inline-item"><code class="notranslate">sch.uk</code></li>
   <li class="list-inline-item"><code class="notranslate">ukaea.uk</code></li>
 </ul>
+
 I tillegg er disse [merkevare- og bedrifts-toppnivådomener](https://en.wikipedia.org/wiki/List_of_Internet_top-level_domains#Brand_and_corporate_top-level_domains) som standard på hvitelisten (f.eks. `apple` for `applecard.apple` for Apple Card bankutskrifter):
 
 <ul class="list-inline">
@@ -5181,6 +5229,7 @@ I tillegg er disse [merkevare- og bedrifts-toppnivådomener](https://en.wikipedi
   <li class="list-inline-item"><code class="notranslate">zara</code></li>
   <li class="list-inline-item"><code class="notranslate">zippo</code></li>
 </ul>
+
 Fra og med 18. mars 2025 har vi også lagt til disse franske oversjøiske territoriene i denne listen ([ifølge denne GitHub-forespørselen](https://github.com/forwardemail/forwardemail.net/issues/327)):
 
 <ul class="list-inline">
@@ -5367,6 +5416,7 @@ Denne nye regelen tillater kun følgende domenenavnutvidelser å brukes på vår
   <li class="list-inline-item"><code class="notranslate">yt</code></li>
   <li class="list-inline-item"><code class="notranslate">za</code></li>
 </ul>
+
 ### Har du en gråliste {#do-you-have-a-greylist}
 
 Ja, vi har en veldig lempelig [e-post grålisting](https://en.wikipedia.org/wiki/Greylisting_\(email\)) policy i bruk. Grålisting gjelder kun for avsendere som ikke er på vår tillatelsesliste og varer i vår cache i 30 dager.
@@ -5544,6 +5594,7 @@ Ja, fra og med 5. mai 2020 har vi lagt til denne funksjonen. Akkurat nå er funk
     Hvis du er på en betalt plan (som har forbedret personvern), vennligst gå til <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Min konto <i class="fa fa-angle-right"></i> Domener</a>, klikk på "Oppsett" ved siden av ditt domene, og deretter klikk på "Innstillinger". Hvis du ønsker å lære mer om betalte planer, se vår <a class="alert-link" rel="noopener noreferrer" href="/private-business-email">Prisside</a>. Ellers kan du fortsette å følge instruksjonene nedenfor.
   </span>
 </div>
+
 Hvis du er på gratisplanen, legger du ganske enkelt til en ny DNS <strong class="notranslate">TXT</strong>-post som vist nedenfor, men endrer porten fra 25 til den porten du ønsker.
 
 For eksempel, hvis jeg vil at alle e-poster som går til `example.com` skal videresendes til alias-mottakeres SMTP-port 1337 i stedet for 25:
@@ -5621,6 +5672,36 @@ Ja, absolutt. For eksempel, hvis du sender en e-post til `hello@example.com` og 
 ### Hvordan forhindrer dere spammere og sikrer god e-postvideresendingsomdømme {#how-do-you-prevent-spammers-and-ensure-good-email-forwarding-reputation}
 
 Se våre seksjoner om [Hvordan fungerer e-postvideresendingssystemet deres](#how-does-your-email-forwarding-system-work), [Hvordan håndterer dere leveringsproblemer med e-post](#how-do-you-handle-email-delivery-issues), og [Hvordan håndterer dere at IP-adressene deres blir blokkert](#how-do-you-handle-your-ip-addresses-becoming-blocked) ovenfor.
+
+### Hvordan kan jeg bekrefte at et domene faktisk bruker Forward Email {#how-can-i-verify-a-domain-is-using-forward-email}
+
+Et domenes offentlige DNS-poster forteller deg om det bruker tjenesten vår, og på hvilken plan.  Dette er et nøytralt teknisk oppslag som hvem som helst kan kjøre mot et hvilket som helst domene; det krever ingen konto og intet samarbeid fra domeneeieren.
+
+**Sjekk MX-postene først.**
+
+```sh
+dig example.com mx +short
+```
+
+Hvis svaret ikke inkluderer `mx1.forwardemail.net` og `mx2.forwardemail.net`, bruker domenet **ikke** tjenesten vår til å motta e-post, og vi er ikke operatøren av den e-posten.
+
+**Sjekk deretter TXT-postene for å skille planene fra hverandre.**
+
+```sh
+dig example.com txt +short
+```
+
+| TXT-verdi                                    | Hva det betyr                                                                                                   |
+| -------------------------------------------- | --------------------------------------------------------------------------------------------------------------- |
+| `forward-email=user@example.com`             | En gratisplan.  Verdien er destinasjonen i klartekst som e-posten videresendes til.                             |
+| `forward-email-site-verification=XXXXXXXXXX` | En betalt plan.  Videresendingskonfigurasjonen lagres i databasen vår under ID-en `XXXXXXXXXX` og er ikke offentlig. |
+| Ingen av dem finnes                          | Domenet er ikke konfigurert for videresendingstjenesten vår.                                                    |
+
+> \[!NOTE]
+> Disse postene er slik tjenesten vår fungerer på DNS-nivå, så det samme oppslaget svarer på «er dette domenet vårt», «er det gratis eller betalt» og, for en gratisplan, «hvor går e-posten».  Se [hvordan videresendingssystemet vårt fungerer](#how-does-your-email-forwarding-system-work) for selve leveringsveien.
+
+> \[!TIP]
+> Vi er ikke en domeneregistrar, så vi har ingen historiske DNS-poster.  For å finne ut hvem som registrerte et domene eller hvem som driver navneserverne, bruk `whois example.com` og `dig example.com ns`, eller spør registraren direkte.
 
 ### Hvordan utfører dere DNS-oppslag på domenenavn {#how-do-you-perform-dns-lookups-on-domain-names}
 
@@ -5890,6 +5971,7 @@ Eller, du kan spesifisere dem i to separate linjer, slik som dette:
     </tr>
   </tbody>
 </table>
+
 Det er opp til deg!
 
 ### Finnes det en maksimal grense for antall e-postadresser jeg kan videresende til per alias {#is-there-a-maximum-limit-on-the-number-of-email-addresses-i-can-forward-to-per-alias}

@@ -155,6 +155,7 @@ Forward Email 通过双端口支持解决了这个问题。现代设备使用我
 
 > \[!TIP]
 > 如果遇到 [Gmail SMTP 配置问题](https://forum.qnap.com/viewtopic.php?t=152466)，同样的故障排除步骤适用于 Forward Email。确保身份验证已正确启用且凭据无误。
+
 > \[!NOTE]
 > QNAP 设备支持高级通知调度，允许您配置静默时间段，在此期间非关键通知将被抑制。这在商业环境中很有帮助。
 

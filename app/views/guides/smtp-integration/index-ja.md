@@ -520,7 +520,7 @@ flowchart TD
 
 ## 追加リソース {#additional-resources}
 
-* [Forward Email ドキュメント](/docs)
+* [Forward Email ドキュメント](/blog/docs)
 * [SMTPサーバーの制限と設定](/faq#what-are-your-outbound-smtp-limits)
 * [メールのベストプラクティスガイド](/blog/docs/best-email-forwarding-service)
 * [セキュリティプラクティス](/security)

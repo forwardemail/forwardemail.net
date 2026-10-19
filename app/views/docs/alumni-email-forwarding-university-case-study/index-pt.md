@@ -78,6 +78,7 @@ Veja quanto nossas universidades parceiras economizam anualmente ao escolher o F
 
 > \[!NOTE]
 > O Forward Email enterprise normalmente custa apenas $250/mês, sem custo extra por usuário, limitações de taxa de API na lista branca, e o único custo adicional é o armazenamento caso você precise de GB/TB adicionais para estudantes (+$3 por 10 GB adicionais de armazenamento). Usamos drives NVMe SSD para suporte rápido a IMAP/POP3/SMTP/CalDAV/CardDAV também.
+
 > \[!IMPORTANT]
 > Ao contrário do Google e da Microsoft, que aumentaram repetidamente seus preços enquanto integravam recursos de IA que analisam seus dados, o Forward Email mantém preços estáveis com um foco rigoroso em privacidade. Não usamos IA, não rastreamos padrões de uso e não armazenamos logs ou e-mails em disco (todo o processamento é feito na memória), garantindo privacidade completa para suas comunicações com ex-alunos.
 

@@ -155,6 +155,7 @@ QNAP-apparaten met QTS werken uitstekend met Forward Email. Ze ondersteunen mode
 
 > \[!TIP]
 > Als je [problemen ondervindt met Gmail SMTP-configuratie](https://forum.qnap.com/viewtopic.php?t=152466), gelden dezelfde stappen voor het oplossen van problemen ook voor Forward Email. Zorg dat authenticatie correct is ingeschakeld en de inloggegevens kloppen.
+
 > \[!NOTE]
 > QNAP-apparaten ondersteunen geavanceerde meldingsplanning, waarmee je stille uren kunt instellen waarin niet-kritieke meldingen worden onderdrukt. Dit is vooral handig in zakelijke omgevingen.
 

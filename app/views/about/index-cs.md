@@ -68,7 +68,7 @@ Jednoduchost a efektivita tohoto řešení přitáhly pozornost významných vý
 **Duben 2020**: Po mnoha překážkách s existujícími řešeními detekce spamu, která nerespektovala zásady ochrany soukromí Forward Email, společnost vydala svou počáteční alfa verzi Spam Scanneru. Toto zcela bezplatné a open-source [anti-spamové filtrování](https://en.wikipedia.org/wiki/Anti-spam_techniques "Anti-spam techniques") řešení používá přístup [Naivního Bayesova spam filtru](https://en.wikipedia.org/wiki/Naive_Bayes_spam_filtering "Naive Bayes spam filtering") kombinovaný s ochranou proti [phishingu](https://en.wikipedia.org/wiki/Phishing "Phishing") a [IDN homografovým útokům](https://en.wikipedia.org/wiki/IDN_homograph_attack "IDN homograph attack"). Forward Email také vydal [dvojfaktorové ověřování](https://en.wikipedia.org/wiki/Multi-factor_authentication "Multi-factor authentication") (2FA) pomocí [jednorázových hesel](https://en.wikipedia.org/wiki/One-time_password "One-time password") (OTP) pro zvýšení bezpečnosti účtu.
 
 **Květen 2020**: Forward Email umožnil vlastní [přesměrování portů](https://en.wikipedia.org/wiki/Port_forwarding "Port forwarding") jako řešení pro uživatele, kteří chtějí obejít blokování portů ze strany svého [ISP](https://en.wikipedia.org/wiki/Internet_service_provider "Internet service provider"). Společnost také vydala svůj [Free Email Forwarding RESTful API](email-api) s kompletní dokumentací a příklady požadavků a odpovědí v reálném čase, spolu s podporou webhooků.
-**Srpen 2020**: Forward Email přidal podporu pro systém ověřování e-mailů [Authenticated Received Chain](arc) ("ARC"), čímž dále posílil bezpečnost a doručitelnost e-mailů.
+**Srpen 2020**: Forward Email přidal podporu pro systém ověřování e-mailů [Authenticated Received Chain](/faq#do-you-support-email-best-practices) ("ARC"), čímž dále posílil bezpečnost a doručitelnost e-mailů.
 
 **23. listopadu 2020**: Forward Email veřejně ukončil beta program, což znamenalo významný milník ve vývoji platformy.
 
@@ -92,7 +92,7 @@ Jednoduchost a efektivita tohoto řešení přitáhly pozornost významných vý
 
 **Listopad 2023**: Forward Email spustil svou funkci [**šifrovaného úložiště poštovní schránky**](/blog/docs/best-quantum-safe-encrypted-email-service) pro [podporu IMAP](/faq#do-you-support-receiving-email-with-imap), což představuje významný pokrok v ochraně soukromí a bezpečnosti e-mailů.
 
-**Prosinec 2023**: Společnost [přidala podporu](/faq#do-you-support-pop3) pro [POP3](https://en.wikipedia.org/wiki/Post_Office_Protocol), [passkeys a WebAuthn](/faq#do-you-support-passkeys-and-webauthn), monitorování [doby doručení do schránky](/faq#i) a [OpenPGP pro IMAP úložiště](/faq#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd).
+**Prosinec 2023**: Společnost [přidala podporu](/faq#do-you-support-pop3) pro [POP3](https://en.wikipedia.org/wiki/Post_Office_Protocol), [passkeys a WebAuthn](/faq#do-you-support-passkeys-and-webauthn), monitorování [doby doručení do schránky](/tti) a [OpenPGP pro IMAP úložiště](/faq#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd).
 
 ### 2024 - Optimalizace služby a pokročilé funkce {#2024---service-optimization-and-advanced-features}
 

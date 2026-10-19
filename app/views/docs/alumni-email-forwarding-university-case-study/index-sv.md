@@ -78,6 +78,7 @@ Så här mycket sparar våra partneruniversitet årligen genom att välja Forwar
 
 > \[!NOTE]
 > Forward Email enterprise kostar vanligtvis endast 250 $/månad, utan extra kostnad per användare, vitlistade API-begränsningar, och den enda extra kostnaden är lagring om du behöver ytterligare GB/TB för studenter (+3 $ per 10 GB extra lagring). Vi använder NVMe SSD-enheter för snabb support av IMAP/POP3/SMTP/CalDAV/CardDAV också.
+
 > \[!IMPORTANT]
 > Till skillnad från Google och Microsoft, som upprepade gånger har höjt sina priser samtidigt som de integrerat AI-funktioner som analyserar dina data, behåller Forward Email stabil prissättning med ett strikt fokus på integritet. Vi använder inte AI, spårar inte användningsmönster och lagrar inte loggar eller e-postmeddelanden på disk (all bearbetning sker i minnet), vilket säkerställer fullständig integritet för dina alumnikommunikationer.
 

@@ -518,7 +518,7 @@ Burada ele alınmayan sorunlarla karşılaşırsanız, lütfen:
 
 ## Ek Kaynaklar {#additional-resources}
 
-* [Forward Email Dokümantasyonu](/docs)  
+* [Forward Email Dokümantasyonu](/blog/docs)
 * [SMTP Sunucu Limitleri ve Yapılandırması](/faq#what-are-your-outbound-smtp-limits)  
 * [E-posta En İyi Uygulamalar Kılavuzu](/blog/docs/best-email-forwarding-service)  
 * [Güvenlik Uygulamaları](/security)  

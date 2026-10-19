@@ -295,6 +295,7 @@ curl -X PUT BASE_URI/v1/account \
 
 > \[!NOTE]
 > 다른 API 엔드포인트와 달리, 이들은 [인증](#authentication)에서 "username"이 별칭 사용자 이름과 같고 "password"가 별칭 생성 비밀번호와 같은 Basic Authorization 헤더를 요구합니다.
+
 > \[!WARNING]
 > 이 엔드포인트 섹션은 진행 중이며 (희망컨대) 2024년에 출시될 예정입니다. 그동안은 웹사이트 내비게이션의 "Apps" 드롭다운에서 IMAP 클라이언트를 사용해 주세요.
 
@@ -481,7 +482,7 @@ curl BASE_URI/v1/emails/limit \
 
 이 엔드포인트는 이메일의 `message`, `headers`, 또는 `rejectedErrors` 속성 값을 반환하지 않습니다.
 
-해당 속성과 값을 반환하려면 이메일 ID와 함께 [이메일 조회](#retrieve-email) 엔드포인트를 사용하세요.
+해당 속성과 값을 반환하려면 이메일 ID와 함께 [이메일 조회](#retrieve-outbound-smtp-email) 엔드포인트를 사용하세요.
 
 > `GET /v1/emails`
 
@@ -584,7 +585,7 @@ curl BASE_URI/v1/emails/:id \
 
 ### 발신 SMTP 이메일 삭제 {#delete-outbound-smtp-email}
 
-이메일 삭제는 현재 상태가 `"pending"`, `"queued"`, 또는 `"deferred"` 중 하나일 경우에만 상태를 `"rejected"`로 설정하며(그 후 큐에서 처리하지 않음) 수행됩니다. 이메일은 생성 및/또는 발송 후 30일이 지나면 자동으로 삭제될 수 있으므로, 클라이언트, 데이터베이스 또는 애플리케이션에 발신 SMTP 이메일 사본을 보관해야 합니다. 원하시면 데이터베이스에서 이메일 ID 값을 참조할 수 있으며, 이 값은 [이메일 생성](#create-email) 및 [이메일 조회](#retrieve-email) 엔드포인트 모두에서 반환됩니다.
+이메일 삭제는 현재 상태가 `"pending"`, `"queued"`, 또는 `"deferred"` 중 하나일 경우에만 상태를 `"rejected"`로 설정하며(그 후 큐에서 처리하지 않음) 수행됩니다. 이메일은 생성 및/또는 발송 후 30일이 지나면 자동으로 삭제될 수 있으므로, 클라이언트, 데이터베이스 또는 애플리케이션에 발신 SMTP 이메일 사본을 보관해야 합니다. 원하시면 데이터베이스에서 이메일 ID 값을 참조할 수 있으며, 이 값은 [이메일 생성](#create-outbound-smtp-email) 및 [이메일 조회](#retrieve-outbound-smtp-email) 엔드포인트 모두에서 반환됩니다.
 
 > `DELETE /v1/emails/:id`
 

@@ -1,40 +1,36 @@
 //- Comprehensive JSON-LD Schema Markup for SEO
 //- This file generates structured data for all page types
+//- (the organization is described in full once, in _wikipedia.pug; every
+//-  other node names it with the same @id, so they read as one entity)
+
+//- Our Trustpilot rating (helpers/aggregate-rating.js asks for it once a
+//- month), on the pages that also show it (_fe-rating.pug under the
+//- testimonials): structured data may only carry a rating the page shows
+-
+  var schemaRating = typeof aggregateRating !== "undefined" && aggregateRating ? { "@type": "AggregateRating", "ratingValue": String(aggregateRating.ratingValue), "ratingCount": String(aggregateRating.ratingCount), "bestRating": "5", "worstRating": "1" } : undefined;
 
 //- SoftwareApplication Schema (for homepage and main pages)
 if ctx.pathWithoutLocale === '/'
-  script(type="application/ld+json", nonce=nonce).
-    {
+  -
+    var softwareApplicationSchema = {
       "@context": "https://schema.org",
       "@type": "SoftwareApplication",
       "name": "Forward Email",
       "applicationCategory": "CommunicationApplication",
       "operatingSystem": "Web, iOS, Android, Windows, macOS, Linux",
-      "offers": {
-        "@type": "Offer",
-        "price": "#{planPricing.free}",
-        "priceCurrency": "USD"
-      },
-      "aggregateRating": {
-        "@type": "AggregateRating",
-        "ratingValue": "4.9",
-        "ratingCount": "2847",
-        "bestRating": "5",
-        "worstRating": "1"
-      },
+      "offers": { "@type": "Offer", "price": String(planPricing.free), "priceCurrency": "USD" },
+      "aggregateRating": schemaRating,
       "description": "Free email forwarding for custom domains. Send and receive email as you@yourdomain.com with unlimited aliases, IMAP, POP3, SMTP, and 100% open-source security.",
       "url": "https://forwardemail.net",
-      "downloadUrl": "https://github.com/forwardemail/forwardemail.net",
-      "screenshot": "https://forwardemail.net/img/og.png",
-      "softwareVersion": "#{pkgVersion}",
+      "downloadUrl": `https://forwardemail.net/${locale}/download`,
+      // (the apps on every device, the poster of the apps video)
+      "screenshot": "https://forwardemail.net/img/video/forward-email-apps.jpg",
+      "softwareVersion": pkgVersion,
       "releaseNotes": "https://forwardemail.net/en/event-feed",
-      "author": {
-        "@type": "Organization",
-        "name": "Forward Email LLC",
-        "url": "https://forwardemail.net"
-      },
+      "author": { "@type": "Organization", "@id": "https://forwardemail.net/#organization", "name": "Forward Email", "url": "https://forwardemail.net" },
       "featureList": ["Free email forwarding", "Custom domain support", "Unlimited aliases", "IMAP and POP3 access", "SMTP sending", "End-to-end encryption", "Open source", "10GB storage", "Webhook support", "RESTful API"]
-    }
+    };
+  script(type="application/ld+json", nonce=nonce)!= JSON.stringify(softwareApplicationSchema).replace(/</g, "\\u003c")
 
 //- Speakable Schema (homepage)
 if ctx.pathWithoutLocale === '/'
@@ -48,6 +44,7 @@ if ctx.pathWithoutLocale === '/'
         "cssSelector": ["h1", ".lead", ".h3"]
       },
       "url": "https://forwardemail.net",
+      "isPartOf": { "@id": "https://forwardemail.net/#website" },
       "author": {
         "@type": "Organization",
         "@id": "https://forwardemail.net/#organization",
@@ -65,12 +62,8 @@ if ctx.pathWithoutLocale === '/email-api'
       "@type": "WebAPI",
       "name": "Forward Email API",
       "description": "RESTful API for sending and managing email, domains, aliases, and more.",
-      "documentation": "https://forwardemail.net/email-api",
-      "provider": {
-        "@type": "Organization",
-        "name": "Forward Email LLC",
-        "url": "https://forwardemail.net"
-      }
+      "documentation": "https://forwardemail.net/#{locale}/email-api",
+      "provider": { "@type": "Organization", "@id": "https://forwardemail.net/#organization", "name": "Forward Email", "url": "https://forwardemail.net" }
     }
 
 //- WebSite Schema with SearchAction
@@ -94,201 +87,57 @@ if ctx.pathWithoutLocale === '/'
     }
 
 //- BreadcrumbList Schema for non-homepage pages
+//- (Home, then each parent path that is a page of its own, then this page,
+//-  named by the first part of their titles as plain text: the titles hold
+//-  markup such as <span class="notranslate">, which was published as is)
 if ctx.pathWithoutLocale && ctx.pathWithoutLocale !== '/'
-  - var schemaBreadcrumbName = meta && meta.title ? meta.title.split(" - ")[0] : "Page";
-  script(type="application/ld+json", nonce=nonce).
-    {
+  -
+    var schemaCrumbName = function (title) {
+      return striptags(convert(title || "")).split(" - ")[0].trim();
+    };
+    var schemaCrumbs = [{ name: t("Home"), item: `${config.urls.web}/${locale}` }];
+    var schemaSegments = ctx.pathWithoutLocale.split("/").filter(Boolean);
+    schemaSegments.slice(0, -1).forEach(function (segment, index) {
+      var schemaParent = `/${schemaSegments.slice(0, index + 1).join("/")}`;
+      if (config.meta[schemaParent])
+        schemaCrumbs.push({
+          name: schemaCrumbName(t(config.meta[schemaParent][0])),
+          item: `${config.urls.web}/${locale}${schemaParent}`
+        });
+    });
+    schemaCrumbs.push({
+      name: schemaCrumbName(meta && meta.title) || schemaSegments[schemaSegments.length - 1],
+      item: `${config.urls.web}/${locale}${ctx.pathWithoutLocale}`
+    });
+    var breadcrumbSchema = {
       "@context": "https://schema.org",
       "@type": "BreadcrumbList",
-      "itemListElement": [
-        {
-          "@type": "ListItem",
-          "position": 1,
-          "name": "Home",
-          "item": "https://forwardemail.net"
-        },
-        {
-          "@type": "ListItem",
-          "position": 2,
-          "name": "#{schemaBreadcrumbName}",
-          "item": "https://forwardemail.net/#{ctx.locale}#{ctx.pathWithoutLocale}"
-        }
-      ]
-    }
+      "itemListElement": schemaCrumbs.map(function (crumb, index) {
+        return { "@type": "ListItem", "position": index + 1, "name": crumb.name, "item": crumb.item };
+      })
+    };
+  script(type="application/ld+json", nonce=nonce)!= JSON.stringify(breadcrumbSchema).replace(/</g, "\\u003c")
 
-//- FAQPage Schema for FAQ page (dynamically generated from FAQ markdown with Redis caching)
-if ctx.pathWithoutLocale === '/faq'
-  if faqSchemaData && faqSchemaData.mainEntity && faqSchemaData.mainEntity.length
-    script(type="application/ld+json", nonce=nonce)!= JSON.stringify(faqSchemaData)
-  else
-    //- Fallback to a minimal hardcoded FAQ schema if dynamic data is unavailable
-    script(type="application/ld+json", nonce=nonce).
-      {
-        "@context": "https://schema.org",
-        "@type": "FAQPage",
-        "mainEntity": [
-          {
-            "@type": "Question",
-            "name": "How do I set up email forwarding for my custom domain?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "Setting up email forwarding takes 2 minutes. Add our MX records to your domain's DNS settings, create a TXT record with your forwarding rules, and you're done. We provide step-by-step guides for all major DNS providers."
-            }
-          },
-          {
-            "@type": "Question",
-            "name": "Is Forward Email really free?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "Yes! Our email forwarding service is completely free for unlimited aliases and domains. We offer paid plans for additional features like IMAP/POP3 access, SMTP sending, and increased storage."
-            }
-          },
-          {
-            "@type": "Question",
-            "name": "Can I send email from my custom domain?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "Yes! You can send email as you@yourdomain.com using our SMTP service or through Gmail's Send Mail As feature. We provide detailed setup guides for both methods."
-            }
-          },
-          {
-            "@type": "Question",
-            "name": "Is Forward Email secure and private?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "Yes. We use TLS encryption for all connections, support SPF/DKIM/DMARC authentication, and our entire codebase is open source for transparency. We never read, store, or sell your emails."
-            }
-          },
-          {
-            "@type": "Question",
-            "name": "What is the difference between email forwarding and email hosting?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "Email forwarding redirects emails from your custom domain to an existing email account (like Gmail). Email hosting stores your emails on our servers with IMAP/POP3 access. We offer both services."
-            }
-          },
-          {
-            "@type": "Question",
-            "name": "How many email aliases can I create?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "You can create unlimited email aliases with Forward Email. Use catch-all forwarding to receive email at any address on your domain, or create specific aliases for different purposes."
-            }
-          },
-          {
-            "@type": "Question",
-            "name": "Does Forward Email work with Gmail?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "Yes. Forward Email works with Gmail. You can forward emails to your Gmail account and use Gmail's Send Mail As feature to send from your custom domain address."
-            }
-          },
-          {
-            "@type": "Question",
-            "name": "What DNS records do I need to set up?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "You need to add two MX records pointing to our servers and one TXT record containing your forwarding rules. We also recommend adding SPF, DKIM, and DMARC records for better deliverability."
-            }
-          }
-        ]
-      }
-
-//- FAQPage Schema for homepage (targets high-value search queries)
-if ctx.pathWithoutLocale === '/'
-  script(type="application/ld+json", nonce=nonce).
-    {
-      "@context": "https://schema.org",
-      "@type": "FAQPage",
-      "mainEntity": [
-        {
-          "@type": "Question",
-          "name": "What is the best email service?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Forward Email is the best email service for privacy-conscious users and developers. It is the only 100% open-source email service with quantum-resistant encryption, free email forwarding for unlimited custom domains, and full IMAP/POP3/SMTP hosting. Trusted by Netflix Games, Disney, and The Linux Foundation."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "What is the best free email service for custom domains?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Forward Email offers free email forwarding for unlimited custom domains and aliases with no credit card required. Paid plans start at $#{planPricing.enhanced}/month for full IMAP/POP3/SMTP hosting with 10GB encrypted storage per alias."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "Is Forward Email better than Proton Mail or Tuta Mail?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Forward Email is the only email service that is 100% open-source (both front-end and back-end). Unlike Proton Mail and Tuta Mail, Forward Email supports standard IMAP/POP3/SMTP protocols, works with any email client, offers unlimited custom domains on all plans, and provides a free tier with unlimited email forwarding."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "What is the most secure email provider?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Forward Email uses quantum-resistant ChaCha20-Poly1305 encryption, zero-knowledge architecture, and supports all modern email security standards including SPF, DKIM, DMARC, BIMI, MTA-STS, DANE, and TLS 1.3. The entire codebase is open-source and auditable on GitHub."
-          }
-        }
-      ]
-    }
-
-//- FAQPage Schema for comparison pages (targets alternative search queries)
-if ctx.pathWithoutLocale && (ctx.pathWithoutLocale.includes('best-email') || ctx.pathWithoutLocale.includes('best-private') || ctx.pathWithoutLocale.includes('best-open-source') || ctx.pathWithoutLocale.includes('alternative'))
-  script(type="application/ld+json", nonce=nonce).
-    {
-      "@context": "https://schema.org",
-      "@type": "FAQPage",
-      "mainEntity": [
-        {
-          "@type": "Question",
-          "name": "Which email service is best for privacy?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Forward Email is the best email service for privacy. It is 100% open-source, uses quantum-resistant encryption, has a zero-knowledge architecture, and is GDPR and SOC 2 Type II compliant. Unlike competitors, both the front-end and back-end code are fully auditable on GitHub."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "What is the best alternative to Gmail?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Forward Email is the best Gmail alternative for users who want privacy and custom domain support. It works with Gmail via Send Mail As, supports unlimited aliases, and offers free email forwarding. Unlike Gmail, Forward Email never reads, stores, or sells your data."
-          }
-        }
-      ]
-    }
+//- FAQPage Schema for FAQ page (generated from the FAQ markdown of the page's
+//- locale, with Redis caching; none when that is unavailable, since the
+//- questions must be the ones the page shows)
+if ctx.pathWithoutLocale === '/faq' && faqSchemaData && faqSchemaData.mainEntity && faqSchemaData.mainEntity.length
+  script(type="application/ld+json", nonce=nonce)!= JSON.stringify(faqSchemaData).replace(/</g, "\\u003c")
 
 //- Product Schema for pricing/comparison pages
 if ctx.pathWithoutLocale && ctx.pathWithoutLocale.includes('alternative')
-  script(type="application/ld+json", nonce=nonce).
-    {
+  -
+    var productSchema = {
       "@context": "https://schema.org",
       "@type": "Product",
       "name": "Forward Email",
       "description": "Privacy-focused email forwarding and hosting service with unlimited aliases, custom domain support, and 100% open-source code.",
-      "brand": {
-        "@type": "Brand",
-        "name": "Forward Email"
-      },
-      "offers": {
-        "@type": "AggregateOffer",
-        "lowPrice": "#{planPricing.free}",
-        "highPrice": "#{planPricing.team}",
-        "priceCurrency": "USD",
-        "offerCount": "3"
-      },
-      "aggregateRating": {
-        "@type": "AggregateRating",
-        "ratingValue": "4.9",
-        "reviewCount": "2847",
-        "bestRating": "5",
-        "worstRating": "1"
-      }
-    }
+      "image": "https://forwardemail.net/img/social.png",
+      "brand": { "@type": "Brand", "name": "Forward Email" },
+      "offers": { "@type": "AggregateOffer", "lowPrice": String(planPricing.free), "highPrice": String(planPricing.team), "priceCurrency": "USD", "offerCount": "3" },
+      "aggregateRating": schemaRating
+    };
+  script(type="application/ld+json", nonce=nonce)!= JSON.stringify(productSchema).replace(/</g, "\\u003c")
 
 //- BlogPosting Schema for blog posts and guides (improves rich results and AI/GEO citations)
 //- Excludes feed endpoints and the /blog and /blog/open-source index landing pages
@@ -312,11 +161,13 @@ if ctx.pathWithoutLocale && (ctx.pathWithoutLocale.startsWith('/blog/') || ctx.p
       "inLanguage": locale,
       "author": {
         "@type": "Organization",
+        "@id": "https://forwardemail.net/#organization",
         "name": "Forward Email",
         "url": config.urls.web
       },
       "publisher": {
         "@type": "Organization",
+        "@id": "https://forwardemail.net/#organization",
         "name": "Forward Email",
         "url": config.urls.web,
         "logo": {

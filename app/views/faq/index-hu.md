@@ -16,7 +16,9 @@
   * [Microsoft Outlook](#microsoft-outlook)
   * [Apple Mail](#apple-mail)
   * [eM Client](#em-client)
+  * [Kínáltok webmail klienst](#do-you-offer-a-webmail-client)
   * [Küldhetek bármely címről a domainemen a webmailben](#can-i-send-from-any-address-on-my-domain-in-webmail)
+  * [Vannak asztali és mobilalkalmazásaitok](#do-you-have-desktop-and-mobile-apps)
   * [Van terminálos alkalmazásotok](#do-you-have-a-terminal-app)
   * [Mobil Eszközök](#mobile-devices)
   * [Sendmail SMTP Relay Beállítás](#sendmail-smtp-relay-configuration)
@@ -75,6 +77,7 @@
   * [Támogatjátok a Sieve email szűrést](#do-you-support-sieve-email-filtering)
   * [Támogatjátok az MTA-STS-t](#do-you-support-mta-sts)
   * [Támogatjátok a passkey-ket és a WebAuthn-t](#do-you-support-passkeys-and-webauthn)
+  * [Támogatott a kétfaktoros hitelesítés (2FA)](#is-two-factor-authentication-2fa-supported)
   * [Támogatjátok az email legjobb gyakorlatait](#do-you-support-email-best-practices)
   * [Támogatjátok a visszapattanási webhookokat](#do-you-support-bounce-webhooks)
   * [Támogatjátok a webhookokat](#do-you-support-webhooks)
@@ -95,6 +98,7 @@
   * [Megőrzitek az email hitelesítési fejlécet](#do-you-preserve-email-authentication-headers)
   * [Megőrzitek az eredeti email fejlécet és megakadályozzátok a hamisítást](#do-you-preserve-original-email-headers-and-prevent-spoofing)
   * [Hogyan védekeztek a spam és visszaélések ellen](#how-do-you-protect-against-spam-and-abuse)
+  * [Kikapcsolhatom a felnőtt tartalom, az adathalászat, a futtatható fájlok vagy a vírusok szűrését](#can-i-disable-adult-content-phishing-executable-or-virus-scanning)
   * [Tároltok email tartalmat lemezen](#do-you-store-email-content-on-disk)
   * [Kiszivároghat az email tartalom rendszerösszeomlás esetén](#can-email-content-be-exposed-during-system-crashes)
   * [Kik férnek hozzá az email infrastruktúrátokhoz](#who-has-access-to-your-email-infrastructure)
@@ -104,6 +108,7 @@
 * [Hol dolgozzák fel és hol tárolják a domainomra érkező e-maileket, és mennyi ideig](#where-is-inbound-email-for-my-domain-processed-and-stored-and-for-how-long)
 * [Hogyan tüntethetem fel a Forward Email szolgáltatót aladatfeldolgozóként a saját DPA-ban](#how-do-i-list-forward-email-as-a-subprocessor-in-my-own-dpa)
   * [Hogyan kezelitek az adatvédelmi incidens értesítéseket](#how-do-you-handle-data-breach-notifications)
+  * [Hogyan jelenthetek be egy biztonsági rést](#how-do-i-report-a-security-vulnerability)
   * [Kínáltok teszt környezetet](#do-you-offer-a-test-environment)
   * [Biztosítotok monitorozó és riasztó eszközöket](#do-you-provide-monitoring-and-alerting-tools)
   * [Hogyan biztosítjátok a magas rendelkezésre állást](#how-do-you-ensure-high-availability)
@@ -136,6 +141,7 @@
   * [Jól tesztelt](#is-this-well-tested)
   * [Átadja az SMTP válasz üzeneteket és kódokat](#do-you-pass-along-smtp-response-messages-and-codes)
   * [Hogyan akadályozzátok meg a spammereket és biztosítjátok a jó email továbbítási hírnevet](#how-do-you-prevent-spammers-and-ensure-good-email-forwarding-reputation)
+  * [Hogyan ellenőrizhetem, hogy egy domain valóban a Forward Emailt használja-e](#how-can-i-verify-a-domain-is-using-forward-email)
   * [Hogyan végeztek DNS lekérdezéseket domain nevekre](#how-do-you-perform-dns-lookups-on-domain-names)
 * [Fiók és Számlázás](#account-and-billing)
   * [Hogyan törölhetem a fiókomat](#how-do-i-delete-my-account)
@@ -317,11 +323,31 @@ Minden memóriában történik, és [a forráskódunk elérhető a GitHubon](htt
 8. Írd be a neved és válassz fióknevet.
 9. Kattints a **Befejezés** gombra.
 
+### Kínáltok webmail klienst {#do-you-offer-a-webmail-client}
+
+Igen.  Hivatalos, nyílt forráskódú webmail kliensünk a <a href="https://mail.forwardemail.net" target="_blank" rel="noopener noreferrer">mail.forwardemail.net</a> címen érhető el.  Nincs szükség telepítésre: bármely böngészőből bejelentkezhetsz egy alias címével és a hozzá generált jelszóval (ugyanazokkal a hitelesítő adatokkal, amelyeket az IMAP, SMTP és POP3 esetében is használsz).
+
+2026 februárjában indult, és támogatja a [CalDAV ütemezési bővítményeket (RFC 6638)](https://www.rfc-editor.org/rfc/rfc6638.html), a [DANE/TLSA (RFC 6698)](https://en.wikipedia.org/wiki/DNS-based_Authentication_of_Named_Entities) szabványt, valamint a [Domain Connect](https://domainconnect.org) protokollt az egykattintásos DNS-beállításhoz, az IMAP, CalDAV és CardDAV valós idejű push értesítései pedig WebSockets kapcsolaton keresztül érkeznek.
+
+A forráskód teljesen nyílt, és elérhető a GitHubon: <a href="https://github.com/forwardemail/mail.forwardemail.net" target="_blank" rel="noopener noreferrer">github.com/forwardemail/mail.forwardemail.net</a>.
+
+A <a href="/blog/docs/webmail">webmail útmutatónk</a> bemutatja a bejelentkezést, több fiók használatát, és azt, hogyan illeszkedik a webmail a weboldal műszerfalához.
+
 ### Küldhetek bármely címről a domainemen a webmailben {#can-i-send-from-any-address-on-my-domain-in-webmail}
 
 Igen. Generálj egy catch-all jelszót a <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">Saját fiók <i class="fa fa-angle-right"></i> Domainek</a> <i class="fa fa-angle-right"></i> Speciális beállítások <i class="fa fa-angle-right"></i> Gyűjtőjelszavak alatt, majd mentsd el a webmailben a **Settings <i class="fa fa-angle-right"></i> General <i class="fa fa-angle-right"></i> Send from any address** részben. Íráskor válaszd a **Other address @yourdomain** lehetőséget a **From** menüben, és írj be bármely címet azon a domainen.
 
 Nem catch-all vagy wildcard fiókként jelentkezel be. A catch-all jelszó csak küldésre jó, ezért a másolat annak a fióknak az Elküldött mappájába kerül, amelyet éppen használsz. Csak azon az eszközön van elmentve, ahol hozzáadtad. Az összes lépést a <a href="/blog/docs/webmail#send-from-any-address-on-your-domain">webmail útmutatónkban</a> találod.
+
+### Vannak asztali és mobilalkalmazásaitok {#do-you-have-desktop-and-mobile-apps}
+
+Igen.  Natív asztali és mobilalkalmazásaink ugyanabból a nyílt forráskódú projektből készülnek, mint a webmail kliensünk, és mindegyik letölthető a <a href="/download" target="_blank" rel="noopener noreferrer">letöltési oldalunkról</a>:
+
+* **Asztali**: macOS (Apple Silicon és Intel), Windows (x64 és ARM64, `.exe` vagy `.msi` telepítőként) és Linux (AppImage, `.deb`, `.rpm` és Snap, mindegyik x64 és ARM64 rendszerre).
+* **Mobil**: Android (APK, alternatív F-Droid változattal) és iOS.
+* **Terminál**: a `forwardemail` parancs macOS-re, Linuxra és Windowsra (x64 és ARM64). Lásd: [Van terminálos alkalmazásotok](#do-you-have-a-terminal-app).
+
+Minden kiadási build megtalálható a GitHubon: <a href="https://github.com/forwardemail/mail.forwardemail.net/releases" target="_blank" rel="noopener noreferrer">github.com/forwardemail/mail.forwardemail.net/releases</a>, a letöltési oldalon pedig a `SHA256SUMS.txt` fájl alapján ellenőrizheted a kiadások ellenőrzőösszegeit.
 
 ### Van terminálos alkalmazásotok {#do-you-have-a-terminal-app}
 
@@ -1917,7 +1943,7 @@ Haladó beállítások <i class="fa fa-angle-right"></i> Egyedi rekordok</td>
     <br />
     <code>forward-email=hello:first@gmail.com,second@gmail.com</code>
     <br />
-    Az <code>hello@example.com</code> címre küldött e-mailek **nem** lesznek továbbítva a <code>second@gmail.com</code> (catch-all) címre ezzel a beállítással, hanem csak a <code>first@gmail.com</code> címre érkeznek meg.
+    Az <code>hello@example.com</code> címre küldött e-mailek <strong>nem</strong> lesznek továbbítva a <code>second@gmail.com</code> (catch-all) címre ezzel a beállítással, hanem csak a <code>first@gmail.com</code> címre érkeznek meg.
   </span>
 </div>
 
@@ -2654,7 +2680,7 @@ Igen. Minden fizetős csomag tartalmazza a kimenő SMTP-t, és ez **korlátlan**
     Fontos:
   </strong>
   <span>
-    A kimenő SMTP-t domainenként hagyjuk jóvá, hogy megvédjük az IP-hírnevünket és az Ön kézbesíthetőségét. Sok domaint már akkor jóváhagyunk, amikor a DNS-rekordjaik ellenőrzése sikeres, a többit pedig csapatunk vizsgálja felül, általában 24 órán belül. Lásd a [Szükséges engedély az SMTP engedélyezéséhez?](#do-i-need-approval-to-enable-smtp) részt.
+    A kimenő SMTP-t domainenként hagyjuk jóvá, hogy megvédjük az IP-hírnevünket és az Ön kézbesíthetőségét. Sok domaint már akkor jóváhagyunk, amikor a DNS-rekordjaik ellenőrzése sikeres, a többit pedig csapatunk vizsgálja felül, általában 24 órán belül. Lásd a <a href="/faq#do-i-need-approval-to-enable-smtp">Szükséges engedély az SMTP engedélyezéséhez?</a> részt.
   </span>
 </div>
 
@@ -2935,7 +2961,7 @@ Különböző módokon kezelheti a Sieve szkripteket:
 
 2. **ManageSieve protokoll**: Csatlakozzon bármilyen ManageSieve-kompatibilis klienssel, például a Thunderbird Sieve bővítményével vagy a [sieve-connect](https://github.com/philpennock/sieve-connect) eszközzel az `imap.forwardemail.net` szerverhez. Használja a `2190` portot STARTTLS-szel vagy a `4190` portot implicit TLS-sel.
 
-3. **API**: Használja a [REST API](/api#sieve-scripts)-t a szkriptek programozott kezeléséhez.
+3. **API**: Használja a [REST API](/email-api)-t a szkriptek programozott kezeléséhez.
 
 <div class="alert my-3 alert-primary">
   <i class="fa fa-info-circle font-weight-bold"></i>
@@ -2978,6 +3004,12 @@ További információk a passkey-ekről az alábbi linkeken:
 * [Bejelentkezés alkalmazásokba és weboldalakra passkey-ekkel](https://support.google.com/android/answer/14124480?hl=en) (Google)
 * [Passkey-k használata iPhone-on alkalmazásokba és weboldalakra való bejelentkezéshez](https://support.apple.com/guide/iphone/use-passkeys-to-sign-in-to-apps-and-websites-iphf538ea8d0/ios) (Apple)
 * [Passkey-k a Wikipédián](https://en.wikipedia.org/wiki/Passkey_\(credential\))
+### Támogatott a kétfaktoros hitelesítés (2FA) {#is-two-factor-authentication-2fa-supported}
+
+Igen, a fiókodba való bejelentkezéshez (a <a href="https://mail.forwardemail.net" target="_blank" rel="noopener noreferrer">webmailt</a> is beleértve) egyszer használatos kódokkal, helyreállító kulcsokkal biztosítva.
+
+A 2FA magára a fiókbejelentkezésre vonatkozik, nem a külső kliensek (Thunderbird, Apple Mail stb.) IMAP, SMTP, POP3, CalDAV vagy CardDAV kapcsolataira.  Ezek a kliensek ehelyett egy adott aliashoz generált jelszóval hitelesítenek, így jelenleg nincs a 2FA-val egyenértékű szabvány az ilyen típusú kliensekhez. Ha szeretnéd, hogy ez megváltozzon, nyiss egy funkciókérést a GitHubon.
+
 ### Támogatjátok az email legjobb gyakorlatait? {#do-you-support-email-best-practices}
 
 Igen. Beépített támogatást nyújtunk az SPF, DKIM, DMARC, ARC és SRS protokollokhoz minden csomagban. Emellett szorosan együttműködtünk ezen szabványok eredeti szerzőivel és más email szakértőkkel a tökéletesség és a magas kézbesíthetőség biztosítása érdekében.
@@ -4073,6 +4105,17 @@ Források:
 * <https://www.datapacket.com/datacenters/denver> (DDoS védelem részletei)
 * <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/abuse-prevention-by-user-id.js>
 
+### Kikapcsolhatom a felnőtt tartalom, az adathalászat, a futtatható fájlok vagy a vírusok szűrését {#can-i-disable-adult-content-phishing-executable-or-virus-scanning}
+
+Igen. Minden domain a <a href="https://spamscanner.net" target="_blank" rel="noopener noreferrer">Spam Scanner</a> segítségével vizsgálja a bejövő linkeket és mellékleteket, amely az általunk fejlesztett nyílt forráskódú spam-, adathalászat- és vírusvédelem (és ugyanazokat az adatvédelmet előtérbe helyező, naplózásmentes irányelveket követi, mint a Forward Email többi része). Négy kategória egymástól függetlenül be- és kikapcsolható a <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">Saját fiók <i class="fa fa-angle-right"></i> Domainek</a> <i class="fa fa-angle-right"></i> Speciális beállítások alatt:
+
+* **Felnőtt tartalom elleni védelem**: ha ki van kapcsolva, a linkeket nem vizsgáljuk felnőtt tartalom szempontjából.
+* **Adathalászat elleni védelem**: ha ki van kapcsolva, a linkeket nem vizsgáljuk kártevők, domaincsere, IDN homográf támadások vagy általában adathalászat szempontjából.
+* **Futtatható fájlok elleni védelem**: ha ki van kapcsolva, a linkeket és mellékleteket nem vizsgáljuk potenciálisan kártékony futtatható fájltípusok, kiterjesztések, nevek, fejlécek vagy IDN homográf támadások szempontjából.
+* **Vírusvédelem**: ha ki van kapcsolva, a mellékleteket nem vizsgáljuk trójaiak, vírusok, kártevők vagy egyéb kártékony fenyegetések szempontjából (a ClamAV segítségével).
+
+Alapértelmezés szerint mind a négy be van kapcsolva. Egy kategória kikapcsolása csak az adott kategória vizsgálatát kapcsolja ki.  Nem kapcsolja ki a spamszűrést egészében, és független egy [adott alias letiltásától](#can-i-disable-specific-aliases). Egy kategória kikapcsolásának leggyakoribb oka egy, a forgalmadra jellemző téves pozitív minta (pl. a felnőtt tartalom vizsgálata jogos levelezőlistákat jelöl meg egy felnőtt témájú helyszín vagy vállalkozás esetében).
+
 ### Tárolnak-e e-mail tartalmat lemezen {#do-you-store-email-content-on-disk}
 
 > \[!IMPORTANT]
@@ -4295,6 +4338,10 @@ Források:
 * <https://forwardemail.net/technical-whitepaper.pdf#page=59>
 * <https://forwardemail.net/gdpr>
 
+### Hogyan jelenthetek be egy biztonsági rést {#how-do-i-report-a-security-vulnerability}
+
+Ha biztonsági rést fedezel fel, kérjük, azonnal jelentsd a <security@forwardemail.net> címen. Ez egy kifejezetten sebezhetőségi és hibajelentésekre szolgáló cím, amely elkülönül az általános ügyfélszolgálattól.  Ha közvetlenül erre a címre írsz, a jelentésed ahhoz a csapathoz kerül, amely a kezeléséért felel.
+
 ### Kínálnak tesztkörnyezetet {#do-you-offer-a-test-environment}
 
 A Forward Email műszaki dokumentációja nem ír le kifejezetten dedikált sandbox módot. Azonban a lehetséges tesztelési megközelítések a következők:
@@ -4435,7 +4482,7 @@ Ez a szakasz leírja az SMTP protokoll `DATA` parancsához kapcsolódó folyamat
    * Rekurzívan végigiterálunk a kinyert továbbítási konfiguráción, hogy meghatározzuk a globális továbbítást, a reguláris kifejezés alapú továbbítást, és minden más támogatott továbbítási konfigurációt – amelyek mostantól "Továbbítási Címek" néven ismertek.
    * Minden Továbbítási Címhez egy rekurzív lekérdezést támogatunk (ami elindítja ezen műveletsorozatot az adott címen). Ha rekurzív egyezést találunk, akkor a szülő eredményt eltávolítjuk a Továbbítási Címek közül, és a gyerekeket hozzáadjuk.
    * A Továbbítási Címeket egyediség szempontjából feldolgozzuk (mivel nem akarunk duplikált címekre küldeni vagy felesleges SMTP kliens kapcsolatokat létrehozni).
-   * Minden Továbbítási Címhez lekérdezzük a domain nevét az API végpontunkon `/v1/max-forwarded-addresses` (hogy meghatározzuk, hány címre engedélyezett a domain az e-mail továbbítást aliasonként, pl. alapértelmezés szerint 10 – lásd a [maximum korlát az aliasonként továbbítható e-mail címek számára](#is-there-a-limit-on-the-number-of-email-addresses-i-can-forward-to-per-alias) szakaszt). Ha ez a korlát túllépésre kerül, akkor 550-es hibakód lép fel, és a feladó visszapattanást kap erre a címzettre.
+   * Minden Továbbítási Címhez lekérdezzük a domain nevét az API végpontunkon `/v1/max-forwarded-addresses` (hogy meghatározzuk, hány címre engedélyezett a domain az e-mail továbbítást aliasonként, pl. alapértelmezés szerint 10 – lásd a [maximum korlát az aliasonként továbbítható e-mail címek számára](#is-there-a-maximum-limit-on-the-number-of-email-addresses-i-can-forward-to-per-alias) szakaszt). Ha ez a korlát túllépésre kerül, akkor 550-es hibakód lép fel, és a feladó visszapattanást kap erre a címzettre.
    * Lekérdezzük az eredeti címzett beállításait az API végpontunkon `/v1/settings`, amely támogatja a fizetős felhasználók lekérdezését (ingyenes felhasználók számára tartalék megoldással). Ez visszaad egy konfigurációs objektumot az alábbi fejlett beállításokkal: `port` (Szám, pl. `25`), `has_adult_content_protection` (Logikai), `has_phishing_protection` (Logikai), `has_executable_protection` (Logikai), és `has_virus_protection` (Logikai).
    * Ezek alapján a beállítások alapján ellenőrizzük a Spam Szűrő eredményeket, és ha bármilyen hiba előfordul, az üzenetet elutasítjuk 554-es hibakóddal (pl. ha a `has_virus_protection` engedélyezve van, akkor ellenőrizzük a Spam Szűrő eredményeit vírusokra). Megjegyzés: minden ingyenes csomagos felhasználó automatikusan be van kapcsolva az ellenőrzésekre felnőtt tartalom, adathalászat, futtatható fájlok és vírusok tekintetében. Alapértelmezés szerint minden fizetős felhasználó is be van kapcsolva, de ez a konfiguráció módosítható a domain Beállítások oldalán a Forward Email irányítópulton.
 
@@ -4755,6 +4802,7 @@ Az alábbi domain névkiterjesztések alapértelmezés szerint engedélyezettnek
   <li class="list-inline-item"><code class="notranslate">sch.uk</code></li>
   <li class="list-inline-item"><code class="notranslate">ukaea.uk</code></li>
 </ul>
+
 Ezen felül ezek a [márka- és vállalati legfelső szintű domainek](https://en.wikipedia.org/wiki/List_of_Internet_top-level_domains#Brand_and_corporate_top-level_domains) alapértelmezés szerint engedélyezettek (pl. `apple` az `applecard.apple` esetén az Apple Card bankszámlakivonatokhoz):
 
 <ul class="list-inline">
@@ -5180,6 +5228,7 @@ Ezen felül ezek a [márka- és vállalati legfelső szintű domainek](https://e
   <li class="list-inline-item"><code class="notranslate">zara</code></li>
   <li class="list-inline-item"><code class="notranslate">zippo</code></li>
 </ul>
+
 2025. március 18-tól ezeket a francia tengerentúli területeket is hozzáadtuk ehhez a listához ([a GitHub kérés alapján](https://github.com/forwardemail/forwardemail.net/issues/327)):
 
 <ul class="list-inline">
@@ -5366,6 +5415,7 @@ Ez az új szabály csak az alábbi domain névkiterjesztések használatát enge
   <li class="list-inline-item"><code class="notranslate">yt</code></li>
   <li class="list-inline-item"><code class="notranslate">za</code></li>
 </ul>
+
 ### Van szürkelista {#do-you-have-a-greylist}
 
 Igen, nagyon laza [email szürkelista](https://en.wikipedia.org/wiki/Greylisting_\(email\)) szabályzatot alkalmazunk. A szürkelista csak az engedélyező listánkon nem szereplő feladókra vonatkozik, és 30 napig marad a gyorsítótárunkban.
@@ -5543,6 +5593,7 @@ Igen, 2020. május 5-től elérhető ez a funkció. Jelenleg a funkció domain-s
     Ha fizetős csomagon van (amely fokozott adatvédelmi védelmet tartalmaz), kérjük, látogasson el a <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Saját fiók <i class="fa fa-angle-right"></i> Domain-ek</a> oldalra, kattintson a domainje melletti "Beállítások" gombra, majd a "Beállítások" fülre. Ha többet szeretne megtudni a fizetős csomagokról, tekintse meg a <a class="alert-link" rel="noopener noreferrer" href="/private-business-email">Árazás</a> oldalunkat. Egyébként folytathatja az alábbi utasítások követését.
   </span>
 </div>
+
 Ha az ingyenes csomagon vagy, akkor egyszerűen adj hozzá egy új DNS <strong class="notranslate">TXT</strong> rekordot az alábbiak szerint, de változtasd meg a portot 25-ről a választott portra.
 
 Például, ha azt szeretném, hogy az összes `example.com`-ra érkező e-mail az alias címzettek SMTP portjára, 1337-re továbbítódjon a 25 helyett:
@@ -5620,6 +5671,36 @@ Igen, abszolút. Például, ha egy `hello@example.com` címre küldesz e-mailt, 
 ### Hogyan akadályozzátok meg a spammereket és biztosítjátok a jó e-mail továbbítási hírnevet? {#how-do-you-prevent-spammers-and-ensure-good-email-forwarding-reputation}
 
 Lásd a fentebb található [Hogyan működik az e-mail továbbító rendszeretek](#how-does-your-email-forwarding-system-work), [Hogyan kezelitek az e-mail kézbesítési problémákat](#how-do-you-handle-email-delivery-issues), és [Hogyan kezelitek, ha az IP címeitek blokkolva lesznek](#how-do-you-handle-your-ip-addresses-becoming-blocked) szakaszokat.
+
+### Hogyan ellenőrizhetem, hogy egy domain valóban a Forward Emailt használja-e {#how-can-i-verify-a-domain-is-using-forward-email}
+
+Egy domain nyilvános DNS-rekordjaiból kiderül, hogy használja-e a szolgáltatásunkat, és ha igen, melyik csomagon.  Ez egy semleges technikai lekérdezés, amelyet bárki lefuttathat bármely domainre; nincs hozzá szükség fiókra, sem a domain tulajdonosának közreműködésére.
+
+**Először ellenőrizd az MX rekordokat.**
+
+```sh
+dig example.com mx +short
+```
+
+Ha a válasz nem tartalmazza az `mx1.forwardemail.net` és `mx2.forwardemail.net` értékeket, akkor a domain **nem** a mi szolgáltatásunkat használja a levelek fogadására, és nem mi üzemeltetjük az adott levelezést.
+
+**Ezután ellenőrizd a TXT rekordokat a csomagok megkülönböztetéséhez.**
+
+```sh
+dig example.com txt +short
+```
+
+| TXT érték                                    | Mit jelent                                                                                                      |
+| -------------------------------------------- | --------------------------------------------------------------------------------------------------------------- |
+| `forward-email=user@example.com`             | Ingyenes csomag.  Az érték az a nyílt szöveges célcím, ahová a leveleket továbbítjuk.                           |
+| `forward-email-site-verification=XXXXXXXXXX` | Fizetős csomag.  A továbbítási beállítás az adatbázisunkban `XXXXXXXXXX` azonosítóval van tárolva, és nem nyilvános. |
+| Egyik sincs jelen                            | A domain nincs beállítva a továbbító szolgáltatásunkhoz.                                                        |
+
+> \[!NOTE]
+> A szolgáltatásunk DNS-szinten ezeken a rekordokon keresztül működik, így ugyanaz a lekérdezés megválaszolja, hogy „a miénk-e ez a domain”, „ingyenes vagy fizetős-e”, és ingyenes csomag esetén azt is, hogy „hová mennek a levelei”.  Magát a kézbesítési útvonalat lásd itt: [hogyan működik a továbbító rendszerünk](#how-does-your-email-forwarding-system-work).
+
+> \[!TIP]
+> Nem vagyunk domainregisztrátor, így nem tárolunk korábbi DNS-rekordokat.  Ha meg szeretnéd tudni, ki regisztrált egy domaint, vagy ki üzemelteti a névszervereit, használd a `whois example.com` és a `dig example.com ns` parancsot, vagy kérdezd meg közvetlenül a regisztrátort.
 
 ### Hogyan végzitek a DNS lekérdezéseket domain neveken? {#how-do-you-perform-dns-lookups-on-domain-names}
 
@@ -5889,6 +5970,7 @@ Vagy megadhatod őket két külön sorban is, például így:
     </tr>
   </tbody>
 </table>
+
 Rajtad múlik!
 
 ### Van-e maximális korlát arra, hogy hány email címet továbbíthatok aliasonként {#is-there-a-maximum-limit-on-the-number-of-email-addresses-i-can-forward-to-per-alias}

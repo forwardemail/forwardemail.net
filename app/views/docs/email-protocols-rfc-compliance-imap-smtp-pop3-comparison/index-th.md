@@ -1328,7 +1328,7 @@ sequenceDiagram
 นอกจาก ManageSieve แล้ว Forward Email ยังมี:
 
 * **แดชบอร์ดเว็บ**: สร้างและจัดการสคริปต์ Sieve ผ่านเว็บอินเทอร์เฟซที่ My Account → Domains → Aliases → Sieve Scripts
-* **REST API**: การเข้าถึงการจัดการสคริปต์ Sieve ผ่านโปรแกรมโดยใช้ [Forward Email API](/api#sieve-scripts)
+* **REST API**: การเข้าถึงการจัดการสคริปต์ Sieve ผ่านโปรแกรมโดยใช้ [Forward Email API](/email-api)
 
 > \[!TIP]
 > สำหรับคำแนะนำการตั้งค่าและการกำหนดค่าลูกค้าโดยละเอียด ดูที่ [FAQ: คุณรองรับการกรองอีเมลด้วย Sieve หรือไม่?](/faq#do-you-support-sieve-email-filtering)
@@ -1589,6 +1589,7 @@ flowchart TB
 ### กระบวนการย้ายข้อมูล {#migration-process}
 
 Forward Email มีการย้ายข้อมูลอัตโนมัติและทำซ้ำได้จากรูปแบบเก่าไปยังรูปแบบใหม่:
+```javascript
 // สถิติการย้ายข้อมูลที่ติดตาม:
 {
   attachmentsMigrated: 0,

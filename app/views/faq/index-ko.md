@@ -16,7 +16,9 @@
   * [Microsoft Outlook](#microsoft-outlook)
   * [Apple Mail](#apple-mail)
   * [eM Client](#em-client)
+  * [웹메일 클라이언트를 제공하나요](#do-you-offer-a-webmail-client)
   * [웹메일에서 내 도메인의 아무 주소로나 보낼 수 있나요](#can-i-send-from-any-address-on-my-domain-in-webmail)
+  * [데스크탑 및 모바일 앱이 있나요](#do-you-have-desktop-and-mobile-apps)
   * [터미널 앱이 있나요](#do-you-have-a-terminal-app)
   * [모바일 기기](#mobile-devices)
   * [Sendmail SMTP 릴레이 구성](#sendmail-smtp-relay-configuration)
@@ -75,6 +77,7 @@
   * [Sieve 이메일 필터링을 지원하나요](#do-you-support-sieve-email-filtering)
   * [MTA-STS를 지원하나요](#do-you-support-mta-sts)
   * [패스키 및 WebAuthn을 지원하나요](#do-you-support-passkeys-and-webauthn)
+  * [2단계 인증(2FA)이 지원되나요](#is-two-factor-authentication-2fa-supported)
   * [이메일 모범 사례를 지원하나요](#do-you-support-email-best-practices)
   * [바운스 웹훅을 지원하나요](#do-you-support-bounce-webhooks)
   * [웹훅을 지원하나요](#do-you-support-webhooks)
@@ -95,6 +98,7 @@
   * [이메일 인증 헤더를 보존하나요](#do-you-preserve-email-authentication-headers)
   * [원본 이메일 헤더를 보존하고 스푸핑을 방지하나요](#do-you-preserve-original-email-headers-and-prevent-spoofing)
   * [스팸 및 악용으로부터 어떻게 보호하나요](#how-do-you-protect-against-spam-and-abuse)
+  * [성인 콘텐츠, 피싱, 실행 파일 또는 바이러스 검사를 비활성화할 수 있나요](#can-i-disable-adult-content-phishing-executable-or-virus-scanning)
   * [이메일 내용을 디스크에 저장하나요](#do-you-store-email-content-on-disk)
   * [시스템 충돌 시 이메일 내용이 노출될 수 있나요](#can-email-content-be-exposed-during-system-crashes)
   * [누가 이메일 인프라에 접근할 수 있나요](#who-has-access-to-your-email-infrastructure)
@@ -104,6 +108,7 @@
 * [내 도메인으로 수신되는 이메일은 어디에서 처리되고 저장되며, 얼마나 오래 보관되나요](#where-is-inbound-email-for-my-domain-processed-and-stored-and-for-how-long)
 * [내 DPA에서 하위 처리자로 Forward Email을 어떻게 기재하나요](#how-do-i-list-forward-email-as-a-subprocessor-in-my-own-dpa)
   * [데이터 유출 알림을 어떻게 처리하나요](#how-do-you-handle-data-breach-notifications)
+  * [보안 취약점은 어떻게 신고하나요](#how-do-i-report-a-security-vulnerability)
   * [테스트 환경을 제공하나요](#do-you-offer-a-test-environment)
   * [모니터링 및 경고 도구를 제공하나요](#do-you-provide-monitoring-and-alerting-tools)
   * [고가용성을 어떻게 보장하나요](#how-do-you-ensure-high-availability)
@@ -136,6 +141,7 @@
   * [충분히 테스트되었나요](#is-this-well-tested)
   * [SMTP 응답 메시지 및 코드를 전달하나요](#do-you-pass-along-smtp-response-messages-and-codes)
   * [스패머를 방지하고 좋은 이메일 전달 평판을 유지하는 방법](#how-do-you-prevent-spammers-and-ensure-good-email-forwarding-reputation)
+  * [도메인이 실제로 Forward Email을 사용하는지 어떻게 확인할 수 있나요](#how-can-i-verify-a-domain-is-using-forward-email)
   * [도메인 이름에 대해 DNS 조회를 수행하는 방법](#how-do-you-perform-dns-lookups-on-domain-names)
 * [계정 및 결제](#account-and-billing)
   * [계정을 어떻게 삭제하나요?](#how-do-i-delete-my-account)
@@ -293,7 +299,7 @@ Forward Email은 메시지를 거의 지연 없이, 일반적으로 수신 후 �
 ### Apple Mail {#apple-mail}
 
 1. Forward Email 대시보드에서 새 별칭을 만들고 비밀번호를 생성하세요
-2. **메일 → 환경설정 → 계정 → +**로 이동하세요
+2. <strong>메일 → 환경설정 → 계정 → +</strong>로 이동하세요
 3. **기타 메일 계정**을 선택하세요
 4. 이름, Forward Email 주소, 비밀번호를 입력하세요
 5. 서버 설정에 다음을 입력하세요:
@@ -317,11 +323,31 @@ Forward Email은 메시지를 거의 지연 없이, 일반적으로 수신 후 �
 8. 이름을 입력하고 계정 이름을 선택하세요.
 9. **완료**를 클릭하세요.
 
+### 웹메일 클라이언트를 제공하나요 {#do-you-offer-a-webmail-client}
+
+네. 공식 오픈 소스 웹메일 클라이언트는 <a href="https://mail.forwardemail.net" target="_blank" rel="noopener noreferrer">mail.forwardemail.net</a>에서 이용할 수 있습니다. 설치는 필요 없으며, 어떤 브라우저에서든 별칭 주소와 생성된 비밀번호(IMAP, SMTP, POP3에 사용하는 것과 동일한 자격 증명)로 로그인하면 됩니다.
+
+2026년 2월에 출시되었으며, [CalDAV 일정 예약 확장(RFC 6638)](https://www.rfc-editor.org/rfc/rfc6638.html), [DANE/TLSA(RFC 6698)](https://en.wikipedia.org/wiki/DNS-based_Authentication_of_Named_Entities), 그리고 원클릭 DNS 설정을 위한 [Domain Connect](https://domainconnect.org)도 지원합니다. IMAP, CalDAV, CardDAV의 실시간 푸시 알림은 WebSockets를 통해 전달됩니다.
+
+소스 코드는 완전한 오픈 소스이며 GitHub의 <a href="https://github.com/forwardemail/mail.forwardemail.net" target="_blank" rel="noopener noreferrer">github.com/forwardemail/mail.forwardemail.net</a>에서 확인할 수 있습니다.
+
+<a href="/blog/docs/webmail">웹메일 가이드</a>에서는 로그인 방법, 여러 계정을 사용하는 방법, 그리고 웹메일이 이 웹사이트의 대시보드와 어떻게 연계되는지 설명합니다.
+
 ### 웹메일에서 내 도메인의 아무 주소로나 보낼 수 있나요 {#can-i-send-from-any-address-on-my-domain-in-webmail}
 
 네. <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">내 계정 <i class="fa fa-angle-right"></i> 도메인</a> <i class="fa fa-angle-right"></i> 고급 설정 <i class="fa fa-angle-right"></i> 포괄적인 비밀번호에서 catch-all 비밀번호를 생성한 다음, 웹메일의 **Settings <i class="fa fa-angle-right"></i> General <i class="fa fa-angle-right"></i> Send from any address**에 저장하세요. 메일을 작성할 때 **From** 메뉴에서 **Other address @yourdomain**을 선택하고 그 도메인의 아무 주소나 입력하면 됩니다.
 
 catch-all 계정이나 와일드카드 계정으로 로그인하는 것은 아닙니다. catch-all 비밀번호는 보내기만 할 수 있으므로, 사본은 사용 중인 계정의 보낸편지함(Sent)에 저장됩니다. 비밀번호는 추가한 기기에만 저장됩니다. 모든 단계는 <a href="/blog/docs/webmail#send-from-any-address-on-your-domain">웹메일 가이드</a>를 참고하세요.
+
+### 데스크탑 및 모바일 앱이 있나요 {#do-you-have-desktop-and-mobile-apps}
+
+네. 데스크탑과 모바일용 네이티브 앱이 있으며, 웹메일 클라이언트와 같은 오픈 소스 프로젝트로 빌드되었고, 모두 <a href="/download" target="_blank" rel="noopener noreferrer">다운로드 페이지</a>에서 받을 수 있습니다:
+
+* **데스크탑**: macOS(Apple Silicon 및 Intel), Windows(x64 및 ARM64, `.exe` 또는 `.msi` 설치 프로그램), Linux(AppImage, `.deb`, `.rpm`, Snap, 각각 x64 및 ARM64용).
+* **모바일**: Android(APK, 대체 F-Droid 빌드 제공) 및 iOS.
+* **터미널**: macOS, Linux, Windows(x64 및 ARM64)용 `forwardemail` 명령. [터미널 앱이 있나요](#do-you-have-a-terminal-app)를 참고하세요.
+
+모든 릴리스 빌드는 GitHub의 <a href="https://github.com/forwardemail/mail.forwardemail.net/releases" target="_blank" rel="noopener noreferrer">github.com/forwardemail/mail.forwardemail.net/releases</a>에 게시되며, 다운로드 페이지에서 `SHA256SUMS.txt`와 대조해 릴리스 체크섬을 확인할 수 있습니다.
 
 ### 터미널 앱이 있나요 {#do-you-have-a-terminal-app}
 
@@ -359,7 +385,7 @@ iOS의 경우:
 
 Android의 경우:
 
-1. **설정 → 계정 → 계정 추가 → 개인(IMAP)**으로 이동하세요
+1. <strong>설정 → 계정 → 계정 추가 → 개인(IMAP)</strong>으로 이동하세요
 2. Forward Email 주소와 비밀번호를 입력하세요
 3. 서버 설정은 위의 IMAP 및 SMTP 설정과 동일하게 사용하세요
 
@@ -1194,14 +1220,14 @@ Microsoft 365(이전 Office 365) 사용자가 메일박스와 일치하지 않�
 1. S3 호환 공급자에서 **비공개** 버킷을 만듭니다. 버킷은 공개 접근이 불가능해야 합니다.
 2. 버킷에 대한 읽기/쓰기 권한이 있는 액세스 자격 증명(액세스 키 ID 및 비밀 액세스 키)을 생성합니다.
 3. <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">내 계정 <i class="fa fa-angle-right"></i> 도메인</a> <i class="fa fa-angle-right"></i> 고급 설정 <i class="fa fa-angle-right"></i> 맞춤 S3 호환 스토리지로 이동합니다.
-4. **"맞춤 S3 호환 스토리지 활성화"**를 체크하고 엔드포인트 URL, 액세스 키 ID, 비밀 액세스 키, 리전, 버킷 이름을 입력합니다.
-5. **"연결 테스트"**를 클릭하여 자격 증명, 버킷 접근 및 쓰기 권한을 확인합니다.
-6. **"저장"**을 클릭하여 설정을 적용합니다.
+4. <strong>"맞춤 S3 호환 스토리지 활성화"</strong>를 체크하고 엔드포인트 URL, 액세스 키 ID, 비밀 액세스 키, 리전, 버킷 이름을 입력합니다.
+5. <strong>"연결 테스트"</strong>를 클릭하여 자격 증명, 버킷 접근 및 쓰기 권한을 확인합니다.
+6. <strong>"저장"</strong>을 클릭하여 설정을 적용합니다.
 
 #### 백업 작동 방식 {#how-backups-work}
 
 백업은 연결된 모든 IMAP 별칭에 대해 자동으로 트리거됩니다. IMAP 서버는 활성 연결을 매시간 확인하고 각 연결된 별칭에 대해 백업을 실행합니다. Redis 기반 잠금 장치는 30분 이내 중복 백업 실행을 방지하며, 최근 24시간 내에 성공적인 백업이 완료된 경우(사용자가 다운로드를 위해 명시적으로 백업을 요청한 경우 제외) 실제 백업은 건너뜁니다.
-백업은 대시보드에서 모든 별칭에 대해 **"백업 다운로드"**를 클릭하여 수동으로도 실행할 수 있습니다. 수동 백업은 24시간 창과 상관없이 항상 실행됩니다.
+백업은 대시보드에서 모든 별칭에 대해 <strong>"백업 다운로드"</strong>를 클릭하여 수동으로도 실행할 수 있습니다. 수동 백업은 24시간 창과 상관없이 항상 실행됩니다.
 
 백업 프로세스는 다음과 같이 작동합니다:
 
@@ -1223,7 +1249,7 @@ Microsoft 365(이전 Office 365) 사용자가 메일박스와 일치하지 않�
 
 모든 내보내기 형식은 연락처, 캘린더 및 캘린더 일정을 보존합니다. 휴대용 EML/MBOX ZIP 파일은 VCF 파일을 `Contacts` 아래의 주소록별로 정리하고, ICS 일정 또는 작업 리소스를 `Calendars` 아래의 캘린더별로 정리합니다. 원본 SQLite는 기본 테이블에 동일한 레코드를 유지합니다.
 
-> **팁:** `.sqlite` 백업 파일을 가지고 있고 로컬에서 `.eml` 파일로 변환하려면 독립 실행형 CLI 도구 **[convert-sqlite-to-eml](#how-do-i-convert-sqlite-backups-to-eml-files)**를 사용하세요. Windows, Linux, macOS에서 작동하며 네트워크 연결이 필요 없습니다.
+> **팁:** `.sqlite` 백업 파일을 가지고 있고 로컬에서 `.eml` 파일로 변환하려면 독립 실행형 CLI 도구 <strong>[convert-sqlite-to-eml](#how-do-i-convert-sqlite-backups-to-eml-files)</strong>를 사용하세요. Windows, Linux, macOS에서 작동하며 네트워크 연결이 필요 없습니다.
 
 #### 파일 명명 및 키 구조 {#file-naming-and-key-structure}
 
@@ -1295,7 +1321,7 @@ curl -X POST https://api.forwardemail.net/v1/domains/example.com/test-s3-connect
 
 ### SQLite 백업을 EML 파일로 변환하는 방법 {#how-do-i-convert-sqlite-backups-to-eml-files}
 
-SQLite 백업을 다운로드하거나 저장한 경우(기본 스토리지 또는 자신의 [사용자 지정 S3 버킷](#how-do-i-use-my-own-s3-compatible-storage-for-backups)에서), 독립 실행형 CLI 도구 **[convert-sqlite-to-eml](https://github.com/forwardemail/forwardemail.net/tree/master/tools/convert-sqlite-to-eml)** 를 사용하여 표준 `.eml` 파일로 변환할 수 있습니다. EML 파일은 모든 이메일 클라이언트([Thunderbird](https://www.thunderbird.net/), [Outlook](https://www.microsoft.com/en-us/microsoft-365/outlook/email-and-calendar-software-microsoft-outlook), [Apple Mail](https://support.apple.com/mail) 등)에서 열거나 다른 메일 서버로 가져올 수 있습니다. 변환기의 비밀번호로 보호된 ZIP 파일에는 `Contacts` 아래의 주소록별 VCF 연락처와 `Calendars` 아래의 캘린더별 ICS 캘린더 일정 또는 작업도 포함되어 있습니다.
+SQLite 백업을 다운로드하거나 저장한 경우(기본 스토리지 또는 자신의 [사용자 지정 S3 버킷](#how-do-i-use-my-own-s3-compatible-storage-for-backups)에서), 독립 실행형 CLI 도구 <strong>[convert-sqlite-to-eml](https://github.com/forwardemail/forwardemail.net/tree/master/tools/convert-sqlite-to-eml)</strong> 를 사용하여 표준 `.eml` 파일로 변환할 수 있습니다. EML 파일은 모든 이메일 클라이언트([Thunderbird](https://www.thunderbird.net/), [Outlook](https://www.microsoft.com/en-us/microsoft-365/outlook/email-and-calendar-software-microsoft-outlook), [Apple Mail](https://support.apple.com/mail) 등)에서 열거나 다른 메일 서버로 가져올 수 있습니다. 변환기의 비밀번호로 보호된 ZIP 파일에는 `Contacts` 아래의 주소록별 VCF 연락처와 `Calendars` 아래의 캘린더별 ICS 캘린더 일정 또는 작업도 포함되어 있습니다.
 
 #### 설치 {#installation-1}
 
@@ -2409,7 +2435,7 @@ DELETE /v1/account/api-token에 DELETE 요청을 보내 API 토큰을 비활성�
 
 ### IMAP을 통한 이메일 수신을 지원하나요? {#do-you-support-receiving-email-with-imap}
 
-네, 2023년 10월 16일부터 모든 유료 사용자에게 추가 기능으로 IMAP을 통한 이메일 수신을 지원합니다. **[암호화된 SQLite 메일박스 저장 기능 작동 방식](/blog/docs/best-quantum-safe-encrypted-email-service)**에 관한 심층 기사를 꼭 읽어보시기 바랍니다.
+네, 2023년 10월 16일부터 모든 유료 사용자에게 추가 기능으로 IMAP을 통한 이메일 수신을 지원합니다. <strong>[암호화된 SQLite 메일박스 저장 기능 작동 방식](/blog/docs/best-quantum-safe-encrypted-email-service)</strong>에 관한 심층 기사를 꼭 읽어보시기 바랍니다.
 
 <div id="imap-instructions">
 
@@ -2654,7 +2680,7 @@ IPv4와 IPv6 모두를 지원하며 포트 `443`(HTTPS)에서 이용 가능합�
     중요:
   </strong>
   <span>
-    저희는 IP 평판과 사용자의 전달성을 보호하기 위해 도메인별로 아웃바운드 SMTP를 승인합니다. 많은 도메인은 DNS 레코드가 확인되는 즉시 승인되며, 나머지는 저희 팀이 검토하여 보통 24시간 이내에 처리합니다. [SMTP 활성화를 위해 승인이 필요한가요](#do-i-need-approval-to-enable-smtp)를 참조하세요.
+    저희는 IP 평판과 사용자의 전달성을 보호하기 위해 도메인별로 아웃바운드 SMTP를 승인합니다. 많은 도메인은 DNS 레코드가 확인되는 즉시 승인되며, 나머지는 저희 팀이 검토하여 보통 24시간 이내에 처리합니다. <a href="/faq#do-i-need-approval-to-enable-smtp">SMTP 활성화를 위해 승인이 필요한가요</a>를 참조하세요.
   </span>
 </div>
 
@@ -2935,7 +2961,7 @@ Sieve 스크립트는 여러 방법으로 관리할 수 있습니다:
 
 2. **ManageSieve 프로토콜**: Thunderbird의 Sieve 애드온이나 [sieve-connect](https://github.com/philpennock/sieve-connect)과 같은 ManageSieve 호환 클라이언트를 사용하여 `imap.forwardemail.net`에 연결하십시오. STARTTLS 사용 시 포트 `2190`, 암시적 TLS 사용 시 포트 `4190`을 사용합니다.
 
-3. **API**: 스크립트를 프로그래밍 방식으로 관리하려면 [REST API](/api#sieve-scripts)를 사용하십시오.
+3. **API**: 스크립트를 프로그래밍 방식으로 관리하려면 [REST API](/email-api)를 사용하십시오.
 
 <div class="alert my-3 alert-primary">
   <i class="fa fa-info-circle font-weight-bold"></i>
@@ -2978,6 +3004,12 @@ Sieve 스크립트는 여러 방법으로 관리할 수 있습니다:
 * [패스키로 애플리케이션 및 웹사이트에 로그인하기](https://support.google.com/android/answer/14124480?hl=en) (Google)
 * [iPhone에서 앱 및 웹사이트에 패스키로 로그인하기](https://support.apple.com/guide/iphone/use-passkeys-to-sign-in-to-apps-and-websites-iphf538ea8d0/ios) (Apple)
 * [패스키에 관한 위키피디아 문서](https://en.wikipedia.org/wiki/Passkey_\(credential\))
+### 2단계 인증(2FA)이 지원되나요 {#is-two-factor-authentication-2fa-supported}
+
+네. 계정 로그인(<a href="https://mail.forwardemail.net" target="_blank" rel="noopener noreferrer">웹메일</a> 포함) 시 일회용 코드를 사용하는 방식으로 지원되며, 복구 키로 보완됩니다.
+
+2FA는 계정 로그인 자체에 적용되며, 타사 클라이언트(Thunderbird, Apple Mail 등)의 IMAP, SMTP, POP3, CalDAV, CardDAV 연결에는 적용되지 않습니다. 이러한 클라이언트는 대신 별칭별로 생성된 비밀번호로 인증하므로, 현재 이 유형의 클라이언트에는 2FA에 해당하는 표준이 없습니다. 이 부분이 바뀌기를 원하시면 GitHub에서 기능 요청을 열어 주세요.
+
 ### 이메일 모범 사례를 지원하나요? {#do-you-support-email-best-practices}
 
 네. 모든 요금제에서 SPF, DKIM, DMARC, ARC, SRS에 대한 내장 지원을 제공합니다. 또한 이러한 사양의 원저자 및 다른 이메일 전문가들과 광범위하게 협력하여 완벽함과 높은 전달률을 보장하고 있습니다.
@@ -4073,6 +4105,17 @@ Forward Email은 포괄적인 다중 계층 보호를 구현합니다:
 * <https://www.datapacket.com/datacenters/denver> (DDoS 보호 세부사항)
 * <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/abuse-prevention-by-user-id.js>
 
+### 성인 콘텐츠, 피싱, 실행 파일 또는 바이러스 검사를 비활성화할 수 있나요 {#can-i-disable-adult-content-phishing-executable-or-virus-scanning}
+
+네. 모든 도메인은 수신되는 링크와 첨부 파일을 <a href="https://spamscanner.net" target="_blank" rel="noopener noreferrer">Spam Scanner</a>로 검사합니다. 이는 저희가 직접 개발한 오픈 소스 스팸, 피싱, 바이러스 방지 솔루션입니다(Forward Email의 나머지 부분과 동일한 개인정보 보호 우선 및 무로그 정책을 따릅니다). 네 가지 범주는 각각 <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">내 계정 <i class="fa fa-angle-right"></i> 도메인</a> <i class="fa fa-angle-right"></i> 고급 설정에서 개별적으로 켜거나 끌 수 있습니다:
+
+* **성인 관련 콘텐츠 보호**: 비활성화하면 링크에서 성인 관련 콘텐츠를 검사하지 않습니다.
+* **피싱 보호**: 비활성화하면 링크에서 악성 코드, 도메인 바꿔치기, IDN 호모그래프 공격 또는 일반적인 피싱을 검사하지 않습니다.
+* **실행 파일 보호**: 비활성화하면 링크와 첨부 파일에서 잠재적으로 악성인 실행 파일 형식, 확장자, 이름, 헤더 또는 IDN 호모그래프 공격을 검사하지 않습니다.
+* **바이러스 보호**: 비활성화하면 첨부 파일에서 트로이 목마, 바이러스, 악성 코드 또는 기타 악의적인 위협을 검사하지 않습니다(ClamAV 사용).
+
+네 가지 모두 기본적으로 활성화되어 있습니다. 하나를 비활성화하면 해당 범주의 검사만 꺼집니다. 스팸 필터링 전체가 비활성화되는 것은 아니며, [특정 별칭 비활성화](#can-i-disable-specific-aliases)와도 별개입니다. 범주를 비활성화하는 가장 흔한 이유는 사용자의 트래픽에 특유한 오탐 패턴입니다(예: 성인 테마 업소나 업체의 정상적인 메일링 리스트를 성인 콘텐츠 검사가 걸러내는 경우).
+
 ### 이메일 내용을 디스크에 저장하나요 {#do-you-store-email-content-on-disk}
 
 > \[!IMPORTANT]
@@ -4295,6 +4338,10 @@ Antrim, BT1 - 5EF
 * <https://forwardemail.net/technical-whitepaper.pdf#page=59>
 * <https://forwardemail.net/gdpr>
 
+### 보안 취약점은 어떻게 신고하나요 {#how-do-i-report-a-security-vulnerability}
+
+보안 취약점을 발견하셨다면 즉시 <security@forwardemail.net>으로 신고해 주세요. 이 주소는 취약점 및 버그 신고 전용 주소로, 일반 지원과는 별도로 운영됩니다. 이 주소로 직접 이메일을 보내면 신고 내용이 처리를 담당하는 팀에 전달됩니다.
+
 ### 테스트 환경을 제공하나요? {#do-you-offer-a-test-environment}
 
 Forward Email의 기술 문서에는 전용 샌드박스 모드가 명시적으로 설명되어 있지 않습니다. 그러나 가능한 테스트 접근법은 다음과 같습니다:
@@ -4366,7 +4413,7 @@ Forward Email은 섹션 889에서 금지된 장비를 사용하지 않는 두 �
 
 **Cloudflare의 약속**: Cloudflare는 제3자 행동 강령에서 섹션 889 금지 대상 업체의 통신 장비, 비디오 감시 제품 또는 서비스를 사용하지 않는다고 명확히 밝히고 있습니다.
 
-**정부 사용 사례**: Forward Email의 섹션 889 준수는 **미 해군사관학교(US Naval Academy)**가 보안 이메일 전달 요구를 위해 Forward Email을 선택하면서 검증되었으며, 연방 준수 기준 문서 제출이 요구되었습니다.
+**정부 사용 사례**: Forward Email의 섹션 889 준수는 <strong>미 해군사관학교(US Naval Academy)</strong>가 보안 이메일 전달 요구를 위해 Forward Email을 선택하면서 검증되었으며, 연방 준수 기준 문서 제출이 요구되었습니다.
 
 정부 준수 프레임워크 및 광범위한 연방 규정에 대한 자세한 내용은 다음 종합 사례 연구를 참조하세요: [연방 정부 이메일 서비스 섹션 889 준수](https://forwardemail.net/blog/docs/federal-government-email-service-section-889-compliant)
 
@@ -4435,7 +4482,7 @@ Forward Email은 섹션 889에서 금지된 장비를 사용하지 않는 두 �
    * 추출한 전달 구성을 재귀적으로 반복하여 전역 전달, 정규식 기반 전달 및 기타 지원되는 모든 전달 구성을 결정합니다. 이들은 이제 "전달 주소"로 알려져 있습니다.
    * 각 전달 주소에 대해 하나의 재귀 조회를 지원합니다(이 작업은 해당 주소에 대해 이 일련의 작업을 다시 시작합니다). 재귀 일치가 발견되면 상위 결과는 전달 주소에서 제거되고 하위 항목이 추가됩니다.
    * 전달 주소는 중복 전송이나 불필요한 SMTP 클라이언트 연결 생성을 방지하기 위해 고유성 검사를 거칩니다.
-   * 각 전달 주소에 대해 도메인 이름을 API 엔드포인트 `/v1/max-forwarded-addresses`에 조회하여 도메인이 별칭당 이메일을 전달할 수 있는 최대 주소 수(기본값 10 – [별칭당 전달 최대 제한](#is-there-a-limit-on-the-number-of-email-addresses-i-can-forward-to-per-alias) 섹션 참조)를 확인합니다. 이 제한을 초과하면 550 오류가 발생하고 발신자는 해당 수신자에 대해 반송 메일을 받게 됩니다.
+   * 각 전달 주소에 대해 도메인 이름을 API 엔드포인트 `/v1/max-forwarded-addresses`에 조회하여 도메인이 별칭당 이메일을 전달할 수 있는 최대 주소 수(기본값 10 – [별칭당 전달 최대 제한](#is-there-a-maximum-limit-on-the-number-of-email-addresses-i-can-forward-to-per-alias) 섹션 참조)를 확인합니다. 이 제한을 초과하면 550 오류가 발생하고 발신자는 해당 수신자에 대해 반송 메일을 받게 됩니다.
    * 원래 수신자의 설정을 API 엔드포인트 `/v1/settings`에 조회합니다. 이 엔드포인트는 유료 사용자 조회를 지원하며 무료 사용자에 대한 대체 경로도 제공합니다. 이 조회는 `port` (숫자, 예: `25`), `has_adult_content_protection` (불리언), `has_phishing_protection` (불리언), `has_executable_protection` (불리언), `has_virus_protection` (불리언)에 대한 고급 설정 구성 객체를 반환합니다.
    * 이러한 설정을 기반으로 스팸 스캐너 결과를 확인하고 오류가 발생하면 554 오류 코드로 메시지를 거부합니다(예: `has_virus_protection`이 활성화된 경우 스팸 스캐너 결과에서 바이러스를 검사합니다). 모든 무료 플랜 사용자는 성인 콘텐츠, 피싱, 실행 파일, 바이러스 검사에 기본적으로 옵트인됩니다. 기본적으로 모든 유료 플랜 사용자도 옵트인되어 있지만, 이 구성은 Forward Email 대시보드의 도메인 설정 페이지에서 변경할 수 있습니다.
 
@@ -4755,6 +4802,7 @@ DNS 또는 연결 오류가 발생하면 `DATA` 명령에 SMTP 응답 코드 421
   <li class="list-inline-item"><code class="notranslate">sch.uk</code></li>
   <li class="list-inline-item"><code class="notranslate">ukaea.uk</code></li>
 </ul>
+
 추가로, 이 [브랜드 및 기업 최상위 도메인](https://en.wikipedia.org/wiki/List_of_Internet_top-level_domains#Brand_and_corporate_top-level_domains)은 기본적으로 허용 목록에 포함되어 있습니다 (예: Apple Card 은행 명세서의 `applecard.apple`에서 `apple`):
 
 <ul class="list-inline">
@@ -5180,6 +5228,7 @@ DNS 또는 연결 오류가 발생하면 `DATA` 명령에 SMTP 응답 코드 421
   <li class="list-inline-item"><code class="notranslate">zara</code></li>
   <li class="list-inline-item"><code class="notranslate">zippo</code></li>
 </ul>
+
 2025년 3월 18일 기준으로 다음 프랑스 해외 영토도 이 목록에 추가되었습니다 ([이 GitHub 요청에 따라](https://github.com/forwardemail/forwardemail.net/issues/327)):
 
 <ul class="list-inline">
@@ -5366,6 +5415,7 @@ DNS 또는 연결 오류가 발생하면 `DATA` 명령에 SMTP 응답 코드 421
   <li class="list-inline-item"><code class="notranslate">yt</code></li>
   <li class="list-inline-item"><code class="notranslate">za</code></li>
 </ul>
+
 ### 그레이리스트가 있나요? {#do-you-have-a-greylist}
 
 네, 저희는 매우 느슨한 [이메일 그레이리스트](https://en.wikipedia.org/wiki/Greylisting_\(email\)) 정책을 사용하고 있습니다. 그레이리스트는 허용 목록에 없는 발신자에게만 적용되며, 캐시에 30일 동안 유지됩니다.
@@ -5543,6 +5593,7 @@ Backscatterer 목록에 오르는 일반적인 이유는 잘못된 반송 또는
     유료 플랜(강화된 개인정보 보호 기능 포함)을 사용 중이시면 <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">내 계정 <i class="fa fa-angle-right"></i> 도메인</a>으로 이동하여 도메인 옆의 "설정"을 클릭한 후 "환경 설정"을 클릭하세요. 유료 플랜에 대해 더 알고 싶으시면 <a class="alert-link" rel="noopener noreferrer" href="/private-business-email">가격</a> 페이지를 참조하세요. 그렇지 않으면 아래 지침을 계속 따라주세요.
   </span>
 </div>
+
 무료 플랜을 사용 중이라면, 아래와 같이 새 DNS <strong class="notranslate">TXT</strong> 레코드를 추가하되, 포트를 25에서 원하는 포트로 변경하면 됩니다.
 
 예를 들어, `example.com`으로 가는 모든 이메일을 25번 대신 별도의 SMTP 포트 1337로 별칭 수신자에게 전달하고 싶다면:
@@ -5620,6 +5671,36 @@ Backscatterer 목록에 오르는 일반적인 이유는 잘못된 반송 또는
 ### 스패머를 어떻게 차단하고 좋은 이메일 전달 평판을 유지하나요? {#how-do-you-prevent-spammers-and-ensure-good-email-forwarding-reputation}
 
 위의 [이메일 전달 시스템은 어떻게 작동하나요](#how-does-your-email-forwarding-system-work), [이메일 전달 문제는 어떻게 처리하나요](#how-do-you-handle-email-delivery-issues), [IP 주소가 차단되면 어떻게 하나요](#how-do-you-handle-your-ip-addresses-becoming-blocked) 섹션을 참고하세요.
+
+### 도메인이 실제로 Forward Email을 사용하는지 어떻게 확인할 수 있나요 {#how-can-i-verify-a-domain-is-using-forward-email}
+
+도메인의 공개 DNS 레코드를 보면 해당 도메인이 저희 서비스를 사용하는지, 그리고 어떤 플랜을 사용하는지 알 수 있습니다. 이는 누구나 어떤 도메인에 대해서든 실행할 수 있는 중립적인 기술 조회이며, 계정이나 도메인 소유자의 협조가 필요하지 않습니다.
+
+**먼저 MX 레코드를 확인하세요.**
+
+```sh
+dig example.com mx +short
+```
+
+응답에 `mx1.forwardemail.net`과 `mx2.forwardemail.net`이 포함되어 있지 않다면, 해당 도메인은 메일 수신에 저희 서비스를 사용하고 있지 **않으며**, 저희는 그 메일의 운영자가 아닙니다.
+
+**그런 다음 TXT 레코드를 확인해 플랜을 구분하세요.**
+
+```sh
+dig example.com txt +short
+```
+
+| TXT 값                                       | 의미                                                                                                            |
+| -------------------------------------------- | --------------------------------------------------------------------------------------------------------------- |
+| `forward-email=user@example.com`             | 무료 플랜입니다. 값은 메일이 전달되는 평문 목적지입니다.                                                        |
+| `forward-email-site-verification=XXXXXXXXXX` | 유료 플랜입니다. 전달 설정은 ID `XXXXXXXXXX`로 저희 데이터베이스에 보관되며 공개되지 않습니다.                  |
+| 둘 다 없음                                   | 해당 도메인은 저희 전달 서비스용으로 구성되어 있지 않습니다.                                                    |
+
+> \[!NOTE]
+> 이 레코드들은 저희 서비스가 DNS 수준에서 작동하는 방식 그 자체이므로, 같은 조회로 "이 도메인이 저희 것인지", "무료인지 유료인지", 그리고 무료 플랜의 경우 "메일이 어디로 가는지"까지 알 수 있습니다. 전달 경로 자체는 [전달 시스템의 작동 방식](#how-does-your-email-forwarding-system-work)을 참고하세요.
+
+> \[!TIP]
+> 저희는 도메인 이름 등록기관이 아니므로 과거 DNS 레코드를 보관하지 않습니다. 도메인을 누가 등록했는지 또는 네임서버를 누가 운영하는지 알아보려면 `whois example.com`과 `dig example.com ns`를 사용하거나 등록기관에 직접 문의하세요.
 
 ### 도메인 이름에 대해 DNS 조회는 어떻게 수행하나요? {#how-do-you-perform-dns-lookups-on-domain-names}
 
@@ -5889,6 +5970,7 @@ Backscatterer 목록에 오르는 일반적인 이유는 잘못된 반송 또는
     </tr>
   </tbody>
 </table>
+
 당신에게 달려 있습니다!
 
 ### 별칭당 전달할 수 있는 이메일 주소 수에 최대 한도가 있나요? {#is-there-a-maximum-limit-on-the-number-of-email-addresses-i-can-forward-to-per-alias}

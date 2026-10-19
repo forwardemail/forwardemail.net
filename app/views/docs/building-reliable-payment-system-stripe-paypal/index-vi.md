@@ -670,6 +670,8 @@ graph TD
     class A,P,V primary;
     class B,C,D,E,I,L,Q,R,S,W,X,Y,Z secondary;
 ```
+
+```mermaid
 graph TD
     subgraph "Nguyên tắc DRY"
         V[Logic Chung] --> W[Chức năng Xử lý Thanh toán]

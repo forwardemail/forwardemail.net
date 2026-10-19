@@ -827,6 +827,12 @@ html.no-js .fe-console__rail-wrap {
   text-decoration: underline;
 }
 
+// our Trustpilot rating, under the cards (see _fe-rating.pug)
+.fe-rating {
+  margin: 2rem 0 0;
+  text-align: center;
+}
+
 // ============================================
 // PRICING TEMPLATE HERO
 // ============================================

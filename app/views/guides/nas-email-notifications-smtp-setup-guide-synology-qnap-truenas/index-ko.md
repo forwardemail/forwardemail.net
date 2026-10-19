@@ -155,6 +155,7 @@ QTS가 탑재된 QNAP 장치는 Forward Email과 잘 작동합니다. 최신 TLS
 
 > \[!TIP]
 > [Gmail SMTP 구성 문제](https://forum.qnap.com/viewtopic.php?t=152466)가 발생할 경우, Forward Email에도 동일한 문제 해결 절차가 적용됩니다. 인증이 제대로 활성화되어 있고 자격 증명이 정확한지 확인하세요.
+
 > \[!NOTE]
 > QNAP 장치는 고급 알림 예약을 지원하여 비필수 알림이 차단되는 조용한 시간을 설정할 수 있습니다. 이는 특히 비즈니스 환경에서 유용합니다.
 

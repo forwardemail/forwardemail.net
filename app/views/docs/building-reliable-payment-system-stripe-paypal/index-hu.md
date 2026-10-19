@@ -671,6 +671,8 @@ graph TD
     class A,P,V primary;
     class B,C,D,E,I,L,Q,R,S,W,X,Y,Z secondary;
 ```
+
+```mermaid
 graph TD
     subgraph "DRY Elv"
         V[Megosztott Logika] --> W[Fizetési Feldolgozó Funkciók]

@@ -16,7 +16,9 @@
   * [Microsoft Outlook](#microsoft-outlook)
   * [Apple Mail](#apple-mail)
   * [eM Client](#em-client)
+  * [Vocês oferecem um cliente de webmail](#do-you-offer-a-webmail-client)
   * [Posso enviar de qualquer endereço do meu domínio no webmail](#can-i-send-from-any-address-on-my-domain-in-webmail)
+  * [Vocês têm apps para desktop e celular](#do-you-have-desktop-and-mobile-apps)
   * [Vocês têm um app para terminal](#do-you-have-a-terminal-app)
   * [Dispositivos Móveis](#mobile-devices)
   * [Configuração de Relay SMTP Sendmail](#sendmail-smtp-relay-configuration)
@@ -75,6 +77,7 @@
   * [Vocês suportam filtragem de email Sieve](#do-you-support-sieve-email-filtering)
   * [Vocês suportam MTA-STS](#do-you-support-mta-sts)
   * [Vocês suportam passkeys e WebAuthn](#do-you-support-passkeys-and-webauthn)
+  * [A autenticação de dois fatores (2FA) é suportada](#is-two-factor-authentication-2fa-supported)
   * [Vocês suportam melhores práticas de email](#do-you-support-email-best-practices)
   * [Vocês suportam webhooks de bounce](#do-you-support-bounce-webhooks)
   * [Vocês suportam webhooks](#do-you-support-webhooks)
@@ -95,6 +98,7 @@
   * [Vocês preservam cabeçalhos de autenticação de email](#do-you-preserve-email-authentication-headers)
   * [Vocês preservam cabeçalhos originais de email e previnem spoofing](#do-you-preserve-original-email-headers-and-prevent-spoofing)
   * [Como vocês protegem contra spam e abuso](#how-do-you-protect-against-spam-and-abuse)
+  * [Posso desativar a verificação de conteúdo adulto, phishing, executáveis ou vírus](#can-i-disable-adult-content-phishing-executable-or-virus-scanning)
   * [Vocês armazenam conteúdo de email em disco](#do-you-store-email-content-on-disk)
   * [O conteúdo do email pode ser exposto durante falhas do sistema](#can-email-content-be-exposed-during-system-crashes)
   * [Quem tem acesso à sua infraestrutura de email](#who-has-access-to-your-email-infrastructure)
@@ -104,6 +108,7 @@
 * [Onde é processado e armazenado o email recebido para o meu domínio, e por quanto tempo](#where-is-inbound-email-for-my-domain-processed-and-stored-and-for-how-long)
 * [Como posso indicar a Forward Email como subcontratante no meu próprio DPA](#how-do-i-list-forward-email-as-a-subprocessor-in-my-own-dpa)
   * [Como vocês lidam com notificações de violação de dados](#how-do-you-handle-data-breach-notifications)
+  * [Como faço para relatar uma vulnerabilidade de segurança](#how-do-i-report-a-security-vulnerability)
   * [Vocês oferecem um ambiente de teste](#do-you-offer-a-test-environment)
   * [Vocês fornecem ferramentas de monitoramento e alerta](#do-you-provide-monitoring-and-alerting-tools)
   * [Como vocês garantem alta disponibilidade](#how-do-you-ensure-high-availability)
@@ -136,6 +141,7 @@
   * [Este serviço é bem testado](#is-this-well-tested)
   * [Vocês repassam mensagens e códigos de resposta SMTP](#do-you-pass-along-smtp-response-messages-and-codes)
   * [Como vocês previnem spammers e garantem boa reputação de encaminhamento de email](#how-do-you-prevent-spammers-and-ensure-good-email-forwarding-reputation)
+  * [Como posso verificar se um domínio realmente usa o Forward Email](#how-can-i-verify-a-domain-is-using-forward-email)
   * [Como vocês realizam consultas DNS em nomes de domínio](#how-do-you-perform-dns-lookups-on-domain-names)
 * [Conta e Faturamento](#account-and-billing)
   * [Como excluo minha conta](#how-do-i-delete-my-account)
@@ -317,11 +323,31 @@ Tudo é feito em memória e [nosso código-fonte está no GitHub](https://github
 8. Insira seu nome e escolha um nome para a conta.
 9. Clique em **Concluir**.
 
+### Vocês oferecem um cliente de webmail {#do-you-offer-a-webmail-client}
+
+Sim.  Nosso cliente de webmail oficial e de código aberto está disponível em <a href="https://mail.forwardemail.net" target="_blank" rel="noopener noreferrer">mail.forwardemail.net</a>.  Não é preciso instalar nada: entre a partir de qualquer navegador usando um endereço de alias e a senha gerada para ele (as mesmas credenciais usadas para IMAP, SMTP e POP3).
+
+Ele foi lançado em fevereiro de 2026 e também oferece suporte a [Extensões de Agendamento do CalDAV (RFC 6638)](https://www.rfc-editor.org/rfc/rfc6638.html), [DANE/TLSA (RFC 6698)](https://en.wikipedia.org/wiki/DNS-based_Authentication_of_Named_Entities) e [Domain Connect](https://domainconnect.org) para configurar o DNS com 1 clique, com notificações push em tempo real para IMAP, CalDAV e CardDAV entregues via WebSockets.
+
+O código-fonte é totalmente aberto e está disponível no GitHub em <a href="https://github.com/forwardemail/mail.forwardemail.net" target="_blank" rel="noopener noreferrer">github.com/forwardemail/mail.forwardemail.net</a>.
+
+Nosso <a href="/blog/docs/webmail">guia do webmail</a> explica como entrar, como usar várias contas e como o webmail se integra ao painel deste site.
+
 ### Posso enviar de qualquer endereço do meu domínio no webmail {#can-i-send-from-any-address-on-my-domain-in-webmail}
 
 Sim. Gere uma senha genérica em <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">Minha Conta <i class="fa fa-angle-right"></i> Domínios</a> <i class="fa fa-angle-right"></i> Configurações avançadas <i class="fa fa-angle-right"></i> Senhas genéricas e depois salve-a no webmail em **Settings <i class="fa fa-angle-right"></i> General <i class="fa fa-angle-right"></i> Send from any address**. Ao escrever uma mensagem, escolha **Other address @seudominio** no menu **From** e digite qualquer endereço desse domínio.
 
 Você não entra como uma conta catch-all ou curinga. A senha genérica só pode enviar, então a cópia vai para a pasta Enviados da conta que você está usando. Ela fica salva apenas no dispositivo onde você a adiciona. Veja nosso <a href="/blog/docs/webmail#send-from-any-address-on-your-domain">guia do webmail</a> para todos os passos.
+
+### Vocês têm apps para desktop e celular {#do-you-have-desktop-and-mobile-apps}
+
+Sim.  Há apps nativos para desktop e celular, criados a partir do mesmo projeto de código aberto do nosso cliente de webmail, e todos podem ser baixados na nossa <a href="/download" target="_blank" rel="noopener noreferrer">página de download</a>:
+
+* **Desktop**: macOS (Apple Silicon e Intel), Windows (x64 e ARM64, com instalador `.exe` ou `.msi`) e Linux (AppImage, `.deb`, `.rpm` e Snap, cada um para x64 e ARM64).
+* **Celular**: Android (APK, com uma versão alternativa no F-Droid) e iOS.
+* **Terminal**: o comando `forwardemail` para macOS, Linux e Windows (x64 e ARM64). Veja [Vocês têm um app para terminal](#do-you-have-a-terminal-app).
+
+Todas as versões de lançamento são publicadas no GitHub em <a href="https://github.com/forwardemail/mail.forwardemail.net/releases" target="_blank" rel="noopener noreferrer">github.com/forwardemail/mail.forwardemail.net/releases</a>, e a página de download permite conferir os checksums das versões com o `SHA256SUMS.txt`.
 
 ### Vocês têm um app para terminal {#do-you-have-a-terminal-app}
 
@@ -1917,7 +1943,7 @@ Configurações avançadas <i class="fa fa-angle-right"></i> Registros personali
     <br />
     <code>forward-email=hello:first@gmail.com,second@gmail.com</code>
     <br />
-    E-mails enviados para <code>hello@example.com</code> **não** serão encaminhados para <code>second@gmail.com</code> (catch-all) com esta configuração, e em vez disso serão entregues apenas para <code>first@gmail.com</code>.
+    E-mails enviados para <code>hello@example.com</code> <strong>não</strong> serão encaminhados para <code>second@gmail.com</code> (catch-all) com esta configuração, e em vez disso serão entregues apenas para <code>first@gmail.com</code>.
   </span>
 </div>
 
@@ -2654,7 +2680,7 @@ Sim. Todos os planos pagos incluem SMTP de saída, e ele é **ilimitado**: seu l
     Importante:
   </strong>
   <span>
-    Aprovamos o SMTP de saída para cada domínio para proteger a reputação dos nossos IPs e a sua entregabilidade. Muitos domínios são aprovados na hora, assim que seus registros DNS são verificados, e nossa equipe analisa os demais, geralmente em até 24 horas. Veja [Preciso de aprovação para ativar o SMTP](#do-i-need-approval-to-enable-smtp).
+    Aprovamos o SMTP de saída para cada domínio para proteger a reputação dos nossos IPs e a sua entregabilidade. Muitos domínios são aprovados na hora, assim que seus registros DNS são verificados, e nossa equipe analisa os demais, geralmente em até 24 horas. Veja <a href="/faq#do-i-need-approval-to-enable-smtp">Preciso de aprovação para ativar o SMTP</a>.
   </span>
 </div>
 
@@ -2935,7 +2961,7 @@ Você pode gerenciar scripts Sieve de várias maneiras:
 
 2. **Protocolo ManageSieve**: Conecte-se usando qualquer cliente compatível com ManageSieve, como o complemento Sieve do Thunderbird ou [sieve-connect](https://github.com/philpennock/sieve-connect), para `imap.forwardemail.net`. Use a porta `2190` com STARTTLS ou a porta `4190` com TLS implícito.
 
-3. **API**: Use a [REST API](/api#sieve-scripts) para gerenciar scripts programaticamente.
+3. **API**: Use a [REST API](/email-api) para gerenciar scripts programaticamente.
 
 <div class="alert my-3 alert-primary">
   <i class="fa fa-info-circle font-weight-bold"></i>
@@ -2978,6 +3004,12 @@ Saiba mais sobre passkeys nos seguintes links:
 * [Faça login em seus aplicativos e sites com passkeys](https://support.google.com/android/answer/14124480?hl=en) (Google)
 * [Use passkeys para fazer login em apps e sites no iPhone](https://support.apple.com/guide/iphone/use-passkeys-to-sign-in-to-apps-and-websites-iphf538ea8d0/ios) (Apple)
 * [Artigo da Wikipedia sobre Passkeys](https://en.wikipedia.org/wiki/Passkey_\(credential\))
+### A autenticação de dois fatores (2FA) é suportada {#is-two-factor-authentication-2fa-supported}
+
+Sim, para entrar na sua conta (incluindo o <a href="https://mail.forwardemail.net" target="_blank" rel="noopener noreferrer">webmail</a>) por meio de códigos de acesso de uso único, com chaves de recuperação como reserva.
+
+A 2FA se aplica ao login da sua conta em si, e não às conexões IMAP, SMTP, POP3, CalDAV ou CardDAV de clientes de terceiros (Thunderbird, Apple Mail etc.).  Esses clientes se autenticam com uma senha gerada específica do alias, por isso atualmente não existe um padrão equivalente à 2FA para essa categoria de cliente. Se você quiser que isso mude, abra uma solicitação de recurso no GitHub.
+
 ### Vocês suportam as melhores práticas de email {#do-you-support-email-best-practices}
 
 Sim. Temos suporte integrado para SPF, DKIM, DMARC, ARC e SRS em todos os planos. Também trabalhamos extensivamente com os autores originais dessas especificações e outros especialistas em email para garantir perfeição e alta entregabilidade.
@@ -4073,6 +4105,17 @@ Fontes:
 * <https://www.datapacket.com/datacenters/denver> (detalhes da proteção contra DDoS)
 * <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/abuse-prevention-by-user-id.js>
 
+### Posso desativar a verificação de conteúdo adulto, phishing, executáveis ou vírus {#can-i-disable-adult-content-phishing-executable-or-virus-scanning}
+
+Sim. Todo domínio verifica os links e anexos recebidos usando o <a href="https://spamscanner.net" target="_blank" rel="noopener noreferrer">Spam Scanner</a>, a proteção de código aberto contra spam, phishing e vírus que nós mesmos criamos (e que segue as mesmas políticas de privacidade em primeiro lugar e zero registros que o restante do Forward Email). Quatro categorias podem ser ativadas ou desativadas de forma independente em <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">Minha Conta <i class="fa fa-angle-right"></i> Domínios</a> <i class="fa fa-angle-right"></i> Configurações avançadas:
+
+* **Proteção contra conteúdo adulto**: se desativada, os links não são verificados em busca de conteúdo adulto.
+* **Proteção contra phishing**: se desativada, os links não são verificados em busca de malware, troca de domínio, ataques de homógrafos IDN ou phishing em geral.
+* **Proteção contra executáveis**: se desativada, links e anexos não são verificados em busca de tipos de arquivo executável, extensões, nomes ou cabeçalhos potencialmente maliciosos, nem de ataques de homógrafos IDN.
+* **Proteção contra vírus**: se desativada, os anexos não são verificados em busca de trojans, vírus, malware ou outras ameaças maliciosas (via ClamAV).
+
+As quatro vêm ativadas por padrão. Desativar uma delas desliga apenas a verificação daquela categoria específica.  Isso não desativa a filtragem de spam como um todo e é diferente de [desativar um alias específico](#can-i-disable-specific-aliases). O motivo mais comum para desativar uma categoria é um padrão de falso positivo específico do seu tráfego (por exemplo, a verificação de conteúdo adulto sinalizando listas de e-mail legítimas de um estabelecimento ou empresa com temática adulta).
+
 ### Você armazena o conteúdo do email no disco {#do-you-store-email-content-on-disk}
 
 > \[!IMPORTANT]
@@ -4295,6 +4338,10 @@ Fontes:
 * <https://forwardemail.net/technical-whitepaper.pdf#page=59>
 * <https://forwardemail.net/gdpr>
 
+### Como faço para relatar uma vulnerabilidade de segurança {#how-do-i-report-a-security-vulnerability}
+
+Se você descobrir uma vulnerabilidade de segurança, relate-a imediatamente para <security@forwardemail.net>. Este é um endereço dedicado a relatos de vulnerabilidades e bugs, separado do suporte geral.  Enviar um e-mail diretamente para ele faz seu relato chegar à equipe responsável por tratá-lo.
+
 ### Você oferece um ambiente de teste {#do-you-offer-a-test-environment}
 
 A documentação técnica do Forward Email não descreve explicitamente um modo sandbox dedicado. No entanto, abordagens potenciais para testes incluem:
@@ -4435,7 +4482,7 @@ Esta seção descreve nosso processo relacionado ao comando do protocolo SMTP `D
    * Recursivamente iteramos sobre a configuração de encaminhamento extraída para determinar o encaminhamento global, encaminhamento baseado em regex e todas as outras configurações de encaminhamento suportadas – que agora são conhecidas como nossos "Endereços de Encaminhamento".
    * Para cada Endereço de Encaminhamento, suportamos uma consulta recursiva (que iniciará esta série de operações novamente para o endereço dado). Se uma correspondência recursiva for encontrada, o resultado pai será removido dos Endereços de Encaminhamento, e os filhos adicionados.
    * Os Endereços de Encaminhamento são analisados para garantir unicidade (pois não queremos enviar duplicatas para um endereço ou gerar conexões SMTP adicionais desnecessárias).
-   * Para cada Endereço de Encaminhamento, consultamos seu nome de domínio em nosso endpoint de API `/v1/max-forwarded-addresses` (para determinar quantos endereços o domínio está autorizado a encaminhar email por alias, por exemplo, 10 por padrão – veja a seção sobre [limite máximo de encaminhamento por alias](#is-there-a-limit-on-the-number-of-email-addresses-i-can-forward-to-per-alias)). Se esse limite for excedido, ocorrerá um erro 550 e o remetente receberá um bounce para esse destinatário.
+   * Para cada Endereço de Encaminhamento, consultamos seu nome de domínio em nosso endpoint de API `/v1/max-forwarded-addresses` (para determinar quantos endereços o domínio está autorizado a encaminhar email por alias, por exemplo, 10 por padrão – veja a seção sobre [limite máximo de encaminhamento por alias](#is-there-a-maximum-limit-on-the-number-of-email-addresses-i-can-forward-to-per-alias)). Se esse limite for excedido, ocorrerá um erro 550 e o remetente receberá um bounce para esse destinatário.
    * Consultamos as configurações do destinatário original em nosso endpoint de API `/v1/settings`, que suporta uma consulta para usuários pagos (com fallback para usuários gratuitos). Isso retorna um objeto de configuração para configurações avançadas de `port` (Número, por exemplo, `25`), `has_adult_content_protection` (Booleano), `has_phishing_protection` (Booleano), `has_executable_protection` (Booleano) e `has_virus_protection` (Booleano).
    * Com base nessas configurações, verificamos os resultados do Scanner de Spam e, se ocorrerem erros, a mensagem é rejeitada com o código de erro 554 (por exemplo, se `has_virus_protection` estiver habilitado, verificaremos os resultados do Scanner de Spam para vírus). Note que todos os usuários do plano gratuito estarão optados para verificações contra conteúdo adulto, phishing, executáveis e vírus. Por padrão, todos os usuários do plano pago também estão optados, mas essa configuração pode ser alterada na página de Configurações para um domínio no painel do Forward Email).
 
@@ -4755,6 +4802,7 @@ As seguintes extensões de nomes de domínio são consideradas permitidas por pa
   <li class="list-inline-item"><code class="notranslate">sch.uk</code></li>
   <li class="list-inline-item"><code class="notranslate">ukaea.uk</code></li>
 </ul>
+
 Além disso, esses [domínios de topo de marca e corporativos](https://en.wikipedia.org/wiki/List_of_Internet_top-level_domains#Brand_and_corporate_top-level_domains) são permitidos por padrão (por exemplo, `apple` para `applecard.apple` para extratos bancários do Apple Card):
 
 <ul class="list-inline">
@@ -5180,6 +5228,7 @@ Além disso, esses [domínios de topo de marca e corporativos](https://en.wikipe
   <li class="list-inline-item"><code class="notranslate">zara</code></li>
   <li class="list-inline-item"><code class="notranslate">zippo</code></li>
 </ul>
+
 A partir de 18 de março de 2025, também adicionamos estes territórios ultramarinos franceses a esta lista ([conforme esta solicitação no GitHub](https://github.com/forwardemail/forwardemail.net/issues/327)):
 
 <ul class="list-inline">
@@ -5366,6 +5415,7 @@ Esta nova regra permite apenas as seguintes extensões de nome de domínio para 
   <li class="list-inline-item"><code class="notranslate">yt</code></li>
   <li class="list-inline-item"><code class="notranslate">za</code></li>
 </ul>
+
 ### Você tem uma greylist {#do-you-have-a-greylist}
 
 Sim, usamos uma política de [greylisting de email](https://en.wikipedia.org/wiki/Greylisting_\(email\)) muito flexível. O greylisting só se aplica a remetentes que não estão na nossa allowlist e permanece em nosso cache por 30 dias.
@@ -5543,6 +5593,7 @@ Sim, desde 5 de maio de 2020 adicionamos esse recurso. Atualmente o recurso é e
     Se você está em um plano pago (que oferece proteção avançada de privacidade), por favor vá para <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Minha Conta <i class="fa fa-angle-right"></i> Domínios</a>, clique em "Configurar" ao lado do seu domínio e depois clique em "Configurações". Se quiser saber mais sobre planos pagos, veja nossa página de <a class="alert-link" rel="noopener noreferrer" href="/private-business-email">Preços</a>. Caso contrário, você pode continuar seguindo as instruções abaixo.
   </span>
 </div>
+
 Se você está no plano gratuito, então simplesmente adicione um novo registro DNS <strong class="notranslate">TXT</strong> conforme mostrado abaixo, mas altere a porta de 25 para a porta de sua escolha.
 
 Por exemplo, se eu quiser que todos os e-mails que vão para `example.com` sejam encaminhados para a porta SMTP dos destinatários alias 1337 em vez de 25:
@@ -5620,6 +5671,36 @@ Sim, absolutamente. Por exemplo, se você está enviando um e-mail para `hello@e
 ### Como vocês previnem spammers e garantem uma boa reputação de encaminhamento de e-mails {#how-do-you-prevent-spammers-and-ensure-good-email-forwarding-reputation}
 
 Veja nossas seções sobre [Como funciona seu sistema de encaminhamento de e-mails](#how-does-your-email-forwarding-system-work), [Como vocês lidam com problemas de entrega de e-mails](#how-do-you-handle-email-delivery-issues), e [Como vocês lidam com o bloqueio dos seus endereços IP](#how-do-you-handle-your-ip-addresses-becoming-blocked) acima.
+
+### Como posso verificar se um domínio realmente usa o Forward Email {#how-can-i-verify-a-domain-is-using-forward-email}
+
+Os registros DNS públicos de um domínio mostram se ele usa nosso serviço e em qual plano.  Esta é uma consulta técnica neutra que qualquer pessoa pode fazer em qualquer domínio; ela não exige conta nem a colaboração do proprietário do domínio.
+
+**Verifique primeiro os registros MX.**
+
+```sh
+dig example.com mx +short
+```
+
+Se a resposta não incluir `mx1.forwardemail.net` e `mx2.forwardemail.net`, o domínio **não** está usando nosso serviço para receber e-mails, e nós não somos os operadores desses e-mails.
+
+**Depois, verifique os registros TXT para distinguir os planos.**
+
+```sh
+dig example.com txt +short
+```
+
+| Valor TXT | O que significa |
+| --- | --- |
+| `forward-email=user@example.com` | Um plano gratuito.  O valor é o destino, em texto simples, para o qual os e-mails são encaminhados. |
+| `forward-email-site-verification=XXXXXXXXXX` | Um plano pago.  A configuração de encaminhamento fica armazenada em nosso banco de dados sob o ID `XXXXXXXXXX` e não é pública. |
+| Nenhum dos dois está presente | O domínio não está configurado para nosso serviço de encaminhamento. |
+
+> \[!NOTE]
+> Esses registros são a forma como nosso serviço funciona no nível do DNS, então a mesma consulta responde a "este domínio é de vocês", "é gratuito ou pago" e, no caso de um plano gratuito, "para onde vão os e-mails dele".  Veja [como funciona nosso sistema de encaminhamento](#how-does-your-email-forwarding-system-work) para conhecer o caminho de entrega em si.
+
+> \[!TIP]
+> Não somos um registrador de nomes de domínio, então não mantemos registros DNS históricos.  Para descobrir quem registrou um domínio ou quem administra seus servidores de nomes, use `whois example.com` e `dig example.com ns`, ou pergunte diretamente ao registrador.
 
 ### Como vocês realizam consultas DNS em nomes de domínio {#how-do-you-perform-dns-lookups-on-domain-names}
 
@@ -5889,6 +5970,7 @@ Ou, você pode especificá-los em duas linhas separadas, como esta:
     </tr>
   </tbody>
 </table>
+
 Depende de você!
 
 ### Existe um limite máximo para o número de endereços de email para os quais posso encaminhar por alias {#is-there-a-maximum-limit-on-the-number-of-email-addresses-i-can-forward-to-per-alias}

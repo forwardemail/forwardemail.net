@@ -672,6 +672,8 @@ graph TD
     class A,P,V primary;
     class B,C,D,E,I,L,Q,R,S,W,X,Y,Z secondary;
 ```
+
+```mermaid
 graph TD
     subgraph "Prinsip DRY"
         V[Logika Bersama] --> W[Fungsi Pemrosesan Pembayaran]

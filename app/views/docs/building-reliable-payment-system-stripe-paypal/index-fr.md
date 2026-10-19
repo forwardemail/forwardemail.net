@@ -672,6 +672,8 @@ graph TD
     class A,P,V primary;
     class B,C,D,E,I,L,Q,R,S,W,X,Y,Z secondary;
 ```
+
+```mermaid
 graph TD
     subgraph "Principe DRY"
         V[Logique Partagée] --> W[Fonctions de Traitement des Paiements]

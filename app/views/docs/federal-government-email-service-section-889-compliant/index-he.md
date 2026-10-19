@@ -47,7 +47,7 @@
 
 ### המחויבות של Cloudflare {#cloudflares-commitment}
 
-[Cloudflare](https://www.cloudflare.com/) מתייחסת במפורש ל**עמידה בסעיף 889** ב**[קוד ההתנהגות של צד שלישי](https://cf-assets.www.cloudflare.com/slt3lc6tev37/284hiWkCYNc49GQpAeBvGN/e137cdac96d1c4cd403c6b525831d284/Third_Party_Code_of_Conduct.pdf)** שלה. הם מציינים:
+[Cloudflare](https://www.cloudflare.com/) מתייחסת במפורש ל**עמידה בסעיף 889** ב<strong>[קוד ההתנהגות של צד שלישי](https://cf-assets.www.cloudflare.com/slt3lc6tev37/284hiWkCYNc49GQpAeBvGN/e137cdac96d1c4cd403c6b525831d284/Third_Party_Code_of_Conduct.pdf)</strong> שלה. הם מציינים:
 
 > "על פי סעיף 889 של חוק הסמכת ההגנה הלאומית (NDAA), Cloudflare אינה משתמשת, ואינה מאפשרת בשרשרת האספקה שלה, ציוד תקשורת, מוצרי פיקוח וידאו או שירותים המיוצרים או מסופקים על ידי Huawei Technologies Company, ZTE Corporation, Hytera Communications Corporation, Hangzhou Hikvision Digital Technology Company, או Dahua Technology Company (או כל חברה בת או שותפה של ישויות אלו)."
 

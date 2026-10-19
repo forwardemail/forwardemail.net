@@ -68,7 +68,7 @@ Forward Email의 미션은 단순히 이메일 서비스를 제공하는 것을 
 **2020년 4월**: Forward Email은 기존 스팸 탐지 솔루션들이 Forward Email의 프라이버시 정책을 존중하지 않아 수많은 난관에 부딪힌 후, 완전 무료이자 오픈 소스인 스팸 스캐너 초기 알파 버전을 출시했습니다. 이 솔루션은 [나이브 베이즈 스팸 필터](https://en.wikipedia.org/wiki/Naive_Bayes_spam_filtering "Naive Bayes spam filtering") 방식을 사용하며, [피싱 방지](https://en.wikipedia.org/wiki/Phishing "Phishing") 및 [IDN 동형문자 공격](https://en.wikipedia.org/wiki/IDN_homograph_attack "IDN homograph attack") 보호 기능을 결합합니다. Forward Email은 또한 향상된 계정 보안을 위해 [일회용 비밀번호](https://en.wikipedia.org/wiki/One-time_password "One-time password")(OTP)를 사용하는 [2단계 인증](https://en.wikipedia.org/wiki/Multi-factor_authentication "Multi-factor authentication")(2FA)을 출시했습니다.
 
 **2020년 5월**: Forward Email은 사용자가 [ISP](https://en.wikipedia.org/wiki/Internet_service_provider "Internet service provider")의 포트 차단을 우회할 수 있도록 맞춤형 [포트 포워딩](https://en.wikipedia.org/wiki/Port_forwarding "Port forwarding")을 허용했습니다. 또한 회사는 완전한 문서와 실시간 요청 및 응답 예제를 포함한 [무료 이메일 전달 RESTful API](email-api)를 출시하고 웹훅 지원도 제공했습니다.
-**2020년 8월**: Forward Email은 이메일 보안 및 전달성을 더욱 강화하는 [Authenticated Received Chain](arc) ("ARC") 이메일 인증 시스템 지원을 추가했습니다.
+**2020년 8월**: Forward Email은 이메일 보안 및 전달성을 더욱 강화하는 [Authenticated Received Chain](/faq#do-you-support-email-best-practices) ("ARC") 이메일 인증 시스템 지원을 추가했습니다.
 
 **2020년 11월 23일**: Forward Email이 베타 프로그램을 종료하고 공식적으로 출시되어 플랫폼 개발의 중요한 이정표를 기록했습니다.
 
@@ -92,7 +92,7 @@ Forward Email의 미션은 단순히 이메일 서비스를 제공하는 것을 
 
 **2023년 11월**: Forward Email은 [IMAP 지원](/faq#do-you-support-receiving-email-with-imap)을 위한 [**암호화된 메일박스 저장소**](/blog/docs/best-quantum-safe-encrypted-email-service) 기능을 출시하여 이메일 프라이버시 및 보안에서 중요한 진전을 이루었습니다.
 
-**2023년 12월**: 회사는 [POP3](/faq#do-you-support-pop3) 지원, [패스키 및 WebAuthn](/faq#do-you-support-passkeys-and-webauthn), [수신 시간 모니터링](/faq#i), 그리고 [IMAP 저장용 OpenPGP](/faq#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd) 지원을 추가했습니다.
+**2023년 12월**: 회사는 [POP3](/faq#do-you-support-pop3) 지원, [패스키 및 WebAuthn](/faq#do-you-support-passkeys-and-webauthn), [수신 시간 모니터링](/tti), 그리고 [IMAP 저장용 OpenPGP](/faq#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd) 지원을 추가했습니다.
 
 ### 2024 - 서비스 최적화 및 고급 기능 {#2024---service-optimization-and-advanced-features}
 

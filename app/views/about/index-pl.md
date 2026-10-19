@@ -68,7 +68,7 @@ Prostota i skuteczność tego rozwiązania przyciągnęły uwagę znanych progra
 **Kwiecień 2020**: Po wielu przeszkodach z istniejącymi rozwiązaniami do wykrywania spamu, które nie respektowały polityki prywatności Forward Email, firma wydała pierwszą wersję alfa Spam Scanner. To całkowicie darmowe i otwarte źródłowo rozwiązanie do [filtrowania antyspamowego](https://en.wikipedia.org/wiki/Anti-spam_techniques "Anti-spam techniques") wykorzystuje podejście [filtra spamu Naive Bayes](https://en.wikipedia.org/wiki/Naive_Bayes_spam_filtering "Naive Bayes spam filtering") połączone z ochroną przed [phishingiem](https://en.wikipedia.org/wiki/Phishing "Phishing") oraz [atakami homografów IDN](https://en.wikipedia.org/wiki/IDN_homograph_attack "IDN homograph attack"). Forward Email wprowadził również [uwierzytelnianie dwuskładnikowe](https://en.wikipedia.org/wiki/Multi-factor_authentication "Multi-factor authentication") (2FA) z wykorzystaniem [jednorazowych haseł](https://en.wikipedia.org/wiki/One-time_password "One-time password") (OTP) dla zwiększenia bezpieczeństwa konta.
 
 **Maj 2020**: Forward Email umożliwił niestandardowe [przekierowanie portów](https://en.wikipedia.org/wiki/Port_forwarding "Port forwarding") jako obejście dla użytkowników, którzy chcieli ominąć blokady portów nałożone przez ich [ISP](https://en.wikipedia.org/wiki/Internet_service_provider "Internet service provider"). Firma udostępniła także swój [bezpłatny RESTful API do przekazywania poczty](email-api) z pełną dokumentacją oraz przykładami zapytań i odpowiedzi w czasie rzeczywistym, wraz z obsługą webhooków.
-**Sierpień 2020**: Forward Email dodał wsparcie dla systemu uwierzytelniania poczty elektronicznej [Authenticated Received Chain](arc) ("ARC"), co dodatkowo wzmocniło bezpieczeństwo i dostarczalność wiadomości e-mail.
+**Sierpień 2020**: Forward Email dodał wsparcie dla systemu uwierzytelniania poczty elektronicznej [Authenticated Received Chain](/faq#do-you-support-email-best-practices) ("ARC"), co dodatkowo wzmocniło bezpieczeństwo i dostarczalność wiadomości e-mail.
 
 **23 listopada 2020**: Forward Email oficjalnie wystartował poza programem beta, co stanowiło ważny kamień milowy w rozwoju platformy.
 
@@ -92,7 +92,7 @@ Prostota i skuteczność tego rozwiązania przyciągnęły uwagę znanych progra
 
 **Listopad 2023**: Forward Email uruchomił funkcję [**zaszyfrowanego przechowywania skrzynki pocztowej**](/blog/docs/best-quantum-safe-encrypted-email-service) dla [wsparcia IMAP](/faq#do-you-support-receiving-email-with-imap), co stanowi znaczący postęp w prywatności i bezpieczeństwie poczty elektronicznej.
 
-**Grudzień 2023**: Firma [dodała wsparcie](/faq#do-you-support-pop3) dla [POP3](https://en.wikipedia.org/wiki/Post_Office_Protocol), [passkey i WebAuthn](/faq#do-you-support-passkeys-and-webauthn), monitorowania [time to inbox](/faq#i) oraz [OpenPGP dla przechowywania IMAP](/faq#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd).
+**Grudzień 2023**: Firma [dodała wsparcie](/faq#do-you-support-pop3) dla [POP3](https://en.wikipedia.org/wiki/Post_Office_Protocol), [passkey i WebAuthn](/faq#do-you-support-passkeys-and-webauthn), monitorowania [time to inbox](/tti) oraz [OpenPGP dla przechowywania IMAP](/faq#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd).
 
 ### 2024 - Optymalizacja usługi i zaawansowane funkcje {#2024---service-optimization-and-advanced-features}
 

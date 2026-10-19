@@ -295,6 +295,7 @@ curl -X PUT BASE_URI/v1/account \
 
 > \[!NOTE]
 > Diğer API uç noktalarının aksine, bunlar [Kimlik Doğrulama](#authentication) "kullanıcı adı" olarak takma ad kullanıcı adı ve "şifre" olarak takma ad tarafından oluşturulan şifre ile Basic Authorization başlıkları gerektirir.
+
 > \[!WARNING]
 > Bu uç nokta bölümü üzerinde çalışmalar devam etmektedir ve (umarız) 2024 yılında yayınlanacaktır. Bu süre zarfında lütfen web sitemizin navigasyonundaki "Apps" açılır menüsünden bir IMAP istemcisi kullanın.
 
@@ -481,7 +482,7 @@ curl BASE_URI/v1/emails/limit \
 
 Bu uç noktanın bir e-postanın `message`, `headers` veya `rejectedErrors` özellik değerlerini döndürmediğine dikkat edin.
 
-Bu özellikleri ve değerlerini döndürmek için lütfen bir e-posta ID'si ile [E-postayı al](#retrieve-email) uç noktasını kullanın.
+Bu özellikleri ve değerlerini döndürmek için lütfen bir e-posta ID'si ile [E-postayı al](#retrieve-outbound-smtp-email) uç noktasını kullanın.
 
 > `GET /v1/emails`
 
@@ -584,7 +585,7 @@ curl BASE_URI/v1/emails/:id \
 
 ### Giden SMTP e-postasını sil {#delete-outbound-smtp-email}
 
-E-posta silme işlemi, mevcut durum yalnızca `"pending"`, `"queued"` veya `"deferred"` ise durumu `"rejected"` olarak ayarlayacak (ve böylece kuyruğa işlemeyecektir).  E-postalar oluşturulduktan ve/veya gönderildikten sonra 30 gün içinde otomatik olarak temizlenebilir – bu nedenle giden SMTP e-postalarının bir kopyasını istemcinizde, veritabanınızda veya uygulamanızda saklamalısınız.  İsterseniz veritabanınızda e-posta ID değerimize referans verebilirsiniz – bu değer hem [E-posta oluştur](#create-email) hem de [E-postayı al](#retrieve-email) uç noktalarından döndürülür.
+E-posta silme işlemi, mevcut durum yalnızca `"pending"`, `"queued"` veya `"deferred"` ise durumu `"rejected"` olarak ayarlayacak (ve böylece kuyruğa işlemeyecektir).  E-postalar oluşturulduktan ve/veya gönderildikten sonra 30 gün içinde otomatik olarak temizlenebilir – bu nedenle giden SMTP e-postalarının bir kopyasını istemcinizde, veritabanınızda veya uygulamanızda saklamalısınız.  İsterseniz veritabanınızda e-posta ID değerimize referans verebilirsiniz – bu değer hem [E-posta oluştur](#create-outbound-smtp-email) hem de [E-postayı al](#retrieve-outbound-smtp-email) uç noktalarından döndürülür.
 
 > `DELETE /v1/emails/:id`
 

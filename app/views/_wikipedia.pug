@@ -1,4 +1,7 @@
 //- Enhanced Organization schema with comprehensive details
+//- (the logo is the raster one, at its real size: the SVG is 100x100, not
+//-  the 512x512 it claimed; sameAs lists profiles of the company, not its
+//-  packages; the site search action is on the WebSite node, see _schema.pug)
 script(type="application/ld+json", nonce=nonce).
   {
     "@context": "https://schema.org",
@@ -7,15 +10,15 @@ script(type="application/ld+json", nonce=nonce).
     "url": "https://forwardemail.net",
     "name": "Forward Email",
     "alternateName": ["ForwardEmail", "Forward Email LLC", "forwardemail.net"],
-    "description": "Forward Email is a free, encrypted, and open-source email forwarding and hosting service for custom domains. Trusted by over 1.6+ million domains worldwide.",
+    "description": "Forward Email is a free, encrypted, and open-source email forwarding and hosting service for custom domains. Trusted by 1.6+ million domains worldwide.",
     "slogan": "Privacy-focused email forwarding for custom domains",
     "foundingDate": "2017",
     "legalName": "Forward Email LLC",
     "logo": {
       "@type": "ImageObject",
-      "url": "https://forwardemail.net/img/logo-square.svg",
-      "width": "512",
-      "height": "512"
+      "url": "https://forwardemail.net/img/logo-square-180x180.png",
+      "width": "180",
+      "height": "180"
     },
     "image": "https://forwardemail.net/img/social.png",
     "email": "support@forwardemail.net",
@@ -56,7 +59,7 @@ script(type="application/ld+json", nonce=nonce).
         }
       ]
     },
-    "sameAs": ["https://wikitia.com/wiki/Forward_Email", "https://github.com/forwardemail", "https://x.com/fwdemail", "https://news.ycombinator.com/user?id=fwdemail", "https://www.reddit.com/r/forwardemail/", "https://www.npmjs.com/~titanism", "https://www.crunchbase.com/organization/forward-email", "https://alternativeto.net/software/forward-email/", "https://youtube.com/forwardemail", "https://github.com/forwardemail/mcp-server", "https://www.npmjs.com/package/@forwardemail/mcp-server"],
+    "sameAs": ["https://wikitia.com/wiki/Forward_Email", "https://github.com/forwardemail", "https://x.com/fwdemail", "https://news.ycombinator.com/user?id=fwdemail", "https://www.reddit.com/r/forwardemail/", "https://www.npmjs.com/~titanism", "https://www.crunchbase.com/organization/forward-email", "https://alternativeto.net/software/forward-email/", "https://www.youtube.com/forwardemail"],
     "contactPoint": [
       {
         "@type": "ContactPoint",
@@ -71,13 +74,5 @@ script(type="application/ld+json", nonce=nonce).
         "url": "https://forwardemail.net/faq",
         "availableLanguage": ["English", "Spanish", "French", "German", "Italian", "Portuguese", "Dutch", "Russian", "Japanese", "Korean", "Chinese", "Arabic", "Hebrew", "Turkish", "Polish", "Czech", "Hungarian", "Swedish", "Norwegian", "Danish", "Finnish", "Indonesian", "Thai", "Vietnamese", "Ukrainian"]
       }
-    ],
-    "potentialAction": {
-      "@type": "SearchAction",
-      "target": {
-        "@type": "EntryPoint",
-        "urlTemplate": "https://forwardemail.net/en/search?q={search_term_string}"
-      },
-      "query-input": "required name=search_term_string"
-    }
+    ]
   }

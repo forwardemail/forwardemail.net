@@ -1328,7 +1328,7 @@ sequenceDiagram
 Ngoài ManageSieve, Forward Email còn cung cấp:
 
 * **Bảng Điều Khiển Web**: Tạo và quản lý các script Sieve qua giao diện web tại My Account → Domains → Aliases → Sieve Scripts
-* **REST API**: Truy cập lập trình để quản lý script Sieve qua [Forward Email API](/api#sieve-scripts)
+* **REST API**: Truy cập lập trình để quản lý script Sieve qua [Forward Email API](/email-api)
 
 > \[!TIP]
 > Để biết hướng dẫn thiết lập chi tiết và cấu hình client, xem [FAQ: Bạn có hỗ trợ lọc email bằng Sieve không?](/faq#do-you-support-sieve-email-filtering)
@@ -1589,6 +1589,7 @@ Tất cả các hàm giải mã **tự động phát hiện** định dạng lư
 ### Quy trình Di cư {#migration-process}
 
 Forward Email cung cấp quá trình di cư tự động, idempotent từ định dạng lưu trữ cũ sang mới:
+```javascript
 // Thống kê di chuyển được theo dõi:
 {
   attachmentsMigrated: 0,

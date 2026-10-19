@@ -518,7 +518,7 @@ flowchart TD
 
 ## 추가 자료 {#additional-resources}
 
-* [Forward Email 문서](/docs)  
+* [Forward Email 문서](/blog/docs)
 * [SMTP 서버 제한 및 구성](/faq#what-are-your-outbound-smtp-limits)  
 * [이메일 모범 사례 가이드](/blog/docs/best-email-forwarding-service)  
 * [보안 관행](/security)  

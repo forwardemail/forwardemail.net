@@ -1328,7 +1328,7 @@ sequenceDiagram
 除了 ManageSieve，Forward Email 还提供：
 
 * **Web 控制面板**：通过网页界面在 我的账户 → 域名 → 别名 → Sieve 脚本 创建和管理 Sieve 脚本
-* **REST API**：通过 [Forward Email API](/api#sieve-scripts) 以编程方式访问 Sieve 脚本管理
+* **REST API**：通过 [Forward Email API](/email-api) 以编程方式访问 Sieve 脚本管理
 
 > \[!TIP]
 > 有关详细的设置说明和客户端配置，请参见 [常见问题：你们支持 Sieve 邮件过滤吗？](/faq#do-you-support-sieve-email-filtering)
@@ -1589,6 +1589,7 @@ flowchart TB
 ### 迁移流程 {#migration-process}
 
 Forward Email 提供从旧存储格式到新存储格式的自动、幂等迁移：
+```javascript
 // 迁移统计跟踪：
 {
   attachmentsMigrated: 0,

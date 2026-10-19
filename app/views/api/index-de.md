@@ -295,6 +295,7 @@ curl -X PUT BASE_URI/v1/account \
 
 > \[!NOTE]
 > Im Gegensatz zu anderen API-Endpunkten erfordern diese [Authentifizierung](#authentication) mit dem "Benutzernamen" gleich dem Alias-Benutzernamen und dem "Passwort" gleich dem vom Alias generierten Passwort als Basic-Authorization-Header.
+
 > \[!WARNING]
 > Dieser Endpunktabschnitt ist noch in Arbeit und wird (hoffentlich) im Jahr 2024 veröffentlicht. Bitte verwenden Sie in der Zwischenzeit einen IMAP-Client aus dem Dropdown-Menü "Apps" in der Navigation unserer Website.
 
@@ -481,7 +482,7 @@ curl BASE_URI/v1/emails/limit \
 
 Beachten Sie, dass dieser Endpunkt keine Eigenschaftswerte für die `message`, `headers` oder `rejectedErrors` einer E-Mail zurückgibt.
 
-Um diese Eigenschaften und ihre Werte zurückzugeben, verwenden Sie bitte den [E-Mail abrufen](#retrieve-email)-Endpunkt mit einer E-Mail-ID.
+Um diese Eigenschaften und ihre Werte zurückzugeben, verwenden Sie bitte den [E-Mail abrufen](#retrieve-outbound-smtp-email)-Endpunkt mit einer E-Mail-ID.
 
 > `GET /v1/emails`
 
@@ -529,7 +530,7 @@ Dieser API-Endpunkt kodiert Emojis automatisch für Sie, wenn sie in den Headern
 | `inReplyTo`      | Nein         | String          | Die Message-ID, auf die die Nachricht antwortet.                                                                                                                                                                                                                                                                                                                                                                                                                   |
 | `references`     | Nein         | String oder Array | Leerzeichen-getrennte Liste oder ein Array von Message-IDs.                                                                                                                                                                                                                                                                                                                                                                                                        |
 | `attachDataUrls` | Nein         | Boolean         | Wenn `true`, werden `data:`-Bilder im HTML-Inhalt der Nachricht in eingebettete Anhänge umgewandelt.                                                                                                                                                                                                                                                                                                                                                               |
-| `watchHtml`      | Nein         | String          | Eine Apple Watch-spezifische HTML-Version der Nachricht ([laut Nodemailer-Dokumentation](https://nodemailer.com/message/#content-options]), die neuesten Watches benötigen dies nicht mehr.                                                                                                                                                                                                                                                                          |
+| `watchHtml`      | Nein         | String          | Eine Apple Watch-spezifische HTML-Version der Nachricht ([laut Nodemailer-Dokumentation](https://nodemailer.com/message/#content-options), die neuesten Watches benötigen dies nicht mehr.                                                                                                                                                                                                                                                                          |
 | `amp`            | Nein         | String          | Eine AMP4EMAIL-spezifische HTML-Version der Nachricht (siehe [Nodemailers Beispiel](https://nodemailer.com/message/#amp-example)).                                                                                                                                                                                                                                                                                                                                 |
 | `icalEvent`      | Nein         | Objekt          | Ein iCalendar-Ereignis, das als alternativer Nachrichteninhalt verwendet wird (siehe [Nodemailers Kalenderereignisse](https://nodemailer.com/message/calendar-events/)).                                                                                                                                                                                                                                                                                           |
 | `alternatives`   | Nein         | Array           | Ein Array alternativer Nachrichteninhalte (siehe [Nodemailers alternative Inhalte](https://nodemailer.com/message/alternatives/)).                                                                                                                                                                                                                                                                                                                                |
@@ -584,7 +585,7 @@ curl BASE_URI/v1/emails/:id \
 
 ### Löschen ausgehender SMTP-E-Mails {#delete-outbound-smtp-email}
 
-Das Löschen einer E-Mail setzt den Status auf `"rejected"` (und verarbeitet sie anschließend nicht mehr in der Warteschlange), wenn und nur wenn der aktuelle Status einer der folgenden ist: `"pending"`, `"queued"` oder `"deferred"`. Wir können E-Mails automatisch 30 Tage nach ihrer Erstellung und/oder dem Versand löschen – daher sollten Sie eine Kopie ausgehender SMTP-E-Mails in Ihrem Client, Ihrer Datenbank oder Anwendung aufbewahren. Sie können unseren E-Mail-ID-Wert in Ihrer Datenbank referenzieren, falls gewünscht – dieser Wert wird sowohl von den Endpunkten [E-Mail erstellen](#create-email) als auch [E-Mail abrufen](#retrieve-email) zurückgegeben.
+Das Löschen einer E-Mail setzt den Status auf `"rejected"` (und verarbeitet sie anschließend nicht mehr in der Warteschlange), wenn und nur wenn der aktuelle Status einer der folgenden ist: `"pending"`, `"queued"` oder `"deferred"`. Wir können E-Mails automatisch 30 Tage nach ihrer Erstellung und/oder dem Versand löschen – daher sollten Sie eine Kopie ausgehender SMTP-E-Mails in Ihrem Client, Ihrer Datenbank oder Anwendung aufbewahren. Sie können unseren E-Mail-ID-Wert in Ihrer Datenbank referenzieren, falls gewünscht – dieser Wert wird sowohl von den Endpunkten [E-Mail erstellen](#create-outbound-smtp-email) als auch [E-Mail abrufen](#retrieve-outbound-smtp-email) zurückgegeben.
 
 > `DELETE /v1/emails/:id`
 

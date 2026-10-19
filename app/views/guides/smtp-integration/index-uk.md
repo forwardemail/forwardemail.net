@@ -520,7 +520,7 @@ flowchart TD
 
 ## Додаткові ресурси {#additional-resources}
 
-* [Документація Forward Email](/docs)
+* [Документація Forward Email](/blog/docs)
 * [Обмеження та налаштування SMTP сервера](/faq#what-are-your-outbound-smtp-limits)
 * [Посібник з найкращих практик електронної пошти](/blog/docs/best-email-forwarding-service)
 * [Практики безпеки](/security)

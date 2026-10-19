@@ -58,7 +58,7 @@
   * [CalDAV/CardDAV Synchronization Flow](#caldavcarddav-synchronization-flow)
   * [Calendaring Extensions NOT Supported](#calendaring-extensions-not-supported)
 * [Email Message Filtering](#email-message-filtering)
-  * [Sieve (RFC 5228) {#sieve-rfc-5228}](#sieve-rfc-5228-sieve-rfc-5228)
+  * [Sieve (RFC 5228)](#sieve-rfc-5228)
   * [ManageSieve (RFC 5804)](#managesieve-rfc-5804)
 * [Storage Optimization](#storage-optimization)
   * [Architecture: Dual-Layer Storage Optimization](#architecture-dual-layer-storage-optimization)
@@ -1350,7 +1350,7 @@ sequenceDiagram
 In addition to ManageSieve, Forward Email provides:
 
 * **Web Dashboard**: Create and manage Sieve scripts through the web interface at My Account → Domains → Aliases → Sieve Scripts
-* **REST API**: Programmatic access to Sieve script management via the [Forward Email API](/api#sieve-scripts)
+* **REST API**: Programmatic access to Sieve script management via the [Forward Email API](/email-api)
 
 > \[!TIP]
 > For detailed setup instructions and client configuration, see [FAQ: Do you support Sieve email filtering?](/faq#do-you-support-sieve-email-filtering)

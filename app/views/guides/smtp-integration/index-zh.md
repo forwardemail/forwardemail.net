@@ -518,7 +518,7 @@ flowchart TD
 
 ## 其他资源 {#additional-resources}
 
-* [Forward Email 文档](/docs)  
+* [Forward Email 文档](/blog/docs)
 * [SMTP 服务器限制与配置](/faq#what-are-your-outbound-smtp-limits)  
 * [邮件最佳实践指南](/blog/docs/best-email-forwarding-service)  
 * [安全实践](/security)  

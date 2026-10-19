@@ -1328,7 +1328,7 @@ sequenceDiagram
 A ManageSieve mellett a Forward Email a következőket kínálja:
 
 * **Webes irányítópult**: Sieve szkriptek létrehozása és kezelése a webes felületen a Saját fiók → Domain-ek → Átirányítások → Sieve szkriptek menüpont alatt
-* **REST API**: Programozott hozzáférés a Sieve szkriptek kezeléséhez a [Forward Email API](/api#sieve-scripts) segítségével
+* **REST API**: Programozott hozzáférés a Sieve szkriptek kezeléséhez a [Forward Email API](/email-api) segítségével
 
 > \[!TIP]
 > Részletes beállítási útmutatóért és kliens konfigurációért lásd a [GYIK: Támogatjátok a Sieve e-mail szűrést?](/faq#do-you-support-sieve-email-filtering) részt
@@ -1589,6 +1589,7 @@ Ez biztosítja a **nulla adatvesztést** a régi és új tárolási formátumok 
 ### Migrációs folyamat {#migration-process}
 
 A Forward Email automatikus, idempotens migrációt biztosít a régi és új tárolási formátumok között:
+```javascript
 // Követett migrációs statisztikák:
 {
   attachmentsMigrated: 0,

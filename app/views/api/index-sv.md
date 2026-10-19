@@ -295,6 +295,7 @@ curl -X PUT BASE_URI/v1/account \
 
 > \[!NOTE]
 > Till skillnad från andra API-endpoints kräver dessa [Autentisering](#authentication) med "användarnamn" lika med alias-användarnamnet och "lösenord" lika med aliasets genererade lösenord som Basic Authorization headers.
+
 > \[!WARNING]
 > Denna endpoint-sektion är ett pågående arbete och kommer (förhoppningsvis) att släppas under 2024. Under tiden, vänligen använd en IMAP-klient från "Apps"-rullgardinsmenyn i navigeringen på vår webbplats.
 
@@ -481,7 +482,7 @@ curl BASE_URI/v1/emails/limit \
 
 Observera att denna endpoint inte returnerar egenskapsvärden för ett e-postmeddelandes `message`, `headers` eller `rejectedErrors`.
 
-För att returnera dessa egenskaper och deras värden, använd [Hämta e-post](#retrieve-email) endpoint med ett e-post-ID.
+För att returnera dessa egenskaper och deras värden, använd [Hämta e-post](#retrieve-outbound-smtp-email) endpoint med ett e-post-ID.
 
 > `GET /v1/emails`
 
@@ -529,7 +530,7 @@ Denna API-endpoint kodar automatiskt emojis åt dig om de finns i headers (t.ex.
 | `inReplyTo`      | Nej          | Sträng           | Message-ID som meddelandet svarar på.                                                                                                                                                                                                                                                                                                                                                                                                                         |
 | `references`     | Nej          | Sträng eller Array | Mellanrum-separerad lista eller en Array med Message-ID:n.                                                                                                                                                                                                                                                                                                                                                                                                    |
 | `attachDataUrls` | Nej          | Boolean          | Om `true` konverteras `data:`-bilder i HTML-innehållet till inbäddade bilagor.                                                                                                                                                                                                                                                                                                                                                                                  |
-| `watchHtml`      | Nej          | Sträng           | En Apple Watch-specifik HTML-version av meddelandet ([enligt Nodemailer docs](https://nodemailer.com/message/#content-options]), de senaste klockorna kräver inte att detta sätts).                                                                                                                                                                                                                                                                           |
+| `watchHtml`      | Nej          | Sträng           | En Apple Watch-specifik HTML-version av meddelandet ([enligt Nodemailer docs](https://nodemailer.com/message/#content-options), de senaste klockorna kräver inte att detta sätts).                                                                                                                                                                                                                                                                           |
 | `amp`            | Nej          | Sträng           | En AMP4EMAIL-specifik HTML-version av meddelandet (se [Nodemailers exempel](https://nodemailer.com/message/#amp-example)).                                                                                                                                                                                                                                                                                                                                     |
 | `icalEvent`      | Nej          | Objekt           | En iCalendar-händelse att använda som alternativt meddelandeinnehåll (se [Nodemailers kalenderhändelser](https://nodemailer.com/message/calendar-events/)).                                                                                                                                                                                                                                                                                                    |
 | `alternatives`   | Nej          | Array            | En Array med alternativt meddelandeinnehåll (se [Nodemailers alternativt innehåll](https://nodemailer.com/message/alternatives/)).                                                                                                                                                                                                                                                                                                                             |
@@ -584,7 +585,7 @@ curl BASE_URI/v1/emails/:id \
 
 ### Radera utgående SMTP-e-post {#delete-outbound-smtp-email}
 
-Radering av e-post kommer att sätta statusen till `"rejected"` (och därefter inte bearbeta den i kön) om och endast om den aktuella statusen är en av `"pending"`, `"queued"`, eller `"deferred"`. Vi kan automatiskt rensa e-postmeddelanden efter 30 dagar efter att de skapades och/eller skickades – därför bör du behålla en kopia av utgående SMTP-e-post i din klient, databas eller applikation. Du kan referera till vårt e-post-ID-värde i din databas om så önskas – detta värde returneras från både [Skapa e-post](#create-email) och [Hämta e-post](#retrieve-email) endpoints.
+Radering av e-post kommer att sätta statusen till `"rejected"` (och därefter inte bearbeta den i kön) om och endast om den aktuella statusen är en av `"pending"`, `"queued"`, eller `"deferred"`. Vi kan automatiskt rensa e-postmeddelanden efter 30 dagar efter att de skapades och/eller skickades – därför bör du behålla en kopia av utgående SMTP-e-post i din klient, databas eller applikation. Du kan referera till vårt e-post-ID-värde i din databas om så önskas – detta värde returneras från både [Skapa e-post](#create-outbound-smtp-email) och [Hämta e-post](#retrieve-outbound-smtp-email) endpoints.
 
 > `DELETE /v1/emails/:id`
 

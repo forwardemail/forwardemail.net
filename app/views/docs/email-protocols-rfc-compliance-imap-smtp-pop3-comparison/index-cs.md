@@ -1328,7 +1328,7 @@ sequenceDiagram
 Kromě ManageSieve poskytuje Forward Email:
 
 * **Webová administrace**: Vytvářejte a spravujte Sieve skripty přes webové rozhraní v Můj účet → Domény → Alias → Sieve skripty
-* **REST API**: Programový přístup ke správě Sieve skriptů přes [Forward Email API](/api#sieve-scripts)
+* **REST API**: Programový přístup ke správě Sieve skriptů přes [Forward Email API](/email-api)
 
 > \[!TIP]
 > Pro podrobné instrukce nastavení a konfiguraci klienta viz [FAQ: Podporujete filtrování e-mailů pomocí Sieve?](/faq#do-you-support-sieve-email-filtering)
@@ -1589,6 +1589,7 @@ To zajišťuje **nulovou ztrátu dat** při migraci ze starých na nové formát
 ### Proces migrace {#migration-process}
 
 Forward Email poskytuje automatickou, idempotentní migraci ze starých na nové formáty uložení:
+```javascript
 // Statistiky migrace sledovány:
 {
   attachmentsMigrated: 0,

@@ -295,6 +295,7 @@ curl -X PUT BASE_URI/v1/account \
 
 > \[!NOTE]
 > Diferente de outros endpoints da API, estes requerem [Autenticação](#authentication) com "username" igual ao nome de usuário do alias e "password" igual à senha gerada do alias como cabeçalhos de Autorização Básica.
+
 > \[!WARNING]
 > Esta seção de endpoint está em desenvolvimento e será lançada (esperançosamente) em 2024.  Enquanto isso, por favor use um cliente IMAP no menu "Apps" na navegação do nosso site.
 
@@ -481,7 +482,7 @@ curl BASE_URI/v1/emails/limit \
 
 Observe que este endpoint não retorna valores das propriedades do `message`, `headers` nem `rejectedErrors` de um email.
 
-Para retornar essas propriedades e seus valores, use o endpoint [Recuperar email](#retrieve-email) com um ID de email.
+Para retornar essas propriedades e seus valores, use o endpoint [Recuperar email](#retrieve-outbound-smtp-email) com um ID de email.
 
 > `GET /v1/emails`
 
@@ -529,7 +530,7 @@ Este endpoint da API codificará automaticamente emojis para você se forem enco
 | `inReplyTo`        | Não         | String           | O Message-ID ao qual a mensagem está respondendo.                                                                                                                                                                                                                                                                                                                                                                                                              |
 | `references`       | Não         | String ou Array  | Lista separada por espaços ou um Array de Message-IDs.                                                                                                                                                                                                                                                                                                                                                                                                          |
 | `attachDataUrls`   | Não         | Boolean          | Se `true`, converte imagens `data:` no conteúdo HTML da mensagem em anexos incorporados.                                                                                                                                                                                                                                                                                                                                                                        |
-| `watchHtml`        | Não         | String           | Uma versão HTML específica para Apple Watch da mensagem ([de acordo com a documentação do Nodemailer](https://nodemailer.com/message/#content-options]), os relógios mais recentes não exigem que isso seja definido).                                                                                                                                                                                                                                           |
+| `watchHtml`        | Não         | String           | Uma versão HTML específica para Apple Watch da mensagem ([de acordo com a documentação do Nodemailer](https://nodemailer.com/message/#content-options), os relógios mais recentes não exigem que isso seja definido).                                                                                                                                                                                                                                           |
 | `amp`              | Não         | String           | Uma versão HTML específica AMP4EMAIL da mensagem (veja o [exemplo do Nodemailer](https://nodemailer.com/message/#amp-example)).                                                                                                                                                                                                                                                                                                                                |
 | `icalEvent`        | Não         | Object           | Um evento iCalendar para usar como conteúdo alternativo da mensagem (veja os [eventos de calendário do Nodemailer](https://nodemailer.com/message/calendar-events/)).                                                                                                                                                                                                                                                                                          |
 | `alternatives`     | Não         | Array            | Um Array de conteúdos alternativos da mensagem (veja os [conteúdos alternativos do Nodemailer](https://nodemailer.com/message/alternatives/)).                                                                                                                                                                                                                                                                                                                 |
@@ -584,7 +585,7 @@ curl BASE_URI/v1/emails/:id \
 
 ### Excluir email SMTP de saída {#delete-outbound-smtp-email}
 
-A exclusão do email definirá o status para `"rejected"` (e subsequentemente não o processará na fila) se e somente se o status atual for um dos seguintes: `"pending"`, `"queued"` ou `"deferred"`. Podemos purgar emails automaticamente após 30 dias da sua criação e/ou envio – portanto, você deve manter uma cópia dos emails SMTP de saída em seu cliente, banco de dados ou aplicação. Você pode referenciar nosso valor de ID do email em seu banco de dados, se desejar – este valor é retornado tanto nos endpoints [Criar email](#create-email) quanto [Recuperar email](#retrieve-email).
+A exclusão do email definirá o status para `"rejected"` (e subsequentemente não o processará na fila) se e somente se o status atual for um dos seguintes: `"pending"`, `"queued"` ou `"deferred"`. Podemos purgar emails automaticamente após 30 dias da sua criação e/ou envio – portanto, você deve manter uma cópia dos emails SMTP de saída em seu cliente, banco de dados ou aplicação. Você pode referenciar nosso valor de ID do email em seu banco de dados, se desejar – este valor é retornado tanto nos endpoints [Criar email](#create-outbound-smtp-email) quanto [Recuperar email](#retrieve-outbound-smtp-email).
 
 > `DELETE /v1/emails/:id`
 

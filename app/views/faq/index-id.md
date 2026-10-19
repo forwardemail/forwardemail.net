@@ -16,7 +16,9 @@
   * [Microsoft Outlook](#microsoft-outlook)
   * [Apple Mail](#apple-mail)
   * [eM Client](#em-client)
+  * [Apakah Anda menawarkan klien webmail](#do-you-offer-a-webmail-client)
   * [Bisakah saya mengirim dari alamat apa pun di domain saya di webmail](#can-i-send-from-any-address-on-my-domain-in-webmail)
+  * [Apakah Anda punya aplikasi desktop dan seluler](#do-you-have-desktop-and-mobile-apps)
   * [Apakah Anda punya aplikasi terminal](#do-you-have-a-terminal-app)
   * [Perangkat Mobile](#mobile-devices)
   * [Konfigurasi Sendmail SMTP Relay](#sendmail-smtp-relay-configuration)
@@ -75,6 +77,7 @@
   * [Apakah Anda mendukung penyaringan email Sieve](#do-you-support-sieve-email-filtering)
   * [Apakah Anda mendukung MTA-STS](#do-you-support-mta-sts)
   * [Apakah Anda mendukung passkeys dan WebAuthn](#do-you-support-passkeys-and-webauthn)
+  * [Apakah autentikasi dua faktor (2FA) didukung](#is-two-factor-authentication-2fa-supported)
   * [Apakah Anda mendukung praktik terbaik email](#do-you-support-email-best-practices)
   * [Apakah Anda mendukung webhook bounce](#do-you-support-bounce-webhooks)
   * [Apakah Anda mendukung webhook](#do-you-support-webhooks)
@@ -95,6 +98,7 @@
   * [Apakah Anda mempertahankan header otentikasi email](#do-you-preserve-email-authentication-headers)
   * [Apakah Anda mempertahankan header email asli dan mencegah spoofing](#do-you-preserve-original-email-headers-and-prevent-spoofing)
   * [Bagaimana Anda melindungi dari spam dan penyalahgunaan](#how-do-you-protect-against-spam-and-abuse)
+  * [Bisakah saya menonaktifkan pemindaian konten dewasa, phishing, file eksekusi, atau virus](#can-i-disable-adult-content-phishing-executable-or-virus-scanning)
   * [Apakah Anda menyimpan konten email di disk](#do-you-store-email-content-on-disk)
   * [Bisakah konten email terekspos selama kerusakan sistem](#can-email-content-be-exposed-during-system-crashes)
   * [Siapa yang memiliki akses ke infrastruktur email Anda](#who-has-access-to-your-email-infrastructure)
@@ -104,6 +108,7 @@
 * [Di mana email masuk untuk domain saya diproses dan disimpan, dan untuk berapa lama](#where-is-inbound-email-for-my-domain-processed-and-stored-and-for-how-long)
 * [Bagaimana cara saya mencantumkan Forward Email sebagai subprosesor dalam DPA milik saya](#how-do-i-list-forward-email-as-a-subprocessor-in-my-own-dpa)
   * [Bagaimana Anda menangani pemberitahuan pelanggaran data](#how-do-you-handle-data-breach-notifications)
+  * [Bagaimana cara melaporkan kerentanan keamanan](#how-do-i-report-a-security-vulnerability)
   * [Apakah Anda menawarkan lingkungan pengujian](#do-you-offer-a-test-environment)
   * [Apakah Anda menyediakan alat pemantauan dan peringatan](#do-you-provide-monitoring-and-alerting-tools)
   * [Bagaimana Anda memastikan ketersediaan tinggi](#how-do-you-ensure-high-availability)
@@ -136,6 +141,7 @@
   * [Apakah ini sudah diuji dengan baik](#is-this-well-tested)
   * [Apakah Anda meneruskan pesan dan kode respons SMTP](#do-you-pass-along-smtp-response-messages-and-codes)
   * [Bagaimana Anda mencegah spammer dan memastikan reputasi penerusan email yang baik](#how-do-you-prevent-spammers-and-ensure-good-email-forwarding-reputation)
+  * [Bagaimana saya bisa memverifikasi bahwa sebuah domain benar-benar menggunakan Forward Email](#how-can-i-verify-a-domain-is-using-forward-email)
   * [Bagaimana Anda melakukan pencarian DNS pada nama domain](#how-do-you-perform-dns-lookups-on-domain-names)
 * [Akun dan Penagihan](#account-and-billing)
   * [Bagaimana cara menghapus akun saya](#how-do-i-delete-my-account)
@@ -317,11 +323,31 @@ Semua dilakukan di memori dan [kode sumber kami ada di GitHub](https://github.co
 8. Masukkan nama Anda dan pilih nama akun.
 9. Klik **Selesai**.
 
+### Apakah Anda menawarkan klien webmail {#do-you-offer-a-webmail-client}
+
+Ya.  Klien webmail resmi kami yang open-source tersedia di <a href="https://mail.forwardemail.net" target="_blank" rel="noopener noreferrer">mail.forwardemail.net</a>.  Tidak perlu instalasi: masuk dari browser apa pun menggunakan alamat alias dan kata sandi yang dibuat untuknya (kredensial yang sama yang digunakan untuk IMAP, SMTP, dan POP3).
+
+Klien ini diluncurkan pada Februari 2026 dan juga mendukung [Ekstensi Penjadwalan CalDAV (RFC 6638)](https://www.rfc-editor.org/rfc/rfc6638.html), [DANE/TLSA (RFC 6698)](https://en.wikipedia.org/wiki/DNS-based_Authentication_of_Named_Entities), dan [Domain Connect](https://domainconnect.org) untuk penyiapan DNS sekali klik, dengan notifikasi push real-time untuk IMAP, CalDAV, dan CardDAV yang dikirim melalui WebSockets.
+
+Kode sumbernya sepenuhnya open-source dan tersedia di GitHub di <a href="https://github.com/forwardemail/mail.forwardemail.net" target="_blank" rel="noopener noreferrer">github.com/forwardemail/mail.forwardemail.net</a>.
+
+<a href="/blog/docs/webmail">Panduan webmail</a> kami membahas cara masuk, cara menggunakan beberapa akun, dan bagaimana webmail terhubung dengan dasbor situs web ini.
+
 ### Bisakah saya mengirim dari alamat apa pun di domain saya di webmail {#can-i-send-from-any-address-on-my-domain-in-webmail}
 
 Ya. Buat kata sandi catch-all di <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">Akun Saya <i class="fa fa-angle-right"></i> Domain</a> <i class="fa fa-angle-right"></i> Pengaturan Lanjutan <i class="fa fa-angle-right"></i> Kata Sandi Catch-all, lalu simpan di webmail di **Settings <i class="fa fa-angle-right"></i> General <i class="fa fa-angle-right"></i> Send from any address**. Saat menulis email, pilih **Other address @yourdomain** di menu **From** dan ketik alamat apa pun di domain tersebut.
 
 Anda tidak masuk sebagai akun catch-all atau wildcard. Kata sandi catch-all hanya bisa mengirim, jadi salinannya masuk ke folder Terkirim milik akun yang sedang Anda gunakan. Kata sandi ini hanya disimpan di perangkat tempat Anda menambahkannya. Lihat <a href="/blog/docs/webmail#send-from-any-address-on-your-domain">panduan webmail</a> kami untuk semua langkahnya.
+
+### Apakah Anda punya aplikasi desktop dan seluler {#do-you-have-desktop-and-mobile-apps}
+
+Ya.  Aplikasi native tersedia untuk desktop dan seluler, dibangun dari proyek open-source yang sama dengan klien webmail kami, dan semuanya dapat diunduh dari <a href="/download" target="_blank" rel="noopener noreferrer">halaman unduhan</a> kami:
+
+* **Desktop**: macOS (Apple Silicon dan Intel), Windows (x64 dan ARM64, sebagai penginstal `.exe` atau `.msi`), dan Linux (AppImage, `.deb`, `.rpm`, dan Snap, masing-masing untuk x64 dan ARM64).
+* **Seluler**: Android (APK, dengan build F-Droid alternatif) dan iOS.
+* **Terminal**: perintah `forwardemail` untuk macOS, Linux, dan Windows (x64 dan ARM64). Lihat [Apakah Anda punya aplikasi terminal](#do-you-have-a-terminal-app).
+
+Semua build rilis dipublikasikan di GitHub di <a href="https://github.com/forwardemail/mail.forwardemail.net/releases" target="_blank" rel="noopener noreferrer">github.com/forwardemail/mail.forwardemail.net/releases</a>, dan halaman unduhan memungkinkan Anda memverifikasi checksum rilis terhadap `SHA256SUMS.txt`.
 
 ### Apakah Anda punya aplikasi terminal {#do-you-have-a-terminal-app}
 
@@ -1917,7 +1943,7 @@ Pengaturan lanjutan <i class="fa fa-angle-right"></i> Custom Records</td>
     <br />
     <code>forward-email=hello:first@gmail.com,second@gmail.com</code>
     <br />
-    Email yang dikirim ke <code>hello@example.com</code> **tidak** akan diteruskan ke <code>second@gmail.com</code> (catch-all) dengan konfigurasi ini, dan hanya akan dikirim ke <code>first@gmail.com</code>.
+    Email yang dikirim ke <code>hello@example.com</code> <strong>tidak</strong> akan diteruskan ke <code>second@gmail.com</code> (catch-all) dengan konfigurasi ini, dan hanya akan dikirim ke <code>first@gmail.com</code>.
   </span>
 </div>
 
@@ -2654,7 +2680,7 @@ Ya. Semua paket berbayar mencakup SMTP keluar, dan SMTP keluar **tidak terbatas*
     Penting:
   </strong>
   <span>
-    Kami menyetujui SMTP keluar untuk setiap domain guna melindungi reputasi IP kami dan keterkiriman email Anda. Kami menyetujui banyak domain saat itu juga begitu catatan DNS-nya terverifikasi, dan tim kami meninjau sisanya, biasanya dalam 24 jam. Lihat [Apakah saya perlu persetujuan untuk mengaktifkan SMTP](#do-i-need-approval-to-enable-smtp).
+    Kami menyetujui SMTP keluar untuk setiap domain guna melindungi reputasi IP kami dan keterkiriman email Anda. Kami menyetujui banyak domain saat itu juga begitu catatan DNS-nya terverifikasi, dan tim kami meninjau sisanya, biasanya dalam 24 jam. Lihat <a href="/faq#do-i-need-approval-to-enable-smtp">Apakah saya perlu persetujuan untuk mengaktifkan SMTP</a>.
   </span>
 </div>
 
@@ -2935,7 +2961,7 @@ Anda dapat mengelola skrip Sieve dengan beberapa cara:
 
 2. **Protokol ManageSieve**: Sambungkan menggunakan klien yang kompatibel ManageSieve, seperti add-on Sieve Thunderbird atau [sieve-connect](https://github.com/philpennock/sieve-connect), ke `imap.forwardemail.net`. Gunakan port `2190` dengan STARTTLS atau port `4190` dengan TLS implisit.
 
-3. **API**: Gunakan [REST API](/api#sieve-scripts) untuk mengelola skrip secara programatis.
+3. **API**: Gunakan [REST API](/email-api) untuk mengelola skrip secara programatis.
 
 <div class="alert my-3 alert-primary">
   <i class="fa fa-info-circle font-weight-bold"></i>
@@ -2978,6 +3004,12 @@ Pelajari lebih lanjut tentang passkeys di tautan berikut:
 * [Masuk ke aplikasi dan situs web Anda dengan passkeys](https://support.google.com/android/answer/14124480?hl=en) (Google)
 * [Gunakan passkeys untuk masuk ke aplikasi dan situs web di iPhone](https://support.apple.com/guide/iphone/use-passkeys-to-sign-in-to-apps-and-websites-iphf538ea8d0/ios) (Apple)
 * [Artikel Wikipedia tentang Passkeys](https://en.wikipedia.org/wiki/Passkey_\(credential\))
+### Apakah autentikasi dua faktor (2FA) didukung {#is-two-factor-authentication-2fa-supported}
+
+Ya, untuk masuk ke akun Anda (termasuk <a href="https://mail.forwardemail.net" target="_blank" rel="noopener noreferrer">webmail</a>) melalui kode sandi sekali pakai, dengan dukungan kunci pemulihan.
+
+2FA berlaku untuk login akun Anda itu sendiri, bukan untuk koneksi IMAP, SMTP, POP3, CalDAV, atau CardDAV dari klien pihak ketiga (Thunderbird, Apple Mail, dll.).  Klien-klien tersebut melakukan autentikasi dengan kata sandi yang dibuat khusus untuk alias, sehingga saat ini belum ada standar yang setara dengan 2FA untuk jenis klien tersebut. Jika Anda ingin hal ini berubah, ajukan permintaan fitur di GitHub.
+
 ### Apakah Anda mendukung praktik terbaik email {#do-you-support-email-best-practices}
 
 Ya. Kami memiliki dukungan bawaan untuk SPF, DKIM, DMARC, ARC, dan SRS di semua paket. Kami juga telah bekerja secara ekstensif dengan penulis asli spesifikasi ini dan ahli email lainnya untuk memastikan kesempurnaan dan tingkat pengiriman yang tinggi.
@@ -4073,6 +4105,17 @@ Sumber:
 * <https://www.datapacket.com/datacenters/denver> (detail perlindungan DDoS)
 * <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/abuse-prevention-by-user-id.js>
 
+### Bisakah saya menonaktifkan pemindaian konten dewasa, phishing, file eksekusi, atau virus {#can-i-disable-adult-content-phishing-executable-or-virus-scanning}
+
+Ya. Setiap domain memindai tautan dan lampiran masuk menggunakan <a href="https://spamscanner.net" target="_blank" rel="noopener noreferrer">Spam Scanner</a>, perlindungan anti-spam, phishing, dan virus open-source yang kami bangun sendiri (dan yang mengikuti kebijakan mengutamakan privasi dan tanpa log yang sama seperti bagian lain dari Forward Email). Empat kategori masing-masing dapat diaktifkan atau dinonaktifkan secara terpisah di <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">Akun Saya <i class="fa fa-angle-right"></i> Domain</a> <i class="fa fa-angle-right"></i> Pengaturan Lanjutan:
+
+* **Perlindungan konten terkait dewasa**: jika dinonaktifkan, tautan tidak dipindai untuk konten terkait dewasa.
+* **Perlindungan phishing**: jika dinonaktifkan, tautan tidak dipindai untuk malware, penukaran domain, serangan homograf IDN, atau phishing secara umum.
+* **Perlindungan file eksekusi**: jika dinonaktifkan, tautan dan lampiran tidak dipindai untuk jenis file eksekusi, ekstensi, nama, header yang berpotensi berbahaya, atau serangan homograf IDN.
+* **Perlindungan virus**: jika dinonaktifkan, lampiran tidak dipindai untuk trojan, virus, malware, atau ancaman berbahaya lainnya (melalui ClamAV).
+
+Keempatnya aktif secara default. Menonaktifkan salah satunya hanya mematikan pemindaian untuk kategori tersebut.  Ini tidak menonaktifkan pemfilteran spam secara keseluruhan, dan terpisah dari [menonaktifkan alias tertentu](#can-i-disable-specific-aliases). Alasan paling umum untuk menonaktifkan suatu kategori adalah pola false positive yang khas pada lalu lintas Anda (misalnya pemindaian konten dewasa yang menandai milis sah untuk tempat atau bisnis bertema dewasa).
+
 ### Apakah Anda menyimpan konten email di disk {#do-you-store-email-content-on-disk}
 
 > \[!IMPORTANT]
@@ -4295,6 +4338,10 @@ Sumber:
 * <https://forwardemail.net/technical-whitepaper.pdf#page=59>
 * <https://forwardemail.net/gdpr>
 
+### Bagaimana cara melaporkan kerentanan keamanan {#how-do-i-report-a-security-vulnerability}
+
+Jika Anda menemukan kerentanan keamanan, harap segera laporkan ke <security@forwardemail.net>. Ini adalah alamat khusus untuk laporan kerentanan dan bug, terpisah dari dukungan umum.  Mengirim email langsung ke alamat ini akan menyampaikan laporan Anda kepada tim yang bertanggung jawab menanganinya.
+
 ### Apakah Anda menawarkan lingkungan pengujian {#do-you-offer-a-test-environment}
 
 Dokumentasi teknis Forward Email tidak secara eksplisit menjelaskan mode sandbox khusus. Namun, pendekatan pengujian potensial meliputi:
@@ -4435,7 +4482,7 @@ Bagian ini menjelaskan proses kami terkait dengan perintah protokol SMTP `DATA` 
    * Secara rekursif kami mengiterasi konfigurasi penerusan yang diekstrak untuk menentukan penerusan global, penerusan berbasis regex, dan semua konfigurasi penerusan lain yang didukung – yang sekarang dikenal sebagai "Alamat Penerusan" kami.
    * Untuk setiap Alamat Penerusan, kami mendukung satu pencarian rekursif (yang akan memulai rangkaian operasi ini kembali pada alamat yang diberikan). Jika ditemukan kecocokan rekursif, maka hasil induk akan dihapus dari Alamat Penerusan, dan anak-anaknya ditambahkan.
    * Alamat Penerusan diurai untuk keunikan (karena kami tidak ingin mengirim duplikat ke satu alamat atau memunculkan koneksi klien SMTP tambahan yang tidak perlu).
-   * Untuk setiap Alamat Penerusan, kami mencari nama domainnya terhadap endpoint API kami `/v1/max-forwarded-addresses` (untuk menentukan berapa banyak alamat yang diizinkan domain untuk meneruskan email per alias, misalnya 10 secara default – lihat bagian tentang [batas maksimum penerusan per alias](#is-there-a-limit-on-the-number-of-email-addresses-i-can-forward-to-per-alias)). Jika batas ini terlampaui, maka akan terjadi kesalahan 550 dan pengirim akan menerima bounce untuk penerima ini.
+   * Untuk setiap Alamat Penerusan, kami mencari nama domainnya terhadap endpoint API kami `/v1/max-forwarded-addresses` (untuk menentukan berapa banyak alamat yang diizinkan domain untuk meneruskan email per alias, misalnya 10 secara default – lihat bagian tentang [batas maksimum penerusan per alias](#is-there-a-maximum-limit-on-the-number-of-email-addresses-i-can-forward-to-per-alias)). Jika batas ini terlampaui, maka akan terjadi kesalahan 550 dan pengirim akan menerima bounce untuk penerima ini.
    * Kami mencari pengaturan penerima asli terhadap endpoint API kami `/v1/settings`, yang mendukung pencarian untuk pengguna berbayar (dengan fallback untuk pengguna gratis). Ini mengembalikan objek konfigurasi untuk pengaturan lanjutan `port` (Angka, misalnya `25`), `has_adult_content_protection` (Boolean), `has_phishing_protection` (Boolean), `has_executable_protection` (Boolean), dan `has_virus_protection` (Boolean).
    * Berdasarkan pengaturan ini, kami kemudian memeriksa hasil Pemindai Spam dan jika terjadi kesalahan, maka pesan ditolak dengan kode kesalahan 554 (misalnya jika `has_virus_protection` diaktifkan, maka kami akan memeriksa hasil Pemindai Spam untuk virus). Perlu dicatat bahwa semua pengguna paket gratis akan otomatis ikut pemeriksaan terhadap konten dewasa, phishing, executable, dan virus. Secara default, semua pengguna paket berbayar juga ikut serta, tetapi konfigurasi ini dapat diubah di halaman Pengaturan untuk domain di dasbor Forward Email).
 
@@ -4755,6 +4802,7 @@ Ekstensi nama domain berikut dianggap secara default diizinkan (terlepas apakah 
   <li class="list-inline-item"><code class="notranslate">sch.uk</code></li>
   <li class="list-inline-item"><code class="notranslate">ukaea.uk</code></li>
 </ul>
+
 Selain itu, [domain tingkat atas merek dan korporat](https://en.wikipedia.org/wiki/List_of_Internet_top-level_domains#Brand_and_corporate_top-level_domains) ini secara default diizinkan (misalnya `apple` untuk `applecard.apple` untuk laporan bank Apple Card):
 
 <ul class="list-inline">
@@ -5180,6 +5228,7 @@ Selain itu, [domain tingkat atas merek dan korporat](https://en.wikipedia.org/wi
   <li class="list-inline-item"><code class="notranslate">zara</code></li>
   <li class="list-inline-item"><code class="notranslate">zippo</code></li>
 </ul>
+
 Per 18 Maret 2025 kami juga telah menambahkan wilayah luar negeri Prancis ini ke dalam daftar ini ([sesuai permintaan GitHub ini](https://github.com/forwardemail/forwardemail.net/issues/327)):
 
 <ul class="list-inline">
@@ -5366,6 +5415,7 @@ Aturan baru ini hanya mengizinkan ekstensi nama domain berikut untuk digunakan p
   <li class="list-inline-item"><code class="notranslate">yt</code></li>
   <li class="list-inline-item"><code class="notranslate">za</code></li>
 </ul>
+
 ### Apakah Anda memiliki greylist {#do-you-have-a-greylist}
 
 Ya, kami menggunakan kebijakan [greylisting email](https://en.wikipedia.org/wiki/Greylisting_\(email\)) yang sangat longgar. Greylisting hanya berlaku untuk pengirim yang tidak ada dalam allowlist kami dan bertahan dalam cache kami selama 30 hari.
@@ -5543,6 +5593,7 @@ Ya, sejak 5 Mei 2020 kami telah menambahkan fitur ini. Saat ini fitur ini spesif
     Jika Anda menggunakan paket berbayar (yang memiliki fitur perlindungan privasi ditingkatkan), silakan pergi ke <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Akun Saya <i class="fa fa-angle-right"></i> Domain</a>, klik "Setup" di sebelah domain Anda, lalu klik "Settings". Jika Anda ingin mempelajari lebih lanjut tentang paket berbayar, lihat halaman <a class="alert-link" rel="noopener noreferrer" href="/private-business-email">Harga</a> kami. Jika tidak, Anda dapat melanjutkan mengikuti instruksi di bawah ini.
   </span>
 </div>
+
 Jika Anda menggunakan paket gratis, maka cukup tambahkan rekaman DNS <strong class="notranslate">TXT</strong> baru seperti yang ditunjukkan di bawah ini, tetapi ubah port dari 25 ke port pilihan Anda.
 
 Misalnya, jika saya ingin semua email yang masuk ke `example.com` diteruskan ke port SMTP penerima alias 1337 bukan 25:
@@ -5620,6 +5671,36 @@ Ya, tentu saja. Misalnya jika Anda mengirim email ke `hello@example.com` dan ter
 ### Bagaimana Anda mencegah spammer dan memastikan reputasi penerusan email yang baik {#how-do-you-prevent-spammers-and-ensure-good-email-forwarding-reputation}
 
 Lihat bagian kami tentang [Bagaimana sistem penerusan email Anda bekerja](#how-does-your-email-forwarding-system-work), [Bagaimana Anda menangani masalah pengiriman email](#how-do-you-handle-email-delivery-issues), dan [Bagaimana Anda menangani alamat IP Anda yang diblokir](#how-do-you-handle-your-ip-addresses-becoming-blocked) di atas.
+
+### Bagaimana saya bisa memverifikasi bahwa sebuah domain benar-benar menggunakan Forward Email {#how-can-i-verify-a-domain-is-using-forward-email}
+
+Catatan DNS publik sebuah domain memberi tahu Anda apakah domain tersebut menggunakan layanan kami, dan dengan paket apa.  Ini adalah pencarian teknis netral yang dapat dijalankan siapa pun terhadap domain apa pun; tidak memerlukan akun dan tidak memerlukan kerja sama dari pemilik domain.
+
+**Periksa catatan MX terlebih dahulu.**
+
+```sh
+dig example.com mx +short
+```
+
+Jika jawabannya tidak mencakup `mx1.forwardemail.net` dan `mx2.forwardemail.net`, maka domain tersebut **tidak** menggunakan layanan kami untuk menerima email, dan kami bukan operator email tersebut.
+
+**Lalu periksa catatan TXT untuk membedakan paketnya.**
+
+```sh
+dig example.com txt +short
+```
+
+| Nilai TXT                                    | Artinya                                                                                                         |
+| -------------------------------------------- | --------------------------------------------------------------------------------------------------------------- |
+| `forward-email=user@example.com`             | Paket gratis.  Nilainya adalah tujuan dalam teks biasa tempat email diteruskan.                                 |
+| `forward-email-site-verification=XXXXXXXXXX` | Paket berbayar.  Konfigurasi penerusan disimpan di database kami dengan ID `XXXXXXXXXX` dan tidak bersifat publik. |
+| Tidak ada keduanya                           | Domain tidak dikonfigurasi untuk layanan penerusan kami.                                                        |
+
+> \[!NOTE]
+> Catatan DNS ini adalah cara layanan kami bekerja di tingkat DNS, sehingga pencarian yang sama menjawab "apakah domain ini milik kami", "apakah gratis atau berbayar", dan "ke mana emailnya dikirim" untuk paket gratis.  Lihat [cara kerja sistem penerusan kami](#how-does-your-email-forwarding-system-work) untuk jalur pengirimannya sendiri.
+
+> \[!TIP]
+> Kami bukan registrar nama domain, sehingga kami tidak menyimpan catatan DNS historis.  Untuk mengetahui siapa yang mendaftarkan sebuah domain atau siapa yang mengelola nameserver-nya, gunakan `whois example.com` dan `dig example.com ns`, atau tanyakan langsung kepada registrar.
 
 ### Bagaimana Anda melakukan pencarian DNS pada nama domain {#how-do-you-perform-dns-lookups-on-domain-names}
 
@@ -5889,6 +5970,7 @@ Atau, Anda bisa menentukan mereka dalam dua baris terpisah, seperti ini:
     </tr>
   </tbody>
 </table>
+
 Terserah Anda!
 
 ### Apakah ada batas maksimum jumlah alamat email yang dapat saya teruskan per alias {#is-there-a-maximum-limit-on-the-number-of-email-addresses-i-can-forward-to-per-alias}

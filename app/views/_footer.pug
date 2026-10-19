@@ -91,10 +91,10 @@ footer.fe-footer.mt-auto(aria-label=t("Footer"))
                 aria-expanded="false"
               )
                 = `${titleize(t(currentLanguage))} ${ctx.locale !== "en" && currentLanguage !== titleize(currentLanguage) ? `(${titleize(currentLanguage)})` : ""}`
+              //- (a plain list of links: no menu role, whose items would need
+              //-  menuitem roles, and not aria-hidden, which stayed on when the
+              //-  list opened and hid it from screen readers)
               ul#navbar-dropdown-language-ul.dropdown-menu(
-                role="menu",
-                aria-expanded="false",
-                aria-hidden="true",
                 aria-labelledby="navbar-dropdown-language-btn"
               )
                 each language in availableLanguages

@@ -155,6 +155,7 @@ QNAP-laitteet, joissa on QTS, toimivat erinomaisesti Forward Emailin kanssa. Ne 
 
 > \[!TIP]
 > Jos kohtaat [Gmailin SMTP-asetusten ongelmia](https://forum.qnap.com/viewtopic.php?t=152466), samat vianmääritysvaiheet pätevät myös Forward Emailiin. Varmista, että todennus on oikein käytössä ja tunnistetiedot ovat oikein.
+
 > \[!NOTE]
 > QNAP-laitteet tukevat kehittynyttä ilmoitusten aikataulutusta, jonka avulla voit määrittää hiljaiset ajat, jolloin ei-kriittiset ilmoitukset estetään. Tämä on erityisen hyödyllistä yritysympäristöissä.
 

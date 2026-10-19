@@ -295,6 +295,7 @@ curl -X PUT BASE_URI/v1/account \
 
 > \[!NOTE]
 > 与其他 API 端点不同，这些端点要求 [认证](#authentication) 的“用户名”为别名用户名，“密码”为别名生成的密码，作为 Basic Authorization 头部。
+
 > \[!WARNING]
 > 本端点部分仍在开发中，预计将在2024年发布。在此期间，请使用我们网站导航中“Apps”下拉菜单中的IMAP客户端。
 
@@ -481,7 +482,7 @@ curl BASE_URI/v1/emails/limit \
 
 请注意，此端点不会返回邮件的 `message`、`headers` 或 `rejectedErrors` 的属性值。
 
-要返回这些属性及其值，请使用带有邮件 ID 的 [检索邮件](#retrieve-email) 端点。
+要返回这些属性及其值，请使用带有邮件 ID 的 [检索邮件](#retrieve-outbound-smtp-email) 端点。
 
 > `GET /v1/emails`
 
@@ -584,7 +585,7 @@ curl BASE_URI/v1/emails/:id \
 
 ### 删除外发 SMTP 邮件 {#delete-outbound-smtp-email}
 
-邮件删除操作会将状态设置为 `"rejected"`（随后不会在队列中处理），前提是当前状态为 `"pending"`、`"queued"` 或 `"deferred"` 之一。我们可能会在邮件创建和/或发送后 30 天自动清理邮件——因此您应在客户端、数据库或应用程序中保留外发 SMTP 邮件的副本。如果需要，您可以在数据库中引用我们的邮件 ID 值——该值会从 [创建邮件](#create-email) 和 [获取邮件](#retrieve-email) 接口返回。
+邮件删除操作会将状态设置为 `"rejected"`（随后不会在队列中处理），前提是当前状态为 `"pending"`、`"queued"` 或 `"deferred"` 之一。我们可能会在邮件创建和/或发送后 30 天自动清理邮件——因此您应在客户端、数据库或应用程序中保留外发 SMTP 邮件的副本。如果需要，您可以在数据库中引用我们的邮件 ID 值——该值会从 [创建邮件](#create-outbound-smtp-email) 和 [获取邮件](#retrieve-outbound-smtp-email) 接口返回。
 
 > `DELETE /v1/emails/:id`
 

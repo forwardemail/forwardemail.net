@@ -1328,7 +1328,7 @@ sequenceDiagram
 Selain ManageSieve, Forward Email menyediakan:
 
 * **Dashboard Web**: Membuat dan mengelola skrip Sieve melalui antarmuka web di Akun Saya → Domain → Alias → Skrip Sieve
-* **REST API**: Akses programatik untuk pengelolaan skrip Sieve melalui [Forward Email API](/api#sieve-scripts)
+* **REST API**: Akses programatik untuk pengelolaan skrip Sieve melalui [Forward Email API](/email-api)
 
 > \[!TIP]
 > Untuk instruksi pengaturan dan konfigurasi klien secara rinci, lihat [FAQ: Apakah Anda mendukung penyaringan email Sieve?](/faq#do-you-support-sieve-email-filtering)
@@ -1589,6 +1589,7 @@ Ini memastikan **tanpa kehilangan data** selama migrasi dari format lama ke baru
 ### Proses Migrasi {#migration-process}
 
 Forward Email menyediakan migrasi otomatis dan idempoten dari format penyimpanan lama ke baru:
+```javascript
 // Statistik migrasi yang dilacak:
 {
   attachmentsMigrated: 0,

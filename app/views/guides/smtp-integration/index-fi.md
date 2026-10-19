@@ -520,7 +520,7 @@ Jos kohtaat tässä käsiteltyjä ongelmia, tee seuraavat:
 
 ## Lisäresurssit {#additional-resources}
 
-* [Forward Email -dokumentaatio](/docs)
+* [Forward Email -dokumentaatio](/blog/docs)
 * [SMTP-palvelimen rajoitukset ja määritys](/faq#what-are-your-outbound-smtp-limits)
 * [Sähköpostin parhaat käytännöt -opas](/blog/docs/best-email-forwarding-service)
 * [Turvakäytännöt](/security)

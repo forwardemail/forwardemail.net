@@ -68,7 +68,7 @@
 **أبريل 2020**: بعد مواجهة العديد من العقبات مع حلول الكشف عن البريد المزعج الموجودة التي لم تحترم سياسة الخصوصية الخاصة بـ Forward Email، أطلقت الشركة النسخة الأولية التجريبية من ماسح البريد المزعج. يستخدم هذا الحل المجاني والمفتوح المصدر بالكامل لتصفية البريد المزعج [تقنية تصفية البريد المزعج بايز الساذج](https://en.wikipedia.org/wiki/Naive_Bayes_spam_filtering "Naive Bayes spam filtering") مع حماية من [التصيد الاحتيالي](https://en.wikipedia.org/wiki/Phishing "Phishing") وهجمات [التشابه الحرفي في أسماء النطاقات](https://en.wikipedia.org/wiki/IDN_homograph_attack "IDN homograph attack"). كما أطلقت Forward Email ميزة [المصادقة الثنائية](https://en.wikipedia.org/wiki/Multi-factor_authentication "Multi-factor authentication") (2FA) باستخدام [كلمات المرور لمرة واحدة](https://en.wikipedia.org/wiki/One-time_password "One-time password") (OTP) لتعزيز أمان الحساب.
 
 **مايو 2020**: سمحت Forward Email بإعادة توجيه [المنافذ المخصصة](https://en.wikipedia.org/wiki/Port_forwarding "Port forwarding") كحل بديل للمستخدمين لتجاوز حظر المنافذ من قبل [مزود خدمة الإنترنت](https://en.wikipedia.org/wiki/Internet_service_provider "Internet service provider"). كما أطلقت الشركة [واجهة برمجة التطبيقات RESTful لإعادة توجيه البريد الإلكتروني المجاني](email-api) مع توثيق كامل وأمثلة على الطلبات والاستجابات في الوقت الحقيقي، بالإضافة إلى دعم الويب هوكس.
-**أغسطس 2020**: أضاف Forward Email دعمًا لنظام مصادقة البريد الإلكتروني [Authenticated Received Chain](arc) ("ARC")، مما عزز أمان البريد الإلكتروني وقابلية التسليم بشكل أكبر.
+**أغسطس 2020**: أضاف Forward Email دعمًا لنظام مصادقة البريد الإلكتروني [Authenticated Received Chain](/faq#do-you-support-email-best-practices) ("ARC")، مما عزز أمان البريد الإلكتروني وقابلية التسليم بشكل أكبر.
 
 **23 نوفمبر 2020**: أطلق Forward Email نسخته العامة بعد انتهاء برنامج البيتا، مما يمثل خطوة مهمة في تطوير المنصة.
 
@@ -92,7 +92,7 @@
 
 **نوفمبر 2023**: أطلق Forward Email ميزة [**تخزين صندوق البريد المشفر**](/blog/docs/best-quantum-safe-encrypted-email-service) الخاصة بهم لـ [دعم IMAP](/faq#do-you-support-receiving-email-with-imap)، مما يمثل تقدمًا كبيرًا في خصوصية وأمان البريد الإلكتروني.
 
-**ديسمبر 2023**: أضافت الشركة [دعمًا](/faq#do-you-support-pop3) لـ [POP3](https://en.wikipedia.org/wiki/Post_Office_Protocol)، و [المفاتيح المارة و WebAuthn](/faq#do-you-support-passkeys-and-webauthn)، و [مراقبة وقت الوصول إلى البريد](/faq#i)، و [OpenPGP لتخزين IMAP](/faq#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd).
+**ديسمبر 2023**: أضافت الشركة [دعمًا](/faq#do-you-support-pop3) لـ [POP3](https://en.wikipedia.org/wiki/Post_Office_Protocol)، و [المفاتيح المارة و WebAuthn](/faq#do-you-support-passkeys-and-webauthn)، و [مراقبة وقت الوصول إلى البريد](/tti)، و [OpenPGP لتخزين IMAP](/faq#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd).
 
 ### 2024 - تحسين الخدمة والميزات المتقدمة {#2024---service-optimization-and-advanced-features}
 

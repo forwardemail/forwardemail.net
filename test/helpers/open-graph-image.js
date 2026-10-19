@@ -3,12 +3,16 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
+const fs = require('node:fs');
+const os = require('node:os');
+const path = require('node:path');
 const process = require('node:process');
 const { Buffer } = require('node:buffer');
 
 const sharp = require('sharp');
 const test = require('ava');
 
+const generateSocialImage = require('../../scripts/generate-social-image');
 const {
   CONTENT_WIDTH,
   HEIGHT,
@@ -265,4 +269,54 @@ test('the logo is rendered with its dark eyes', async (t) => {
     // (#000b34, as browsers draw it, and not the light blue under it)
     t.true(r < 40 && g < 60 && b < 110, `eye at ${px},${py}: ${r},${g},${b}`);
   }
+});
+
+test('without a star count the image shows none', async (t) => {
+  const svg = await renderOpenGraphImage({
+    title: 'Free Email Forwarding for Custom Domains',
+    description: 'Unlimited aliases for every domain.',
+    url: '/'
+  });
+  t.false(svg.includes('>stars<'));
+  t.false(svg.includes('>undefined<'));
+  t.true(svg.includes('>Forward Email<'));
+  t.true(svg.includes('>forwardemail.net<'));
+});
+
+test('assets/img/social.png is the image the script renders now', async (t) => {
+  t.timeout(60_000);
+  const { SOCIAL_IMAGE } = generateSocialImage;
+
+  const file = path.join(
+    fs.mkdtempSync(path.join(os.tmpdir(), 'social-')),
+    'social.png'
+  );
+  t.teardown(() => fs.rmSync(path.dirname(file), { recursive: true }));
+  await generateSocialImage(file);
+
+  const [fresh, committed] = await Promise.all(
+    [file, SOCIAL_IMAGE].map((f) =>
+      sharp(f).removeAlpha().raw().toBuffer({ resolveWithObject: true })
+    )
+  );
+  t.is(committed.info.width, WIDTH);
+  t.is(committed.info.height, HEIGHT);
+  t.deepEqual(fresh.info, committed.info);
+  // the same picture: no more than a few pixels differ visibly (allowing
+  // for small differences in rasterizing)
+  const { channels } = fresh.info;
+  let differing = 0;
+  for (let i = 0; i < fresh.data.length; i += channels) {
+    for (let c = 0; c < channels; c++) {
+      if (Math.abs(fresh.data[i + c] - committed.data[i + c]) > 24) {
+        differing++;
+        break;
+      }
+    }
+  }
+
+  t.true(
+    differing < (WIDTH * HEIGHT) / 2000,
+    `run node scripts/generate-social-image.js (${differing} pixels differ)`
+  );
 });

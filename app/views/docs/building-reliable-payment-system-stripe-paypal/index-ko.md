@@ -672,6 +672,8 @@ graph TD
     class A,P,V primary;
     class B,C,D,E,I,L,Q,R,S,W,X,Y,Z secondary;
 ```
+
+```mermaid
 graph TD
     subgraph "DRY 원칙"
         V[공유 로직] --> W[결제 처리 함수]

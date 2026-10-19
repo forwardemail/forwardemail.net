@@ -295,6 +295,7 @@ curl -X PUT BASE_URI/v1/account \
 
 > \[!NOTE]
 > Toisin kuin muut API-päätepisteet, nämä vaativat [Autentikoinnin](#authentication) "käyttäjätunnuksen" vastaamaan aliaksen käyttäjätunnusta ja "salasanan" vastaamaan aliaksen luotua salasanaa Basic Authorization -otsikoissa.
+
 > \[!WARNING]
 > Tämä päätepisteosio on työn alla ja julkaistaan (toivottavasti) vuonna 2024. Sillä välin käytä IMAP-asiakasohjelmaa verkkosivustomme navigaation "Apps"-valikosta.
 
@@ -481,7 +482,7 @@ curl BASE_URI/v1/emails/limit \
 
 Huomaa, että tämä päätepiste ei palauta ominaisuuksien arvoja sähköpostin `message`, `headers` eikä `rejectedErrors` osalta.
 
-Palautaaksesi nämä ominaisuudet ja niiden arvot, käytä [Hae sähköposti](#retrieve-email) -päätepistettä sähköpostin tunnuksella.
+Palautaaksesi nämä ominaisuudet ja niiden arvot, käytä [Hae sähköposti](#retrieve-outbound-smtp-email) -päätepistettä sähköpostin tunnuksella.
 
 > `GET /v1/emails`
 
@@ -529,7 +530,7 @@ Tämä API-päätepiste koodaa automaattisesti emojit, jos niitä löytyy otsiko
 | `inReplyTo`      | Ei         | Merkkijono         | Viestin Message-ID, johon vastataan.                                                                                                                                                                                                                                                                                                                                                                                                                           |
 | `references`     | Ei         | Merkkijono tai Taulukko | Välilyönnillä eroteltu lista tai taulukko Message-ID:istä.                                                                                                                                                                                                                                                                                                                                                                                                    |
 | `attachDataUrls` | Ei         | Totuusarvo         | Jos `true`, muuntaa `data:`-kuvat viestin HTML-sisällössä upotetuiksi liitteiksi.                                                                                                                                                                                                                                                                                                                                                                               |
-| `watchHtml`      | Ei         | Merkkijono         | Apple Watch -kohtainen HTML-versio viestistä ([Nodemailerin dokumentaation mukaan](https://nodemailer.com/message/#content-options]), uusimmat kellot eivät vaadi tämän asettamista).                                                                                                                                                                                                                                                                           |
+| `watchHtml`      | Ei         | Merkkijono         | Apple Watch -kohtainen HTML-versio viestistä ([Nodemailerin dokumentaation mukaan](https://nodemailer.com/message/#content-options), uusimmat kellot eivät vaadi tämän asettamista).                                                                                                                                                                                                                                                                           |
 | `amp`            | Ei         | Merkkijono         | AMP4EMAIL-spesifinen HTML-versio viestistä (katso [Nodemailerin esimerkki](https://nodemailer.com/message/#amp-example)).                                                                                                                                                                                                                                                                                                                                       |
 | `icalEvent`      | Ei         | Objekti            | iCalendar-tapahtuma vaihtoehtoisena viestisisältönä (katso [Nodemailerin kalenteritapahtumat](https://nodemailer.com/message/calendar-events/)).                                                                                                                                                                                                                                                                                                               |
 | `alternatives`   | Ei         | Taulukko           | Vaihtoehtoisten viestisisältöjen taulukko (katso [Nodemailerin vaihtoehtoinen sisältö](https://nodemailer.com/message/alternatives/)).                                                                                                                                                                                                                                                                                                                        |
@@ -584,7 +585,7 @@ curl BASE_URI/v1/emails/:id \
 
 ### Poista lähtevä SMTP-sähköposti {#delete-outbound-smtp-email}
 
-Sähköpostin poisto asettaa tilaksi `"rejected"` (eikä sitä tämän jälkeen käsitellä jonossa) vain jos nykyinen tila on jokin seuraavista: `"pending"`, `"queued"` tai `"deferred"`. Saatamme poistaa sähköposteja automaattisesti 30 päivän kuluttua niiden luomisesta ja/tai lähettämisestä – siksi sinun tulisi säilyttää kopio lähtevistä SMTP-sähköposteista asiakkaassasi, tietokannassasi tai sovelluksessasi. Voit halutessasi viitata sähköpostin ID-arvoon tietokannassasi – tämä arvo palautetaan sekä [Luo sähköposti](#create-email) että [Nouda sähköposti](#retrieve-email) -rajapinnoista.
+Sähköpostin poisto asettaa tilaksi `"rejected"` (eikä sitä tämän jälkeen käsitellä jonossa) vain jos nykyinen tila on jokin seuraavista: `"pending"`, `"queued"` tai `"deferred"`. Saatamme poistaa sähköposteja automaattisesti 30 päivän kuluttua niiden luomisesta ja/tai lähettämisestä – siksi sinun tulisi säilyttää kopio lähtevistä SMTP-sähköposteista asiakkaassasi, tietokannassasi tai sovelluksessasi. Voit halutessasi viitata sähköpostin ID-arvoon tietokannassasi – tämä arvo palautetaan sekä [Luo sähköposti](#create-outbound-smtp-email) että [Nouda sähköposti](#retrieve-outbound-smtp-email) -rajapinnoista.
 
 > `DELETE /v1/emails/:id`
 

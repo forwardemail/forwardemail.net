@@ -155,6 +155,7 @@ QTS'li QNAP cihazları Forward Email ile çok iyi çalışır. Modern TLS'yi des
 
 > \[!TIP]
 > Eğer [Gmail SMTP yapılandırma sorunları](https://forum.qnap.com/viewtopic.php?t=152466) ile karşılaşırsanız, aynı sorun giderme adımları Forward Email için de geçerlidir. Kimlik doğrulamanın doğru etkinleştirildiğinden ve kimlik bilgilerinin doğru olduğundan emin olun.
+
 > \[!NOTE]
 > QNAP cihazları, kritik olmayan bildirimlerin bastırıldığı sessiz saatleri yapılandırmanıza olanak tanıyan gelişmiş bildirim zamanlamasını destekler. Bu, özellikle iş ortamlarında faydalıdır.
 

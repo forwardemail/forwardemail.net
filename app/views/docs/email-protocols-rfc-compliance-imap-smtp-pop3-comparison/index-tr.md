@@ -1328,7 +1328,7 @@ sequenceDiagram
 ManageSieve'e ek olarak, Forward Email şunları sağlar:
 
 * **Web Kontrol Paneli**: My Account → Domains → Aliases → Sieve Scripts üzerinden web arayüzü ile Sieve betikleri oluşturma ve yönetme
-* **REST API**: [Forward Email API](/api#sieve-scripts) aracılığıyla programatik Sieve betik yönetimi erişimi
+* **REST API**: [Forward Email API](/email-api) aracılığıyla programatik Sieve betik yönetimi erişimi
 
 > \[!TIP]
 > Detaylı kurulum talimatları ve istemci yapılandırması için bkz. [SSS: Sieve e-posta filtrelemesini destekliyor musunuz?](/faq#do-you-support-sieve-email-filtering)
@@ -1589,6 +1589,7 @@ Bu, eski depolama formatlarından yeni formatlara geçişte **sıfır veri kayb�
 ### Geçiş Süreci {#migration-process}
 
 Forward Email, eski depolama formatlarından yeni formatlara otomatik, idempotent geçiş sağlar:
+```javascript
 // Takip edilen göç istatistikleri:
 {
   attachmentsMigrated: 0,

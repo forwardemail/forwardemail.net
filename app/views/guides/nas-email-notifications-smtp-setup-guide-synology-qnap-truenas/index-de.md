@@ -155,6 +155,7 @@ QNAP-Geräte mit QTS funktionieren hervorragend mit Forward Email. Sie unterstü
 
 > \[!TIP]
 > Wenn Sie auf [Probleme bei der Gmail SMTP-Konfiguration](https://forum.qnap.com/viewtopic.php?t=152466) stoßen, gelten dieselben Schritte zur Fehlerbehebung auch für Forward Email. Stellen Sie sicher, dass die Authentifizierung korrekt aktiviert ist und die Zugangsdaten stimmen.
+
 > \[!NOTE]
 > QNAP-Geräte unterstützen eine erweiterte Benachrichtigungsplanung, mit der Sie Ruhezeiten konfigurieren können, in denen nicht-kritische Benachrichtigungen unterdrückt werden. Dies ist besonders in Geschäftsumgebungen nützlich.
 

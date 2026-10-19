@@ -68,7 +68,7 @@ Dịch vụ đã thu hút các nhà phát triển nổi tiếng, bao gồm [Davi
 **Tháng 4 năm 2020**: Sau khi gặp phải vô số trở ngại với các giải pháp phát hiện thư rác hiện có không tuân thủ chính sách quyền riêng tư của Forward Email, công ty đã phát hành phiên bản alpha ban đầu của Trình Quét Thư Rác. Giải pháp [lọc thư rác](https://en.wikipedia.org/wiki/Anti-spam_techniques "Anti-spam techniques") miễn phí và mã nguồn mở này sử dụng phương pháp lọc thư rác [Naive Bayes](https://en.wikipedia.org/wiki/Naive_Bayes_spam_filtering "Naive Bayes spam filtering") kết hợp với bảo vệ chống [lừa đảo](https://en.wikipedia.org/wiki/Phishing "Phishing") và tấn công [IDN homograph](https://en.wikipedia.org/wiki/IDN_homograph_attack "IDN homograph attack"). Forward Email cũng phát hành [xác thực hai yếu tố](https://en.wikipedia.org/wiki/Multi-factor_authentication "Multi-factor authentication") (2FA) sử dụng [mật khẩu dùng một lần](https://en.wikipedia.org/wiki/One-time_password "One-time password") (OTP) để tăng cường bảo mật tài khoản.
 
 **Tháng 5 năm 2020**: Forward Email cho phép [chuyển tiếp cổng tùy chỉnh](https://en.wikipedia.org/wiki/Port_forwarding "Port forwarding") như một giải pháp cho người dùng để vượt qua việc chặn cổng bởi [ISP](https://en.wikipedia.org/wiki/Internet_service_provider "Internet service provider"). Công ty cũng phát hành [API RESTful Chuyển tiếp Email Miễn phí](email-api) với tài liệu đầy đủ và các ví dụ yêu cầu và phản hồi theo thời gian thực, cùng với hỗ trợ webhook.
-**Tháng 8 năm 2020**: Forward Email đã thêm hỗ trợ cho hệ thống xác thực email [Authenticated Received Chain](arc) ("ARC"), tăng cường bảo mật và khả năng gửi email thành công.
+**Tháng 8 năm 2020**: Forward Email đã thêm hỗ trợ cho hệ thống xác thực email [Authenticated Received Chain](/faq#do-you-support-email-best-practices) ("ARC"), tăng cường bảo mật và khả năng gửi email thành công.
 
 **Ngày 23 tháng 11 năm 2020**: Forward Email chính thức ra mắt công khai sau chương trình beta.
 
@@ -92,7 +92,7 @@ Dịch vụ đã thu hút các nhà phát triển nổi tiếng, bao gồm [Davi
 
 **Tháng 11 năm 2023**: Forward Email ra mắt tính năng [**lưu trữ hộp thư mã hóa**](/blog/docs/best-quantum-safe-encrypted-email-service) cho [hỗ trợ IMAP](/faq#do-you-support-receiving-email-with-imap).
 
-**Tháng 12 năm 2023**: Công ty [thêm hỗ trợ](/faq#do-you-support-pop3) cho [POP3](https://en.wikipedia.org/wiki/Post_Office_Protocol), [passkeys và WebAuthn](/faq#do-you-support-passkeys-and-webauthn), giám sát [thời gian đến hộp thư](/faq#i), và [OpenPGP cho lưu trữ IMAP](/faq#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd).
+**Tháng 12 năm 2023**: Công ty [thêm hỗ trợ](/faq#do-you-support-pop3) cho [POP3](https://en.wikipedia.org/wiki/Post_Office_Protocol), [passkeys và WebAuthn](/faq#do-you-support-passkeys-and-webauthn), giám sát [thời gian đến hộp thư](/tti), và [OpenPGP cho lưu trữ IMAP](/faq#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd).
 
 ### 2024 - Tối ưu dịch vụ và tính năng nâng cao {#2024---service-optimization-and-advanced-features}
 

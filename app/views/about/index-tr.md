@@ -68,7 +68,7 @@ Bu çözümün sadeliği ve etkinliği, Ruby on Rails'in yaratıcısı [David He
 **Nisan 2020**: Forward Email, gizlilik politikasına uymayan mevcut spam tespit çözümleriyle karşılaştığı sayısız engelin ardından, Spam Tarayıcı'nın ilk alfa sürümünü yayınladı. Bu tamamen ücretsiz ve açık kaynaklı [anti-spam filtreleme](https://en.wikipedia.org/wiki/Anti-spam_techniques "Anti-spam techniques") çözümü, [Naive Bayes spam filtresi](https://en.wikipedia.org/wiki/Naive_Bayes_spam_filtering "Naive Bayes spam filtering") yaklaşımını [anti-phishing](https://en.wikipedia.org/wiki/Phishing "Phishing") ve [IDN homograf saldırısı](https://en.wikipedia.org/wiki/IDN_homograph_attack "IDN homograph attack") korumasıyla birleştirir. Forward Email ayrıca, gelişmiş hesap güvenliği için [tek kullanımlık şifreler](https://en.wikipedia.org/wiki/One-time_password "One-time password") (OTP) kullanan [iki faktörlü kimlik doğrulama](https://en.wikipedia.org/wiki/Multi-factor_authentication "Multi-factor authentication") (2FA) özelliğini yayınladı.
 
 **Mayıs 2020**: Forward Email, kullanıcıların [ISS](https://en.wikipedia.org/wiki/Internet_service_provider "Internet service provider") tarafından uygulanan port engellemelerini aşabilmeleri için özel [port yönlendirmesine](https://en.wikipedia.org/wiki/Port_forwarding "Port forwarding") izin verdi. Şirket ayrıca, tam dokümantasyon ve gerçek zamanlı istek ve yanıt örnekleriyle birlikte, webhooks desteği içeren [Ücretsiz E-posta Yönlendirme RESTful API'sini](email-api) yayınladı.
-**Ağustos 2020**: Forward Email, e-posta güvenliği ve teslimatını daha da güçlendiren [Authenticated Received Chain](arc) ("ARC") e-posta kimlik doğrulama sistemi için destek ekledi.
+**Ağustos 2020**: Forward Email, e-posta güvenliği ve teslimatını daha da güçlendiren [Authenticated Received Chain](/faq#do-you-support-email-best-practices) ("ARC") e-posta kimlik doğrulama sistemi için destek ekledi.
 
 **23 Kasım 2020**: Forward Email, beta programından çıkarak halka açıldı ve platformun gelişiminde önemli bir dönüm noktasını işaret etti.
 
@@ -92,7 +92,7 @@ Bu çözümün sadeliği ve etkinliği, Ruby on Rails'in yaratıcısı [David He
 
 **Kasım 2023**: Forward Email, e-posta gizliliği ve güvenliğinde önemli bir ilerlemeyi temsil eden [**şifreli posta kutusu depolama**](/blog/docs/best-quantum-safe-encrypted-email-service) özelliğini [IMAP desteği](/faq#do-you-support-receiving-email-with-imap) için başlattı.
 
-**Aralık 2023**: Şirket, [POP3](/faq#do-you-support-pop3) desteği, [passkeyler ve WebAuthn](/faq#do-you-support-passkeys-and-webauthn), [gelen kutusuna ulaşma süresi](/faq#i) izleme ve [IMAP Depolama için OpenPGP](/faq#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd) için destek ekledi.
+**Aralık 2023**: Şirket, [POP3](/faq#do-you-support-pop3) desteği, [passkeyler ve WebAuthn](/faq#do-you-support-passkeys-and-webauthn), [gelen kutusuna ulaşma süresi](/tti) izleme ve [IMAP Depolama için OpenPGP](/faq#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd) için destek ekledi.
 
 ### 2024 - Hizmet Optimizasyonu ve Gelişmiş Özellikler {#2024---service-optimization-and-advanced-features}
 

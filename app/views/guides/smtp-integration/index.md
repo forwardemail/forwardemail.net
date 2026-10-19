@@ -523,7 +523,7 @@ If you encounter issues not covered here, please:
 
 ## Additional Resources
 
-* [Forward Email Documentation](/docs)
+* [Forward Email Documentation](/blog/docs)
 * [SMTP Server Limits and Configuration](/faq#what-are-your-outbound-smtp-limits)
 * [Email Best Practices Guide](/blog/docs/best-email-forwarding-service)
 * [Security Practices](/security)

@@ -295,6 +295,7 @@ curl -X PUT BASE_URI/v1/account \
 
 > \[!NOTE]
 > Más API végpontoktól eltérően ezekhez a végpontokhoz a [Hitelesítés](#authentication) "felhasználónév" az alias felhasználónévvel, a "jelszó" pedig az alias által generált jelszóval kell, hogy megegyezzen, Basic Authorization fejlécként.
+
 > \[!WARNING]
 > Ez a végpont szakasz fejlesztés alatt áll, és remélhetőleg 2024-ben kerül kiadásra. Addig kérjük, használjon egy IMAP klienst a weboldalunk navigációjában található "Apps" legördülő menüből.
 
@@ -481,7 +482,7 @@ curl BASE_URI/v1/emails/limit \
 
 Vegye figyelembe, hogy ez a végpont nem ad vissza tulajdonságértékeket az e-mail `message`, `headers` vagy `rejectedErrors` mezőihez.
 
-Ezeknek a tulajdonságoknak és értékeiknek a visszaadásához kérjük, használja a [E-mail lekérése](#retrieve-email) végpontot egy e-mail azonosítóval.
+Ezeknek a tulajdonságoknak és értékeiknek a visszaadásához kérjük, használja a [E-mail lekérése](#retrieve-outbound-smtp-email) végpontot egy e-mail azonosítóval.
 
 > `GET /v1/emails`
 
@@ -529,7 +530,7 @@ Ez az API végpont automatikusan kódolja az emojikat, ha azok a fejlécben tal�
 | `inReplyTo`       | Nem      | String            | Az üzenethez válaszként küldött Message-ID.                                                                                                                                                                                                                                                                                                                                                                                                                    |
 | `references`      | Nem      | String vagy Tömb   | Szóközzel elválasztott lista vagy tömb Message-ID-kből.                                                                                                                                                                                                                                                                                                                                                                                                        |
 | `attachDataUrls`  | Nem      | Boolean           | Ha `true`, akkor a HTML tartalomban található `data:` képeket beágyazott mellékletként konvertálja.                                                                                                                                                                                                                                                                                                                                                             |
-| `watchHtml`       | Nem      | String            | Apple Watch specifikus HTML változat az üzenethez ([a Nodemailer dokumentációja szerint](https://nodemailer.com/message/#content-options]), a legújabb órák esetén nem szükséges beállítani).                                                                                                                                                                                                                                                                   |
+| `watchHtml`       | Nem      | String            | Apple Watch specifikus HTML változat az üzenethez ([a Nodemailer dokumentációja szerint](https://nodemailer.com/message/#content-options), a legújabb órák esetén nem szükséges beállítani).                                                                                                                                                                                                                                                                   |
 | `amp`             | Nem      | String            | AMP4EMAIL specifikus HTML változat az üzenethez (lásd a [Nodemailer példáját](https://nodemailer.com/message/#amp-example)).                                                                                                                                                                                                                                                                                                                                   |
 | `icalEvent`       | Nem      | Objektum          | iCalendar esemény alternatív üzenettartalomként (lásd a [Nodemailer naptár eseményeit](https://nodemailer.com/message/calendar-events/)).                                                                                                                                                                                                                                                                                                                     |
 | `alternatives`    | Nem      | Tömb              | Alternatív üzenettartalmak tömbje (lásd a [Nodemailer alternatív tartalmakat](https://nodemailer.com/message/alternatives/)).                                                                                                                                                                                                                                                                                                                                   |
@@ -584,7 +585,7 @@ curl BASE_URI/v1/emails/:id \
 
 ### Kimenő SMTP email törlése {#delete-outbound-smtp-email}
 
-Az email törlése a státuszt `"rejected"`-re állítja (és ezáltal nem dolgozza fel a sorban), ha és csak ha az aktuális státusz `"pending"`, `"queued"` vagy `"deferred"`. Automatikusan törölhetünk emaileket 30 nappal az elkészítésük és/vagy elküldésük után – ezért érdemes a kimenő SMTP emailekről másolatot tartani a kliensben, adatbázisban vagy alkalmazásban. Az email ID értékünkre hivatkozhat az adatbázisban, ha szükséges – ez az érték visszatér mind a [Email létrehozása](#create-email), mind a [Email lekérése](#retrieve-email) végpontokból.
+Az email törlése a státuszt `"rejected"`-re állítja (és ezáltal nem dolgozza fel a sorban), ha és csak ha az aktuális státusz `"pending"`, `"queued"` vagy `"deferred"`. Automatikusan törölhetünk emaileket 30 nappal az elkészítésük és/vagy elküldésük után – ezért érdemes a kimenő SMTP emailekről másolatot tartani a kliensben, adatbázisban vagy alkalmazásban. Az email ID értékünkre hivatkozhat az adatbázisban, ha szükséges – ez az érték visszatér mind a [Email létrehozása](#create-outbound-smtp-email), mind a [Email lekérése](#retrieve-outbound-smtp-email) végpontokból.
 
 > `DELETE /v1/emails/:id`
 

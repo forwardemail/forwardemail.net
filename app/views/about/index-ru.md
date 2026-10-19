@@ -68,7 +68,7 @@ Forward Email был основан **Николасом Боу** в 2017 год
 **Апрель 2020**: После множества препятствий с существующими решениями для обнаружения спама, которые не соблюдали политику конфиденциальности Forward Email, компания выпустила свою первую альфа-версию Spam Scanner. Это полностью бесплатное и открытое [антиспам-фильтрационное](https://en.wikipedia.org/wiki/Anti-spam_techniques "Anti-spam techniques") решение использует подход [наивного байесовского спам-фильтра](https://en.wikipedia.org/wiki/Naive_Bayes_spam_filtering "Naive Bayes spam filtering") в сочетании с защитой от [фишинга](https://en.wikipedia.org/wiki/Phishing "Phishing") и [атак с использованием гомографов IDN](https://en.wikipedia.org/wiki/IDN_homograph_attack "IDN homograph attack"). Forward Email также выпустил [двухфакторную аутентификацию](https://en.wikipedia.org/wiki/Multi-factor_authentication "Multi-factor authentication") (2FA) с использованием [одноразовых паролей](https://en.wikipedia.org/wiki/One-time_password "One-time password") (OTP) для повышения безопасности аккаунтов.
 
 **Май 2020**: Forward Email позволил использовать пользовательскую [переадресацию портов](https://en.wikipedia.org/wiki/Port_forwarding "Port forwarding") в качестве обходного решения для пользователей, чтобы обойти блокировку портов со стороны их [интернет-провайдера](https://en.wikipedia.org/wiki/Internet_service_provider "Internet service provider"). Компания также выпустила свой [RESTful API для бесплатной переадресации электронной почты](email-api) с полной документацией и примерами запросов и ответов в реальном времени, а также с поддержкой вебхуков.
-**Август 2020**: Forward Email добавил поддержку системы аутентификации электронной почты [Authenticated Received Chain](arc) ("ARC"), что дополнительно усилило безопасность и доставляемость электронной почты.
+**Август 2020**: Forward Email добавил поддержку системы аутентификации электронной почты [Authenticated Received Chain](/faq#do-you-support-email-best-practices) ("ARC"), что дополнительно усилило безопасность и доставляемость электронной почты.
 
 **23 ноября 2020**: Forward Email официально вышел из бета-программы, что стало значительным этапом в развитии платформы.
 
@@ -92,7 +92,7 @@ Forward Email был основан **Николасом Боу** в 2017 год
 
 **Ноябрь 2023**: Forward Email запустил функцию [**шифрованного хранения почтовых ящиков**](/blog/docs/best-quantum-safe-encrypted-email-service) для [поддержки IMAP](/faq#do-you-support-receiving-email-with-imap), что стало значительным шагом вперёд в области конфиденциальности и безопасности электронной почты.
 
-**Декабрь 2023**: Компания [добавила поддержку](/faq#do-you-support-pop3) для [POP3](https://en.wikipedia.org/wiki/Post_Office_Protocol), [passkeys и WebAuthn](/faq#do-you-support-passkeys-and-webauthn), мониторинг [времени доставки в почтовый ящик](/faq#i) и [OpenPGP для IMAP-хранения](/faq#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd).
+**Декабрь 2023**: Компания [добавила поддержку](/faq#do-you-support-pop3) для [POP3](https://en.wikipedia.org/wiki/Post_Office_Protocol), [passkeys и WebAuthn](/faq#do-you-support-passkeys-and-webauthn), мониторинг [времени доставки в почтовый ящик](/tti) и [OpenPGP для IMAP-хранения](/faq#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd).
 
 ### 2024 - Оптимизация сервиса и продвинутые функции {#2024---service-optimization-and-advanced-features}
 

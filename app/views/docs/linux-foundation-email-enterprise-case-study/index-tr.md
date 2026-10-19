@@ -139,7 +139,7 @@ Uygulama önemli faydalar sağlamıştır:
 ## Sonuç {#conclusion}
 
 Linux Vakfı'nın Forward Email ile ortaklığı, kuruluşların karmaşık e-posta yönetimi zorluklarını nasıl çözebileceğini ve temel değerleriyle uyumlu kalabileceğini göstermektedir. Açık kaynak ilkelerini, gizliliği ve güvenliği önceliklendiren bir çözüm seçerek, Linux Vakfı e-posta yönetimini idari bir yükten stratejik bir avantaja dönüştürmüştür.
-Canonical/Ubuntu](https://forwardemail.net/blog/docs/canonical-ubuntu-email-enterprise-case-study) ve [büyük üniversiteler](https://forwardemail.net/blog/docs/alumni-email-forwarding-university-case-study) ile yaptığımız çalışmalarda görüldüğü gibi, karmaşık alan adı portföylerine sahip organizasyonlar, Forward Email'in kurumsal çözümü sayesinde verimlilik, güvenlik ve maliyet yönetiminde önemli iyileşmeler sağlayabilirler.
+[Canonical/Ubuntu](https://forwardemail.net/blog/docs/canonical-ubuntu-email-enterprise-case-study) ve [büyük üniversiteler](https://forwardemail.net/blog/docs/alumni-email-forwarding-university-case-study) ile yaptığımız çalışmalarda görüldüğü gibi, karmaşık alan adı portföylerine sahip organizasyonlar, Forward Email'in kurumsal çözümü sayesinde verimlilik, güvenlik ve maliyet yönetiminde önemli iyileşmeler sağlayabilirler.
 
 Forward Email'in organizasyonunuzun birden fazla alan adı üzerinden e-posta yönetimine nasıl yardımcı olabileceği hakkında daha fazla bilgi için [forwardemail.net](https://forwardemail.net) adresini ziyaret edin veya detaylı [dokümantasyonumuzu](https://forwardemail.net/email-api) ve [rehberlerimizi](https://forwardemail.net/guides) inceleyin.
 

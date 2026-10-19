@@ -68,7 +68,7 @@ Forward Emailのミッションは単なるメールサービスの提供を超�
 **2020年4月**: Forward Emailは既存のスパム検出ソリューションがForward Emailのプライバシーポリシーを尊重しなかったため、多くの障害に直面した後、スパムスキャナーの初期アルファ版をリリースしました。この完全無料かつオープンソースの[アンチスパムフィルタリング](https://en.wikipedia.org/wiki/Anti-spam_techniques "Anti-spam techniques")ソリューションは、[ナイーブベイズスパムフィルター](https://en.wikipedia.org/wiki/Naive_Bayes_spam_filtering "Naive Bayes spam filtering")方式に加え、[フィッシング対策](https://en.wikipedia.org/wiki/Phishing "Phishing")および[IDNホモグラフ攻撃](https://en.wikipedia.org/wiki/IDN_homograph_attack "IDN homograph attack")保護を組み合わせています。さらにForward Emailは、アカウントセキュリティ強化のために[ワンタイムパスワード](https://en.wikipedia.org/wiki/One-time_password "One-time password")(OTP)を用いた[二要素認証](https://en.wikipedia.org/wiki/Multi-factor_authentication "Multi-factor authentication")(2FA)もリリースしました。
 
 **2020年5月**: Forward Emailはユーザーが[ISP](https://en.wikipedia.org/wiki/Internet_service_provider "Internet service provider")によるポートブロッキングを回避するための回避策としてカスタムの[ポートフォワーディング](https://en.wikipedia.org/wiki/Port_forwarding "Port forwarding")を許可しました。また、同社は完全なドキュメントとリアルタイムのリクエスト・レスポンス例を備えた[無料メール転送RESTful API](email-api)をリリースし、Webhookのサポートも提供しました。
-**2020年8月**: Forward Emailは[Authenticated Received Chain](arc)（「ARC」）メール認証システムのサポートを追加し、メールのセキュリティと配信性をさらに強化しました。
+**2020年8月**: Forward Emailは[Authenticated Received Chain](/faq#do-you-support-email-best-practices)（「ARC」）メール認証システムのサポートを追加し、メールのセキュリティと配信性をさらに強化しました。
 
 **2020年11月23日**: Forward Emailはベータプログラムを終了し正式に公開され、プラットフォームの開発における重要なマイルストーンとなりました。
 
@@ -92,7 +92,7 @@ Forward Emailのミッションは単なるメールサービスの提供を超�
 
 **2023年11月**: Forward Emailは[IMAPサポート](/faq#do-you-support-receiving-email-with-imap)向けの[**暗号化されたメールボックスストレージ**](/blog/docs/best-quantum-safe-encrypted-email-service)機能を開始し、メールのプライバシーとセキュリティにおいて大きな進歩を遂げました。
 
-**2023年12月**: 同社は[POP3](/faq#do-you-support-pop3)のサポート、[パスキーとWebAuthn](/faq#do-you-support-passkeys-and-webauthn)、[受信時間監視](/faq#i)、および[IMAPストレージ向けOpenPGP](/faq#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd)のサポートを追加しました。
+**2023年12月**: 同社は[POP3](/faq#do-you-support-pop3)のサポート、[パスキーとWebAuthn](/faq#do-you-support-passkeys-and-webauthn)、[受信時間監視](/tti)、および[IMAPストレージ向けOpenPGP](/faq#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd)のサポートを追加しました。
 
 ### 2024年 - サービス最適化と高度な機能 {#2024---service-optimization-and-advanced-features}
 

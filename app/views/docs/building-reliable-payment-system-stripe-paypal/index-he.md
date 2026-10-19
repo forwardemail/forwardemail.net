@@ -672,6 +672,8 @@ graph TD
     class A,P,V primary;
     class B,C,D,E,I,L,Q,R,S,W,X,Y,Z secondary;
 ```
+
+```mermaid
 graph TD
     subgraph "עקרון DRY"
         V[לוגיקה משותפת] --> W[פונקציות עיבוד תשלום]

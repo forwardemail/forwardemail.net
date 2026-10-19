@@ -78,6 +78,7 @@ Zde je, kolik naše partnerské univerzity ročně ušetří volbou Forward Emai
 
 > \[!NOTE]
 > Forward Email enterprise obvykle stojí pouze 250 $/měsíc, bez dalších nákladů za uživatele, s povolenými API limity a jediným dalším nákladem je úložiště, pokud potřebujete další GB/TB pro studenty (+3 $ za každých 10 GB navíc). Používáme NVMe SSD disky pro rychlou podporu IMAP/POP3/SMTP/CalDAV/CardDAV také.
+
 > \[!IMPORTANT]
 > Na rozdíl od Google a Microsoft, kteří opakovaně zvyšovali své ceny při integraci AI funkcí analyzujících vaše data, Forward Email udržuje stabilní ceny se silným zaměřením na soukromí. Nepoužíváme AI, nesledujeme vzory používání a neukládáme logy ani e-maily na disk (veškeré zpracování probíhá v paměti), což zajišťuje úplné soukromí vašich komunikací s absolventy.
 

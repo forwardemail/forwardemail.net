@@ -4,7 +4,11 @@
 link(rel="image_src", type="image/png", href=ogImage, crossorigin="anonymous")
 
 //- Core Open Graph tags
-meta(property="og:locale", content=locale)
+//- (og:locale is language_TERRITORY: a bare "de" is not a value it takes;
+//-  the Portuguese and Chinese pages are Brazilian and simplified)
+-
+  const ogLocales = { ar: "ar_AR", cs: "cs_CZ", da: "da_DK", de: "de_DE", en: "en_US", es: "es_ES", fi: "fi_FI", fr: "fr_FR", he: "he_IL", hu: "hu_HU", id: "id_ID", it: "it_IT", ja: "ja_JP", ko: "ko_KR", nl: "nl_NL", no: "nb_NO", pl: "pl_PL", pt: "pt_BR", ru: "ru_RU", sv: "sv_SE", th: "th_TH", tr: "tr_TR", uk: "uk_UA", vi: "vi_VN", zh: "zh_CN" };
+meta(property="og:locale", content=ogLocales[locale] || locale)
 meta(
   property="og:type",
   content=ctx.pathWithoutLocale === "/" ? "website" : "article"
@@ -102,8 +106,9 @@ if ctx.pathWithoutLocale !== '/' && ctx.pathWithoutLocale !== '/private-business
 else if ctx.pathWithoutLocale === '/'
   meta(name="twitter:label1", content=t("Price"))
   meta(name="twitter:data1", content=t("Free"))
-  meta(name="twitter:label2", content=t("Users"))
-  meta(name="twitter:data2", content="500,000+")
+  //- (the domain count the hero gives, see _fe-hero.pug)
+  meta(name="twitter:label2", content=t("Domains"))
+  meta(name="twitter:data2", content="1.6M+")
 
 //- Facebook App ID (if available)
 //- meta(property="fb:app_id", content="YOUR_FB_APP_ID")

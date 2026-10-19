@@ -68,7 +68,7 @@ Forward Email ก่อตั้งโดย **Nicholas Baugh** ในปี 201
 **เมษายน 2020**: หลังจากเผชิญกับอุปสรรคมากมายกับโซลูชันตรวจจับสแปมที่มีอยู่ซึ่งไม่เคารพนโยบายความเป็นส่วนตัวของ Forward Email บริษัทฯ ได้เปิดตัวเวอร์ชันอัลฟ่าของ Spam Scanner ซึ่งเป็นโซลูชัน [การกรองสแปม](https://en.wikipedia.org/wiki/Anti-spam_techniques "Anti-spam techniques") แบบฟรีและโอเพนซอร์สโดยใช้วิธี [Naive Bayes spam filter](https://en.wikipedia.org/wiki/Naive_Bayes_spam_filtering "Naive Bayes spam filtering") ร่วมกับการป้องกัน [anti-phishing](https://en.wikipedia.org/wiki/Phishing "Phishing") และ [IDN homograph attack](https://en.wikipedia.org/wiki/IDN_homograph_attack "IDN homograph attack") Forward Email ยังเปิดตัว [การยืนยันตัวตนแบบสองปัจจัย](https://en.wikipedia.org/wiki/Multi-factor_authentication "Multi-factor authentication") (2FA) โดยใช้ [รหัสผ่านใช้ครั้งเดียว](https://en.wikipedia.org/wiki/One-time_password "One-time password") (OTP) เพื่อเพิ่มความปลอดภัยของบัญชี
 
 **พฤษภาคม 2020**: Forward Email อนุญาตให้ใช้ [port forwarding](https://en.wikipedia.org/wiki/Port_forwarding "Port forwarding") แบบกำหนดเองเป็นวิธีแก้ไขสำหรับผู้ใช้ที่ต้องการหลีกเลี่ยงการบล็อกพอร์ตโดย [ISP](https://en.wikipedia.org/wiki/Internet_service_provider "Internet service provider") บริษัทฯ ยังเปิดตัว [Free Email Forwarding RESTful API](email-api) พร้อมเอกสารครบถ้วนและตัวอย่างคำขอและการตอบสนองแบบเรียลไทม์ รวมถึงรองรับเว็บฮุกส์ด้วย
-**สิงหาคม 2020**: Forward Email เพิ่มการรองรับระบบการตรวจสอบอีเมล [Authenticated Received Chain](arc) ("ARC") ซึ่งช่วยเสริมความปลอดภัยและความน่าเชื่อถือในการส่งอีเมลให้แข็งแกร่งยิ่งขึ้น
+**สิงหาคม 2020**: Forward Email เพิ่มการรองรับระบบการตรวจสอบอีเมล [Authenticated Received Chain](/faq#do-you-support-email-best-practices) ("ARC") ซึ่งช่วยเสริมความปลอดภัยและความน่าเชื่อถือในการส่งอีเมลให้แข็งแกร่งยิ่งขึ้น
 
 **23 พฤศจิกายน 2020**: Forward Email เปิดตัวอย่างเป็นทางการหลังจากสิ้นสุดโปรแกรมเบต้า ถือเป็นก้าวสำคัญในการพัฒนาของแพลตฟอร์ม
 
@@ -92,7 +92,7 @@ Forward Email ก่อตั้งโดย **Nicholas Baugh** ในปี 201
 
 **พฤศจิกายน 2023**: Forward Email เปิดตัวฟีเจอร์ [**การจัดเก็บกล่องจดหมายแบบเข้ารหัส**](/blog/docs/best-quantum-safe-encrypted-email-service) สำหรับ [การรองรับ IMAP](/faq#do-you-support-receiving-email-with-imap) ซึ่งเป็นก้าวสำคัญในการพัฒนาความเป็นส่วนตัวและความปลอดภัยของอีเมล
 
-**ธันวาคม 2023**: บริษัท [เพิ่มการรองรับ](/faq#do-you-support-pop3) สำหรับ [POP3](https://en.wikipedia.org/wiki/Post_Office_Protocol), [passkeys และ WebAuthn](/faq#do-you-support-passkeys-and-webauthn), การตรวจสอบ [time to inbox](/faq#i) และ [OpenPGP สำหรับการจัดเก็บ IMAP](/faq#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd)
+**ธันวาคม 2023**: บริษัท [เพิ่มการรองรับ](/faq#do-you-support-pop3) สำหรับ [POP3](https://en.wikipedia.org/wiki/Post_Office_Protocol), [passkeys และ WebAuthn](/faq#do-you-support-passkeys-and-webauthn), การตรวจสอบ [time to inbox](/tti) และ [OpenPGP สำหรับการจัดเก็บ IMAP](/faq#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd)
 
 ### 2024 - การปรับแต่งบริการและฟีเจอร์ขั้นสูง {#2024---service-optimization-and-advanced-features}
 

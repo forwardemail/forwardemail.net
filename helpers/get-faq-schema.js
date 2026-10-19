@@ -7,6 +7,7 @@ const fs = require('node:fs');
 
 const MarkdownIt = require('markdown-it');
 const markdownItAttrs = require('markdown-it-attrs');
+const markdownItEmoji = require('markdown-it-emoji');
 const markdownItGitHubAlerts = require('markdown-it-github-alerts');
 const ms = require('ms');
 const sanitizeHtml = require('sanitize-html');
@@ -89,6 +90,9 @@ const QUESTION_PREFIXES = [
 // (avoids the full helpers/markdown.js which has heavier dependencies)
 const md = new MarkdownIt({ html: true, linkify: true });
 md.use(markdownItGitHubAlerts);
+// Emoji shortcodes (`:tangerine:`) as the page renders them (helpers/markdown),
+// so an answer reads the same in the structured data as on the page
+md.use(markdownItEmoji);
 // Headings inside answers pin their anchor as `{#id}`, which every translated
 // FAQ file uses. Without this the braces render as visible text and end up in
 // the structured data Google reads. `id` is the only attribute allowed, so the
@@ -217,11 +221,15 @@ function parseFaqMarkdown(faqFilePath) {
  * Build FAQ structured data (JSON-LD) from parsed Q&A pairs.
  * Renders markdown answers to HTML, then sanitizes to only
  * Google-allowed tags per the FAQPage spec.
- * Ensures question names end with "?" when they are interrogative.
+ * Ensures English question names end with "?" when they are interrogative,
+ * as the FAQ page shows them (helpers/get-faq-index.js); other languages keep
+ * their heading as written (the English interrogatives matched "Was ist" in
+ * German).
  * @param {Array<Object>} pairs - Array of { question, answerMd } objects
+ * @param {Object} [options] - { isEnglish } (default true)
  * @returns {Object} - FAQPage JSON-LD structured data object
  */
-function buildFaqSchema(pairs) {
+function buildFaqSchema(pairs, { isEnglish = true } = {}) {
   const mainEntity = [];
 
   for (const pair of pairs) {
@@ -240,7 +248,8 @@ function buildFaqSchema(pairs) {
     // Strip the pinned anchor before it reaches the structured data. Google
     // shows this name verbatim in rich results, so `{#can-i-forward-email...}`
     // was being published as part of the question.
-    const name = ensureQuestionMark(splitHeadingAttr(pair.question).text);
+    const { text } = splitHeadingAttr(pair.question);
+    const name = isEnglish ? ensureQuestionMark(text) : text;
 
     // Only include pairs that have both a question and a non-empty answer
     if (name && cleanHtml) {
@@ -282,17 +291,33 @@ function isValidFaqSchema(schema) {
 
 /**
  * The cache key for a given FAQ file: the prefix, the parser fingerprint, then
- * a fingerprint of the file.
+ * a fingerprint of the file (and a suffix when its questions are kept as
+ * written, as for a locale that falls back to the English file).
  *
  * @param {string} faqFilePath
+ * @param {boolean} [isEnglish] - whether "?" is added (default true)
  * @returns {string}
  */
-function getCacheKey(faqFilePath) {
-  return `${CACHE_KEY}:${PARSER_HASH}:${getSourceHash(faqFilePath)}`;
+function getCacheKey(faqFilePath, isEnglish = true) {
+  return `${CACHE_KEY}:${PARSER_HASH}:${getSourceHash(faqFilePath)}${
+    isEnglish ? '' : ':as-written'
+  }`;
 }
 
-async function getFaqSchema(client, faqFilePath, logger) {
-  const cacheKey = getCacheKey(faqFilePath);
+/**
+ * @param {Object} client - Redis client
+ * @param {string} faqFilePath - the markdown the page renders
+ * @param {Object} [logger]
+ * @param {string} [locale] - the page's locale: "?" is added only in English,
+ *   as the page does (helpers/get-faq-index.js); without one, the file decides
+ *   (the translations are index-<locale>.md)
+ * @returns {Promise<Object>}
+ */
+async function getFaqSchema(client, faqFilePath, logger, locale) {
+  const isEnglish = locale
+    ? locale === 'en'
+    : !/index-[a-z]{2}\.md$/.test(faqFilePath);
+  const cacheKey = getCacheKey(faqFilePath, isEnglish);
 
   // Single-flight: the markdown parse + sanitize is CPU-bound, so on a cold key
   // one caller builds the schema and concurrent requests across every worker
@@ -305,7 +330,7 @@ async function getFaqSchema(client, faqFilePath, logger) {
     ttlSeconds: CACHE_TTL_SECONDS,
     logger,
     shouldCache: isValidFaqSchema,
-    compute: () => buildFaqSchema(parseFaqMarkdown(faqFilePath))
+    compute: () => buildFaqSchema(parseFaqMarkdown(faqFilePath), { isEnglish })
   });
 }
 

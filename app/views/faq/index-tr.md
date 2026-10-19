@@ -16,7 +16,9 @@
   * [Microsoft Outlook](#microsoft-outlook)
   * [Apple Mail](#apple-mail)
   * [eM Client](#em-client)
+  * [Webmail istemcisi sunuyor musunuz?](#do-you-offer-a-webmail-client)
   * [Webmail'de alan adımdaki herhangi bir adresten gönderebilir miyim](#can-i-send-from-any-address-on-my-domain-in-webmail)
+  * [Masaüstü ve mobil uygulamalarınız var mı?](#do-you-have-desktop-and-mobile-apps)
   * [Terminal uygulamanız var mı](#do-you-have-a-terminal-app)
   * [Mobil Cihazlar](#mobile-devices)
   * [Sendmail SMTP Relay Yapılandırması](#sendmail-smtp-relay-configuration)
@@ -75,6 +77,7 @@
   * [Sieve e-posta filtrelemeyi destekliyor musunuz](#do-you-support-sieve-email-filtering)
   * [MTA-STS destekliyor musunuz](#do-you-support-mta-sts)
   * [Parola anahtarları ve WebAuthn destekliyor musunuz](#do-you-support-passkeys-and-webauthn)
+  * [İki faktörlü kimlik doğrulama (2FA) destekleniyor mu?](#is-two-factor-authentication-2fa-supported)
   * [E-posta en iyi uygulamalarını destekliyor musunuz](#do-you-support-email-best-practices)
   * [Bounce webhooks destekliyor musunuz](#do-you-support-bounce-webhooks)
   * [Webhooks destekliyor musunuz](#do-you-support-webhooks)
@@ -95,6 +98,7 @@
   * [E-posta kimlik doğrulama başlıklarını koruyor musunuz](#do-you-preserve-email-authentication-headers)
   * [Orijinal e-posta başlıklarını koruyor ve sahteciliği önlüyor musunuz](#do-you-preserve-original-email-headers-and-prevent-spoofing)
   * [Spam ve kötüye kullanımı nasıl önlüyorsunuz](#how-do-you-protect-against-spam-and-abuse)
+  * [Yetişkin içerik, oltalama, yürütülebilir dosya veya virüs taramasını devre dışı bırakabilir miyim?](#can-i-disable-adult-content-phishing-executable-or-virus-scanning)
   * [E-posta içeriğini diskte saklıyor musunuz](#do-you-store-email-content-on-disk)
   * [Sistem çökmeleri sırasında e-posta içeriği açığa çıkabilir mi](#can-email-content-be-exposed-during-system-crashes)
   * [E-posta altyapınıza kimler erişebilir](#who-has-access-to-your-email-infrastructure)
@@ -104,6 +108,7 @@
 * [Alan adım için gelen e-postalar nerede işlenir ve depolanır, ve ne kadar süreyle](#where-is-inbound-email-for-my-domain-processed-and-stored-and-for-how-long)
 * [Kendi DPA'mda Forward Email'i bir alt işleyici olarak nasıl listelerim](#how-do-i-list-forward-email-as-a-subprocessor-in-my-own-dpa)
   * [Veri ihlali bildirimlerini nasıl yönetiyorsunuz](#how-do-you-handle-data-breach-notifications)
+  * [Bir güvenlik açığını nasıl bildiririm?](#how-do-i-report-a-security-vulnerability)
   * [Bir test ortamı sunuyor musunuz](#do-you-offer-a-test-environment)
   * [İzleme ve uyarı araçları sağlıyor musunuz](#do-you-provide-monitoring-and-alerting-tools)
   * [Yüksek kullanılabilirliği nasıl sağlıyorsunuz](#how-do-you-ensure-high-availability)
@@ -136,6 +141,7 @@
   * [Bu iyi test edildi mi](#is-this-well-tested)
   * [SMTP yanıt mesajlarını ve kodlarını iletiyor musunuz](#do-you-pass-along-smtp-response-messages-and-codes)
   * [Spam göndericileri nasıl engelliyor ve iyi bir e-posta yönlendirme itibarı sağlıyorsunuz](#how-do-you-prevent-spammers-and-ensure-good-email-forwarding-reputation)
+  * [Bir alan adının gerçekten Forward Email kullandığını nasıl doğrulayabilirim?](#how-can-i-verify-a-domain-is-using-forward-email)
   * [Alan adlarında DNS sorgularını nasıl yapıyorsunuz](#how-do-you-perform-dns-lookups-on-domain-names)
 * [Hesap ve Faturalandırma](#account-and-billing)
   * [Hesabımı nasıl silerim](#how-do-i-delete-my-account)
@@ -317,11 +323,31 @@ Her şey bellekte yapılır ve [kaynak kodumuz GitHub'da mevcuttur](https://gith
 8. Adınızı girin ve bir hesap adı seçin.
 9. **Bitir** butonuna tıklayın.
 
+### Webmail istemcisi sunuyor musunuz? {#do-you-offer-a-webmail-client}
+
+Evet.  Resmi, açık kaynaklı webmail istemcimize <a href="https://mail.forwardemail.net" target="_blank" rel="noopener noreferrer">mail.forwardemail.net</a> adresinden ulaşabilirsiniz.  Kurulum gerekmez: herhangi bir tarayıcıdan bir takma ad adresi ve onun için oluşturulan şifreyle (IMAP, SMTP ve POP3 için kullanılan kimlik bilgilerinin aynısı) giriş yapın.
+
+Şubat 2026'da kullanıma sunuldu ve ayrıca [CalDAV Zamanlama Uzantıları (RFC 6638)](https://www.rfc-editor.org/rfc/rfc6638.html), [DANE/TLSA (RFC 6698)](https://en.wikipedia.org/wiki/DNS-based_Authentication_of_Named_Entities) ve tek tıkla DNS kurulumu için [Domain Connect](https://domainconnect.org) desteği sunar; IMAP, CalDAV ve CardDAV için gerçek zamanlı anlık bildirimler WebSockets üzerinden iletilir.
+
+Kaynak kodu tamamen açık kaynaklıdır ve GitHub'da <a href="https://github.com/forwardemail/mail.forwardemail.net" target="_blank" rel="noopener noreferrer">github.com/forwardemail/mail.forwardemail.net</a> adresinde bulunur.
+
+<a href="/blog/docs/webmail">Webmail kılavuzumuz</a>; giriş yapmayı, birden fazla hesap kullanmayı ve webmail'in bu web sitesinin kontrol paneliyle nasıl birlikte çalıştığını anlatır.
+
 ### Webmail'de alan adımdaki herhangi bir adresten gönderebilir miyim? {#can-i-send-from-any-address-on-my-domain-in-webmail}
 
 Evet. <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">Hesabım <i class="fa fa-angle-right"></i> Alan Adları</a> <i class="fa fa-angle-right"></i> Gelişmiş Ayarlar <i class="fa fa-angle-right"></i> Tüm Parolaları Kapsayan Parolalar bölümünde bir catch-all parolası oluşturun, ardından bunu webmail'de **Settings <i class="fa fa-angle-right"></i> General <i class="fa fa-angle-right"></i> Send from any address** altına kaydedin. İleti yazarken **From** menüsünden **Other address @yourdomain** seçeneğini seçin ve o alan adındaki herhangi bir adresi yazın.
 
 Catch-all veya joker karakterli bir hesap olarak giriş yapmazsınız. Catch-all parolası yalnızca gönderebilir, bu yüzden kopya kullandığınız hesabın Gönderilenler klasörüne gider. Parola yalnızca eklediğiniz cihazda saklanır. Tüm adımlar için <a href="/blog/docs/webmail#send-from-any-address-on-your-domain">webmail kılavuzumuza</a> bakın.
+
+### Masaüstü ve mobil uygulamalarınız var mı? {#do-you-have-desktop-and-mobile-apps}
+
+Evet.  Webmail istemcimizle aynı açık kaynaklı projeden derlenen yerel masaüstü ve mobil uygulamalar mevcuttur ve tümü <a href="/download" target="_blank" rel="noopener noreferrer">indirme sayfamızdan</a> indirilebilir:
+
+* **Masaüstü**: macOS (Apple Silicon ve Intel), Windows (x64 ve ARM64, `.exe` veya `.msi` yükleyicisi olarak) ve Linux (AppImage, `.deb`, `.rpm` ve Snap; her biri x64 ve ARM64 için).
+* **Mobil**: Android (APK ve alternatif bir F-Droid derlemesi) ve iOS.
+* **Terminal**: macOS, Linux ve Windows (x64 ve ARM64) için `forwardemail` komutu. Bkz. [Terminal uygulamanız var mı?](#do-you-have-a-terminal-app).
+
+Tüm sürüm derlemeleri GitHub'da <a href="https://github.com/forwardemail/mail.forwardemail.net/releases" target="_blank" rel="noopener noreferrer">github.com/forwardemail/mail.forwardemail.net/releases</a> adresinde yayımlanır ve indirme sayfası, sürüm sağlama toplamlarını `SHA256SUMS.txt` dosyasıyla doğrulamanıza olanak tanır.
 
 ### Terminal uygulamanız var mı? {#do-you-have-a-terminal-app}
 
@@ -1917,7 +1943,7 @@ Gelişmiş ayarlar <i class="fa fa-angle-right"></i> Özel Kayıtlar</td>
     <br />
     <code>forward-email=hello:first@gmail.com,second@gmail.com</code>
     <br />
-    Bu yapılandırmayla <code>hello@example.com</code> adresine gönderilen e-postalar <code>second@gmail.com</code> (catch-all) adresine **yönlendirilmez**, sadece <code>first@gmail.com</code> adresine teslim edilir.
+    Bu yapılandırmayla <code>hello@example.com</code> adresine gönderilen e-postalar <code>second@gmail.com</code> (catch-all) adresine <strong>yönlendirilmez</strong>, sadece <code>first@gmail.com</code> adresine teslim edilir.
   </span>
 </div>
 
@@ -2654,7 +2680,7 @@ Evet. Tüm ücretli planlar giden SMTP içerir ve bu **sınırsızdır**: günl�
     Önemli:
   </strong>
   <span>
-    Giden SMTP'yi IP itibarımızı ve e-postalarınızın teslim edilebilirliğini korumak için her alan adı için ayrı ayrı onaylıyoruz. Birçok alan adı, DNS kayıtları doğrulandığı anda onaylanır; geri kalanları ekibimiz genellikle 24 saat içinde inceler. Ayrıntılar için [SMTP'yi etkinleştirmek için onay gerekiyor mu](#do-i-need-approval-to-enable-smtp) bölümüne bakın.
+    Giden SMTP'yi IP itibarımızı ve e-postalarınızın teslim edilebilirliğini korumak için her alan adı için ayrı ayrı onaylıyoruz. Birçok alan adı, DNS kayıtları doğrulandığı anda onaylanır; geri kalanları ekibimiz genellikle 24 saat içinde inceler. Ayrıntılar için <a href="/faq#do-i-need-approval-to-enable-smtp">SMTP'yi etkinleştirmek için onay gerekiyor mu</a> bölümüne bakın.
   </span>
 </div>
 
@@ -2935,7 +2961,7 @@ Sieve betiklerini birkaç yolla yönetebilirsiniz:
 
 2. **ManageSieve Protokolü**: Thunderbird'in Sieve eklentisi veya [sieve-connect](https://github.com/philpennock/sieve-connect) gibi herhangi bir ManageSieve uyumlu istemci ile `imap.forwardemail.net` adresine bağlanın. STARTTLS ile `2190` portunu veya implicit TLS ile `4190` portunu kullanın.
 
-3. **API**: Betikleri programlı olarak yönetmek için [REST API](/api#sieve-scripts) kullanın.
+3. **API**: Betikleri programlı olarak yönetmek için [REST API](/email-api) kullanın.
 
 <div class="alert my-3 alert-primary">
   <i class="fa fa-info-circle font-weight-bold"></i>
@@ -2978,6 +3004,12 @@ Passkey’ler hakkında daha fazla bilgi için aşağıdaki bağlantılara bakab
 * [Uygulamalarınıza ve web sitelerinize passkey ile giriş yapın](https://support.google.com/android/answer/14124480?hl=en) (Google)
 * [iPhone’da uygulamalara ve web sitelerine passkey ile giriş yapma](https://support.apple.com/guide/iphone/use-passkeys-to-sign-in-to-apps-and-websites-iphf538ea8d0/ios) (Apple)
 * [Passkey hakkında Vikipedi makalesi](https://en.wikipedia.org/wiki/Passkey_\(credential\))
+### İki faktörlü kimlik doğrulama (2FA) destekleniyor mu? {#is-two-factor-authentication-2fa-supported}
+
+Evet, hesabınıza (<a href="https://mail.forwardemail.net" target="_blank" rel="noopener noreferrer">webmail</a> dahil) giriş için, kurtarma anahtarlarıyla desteklenen tek kullanımlık kodlar aracılığıyla.
+
+2FA, üçüncü taraf istemcilerden (Thunderbird, Apple Mail vb.) yapılan IMAP, SMTP, POP3, CalDAV veya CardDAV bağlantılarına değil, yalnızca hesap girişinizin kendisine uygulanır.  Bu istemciler bunun yerine takma ada özel oluşturulmuş bir şifreyle kimlik doğrular, bu nedenle bu istemci sınıfı için şu anda 2FA'ya eşdeğer bir standart yoktur. Bunun değişmesini istiyorsanız GitHub'da bir özellik isteği açın.
+
 ### E-posta en iyi uygulamalarını destekliyor musunuz {#do-you-support-email-best-practices}
 
 Evet. Tüm planlarda SPF, DKIM, DMARC, ARC ve SRS için yerleşik destek sağlıyoruz. Ayrıca, bu spesifikasyonların orijinal yazarları ve diğer e-posta uzmanları ile kapsamlı çalışmalar yaparak mükemmellik ve yüksek teslim edilebilirlik sağladık.
@@ -4073,6 +4105,17 @@ Kaynaklar:
 * <https://www.datapacket.com/datacenters/denver> (DDoS koruma detayları)
 * <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/abuse-prevention-by-user-id.js>
 
+### Yetişkin içerik, oltalama, yürütülebilir dosya veya virüs taramasını devre dışı bırakabilir miyim? {#can-i-disable-adult-content-phishing-executable-or-virus-scanning}
+
+Evet. Her alan adı, gelen bağlantıları ve ekleri kendi geliştirdiğimiz açık kaynaklı spam, oltalama ve virüs koruması olan <a href="https://spamscanner.net" target="_blank" rel="noopener noreferrer">Spam Scanner</a> ile tarar (Spam Scanner, Forward Email'in geri kalanıyla aynı gizlilik öncelikli, sıfır kayıt politikalarını izler). Dört kategorinin her biri <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">Hesabım <i class="fa fa-angle-right"></i> Alan Adları</a> <i class="fa fa-angle-right"></i> Gelişmiş Ayarlar bölümünden bağımsız olarak açılıp kapatılabilir:
+
+* **Yetişkin içerik koruması**: devre dışı bırakılırsa bağlantılar yetişkinlere yönelik içerik açısından taranmaz.
+* **Oltalama koruması**: devre dışı bırakılırsa bağlantılar kötü amaçlı yazılım, alan adı değiştirme, IDN homograf saldırıları veya genel olarak oltalama açısından taranmaz.
+* **Yürütülebilir dosya koruması**: devre dışı bırakılırsa bağlantılar ve ekler potansiyel olarak kötü amaçlı yürütülebilir dosya türleri, uzantılar, adlar, başlıklar veya IDN homograf saldırıları açısından taranmaz.
+* **Virüs koruması**: devre dışı bırakılırsa ekler truva atları, virüsler, kötü amaçlı yazılımlar veya diğer kötü amaçlı tehditler açısından (ClamAV ile) taranmaz.
+
+Dördü de varsayılan olarak etkindir. Birini devre dışı bırakmak yalnızca o kategoriye ait taramayı kapatır.  Spam filtrelemeyi bütünüyle devre dışı bırakmaz ve [belirli bir takma adı devre dışı bırakmaktan](#can-i-disable-specific-aliases) ayrıdır. Bir kategoriyi devre dışı bırakmanın en yaygın nedeni, trafiğinize özgü bir yanlış pozitif örüntüsüdür (ör. yetişkin içerik taramasının, yetişkin temalı bir mekân veya işletmeye ait meşru posta listelerini işaretlemesi).
+
 ### E-posta içeriğini diskte saklıyor musunuz {#do-you-store-email-content-on-disk}
 
 > \[!IMPORTANT]
@@ -4295,6 +4338,10 @@ Kaynaklar:
 * <https://forwardemail.net/technical-whitepaper.pdf#page=59>
 * <https://forwardemail.net/gdpr>
 
+### Bir güvenlik açığını nasıl bildiririm? {#how-do-i-report-a-security-vulnerability}
+
+Bir güvenlik açığı keşfederseniz lütfen hemen <security@forwardemail.net> adresine bildirin. Bu, genel destekten ayrı, güvenlik açığı ve hata bildirimlerine ayrılmış bir adrestir.  Doğrudan bu adrese e-posta göndermek, bildiriminizin bununla ilgilenmekten sorumlu ekibe ulaşmasını sağlar.
+
 ### Test ortamı sunuyor musunuz {#do-you-offer-a-test-environment}
 
 Forward Email'in teknik dokümantasyonu açıkça özel bir sandbox modundan bahsetmemektedir. Ancak, potansiyel test yaklaşımları şunları içerebilir:
@@ -4435,7 +4482,7 @@ Bu bölüm, yukarıdaki [E-posta iletme sisteminiz nasıl çalışıyor](#how-do
    * Çıkarılan yönlendirme yapılandırması üzerinde özyinelemeli olarak yineleme yaparak global yönlendirme, regex tabanlı yönlendirme ve diğer desteklenen tüm yönlendirme yapılandırmalarını belirliyoruz – bunlar artık "Yönlendirme Adreslerimiz" olarak bilinir.
    * Her Yönlendirme Adresi için bir özyinelemeli sorgulamayı destekliyoruz (bu, verilen adres üzerinde bu işlem dizisini başlatır). Özyinelemeli eşleşme bulunursa, üst sonuç Yönlendirme Adreslerinden kaldırılır ve alt adresler eklenir.
    * Yönlendirme Adresleri benzersizlik açısından ayrıştırılır (aynı adrese yinelenen gönderimler yapmak veya gereksiz SMTP istemci bağlantıları oluşturmak istemiyoruz).
-   * Her Yönlendirme Adresi için, alan adını API uç noktamız `/v1/max-forwarded-addresses` ile sorguluyoruz (bir takma ad başına alanın kaç adrese e-posta yönlendirmesine izin verildiğini belirlemek için, örneğin varsayılan 10 – bkz. [takma ad başına yönlendirme sayısı sınırı var mı](#is-there-a-limit-on-the-number-of-email-addresses-i-can-forward-to-per-alias) bölümü). Bu sınır aşılırsa, 550 hatası oluşur ve gönderen bu alıcı için bir bounce alır.
+   * Her Yönlendirme Adresi için, alan adını API uç noktamız `/v1/max-forwarded-addresses` ile sorguluyoruz (bir takma ad başına alanın kaç adrese e-posta yönlendirmesine izin verildiğini belirlemek için, örneğin varsayılan 10 – bkz. [takma ad başına yönlendirme sayısı sınırı var mı](#is-there-a-maximum-limit-on-the-number-of-email-addresses-i-can-forward-to-per-alias) bölümü). Bu sınır aşılırsa, 550 hatası oluşur ve gönderen bu alıcı için bir bounce alır.
    * Orijinal alıcının ayarlarını API uç noktamız `/v1/settings` ile sorguluyoruz; bu, ücretli kullanıcılar için sorgulamayı destekler (ücretsiz kullanıcılar için yedekleme ile). Bu, `port` (Sayı, örn. `25`), `has_adult_content_protection` (Boolean), `has_phishing_protection` (Boolean), `has_executable_protection` (Boolean) ve `has_virus_protection` (Boolean) için gelişmiş ayarları içeren bir yapılandırma nesnesi döndürür.
    * Bu ayarlara dayanarak, Spam Tarayıcı sonuçlarını kontrol ediyoruz ve herhangi bir hata oluşursa, mesaj 554 hata kodu ile reddedilir (örneğin, `has_virus_protection` etkinse, Spam Tarayıcı sonuçlarını virüsler için kontrol ederiz). Tüm ücretsiz plan kullanıcıları, yetişkin içeriği, oltalama, yürütülebilir dosyalar ve virüslere karşı kontroller için varsayılan olarak dahil edilir. Ücretli plan kullanıcılarının tamamı da varsayılan olarak dahil edilir, ancak bu yapılandırma Forward Email kontrol panelindeki Alan Ayarları sayfasında değiştirilebilir).
 
@@ -4755,6 +4802,7 @@ Aşağıdaki alan adı uzantıları, Umbrella Popülerlik Listesinde olup olmama
   <li class="list-inline-item"><code class="notranslate">sch.uk</code></li>
   <li class="list-inline-item"><code class="notranslate">ukaea.uk</code></li>
 </ul>
+
 Ayrıca bu [marka ve kurumsal üst düzey alan adları](https://en.wikipedia.org/wiki/List_of_Internet_top-level_domains#Brand_and_corporate_top-level_domains) varsayılan olarak izin verilenler listesine eklenmiştir (örneğin Apple Card banka ekstreleri için `applecard.apple` içindeki `apple`):
 
 <ul class="list-inline">
@@ -5180,6 +5228,7 @@ Ayrıca bu [marka ve kurumsal üst düzey alan adları](https://en.wikipedia.org
   <li class="list-inline-item"><code class="notranslate">zara</code></li>
   <li class="list-inline-item"><code class="notranslate">zippo</code></li>
 </ul>
+
 18 Mart 2025 itibarıyla, bu listeye şu Fransız denizaşırı topraklarını da ekledik ([bu GitHub talebine göre](https://github.com/forwardemail/forwardemail.net/issues/327)):
 
 <ul class="list-inline">
@@ -5366,6 +5415,7 @@ Bu yeni kural, ücretsiz planımızda yalnızca aşağıdaki alan adı uzantıla
   <li class="list-inline-item"><code class="notranslate">yt</code></li>
   <li class="list-inline-item"><code class="notranslate">za</code></li>
 </ul>
+
 ### Bir gri listeye sahip misiniz? {#do-you-have-a-greylist}
 
 Evet, çok gevşek bir [e-posta gri listeleme](https://en.wikipedia.org/wiki/Greylisting_\(email\)) politikamız var. Gri listeleme yalnızca izin verilenler listemizde olmayan göndericiler için geçerlidir ve önbelleğimizde 30 gün boyunca saklanır.
@@ -5543,6 +5593,7 @@ Evet, 5 Mayıs 2020 itibarıyla bu özelliği ekledik. Şu anda bu özellik alan
     Eğer ücretli bir plandaysanız (gelişmiş gizlilik koruması özellikli), lütfen <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Hesabım <i class="fa fa-angle-right"></i> Alan Adları</a> sayfasına gidin, alan adınızın yanındaki "Kurulum" seçeneğine tıklayın ve ardından "Ayarlar" seçeneğine tıklayın. Ücretli planlar hakkında daha fazla bilgi almak isterseniz <a class="alert-link" rel="noopener noreferrer" href="/private-business-email">Fiyatlandırma</a> sayfamıza bakabilirsiniz. Aksi takdirde aşağıdaki talimatları izlemeye devam edebilirsiniz.
   </span>
 </div>
+
 Eğer ücretsiz plandaysanız, aşağıda gösterildiği gibi yeni bir DNS <strong class="notranslate">TXT</strong> kaydı ekleyin, ancak portu 25'ten istediğiniz porta değiştirin.
 
 Örneğin, `example.com` adresine giden tüm e-postaların alias alıcıların SMTP portu 1337'ye yönlendirilmesini istiyorsam:
@@ -5620,6 +5671,36 @@ Evet, kesinlikle. Örneğin, `hello@example.com` adresine bir e-posta gönderiyo
 ### Spam gönderenleri nasıl engelliyorsunuz ve iyi bir e-posta yönlendirme itibarı nasıl sağlıyorsunuz? {#how-do-you-prevent-spammers-and-ensure-good-email-forwarding-reputation}
 
 Yukarıdaki [E-posta yönlendirme sisteminiz nasıl çalışıyor](#how-does-your-email-forwarding-system-work), [E-posta teslim sorunlarını nasıl ele alıyorsunuz](#how-do-you-handle-email-delivery-issues) ve [IP adreslerinizin engellenmesini nasıl yönetiyorsunuz](#how-do-you-handle-your-ip-addresses-becoming-blocked) bölümlerimize bakınız.
+
+### Bir alan adının gerçekten Forward Email kullandığını nasıl doğrulayabilirim? {#how-can-i-verify-a-domain-is-using-forward-email}
+
+Bir alan adının herkese açık DNS kayıtları, hizmetimizi kullanıp kullanmadığını ve hangi planda olduğunu gösterir.  Bu, herkesin herhangi bir alan adı için yapabileceği tarafsız bir teknik sorgudur; hesap gerektirmez ve alan adı sahibinin iş birliğine ihtiyaç duymaz.
+
+**Önce MX kayıtlarını kontrol edin.**
+
+```sh
+dig example.com mx +short
+```
+
+Yanıtta `mx1.forwardemail.net` ve `mx2.forwardemail.net` yoksa alan adı posta almak için hizmetimizi **kullanmıyordur** ve o postanın operatörü biz değiliz.
+
+**Ardından planları ayırt etmek için TXT kayıtlarını kontrol edin.**
+
+```sh
+dig example.com txt +short
+```
+
+| TXT değeri | Anlamı |
+| --- | --- |
+| `forward-email=user@example.com` | Ücretsiz plan.  Değer, postanın iletildiği düz metin hedef adrestir. |
+| `forward-email-site-verification=XXXXXXXXXX` | Ücretli plan.  Yönlendirme yapılandırması veritabanımızda `XXXXXXXXXX` kimliği altında tutulur ve herkese açık değildir. |
+| İkisi de yok | Alan adı yönlendirme hizmetimiz için yapılandırılmamıştır. |
+
+> \[!NOTE]
+> Hizmetimiz DNS düzeyinde bu kayıtlarla çalışır; bu yüzden aynı sorgu "bu alan adı sizin mi", "ücretsiz mi ücretli mi" ve ücretsiz planda "postası nereye gidiyor" sorularını yanıtlar.  Teslimat yolunun kendisi için [yönlendirme sistemimizin nasıl çalıştığına](#how-does-your-email-forwarding-system-work) bakın.
+
+> \[!TIP]
+> Bir alan adı kayıt şirketi olmadığımız için geçmiş DNS kayıtlarını tutmuyoruz.  Bir alan adını kimin kaydettiğini veya ad sunucularını kimin yönettiğini öğrenmek için `whois example.com` ve `dig example.com ns` komutlarını kullanın ya da doğrudan kayıt şirketine sorun.
 
 ### Alan adlarında DNS sorgularını nasıl yapıyorsunuz? {#how-do-you-perform-dns-lookups-on-domain-names}
 
@@ -5889,6 +5970,7 @@ Ya da, bunları iki ayrı satırda belirtebilirsiniz, şöyle:
     </tr>
   </tbody>
 </table>
+
 Karar sizin!
 
 ### Her takma ad için iletebileceğim e-posta adresi sayısında maksimum bir sınır var mı? {#is-there-a-maximum-limit-on-the-number-of-email-addresses-i-can-forward-to-per-alias}

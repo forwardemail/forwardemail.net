@@ -16,7 +16,9 @@
   * [Microsoft Outlook](#microsoft-outlook)
   * [Apple Mail](#apple-mail)
   * [eM Client](#em-client)
+  * [Nabízíte webmailového klienta](#do-you-offer-a-webmail-client)
   * [Mohu ve webmailu odesílat z libovolné adresy na své doméně](#can-i-send-from-any-address-on-my-domain-in-webmail)
+  * [Máte desktopové a mobilní aplikace](#do-you-have-desktop-and-mobile-apps)
   * [Máte terminálovou aplikaci](#do-you-have-a-terminal-app)
   * [Mobilní zařízení](#mobile-devices)
   * [Konfigurace Sendmail SMTP Relay](#sendmail-smtp-relay-configuration)
@@ -75,6 +77,7 @@
   * [Podporujete Sieve filtrování emailů](#do-you-support-sieve-email-filtering)
   * [Podporujete MTA-STS](#do-you-support-mta-sts)
   * [Podporujete passkeys a WebAuthn](#do-you-support-passkeys-and-webauthn)
+  * [Je podporována dvojfaktorová autentizace (2FA)](#is-two-factor-authentication-2fa-supported)
   * [Podporujete nejlepší praktiky emailu](#do-you-support-email-best-practices)
   * [Podporujete bounce webhooks](#do-you-support-bounce-webhooks)
   * [Podporujete webhooks](#do-you-support-webhooks)
@@ -95,6 +98,7 @@
   * [Zachováváte hlavičky autentizace emailu](#do-you-preserve-email-authentication-headers)
   * [Zachováváte původní hlavičky emailu a zabraňujete spoofingu](#do-you-preserve-original-email-headers-and-prevent-spoofing)
   * [Jak chráníte proti spamu a zneužití](#how-do-you-protect-against-spam-and-abuse)
+  * [Mohu vypnout kontrolu obsahu pro dospělé, phishingu, spustitelných souborů nebo virů](#can-i-disable-adult-content-phishing-executable-or-virus-scanning)
   * [Ukládáte obsah emailů na disk](#do-you-store-email-content-on-disk)
   * [Může být obsah emailu vystaven při havárii systému](#can-email-content-be-exposed-during-system-crashes)
   * [Kdo má přístup k vaší emailové infrastruktuře](#who-has-access-to-your-email-infrastructure)
@@ -104,6 +108,7 @@
 * [Kde jsou příchozí e‑maily pro mou doménu zpracovávány a ukládány a jak dlouho](#where-is-inbound-email-for-my-domain-processed-and-stored-and-for-how-long)
 * [Jak uvedu Forward Email jako subzpracovatele ve své vlastní DPA](#how-do-i-list-forward-email-as-a-subprocessor-in-my-own-dpa)
   * [Jak řešíte oznámení o narušení dat](#how-do-you-handle-data-breach-notifications)
+  * [Jak nahlásit bezpečnostní zranitelnost](#how-do-i-report-a-security-vulnerability)
   * [Nabízíte testovací prostředí](#do-you-offer-a-test-environment)
   * [Poskytujete nástroje pro monitorování a upozornění](#do-you-provide-monitoring-and-alerting-tools)
   * [Jak zajišťujete vysokou dostupnost](#how-do-you-ensure-high-availability)
@@ -136,6 +141,7 @@
   * [Je to dobře otestované](#is-this-well-tested)
   * [Přenášíte SMTP odpovědi a kódy](#do-you-pass-along-smtp-response-messages-and-codes)
   * [Jak zabraňujete spammerům a zajišťujete dobrou reputaci přeposílání emailů](#how-do-you-prevent-spammers-and-ensure-good-email-forwarding-reputation)
+  * [Jak mohu ověřit, že doména skutečně používá Forward Email](#how-can-i-verify-a-domain-is-using-forward-email)
   * [Jak provádíte DNS dotazy na doménová jména](#how-do-you-perform-dns-lookups-on-domain-names)
 * [Účet a fakturace](#account-and-billing)
   * [Jak mohu smazat svůj účet](#how-do-i-delete-my-account)
@@ -317,11 +323,31 @@ Vše probíhá v paměti a [náš zdrojový kód je na GitHubu](https://github.c
 8. Zadejte své jméno a vyberte název účtu.
 9. Klikněte na **Dokončit**.
 
+### Nabízíte webmailového klienta {#do-you-offer-a-webmail-client}
+
+Ano.  Náš oficiální webmailový klient s otevřeným zdrojovým kódem je dostupný na <a href="https://mail.forwardemail.net" target="_blank" rel="noopener noreferrer">mail.forwardemail.net</a>.  Není potřeba nic instalovat: přihlaste se z libovolného prohlížeče pomocí adresy aliasu a jeho vygenerovaného hesla (stejné přihlašovací údaje, které se používají pro IMAP, SMTP a POP3).
+
+Byl spuštěn v únoru 2026 a podporuje také [CalDAV Scheduling Extensions (RFC 6638)](https://www.rfc-editor.org/rfc/rfc6638.html), [DANE/TLSA (RFC 6698)](https://en.wikipedia.org/wiki/DNS-based_Authentication_of_Named_Entities) a [Domain Connect](https://domainconnect.org) pro nastavení DNS jedním kliknutím, s push oznámeními v reálném čase pro IMAP, CalDAV a CardDAV doručovanými přes WebSockets.
+
+Zdrojový kód je plně open-source a je k dispozici na GitHubu na <a href="https://github.com/forwardemail/mail.forwardemail.net" target="_blank" rel="noopener noreferrer">github.com/forwardemail/mail.forwardemail.net</a>.
+
+Náš <a href="/blog/docs/webmail">průvodce webmailem</a> popisuje přihlášení, používání více účtů a to, jak webmail souvisí s ovládacím panelem tohoto webu.
+
 ### Mohu ve webmailu odesílat z libovolné adresy na své doméně {#can-i-send-from-any-address-on-my-domain-in-webmail}
 
 Ano. Vygenerujte catch-all heslo v <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">Můj účet <i class="fa fa-angle-right"></i> Domény</a> <i class="fa fa-angle-right"></i> Pokročilá nastavení <i class="fa fa-angle-right"></i> Catch-all hesla a pak ho uložte ve webmailu v **Settings <i class="fa fa-angle-right"></i> General <i class="fa fa-angle-right"></i> Send from any address**. Při psaní zprávy vyberte v nabídce **From** položku **Other address @yourdomain** a napište libovolnou adresu na této doméně.
 
 Nepřihlašujete se jako catch-all ani wildcard účet. Catch-all heslo umí jen odesílat, takže kopie se uloží do složky Odeslané účtu, který používáte. Ukládá se jen na zařízení, kde ho přidáte. Všechny kroky najdete v našem <a href="/blog/docs/webmail#send-from-any-address-on-your-domain">průvodci webmailem</a>.
+
+### Máte desktopové a mobilní aplikace {#do-you-have-desktop-and-mobile-apps}
+
+Ano.  Nativní aplikace jsou k dispozici pro počítače i mobilní zařízení, jsou postavené na stejném open-source projektu jako náš webmailový klient a všechny si je můžete stáhnout z naší <a href="/download" target="_blank" rel="noopener noreferrer">stránky ke stažení</a>:
+
+* **Desktop**: macOS (Apple Silicon a Intel), Windows (x64 a ARM64, jako instalátor `.exe` nebo `.msi`) a Linux (AppImage, `.deb`, `.rpm` a Snap, vždy pro x64 i ARM64).
+* **Mobilní zařízení**: Android (APK, s alternativním sestavením pro F-Droid) a iOS.
+* **Terminál**: příkaz `forwardemail` pro macOS, Linux a Windows (x64 a ARM64). Viz [Máte terminálovou aplikaci](#do-you-have-a-terminal-app).
+
+Všechna sestavení vydání jsou zveřejněna na GitHubu na <a href="https://github.com/forwardemail/mail.forwardemail.net/releases" target="_blank" rel="noopener noreferrer">github.com/forwardemail/mail.forwardemail.net/releases</a> a na stránce ke stažení si můžete ověřit kontrolní součty vydání podle souboru `SHA256SUMS.txt`.
 
 ### Máte terminálovou aplikaci {#do-you-have-a-terminal-app}
 
@@ -1263,7 +1289,7 @@ Pokud zakážete vlastní S3 úložiště nebo přepnete zpět na naše výchoz�
 
 #### Bezpečnost {#security}
 
-* Vaše přístupové ID a tajný přístupový klíč jsou **zašifrovány v klidu** pomocí [AES-256-GCM](https://cs.wikipedia.org/wiki/Galois/Counter_Mode) před uložením do naší databáze. Jsou dešifrovány pouze za běhu při provádění zálohovacích operací.
+* Vaše přístupové ID a tajný přístupový klíč jsou **zašifrovány v klidu** pomocí [AES-256-GCM](https://en.wikipedia.org/wiki/Galois/Counter_Mode) před uložením do naší databáze. Jsou dešifrovány pouze za běhu při provádění zálohovacích operací.
 * Automaticky ověřujeme, že váš bucket **není veřejně přístupný**. Pokud je detekován veřejný bucket, konfigurace bude při ukládání odmítnuta. Pokud je veřejný přístup zjištěn v době zálohy, přepneme na naše výchozí úložiště a všechny správce domény upozorníme e-mailem.
 * Přihlašovací údaje jsou ověřovány při ukládání pomocí volání [HeadBucket](https://docs.aws.amazon.com/AmazonS3/latest/API/API_HeadBucket.html), aby se zajistilo, že bucket existuje a údaje jsou správné. Pokud ověření selže, vlastní S3 úložiště je automaticky deaktivováno.
 * Každý záložní soubor obsahuje SHA-256 hash v metadatech S3, který se používá k detekci nezměněných databází a přeskočení zbytečných nahrání.
@@ -2654,7 +2680,7 @@ Ano. Všechny placené plány zahrnují odchozí SMTP a je **neomezené**: váš
     Důležité:
   </strong>
   <span>
-    Odchozí SMTP schvalujeme pro každou doménu, abychom chránili reputaci našich IP adres i doručitelnost vaší pošty. Mnoho domén schválíme bez čekání, jakmile se ověří jejich DNS záznamy, a ostatní posoudí náš tým, obvykle do 24 hodin. Viz [Potřebuji schválení pro povolení SMTP](#do-i-need-approval-to-enable-smtp).
+    Odchozí SMTP schvalujeme pro každou doménu, abychom chránili reputaci našich IP adres i doručitelnost vaší pošty. Mnoho domén schválíme bez čekání, jakmile se ověří jejich DNS záznamy, a ostatní posoudí náš tým, obvykle do 24 hodin. Viz <a href="/faq#do-i-need-approval-to-enable-smtp">Potřebuji schválení pro povolení SMTP</a>.
   </span>
 </div>
 
@@ -2935,7 +2961,7 @@ S Sieve skripty můžete pracovat několika způsoby:
 
 2. **Protokol ManageSieve**: Připojte se pomocí libovolného klienta kompatibilního s ManageSieve, například Sieve rozšíření pro Thunderbird nebo [sieve-connect](https://github.com/philpennock/sieve-connect), na `imap.forwardemail.net`. Použijte port `2190` se STARTTLS nebo port `4190` s implicitním TLS.
 
-3. **API**: Použijte [REST API](/api#sieve-scripts) pro programovou správu skriptů.
+3. **API**: Použijte [REST API](/email-api) pro programovou správu skriptů.
 
 <div class="alert my-3 alert-primary">
   <i class="fa fa-info-circle font-weight-bold"></i>
@@ -2978,6 +3004,12 @@ Více o passkeys se dozvíte na následujících odkazech:
 * [Přihlášení do aplikací a webů pomocí passkeys](https://support.google.com/android/answer/14124480?hl=en) (Google)
 * [Použití passkeys pro přihlášení do aplikací a webů na iPhonu](https://support.apple.com/guide/iphone/use-passkeys-to-sign-in-to-apps-and-websites-iphf538ea8d0/ios) (Apple)
 * [Článek na Wikipedii o Passkeys](https://en.wikipedia.org/wiki/Passkey_\(credential\))
+### Je podporována dvojfaktorová autentizace (2FA) {#is-two-factor-authentication-2fa-supported}
+
+Ano, pro přihlášení k vašemu účtu (včetně <a href="https://mail.forwardemail.net" target="_blank" rel="noopener noreferrer">webmailu</a>) pomocí jednorázových kódů, zajištěných klíči pro obnovení.
+
+2FA se vztahuje na samotné přihlášení k vašemu účtu, nikoli na připojení IMAP, SMTP, POP3, CalDAV nebo CardDAV z klientů třetích stran (Thunderbird, Apple Mail atd.).  Tito klienti se místo toho ověřují vygenerovaným heslem specifickým pro alias, takže pro tuto třídu klientů zatím neexistuje žádný standard odpovídající 2FA. Pokud byste to chtěli změnit, založte požadavek na novou funkci na GitHubu.
+
 ### Podporujete nejlepší praktiky e-mailu {#do-you-support-email-best-practices}
 
 Ano. Máme vestavěnou podporu pro SPF, DKIM, DMARC, ARC a SRS ve všech plánech. Také jsme úzce spolupracovali s původními autory těchto specifikací a dalšími odborníky na e-maily, abychom zajistili dokonalost a vysokou doručitelnost.
@@ -4073,6 +4105,17 @@ Zdroje:
 * <https://www.datapacket.com/datacenters/denver> (detaily ochrany proti DDoS)
 * <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/abuse-prevention-by-user-id.js>
 
+### Mohu vypnout kontrolu obsahu pro dospělé, phishingu, spustitelných souborů nebo virů {#can-i-disable-adult-content-phishing-executable-or-virus-scanning}
+
+Ano. Každá doména kontroluje příchozí odkazy a přílohy pomocí <a href="https://spamscanner.net" target="_blank" rel="noopener noreferrer">Spam Scanner</a>, open-source ochrany proti spamu, phishingu a virům, kterou jsme sami vyvinuli (a která se řídí stejnými zásadami s důrazem na soukromí a bez jakéhokoli logování jako zbytek Forward Email). Každou ze čtyř kategorií lze nezávisle zapnout nebo vypnout v <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">Můj účet <i class="fa fa-angle-right"></i> Domény</a> <i class="fa fa-angle-right"></i> Pokročilá nastavení:
+
+* **Ochrana před obsahem pro dospělé**: pokud je vypnuta, odkazy se nekontrolují na obsah pro dospělé.
+* **Ochrana před phishingem**: pokud je vypnuta, odkazy se nekontrolují na malware, záměnu domén, útoky pomocí IDN homografů ani na phishing obecně.
+* **Ochrana před spustitelnými soubory**: pokud je vypnuta, odkazy a přílohy se nekontrolují na potenciálně škodlivé typy spustitelných souborů, přípony, názvy, hlavičky ani útoky pomocí IDN homografů.
+* **Antivirová ochrana**: pokud je vypnuta, přílohy se nekontrolují na trojské koně, viry, malware ani jiné škodlivé hrozby (pomocí ClamAV).
+
+Všechny čtyři jsou ve výchozím stavu zapnuté. Vypnutí jedné kategorie vypne pouze kontrolu pro tuto konkrétní kategorii.  Nevypíná filtrování spamu jako celek a jde o něco jiného než [zakázání konkrétního aliasu](#can-i-disable-specific-aliases). Nejčastějším důvodem k vypnutí kategorie je opakující se vzorec falešně pozitivních výsledků specifický pro váš provoz (např. kontrola obsahu pro dospělé označuje legitimní e-mailové konference klubu nebo podniku s tematikou pro dospělé).
+
 ### Ukládáte obsah e-mailů na disk {#do-you-store-email-content-on-disk}
 
 > \[!IMPORTANT]
@@ -4295,6 +4338,10 @@ Zdroje:
 * <https://forwardemail.net/technical-whitepaper.pdf#page=59>
 * <https://forwardemail.net/gdpr>
 
+### Jak nahlásit bezpečnostní zranitelnost {#how-do-i-report-a-security-vulnerability}
+
+Pokud objevíte bezpečnostní zranitelnost, nahlaste ji prosím okamžitě na <security@forwardemail.net>. Jde o vyhrazenou adresu pro hlášení zranitelností a chyb, oddělenou od běžné podpory.  Když napíšete přímo na ni, vaše hlášení se dostane k týmu, který má jeho řešení na starosti.
+
 ### Nabízíte testovací prostředí {#do-you-offer-a-test-environment}
 
 Technická dokumentace Forward Email explicitně nepopisuje vyhrazený sandbox režim. Potenciální přístupy k testování však zahrnují:
@@ -4435,7 +4482,7 @@ Tato sekce popisuje náš proces související s příkazem protokolu SMTP `DATA
    * Rekurzivně iterujeme přes extrahovanou konfiguraci přeposílání, abychom určili globální přeposílání, přeposílání založené na regulárních výrazech a všechny ostatní podporované konfigurace přeposílání – které jsou nyní známy jako naše "Přeposílací adresy".
    * Pro každou Přeposílací adresu podporujeme jedno rekurzivní vyhledávání (které spustí tuto sérii operací znovu pro danou adresu). Pokud je nalezena rekurzivní shoda, rodičovský výsledek bude odstraněn z Přeposílacích adres a děti přidány.
    * Přeposílací adresy jsou analyzovány na jedinečnost (protože nechceme posílat duplicitní zprávy na jednu adresu nebo vytvářet zbytečné další SMTP klientské připojení).
-   * Pro každou Přeposílací adresu vyhledáme její doménové jméno pomocí našeho API endpointu `/v1/max-forwarded-addresses` (abychom zjistili, kolika adresám může doména přeposílat e-maily na alias, např. výchozích 10 – viz sekce o [maximálním limitu přeposílání na alias](#is-there-a-limit-on-the-number-of-email-addresses-i-can-forward-to-per-alias)). Pokud je tento limit překročen, dojde k chybě 550 a odesílatel obdrží odmítnutí pro tohoto příjemce.
+   * Pro každou Přeposílací adresu vyhledáme její doménové jméno pomocí našeho API endpointu `/v1/max-forwarded-addresses` (abychom zjistili, kolika adresám může doména přeposílat e-maily na alias, např. výchozích 10 – viz sekce o [maximálním limitu přeposílání na alias](#is-there-a-maximum-limit-on-the-number-of-email-addresses-i-can-forward-to-per-alias)). Pokud je tento limit překročen, dojde k chybě 550 a odesílatel obdrží odmítnutí pro tohoto příjemce.
    * Vyhledáme nastavení původního příjemce pomocí našeho API endpointu `/v1/settings`, který podporuje vyhledávání pro placené uživatele (s fallbackem pro bezplatné uživatele). Toto vrací konfigurační objekt pro pokročilá nastavení `port` (Číslo, např. `25`), `has_adult_content_protection` (Boolean), `has_phishing_protection` (Boolean), `has_executable_protection` (Boolean) a `has_virus_protection` (Boolean).
    * Na základě těchto nastavení pak kontrolujeme výsledky Spam Scanneru a pokud dojde k jakýmkoli chybám, zpráva je odmítnuta s chybovým kódem 554 (např. pokud je povolena ochrana proti virům `has_virus_protection`, kontrolujeme výsledky Spam Scanneru na viry). Všimněte si, že všichni uživatelé bezplatného plánu jsou automaticky zapojeni do kontrol proti obsahu pro dospělé, phishingu, spustitelným souborům a virům. Výchozí nastavení pro všechny uživatele placených plánů je také zapojení, ale toto nastavení lze změnit na stránce Nastavení domény v dashboardu Forward Email).
 
@@ -4755,6 +4802,7 @@ Následující doménové přípony jsou považovány za ve výchozím nastaven�
   <li class="list-inline-item"><code class="notranslate">sch.uk</code></li>
   <li class="list-inline-item"><code class="notranslate">ukaea.uk</code></li>
 </ul>
+
 Navíc jsou tyto [značkové a korporátní domény nejvyšší úrovně](https://en.wikipedia.org/wiki/List_of_Internet_top-level_domains#Brand_and_corporate_top-level_domains) ve výchozím nastavení na seznamu povolených (např. `apple` pro `applecard.apple` pro výpisy z bankovního účtu Apple Card):
 
 <ul class="list-inline">
@@ -5180,6 +5228,7 @@ Navíc jsou tyto [značkové a korporátní domény nejvyšší úrovně](https:
   <li class="list-inline-item"><code class="notranslate">zara</code></li>
   <li class="list-inline-item"><code class="notranslate">zippo</code></li>
 </ul>
+
 K 18. březnu 2025 jsme také přidali tyto francouzské zámořské území do tohoto seznamu ([podle tohoto požadavku na GitHubu](https://github.com/forwardemail/forwardemail.net/issues/327)):
 
 <ul class="list-inline">
@@ -5366,6 +5415,7 @@ Toto nové pravidlo umožňuje používat na našem bezplatném plánu pouze ná
   <li class="list-inline-item"><code class="notranslate">yt</code></li>
   <li class="list-inline-item"><code class="notranslate">za</code></li>
 </ul>
+
 ### Máte šedý seznam {#do-you-have-a-greylist}
 
 Ano, používáme velmi volnou politiku [šedého seznamu e-mailů](https://en.wikipedia.org/wiki/Greylisting_\(email\)). Šedý seznam se vztahuje pouze na odesílatele, kteří nejsou na našem povoleném seznamu, a v naší cache zůstává po dobu 30 dnů.
@@ -5543,6 +5593,7 @@ Ano, od 5. května 2020 jsme tuto funkci přidali. V současné době je funkce 
     Pokud jste na placeném plánu (který nabízí rozšířenou ochranu soukromí), přejděte prosím na <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Můj účet <i class="fa fa-angle-right"></i> Domény</a>, klikněte na "Nastavení" vedle vaší domény a poté klikněte na "Nastavení". Pokud se chcete dozvědět více o placených plánech, navštivte naši stránku <a class="alert-link" rel="noopener noreferrer" href="/private-business-email">Ceník</a>. Jinak můžete pokračovat podle níže uvedených pokynů.
   </span>
 </div>
+
 Pokud jste na bezplatném plánu, jednoduše přidejte nový DNS <strong class="notranslate">TXT</strong> záznam, jak je uvedeno níže, ale změňte port z 25 na port dle vašeho výběru.
 
 Například, pokud chci, aby všechny e-maily směřující na `example.com` byly přeposílány na SMTP port alias příjemců 1337 místo 25:
@@ -5620,6 +5671,36 @@ Ano, rozhodně. Například pokud posíláte e-mail na `hello@example.com` a je 
 ### Jak zabraňujete spammerům a zajišťujete dobrou reputaci přeposílání e-mailů {#how-do-you-prevent-spammers-and-ensure-good-email-forwarding-reputation}
 
 Podívejte se na naše sekce o [Jak funguje váš systém přeposílání e-mailů](#how-does-your-email-forwarding-system-work), [Jak řešíte problémy s doručováním e-mailů](#how-do-you-handle-email-delivery-issues) a [Jak řešíte blokování vašich IP adres](#how-do-you-handle-your-ip-addresses-becoming-blocked) výše.
+
+### Jak mohu ověřit, že doména skutečně používá Forward Email {#how-can-i-verify-a-domain-is-using-forward-email}
+
+Veřejné DNS záznamy domény vám prozradí, zda používá naši službu a s jakým plánem.  Jde o neutrální technické vyhledání, které může kdokoli provést pro jakoukoli doménu; nevyžaduje žádný účet ani součinnost vlastníka domény.
+
+**Nejprve zkontrolujte MX záznamy.**
+
+```sh
+dig example.com mx +short
+```
+
+Pokud odpověď neobsahuje `mx1.forwardemail.net` a `mx2.forwardemail.net`, doména naši službu k příjmu pošty **nepoužívá** a my nejsme provozovatelem této pošty.
+
+**Potom zkontrolujte TXT záznamy, abyste rozlišili plány.**
+
+```sh
+dig example.com txt +short
+```
+
+| Hodnota TXT                                  | Co znamená                                                                                                       |
+| -------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| `forward-email=user@example.com`             | Bezplatný plán.  Hodnota je cíl v prostém textu, na který se pošta přeposílá.                                    |
+| `forward-email-site-verification=XXXXXXXXXX` | Placený plán.  Konfigurace přeposílání je uložena v naší databázi pod ID `XXXXXXXXXX` a není veřejná.            |
+| Není přítomen ani jeden                      | Doména není nakonfigurována pro naši službu přeposílání.                                                         |
+
+> \[!NOTE]
+> Tyto záznamy ukazují, jak naše služba funguje na úrovni DNS, takže stejné vyhledání odpoví na otázky „je tato doména naše“, „je bezplatná, nebo placená“ a u bezplatného plánu „kam jde její pošta“.  Samotnou cestu doručení popisuje sekce [jak funguje náš systém přeposílání](#how-does-your-email-forwarding-system-work).
+
+> \[!TIP]
+> Nejsme registrátor doménových jmen, takže neuchováváme žádné historické DNS záznamy.  Chcete-li zjistit, kdo doménu zaregistroval nebo kdo provozuje její jmenné servery, použijte `whois example.com` a `dig example.com ns`, nebo se obraťte přímo na registrátora.
 
 ### Jak provádíte DNS dotazy na doménová jména {#how-do-you-perform-dns-lookups-on-domain-names}
 
@@ -5889,6 +5970,7 @@ Nebo je můžete uvést ve dvou samostatných řádcích, například takto:
     </tr>
   </tbody>
 </table>
+
 Je to na vás!
 
 ### Existuje maximální limit počtu e-mailových adres, na které mohu přeposílat na jeden alias {#is-there-a-maximum-limit-on-the-number-of-email-addresses-i-can-forward-to-per-alias}

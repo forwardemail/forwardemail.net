@@ -45,17 +45,17 @@ const {
 } = require('#config/utilities');
 const { web } = require('#controllers');
 const getAppDownloads = require('#helpers/get-app-downloads');
+const { getAggregateRating } = require('#helpers/aggregate-rating');
 const getFaqIndex = require('#helpers/get-faq-index');
 const { getLatestTti, getSummaryTti } = require('#helpers/get-latest-tti');
 
-const { filterFaqIndex } = getFaqIndex;
+const { filterFaqIndex, faqFilePathForLocale } = getFaqIndex;
 const getFaqSchema = require('#helpers/get-faq-schema');
 const { getLatestMailAppRelease } = require('#helpers/get-mail-app-releases');
 
 const MAX_AGE = ms('1y') / 1000;
 
 const filePath = path.join(config.views.root, '_tti.pug');
-const faqFilePath = path.join(config.views.root, 'faq', 'index.md');
 
 const router = new Router();
 
@@ -275,6 +275,20 @@ localeRouter
     return next();
   })
 
+  // our Trustpilot rating, for the pages whose structured data carries it
+  // and which show it (the home page and the alternatives pages, see
+  // helpers/aggregate-rating.js and _schema.pug)
+  .use(async (ctx, next) => {
+    if (
+      ctx.method === 'GET' &&
+      (ctx.pathWithoutLocale === '/' ||
+        ctx.pathWithoutLocale.includes('alternative'))
+    )
+      ctx.state.aggregateRating = await getAggregateRating(ctx.client);
+
+    return next();
+  })
+
   // locale specific sitemap
   .get('/sitemap.xml', web.sitemap)
 
@@ -471,16 +485,21 @@ localeRouter
     // lines up with the rail at the top left, as on articles.
     async (ctx, next) => {
       ctx.state.isContainerFluid = true;
-      // Load FAQ structured data (JSON-LD) from Redis cache or parse from markdown
-      try {
-        ctx.state.faqSchemaData = await getFaqSchema(
-          ctx.client,
-          faqFilePath,
-          ctx.logger
-        );
-      } catch (err) {
-        ctx.logger.error(err);
-      }
+      // Load FAQ structured data (JSON-LD) from Redis cache or parse from
+      // markdown: the locale's own, as the page shows (it was always the
+      // English questions, also on /de/faq). None for a search (?q=), whose
+      // page shows only the answers that match.
+      if (!isSANB(ctx.query.q))
+        try {
+          ctx.state.faqSchemaData = await getFaqSchema(
+            ctx.client,
+            faqFilePathForLocale(config.views.root, ctx.locale),
+            ctx.logger,
+            ctx.locale
+          );
+        } catch (err) {
+          ctx.logger.error(err);
+        }
 
       // Set unconditionally, before the branch. web.onboard further down this
       // chain re-renders this same view itself with pug.renderFile(ctx.state),

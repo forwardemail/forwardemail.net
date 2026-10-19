@@ -461,12 +461,13 @@ function fixTableOfContents(content, options) {
   if (!options.isDocs && !options.hasSidebar && lis.length <= MAX_SECTIONS)
     return `<div class="markdown-body">${root.toString()}</div>`;
 
+  // (a button, which a keyboard reaches: the link it was had no href)
   const topPart = `<div class="fixed-bottom bg-dark border-top border-themed p-2 text-center no-js d-print-none">
       <ul class="list-inline mb-0">
         <li class="list-inline-item">
-          <a data-toggle="modal-anchor" role="button" data-target="#modal-table-of-contents" class="btn btn-success">
+          <button type="button" data-toggle="modal" data-target="#modal-table-of-contents" class="btn btn-success">
             <i class="fa fa-search"></i> ${str}
-          </a>
+          </button>
         </li>
       </ul>
     </div>
@@ -536,6 +537,83 @@ for (const fn of [
 // TODO: create an in-memory hash map with rev-hash to render quick in production
 //
 
+//
+// A README included from node_modules (the docs pages) links to files of its
+// own repository by relative path ("LICENSE", "examples/koa.js",
+// "media/footer.png"). On our page those resolved under /:locale/blog/docs/
+// and were 404s, so they point to the repository on GitHub instead. Its empty
+// headings (a "##" kept as a divider above a footer image) are dropped too.
+//
+const RELATIVE_URL = /^(?![a-z][\w+.-]*:|\/|#|\?)\S/i;
+
+function getRepositoryUrl(dir) {
+  let repository;
+  try {
+    ({ repository } = require(path.join(dir, 'package.json')));
+  } catch {
+    return null;
+  }
+
+  let url =
+    typeof repository === 'object' && repository ? repository.url : repository;
+  if (typeof url !== 'string') return null;
+  url = url
+    .trim()
+    .replace(/^git\+/, '')
+    .replace(/^github:/, '')
+    .replace(/^git:\/\//, 'https://')
+    .replace(/\.git$/, '')
+    .replace(/\/+$/, '');
+  if (/^[\w.-]+\/[\w.-]+$/.test(url)) url = `https://github.com/${url}`;
+  return url.startsWith('https://github.com/') ? url : null;
+}
+
+function fixReadmeLinks(html, filename) {
+  if (
+    typeof filename !== 'string' ||
+    !filename.includes(`${path.sep}node_modules${path.sep}`)
+  )
+    return html;
+
+  const repository = getRepositoryUrl(path.dirname(filename));
+  const root = parse(html);
+
+  for (const header of root.querySelectorAll('h1,h2,h3,h4,h5,h6')) {
+    if (!header.text.trim() && !header.querySelector('img')) header.remove();
+  }
+
+  // (a footer picture with "#" for alt text, linked to "#", is decoration:
+  // no link and no alt text)
+  for (const img of root.querySelectorAll('img[alt="#"]')) {
+    img.setAttribute('alt', '');
+    const { parentNode } = img;
+    if (
+      parentNode &&
+      parentNode.rawTagName === 'a' &&
+      parentNode.getAttribute('href') === '#'
+    )
+      parentNode.replaceWith(img);
+  }
+
+  if (repository) {
+    for (const [selector, attr, kind] of [
+      ['a[href]', 'href', 'blob'],
+      ['img[src]', 'src', 'raw']
+    ]) {
+      for (const element of root.querySelectorAll(selector)) {
+        const value = element.getAttribute(attr).trim();
+        if (!RELATIVE_URL.test(value)) continue;
+        element.setAttribute(
+          attr,
+          `${repository}/${kind}/HEAD/${value.replace(/^\.\//, '')}`
+        );
+      }
+    }
+  }
+
+  return root.toString();
+}
+
 const escapedFootnotePattern = /\\(\[(\^[^\]]+)])/g;
 function fixFootnoteReferences(markdownText) {
   return markdownText.replace(escapedFootnotePattern, '$1');
@@ -554,7 +632,10 @@ module.exports = {
       // replace footnote escaped chars
       string = fixFootnoteReferences(string);
 
-      return fixTableOfContents(markdown.render(string), options);
+      return fixTableOfContents(
+        fixReadmeLinks(markdown.render(string), options && options.filename),
+        options
+      );
 
       /*
       if (typeof options !== 'object' || !isSANB(options.locale))

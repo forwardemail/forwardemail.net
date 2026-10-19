@@ -16,7 +16,9 @@
   * [Microsoft Outlook](#microsoft-outlook)
   * [Apple Mail](#apple-mail)
   * [eM Client](#em-client)
+  * [Erbjuder ni en webbmailklient](#do-you-offer-a-webmail-client)
   * [Kan jag skicka från valfri adress på min domän i webbmailen](#can-i-send-from-any-address-on-my-domain-in-webmail)
+  * [Har ni appar för dator och mobil](#do-you-have-desktop-and-mobile-apps)
   * [Har ni en terminalapp](#do-you-have-a-terminal-app)
   * [Mobila enheter](#mobile-devices)
   * [Sendmail SMTP Relay-konfiguration](#sendmail-smtp-relay-configuration)
@@ -75,6 +77,7 @@
   * [Stöder ni Sieve e-postfiltrering](#do-you-support-sieve-email-filtering)
   * [Stöder ni MTA-STS](#do-you-support-mta-sts)
   * [Stöder ni passkeys och WebAuthn](#do-you-support-passkeys-and-webauthn)
+  * [Stöds tvåfaktorsautentisering (2FA)](#is-two-factor-authentication-2fa-supported)
   * [Stöder ni bästa praxis för e-post](#do-you-support-email-best-practices)
   * [Stöder ni bounce-webhooks](#do-you-support-bounce-webhooks)
   * [Stöder ni webhooks](#do-you-support-webhooks)
@@ -95,6 +98,7 @@
   * [Bevarar ni e-postautentiseringshuvuden](#do-you-preserve-email-authentication-headers)
   * [Bevarar ni ursprungliga e-posthuvuden och förhindrar spoofing](#do-you-preserve-original-email-headers-and-prevent-spoofing)
   * [Hur skyddar ni mot spam och missbruk](#how-do-you-protect-against-spam-and-abuse)
+  * [Kan jag inaktivera skanning efter vuxeninnehåll, nätfiske, körbara filer eller virus](#can-i-disable-adult-content-phishing-executable-or-virus-scanning)
   * [Sparar ni e-postinnehåll på disk](#do-you-store-email-content-on-disk)
   * [Kan e-postinnehåll exponeras vid systemkrascher](#can-email-content-be-exposed-during-system-crashes)
   * [Vem har tillgång till er e-postinfrastruktur](#who-has-access-to-your-email-infrastructure)
@@ -104,6 +108,7 @@
 * [Var behandlas och lagras inkommande e‑post för min domän och hur länge](#where-is-inbound-email-for-my-domain-processed-and-stored-and-for-how-long)
 * [Hur listar jag Forward Email som underbiträde i min egen DPA](#how-do-i-list-forward-email-as-a-subprocessor-in-my-own-dpa)
   * [Hur hanterar ni dataintrångsmeddelanden](#how-do-you-handle-data-breach-notifications)
+  * [Hur rapporterar jag en säkerhetssårbarhet](#how-do-i-report-a-security-vulnerability)
   * [Erbjuder ni en testmiljö](#do-you-offer-a-test-environment)
   * [Tillhandahåller ni övervaknings- och larmverktyg](#do-you-provide-monitoring-and-alerting-tools)
   * [Hur säkerställer ni hög tillgänglighet](#how-do-you-ensure-high-availability)
@@ -136,6 +141,7 @@
   * [Är detta väl testat](#is-this-well-tested)
   * [Vidarebefordrar ni SMTP-svarsmeldingar och koder](#do-you-pass-along-smtp-response-messages-and-codes)
   * [Hur förhindrar ni spammare och säkerställer gott rykte för e-postvidarebefordran](#how-do-you-prevent-spammers-and-ensure-good-email-forwarding-reputation)
+  * [Hur kan jag verifiera att en domän verkligen använder Forward Email](#how-can-i-verify-a-domain-is-using-forward-email)
   * [Hur utför ni DNS-uppslag på domännamn](#how-do-you-perform-dns-lookups-on-domain-names)
 * [Konto och fakturering](#account-and-billing)
   * [Hur tar jag bort mitt konto](#how-do-i-delete-my-account)
@@ -317,11 +323,31 @@ Allt görs i minnet och [vår källkod finns på GitHub](https://github.com/forw
 8. Ange ditt namn och välj ett kontonamn.
 9. Klicka på **Slutför**.
 
+### Erbjuder ni en webbmailklient {#do-you-offer-a-webmail-client}
+
+Ja.  Vår officiella webbmailklient med öppen källkod finns på <a href="https://mail.forwardemail.net" target="_blank" rel="noopener noreferrer">mail.forwardemail.net</a>.  Ingen installation krävs: logga in från valfri webbläsare med en aliasadress och dess genererade lösenord (samma inloggningsuppgifter som används för IMAP, SMTP och POP3).
+
+Den lanserades i februari 2026 och stöder även [CalDAV-schemaläggningstillägg (RFC 6638)](https://www.rfc-editor.org/rfc/rfc6638.html), [DANE/TLSA (RFC 6698)](https://en.wikipedia.org/wiki/DNS-based_Authentication_of_Named_Entities) och [Domain Connect](https://domainconnect.org) för DNS-konfiguration med ett klick, med push-aviseringar i realtid för IMAP, CalDAV och CardDAV som levereras via WebSockets.
+
+Källkoden är helt öppen och finns på GitHub på <a href="https://github.com/forwardemail/mail.forwardemail.net" target="_blank" rel="noopener noreferrer">github.com/forwardemail/mail.forwardemail.net</a>.
+
+Vår <a href="/blog/docs/webmail">webbmailguide</a> går igenom inloggning, användning av flera konton och hur webbmailen hänger ihop med den här webbplatsens kontrollpanel.
+
 ### Kan jag skicka från valfri adress på min domän i webbmailen {#can-i-send-from-any-address-on-my-domain-in-webmail}
 
 Ja. Generera ett allmänt lösenord under <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">Mitt konto <i class="fa fa-angle-right"></i> Domäner</a> <i class="fa fa-angle-right"></i> Avancerade inställningar <i class="fa fa-angle-right"></i> Allmänna lösenord, och spara det sedan i webbmailen under **Settings <i class="fa fa-angle-right"></i> General <i class="fa fa-angle-right"></i> Send from any address**. När du skriver ett meddelande väljer du **Other address @dindomän** i menyn **From** och skriver valfri adress på den domänen.
 
 Du loggar inte in som ett catch-all- eller wildcard-konto. Det allmänna lösenordet kan bara skicka, så kopian hamnar i mappen Skickat för kontot du använder. Det sparas bara på enheten där du lägger till det. Se vår <a href="/blog/docs/webmail#send-from-any-address-on-your-domain">webbmailguide</a> för alla steg.
+
+### Har ni appar för dator och mobil {#do-you-have-desktop-and-mobile-apps}
+
+Ja.  Det finns inbyggda appar för dator och mobil, byggda från samma projekt med öppen källkod som vår webbmailklient, och alla kan laddas ner från vår <a href="/download" target="_blank" rel="noopener noreferrer">nedladdningssida</a>:
+
+* **Dator**: macOS (Apple Silicon och Intel), Windows (x64 och ARM64, som installationsprogram i formatet `.exe` eller `.msi`) och Linux (AppImage, `.deb`, `.rpm` och Snap, var och en för x64 och ARM64).
+* **Mobil**: Android (APK, med ett alternativt F-Droid-bygge) och iOS.
+* **Terminal**: kommandot `forwardemail` för macOS, Linux och Windows (x64 och ARM64). Se [Har ni en terminalapp](#do-you-have-a-terminal-app).
+
+Alla utgåvebyggen publiceras på GitHub på <a href="https://github.com/forwardemail/mail.forwardemail.net/releases" target="_blank" rel="noopener noreferrer">github.com/forwardemail/mail.forwardemail.net/releases</a>, och på nedladdningssidan kan du verifiera utgåvornas kontrollsummor mot `SHA256SUMS.txt`.
 
 ### Har ni en terminalapp {#do-you-have-a-terminal-app}
 
@@ -1917,7 +1943,7 @@ Avancerade inställningar <i class="fa fa-angle-right"></i> Anpassade poster</td
     <br />
     <code>forward-email=hello:first@gmail.com,second@gmail.com</code>
     <br />
-    E-post skickad till <code>hello@example.com</code> kommer **inte** att vidarebefordras till <code>second@gmail.com</code> (catch-all) med denna konfiguration, utan levereras endast till <code>first@gmail.com</code>.
+    E-post skickad till <code>hello@example.com</code> kommer <strong>inte</strong> att vidarebefordras till <code>second@gmail.com</code> (catch-all) med denna konfiguration, utan levereras endast till <code>first@gmail.com</code>.
   </span>
 </div>
 
@@ -2654,7 +2680,7 @@ Ja. Alla betalda planer inkluderar utgående SMTP, och den är **obegränsad**: 
     Viktigt:
   </strong>
   <span>
-    Vi godkänner utgående SMTP för varje domän för att skydda vårt IP-rykte och din leveransbarhet. Många domäner godkänns direkt när deras DNS-poster har verifierats, och vårt team granskar resten, oftast inom 24 timmar. Se [Behöver jag godkännande för att aktivera SMTP](#do-i-need-approval-to-enable-smtp).
+    Vi godkänner utgående SMTP för varje domän för att skydda vårt IP-rykte och din leveransbarhet. Många domäner godkänns direkt när deras DNS-poster har verifierats, och vårt team granskar resten, oftast inom 24 timmar. Se <a href="/faq#do-i-need-approval-to-enable-smtp">Behöver jag godkännande för att aktivera SMTP</a>.
   </span>
 </div>
 
@@ -2935,7 +2961,7 @@ Du kan hantera Sieve-skript på flera sätt:
 
 2. **ManageSieve-protokollet**: Anslut med valfri ManageSieve-kompatibel klient, såsom Thunderbirds Sieve-tillägg eller [sieve-connect](https://github.com/philpennock/sieve-connect), till `imap.forwardemail.net`. Använd port `2190` med STARTTLS eller port `4190` med implicit TLS.
 
-3. **API**: Använd [REST API](/api#sieve-scripts) för att hantera skript programmässigt.
+3. **API**: Använd [REST API](/email-api) för att hantera skript programmässigt.
 
 <div class="alert my-3 alert-primary">
   <i class="fa fa-info-circle font-weight-bold"></i>
@@ -2978,6 +3004,12 @@ Läs mer om passkeys på följande länkar:
 * [Logga in på dina appar och webbplatser med passkeys](https://support.google.com/android/answer/14124480?hl=en) (Google)
 * [Använd passkeys för att logga in på appar och webbplatser på iPhone](https://support.apple.com/guide/iphone/use-passkeys-to-sign-in-to-apps-and-websites-iphf538ea8d0/ios) (Apple)
 * [Wikipedia-artikel om Passkeys](https://en.wikipedia.org/wiki/Passkey_\(credential\))
+### Stöds tvåfaktorsautentisering (2FA) {#is-two-factor-authentication-2fa-supported}
+
+Ja, för inloggning på ditt konto (inklusive <a href="https://mail.forwardemail.net" target="_blank" rel="noopener noreferrer">webbmailen</a>) via engångskoder, med återställningsnycklar som reserv.
+
+2FA gäller själva inloggningen på ditt konto, inte IMAP-, SMTP-, POP3-, CalDAV- eller CardDAV-anslutningar från tredjepartsklienter (Thunderbird, Apple Mail osv.).  Sådana klienter autentiserar sig i stället med ett aliasspecifikt genererat lösenord, så det finns för närvarande ingen standard motsvarande 2FA för den typen av klienter. Om du vill att det ska ändras kan du skicka in en funktionsförfrågan på GitHub.
+
 ### Stöder ni bästa praxis för e-post {#do-you-support-email-best-practices}
 
 Ja. Vi har inbyggt stöd för SPF, DKIM, DMARC, ARC och SRS i alla planer. Vi har också arbetat omfattande med de ursprungliga författarna till dessa specifikationer och andra e-postexperter för att säkerställa perfektion och hög leveransbarhet.
@@ -4073,6 +4105,17 @@ Källor:
 * <https://www.datapacket.com/datacenters/denver> (Detaljer om DDoS-skydd)
 * <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/abuse-prevention-by-user-id.js>
 
+### Kan jag inaktivera skanning efter vuxeninnehåll, nätfiske, körbara filer eller virus {#can-i-disable-adult-content-phishing-executable-or-virus-scanning}
+
+Ja. Varje domän skannar inkommande länkar och bilagor med <a href="https://spamscanner.net" target="_blank" rel="noopener noreferrer">Spam Scanner</a>, det skydd mot spam, nätfiske och virus med öppen källkod som vi själva har byggt (och som följer samma integritetsfokuserade policy utan loggning som resten av Forward Email). Fyra kategorier kan slås på eller av var för sig under <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">Mitt konto <i class="fa fa-angle-right"></i> Domäner</a> <i class="fa fa-angle-right"></i> Avancerade inställningar:
+
+* **Skydd mot vuxeninnehåll**: om det är inaktiverat skannas länkar inte efter vuxenrelaterat innehåll.
+* **Skydd mot nätfiske**: om det är inaktiverat skannas länkar inte efter skadlig kod, domänbyten, IDN-homografattacker eller nätfiske i allmänhet.
+* **Skydd mot körbara filer**: om det är inaktiverat skannas länkar och bilagor inte efter potentiellt skadliga typer av körbara filer, filändelser, namn, rubriker eller IDN-homografattacker.
+* **Virusskydd**: om det är inaktiverat skannas bilagor inte efter trojaner, virus, skadlig kod eller andra skadliga hot (via ClamAV).
+
+Alla fyra är aktiverade som standard. Att inaktivera en av dem stänger bara av skanningen för just den kategorin.  Det inaktiverar inte spamfiltreringen som helhet, och det är skilt från att [inaktivera ett specifikt alias](#can-i-disable-specific-aliases). Det vanligaste skälet att inaktivera en kategori är ett mönster av falska positiva som är specifikt för din trafik (t.ex. att skanningen efter vuxeninnehåll flaggar legitima e-postlistor för en lokal eller ett företag med vuxentema).
+
 ### Lagrar ni e-postinnehåll på disk {#do-you-store-email-content-on-disk}
 
 > \[!IMPORTANT]
@@ -4295,6 +4338,10 @@ Källor:
 * <https://forwardemail.net/technical-whitepaper.pdf#page=59>
 * <https://forwardemail.net/gdpr>
 
+### Hur rapporterar jag en säkerhetssårbarhet {#how-do-i-report-a-security-vulnerability}
+
+Om du upptäcker en säkerhetssårbarhet, rapportera den omedelbart till <security@forwardemail.net>. Det är en särskild adress för rapporter om sårbarheter och buggar, skild från den allmänna supporten.  Genom att mejla den direkt når din rapport det team som ansvarar för att hantera den.
+
 ### Erbjuder ni en testmiljö {#do-you-offer-a-test-environment}
 
 Forward Emails tekniska dokumentation beskriver inte uttryckligen ett dedikerat sandbox-läge. Möjliga testmetoder inkluderar dock:
@@ -4435,7 +4482,7 @@ Detta avsnitt beskriver vår process relaterad till SMTP-protokollkommandot `DAT
    * Rekursivt itererar vi över den extraherade vidarebefordringskonfigurationen för att bestämma global vidarebefordran, regex-baserad vidarebefordran och alla andra stödjade vidarebefordringskonfigurationer – vilka nu kallas våra "Vidarebefordringsadresser".
    * För varje Vidarebefordringsadress stödjer vi en rekursiv uppslagning (vilket startar denna serie av operationer på den givna adressen). Om en rekursiv matchning hittas, tas föräldraresultatet bort från Vidarebefordringsadresser och barnen läggs till.
    * Vidarebefordringsadresser analyseras för unikhet (eftersom vi inte vill skicka dubbletter till en adress eller skapa onödiga ytterligare SMTP-klientanslutningar).
-   * För varje Vidarebefordringsadress söker vi upp dess domännamn mot vår API-endpoint `/v1/max-forwarded-addresses` (för att avgöra hur många adresser domänen får vidarebefordra e-post till per alias, t.ex. 10 som standard – se avsnittet om [maxgräns för vidarebefordran per alias](#is-there-a-limit-on-the-number-of-email-addresses-i-can-forward-to-per-alias)). Om denna gräns överskrids uppstår ett 550-fel och avsändaren får ett studsfel för denna mottagare.
+   * För varje Vidarebefordringsadress söker vi upp dess domännamn mot vår API-endpoint `/v1/max-forwarded-addresses` (för att avgöra hur många adresser domänen får vidarebefordra e-post till per alias, t.ex. 10 som standard – se avsnittet om [maxgräns för vidarebefordran per alias](#is-there-a-maximum-limit-on-the-number-of-email-addresses-i-can-forward-to-per-alias)). Om denna gräns överskrids uppstår ett 550-fel och avsändaren får ett studsfel för denna mottagare.
    * Vi söker upp inställningarna för den ursprungliga mottagaren mot vår API-endpoint `/v1/settings`, som stödjer uppslagning för betalande användare (med fallback för gratisanvändare). Detta returnerar ett konfigurationsobjekt för avancerade inställningar för `port` (Nummer, t.ex. `25`), `has_adult_content_protection` (Boolean), `has_phishing_protection` (Boolean), `has_executable_protection` (Boolean) och `has_virus_protection` (Boolean).
    * Baserat på dessa inställningar kontrollerar vi sedan mot Spam Scanner-resultat och om några fel uppstår avvisas meddelandet med felkod 554 (t.ex. om `has_virus_protection` är aktiverat, kontrollerar vi Spam Scanner-resultaten för virus). Observera att alla användare på gratisplan automatiskt omfattas av kontroller mot vuxeninnehåll, nätfiske, körbara filer och virus. Som standard omfattas även alla betalplananvändare, men denna konfiguration kan ändras under inställningssidan för en domän i Forward Email-instrumentpanelen).
 
@@ -4755,6 +4802,7 @@ Följande domännamnstillägg anses vara tillåtna som standard (oavsett om de f
   <li class="list-inline-item"><code class="notranslate">sch.uk</code></li>
   <li class="list-inline-item"><code class="notranslate">ukaea.uk</code></li>
 </ul>
+
 Dessutom är dessa [varumärkes- och företags-toppdomäner](https://en.wikipedia.org/wiki/List_of_Internet_top-level_domains#Brand_and_corporate_top-level_domains) tillåtna som standard (t.ex. `apple` för `applecard.apple` för Apple Card bankutdrag):
 
 <ul class="list-inline">
@@ -5180,6 +5228,7 @@ Dessutom är dessa [varumärkes- och företags-toppdomäner](https://en.wikipedi
   <li class="list-inline-item"><code class="notranslate">zara</code></li>
   <li class="list-inline-item"><code class="notranslate">zippo</code></li>
 </ul>
+
 Från och med den 18 mars 2025 har vi även lagt till dessa franska utomeuropeiska territorier till denna lista ([enligt denna GitHub-förfrågan](https://github.com/forwardemail/forwardemail.net/issues/327)):
 
 <ul class="list-inline">
@@ -5366,6 +5415,7 @@ Denna nya regel tillåter endast följande domännamnstillägg att användas på
   <li class="list-inline-item"><code class="notranslate">yt</code></li>
   <li class="list-inline-item"><code class="notranslate">za</code></li>
 </ul>
+
 ### Har ni en greylist {#do-you-have-a-greylist}
 
 Ja, vi har en mycket slapp [email greylisting](https://en.wikipedia.org/wiki/Greylisting_\(email\)) policy som används. Greylisting gäller endast för avsändare som inte finns på vår tillåtna lista och varar i vår cache i 30 dagar.
@@ -5543,6 +5593,7 @@ Ja, från och med 5 maj 2020 har vi lagt till denna funktion. Just nu är funkti
     Om du har en betald plan (som har förbättrat integritetsskydd), gå då till <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Mitt konto <i class="fa fa-angle-right"></i> Domäner</a>, klicka på "Setup" bredvid din domän och klicka sedan på "Inställningar". Om du vill veta mer om betalda planer, se vår <a class="alert-link" rel="noopener noreferrer" href="/private-business-email">Prissättning</a>-sida. Annars kan du fortsätta följa instruktionerna nedan.
   </span>
 </div>
+
 Om du är på gratisplanen, lägg då helt enkelt till en ny DNS <strong class="notranslate">TXT</strong>-post som visas nedan, men ändra porten från 25 till den port du väljer.
 
 Till exempel, om jag vill att alla e-postmeddelanden som går till `example.com` ska vidarebefordras till aliasmottagares SMTP-port 1337 istället för 25:
@@ -5620,6 +5671,36 @@ Ja, absolut. Till exempel, om du skickar ett e-postmeddelande till `hello@exampl
 ### Hur förhindrar ni spammare och säkerställer gott rykte för e-postvidarebefordran {#how-do-you-prevent-spammers-and-ensure-good-email-forwarding-reputation}
 
 Se våra avsnitt om [Hur fungerar ert e-postvidarebefordringssystem](#how-does-your-email-forwarding-system-work), [Hur hanterar ni leveransproblem med e-post](#how-do-you-handle-email-delivery-issues), och [Hur hanterar ni att era IP-adresser blir blockerade](#how-do-you-handle-your-ip-addresses-becoming-blocked) ovan.
+
+### Hur kan jag verifiera att en domän verkligen använder Forward Email {#how-can-i-verify-a-domain-is-using-forward-email}
+
+En domäns offentliga DNS-poster visar om den använder vår tjänst och på vilken plan.  Det här är en neutral teknisk uppslagning som vem som helst kan göra för vilken domän som helst; den kräver inget konto och ingen medverkan från domänens ägare.
+
+**Kontrollera MX-posterna först.**
+
+```sh
+dig example.com mx +short
+```
+
+Om svaret inte innehåller `mx1.forwardemail.net` och `mx2.forwardemail.net` använder domänen **inte** vår tjänst för att ta emot e-post, och vi är inte operatör för den e-posten.
+
+**Kontrollera sedan TXT-posterna för att skilja planerna åt.**
+
+```sh
+dig example.com txt +short
+```
+
+| TXT-värde | Vad det betyder |
+| --- | --- |
+| `forward-email=user@example.com` | En gratisplan.  Värdet är den mottagaradress i klartext som e-posten vidarebefordras till. |
+| `forward-email-site-verification=XXXXXXXXXX` | En betald plan.  Vidarebefordringskonfigurationen lagras i vår databas under ID:t `XXXXXXXXXX` och är inte offentlig. |
+| Ingen av dem finns | Domänen är inte konfigurerad för vår vidarebefordringstjänst. |
+
+> \[!NOTE]
+> Det är med de här posterna som vår tjänst fungerar på DNS-nivå, så samma uppslagning besvarar "är den här domänen er", "är den gratis eller betald" och, för en gratisplan, "vart går dess e-post".  Se [hur vårt vidarebefordringssystem fungerar](#how-does-your-email-forwarding-system-work) för själva leveransvägen.
+
+> \[!TIP]
+> Vi är inte en domännamnsregistrar, så vi har inga historiska DNS-poster.  För att ta reda på vem som registrerade en domän eller vem som driver dess namnservrar kan du använda `whois example.com` och `dig example.com ns`, eller fråga registraren direkt.
 
 ### Hur utför ni DNS-uppslagningar på domännamn {#how-do-you-perform-dns-lookups-on-domain-names}
 
@@ -5889,6 +5970,7 @@ Eller så kan du ange dem på två separata rader, som detta:
     </tr>
   </tbody>
 </table>
+
 Det är upp till dig!
 
 ### Finns det en maximal gräns för hur många e-postadresser jag kan vidarebefordra till per alias {#is-there-a-maximum-limit-on-the-number-of-email-addresses-i-can-forward-to-per-alias}

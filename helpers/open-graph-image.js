@@ -75,6 +75,9 @@ const ELLIPSIS = '\u2026';
 
 const TRUSTED_BY = ['Netflix', 'Ubuntu', 'Linux', 'jQuery'];
 
+// the domain count the home page gives ("Trusted by 1.6M+ domains")
+const TRUSTED_DOMAINS = '1.6M+';
+
 // scripts written right to left (Hebrew, Arabic, Syriac, Thaana, N'Ko...)
 const RTL_REGEX = /[\u0590-\u08FF\uFB1D-\uFDFF\uFE70-\uFEFF]/;
 // the first strong character decides the direction of a paragraph
@@ -453,13 +456,14 @@ async function pill({ x, y, height, runs, leading, paddingX = 20, gap = 10 }) {
 // Build the SVG of a page's Open Graph image.
 //
 // `title` and `description` are plain text (no HTML), `url` is the path of
-// the page (without locale) and `stars` the GitHub star count.
+// the page (without locale) and `stars` the GitHub star count (none is
+// shown without one: the static social image, which would go stale).
 //
 async function renderOpenGraphImage({ title, description, url, stars }) {
   const parts = [];
 
   //
-  // header: logo, wordmark and the GitHub stars, on a rule
+  // header: logo, wordmark and the GitHub stars (if any), on a rule
   //
   parts.push(
     `<g transform="translate(${MARGIN} 56) scale(.48)">${LOGO}</g>`,
@@ -470,27 +474,32 @@ async function renderOpenGraphImage({ title, description, url, stars }) {
     })
   );
 
-  const starCount = Number.isFinite(Number(stars))
-    ? Number(stars).toLocaleString('en-US')
-    : String(stars);
-  const starsPill = await pill({
-    x: 0,
-    y: 56,
-    height: 48,
-    leading: {
-      width: 22,
-      height: 22,
-      markup: `<g transform="scale(1.2222)">${GITHUB_MARK}</g>`
-    },
-    runs: [
-      { text: starCount, style: STYLE.stars, fill: COLORS.title },
-      { text: 'stars', style: STYLE.starsLabel, fill: COLORS.muted }
-    ]
-  });
+  if (stars !== undefined && stars !== null) {
+    const starCount = Number.isFinite(Number(stars))
+      ? Number(stars).toLocaleString('en-US')
+      : String(stars);
+    const starsPill = await pill({
+      x: 0,
+      y: 56,
+      height: 48,
+      leading: {
+        width: 22,
+        height: 22,
+        markup: `<g transform="scale(1.2222)">${GITHUB_MARK}</g>`
+      },
+      runs: [
+        { text: starCount, style: STYLE.stars, fill: COLORS.title },
+        { text: 'stars', style: STYLE.starsLabel, fill: COLORS.muted }
+      ]
+    });
+    parts.push(
+      `<g transform="translate(${WIDTH - MARGIN - starsPill.width} 0)">${
+        starsPill.markup
+      }</g>`
+    );
+  }
+
   parts.push(
-    `<g transform="translate(${WIDTH - MARGIN - starsPill.width} 0)">${
-      starsPill.markup
-    }</g>`,
     `<rect x="${MARGIN}" y="${HEADER_RULE_Y}" width="${CONTENT_WIDTH}" height="1" fill="#fff" fill-opacity=".1"/>`
   );
 
@@ -600,7 +609,7 @@ async function renderOpenGraphImage({ title, description, url, stars }) {
     },
     runs: [
       { text: 'Trusted by', style: STYLE.footer, fill: COLORS.body },
-      { text: '500,000+', style: STYLE.footerStrong, fill: COLORS.accent },
+      { text: TRUSTED_DOMAINS, style: STYLE.footerStrong, fill: COLORS.accent },
       { text: 'domains', style: STYLE.footer, fill: COLORS.body }
     ]
   });

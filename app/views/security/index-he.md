@@ -73,7 +73,7 @@
 * **הגנה מקיפה**: אנו מיישמים הצפנה במנוחה, בזיכרון ובתנועה
 
 > \[!NOTE]
-> אנו שירות הדואר האלקטרוני הראשון והיחיד בעולם המשתמש ב**[תיבות דואר SQLite מוצפנות באופן אינדיבידואלי ועמידות לקוונטים](https://forwardemail.net/en/blog/docs/best-quantum-safe-encrypted-email-service)**.
+> אנו שירות הדואר האלקטרוני הראשון והיחיד בעולם המשתמש ב<strong>[תיבות דואר SQLite מוצפנות באופן אינדיבידואלי ועמידות לקוונטים](https://forwardemail.net/en/blog/docs/best-quantum-safe-encrypted-email-service)</strong>.
 
 ### אימות והרשאות {#authentication-and-authorization}
 

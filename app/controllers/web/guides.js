@@ -86,8 +86,10 @@ async function sendMailAs(ctx, next) {
     ctx.state.sendMailAsContent = root.querySelector(
       '#send-mail-as-content'
     ).outerHTML;
+    // its content only: the view's own column is #legacy-free-guide (the
+    // anchor the pricing pages link to), and the page held that id twice
     ctx.state.legacyFreeGuide =
-      root.querySelector('#legacy-free-guide').outerHTML;
+      root.querySelector('#legacy-free-guide').innerHTML;
   } catch (err) {
     //
     // NOTE: typical output/error is:
@@ -105,7 +107,7 @@ async function sendMailAs(ctx, next) {
         '#send-mail-as-content'
       ).outerHTML;
       ctx.state.legacyFreeGuide =
-        root.querySelector('#legacy-free-guide').outerHTML;
+        root.querySelector('#legacy-free-guide').innerHTML;
     } catch {}
   }
 

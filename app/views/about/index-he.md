@@ -68,7 +68,7 @@ Forward Email נוסדה על ידי **ניקולאס באו** בשנת 2017. ל
 **אפריל 2020**: לאחר התמודדות עם חסימות רבות של פתרונות זיהוי ספאם קיימים שלא כיבדו את מדיניות הפרטיות של Forward Email, החברה שחררה את גרסת האלפא הראשונית של סורק הספאם. פתרון [סינון אנטי-ספאם](https://en.wikipedia.org/wiki/Anti-spam_techniques "Anti-spam techniques") זה, שהוא חינמי וקוד פתוח לחלוטין, משתמש בגישת [מסנן ספאם Naive Bayes](https://en.wikipedia.org/wiki/Naive_Bayes_spam_filtering "Naive Bayes spam filtering") בשילוב עם הגנה מפני [פישינג](https://en.wikipedia.org/wiki/Phishing "Phishing") ו-[התקפות הומוגרפיות IDN](https://en.wikipedia.org/wiki/IDN_homograph_attack "IDN homograph attack"). Forward Email גם שחררה [אימות דו-שלבי](https://en.wikipedia.org/wiki/Multi-factor_authentication "Multi-factor authentication") (2FA) באמצעות [סיסמאות חד-פעמיות](https://en.wikipedia.org/wiki/One-time_password "One-time password") (OTP) לאבטחת חשבון משופרת.
 
 **מאי 2020**: Forward Email אפשרה [העברת פורטים מותאמת אישית](https://en.wikipedia.org/wiki/Port_forwarding "Port forwarding") כפתרון לעקיפת חסימות פורטים מצד [ספקי אינטרנט](https://en.wikipedia.org/wiki/Internet_service_provider "Internet service provider"). החברה גם שחררה את [ממשק ה-RESTful API להעברת דואר חינמית](email-api) עם תיעוד מלא ודוגמאות בקשות ותשובות בזמן אמת, יחד עם תמיכה ב-webhooks.
-**אוגוסט 2020**: Forward Email הוסיפה תמיכה במערכת אימות האימייל [Authenticated Received Chain](arc) ("ARC"), שהחיזקה עוד יותר את אבטחת האימייל ואת יכולת המסירה שלו.
+**אוגוסט 2020**: Forward Email הוסיפה תמיכה במערכת אימות האימייל [Authenticated Received Chain](/faq#do-you-support-email-best-practices) ("ARC"), שהחיזקה עוד יותר את אבטחת האימייל ואת יכולת המסירה שלו.
 
 **23 בנובמבר 2020**: Forward Email השיקה באופן פומבי את השירות מחוץ לתוכנית הבטא שלה, ציון דרך משמעותי בהתפתחות הפלטפורמה.
 
@@ -92,7 +92,7 @@ Forward Email נוסדה על ידי **ניקולאס באו** בשנת 2017. ל
 
 **נובמבר 2023**: Forward Email השיקה את תכונת [**אחסון תיבת דואר מוצפן**](/blog/docs/best-quantum-safe-encrypted-email-service) ל[תמיכה ב-IMAP](/faq#do-you-support-receiving-email-with-imap), המהווה התקדמות משמעותית בפרטיות ובאבטחת האימייל.
 
-**דצמבר 2023**: החברה [הוסיפה תמיכה](/faq#do-you-support-pop3) ב-[POP3](https://en.wikipedia.org/wiki/Post_Office_Protocol), [מפתחות גישה ו-WebAuthn](/faq#do-you-support-passkeys-and-webauthn), ניטור [זמן להגעת האימייל לתיבה](/faq#i), ו-[OpenPGP לאחסון IMAP](/faq#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd).
+**דצמבר 2023**: החברה [הוסיפה תמיכה](/faq#do-you-support-pop3) ב-[POP3](https://en.wikipedia.org/wiki/Post_Office_Protocol), [מפתחות גישה ו-WebAuthn](/faq#do-you-support-passkeys-and-webauthn), ניטור [זמן להגעת האימייל לתיבה](/tti), ו-[OpenPGP לאחסון IMAP](/faq#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd).
 
 ### 2024 - אופטימיזציה של השירות ותכונות מתקדמות {#2024---service-optimization-and-advanced-features}
 

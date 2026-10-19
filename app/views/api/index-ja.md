@@ -295,6 +295,7 @@ curl -X PUT BASE_URI/v1/account \
 
 > \[!NOTE]
 > 他のAPIエンドポイントとは異なり、これらは[認証](#authentication)で「ユーザー名」をエイリアスのユーザー名、「パスワード」をエイリアス生成パスワードとし、Basic認証ヘッダーとして送信する必要があります。
+
 > \[!WARNING]
 > このエンドポイントセクションは現在作業中で、（できれば）2024年にリリース予定です。 それまでの間は、当社ウェブサイトのナビゲーションにある「Apps」ドロップダウンからIMAPクライアントをご利用ください。
 
@@ -481,7 +482,7 @@ curl BASE_URI/v1/emails/limit \
 
 このエンドポイントは、メールの `message`、`headers`、および `rejectedErrors` のプロパティ値を返しません。
 
-それらのプロパティと値を取得するには、メールIDを使って [メール取得](#retrieve-email) エンドポイントを使用してください。
+それらのプロパティと値を取得するには、メールIDを使って [メール取得](#retrieve-outbound-smtp-email) エンドポイントを使用してください。
 
 > `GET /v1/emails`
 
@@ -584,7 +585,7 @@ curl BASE_URI/v1/emails/:id \
 
 ### アウトバウンドSMTPメールの削除 {#delete-outbound-smtp-email}
 
-メールの削除は、現在のステータスが `"pending"`、`"queued"`、または `"deferred"` のいずれかの場合に限り、ステータスを `"rejected"` に設定し（その後キューで処理されません）、実行されます。メールは作成または送信後30日経過すると自動的に削除される場合があります。そのため、クライアント、データベース、またはアプリケーションにアウトバウンドSMTPメールのコピーを保持することを推奨します。必要に応じて、[Create email](#create-email) および [Retrieve email](#retrieve-email) エンドポイントの両方から返されるメールID値をデータベースで参照できます。
+メールの削除は、現在のステータスが `"pending"`、`"queued"`、または `"deferred"` のいずれかの場合に限り、ステータスを `"rejected"` に設定し（その後キューで処理されません）、実行されます。メールは作成または送信後30日経過すると自動的に削除される場合があります。そのため、クライアント、データベース、またはアプリケーションにアウトバウンドSMTPメールのコピーを保持することを推奨します。必要に応じて、[Create email](#create-outbound-smtp-email) および [Retrieve email](#retrieve-outbound-smtp-email) エンドポイントの両方から返されるメールID値をデータベースで参照できます。
 
 > `DELETE /v1/emails/:id`
 

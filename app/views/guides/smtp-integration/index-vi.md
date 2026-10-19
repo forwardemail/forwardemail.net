@@ -518,7 +518,7 @@ Nếu bạn gặp các vấn đề không được đề cập ở đây, vui l�
 
 ## Tài Nguyên Bổ Sung {#additional-resources}
 
-* [Tài liệu Forward Email](/docs)  
+* [Tài liệu Forward Email](/blog/docs)
 * [Giới hạn và Cấu hình Máy chủ SMTP](/faq#what-are-your-outbound-smtp-limits)  
 * [Hướng dẫn Thực hành Tốt nhất về Email](/blog/docs/best-email-forwarding-service)  
 * [Thực hành Bảo mật](/security)  

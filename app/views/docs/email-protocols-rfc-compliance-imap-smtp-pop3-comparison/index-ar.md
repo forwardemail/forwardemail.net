@@ -1328,7 +1328,7 @@ sequenceDiagram
 بالإضافة إلى ManageSieve، يوفر Forward Email:
 
 * **لوحة تحكم الويب**: إنشاء وإدارة سكربتات Sieve عبر واجهة الويب في حسابي → النطاقات → الأسماء المستعارة → سكربتات Sieve
-* **واجهة برمجة التطبيقات REST**: وصول برمجي لإدارة سكربتات Sieve عبر [واجهة برمجة تطبيقات Forward Email](/api#sieve-scripts)
+* **واجهة برمجة التطبيقات REST**: وصول برمجي لإدارة سكربتات Sieve عبر [واجهة برمجة تطبيقات Forward Email](/email-api)
 
 > \[!TIP]
 > للحصول على تعليمات إعداد مفصلة وتكوين العميل، راجع [الأسئلة الشائعة: هل تدعمون تصفية البريد الإلكتروني باستخدام Sieve؟](/faq#do-you-support-sieve-email-filtering)
@@ -1589,6 +1589,7 @@ flowchart TB
 ### عملية الترحيل {#migration-process}
 
 يوفر Forward Email ترحيلًا تلقائيًا ومتكررًا من الصيغ القديمة إلى الجديدة:
+```javascript
 // إحصائيات الترحيل المتتبعة:
 {
   attachmentsMigrated: 0,

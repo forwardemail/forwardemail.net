@@ -518,7 +518,7 @@ Als je problemen ondervindt die hier niet worden behandeld, doe dan het volgende
 
 ## Aanvullende bronnen {#additional-resources}
 
-* [Forward Email Documentatie](/docs)  
+* [Forward Email Documentatie](/blog/docs)
 * [SMTP-serverlimieten en configuratie](/faq#what-are-your-outbound-smtp-limits)  
 * [Gids voor beste e-mailpraktijken](/blog/docs/best-email-forwarding-service)  
 * [Beveiligingspraktijken](/security)  

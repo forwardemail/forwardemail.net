@@ -152,6 +152,12 @@ let jobs = [
     interval: '1d',
     timeout: 0
   },
+  // (asks Trustpilot once a month, see helpers/aggregate-rating.js)
+  {
+    name: 'update-aggregate-rating',
+    interval: '1d',
+    timeout: 0
+  },
   {
     name: 'payment-email',
     interval: '1m',

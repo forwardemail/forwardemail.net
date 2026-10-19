@@ -518,7 +518,7 @@ Hvis du støder på problemer, der ikke er dækket her, bedes du:
 
 ## Yderligere ressourcer {#additional-resources}
 
-* [Forward Email Dokumentation](/docs)  
+* [Forward Email Dokumentation](/blog/docs)
 * [SMTP-servergrænser og konfiguration](/faq#what-are-your-outbound-smtp-limits)  
 * [Guide til bedste praksis for e-mail](/blog/docs/best-email-forwarding-service)  
 * [Sikkerhedspraksis](/security)  

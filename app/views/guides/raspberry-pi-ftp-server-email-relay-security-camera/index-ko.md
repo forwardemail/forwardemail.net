@@ -67,8 +67,8 @@
 1. **Raspberry Pi Imager 다운로드:** [공식 웹사이트](https://www.raspberrypi.com/software/)에서 다운로드하세요.
 
 2. **운영체제 선택:** Imager에서 "CHOOSE OS" > "Other general-purpose OS" > "Ubuntu"를 선택하세요.
-   * 64비트 모델 (Pi 3, 4, 5, Zero 2 W)에는 **"Ubuntu Server 22.04.1 LTS (64-bit)"**를 선택하세요.
-   * 구형 32비트 모델 (Pi 2, Pi Zero, Pi Zero W)에는 **"Ubuntu Server 22.04.1 LTS (32-bit)"**를 선택하세요.
+   * 64비트 모델 (Pi 3, 4, 5, Zero 2 W)에는 <strong>"Ubuntu Server 22.04.1 LTS (64-bit)"</strong>를 선택하세요.
+   * 구형 32비트 모델 (Pi 2, Pi Zero, Pi Zero W)에는 <strong>"Ubuntu Server 22.04.1 LTS (32-bit)"</strong>를 선택하세요.
 
 3. **저장 장치 선택:** 마이크로SD 카드를 선택하세요.
 

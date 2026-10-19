@@ -155,6 +155,7 @@ I dispositivi QNAP con QTS funzionano molto bene con Forward Email. Supportano T
 
 > \[!TIP]
 > Se incontri [problemi di configurazione SMTP con Gmail](https://forum.qnap.com/viewtopic.php?t=152466), gli stessi passaggi di risoluzione si applicano a Forward Email. Assicurati che l'autenticazione sia abilitata correttamente e che le credenziali siano corrette.
+
 > \[!NOTE]
 > I dispositivi QNAP supportano una pianificazione avanzata delle notifiche, permettendoti di configurare orari di silenzio durante i quali le notifiche non critiche vengono soppresse. Questo è particolarmente utile negli ambienti aziendali.
 

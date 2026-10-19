@@ -295,6 +295,7 @@ curl -X PUT BASE_URI/v1/account \
 
 > \[!NOTE]
 > Khác với các điểm cuối API khác, những điểm này yêu cầu [Xác thực](#authentication) "tên người dùng" bằng tên người dùng bí danh và "mật khẩu" bằng mật khẩu được tạo cho bí danh dưới dạng tiêu đề ủy quyền Basic.
+
 > \[!WARNING]
 > Phần endpoint này đang trong quá trình phát triển và dự kiến sẽ được phát hành (hy vọng) vào năm 2024. Trong thời gian chờ đợi, vui lòng sử dụng một ứng dụng IMAP từ menu "Apps" trong phần điều hướng của trang web chúng tôi.
 
@@ -481,7 +482,7 @@ curl BASE_URI/v1/emails/limit \
 
 Lưu ý rằng endpoint này không trả về giá trị thuộc tính cho `message`, `headers`, cũng như `rejectedErrors` của một email.
 
-Để trả về các thuộc tính và giá trị đó, vui lòng sử dụng endpoint [Lấy email](#retrieve-email) với ID email.
+Để trả về các thuộc tính và giá trị đó, vui lòng sử dụng endpoint [Lấy email](#retrieve-outbound-smtp-email) với ID email.
 
 > `GET /v1/emails`
 
@@ -529,7 +530,7 @@ Endpoint API này sẽ tự động mã hóa emoji cho bạn nếu chúng đư�
 | `inReplyTo`      | Không    | Chuỗi            | Message-ID mà tin nhắn này trả lời.                                                                                                                                                                                                                                                                                                                                                                                                                            |
 | `references`     | Không    | Chuỗi hoặc Mảng  | Danh sách Message-ID phân tách bằng dấu cách hoặc một Mảng các Message-ID.                                                                                                                                                                                                                                                                                                                                                                                     |
 | `attachDataUrls` | Không    | Boolean          | Nếu là `true` thì chuyển đổi các hình ảnh `data:` trong nội dung HTML của tin nhắn thành các tệp đính kèm nhúng.                                                                                                                                                                                                                                                                                                                                              |
-| `watchHtml`      | Không    | Chuỗi            | Phiên bản HTML dành riêng cho Apple Watch của tin nhắn ([theo tài liệu Nodemailer](https://nodemailer.com/message/#content-options]), các đồng hồ mới nhất không yêu cầu thiết lập này).                                                                                                                                                                                                                                                                       |
+| `watchHtml`      | Không    | Chuỗi            | Phiên bản HTML dành riêng cho Apple Watch của tin nhắn ([theo tài liệu Nodemailer](https://nodemailer.com/message/#content-options), các đồng hồ mới nhất không yêu cầu thiết lập này).                                                                                                                                                                                                                                                                       |
 | `amp`            | Không    | Chuỗi            | Phiên bản HTML dành riêng cho AMP4EMAIL của tin nhắn (xem [ví dụ của Nodemailer](https://nodemailer.com/message/#amp-example)).                                                                                                                                                                                                                                                                                                                               |
 | `icalEvent`      | Không    | Đối tượng        | Một sự kiện iCalendar để sử dụng như nội dung tin nhắn thay thế (xem [sự kiện lịch của Nodemailer](https://nodemailer.com/message/calendar-events/)).                                                                                                                                                                                                                                                                                                        |
 | `alternatives`   | Không    | Mảng             | Một mảng các nội dung tin nhắn thay thế (xem [nội dung thay thế của Nodemailer](https://nodemailer.com/message/alternatives/)).                                                                                                                                                                                                                                                                                                                                |
@@ -584,7 +585,7 @@ curl BASE_URI/v1/emails/:id \
 
 ### Xóa email SMTP gửi đi {#delete-outbound-smtp-email}
 
-Việc xóa email sẽ đặt trạng thái thành `"rejected"` (và sau đó không xử lý trong hàng đợi) nếu và chỉ nếu trạng thái hiện tại là một trong các trạng thái `"pending"`, `"queued"`, hoặc `"deferred"`.  Chúng tôi có thể tự động xóa email sau 30 ngày kể từ khi chúng được tạo và/hoặc gửi – do đó bạn nên giữ một bản sao email SMTP gửi đi trong client, cơ sở dữ liệu hoặc ứng dụng của bạn.  Bạn có thể tham chiếu giá trị ID email của chúng tôi trong cơ sở dữ liệu nếu muốn – giá trị này được trả về từ cả hai điểm cuối [Tạo email](#create-email) và [Lấy email](#retrieve-email).
+Việc xóa email sẽ đặt trạng thái thành `"rejected"` (và sau đó không xử lý trong hàng đợi) nếu và chỉ nếu trạng thái hiện tại là một trong các trạng thái `"pending"`, `"queued"`, hoặc `"deferred"`.  Chúng tôi có thể tự động xóa email sau 30 ngày kể từ khi chúng được tạo và/hoặc gửi – do đó bạn nên giữ một bản sao email SMTP gửi đi trong client, cơ sở dữ liệu hoặc ứng dụng của bạn.  Bạn có thể tham chiếu giá trị ID email của chúng tôi trong cơ sở dữ liệu nếu muốn – giá trị này được trả về từ cả hai điểm cuối [Tạo email](#create-outbound-smtp-email) và [Lấy email](#retrieve-outbound-smtp-email).
 
 > `DELETE /v1/emails/:id`
 

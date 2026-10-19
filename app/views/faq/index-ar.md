@@ -16,7 +16,9 @@
   * [Microsoft Outlook](#microsoft-outlook)
   * [Apple Mail](#apple-mail)
   * [eM Client](#em-client)
+  * [هل تقدمون عميل بريد ويب](#do-you-offer-a-webmail-client)
   * [هل يمكنني الإرسال من أي عنوان على نطاقي في بريد الويب](#can-i-send-from-any-address-on-my-domain-in-webmail)
+  * [هل لديكم تطبيقات لسطح المكتب والأجهزة المحمولة](#do-you-have-desktop-and-mobile-apps)
   * [هل لديكم تطبيق للطرفية](#do-you-have-a-terminal-app)
   * [الأجهزة المحمولة](#mobile-devices)
   * [تكوين Sendmail SMTP Relay](#sendmail-smtp-relay-configuration)
@@ -75,6 +77,7 @@
   * [هل تدعمون تصفية البريد الإلكتروني باستخدام Sieve](#do-you-support-sieve-email-filtering)
   * [هل تدعمون MTA-STS](#do-you-support-mta-sts)
   * [هل تدعمون مفاتيح المرور وWebAuthn](#do-you-support-passkeys-and-webauthn)
+  * [هل المصادقة الثنائية (2FA) مدعومة](#is-two-factor-authentication-2fa-supported)
   * [هل تدعمون أفضل ممارسات البريد الإلكتروني](#do-you-support-email-best-practices)
   * [هل تدعمون webhooks للارتداد](#do-you-support-bounce-webhooks)
   * [هل تدعمون webhooks](#do-you-support-webhooks)
@@ -95,6 +98,7 @@
   * [هل تحتفظون برؤوس مصادقة البريد الإلكتروني](#do-you-preserve-email-authentication-headers)
   * [هل تحتفظون بالرؤوس الأصلية للبريد الإلكتروني وتمنعون التزوير](#do-you-preserve-original-email-headers-and-prevent-spoofing)
   * [كيف تحمون من البريد المزعج والإساءة](#how-do-you-protect-against-spam-and-abuse)
+  * [هل يمكنني تعطيل فحص محتوى البالغين أو التصيد الاحتيالي أو الملفات التنفيذية أو الفيروسات](#can-i-disable-adult-content-phishing-executable-or-virus-scanning)
   * [هل تخزنون محتوى البريد الإلكتروني على القرص](#do-you-store-email-content-on-disk)
   * [هل يمكن أن يتعرض محتوى البريد الإلكتروني للكشف أثناء تعطل النظام](#can-email-content-be-exposed-during-system-crashes)
   * [من لديه حق الوصول إلى بنية البريد الإلكتروني الخاصة بكم](#who-has-access-to-your-email-infrastructure)
@@ -104,6 +108,7 @@
 * [مكان معالجة وتخزين البريد الإلكتروني الوارد لنطاقي ومدة الاحتفاظ به](#where-is-inbound-email-for-my-domain-processed-and-stored-and-for-how-long)
 * [كيفية إدراج Forward Email كمعالج فرعي في اتفاقية DPA الخاصة بي](#how-do-i-list-forward-email-as-a-subprocessor-in-my-own-dpa)
   * [كيف تتعاملون مع إشعارات خروقات البيانات](#how-do-you-handle-data-breach-notifications)
+  * [كيف أبلغ عن ثغرة أمنية](#how-do-i-report-a-security-vulnerability)
   * [هل تقدمون بيئة اختبار](#do-you-offer-a-test-environment)
   * [هل توفرون أدوات المراقبة والتنبيه](#do-you-provide-monitoring-and-alerting-tools)
   * [كيف تضمنون التوفر العالي](#how-do-you-ensure-high-availability)
@@ -136,6 +141,7 @@
   * [هل تم اختباره جيداً](#is-this-well-tested)
   * [هل تمررون رسائل واستجابات SMTP](#do-you-pass-along-smtp-response-messages-and-codes)
   * [كيف تمنعون المرسلين المزعجين وتضمنون سمعة جيدة لإعادة توجيه البريد الإلكتروني](#how-do-you-prevent-spammers-and-ensure-good-email-forwarding-reputation)
+  * [كيف يمكنني التحقق من أن نطاقاً ما يستخدم Forward Email فعلاً](#how-can-i-verify-a-domain-is-using-forward-email)
   * [كيف تقومون بعمليات بحث DNS على أسماء النطاقات](#how-do-you-perform-dns-lookups-on-domain-names)
 * [الحساب والفوترة](#account-and-billing)
   * [كيف يمكنني حذف حسابي](#how-do-i-delete-my-account)
@@ -317,11 +323,31 @@ Forward Email هو **مزود خدمة بريد إلكتروني متكامل ا
 8. أدخل اسمك واختر اسم الحساب.
 9. انقر على **إنهاء**.
 
+### هل تقدمون عميل بريد ويب {#do-you-offer-a-webmail-client}
+
+نعم.  عميل بريد الويب الرسمي ومفتوح المصدر الخاص بنا متاح على <a href="https://mail.forwardemail.net" target="_blank" rel="noopener noreferrer">mail.forwardemail.net</a>.  لا يلزم أي تثبيت: سجّل الدخول من أي متصفح باستخدام عنوان اسم مستعار وكلمة المرور التي تم إنشاؤها له (بيانات الاعتماد نفسها المستخدمة لـ IMAP وSMTP وPOP3).
+
+أُطلق في فبراير 2026، ويدعم أيضاً [CalDAV Scheduling Extensions (RFC 6638)](https://www.rfc-editor.org/rfc/rfc6638.html) و[DANE/TLSA (RFC 6698)](https://en.wikipedia.org/wiki/DNS-based_Authentication_of_Named_Entities) و[Domain Connect](https://domainconnect.org) لإعداد DNS بنقرة واحدة، مع إشعارات فورية في الوقت الحقيقي لـ IMAP وCalDAV وCardDAV تُرسَل عبر WebSockets.
+
+الشيفرة المصدرية مفتوحة المصدر بالكامل ومتاحة على GitHub على <a href="https://github.com/forwardemail/mail.forwardemail.net" target="_blank" rel="noopener noreferrer">github.com/forwardemail/mail.forwardemail.net</a>.
+
+يشرح <a href="/blog/docs/webmail">دليل بريد الويب</a> الخاص بنا تسجيل الدخول، واستخدام عدة حسابات، وكيف يتكامل بريد الويب مع لوحة التحكم في هذا الموقع.
+
 ### هل يمكنني الإرسال من أي عنوان على نطاقي في بريد الويب {#can-i-send-from-any-address-on-my-domain-in-webmail}
 
 نعم. أنشئ كلمة مرور شاملة (catch-all) من <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">حسابي <i class="fa fa-angle-right"></i> النطاقات</a> <i class="fa fa-angle-right"></i> الإعدادات المتقدمة <i class="fa fa-angle-right"></i> كلمات مرور شاملة، ثم احفظها في بريد الويب ضمن **Settings <i class="fa fa-angle-right"></i> General <i class="fa fa-angle-right"></i> Send from any address**. عند كتابة رسالة، اختر **Other address @yourdomain** في قائمة **From** واكتب أي عنوان على ذلك النطاق.
 
 أنت لا تسجّل الدخول كحساب شامل أو حساب بحرف بدل (wildcard). كلمة المرور الشاملة يمكنها الإرسال فقط، لذا تذهب النسخة إلى مجلد المرسل للحساب الذي تستخدمه. وتُحفظ فقط على الجهاز الذي تضيفها عليه. راجع <a href="/blog/docs/webmail#send-from-any-address-on-your-domain">دليل بريد الويب</a> لمعرفة جميع الخطوات.
+
+### هل لديكم تطبيقات لسطح المكتب والأجهزة المحمولة {#do-you-have-desktop-and-mobile-apps}
+
+نعم.  تتوفر تطبيقات أصلية لسطح المكتب والأجهزة المحمولة، مبنية من المشروع مفتوح المصدر نفسه الذي بُني منه عميل بريد الويب الخاص بنا، ويمكن تنزيلها جميعاً من <a href="/download" target="_blank" rel="noopener noreferrer">صفحة التنزيل</a> لدينا:
+
+* **سطح المكتب**: macOS (Apple Silicon وIntel)، وWindows (x64 وARM64، كمثبّت `.exe` أو `.msi`)، وLinux (AppImage و`.deb` و`.rpm` وSnap، لكل من x64 وARM64).
+* **الأجهزة المحمولة**: Android (APK، مع إصدار بديل عبر F-Droid) وiOS.
+* **الطرفية**: الأمر `forwardemail` لأنظمة macOS وLinux وWindows (x64 وARM64). راجع [هل لديكم تطبيق للطرفية](#do-you-have-a-terminal-app).
+
+تُنشر جميع إصدارات البناء على GitHub على <a href="https://github.com/forwardemail/mail.forwardemail.net/releases" target="_blank" rel="noopener noreferrer">github.com/forwardemail/mail.forwardemail.net/releases</a>، وتتيح لك صفحة التنزيل التحقق من المجاميع الاختبارية للإصدارات مقابل `SHA256SUMS.txt`.
 
 ### هل لديكم تطبيق للطرفية {#do-you-have-a-terminal-app}
 
@@ -1917,7 +1943,7 @@ Drafts/
     <br />
     <code>forward-email=hello:first@gmail.com,second@gmail.com</code>
     <br />
-    الرسائل المرسلة إلى <code>hello@example.com</code> **لن** يتم إعادة توجيهها إلى <code>second@gmail.com</code> (القاعدة الشاملة) مع هذا التكوين، وبدلاً من ذلك سيتم تسليمها فقط إلى <code>first@gmail.com</code>.
+    الرسائل المرسلة إلى <code>hello@example.com</code> <strong>لن</strong> يتم إعادة توجيهها إلى <code>second@gmail.com</code> (القاعدة الشاملة) مع هذا التكوين، وبدلاً من ذلك سيتم تسليمها فقط إلى <code>first@gmail.com</code>.
   </span>
 </div>
 
@@ -2654,7 +2680,7 @@ Tasks.org هو مدير مهام مفتوح المصدر شهير يعمل بش�
     مهم:
   </strong>
   <span>
-    نوافق على SMTP الصادر لكل نطاق لحماية سمعة عناوين IP الخاصة بنا وقابلية تسليم رسائلك. نوافق على نطاقات كثيرة دون انتظار بمجرد التحقق من سجلات DNS الخاصة بها، ويراجع فريقنا البقية، عادةً خلال 24 ساعة. راجع [هل أحتاج إلى موافقة لتمكين SMTP](#do-i-need-approval-to-enable-smtp).
+    نوافق على SMTP الصادر لكل نطاق لحماية سمعة عناوين IP الخاصة بنا وقابلية تسليم رسائلك. نوافق على نطاقات كثيرة دون انتظار بمجرد التحقق من سجلات DNS الخاصة بها، ويراجع فريقنا البقية، عادةً خلال 24 ساعة. راجع <a href="/faq#do-i-need-approval-to-enable-smtp">هل أحتاج إلى موافقة لتمكين SMTP</a>.
   </span>
 </div>
 
@@ -2935,7 +2961,7 @@ if header :contains "Subject" "invoice" {
 
 2. **بروتوكول ManageSieve**: اتصل باستخدام أي عميل متوافق مع ManageSieve، مثل إضافة Sieve لثندربرد أو [sieve-connect](https://github.com/philpennock/sieve-connect)، إلى `imap.forwardemail.net`. استخدم المنفذ `2190` مع STARTTLS أو المنفذ `4190` مع TLS الضمني.
 
-3. **API**: استخدم [REST API](/api#sieve-scripts) لإدارة السكربتات برمجيًا.
+3. **API**: استخدم [REST API](/email-api) لإدارة السكربتات برمجيًا.
 
 <div class="alert my-3 alert-primary">
   <i class="fa fa-info-circle font-weight-bold"></i>
@@ -2978,6 +3004,12 @@ if header :contains "Subject" "invoice" {
 * [تسجيل الدخول إلى تطبيقاتك ومواقعك باستخدام مفاتيح المرور](https://support.google.com/android/answer/14124480?hl=en) (جوجل)
 * [استخدام مفاتيح المرور لتسجيل الدخول إلى التطبيقات والمواقع على iPhone](https://support.apple.com/guide/iphone/use-passkeys-to-sign-in-to-apps-and-websites-iphf538ea8d0/ios) (آبل)
 * [مقال ويكيبيديا عن مفاتيح المرور](https://en.wikipedia.org/wiki/Passkey_\(credential\))
+### هل المصادقة الثنائية (2FA) مدعومة {#is-two-factor-authentication-2fa-supported}
+
+نعم، لتسجيل الدخول إلى حسابك (بما في ذلك <a href="https://mail.forwardemail.net" target="_blank" rel="noopener noreferrer">بريد الويب</a>) عبر رموز مرور لمرة واحدة، مدعومة بمفاتيح استرداد.
+
+تنطبق المصادقة الثنائية على تسجيل الدخول إلى حسابك نفسه، وليس على اتصالات IMAP أو SMTP أو POP3 أو CalDAV أو CardDAV من عملاء الجهات الخارجية (Thunderbird وApple Mail وغيرها).  إذ تُصادق هذه العملاء بدلاً من ذلك باستخدام كلمة مرور مُنشأة خاصة بالاسم المستعار، لذا لا يوجد حالياً معيار مكافئ للمصادقة الثنائية لهذه الفئة من العملاء. إذا كنت ترغب في تغيير ذلك، فافتح طلب ميزة على GitHub.
+
 ### هل تدعم أفضل ممارسات البريد الإلكتروني {#do-you-support-email-best-practices}
 
 نعم. لدينا دعم مدمج لـ SPF و DKIM و DMARC و ARC و SRS عبر جميع الخطط. كما عملنا بشكل مكثف مع المؤلفين الأصليين لهذه المواصفات وخبراء البريد الإلكتروني الآخرين لضمان الكمال والتسليم العالي.
@@ -4072,6 +4104,17 @@ SMTP الصادر **غير محدود** و**قائم على السمعة**. تح
 * <https://www.datapacket.com/datacenters/denver> (تفاصيل حماية DDoS)
 * <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/abuse-prevention-by-user-id.js>
 
+### هل يمكنني تعطيل فحص محتوى البالغين أو التصيد الاحتيالي أو الملفات التنفيذية أو الفيروسات {#can-i-disable-adult-content-phishing-executable-or-virus-scanning}
+
+نعم. يفحص كل نطاق الروابط والمرفقات الواردة باستخدام <a href="https://spamscanner.net" target="_blank" rel="noopener noreferrer">Spam Scanner</a>، وهو نظام الحماية مفتوح المصدر من البريد المزعج والتصيد الاحتيالي والفيروسات الذي بنيناه بأنفسنا (والذي يتبع سياسات الخصوصية أولاً وعدم الاحتفاظ بأي سجلات نفسها المتبعة في بقية Forward Email). يمكن تشغيل أو إيقاف كل فئة من الفئات الأربع بشكل مستقل من <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">حسابي <i class="fa fa-angle-right"></i> النطاقات</a> <i class="fa fa-angle-right"></i> الإعدادات المتقدمة:
+
+* **الحماية من محتوى البالغين**: إذا تم تعطيلها، فلن تُفحص الروابط بحثاً عن محتوى خاص بالبالغين.
+* **الحماية من التصيد الاحتيالي**: إذا تم تعطيلها، فلن تُفحص الروابط بحثاً عن البرامج الضارة أو تبديل النطاقات أو هجمات التماثل الشكلي لأسماء النطاقات الدولية (IDN) أو التصيد الاحتيالي بشكل عام.
+* **الحماية من الملفات التنفيذية**: إذا تم تعطيلها، فلن تُفحص الروابط والمرفقات بحثاً عن أنواع الملفات التنفيذية التي يُحتمل أن تكون ضارة، أو الامتدادات، أو الأسماء، أو الترويسات، أو هجمات التماثل الشكلي لأسماء النطاقات الدولية (IDN).
+* **الحماية من الفيروسات**: إذا تم تعطيلها، فلن تُفحص المرفقات بحثاً عن أحصنة طروادة أو الفيروسات أو البرامج الضارة أو غيرها من التهديدات الخبيثة (عبر ClamAV).
+
+جميع الفئات الأربع مفعّلة افتراضياً. تعطيل إحداها يوقف الفحص لتلك الفئة المحددة فقط.  ولا يعطّل تصفية البريد المزعج ككل، وهو منفصل عن [تعطيل اسم مستعار معين](#can-i-disable-specific-aliases). السبب الأكثر شيوعاً لتعطيل فئة ما هو نمط من الإيجابيات الكاذبة خاص بحركة البريد لديك (مثل أن يصنّف فحص محتوى البالغين قوائم بريدية مشروعة لمكان ترفيهي أو نشاط تجاري ذي طابع خاص بالبالغين).
+
 ### هل تخزن محتوى البريد الإلكتروني على القرص {#do-you-store-email-content-on-disk}
 
 > \[!IMPORTANT]
@@ -4294,6 +4337,10 @@ Antrim, BT1 - 5EF
 * <https://forwardemail.net/technical-whitepaper.pdf#page=59>
 * <https://forwardemail.net/gdpr>
 
+### كيف أبلغ عن ثغرة أمنية {#how-do-i-report-a-security-vulnerability}
+
+إذا اكتشفت ثغرة أمنية، فيرجى الإبلاغ عنها فوراً إلى <security@forwardemail.net>. هذا عنوان مخصص لتقارير الثغرات والأخطاء البرمجية، منفصل عن الدعم العام.  إرسال بريد إلكتروني إليه مباشرةً يوصل تقريرك إلى الفريق المسؤول عن معالجته.
+
 ### هل تقدم بيئة اختبار {#do-you-offer-a-test-environment}
 
 لا تصف الوثائق التقنية لـ Forward Email بشكل صريح وضع صندوق رمل مخصص. ومع ذلك، تشمل طرق الاختبار المحتملة:
@@ -4434,7 +4481,7 @@ Antrim, BT1 - 5EF
    * بشكل متكرر، نقوم بالتكرار على تكوين إعادة التوجيه المستخرج لتحديد إعادة التوجيه العامة، وإعادة التوجيه بناءً على التعبيرات النمطية، وجميع تكوينات إعادة التوجيه الأخرى المدعومة – والتي تُعرف الآن باسم "عناوين إعادة التوجيه" الخاصة بنا.
    * لكل عنوان إعادة توجيه، ندعم بحثًا تكراريًا واحدًا (والذي سيبدأ سلسلة العمليات هذه مرة أخرى على العنوان المعطى). إذا تم العثور على تطابق تكراري، فسيتم إزالة النتيجة الأصلية من عناوين إعادة التوجيه، وإضافة النتائج الفرعية.
    * يتم تحليل عناوين إعادة التوجيه للتحقق من التفرد (لأننا لا نريد إرسال نسخ مكررة إلى عنوان واحد أو إنشاء اتصالات SMTP إضافية غير ضرورية).
-   * لكل عنوان إعادة توجيه، نقوم بالبحث عن اسم نطاقه مقابل نقطة النهاية API `/v1/max-forwarded-addresses` (لتحديد عدد العناوين التي يسمح للنطاق بإعادة توجيه البريد الإلكتروني إليها لكل اسم مستعار، مثلًا 10 بشكل افتراضي – انظر القسم الخاص بـ [الحد الأقصى لإعادة التوجيه لكل اسم مستعار](#is-there-a-limit-on-the-number-of-email-addresses-i-can-forward-to-per-alias)). إذا تم تجاوز هذا الحد، فسيحدث خطأ 550 وسيتلقى المرسل ردًا مرتدًا لهذا المستلم.
+   * لكل عنوان إعادة توجيه، نقوم بالبحث عن اسم نطاقه مقابل نقطة النهاية API `/v1/max-forwarded-addresses` (لتحديد عدد العناوين التي يسمح للنطاق بإعادة توجيه البريد الإلكتروني إليها لكل اسم مستعار، مثلًا 10 بشكل افتراضي – انظر القسم الخاص بـ [الحد الأقصى لإعادة التوجيه لكل اسم مستعار](#is-there-a-maximum-limit-on-the-number-of-email-addresses-i-can-forward-to-per-alias)). إذا تم تجاوز هذا الحد، فسيحدث خطأ 550 وسيتلقى المرسل ردًا مرتدًا لهذا المستلم.
    * نقوم بالبحث عن إعدادات المستلم الأصلي مقابل نقطة النهاية API `/v1/settings`، والتي تدعم البحث للمستخدمين المدفوعين (مع وجود بديل للمستخدمين المجانيين). هذا يعيد كائن تكوين للإعدادات المتقدمة لـ `port` (رقم، مثلًا `25`)، `has_adult_content_protection` (قيمة منطقية)، `has_phishing_protection` (قيمة منطقية)، `has_executable_protection` (قيمة منطقية)، و `has_virus_protection` (قيمة منطقية).
    * بناءً على هذه الإعدادات، نتحقق بعد ذلك من نتائج فاحص الرسائل المزعجة وإذا حدثت أي أخطاء، يتم رفض الرسالة برمز الخطأ 554 (مثلًا إذا كان `has_virus_protection` مفعّلًا، فسنقوم بفحص نتائج فاحص الرسائل المزعجة للفيروسات). لاحظ أن جميع مستخدمي الخطط المجانية سيتم اختيارهم تلقائيًا للفحص ضد المحتوى البالغ، والتصيد الاحتيالي، والبرامج التنفيذية، والفيروسات. بشكل افتراضي، يتم اختيار جميع مستخدمي الخطط المدفوعة أيضًا، لكن يمكن تعديل هذا التكوين ضمن صفحة الإعدادات لنطاق في لوحة تحكم Forward Email).
 
@@ -4754,6 +4801,7 @@ Antrim, BT1 - 5EF
   <li class="list-inline-item"><code class="notranslate">sch.uk</code></li>
   <li class="list-inline-item"><code class="notranslate">ukaea.uk</code></li>
 </ul>
+
 بالإضافة إلى ذلك، فإن هذه [نطاقات العلامات التجارية والشركات من المستوى الأعلى](https://en.wikipedia.org/wiki/List_of_Internet_top-level_domains#Brand_and_corporate_top-level_domains) مدرجة في القائمة البيضاء بشكل افتراضي (على سبيل المثال `apple` لـ `applecard.apple` لكشوف حسابات بنك Apple Card):
 
 <ul class="list-inline">
@@ -5179,6 +5227,7 @@ Antrim, BT1 - 5EF
   <li class="list-inline-item"><code class="notranslate">zara</code></li>
   <li class="list-inline-item"><code class="notranslate">zippo</code></li>
 </ul>
+
 اعتبارًا من 18 مارس 2025 أضفنا أيضًا هذه الأراضي الفرنسية الخارجية إلى هذه القائمة ([وفقًا لهذا الطلب على GitHub](https://github.com/forwardemail/forwardemail.net/issues/327)):
 
 <ul class="list-inline">
@@ -5365,6 +5414,7 @@ Antrim, BT1 - 5EF
   <li class="list-inline-item"><code class="notranslate">yt</code></li>
   <li class="list-inline-item"><code class="notranslate">za</code></li>
 </ul>
+
 ### هل لديك قائمة رمادية {#do-you-have-a-greylist}
 
 نعم، لدينا سياسة [القائمة الرمادية للبريد الإلكتروني](https://en.wikipedia.org/wiki/Greylisting_\(email\)) متساهلة جدًا. تنطبق القائمة الرمادية فقط على المرسلين غير الموجودين في قائمتنا البيضاء وتستمر في ذاكرة التخزين المؤقت لدينا لمدة 30 يومًا.
@@ -5542,6 +5592,7 @@ Antrim, BT1 - 5EF
     إذا كنت على خطة مدفوعة (تتميز بحماية خصوصية محسنة)، فالرجاء الذهاب إلى <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">حسابي <i class="fa fa-angle-right"></i> النطاقات</a>، انقر على "الإعداد" بجانب نطاقك، ثم انقر على "الإعدادات". إذا كنت ترغب في معرفة المزيد عن الخطط المدفوعة، راجع صفحة <a class="alert-link" rel="noopener noreferrer" href="/private-business-email">التسعير</a> الخاصة بنا. وإلا يمكنك متابعة التعليمات أدناه.
   </span>
 </div>
+
 إذا كنت تستخدم الخطة المجانية، فما عليك سوى إضافة سجل DNS <strong class="notranslate">TXT</strong> جديد كما هو موضح أدناه، ولكن قم بتغيير المنفذ من 25 إلى المنفذ الذي تختاره.
 
 على سبيل المثال، إذا أردت أن يتم توجيه جميع الرسائل الإلكترونية التي تذهب إلى `example.com` إلى منفذ SMTP الخاص بالمستلمين المستعارين 1337 بدلاً من 25:
@@ -5619,6 +5670,36 @@ Antrim, BT1 - 5EF
 ### كيف تمنعون المرسلين العشوائيين وتضمنون سمعة جيدة لإعادة توجيه البريد الإلكتروني {#how-do-you-prevent-spammers-and-ensure-good-email-forwarding-reputation}
 
 راجع أقسامنا حول [كيف يعمل نظام إعادة توجيه البريد الإلكتروني الخاص بك](#how-does-your-email-forwarding-system-work)، [كيف تتعامل مع مشاكل تسليم البريد الإلكتروني](#how-do-you-handle-email-delivery-issues)، و [كيف تتعامل مع حظر عناوين IP الخاصة بك](#how-do-you-handle-your-ip-addresses-becoming-blocked) أعلاه.
+
+### كيف يمكنني التحقق من أن نطاقاً ما يستخدم Forward Email فعلاً {#how-can-i-verify-a-domain-is-using-forward-email}
+
+تخبرك سجلات DNS العامة لأي نطاق ما إذا كان يستخدم خدمتنا، وبأي خطة.  هذا استعلام تقني محايد يمكن لأي شخص إجراؤه على أي نطاق؛ ولا يتطلب حساباً ولا تعاوناً من مالك النطاق.
+
+**تحقق من سجلات MX أولاً.**
+
+```sh
+dig example.com mx +short
+```
+
+إذا لم تتضمن الإجابة `mx1.forwardemail.net` و`mx2.forwardemail.net`، فإن النطاق **لا** يستخدم خدمتنا لاستقبال البريد، ونحن لسنا مشغّل ذلك البريد.
+
+**ثم تحقق من سجلات TXT للتمييز بين الخطط.**
+
+```sh
+dig example.com txt +short
+```
+
+| قيمة TXT                                     | ماذا تعني                                                                                          |
+| -------------------------------------------- | -------------------------------------------------------------------------------------------------- |
+| `forward-email=user@example.com`             | خطة مجانية.  القيمة هي الوجهة بنص عادي التي يُعاد توجيه البريد إليها.                              |
+| `forward-email-site-verification=XXXXXXXXXX` | خطة مدفوعة.  يُحفظ إعداد إعادة التوجيه في قاعدة بياناتنا تحت المعرّف `XXXXXXXXXX` وهو غير عام.     |
+| لا يوجد أي منهما                             | النطاق غير مُعدّ لخدمة إعادة التوجيه لدينا.                                                        |
+
+> \[!NOTE]
+> هذه السجلات هي الطريقة التي تعمل بها خدمتنا على مستوى DNS، لذا فإن الاستعلام نفسه يجيب عن "هل هذا النطاق تابع لنا" و"هل هو مجاني أم مدفوع" و"أين يذهب بريده" في حالة الخطة المجانية.  راجع [كيف يعمل نظام إعادة التوجيه لدينا](#how-does-your-email-forwarding-system-work) لمعرفة مسار التسليم نفسه.
+
+> \[!TIP]
+> نحن لسنا مسجّل أسماء نطاقات، لذا لا نحتفظ بأي سجلات DNS تاريخية.  لمعرفة من سجّل نطاقاً ما أو من يدير خوادم الأسماء الخاصة به، استخدم `whois example.com` و`dig example.com ns`، أو اسأل المسجّل مباشرةً.
 
 ### كيف تقومون بعمليات بحث DNS على أسماء النطاقات {#how-do-you-perform-dns-lookups-on-domain-names}
 
@@ -5888,6 +5969,7 @@ Antrim, BT1 - 5EF
     </tr>
   </tbody>
 </table>
+
 الأمر متروك لك!
 
 ### هل هناك حد أقصى لعدد عناوين البريد الإلكتروني التي يمكنني إعادة توجيهها لكل اسم مستعار {#is-there-a-maximum-limit-on-the-number-of-email-addresses-i-can-forward-to-per-alias}

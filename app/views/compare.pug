@@ -290,7 +290,8 @@ block body
                               each a in sorted
                                 if a.name !== alternatives[0].name
                                   a.dropdown-item(
-                                    href=l(`/blog/${alternatives[0].slug}-vs-${a.slug}-email-service-comparison`)
+                                    href=l(`/blog/${alternatives[0].slug}-vs-${a.slug}-email-service-comparison`),
+                                    rel=config.topCompetitors.includes(alternatives[0].slug) && config.topCompetitors.includes(a.slug) ? undefined : "nofollow"
                                   )= a.name
                     //- Badges
                     ul.list-unstyled
@@ -467,7 +468,8 @@ block body
                               each a in sorted
                                 if a.name !== alternatives[1].name
                                   a.dropdown-item(
-                                    href=l(`/blog/${alternatives[1].slug}-vs-${a.slug}-email-service-comparison`)
+                                    href=l(`/blog/${alternatives[1].slug}-vs-${a.slug}-email-service-comparison`),
+                                    rel=config.topCompetitors.includes(alternatives[1].slug) && config.topCompetitors.includes(a.slug) ? undefined : "nofollow"
                                   )= a.name
                     //- Badges
                     ul.list-unstyled
@@ -926,12 +928,15 @@ block body
                         i.fa.fa-balance-scale
                         = " "
                         = t("Compare with...")
+                      //- (nofollow for the pairs the sitemap leaves out, see
+                      //-  config/top-competitors.js)
                       .dropdown-menu.dropdown-menu-right.small
                         .card-columns.small
                           each a in sorted
                             if a.name !== alternative.name
                               a.dropdown-item(
-                                href=l(`/blog/${alternative.slug}-vs-${a.slug}-email-service-comparison`)
+                                href=l(`/blog/${alternative.slug}-vs-${a.slug}-email-service-comparison`),
+                                rel=config.topCompetitors.includes(alternative.slug) && config.topCompetitors.includes(a.slug) ? undefined : "nofollow"
                               )= a.name
                 //- Badges
                 ul.list-unstyled

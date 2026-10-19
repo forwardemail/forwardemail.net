@@ -308,8 +308,11 @@ pre {
   z-index: 9999;
 }
 
+// (a menu section label, not a page heading: it reads as the h6 it was)
 .dropdown-header {
   @include font-size($font-size-base);
+  font-weight: $headings-font-weight;
+  line-height: $headings-line-height;
 }
 
 a,

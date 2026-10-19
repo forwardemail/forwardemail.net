@@ -155,6 +155,7 @@ Perangkat QNAP dengan QTS bekerja dengan baik bersama Forward Email. Mereka mend
 
 > \[!TIP]
 > Jika Anda mengalami [masalah konfigurasi SMTP Gmail](https://forum.qnap.com/viewtopic.php?t=152466), langkah pemecahan masalah yang sama berlaku untuk Forward Email. Pastikan autentikasi diaktifkan dengan benar dan kredensial sudah tepat.
+
 > \[!NOTE]
 > Perangkat QNAP mendukung penjadwalan notifikasi lanjutan, memungkinkan Anda mengonfigurasi jam tenang ketika notifikasi non-kritis ditekan. Ini sangat berguna terutama di lingkungan bisnis.
 

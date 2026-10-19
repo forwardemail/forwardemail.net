@@ -16,7 +16,9 @@
   * [Microsoft Outlook](#microsoft-outlook)
   * [Apple Mail](#apple-mail)
   * [eM Client](#em-client)
+  * [你们提供网页邮件客户端吗](#do-you-offer-a-webmail-client)
   * [我可以在网页邮件中从我域名上的任意地址发送吗](#can-i-send-from-any-address-on-my-domain-in-webmail)
+  * [你们有桌面和移动应用吗](#do-you-have-desktop-and-mobile-apps)
   * [你们有终端应用吗](#do-you-have-a-terminal-app)
   * [移动设备](#mobile-devices)
   * [Sendmail SMTP 中继配置](#sendmail-smtp-relay-configuration)
@@ -75,6 +77,7 @@
   * [你们支持 Sieve 邮件过滤吗](#do-you-support-sieve-email-filtering)
   * [你们支持 MTA-STS 吗](#do-you-support-mta-sts)
   * [你们支持通行密钥和 WebAuthn 吗](#do-you-support-passkeys-and-webauthn)
+  * [是否支持双因素认证 (2FA)](#is-two-factor-authentication-2fa-supported)
   * [你们支持电子邮件最佳实践吗](#do-you-support-email-best-practices)
   * [你们支持退信 Webhooks 吗](#do-you-support-bounce-webhooks)
   * [你们支持 Webhooks 吗](#do-you-support-webhooks)
@@ -95,6 +98,7 @@
   * [你们保留邮件认证头吗](#do-you-preserve-email-authentication-headers)
   * [你们保留原始邮件头并防止伪造吗](#do-you-preserve-original-email-headers-and-prevent-spoofing)
   * [你们如何防止垃圾邮件和滥用](#how-do-you-protect-against-spam-and-abuse)
+  * [我可以禁用成人内容、网络钓鱼、可执行文件或病毒扫描吗](#can-i-disable-adult-content-phishing-executable-or-virus-scanning)
   * [你们会将邮件内容存储在磁盘上吗](#do-you-store-email-content-on-disk)
   * [系统崩溃时邮件内容会被暴露吗](#can-email-content-be-exposed-during-system-crashes)
   * [谁可以访问你们的邮件基础设施](#who-has-access-to-your-email-infrastructure)
@@ -104,6 +108,7 @@
 * [我的域名的入站电子邮件在哪里处理和存储，以及会保留多长时间](#where-is-inbound-email-for-my-domain-processed-and-stored-and-for-how-long)
 * [如何在我自己的 DPA 中将 Forward Email 列为次级处理者](#how-do-i-list-forward-email-as-a-subprocessor-in-my-own-dpa)
   * [你们如何处理数据泄露通知](#how-do-you-handle-data-breach-notifications)
+  * [如何报告安全漏洞](#how-do-i-report-a-security-vulnerability)
   * [你们提供测试环境吗](#do-you-offer-a-test-environment)
   * [你们提供监控和告警工具吗](#do-you-provide-monitoring-and-alerting-tools)
   * [你们如何确保高可用性](#how-do-you-ensure-high-availability)
@@ -136,6 +141,7 @@
   * [这是经过充分测试的吗](#is-this-well-tested)
   * [你们会传递 SMTP 响应消息和代码吗](#do-you-pass-along-smtp-response-messages-and-codes)
   * [你们如何防止垃圾邮件发送者并确保良好的邮件转发信誉](#how-do-you-prevent-spammers-and-ensure-good-email-forwarding-reputation)
+  * [如何验证某个域名是否真正在使用 Forward Email](#how-can-i-verify-a-domain-is-using-forward-email)
   * [你们如何对域名执行 DNS 查询](#how-do-you-perform-dns-lookups-on-domain-names)
 * [账户和计费](#account-and-billing)
   * [如何删除我的账户](#how-do-i-delete-my-account)
@@ -316,11 +322,31 @@ Forward Email 以极短的延迟传递邮件，通常在收到邮件后几秒内
 8. 输入您的姓名并选择账户名称
 9. 点击 **完成**
 
+### 你们提供网页邮件客户端吗 {#do-you-offer-a-webmail-client}
+
+提供。我们官方的开源网页邮件客户端位于 <a href="https://mail.forwardemail.net" target="_blank" rel="noopener noreferrer">mail.forwardemail.net</a>。无需安装：在任意浏览器中使用别名地址及其生成的密码登录即可（与 IMAP、SMTP 和 POP3 使用的凭据相同）。
+
+它于 2026 年 2 月推出，还支持 [CalDAV 日程调度扩展 (RFC 6638)](https://www.rfc-editor.org/rfc/rfc6638.html)、[DANE/TLSA (RFC 6698)](https://en.wikipedia.org/wiki/DNS-based_Authentication_of_Named_Entities) 以及用于一键配置 DNS 的 [Domain Connect](https://domainconnect.org)，并通过 WebSockets 为 IMAP、CalDAV 和 CardDAV 提供实时推送通知。
+
+源代码完全开源，可在 GitHub 上获取：<a href="https://github.com/forwardemail/mail.forwardemail.net" target="_blank" rel="noopener noreferrer">github.com/forwardemail/mail.forwardemail.net</a>。
+
+我们的<a href="/blog/docs/webmail">网页邮件指南</a>介绍了如何登录、如何使用多个账户，以及网页邮件与本网站控制面板如何配合使用。
+
 ### 我可以在网页邮件中从我域名上的任意地址发送吗 {#can-i-send-from-any-address-on-my-domain-in-webmail}
 
 可以。在 <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">我的账户 <i class="fa fa-angle-right"></i> 域名</a> <i class="fa fa-angle-right"></i> 高级设置 <i class="fa fa-angle-right"></i> 捕获所有密码 中生成一个通配密码，然后在网页邮件的 **Settings <i class="fa fa-angle-right"></i> General <i class="fa fa-angle-right"></i> Send from any address** 中保存它。撰写邮件时，在 **From** 菜单中选择 **Other address @yourdomain**，然后输入该域名上的任意地址。
 
 您无需以 catch-all 或通配符账户登录。通配密码只能用于发送，因此副本会存入您正在使用的账户的“已发送”文件夹。它只保存在您添加它的设备上。完整步骤请参阅我们的<a href="/blog/docs/webmail#send-from-any-address-on-your-domain">网页邮件指南</a>。
+
+### 你们有桌面和移动应用吗 {#do-you-have-desktop-and-mobile-apps}
+
+有。我们提供桌面和移动端原生应用，它们与我们的网页邮件客户端基于同一个开源项目构建，均可从我们的<a href="/download" target="_blank" rel="noopener noreferrer">下载页面</a>下载：
+
+* **桌面**：macOS（Apple Silicon 和 Intel）、Windows（x64 和 ARM64，提供 `.exe` 或 `.msi` 安装程序）以及 Linux（AppImage、`.deb`、`.rpm` 和 Snap，均支持 x64 和 ARM64）。
+* **移动**：Android（APK，另有 F-Droid 替代版本）和 iOS。
+* **终端**：适用于 macOS、Linux 和 Windows（x64 和 ARM64）的 `forwardemail` 命令。请参阅[你们有终端应用吗](#do-you-have-a-terminal-app)。
+
+所有发布版本均发布在 GitHub 上：<a href="https://github.com/forwardemail/mail.forwardemail.net/releases" target="_blank" rel="noopener noreferrer">github.com/forwardemail/mail.forwardemail.net/releases</a>，您还可以在下载页面根据 `SHA256SUMS.txt` 校验发布版本的校验和。
 
 ### 你们有终端应用吗 {#do-you-have-a-terminal-app}
 
@@ -1914,7 +1940,7 @@ EML 文件按邮箱文件夹组织。ZIP 密码与您的 IMAP/别名密码相同
     <br />
     <code>forward-email=hello:first@gmail.com,second@gmail.com</code>
     <br />
-    使用此配置，发送到 <code>hello@example.com</code> 的邮件 **不会** 被转发到 <code>second@gmail.com</code>（通配符），而只会投递到 <code>first@gmail.com</code>。
+    使用此配置，发送到 <code>hello@example.com</code> 的邮件 <strong>不会</strong> 被转发到 <code>second@gmail.com</code>（通配符），而只会投递到 <code>first@gmail.com</code>。
   </span>
 </div>
 
@@ -2651,7 +2677,7 @@ Tasks.org 是一个流行的开源任务管理器，与 Forward Email 的 CalDAV
     重要提示：
   </strong>
   <span>
-    我们逐个域名审批出站 SMTP，以保护我们的 IP 信誉和您的邮件送达率。许多域名在其 DNS 记录验证通过后即可当场获批，其余域名由我们的团队审核，通常在 24 小时内完成。请参阅[启用 SMTP 是否需要审批](#do-i-need-approval-to-enable-smtp)。
+    我们逐个域名审批出站 SMTP，以保护我们的 IP 信誉和您的邮件送达率。许多域名在其 DNS 记录验证通过后即可当场获批，其余域名由我们的团队审核，通常在 24 小时内完成。请参阅<a href="/faq#do-i-need-approval-to-enable-smtp">启用 SMTP 是否需要审批</a>。
   </span>
 </div>
 
@@ -2932,7 +2958,7 @@ if header :contains "Subject" "invoice" {
 
 2. **ManageSieve 协议**：使用任何与 ManageSieve 兼容的客户端连接，例如 Thunderbird 的 Sieve 插件或 [sieve-connect](https://github.com/philpennock/sieve-connect)，连接到 `imap.forwardemail.net`。使用带 STARTTLS 的端口 `2190` 或 使用隐式 TLS 的端口 `4190`。
 
-3. **API**：使用 [REST API](/api#sieve-scripts) 以编程方式管理脚本。
+3. **API**：使用 [REST API](/email-api) 以编程方式管理脚本。
 
 <div class="alert my-3 alert-primary">
   <i class="fa fa-info-circle font-weight-bold"></i>
@@ -2975,6 +3001,12 @@ if header :contains "Subject" "invoice" {
 * [使用通行密钥登录您的应用和网站](https://support.google.com/android/answer/14124480?hl=en)（Google）
 * [在 iPhone 上使用通行密钥登录应用和网站](https://support.apple.com/guide/iphone/use-passkeys-to-sign-in-to-apps-and-websites-iphf538ea8d0/ios)（Apple）
 * [维基百科关于通行密钥的条目](https://en.wikipedia.org/wiki/Passkey_\(credential\))
+### 是否支持双因素认证 (2FA) {#is-two-factor-authentication-2fa-supported}
+
+支持，可在登录您的账户（包括<a href="https://mail.forwardemail.net" target="_blank" rel="noopener noreferrer">网页邮件</a>）时使用一次性验证码，并以恢复密钥作为后备。
+
+2FA 仅适用于您的账户登录本身，不适用于来自第三方客户端（Thunderbird、Apple Mail 等）的 IMAP、SMTP、POP3、CalDAV 或 CardDAV 连接。这些客户端改用别名专属的生成密码进行认证，因此目前这类客户端还没有与 2FA 等效的标准。如果您希望改变这一点，请在 GitHub 上提交功能请求。
+
 ### 你支持电子邮件最佳实践吗 {#do-you-support-email-best-practices}
 
 是的。我们在所有计划中内置支持 SPF、DKIM、DMARC、ARC 和 SRS。我们还与这些规范的原始作者及其他电子邮件专家进行了广泛合作，以确保高送达率。
@@ -4070,6 +4102,17 @@ Forward Email 实施了多层保护：
 * <https://www.datapacket.com/datacenters/denver>（DDoS 保护详情）
 * <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/abuse-prevention-by-user-id.js>
 
+### 我可以禁用成人内容、网络钓鱼、可执行文件或病毒扫描吗 {#can-i-disable-adult-content-phishing-executable-or-virus-scanning}
+
+可以。每个域名都会使用 <a href="https://spamscanner.net" target="_blank" rel="noopener noreferrer">Spam Scanner</a> 扫描传入的链接和附件。Spam Scanner 是我们自主开发的开源反垃圾邮件、反网络钓鱼和病毒防护工具（并遵循与 Forward Email 其他部分相同的隐私优先、零日志政策）。以下四个类别均可在 <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">我的账户 <i class="fa fa-angle-right"></i> 域名</a> <i class="fa fa-angle-right"></i> 高级设置 中单独开启或关闭：
+
+* **成人内容防护**：如果禁用，将不会扫描链接中的成人相关内容。
+* **网络钓鱼防护**：如果禁用，将不会扫描链接中的恶意软件、域名替换、IDN 同形异义字攻击或一般的网络钓鱼。
+* **可执行文件防护**：如果禁用，将不会扫描链接和附件中可能具有恶意的可执行文件类型、扩展名、名称、标头或 IDN 同形异义字攻击。
+* **病毒防护**：如果禁用，将不会扫描附件中的木马、病毒、恶意软件或其他恶意威胁（通过 ClamAV）。
+
+这四项默认均为启用。禁用其中一项只会关闭该特定类别的扫描。它不会禁用整体的垃圾邮件过滤，并且与[禁用特定别名](#can-i-disable-specific-aliases)是两回事。禁用某个类别最常见的原因是出现了您的流量特有的误报模式（例如，成人内容扫描将某个成人主题场所或企业的正当邮件列表标记出来）。
+
 ### 你们是否将邮件内容存储到磁盘 {#do-you-store-email-content-on-disk}
 
 > \[!IMPORTANT]
@@ -4208,9 +4251,9 @@ Forward Email 对其极少的 2-3 人工程团队访问实施了访问控制，�
 > [!IMPORTANT]
 > 目前还不行。今天尚无仅限欧盟的部署或欧盟“选择加入”可用，你不应在你自己的记录或数据处理协议中将 Forward Email 描述为仅限欧盟的处理者。
 
-**当前的处理位置：**我们的服务器主要位于 Denver, Colorado, United States（参见[你们的服务器位于哪里](#where-are-your-servers-located)以及 <https://forwardemail.net/ips>）。这适用于所有功能：入站转发、错误日志、邮箱存储（IMAP/POP3/CalDAV/CardDAV）以及出站 SMTP。
+<strong>当前的处理位置：</strong>我们的服务器主要位于 Denver, Colorado, United States（参见[你们的服务器位于哪里](#where-are-your-servers-located)以及 <https://forwardemail.net/ips>）。这适用于所有功能：入站转发、错误日志、邮箱存储（IMAP/POP3/CalDAV/CardDAV）以及出站 SMTP。
 
-**计划内容：**在阿姆斯特丹设立一个欧盟数据中心，托管于 [forwardemail.eu](https://forwardemail.eu)。为了让欧盟数据在法律与技术上都实现隔离，需要通过一家独立的欧盟本地公司运营，而不仅仅是在欧盟地点放置服务器。我们尚无上线日期，加入候补名单不会改变你今天的邮件处理地点。订阅 <https://github.com/orgs/forwardemail/discussions/336> 以获取公告；一旦可用，我们会在那里说明现有客户如何选择加入。
+<strong>计划内容：</strong>在阿姆斯特丹设立一个欧盟数据中心，托管于 [forwardemail.eu](https://forwardemail.eu)。为了让欧盟数据在法律与技术上都实现隔离，需要通过一家独立的欧盟本地公司运营，而不仅仅是在欧盟地点放置服务器。我们尚无上线日期，加入候补名单不会改变你今天的邮件处理地点。订阅 <https://github.com/orgs/forwardemail/discussions/336> 以获取公告；一旦可用，我们会在那里说明现有客户如何选择加入。
 
 **你今天可以准确陈述的是：**
 
@@ -4291,6 +4334,10 @@ Antrim, BT1 - 5EF
 
 * <https://forwardemail.net/technical-whitepaper.pdf#page=59>
 * <https://forwardemail.net/gdpr>
+
+### 如何报告安全漏洞 {#how-do-i-report-a-security-vulnerability}
+
+如果您发现了安全漏洞，请立即报告至 <security@forwardemail.net>。这是专门用于接收漏洞和错误报告的地址，与一般支持分开。直接发送邮件到该地址，您的报告就会送达负责处理的团队。
 
 ### 您是否提供测试环境 {#do-you-offer-a-test-environment}
 
@@ -4432,7 +4479,7 @@ Forward Email 完全依赖两个关键基础设施提供商，且均未使用第
    * 递归迭代提取的转发配置，以确定全局转发、基于正则表达式的转发以及所有其他支持的转发配置——这些现在被称为我们的“转发地址”。
    * 对于每个转发地址，我们支持一次递归查找（这将对给定地址重新开始这一系列操作）。如果找到递归匹配，则父结果将从转发地址中移除，子地址将被添加。
    * 解析转发地址以确保唯一性（因为我们不希望向同一地址发送重复邮件或产生额外不必要的 SMTP 客户端连接）。
-   * 对于每个转发地址，我们通过我们的 API 端点 `/v1/max-forwarded-addresses` 查询其域名（以确定该域名每个别名允许转发的地址数量，例如默认是 10 个——详见章节 [每个别名转发的最大地址限制](#is-there-a-limit-on-the-number-of-email-addresses-i-can-forward-to-per-alias)）。如果超过此限制，则会发生 550 错误，发送者将收到该收件人的退信。
+   * 对于每个转发地址，我们通过我们的 API 端点 `/v1/max-forwarded-addresses` 查询其域名（以确定该域名每个别名允许转发的地址数量，例如默认是 10 个——详见章节 [每个别名转发的最大地址限制](#is-there-a-maximum-limit-on-the-number-of-email-addresses-i-can-forward-to-per-alias)）。如果超过此限制，则会发生 550 错误，发送者将收到该收件人的退信。
    * 我们通过 API 端点 `/v1/settings` 查询原始收件人的设置，该端点支持付费用户查询（并为免费用户提供回退）。这会返回一个配置对象，包含高级设置，如 `port`（数字，例如 `25`）、`has_adult_content_protection`（布尔值）、`has_phishing_protection`（布尔值）、`has_executable_protection`（布尔值）和 `has_virus_protection`（布尔值）。
    * 基于这些设置，我们检查垃圾邮件扫描器的结果，如果出现任何错误，则邮件将以 554 错误代码被拒绝（例如，如果启用了 `has_virus_protection`，我们将检查垃圾邮件扫描器的病毒检测结果）。注意，所有免费计划用户默认启用成人内容、钓鱼、可执行文件和病毒的检查。默认情况下，所有付费计划用户也启用此功能，但此配置可以在 Forward Email 仪表板的域名设置页面中更改。
 
@@ -4752,6 +4799,7 @@ Forward Email 完全依赖两个关键基础设施提供商，且均未使用第
   <li class="list-inline-item"><code class="notranslate">sch.uk</code></li>
   <li class="list-inline-item"><code class="notranslate">ukaea.uk</code></li>
 </ul>
+
 此外，这些[品牌和企业顶级域名](https://en.wikipedia.org/wiki/List_of_Internet_top-level_domains#Brand_and_corporate_top-level_domains)默认被允许（例如，Apple Card 银行对账单的 `applecard.apple` 中的 `apple`）：
 
 <ul class="list-inline">
@@ -5177,6 +5225,7 @@ Forward Email 完全依赖两个关键基础设施提供商，且均未使用第
   <li class="list-inline-item"><code class="notranslate">zara</code></li>
   <li class="list-inline-item"><code class="notranslate">zippo</code></li>
 </ul>
+
 截至2025年3月18日，我们还将以下法国海外领土添加到此列表中（[根据此GitHub请求](https://github.com/forwardemail/forwardemail.net/issues/327)）：
 
 <ul class="list-inline">
@@ -5363,6 +5412,7 @@ Forward Email 完全依赖两个关键基础设施提供商，且均未使用第
   <li class="list-inline-item"><code class="notranslate">yt</code></li>
   <li class="list-inline-item"><code class="notranslate">za</code></li>
 </ul>
+
 ### 你们有灰名单吗 {#do-you-have-a-greylist}
 
 是的，我们采用了非常宽松的 [邮件灰名单](https://en.wikipedia.org/wiki/Greylisting_\(email\)) 策略。灰名单只适用于不在我们的允许列表中的发件人，并且在我们的缓存中保存30天。
@@ -5540,6 +5590,7 @@ MX 服务器还通过速率限制限制转发给一个或多个收件人的邮�
     如果您使用的是付费计划（该计划具备增强隐私保护功能），请前往 <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">我的账户 <i class="fa fa-angle-right"></i> 域名</a>，点击您的域名旁的“设置”，然后点击“设置”选项。如果您想了解更多关于付费计划的信息，请参阅我们的 <a class="alert-link" rel="noopener noreferrer" href="/private-business-email">价格</a> 页面。否则，您可以继续按照以下说明操作。
   </span>
 </div>
+
 如果您使用的是免费计划，请添加一个新的 DNS <strong class="notranslate">TXT</strong> 记录，如下所示，但将端口从 25 更改为您选择的端口。
 
 例如，如果你想让所有发送到 `example.com` 的邮件转发到别名收件人的 SMTP 端口 1337，而不是 25：
@@ -5617,6 +5668,36 @@ MX 服务器还通过速率限制限制转发给一个或多个收件人的邮�
 ### 如何防止垃圾邮件发送者并确保良好的邮件转发声誉 {#how-do-you-prevent-spammers-and-ensure-good-email-forwarding-reputation}
 
 请参阅上文中关于 [您的邮件转发系统如何工作](#how-does-your-email-forwarding-system-work)、[您如何处理邮件投递问题](#how-do-you-handle-email-delivery-issues) 和 [您如何处理 IP 地址被封锁](#how-do-you-handle-your-ip-addresses-becoming-blocked) 的章节。
+
+### 如何验证某个域名是否真正在使用 Forward Email {#how-can-i-verify-a-domain-is-using-forward-email}
+
+域名的公共 DNS 记录会显示它是否在使用我们的服务，以及使用的是哪种计划。这是一项中立的技术查询，任何人都可以对任何域名执行；无需账户，也无需域名所有者配合。
+
+**首先检查 MX 记录。**
+
+```sh
+dig example.com mx +short
+```
+
+如果结果中不包含 `mx1.forwardemail.net` 和 `mx2.forwardemail.net`，则该域名**并未**使用我们的服务接收邮件，我们也不是这些邮件的运营方。
+
+**然后检查 TXT 记录以区分计划。**
+
+```sh
+dig example.com txt +short
+```
+
+| TXT 值 | 含义 |
+| --- | --- |
+| `forward-email=user@example.com` | 免费计划。该值是邮件被转发到的明文目标地址。 |
+| `forward-email-site-verification=XXXXXXXXXX` | 付费计划。转发配置保存在我们的数据库中，ID 为 `XXXXXXXXXX`，不公开。 |
+| 两者都不存在 | 该域名未配置使用我们的转发服务。 |
+
+> \[!NOTE]
+> 这些记录就是我们的服务在 DNS 层面的工作方式，因此同一次查询即可回答“这个域名是否使用你们的服务”、“是免费还是付费”，以及对于免费计划“它的邮件发往何处”。有关投递路径本身，请参阅[我们的转发系统如何运作](#how-does-your-email-forwarding-system-work)。
+
+> \[!TIP]
+> 我们不是域名注册商，因此不保存历史 DNS 记录。要查明谁注册了某个域名或谁在运营其域名服务器，请使用 `whois example.com` 和 `dig example.com ns`，或直接咨询注册商。
 
 ### 您如何对域名执行 DNS 查询 {#how-do-you-perform-dns-lookups-on-domain-names}
 
@@ -5886,6 +5967,7 @@ MX 服务器还通过速率限制限制转发给一个或多个收件人的邮�
     </tr>
   </tbody>
 </table>
+
 由你决定！
 
 ### 每个别名我可以转发到的电子邮件地址数量有限制吗 {#is-there-a-maximum-limit-on-the-number-of-email-addresses-i-can-forward-to-per-alias}
@@ -5930,7 +6012,7 @@ Enterprise License 的价格为 **$250/month**，通过直接报价与开票收�
 
 这并不会改变你数据的处理地点：参见[我能否将我的电子邮件处理和存储保留在欧盟（数据驻留）](#can-i-keep-my-email-processing-and-storage-in-the-eu-data-residency)。
 
-**谁需要它：**任何对服务的使用超出条款（第三方访问）范围的人，以及任何需要会签版 DPA、自定义 DPA 条款，或为合规目的而指定工程联系人 的人。
+<strong>谁需要它：</strong>任何对服务的使用超出条款（第三方访问）范围的人，以及任何需要会签版 DPA、自定义 DPA 条款，或为合规目的而指定工程联系人 的人。
 
 **如何开始：**[联系我们](/help)，提供你的法定公司名称、注册地址、公司注册号与 VAT 编号，以及签署人的姓名、职务和电子邮件地址。我们会回复一份 DocuSign 协议供你审阅。
 

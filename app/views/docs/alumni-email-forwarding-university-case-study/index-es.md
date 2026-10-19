@@ -78,6 +78,7 @@ Así es como nuestras universidades asociadas ahorran anualmente al elegir Forwa
 
 > \[!NOTE]
 > Forward Email enterprise típicamente cuesta solo $250/mes, sin costo adicional por usuario, limitaciones de tasa API en lista blanca, y el único costo adicional es el almacenamiento si necesitas GB/TB adicionales para estudiantes (+$3 por cada 10 GB adicionales). También usamos unidades NVMe SSD para soporte rápido de IMAP/POP3/SMTP/CalDAV/CardDAV.
+
 > \[!IMPORTANT]
 > A diferencia de Google y Microsoft, que han aumentado repetidamente sus precios mientras integran funciones de IA que analizan tus datos, Forward Email mantiene precios estables con un enfoque estricto en la privacidad. No usamos IA, no rastreamos patrones de uso y no almacenamos registros ni correos electrónicos en disco (todo el procesamiento se realiza en memoria), garantizando privacidad completa para tus comunicaciones con exalumnos.
 

@@ -1328,7 +1328,7 @@ sequenceDiagram
 Naast ManageSieve biedt Forward Email:
 
 * **Web Dashboard**: Maak en beheer Sieve-scripts via de webinterface bij Mijn Account → Domeinen → Aliassen → Sieve Scripts
-* **REST API**: Programmatic toegang tot Sieve-scriptbeheer via de [Forward Email API](/api#sieve-scripts)
+* **REST API**: Programmatic toegang tot Sieve-scriptbeheer via de [Forward Email API](/email-api)
 
 > \[!TIP]
 > Voor gedetailleerde installatie-instructies en clientconfiguratie, zie [FAQ: Ondersteunt u Sieve e-mailfiltering?](/faq#do-you-support-sieve-email-filtering)
@@ -1589,6 +1589,7 @@ Dit zorgt voor **nul dataverlies** tijdens migratie van oude naar nieuwe opslagf
 ### Migratie Proces {#migration-process}
 
 Forward Email biedt automatische, idempotente migratie van oude naar nieuwe opslagformaten:
+```javascript
 // Migratiestatistieken bijgehouden:
 {
   attachmentsMigrated: 0,

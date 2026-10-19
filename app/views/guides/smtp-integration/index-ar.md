@@ -520,7 +520,7 @@ flowchart TD
 
 ## موارد إضافية {#additional-resources}
 
-* [توثيق Forward Email](/docs)
+* [توثيق Forward Email](/blog/docs)
 * [حدود وتكوين خادم SMTP](/faq#what-are-your-outbound-smtp-limits)
 * [دليل أفضل ممارسات البريد الإلكتروني](/blog/docs/best-email-forwarding-service)
 * [ممارسات الأمان](/security)

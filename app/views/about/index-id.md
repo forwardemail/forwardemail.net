@@ -68,7 +68,7 @@ Kesederhanaan dan efektivitas solusi ini menarik perhatian dari pengembang terke
 **April 2020**: Setelah menghadapi banyak kendala dengan solusi deteksi spam yang ada yang tidak menghormati kebijakan privasi Forward Email, perusahaan merilis versi alfa awal dari Spam Scanner mereka. Solusi [filter anti-spam](https://en.wikipedia.org/wiki/Anti-spam_techniques "Anti-spam techniques") yang sepenuhnya gratis dan open-source ini menggunakan pendekatan [filter spam Naive Bayes](https://en.wikipedia.org/wiki/Naive_Bayes_spam_filtering "Naive Bayes spam filtering") yang dikombinasikan dengan perlindungan [anti-phishing](https://en.wikipedia.org/wiki/Phishing "Phishing") dan [serangan homograf IDN](https://en.wikipedia.org/wiki/IDN_homograph_attack "IDN homograph attack"). Forward Email juga merilis [otentikasi dua faktor](https://en.wikipedia.org/wiki/Multi-factor_authentication "Multi-factor authentication") (2FA) menggunakan [kata sandi sekali pakai](https://en.wikipedia.org/wiki/One-time_password "One-time password") (OTP) untuk keamanan akun yang lebih baik.
 
 **Mei 2020**: Forward Email memungkinkan [port forwarding](https://en.wikipedia.org/wiki/Port_forwarding "Port forwarding") kustom sebagai solusi bagi pengguna untuk mengatasi pemblokiran port oleh [ISP](https://en.wikipedia.org/wiki/Internet_service_provider "Internet service provider") mereka. Perusahaan juga merilis [Free Email Forwarding RESTful API](email-api) dengan dokumentasi lengkap dan contoh permintaan serta respons secara real-time, bersama dengan dukungan untuk webhook.
-**Agustus 2020**: Forward Email menambahkan dukungan untuk sistem otentikasi email [Authenticated Received Chain](arc) ("ARC"), memperkuat keamanan dan keterkiriman email.
+**Agustus 2020**: Forward Email menambahkan dukungan untuk sistem otentikasi email [Authenticated Received Chain](/faq#do-you-support-email-best-practices) ("ARC"), memperkuat keamanan dan keterkiriman email.
 
 **23 November 2020**: Forward Email secara publik meluncurkan layanan mereka keluar dari program beta, menandai tonggak penting dalam pengembangan platform.
 
@@ -92,7 +92,7 @@ Kesederhanaan dan efektivitas solusi ini menarik perhatian dari pengembang terke
 
 **November 2023**: Forward Email meluncurkan fitur [**penyimpanan kotak surat terenkripsi**](/blog/docs/best-quantum-safe-encrypted-email-service) untuk [dukungan IMAP](/faq#do-you-support-receiving-email-with-imap), yang merupakan kemajuan signifikan dalam privasi dan keamanan email.
 
-**Desember 2023**: Perusahaan [menambahkan dukungan](/faq#do-you-support-pop3) untuk [POP3](https://en.wikipedia.org/wiki/Post_Office_Protocol), [passkeys dan WebAuthn](/faq#do-you-support-passkeys-and-webauthn), pemantauan [waktu sampai inbox](/faq#i), dan [OpenPGP untuk Penyimpanan IMAP](/faq#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd).
+**Desember 2023**: Perusahaan [menambahkan dukungan](/faq#do-you-support-pop3) untuk [POP3](https://en.wikipedia.org/wiki/Post_Office_Protocol), [passkeys dan WebAuthn](/faq#do-you-support-passkeys-and-webauthn), pemantauan [waktu sampai inbox](/tti), dan [OpenPGP untuk Penyimpanan IMAP](/faq#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd).
 
 ### 2024 - Optimasi Layanan dan Fitur Lanjutan {#2024---service-optimization-and-advanced-features}
 

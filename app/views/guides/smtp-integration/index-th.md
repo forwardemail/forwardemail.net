@@ -520,7 +520,7 @@ flowchart TD
 
 ## แหล่งข้อมูลเพิ่มเติม {#additional-resources}
 
-* [เอกสาร Forward Email](/docs)
+* [เอกสาร Forward Email](/blog/docs)
 * [ข้อจำกัดและการตั้งค่าเซิร์ฟเวอร์ SMTP](/faq#what-are-your-outbound-smtp-limits)
 * [คู่มือแนวทางปฏิบัติที่ดีที่สุดสำหรับอีเมล](/blog/docs/best-email-forwarding-service)
 * [แนวทางด้านความปลอดภัย](/security)

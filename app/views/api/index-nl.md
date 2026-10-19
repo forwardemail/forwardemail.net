@@ -295,6 +295,7 @@ curl -X PUT BASE_URI/v1/account \
 
 > \[!NOTE]
 > In tegenstelling tot andere API endpoints vereisen deze [Authenticatie](#authentication) met "gebruikersnaam" gelijk aan de alias gebruikersnaam en "wachtwoord" gelijk aan het gegenereerde alias wachtwoord als Basic Authorization headers.
+
 > \[!WARNING]
 > Deze endpointsectie is een werk in uitvoering en zal (hopelijk) in 2024 worden uitgebracht. Gebruik in de tussentijd een IMAP-client uit het dropdownmenu "Apps" in de navigatie van onze website.
 
@@ -481,7 +482,7 @@ curl BASE_URI/v1/emails/limit \
 
 Let op dat deze endpoint geen eigenschapswaarden retourneert voor de `message`, `headers` of `rejectedErrors` van een e-mail.
 
-Om die eigenschappen en hun waarden te verkrijgen, gebruik je de [E-mail ophalen](#retrieve-email) endpoint met een e-mail-ID.
+Om die eigenschappen en hun waarden te verkrijgen, gebruik je de [E-mail ophalen](#retrieve-outbound-smtp-email) endpoint met een e-mail-ID.
 
 > `GET /v1/emails`
 
@@ -529,7 +530,7 @@ Deze API endpoint codeert automatisch emoji's voor je als ze in de headers worde
 | `inReplyTo`      | Nee     | String           | De Message-ID waarop het bericht een antwoord is.                                                                                                                                                                                                                                                                                                                                                                                                                 |
 | `references`     | Nee     | String of Array  | Spatie gescheiden lijst of een Array van Message-ID's.                                                                                                                                                                                                                                                                                                                                                                                                             |
 | `attachDataUrls` | Nee     | Boolean          | Als `true` worden `data:` afbeeldingen in de HTML-inhoud van het bericht omgezet naar ingesloten bijlagen.                                                                                                                                                                                                                                                                                                                                                       |
-| `watchHtml`      | Nee     | String           | Een Apple Watch specifieke HTML-versie van het bericht ([volgens de Nodemailer docs](https://nodemailer.com/message/#content-options]), de nieuwste watches vereisen dit niet meer).                                                                                                                                                                                                                                                                                |
+| `watchHtml`      | Nee     | String           | Een Apple Watch specifieke HTML-versie van het bericht ([volgens de Nodemailer docs](https://nodemailer.com/message/#content-options), de nieuwste watches vereisen dit niet meer).                                                                                                                                                                                                                                                                                |
 | `amp`            | Nee     | String           | Een AMP4EMAIL specifieke HTML-versie van het bericht (zie [Nodemailer's voorbeeld](https://nodemailer.com/message/#amp-example)).                                                                                                                                                                                                                                                                                                                                 |
 | `icalEvent`      | Nee     | Object           | Een iCalendar evenement om te gebruiken als alternatieve berichtinhoud (zie [Nodemailer's calendar events](https://nodemailer.com/message/calendar-events/)).                                                                                                                                                                                                                                                                                                     |
 | `alternatives`   | Nee     | Array            | Een Array van alternatieve berichtinhoud (zie [Nodemailer's alternative content](https://nodemailer.com/message/alternatives/)).                                                                                                                                                                                                                                                                                                                                  |
@@ -584,7 +585,7 @@ curl BASE_URI/v1/emails/:id \
 
 ### Verwijderen uitgaande SMTP-e-mail {#delete-outbound-smtp-email}
 
-Het verwijderen van e-mail zal de status instellen op `"rejected"` (en deze vervolgens niet verwerken in de wachtrij) als en alleen als de huidige status een van de volgende is: `"pending"`, `"queued"`, of `"deferred"`.  We kunnen e-mails automatisch verwijderen na 30 dagen nadat ze zijn aangemaakt en/of verzonden – daarom moet u een kopie van uitgaande SMTP-e-mails bewaren in uw client, database of applicatie.  U kunt onze e-mail-ID waarde in uw database refereren indien gewenst – deze waarde wordt teruggegeven door zowel de [Create email](#create-email) als [Retrieve email](#retrieve-email) endpoints.
+Het verwijderen van e-mail zal de status instellen op `"rejected"` (en deze vervolgens niet verwerken in de wachtrij) als en alleen als de huidige status een van de volgende is: `"pending"`, `"queued"`, of `"deferred"`.  We kunnen e-mails automatisch verwijderen na 30 dagen nadat ze zijn aangemaakt en/of verzonden – daarom moet u een kopie van uitgaande SMTP-e-mails bewaren in uw client, database of applicatie.  U kunt onze e-mail-ID waarde in uw database refereren indien gewenst – deze waarde wordt teruggegeven door zowel de [Create email](#create-outbound-smtp-email) als [Retrieve email](#retrieve-outbound-smtp-email) endpoints.
 
 > `DELETE /v1/emails/:id`
 

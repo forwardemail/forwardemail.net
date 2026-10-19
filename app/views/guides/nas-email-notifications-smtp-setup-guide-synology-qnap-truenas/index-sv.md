@@ -155,6 +155,7 @@ QNAP-enheter med QTS fungerar utmärkt med Forward Email. De stödjer modern TLS
 
 > \[!TIP]
 > Om du stöter på [Gmail SMTP-konfigurationsproblem](https://forum.qnap.com/viewtopic.php?t=152466) gäller samma felsökningssteg för Forward Email. Se till att autentisering är korrekt aktiverad och att uppgifterna är rätta.
+
 > \[!NOTE]
 > QNAP-enheter stöder avancerad schemaläggning av aviseringar, vilket gör att du kan konfigurera tysta timmar när icke-kritiska aviseringar undertrycks. Detta är särskilt användbart i affärsmiljöer.
 

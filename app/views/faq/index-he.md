@@ -16,7 +16,9 @@
   * [Microsoft Outlook](#microsoft-outlook)
   * [Apple Mail](#apple-mail)
   * [eM Client](#em-client)
+  * [האם אתם מציעים לקוח Webmail](#do-you-offer-a-webmail-client)
   * [האם אפשר לשלוח מכל כתובת בדומיין שלי ב-Webmail](#can-i-send-from-any-address-on-my-domain-in-webmail)
+  * [האם יש לכם יישומים לשולחן העבודה ולנייד](#do-you-have-desktop-and-mobile-apps)
   * [האם יש לכם יישום לטרמינל](#do-you-have-a-terminal-app)
   * [מכשירים ניידים](#mobile-devices)
   * [הגדרת Sendmail SMTP Relay](#sendmail-smtp-relay-configuration)
@@ -75,6 +77,7 @@
   * [האם אתם תומכים בסינון דואר באמצעות Sieve](#do-you-support-sieve-email-filtering)
   * [האם אתם תומכים ב-MTA-STS](#do-you-support-mta-sts)
   * [האם אתם תומכים במפתחות גישה ו-WebAuthn](#do-you-support-passkeys-and-webauthn)
+  * [האם יש תמיכה באימות דו-שלבי (2FA)](#is-two-factor-authentication-2fa-supported)
   * [האם אתם תומכים בפרקטיקות מיטביות לדואר אלקטרוני](#do-you-support-email-best-practices)
   * [האם אתם תומכים ב-webhooks לבאונס](#do-you-support-bounce-webhooks)
   * [האם אתם תומכים ב-webhooks](#do-you-support-webhooks)
@@ -95,6 +98,7 @@
   * [האם אתם שומרים על כותרות אימות הדואר](#do-you-preserve-email-authentication-headers)
   * [האם אתם שומרים על כותרות הדואר המקוריות ומונעים זיוף](#do-you-preserve-original-email-headers-and-prevent-spoofing)
   * [איך אתם מגנים מפני ספאם והתעללות](#how-do-you-protect-against-spam-and-abuse)
+  * [האם אפשר להשבית סריקה של תוכן למבוגרים, פישינג, קבצי הפעלה או וירוסים](#can-i-disable-adult-content-phishing-executable-or-virus-scanning)
   * [האם אתם מאחסנים תוכן דואר על הדיסק](#do-you-store-email-content-on-disk)
   * [האם תוכן הדואר יכול להיחשף בזמן קריסות מערכת](#can-email-content-be-exposed-during-system-crashes)
   * [מי יש לו גישה לתשתית הדואר שלכם](#who-has-access-to-your-email-infrastructure)
@@ -104,6 +108,7 @@
 * [היכן מעובד ומאוחסן הדוא״ל הנכנס לשם המתחם שלי, ולכמה זמן](#where-is-inbound-email-for-my-domain-processed-and-stored-and-for-how-long)
 * [כיצד אוכל לרשום את Forward Email כמעבד משנה ב‑DPA שלי](#how-do-i-list-forward-email-as-a-subprocessor-in-my-own-dpa)
   * [איך אתם מטפלים בהודעות פריצות נתונים](#how-do-you-handle-data-breach-notifications)
+  * [כיצד לדווח על פגיעות אבטחה](#how-do-i-report-a-security-vulnerability)
   * [האם אתם מציעים סביבת בדיקה](#do-you-offer-a-test-environment)
   * [האם אתם מספקים כלים לניטור והתראות](#do-you-provide-monitoring-and-alerting-tools)
   * [איך אתם מבטיחים זמינות גבוהה](#how-do-you-ensure-high-availability)
@@ -136,6 +141,7 @@
   * [האם זה נבדק היטב](#is-this-well-tested)
   * [האם אתם מעבירים הודעות וקודי תגובה של SMTP](#do-you-pass-along-smtp-response-messages-and-codes)
   * [איך אתם מונעים ספאמרים ומבטיחים מוניטין טוב להעברת דואר](#how-do-you-prevent-spammers-and-ensure-good-email-forwarding-reputation)
+  * [איך אפשר לאמת שדומיין באמת משתמש ב-Forward Email](#how-can-i-verify-a-domain-is-using-forward-email)
   * [איך אתם מבצעים חיפושי DNS על שמות דומיין](#how-do-you-perform-dns-lookups-on-domain-names)
 * [חשבון וחשבוניות](#account-and-billing)
   * [כיצד אוכל למחוק את החשבון שלי](#how-do-i-delete-my-account)
@@ -317,11 +323,31 @@ Forward Email מספק הודעות עם עיכוב מינימלי, בדרך כ�
 8. הזן את שמך ובחר שם לחשבון.
 9. לחץ על **Finish**.
 
+### האם אתם מציעים לקוח Webmail {#do-you-offer-a-webmail-client}
+
+כן.  לקוח ה-Webmail הרשמי שלנו, בקוד פתוח, זמין בכתובת <a href="https://mail.forwardemail.net" target="_blank" rel="noopener noreferrer">mail.forwardemail.net</a>.  אין צורך בהתקנה: התחבר מכל דפדפן באמצעות כתובת כינוי והסיסמה שנוצרה עבורה (אותם פרטי התחברות המשמשים ל-IMAP, SMTP ו-POP3).
+
+הוא הושק בפברואר 2026 ותומך גם ב-[CalDAV Scheduling Extensions (RFC 6638)](https://www.rfc-editor.org/rfc/rfc6638.html), ב-[DANE/TLSA (RFC 6698)](https://en.wikipedia.org/wiki/DNS-based_Authentication_of_Named_Entities) וב-[Domain Connect](https://domainconnect.org) להגדרת DNS בלחיצה אחת, עם התראות Push בזמן אמת עבור IMAP, CalDAV ו-CardDAV הנמסרות באמצעות WebSockets.
+
+קוד המקור פתוח במלואו וזמין ב-GitHub בכתובת <a href="https://github.com/forwardemail/mail.forwardemail.net" target="_blank" rel="noopener noreferrer">github.com/forwardemail/mail.forwardemail.net</a>.
+
+<a href="/blog/docs/webmail">מדריך ה-Webmail</a> שלנו מסביר על התחברות, על שימוש בכמה חשבונות, ועל האופן שבו ה-Webmail משתלב עם לוח הבקרה של אתר זה.
+
 ### האם אפשר לשלוח מכל כתובת בדומיין שלי ב-Webmail {#can-i-send-from-any-address-on-my-domain-in-webmail}
 
 כן. צור סיסמת catch-all ב-<a href="/my-account/domains" target="_blank" rel="noopener noreferrer">החשבון שלי <i class="fa fa-angle-right"></i> דומיינים</a> <i class="fa fa-angle-right"></i> הגדרות מתקדמות <i class="fa fa-angle-right"></i> סיסמאות מכוסות, ואז שמור אותה ב-Webmail תחת **Settings <i class="fa fa-angle-right"></i> General <i class="fa fa-angle-right"></i> Send from any address**. כשאתה כותב הודעה, בחר **Other address @הדומיין-שלך** בתפריט **From** והקלד כל כתובת בדומיין הזה.
 
 לא מתחברים כחשבון catch-all או wildcard. סיסמת ה-catch-all יכולה רק לשלוח, ולכן העותק נשמר בתיקיית הדואר היוצא (Sent) של החשבון שבו אתה משתמש. היא נשמרת רק במכשיר שבו הוספת אותה. ראה את <a href="/blog/docs/webmail#send-from-any-address-on-your-domain">מדריך ה-Webmail</a> שלנו לכל השלבים.
+
+### האם יש לכם יישומים לשולחן העבודה ולנייד {#do-you-have-desktop-and-mobile-apps}
+
+כן.  יישומים מקוריים זמינים לשולחן העבודה ולנייד, בנויים מאותו פרויקט קוד פתוח כמו לקוח ה-Webmail שלנו, ואפשר להוריד את כולם מ<a href="/download" target="_blank" rel="noopener noreferrer">דף ההורדות</a> שלנו:
+
+* **שולחן עבודה**: macOS (Apple Silicon ו-Intel), Windows (x64 ו-ARM64, כמתקין `.exe` או `.msi`), ו-Linux (AppImage, `.deb`, `.rpm` ו-Snap, כל אחד עבור x64 ו-ARM64).
+* **נייד**: Android (APK, עם גרסת F-Droid חלופית) ו-iOS.
+* **טרמינל**: הפקודה `forwardemail` עבור macOS, Linux ו-Windows (x64 ו-ARM64). ראה [האם יש לכם יישום לטרמינל](#do-you-have-a-terminal-app).
+
+כל גרסאות ההפצה מתפרסמות ב-GitHub בכתובת <a href="https://github.com/forwardemail/mail.forwardemail.net/releases" target="_blank" rel="noopener noreferrer">github.com/forwardemail/mail.forwardemail.net/releases</a>, ובדף ההורדות אפשר לאמת את סכומי הביקורת של הגרסאות מול `SHA256SUMS.txt`.
 
 ### האם יש לכם יישום לטרמינל {#do-you-have-a-terminal-app}
 
@@ -1917,7 +1943,7 @@ Drafts/
     <br />
     <code>forward-email=hello:first@gmail.com,second@gmail.com</code>
     <br />
-    מיילים שנשלחים ל-<code>hello@example.com</code> **לא** יופנו ל-<code>second@gmail.com</code> (catch-all) עם תצורה זו, ובמקום זאת יגיעו רק ל-<code>first@gmail.com</code>.
+    מיילים שנשלחים ל-<code>hello@example.com</code> <strong>לא</strong> יופנו ל-<code>second@gmail.com</code> (catch-all) עם תצורה זו, ובמקום זאת יגיעו רק ל-<code>first@gmail.com</code>.
   </span>
 </div>
 
@@ -2654,7 +2680,7 @@ Tasks.org הוא מנהל משימות קוד פתוח פופולרי שעובד
     חשוב:
   </strong>
   <span>
-    אנו מאשרים SMTP יוצא לכל דומיין בנפרד כדי להגן על מוניטין ה-IP שלנו ועל יכולת המסירה שלכם. אנו מאשרים דומיינים רבים כבר ברגע שרשומות ה-DNS שלהם מאומתות, והצוות שלנו בודק את השאר, בדרך כלל תוך 24 שעות. ראו [האם אני צריך אישור כדי להפעיל SMTP](#do-i-need-approval-to-enable-smtp).
+    אנו מאשרים SMTP יוצא לכל דומיין בנפרד כדי להגן על מוניטין ה-IP שלנו ועל יכולת המסירה שלכם. אנו מאשרים דומיינים רבים כבר ברגע שרשומות ה-DNS שלהם מאומתות, והצוות שלנו בודק את השאר, בדרך כלל תוך 24 שעות. ראו <a href="/faq#do-i-need-approval-to-enable-smtp">האם אני צריך אישור כדי להפעיל SMTP</a>.
   </span>
 </div>
 
@@ -2935,7 +2961,7 @@ if header :contains "Subject" "invoice" {
 
 2. **פרוטוקול ManageSieve**: התחבר באמצעות כל לקוח התואם ל-ManageSieve, כגון תוסף Sieve של Thunderbird או [sieve-connect](https://github.com/philpennock/sieve-connect), אל `imap.forwardemail.net`. השתמש ביציאה `2190` עם STARTTLS או ביציאה `4190` עם TLS מרומז.
 
-3. **API**: השתמש ב-[REST API](/api#sieve-scripts) כדי לנהל סקריפטים בצורה תכנותית.
+3. **API**: השתמש ב-[REST API](/email-api) כדי לנהל סקריפטים בצורה תכנותית.
 
 <div class="alert my-3 alert-primary">
   <i class="fa fa-info-circle font-weight-bold"></i>
@@ -2978,6 +3004,12 @@ Passkeys מאפשרים לכם להיכנס בצורה מאובטחת ללא צ�
 * [התחברו לאפליקציות ואתרים עם passkeys](https://support.google.com/android/answer/14124480?hl=en) (Google)
 * [השתמשו ב-passkeys כדי להיכנס לאפליקציות ואתרים באייפון](https://support.apple.com/guide/iphone/use-passkeys-to-sign-in-to-apps-and-websites-iphf538ea8d0/ios) (Apple)
 * [מאמר ויקיפדיה על Passkeys](https://en.wikipedia.org/wiki/Passkey_\(credential\))
+### האם יש תמיכה באימות דו-שלבי (2FA) {#is-two-factor-authentication-2fa-supported}
+
+כן, להתחברות לחשבון שלך (כולל <a href="https://mail.forwardemail.net" target="_blank" rel="noopener noreferrer">Webmail</a>) באמצעות קודי גישה חד-פעמיים, עם גיבוי של מפתחות שחזור.
+
+2FA חל על ההתחברות לחשבון שלך עצמו, ולא על חיבורי IMAP, SMTP, POP3, CalDAV או CardDAV מלקוחות צד שלישי (Thunderbird, Apple Mail וכו').  לקוחות אלה מאמתים את עצמם במקום זאת באמצעות סיסמה שנוצרה וייחודית לכינוי, ולכן אין כרגע תקן מקביל ל-2FA עבור סוג זה של לקוחות. אם תרצה שזה ישתנה, פתח בקשת תכונה ב-GitHub.
+
 ### האם אתם תומכים בפרקטיקות הטובות ביותר לדואר אלקטרוני {#do-you-support-email-best-practices}
 
 כן. יש לנו תמיכה מובנית ב-SPF, DKIM, DMARC, ARC ו-SRS בכל התכניות. בנוסף, עבדנו רבות עם המחברים המקוריים של המפרטים הללו ומומחים נוספים לדואר אלקטרוני כדי להבטיח שלמות ואחוזי מסירה גבוהים.
@@ -4073,6 +4105,17 @@ Forward Email מיישם הגנה רב-שכבתית מקיפה:
 * <https://www.datapacket.com/datacenters/denver> (פרטי הגנת DDoS)
 * <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/abuse-prevention-by-user-id.js>
 
+### האם אפשר להשבית סריקה של תוכן למבוגרים, פישינג, קבצי הפעלה או וירוסים {#can-i-disable-adult-content-phishing-executable-or-virus-scanning}
+
+כן. כל דומיין סורק קישורים וקבצים מצורפים נכנסים באמצעות <a href="https://spamscanner.net" target="_blank" rel="noopener noreferrer">Spam Scanner</a>, ההגנה מפני ספאם, פישינג ווירוסים בקוד פתוח שבנינו בעצמנו (והפועלת לפי אותה מדיניות של פרטיות קודם כול וללא רישום יומנים כמו שאר Forward Email). ניתן להפעיל או לכבות כל אחת מארבע קטגוריות באופן עצמאי ב-<a href="/my-account/domains" target="_blank" rel="noopener noreferrer">החשבון שלי <i class="fa fa-angle-right"></i> דומיינים</a> <i class="fa fa-angle-right"></i> הגדרות מתקדמות:
+
+* **הגנה מפני תוכן למבוגרים**: אם היא מושבתת, קישורים אינם נסרקים לאיתור תוכן למבוגרים.
+* **הגנה מפני פישינג**: אם היא מושבתת, קישורים אינם נסרקים לאיתור תוכנות זדוניות, החלפת דומיינים, מתקפות הומוגרף IDN או פישינג באופן כללי.
+* **הגנה מפני קבצי הפעלה**: אם היא מושבתת, קישורים וקבצים מצורפים אינם נסרקים לאיתור סוגי קבצי הפעלה שעלולים להיות זדוניים, סיומות, שמות, כותרות או מתקפות הומוגרף IDN.
+* **הגנה מפני וירוסים**: אם היא מושבתת, קבצים מצורפים אינם נסרקים לאיתור סוסים טרויאניים, וירוסים, תוכנות זדוניות או איומים זדוניים אחרים (באמצעות ClamAV).
+
+כל ארבע הקטגוריות מופעלות כברירת מחדל. השבתת אחת מהן מכבה רק את הסריקה עבור אותה קטגוריה ספציפית.  היא אינה משביתה את סינון הספאם כולו, והיא נפרדת מ[השבתת כינוי ספציפי](#can-i-disable-specific-aliases). הסיבה הנפוצה ביותר להשבתת קטגוריה היא דפוס של חיובים שגויים שאופייני לתעבורה שלך (למשל, סריקת תוכן למבוגרים שמסמנת רשימות תפוצה לגיטימיות של מקום בילוי או עסק בנושא מבוגרים).
+
 ### האם אתם מאחסנים תוכן דואר אלקטרוני בדיסק {#do-you-store-email-content-on-disk}
 
 > \[!IMPORTANT]
@@ -4295,6 +4338,10 @@ Antrim, BT1 - 5EF
 * <https://forwardemail.net/technical-whitepaper.pdf#page=59>
 * <https://forwardemail.net/gdpr>
 
+### כיצד לדווח על פגיעות אבטחה {#how-do-i-report-a-security-vulnerability}
+
+אם גילית פגיעות אבטחה, אנא דווח עליה מיד לכתובת <security@forwardemail.net>. זוהי כתובת ייעודית לדיווחים על פגיעויות ובאגים, נפרדת מהתמיכה הכללית.  שליחת דוא"ל ישירות אליה מעבירה את הדיווח שלך לצוות האחראי על הטיפול בו.
+
 ### האם אתם מציעים סביבת בדיקה {#do-you-offer-a-test-environment}
 
 התיעוד הטכני של Forward Email אינו מתאר במפורש מצב סנדבוקס ייעודי. עם זאת, גישות בדיקה אפשריות כוללות:
@@ -4435,7 +4482,7 @@ Forward Email מסתמכת בלעדית על שני ספקי תשתית מרכז
    * באופן רקורסיבי אנו עוברים על תצורת ההעברה שחולצה כדי לקבוע העברה גלובלית, העברה מבוססת ביטויים רגולריים, וכל תצורות ההעברה הנתמכות האחרות – שהן כעת ידועות כ"כתובות העברה" שלנו.
    * עבור כל כתובת העברה, אנו תומכים בחיפוש רקורסיבי אחד (שיתחיל את סדרת הפעולות הזו מחדש על הכתובת הנתונה). אם נמצא התאמה רקורסיבית, אז התוצאה ההורה תוסר מכתובות ההעברה, והילדים יתווספו.
    * כתובות ההעברה מנותחות לייחודיות (כיוון שאיננו רוצים לשלוח כפילויות לכתובת אחת או ליצור חיבורים מיותרים של לקוח SMTP).
-   * עבור כל כתובת העברה, אנו מחפשים את שם הדומיין שלה מול נקודת הקצה של ה-API שלנו `/v1/max-forwarded-addresses` (כדי לקבוע לכמה כתובות הדומיין מורשה להעביר אימייל לכל כינוי, לדוגמה 10 כברירת מחדל – ראה את הסעיף על [מגבלה מקסימלית על העברה לכל כינוי](#is-there-a-limit-on-the-number-of-email-addresses-i-can-forward-to-per-alias)). אם מגבלה זו מופרזת, תתרחש שגיאת 550 והשולח יקבל החזרה עבור נמען זה.
+   * עבור כל כתובת העברה, אנו מחפשים את שם הדומיין שלה מול נקודת הקצה של ה-API שלנו `/v1/max-forwarded-addresses` (כדי לקבוע לכמה כתובות הדומיין מורשה להעביר אימייל לכל כינוי, לדוגמה 10 כברירת מחדל – ראה את הסעיף על [מגבלה מקסימלית על העברה לכל כינוי](#is-there-a-maximum-limit-on-the-number-of-email-addresses-i-can-forward-to-per-alias)). אם מגבלה זו מופרזת, תתרחש שגיאת 550 והשולח יקבל החזרה עבור נמען זה.
    * אנו מחפשים את ההגדרות של הנמען המקורי מול נקודת הקצה של ה-API שלנו `/v1/settings`, התומכת בחיפוש עבור משתמשים בתשלום (עם גיבוי למשתמשים חינמיים). זה מחזיר אובייקט תצורה עבור הגדרות מתקדמות של `port` (מספר, לדוגמה `25`), `has_adult_content_protection` (בוליאני), `has_phishing_protection` (בוליאני), `has_executable_protection` (בוליאני), ו-`has_virus_protection` (בוליאני).
    * בהתבסס על הגדרות אלו, אנו בודקים את תוצאות סורק הספאם ואם מתרחשות שגיאות, ההודעה נדחית עם קוד שגיאה 554 (לדוגמה אם `has_virus_protection` מופעל, נבדוק את תוצאות סורק הספאם עבור וירוסים). שים לב שכל משתמשי התוכנית החינמית יהיו רשומים לבדיקה נגד תוכן למבוגרים, פישינג, קבצים ניתנים להרצה ווירוסים. כברירת מחדל, כל משתמשי התוכנית בתשלום רשומים גם כן, אך תצורה זו ניתנת לשינוי בדף ההגדרות של דומיין בלוח הבקרה של Forward Email).
 
@@ -4755,6 +4802,7 @@ Forward Email מסתמכת בלעדית על שני ספקי תשתית מרכז
   <li class="list-inline-item"><code class="notranslate">sch.uk</code></li>
   <li class="list-inline-item"><code class="notranslate">ukaea.uk</code></li>
 </ul>
+
 בנוסף, [תחומי על ברנדיים ותאגידיים](https://en.wikipedia.org/wiki/List_of_Internet_top-level_domains#Brand_and_corporate_top-level_domains) אלו מותרים כברירת מחדל (למשל `apple` עבור `applecard.apple` עבור דפי חשבון בנק של Apple Card):
 
 <ul class="list-inline">
@@ -5180,6 +5228,7 @@ Forward Email מסתמכת בלעדית על שני ספקי תשתית מרכז
   <li class="list-inline-item"><code class="notranslate">zara</code></li>
   <li class="list-inline-item"><code class="notranslate">zippo</code></li>
 </ul>
+
 נכון ל-18 במרץ 2025 הוספנו גם את הטריטוריות הצרפתיות שמעבר לים לרשימה זו ([לפי בקשת GitHub זו](https://github.com/forwardemail/forwardemail.net/issues/327)):
 
 <ul class="list-inline">
@@ -5366,6 +5415,7 @@ Forward Email מסתמכת בלעדית על שני ספקי תשתית מרכז
   <li class="list-inline-item"><code class="notranslate">yt</code></li>
   <li class="list-inline-item"><code class="notranslate">za</code></li>
 </ul>
+
 ### האם יש לכם רשימת אפור {#do-you-have-a-greylist}
 
 כן, יש לנו מדיניות [רשימת אפור למיילים](https://en.wikipedia.org/wiki/Greylisting_\(email\)) מאוד רפה. רשימת האפור חלה רק על שולחים שאינם ברשימת ההרשאה שלנו ונשמרת במטמון שלנו למשך 30 יום.
@@ -5543,6 +5593,7 @@ Forward Email מסתמכת בלעדית על שני ספקי תשתית מרכז
     אם אתם בתוכנית בתשלום (שכוללת הגנת פרטיות משופרת), אנא עברו ל- <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">החשבון שלי <i class="fa fa-angle-right"></i> דומיינים</a>, לחצו על "הגדרות" ליד הדומיין שלכם, ואז לחצו על "הגדרות". אם תרצו ללמוד עוד על תוכניות בתשלום ראו את דף ה- <a class="alert-link" rel="noopener noreferrer" href="/private-business-email">תמחור</a> שלנו. אחרת תוכלו להמשיך לעקוב אחרי ההוראות למטה.
   </span>
 </div>
+
 אם אתם בתוכנית החינמית, פשוט הוסיפו רשומת DNS <strong class="notranslate">TXT</strong> חדשה כפי שמוצג למטה, אך שנו את הפורט מ-25 לפורט שתבחרו.
 
 לדוגמה, אם אני רוצה שכל המיילים שנשלחים ל-`example.com` יועברו לנמענים עם פורט SMTP של 1337 במקום 25:
@@ -5620,6 +5671,36 @@ Forward Email מסתמכת בלעדית על שני ספקי תשתית מרכז
 ### איך אתם מונעים ספאמרים ומבטיחים מוניטין טוב להעברת מיילים {#how-do-you-prevent-spammers-and-ensure-good-email-forwarding-reputation}
 
 ראו את הסעיפים שלנו על [איך עובד מערכת העברת המייל שלכם](#how-does-your-email-forwarding-system-work), [איך אתם מטפלים בבעיות מסירת מיילים](#how-do-you-handle-email-delivery-issues), ו-[איך אתם מטפלים בכתובות ה-IP שלכם כשהן נחסמות](#how-do-you-handle-your-ip-addresses-becoming-blocked) למעלה.
+
+### איך אפשר לאמת שדומיין באמת משתמש ב-Forward Email {#how-can-i-verify-a-domain-is-using-forward-email}
+
+רשומות ה-DNS הציבוריות של דומיין מראות לך אם הוא משתמש בשירות שלנו, ובאיזו תוכנית.  זוהי בדיקה טכנית ניטרלית שכל אחד יכול להריץ על כל דומיין; היא אינה דורשת חשבון ואינה דורשת שיתוף פעולה מבעל הדומיין.
+
+**בדוק קודם את רשומות ה-MX.**
+
+```sh
+dig example.com mx +short
+```
+
+אם התשובה אינה כוללת את `mx1.forwardemail.net` ואת `mx2.forwardemail.net`, הדומיין **אינו** משתמש בשירות שלנו לקבלת דואר, ואנחנו לא המפעילים של הדואר הזה.
+
+**לאחר מכן בדוק את רשומות ה-TXT כדי להבחין בין התוכניות.**
+
+```sh
+dig example.com txt +short
+```
+
+| ערך TXT                                      | מה זה אומר                                                                                       |
+| -------------------------------------------- | ------------------------------------------------------------------------------------------------ |
+| `forward-email=user@example.com`             | תוכנית חינמית.  הערך הוא היעד בטקסט גלוי שאליו הדואר מועבר.                                      |
+| `forward-email-site-verification=XXXXXXXXXX` | תוכנית בתשלום.  תצורת ההעברה נשמרת במסד הנתונים שלנו תחת המזהה `XXXXXXXXXX` ואינה ציבורית.       |
+| אף אחד מהם אינו קיים                         | הדומיין אינו מוגדר עבור שירות ההעברה שלנו.                                                       |
+
+> \[!NOTE]
+> רשומות אלה הן האופן שבו השירות שלנו פועל ברמת ה-DNS, ולכן אותה בדיקה עונה על "האם הדומיין הזה שלנו", "האם הוא חינמי או בתשלום" ובתוכנית חינמית גם על "לאן הדואר שלו הולך".  ראה [כיצד פועלת מערכת ההעברה שלנו](#how-does-your-email-forwarding-system-work) לגבי נתיב המסירה עצמו.
+
+> \[!TIP]
+> אנחנו לא רשם שמות דומיין, ולכן איננו מחזיקים רשומות DNS היסטוריות.  כדי לגלות מי רשם דומיין או מי מפעיל את שרתי השמות שלו, השתמש ב-`whois example.com` וב-`dig example.com ns`, או פנה ישירות לרשם.
 
 ### איך אתם מבצעים חיפושי DNS על שמות דומיין {#how-do-you-perform-dns-lookups-on-domain-names}
 
@@ -5889,6 +5970,7 @@ Forward Email מסתמכת בלעדית על שני ספקי תשתית מרכז
     </tr>
   </tbody>
 </table>
+
 זה תלוי בך!
 
 ### האם יש מגבלה מקסימלית על מספר כתובות האימייל שאני יכול להעביר לכל כינוי {#is-there-a-maximum-limit-on-the-number-of-email-addresses-i-can-forward-to-per-alias}

@@ -16,7 +16,9 @@
   * [Microsoft Outlook](#microsoft-outlook)
   * [Apple Mail](#apple-mail)
   * [eM Client](#em-client)
+  * [Tarjoatteko webmail-asiakasohjelmaa](#do-you-offer-a-webmail-client)
   * [Voinko lähettää webmailissa mistä tahansa verkkotunnukseni osoitteesta](#can-i-send-from-any-address-on-my-domain-in-webmail)
+  * [Onko teillä työpöytä- ja mobiilisovelluksia](#do-you-have-desktop-and-mobile-apps)
   * [Onko teillä terminaalisovellusta](#do-you-have-a-terminal-app)
   * [Mobiililaitteet](#mobile-devices)
   * [Sendmail SMTP -välityspalvelimen asetukset](#sendmail-smtp-relay-configuration)
@@ -75,6 +77,7 @@
   * [Tuetteko Sieve-sähköpostisuodatusta](#do-you-support-sieve-email-filtering)
   * [Tuetteko MTA-STS:ää](#do-you-support-mta-sts)
   * [Tuetteko passkeyjä ja WebAuthnia](#do-you-support-passkeys-and-webauthn)
+  * [Tuetaanko kaksivaiheista tunnistautumista (2FA)](#is-two-factor-authentication-2fa-supported)
   * [Tuetteko sähköpostin parhaita käytäntöjä](#do-you-support-email-best-practices)
   * [Tuetteko bounce-webhookkeja](#do-you-support-bounce-webhooks)
   * [Tuetteko webhookkeja](#do-you-support-webhooks)
@@ -95,6 +98,7 @@
   * [Säilytättekö sähköpostin todennusotsikot](#do-you-preserve-email-authentication-headers)
   * [Säilytättekö alkuperäiset sähköpostin otsikot ja estättekö väärentämisen](#do-you-preserve-original-email-headers-and-prevent-spoofing)
   * [Kuinka suojaudutte roskapostilta ja väärinkäytöksiltä](#how-do-you-protect-against-spam-and-abuse)
+  * [Voinko poistaa käytöstä aikuissisällön, tietojenkalastelun, suoritettavien tiedostojen tai virusten tarkistuksen](#can-i-disable-adult-content-phishing-executable-or-virus-scanning)
   * [Tallennatteko sähköpostin sisällön levylle](#do-you-store-email-content-on-disk)
   * [Voiko sähköpostin sisältö paljastua järjestelmävirheissä](#can-email-content-be-exposed-during-system-crashes)
   * [Kuka pääsee käsiksi sähköpostiinfrastruktuuriinne](#who-has-access-to-your-email-infrastructure)
@@ -104,6 +108,7 @@
 * [Missä verkkotunnuksen saapuva sähköposti käsitellään ja tallennetaan, ja kuinka kauan](#where-is-inbound-email-for-my-domain-processed-and-stored-and-for-how-long)
 * [Miten nimitän Forward Emailin aliprosessoriksi omassa DPA:ssani](#how-do-i-list-forward-email-as-a-subprocessor-in-my-own-dpa)
   * [Kuinka käsittelette tietomurtotiedotteet](#how-do-you-handle-data-breach-notifications)
+  * [Kuinka ilmoitan tietoturvahaavoittuvuudesta](#how-do-i-report-a-security-vulnerability)
   * [Tarjoatteko testausympäristön](#do-you-offer-a-test-environment)
   * [Tarjoatteko valvonta- ja hälytystyökaluja](#do-you-provide-monitoring-and-alerting-tools)
   * [Kuinka varmistatte korkean käytettävyyden](#how-do-you-ensure-high-availability)
@@ -136,6 +141,7 @@
   * [Onko tämä hyvin testattu](#is-this-well-tested)
   * [Välitättekö SMTP-vastausviestit ja -koodit](#do-you-pass-along-smtp-response-messages-and-codes)
   * [Kuinka estätte roskapostittajat ja varmistatte hyvän sähköpostin edelleenlähetyksen maineen](#how-do-you-prevent-spammers-and-ensure-good-email-forwarding-reputation)
+  * [Kuinka voin varmistaa, että verkkotunnus todella käyttää Forward Emailia](#how-can-i-verify-a-domain-is-using-forward-email)
   * [Kuinka teette DNS-kyselyjä domain-nimille](#how-do-you-perform-dns-lookups-on-domain-names)
 * [Tili ja laskutus](#account-and-billing)
   * [Kuinka poistan tilini](#how-do-i-delete-my-account)
@@ -317,11 +323,31 @@ Kaikki tehdään muistissa ja [lähdekoodimme on GitHubissa](https://github.com/
 8. Syötä nimesi ja valitse tilin nimi.
 9. Klikkaa **Valmis**.
 
+### Tarjoatteko webmail-asiakasohjelmaa {#do-you-offer-a-webmail-client}
+
+Kyllä.  Virallinen avoimen lähdekoodin webmail-asiakasohjelmamme on saatavilla osoitteessa <a href="https://mail.forwardemail.net" target="_blank" rel="noopener noreferrer">mail.forwardemail.net</a>.  Asennusta ei tarvita: kirjaudu millä tahansa selaimella aliaksen osoitteella ja sen luodulla salasanalla (samat tunnukset, joita käytetään IMAP:ssa, SMTP:ssä ja POP3:ssa).
+
+Se julkaistiin helmikuussa 2026, ja se tukee myös [CalDAV Scheduling Extensions (RFC 6638)](https://www.rfc-editor.org/rfc/rfc6638.html)-, [DANE/TLSA (RFC 6698)](https://en.wikipedia.org/wiki/DNS-based_Authentication_of_Named_Entities)- ja [Domain Connect](https://domainconnect.org) -standardeja yhden napsautuksen DNS-määritystä varten, ja IMAP:n, CalDAV:n ja CardDAV:n reaaliaikaiset push-ilmoitukset toimitetaan WebSocketsin kautta.
+
+Lähdekoodi on täysin avointa ja saatavilla GitHubissa osoitteessa <a href="https://github.com/forwardemail/mail.forwardemail.net" target="_blank" rel="noopener noreferrer">github.com/forwardemail/mail.forwardemail.net</a>.
+
+<a href="/blog/docs/webmail">Webmail-oppaamme</a> kertoo kirjautumisesta, useiden tilien käytöstä ja siitä, miten webmail liittyy tämän verkkosivuston hallintapaneeliin.
+
 ### Voinko lähettää webmailissa mistä tahansa verkkotunnukseni osoitteesta {#can-i-send-from-any-address-on-my-domain-in-webmail}
 
 Kyllä. Luo catch-all-salasana kohdassa <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">Oma tili <i class="fa fa-angle-right"></i> Verkkotunnukset</a> <i class="fa fa-angle-right"></i> Lisäasetukset <i class="fa fa-angle-right"></i> Yleiset salasanat ja tallenna se sitten webmailiin kohtaan **Settings <i class="fa fa-angle-right"></i> General <i class="fa fa-angle-right"></i> Send from any address**. Kun kirjoitat viestiä, valitse **From**-valikosta **Other address @verkkotunnuksesi** ja kirjoita mikä tahansa kyseisen verkkotunnuksen osoite.
 
 Et kirjaudu catch-all- tai jokerimerkkitilinä. Catch-all-salasanalla voi vain lähettää, joten kopio menee käyttämäsi tilin Lähetetyt-kansioon. Se tallennetaan vain laitteelle, jolla lisäät sen. Katso kaikki vaiheet <a href="/blog/docs/webmail#send-from-any-address-on-your-domain">webmail-oppaastamme</a>.
+
+### Onko teillä työpöytä- ja mobiilisovelluksia {#do-you-have-desktop-and-mobile-apps}
+
+Kyllä.  Natiivisovellukset ovat saatavilla työpöydälle ja mobiililaitteille. Ne on rakennettu samasta avoimen lähdekoodin projektista kuin webmail-asiakasohjelmamme, ja ne kaikki voi ladata <a href="/download" target="_blank" rel="noopener noreferrer">lataussivultamme</a>:
+
+* **Työpöytä**: macOS (Apple Silicon ja Intel), Windows (x64 ja ARM64, joko `.exe`- tai `.msi`-asennusohjelmana) ja Linux (AppImage, `.deb`, `.rpm` ja Snap, kukin x64:lle ja ARM64:lle).
+* **Mobiili**: Android (APK sekä vaihtoehtoinen F-Droid-versio) ja iOS.
+* **Terminaali**: `forwardemail`-komento macOS:lle, Linuxille ja Windowsille (x64 ja ARM64). Katso [Onko teillä terminaalisovellusta](#do-you-have-a-terminal-app).
+
+Kaikki julkaisuversiot julkaistaan GitHubissa osoitteessa <a href="https://github.com/forwardemail/mail.forwardemail.net/releases" target="_blank" rel="noopener noreferrer">github.com/forwardemail/mail.forwardemail.net/releases</a>, ja lataussivulla voit tarkistaa julkaisujen tarkistussummat `SHA256SUMS.txt`-tiedostoa vasten.
 
 ### Onko teillä terminaalisovellusta {#do-you-have-a-terminal-app}
 
@@ -1916,7 +1942,7 @@ Lisäasetukset <i class="fa fa-angle-right"></i> Mukautetut tietueet</td>
     <br />
     <code>forward-email=hello:first@gmail.com,second@gmail.com</code>
     <br />
-    Sähköpostit osoitteeseen <code>hello@example.com</code> **eivät** tässä kokoonpanossa lähetetä edelleen osoitteeseen <code>second@gmail.com</code> (catch-all), vaan ne toimitetaan vain osoitteeseen <code>first@gmail.com</code>.
+    Sähköpostit osoitteeseen <code>hello@example.com</code> <strong>eivät</strong> tässä kokoonpanossa lähetetä edelleen osoitteeseen <code>second@gmail.com</code> (catch-all), vaan ne toimitetaan vain osoitteeseen <code>first@gmail.com</code>.
   </span>
 </div>
 
@@ -2653,7 +2679,7 @@ Kyllä. Kaikki maksulliset paketit sisältävät lähtevän SMTP:n, ja se on **r
     Tärkeää:
   </strong>
   <span>
-    Hyväksymme lähtevän SMTP:n verkkotunnuskohtaisesti suojataksemme IP-mainettamme ja viestiesi toimitettavuutta. Hyväksymme monet verkkotunnukset ilman odotusta, kun niiden DNS-tietueet on vahvistettu, ja tiimimme tarkastaa loput, yleensä 24 tunnin kuluessa. Katso [Tarvitsenko hyväksynnän SMTP:n käyttöönottoon](#do-i-need-approval-to-enable-smtp).
+    Hyväksymme lähtevän SMTP:n verkkotunnuskohtaisesti suojataksemme IP-mainettamme ja viestiesi toimitettavuutta. Hyväksymme monet verkkotunnukset ilman odotusta, kun niiden DNS-tietueet on vahvistettu, ja tiimimme tarkastaa loput, yleensä 24 tunnin kuluessa. Katso <a href="/faq#do-i-need-approval-to-enable-smtp">Tarvitsenko hyväksynnän SMTP:n käyttöönottoon</a>.
   </span>
 </div>
 
@@ -2934,7 +2960,7 @@ Voit hallita Sieve-skriptejä useilla tavoilla:
 
 2. **ManageSieve-protokolla**: Yhdistä käyttämällä mitä tahansa ManageSieve-yhteensopivaa asiakasta, kuten Thunderbirdin Sieve-lisäosaa tai [sieve-connect](https://github.com/philpennock/sieve-connect), osoitteeseen `imap.forwardemail.net`. Käytä porttia `2190` STARTTLS:llä tai porttia `4190` implisiittisellä TLS:llä.
 
-3. **API**: Käytä [REST API](/api#sieve-scripts) -rajapintaa skriptien hallintaan ohjelmallisesti.
+3. **API**: Käytä [REST API](/email-api) -rajapintaa skriptien hallintaan ohjelmallisesti.
 
 <div class="alert my-3 alert-primary">
   <i class="fa fa-info-circle font-weight-bold"></i>
@@ -2977,6 +3003,12 @@ Lisätietoja passkeyistä seuraavista linkeistä:
 * [Kirjaudu sovelluksiin ja verkkosivustoille passkeyillä](https://support.google.com/android/answer/14124480?hl=en) (Google)
 * [Käytä passkeyjä kirjautuaksesi sovelluksiin ja verkkosivustoille iPhonessa](https://support.apple.com/guide/iphone/use-passkeys-to-sign-in-to-apps-and-websites-iphf538ea8d0/ios) (Apple)
 * [Wikipedia-artikkeli Passkeyistä](https://en.wikipedia.org/wiki/Passkey_\(credential\))
+### Tuetaanko kaksivaiheista tunnistautumista (2FA) {#is-two-factor-authentication-2fa-supported}
+
+Kyllä, tilillesi kirjautumisessa (mukaan lukien <a href="https://mail.forwardemail.net" target="_blank" rel="noopener noreferrer">webmail</a>) kertakäyttöisillä tunnuskoodeilla, joiden varmistuksena toimivat palautusavaimet.
+
+2FA koskee itse tilillesi kirjautumista, ei kolmannen osapuolen asiakasohjelmien (Thunderbird, Apple Mail jne.) IMAP-, SMTP-, POP3-, CalDAV- tai CardDAV-yhteyksiä.  Nämä asiakasohjelmat tunnistautuvat sen sijaan aliaskohtaisella luodulla salasanalla, joten tämäntyyppisille asiakasohjelmille ei tällä hetkellä ole 2FA:ta vastaavaa standardia. Jos haluaisit tähän muutoksen, avaa ominaisuuspyyntö GitHubissa.
+
 ### Tuetteko sähköpostin parhaita käytäntöjä {#do-you-support-email-best-practices}
 
 Kyllä. Meillä on sisäänrakennettu tuki SPF:lle, DKIM:lle, DMARC:lle, ARC:lle ja SRS:lle kaikissa suunnitelmissa. Olemme myös tehneet laajasti yhteistyötä näiden spesifikaatioiden alkuperäisten tekijöiden ja muiden sähköpostiasiantuntijoiden kanssa varmistaaksemme täydellisyyden ja korkean toimitettavuuden.
@@ -4072,6 +4104,17 @@ Lähteet:
 * <https://www.datapacket.com/datacenters/denver> (DDoS-suojauksen tiedot)
 * <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/abuse-prevention-by-user-id.js>
 
+### Voinko poistaa käytöstä aikuissisällön, tietojenkalastelun, suoritettavien tiedostojen tai virusten tarkistuksen {#can-i-disable-adult-content-phishing-executable-or-virus-scanning}
+
+Kyllä. Jokainen verkkotunnus tarkistaa saapuvat linkit ja liitteet <a href="https://spamscanner.net" target="_blank" rel="noopener noreferrer">Spam Scanner</a> -työkalulla, joka on itse rakentamamme avoimen lähdekoodin suoja roskapostia, tietojenkalastelua ja viruksia vastaan (ja joka noudattaa samoja yksityisyys edellä- ja lokittomuuskäytäntöjä kuin muukin Forward Email). Neljä luokkaa voi kytkeä päälle tai pois toisistaan riippumatta kohdassa <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">Oma tili <i class="fa fa-angle-right"></i> Verkkotunnukset</a> <i class="fa fa-angle-right"></i> Lisäasetukset:
+
+* **Aikuissisältösuojaus**: jos se on poistettu käytöstä, linkkejä ei tarkisteta aikuissisällön varalta.
+* **Tietojenkalastelusuojaus**: jos se on poistettu käytöstä, linkkejä ei tarkisteta haittaohjelmien, verkkotunnusten vaihtamisen, IDN-homografihyökkäysten tai tietojenkalastelun varalta yleensä.
+* **Suoritettavien tiedostojen suojaus**: jos se on poistettu käytöstä, linkkejä ja liitteitä ei tarkisteta mahdollisesti haitallisten suoritettavien tiedostotyyppien, tiedostopäätteiden, nimien, otsakkeiden tai IDN-homografihyökkäysten varalta.
+* **Virussuojaus**: jos se on poistettu käytöstä, liitteitä ei tarkisteta troijalaisten, virusten, haittaohjelmien tai muiden haitallisten uhkien varalta (ClamAV:n avulla).
+
+Kaikki neljä ovat oletuksena käytössä. Yhden luokan poistaminen käytöstä lopettaa tarkistuksen vain kyseisen luokan osalta.  Se ei poista roskapostisuodatusta käytöstä kokonaan, ja se on eri asia kuin [tietyn aliaksen poistaminen käytöstä](#can-i-disable-specific-aliases). Yleisin syy luokan poistamiseen käytöstä on liikenteellesi ominainen väärien positiivisten tulosten toistuva kuvio (esim. aikuissisällön tarkistus merkitsee aikuisteemaisen tapahtumapaikan tai yrityksen oikeutettuja postituslistoja).
+
 ### Tallennatteko sähköpostisisältöä levylle {#do-you-store-email-content-on-disk}
 
 > \[!IMPORTANT]
@@ -4294,6 +4337,10 @@ Lähteet:
 * <https://forwardemail.net/technical-whitepaper.pdf#page=59>
 * <https://forwardemail.net/gdpr>
 
+### Kuinka ilmoitan tietoturvahaavoittuvuudesta {#how-do-i-report-a-security-vulnerability}
+
+Jos löydät tietoturvahaavoittuvuuden, ilmoita siitä välittömästi osoitteeseen <security@forwardemail.net>. Tämä on haavoittuvuus- ja virheilmoituksille varattu osoite, erillään yleisestä tuesta.  Kun lähetät sähköpostia suoraan siihen, ilmoituksesi menee tiimille, joka vastaa sen käsittelystä.
+
 ### Tarjoatteko testausympäristön {#do-you-offer-a-test-environment}
 
 Forward Emailin tekninen dokumentaatio ei nimenomaisesti kuvaa erillistä hiekkalaatikkotilaa. Mahdollisia testausmenetelmiä ovat kuitenkin:
@@ -4434,7 +4481,7 @@ Tässä osiossa kuvataan prosessimme liittyen SMTP-protokollan komentoon `DATA` 
    * Rekursiivisesti käymme läpi poimitun edelleenlähetyskonfiguraation määrittääksemme globaalin edelleenlähetyksen, regex-pohjaisen edelleenlähetyksen ja kaikki muut tuetut edelleenlähetyskonfiguraatiot – jotka tunnetaan nyt nimellä "Edelleenlähetysosoitteet".
    * Jokaiselle Edelleenlähetysosoitteelle tuemme yhtä rekursiivista hakua (joka aloittaa tämän sarjan toimintoja annetulle osoitteelle). Jos rekursiivinen osuma löytyy, vanhempi tulos poistetaan Edelleenlähetysosoitteista ja lapset lisätään.
    * Edelleenlähetysosoitteet jäsennetään ainutlaatuisuuden varmistamiseksi (koska emme halua lähettää duplikaatteja yhdelle osoitteelle tai luoda tarpeettomia SMTP-asiakas-yhteyksiä).
-   * Jokaiselle Edelleenlähetysosoitteelle haemme sen verkkotunnuksen API-päätepisteestämme `/v1/max-forwarded-addresses` (määrittääksemme, kuinka monelle osoitteelle verkkotunnus saa edelleenlähettää sähköpostia aliasia kohden, esim. oletuksena 10 – katso kohta [rajoituksesta edelleenlähetyksen määrälle aliasia kohden](#is-there-a-limit-on-the-number-of-email-addresses-i-can-forward-to-per-alias)). Jos tämä raja ylittyy, syntyy 550-virhe ja lähettäjä saa palautteen tästä vastaanottajasta.
+   * Jokaiselle Edelleenlähetysosoitteelle haemme sen verkkotunnuksen API-päätepisteestämme `/v1/max-forwarded-addresses` (määrittääksemme, kuinka monelle osoitteelle verkkotunnus saa edelleenlähettää sähköpostia aliasia kohden, esim. oletuksena 10 – katso kohta [rajoituksesta edelleenlähetyksen määrälle aliasia kohden](#is-there-a-maximum-limit-on-the-number-of-email-addresses-i-can-forward-to-per-alias)). Jos tämä raja ylittyy, syntyy 550-virhe ja lähettäjä saa palautteen tästä vastaanottajasta.
    * Haemme alkuperäisen vastaanottajan asetukset API-päätepisteestämme `/v1/settings`, joka tukee haun maksullisille käyttäjille (varalla ilmaisille käyttäjille). Tämä palauttaa konfiguraatio-olion edistyneille asetuksille `port` (Numero, esim. `25`), `has_adult_content_protection` (Boolean), `has_phishing_protection` (Boolean), `has_executable_protection` (Boolean) ja `has_virus_protection` (Boolean).
    * Näiden asetusten perusteella tarkistamme sitten Roskapostiskannerin tulokset ja jos virheitä ilmenee, viesti hylätään 554-virhekoodilla (esim. jos `has_virus_protection` on käytössä, tarkistamme Roskapostiskannerin tulokset virusten varalta). Huomaa, että kaikki ilmaiset käyttäjät ovat oletuksena valinneet tarkistukset aikuisviestien, kalastelun, suoritettavien tiedostojen ja virusten varalta. Oletuksena myös kaikki maksulliset käyttäjät ovat valinneet nämä, mutta tätä asetusta voi muuttaa Verkkotunnuksen asetussivulla Forward Email -hallintapaneelissa).
 
@@ -4754,6 +4801,7 @@ Seuraavat verkkotunnusten päätteet katsotaan oletuksena sallituiksi (riippumat
   <li class="list-inline-item"><code class="notranslate">sch.uk</code></li>
   <li class="list-inline-item"><code class="notranslate">ukaea.uk</code></li>
 </ul>
+
 Lisäksi nämä [brändi- ja yritystason ylätason verkkotunnukset](https://en.wikipedia.org/wiki/List_of_Internet_top-level_domains#Brand_and_corporate_top-level_domains) ovat oletuksena sallittuja (esim. `apple` kohteelle `applecard.apple` Apple Card -pankkitiliotteille):
 
 <ul class="list-inline">
@@ -5179,6 +5227,7 @@ Lisäksi nämä [brändi- ja yritystason ylätason verkkotunnukset](https://en.w
   <li class="list-inline-item"><code class="notranslate">zara</code></li>
   <li class="list-inline-item"><code class="notranslate">zippo</code></li>
 </ul>
+
 18. maaliskuuta 2025 alkaen olemme myös lisänneet nämä Ranskan merentakaiset alueet tälle listalle ([tämän GitHub-pyynnön mukaan](https://github.com/forwardemail/forwardemail.net/issues/327)):
 
 <ul class="list-inline">
@@ -5365,6 +5414,7 @@ Tämä uusi sääntö sallii seuraavien verkkotunnuksen päätteiden käytön va
   <li class="list-inline-item"><code class="notranslate">yt</code></li>
   <li class="list-inline-item"><code class="notranslate">za</code></li>
 </ul>
+
 ### Onko teillä harmaalista {#do-you-have-a-greylist}
 
 Kyllä, meillä on käytössä hyvin löysä [sähköpostin harmaalistaus](https://en.wikipedia.org/wiki/Greylisting_\(email\)) -käytäntö. Harmaalista koskee vain lähettäjiä, jotka eivät ole sallittujen listalla, ja se säilyy välimuistissamme 30 päivää.
@@ -5542,6 +5592,7 @@ Kyllä, 5. toukokuuta 2020 alkaen olemme lisänneet tämän ominaisuuden. Täll�
     Jos olet maksullisella tilauksella (joka sisältää parannetun tietosuojan), siirry osoitteeseen <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Oma tili <i class="fa fa-angle-right"></i> Domainit</a>, klikkaa "Aseta" domainisi vieressä ja sitten "Asetukset". Jos haluat lisätietoja maksullisista tilauksista, katso <a class="alert-link" rel="noopener noreferrer" href="/private-business-email">Hinnoittelu</a>-sivumme. Muussa tapauksessa voit jatkaa alla olevien ohjeiden seuraamista.
   </span>
 </div>
+
 Jos olet ilmaisella suunnitelmalla, lisää vain uusi DNS <strong class="notranslate">TXT</strong> -tietue alla kuvatulla tavalla, mutta vaihda portti 25:stä haluamaasi porttiin.
 
 Esimerkiksi, jos haluan, että kaikki `example.com`-osoitteeseen menevät sähköpostit välitetään alias-vastaanottajien SMTP-porttiin 1337 portin 25 sijaan:
@@ -5619,6 +5670,36 @@ Kyllä, ehdottomasti. Esimerkiksi jos lähetät sähköpostia osoitteeseen `hell
 ### Miten estätte roskapostittajat ja varmistatte hyvän sähköpostin välityksen maineen {#how-do-you-prevent-spammers-and-ensure-good-email-forwarding-reputation}
 
 Katso yllä olevat osiot [Miten sähköpostin välitysjärjestelmänne toimii](#how-does-your-email-forwarding-system-work), [Miten käsittelette sähköpostin toimitusongelmia](#how-do-you-handle-email-delivery-issues) ja [Miten käsittelette IP-osoitteiden estämisen](#how-do-you-handle-your-ip-addresses-becoming-blocked).
+
+### Kuinka voin varmistaa, että verkkotunnus todella käyttää Forward Emailia {#how-can-i-verify-a-domain-is-using-forward-email}
+
+Verkkotunnuksen julkiset DNS-tietueet kertovat, käyttääkö se palveluamme ja millä suunnitelmalla.  Tämä on neutraali tekninen haku, jonka kuka tahansa voi tehdä mille tahansa verkkotunnukselle; se ei vaadi tiliä eikä verkkotunnuksen omistajan yhteistyötä.
+
+**Tarkista ensin MX-tietueet.**
+
+```sh
+dig example.com mx +short
+```
+
+Jos vastaus ei sisällä osoitteita `mx1.forwardemail.net` ja `mx2.forwardemail.net`, verkkotunnus **ei** käytä palveluamme postin vastaanottamiseen, emmekä ole kyseisen postin ylläpitäjä.
+
+**Tarkista sitten TXT-tietueet erottaaksesi suunnitelmat toisistaan.**
+
+```sh
+dig example.com txt +short
+```
+
+| TXT-arvo                                     | Mitä se tarkoittaa                                                                                                   |
+| -------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
+| `forward-email=user@example.com`             | Ilmainen suunnitelma.  Arvo on selväkielinen kohde, johon posti välitetään.                                          |
+| `forward-email-site-verification=XXXXXXXXXX` | Maksullinen suunnitelma.  Edelleenlähetysmääritys säilytetään tietokannassamme tunnisteella `XXXXXXXXXX`, eikä se ole julkinen. |
+| Kumpaakaan ei ole                            | Verkkotunnusta ei ole määritetty edelleenlähetyspalveluamme varten.                                                  |
+
+> \[!NOTE]
+> Nämä tietueet ovat tapa, jolla palvelumme toimii DNS-tasolla, joten sama haku vastaa kysymyksiin "onko tämä verkkotunnus meidän", "onko se ilmainen vai maksullinen" ja ilmaisen suunnitelman kohdalla "minne sen posti menee".  Itse toimituspolku on kuvattu kohdassa [kuinka edelleenlähetysjärjestelmämme toimii](#how-does-your-email-forwarding-system-work).
+
+> \[!TIP]
+> Emme ole verkkotunnusrekisteröijä, joten emme säilytä historiallisia DNS-tietueita.  Selvittääksesi, kuka verkkotunnuksen on rekisteröinyt tai kuka ylläpitää sen nimipalvelimia, käytä komentoja `whois example.com` ja `dig example.com ns`, tai kysy suoraan rekisteröijältä.
 
 ### Miten suoritatte DNS-kyselyt verkkotunnuksille {#how-do-you-perform-dns-lookups-on-domain-names}
 
@@ -5888,6 +5969,7 @@ Tai voit määrittää ne kahdella erillisellä rivillä, kuten tässä:
     </tr>
   </tbody>
 </table>
+
 Se on sinun päätettävissäsi!
 
 ### Onko alias-kohtaiselle edelleenlähetettävien sähköpostiosoitteiden määrälle enimmäisrajaa {#is-there-a-maximum-limit-on-the-number-of-email-addresses-i-can-forward-to-per-alias}

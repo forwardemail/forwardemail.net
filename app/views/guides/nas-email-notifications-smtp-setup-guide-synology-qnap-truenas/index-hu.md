@@ -155,6 +155,7 @@ A QNAP eszközök QTS-sel jól működnek a Forward Email-lel. Támogatják a mo
 
 > \[!TIP]
 > Ha [Gmail SMTP konfigurációs problémákkal](https://forum.qnap.com/viewtopic.php?t=152466) találkozol, ugyanazok a hibaelhárítási lépések érvényesek a Forward Email-re is. Győződj meg róla, hogy az autentikáció megfelelően engedélyezve van, és az adatok helyesek.
+
 > \[!NOTE]
 > A QNAP eszközök támogatják a fejlett értesítési ütemezést, amely lehetővé teszi a csendes órák beállítását, amikor a nem kritikus értesítések elnyomásra kerülnek. Ez különösen hasznos üzleti környezetben.
 

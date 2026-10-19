@@ -16,7 +16,9 @@
   * [Microsoft Outlook](#microsoft-outlook)
   * [Apple Mail](#apple-mail)
   * [eM Client](#em-client)
+  * [Bieden jullie een webmailclient aan](#do-you-offer-a-webmail-client)
   * [Kan ik in webmail verzenden vanaf elk adres op mijn domein](#can-i-send-from-any-address-on-my-domain-in-webmail)
+  * [Hebben jullie desktop- en mobiele apps](#do-you-have-desktop-and-mobile-apps)
   * [Hebben jullie een terminal-app](#do-you-have-a-terminal-app)
   * [Mobiele apparaten](#mobile-devices)
   * [Sendmail SMTP Relay Configuratie](#sendmail-smtp-relay-configuration)
@@ -75,6 +77,7 @@
   * [Ondersteunt u Sieve e-mailfiltering](#do-you-support-sieve-email-filtering)
   * [Ondersteunt u MTA-STS](#do-you-support-mta-sts)
   * [Ondersteunt u passkeys en WebAuthn](#do-you-support-passkeys-and-webauthn)
+  * [Wordt tweefactorauthenticatie (2FA) ondersteund](#is-two-factor-authentication-2fa-supported)
   * [Ondersteunt u e-mail best practices](#do-you-support-email-best-practices)
   * [Ondersteunt u bounce webhooks](#do-you-support-bounce-webhooks)
   * [Ondersteunt u webhooks](#do-you-support-webhooks)
@@ -95,6 +98,7 @@
   * [Behoudt u e-mail authenticatieheaders](#do-you-preserve-email-authentication-headers)
   * [Behoudt u originele e-mailheaders en voorkomt u spoofing](#do-you-preserve-original-email-headers-and-prevent-spoofing)
   * [Hoe beschermt u tegen spam en misbruik](#how-do-you-protect-against-spam-and-abuse)
+  * [Kan ik het scannen op inhoud voor volwassenen, phishing, uitvoerbare bestanden of virussen uitschakelen](#can-i-disable-adult-content-phishing-executable-or-virus-scanning)
   * [Slaat u e-mailinhoud op schijf op](#do-you-store-email-content-on-disk)
   * [Kan e-mailinhoud worden blootgesteld tijdens systeemcrashes](#can-email-content-be-exposed-during-system-crashes)
   * [Wie heeft toegang tot uw e-mailinfrastructuur](#who-has-access-to-your-email-infrastructure)
@@ -104,6 +108,7 @@
 * [Waar worden inkomende e-mail voor mijn domein verwerkt en opgeslagen, en hoe lang](#where-is-inbound-email-for-my-domain-processed-and-stored-and-for-how-long)
 * [Hoe vermeld ik Forward Email als subverwerker in mijn eigen DPA](#how-do-i-list-forward-email-as-a-subprocessor-in-my-own-dpa)
   * [Hoe gaat u om met meldingen van datalekken](#how-do-you-handle-data-breach-notifications)
+  * [Hoe meld ik een beveiligingslek](#how-do-i-report-a-security-vulnerability)
   * [Biedt u een testomgeving](#do-you-offer-a-test-environment)
   * [Biedt u monitoring- en waarschuwingshulpmiddelen](#do-you-provide-monitoring-and-alerting-tools)
   * [Hoe zorgt u voor hoge beschikbaarheid](#how-do-you-ensure-high-availability)
@@ -136,6 +141,7 @@
   * [Is dit goed getest](#is-this-well-tested)
   * [Geeft u SMTP-responsberichten en codes door](#do-you-pass-along-smtp-response-messages-and-codes)
   * [Hoe voorkomt u spammers en zorgt u voor een goede e-mail forwarding reputatie](#how-do-you-prevent-spammers-and-ensure-good-email-forwarding-reputation)
+  * [Hoe kan ik controleren of een domein echt Forward Email gebruikt](#how-can-i-verify-a-domain-is-using-forward-email)
   * [Hoe voert u DNS-zoekopdrachten uit op domeinnamen](#how-do-you-perform-dns-lookups-on-domain-names)
 * [Account en facturering](#account-and-billing)
   * [Hoe verwijder ik mijn account](#how-do-i-delete-my-account)
@@ -317,11 +323,31 @@ Alles gebeurt in het geheugen en [onze broncode staat op GitHub](https://github.
 8. Voer je naam in en kies een accountnaam.
 9. Klik op **Voltooien**.
 
+### Bieden jullie een webmailclient aan {#do-you-offer-a-webmail-client}
+
+Ja.  Onze officiële, open-source webmailclient is beschikbaar op <a href="https://mail.forwardemail.net" target="_blank" rel="noopener noreferrer">mail.forwardemail.net</a>.  Installatie is niet nodig: meld je vanuit elke browser aan met een aliasadres en het bijbehorende gegenereerde wachtwoord (dezelfde inloggegevens die je voor IMAP, SMTP en POP3 gebruikt).
+
+Hij is gelanceerd in februari 2026 en ondersteunt ook [CalDAV-planningsextensies (RFC 6638)](https://www.rfc-editor.org/rfc/rfc6638.html), [DANE/TLSA (RFC 6698)](https://en.wikipedia.org/wiki/DNS-based_Authentication_of_Named_Entities) en [Domain Connect](https://domainconnect.org) voor DNS-configuratie met één klik, met realtime pushmeldingen voor IMAP, CalDAV en CardDAV via WebSockets.
+
+De broncode is volledig open source en beschikbaar op GitHub via <a href="https://github.com/forwardemail/mail.forwardemail.net" target="_blank" rel="noopener noreferrer">github.com/forwardemail/mail.forwardemail.net</a>.
+
+Onze <a href="/blog/docs/webmail">webmail-handleiding</a> behandelt het aanmelden, het gebruik van meerdere accounts en hoe webmail samenhangt met het dashboard van deze website.
+
 ### Kan ik in webmail verzenden vanaf elk adres op mijn domein {#can-i-send-from-any-address-on-my-domain-in-webmail}
 
 Ja. Genereer een catch-all-wachtwoord via <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">Mijn account <i class="fa fa-angle-right"></i> Domeinen</a> <i class="fa fa-angle-right"></i> Geavanceerde instellingen <i class="fa fa-angle-right"></i> Vangnetwachtwoorden, en sla het daarna in webmail op onder **Settings <i class="fa fa-angle-right"></i> General <i class="fa fa-angle-right"></i> Send from any address**. Kies bij het opstellen **Other address @yourdomain** in het **From**-menu en typ een willekeurig adres op dat domein.
 
 Je meldt je niet aan als catch-all- of wildcard-account. Het catch-all-wachtwoord kan alleen verzenden, dus de kopie gaat naar de map Verzonden (Sent) van het account dat je gebruikt. Het wordt alleen opgeslagen op het apparaat waar je het toevoegt. Zie onze <a href="/blog/docs/webmail#send-from-any-address-on-your-domain">webmail-handleiding</a> voor alle stappen.
+
+### Hebben jullie desktop- en mobiele apps {#do-you-have-desktop-and-mobile-apps}
+
+Ja.  Er zijn native apps voor desktop en mobiel, gebouwd vanuit hetzelfde open-sourceproject als onze webmailclient, en ze zijn allemaal te downloaden via onze <a href="/download" target="_blank" rel="noopener noreferrer">downloadpagina</a>:
+
+* **Desktop**: macOS (Apple Silicon en Intel), Windows (x64 en ARM64, als `.exe`- of `.msi`-installer) en Linux (AppImage, `.deb`, `.rpm` en Snap, elk voor x64 en ARM64).
+* **Mobiel**: Android (APK, met een alternatieve F-Droid-build) en iOS.
+* **Terminal**: de opdracht `forwardemail` voor macOS, Linux en Windows (x64 en ARM64). Zie [Hebben jullie een terminal-app](#do-you-have-a-terminal-app).
+
+Alle release-builds worden gepubliceerd op GitHub via <a href="https://github.com/forwardemail/mail.forwardemail.net/releases" target="_blank" rel="noopener noreferrer">github.com/forwardemail/mail.forwardemail.net/releases</a>, en op de downloadpagina kun je de checksums van releases controleren aan de hand van `SHA256SUMS.txt`.
 
 ### Hebben jullie een terminal-app {#do-you-have-a-terminal-app}
 
@@ -1917,7 +1943,7 @@ Geavanceerde instellingen <i class="fa fa-angle-right"></i> Aangepaste records</
     <br />
     <code>forward-email=hello:first@gmail.com,second@gmail.com</code>
     <br />
-    E-mails gestuurd naar <code>hello@example.com</code> worden **niet** doorgestuurd naar <code>second@gmail.com</code> (catch-all) met deze configuratie, en worden in plaats daarvan alleen afgeleverd bij <code>first@gmail.com</code>.
+    E-mails gestuurd naar <code>hello@example.com</code> worden <strong>niet</strong> doorgestuurd naar <code>second@gmail.com</code> (catch-all) met deze configuratie, en worden in plaats daarvan alleen afgeleverd bij <code>first@gmail.com</code>.
   </span>
 </div>
 
@@ -2654,7 +2680,7 @@ Ja. Alle betaalde abonnementen bevatten uitgaande SMTP, en het is **onbeperkt**:
     Belangrijk:
   </strong>
   <span>
-    We keuren uitgaande SMTP per domein goed om onze IP-reputatie en je afleverbaarheid te beschermen. Veel domeinen worden direct goedgekeurd zodra hun DNS-records zijn geverifieerd, en ons team beoordeelt de rest, meestal binnen 24 uur. Zie [Heb ik goedkeuring nodig om SMTP in te schakelen](#do-i-need-approval-to-enable-smtp).
+    We keuren uitgaande SMTP per domein goed om onze IP-reputatie en je afleverbaarheid te beschermen. Veel domeinen worden direct goedgekeurd zodra hun DNS-records zijn geverifieerd, en ons team beoordeelt de rest, meestal binnen 24 uur. Zie <a href="/faq#do-i-need-approval-to-enable-smtp">Heb ik goedkeuring nodig om SMTP in te schakelen</a>.
   </span>
 </div>
 
@@ -2935,7 +2961,7 @@ U kunt Sieve-scripts op verschillende manieren beheren:
 
 2. **ManageSieve Protocol**: Maak verbinding met elke ManageSieve-compatibele client, zoals de Sieve-add-on van Thunderbird of [sieve-connect](https://github.com/philpennock/sieve-connect), met `imap.forwardemail.net`. Gebruik poort `2190` met STARTTLS of poort `4190` met impliciete TLS.
 
-3. **API**: Gebruik de [REST API](/api#sieve-scripts) om scripts programmatisch te beheren.
+3. **API**: Gebruik de [REST API](/email-api) om scripts programmatisch te beheren.
 
 <div class="alert my-3 alert-primary">
   <i class="fa fa-info-circle font-weight-bold"></i>
@@ -2978,6 +3004,12 @@ Lees meer over passkeys via de volgende links:
 * [Inloggen bij je apps en websites met passkeys](https://support.google.com/android/answer/14124480?hl=en) (Google)
 * [Gebruik passkeys om in te loggen bij apps en websites op iPhone](https://support.apple.com/guide/iphone/use-passkeys-to-sign-in-to-apps-and-websites-iphf538ea8d0/ios) (Apple)
 * [Wikipedia-artikel over Passkeys](https://en.wikipedia.org/wiki/Passkey_\(credential\))
+### Wordt tweefactorauthenticatie (2FA) ondersteund {#is-two-factor-authentication-2fa-supported}
+
+Ja, voor het inloggen op je account (inclusief <a href="https://mail.forwardemail.net" target="_blank" rel="noopener noreferrer">webmail</a>) via eenmalige codes, met herstelsleutels als back-up.
+
+2FA geldt voor het inloggen op je account zelf, niet voor IMAP-, SMTP-, POP3-, CalDAV- of CardDAV-verbindingen vanuit clients van derden (Thunderbird, Apple Mail, enz.).  Die clients authenticeren in plaats daarvan met een gegenereerd wachtwoord dat specifiek is voor de alias, dus er bestaat momenteel geen 2FA-equivalente standaard voor dit type client. Wil je dat dit verandert, open dan een functieverzoek op GitHub.
+
 ### Ondersteunt u de beste praktijken voor e-mail {#do-you-support-email-best-practices}
 
 Ja. We hebben ingebouwde ondersteuning voor SPF, DKIM, DMARC, ARC en SRS in alle plannen. We hebben ook uitgebreid samengewerkt met de oorspronkelijke auteurs van deze specificaties en andere e-mailexperts om perfectie en een hoge afleverbaarheid te garanderen.
@@ -4073,6 +4105,17 @@ Bronnen:
 * <https://www.datapacket.com/datacenters/denver> (Details DDoS-bescherming)
 * <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/abuse-prevention-by-user-id.js>
 
+### Kan ik het scannen op inhoud voor volwassenen, phishing, uitvoerbare bestanden of virussen uitschakelen {#can-i-disable-adult-content-phishing-executable-or-virus-scanning}
+
+Ja. Elk domein scant inkomende links en bijlagen met <a href="https://spamscanner.net" target="_blank" rel="noopener noreferrer">Spam Scanner</a>, de open-source bescherming tegen spam, phishing en virussen die we zelf hebben gebouwd (en die hetzelfde privacy-first-beleid zonder logging volgt als de rest van Forward Email). Vier categorieën kunnen elk afzonderlijk worden in- of uitgeschakeld via <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">Mijn account <i class="fa fa-angle-right"></i> Domeinen</a> <i class="fa fa-angle-right"></i> Geavanceerde instellingen:
+
+* **Bescherming tegen inhoud voor volwassenen**: indien uitgeschakeld, worden links niet gescand op inhoud voor volwassenen.
+* **Phishing-beveiliging**: indien uitgeschakeld, worden links niet gescand op malware, domeinverwisseling, IDN-homograafaanvallen of phishing in het algemeen.
+* **Bescherming tegen uitvoerbare bestanden**: indien uitgeschakeld, worden links en bijlagen niet gescand op potentieel schadelijke uitvoerbare bestandstypen, extensies, namen, headers of IDN-homograafaanvallen.
+* **Virusbescherming**: indien uitgeschakeld, worden bijlagen niet gescand op trojans, virussen, malware of andere schadelijke dreigingen (via ClamAV).
+
+Alle vier staan standaard aan. Als je er één uitschakelt, wordt alleen het scannen voor die specifieke categorie uitgezet.  Het schakelt spamfiltering niet als geheel uit, en het staat los van [het uitschakelen van een specifieke alias](#can-i-disable-specific-aliases). De meest voorkomende reden om een categorie uit te schakelen is een patroon van false positives dat specifiek is voor jouw verkeer (bijv. scannen op inhoud voor volwassenen dat legitieme mailinglijsten markeert voor een locatie of bedrijf met een volwassenenthema).
+
 ### Slaat u e-mailinhoud op de schijf op {#do-you-store-email-content-on-disk}
 
 > \[!IMPORTANT]
@@ -4295,6 +4338,10 @@ Bronnen:
 * <https://forwardemail.net/technical-whitepaper.pdf#page=59>
 * <https://forwardemail.net/gdpr>
 
+### Hoe meld ik een beveiligingslek {#how-do-i-report-a-security-vulnerability}
+
+Als je een beveiligingslek ontdekt, meld het dan onmiddellijk via <security@forwardemail.net>. Dit is een speciaal adres voor meldingen van kwetsbaarheden en bugs, los van de algemene ondersteuning.  Door rechtstreeks naar dit adres te mailen, komt je melding terecht bij het team dat verantwoordelijk is voor de afhandeling ervan.
+
 ### Biedt u een testomgeving aan {#do-you-offer-a-test-environment}
 
 De technische documentatie van Forward Email beschrijft niet expliciet een toegewijde sandbox-modus. Mogelijke testbenaderingen zijn echter:
@@ -4435,7 +4482,7 @@ Deze sectie beschrijft ons proces met betrekking tot het SMTP-protocolcommando `
    * We itereren recursief over de geëxtraheerde doorstuurconfiguratie om globale doorsturing, regex-gebaseerde doorsturing en alle andere ondersteunde doorstuurconfiguraties te bepalen – die nu bekendstaan als onze "Doorstuuradressen".
    * Voor elk Doorstuuradres ondersteunen we één recursieve lookup (die deze reeks operaties opnieuw start voor het gegeven adres). Als een recursieve match wordt gevonden, wordt het ouderresultaat verwijderd uit Doorstuuradressen en worden de kinderen toegevoegd.
    * Doorstuuradressen worden geparsed op uniekheid (omdat we geen duplicaten naar één adres willen sturen of onnodige extra SMTP-clientverbindingen willen maken).
-   * Voor elk Doorstuuradres zoeken we de domeinnaam op via onze API-endpoint `/v1/max-forwarded-addresses` (om te bepalen naar hoeveel adressen het domein e-mail mag doorsturen per alias, bijvoorbeeld standaard 10 – zie de sectie over [maximale limiet op doorsturen per alias](#is-there-a-limit-on-the-number-of-email-addresses-i-can-forward-to-per-alias)). Als deze limiet wordt overschreden, treedt een 550-fout op en ontvangt de afzender een bounce voor deze ontvanger.
+   * Voor elk Doorstuuradres zoeken we de domeinnaam op via onze API-endpoint `/v1/max-forwarded-addresses` (om te bepalen naar hoeveel adressen het domein e-mail mag doorsturen per alias, bijvoorbeeld standaard 10 – zie de sectie over [maximale limiet op doorsturen per alias](#is-there-a-maximum-limit-on-the-number-of-email-addresses-i-can-forward-to-per-alias)). Als deze limiet wordt overschreden, treedt een 550-fout op en ontvangt de afzender een bounce voor deze ontvanger.
    * We zoeken de instellingen van de originele ontvanger op via onze API-endpoint `/v1/settings`, die een lookup ondersteunt voor betaalde gebruikers (met een fallback voor gratis gebruikers). Dit retourneert een configuratieobject voor geavanceerde instellingen voor `port` (Nummer, bijvoorbeeld `25`), `has_adult_content_protection` (Boolean), `has_phishing_protection` (Boolean), `has_executable_protection` (Boolean), en `has_virus_protection` (Boolean).
    * Op basis van deze instellingen controleren we vervolgens de resultaten van de Spam Scanner en als er fouten optreden, wordt het bericht afgewezen met een 554-foutcode (bijvoorbeeld als `has_virus_protection` is ingeschakeld, controleren we de Spam Scanner-resultaten op virussen). Let op dat alle gebruikers van het gratis plan automatisch zijn ingeschreven voor controles op volwassen inhoud, phishing, uitvoerbare bestanden en virussen. Standaard zijn ook alle betaalde gebruikers ingeschreven, maar deze configuratie kan worden aangepast op de Instellingenpagina voor een domein in het Forward Email-dashboard).
 
@@ -4755,6 +4802,7 @@ De volgende domeinnaamextensies worden standaard als toegestaan beschouwd (ongea
   <li class="list-inline-item"><code class="notranslate">sch.uk</code></li>
   <li class="list-inline-item"><code class="notranslate">ukaea.uk</code></li>
 </ul>
+
 Daarnaast zijn deze [brand- en corporate top-level domeinen](https://en.wikipedia.org/wiki/List_of_Internet_top-level_domains#Brand_and_corporate_top-level_domains) standaard toegestaan (bijv. `apple` voor `applecard.apple` voor Apple Card bankafschriften):
 
 <ul class="list-inline">
@@ -5180,6 +5228,7 @@ Daarnaast zijn deze [brand- en corporate top-level domeinen](https://en.wikipedi
   <li class="list-inline-item"><code class="notranslate">zara</code></li>
   <li class="list-inline-item"><code class="notranslate">zippo</code></li>
 </ul>
+
 Vanaf 18 maart 2025 hebben we ook deze Franse overzeese gebieden aan deze lijst toegevoegd ([volgens dit GitHub-verzoek](https://github.com/forwardemail/forwardemail.net/issues/327)):
 
 <ul class="list-inline">
@@ -5366,6 +5415,7 @@ Deze nieuwe regel staat alleen de volgende domeinnaamextensies toe op ons gratis
   <li class="list-inline-item"><code class="notranslate">yt</code></li>
   <li class="list-inline-item"><code class="notranslate">za</code></li>
 </ul>
+
 ### Heeft u een greylist {#do-you-have-a-greylist}
 
 Ja, we hanteren een zeer soepele [email greylisting](https://en.wikipedia.org/wiki/Greylisting_\(email\)) policy. Greylisting geldt alleen voor afzenders die niet op onze allowlist staan en blijft 30 dagen in onze cache.
@@ -5543,6 +5593,7 @@ Ja, sinds 5 mei 2020 hebben we deze functie toegevoegd. Op dit moment is de func
     Als u een betaald abonnement heeft (met verbeterde privacybescherming), ga dan naar <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Mijn Account <i class="fa fa-angle-right"></i> Domeinen</a>, klik op "Instellen" naast uw domein, en klik vervolgens op "Instellingen". Als u meer wilt weten over betaalde abonnementen, zie dan onze <a class="alert-link" rel="noopener noreferrer" href="/private-business-email">Prijzen</a>-pagina. Anders kunt u de onderstaande instructies blijven volgen.
   </span>
 </div>
+
 Als je het gratis abonnement gebruikt, voeg dan eenvoudig een nieuw DNS <strong class="notranslate">TXT</strong>-record toe zoals hieronder weergegeven, maar wijzig de poort van 25 naar de poort van jouw keuze.
 
 Als voorbeeld, als ik wil dat alle e-mails die naar `example.com` gaan worden doorgestuurd naar de SMTP-poort 1337 van aliasontvangers in plaats van 25:
@@ -5620,6 +5671,36 @@ Ja, absoluut. Bijvoorbeeld, als je een e-mail stuurt naar `hello@example.com` en
 ### Hoe voorkom je spammers en zorg je voor een goede reputatie bij e-maildoorsturing {#how-do-you-prevent-spammers-and-ensure-good-email-forwarding-reputation}
 
 Zie onze secties over [Hoe werkt jullie e-maildoorsturingssysteem](#how-does-your-email-forwarding-system-work), [Hoe gaan jullie om met problemen bij e-mailbezorging](#how-do-you-handle-email-delivery-issues), en [Hoe gaan jullie om met het blokkeren van jullie IP-adressen](#how-do-you-handle-your-ip-addresses-becoming-blocked) hierboven.
+
+### Hoe kan ik controleren of een domein echt Forward Email gebruikt {#how-can-i-verify-a-domain-is-using-forward-email}
+
+De openbare DNS-records van een domein vertellen je of het onze dienst gebruikt, en met welk abonnement.  Dit is een neutrale technische opzoeking die iedereen voor elk domein kan uitvoeren; er is geen account voor nodig en geen medewerking van de eigenaar van het domein.
+
+**Controleer eerst de MX-records.**
+
+```sh
+dig example.com mx +short
+```
+
+Als het antwoord `mx1.forwardemail.net` en `mx2.forwardemail.net` niet bevat, gebruikt het domein onze dienst **niet** om e-mail te ontvangen, en zijn wij niet de beheerder van die e-mail.
+
+**Controleer daarna de TXT-records om de abonnementen te onderscheiden.**
+
+```sh
+dig example.com txt +short
+```
+
+| TXT-waarde                                   | Wat het betekent                                                                                                |
+| -------------------------------------------- | --------------------------------------------------------------------------------------------------------------- |
+| `forward-email=user@example.com`             | Een gratis abonnement.  De waarde is de bestemming in platte tekst waarnaar e-mail wordt doorgestuurd.          |
+| `forward-email-site-verification=XXXXXXXXXX` | Een betaald abonnement.  De doorstuurconfiguratie staat in onze database onder de ID `XXXXXXXXXX` en is niet openbaar. |
+| Geen van beide aanwezig                      | Het domein is niet geconfigureerd voor onze doorstuurdienst.                                                    |
+
+> \[!NOTE]
+> Deze records zijn de manier waarop onze dienst op DNS-niveau werkt, dus dezelfde opzoeking beantwoordt "is dit domein van ons", "is het gratis of betaald" en, bij een gratis abonnement, "waar gaat de e-mail naartoe".  Zie [hoe ons doorstuursysteem werkt](#how-does-your-email-forwarding-system-work) voor het afleverpad zelf.
+
+> \[!TIP]
+> We zijn geen domeinnaamregistrar, dus we bewaren geen historische DNS-records.  Om te achterhalen wie een domein heeft geregistreerd of wie de nameservers ervan beheert, gebruik je `whois example.com` en `dig example.com ns`, of vraag je het rechtstreeks aan de registrar.
 
 ### Hoe voer je DNS-zoekopdrachten uit op domeinnamen {#how-do-you-perform-dns-lookups-on-domain-names}
 
@@ -5889,6 +5970,7 @@ Of je kunt ze op twee aparte regels specificeren, zoals dit:
     </tr>
   </tbody>
 </table>
+
 Het is aan jou!
 
 ### Is er een maximumlimiet voor het aantal e-mailadressen waarnaar ik per alias kan doorsturen {#is-there-a-maximum-limit-on-the-number-of-email-addresses-i-can-forward-to-per-alias}

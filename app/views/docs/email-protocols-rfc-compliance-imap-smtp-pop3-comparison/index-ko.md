@@ -1328,7 +1328,7 @@ sequenceDiagram
 ManageSieve 외에도 Forward Email은 다음을 제공합니다:
 
 * **웹 대시보드**: 내 계정 → 도메인 → 별칭 → Sieve 스크립트에서 웹 인터페이스를 통해 Sieve 스크립트를 생성 및 관리
-* **REST API**: [Forward Email API](/api#sieve-scripts)를 통한 Sieve 스크립트 관리 프로그래밍 접근
+* **REST API**: [Forward Email API](/email-api)를 통한 Sieve 스크립트 관리 프로그래밍 접근
 
 > \[!TIP]
 > 자세한 설정 지침과 클라이언트 구성은 [FAQ: Sieve 이메일 필터링을 지원하나요?](/faq#do-you-support-sieve-email-filtering)를 참조하세요
@@ -1589,6 +1589,7 @@ flowchart TB
 ### 마이그레이션 프로세스 {#migration-process}
 
 Forward Email은 기존 저장 형식에서 새 저장 형식으로 자동으로, 멱등적으로 마이그레이션을 제공합니다:
+```javascript
 // 마이그레이션 통계 추적:
 {
   attachmentsMigrated: 0,

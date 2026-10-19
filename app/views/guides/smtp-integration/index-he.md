@@ -518,7 +518,7 @@ flowchart TD
 
 ## משאבים נוספים {#additional-resources}
 
-* [תיעוד Forward Email](/docs)  
+* [תיעוד Forward Email](/blog/docs)
 * [מגבלות והגדרות שרת SMTP](/faq#what-are-your-outbound-smtp-limits)  
 * [מדריך לפרקטיקות מיטביות בדואר אלקטרוני](/blog/docs/best-email-forwarding-service)  
 * [פרקטיקות אבטחה](/security)  

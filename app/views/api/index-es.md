@@ -295,6 +295,7 @@ curl -X PUT BASE_URI/v1/account \
 
 > \[!NOTE]
 > A diferencia de otros endpoints de la API, estos requieren que la [Autenticación](#authentication) tenga el "nombre de usuario" igual al nombre de usuario del alias y la "contraseña" igual a la contraseña generada del alias como encabezados de autorización básica.
+
 > \[!WARNING]
 > Esta sección de endpoints está en desarrollo y se lanzará (esperemos) en 2024. Mientras tanto, por favor use un cliente IMAP desde el menú desplegable "Apps" en la navegación de nuestro sitio web.
 
@@ -481,7 +482,7 @@ curl BASE_URI/v1/emails/limit \
 
 Tenga en cuenta que este endpoint no devuelve los valores de las propiedades `message`, `headers` ni `rejectedErrors` de un correo.
 
-Para devolver esas propiedades y sus valores, utilice el endpoint [Recuperar correo](#retrieve-email) con un ID de correo.
+Para devolver esas propiedades y sus valores, utilice el endpoint [Recuperar correo](#retrieve-outbound-smtp-email) con un ID de correo.
 
 > `GET /v1/emails`
 
@@ -529,7 +530,7 @@ Este endpoint de la API codificará automáticamente los emojis si se encuentran
 | `inReplyTo`          | No          | String           | El Message-ID al que responde el mensaje.                                                                                                                                                                                                                                                                                                                                                                                                                       |
 | `references`         | No          | String o Array   | Lista separada por espacios o un Array de Message-ID's.                                                                                                                                                                                                                                                                                                                                                                                                          |
 | `attachDataUrls`     | No          | Boolean          | Si es `true`, convierte imágenes `data:` en el contenido HTML del mensaje en adjuntos embebidos.                                                                                                                                                                                                                                                                                                                                                                |
-| `watchHtml`          | No          | String           | Una versión HTML específica para Apple Watch del mensaje ([según la documentación de Nodemailer](https://nodemailer.com/message/#content-options]), los relojes más recientes no requieren que esto se establezca).                                                                                                                                                                                                                                               |
+| `watchHtml`          | No          | String           | Una versión HTML específica para Apple Watch del mensaje ([según la documentación de Nodemailer](https://nodemailer.com/message/#content-options), los relojes más recientes no requieren que esto se establezca).                                                                                                                                                                                                                                               |
 | `amp`                | No          | String           | Una versión HTML específica AMP4EMAIL del mensaje (ver [ejemplo de Nodemailer](https://nodemailer.com/message/#amp-example)).                                                                                                                                                                                                                                                                                                                                   |
 | `icalEvent`          | No          | Object           | Un evento iCalendar para usar como contenido alternativo del mensaje (ver [eventos de calendario de Nodemailer](https://nodemailer.com/message/calendar-events/)).                                                                                                                                                                                                                                                                                               |
 | `alternatives`       | No          | Array            | Un Array de contenido alternativo del mensaje (ver [contenido alternativo de Nodemailer](https://nodemailer.com/message/alternatives/)).                                                                                                                                                                                                                                                                                                                        |
@@ -584,7 +585,7 @@ curl BASE_URI/v1/emails/:id \
 
 ### Eliminar correo SMTP saliente {#delete-outbound-smtp-email}
 
-La eliminación de correos establecerá el estado a `"rejected"` (y posteriormente no lo procesará en la cola) si y solo si el estado actual es uno de `"pending"`, `"queued"` o `"deferred"`. Podemos purgar correos automáticamente después de 30 días desde que fueron creados y/o enviados – por lo tanto, debe mantener una copia de los correos SMTP salientes en su cliente, base de datos o aplicación. Puede referenciar nuestro valor de ID de correo en su base de datos si lo desea – este valor se devuelve tanto en los endpoints de [Crear correo](#create-email) como de [Recuperar correo](#retrieve-email).
+La eliminación de correos establecerá el estado a `"rejected"` (y posteriormente no lo procesará en la cola) si y solo si el estado actual es uno de `"pending"`, `"queued"` o `"deferred"`. Podemos purgar correos automáticamente después de 30 días desde que fueron creados y/o enviados – por lo tanto, debe mantener una copia de los correos SMTP salientes en su cliente, base de datos o aplicación. Puede referenciar nuestro valor de ID de correo en su base de datos si lo desea – este valor se devuelve tanto en los endpoints de [Crear correo](#create-outbound-smtp-email) como de [Recuperar correo](#retrieve-outbound-smtp-email).
 
 > `DELETE /v1/emails/:id`
 

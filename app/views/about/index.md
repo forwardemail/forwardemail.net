@@ -70,7 +70,7 @@ The service attracted prominent developers, including [David Heinemeier Hansson]
 
 **May 2020**: Forward Email allowed custom [port forwarding](https://en.wikipedia.org/wiki/Port_forwarding "Port forwarding") as a workaround for users to circumvent port blocking by their [ISP](https://en.wikipedia.org/wiki/Internet_service_provider "Internet service provider"). The company also released their [Free Email Forwarding RESTful API](email-api) with complete documentation and real-time request and response examples, along with support for webhooks.
 
-**August 2020**: Forward Email added support for the [Authenticated Received Chain](arc) ("ARC") email authentication system, further strengthening email security and deliverability.
+**August 2020**: Forward Email added support for the [Authenticated Received Chain](/faq#do-you-support-email-best-practices) ("ARC") email authentication system, further strengthening email security and deliverability.
 
 **November 23, 2020**: Forward Email publicly launched out of their beta program.
 
@@ -94,7 +94,7 @@ The service attracted prominent developers, including [David Heinemeier Hansson]
 
 **November 2023**: Forward Email launched their [**encrypted mailbox storage**](/blog/docs/best-quantum-safe-encrypted-email-service) feature for [IMAP support](/faq#do-you-support-receiving-email-with-imap).
 
-**December 2023**: The company [added support](/faq#do-you-support-pop3) for [POP3](https://en.wikipedia.org/wiki/Post_Office_Protocol), [passkeys and WebAuthn](/faq#do-you-support-passkeys-and-webauthn), [time to inbox](/faq#i) monitoring, and [OpenPGP for IMAP Storage](/faq#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd).
+**December 2023**: The company [added support](/faq#do-you-support-pop3) for [POP3](https://en.wikipedia.org/wiki/Post_Office_Protocol), [passkeys and WebAuthn](/faq#do-you-support-passkeys-and-webauthn), [time to inbox](/tti) monitoring, and [OpenPGP for IMAP Storage](/faq#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd).
 
 ### 2024 - Service Optimization and Advanced Features
 

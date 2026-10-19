@@ -10,11 +10,13 @@ const env = require('#config/env');
 const metaConfig = require('#config/meta-config');
 const metaFn = require('#config/meta');
 const alternatives = require('#config/alternatives');
+const topCompetitorSlugs = require('#config/top-competitors');
 
 // in-memory caching
 const cache = new Map();
 
 const meta = metaFn(metaConfig, true);
+const topCompetitors = new Set(topCompetitorSlugs);
 
 // <https://developers.google.com/search/docs/specialty/international/localized-versions#sitemap>
 // <https://developers.google.com/search/docs/crawling-indexing/sitemaps/large-sitemaps>
@@ -51,23 +53,6 @@ async function sitemap(ctx) {
   for (const alternative of alternatives) {
     keys.push(`/blog/best-${alternative.slug}-alternative`);
     // Add vs comparison pages for top competitors only (avoids 6000+ thin pages)
-    const topCompetitors = new Set([
-      'forward-email',
-      'proton-mail',
-      'gmail',
-      'tutanota',
-      'fastmail',
-      'zoho-mail',
-      'outlook-com',
-      'yahoo',
-      'hey',
-      'mailbox-org',
-      'posteo',
-      'startmail',
-      'runbox',
-      'mailfence',
-      'skiff'
-    ]);
     if (topCompetitors.has(alternative.slug)) {
       for (const a of alternatives) {
         if (a.name === alternative.name) continue;

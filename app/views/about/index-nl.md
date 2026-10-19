@@ -68,7 +68,7 @@ De eenvoud en effectiviteit van deze oplossing trok de aandacht van vooraanstaan
 **April 2020**: Na talloze obstakels met bestaande spamdetectieoplossingen die de privacyverklaring van Forward Email niet respecteerden, bracht het bedrijf hun eerste alpha-versie van Spam Scanner uit. Deze volledig gratis en open-source [anti-spam filtering](https://en.wikipedia.org/wiki/Anti-spam_techniques "Anti-spam techniques") oplossing gebruikt een [Naive Bayes spamfilter](https://en.wikipedia.org/wiki/Naive_Bayes_spam_filtering "Naive Bayes spam filtering")-benadering gecombineerd met [anti-phishing](https://en.wikipedia.org/wiki/Phishing "Phishing") en [IDN homograph attack](https://en.wikipedia.org/wiki/IDN_homograph_attack "IDN homograph attack") bescherming. Forward Email bracht ook [twee-factor authenticatie](https://en.wikipedia.org/wiki/Multi-factor_authentication "Multi-factor authentication") (2FA) uit met gebruik van [eenmalige wachtwoorden](https://en.wikipedia.org/wiki/One-time_password "One-time password") (OTP) voor verbeterde accountbeveiliging.
 
 **Mei 2020**: Forward Email maakte aangepaste [poortdoorsturing](https://en.wikipedia.org/wiki/Port_forwarding "Port forwarding") mogelijk als een workaround voor gebruikers om poortblokkades door hun [ISP](https://en.wikipedia.org/wiki/Internet_service_provider "Internet service provider") te omzeilen. Het bedrijf bracht ook hun [Gratis E-mail Doorstuur RESTful API](email-api) uit met volledige documentatie en realtime voorbeelden van verzoeken en antwoorden, samen met ondersteuning voor webhooks.
-**Augustus 2020**: Forward Email voegde ondersteuning toe voor het [Authenticated Received Chain](arc) ("ARC") e-mailauthenticatiesysteem, waarmee de e-mailbeveiliging en afleverbaarheid verder werden versterkt.
+**Augustus 2020**: Forward Email voegde ondersteuning toe voor het [Authenticated Received Chain](/faq#do-you-support-email-best-practices) ("ARC") e-mailauthenticatiesysteem, waarmee de e-mailbeveiliging en afleverbaarheid verder werden versterkt.
 
 **23 november 2020**: Forward Email werd publiekelijk gelanceerd uit hun bètaprogramma, wat een belangrijke mijlpaal markeerde in de ontwikkeling van het platform.
 
@@ -92,7 +92,7 @@ De eenvoud en effectiviteit van deze oplossing trok de aandacht van vooraanstaan
 
 **November 2023**: Forward Email lanceerde hun [**versleutelde mailboxopslag**](/blog/docs/best-quantum-safe-encrypted-email-service) functie voor [IMAP-ondersteuning](/faq#do-you-support-receiving-email-with-imap), wat een belangrijke vooruitgang betekent in e-mailprivacy en beveiliging.
 
-**December 2023**: Het bedrijf [voegde ondersteuning toe](/faq#do-you-support-pop3) voor [POP3](https://en.wikipedia.org/wiki/Post_Office_Protocol), [passkeys en WebAuthn](/faq#do-you-support-passkeys-and-webauthn), [time to inbox](/faq#i) monitoring, en [OpenPGP voor IMAP-opslag](/faq#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd).
+**December 2023**: Het bedrijf [voegde ondersteuning toe](/faq#do-you-support-pop3) voor [POP3](https://en.wikipedia.org/wiki/Post_Office_Protocol), [passkeys en WebAuthn](/faq#do-you-support-passkeys-and-webauthn), [time to inbox](/tti) monitoring, en [OpenPGP voor IMAP-opslag](/faq#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd).
 
 ### 2024 - Serviceoptimalisatie en Geavanceerde Functies {#2024---service-optimization-and-advanced-features}
 

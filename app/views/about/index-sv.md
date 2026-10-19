@@ -68,7 +68,7 @@ Enkelheten och effektiviteten i denna lösning drog till sig uppmärksamhet frå
 **April 2020**: Efter att ha stött på otaliga hinder med befintliga spamdetekteringslösningar som inte respekterade Forward Emails integritetspolicy, släppte företaget sin initiala alfa-version av Spam Scanner. Denna helt fria och open-source [anti-spam filtrerings](https://en.wikipedia.org/wiki/Anti-spam_techniques "Anti-spam techniques")-lösning använder en [Naive Bayes spamfilter](https://en.wikipedia.org/wiki/Naive_Bayes_spam_filtering "Naive Bayes spam filtering")-metod kombinerad med [anti-phishing](https://en.wikipedia.org/wiki/Phishing "Phishing") och skydd mot [IDN homografattacker](https://en.wikipedia.org/wiki/IDN_homograph_attack "IDN homograph attack"). Forward Email lanserade också [tvåfaktorsautentisering](https://en.wikipedia.org/wiki/Multi-factor_authentication "Multi-factor authentication") (2FA) med hjälp av [engångslösenord](https://en.wikipedia.org/wiki/One-time_password "One-time password") (OTP) för förbättrad kontosäkerhet.
 
 **Maj 2020**: Forward Email tillät anpassad [portvidarebefordran](https://en.wikipedia.org/wiki/Port_forwarding "Port forwarding") som en lösning för användare att kringgå portblockering från deras [ISP](https://en.wikipedia.org/wiki/Internet_service_provider "Internet service provider"). Företaget släppte också sin [Free Email Forwarding RESTful API](email-api) med fullständig dokumentation och realtids-exempel på förfrågningar och svar, tillsammans med stöd för webhooks.
-**Augusti 2020**: Forward Email lade till stöd för [Authenticated Received Chain](arc) ("ARC") e-postautentiseringssystem, vilket ytterligare stärkte e-postsäkerheten och leveransbarheten.
+**Augusti 2020**: Forward Email lade till stöd för [Authenticated Received Chain](/faq#do-you-support-email-best-practices) ("ARC") e-postautentiseringssystem, vilket ytterligare stärkte e-postsäkerheten och leveransbarheten.
 
 **23 november 2020**: Forward Email lanserades offentligt utanför deras betaprogram, vilket markerade en betydande milstolpe i plattformens utveckling.
 
@@ -92,7 +92,7 @@ Enkelheten och effektiviteten i denna lösning drog till sig uppmärksamhet frå
 
 **November 2023**: Forward Email lanserade sin [**krypterade brevlådelagring**](/blog/docs/best-quantum-safe-encrypted-email-service)-funktion för [IMAP-stöd](/faq#do-you-support-receiving-email-with-imap), vilket representerar ett betydande framsteg inom e-postsekretess och säkerhet.
 
-**December 2023**: Företaget [lade till stöd](/faq#do-you-support-pop3) för [POP3](https://en.wikipedia.org/wiki/Post_Office_Protocol), [passkeys och WebAuthn](/faq#do-you-support-passkeys-and-webauthn), [övervakning av tid till inkorg](/faq#i) och [OpenPGP för IMAP-lagring](/faq#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd).
+**December 2023**: Företaget [lade till stöd](/faq#do-you-support-pop3) för [POP3](https://en.wikipedia.org/wiki/Post_Office_Protocol), [passkeys och WebAuthn](/faq#do-you-support-passkeys-and-webauthn), [övervakning av tid till inkorg](/tti) och [OpenPGP för IMAP-lagring](/faq#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd).
 
 ### 2024 - Tjänsteoptimering och avancerade funktioner {#2024---service-optimization-and-advanced-features}
 

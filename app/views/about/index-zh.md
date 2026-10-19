@@ -68,7 +68,7 @@ Forward Email 的使命是改变行业对邮件隐私和安全的态度。公司
 **2020年4月**：在现有垃圾邮件检测解决方案未能遵守Forward Email隐私政策的多次阻碍后，公司发布了其初始alpha版本的垃圾邮件扫描器。这是一款免费且开源的[反垃圾邮件过滤](https://en.wikipedia.org/wiki/Anti-spam_techniques "Anti-spam techniques")解决方案，采用[朴素贝叶斯垃圾邮件过滤](https://en.wikipedia.org/wiki/Naive_Bayes_spam_filtering "Naive Bayes spam filtering")方法，结合[反钓鱼](https://en.wikipedia.org/wiki/Phishing "Phishing")和[IDN同形异义攻击](https://en.wikipedia.org/wiki/IDN_homograph_attack "IDN homograph attack")防护。Forward Email还推出了基于[一次性密码](https://en.wikipedia.org/wiki/One-time_password "One-time password")（OTP）的[双因素认证](https://en.wikipedia.org/wiki/Multi-factor_authentication "Multi-factor authentication")（2FA），以增强账户安全。
 
 **2020年5月**：Forward Email允许自定义[端口转发](https://en.wikipedia.org/wiki/Port_forwarding "Port forwarding")，作为用户绕过其[ISP](https://en.wikipedia.org/wiki/Internet_service_provider "Internet service provider")端口阻塞的解决方案。公司还发布了其[免费邮件转发RESTful API](email-api)，提供完整文档和实时请求与响应示例，并支持webhooks。
-**2020年8月**：Forward Email 增加了对[Authenticated Received Chain](arc)（“ARC”）电子邮件认证系统的支持，进一步增强了电子邮件的安全性和可达性。
+**2020年8月**：Forward Email 增加了对[Authenticated Received Chain](/faq#do-you-support-email-best-practices)（“ARC”）电子邮件认证系统的支持，进一步增强了电子邮件的安全性和可达性。
 
 **2020年11月23日**：Forward Email 正式从测试版推出。
 
@@ -92,7 +92,7 @@ Forward Email 的使命是改变行业对邮件隐私和安全的态度。公司
 
 **2023年11月**：Forward Email 推出了[**加密邮箱存储**](/blog/docs/best-quantum-safe-encrypted-email-service)功能，支持[IMAP](/faq#do-you-support-receiving-email-with-imap)。
 
-**2023年12月**：公司[增加了对](/faq#do-you-support-pop3)[POP3](https://en.wikipedia.org/wiki/Post_Office_Protocol)、[通行密钥和WebAuthn](/faq#do-you-support-passkeys-and-webauthn)、[收件时间监控](/faq#i)以及[IMAP存储的OpenPGP](/faq#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd)的支持。
+**2023年12月**：公司[增加了对](/faq#do-you-support-pop3)[POP3](https://en.wikipedia.org/wiki/Post_Office_Protocol)、[通行密钥和WebAuthn](/faq#do-you-support-passkeys-and-webauthn)、[收件时间监控](/tti)以及[IMAP存储的OpenPGP](/faq#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd)的支持。
 
 ### 2024年 - 服务优化与高级功能 {#2024---service-optimization-and-advanced-features}
 

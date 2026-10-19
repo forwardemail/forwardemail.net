@@ -526,7 +526,7 @@ Forward Emailは複数のプランを提供しています：
 | エンタープライズ        | $250/月      | チーム + 無制限APIリクエスト           |
 
 > \[!IMPORTANT]
-> SMTPアクセスとレガシーTLS 1.0ポートのサポートには、**Enhanced Protectionプラン（$3/月）**以上が必要です。
+> SMTPアクセスとレガシーTLS 1.0ポートのサポートには、<strong>Enhanced Protectionプラン（$3/月）</strong>以上が必要です。
 
 詳細は[Forward Email Pricing](https://forwardemail.net/en/pricing)をご覧ください。
 
@@ -537,7 +537,7 @@ Forward Emailは複数のプランを提供しています：
 1. [Forward Email](https://forwardemail.net)にログイン
 2. **マイアカウント → ドメイン → \[あなたのドメイン] → エイリアス**に移動
 3. エイリアスを作成または選択（例：`camera@yourdomain.com`）
-4. エイリアスの横にある**「パスワードを生成」**をクリック
+4. エイリアスの横にある<strong>「パスワードを生成」</strong>をクリック
 5. 生成されたパスワードをコピー — SMTP認証に使用します
 
 > \[!TIP]

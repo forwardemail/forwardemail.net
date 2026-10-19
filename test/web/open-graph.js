@@ -94,3 +94,15 @@ test('an unknown page redirects to the generic image', async (t) => {
   t.is(res.status, 302);
   t.regex(res.headers.location, /^\/en\/index\.png\?v=\d+$/);
 });
+
+test('the image and the home page give the same domain count', async (t) => {
+  t.timeout(60_000);
+  const { web } = t.context;
+  const home = await web.get('/en').set({ Accept: 'text/html' });
+  const [, count] = home.text.match(/Trusted by ([\d.,]+[MK]?\+) domains/);
+  const { body } = await image(web, '/en/index.svg');
+  const svg = body.toString();
+  t.true(svg.includes(`>${count}<`), `${count}`);
+  // and the card of the home page for X
+  t.true(home.text.includes(`<meta name="twitter:data2" content="${count}"/>`));
+});

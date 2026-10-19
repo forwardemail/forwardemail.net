@@ -142,7 +142,7 @@
   * [Is this well-tested](#is-this-well-tested)
   * [Do you pass along SMTP response messages and codes](#do-you-pass-along-smtp-response-messages-and-codes)
   * [How do you prevent spammers and ensure good email forwarding reputation](#how-do-you-prevent-spammers-and-ensure-good-email-forwarding-reputation)
-  * [How can I verify a domain is genuinely using Forward Email {#how-can-i-verify-a-domain-is-using-forward-email}](#how-can-i-verify-a-domain-is-genuinely-using-forward-email-how-can-i-verify-a-domain-is-using-forward-email)
+  * [How can I verify a domain is genuinely using Forward Email](#how-can-i-verify-a-domain-is-using-forward-email)
   * [How do you perform DNS lookups on domain names](#how-do-you-perform-dns-lookups-on-domain-names)
 * [Account and Billing](#account-and-billing)
   * [How do I delete my account](#how-do-i-delete-my-account)
@@ -1969,7 +1969,7 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
     <br />
     <code>forward-email=hello:first@gmail.com,second@gmail.com</code>
     <br />
-    Emails sent to <code>hello@example.com</code> will **not** be forwarded to <code>second@gmail.com</code> (catch-all) with this configuration, and instead only be delivered to <code>first@gmail.com</code>.
+    Emails sent to <code>hello@example.com</code> will <strong>not</strong> be forwarded to <code>second@gmail.com</code> (catch-all) with this configuration, and instead only be delivered to <code>first@gmail.com</code>.
   </span>
 </div>
 
@@ -2717,7 +2717,7 @@ Yes. All paid plans include outbound SMTP, and it is **unlimited**: your daily s
     Important:
   </strong>
   <span>
-    We approve outbound SMTP for each domain to protect our IP reputation and your deliverability. Many domains get approved on the spot once their DNS records verify, and our team reviews the rest, usually within 24 hours. See [Do I need approval to enable SMTP](#do-i-need-approval-to-enable-smtp).
+    We approve outbound SMTP for each domain to protect our IP reputation and your deliverability. Many domains get approved on the spot once their DNS records verify, and our team reviews the rest, usually within 24 hours. See <a href="/faq#do-i-need-approval-to-enable-smtp">Do I need approval to enable SMTP</a>.
   </span>
 </div>
 
@@ -3001,7 +3001,7 @@ You can manage Sieve scripts in several ways:
 
 2. **ManageSieve Protocol**: Connect using any ManageSieve-compatible client, such as Thunderbird's Sieve add-on or [sieve-connect](https://github.com/philpennock/sieve-connect), to `imap.forwardemail.net`. Use port `2190` with STARTTLS or port `4190` with implicit TLS.
 
-3. **API**: Use the [REST API](/api#sieve-scripts) to manage scripts programmatically.
+3. **API**: Use the [REST API](/email-api) to manage scripts programmatically.
 
 <div class="alert my-3 alert-primary">
   <i class="fa fa-info-circle font-weight-bold"></i>
@@ -4553,7 +4553,7 @@ This section describes our process related to the SMTP protocol command `DATA` i
    * Recursively we iterate over the extracted forwarding configuration to determine global forwarding, regex based forwarding, and all other supported forwarding configurations – which are now known as our "Forwarding Addresses".
    * For each Forwarding Address, we support one recursive lookup (which will start this series of operations over on the given address).  If a recursive match was found, then the parent result will be removed from Forwarding Addresses, and the children added.
    * Forwarding Addresses are parsed for uniqueness (since we don't want to send duplicates to one address or spawn additionally unnecessary SMTP client connections).
-   * For each Forwarding Address, we lookup its domain name against our API endpoint `/v1/max-forwarded-addresses` (in order to determine how many addresses the domain is permitted to forward email to per alias, e.g. 10 by default – see the section on [maximum limit on forwarding per alias](#is-there-a-limit-on-the-number-of-email-addresses-i-can-forward-to-per-alias)).  If this limit is exceeded, then a 550 error will occur and the sender will receive a bounce for this recipient.
+   * For each Forwarding Address, we lookup its domain name against our API endpoint `/v1/max-forwarded-addresses` (in order to determine how many addresses the domain is permitted to forward email to per alias, e.g. 10 by default – see the section on [maximum limit on forwarding per alias](#is-there-a-maximum-limit-on-the-number-of-email-addresses-i-can-forward-to-per-alias)).  If this limit is exceeded, then a 550 error will occur and the sender will receive a bounce for this recipient.
    * We lookup the settings of the original recipient against our API endpoint `/v1/settings`, which supports a lookup for paid users (with a fallback for free users).  This returns a configuration object for advanced settings for `port` (Number, e.g. `25`), `has_adult_content_protection` (Boolean), `has_phishing_protection` (Boolean), `has_executable_protection` (Boolean), and `has_virus_protection` (Boolean).
    * Based off these settings, we then check against Spam Scanner results and if any errors occur, then the message is rejected with a 554 error code (e.g. if `has_virus_protection` is enabled, then we will check the Spam Scanner results for viruses).  Note that all free plan users will be opted-in for checks against adult-content, phishing, executables, and viruses.  By default, all paid plan users are opted-in as well, but this configuration can be altered under the Settings page for a domain in the Forward Email dashboard).
 

@@ -518,7 +518,7 @@ flowchart TD
 
 ## Дополнительные ресурсы {#additional-resources}
 
-* [Документация Forward Email](/docs)  
+* [Документация Forward Email](/blog/docs)
 * [Ограничения и настройка SMTP-сервера](/faq#what-are-your-outbound-smtp-limits)  
 * [Руководство по лучшим практикам электронной почты](/blog/docs/best-email-forwarding-service)  
 * [Практики безопасности](/security)  

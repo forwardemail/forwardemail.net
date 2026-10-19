@@ -78,6 +78,7 @@ Bu blog yazısı, [açık kaynaklı](https://en.wikipedia.org/wiki/Open-source_s
 
 > \[!NOTE]
 > Forward Email enterprise genellikle kullanıcı başına ekstra ücret olmadan ayda sadece 250 $ tutarındadır, beyaz listeye alınmış API hız sınırları vardır ve ek maliyet yalnızca öğrencilere ek GB/TB depolama gerekiyorsa (+10 GB ek depolama için 3 $). IMAP/POP3/SMTP/CalDAV/CardDAV için hızlı destek sağlamak amacıyla NVMe SSD sürücüler kullanıyoruz.
+
 > \[!IMPORTANT]
 > Google ve Microsoft'un aksine, verilerinizi analiz eden yapay zeka özelliklerini entegre ederken fiyatlarını defalarca artıran şirketlerin aksine, Forward Email sabit fiyatlandırmayı katı bir gizlilik odaklı yaklaşımla sürdürür. Yapay zeka kullanmıyoruz, kullanım kalıplarını takip etmiyoruz ve günlükleri veya e-postaları diske kaydetmiyoruz (tüm işlem bellekte yapılır), böylece mezun iletişimleriniz için tam gizlilik sağlıyoruz.
 

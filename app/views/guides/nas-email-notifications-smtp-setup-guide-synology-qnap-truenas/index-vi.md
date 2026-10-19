@@ -155,6 +155,7 @@ Các thiết bị QNAP với QTS hoạt động rất tốt với Forward Email.
 
 > \[!TIP]
 > Nếu bạn gặp phải [vấn đề cấu hình SMTP Gmail](https://forum.qnap.com/viewtopic.php?t=152466), các bước khắc phục tương tự cũng áp dụng cho Forward Email. Hãy đảm bảo xác thực được bật đúng cách và thông tin đăng nhập chính xác.
+
 > \[!NOTE]
 > Thiết bị QNAP hỗ trợ lập lịch thông báo nâng cao, cho phép bạn cấu hình giờ yên tĩnh khi các thông báo không quan trọng bị tắt. Điều này hữu ích trong môi trường doanh nghiệp.
 

@@ -78,6 +78,7 @@ Khoản tiết kiệm hàng năm của các trường đại học đối tác k
 
 > \[!NOTE]
 > Forward Email enterprise thường chỉ tốn $250/tháng, không có chi phí thêm cho mỗi người dùng, giới hạn tốc độ API được phép, và chi phí bổ sung duy nhất là lưu trữ nếu bạn cần thêm GB/TB cho sinh viên (+$3 cho mỗi 10 GB lưu trữ thêm). Chúng tôi sử dụng ổ NVMe SSD để hỗ trợ nhanh các giao thức IMAP/POP3/SMTP/CalDAV/CardDAV.
+
 > \[!IMPORTANT]
 > Khác với Google và Microsoft, những công ty đã nhiều lần tăng giá trong khi tích hợp các tính năng AI phân tích dữ liệu của bạn, Forward Email duy trì mức giá ổn định với trọng tâm nghiêm ngặt về quyền riêng tư. Chúng tôi không sử dụng AI, không theo dõi các mẫu sử dụng, và không lưu trữ nhật ký hay email lên đĩa (tất cả xử lý được thực hiện trong bộ nhớ), đảm bảo quyền riêng tư hoàn toàn cho các liên lạc của cựu sinh viên.
 

@@ -47,7 +47,7 @@ Both [Cloudflare](https://www.cloudflare.com/) and [DataPacket](https://datapack
 
 ### Cloudflare의 약속 {#cloudflares-commitment}
 
-[Cloudflare](https://www.cloudflare.com/)는 **[제3자 행동 강령](https://cf-assets.www.cloudflare.com/slt3lc6tev37/284hiWkCYNc49GQpAeBvGN/e137cdac96d1c4cd403c6b525831d284/Third_Party_Code_of_Conduct.pdf)**에서 **Section 889 준수**를 명확히 언급하고 있습니다. 그들은 다음과 같이 명시합니다:
+[Cloudflare](https://www.cloudflare.com/)는 <strong>[제3자 행동 강령](https://cf-assets.www.cloudflare.com/slt3lc6tev37/284hiWkCYNc49GQpAeBvGN/e137cdac96d1c4cd403c6b525831d284/Third_Party_Code_of_Conduct.pdf)</strong>에서 **Section 889 준수**를 명확히 언급하고 있습니다. 그들은 다음과 같이 명시합니다:
 
 > "국방수권법(NDAA) Section 889에 따라, Cloudflare는 Huawei Technologies Company, ZTE Corporation, Hytera Communications Corporation, Hangzhou Hikvision Digital Technology Company, 또는 Dahua Technology Company(또는 해당 법인의 자회사나 계열사)가 생산하거나 제공하는 통신 장비, 비디오 감시 제품 또는 서비스를 사용하거나 공급망 내에서 허용하지 않습니다."
 

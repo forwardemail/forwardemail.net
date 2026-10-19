@@ -16,7 +16,9 @@
   * [Microsoft Outlook](#microsoft-outlook)
   * [Apple Mail](#apple-mail)
   * [eM Client](#em-client)
+  * [คุณมีเว็บเมลไคลเอนต์ไหม](#do-you-offer-a-webmail-client)
   * [ฉันส่งจากที่อยู่ใดก็ได้บนโดเมนของฉันในเว็บเมลได้ไหม](#can-i-send-from-any-address-on-my-domain-in-webmail)
+  * [คุณมีแอปสำหรับเดสก์ท็อปและมือถือไหม](#do-you-have-desktop-and-mobile-apps)
   * [คุณมีแอปสำหรับเทอร์มินัลไหม](#do-you-have-a-terminal-app)
   * [อุปกรณ์มือถือ](#mobile-devices)
   * [การตั้งค่า Sendmail SMTP Relay](#sendmail-smtp-relay-configuration)
@@ -75,6 +77,7 @@
   * [คุณรองรับการกรองอีเมลด้วย Sieve ไหม](#do-you-support-sieve-email-filtering)
   * [คุณรองรับ MTA-STS ไหม](#do-you-support-mta-sts)
   * [คุณรองรับ passkeys และ WebAuthn ไหม](#do-you-support-passkeys-and-webauthn)
+  * [รองรับการยืนยันตัวตนสองขั้นตอน (2FA) ไหม](#is-two-factor-authentication-2fa-supported)
   * [คุณรองรับแนวทางปฏิบัติที่ดีที่สุดของอีเมลไหม](#do-you-support-email-best-practices)
   * [คุณรองรับ bounce webhooks ไหม](#do-you-support-bounce-webhooks)
   * [คุณรองรับ webhooks ไหม](#do-you-support-webhooks)
@@ -95,6 +98,7 @@
   * [คุณเก็บรักษาหัวข้อการตรวจสอบอีเมลไหม](#do-you-preserve-email-authentication-headers)
   * [คุณเก็บรักษาหัวข้ออีเมลต้นฉบับและป้องกันการปลอมแปลงไหม](#do-you-preserve-original-email-headers-and-prevent-spoofing)
   * [คุณป้องกันสแปมและการละเมิดอย่างไร](#how-do-you-protect-against-spam-and-abuse)
+  * [ฉันปิดการสแกนเนื้อหาสำหรับผู้ใหญ่ ฟิชชิง ไฟล์ปฏิบัติการ หรือไวรัสได้ไหม](#can-i-disable-adult-content-phishing-executable-or-virus-scanning)
   * [คุณเก็บเนื้อหาอีเมลบนดิสก์ไหม](#do-you-store-email-content-on-disk)
   * [เนื้อหาอีเมลอาจถูกเปิดเผยในระหว่างระบบล่มไหม](#can-email-content-be-exposed-during-system-crashes)
   * [ใครเข้าถึงโครงสร้างพื้นฐานอีเมลของคุณได้บ้าง](#who-has-access-to-your-email-infrastructure)
@@ -104,6 +108,7 @@
 * [อีเมลขาเข้าของโดเมนของฉันถูกประมวลผลและจัดเก็บไว้ที่ใด และนานเท่าใด](#where-is-inbound-email-for-my-domain-processed-and-stored-and-for-how-long)
 * [ฉันจะระบุ Forward Email เป็นผู้ประมวลผลย่อยใน DPA ของฉันได้อย่างไร](#how-do-i-list-forward-email-as-a-subprocessor-in-my-own-dpa)
   * [คุณจัดการการแจ้งเตือนการละเมิดข้อมูลอย่างไร](#how-do-you-handle-data-breach-notifications)
+  * [ฉันจะรายงานช่องโหว่ด้านความปลอดภัยได้อย่างไร](#how-do-i-report-a-security-vulnerability)
   * [คุณมีสภาพแวดล้อมสำหรับทดสอบไหม](#do-you-offer-a-test-environment)
   * [คุณมีเครื่องมือสำหรับการตรวจสอบและแจ้งเตือนไหม](#do-you-provide-monitoring-and-alerting-tools)
   * [คุณรับประกันความพร้อมใช้งานสูงอย่างไร](#how-do-you-ensure-high-availability)
@@ -136,6 +141,7 @@
   * [ผ่านการทดสอบอย่างดีไหม](#is-this-well-tested)
   * [คุณส่งต่อข้อความและรหัสตอบกลับ SMTP ไหม](#do-you-pass-along-smtp-response-messages-and-codes)
   * [คุณป้องกันสแปมเมอร์และรักษาชื่อเสียงการส่งต่ออีเมลอย่างไร](#how-do-you-prevent-spammers-and-ensure-good-email-forwarding-reputation)
+  * [ฉันจะตรวจสอบได้อย่างไรว่าโดเมนใช้ Forward Email จริง](#how-can-i-verify-a-domain-is-using-forward-email)
   * [คุณทำการค้นหา DNS บนชื่อโดเมนอย่างไร](#how-do-you-perform-dns-lookups-on-domain-names)
 * [บัญชีและการชำระเงิน](#account-and-billing)
   * [ฉันจะลบบัญชีของฉันได้อย่างไร](#how-do-i-delete-my-account)
@@ -317,11 +323,31 @@ Forward Email ส่งข้อความด้วยความล่าช
 8. กรอกชื่อของคุณและเลือกชื่อบัญชี
 9. คลิก **เสร็จสิ้น**
 
+### คุณมีเว็บเมลไคลเอนต์ไหม {#do-you-offer-a-webmail-client}
+
+มี  เว็บเมลไคลเอนต์อย่างเป็นทางการแบบโอเพนซอร์สของเราพร้อมใช้งานที่ <a href="https://mail.forwardemail.net" target="_blank" rel="noopener noreferrer">mail.forwardemail.net</a>  ไม่ต้องติดตั้งอะไร เพียงลงชื่อเข้าใช้จากเบราว์เซอร์ใดก็ได้ด้วยที่อยู่นามแฝงและรหัสผ่านที่สร้างไว้ของนามแฝงนั้น (ข้อมูลประจำตัวชุดเดียวกับที่ใช้สำหรับ IMAP, SMTP และ POP3)
+
+เว็บเมลเปิดตัวในเดือนกุมภาพันธ์ 2026 และยังรองรับ [ส่วนขยายการจัดตารางนัดหมายของ CalDAV (RFC 6638)](https://www.rfc-editor.org/rfc/rfc6638.html), [DANE/TLSA (RFC 6698)](https://en.wikipedia.org/wiki/DNS-based_Authentication_of_Named_Entities) และ [Domain Connect](https://domainconnect.org) สำหรับการตั้งค่า DNS ในคลิกเดียว พร้อมการแจ้งเตือนแบบพุชแบบเรียลไทม์สำหรับ IMAP, CalDAV และ CardDAV ที่ส่งผ่าน WebSockets
+
+ซอร์สโค้ดเป็นโอเพนซอร์สทั้งหมดและมีให้ใช้งานบน GitHub ที่ <a href="https://github.com/forwardemail/mail.forwardemail.net" target="_blank" rel="noopener noreferrer">github.com/forwardemail/mail.forwardemail.net</a>
+
+<a href="/blog/docs/webmail">คู่มือเว็บเมล</a>ของเราอธิบายการลงชื่อเข้าใช้ การใช้หลายบัญชี และการทำงานร่วมกันระหว่างเว็บเมลกับแดชบอร์ดของเว็บไซต์นี้
+
 ### ฉันส่งจากที่อยู่ใดก็ได้บนโดเมนของฉันในเว็บเมลได้ไหม {#can-i-send-from-any-address-on-my-domain-in-webmail}
 
 ได้ สร้างรหัสผ่านแบบจับทั้งหมดที่ <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">บัญชีของฉัน <i class="fa fa-angle-right"></i> โดเมน</a> <i class="fa fa-angle-right"></i> การตั้งค่าขั้นสูง <i class="fa fa-angle-right"></i> รหัสผ่านแบบจับทั้งหมด จากนั้นบันทึกไว้ในเว็บเมลที่ **Settings <i class="fa fa-angle-right"></i> General <i class="fa fa-angle-right"></i> Send from any address** เมื่อเขียนอีเมล ให้เลือก **Other address @โดเมนของคุณ** ในเมนู **From** แล้วพิมพ์ที่อยู่ใดก็ได้บนโดเมนนั้น
 
 คุณไม่ได้ลงชื่อเข้าใช้ในฐานะบัญชี catch-all หรือ wildcard รหัสผ่านแบบจับทั้งหมดใช้ได้เฉพาะการส่ง สำเนาจึงไปอยู่ในโฟลเดอร์ส่งแล้วของบัญชีที่คุณกำลังใช้ และจะบันทึกไว้เฉพาะในอุปกรณ์ที่คุณเพิ่มเท่านั้น ดู<a href="/blog/docs/webmail#send-from-any-address-on-your-domain">คู่มือเว็บเมล</a>ของเราสำหรับขั้นตอนทั้งหมด
+
+### คุณมีแอปสำหรับเดสก์ท็อปและมือถือไหม {#do-you-have-desktop-and-mobile-apps}
+
+มี  แอปเนทีฟมีให้ใช้งานทั้งบนเดสก์ท็อปและมือถือ โดยสร้างจากโปรเจกต์โอเพนซอร์สเดียวกับเว็บเมลไคลเอนต์ของเรา และดาวน์โหลดได้ทั้งหมดจาก<a href="/download" target="_blank" rel="noopener noreferrer">หน้าดาวน์โหลด</a>ของเรา:
+
+* **เดสก์ท็อป**: macOS (Apple Silicon และ Intel), Windows (x64 และ ARM64 เป็นตัวติดตั้งแบบ `.exe` หรือ `.msi`) และ Linux (AppImage, `.deb`, `.rpm` และ Snap แต่ละแบบสำหรับ x64 และ ARM64)
+* **มือถือ**: Android (APK พร้อมบิลด์ทางเลือกบน F-Droid) และ iOS
+* **เทอร์มินัล**: คำสั่ง `forwardemail` สำหรับ macOS, Linux และ Windows (x64 และ ARM64) ดู [คุณมีแอปสำหรับเทอร์มินัลไหม](#do-you-have-a-terminal-app)
+
+บิลด์รีลีสทั้งหมดเผยแพร่บน GitHub ที่ <a href="https://github.com/forwardemail/mail.forwardemail.net/releases" target="_blank" rel="noopener noreferrer">github.com/forwardemail/mail.forwardemail.net/releases</a> และหน้าดาวน์โหลดยังให้คุณตรวจสอบเช็กซัมของรีลีสกับ `SHA256SUMS.txt` ได้
 
 ### คุณมีแอปสำหรับเทอร์มินัลไหม {#do-you-have-a-terminal-app}
 
@@ -1916,7 +1942,7 @@ Drafts/
     <br />
     <code>forward-email=hello:first@gmail.com,second@gmail.com</code>
     <br />
-    อีเมลที่ส่งไปยัง <code>hello@example.com</code> จะ **ไม่** ถูกส่งต่อไปยัง <code>second@gmail.com</code> (catch-all) ด้วยการตั้งค่านี้ และจะถูกส่งไปยัง <code>first@gmail.com</code> เท่านั้น
+    อีเมลที่ส่งไปยัง <code>hello@example.com</code> จะ <strong>ไม่</strong> ถูกส่งต่อไปยัง <code>second@gmail.com</code> (catch-all) ด้วยการตั้งค่านี้ และจะถูกส่งไปยัง <code>first@gmail.com</code> เท่านั้น
   </span>
 </div>
 
@@ -2653,7 +2679,7 @@ It supports both IPv4 and IPv6 and is available over port `443` (HTTPS).
     สำคัญ:
   </strong>
   <span>
-    เราอนุมัติ SMTP ขาออกเป็นรายโดเมนเพื่อปกป้องชื่อเสียง IP ของเราและความสามารถในการส่งถึงของอีเมลคุณ หลายโดเมนได้รับการอนุมัติทันทีเมื่อระเบียน DNS ของโดเมนผ่านการยืนยัน และทีมของเราจะตรวจสอบโดเมนที่เหลือ โดยปกติภายใน 24 ชั่วโมง ดู [ฉันต้องได้รับการอนุมัติเพื่อเปิดใช้งาน SMTP หรือไม่](#do-i-need-approval-to-enable-smtp)
+    เราอนุมัติ SMTP ขาออกเป็นรายโดเมนเพื่อปกป้องชื่อเสียง IP ของเราและความสามารถในการส่งถึงของอีเมลคุณ หลายโดเมนได้รับการอนุมัติทันทีเมื่อระเบียน DNS ของโดเมนผ่านการยืนยัน และทีมของเราจะตรวจสอบโดเมนที่เหลือ โดยปกติภายใน 24 ชั่วโมง ดู <a href="/faq#do-i-need-approval-to-enable-smtp">ฉันต้องได้รับการอนุมัติเพื่อเปิดใช้งาน SMTP หรือไม่</a>
   </span>
 </div>
 
@@ -2932,7 +2958,7 @@ if header :contains "Subject" "invoice" {
 
 1. **ส่วนติดต่อเว็บ**: ไปที่ <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">บัญชีของฉัน <i class="fa fa-angle-right"></i> โดเมน</a> <i class="fa fa-angle-right"></i> นามแฝง <i class="fa fa-angle-right"></i> สคริปต์ Sieve เพื่อสร้างและจัดการสคริปต์
 2. **โปรโตคอล ManageSieve**: เชื่อมต่อโดยใช้ไคลเอนต์ที่เข้ากันได้กับ ManageSieve เช่น ส่วนเสริม Sieve ของ Thunderbird หรือ [sieve-connect](https://github.com/philpennock/sieve-connect) ไปยัง `imap.forwardemail.net` ใช้พอร์ต `2190` ร่วมกับ STARTTLS หรือพอร์ต `4190` กับ TLS แบบ implicit
-3. **API**: ใช้ [REST API](/api#sieve-scripts) เพื่อจัดการสคริปต์แบบโปรแกรมมิ่ง
+3. **API**: ใช้ [REST API](/email-api) เพื่อจัดการสคริปต์แบบโปรแกรมมิ่ง
 
 <div class="alert my-3 alert-primary">
   <i class="fa fa-info-circle font-weight-bold"></i>
@@ -2975,6 +3001,12 @@ Passkeys ช่วยให้คุณเข้าสู่ระบบได�
 * [เข้าสู่ระบบแอปและเว็บไซต์ของคุณด้วย passkeys](https://support.google.com/android/answer/14124480?hl=en) (Google)
 * [ใช้ passkeys เพื่อเข้าสู่ระบบแอปและเว็บไซต์บน iPhone](https://support.apple.com/guide/iphone/use-passkeys-to-sign-in-to-apps-and-websites-iphf538ea8d0/ios) (Apple)
 * [บทความวิกิพีเดียเกี่ยวกับ Passkeys](https://en.wikipedia.org/wiki/Passkey_\(credential\))
+### รองรับการยืนยันตัวตนสองขั้นตอน (2FA) ไหม {#is-two-factor-authentication-2fa-supported}
+
+รองรับ สำหรับการลงชื่อเข้าใช้บัญชีของคุณ (รวมถึง<a href="https://mail.forwardemail.net" target="_blank" rel="noopener noreferrer">เว็บเมล</a>) ผ่านรหัสผ่านแบบใช้ครั้งเดียว โดยมีคีย์กู้คืนเป็นตัวสำรอง
+
+2FA ใช้กับการลงชื่อเข้าใช้บัญชีของคุณเท่านั้น ไม่ได้ใช้กับการเชื่อมต่อ IMAP, SMTP, POP3, CalDAV หรือ CardDAV จากไคลเอนต์ของบุคคลที่สาม (Thunderbird, Apple Mail เป็นต้น)  ไคลเอนต์เหล่านั้นยืนยันตัวตนด้วยรหัสผ่านที่สร้างขึ้นเฉพาะสำหรับนามแฝงแทน ปัจจุบันจึงยังไม่มีมาตรฐานที่เทียบเท่า 2FA สำหรับไคลเอนต์ประเภทนี้ หากคุณต้องการให้สิ่งนี้เปลี่ยนแปลง โปรดเปิดคำขอฟีเจอร์บน GitHub
+
 ### คุณสนับสนุนแนวทางปฏิบัติที่ดีที่สุดของอีเมลหรือไม่ {#do-you-support-email-best-practices}
 
 ใช่ เรามีการสนับสนุนในตัวสำหรับ SPF, DKIM, DMARC, ARC และ SRS ในทุกแผนบริการ เราได้ทำงานอย่างกว้างขวางร่วมกับผู้เขียนต้นฉบับของข้อกำหนดเหล่านี้และผู้เชี่ยวชาญด้านอีเมลอื่น ๆ เพื่อให้มั่นใจในความสมบูรณ์แบบและการส่งอีเมลที่มีประสิทธิภาพสูง
@@ -4070,6 +4102,17 @@ Forward Email ใช้มาตรการป้องกันหลายช
 * <https://www.datapacket.com/datacenters/denver> (รายละเอียดการป้องกัน DDoS)
 * <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/abuse-prevention-by-user-id.js>
 
+### ฉันปิดการสแกนเนื้อหาสำหรับผู้ใหญ่ ฟิชชิง ไฟล์ปฏิบัติการ หรือไวรัสได้ไหม {#can-i-disable-adult-content-phishing-executable-or-virus-scanning}
+
+ได้ ทุกโดเมนจะสแกนลิงก์และไฟล์แนบขาเข้าด้วย <a href="https://spamscanner.net" target="_blank" rel="noopener noreferrer">Spam Scanner</a> ระบบป้องกันสแปม ฟิชชิง และไวรัสแบบโอเพนซอร์สที่เราสร้างขึ้นเอง (และปฏิบัติตามนโยบายที่ให้ความสำคัญกับความเป็นส่วนตัวเป็นอันดับแรกและไม่เก็บบันทึกเช่นเดียวกับส่วนอื่นๆ ของ Forward Email) มีสี่หมวดหมู่ที่เปิดหรือปิดแยกกันได้ที่ <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">บัญชีของฉัน <i class="fa fa-angle-right"></i> โดเมน</a> <i class="fa fa-angle-right"></i> การตั้งค่าขั้นสูง:
+
+* **การป้องกันเนื้อหาสำหรับผู้ใหญ่**: หากปิดใช้งาน ลิงก์จะไม่ถูกสแกนหาเนื้อหาที่เกี่ยวข้องกับผู้ใหญ่
+* **การป้องกันฟิชชิง**: หากปิดใช้งาน ลิงก์จะไม่ถูกสแกนหามัลแวร์ การสลับโดเมน การโจมตีแบบ IDN homograph หรือฟิชชิงโดยทั่วไป
+* **การป้องกันไฟล์ปฏิบัติการ**: หากปิดใช้งาน ลิงก์และไฟล์แนบจะไม่ถูกสแกนหาประเภทไฟล์ปฏิบัติการ นามสกุล ชื่อ ส่วนหัวที่อาจเป็นอันตราย หรือการโจมตีแบบ IDN homograph
+* **การป้องกันไวรัส**: หากปิดใช้งาน ไฟล์แนบจะไม่ถูกสแกนหาโทรจัน ไวรัส มัลแวร์ หรือภัยคุกคามที่เป็นอันตรายอื่นๆ (ผ่าน ClamAV)
+
+ทั้งสี่หมวดหมู่เปิดใช้งานเป็นค่าเริ่มต้น การปิดหมวดหมู่ใดหมวดหมู่หนึ่งจะปิดการสแกนเฉพาะหมวดหมู่นั้นเท่านั้น  การทำเช่นนี้ไม่ได้ปิดการกรองสแปมทั้งหมด และแยกจาก[การปิดใช้งานนามแฝงที่ระบุ](#can-i-disable-specific-aliases) เหตุผลที่พบบ่อยที่สุดในการปิดหมวดหมู่หนึ่งคือรูปแบบผลบวกลวงที่เกิดเฉพาะกับทราฟฟิกของคุณ (เช่น การสแกนเนื้อหาสำหรับผู้ใหญ่ตั้งค่าสถานะเมลลิงลิสต์ที่ถูกต้องของสถานที่หรือธุรกิจที่มีธีมสำหรับผู้ใหญ่)
+
 ### คุณเก็บเนื้อหาอีเมลไว้บนดิสก์หรือไม่ {#do-you-store-email-content-on-disk}
 
 > \[!IMPORTANT]
@@ -4292,6 +4335,10 @@ Antrim, BT1 - 5EF
 * <https://forwardemail.net/technical-whitepaper.pdf#page=59>
 * <https://forwardemail.net/gdpr>
 
+### ฉันจะรายงานช่องโหว่ด้านความปลอดภัยได้อย่างไร {#how-do-i-report-a-security-vulnerability}
+
+หากคุณพบช่องโหว่ด้านความปลอดภัย โปรดรายงานไปที่ <security@forwardemail.net> ทันที ที่อยู่นี้ใช้สำหรับรายงานช่องโหว่และบั๊กโดยเฉพาะ แยกจากฝ่ายสนับสนุนทั่วไป  การส่งอีเมลไปที่อยู่นี้โดยตรงจะทำให้รายงานของคุณถึงทีมที่รับผิดชอบดูแลเรื่องนี้
+
 ### คุณมีสภาพแวดล้อมทดสอบให้หรือไม่ {#do-you-offer-a-test-environment}
 
 เอกสารทางเทคนิคของ Forward Email ไม่ได้ระบุอย่างชัดเจนถึงโหมด sandbox เฉพาะ อย่างไรก็ตาม วิธีการทดสอบที่เป็นไปได้ ได้แก่:
@@ -4432,7 +4479,7 @@ Forward Email พึ่งพาผู้ให้บริการโครง
    * เราจะวนลูปแบบเรียกซ้ำผ่านการตั้งค่าการส่งต่อที่ดึงมาเพื่อกำหนดการส่งต่อแบบทั่วโลก การส่งต่อแบบ regex และการตั้งค่าการส่งต่ออื่น ๆ ที่รองรับทั้งหมด – ซึ่งตอนนี้เรียกว่า "ที่อยู่สำหรับส่งต่อ"
    * สำหรับแต่ละที่อยู่สำหรับส่งต่อ เรารองรับการค้นหาแบบเรียกซ้ำหนึ่งครั้ง (ซึ่งจะเริ่มชุดการดำเนินการนี้ใหม่สำหรับที่อยู่นั้น) หากพบการจับคู่แบบเรียกซ้ำ ผลลัพธ์ของพาเรนต์จะถูกลบออกจากที่อยู่สำหรับส่งต่อ และเพิ่มที่อยู่ลูกแทน
    * ที่อยู่สำหรับส่งต่อจะถูกวิเคราะห์เพื่อความไม่ซ้ำกัน (เนื่องจากเราไม่ต้องการส่งซ้ำไปยังที่อยู่เดียวกันหรือสร้างการเชื่อมต่อ SMTP ที่ไม่จำเป็นเพิ่มเติม)
-   * สำหรับแต่ละที่อยู่สำหรับส่งต่อ เราจะค้นหาชื่อโดเมนของมันกับ API endpoint `/v1/max-forwarded-addresses` (เพื่อกำหนดจำนวนที่อยู่ที่โดเมนนั้นได้รับอนุญาตให้ส่งต่ออีเมลต่ออาลิอาส เช่น 10 โดยค่าเริ่มต้น – ดูส่วน [ขีดจำกัดสูงสุดของการส่งต่ออีเมลต่ออาลิอาส](#is-there-a-limit-on-the-number-of-email-addresses-i-can-forward-to-per-alias)) หากเกินขีดจำกัดนี้ จะเกิดข้อผิดพลาด 550 และผู้ส่งจะได้รับการแจ้งเตือนการส่งล้มเหลวสำหรับผู้รับนี้
+   * สำหรับแต่ละที่อยู่สำหรับส่งต่อ เราจะค้นหาชื่อโดเมนของมันกับ API endpoint `/v1/max-forwarded-addresses` (เพื่อกำหนดจำนวนที่อยู่ที่โดเมนนั้นได้รับอนุญาตให้ส่งต่ออีเมลต่ออาลิอาส เช่น 10 โดยค่าเริ่มต้น – ดูส่วน [ขีดจำกัดสูงสุดของการส่งต่ออีเมลต่ออาลิอาส](#is-there-a-maximum-limit-on-the-number-of-email-addresses-i-can-forward-to-per-alias)) หากเกินขีดจำกัดนี้ จะเกิดข้อผิดพลาด 550 และผู้ส่งจะได้รับการแจ้งเตือนการส่งล้มเหลวสำหรับผู้รับนี้
    * เราจะค้นหาการตั้งค่าของผู้รับต้นทางกับ API endpoint `/v1/settings` ซึ่งรองรับการค้นหาสำหรับผู้ใช้แบบชำระเงิน (พร้อมตัวเลือกสำรองสำหรับผู้ใช้ฟรี) ซึ่งจะส่งคืนอ็อบเจ็กต์การตั้งค่าสำหรับการตั้งค่าขั้นสูง เช่น `port` (ตัวเลข เช่น `25`), `has_adult_content_protection` (บูลีน), `has_phishing_protection` (บูลีน), `has_executable_protection` (บูลีน), และ `has_virus_protection` (บูลีน)
    * จากการตั้งค่าเหล่านี้ เราจะตรวจสอบผลลัพธ์จาก Spam Scanner และหากพบข้อผิดพลาดใด ๆ ข้อความจะถูกปฏิเสธด้วยรหัสข้อผิดพลาด 554 (เช่น หากเปิดใช้งาน `has_virus_protection` เราจะตรวจสอบผลลัพธ์ของ Spam Scanner สำหรับไวรัส) โปรดทราบว่าผู้ใช้แผนฟรีทั้งหมดจะถูกเลือกให้ตรวจสอบเนื้อหาผู้ใหญ่ การฟิชชิ่ง ไฟล์ปฏิบัติการ และไวรัสโดยอัตโนมัติ โดยค่าเริ่มต้นผู้ใช้แผนชำระเงินทั้งหมดก็ถูกเลือกเช่นกัน แต่การตั้งค่านี้สามารถเปลี่ยนแปลงได้ในหน้าการตั้งค่าสำหรับโดเมนในแดชบอร์ด Forward Email
 
@@ -4752,6 +4799,7 @@ Forward Email พึ่งพาผู้ให้บริการโครง
   <li class="list-inline-item"><code class="notranslate">sch.uk</code></li>
   <li class="list-inline-item"><code class="notranslate">ukaea.uk</code></li>
 </ul>
+
 นอกจากนี้ [โดเมนระดับบนสุดของแบรนด์และบริษัท](https://en.wikipedia.org/wiki/List_of_Internet_top-level_domains#Brand_and_corporate_top-level_domains) เหล่านี้ได้รับการอนุญาตโดยค่าเริ่มต้น (เช่น `apple` สำหรับ `applecard.apple` สำหรับใบแจ้งยอดบัญชีธนาคาร Apple Card):
 
 <ul class="list-inline">
@@ -5177,6 +5225,7 @@ Forward Email พึ่งพาผู้ให้บริการโครง
   <li class="list-inline-item"><code class="notranslate">zara</code></li>
   <li class="list-inline-item"><code class="notranslate">zippo</code></li>
 </ul>
+
 ตั้งแต่วันที่ 18 มีนาคม 2025 เราได้เพิ่มดินแดนโพ้นทะเลของฝรั่งเศสเหล่านี้ในรายการนี้ด้วย ([ตามคำขอ GitHub นี้](https://github.com/forwardemail/forwardemail.net/issues/327)):
 
 <ul class="list-inline">
@@ -5363,6 +5412,7 @@ Forward Email พึ่งพาผู้ให้บริการโครง
   <li class="list-inline-item"><code class="notranslate">yt</code></li>
   <li class="list-inline-item"><code class="notranslate">za</code></li>
 </ul>
+
 ### คุณมี greylist หรือไม่ {#do-you-have-a-greylist}
 
 ใช่ เรามีนโยบาย [email greylisting](https://en.wikipedia.org/wiki/Greylisting_\(email\)) ที่ค่อนข้างผ่อนปรน Greylisting จะใช้กับผู้ส่งที่ไม่ได้อยู่ใน allowlist ของเราเท่านั้น และจะเก็บไว้ในแคชของเรานาน 30 วัน
@@ -5540,6 +5590,7 @@ Bounces คืออีเมลที่บ่งชี้ว่าการส
     หากคุณใช้แผนบริการแบบชำระเงิน (ซึ่งมีฟีเจอร์การปกป้องความเป็นส่วนตัวที่เพิ่มขึ้น) กรุณาไปที่ <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">บัญชีของฉัน <i class="fa fa-angle-right"></i> โดเมน</a> คลิกที่ "ตั้งค่า" ข้างโดเมนของคุณ แล้วคลิกที่ "การตั้งค่า" หากคุณต้องการเรียนรู้เพิ่มเติมเกี่ยวกับแผนบริการแบบชำระเงิน โปรดดูที่หน้า <a class="alert-link" rel="noopener noreferrer" href="/private-business-email">ราคาของเรา</a> มิฉะนั้นคุณสามารถทำตามคำแนะนำด้านล่างต่อไปได้
   </span>
 </div>
+
 หากคุณใช้แผนฟรี ให้เพิ่มระเบียน DNS <strong class="notranslate">TXT</strong> ใหม่ตามที่แสดงด้านล่างนี้ แต่เปลี่ยนพอร์ตจาก 25 เป็นพอร์ตที่คุณเลือก
 
 ตัวอย่างเช่น หากฉันต้องการให้อีเมลทั้งหมดที่ส่งไปยัง `example.com` ถูกส่งต่อไปยังพอร์ต SMTP ของผู้รับอีเมลสำรองที่ 1337 แทนพอร์ต 25:
@@ -5617,6 +5668,36 @@ Bounces คืออีเมลที่บ่งชี้ว่าการส
 ### คุณป้องกันสแปมเมอร์และรักษาชื่อเสียงการส่งต่ออีเมลที่ดีอย่างไร {#how-do-you-prevent-spammers-and-ensure-good-email-forwarding-reputation}
 
 ดูส่วนของเราเกี่ยวกับ [ระบบการส่งต่ออีเมลของคุณทำงานอย่างไร](#how-does-your-email-forwarding-system-work), [คุณจัดการปัญหาการส่งอีเมลอย่างไร](#how-do-you-handle-email-delivery-issues), และ [คุณจัดการกับที่อยู่ IP ของคุณที่ถูกบล็อกอย่างไร](#how-do-you-handle-your-ip-addresses-becoming-blocked) ข้างต้น
+
+### ฉันจะตรวจสอบได้อย่างไรว่าโดเมนใช้ Forward Email จริง {#how-can-i-verify-a-domain-is-using-forward-email}
+
+ระเบียน DNS สาธารณะของโดเมนจะบอกได้ว่าโดเมนนั้นใช้บริการของเราหรือไม่ และใช้แผนใด  นี่เป็นการค้นหาทางเทคนิคที่เป็นกลางซึ่งใครก็ทำได้กับทุกโดเมน โดยไม่ต้องมีบัญชีและไม่ต้องได้รับความร่วมมือจากเจ้าของโดเมน
+
+**ตรวจสอบระเบียน MX ก่อน**
+
+```sh
+dig example.com mx +short
+```
+
+หากคำตอบไม่มี `mx1.forwardemail.net` และ `mx2.forwardemail.net` แสดงว่าโดเมนนั้น**ไม่ได้**ใช้บริการของเราในการรับอีเมล และเราไม่ใช่ผู้ให้บริการอีเมลนั้น
+
+**จากนั้นตรวจสอบระเบียน TXT เพื่อแยกแยะแผน**
+
+```sh
+dig example.com txt +short
+```
+
+| ค่า TXT | ความหมาย |
+| --- | --- |
+| `forward-email=user@example.com` | แผนฟรี  ค่านี้คือปลายทางแบบข้อความธรรมดาที่อีเมลจะถูกส่งต่อไป |
+| `forward-email-site-verification=XXXXXXXXXX` | แผนแบบชำระเงิน  การกำหนดค่าการส่งต่อจัดเก็บอยู่ในฐานข้อมูลของเราภายใต้ ID `XXXXXXXXXX` และไม่เปิดเผยต่อสาธารณะ |
+| ไม่มีทั้งสองค่า | โดเมนนี้ไม่ได้ตั้งค่าไว้สำหรับบริการส่งต่อของเรา |
+
+> \[!NOTE]
+> ระเบียนเหล่านี้คือวิธีที่บริการของเราทำงานในระดับ DNS ดังนั้นการค้นหาเดียวกันจึงตอบได้ทั้ง "โดเมนนี้ใช้บริการของเราหรือไม่" "เป็นแผนฟรีหรือแบบชำระเงิน" และสำหรับแผนฟรี "อีเมลของโดเมนนี้ถูกส่งไปที่ใด"  ดู[ระบบการส่งต่อของเราทำงานอย่างไร](#how-does-your-email-forwarding-system-work) สำหรับเส้นทางการส่งอีเมลโดยละเอียด
+
+> \[!TIP]
+> เราไม่ใช่ผู้รับจดทะเบียนชื่อโดเมน จึงไม่มีระเบียน DNS ย้อนหลัง  หากต้องการทราบว่าใครจดทะเบียนโดเมนหรือใครดูแลเนมเซิร์ฟเวอร์ของโดเมน ให้ใช้ `whois example.com` และ `dig example.com ns` หรือสอบถามผู้รับจดทะเบียนโดยตรง
 
 ### คุณทำการค้นหา DNS บนชื่อโดเมนอย่างไร {#how-do-you-perform-dns-lookups-on-domain-names}
 
@@ -5886,6 +5967,7 @@ Bounces คืออีเมลที่บ่งชี้ว่าการส
     </tr>
   </tbody>
 </table>
+
 เป็นเรื่องของคุณ!
 
 ### มีขีดจำกัดสูงสุดของจำนวนที่อยู่อีเมลที่ฉันสามารถส่งต่อได้ต่ออาลิอัสหรือไม่ {#is-there-a-maximum-limit-on-the-number-of-email-addresses-i-can-forward-to-per-alias}

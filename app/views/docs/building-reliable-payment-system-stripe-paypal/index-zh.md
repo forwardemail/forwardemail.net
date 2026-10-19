@@ -669,6 +669,8 @@ graph TD
     class A,P,V primary;
     class B,C,D,E,I,L,Q,R,S,W,X,Y,Z secondary;
 ```
+
+```mermaid
 graph TD
     subgraph "DRY 原则"
         V[共享逻辑] --> W[支付处理功能]

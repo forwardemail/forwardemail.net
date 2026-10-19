@@ -520,7 +520,7 @@ Ha olyan problémába ütközik, amely itt nem szerepel, kérjük:
 
 ## További források {#additional-resources}
 
-* [Forward Email dokumentáció](/docs)
+* [Forward Email dokumentáció](/blog/docs)
 * [SMTP szerver korlátok és beállítások](/faq#what-are-your-outbound-smtp-limits)
 * [E-mail legjobb gyakorlatok útmutató](/blog/docs/best-email-forwarding-service)
 * [Biztonsági gyakorlatok](/security)

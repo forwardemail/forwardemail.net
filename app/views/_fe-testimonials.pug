@@ -6,6 +6,8 @@
 //- remaining legacy quotes were cut on purpose — praise without information.
 //- Quotes are verbatim tweets and deliberately not run through t(), same as
 //- the legacy partial.
+include _fe-rating
+
 mixin feProofCard(card)
   figure.fe-panel.fe-panel--quiet.fe-proof__card(
     class=card.featured ? "fe-proof__card--featured" : ""
@@ -19,6 +21,7 @@ mixin feProofCard(card)
       //- 44px on screen: the 44px copy, or the 100px original on a 2x
       //- screen. The first card's loads eagerly, as one of the page's first
       //- three images (the rest of the page's images are lazy).
+      //- (alt is empty: the name is written right next to it)
       img.fe-proof__avatar(
         loading=card.eager ? "eager" : "lazy",
         fetchpriority=card.eager ? "low" : false,
@@ -27,7 +30,7 @@ mixin feProofCard(card)
         height=44,
         src=manifest(`img/testimonials/${card.avatar}-44.webp`),
         srcset=`${manifest(`img/testimonials/${card.avatar}-44.webp`)} 1x, ${manifest(`img/testimonials/${card.avatar}.webp`)} 2x`,
-        alt=card.name
+        alt=""
       )
       .fe-proof__id
         span.fe-proof__name= card.name
@@ -66,3 +69,4 @@ mixin feTestimonials
           | So they made this cool app that forwards email from your own domain to your Gmail inbox. There is even a catch all option, so sales@, support@, etc all goes to your own inbox. Check it out! It's free!
           = " "
           | forwardemail.net
+      +feRating

@@ -16,7 +16,9 @@
   * [Microsoft Outlook](#microsoft-outlook)
   * [Apple Mail](#apple-mail)
   * [eM Client](#em-client)
+  * [Bạn có cung cấp trình khách webmail không](#do-you-offer-a-webmail-client)
   * [Tôi có thể gửi từ bất kỳ địa chỉ nào trên tên miền của mình trong webmail không](#can-i-send-from-any-address-on-my-domain-in-webmail)
+  * [Bạn có ứng dụng cho máy tính và di động không](#do-you-have-desktop-and-mobile-apps)
   * [Bạn có ứng dụng terminal không](#do-you-have-a-terminal-app)
   * [Thiết Bị Di Động](#mobile-devices)
   * [Cấu Hình Sendmail SMTP Relay](#sendmail-smtp-relay-configuration)
@@ -75,6 +77,7 @@
   * [Bạn có hỗ trợ lọc email bằng Sieve không](#do-you-support-sieve-email-filtering)
   * [Bạn có hỗ trợ MTA-STS không](#do-you-support-mta-sts)
   * [Bạn có hỗ trợ passkeys và WebAuthn không](#do-you-support-passkeys-and-webauthn)
+  * [Có hỗ trợ xác thực hai yếu tố (2FA) không](#is-two-factor-authentication-2fa-supported)
   * [Bạn có hỗ trợ các thực hành tốt nhất về email không](#do-you-support-email-best-practices)
   * [Bạn có hỗ trợ bounce webhooks không](#do-you-support-bounce-webhooks)
   * [Bạn có hỗ trợ webhooks không](#do-you-support-webhooks)
@@ -95,6 +98,7 @@
   * [Bạn có giữ nguyên các header xác thực email không](#do-you-preserve-email-authentication-headers)
   * [Bạn có giữ nguyên header email gốc và ngăn chặn giả mạo không](#do-you-preserve-original-email-headers-and-prevent-spoofing)
   * [Bạn bảo vệ chống spam và lạm dụng như thế nào](#how-do-you-protect-against-spam-and-abuse)
+  * [Tôi có thể tắt tính năng quét nội dung người lớn, lừa đảo, tệp thực thi hoặc virus không](#can-i-disable-adult-content-phishing-executable-or-virus-scanning)
   * [Bạn có lưu trữ nội dung email trên đĩa không](#do-you-store-email-content-on-disk)
   * [Nội dung email có thể bị lộ trong trường hợp hệ thống bị sự cố không](#can-email-content-be-exposed-during-system-crashes)
   * [Ai có quyền truy cập vào hạ tầng email của bạn](#who-has-access-to-your-email-infrastructure)
@@ -104,6 +108,7 @@
 * [Email đến cho miền của tôi được xử lý và lưu trữ ở đâu, và trong bao lâu](#where-is-inbound-email-for-my-domain-processed-and-stored-and-for-how-long)
 * [Làm thế nào để tôi liệt kê Forward Email là một bên xử lý phụ trong DPA của riêng tôi](#how-do-i-list-forward-email-as-a-subprocessor-in-my-own-dpa)
   * [Bạn xử lý thông báo vi phạm dữ liệu như thế nào](#how-do-you-handle-data-breach-notifications)
+  * [Làm thế nào để báo cáo lỗ hổng bảo mật](#how-do-i-report-a-security-vulnerability)
   * [Bạn có cung cấp môi trường thử nghiệm không](#do-you-offer-a-test-environment)
   * [Bạn có cung cấp công cụ giám sát và cảnh báo không](#do-you-provide-monitoring-and-alerting-tools)
   * [Bạn đảm bảo tính sẵn sàng cao như thế nào](#how-do-you-ensure-high-availability)
@@ -136,6 +141,7 @@
   * [Nó có được kiểm tra kỹ lưỡng không](#is-this-well-tested)
   * [Bạn có truyền các thông điệp và mã phản hồi SMTP không](#do-you-pass-along-smtp-response-messages-and-codes)
   * [Bạn ngăn chặn spammer và đảm bảo uy tín chuyển tiếp email tốt như thế nào](#how-do-you-prevent-spammers-and-ensure-good-email-forwarding-reputation)
+  * [Làm thế nào để xác minh một tên miền thực sự đang dùng Forward Email](#how-can-i-verify-a-domain-is-using-forward-email)
   * [Bạn thực hiện tra cứu DNS trên tên miền như thế nào](#how-do-you-perform-dns-lookups-on-domain-names)
 * [Tài Khoản và Thanh Toán](#account-and-billing)
   * [Làm cách nào để xóa tài khoản của tôi](#how-do-i-delete-my-account)
@@ -317,11 +323,31 @@ Mọi thứ được thực hiện trong bộ nhớ và [mã nguồn của chún
 8. Nhập tên của bạn và chọn tên tài khoản.
 9. Nhấn **Hoàn tất**.
 
+### Bạn có cung cấp trình khách webmail không {#do-you-offer-a-webmail-client}
+
+Có.  Trình khách webmail chính thức, mã nguồn mở của chúng tôi có tại <a href="https://mail.forwardemail.net" target="_blank" rel="noopener noreferrer">mail.forwardemail.net</a>.  Không cần cài đặt: hãy đăng nhập từ bất kỳ trình duyệt nào bằng địa chỉ bí danh cùng mật khẩu đã tạo của nó (cùng thông tin đăng nhập dùng cho IMAP, SMTP và POP3).
+
+Webmail ra mắt vào tháng 2 năm 2026 và còn hỗ trợ [Phần mở rộng lập lịch CalDAV (RFC 6638)](https://www.rfc-editor.org/rfc/rfc6638.html), [DANE/TLSA (RFC 6698)](https://en.wikipedia.org/wiki/DNS-based_Authentication_of_Named_Entities) và [Domain Connect](https://domainconnect.org) để thiết lập DNS bằng 1 cú nhấp, cùng thông báo đẩy theo thời gian thực cho IMAP, CalDAV và CardDAV được gửi qua WebSockets.
+
+Mã nguồn hoàn toàn mở và có trên GitHub tại <a href="https://github.com/forwardemail/mail.forwardemail.net" target="_blank" rel="noopener noreferrer">github.com/forwardemail/mail.forwardemail.net</a>.
+
+<a href="/blog/docs/webmail">Hướng dẫn webmail</a> của chúng tôi trình bày cách đăng nhập, cách dùng nhiều tài khoản và cách webmail kết hợp với bảng điều khiển của trang web này.
+
 ### Tôi có thể gửi từ bất kỳ địa chỉ nào trên tên miền của mình trong webmail không {#can-i-send-from-any-address-on-my-domain-in-webmail}
 
 Có. Tạo một mật khẩu catch-all tại <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">Tài khoản của tôi <i class="fa fa-angle-right"></i> Tên miền</a> <i class="fa fa-angle-right"></i> Cài đặt nâng cao <i class="fa fa-angle-right"></i> Mật khẩu tổng hợp, sau đó lưu nó trong webmail tại **Settings <i class="fa fa-angle-right"></i> General <i class="fa fa-angle-right"></i> Send from any address**. Khi soạn thư, chọn **Other address @yourdomain** trong menu **From** và nhập bất kỳ địa chỉ nào trên tên miền đó.
 
 Bạn không đăng nhập bằng một tài khoản catch-all hay ký tự đại diện. Mật khẩu catch-all chỉ có thể gửi, nên bản sao được lưu vào thư mục Đã gửi của tài khoản bạn đang dùng. Mật khẩu chỉ được lưu trên thiết bị nơi bạn thêm nó. Xem <a href="/blog/docs/webmail#send-from-any-address-on-your-domain">hướng dẫn webmail</a> của chúng tôi để biết từng bước.
+
+### Bạn có ứng dụng cho máy tính và di động không {#do-you-have-desktop-and-mobile-apps}
+
+Có.  Các ứng dụng gốc dành cho máy tính và di động được xây dựng từ cùng dự án mã nguồn mở với trình khách webmail của chúng tôi, và đều có thể tải xuống từ <a href="/download" target="_blank" rel="noopener noreferrer">trang tải xuống</a> của chúng tôi:
+
+* **Máy tính**: macOS (Apple Silicon và Intel), Windows (x64 và ARM64, dưới dạng trình cài đặt `.exe` hoặc `.msi`) và Linux (AppImage, `.deb`, `.rpm` và Snap, mỗi loại cho x64 và ARM64).
+* **Di động**: Android (APK, kèm một bản dựng thay thế trên F-Droid) và iOS.
+* **Terminal**: lệnh `forwardemail` cho macOS, Linux và Windows (x64 và ARM64). Xem [Bạn có ứng dụng terminal không](#do-you-have-a-terminal-app).
+
+Tất cả các bản dựng phát hành đều được đăng trên GitHub tại <a href="https://github.com/forwardemail/mail.forwardemail.net/releases" target="_blank" rel="noopener noreferrer">github.com/forwardemail/mail.forwardemail.net/releases</a>, và trang tải xuống cho phép bạn xác minh mã kiểm tra (checksum) của bản phát hành với `SHA256SUMS.txt`.
 
 ### Bạn có ứng dụng terminal không {#do-you-have-a-terminal-app}
 
@@ -1916,7 +1942,7 @@ Cài đặt nâng cao <i class="fa fa-angle-right"></i> Bản ghi tùy chỉnh</
     <br />
     <code>forward-email=hello:first@gmail.com,second@gmail.com</code>
     <br />
-    Email gửi đến <code>hello@example.com</code> sẽ **không** được chuyển tiếp đến <code>second@gmail.com</code> (bắt tất cả) với cấu hình này, và thay vào đó chỉ được gửi đến <code>first@gmail.com</code>.
+    Email gửi đến <code>hello@example.com</code> sẽ <strong>không</strong> được chuyển tiếp đến <code>second@gmail.com</code> (bắt tất cả) với cấu hình này, và thay vào đó chỉ được gửi đến <code>first@gmail.com</code>.
   </span>
 </div>
 
@@ -2653,7 +2679,7 @@ Có. Tất cả các gói trả phí đều bao gồm SMTP gửi đi, và SMTP g
     Quan trọng:
   </strong>
   <span>
-    Chúng tôi phê duyệt SMTP gửi đi cho từng tên miền để bảo vệ uy tín IP của chúng tôi và khả năng gửi thư thành công của bạn. Nhiều tên miền được phê duyệt ngay khi các bản ghi DNS của chúng được xác minh, và nhóm của chúng tôi xem xét các tên miền còn lại, thường trong vòng 24 giờ. Xem [Tôi có cần phê duyệt để bật SMTP không](#do-i-need-approval-to-enable-smtp).
+    Chúng tôi phê duyệt SMTP gửi đi cho từng tên miền để bảo vệ uy tín IP của chúng tôi và khả năng gửi thư thành công của bạn. Nhiều tên miền được phê duyệt ngay khi các bản ghi DNS của chúng được xác minh, và nhóm của chúng tôi xem xét các tên miền còn lại, thường trong vòng 24 giờ. Xem <a href="/faq#do-i-need-approval-to-enable-smtp">Tôi có cần phê duyệt để bật SMTP không</a>.
   </span>
 </div>
 
@@ -2934,7 +2960,7 @@ Bạn có thể quản lý script Sieve bằng một số cách:
 
 2. **Giao thức ManageSieve**: Kết nối bằng bất kỳ client tương thích ManageSieve nào, chẳng hạn add-on Sieve của Thunderbird hoặc [sieve-connect](https://github.com/philpennock/sieve-connect), tới `imap.forwardemail.net`. Sử dụng cổng `2190` với STARTTLS hoặc cổng `4190` với TLS ngầm định.
 
-3. **API**: Sử dụng [REST API](/api#sieve-scripts) để quản lý script theo chương trình.
+3. **API**: Sử dụng [REST API](/email-api) để quản lý script theo chương trình.
 
 <div class="alert my-3 alert-primary">
   <i class="fa fa-info-circle font-weight-bold"></i>
@@ -2977,6 +3003,12 @@ Tìm hiểu thêm về passkeys tại các liên kết sau:
 * [Đăng nhập vào ứng dụng và trang web của bạn bằng passkeys](https://support.google.com/android/answer/14124480?hl=en) (Google)
 * [Sử dụng passkeys để đăng nhập vào ứng dụng và trang web trên iPhone](https://support.apple.com/guide/iphone/use-passkeys-to-sign-in-to-apps-and-websites-iphf538ea8d0/ios) (Apple)
 * [Bài viết Wikipedia về Passkeys](https://en.wikipedia.org/wiki/Passkey_\(credential\))
+### Có hỗ trợ xác thực hai yếu tố (2FA) không {#is-two-factor-authentication-2fa-supported}
+
+Có, khi đăng nhập vào tài khoản của bạn (bao gồm cả <a href="https://mail.forwardemail.net" target="_blank" rel="noopener noreferrer">webmail</a>) bằng mã dùng một lần, có khóa khôi phục để dự phòng.
+
+2FA áp dụng cho chính việc đăng nhập tài khoản của bạn, không áp dụng cho các kết nối IMAP, SMTP, POP3, CalDAV hoặc CardDAV từ trình khách bên thứ ba (Thunderbird, Apple Mail, v.v.).  Các trình khách đó xác thực bằng mật khẩu đã tạo riêng cho từng bí danh, vì vậy hiện chưa có tiêu chuẩn tương đương 2FA cho loại trình khách này. Nếu bạn muốn điều đó thay đổi, hãy mở một yêu cầu tính năng trên GitHub.
+
 ### Bạn có hỗ trợ các thực hành tốt nhất về email không {#do-you-support-email-best-practices}
 
 Có. Chúng tôi có hỗ trợ tích hợp cho SPF, DKIM, DMARC, ARC và SRS trên tất cả các gói. Chúng tôi cũng đã làm việc rộng rãi với các tác giả gốc của các đặc tả này và các chuyên gia email khác để đảm bảo khả năng gửi thư cao.
@@ -4072,6 +4104,17 @@ Nguồn:
 * <https://www.datapacket.com/datacenters/denver> (Chi tiết bảo vệ DDoS)
 * <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/abuse-prevention-by-user-id.js>
 
+### Tôi có thể tắt tính năng quét nội dung người lớn, lừa đảo, tệp thực thi hoặc virus không {#can-i-disable-adult-content-phishing-executable-or-virus-scanning}
+
+Có. Mọi tên miền đều quét các liên kết và tệp đính kèm đến bằng <a href="https://spamscanner.net" target="_blank" rel="noopener noreferrer">Spam Scanner</a>, công cụ bảo vệ chống spam, lừa đảo và virus mã nguồn mở do chính chúng tôi xây dựng (và tuân theo cùng chính sách ưu tiên quyền riêng tư, không ghi nhật ký như phần còn lại của Forward Email). Bốn danh mục có thể được bật hoặc tắt độc lập tại <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">Tài khoản của tôi <i class="fa fa-angle-right"></i> Tên miền</a> <i class="fa fa-angle-right"></i> Cài đặt nâng cao:
+
+* **Bảo vệ nội dung người lớn**: nếu tắt, các liên kết sẽ không được quét để tìm nội dung liên quan đến người lớn.
+* **Bảo vệ chống lừa đảo**: nếu tắt, các liên kết sẽ không được quét để tìm phần mềm độc hại, hoán đổi tên miền, tấn công IDN homograph hoặc lừa đảo (phishing) nói chung.
+* **Bảo vệ tệp thực thi**: nếu tắt, các liên kết và tệp đính kèm sẽ không được quét để tìm loại tệp thực thi, phần mở rộng, tên, tiêu đề có khả năng độc hại hoặc tấn công IDN homograph.
+* **Bảo vệ chống virus**: nếu tắt, các tệp đính kèm sẽ không được quét để tìm trojan, virus, phần mềm độc hại hoặc các mối đe dọa độc hại khác (thông qua ClamAV).
+
+Cả bốn đều được bật theo mặc định. Tắt một danh mục chỉ tắt việc quét cho riêng danh mục đó.  Điều này không tắt toàn bộ tính năng lọc spam và khác với việc [tắt một bí danh cụ thể](#can-i-disable-specific-aliases). Lý do phổ biến nhất để tắt một danh mục là một kiểu dương tính giả đặc thù với lưu lượng thư của bạn (ví dụ: tính năng quét nội dung người lớn gắn cờ các danh sách thư hợp lệ của một địa điểm hoặc doanh nghiệp có chủ đề người lớn).
+
 ### Bạn có lưu trữ nội dung email trên đĩa không {#do-you-store-email-content-on-disk}
 
 > \[!IMPORTANT]
@@ -4294,6 +4337,10 @@ Nguồn:
 * <https://forwardemail.net/technical-whitepaper.pdf#page=59>
 * <https://forwardemail.net/gdpr>
 
+### Làm thế nào để báo cáo lỗ hổng bảo mật {#how-do-i-report-a-security-vulnerability}
+
+Nếu bạn phát hiện một lỗ hổng bảo mật, vui lòng báo cáo ngay cho <security@forwardemail.net>. Đây là địa chỉ dành riêng cho các báo cáo lỗ hổng và lỗi, tách biệt với bộ phận hỗ trợ chung.  Gửi email trực tiếp đến địa chỉ này sẽ đưa báo cáo của bạn đến nhóm chịu trách nhiệm xử lý.
+
 ### Bạn có cung cấp môi trường thử nghiệm không {#do-you-offer-a-test-environment}
 
 Tài liệu kỹ thuật của Forward Email không mô tả rõ ràng chế độ sandbox riêng biệt. Tuy nhiên, các phương pháp thử nghiệm tiềm năng bao gồm:
@@ -4434,7 +4481,7 @@ Phần này mô tả quy trình của chúng tôi liên quan đến lệnh giao 
    * Đệ quy, chúng ta lặp qua cấu hình chuyển tiếp đã trích xuất để xác định chuyển tiếp toàn cục, chuyển tiếp dựa trên regex, và tất cả các cấu hình chuyển tiếp được hỗ trợ khác – hiện được gọi là "Địa chỉ Chuyển tiếp" của chúng tôi.
    * Đối với mỗi Địa chỉ Chuyển tiếp, chúng tôi hỗ trợ một lần tra cứu đệ quy (sẽ bắt đầu lại chuỗi các thao tác này trên địa chỉ được cho). Nếu tìm thấy kết quả đệ quy, thì kết quả cha sẽ bị loại khỏi Địa chỉ Chuyển tiếp, và các kết quả con sẽ được thêm vào.
    * Địa chỉ Chuyển tiếp được phân tích để đảm bảo tính duy nhất (vì chúng tôi không muốn gửi trùng lặp đến một địa chỉ hoặc tạo thêm các kết nối SMTP không cần thiết).
-   * Đối với mỗi Địa chỉ Chuyển tiếp, chúng tôi tra cứu tên miền của nó qua điểm cuối API `/v1/max-forwarded-addresses` (để xác định số lượng địa chỉ mà tên miền được phép chuyển tiếp email đến mỗi bí danh, ví dụ mặc định là 10 – xem phần [giới hạn tối đa về số lượng địa chỉ email tôi có thể chuyển tiếp đến mỗi bí danh](#is-there-a-limit-on-the-number-of-email-addresses-i-can-forward-to-per-alias)). Nếu vượt quá giới hạn này, sẽ xảy ra lỗi 550 và người gửi sẽ nhận được thư trả lại cho người nhận này.
+   * Đối với mỗi Địa chỉ Chuyển tiếp, chúng tôi tra cứu tên miền của nó qua điểm cuối API `/v1/max-forwarded-addresses` (để xác định số lượng địa chỉ mà tên miền được phép chuyển tiếp email đến mỗi bí danh, ví dụ mặc định là 10 – xem phần [giới hạn tối đa về số lượng địa chỉ email tôi có thể chuyển tiếp đến mỗi bí danh](#is-there-a-maximum-limit-on-the-number-of-email-addresses-i-can-forward-to-per-alias)). Nếu vượt quá giới hạn này, sẽ xảy ra lỗi 550 và người gửi sẽ nhận được thư trả lại cho người nhận này.
    * Chúng tôi tra cứu cài đặt của người nhận gốc qua điểm cuối API `/v1/settings`, hỗ trợ tra cứu cho người dùng trả phí (với phương án dự phòng cho người dùng miễn phí). Điều này trả về một đối tượng cấu hình cho các cài đặt nâng cao như `port` (Số, ví dụ `25`), `has_adult_content_protection` (Boolean), `has_phishing_protection` (Boolean), `has_executable_protection` (Boolean), và `has_virus_protection` (Boolean).
    * Dựa trên các cài đặt này, chúng tôi kiểm tra kết quả của Bộ quét Spam và nếu có lỗi xảy ra, tin nhắn sẽ bị từ chối với mã lỗi 554 (ví dụ nếu `has_virus_protection` được bật, chúng tôi sẽ kiểm tra kết quả Bộ quét Spam về virus). Lưu ý rằng tất cả người dùng gói miễn phí sẽ được tự động kiểm tra nội dung người lớn, lừa đảo, tệp thực thi và virus. Mặc định, tất cả người dùng gói trả phí cũng được tự động kiểm tra, nhưng cấu hình này có thể thay đổi trong trang Cài đặt cho một tên miền trong bảng điều khiển Forward Email).
 
@@ -4754,6 +4801,7 @@ Các phần mở rộng tên miền sau được coi là được phép theo m�
   <li class="list-inline-item"><code class="notranslate">sch.uk</code></li>
   <li class="list-inline-item"><code class="notranslate">ukaea.uk</code></li>
 </ul>
+
 Ngoài ra, những [miền cấp cao thương hiệu và doanh nghiệp](https://en.wikipedia.org/wiki/List_of_Internet_top-level_domains#Brand_and_corporate_top-level_domains) này được phép mặc định (ví dụ `apple` cho `applecard.apple` cho sao kê ngân hàng Apple Card):
 
 <ul class="list-inline">
@@ -5179,6 +5227,7 @@ Ngoài ra, những [miền cấp cao thương hiệu và doanh nghiệp](https:/
   <li class="list-inline-item"><code class="notranslate">zara</code></li>
   <li class="list-inline-item"><code class="notranslate">zippo</code></li>
 </ul>
+
 Tính đến ngày 18 tháng 3 năm 2025, chúng tôi cũng đã thêm các lãnh thổ hải ngoại của Pháp này vào danh sách này ([theo yêu cầu GitHub này](https://github.com/forwardemail/forwardemail.net/issues/327)):
 
 <ul class="list-inline">
@@ -5365,6 +5414,7 @@ Quy tắc mới này chỉ cho phép các phần mở rộng tên miền sau đ�
   <li class="list-inline-item"><code class="notranslate">yt</code></li>
   <li class="list-inline-item"><code class="notranslate">za</code></li>
 </ul>
+
 ### Bạn có sử dụng greylist {#do-you-have-a-greylist}
 
 Vâng, chúng tôi sử dụng chính sách [greylisting email](https://en.wikipedia.org/wiki/Greylisting_\(email\)) rất lỏng lẻo. Greylisting chỉ áp dụng cho những người gửi không có trong danh sách cho phép của chúng tôi và được lưu trong bộ nhớ đệm của chúng tôi trong 30 ngày.
@@ -5542,6 +5592,7 @@ Có, kể từ ngày 5 tháng 5 năm 2020 chúng tôi đã thêm tính năng nà
     Nếu bạn đang sử dụng gói trả phí (có tính năng bảo vệ quyền riêng tư nâng cao), vui lòng truy cập <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Tài khoản của tôi <i class="fa fa-angle-right"></i> Tên miền</a>, nhấp vào "Thiết lập" bên cạnh tên miền của bạn, sau đó nhấp vào "Cài đặt".  Nếu bạn muốn tìm hiểu thêm về các gói trả phí, xem trang <a class="alert-link" rel="noopener noreferrer" href="/private-business-email">Bảng giá</a> của chúng tôi.  Nếu không, bạn có thể tiếp tục theo các hướng dẫn bên dưới.
   </span>
 </div>
+
 Nếu bạn đang sử dụng gói miễn phí, thì hãy thêm một bản ghi DNS <strong class="notranslate">TXT</strong> mới như hình dưới đây, nhưng thay đổi cổng từ 25 sang cổng bạn chọn.
 
 Ví dụ, nếu bạn muốn tất cả email gửi đến `example.com` được chuyển tiếp đến cổng SMTP của người nhận bí danh là 1337 thay vì 25:
@@ -5619,6 +5670,36 @@ Có, hoàn toàn có. Ví dụ nếu bạn gửi email đến `hello@example.com
 ### Làm thế nào bạn ngăn chặn spammer và đảm bảo uy tín chuyển tiếp email tốt {#how-do-you-prevent-spammers-and-ensure-good-email-forwarding-reputation}
 
 Xem các phần của chúng tôi về [Hệ thống chuyển tiếp email của bạn hoạt động như thế nào](#how-does-your-email-forwarding-system-work), [Bạn xử lý các vấn đề giao nhận email như thế nào](#how-do-you-handle-email-delivery-issues), và [Bạn xử lý khi địa chỉ IP của bạn bị chặn như thế nào](#how-do-you-handle-your-ip-addresses-becoming-blocked) ở trên.
+
+### Làm thế nào để xác minh một tên miền thực sự đang dùng Forward Email {#how-can-i-verify-a-domain-is-using-forward-email}
+
+Các bản ghi DNS công khai của một tên miền cho biết tên miền đó có dùng dịch vụ của chúng tôi hay không và dùng gói nào.  Đây là một phép tra cứu kỹ thuật trung lập mà bất kỳ ai cũng có thể thực hiện với bất kỳ tên miền nào; không cần tài khoản và không cần sự hợp tác của chủ sở hữu tên miền.
+
+**Trước tiên, hãy kiểm tra các bản ghi MX.**
+
+```sh
+dig example.com mx +short
+```
+
+Nếu kết quả không bao gồm `mx1.forwardemail.net` và `mx2.forwardemail.net`, thì tên miền đó **không** dùng dịch vụ của chúng tôi để nhận thư, và chúng tôi không phải là bên vận hành thư đó.
+
+**Sau đó, kiểm tra các bản ghi TXT để phân biệt các gói.**
+
+```sh
+dig example.com txt +short
+```
+
+| Giá trị TXT | Ý nghĩa |
+| --- | --- |
+| `forward-email=user@example.com` | Gói miễn phí.  Giá trị là địa chỉ đích dạng văn bản thuần mà thư được chuyển tiếp đến. |
+| `forward-email-site-verification=XXXXXXXXXX` | Gói trả phí.  Cấu hình chuyển tiếp được lưu trong cơ sở dữ liệu của chúng tôi dưới ID `XXXXXXXXXX` và không công khai. |
+| Không có bản ghi nào | Tên miền chưa được cấu hình cho dịch vụ chuyển tiếp của chúng tôi. |
+
+> \[!NOTE]
+> Các bản ghi này là cách dịch vụ của chúng tôi hoạt động ở cấp DNS, nên cùng một phép tra cứu sẽ trả lời được "tên miền này có phải của các bạn không", "đây là gói miễn phí hay trả phí" và, với gói miễn phí, "thư của nó được gửi đến đâu".  Xem [cách hệ thống chuyển tiếp của chúng tôi hoạt động](#how-does-your-email-forwarding-system-work) để biết chính đường đi của thư.
+
+> \[!TIP]
+> Chúng tôi không phải là nhà đăng ký tên miền, nên không lưu giữ lịch sử bản ghi DNS.  Để biết ai đã đăng ký một tên miền hoặc ai đang vận hành máy chủ tên của nó, hãy dùng `whois example.com` và `dig example.com ns`, hoặc hỏi trực tiếp nhà đăng ký.
 
 ### Làm thế nào bạn thực hiện tra cứu DNS trên tên miền {#how-do-you-perform-dns-lookups-on-domain-names}
 
@@ -5888,6 +5969,7 @@ Hoặc, bạn có thể chỉ định chúng trên hai dòng riêng biệt, như
     </tr>
   </tbody>
 </table>
+
 Tùy bạn quyết định!
 
 ### Có giới hạn tối đa về số lượng địa chỉ email tôi có thể chuyển tiếp cho mỗi bí danh không {#is-there-a-maximum-limit-on-the-number-of-email-addresses-i-can-forward-to-per-alias}

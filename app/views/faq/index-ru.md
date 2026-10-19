@@ -16,7 +16,9 @@
   * [Microsoft Outlook](#microsoft-outlook)
   * [Apple Mail](#apple-mail)
   * [eM Client](#em-client)
+  * [Есть ли у вас клиент веб-почты](#do-you-offer-a-webmail-client)
   * [Можно ли отправлять письма с любого адреса моего домена в веб-почте](#can-i-send-from-any-address-on-my-domain-in-webmail)
+  * [Есть ли у вас приложения для компьютера и мобильных устройств](#do-you-have-desktop-and-mobile-apps)
   * [Есть ли у вас терминальное приложение](#do-you-have-a-terminal-app)
   * [Мобильные устройства](#mobile-devices)
   * [Конфигурация Sendmail SMTP Relay](#sendmail-smtp-relay-configuration)
@@ -75,6 +77,7 @@
   * [Поддерживаете ли вы фильтрацию почты Sieve](#do-you-support-sieve-email-filtering)
   * [Поддерживаете ли вы MTA-STS](#do-you-support-mta-sts)
   * [Поддерживаете ли вы passkeys и WebAuthn](#do-you-support-passkeys-and-webauthn)
+  * [Поддерживается ли двухфакторная аутентификация (2FA)](#is-two-factor-authentication-2fa-supported)
   * [Поддерживаете ли вы лучшие практики электронной почты](#do-you-support-email-best-practices)
   * [Поддерживаете ли вы bounce webhooks](#do-you-support-bounce-webhooks)
   * [Поддерживаете ли вы webhooks](#do-you-support-webhooks)
@@ -95,6 +98,7 @@
   * [Сохраняете ли вы заголовки аутентификации почты](#do-you-preserve-email-authentication-headers)
   * [Сохраняете ли вы оригинальные заголовки почты и предотвращаете подделку](#do-you-preserve-original-email-headers-and-prevent-spoofing)
   * [Как вы защищаетесь от спама и злоупотреблений](#how-do-you-protect-against-spam-and-abuse)
+  * [Можно ли отключить проверку на контент для взрослых, фишинг, исполняемые файлы или вирусы](#can-i-disable-adult-content-phishing-executable-or-virus-scanning)
   * [Храните ли вы содержимое писем на диске](#do-you-store-email-content-on-disk)
   * [Может ли содержимое писем быть раскрыто при сбоях системы](#can-email-content-be-exposed-during-system-crashes)
   * [Кто имеет доступ к вашей почтовой инфраструктуре](#who-has-access-to-your-email-infrastructure)
@@ -104,6 +108,7 @@
 * [Где обрабатывается и хранится входящая почта для моего домена и как долго](#where-is-inbound-email-for-my-domain-processed-and-stored-and-for-how-long)
 * [Как указать Forward Email в качестве субобработчика в моем DPA](#how-do-i-list-forward-email-as-a-subprocessor-in-my-own-dpa)
   * [Как вы обрабатываете уведомления о нарушениях данных](#how-do-you-handle-data-breach-notifications)
+  * [Как сообщить об уязвимости безопасности](#how-do-i-report-a-security-vulnerability)
   * [Предлагаете ли вы тестовую среду](#do-you-offer-a-test-environment)
   * [Предоставляете ли вы инструменты мониторинга и оповещений](#do-you-provide-monitoring-and-alerting-tools)
   * [Как вы обеспечиваете высокую доступность](#how-do-you-ensure-high-availability)
@@ -136,6 +141,7 @@
   * [Насколько это хорошо протестировано](#is-this-well-tested)
   * [Передаете ли вы SMTP ответы и коды](#do-you-pass-along-smtp-response-messages-and-codes)
   * [Как вы предотвращаете спамеров и обеспечиваете хорошую репутацию переадресации](#how-do-you-prevent-spammers-and-ensure-good-email-forwarding-reputation)
+  * [Как проверить, что домен действительно использует Forward Email](#how-can-i-verify-a-domain-is-using-forward-email)
   * [Как вы выполняете DNS-запросы доменных имён](#how-do-you-perform-dns-lookups-on-domain-names)
 * [Аккаунт и оплата](#account-and-billing)
   * [Как удалить свой аккаунт](#how-do-i-delete-my-account)
@@ -317,11 +323,31 @@ Forward Email доставляет сообщения с минимальной 
 8. Введите ваше имя и выберите имя аккаунта.
 9. Нажмите **Завершить**.
 
+### Есть ли у вас клиент веб-почты {#do-you-offer-a-webmail-client}
+
+Да.  Наш официальный клиент веб-почты с открытым исходным кодом доступен по адресу <a href="https://mail.forwardemail.net" target="_blank" rel="noopener noreferrer">mail.forwardemail.net</a>.  Устанавливать ничего не нужно: войдите из любого браузера, используя адрес алиаса и его сгенерированный пароль (те же учётные данные, что и для IMAP, SMTP и POP3).
+
+Он был запущен в феврале 2026 года и также поддерживает [расширения планирования CalDAV (RFC 6638)](https://www.rfc-editor.org/rfc/rfc6638.html), [DANE/TLSA (RFC 6698)](https://en.wikipedia.org/wiki/DNS-based_Authentication_of_Named_Entities) и [Domain Connect](https://domainconnect.org) для настройки DNS в один клик, а push-уведомления в реальном времени для IMAP, CalDAV и CardDAV доставляются через WebSockets.
+
+Исходный код полностью открыт и доступен на GitHub: <a href="https://github.com/forwardemail/mail.forwardemail.net" target="_blank" rel="noopener noreferrer">github.com/forwardemail/mail.forwardemail.net</a>.
+
+В нашем <a href="/blog/docs/webmail">руководстве по веб-почте</a> рассказывается о входе, работе с несколькими аккаунтами и о том, как веб-почта сочетается с панелью управления этого сайта.
+
 ### Можно ли отправлять письма с любого адреса моего домена в веб-почте {#can-i-send-from-any-address-on-my-domain-in-webmail}
 
 Да. Сгенерируйте универсальный пароль в разделе <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">Мой аккаунт <i class="fa fa-angle-right"></i> Домены</a> <i class="fa fa-angle-right"></i> Расширенные настройки <i class="fa fa-angle-right"></i> Универсальные пароли, затем сохраните его в веб-почте в **Settings <i class="fa fa-angle-right"></i> General <i class="fa fa-angle-right"></i> Send from any address**. При написании письма выберите **Other address @вашдомен** в меню **From** и введите любой адрес на этом домене.
 
 Вы не входите как catch-all- или wildcard-аккаунт. Универсальный пароль позволяет только отправлять, поэтому копия попадает в папку «Отправленные» того аккаунта, который вы используете. Он сохраняется только на том устройстве, где вы его добавили. Все шаги описаны в нашем <a href="/blog/docs/webmail#send-from-any-address-on-your-domain">руководстве по веб-почте</a>.
+
+### Есть ли у вас приложения для компьютера и мобильных устройств {#do-you-have-desktop-and-mobile-apps}
+
+Да.  Нативные приложения доступны для компьютеров и мобильных устройств. Они собраны из того же проекта с открытым исходным кодом, что и наш клиент веб-почты, и все их можно скачать на нашей <a href="/download" target="_blank" rel="noopener noreferrer">странице загрузки</a>:
+
+* **Компьютер**: macOS (Apple Silicon и Intel), Windows (x64 и ARM64, в виде установщика `.exe` или `.msi`) и Linux (AppImage, `.deb`, `.rpm` и Snap, каждый для x64 и ARM64).
+* **Мобильные устройства**: Android (APK, а также альтернативная сборка для F-Droid) и iOS.
+* **Терминал**: команда `forwardemail` для macOS, Linux и Windows (x64 и ARM64). См. [Есть ли у вас терминальное приложение](#do-you-have-a-terminal-app).
+
+Все релизные сборки публикуются на GitHub по адресу <a href="https://github.com/forwardemail/mail.forwardemail.net/releases" target="_blank" rel="noopener noreferrer">github.com/forwardemail/mail.forwardemail.net/releases</a>, а на странице загрузки можно сверить контрольные суммы релиза с файлом `SHA256SUMS.txt`.
 
 ### Есть ли у вас терминальное приложение {#do-you-have-a-terminal-app}
 
@@ -1917,7 +1943,7 @@ Drafts/
     <br />
     <code>forward-email=hello:first@gmail.com,second@gmail.com</code>
     <br />
-    Письма, отправленные на <code>hello@example.com</code>, **не будут** пересылаться на <code>second@gmail.com</code> (catch-all) с этой конфигурацией, и вместо этого будут доставлены только на <code>first@gmail.com</code>.
+    Письма, отправленные на <code>hello@example.com</code>, <strong>не будут</strong> пересылаться на <code>second@gmail.com</code> (catch-all) с этой конфигурацией, и вместо этого будут доставлены только на <code>first@gmail.com</code>.
   </span>
 </div>
 
@@ -2654,7 +2680,7 @@ Tasks.org — популярный менеджер задач с открыты
     Важно:
   </strong>
   <span>
-    Мы одобряем исходящий SMTP для каждого домена, чтобы защитить репутацию наших IP-адресов и доставляемость ваших писем. Многие домены получают одобрение сразу после проверки их DNS-записей, а остальные проверяет наша команда, обычно в течение 24 часов. См. [Нужно ли одобрение для включения SMTP](#do-i-need-approval-to-enable-smtp).
+    Мы одобряем исходящий SMTP для каждого домена, чтобы защитить репутацию наших IP-адресов и доставляемость ваших писем. Многие домены получают одобрение сразу после проверки их DNS-записей, а остальные проверяет наша команда, обычно в течение 24 часов. См. <a href="/faq#do-i-need-approval-to-enable-smtp">Нужно ли одобрение для включения SMTP</a>.
   </span>
 </div>
 
@@ -2935,7 +2961,7 @@ if header :contains "Subject" "invoice" {
 
 2. **Протокол ManageSieve**: Подключитесь с помощью любого клиента, совместимого с ManageSieve, например, аддона Sieve для Thunderbird или [sieve-connect](https://github.com/philpennock/sieve-connect), к `imap.forwardemail.net`. Используйте порт `2190` с STARTTLS или порт `4190` с неявным TLS.
 
-3. **API**: Используйте [REST API](/api#sieve-scripts) для управления скриптами программно.
+3. **API**: Используйте [REST API](/email-api) для управления скриптами программно.
 
 <div class="alert my-3 alert-primary">
   <i class="fa fa-info-circle font-weight-bold"></i>
@@ -2978,6 +3004,12 @@ Passkeys позволяют безопасно входить без парол�
 * [Вход в приложения и сайты с помощью passkeys](https://support.google.com/android/answer/14124480?hl=en) (Google)
 * [Использование passkeys для входа в приложения и сайты на iPhone](https://support.apple.com/guide/iphone/use-passkeys-to-sign-in-to-apps-and-websites-iphf538ea8d0/ios) (Apple)
 * [Статья в Википедии о Passkeys](https://en.wikipedia.org/wiki/Passkey_\(credential\))
+### Поддерживается ли двухфакторная аутентификация (2FA) {#is-two-factor-authentication-2fa-supported}
+
+Да, для входа в ваш аккаунт (включая <a href="https://mail.forwardemail.net" target="_blank" rel="noopener noreferrer">веб-почту</a>) с помощью одноразовых кодов, подкреплённых ключами восстановления.
+
+2FA применяется к самому входу в аккаунт, а не к подключениям IMAP, SMTP, POP3, CalDAV или CardDAV из сторонних клиентов (Thunderbird, Apple Mail и т. д.).  Такие клиенты проходят аутентификацию с помощью сгенерированного пароля конкретного алиаса, поэтому для этого класса клиентов сейчас нет стандарта, равнозначного 2FA. Если вы хотите, чтобы это изменилось, создайте запрос на новую функцию на GitHub.
+
 ### Вы поддерживаете лучшие практики электронной почты {#do-you-support-email-best-practices}
 
 Да. У нас встроена поддержка SPF, DKIM, DMARC, ARC и SRS во всех тарифных планах. Мы также тесно сотрудничали с оригинальными авторами этих спецификаций и другими экспертами по электронной почте, чтобы обеспечить совершенство и высокую доставляемость.
@@ -4073,6 +4105,17 @@ Forward Email реализует комплексную многоуровнев
 * <https://www.datapacket.com/datacenters/denver> (подробности защиты от DDoS)
 * <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/abuse-prevention-by-user-id.js>
 
+### Можно ли отключить проверку на контент для взрослых, фишинг, исполняемые файлы или вирусы {#can-i-disable-adult-content-phishing-executable-or-virus-scanning}
+
+Да. Каждый домен проверяет входящие ссылки и вложения с помощью <a href="https://spamscanner.net" target="_blank" rel="noopener noreferrer">Spam Scanner</a> — созданной нами защиты от спама, фишинга и вирусов с открытым исходным кодом (которая следует тем же принципам приоритета конфиденциальности и отказа от логов, что и весь Forward Email). Четыре категории можно включать и отключать независимо друг от друга в разделе <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">Мой аккаунт <i class="fa fa-angle-right"></i> Домены</a> <i class="fa fa-angle-right"></i> Расширенные настройки:
+
+* **Защита от контента для взрослых**: если отключена, ссылки не проверяются на контент для взрослых.
+* **Защита от фишинга**: если отключена, ссылки не проверяются на вредоносное ПО, подмену доменов, атаки с использованием IDN-омографов или фишинг в целом.
+* **Защита от исполняемых файлов**: если отключена, ссылки и вложения не проверяются на потенциально вредоносные типы исполняемых файлов, расширения, имена, заголовки или атаки с использованием IDN-омографов.
+* **Защита от вирусов**: если отключена, вложения не проверяются на трояны, вирусы, вредоносное ПО и другие вредоносные угрозы (с помощью ClamAV).
+
+По умолчанию все четыре включены. Отключение одной из них выключает проверку только для этой конкретной категории.  Фильтрация спама в целом при этом не отключается, и это не то же самое, что [отключение конкретного алиаса](#can-i-disable-specific-aliases). Чаще всего категорию отключают из-за ложных срабатываний, характерных именно для вашего трафика (например, когда проверка на контент для взрослых помечает легитимные рассылки заведения или компании с тематикой для взрослых).
+
 ### Храните ли вы содержимое электронной почты на диске {#do-you-store-email-content-on-disk}
 
 > \[!IMPORTANT]
@@ -4295,6 +4338,10 @@ Antrim, BT1 - 5EF
 * <https://forwardemail.net/technical-whitepaper.pdf#page=59>
 * <https://forwardemail.net/gdpr>
 
+### Как сообщить об уязвимости безопасности {#how-do-i-report-a-security-vulnerability}
+
+Если вы обнаружили уязвимость безопасности, пожалуйста, немедленно сообщите о ней по адресу <security@forwardemail.net>. Это отдельный адрес для сообщений об уязвимостях и ошибках, не связанный с общей поддержкой.  Письмо, отправленное напрямую на этот адрес, попадает к команде, которая отвечает за обработку таких сообщений.
+
 ### Предлагаете ли вы тестовую среду {#do-you-offer-a-test-environment}
 
 Техническая документация Forward Email не описывает явно выделенный режим песочницы. Однако возможные подходы к тестированию включают:
@@ -4435,7 +4482,7 @@ Forward Email полагается исключительно на двух кл
    * Рекурсивно мы перебираем извлечённую конфигурацию переадресации, чтобы определить глобальную переадресацию, переадресацию на основе регулярных выражений и все другие поддерживаемые конфигурации переадресации — которые теперь известны как наши «Адреса переадресации».
    * Для каждого Адреса переадресации мы поддерживаем один рекурсивный поиск (который запустит этот набор операций заново для данного адреса). Если рекурсивное совпадение найдено, то родительский результат будет удалён из Адресов переадресации, а дети добавлены.
    * Адреса переадресации анализируются на уникальность (так как мы не хотим отправлять дубликаты на один адрес или создавать дополнительные ненужные SMTP-соединения).
-   * Для каждого Адреса переадресации мы проверяем его доменное имя через наш API-эндпоинт `/v1/max-forwarded-addresses` (чтобы определить, сколько адресов домену разрешено переадресовывать на один алиас, например, по умолчанию 10 — см. раздел о [максимальном лимите переадресации на один алиас](#is-there-a-limit-on-the-number-of-email-addresses-i-can-forward-to-per-alias)). Если этот лимит превышен, возникает ошибка 550, и отправитель получает уведомление о недоставке для этого получателя.
+   * Для каждого Адреса переадресации мы проверяем его доменное имя через наш API-эндпоинт `/v1/max-forwarded-addresses` (чтобы определить, сколько адресов домену разрешено переадресовывать на один алиас, например, по умолчанию 10 — см. раздел о [максимальном лимите переадресации на один алиас](#is-there-a-maximum-limit-on-the-number-of-email-addresses-i-can-forward-to-per-alias)). Если этот лимит превышен, возникает ошибка 550, и отправитель получает уведомление о недоставке для этого получателя.
    * Мы проверяем настройки исходного получателя через наш API-эндпоинт `/v1/settings`, который поддерживает поиск для платных пользователей (с резервным вариантом для бесплатных). Это возвращает объект конфигурации для расширенных настроек: `port` (число, например, `25`), `has_adult_content_protection` (булево значение), `has_phishing_protection` (булево значение), `has_executable_protection` (булево значение) и `has_virus_protection` (булево значение).
    * Исходя из этих настроек, мы затем проверяем результаты Спам-сканера, и если возникают ошибки, сообщение отклоняется с кодом ошибки 554 (например, если включена защита от вирусов `has_virus_protection`, мы проверяем результаты Спам-сканера на наличие вирусов). Обратите внимание, что все пользователи бесплатного плана автоматически участвуют в проверках на взрослый контент, фишинг, исполняемые файлы и вирусы. По умолчанию все пользователи платного плана также участвуют, но эту конфигурацию можно изменить на странице настроек домена в панели Forward Email).
 
@@ -4755,6 +4802,7 @@ Forward Email полагается исключительно на двух кл
   <li class="list-inline-item"><code class="notranslate">sch.uk</code></li>
   <li class="list-inline-item"><code class="notranslate">ukaea.uk</code></li>
 </ul>
+
 Кроме того, эти [брендовые и корпоративные домены верхнего уровня](https://en.wikipedia.org/wiki/List_of_Internet_top-level_domains#Brand_and_corporate_top-level_domains) по умолчанию включены в белый список (например, `apple` для `applecard.apple` для выписок по банковской карте Apple Card):
 
 <ul class="list-inline">
@@ -5180,6 +5228,7 @@ Forward Email полагается исключительно на двух кл
   <li class="list-inline-item"><code class="notranslate">zara</code></li>
   <li class="list-inline-item"><code class="notranslate">zippo</code></li>
 </ul>
+
 По состоянию на 18 марта 2025 года мы также добавили эти французские заморские территории в этот список ([согласно этому запросу на GitHub](https://github.com/forwardemail/forwardemail.net/issues/327)):
 
 <ul class="list-inline">
@@ -5366,6 +5415,7 @@ Forward Email полагается исключительно на двух кл
   <li class="list-inline-item"><code class="notranslate">yt</code></li>
   <li class="list-inline-item"><code class="notranslate">za</code></li>
 </ul>
+
 ### У вас есть серый список {#do-you-have-a-greylist}
 
 Да, у нас используется очень мягкая политика [серого списка электронной почты](https://en.wikipedia.org/wiki/Greylisting_\(email\)). Серый список применяется только к отправителям, не находящимся в нашем белом списке, и хранится в нашем кэше в течение 30 дней.
@@ -5543,6 +5593,7 @@ MX-серверы также ограничивают количество со�
     Если вы используете платный тариф (в котором есть усиленная защита конфиденциальности), пожалуйста, перейдите в <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Мой аккаунт <i class="fa fa-angle-right"></i> Домены</a>, нажмите "Настроить" рядом с вашим доменом, а затем нажмите "Настройки". Если хотите узнать больше о платных тарифах, смотрите нашу страницу <a class="alert-link" rel="noopener noreferrer" href="/private-business-email">Цены</a>. В противном случае вы можете продолжить следовать инструкциям ниже.
   </span>
 </div>
+
 Если вы используете бесплатный тариф, просто добавьте новую DNS-запись <strong class="notranslate">TXT</strong>, как показано ниже, но измените порт с 25 на выбранный вами порт.
 
 Например, если я хочу, чтобы все письма, отправляемые на `example.com`, перенаправлялись на SMTP-порт 1337 получателей-псевдонимов вместо 25:
@@ -5620,6 +5671,36 @@ MX-серверы также ограничивают количество со�
 ### Как вы предотвращаете спамеров и обеспечиваете хорошую репутацию перенаправления почты {#how-do-you-prevent-spammers-and-ensure-good-email-forwarding-reputation}
 
 Смотрите наши разделы [Как работает ваша система перенаправления почты](#how-does-your-email-forwarding-system-work), [Как вы обрабатываете проблемы доставки почты](#how-do-you-handle-email-delivery-issues) и [Как вы справляетесь с блокировкой ваших IP-адресов](#how-do-you-handle-your-ip-addresses-becoming-blocked) выше.
+
+### Как проверить, что домен действительно использует Forward Email {#how-can-i-verify-a-domain-is-using-forward-email}
+
+Публичные DNS-записи домена показывают, использует ли он наш сервис и на каком тарифе.  Это нейтральная техническая проверка, которую любой может выполнить для любого домена; для неё не нужен аккаунт и не требуется содействие владельца домена.
+
+**Сначала проверьте MX-записи.**
+
+```sh
+dig example.com mx +short
+```
+
+Если в ответе нет `mx1.forwardemail.net` и `mx2.forwardemail.net`, значит, домен **не** использует наш сервис для получения почты, и мы не являемся оператором этой почты.
+
+**Затем проверьте TXT-записи, чтобы различить тарифы.**
+
+```sh
+dig example.com txt +short
+```
+
+| Значение TXT | Что это означает |
+| --- | --- |
+| `forward-email=user@example.com` | Бесплатный тариф.  Значение — это адрес назначения в открытом виде, на который пересылается почта. |
+| `forward-email-site-verification=XXXXXXXXXX` | Платный тариф.  Конфигурация пересылки хранится в нашей базе данных под идентификатором `XXXXXXXXXX` и не является публичной. |
+| Нет ни одной из этих записей | Домен не настроен для нашего сервиса пересылки. |
+
+> \[!NOTE]
+> Именно через эти записи наш сервис работает на уровне DNS, поэтому одна и та же проверка отвечает на вопросы «наш ли это домен», «бесплатный он или платный» и, для бесплатного тарифа, «куда уходит его почта».  Сам путь доставки описан в разделе [как работает наша система пересылки](#how-does-your-email-forwarding-system-work).
+
+> \[!TIP]
+> Мы не являемся регистратором доменных имён, поэтому не храним историю DNS-записей.  Чтобы узнать, кто зарегистрировал домен или кто обслуживает его серверы имён, используйте `whois example.com` и `dig example.com ns` или обратитесь напрямую к регистратору.
 
 ### Как вы выполняете DNS-запросы по доменным именам {#how-do-you-perform-dns-lookups-on-domain-names}
 
@@ -5889,6 +5970,7 @@ MX-серверы также ограничивают количество со�
     </tr>
   </tbody>
 </table>
+
 Это зависит от вас!
 
 ### Есть ли максимальное ограничение на количество адресов электронной почты, на которые я могу пересылать письма с одного алиаса {#is-there-a-maximum-limit-on-the-number-of-email-addresses-i-can-forward-to-per-alias}

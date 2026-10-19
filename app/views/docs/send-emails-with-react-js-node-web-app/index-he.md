@@ -79,6 +79,6 @@ transporter.sendMail(options);
 node app
 ```
 
-כעת תוכלו לגשת ל**[החשבון שלי → מיילים](/my-account/emails)** כדי לראות את סטטוס משלוח המייל בזמן אמת, יומני נגישות המייל, ותצוגות מקדימות של HTML/טקסט רגיל/קבצים מצורפים.
+כעת תוכלו לגשת ל<strong>[החשבון שלי → מיילים](/my-account/emails)</strong> כדי לראות את סטטוס משלוח המייל בזמן אמת, יומני נגישות המייל, ותצוגות מקדימות של HTML/טקסט רגיל/קבצים מצורפים.
 
 > הערה: :tada: תוכלו גם **[לתצוגת מקדימה של מיילים בדפדפנים ובאימולטור iOS](/docs/test-preview-email-rendering-browsers-ios-simulator)** ו-**[ליצור תבניות מייל עם Node.js](/docs/send-emails-with-node-js-javascript)**.

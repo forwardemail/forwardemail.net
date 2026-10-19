@@ -78,6 +78,7 @@ A megoldásunk pénzügyi előnyei jelentősek, különösen a hagyományos e-ma
 
 > \[!NOTE]
 > A Forward Email enterprise általában csak 250 USD/hó költséggel jár, felhasználónként nincs további díj, nincs fehérlistázott API-korlátozás, és az egyetlen további költség a tárhely, ha további GB/TB-ra van szükség a hallgatók számára (+3 USD minden további 10 GB tárhelyért). NVMe SSD meghajtókat használunk az IMAP/POP3/SMTP/CalDAV/CardDAV gyors támogatásához is.
+
 > \[!IMPORTANT]
 > Ellentétben a Google-lal és a Microsofttal, akik ismételten emelték áraikat miközben AI funkciókat integráltak, amelyek elemzik az adataidat, a Forward Email stabil árakat tart fenn, szigorú adatvédelmi fókusz mellett. Nem használunk AI-t, nem követjük a használati mintákat, és nem tárolunk naplókat vagy e-maileket lemezen (minden feldolgozás memóriában történik), így teljes adatvédelmet biztosítunk az alumni kommunikációid számára.
 
