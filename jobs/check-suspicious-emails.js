@@ -17,12 +17,12 @@ require('#config/mongoose');
 const Graceful = require('@ladjs/graceful');
 const Redis = require('@ladjs/redis');
 const dayjs = require('dayjs-with-plugins');
-const { distance } = require('fastest-levenshtein');
 const mongoose = require('mongoose');
 const sharedConfig = require('@ladjs/shared-config');
 
 const CappedList = require('#helpers/capped-list');
 const config = require('#config');
+const createSuspiciousEmailMatcher = require('#helpers/create-suspicious-email-matcher');
 const emailHelper = require('#helpers/email');
 const forEachInBatches = require('#helpers/for-each-in-batches');
 const logger = require('#helpers/logger');
@@ -38,8 +38,6 @@ const graceful = new Graceful({
   redisClients: [client],
   logger
 });
-
-const MAX_DISTANCE = 3;
 
 async function getBannedEmails() {
   try {
@@ -59,34 +57,6 @@ async function getBannedEmails() {
     logger.error('Error fetching banned emails', err);
     return [];
   }
-}
-
-function isEmailSuspicious(email, bannedEmails) {
-  if (!email || typeof email !== 'string') return null;
-
-  const emailLower = email.toLowerCase().trim();
-
-  if (bannedEmails.includes(emailLower)) {
-    return {
-      type: 'exact',
-      bannedEmail: emailLower,
-      reason: 'Exact match to banned email'
-    };
-  }
-
-  for (const bannedEmail of bannedEmails) {
-    const dist = distance(emailLower, bannedEmail.toLowerCase());
-    if (dist <= MAX_DISTANCE && dist > 0) {
-      return {
-        type: 'similar',
-        bannedEmail,
-        distance: dist,
-        reason: `Similar to banned email: ${bannedEmail} (distance: ${dist})`
-      };
-    }
-  }
-
-  return null;
 }
 
 async function sendAggregatedAlert(suspiciousUsers) {
@@ -170,6 +140,10 @@ graceful.listen();
 
   try {
     const bannedEmails = await getBannedEmails();
+    // an exact match, or the first banned email within three edits (see
+    // helpers/create-suspicious-email-matcher.js, which indexes the banned
+    // emails once so each user is compared with few of them)
+    const isEmailSuspicious = createSuspiciousEmailMatcher(bannedEmails);
     // users listed in the alert (every one found is still counted)
     const suspiciousUsers = new CappedList(500);
 
@@ -192,7 +166,7 @@ graceful.listen();
       { batchSize: 500, concurrency: 5 },
       async (user) => {
         try {
-          const suspicionResult = isEmailSuspicious(user.email, bannedEmails);
+          const suspicionResult = isEmailSuspicious(user.email);
 
           if (suspicionResult) {
             suspiciousUsers.push({ user, suspicionResult });

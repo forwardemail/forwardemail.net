@@ -58,16 +58,22 @@ async function mapper(upgradeReminder) {
   // return early if the job was already cancelled
   if (isCancelled) return;
 
+  //
+  // the denylist entries of the domain and of each address, in one round
+  // trip (a GET for each, awaited in turn, cost a round trip per address)
+  //
+  const [domainBanned, ...emailsBanned] = await client.mget(
+    `denylist:${upgradeReminder.domain}`,
+    ...upgradeReminder.queue.map((addr) => `denylist:${addr}`)
+  );
+
   // check if the domain was banned and if so then don't send
-  const domainBanned = await client.get(`denylist:${upgradeReminder.domain}`);
   if (boolean(domainBanned)) return;
 
   // check if the mail was banned and if so then don't send
-  const cleanQueue = [];
-  for (const addr of upgradeReminder.queue) {
-    const emailBanned = await client.get(`denylist:${addr}`);
-    if (!boolean(emailBanned)) cleanQueue.push(addr);
-  }
+  const cleanQueue = upgradeReminder.queue.filter(
+    (addr, index) => !boolean(emailsBanned[index])
+  );
 
   if (cleanQueue.length === 0) return;
 

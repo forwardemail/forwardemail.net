@@ -47,45 +47,65 @@ const MONITORED_PREFIXES = [
   'whois:'
 ];
 
-// Configuration for TTL setting (resource-friendly)
+//
+// Each SCAN page is checked with one pipelined round trip (TTL for every key
+// on the page), and the keys it finds without a TTL get theirs in a second
+// one. A TTL or PEXPIRE per key, awaited in turn, cost two system calls and a
+// wait on the network for every key in Redis under these prefixes (millions
+// of sessions and cache entries), which kept the bree host busy in the kernel
+// for hours each run.
+//
 const TTL_CONFIG = {
-  batchSize: 50, // Process 50 keys at a time
-  batchDelay: 200, // Wait 200ms between batches
-  scanCount: 100 // Keys per SCAN iteration
+  scanCount: 1000, // Keys per SCAN iteration (Redis reads about this many)
+  scanDelay: 50 // Wait 50ms between SCAN pages so Redis serves others too
 };
 
-// Helper to delay between batches
+// Helper to delay between SCAN pages
 function delay(ms) {
   return new Promise((resolve) => {
     setTimeout(resolve, ms);
   });
 }
 
-// prefixes whose keys without a TTL get one set (see setTTLOnKey)
-const REMEDIATED_PREFIXES = new Set(['f:', 'denylist:']);
+// prefixes whose keys without a TTL get one set, and the TTL in milliseconds
+const REMEDIATION_TTL = new Map([
+  // Fingerprint keys: use PX with config.fingerprintTTL
+  ['f:', config.fingerprintTTL],
+  // Denylist keys: use PX with 30 days
+  ['denylist:', ms('30d')]
+]);
 
-// Set TTL on a key without expiration (non-blocking, resource-friendly)
-async function setTTLOnKey(key, prefix, result) {
+// the reply to each command of a pipeline, or the first error among them
+function pipelineReplies(results) {
+  return results.map(([err, reply]) => {
+    if (err) throw err;
+    return reply;
+  });
+}
+
+// Set a TTL on keys of a prefix found without one (one round trip)
+async function setTTLOnKeys(keys, prefix, result) {
+  const ttl = REMEDIATION_TTL.get(prefix);
+  let results;
   try {
-    // Set TTL based on prefix
-    if (prefix === 'f:') {
-      // Fingerprint keys: use PX with config.fingerprintTTL
-      await client.pexpire(key, config.fingerprintTTL);
-      result.setCount++;
-    } else if (prefix === 'denylist:') {
-      // Denylist keys: use PX with 30 days
-      await client.pexpire(key, ms('30d'));
-      result.setCount++;
-    }
-    // Add more prefix-specific TTL logic here if needed
+    results = await client
+      .pipeline(keys.map((key) => ['pexpire', key, ttl]))
+      .exec();
   } catch (err) {
-    result.errorCount++;
-    logger.error(err, { key, prefix });
+    // the whole pipeline failed (e.g. the connection dropped)
+    result.errorCount += keys.length;
+    logger.error(err, { keys: keys.length, prefix });
+    return;
   }
 
-  // Add delay between batches to prevent resource hogging
-  if ((result.setCount + result.errorCount) % TTL_CONFIG.batchSize === 0)
-    await delay(TTL_CONFIG.batchDelay);
+  for (const [index, [err]] of results.entries()) {
+    if (err) {
+      result.errorCount++;
+      logger.error(err, { key: keys[index], prefix });
+    } else {
+      result.setCount++;
+    }
+  }
 }
 
 (async () => {
@@ -116,12 +136,16 @@ async function setTTLOnKey(key, prefix, result) {
         cursor = newCursor;
         totalScanned += keys.length;
 
-        for (const key of keys) {
-          const ttl = await client.ttl(key);
+        if (keys.length > 0) {
+          const ttls = pipelineReplies(
+            await client.pipeline(keys.map((key) => ['ttl', key])).exec()
+          );
 
           // ttl = -1 means key has no expiry
-          if (ttl === -1) {
-            totalWithoutTTL++;
+          const withoutTTL = keys.filter((key, index) => ttls[index] === -1);
+
+          if (withoutTTL.length > 0) {
+            totalWithoutTTL += withoutTTL.length;
 
             // count keys without TTL (and keep a few samples)
             if (!keysWithoutTTL[prefix]) {
@@ -131,23 +155,24 @@ async function setTTLOnKey(key, prefix, result) {
               };
             }
 
-            keysWithoutTTL[prefix].count++;
+            keysWithoutTTL[prefix].count += withoutTTL.length;
 
-            if (keysWithoutTTL[prefix].samples.length < 5) {
+            for (const key of withoutTTL) {
+              if (keysWithoutTTL[prefix].samples.length >= 5) break;
               keysWithoutTTL[prefix].samples.push(key);
             }
 
             // set TTL on fingerprint and denylist keys
-            if (REMEDIATED_PREFIXES.has(prefix)) {
+            if (REMEDIATION_TTL.has(prefix)) {
               if (!ttlSetResults[prefix])
                 ttlSetResults[prefix] = { setCount: 0, errorCount: 0 };
-              await setTTLOnKey(key, prefix, ttlSetResults[prefix]);
+              await setTTLOnKeys(withoutTTL, prefix, ttlSetResults[prefix]);
             }
           }
         }
 
         // Add small delay between scans to be resource-friendly
-        await delay(50);
+        await delay(TTL_CONFIG.scanDelay);
       } while (cursor !== '0');
     }
 

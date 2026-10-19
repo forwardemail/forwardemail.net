@@ -17,17 +17,14 @@ require('#config/mongoose');
 
 const Graceful = require('@ladjs/graceful');
 const Redis = require('@ladjs/redis');
-const isSANB = require('is-string-and-not-blank');
 const mongoose = require('mongoose');
 const ms = require('ms');
 const parseErr = require('parse-err');
 const safeStringify = require('fast-safe-stringify');
 const { encode } = require('html-entities');
 const sharedConfig = require('@ladjs/shared-config');
-const splitLines = require('split-lines');
 const { XMLParser } = require('fast-xml-parser');
-const { convert } = require('html-to-text');
-const { parse } = require('node-html-parser');
+const pMap = require('p-map');
 const _ = require('#helpers/lodash');
 
 const RetryClient = require('#helpers/retry-client');
@@ -35,6 +32,7 @@ const SearchResults = require('#models/search-results');
 const config = require('#config');
 const createTangerine = require('#helpers/create-tangerine');
 const emailHelper = require('#helpers/email');
+const getSearchEntries = require('#helpers/get-search-entries');
 const env = require('#config/env');
 const locales = require('#config/locales');
 const logger = require('#helpers/logger');
@@ -183,6 +181,18 @@ function extractSitemapIndexUrls(result) {
     .map((sitemap) => sitemap.loc);
 }
 
+// how many search index writes of one page run at once
+const SEARCH_WRITE_CONCURRENCY = 10;
+
+//
+// Read a response body to the end without keeping it as a string (the
+// requests below only warm the web server's cache; a PNG decoded as UTF-8
+// text cost CPU for nothing)
+//
+async function drain(body) {
+  await body.arrayBuffer();
+}
+
 /**
  * Process a single URL - crawl and index content
  * @param {Object} url - URL object with loc property
@@ -200,148 +210,37 @@ async function processUrl(url) {
 
     const text = await body.text();
 
-    const document = parse(text);
+    // the page's entry and one for each heading (helpers/get-search-entries)
+    const { page, sections } = getSearchEntries(text, url.loc);
 
-    // remove <nav> and <footer> and all modals
-    for (const el of document.querySelectorAll(
-      'nav, footer, .modal, .fixed-bottom, .no-search'
-    )) {
-      el.remove();
-    }
-
-    const title = document.querySelector('title').rawText;
-    const content = document
-      .querySelector('meta[name="description"]')
-      .getAttribute('content');
-    const locale = document.querySelector('html').getAttribute('lang');
-
-    SearchResults.findOneAndUpdate(
-      {
-        href: url.loc
-      },
-      {
-        href: url.loc,
-        title,
-        content,
-        locale
-      },
-      {
-        upsert: true
-      }
-    )
-      .then()
-      .catch((err) => logger.error(err));
-
-    for (const header of document.querySelectorAll('h1,h2,h3,h4,h5,h6')) {
-      let content = '';
-
-      let href = url.loc;
-      let id;
-
-      id = header.getAttribute('id');
-      if (!isSANB(id) || id === 'top') id = null;
-      if (!id) {
-        const a = header.querySelector('a');
-        if (a) {
-          id = a.getAttribute('id');
-          if (!isSANB(id) || id === 'top') id = null;
-        }
-      }
-
-      if (!id) {
-        // find closest parent header
-        const number = Number.parseInt(header.rawTagName.replace('h', ''), 10);
-        if (number !== 1) {
-          const closest = header.closest(`h${number - 1}`);
-          if (closest) {
-            id = closest.getAttribute('id');
-            if (!isSANB(id) || id === 'top') id = null;
-            if (!id) {
-              const anchor = closest.querySelector('a');
-              if (anchor) {
-                const id = anchor.getAttribute('id');
-                if (isSANB(id) && id !== 'top') href += `#${id}`;
-              }
-            }
-          }
-        }
-      }
-
-      if (id) {
-        href += `#${id}`;
-        href += `:~:text=${encodeURIComponent(header.text)}`;
-      } else {
-        href += `#:~:text=${encodeURIComponent(header.text)}`;
-      }
-
-      let node = header;
-      while (
-        node.nextElementSibling &&
-        !['h1', 'h2', 'h3', 'h4', 'h5', 'h6'].includes(
-          node.nextElementSibling.rawTagName
-        )
-      ) {
-        node = node.nextElementSibling;
-        content += _.compact(
-          splitLines(
-            convert(node.outerHTML, {
-              wordwrap: false,
-              linkBrackets: false,
-              selectors: [
-                ...[1, 2, 3, 4, 5, 6].map((i) => ({
-                  selector: `h${i}`,
-                  format: 'block',
-                  options: { uppercase: false }
-                })),
-                { selector: 'form', format: 'skip' },
-                { selector: 'pre', format: 'skip' },
-                { selector: 'img', format: 'skip' },
-                { selector: 'svg', format: 'skip' },
-                { selector: 'hr', format: 'skip' },
-                { selector: 'ul', options: { itemPrefix: ' ' } },
-                {
-                  selector: 'a',
-                  options: {
-                    hideLinkHrefIfSameAsText: true,
-                    ignoreHref: true,
-                    baseUrl: config.urls.web,
-                    linkBrackets: false
-                  }
-                }
-              ]
-            }).trim()
-          )
-        ).join(' ');
-      }
-
-      // <https://stackoverflow.com/a/64875801>
-      content = content
-        .replace(/\s\s+/g, ' ')
-        // .replace(/\s*([,.!?:;]+)(?!\s*$)\s*/g, '$1 ')
-        .trim();
-
-      if (content) {
-        SearchResults.findOneAndUpdate(
+    //
+    // Write them a few at a time, and finish before the next page. Each
+    // write used to be started without waiting, so a page with thousands of
+    // headings queued thousands of writes at once, for every page crawled.
+    //
+    await pMap(
+      [
+        [{ href: page.href }, page],
+        ...sections.map((section) => [
           {
-            href,
-            title,
-            header: header.text
+            href: section.href,
+            title: section.title,
+            header: section.header
           },
-          {
-            href,
-            title,
-            header: header.text,
-            content,
-            locale
-          },
-          {
+          section
+        ])
+      ],
+      async ([filter, update]) => {
+        try {
+          await SearchResults.findOneAndUpdate(filter, update, {
             upsert: true
-          }
-        )
-          .then()
-          .catch((err) => logger.error(err));
-      }
-    }
+          });
+        } catch (err) {
+          logger.error(err);
+        }
+      },
+      { concurrency: SEARCH_WRITE_CONCURRENCY }
+    );
   }
 
   // crawl the page + .png for social open graph image caching
@@ -354,8 +253,7 @@ async function processUrl(url) {
       path
     });
 
-    await body.text();
-    // body.destroy();
+    await drain(body);
   }
 }
 
@@ -441,7 +339,7 @@ async function processUrl(url) {
           path
         });
 
-        await body.text();
+        await drain(body);
 
         // Also crawl .png for OG image caching
         const pngPath = path + '.png';
@@ -451,7 +349,7 @@ async function processUrl(url) {
           path: pngPath
         });
 
-        await pngBody.text();
+        await drain(pngBody);
       } catch (err) {
         logger.error(err, { url: url.loc });
       }
