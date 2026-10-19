@@ -23362,7 +23362,7 @@
   "Show previous platform area": "前のプラットフォーム領域を表示",
   "Show next platform area": "次のプラットフォーム領域を表示",
   "Swipe or scroll to see all platform areas.": "スワイプまたはスクロールして、すべてのプラットフォーム領域を表示します。",
-  "Last updated on <span class=\"dayjs notranslate\" data-time=\"%d\">%s</span>": "最終更新日: <span class=\"dayjs notranslate\" data-time=\"%d\">%s</span>",
+  "Last updated on <time class=\"dayjs notranslate\" datetime=\"%s\" data-time=\"%d\" data-date-style=\"long\" data-time-style=\"long\">%s</time>": "最終更新日: <time class=\"dayjs notranslate\" datetime=\"%s\" data-time=\"%d\" data-date-style=\"long\" data-time-style=\"long\">%s</time>",
   "Loading": "読み込み中",
   "Time (24 Hours)": "時刻（24時間）",
   "N/A": "該当なし",

@@ -23362,7 +23362,7 @@
   "Show previous platform area": "แสดงส่วนแพลตฟอร์มก่อนหน้า",
   "Show next platform area": "แสดงส่วนแพลตฟอร์มถัดไป",
   "Swipe or scroll to see all platform areas.": "ปัดหรือเลื่อนเพื่อดูส่วนแพลตฟอร์มทั้งหมด",
-  "Last updated on <span class=\"dayjs notranslate\" data-time=\"%d\">%s</span>": "อัปเดตล่าสุดเมื่อ <span class=\"dayjs notranslate\" data-time=\"%d\">%s</span>",
+  "Last updated on <time class=\"dayjs notranslate\" datetime=\"%s\" data-time=\"%d\" data-date-style=\"long\" data-time-style=\"long\">%s</time>": "อัปเดตล่าสุดเมื่อ <time class=\"dayjs notranslate\" datetime=\"%s\" data-time=\"%d\" data-date-style=\"long\" data-time-style=\"long\">%s</time>",
   "Loading": "กำลังโหลด",
   "Time (24 Hours)": "เวลา (24 ชั่วโมง)",
   "N/A": "ไม่มีข้อมูล",

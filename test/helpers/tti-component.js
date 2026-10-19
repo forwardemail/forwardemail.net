@@ -107,3 +107,18 @@ test('names the section once and says what the figures measure', (t) => {
     );
   }
 });
+
+test('shows when the figures were measured as a date a reader can parse', (t) => {
+  for (const pathWithoutLocale of ['/', '/tti']) {
+    const html = renderTti(pathWithoutLocale);
+    // a <time> with its ISO date, written out in full ("9/24/26" was not
+    // read as a date)
+    const updated = html.match(
+      /<p class="fe-tti__updated">Last updated on <time class="dayjs notranslate" datetime="([^"]+)" data-time="(\d+)" data-date-style="long" data-time-style="long">([^<]+)<\/time><\/p>/
+    );
+    t.truthy(updated, `${pathWithoutLocale}`);
+    t.is(updated[1], '2026-09-24T00:00:00.000Z');
+    t.is(Number(updated[2]), Date.parse('2026-09-24T00:00:00Z'));
+    t.regex(updated[3], /^September 24, 2026 at 12:00:00\sAM UTC$/);
+  }
+});

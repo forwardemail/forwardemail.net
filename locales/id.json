@@ -23362,7 +23362,7 @@
   "Show previous platform area": "Tampilkan area platform sebelumnya",
   "Show next platform area": "Tampilkan area platform berikutnya",
   "Swipe or scroll to see all platform areas.": "Geser atau gulir untuk melihat semua area platform.",
-  "Last updated on <span class=\"dayjs notranslate\" data-time=\"%d\">%s</span>": "Terakhir diperbarui pada <span class=\"dayjs notranslate\" data-time=\"%d\">%s</span>",
+  "Last updated on <time class=\"dayjs notranslate\" datetime=\"%s\" data-time=\"%d\" data-date-style=\"long\" data-time-style=\"long\">%s</time>": "Terakhir diperbarui pada <time class=\"dayjs notranslate\" datetime=\"%s\" data-time=\"%d\" data-date-style=\"long\" data-time-style=\"long\">%s</time>",
   "Loading": "Memuat",
   "Time (24 Hours)": "Waktu (24 Jam)",
   "N/A": "Tidak Tersedia",

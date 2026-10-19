@@ -23362,7 +23362,7 @@
   "Show previous platform area": "Показать предыдущий раздел платформы",
   "Show next platform area": "Показать следующий раздел платформы",
   "Swipe or scroll to see all platform areas.": "Проведите пальцем или прокрутите, чтобы увидеть все разделы платформы.",
-  "Last updated on <span class=\"dayjs notranslate\" data-time=\"%d\">%s</span>": "Последнее обновление: <span class=\"dayjs notranslate\" data-time=\"%d\">%s</span>",
+  "Last updated on <time class=\"dayjs notranslate\" datetime=\"%s\" data-time=\"%d\" data-date-style=\"long\" data-time-style=\"long\">%s</time>": "Последнее обновление: <time class=\"dayjs notranslate\" datetime=\"%s\" data-time=\"%d\" data-date-style=\"long\" data-time-style=\"long\">%s</time>",
   "Loading": "Загрузка",
   "Time (24 Hours)": "Время (24 часа)",
   "N/A": "Н/Д",

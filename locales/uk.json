@@ -23362,7 +23362,7 @@
   "Show previous platform area": "Показати попередній розділ платформи",
   "Show next platform area": "Показати наступний розділ платформи",
   "Swipe or scroll to see all platform areas.": "Проведіть пальцем або прокрутіть, щоб побачити всі розділи платформи.",
-  "Last updated on <span class=\"dayjs notranslate\" data-time=\"%d\">%s</span>": "Останнє оновлення <span class=\"dayjs notranslate\" data-time=\"%d\">%s</span>",
+  "Last updated on <time class=\"dayjs notranslate\" datetime=\"%s\" data-time=\"%d\" data-date-style=\"long\" data-time-style=\"long\">%s</time>": "Останнє оновлення <time class=\"dayjs notranslate\" datetime=\"%s\" data-time=\"%d\" data-date-style=\"long\" data-time-style=\"long\">%s</time>",
   "Loading": "Завантаження",
   "Time (24 Hours)": "Час (24 години)",
   "N/A": "Н/Д",

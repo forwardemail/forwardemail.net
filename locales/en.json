@@ -23362,7 +23362,7 @@
   "Show previous platform area": "Show previous platform area",
   "Show next platform area": "Show next platform area",
   "Swipe or scroll to see all platform areas.": "Swipe or scroll to see all platform areas.",
-  "Last updated on <span class=\"dayjs notranslate\" data-time=\"%d\">%s</span>": "Last updated on <span class=\"dayjs notranslate\" data-time=\"%d\">%s</span>",
+  "Last updated on <time class=\"dayjs notranslate\" datetime=\"%s\" data-time=\"%d\" data-date-style=\"long\" data-time-style=\"long\">%s</time>": "Last updated on <time class=\"dayjs notranslate\" datetime=\"%s\" data-time=\"%d\" data-date-style=\"long\" data-time-style=\"long\">%s</time>",
   "Loading": "Loading",
   "Time (24 Hours)": "Time (24 Hours)",
   "N/A": "N/A",

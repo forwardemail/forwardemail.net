@@ -23362,7 +23362,7 @@
   "Show previous platform area": "Zobrazit předchozí oblast platformy",
   "Show next platform area": "Zobrazit další oblast platformy",
   "Swipe or scroll to see all platform areas.": "Přejetím prstem nebo posunutím zobrazíte všechny oblasti platformy.",
-  "Last updated on <span class=\"dayjs notranslate\" data-time=\"%d\">%s</span>": "Naposledy aktualizováno <span class=\"dayjs notranslate\" data-time=\"%d\">%s</span>",
+  "Last updated on <time class=\"dayjs notranslate\" datetime=\"%s\" data-time=\"%d\" data-date-style=\"long\" data-time-style=\"long\">%s</time>": "Naposledy aktualizováno <time class=\"dayjs notranslate\" datetime=\"%s\" data-time=\"%d\" data-date-style=\"long\" data-time-style=\"long\">%s</time>",
   "Loading": "Načítání",
   "Time (24 Hours)": "Čas (24 hodin)",
   "N/A": "Není k dispozici",

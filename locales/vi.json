@@ -23362,7 +23362,7 @@
   "Show previous platform area": "Hiển thị khu vực nền tảng trước",
   "Show next platform area": "Hiển thị khu vực nền tảng tiếp theo",
   "Swipe or scroll to see all platform areas.": "Vuốt hoặc cuộn để xem tất cả các khu vực nền tảng.",
-  "Last updated on <span class=\"dayjs notranslate\" data-time=\"%d\">%s</span>": "Cập nhật lần cuối vào <span class=\"dayjs notranslate\" data-time=\"%d\">%s</span>",
+  "Last updated on <time class=\"dayjs notranslate\" datetime=\"%s\" data-time=\"%d\" data-date-style=\"long\" data-time-style=\"long\">%s</time>": "Cập nhật lần cuối vào <time class=\"dayjs notranslate\" datetime=\"%s\" data-time=\"%d\" data-date-style=\"long\" data-time-style=\"long\">%s</time>",
   "Loading": "Đang tải",
   "Time (24 Hours)": "Thời gian (24 giờ)",
   "N/A": "Không có",

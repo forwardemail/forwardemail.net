@@ -23362,7 +23362,7 @@
   "Show previous platform area": "이전 플랫폼 영역 보기",
   "Show next platform area": "다음 플랫폼 영역 보기",
   "Swipe or scroll to see all platform areas.": "모든 플랫폼 영역을 보려면 스와이프하거나 스크롤하세요.",
-  "Last updated on <span class=\"dayjs notranslate\" data-time=\"%d\">%s</span>": "마지막 업데이트: <span class=\"dayjs notranslate\" data-time=\"%d\">%s</span>",
+  "Last updated on <time class=\"dayjs notranslate\" datetime=\"%s\" data-time=\"%d\" data-date-style=\"long\" data-time-style=\"long\">%s</time>": "마지막 업데이트: <time class=\"dayjs notranslate\" datetime=\"%s\" data-time=\"%d\" data-date-style=\"long\" data-time-style=\"long\">%s</time>",
   "Loading": "로딩 중",
   "Time (24 Hours)": "시간(24시간)",
   "N/A": "해당 없음",

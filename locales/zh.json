@@ -23362,7 +23362,7 @@
   "Show previous platform area": "显示上一个平台区域",
   "Show next platform area": "显示下一个平台区域",
   "Swipe or scroll to see all platform areas.": "滑动或滚动以查看所有平台区域。",
-  "Last updated on <span class=\"dayjs notranslate\" data-time=\"%d\">%s</span>": "最后更新于 <span class=\"dayjs notranslate\" data-time=\"%d\">%s</span>",
+  "Last updated on <time class=\"dayjs notranslate\" datetime=\"%s\" data-time=\"%d\" data-date-style=\"long\" data-time-style=\"long\">%s</time>": "最后更新于 <time class=\"dayjs notranslate\" datetime=\"%s\" data-time=\"%d\" data-date-style=\"long\" data-time-style=\"long\">%s</time>",
   "Loading": "加载中",
   "Time (24 Hours)": "时间（24 小时）",
   "N/A": "不适用",

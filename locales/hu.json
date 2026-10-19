@@ -23362,7 +23362,7 @@
   "Show previous platform area": "Előző platformterület megjelenítése",
   "Show next platform area": "Következő platformterület megjelenítése",
   "Swipe or scroll to see all platform areas.": "Húzza el vagy görgessen az összes platformterület megtekintéséhez.",
-  "Last updated on <span class=\"dayjs notranslate\" data-time=\"%d\">%s</span>": "Utolsó frissítés: <span class=\"dayjs notranslate\" data-time=\"%d\">%s</span>",
+  "Last updated on <time class=\"dayjs notranslate\" datetime=\"%s\" data-time=\"%d\" data-date-style=\"long\" data-time-style=\"long\">%s</time>": "Utolsó frissítés: <time class=\"dayjs notranslate\" datetime=\"%s\" data-time=\"%d\" data-date-style=\"long\" data-time-style=\"long\">%s</time>",
   "Loading": "Betöltés",
   "Time (24 Hours)": "Idő (24 órás)",
   "N/A": "Nem elérhető",

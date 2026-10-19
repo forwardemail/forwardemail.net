@@ -26,8 +26,11 @@ if ttiData && (isTtiPage || canRenderTti)
             if !isTtiPage
               = " "
               != t('Source code is <a href="https://github.com/forwardemail/forwardemail.net/blob/master/jobs/tti.js" target="_blank" rel="noopener noreferrer" class="alert-link">available on GitHub</a>.')
+          //- A <time> with its ISO date, written out in full in the page's
+          //- language (core.js re-renders it in the visitor's time zone with
+          //- the same styles): "10/19/26" was not read as a date
           p.fe-tti__updated
-            != t('Last updated on <span class="dayjs notranslate" data-time="%d">%s</span>', ttiData.created_at.getTime(), dayjs(ttiData.created_at).format("M/D/YY h:mm A z"))
+            != t('Last updated on <time class="dayjs notranslate" datetime="%s" data-time="%d" data-date-style="long" data-time-style="long">%s</time>', ttiData.created_at.toISOString(), ttiData.created_at.getTime(), new Intl.DateTimeFormat(typeof locale === "undefined" ? "en" : locale, { dateStyle: "long", timeStyle: "long", timeZone: "UTC" }).format(ttiData.created_at))
 
         h2.fe-tti__section-title= t("Current Delivery Times")
         //- what the figures measure (see jobs/tti.js: it runs again once the

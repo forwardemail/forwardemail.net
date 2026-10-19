@@ -23362,7 +23362,7 @@
   "Show previous platform area": "Önceki platform alanını göster",
   "Show next platform area": "Sonraki platform alanını göster",
   "Swipe or scroll to see all platform areas.": "Tüm platform alanlarını görmek için kaydırın.",
-  "Last updated on <span class=\"dayjs notranslate\" data-time=\"%d\">%s</span>": "Son güncelleme: <span class=\"dayjs notranslate\" data-time=\"%d\">%s</span>",
+  "Last updated on <time class=\"dayjs notranslate\" datetime=\"%s\" data-time=\"%d\" data-date-style=\"long\" data-time-style=\"long\">%s</time>": "Son güncelleme: <time class=\"dayjs notranslate\" datetime=\"%s\" data-time=\"%d\" data-date-style=\"long\" data-time-style=\"long\">%s</time>",
   "Loading": "Yükleniyor",
   "Time (24 Hours)": "Saat (24 Saat)",
   "N/A": "Yok",

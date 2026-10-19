@@ -23362,7 +23362,7 @@
   "Show previous platform area": "Vorig platformonderdeel tonen",
   "Show next platform area": "Volgend platformonderdeel tonen",
   "Swipe or scroll to see all platform areas.": "Veeg of scroll om alle platformonderdelen te zien.",
-  "Last updated on <span class=\"dayjs notranslate\" data-time=\"%d\">%s</span>": "Laatst bijgewerkt op <span class=\"dayjs notranslate\" data-time=\"%d\">%s</span>",
+  "Last updated on <time class=\"dayjs notranslate\" datetime=\"%s\" data-time=\"%d\" data-date-style=\"long\" data-time-style=\"long\">%s</time>": "Laatst bijgewerkt op <time class=\"dayjs notranslate\" datetime=\"%s\" data-time=\"%d\" data-date-style=\"long\" data-time-style=\"long\">%s</time>",
   "Loading": "Bezig met laden",
   "Time (24 Hours)": "Tijd (24 uur)",
   "N/A": "N.v.t.",

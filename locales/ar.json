@@ -23362,7 +23362,7 @@
   "Show previous platform area": "عرض قسم المنصة السابق",
   "Show next platform area": "عرض قسم المنصة التالي",
   "Swipe or scroll to see all platform areas.": "اسحب أو مرّر لعرض جميع أقسام المنصة.",
-  "Last updated on <span class=\"dayjs notranslate\" data-time=\"%d\">%s</span>": "آخر تحديث في <span class=\"dayjs notranslate\" data-time=\"%d\">%s</span>",
+  "Last updated on <time class=\"dayjs notranslate\" datetime=\"%s\" data-time=\"%d\" data-date-style=\"long\" data-time-style=\"long\">%s</time>": "آخر تحديث في <time class=\"dayjs notranslate\" datetime=\"%s\" data-time=\"%d\" data-date-style=\"long\" data-time-style=\"long\">%s</time>",
   "Loading": "جارٍ التحميل",
   "Time (24 Hours)": "الوقت (24 ساعة)",
   "N/A": "غير متوفر",

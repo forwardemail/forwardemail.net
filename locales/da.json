@@ -23362,7 +23362,7 @@
   "Show previous platform area": "Vis forrige platformområde",
   "Show next platform area": "Vis næste platformområde",
   "Swipe or scroll to see all platform areas.": "Stryg eller rul for at se alle platformområder.",
-  "Last updated on <span class=\"dayjs notranslate\" data-time=\"%d\">%s</span>": "Sidst opdateret <span class=\"dayjs notranslate\" data-time=\"%d\">%s</span>",
+  "Last updated on <time class=\"dayjs notranslate\" datetime=\"%s\" data-time=\"%d\" data-date-style=\"long\" data-time-style=\"long\">%s</time>": "Sidst opdateret <time class=\"dayjs notranslate\" datetime=\"%s\" data-time=\"%d\" data-date-style=\"long\" data-time-style=\"long\">%s</time>",
   "Loading": "Indlæser",
   "Time (24 Hours)": "Tid (24 timer)",
   "N/A": "Ikke tilgængelig",

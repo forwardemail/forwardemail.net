@@ -23362,7 +23362,7 @@
   "Show previous platform area": "Visa föregående plattformsområde",
   "Show next platform area": "Visa nästa plattformsområde",
   "Swipe or scroll to see all platform areas.": "Svep eller scrolla för att se alla plattformsområden.",
-  "Last updated on <span class=\"dayjs notranslate\" data-time=\"%d\">%s</span>": "Senast uppdaterad <span class=\"dayjs notranslate\" data-time=\"%d\">%s</span>",
+  "Last updated on <time class=\"dayjs notranslate\" datetime=\"%s\" data-time=\"%d\" data-date-style=\"long\" data-time-style=\"long\">%s</time>": "Senast uppdaterad <time class=\"dayjs notranslate\" datetime=\"%s\" data-time=\"%d\" data-date-style=\"long\" data-time-style=\"long\">%s</time>",
   "Loading": "Laddar",
   "Time (24 Hours)": "Tid (24 timmar)",
   "N/A": "Ej tillg.",
