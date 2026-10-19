@@ -30,12 +30,15 @@
       kicker: 'Route',
       tone: 'primary',
       title: 'Forwarding & aliases',
-      promise: 'Point one MX record and every address on your domain becomes yours: wildcards, regex rules, disposable aliases, outbound PGP.',
+      promise: 'Add our MX records, and every address on your domain is yours. We have forwarded email since %d, and %s domains use us today.',
+      // the year we started, and the domain count as the hero gives it, in
+      // the page's own number format ("1.6M+", "1,6 Mio.+", "160万+")
+      promiseArgs: [2017, `${new Intl.NumberFormat(locale, { notation: 'compact', maximumFractionDigits: 1, numberingSystem: 'latn' }).format(1600000)}+`],
       cards: [
-        { label: 'Unlimited aliases', sub: '$%d per alias, per user, forever', subArg: planPricing.free },
-        { label: 'Catch-all & regex', sub: '*@ and pattern-based routing' },
-        { label: 'Multi-recipient', sub: 'Fan out to people, teams, webhooks' },
-        { label: 'Disposable', sub: 'Burn an alias without losing history' }
+        { label: 'Unlimited aliases', sub: 'We never charge per alias or per user.' },
+        { label: 'Catch-all & regex', sub: 'Send every address, or any regex match, to the inbox you choose.' },
+        { label: 'Multi-recipient', sub: 'One alias can reach people, teams and webhooks.' },
+        { label: 'Disposable', sub: 'Turn off an alias without deleting its mail.' }
       ],
       glyph: '→',
       evidence: 'forward hello@studio.dev → you@gmail.com · 41ms'
@@ -46,12 +49,12 @@
       kicker: 'Store',
       tone: 'mint',
       title: 'Encrypted mailboxes',
-      promise: 'Real mailboxes with individually encrypted, sandboxed storage. Use any client. Nothing about the mail is readable by us.',
+      promise: 'Each mailbox is its own SQLite file, encrypted at rest with ChaCha20-Poly1305. The key is your mailbox password, and only you have it.',
       cards: [
-        { label: 'IMAP · POP3', sub: 'Apple Mail, Thunderbird, mobile' },
-        { label: '10 GB pooled', sub: 'Shared across every domain' },
-        { label: 'Zero-knowledge', sub: 'Quantum-resistant encryption' },
-        { label: 'Search & filters', sub: 'Full search, server-side, without ever decrypting your mail' }
+        { label: 'IMAP · POP3', sub: 'Works in Apple Mail, Thunderbird and phone apps.' },
+        { label: '10 GB pooled', sub: 'One storage pool for all your domains.' },
+        { label: 'Zero-knowledge', sub: 'Quantum-resistant encryption on every mailbox.' },
+        { label: 'Search & filters', sub: 'Search on the server, without downloading every message.' }
       ],
       glyph: '✓',
       evidence: 'imap.forwardemail.net · TLS 1.3 ·',
@@ -63,12 +66,12 @@
       kicker: 'Send',
       tone: 'signal',
       title: 'Outbound SMTP & newsletters',
-      promise: 'Send as your domain from an app, a script, or a campaign. The authentication and reputation work is already done.',
+      promise: 'Send as your domain from an app, a script or a campaign. We sign each message with your domain\'s DKIM key, so receivers can check it came from you.',
       cards: [
-        { label: 'Unlimited outbound (reputation-based)', sub: 'Included in the $%d plan', subArg: planPricing.enhanced },
-        { label: 'SMTP relay', sub: 'Drop-in for any framework' },
-        { label: 'Newsletters', sub: 'Lists, unsubscribes, bounce handling' },
-        { label: 'Pre-warmed IPs', sub: 'Years of sender reputation from day one' }
+        { label: 'Unlimited outbound (reputation-based)', sub: 'Included on every paid plan from $%d/mo.', subArg: planPricing.enhanced },
+        { label: 'SMTP relay', sub: 'Works with any app or framework that speaks SMTP.' },
+        { label: 'Newsletters', sub: 'Each domain needs a one-time review, usually within 24 hours.' },
+        { label: 'Pre-warmed IPs', sub: 'We publish the IP addresses we send from.' }
       ],
       evidence: 'POST /v1/emails → 202',
       note: 'accepted · signed · tracked'
@@ -79,12 +82,12 @@
       kicker: 'Sync',
       tone: 'vault',
       title: 'Calendars, contacts & tasks',
-      promise: 'CalDAV and CardDAV on the same domain and the same login, so the mailbox is a workspace, not just an inbox.',
+      promise: 'Calendars, contacts and tasks use the open CalDAV and CardDAV standards. Sign in with the same address and password as your mailbox.',
       cards: [
-        { label: 'CalDAV', sub: 'Shared and personal calendars' },
-        { label: 'CardDAV', sub: 'Contacts across every device' },
-        { label: 'VTODO', sub: 'Tasks and reminders, synced everywhere' },
-        { label: 'Open standards', sub: 'Export or leave any time' }
+        { label: 'CalDAV', sub: 'Send and answer meeting invitations.' },
+        { label: 'CardDAV', sub: 'The same contacts on every device.' },
+        { label: 'VTODO', sub: 'Your Apple Reminders lists sync too.' },
+        { label: 'Open standards', sub: 'Export your data and leave any time.' }
       ],
       glyph: '✓',
       evidence: 'caldav.forwardemail.net ·',
@@ -96,12 +99,12 @@
       kicker: 'Observe',
       tone: 'caution',
       title: 'API, webhooks & reports',
-      promise: 'Everything the dashboard does is an API call, and everything that happens to your mail can be pushed to your systems.',
+      promise: 'Our REST API manages domains, aliases, messages, calendars and contacts. Webhooks post inbound messages to your app as JSON.',
       cards: [
-        { label: 'REST API', sub: 'Domains, aliases, messages, logs' },
-        { label: 'Webhooks', sub: 'Inbound mail as JSON events' },
-        { label: 'DMARC reports', sub: 'Parsed, aggregated, human-readable' },
-        { label: 'Deliverability', sub: 'Per-domain analytics and alerts' }
+        { label: 'REST API', sub: 'Manage domains, aliases and messages, and download logs.' },
+        { label: 'Webhooks', sub: 'Each inbound email arrives as a JSON request.' },
+        { label: 'DMARC reports', sub: 'We turn the raw reports into a readable summary.' },
+        { label: 'Deliverability', sub: 'Analytics and alerts for each domain.' }
       ],
       evidence: 'POST https://your.app/hooks/mail → 200 ·',
       note: '1,284 events today'
@@ -112,12 +115,12 @@
       kicker: 'Use',
       tone: 'primary',
       title: 'Desktop, mobile and terminal apps',
-      promise: 'Desktop and mobile apps built by us, with encrypted local storage, offline-first, auto-updating, and the same app in your terminal. Or keep using Apple Mail; both work.',
+      promise: 'We build our own apps for desktop, mobile and the terminal. The desktop and mobile apps work offline. Apple Mail and other mail apps work too.',
       cards: [
-        { label: 'macOS · Windows · Linux', sub: 'Signed, notarized, auto-updating' },
-        { label: 'iOS · Android', sub: 'Native apps with push notifications' },
-        { label: 'Terminal', sub: 'The forwardemail command, with desktop notifications' },
-        { label: 'App Lock', sub: 'Local cache encrypted, locked behind biometrics' }
+        { label: 'macOS · Windows · Linux', sub: 'Signed updates install themselves. Windows and macOS builds are code-signed.' },
+        { label: 'iOS · Android', sub: 'Native apps with push notifications.' },
+        { label: 'Terminal', sub: 'The forwardemail command, with desktop notifications.' },
+        { label: 'App Lock', sub: 'Turn it on to encrypt mail on the device with a PIN or passkey.' }
       ],
       glyph: '✓',
       evidence: 'update check → up to date ·',
@@ -196,7 +199,7 @@ mixin feConsoleView(view, isFirst)
       = t(view.kicker)
 
     h2.fe-console__heading(id=`view-${view.id}-title`)= t(view.title)
-    p.fe-text.fe-console__promise= t(view.promise)
+    p.fe-text.fe-console__promise= view.promiseArgs ? t(view.promise, ...view.promiseArgs) : t(view.promise)
 
     ul.fe-grid.fe-grid--2.fe-console__cards
       each card in view.cards

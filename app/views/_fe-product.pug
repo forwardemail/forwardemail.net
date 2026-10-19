@@ -11,7 +11,7 @@ mixin feProduct
         = t("All-in-one, no add-on fees")
 
       .fe-product__head
-        h2#fe-product-title.fe-display-lg= t("One control plane for forwarding, mailboxes, sending, and deliverability.")
+        h2#fe-product-title.fe-display-lg= t("One dashboard for forwarding, mailboxes, sending and delivery.")
 
         ul.fe-stats.fe-product__stats
           li
@@ -32,7 +32,7 @@ mixin feProduct
       //- (see _fe-video.pug).
       .fe-product__intro
         //- Opens with the answer to the heading above.
-        p.fe-lede= t("You run forwarding, mailboxes, sending and deliverability for your domain from one dashboard. Connect a domain, prove you own it, route its mail and watch the results.")
+        p.fe-lede= t("Add your domain, prove you own it and route its mail. Then watch the results in one place.")
         //- eager: the first image on the page after the logo
         +feVideoCard("tour", "eager")
 
@@ -117,11 +117,11 @@ mixin feProduct
           h3.fe-display-sm.fe-sending__title= t("Unlimited outbound email, earned by reputation.")
           - const badDayRate = new Intl.NumberFormat(locale, { style: "percent", maximumFractionDigits: 2, numberingSystem: "latn" }).format(config.smtpReputationBadDayReportRate);
           p.fe-text.fe-sending__body
-            = t("Send with SMTP or the API on any paid plan from $%d/mo. New senders start at %d messages per day (%d on the Team plan), and the daily threshold grows as you keep paying and send clean mail.", planPricing.enhanced, feSendingTiers[0].limit, config.smtpTeamLimitMessages)
+            = t("Send with SMTP or the API on any paid plan from $%d/mo. New senders start at %d messages a day (%d on the Team plan). Your daily limit grows as you keep paying and send clean mail.", planPricing.enhanced, feSendingTiers[0].limit, config.smtpTeamLimitMessages)
             = " "
             != t('According to <a href="%s" target="_blank" rel="noopener noreferrer">Gmail\'s sender guidelines</a>, senders should keep their spam rate under %s.', "https://support.google.com/a/answer/81126", badDayRate)
             = " "
-            = t("We use a similar limit: a day when large mailbox providers reject mail to %s or more of your recipients as spam or viruses can lower your threshold one step.", badDayRate)
+            = t("We use the same rate. If big mail providers reject %s or more of your recipients as spam or viruses in a day, your limit can drop one step.", badDayRate)
           a.fe-feature__link(href=l("/faq#what-are-your-outbound-smtp-limits"))= t("How sending thresholds work")
         div
           ol.fe-sending__tiers(aria-label=t("Daily sending thresholds"))

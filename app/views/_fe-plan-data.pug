@@ -37,6 +37,9 @@
       summary: {
         name: t("Enhanced"),
         line: t("Send + receive as you@domain"),
+        // first-hand: where the plan keeps the forwarding setup (the Free
+        // plan's line, which links /encrypt, is in _fe-pricing.pug)
+        proof: t("Your forwarding rules stay out of DNS, in our secure, backed-up database."),
         cta: t("Get you@domain.com"),
         features: [
           t("Everything in Free"),
@@ -55,6 +58,8 @@
       featured: false,
       summary: {
         line: t("Families and organizations"),
+        // (as "How do I add team members to my domain" in the FAQ)
+        proof: t("An admin invites members by email. Members can add aliases. Admins can also change settings and manage the team."),
         cta: t("Create team"),
         features: [
           t("Everything in Enhanced"),

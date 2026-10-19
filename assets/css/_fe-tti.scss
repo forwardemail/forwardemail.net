@@ -69,6 +69,16 @@
   text-align: center;
 }
 
+// what the figures under "Current Delivery Times" measure
+.fe-tti__legend {
+  max-width: 66ch;
+  margin: 0 auto var(--fe-space-6);
+  font-size: var(--fe-text-body-sm);
+  line-height: var(--fe-leading-normal);
+  color: var(--fe-fg-secondary);
+  text-align: center;
+}
+
 .fe-tti__metrics {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));

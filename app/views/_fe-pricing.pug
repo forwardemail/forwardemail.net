@@ -47,7 +47,12 @@ mixin fePricing
                   li.fe-plan__feature
                     i.fa.fa-check.fe-plan__icon(aria-hidden="true")
                     span= feature
-              //- first-hand: two customers on this plan, each linked to its
-              //- case study
+              //- first-hand: how the plan works (see _fe-plan-data.pug), and for
+              //- Enterprise two customers on it, each linked to its case study
+              if plan.summary.proof
+                p.fe-plan__proof= plan.summary.proof
+              //- (a free plan's TXT record can be encrypted at /encrypt)
+              if plan.key === "free"
+                p.fe-plan__proof!= t('Your forwarding rules live in your domain\'s DNS records, and you can <a href="%s">encrypt them</a>. Paid plans keep them out of DNS.', l("/encrypt"))
               if plan.key === "enterprise"
-                p.fe-plan__proof!= t("We handle email for the %s across 250+ domains, and we built the @ubuntu.com member addresses for %s.", `<a href="${l("/blog/docs/linux-foundation-email-enterprise-case-study")}">Linux Foundation</a>`, `<a href="${l("/blog/docs/canonical-ubuntu-email-enterprise-case-study")}">Canonical</a>`)
+                p.fe-plan__proof!= t("We handle email for the %s across 250+ domains. We also built the @ubuntu.com member addresses for %s.", `<a href="${l("/blog/docs/linux-foundation-email-enterprise-case-study")}">Linux Foundation</a>`, `<a href="${l("/blog/docs/canonical-ubuntu-email-enterprise-case-study")}">Canonical</a>`)

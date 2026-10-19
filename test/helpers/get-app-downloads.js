@@ -128,6 +128,27 @@ test('attaches each platform its channels and hides the na ones', (t) => {
   }
 });
 
+test('Windows builds are signed, and their cards say SmartScreen may still warn', (t) => {
+  // (Authenticode through SSL.com eSigner, with a certificate still building
+  // SmartScreen reputation, see config/mail-app-channels.js)
+  const downloads = getAppDownloads(releaseWithTerminal);
+  const platforms = downloads.groups.flatMap((group) => group.platforms);
+  t.deepEqual(
+    platforms
+      .filter((platform) => ['windows', 'terminal'].includes(platform.key))
+      .map((platform) => [platform.key, platform.signed, platform.smartScreen]),
+    [
+      ['windows', true, true],
+      ['terminal', true, true]
+    ]
+  );
+  // the other platforms are signed and trusted
+  for (const platform of platforms.filter(
+    (platform) => !['windows', 'terminal'].includes(platform.key)
+  ))
+    t.false(platform.smartScreen, `${platform.key}`);
+});
+
 test('exposes the updater key, provenance and F-Droid facts to the page', (t) => {
   const downloads = getAppDownloads(null);
 

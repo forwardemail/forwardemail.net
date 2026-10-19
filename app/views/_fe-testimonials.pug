@@ -49,7 +49,7 @@ mixin feTestimonials
       //- A question heading, answered by the first sentence of the lede. The
       //- auditor link is an outside source for the claims the cards make.
       h2#fe-proof-title.fe-display-lg= t("Why do people switch to Forward Email?")
-      p.fe-lede!= t("Customers give three reasons: privacy built into the architecture, a migration that takes a few DNS changes, and one inbox for every address. Each quote links to proof you can check. %s spent 25 days auditing our code, our infrastructure and Nodemailer, with four senior testers and full access to the source, according to its report.", '<a href="https://cure53.de/" target="_blank" rel="noopener noreferrer">Cure53</a>')
+      p.fe-lede!= t("Customers give three reasons: privacy by design, a move that takes a few DNS changes, and one inbox for every address. Each quote links to proof you can check. According to its report, %s spent 25 days testing our code, servers and Nodemailer. Four senior testers had full access to the source.", '<a href="https://cure53.de/" target="_blank" rel="noopener noreferrer">Cure53</a>')
       .fe-proof__grid
         +feProofCard({ featured: true, eager: true, tone: "primary", pillar: t("Private by architecture"), avatar: "dhh", name: "DHH", handle: "@dhh", role: "Creator of Ruby on Rails, Founder & CTO at Basecamp & HEY", receiptHref: "/pentest-report_forward-email.pdf", receiptLabel: t("Read the security audit") })
           | Congrats for fully launching Forward Email – a forwarding service

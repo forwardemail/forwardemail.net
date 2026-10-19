@@ -126,7 +126,9 @@ mixin feVideoModal(key)
     .modal-dialog.modal-dialog-centered.modal-xl(role="document")
       .modal-content
         .modal-header
-          h2.modal-title.h5(id=`${video.modal}-title`)= video.title
+          //- (not a heading: the dialog is named by aria-labelledby, and a
+          //- heading here came before the page's h1 in its outline)
+          p.modal-title.h5(id=`${video.modal}-title`)= video.title
           button.close(
             type="button",
             data-dismiss="modal",

@@ -64,12 +64,14 @@ mixin feDownloadCard(platform)
     // arm64 notes go when those builds ship).
     const notes = [];
     if (platform.key === "windows" && !platform.signed) notes.push(t("Installers are not code-signed yet, so SmartScreen warns on first run: choose More info, then Run anyway. Check the SHA-256 until the certificate lands."));
+    if (platform.key === "windows" && platform.smartScreen) notes.push(t("Installers are signed. While the new certificate builds reputation, SmartScreen may still warn on first run: choose More info, then Run anyway."));
     if (platform.key === "windows" && hasBuild("exe", "arm64") && !hasBuild("msi", "arm64")) notes.push(t("No .msi for ARM64; the .exe installer covers it."));
     if (platform.key === "linux" && hasBuild("deb", "arm64") && !hasBuild("appimage", "arm64")) notes.push(t("No AppImage for ARM64. The .deb and .rpm builds update themselves through the in-app updater; the Snap updates through snapd."));
     if (platform.key === "android") notes.push(t("Android asks you to allow installs from your browser the first time."));
     if (platform.key === "ios") notes.push(t("The iOS build is not signed for direct install. Sideload it with AltStore, Sideloadly, or Xcode."));
     if (platform.key === "terminal") notes.push(t("The standalone builds update themselves. The Linux builds need glibc; on Alpine and other musl systems, use npm."));
     if (platform.key === "terminal" && !platform.signed) notes.push(t("The Windows executables are not code-signed yet, so SmartScreen may warn on first run: choose More info, then Run anyway."));
+    if (platform.key === "terminal" && platform.smartScreen) notes.push(t("The Windows executables are signed. While the new certificate builds reputation, SmartScreen may still warn on first run: choose More info, then Run anyway."));
 
     const liveChannels = platform.channels.filter((channel) => channel.state === "live");
     const soonChannels = platform.channels.filter((channel) => channel.state === "soon");
@@ -145,8 +147,8 @@ mixin feDownloadPlatforms
     if group.key === "desktop"
       span#fe-download-desktop.fe-download-anchor
       //- "Signed auto updater", not "signed installer": the updater signature
-      //- is true on every desktop platform, installer signing is not yet
-      //- (see the Windows card's note).
+      //- is true on every desktop platform, while the Linux packages are not
+      //- code-signed (the Windows and macOS installers are).
       +feDownloadGroup(group, "fe-download-desktop", t("Desktop"), t("Built for the machine you work on."), t("Every desktop build carries a signed auto updater, so you stay current without coming back here."))
     else if group.key === "mobile"
       span#fe-download-mobile.fe-download-anchor

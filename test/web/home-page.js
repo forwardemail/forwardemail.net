@@ -256,8 +256,9 @@ test('the stylesheet loads only WOFF2 fonts', async (t) => {
 test('the home page names its sources', async (t) => {
   const { document } = await getPage(t, '/en');
 
-  // the Enterprise card links both case studies
-  const proof = document.querySelector('.fe-plan__proof');
+  // the Enterprise card (the last plan) links both case studies
+  const proofs = document.querySelectorAll('.fe-plan__proof');
+  const proof = proofs[proofs.length - 1];
   t.truthy(proof);
   const links = [...proof.querySelectorAll('a')].map((a) =>
     a.getAttribute('href')
@@ -270,7 +271,7 @@ test('the home page names its sources', async (t) => {
   // the sending section quotes the rate it enforces, and where it comes from
   const sending = document.querySelector('.fe-sending__body');
   t.regex(sending.textContent, /keep their spam rate under 0\.1%\./);
-  t.regex(sending.textContent, /mail to 0\.1% or more of your recipients/);
+  t.regex(sending.textContent, /reject 0\.1% or more of your recipients/);
   t.is(
     sending.querySelector('a').getAttribute('href'),
     'https://support.google.com/a/answer/81126'
@@ -279,7 +280,7 @@ test('the home page names its sources', async (t) => {
   // the testimonials lede names the auditor and what it covered
   t.regex(
     document.querySelector('#testimonials .fe-lede').textContent,
-    /Cure53 spent 25 days auditing our code, our infrastructure and Nodemailer, .*according to its report\./
+    /According to its report, Cure53 spent 25 days testing our code, servers and Nodemailer\./
   );
 
   // the four route steps are list labels, not headings

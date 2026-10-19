@@ -73,3 +73,29 @@ test('renders a non-refreshing Time to Inbox summary outside the dashboard', (t)
   t.is((html.match(/Historical Timeline/g) || []).length, 0);
   t.is((html.match(/Current Delivery Times/g) || []).length, 1);
 });
+
+test('names the section once and says what the figures measure', (t) => {
+  for (const pathWithoutLocale of ['/', '/tti']) {
+    const html = renderTti(pathWithoutLocale);
+    // the eyebrow is not the heading again ("Time to Inbox Time to Inbox")
+    t.is(
+      (html.match(/>Time to Inbox</g) || []).length,
+      1,
+      `${pathWithoutLocale}`
+    );
+    t.true(
+      html.includes(
+        '<p class="fe-tti__eyebrow fe-label">Live delivery data</p>'
+      )
+    );
+    // under "Current Delivery Times", what Direct and Forwarding are
+    const legend = html.match(/<p class="fe-tti__legend">([^<]+)<\/p>/);
+    t.truthy(legend, `${pathWithoutLocale}`);
+    t.true(legend[1].startsWith('Data from our latest test'));
+    t.true(legend[1].includes('Direct is a message'));
+    t.true(legend[1].includes('Forwarding is a message'));
+    t.true(
+      html.indexOf('Current Delivery Times') < html.indexOf('fe-tti__legend')
+    );
+  }
+});

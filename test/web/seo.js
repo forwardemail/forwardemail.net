@@ -457,17 +457,17 @@ test('the stored Trustpilot rating is published where the page shows it', async 
     [
       '/en',
       'SoftwareApplication',
-      'Rated 4.2 out of 5 from 1,234 reviews on Trustpilot.'
+      'We are rated 4.2 out of 5, according to 1,234 reviews on Trustpilot.'
     ],
     [
       '/de',
       'SoftwareApplication',
-      'Mit 4,2 von 5 bewertet, aus 1.234 Bewertungen auf Trustpilot.'
+      'Wir werden mit 4,2 von 5 bewertet, laut 1.234 Bewertungen auf Trustpilot.'
     ],
     [
       '/en/blog/best-gmail-alternative',
       'Product',
-      'Rated 4.2 out of 5 from 1,234 reviews on Trustpilot.'
+      'We are rated 4.2 out of 5, according to 1,234 reviews on Trustpilot.'
     ]
   ]) {
     const document = await getPage(t, path);
@@ -485,4 +485,128 @@ test('the stored Trustpilot rating is published where the page shows it', async 
   const about = await getPage(t, '/en/about');
   t.is(about.querySelector('.fe-rating'), null);
   t.false(JSON.stringify(jsonLd(t, about)).includes('aggregateRating'));
+});
+
+test('the home page reads as text: one name per heading, sentences with their facts', async (t) => {
+  const document = await getPage(t, '/en');
+  const text = (element) => element.textContent.replace(/\s+/g, ' ').trim();
+
+  // the page's first heading is its title (the video dialog's name is not a
+  // heading before it)
+  t.is(document.querySelector('h1,h2,h3,h4,h5,h6').tagName, 'H1');
+  t.is(
+    text(document.querySelector('#modal-video-title')),
+    'Forward Email in two minutes'
+  );
+
+  // each footer column heading holds its name once; below lg its toggle
+  // shows the same name from CSS and is named by aria-label
+  const footerHeadings = [...document.querySelectorAll('footer h2')]
+    .map((h2) => text(h2))
+    .filter((name) => name !== 'Languages');
+  t.deepEqual(footerHeadings, ['Product', 'Developers', 'Guides', 'Company']);
+  const toggles = document.querySelectorAll('footer h2 .fe-footer__toggle');
+  t.is(toggles.length, 4);
+  for (const toggle of toggles) {
+    t.is(toggle.dataset.toggle, 'collapse');
+    t.truthy(
+      document.querySelector(`#${toggle.getAttribute('aria-controls')}`),
+      `${toggle.dataset.label}`
+    );
+    t.is(toggle.textContent.trim(), '');
+    t.is(toggle.getAttribute('aria-label'), toggle.dataset.label);
+  }
+
+  // the console's promises and card descriptions are sentences
+  const sentences = [
+    ...document.querySelectorAll('.fe-console__promise, .fe-console__card-sub')
+  ].map((element) => text(element));
+  t.is(sentences.length, 30);
+  for (const sentence of sentences) t.regex(sentence, /\.$/, `${sentence}`);
+  t.true(
+    sentences.includes(
+      'Add our MX records, and every address on your domain is yours. We have forwarded email since 2017, and 1.6M+ domains use us today.'
+    )
+  );
+  t.true(sentences.includes('Included on every paid plan from $3/mo.'));
+
+  // every plan card says how it works in a sentence of its own
+  const plans = [...document.querySelectorAll('.fe-pricing .fe-plan')];
+  t.is(plans.length, 4);
+  for (const plan of plans)
+    t.is(plan.querySelectorAll('.fe-plan__proof').length, 1, `${text(plan)}`);
+
+  // and every locale has the new sentences in its own words
+  const english = new Set([
+    ...sentences,
+    ...plans.map((plan) => text(plan.querySelector('.fe-plan__proof')))
+  ]);
+  for (const locale of config.i18n.locales) {
+    if (locale === 'en') continue;
+    const page = await getPage(t, `/${locale}`);
+    const translated = [
+      ...page.querySelectorAll(
+        '.fe-console__promise, .fe-console__card-sub, .fe-pricing .fe-plan__proof'
+      )
+    ].map((element) => text(element));
+    t.is(translated.length, english.size, `${locale}`);
+    for (const sentence of translated)
+      t.false(english.has(sentence), `${locale}: ${sentence}`);
+    // (the hint under the console's tabs too, which no locale had)
+    t.not(
+      text(page.querySelector('.fe-console__rail-hint')),
+      'Swipe or scroll to see all platform areas.',
+      `${locale}`
+    );
+    // (the domain count in the page's own number format)
+    if (locale === 'de')
+      t.true(translated[0].includes('1,6 Mio.+'), `${translated[0]}`);
+    if (locale === 'ja')
+      t.true(translated[0].includes('160万+'), `${translated[0]}`);
+  }
+});
+
+test('every node that names the company is the same Organization', async (t) => {
+  // (the author, publisher and provider of each page, by @id, name, legal
+  // name and url, as the Organization node gives them)
+  const named = [];
+  const collect = (value) => {
+    if (Array.isArray(value)) {
+      for (const item of value) collect(item);
+    } else if (value && typeof value === 'object') {
+      if (value['@id'] === ORGANIZATION) named.push(value);
+      for (const child of Object.values(value)) collect(child);
+    }
+  };
+
+  for (const [path, headers] of [
+    ['/en', {}],
+    ['/en/blog/docs', {}],
+    [
+      '/en/email-api',
+      { 'User-Agent': 'Googlebot/2.1 (+http://www.google.com/bot.html)' }
+    ]
+  ]) {
+    const document = await getPage(t, path, headers);
+    t.is(
+      document.querySelector('meta[name="author"]').getAttribute('content'),
+      'Forward Email LLC'
+    );
+    collect(jsonLd(t, document));
+  }
+
+  const [organization, ...references] = named.sort(
+    (a, b) => Object.keys(b).length - Object.keys(a).length
+  );
+  t.is(organization['@type'], 'Organization');
+  t.is(organization.legalName, 'Forward Email LLC');
+  // author on the home page, the docs page and the API page, publisher,
+  // provider
+  t.true(references.length >= 6);
+  for (const node of references) {
+    t.is(node['@type'], 'Organization');
+    t.is(node.name, organization.name);
+    t.is(node.legalName, organization.legalName);
+    t.is(node.url, organization.url);
+  }
 });

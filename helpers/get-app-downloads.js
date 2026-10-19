@@ -358,7 +358,9 @@ function getAppDownloads(release) {
           channels: getChannels(platform),
           // False only while the config says this platform's installers are
           // not code-signed yet; the card carries the SmartScreen note then.
-          signed: CHANNELS.signing[platform] !== false
+          signed: CHANNELS.signing[platform] !== false,
+          // Signed with a certificate SmartScreen does not trust yet
+          smartScreen: CHANNELS.signing[platform] === 'reputation'
         };
       })
       .filter((platform) => platform.options.length > 0)

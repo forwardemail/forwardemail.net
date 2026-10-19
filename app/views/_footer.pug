@@ -121,16 +121,18 @@ footer.fe-footer.mt-auto(aria-label=t("Footer"))
           h2.h5.mb-2
             span.d-none.d-lg-inline= t("Product")
             = " "
-            a.d-lg-none.d-block.py-2(
+            //- (its text is drawn by CSS from data-label, see _fe-footer.scss, so the
+            //- page text holds the heading once and not "Product Product")
+            a.d-lg-none.d-block.py-2.fe-footer__toggle(
               href="#",
               data-toggle="collapse",
               data-target="#footer-col-product",
               role="button",
               aria-expanded="false",
-              aria-controls="footer-col-product"
+              aria-controls="footer-col-product",
+              aria-label=t("Product"),
+              data-label=t("Product")
             )
-              = t("Product")
-              = " "
               i.fa.fa-angle-down(aria-hidden="true")
           ul#footer-col-product.list-unstyled.mb-0.mb-lg-3.collapse.d-lg-block
             - let pricingPageHref = domain && domain.name ? l(`/private-business-email?domain=${encodeURIComponent(domain.name)}&pricing=true`) : l("/private-business-email?pricing=true");
@@ -164,16 +166,18 @@ footer.fe-footer.mt-auto(aria-label=t("Footer"))
           h2.h5.mb-2
             a.d-none.d-lg-inline(href=l("/email-api"))= t("Developers")
             = " "
-            a.d-lg-none.d-block.py-2(
+            //- (its text is drawn by CSS from data-label, see _fe-footer.scss, so the
+            //- page text holds the heading once and not "Developers Developers")
+            a.d-lg-none.d-block.py-2.fe-footer__toggle(
               href="#",
               data-toggle="collapse",
               data-target="#footer-col-developers",
               role="button",
               aria-expanded="false",
-              aria-controls="footer-col-developers"
+              aria-controls="footer-col-developers",
+              aria-label=t("Developers"),
+              data-label=t("Developers")
             )
-              = t("Developers")
-              = " "
               i.fa.fa-angle-down(aria-hidden="true")
           ul#footer-col-developers.list-unstyled.mb-0.mb-lg-3.collapse.d-lg-block
             li: a.d-block.py-2.py-md-0(href=l("/email-api"))= t("Email API Reference")
@@ -192,16 +196,18 @@ footer.fe-footer.mt-auto(aria-label=t("Footer"))
           h2.h5.mb-2
             a.d-none.d-lg-inline(href=l("/guides"))= t("Guides")
             = " "
-            a.d-lg-none.d-block.py-2(
+            //- (its text is drawn by CSS from data-label, see _fe-footer.scss, so the
+            //- page text holds the heading once and not "Guides Guides")
+            a.d-lg-none.d-block.py-2.fe-footer__toggle(
               href="#",
               data-toggle="collapse",
               data-target="#footer-col-guides",
               role="button",
               aria-expanded="false",
-              aria-controls="footer-col-guides"
+              aria-controls="footer-col-guides",
+              aria-label=t("Guides"),
+              data-label=t("Guides")
             )
-              = t("Guides")
-              = " "
               i.fa.fa-angle-down(aria-hidden="true")
           ul#footer-col-guides.list-unstyled.mb-0.mb-lg-3.collapse.d-lg-block
             li: a.d-block.py-2.py-md-0(href=l("/guides"))= t("Email Setup Guides")
@@ -224,16 +230,18 @@ footer.fe-footer.mt-auto(aria-label=t("Footer"))
             h2.h5.mb-2
               span.d-none.d-lg-inline= t("Company")
               = " "
-              a.d-lg-none.d-block.py-2(
+              //- (its text is drawn by CSS from data-label, see _fe-footer.scss, so the
+              //- page text holds the heading once and not "Company Company")
+              a.d-lg-none.d-block.py-2.fe-footer__toggle(
                 href="#",
                 data-toggle="collapse",
                 data-target="#footer-col-company",
                 role="button",
                 aria-expanded="false",
-                aria-controls="footer-col-company"
+                aria-controls="footer-col-company",
+                aria-label=t("Company"),
+                data-label=t("Company")
               )
-                = t("Company")
-                = " "
                 i.fa.fa-angle-down(aria-hidden="true")
             ul#footer-col-company.list-unstyled.mb-0.mb-lg-3.collapse.d-lg-block
               li: a.d-block.py-2.py-md-0(href=l("/about"))= t("About")

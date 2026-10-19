@@ -6,4 +6,4 @@ mixin feRating
   if aggregateRating
     - const ratingFormat = new Intl.NumberFormat(locale, { minimumFractionDigits: 1, maximumFractionDigits: 1 });
     p.fe-rating
-      != t('Rated <span class="notranslate">%s</span> out of 5 from <span class="notranslate">%s</span> reviews on %s.', ratingFormat.format(aggregateRating.ratingValue), new Intl.NumberFormat(locale).format(aggregateRating.ratingCount), `<a href="${aggregateRating.url}" target="_blank" rel="noopener noreferrer">Trustpilot</a>`)
+      != t('We are rated <span class="notranslate">%s</span> out of 5, according to <span class="notranslate">%s</span> reviews on %s.', ratingFormat.format(aggregateRating.ratingValue), new Intl.NumberFormat(locale).format(aggregateRating.ratingCount), `<a href="${aggregateRating.url}" target="_blank" rel="noopener noreferrer">Trustpilot</a>`)

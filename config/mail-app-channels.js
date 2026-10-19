@@ -165,14 +165,17 @@ const channels = [
 
 // Whether a platform's installers are code-signed. A platform set to false
 // gets an honest note on its card (SmartScreen, for Windows) until the
-// certificate lands. A platform not listed here is signed.
+// certificate lands, and one set to 'reputation' is signed with a
+// certificate SmartScreen does not trust yet, so its card says it may still
+// warn. A platform not listed here is signed.
 const signing = {
-  // Windows installers ship unsigned until the Authenticode certificate is
-  // provisioned and WINDOWS_SIGNING_REQUIRED is set in the release workflow.
-  windows: false
+  // The Windows installers carry an Authenticode signature made through
+  // SSL.com eSigner (release-desktop.yml in forwardemail/mail.forwardemail.net),
+  // and the certificate is building SmartScreen reputation.
+  windows: 'reputation'
 };
-// The terminal client's Windows executables are signed in the same release
-// with the same certificate (release-cli.yml), so they follow the installers.
+// The terminal client's Windows executables are signed in the same way
+// (release-cli.yml), so they follow the installers.
 signing.terminal = signing.windows;
 
 // Verification material a visitor can check a download against, beyond the

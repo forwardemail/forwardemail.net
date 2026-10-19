@@ -34,6 +34,13 @@ footer.fe-footer h2 {
   text-transform: uppercase;
 }
 
+// The collapse toggle that stands for a column heading below lg: its text
+// comes from data-label (its name from aria-label), so the page text holds
+// the heading once, as the lg-up span or link next to it.
+footer.fe-footer h2 .fe-footer__toggle::before {
+  content: attr(data-label) " ";
+}
+
 // Link rows and heading links. The list rule sits first so specificity
 // ascends for stylelint.
 footer.fe-footer ul a {

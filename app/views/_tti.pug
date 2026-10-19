@@ -10,7 +10,9 @@ if ttiData && (isTtiPage || canRenderTti)
     .fe-tti__container
       .fe-tti__summary
         header.fe-tti__header
-          p.fe-tti__eyebrow.fe-label= t("Time to Inbox")
+          //- (not the heading again: the page text would read "Time to Inbox
+          //- Time to Inbox")
+          p.fe-tti__eyebrow.fe-label= t("Live delivery data")
           if isTtiPage
             h1.fe-tti__title= t("Time to Inbox")
           else
@@ -28,6 +30,9 @@ if ttiData && (isTtiPage || canRenderTti)
             != t('Last updated on <span class="dayjs notranslate" data-time="%d">%s</span>', ttiData.created_at.getTime(), dayjs(ttiData.created_at).format("M/D/YY h:mm A z"))
 
         h2.fe-tti__section-title= t("Current Delivery Times")
+        //- what the figures measure (see jobs/tti.js: it runs again once the
+        //- last result is five minutes old)
+        p.fe-tti__legend= t("Data from our latest test, which runs about every five minutes. Direct is a message from our servers to an inbox at that provider. Forwarding is a message to a Forward Email address that forwards it to that inbox.")
         ul.fe-tti__metrics
           each provider in ttiData.providers
             li.fe-tti__metric
