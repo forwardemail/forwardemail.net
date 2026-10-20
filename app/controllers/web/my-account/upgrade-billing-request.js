@@ -4,11 +4,13 @@
  */
 
 const Boom = require('@hapi/boom');
-const bytes = require('@forwardemail/bytes');
 const ms = require('ms');
 
-const config = require('#config');
 const emailHelper = require('#helpers/email');
+
+// payment link for storage (each one bought adds 10 GB)
+const STORAGE_CHECKOUT_URL =
+  'https://checkout.forwardemail.net/b/fZu5kE9al2Yj6iP25Fa3u0b';
 
 async function upgradeBillingRequest(ctx) {
   const { kind, upgrade_option } = ctx.request.body;
@@ -36,36 +38,37 @@ async function upgradeBillingRequest(ctx) {
     throw Boom.badRequest(ctx.translateError('INVALID_STORAGE_OPTION'));
 
   const { user } = ctx.state;
-  const currentQuota = user.max_quota_per_alias;
-  const currentQuotaFormatted = bytes(currentQuota);
-  const kindLabel = ctx.translate('STORAGE');
-  const subject = `${ctx.translate('UPGRADE_REQUEST')}: ${kindLabel} - ${
-    user.email
-  }`;
   const key = `upgrade_request:${kind}:${user.id}`;
   const cache = await ctx.client.get(key);
 
   if (cache)
-    throw Boom.badRequest(ctx.translateError('UPGRADE_REQUEST_ALREADY_SENT'));
+    throw Boom.badRequest(
+      ctx.translateError('STORAGE_UPGRADE_LINK_ALREADY_SENT')
+    );
 
+  //
+  // storage upgrades are a manual process, so the user is emailed the
+  // payment link (with their email filled in) and asked to reply once they
+  // paid, so the increase can be confirmed (admins are not emailed, since
+  // nothing can be done until the user pays)
+  //
+  const url = `${STORAGE_CHECKOUT_URL}?prefilled_email=${encodeURIComponent(
+    user.email
+  )}`;
+  // (sent from the default address, i.e. support, with its display name)
   await emailHelper({
-    template: 'upgrade-request-alert',
+    template: 'storage-upgrade',
     message: {
-      to: config.supportEmail,
-      subject
+      to: user.email,
+      subject: ctx.translate('STORAGE_UPGRADE_LINK_SUBJECT')
     },
     locals: {
-      userData: {
-        email: user.email,
-        plan: user.plan
-      },
-      kind,
-      upgrade_option,
-      current_quota: currentQuotaFormatted,
-      request_date: new Date().toISOString(),
-      admin_user_link: `${config.urls.web}/admin/users?q=${encodeURIComponent(
-        user.email
-      )}`
+      message: ctx.translate(
+        'STORAGE_UPGRADE_LINK_MESSAGE',
+        upgrade_option === 'Other' ? ctx.request.t('Other') : upgrade_option,
+        url
+      ),
+      locale: ctx.locale
     }
   });
 
@@ -73,7 +76,7 @@ async function upgradeBillingRequest(ctx) {
 
   ctx.flash('custom', {
     title: ctx.translate('SUCCESS'),
-    text: ctx.translate('UPGRADE_REQUEST_NOTIFICATION'),
+    text: ctx.translate('STORAGE_UPGRADE_LINK_SENT'),
     type: 'success',
     toast: true,
     showConfirmButton: false,

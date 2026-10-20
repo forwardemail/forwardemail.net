@@ -12,7 +12,6 @@
 * [גופנים](#fonts)
 * [צבעים](#colors)
 * [לוגואים](#logos)
-* [גרפיקה](#graphics)
 
 
 ## אודות Forward Email {#about-forward-email}
@@ -77,30 +76,3 @@ Forward Email מהימן על ידי ארגונים מובילים בתעשיו�
 ![Forward Email Logo](https://raw.githubusercontent.com/forwardemail/forwardemail.net/master/assets/img/logo-square.svg)
 
 > <https://raw.githubusercontent.com/forwardemail/forwardemail.net/master/assets/img/logo-square.svg>
-
-
-## גרפיקה {#graphics}
-
-"פרדי מנופף מחלל חיצון"
-
-![Freddy waving](https://raw.githubusercontent.com/forwardemail/forwardemail.net/master/assets/img/emails/domain-onboard.gif)
-
-> <https://raw.githubusercontent.com/forwardemail/forwardemail.net/master/assets/img/emails/domain-onboard.gif>
-
-"פרדי במעטפה"
-
-![Freddy in an envelope](https://raw.githubusercontent.com/forwardemail/forwardemail.net/master/assets/img/emails/domain-verified.gif)
-
-> <https://raw.githubusercontent.com/forwardemail/forwardemail.net/master/assets/img/emails/domain-verified.gif>
-
-"פרדי עם מצנח"
-
-![Freddy with a parachute](https://raw.githubusercontent.com/forwardemail/forwardemail.net/master/assets/img/emails/self-test.gif)
-
-> <https://raw.githubusercontent.com/forwardemail/forwardemail.net/master/assets/img/emails/self-test.gif>
-
-"פרדי מנופף בשדה דשא"
-
-![Freddy waving in a grassy field](https://raw.githubusercontent.com/forwardemail/forwardemail.net/master/assets/img/emails/welcome.gif)
-
-> <https://raw.githubusercontent.com/forwardemail/forwardemail.net/master/assets/img/emails/welcome.gif>

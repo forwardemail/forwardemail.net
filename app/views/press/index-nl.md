@@ -12,7 +12,6 @@
 * [Lettertypen](#fonts)
 * [Kleuren](#colors)
 * [Logo's](#logos)
-* [Grafieken](#graphics)
 
 
 ## Over Forward Email {#about-forward-email}
@@ -77,30 +76,3 @@ Forward Email wordt vertrouwd door toonaangevende organisaties in diverse sector
 ![Forward Email Logo](https://raw.githubusercontent.com/forwardemail/forwardemail.net/master/assets/img/logo-square.svg)
 
 > <https://raw.githubusercontent.com/forwardemail/forwardemail.net/master/assets/img/logo-square.svg>
-
-
-## Grafieken {#graphics}
-
-"Freddy zwaait vanuit de ruimte"
-
-![Freddy waving](https://raw.githubusercontent.com/forwardemail/forwardemail.net/master/assets/img/emails/domain-onboard.gif)
-
-> <https://raw.githubusercontent.com/forwardemail/forwardemail.net/master/assets/img/emails/domain-onboard.gif>
-
-"Freddy in een envelop"
-
-![Freddy in an envelope](https://raw.githubusercontent.com/forwardemail/forwardemail.net/master/assets/img/emails/domain-verified.gif)
-
-> <https://raw.githubusercontent.com/forwardemail/forwardemail.net/master/assets/img/emails/domain-verified.gif>
-
-"Freddy met een parachute"
-
-![Freddy with a parachute](https://raw.githubusercontent.com/forwardemail/forwardemail.net/master/assets/img/emails/self-test.gif)
-
-> <https://raw.githubusercontent.com/forwardemail/forwardemail.net/master/assets/img/emails/self-test.gif>
-
-"Freddy zwaait in een grasveld"
-
-![Freddy waving in a grassy field](https://raw.githubusercontent.com/forwardemail/forwardemail.net/master/assets/img/emails/welcome.gif)
-
-> <https://raw.githubusercontent.com/forwardemail/forwardemail.net/master/assets/img/emails/welcome.gif>

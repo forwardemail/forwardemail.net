@@ -1,0 +1,29 @@
+//-
+//- One option of a domain's "Change plan" menu (the block is its label; the
+//- domain's current plan is shown disabled).
+//-
+//- Changing the user's last paid domain to Free asks first, since the
+//- account stays on its paid plan (which is what gets billed); the domain
+//- billing page then offers to downgrade the account too (not for an
+//- expired plan, which cannot switch plans or is downgraded on its own).
+//- (`paidAdminDomainCount` and `hasGlobalAliases` are set by retrieve-domains)
+//-
+mixin changePlanOption(domain, plan)
+  - const billingUrl = l(`/my-account/domains/${punycode.toASCII(domain.name)}/billing`);
+  if plan === 'free' && domain.plan !== 'free' && domain.group === 'admin' && user.plan !== 'free' && new Date(user[config.userFields.planExpiresAt]).getTime() >= Date.now() && paidAdminDomainCount === 1 && !hasGlobalAliases
+    form.confirm-prompt.m-0(
+      action=billingUrl,
+      method="GET",
+      data-confirm-prompt-title=t("Downgrade this domain to Free?"),
+      data-confirm-prompt-html=t('This is your only domain on a paid plan. Your account stays on the <span class="notranslate">%s</span> plan, which is what you are billed for. You can downgrade your account to Free next.', t(titleize(humanize(user.plan))))
+    )
+      input(type="hidden", name="plan", value="free")
+      button.dropdown-item(type="submit")
+        block
+  else
+    a.dropdown-item(
+      href=`${billingUrl}?plan=${plan}`,
+      disabled=plan === domain.plan,
+      class=plan === domain.plan ? "disabled" : undefined
+    )
+      block

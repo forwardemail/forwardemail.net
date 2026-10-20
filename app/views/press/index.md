@@ -12,7 +12,6 @@
 * [Fonts](#fonts)
 * [Colors](#colors)
 * [Logos](#logos)
-* [Graphics](#graphics)
 
 
 ## About Forward Email
@@ -79,30 +78,3 @@ Forward Email is trusted by leading organizations across industries:
 ![Forward Email Logo](https://raw.githubusercontent.com/forwardemail/forwardemail.net/master/assets/img/logo-square.svg)
 
 > <https://raw.githubusercontent.com/forwardemail/forwardemail.net/master/assets/img/logo-square.svg>
-
-
-## Graphics
-
-"Freddy waving from outer space"
-
-![Freddy waving](https://raw.githubusercontent.com/forwardemail/forwardemail.net/master/assets/img/emails/domain-onboard.gif)
-
-> <https://raw.githubusercontent.com/forwardemail/forwardemail.net/master/assets/img/emails/domain-onboard.gif>
-
-"Freddy in an envelope"
-
-![Freddy in an envelope](https://raw.githubusercontent.com/forwardemail/forwardemail.net/master/assets/img/emails/domain-verified.gif)
-
-> <https://raw.githubusercontent.com/forwardemail/forwardemail.net/master/assets/img/emails/domain-verified.gif>
-
-"Freddy with a parachute"
-
-![Freddy with a parachute](https://raw.githubusercontent.com/forwardemail/forwardemail.net/master/assets/img/emails/self-test.gif)
-
-> <https://raw.githubusercontent.com/forwardemail/forwardemail.net/master/assets/img/emails/self-test.gif>
-
-"Freddy waving in a grassy field"
-
-![Freddy waving in a grassy field](https://raw.githubusercontent.com/forwardemail/forwardemail.net/master/assets/img/emails/welcome.gif)
-
-> <https://raw.githubusercontent.com/forwardemail/forwardemail.net/master/assets/img/emails/welcome.gif>

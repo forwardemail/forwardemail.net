@@ -171,7 +171,7 @@ block body
             method="POST",
             action=l("/my-account/billing/upgrade-request"),
             data-confirm-prompt-title=t("Upgrade Request: Storage"),
-            data-confirm-prompt-html=t("We will review your request and reach out shortly via email. Once approved, we’ll send you a secure payment link to complete your upgrade. Ready to proceed?")
+            data-confirm-prompt-html=t("We will email you a secure payment link for more storage. Storage upgrades are a manual process: once you have paid, reply to that email so we can confirm the increase. Ready to proceed?")
           )
             input(type="hidden", name="kind", value="storage_limit")
             .card.border-themed

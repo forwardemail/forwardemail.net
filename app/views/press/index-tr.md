@@ -12,7 +12,6 @@
 * [Fontlar](#fonts)
 * [Renkler](#colors)
 * [Logolar](#logos)
-* [Grafikler](#graphics)
 
 
 ## Forward Email Hakkında {#about-forward-email}
@@ -77,30 +76,3 @@ Forward Email, sektörler arası önde gelen kuruluşlar tarafından güvenilmek
 ![Forward Email Logo](https://raw.githubusercontent.com/forwardemail/forwardemail.net/master/assets/img/logo-square.svg)
 
 > <https://raw.githubusercontent.com/forwardemail/forwardemail.net/master/assets/img/logo-square.svg>
-
-
-## Grafikler {#graphics}
-
-"Dış uzaydan el sallayan Freddy"
-
-![Freddy waving](https://raw.githubusercontent.com/forwardemail/forwardemail.net/master/assets/img/emails/domain-onboard.gif)
-
-> <https://raw.githubusercontent.com/forwardemail/forwardemail.net/master/assets/img/emails/domain-onboard.gif>
-
-"Bir zarf içindeki Freddy"
-
-![Freddy in an envelope](https://raw.githubusercontent.com/forwardemail/forwardemail.net/master/assets/img/emails/domain-verified.gif)
-
-> <https://raw.githubusercontent.com/forwardemail/forwardemail.net/master/assets/img/emails/domain-verified.gif>
-
-"Paraşütle Freddy"
-
-![Freddy with a parachute](https://raw.githubusercontent.com/forwardemail/forwardemail.net/master/assets/img/emails/self-test.gif)
-
-> <https://raw.githubusercontent.com/forwardemail/forwardemail.net/master/assets/img/emails/self-test.gif>
-
-"Çimenli bir alanda el sallayan Freddy"
-
-![Freddy waving in a grassy field](https://raw.githubusercontent.com/forwardemail/forwardemail.net/master/assets/img/emails/welcome.gif)
-
-> <https://raw.githubusercontent.com/forwardemail/forwardemail.net/master/assets/img/emails/welcome.gif>

@@ -6,6 +6,10 @@
 const isSANB = require('is-string-and-not-blank');
 const Boom = require('@hapi/boom');
 
+const {
+  shouldAskToDowngradeAccount,
+  flashAskToDowngradeAccount
+} = require('./ask-to-downgrade-account');
 const abusePreventionByUserId = require('#helpers/abuse-prevention-by-user-id');
 // const { removeMultipleAliasBackups } = require('#helpers/remove-alias-backup');
 const config = require('#config');
@@ -48,7 +52,18 @@ async function removeDomain(ctx, next) {
 
   // remove the domain
   await Domains.findByIdAndRemove(ctx.state.domain._id);
-  if (!ctx.api)
+
+  // the last paid domain was deleted, but the account (which is what gets
+  // billed) may still be on a paid plan, so ask whether to downgrade it too
+  // (in place of the toast below; not for a free domain, so a user who chose
+  // to keep their plan is not asked again)
+  if (
+    !ctx.api &&
+    ctx.state.domain.plan !== 'free' &&
+    (await shouldAskToDowngradeAccount(ctx))
+  )
+    flashAskToDowngradeAccount(ctx, ctx.translate('REQUEST_OK'));
+  else if (!ctx.api)
     ctx.flash('custom', {
       title: ctx.request.t('Success'),
       text: ctx.translate('REQUEST_OK'),

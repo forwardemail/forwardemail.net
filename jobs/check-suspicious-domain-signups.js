@@ -748,7 +748,7 @@ ${reportsHtml}
     await emailHelper({
       template: 'alert',
       message: {
-        to: config.email.message.from,
+        to: config.alertsEmail,
         subject: `🚨 ${severity.toUpperCase()} SECURITY ALERT: ${
           reports.length
         } Suspicious Domain(s) Detected - ${totalUsers} Users`
@@ -942,7 +942,7 @@ ${reportsHtml}
     await emailHelper({
       template: 'alert',
       message: {
-        to: config.email.message.from,
+        to: config.alertsEmail,
         subject: 'Suspicious Domain Signup Detection Job Failed'
       },
       locals: {

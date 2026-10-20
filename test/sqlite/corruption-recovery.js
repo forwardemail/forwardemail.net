@@ -298,7 +298,7 @@ test('quarantines an unreadable mailbox instead of deleting it', async (t) => {
   const alert = sentEmails.find((data) =>
     data.message.subject.startsWith('Database backup fix for ')
   );
-  t.is(alert.message.to, config.supportEmail);
+  t.is(alert.message.to, config.alertsEmail);
   t.is(
     alert.message.subject,
     `Database backup fix for ${session.user.username} (${t.context.alias.id})`

@@ -6,6 +6,10 @@
 const Boom = require('@hapi/boom');
 const isSANB = require('is-string-and-not-blank');
 
+const {
+  shouldAskToDowngradeAccount,
+  flashAskToDowngradeAccount
+} = require('./ask-to-downgrade-account');
 const _ = require('#helpers/lodash');
 const emailHelper = require('#helpers/email');
 const { Aliases, Domains, Users } = require('#models');
@@ -124,15 +128,32 @@ async function removeMember(ctx, next) {
 
   if (ctx.api) return next();
 
-  ctx.flash('custom', {
-    title: ctx.request.t('Success'),
-    text: ctx.translate('REQUEST_OK'),
-    type: 'success',
-    toast: true,
-    showConfirmButton: false,
-    timer: 3000,
-    position: 'top'
-  });
+  // the user left the domain, and if it was the last paid domain they
+  // manage, the account (which is what gets billed) may still be on a paid
+  // plan, so ask whether to downgrade it too (in place of the toast below)
+  if (
+    member.user.id === ctx.state.user.id &&
+    (await shouldAskToDowngradeAccount(ctx))
+  )
+    flashAskToDowngradeAccount(ctx, ctx.translate('REQUEST_OK'));
+  else
+    ctx.flash('custom', {
+      title: ctx.request.t('Success'),
+      text: ctx.translate('REQUEST_OK'),
+      type: 'success',
+      toast: true,
+      showConfirmButton: false,
+      timer: 3000,
+      position: 'top'
+    });
+
+  // (a user who left the domain can no longer open its pages)
+  if (member.user.id === ctx.state.user.id) {
+    const redirectTo = ctx.state.l('/my-account/domains');
+    if (ctx.accepts('html')) ctx.redirect(redirectTo);
+    else ctx.body = { redirectTo };
+    return;
+  }
 
   if (ctx.accepts('html')) ctx.redirect('back');
   else ctx.body = { reloadPage: true };

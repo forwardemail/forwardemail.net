@@ -218,9 +218,11 @@ async function verifySMTP(ctx) {
                   }
                 </li>
               </ul>
-              <a href="${config.urls.web}/admin/domains?name=${
+              <a href="${
+                config.urls.web
+              }/admin/domains?name=${encodeURIComponent(
                   domain.name
-                }" class="btn btn-dark btn-md">Review Domain</a>
+                )}" class="btn btn-dark btn-md">Review Domain</a>
               `.trim(),
                 locale
               }

@@ -932,8 +932,8 @@ Aliases.pre('validate', function (next) {
         i18n.translateError(
           'INVALID_REGEX_PATTERN',
           this.locale,
-          this.name,
-          err.message
+          _.escape(this.name),
+          _.escape(err.message)
         )
       )
     );

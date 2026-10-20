@@ -223,7 +223,8 @@ module.exports = async (data) => {
       'payment-reminder',
       'alert',
       'inquiry',
-      'inquiry-response'
+      'inquiry-response',
+      'storage-upgrade'
     ];
 
     const isCriticalEmail =

@@ -221,7 +221,7 @@ async function syncPayPalSubscriptionPayments() {
                   ...(userDoc[config.userFields.receiptEmail]
                     ? { cc: userDoc.email }
                     : {}),
-                  bcc: config.supportEmail,
+                  bcc: config.alertsEmail,
                   subject: 'Duplicate PayPal subscription resolved'
                 },
                 locals: {
@@ -341,7 +341,7 @@ async function syncPayPalSubscriptionPayments() {
                 ...(userDoc[config.userFields.receiptEmail]
                   ? { cc: userDoc.email }
                   : {}),
-                bcc: config.supportEmail,
+                bcc: config.alertsEmail,
                 subject: i18n.api.t({
                   phrase: config.i18n.phrases.SUBSCRIPTION_ACTIVATED_SUBJECT,
                   locale
@@ -424,7 +424,7 @@ async function syncPayPalSubscriptionPayments() {
         await emailHelper({
           template: 'alert',
           message: {
-            to: config.supportEmail,
+            to: config.alertsEmail,
             subject: `${unmatchedSubscriptions.length} PayPal subscription(s) could not be matched to users`
           },
           locals: {

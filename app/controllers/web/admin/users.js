@@ -12,6 +12,7 @@ const { boolean } = require('boolean');
 const _ = require('#helpers/lodash');
 
 const assertAllowedMongoQuery = require('#helpers/assert-no-blocked-mongo-operators');
+const isEmail = require('#helpers/is-email');
 const getAllowedSort = require('#helpers/get-allowed-sort');
 const { Domains, Users } = require('#models');
 // Const { removeUserAliasBackups } = require('#helpers/remove-alias-backup');
@@ -173,8 +174,17 @@ async function update(ctx) {
     user[config.userFields.pendingRecovery] = false;
   }
 
-  if (body.email) {
-    user.email = body.email;
+  if (isSANB(body.email)) {
+    // (a new address is validated like every other way to set an email,
+    // since the schema allows quotes and angle brackets, which are shown as
+    // HTML in messages; an unchanged one is left as is)
+    const email = body.email.trim();
+    if (
+      email.toLowerCase() !== String(user.email).toLowerCase() &&
+      !isEmail(email)
+    )
+      throw Boom.badRequest(ctx.translateError('INVALID_EMAIL'));
+    user.email = email;
   }
 
   if (body.group) {

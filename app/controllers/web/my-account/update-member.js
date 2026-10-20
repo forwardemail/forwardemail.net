@@ -10,6 +10,10 @@ const isSANB = require('is-string-and-not-blank');
 const reservedAdminList = require('reserved-email-addresses-list/admin-list.json');
 const reservedEmailAddressesList = require('reserved-email-addresses-list');
 
+const {
+  shouldAskToDowngradeAccount,
+  flashAskToDowngradeAccount
+} = require('./ask-to-downgrade-account');
 const _ = require('#helpers/lodash');
 const emailHelper = require('#helpers/email');
 const { Aliases, Domains, Users } = require('#models');
@@ -264,15 +268,34 @@ async function updateMember(ctx, next) {
 
   if (ctx.api) return next();
 
-  ctx.flash('custom', {
-    title: ctx.request.t('Success'),
-    text: ctx.translate('REQUEST_OK'),
-    type: 'success',
-    toast: true,
-    showConfirmButton: false,
-    timer: 3000,
-    position: 'top'
-  });
+  // the user set themselves back to a user of the domain, and if it was the
+  // last paid domain they manage, the account (which is what gets billed)
+  // may still be on a paid plan, so ask whether to downgrade it too (in
+  // place of the toast below)
+  if (
+    isCurrentUserBeingUpdated &&
+    ctx.request.body.group === 'user' &&
+    (await shouldAskToDowngradeAccount(ctx))
+  )
+    flashAskToDowngradeAccount(ctx, ctx.translate('REQUEST_OK'));
+  else
+    ctx.flash('custom', {
+      title: ctx.request.t('Success'),
+      text: ctx.translate('REQUEST_OK'),
+      type: 'success',
+      toast: true,
+      showConfirmButton: false,
+      timer: 3000,
+      position: 'top'
+    });
+
+  // (a user who is no longer an admin of the domain cannot open its settings)
+  if (isCurrentUserBeingUpdated && ctx.request.body.group === 'user') {
+    const redirectTo = ctx.state.l('/my-account/domains');
+    if (ctx.accepts('html')) ctx.redirect(redirectTo);
+    else ctx.body = { redirectTo };
+    return;
+  }
 
   if (ctx.accepts('html')) ctx.redirect('back');
   else ctx.body = { reloadPage: true };

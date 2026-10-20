@@ -433,7 +433,7 @@ function getAlertHtml({ name, cat, bannableHits, flaggedUsers, aliasCount }) {
  * Categorise a single domain and take action (email support for review / report).
  *
  * Instead of automatically banning users and adding to the denylist,
- * this now emails support@ for manual review when bannable categories
+ * this now emails alerts@ for manual review when bannable categories
  * are detected.  This prevents false positives from the Cloudflare
  * Radar / Family DNS checks from incorrectly banning legitimate users.
  *
@@ -599,7 +599,7 @@ async function checkDomainAndAct(domainDoc, ctx, opts) {
       if (ctx.dryRun) {
         // (a dry run sends nothing)
         log.info(
-          `[DRY RUN] Would email support@ for review: domain ${name} and ${flaggedEmails.length} user(s)`
+          `[DRY RUN] Would email alerts@ for review: domain ${name} and ${flaggedEmails.length} user(s)`
         );
       } else {
         //
@@ -630,7 +630,7 @@ async function checkDomainAndAct(domainDoc, ctx, opts) {
             await emailHelper({
               template: 'alert',
               message: {
-                to: config.supportEmail,
+                to: config.alertsEmail,
                 subject: `[Review Required] Domain flagged by Cloudflare check: ${name} – ${bannableHits.join(
                   ', '
                 )}`

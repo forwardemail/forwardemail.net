@@ -27,6 +27,7 @@ const Domains = require('#models/domains');
 const Users = require('#models/users');
 const config = require('#config');
 const emailHelper = require('#helpers/email');
+const _ = require('#helpers/lodash');
 const i18n = require('#helpers/i18n');
 const logger = require('#helpers/logger');
 const setupMongoose = require('#helpers/setup-mongoose');
@@ -172,13 +173,15 @@ function validateRegexAlias(aliasName) {
           obj.locale,
           alias.domain.name
         );
+        // (escaped, since a regex alias name can contain HTML and the
+        // message is sent to every admin of the domain)
         const message = i18n.translate(
           'INVALID_REGEX_ALIAS_MESSAGE',
           obj.locale,
-          alias.domain.name,
-          alias.name,
-          err.parsedRegex,
-          err.message
+          _.escape(alias.domain.name),
+          _.escape(alias.name),
+          _.escape(err.parsedRegex),
+          _.escape(err.message)
         );
 
         await emailHelper({

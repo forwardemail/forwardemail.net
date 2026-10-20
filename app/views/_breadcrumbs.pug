@@ -1,3 +1,5 @@
+include my-account/domains/_change-plan-option
+
 - const isObjectIdLike = (value) => typeof value === "string" && /^[a-f\d]{24}$/i.test(value);
 - const breadcrumbValue = (value) => (_.isObject(value) ? value.name : value);
 - const breadcrumbName = (value) => (isObjectIdLike(breadcrumbValue(value)) ? titleize(humanize(breadcrumbValue(value))) : t(titleize(humanize(breadcrumbValue(value)))));
@@ -94,11 +96,7 @@ if breadcrumbs.length > 1
                   .dropdown-menu.dropdown-menu-right
                     h6.dropdown-header= t("Change Plan")
                     each plan in [ 'free', 'enhanced_protection', 'team' ]
-                      a.dropdown-item(
-                        href=l(`/my-account/domains/${punycode.toASCII(domain.name)}/billing?plan=${plan}`),
-                        disabled=plan === domain.plan,
-                        class=plan === domain.plan ? "disabled" : ""
-                      )
+                      +changePlanOption(domain, plan)
                         case plan
                           when 'enhanced_protection'
                             i.fa.fa-fw.fa-shield

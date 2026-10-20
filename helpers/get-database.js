@@ -2355,7 +2355,7 @@ function retryGetDatabase(...args) {
                     template: 'alert',
                     message: {
                       to: session.user.owner_full_email,
-                      cc: config.supportEmail,
+                      bcc: config.alertsEmail,
                       subject: `Action required: mailbox for ${session.user.username} needs password reset`
                     },
                     locals: {
@@ -2589,7 +2589,7 @@ function retryGetDatabase(...args) {
             email({
               template: 'alert',
               message: {
-                to: config.supportEmail,
+                to: config.alertsEmail,
                 subject: `Database backup fix for ${session.user.username} (${session.user.alias_id})`
               },
               locals: {

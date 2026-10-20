@@ -111,7 +111,7 @@ async function mapper(customer) {
         await emailHelper({
           template: 'alert',
           message: {
-            to: config.email.message.from,
+            to: config.alertsEmail,
             subject: `Cancelled orphaned Stripe subscriptions: ${customer.email}`
           },
           locals: {
@@ -135,7 +135,7 @@ async function mapper(customer) {
         await emailHelper({
           template: 'alert',
           message: {
-            to: config.email.message.from,
+            to: config.alertsEmail,
             subject: `Legacy add-on subscription needs review: ${customer.email}`
           },
           locals: {
@@ -201,7 +201,7 @@ async function mapper(customer) {
       await emailHelper({
         template: 'alert',
         message: {
-          to: config.email.message.from,
+          to: config.alertsEmail,
           subject: `Cancelled subscriptions for banned user: ${user.email}`
         },
         locals: {
@@ -264,7 +264,7 @@ async function mapper(customer) {
     await emailHelper({
       template: 'alert',
       message: {
-        to: config.email.message.from,
+        to: config.alertsEmail,
         subject: `Customer had multiple subscriptions: ${user.email}`
       },
       locals: {
@@ -427,7 +427,7 @@ async function mapper(customer) {
           message: {
             to: user[config.userFields.receiptEmail] || user.email,
             ...(user[config.userFields.receiptEmail] ? { cc: user.email } : {}),
-            bcc: config.supportEmail,
+            bcc: config.alertsEmail,
             subject: i18n.api.t({
               phrase: config.i18n.phrases.SUBSCRIPTION_ACTIVATED_SUBJECT,
               locale

@@ -298,7 +298,7 @@ async function safetyNetUnlock(emailId, reason, recipients = []) {
   emailHelper({
     template: 'alert',
     message: {
-      to: config.supportEmail,
+      to: config.alertsEmail,
       subject: `Hung email detected: ${emailId} (${reason})`
     },
     locals: {

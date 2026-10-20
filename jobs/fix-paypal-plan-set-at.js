@@ -334,7 +334,7 @@ async function mapper(id) {
               ...(user[config.userFields.receiptEmail]
                 ? { cc: user.email }
                 : {}),
-              bcc: config.supportEmail,
+              bcc: config.alertsEmail,
               subject: `Your ${planName} plan has been credited with ${creditDays} additional day${
                 creditDays === 1 ? '' : 's'
               }`

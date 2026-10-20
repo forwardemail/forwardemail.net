@@ -239,7 +239,7 @@ Denylist keys (denylist:*) were set to 30 days using PX.
 These keys should have TTL set to prevent unbounded Redis memory growth.`;
 
       const message = {
-        to: config.email.message.from,
+        to: config.alertsEmail,
         subject: `Redis Keys Without TTL: ${totalWithoutTTL} found${
           totalTTLSet > 0 ? `, ${totalTTLSet} fixed` : ''
         }`,

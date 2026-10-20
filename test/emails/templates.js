@@ -427,13 +427,7 @@ const readabilityLocals = {
   from: 'jane@example.com',
   subject: 'Hello',
   messageId: '<1@example.com>',
-  date: now,
-  userData: { email: 'jane@example.com', plan: 'free' },
-  kind: 'storage',
-  upgrade_option: '20 GB',
-  current_quota: '10 GB',
-  request_date: now.toISOString(),
-  admin_user_link: `${config.urls.web}/admin/users`
+  date: now
 };
 
 // a CSS color as [r, g, b], or null for none or transparent

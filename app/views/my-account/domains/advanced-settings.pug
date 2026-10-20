@@ -1,6 +1,7 @@
 extends ../../layout
 
 include _zone-file
+include _change-plan-option
 
 mixin deleteDomain
   if domain.group === 'admin'
@@ -485,9 +486,7 @@ block body
                   .dropdown-menu.dropdown-menu-right
                     h6.dropdown-header= t("Change plan to:")
                     each plan in [ 'free', 'enhanced_protection', 'team' ].filter(plan => plan !== domain.plan)
-                      a.dropdown-item(
-                        href=l(`/my-account/domains/${punycode.toASCII(domain.name)}/billing?plan=${plan}`)
-                      )
+                      +changePlanOption(domain, plan)
                         case plan
                           when 'enhanced_protection'
                             i.fa.fa-fw.fa-shield

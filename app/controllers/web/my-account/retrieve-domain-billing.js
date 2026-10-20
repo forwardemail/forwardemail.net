@@ -17,6 +17,10 @@ const parseErr = require('parse-err');
 const safeStringify = require('fast-safe-stringify');
 const { encode } = require('html-entities');
 const striptags = require('striptags');
+const {
+  shouldAskToDowngradeAccount,
+  flashAskToDowngradeAccount
+} = require('./ask-to-downgrade-account');
 const _ = require('#helpers/lodash');
 
 const config = require('#config');
@@ -59,6 +63,62 @@ const SIGN_IN_PAGE = new RegExp(
   'i'
 );
 
+//
+// how long the user's plan has been past due, in words
+// (e.g. "20 days", "a month", or "a year and 3 months")
+//
+// NOTE: if it is over a year then we need to specify the # of months
+//       and we could use thresholds from dayjs but this is simpler
+//       <https://day.js.org/docs/en/customization/relative-time>
+//       (but note we don't want to specify # months if not a complete month)
+//
+function getPastDueDuration(ctx) {
+  let str = dayjs(ctx.state.user[config.userFields.planExpiresAt])
+    .locale(ctx.locale)
+    .fromNow(true);
+  // subtract years difference and if there are > 0 months then add affix
+  const years = dayjs().diff(
+    ctx.state.user[config.userFields.planExpiresAt],
+    'years'
+  );
+  if (years > 0) {
+    const months = dayjs().diff(
+      dayjs(ctx.state.user[config.userFields.planExpiresAt]).add(
+        years,
+        'years'
+      ),
+      'months'
+    );
+
+    if (months > 0)
+      str += ` ${ctx.translate('AND')} ${dayjs()
+        .add(months, 'months')
+        .locale(ctx.locale)
+        .fromNow(true)}`;
+  }
+
+  return str;
+}
+
+const BILLING_PAGE = new RegExp(
+  `^/(?:(?:${config.i18n.locales.join('|')})/)?my-account/billing/?$`,
+  'i'
+);
+
+function isFromBillingPage(ctx) {
+  const referrer = ctx.get('Referrer');
+  if (!referrer) return false;
+  try {
+    const url = new URL(referrer);
+    return (
+      url.origin === new URL(config.urls.web).origin &&
+      BILLING_PAGE.test(url.pathname)
+    );
+  } catch {
+    return false;
+  }
+}
+
 function isCrossSiteRequest(ctx) {
   const site = ctx.get('Sec-Fetch-Site');
   const referrer = ctx.get('Referrer');
@@ -87,6 +147,12 @@ const PLAN_NAMES = {
   free: 'Free',
   enhanced_protection: 'Enhanced Protection',
   team: 'Team'
+};
+
+const PLAN_RANKS = {
+  free: 0,
+  enhanced_protection: 1,
+  team: 2
 };
 
 //
@@ -121,7 +187,13 @@ async function retrieveDomainBilling(ctx) {
   const isEnableAutoRenew =
     ctx.pathWithoutLocale === '/my-account/billing/enable-auto-renew';
   let redirectTo = ctx.state.l(
-    isAccountUpgrade || isMakePayment || isEnableAutoRenew
+    isAccountUpgrade ||
+      isMakePayment ||
+      isEnableAutoRenew ||
+      // a domain changed from a link in the error on the Billing page (an
+      // account plan change that needs its domains changed first) goes back
+      // there, so the next domain or the account change is one click away
+      isFromBillingPage(ctx)
       ? '/my-account/billing'
       : `/my-account/domains/${punycode.toASCII(ctx.state.domain.name)}`
   );
@@ -230,37 +302,10 @@ async function retrieveDomainBilling(ctx) {
             )
         )
       ) {
-        //
-        // NOTE: if it is over a year then we need to specify the # of months
-        //       and we could use thresholds from dayjs but this is simpler
-        //       <https://day.js.org/docs/en/customization/relative-time>
-        //       (but note we don't want to specify # months if not a complete month)
-        //
-        let str = dayjs(ctx.state.user[config.userFields.planExpiresAt])
-          .locale(ctx.locale)
-          .fromNow(true);
-        // subtract years difference and if there are > 0 months then add affix
-        const years = dayjs().diff(
-          ctx.state.user[config.userFields.planExpiresAt],
-          'years'
+        ctx.flash(
+          'warning',
+          ctx.translate('PAST_DUE_REQUIRED_ONE_TIME', getPastDueDuration(ctx))
         );
-        if (years > 0) {
-          const months = dayjs().diff(
-            dayjs(ctx.state.user[config.userFields.planExpiresAt]).add(
-              years,
-              'years'
-            ),
-            'months'
-          );
-
-          if (months > 0)
-            str += ` ${ctx.translate('AND')} ${dayjs()
-              .add(months, 'months')
-              .locale(ctx.locale)
-              .fromNow(true)}`;
-        }
-
-        ctx.flash('warning', ctx.translate('PAST_DUE_REQUIRED_ONE_TIME', str));
         const redirectTo = ctx.state.l('/my-account/billing/make-payment');
         if (ctx.accepts('html')) ctx.redirect(redirectTo);
         else ctx.body = { redirectTo };
@@ -281,6 +326,7 @@ async function retrieveDomainBilling(ctx) {
       throw Boom.badRequest(ctx.translateError('INVALID_PLAN'));
 
     let domain;
+    let askToDowngradeAccount = false;
     if (!isAccountUpgrade && !isMakePayment && !isEnableAutoRenew) {
       if (!ctx.state.domain)
         throw Boom.badRequest(ctx.translateError('DOMAIN_DOES_NOT_EXIST'));
@@ -309,15 +355,10 @@ async function retrieveDomainBilling(ctx) {
         new Date(ctx.state.user[config.userFields.planExpiresAt]).getTime() <
           Date.now()
       ) {
+        // (a whole number of months read "0 months" when under a month)
         ctx.flash(
           'warning',
-          ctx.translate(
-            'PAST_DUE_CANNOT_SWITCH',
-            dayjs().diff(
-              new Date(ctx.state.user[config.userFields.planExpiresAt]),
-              'months'
-            )
-          )
+          ctx.translate('PAST_DUE_CANNOT_SWITCH', getPastDueDuration(ctx))
         );
         const redirectTo = ctx.state.l('/my-account/billing/make-payment');
         if (ctx.accepts('html')) ctx.redirect(redirectTo);
@@ -369,23 +410,23 @@ async function retrieveDomainBilling(ctx) {
           }
         }
 
+        //
+        // the link changes the domain to the plan the user is switching to
+        // (e.g. a Team domain to Enhanced Protection when downgrading the
+        // account from Team to Enhanced Protection), since a link without
+        // a plan was refused as an invalid plan
+        //
         if (!isValid)
           errors.push(
             ctx.translateError(
               'DOMAIN_PLAN_DOWNGRADE_REQUIRED',
-              domain.name,
+              _.escape(domain.name),
               ctx.translate(domain.plan.toUpperCase()),
-              ctx.query.plan === 'free'
-                ? ctx.state.l(
-                    `/my-account/domains/${punycode.toASCII(
-                      domain.name
-                    )}/billing?plan=free`
-                  )
-                : ctx.state.l(
-                    `/my-account/domains/${punycode.toASCII(
-                      domain.name
-                    )}/billing`
-                  )
+              ctx.state.l(
+                `/my-account/domains/${punycode.toASCII(
+                  domain.name
+                )}/billing?plan=${ctx.query.plan}`
+              )
             )
           );
       }
@@ -399,7 +440,7 @@ async function retrieveDomainBilling(ctx) {
           )}</p>
           <ul class="mb-0 text-left"><li>${errors
             .map((e) => e.message)
-            .join('</li><li>')}</li><ul>
+            .join('</li><li>')}</li></ul>
         `);
       }
     }
@@ -1164,7 +1205,7 @@ async function retrieveDomainBilling(ctx) {
           emailHelper({
             template: 'alert',
             message: {
-              to: config.email.message.from,
+              to: config.alertsEmail,
               subject: `${
                 isRetryExhausted ? 'CRITICAL: ' : ''
               }Error while capturing PayPal order payment for ${
@@ -1718,6 +1759,11 @@ ${encode(safeStringify(parseErr(err), null, 2))}</code></pre>`
           await ctx.state.user.save();
         }
       }
+
+      // the last paid domain was changed to free, but the account (which is
+      // what gets billed) may still be on a paid plan
+      if (ctx.query.plan === 'free')
+        askToDowngradeAccount = await shouldAskToDowngradeAccount(ctx);
     }
 
     // if ctx.query.plan was free and it was an account billing change
@@ -1800,15 +1846,42 @@ ${encode(safeStringify(parseErr(err), null, 2))}</code></pre>`
       ]);
     }
 
+    //
     // flash message and redirect
-    ctx.flash(
-      'success',
-      isMakePayment
-        ? ctx.translate('ONE_TIME_PAYMENT_SUCCESSFUL')
-        : isEnableAutoRenew
-        ? ctx.translate('AUTO_RENEW_ENABLED')
-        : ctx.translate(`${ctx.query.plan.toUpperCase()}_PLAN`)
-    );
+    //
+    // (a domain's plan change says which domain changed, unless the account
+    // was upgraded along with it through a payment, since the account plan
+    // is what gets billed and "You have successfully downgraded to the Free
+    // Plan" read as if the account no longer was)
+    //
+    let message;
+    if (isMakePayment) message = ctx.translate('ONE_TIME_PAYMENT_SUCCESSFUL');
+    else if (isEnableAutoRenew) message = ctx.translate('AUTO_RENEW_ENABLED');
+    else if (
+      domain &&
+      (ctx.state.user.plan === originalPlan || ctx.state.user.plan === 'free')
+    )
+      message = ctx.translate(
+        'DOMAIN_PLAN_CHANGED',
+        _.escape(domain.name),
+        ctx.translate(ctx.query.plan.toUpperCase())
+      );
+    else if (
+      isAccountUpgrade &&
+      ctx.query.plan === 'enhanced_protection' &&
+      originalPlan === 'team'
+    )
+      message = ctx.translate('ENHANCED_PROTECTION_PLAN_DOWNGRADE');
+    else message = ctx.translate(`${ctx.query.plan.toUpperCase()}_PLAN`);
+
+    //
+    // the question about the account carries the message above in one
+    // dialog (flash messages are shown in order of their type, and another
+    // "custom" message of this request would put the question first)
+    //
+    if (askToDowngradeAccount && ctx.accepts('html'))
+      flashAskToDowngradeAccount(ctx, message);
+    else ctx.flash('success', message);
 
     //
     // if the user switched plans and were not originally on the free plan then
@@ -1950,7 +2023,12 @@ ${encode(safeStringify(parseErr(err), null, 2))}</code></pre>`
     // if the user is upgrading plans and has domains not
     // on the same plan they're upgrading to, then alert them
     // and also send them an email in the background too
-    if (isAccountUpgrade) {
+    // (not on a downgrade, e.g. Team to Enhanced Protection or to Free,
+    // since the message says the account was upgraded)
+    if (
+      isAccountUpgrade &&
+      PLAN_RANKS[ctx.state.user.plan] > PLAN_RANKS[originalPlan]
+    ) {
       const domains = ctx.state.domains.filter((domain) => {
         return (
           !domain.is_global &&
@@ -2038,7 +2116,8 @@ ${encode(safeStringify(parseErr(err), null, 2))}</code></pre>`
         domain: { $in: ctx.state.domains.map((d) => d._id) },
         user: ctx.state.user._id
       });
-      if (count === 0) redirectTo = ctx.state.l('/my-account/domains/new');
+      if (count === 0 && !(domain && isFromBillingPage(ctx)))
+        redirectTo = ctx.state.l('/my-account/domains/new');
     } catch (err) {
       ctx.logger.fatal(err);
     }

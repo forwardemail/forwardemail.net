@@ -174,6 +174,54 @@ async function retrieveDomains(ctx, next) {
   if (ctx.api) return next();
 
   //
+  // number of paid domains the user is an admin of, and whether the user
+  // has aliases on a global domain (which need a paid plan), so the last
+  // paid domain asks before it is changed to free (since the account plan,
+  // which is what gets billed, stays the same)
+  //
+  // (only the domain pages show this; a search filters the list above, so
+  // then these are looked up)
+  //
+  if (
+    ctx.method === 'GET' &&
+    ctx.pathWithoutLocale.startsWith('/my-account/domains')
+  ) {
+    const isFiltered =
+      ctx.pathWithoutLocale.endsWith('/domains') &&
+      (isSANB(ctx.query.q) || isSANB(ctx.query.name));
+    if (isFiltered) {
+      const [count, globalDomainIds] = await Promise.all([
+        Domains.countDocuments({
+          members: {
+            $elemMatch: {
+              user: ctx.state.user._id,
+              group: 'admin'
+            }
+          },
+          plan: { $in: ['enhanced_protection', 'team'] }
+        }),
+        Domains.distinct('_id', { is_global: true })
+      ]);
+      ctx.state.paidAdminDomainCount = count;
+      ctx.state.hasGlobalAliases =
+        globalDomainIds.length > 0 &&
+        Boolean(
+          await Aliases.exists({
+            user: ctx.state.user._id,
+            domain: { $in: globalDomainIds }
+          })
+        );
+    } else {
+      ctx.state.paidAdminDomainCount = ctx.state.domains.filter(
+        (d) => d.group === 'admin' && d.plan !== 'free'
+      ).length;
+      ctx.state.hasGlobalAliases = ctx.state.domains.some(
+        (d) => d.is_global && d.has_global_aliases
+      );
+    }
+  }
+
+  //
   // NOTE: we can't have this here because it's incredibly slow
   //       (e.g. when you have 2000+ domains)
   //       (this was moved to list-domains controller)

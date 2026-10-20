@@ -115,7 +115,11 @@ block body
                   target="_blank"
                 )= t("learn more")
               else
-                != t('Ready to upgrade <span class="notranslate font-weight-bold">%s</span> from <span class="notranslate font-weight-bold">%s</span> to <span class="notranslate font-weight-bold">%s</span>?', domain.name, titleize(humanize(domain.plan)), titleize(humanize(user.plan)))
+                //- (a Team domain for an Enhanced Protection account is a downgrade)
+                if domain.plan === 'team'
+                  != t('Ready to downgrade <span class="notranslate font-weight-bold">%s</span> from <span class="notranslate font-weight-bold">%s</span> to <span class="notranslate font-weight-bold">%s</span>?', domain.name, titleize(humanize(domain.plan)), titleize(humanize(user.plan)))
+                else
+                  != t('Ready to upgrade <span class="notranslate font-weight-bold">%s</span> from <span class="notranslate font-weight-bold">%s</span> to <span class="notranslate font-weight-bold">%s</span>?', domain.name, titleize(humanize(domain.plan)), titleize(humanize(user.plan)))
                 br.d-block.d-md-none
                 = " "
                 a.alert-link(

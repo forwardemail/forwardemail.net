@@ -3225,10 +3225,18 @@ async function ensureUserHasValidPlan(user, locale) {
     return;
   }
 
-  // Get all domains associated with this user
+  // Get all paid domains this user is an admin of
+  // (only an admin's plan counts towards a domain's plan, so another
+  // member's plan change never makes a domain invalid, and the link in the
+  // error below is to a page only admins can use)
   const domains = await this.find({
     plan: { $in: ['enhanced_protection', 'team'] },
-    'members.user': user._id
+    members: {
+      $elemMatch: {
+        user: user._id,
+        group: 'admin'
+      }
+    }
   })
     .select('name plan members.user members.group')
     .populate('members.user')
@@ -3302,20 +3310,26 @@ async function ensureUserHasValidPlan(user, locale) {
           i18n.translateError(
             'DOMAIN_ADMIN_PAYMENT_REQUIRED',
             locale,
-            domain.name,
+            _.escape(domain.name),
             `${config.urls.web}/${locale}/my-account/billing`
           )
         );
       } else {
+        //
+        // the user is changing their own plan to one that this domain
+        // cannot use (e.g. Team to Enhanced Protection with a Team domain),
+        // so the domain is downgraded to the user's new plan (a link to the
+        // domain's current plan was refused as already active)
+        //
         errors.push(
           i18n.translateError(
-            'DOMAIN_PLAN_UPGRADE_REQUIRED',
+            'DOMAIN_PLAN_DOWNGRADE_REQUIRED',
             locale,
-            domain.name,
+            _.escape(domain.name),
             i18n.translate(domain.plan.toUpperCase(), locale),
             `/${locale}/my-account/domains/${punycode.toASCII(
               domain.name
-            )}/billing?plan=${domain.plan}`
+            )}/billing?plan=${user.plan}`
           )
         );
       }
@@ -3339,7 +3353,7 @@ async function ensureUserHasValidPlan(user, locale) {
     )}</p>
     <ul class="mb-0 text-left"><li>${errors
       .map((e) => e.message)
-      .join('</li><li>')}</li><ul>
+      .join('</li><li>')}</li></ul>
   `);
 }
 
@@ -3474,7 +3488,7 @@ async function getMaxQuota(
         i18n.translateError(
           'DOMAIN_ADMIN_PAYMENT_REQUIRED',
           locale,
-          domain.name,
+          _.escape(domain.name),
           `${config.urls.web}/${locale}/my-account/billing`
         )
       );
@@ -3636,7 +3650,7 @@ async function getStorageUsed(
         i18n.translateError(
           'DOMAIN_ADMIN_PAYMENT_REQUIRED',
           locale,
-          domain.name,
+          _.escape(domain.name),
           `${config.urls.web}/${locale}/my-account/billing`
         )
       );

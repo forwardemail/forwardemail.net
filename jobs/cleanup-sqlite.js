@@ -855,7 +855,7 @@ const mountDir = config.env === 'production' ? '/mnt' : tmpdir;
         await emailHelper({
           template: 'alert',
           message: {
-            to: config.supportEmail,
+            to: config.alertsEmail,
             subject: `Found ${orphanedAliases.length} orphaned aliases ${
               dryRun ? '(DRY RUN)' : '(cleaned up)'
             }`
@@ -886,7 +886,7 @@ const mountDir = config.env === 'production' ? '/mnt' : tmpdir;
         await emailHelper({
           template: 'alert',
           message: {
-            to: config.supportEmail,
+            to: config.alertsEmail,
             subject: `Found ${
               nonImapAliases.length
             } aliases without IMAP enabled ${
@@ -999,7 +999,7 @@ const mountDir = config.env === 'production' ? '/mnt' : tmpdir;
       await emailHelper({
         template: 'alert',
         message: {
-          to: config.supportEmail,
+          to: config.alertsEmail,
           subject: completionSubject
         },
         locals: {
@@ -1035,7 +1035,7 @@ const mountDir = config.env === 'production' ? '/mnt' : tmpdir;
       await emailHelper({
         template: 'alert',
         message: {
-          to: config.supportEmail,
+          to: config.alertsEmail,
           subject: `SQLite cleanup job FAILED ${dryRun ? '(DRY RUN)' : ''}`
         },
         locals: {

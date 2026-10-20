@@ -500,6 +500,28 @@ nav.navbar(class=navbarClasses.join(" "), aria-label=t("Main menu"))
                         = t("Denylist Removal")
                       else
                         = t(titleize(humanize(resourcePage.replace("/", ""))))
+                hr.dropdown-divider
+                .dropdown-header= t("Our Projects")
+                a.dropdown-item(
+                  href="https://privacyratings.com",
+                  target="_blank",
+                  rel="noopener noreferrer"
+                ) PrivacyRatings.com
+                a.dropdown-item(
+                  href="https://spamscanner.net",
+                  target="_blank",
+                  rel="noopener noreferrer"
+                ) SpamScanner.net
+                a.dropdown-item(
+                  href="https://attestium.com",
+                  target="_blank",
+                  rel="noopener noreferrer"
+                ) Attestium.com
+                a.dropdown-item(
+                  href="https://terminalemail.com",
+                  target="_blank",
+                  rel="noopener noreferrer"
+                ) TerminalEmail.com
                 a.dropdown-item(
                   href="https://alumniemail.com",
                   target="_blank",

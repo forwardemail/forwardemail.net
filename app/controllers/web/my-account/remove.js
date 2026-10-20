@@ -247,7 +247,6 @@ async function remove(ctx) {
     message: {
       to: originalEmail,
       from: config.supportEmail,
-      bcc: config.supportEmail,
       subject: 'Quick question',
       text: `Hey,
 

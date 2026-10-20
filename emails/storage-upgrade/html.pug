@@ -1,0 +1,12 @@
+extends ../layout
+
+//- The payment link for more storage, sent to the user who asked for it
+//- (they reply to it once paid, so it is not framed as an automated alert)
+block content
+  .container.mt-3
+    .row
+      .col-12
+        .card.border-dark.d-block
+          h1.h5.card-header.text-center= t("Storage Upgrade")
+          .card-body
+            .card-text!= message

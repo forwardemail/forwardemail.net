@@ -770,11 +770,35 @@ async function processEmail({ email, port = 25, resolver, client }) {
           template: 'alert',
           message: {
             to: obj.to,
-            bcc: config.email.message.from,
             subject
           },
           locals: {
             message,
+            locale: obj.locale
+          }
+        })
+          .then()
+          .catch((err) => logger.fatal(err, { ignore_hook: true }));
+        //
+        // support is asked to review it (like SMTP access requests), with
+        // replies going to the domain's admins and a link to the domain
+        // (it was a Bcc of the email above, so a reply went to ourselves)
+        //
+        emailHelper({
+          template: 'alert',
+          message: {
+            to: config.supportEmail,
+            replyTo: obj.to,
+            subject
+          },
+          locals: {
+            message: `<p>${_.escape(
+              domain.name
+            )} attempted to send an outbound SMTP newsletter and needs newsletter approval.</p><a href="${
+              config.urls.web
+            }/admin/domains?name=${encodeURIComponent(
+              domain.name
+            )}" class="btn btn-dark btn-md">Review Domain</a>`,
             locale: obj.locale
           }
         })
@@ -1371,7 +1395,7 @@ async function processEmail({ email, port = 25, resolver, client }) {
                         template: 'alert',
                         message: {
                           to,
-                          bcc: config.email.message.from,
+                          bcc: config.alertsEmail,
                           locale,
                           subject: `Alias suspended: ${alias.name}@${domain.name}`
                         },
@@ -1416,7 +1440,7 @@ async function processEmail({ email, port = 25, resolver, client }) {
                     );
                     emailHelper({
                       template: 'smtp-suspended',
-                      message: { to: obj.to, bcc: config.email.message.from },
+                      message: { to: obj.to, bcc: config.alertsEmail },
                       locals: {
                         domain:
                           typeof domain.toObject === 'function'
@@ -1449,7 +1473,7 @@ async function processEmail({ email, port = 25, resolver, client }) {
                           template: 'alert',
                           message: {
                             to,
-                            bcc: config.email.message.from,
+                            bcc: config.alertsEmail,
                             locale,
                             subject: `Domain suspended: ${domain.name}`
                           },

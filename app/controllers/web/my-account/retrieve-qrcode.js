@@ -18,6 +18,7 @@ const Aliases = require('#models/aliases');
 const config = require('#config');
 const env = require('#config/env');
 const isErrorConstructorName = require('#helpers/is-error-constructor-name');
+const _ = require('#helpers/lodash');
 const isValidPassword = require('#helpers/is-valid-password');
 const { encrypt } = require('#helpers/encrypt-decrypt');
 
@@ -139,15 +140,19 @@ async function retrieveQRCode(ctx) {
       }
     );
 
+    // (escaped like helpers/get-alias-password-swal.js, since the password
+    // can be user-supplied and the username contains the alias name)
+    const safeUsername = _.escape(username);
+    const safePass = _.escape(ctx.request.body.password);
     const html = ctx.translate(
       'ALIAS_GENERATED_PASSWORD',
-      username,
-      username,
-      ctx.request.body.password,
-      ctx.request.body.password,
+      safeUsername,
+      safeUsername,
+      safePass,
+      safePass,
       appleImgSrc,
       appleLink,
-      `${username}.mobileconfig`,
+      `${safeUsername}.mobileconfig`,
       thunderbirdQRCode
       // k9ImgSrc,
       // k9Link,

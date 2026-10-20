@@ -186,7 +186,7 @@ graceful.listen();
       await emailHelper({
         template: 'alert',
         message: {
-          to: config.supportEmail,
+          to: config.alertsEmail,
           subject
         },
         locals: {

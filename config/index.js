@@ -53,6 +53,14 @@ const topCompetitors = require('./top-competitors');
 const _ = require('#helpers/lodash');
 const getIpBucket = require('#helpers/get-ip-bucket');
 
+//
+// dayjs has Norwegian as "nb", and "no" (one of our locales) fell back to
+// English for every date and duration (e.g. in billing pages and emails),
+// so "no" is added as the same locale
+//
+if (!dayjs.Ls.no && dayjs.Ls.nb)
+  dayjs.locale({ ...dayjs.Ls.nb, name: 'no' }, null, true);
+
 let zxcvbn;
 
 const brandAndCorporateDomains = [

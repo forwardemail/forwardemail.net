@@ -770,6 +770,15 @@ module.exports = {
   ENHANCED_PROTECTION_PLAN:
     'You have successfully upgraded to the Enhanced Protection Plan.',
   TEAM_PLAN: 'You have successfully upgraded to the Team Plan.',
+  ENHANCED_PROTECTION_PLAN_DOWNGRADE:
+    'You have successfully downgraded to the Enhanced Protection Plan.',
+  DOMAIN_PLAN_CHANGED:
+    'Domain <span class="notranslate">%s</span> is now on the <span class="notranslate">%s</span> plan.',
+  DOWNGRADE_ACCOUNT_TOO_TITLE: 'Downgrade your account too?',
+  DOWNGRADE_ACCOUNT_TOO_MESSAGE:
+    'None of the domains you manage are on a paid plan now, but your account is still on the <span class="notranslate">%s</span> plan, which is what you are billed for. Do you want to downgrade your account to Free too?',
+  DOWNGRADE_ACCOUNT_TO_FREE: 'Downgrade account to Free',
+  KEEP_MY_PLAN: 'Keep my plan',
   AUTO_RENEW_STARTS:
     'Auto-renew successfully enabled (starts on <span class="notranslate">%s</span>)',
   AUTO_RENEW_ENABLED:
@@ -974,7 +983,7 @@ module.exports = {
   USER_UPGRADED_ACCOUNT_NOT_DOMAINS_SUBJECT:
     'Need to configure your domains to match your plan?',
   PAST_DUE_CANNOT_SWITCH:
-    'In order to switch plans, you must first update your account to good standing by paying the entire past due balance. You owe payment for <span class="notranslate">%d</span> months.  You can alternatively downgrade all of your domains to the free plan.',
+    'In order to switch plans, you must first update your account to good standing by paying the entire past due balance. Your account is <span class="notranslate">%s</span> past due.  You can alternatively downgrade all of your domains to the free plan.',
   PAYMENT_PAST_DUE_SUBJECT:
     'Your account is past due and API access may be restricted!',
   PAYMENT_PAST_DUE_API_RESTRICTED:
@@ -999,6 +1008,13 @@ module.exports = {
   UPGRADE_REQUEST: 'Upgrade Request',
   UPGRADE_REQUEST_NOTIFICATION:
     'Our team has been notified and will follow up shortly by email.',
+  STORAGE_UPGRADE_LINK_SUBJECT: 'Your payment link for more storage',
+  STORAGE_UPGRADE_LINK_MESSAGE:
+    '<p>You asked for more storage (<span class="notranslate">%s</span>). Storage upgrades are a manual process:</p><ol><li>Open the payment link below (your email is already filled in).</li><li>Select the quantity you want. Each one adds 10 GB, e.g. 1 for +10 GB or 3 for +30 GB.</li><li>Once you have paid, reply to this email so we can confirm the increase for you.</li></ol><p class="text-center mb-0"><a class="btn btn-dark btn-md" href="%s">Pay for more storage</a></p>',
+  STORAGE_UPGRADE_LINK_ALREADY_SENT:
+    'We already emailed you a payment link for more storage. Please check your inbox (and spam folder), or reply to that email if you need help.',
+  STORAGE_UPGRADE_LINK_SENT:
+    'We emailed you a payment link for more storage. Once you have paid, reply to that email so we can confirm the increase.',
   FREE_CREDIT_GRANTED:
     'Free credit granted successfully to <span class="notranslate">%s</span> for <span class="notranslate">%s</span> plan (%s duration)',
 
