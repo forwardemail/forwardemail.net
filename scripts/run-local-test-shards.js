@@ -10,6 +10,8 @@ const os = require('node:os');
 const path = require('node:path');
 const process = require('node:process');
 
+const { getNodeVersionError } = require('./check-node-version');
+
 const DEFAULT_TOTAL_SHARDS = 6;
 const SIEVE_TEST_FILES = [
   'test/sieve/parser.js',
@@ -127,6 +129,14 @@ async function runSieve(cwd) {
 }
 
 async function main() {
+  // (also run on its own by "nps test", before lint and build)
+  const nodeVersionError = getNodeVersionError();
+  if (nodeVersionError) {
+    console.error(nodeVersionError);
+    process.exitCode = 1;
+    return;
+  }
+
   const totalShards = getTotalShards();
   const cwd = path.join(__dirname, '..');
   const tempDir = path.join(

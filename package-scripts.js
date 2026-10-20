@@ -62,7 +62,10 @@ module.exports = {
     ),
 
     // <https://github.com/kentcdodds/nps-utils/issues/24>
-    pretest: concurrent.nps('lint', 'build-test'),
+    pretest: series(
+      'node scripts/check-node-version.js',
+      concurrent.nps('lint', 'build-test')
+    ),
 
     test:
       process.env.CI_SHARD && process.env.CI_SHARD !== '1'
