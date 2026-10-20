@@ -31,6 +31,11 @@ const logger = require('./logger');
 const shouldSendDSN = require('./should-send-dsn');
 const shouldThrow = require('./should-throw');
 const signMessage = require('./sign-message');
+const {
+  acquireSmtpSession,
+  backOffSmtpSessions,
+  isSessionLimitError
+} = require('./smtp-session-limiter');
 
 const Emails = require('#models/emails');
 const env = require('#config/env');
@@ -346,6 +351,61 @@ async function sendEmail(
     };
   }
 
+  //
+  // wait for a free session if the receiving provider limits how many one IP
+  // may have open (e.g. Comcast replies "421 Too many sessions opened")
+  //
+  let release;
+  try {
+    release = await acquireSmtpSession({ client, resolver, target });
+  } catch (err) {
+    err.port = port;
+    err.envelope = envelope;
+    throw err;
+  }
+
+  try {
+    return await deliver(
+      {
+        session,
+        cache,
+        target,
+        port,
+        envelope,
+        raw,
+        resolver,
+        client,
+        publicKey,
+        smimeCertificate,
+        hasWkdDisabled,
+        forwardedFor
+      },
+      email,
+      domain
+    );
+  } finally {
+    release();
+  }
+}
+
+async function deliver(
+  {
+    session,
+    cache,
+    target,
+    port,
+    envelope,
+    raw,
+    resolver,
+    client,
+    publicKey,
+    smimeCertificate,
+    hasWkdDisabled,
+    forwardedFor
+  },
+  email,
+  domain
+) {
   const [pgpResults, transporterResults] = await Promise.all([
     getPGPResults({
       session,
@@ -518,6 +578,21 @@ async function sendEmail(
     //
     if (isDaneError(err)) {
       err.responseCode = 421;
+      throw err;
+    }
+
+    //
+    // The provider limits sessions from this IP (or throttled it), so defer
+    // instead of opening another session to its next MX host right away
+    // (which counts against the same limit), and allow fewer sessions to it
+    // for a while.
+    //
+    if (isSessionLimitError(err)) {
+      err.isSessionLimit = true;
+      err.isCodeBug = false;
+      err.responseCode = 421;
+      await backOffSmtpSessions({ client, resolver, target });
+      logger.warn(err, { session, resolver });
       throw err;
     }
 
@@ -720,6 +795,15 @@ async function sendEmail(
         //
         if (isDaneError(err)) {
           err.responseCode = 421;
+          throw err;
+        }
+
+        if (isSessionLimitError(err)) {
+          err.isSessionLimit = true;
+          err.isCodeBug = false;
+          err.responseCode = 421;
+          await backOffSmtpSessions({ client, resolver, target });
+          logger.warn(err, { session, resolver });
           throw err;
         }
 

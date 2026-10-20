@@ -780,6 +780,26 @@ const config = {
   // PQueue slots too long. Most legitimate servers respond within 30s.
   // Emails to very slow servers will retry on the next queue cycle.
   smtpQueueTimeout: ms('60s'),
+  //
+  // Outbound SMTP sessions open at once from one IP to a provider that limits
+  // them (see `helpers/smtp-session-limiter.js`), keyed by the root domain of
+  // the provider's primary MX host. Comcast allows 25 per sending IP and
+  // replies "421 Too many sessions opened" past that; sessions that were not
+  // closed cleanly still count on their side for a while, so this stays well
+  // below it.
+  // <https://www.xfinity.com/support/articles/email-errors>
+  //
+  smtpSessionLimits: new Map([['comcast.net', 10]]),
+  // after a "too many sessions" or rate limit (e.g. Comcast RL000003) reply,
+  // allow at most this many sessions to that provider (from that IP) for this
+  // long (only for providers listed above)
+  smtpSessionLimitBackoffMax: 2,
+  smtpSessionLimitBackoff: ms('5m'),
+  // how long a delivery waits for a free session before it is deferred (421)
+  // (kept short since it holds a queue slot or an inbound SMTP session)
+  smtpSessionLimitWait: ms('5s'),
+  // a session that was never released (e.g. a crash) stops counting after this
+  smtpSessionTTL: ms('5m'),
   smtpLimitMessages: SMTP_LIMIT_MESSAGES,
   // senders on the Team plan start (and are never reset below) this daily
   // threshold instead of the first tier's, and move up from the first tier

@@ -577,6 +577,50 @@ test.serial(
 );
 
 test.serial(
+  'a destination that limits sessions from our IP is not reported as a forwarding issue',
+  async (t) => {
+    const { partialDeliveryRetryWindow } = config;
+    config.partialDeliveryRetryWindow = 1;
+    t.teardown(() => {
+      config.partialDeliveryRetryWindow = partialDeliveryRetryWindow;
+    });
+
+    // the provider throttles our sending IP (e.g. Comcast), which the alias
+    // owner cannot fix
+    const ctx = await setup(t, {
+      rcptTo(address) {
+        if (address !== ctx.addr('throttled')) return;
+        const err = new Error(
+          `4.2.0 ${IP_ADDRESS} Throttled - try again later. Please see https://postmaster.comcast.net/smtp-error-codes.php#RL000003`
+        );
+        err.responseCode = 421;
+        return err;
+      }
+    });
+
+    await ctx.createAlias('epsilon', ['epsilon', 'throttled']);
+    await ctx.createAlias('zeta', ['zeta']);
+
+    const id = randomUUID();
+    const err = await t.throwsAsync(ctx.send(['epsilon', 'zeta'], id));
+    t.is(err.responseCode, 421);
+
+    await delay(50);
+    await ctx.clearGreylist();
+    const info = await ctx.send(['epsilon', 'zeta'], id);
+    t.deepEqual(info.rejected, []);
+    t.is(ctx.received.get(ctx.addr('epsilon')), 1);
+    t.is(ctx.received.get(ctx.addr('zeta')), 1);
+
+    const emails = await getForwardingIssueEmails(
+      `epsilon@${ctx.domain.name}`,
+      0
+    );
+    t.is(emails.length, 0);
+  }
+);
+
+test.serial(
   'a mailbox that is over quota receives the message when the sender retries',
   async (t) => {
     const ctx = await setup(t);

@@ -18,6 +18,7 @@ const emailHelper = require('#helpers/email');
 const getBounceInfo = require('#helpers/get-bounce-info');
 const getErrorCode = require('#helpers/get-error-code');
 const i18n = require('#helpers/i18n');
+const { isSessionLimitError } = require('#helpers/smtp-session-limiter');
 const { isWithinGracePeriod } = require('#helpers/is-within-grace-period');
 const logger = require('#helpers/logger');
 const parseHostFromDomainOrAddress = require('#helpers/parse-host-from-domain-or-address');
@@ -68,6 +69,13 @@ function isDestinationIssue(bounce) {
     bounce.err.name === 'DenylistError'
   )
     return false;
+
+  //
+  // the provider limited sessions from (or throttled) our sending IP, which is
+  // about our servers and not something the alias owner can fix
+  // (e.g. "421 Too many sessions opened" from Comcast)
+  //
+  if (isSessionLimitError(bounce.err)) return false;
 
   if (!bounce.err.bounceInfo) bounce.err.bounceInfo = getBounceInfo(bounce.err);
   const { category } = bounce.err.bounceInfo;
