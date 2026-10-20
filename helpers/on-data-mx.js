@@ -83,6 +83,7 @@ const isCodeBug = require('#helpers/is-code-bug');
 const isDenylisted = require('#helpers/is-denylisted');
 const isTimeoutError = require('#helpers/is-timeout-error');
 const isEmail = require('#helpers/is-email');
+const isGoogleMX = require('#helpers/is-google-mx');
 const isGreylisted = require('#helpers/is-greylisted');
 const isHighConfidenceGenericRdnsSpam = require('#helpers/is-high-confidence-generic-rdns-spam');
 const isHighConfidenceUnconfirmedRdnsSpam = require('#helpers/is-high-confidence-unconfirmed-rdns-spam');
@@ -1209,6 +1210,41 @@ async function checkBounceForSpam(bounce, headers, session) {
 //       we can probably rewrite most of the `recipient.replacements` stuff below to clean it up
 //
 
+//
+// rewrite the From header to our own address (keeping the original sender in
+// the display name, X-Original-From, and Reply-To unless one was set) so the
+// forwarded message passes DMARC at the destination
+//
+function rewriteFriendlyFrom(headers, session) {
+  session.rewriteFriendlyFrom = true;
+  headers.update(
+    'From',
+    `"${session.originalFromAddress}" <${config.friendlyFromEmail}>`
+  );
+  headers.add('X-Original-From', session.originalFromAddress);
+  //
+  // if there was an original reply-to on the email
+  // then we don't want to modify it of course
+  //
+  // <https://github.com/andris9/mailsplit/issues/21>
+  if (!getHeaders(headers, 'reply-to'))
+    headers.update('Reply-To', session.originalFromAddress);
+}
+
+//
+// a message that failed DMARC is only accepted when a trusted intermediary
+// sealed it with ARC (e.g. an Outlook/Hotmail inbox rule redirect that
+// re-encoded the body and broke the original DKIM signature), so forwarding
+// it with the original From will always fail DMARC at the next hop
+//
+function isTrustedArcDmarcFailure(session) {
+  return Boolean(
+    session.dmarc?.status?.result === 'fail' &&
+      session.isTrustedArc &&
+      (session.isAllowlisted || session.hasSameHostnameAsFrom)
+  );
+}
+
 async function forward(recipient, headers, session, body) {
   // prevent sending to the same webhook or email twice
   const key = getFingerprintKey(session, recipient.webhook || recipient.to[0]);
@@ -1745,6 +1781,21 @@ async function forward(recipient, headers, session, body) {
     if (downgraded !== value) headers.update(hdr, downgraded);
   }
 
+  //
+  // Gmail rejects a message that fails DMARC on its From header, so rewrite it
+  // up front instead of sending one that we know will be rejected
+  // (other destinations get the rewrite if they reject it for DMARC below)
+  //
+  let hasFriendlyFrom = false;
+  if (
+    isTrustedArcDmarcFailure(session) &&
+    session.dmarc.policy === 'reject' &&
+    (await isGoogleMX(this.resolver, recipient.host))
+  ) {
+    rewriteFriendlyFrom(headers, session);
+    hasFriendlyFrom = true;
+  }
+
   const unsealed = Buffer.concat([headers.build(), body]);
   const sealHeaders = await sealMessage(unsealed, {
     ...config.signatureData,
@@ -1876,13 +1927,12 @@ async function forward(recipient, headers, session, body) {
       }
 
       if (
-        !session.rewriteFriendlyFrom &&
-        session.dmarc?.status?.result === 'pass' &&
+        !hasFriendlyFrom &&
         err.bounceInfo.category === 'dmarc' &&
-        (session.isAllowlisted || session.hasSameHostnameAsFrom)
+        ((session.dmarc?.status?.result === 'pass' &&
+          (session.isAllowlisted || session.hasSameHostnameAsFrom)) ||
+          isTrustedArcDmarcFailure(session))
       ) {
-        session.rewriteFriendlyFrom = true;
-
         // TODO: disabled until we use MongoDB for this
         // notify common system administrator usernames of this issue
         // sendSysAdminEmail
@@ -1890,18 +1940,7 @@ async function forward(recipient, headers, session, body) {
         //   .then()
         //   .catch((err) => logger.fatal(err));
 
-        headers.update(
-          'From',
-          `"${session.originalFromAddress}" <${config.friendlyFromEmail}>`
-        );
-        headers.add('X-Original-From', session.originalFromAddress);
-        //
-        // if there was an original reply-to on the email
-        // then we don't want to modify it of course
-        //
-        // <https://github.com/andris9/mailsplit/issues/21>
-        if (!getHeaders(headers, 'reply-to'))
-          headers.update('Reply-To', session.originalFromAddress);
+        rewriteFriendlyFrom(headers, session);
 
         const unsealed = Buffer.concat([headers.build(), body]);
         const sealHeaders = await sealMessage(unsealed, {
@@ -1945,6 +1984,13 @@ async function forward(recipient, headers, session, body) {
           throw err;
         }
       } else {
+        // alert admins if the up-front friendly-from rewrite was not enough
+        if (hasFriendlyFrom && err.bounceInfo.category === 'dmarc') {
+          err.isCodeBug = true;
+          err.session = session;
+          logger.fatal(err);
+        }
+
         throw err;
       }
     }
