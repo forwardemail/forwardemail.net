@@ -38,6 +38,7 @@
  */
 
 const ICAL = require('ical.js');
+const uuid = require('uuid');
 const isEmail = require('#helpers/is-email');
 const deduplicateCalendarEvents = require('#helpers/deduplicate-calendar-events');
 const { sendCalendarEmail } = require('#helpers/send-calendar-email');
@@ -613,10 +614,22 @@ async function processRequest(instance, ctx, invite, calendars) {
     // Strip METHOD from stored ICS
     const storedIcs = stripMethodFromIcs(invite.rawIcs);
 
-    // Generate eventId and href from UID (follows CalDAV server convention)
+    //
+    // Generate eventId and href from UID (follows CalDAV server convention).
+    // The href is inside the calendar's collection as clients list it (its
+    // calendarId, or its database id without a UUID one, as caldav-server.js
+    // getCalendarId), with "@" encoded as the REST API writes it.  DAVx5
+    // ignores an event whose URL is outside the calendar it lists.
+    //
     const eventId = `${invite.eventUid}.ics`;
     const username = ctx.state.user?.username || '';
-    const href = `/dav/${username}/${targetCalendar._id}/${eventId}`;
+    const collectionId = uuid.validate(targetCalendar.calendarId)
+      ? targetCalendar.calendarId
+      : targetCalendar._id.toString();
+    const href = `/dav/${username.replaceAll(
+      '@',
+      '%40'
+    )}/${collectionId}/${eventId.replaceAll('@', '%40')}`;
 
     //
     // Find-before-write dedup: check if an event with this eventId already
@@ -630,6 +643,7 @@ async function processRequest(instance, ctx, invite, calendars) {
     });
 
     let createdEvent;
+    let eventHref = href;
     if (existingAll.length > 0) {
       // Deduplicate: keep the latest by updated_at
       const deduped = deduplicateCalendarEvents(existingAll);
@@ -648,11 +662,13 @@ async function processRequest(instance, ctx, invite, calendars) {
       );
 
       // Update the keeper with new ICS data and resurrect if soft-deleted
+      // (its href is kept: clients may have the event cached at that URL)
+      if (keeper.href) eventHref = keeper.href;
       await CalendarEvents.findOneAndUpdate(
         instance,
         ctx.state.session,
         { _id: keeper._id },
-        { $set: { ical: storedIcs, href, deleted_at: null } }
+        { $set: { ical: storedIcs, href: eventHref, deleted_at: null } }
       );
 
       // Soft-delete any extra duplicates
@@ -701,7 +717,7 @@ async function processRequest(instance, ctx, invite, calendars) {
           eventId,
           calendarId: targetCalendar.calendarId,
           ical: storedIcs || '',
-          href,
+          href: eventHref,
           object: 'calendar_event'
         }
       }

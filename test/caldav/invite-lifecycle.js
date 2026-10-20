@@ -610,6 +610,84 @@ test.serial(
   }
 );
 
+// An invite added to a calendar is listed inside that calendar: DAVx5 keeps
+// only the events whose URL is a member of the collection it lists (it logs
+// "Ignoring non-member response" for the others and never downloads them).
+// Invites were stored with the calendar's database id in their href, so
+// DAVx5 never showed them.  An updated invite keeps its URL.
+test.serial(
+  'Lifecycle: an invite is listed inside the calendar it was added to',
+  async (t) => {
+    const uid = `lifecycle-member-${Date.now()}@google.com`;
+    const attendee = t.context.username;
+    const receive = async (sequence, summary) => {
+      const icsContent = makeRequestIcs({
+        uid,
+        organizer: 'boss@gmail.com',
+        attendees: [attendee],
+        summary,
+        sequence
+      });
+      const result = await checkAndProcessImipMessage(
+        buildParsedEmail({
+          from: 'calendar-notification@google.com',
+          to: attendee,
+          icsContent,
+          subject: `Invitation: ${summary}`
+        }),
+        {
+          messageId: `<msg-member-${sequence}@google.com>`,
+          fromEmail: 'calendar-notification@google.com',
+          toEmail: attendee,
+          // (an update is applied only when sent by the organizer)
+          authenticatedFromEmail: 'boss@gmail.com'
+        }
+      );
+      t.true(result.processed);
+      await runProcessInvites(t);
+    };
+
+    // the calendar the event is in, and its URL as the client lists it
+    const listed = async (headers) => {
+      for (const calendar of t.context.calendars) {
+        const objects = await fetchCalendarObjects({ calendar, headers });
+        const match = objects.find((o) => o.data && o.data.includes(uid));
+        if (match) return { calendar, url: match.url, data: match.data };
+      }
+
+      return null;
+    };
+
+    // (as DAVx5 decides it: the decoded path is directly in the calendar)
+    const isMember = ({ calendar, url }) => {
+      const collection = decodeURIComponent(new URL(calendar.url).pathname);
+      const path = decodeURIComponent(new URL(url, calendar.url).pathname);
+      return (
+        path.startsWith(collection) &&
+        !path.slice(collection.length).includes('/')
+      );
+    };
+
+    const davx5 = {
+      ...t.context.authHeaders,
+      'User-Agent': 'DAVx5/4.4 (at.bitfire.davdroid)'
+    };
+
+    await receive(0, 'Membership check');
+    const added = await listed(t.context.authHeaders);
+    t.truthy(added, 'the invite is in a calendar');
+    t.true(isMember(added), `${added.url} is inside ${added.calendar.url}`);
+    const forDavx5 = await listed(davx5);
+    t.is(forDavx5.url, added.url);
+
+    // an update from the organizer keeps the URL clients have
+    await receive(1, 'Membership check moved');
+    const updated = await listed(t.context.authHeaders);
+    t.true(updated.data.includes('Membership check moved'));
+    t.is(updated.url, added.url);
+  }
+);
+
 // ═══════════════════════════════════════════════════════════════════════════════
 // LIFECYCLE 2: iMIP REPLY → Organizer's PARTSTAT Updated
 // ═══════════════════════════════════════════════════════════════════════════════
