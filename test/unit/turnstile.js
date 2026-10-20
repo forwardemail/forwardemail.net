@@ -3,14 +3,75 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
+const fs = require('node:fs');
+
 const test = require('ava');
 const { JSDOM } = require('jsdom');
 const jquery = require('jquery');
 
 const {
   createAjaxFormWithTurnstile,
+  isTurnstileRenderable,
   resetTurnstile
 } = require('../../assets/js/turnstile');
+
+// page with the site's jQuery and Bootstrap modal plugin loaded as globals
+function createModalDom() {
+  const dom = new JSDOM(
+    `
+    <form id="page-form" class="ajax-form">
+      <div id="page-turnstile" class="cf-explicit-turnstile"></div>
+    </form>
+    <div class="modal fade" id="modal-generate-password" tabindex="-1">
+      <div class="modal-dialog"><div class="modal-content"><div class="modal-body">
+        <form class="ajax-form confirm-prompt">
+          <div id="modal-turnstile" class="cf-explicit-turnstile"></div>
+        </form>
+      </div></div></div>
+    </div>
+  `,
+    { runScripts: 'outside-only' }
+  );
+  for (const file of [
+    require.resolve('jquery/dist/jquery.js'),
+    require.resolve('bootstrap/dist/js/bootstrap.bundle.js')
+  ]) {
+    dom.window.eval(fs.readFileSync(file, 'utf8'));
+  }
+
+  return { $: dom.window.jQuery, dom };
+}
+
+test('renders widgets outside modals', (t) => {
+  const { $, dom } = createModalDom();
+  t.true(isTurnstileRenderable($, $('#page-turnstile').get(0)));
+  dom.window.close();
+});
+
+test('does not render widgets in closed modals', (t) => {
+  const { $, dom } = createModalDom();
+  t.false(isTurnstileRenderable($, $('#modal-turnstile').get(0)));
+  dom.window.close();
+});
+
+test('renders the widget of a modal that is still opening', async (t) => {
+  const { $, dom } = createModalDom();
+  const $modal = $('#modal-generate-password');
+  const shown = new Promise((resolve) => {
+    $modal.one('shown.bs.modal', resolve);
+  });
+
+  // api.js can finish loading after `show.bs.modal` fired and before the
+  // backdrop fade makes the modal visible
+  $modal.modal('show');
+  t.true($modal.data('bs.modal')._isTransitioning);
+  t.true(isTurnstileRenderable($, $('#modal-turnstile').get(0)));
+
+  await shown;
+  $modal.modal('hide');
+  t.false(isTurnstileRenderable($, $('#modal-turnstile').get(0)));
+  dom.window.close();
+});
 
 function createDom() {
   const dom = new JSDOM(`

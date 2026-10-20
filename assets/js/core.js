@@ -132,7 +132,10 @@ const debounce = require('./debounce');
 const { initApiTokens } = require('./api-token');
 const logger = require('./logger');
 const sendRequest = require('./send-request');
-const { createAjaxFormWithTurnstile } = require('./turnstile');
+const {
+  createAjaxFormWithTurnstile,
+  isTurnstileRenderable
+} = require('./turnstile');
 
 //
 // Handle explicit Cloudflare Turnstile (Advanced Example with Bootstrap/Modals/Responsive Support)
@@ -197,11 +200,8 @@ $('body').on('click.handleHashChange', "a[href^='#']", handleHashChange);
 window.onloadTurnstileCallback = function () {
   $('.cf-explicit-turnstile')
     .filter(function () {
-      // render if not inside modal or if inside modal that's shown
-      // (e.g. in case you render a modal on the page when it loads; which is an anti-pattern)
-      const $modal = $(this).parents('.modal:first');
-      if ($modal.length === 0) return true;
-      return $modal.is(':visible');
+      // render if not inside a modal, or inside a modal that's open or opening
+      return isTurnstileRenderable($, this);
     })
     .each(handleExplicitTurnstile);
   $('body').on('show.bs.modal', '.modal', function () {
