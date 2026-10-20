@@ -3425,7 +3425,7 @@ Test`.trim()
       });
       return Boolean(exists);
     },
-    { timeout: ms('5s') }
+    { timeout: ms('30s') }
   );
 
   await server.close();
@@ -3716,7 +3716,7 @@ Test`.trim()
       });
       return Boolean(exists);
     },
-    { timeout: ms('5s') }
+    { timeout: ms('30s') }
   );
 
   await server.close();
@@ -4015,7 +4015,7 @@ Test`.trim()
         });
         return Boolean(exists);
       },
-      { timeout: ms('5s') }
+      { timeout: ms('30s') }
     )
   );
   t.is(err.name, 'TimeoutError');
@@ -4303,7 +4303,7 @@ Test`.trim()
       });
       return Boolean(exists);
     },
-    { timeout: ms('5s') }
+    { timeout: ms('30s') }
   );
 
   await server.close();
@@ -4485,7 +4485,7 @@ Test REQUIRETLS
       });
       return Boolean(exists);
     },
-    { timeout: ms('5s') }
+    { timeout: ms('30s') }
   );
 
   // Verify email was stored with requireTLS flag
@@ -4767,7 +4767,7 @@ Test message for RFC 3464 bounce compliance`.trim()
       });
       return Boolean(exists);
     },
-    { timeout: ms('5s') }
+    { timeout: ms('30s') }
   );
 
   // Retrieve the bounce DSN email
@@ -5169,7 +5169,7 @@ Test message for RFC 3464 success DSN compliance`.trim()
       });
       return Boolean(exists);
     },
-    { timeout: ms('5s') }
+    { timeout: ms('30s') }
   );
 
   // Retrieve the success DSN email

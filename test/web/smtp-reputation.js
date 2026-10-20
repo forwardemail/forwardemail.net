@@ -371,7 +371,7 @@ test('pricing advertises the team starting threshold', async (t) => {
   t.regex(
     text(document.body),
     new RegExp(
-      `New senders start at ${config.smtpReputationTiers[0].limit} messages per day \\(${config.smtpTeamLimitMessages} on the Team plan\\)`
+      `New senders start at ${config.smtpReputationTiers[0].limit} messages a day \\(${config.smtpTeamLimitMessages} on the Team plan\\)`
     )
   );
 });

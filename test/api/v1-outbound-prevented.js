@@ -32,6 +32,10 @@ const utils = require('../utils');
 const config = require('#config');
 const { Domains, Emails } = require('#models');
 
+// how the scanner names an executable attachment ("executable" up to Spam
+// Scanner 5, "a file type that runs code" from Spam Scanner 7)
+const EXECUTABLE = /executable|runs code/i;
+
 test.before(utils.setupMongoose);
 test.after.always(utils.teardownMongoose);
 test.beforeEach(utils.setupApiServer);
@@ -102,7 +106,7 @@ test('a message with an executable attachment is prevented, and only that messag
     }
   ]);
   t.is(res.status, 403, `${JSON.stringify(res.body)}`);
-  t.regex(res.body.message, /executable/i);
+  t.regex(res.body.message, EXECUTABLE);
 
   // nothing was queued
   t.is(await Emails.countDocuments({ domain: domain._id }), 0);
@@ -126,7 +130,7 @@ test('a message with an executable attachment is prevented, and only that messag
     ).includes(user.email)
   );
   t.is(notice.locals.responseCode, 554);
-  t.regex(notice.locals.response, /executable/i);
+  t.regex(notice.locals.response, EXECUTABLE);
   // (rendered through the real template)
   const { info } = await emailHelper(notice);
   const { html } = info.originalMessage;
