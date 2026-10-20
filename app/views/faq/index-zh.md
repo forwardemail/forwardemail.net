@@ -89,6 +89,7 @@
   * [为什么新注册或最近过期的域名需要付费计划](#why-do-newly-registered-or-recently-expired-domains-require-a-paid-plan)
   * [你们的 SMTP 服务器配置设置是什么](#what-are-your-smtp-server-configuration-settings)
   * [你们的 IMAP 服务器配置设置是什么](#what-are-your-imap-server-configuration-settings)
+  * [新邮箱包含哪些文件夹](#what-folders-does-a-new-mailbox-have)
   * [你们的 POP3 服务器配置设置是什么](#what-are-your-pop3-server-configuration-settings)
   * [如何为我的域设置邮件自动发现](#how-do-i-set-up-email-autodiscovery-for-my-domain)
 * [安全](#security-1)
@@ -3902,6 +3903,23 @@ WHOIS/RDAP 结果会缓存 24 小时，因此刚刚超过 90 天期限的域名�
 
 请参阅 [你们支持使用 IMAP 接收邮件吗](#do-you-support-receiving-email-with-imap) 获取分步说明。
 
+### 新邮箱包含哪些文件夹 {#what-folders-does-a-new-mailbox-have}
+
+新邮箱默认包含以下文件夹。除 `INBOX` 外，每个文件夹都有一个[特殊用途属性（RFC 6154）](https://www.rfc-editor.org/rfc/rfc6154.html)，电子邮件客户端（包括我们的[网页邮件客户端](https://mail.forwardemail.net)和[应用](/download)）正是通过它来识别已发送、草稿、废纸篓和垃圾邮件文件夹，无论它们叫什么名字。
+
+| 文件夹         | 特殊用途       | 删除后                                                                                   |
+| ----------- | ---------- | ------------------------------------------------------------------------------------- |
+| `INBOX`     | –          | 无法删除（[RFC 9051](https://www.rfc-editor.org/rfc/rfc9051.html#section-6.3.4)），我们也不允许重命名 |
+| `Sent Mail` | `\Sent`    | 我们会重新创建                                                                               |
+| `Drafts`    | `\Drafts`  | 我们会重新创建                                                                               |
+| `Trash`     | `\Trash`   | 我们会重新创建                                                                               |
+| `Spam`      | `\Junk`    | 保持删除状态                                                                                |
+| `Archive`   | `\Archive` | 保持删除状态                                                                                |
+
+* **Spam 和 Junk：** 较早的邮箱可能还有一个 `Junk` 文件夹。`Spam` 和 `Junk` 都标记为 `\Junk`，因此任何一个都可以用作垃圾邮件文件夹，您可以删除不用的那个。归入 `Junk` 的邮件（例如由 [Sieve 脚本](#do-you-support-sieve-email-filtering)归入）在没有 `Junk` 文件夹时会进入 `Spam`。
+* **重命名：** 我们按名称识别这些文件夹。如果您重命名 `Sent Mail`、`Drafts` 或 `Trash`，重命名后的文件夹会变成普通文件夹，我们会重新创建原文件夹。因此请保留它们的名称；大多数客户端本来就会用自己的名称（如“已发送”）显示它们。
+* **保留期限：** `Trash` 和 `Spam`（以及 `Junk`，如果有的话）中的邮件最多保留 30 天，邮箱越满删除得越早（最短 1 天），除非您为该别名设置了保留期限。
+
 ### 你们的 POP3 服务器配置设置是什么 {#what-are-your-pop3-server-configuration-settings}
 
 我们的服务器是 `pop3.forwardemail.net`，并且在我们的 <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">状态页面</a> 上也有监控。
@@ -5415,9 +5433,9 @@ Forward Email 完全依赖两个关键基础设施提供商，且均未使用第
 
 ### 你们有灰名单吗 {#do-you-have-a-greylist}
 
-是的，我们采用了非常宽松的 [邮件灰名单](https://en.wikipedia.org/wiki/Greylisting_\(email\)) 策略。灰名单只适用于不在我们的允许列表中的发件人，并且在我们的缓存中保存30天。
+是的，我们采用了非常宽松的 [邮件灰名单](https://en.wikipedia.org/wiki/Greylisting_\(email\)) 策略。灰名单只适用于不在我们的允许列表中的发件人，并且在我们的缓存中保存5天。
 
-对于任何新发件人，我们会在Redis数据库中存储一个键，保存30天，值为其首次请求的初始到达时间。然后我们以450重试状态码拒绝他们的邮件，只有在经过5分钟后才允许通过。
+对于任何新发件人，我们会在Redis数据库中存储一个键，保存5天，值为其首次请求的初始到达时间。然后我们以450重试状态码拒绝他们的邮件，只有在经过5分钟后才允许通过。
 
 如果他们成功等待了从初始到达时间起的5分钟，那么他们的邮件将被接受，不会再收到450状态码。
 
@@ -5426,6 +5444,8 @@ Forward Email 完全依赖两个关键基础设施提供商，且均未使用第
 例如，如果一封邮件来自 `test.example.com`，而我们还未见过来自 `example.com` 的邮件，那么来自 `test.example.com` 和/或 `example.com` 的任何邮件都必须从连接的初始到达时间起等待5分钟。我们不会让 `test.example.com` 和 `example.com` 各自等待各自的5分钟（我们的灰名单策略适用于根域级别）。
 
 请注意，灰名单不适用于任何在我们的[允许列表](#do-you-have-an-allowlist)中的发件人（例如本文撰写时的Meta、Amazon、Netflix、Google、Microsoft）。
+
+当我们转发的邮件被目标服务器拒绝时（例如您转发到的邮箱拒绝了它），会另外适用一项暂缓措施。此时，我们会按邮件的[指纹](#how-do-you-determine-an-email-fingerprint)识别同一封邮件，将其重试暂缓1小时，发件人会收到带有该等待时间的同一个450状态码。如果无法连接目标服务器或其容量不足（例如邮箱已满），暂缓时间为5分钟；[允许列表](#do-you-have-an-allowlist)中的发件人则暂缓10分钟（上述两种情况为1分钟）。这样可以避免同一拒绝在目标服务器上反复发生，从而损害我们在那里的信誉。要消除这些延迟，请修复首次拒绝的原因，您可以在[我的账户 → 日志](/my-account/logs)中查看。
 
 ### 你们有拒绝名单吗 {#do-you-have-a-denylist}
 
@@ -5446,8 +5466,8 @@ Forward Email 完全依赖两个关键基础设施提供商，且均未使用第
 检测到发送垃圾邮件或病毒内容的发件人将按以下方式加入拒绝名单：
 
 1. 在检测到垃圾邮件或来自“可信”发件人（例如 `gmail.com`、`microsoft.com`、`apple.com`）的黑名单时，[初始消息指纹](#how-do-you-determine-an-email-fingerprint) 会被灰名单处理。
-   * 如果发件人在允许列表中，消息灰名单时间为1小时。
-   * 如果发件人不在允许列表中，消息灰名单时间为6小时。
+   * 如果发件人在允许列表中，消息灰名单时间为10分钟。
+   * 如果发件人不在允许列表中，消息灰名单时间为1小时。
 2. 我们从发件人和消息信息中解析拒绝名单键，对于每个键（如果不存在则创建），创建计数器，计数器加1，并缓存24小时。
    * 对于允许列表发件人：
      * 如果信封“MAIL FROM”邮箱通过SPF或无SPF，且不是[postmaster用户名](#what-are-postmaster-addresses)或[no-reply用户名](#what-are-no-reply-addresses)，则添加该键。

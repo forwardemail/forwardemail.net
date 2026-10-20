@@ -28,6 +28,16 @@ const MAX_FIELD_BYTES = 256 * 1024; // 256 KB
 const MAX_ARRAY_LENGTH = 5;
 
 //
+// Most values kept for each header in `meta.session.repeatedHeaders` (every
+// value of a header that occurs more than once, see `helpers/get-headers.js`)
+//
+// (these are the message's own headers shown on the log page, such as a
+//  chain of Received headers or up to 10 DKIM-Signature headers, so the
+//  general array limit above would hide most of them)
+//
+const MAX_REPEATED_HEADER_VALUES = 50;
+
+//
 // Well-known keys that can grow very large and are safe to drop or truncate.
 //
 const DROPPABLE_META_KEYS = new Set(['results', 'rejectedErrors', 'bounces']);
@@ -69,6 +79,31 @@ function truncateArray(arr) {
 }
 
 /**
+ * Truncate the values of repeated headers (keeping only strings).
+ * @param {object} repeatedHeaders
+ * @returns {object}
+ */
+function truncateRepeatedHeaders(repeatedHeaders) {
+  const result = {};
+  for (const key of Object.keys(repeatedHeaders)) {
+    const values = repeatedHeaders[key];
+    if (!Array.isArray(values)) continue;
+    const strings = values.filter((value) => typeof value === 'string');
+    result[key] = strings
+      .slice(0, MAX_REPEATED_HEADER_VALUES)
+      .map((value) => truncateString(value));
+    if (strings.length > MAX_REPEATED_HEADER_VALUES)
+      result[key].push(
+        `[... ${
+          strings.length - MAX_REPEATED_HEADER_VALUES
+        } more items truncated]`
+      );
+  }
+
+  return result;
+}
+
+/**
  * Recursively walk an object and truncate oversized string values.
  * Also truncates known large arrays.
  * @param {*} obj
@@ -90,6 +125,13 @@ function deepTruncate(obj, depth = 0) {
   for (const key of Object.keys(obj)) {
     const val = obj[key];
     if (
+      key === 'repeatedHeaders' &&
+      val &&
+      typeof val === 'object' &&
+      !Array.isArray(val)
+    ) {
+      result[key] = truncateRepeatedHeaders(val);
+    } else if (
       DROPPABLE_META_KEYS.has(key) &&
       Array.isArray(val) &&
       val.length > MAX_ARRAY_LENGTH

@@ -253,3 +253,27 @@ test('null and undefined values are handled', (t) => {
 test('MAX_DOC_BYTES is 12 MB', (t) => {
   t.is(MAX_DOC_BYTES, 12 * 1024 * 1024);
 });
+
+test('every value of a repeated header is kept, up to 50', (t) => {
+  const received = Array.from({ length: 12 }, (_, i) => `from hop${i}`);
+  const many = Array.from({ length: 60 }, (_, i) => `value ${i}`);
+  const result = sanitizeLogPayload({
+    message: 'test',
+    meta: {
+      session: {
+        headers: { Received: 'from hop11', 'X-Many': 'value 59' },
+        repeatedHeaders: {
+          Received: received,
+          'X-Many': many,
+          'X-Mixed': ['one', { not: 'a string' }, 'two']
+        }
+      }
+    }
+  });
+  const { repeatedHeaders } = result.meta.session;
+  t.deepEqual(repeatedHeaders.Received, received);
+  t.is(repeatedHeaders['X-Many'].length, 51);
+  t.deepEqual(repeatedHeaders['X-Many'].slice(0, 50), many.slice(0, 50));
+  t.is(repeatedHeaders['X-Many'][50], '[... 10 more items truncated]');
+  t.deepEqual(repeatedHeaders['X-Mixed'], ['one', 'two']);
+});

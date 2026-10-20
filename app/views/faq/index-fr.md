@@ -89,6 +89,7 @@
   * [Pourquoi les domaines récemment enregistrés ou récemment expirés nécessitent-ils un forfait payant](#why-do-newly-registered-or-recently-expired-domains-require-a-paid-plan)
   * [Quels sont les paramètres de configuration de votre serveur SMTP](#what-are-your-smtp-server-configuration-settings)
   * [Quels sont les paramètres de configuration de votre serveur IMAP](#what-are-your-imap-server-configuration-settings)
+  * [Quels dossiers contient une nouvelle boîte aux lettres](#what-folders-does-a-new-mailbox-have)
   * [Quels sont les paramètres de configuration de votre serveur POP3](#what-are-your-pop3-server-configuration-settings)
   * [Comment configurer la découverte automatique d'email pour mon domaine](#how-do-i-set-up-email-autodiscovery-for-my-domain)
 * [Sécurité](#security-1)
@@ -3906,6 +3907,23 @@ Pour se connecter avec IMAP, le **utilisateur IMAP** doit être l’adresse e-ma
 
 Veuillez consulter [Supportez-vous la réception d’e-mails avec IMAP](#do-you-support-receiving-email-with-imap) pour des instructions étape par étape.
 
+### Quels dossiers contient une nouvelle boîte aux lettres {#what-folders-does-a-new-mailbox-have}
+
+Une nouvelle boîte aux lettres commence avec les dossiers ci-dessous. Chaque dossier autre que `INBOX` possède un [attribut d'usage spécial (RFC 6154)](https://www.rfc-editor.org/rfc/rfc6154.html), qui permet aux clients email, y compris notre [webmail](https://mail.forwardemail.net) et nos [applications](/download), de trouver les dossiers des messages envoyés, des brouillons, de la corbeille et des spams, quel que soit leur nom.
+
+| Dossier     | Usage spécial | Si vous le supprimez                                                                                                                           |
+| ----------- | ------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| `INBOX`     | –             | Il ne peut pas être supprimé ([RFC 9051](https://www.rfc-editor.org/rfc/rfc9051.html#section-6.3.4)), et nous ne permettons pas de le renommer |
+| `Sent Mail` | `\Sent`       | Nous le recréons                                                                                                                               |
+| `Drafts`    | `\Drafts`     | Nous le recréons                                                                                                                               |
+| `Trash`     | `\Trash`      | Nous le recréons                                                                                                                               |
+| `Spam`      | `\Junk`       | Il reste supprimé                                                                                                                              |
+| `Archive`   | `\Archive`    | Il reste supprimé                                                                                                                              |
+
+* **Spam et Junk :** les anciennes boîtes aux lettres peuvent aussi avoir un dossier `Junk`. `Spam` et `Junk` sont tous deux marqués `\Junk`, donc l'un ou l'autre peut servir de dossier spam, et vous pouvez supprimer celui que vous n'utilisez pas. Les messages classés dans `Junk` (par exemple par un [script Sieve](#do-you-support-sieve-email-filtering)) vont dans `Spam` s'il n'existe pas de dossier `Junk`.
+* **Renommage :** nous reconnaissons ces dossiers par leur nom. Si vous renommez `Sent Mail`, `Drafts` ou `Trash`, le dossier renommé devient un dossier ordinaire et nous recréons l'original. Gardez plutôt leur nom ; la plupart des clients les affichent de toute façon sous leur propre nom (comme « Envoyés »).
+* **Durée de conservation :** les messages dans `Trash` et `Spam` (et `Junk`, si vous en avez un) sont supprimés après 30 jours au maximum, et plus tôt à mesure que la boîte aux lettres se remplit (jusqu'à 1 jour), sauf si vous définissez une durée de conservation pour l'alias.
+
 ### Quelles sont vos configurations de serveur POP3 {#what-are-your-pop3-server-configuration-settings}
 
 Notre serveur est `pop3.forwardemail.net` et est également surveillé sur notre <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">page de statut</a>.
@@ -5419,9 +5437,9 @@ Cette nouvelle règle autorise uniquement les extensions de noms de domaine suiv
 
 ### Avez-vous une liste grise {#do-you-have-a-greylist}
 
-Oui, nous utilisons une politique de [greylisting des emails](https://en.wikipedia.org/wiki/Greylisting_\(email\)) très laxiste. Le greylisting ne s'applique qu'aux expéditeurs qui ne sont pas sur notre liste blanche et reste dans notre cache pendant 30 jours.
+Oui, nous utilisons une politique de [greylisting des emails](https://en.wikipedia.org/wiki/Greylisting_\(email\)) très laxiste. Le greylisting ne s'applique qu'aux expéditeurs qui ne sont pas sur notre liste blanche et reste dans notre cache pendant 5 jours.
 
-Pour tout nouvel expéditeur, nous stockons une clé dans notre base de données Redis pendant 30 jours avec une valeur correspondant à l'heure d'arrivée initiale de leur première requête. Nous rejetons ensuite leur email avec un code de statut de retry 450 et ne l'autorisons à passer qu'après un délai de 5 minutes.
+Pour tout nouvel expéditeur, nous stockons une clé dans notre base de données Redis pendant 5 jours avec une valeur correspondant à l'heure d'arrivée initiale de leur première requête. Nous rejetons ensuite leur email avec un code de statut de retry 450 et ne l'autorisons à passer qu'après un délai de 5 minutes.
 
 S'ils ont attendu avec succès 5 minutes à partir de cette heure d'arrivée initiale, leurs emails seront alors acceptés et ils ne recevront plus ce code de statut 450.
 
@@ -5430,6 +5448,8 @@ La clé consiste soit en le domaine racine FQDN, soit en l'adresse IP de l'expé
 Par exemple, si un email provient de `test.example.com` avant que nous ne voyions un email venir de `example.com`, alors tout email de `test.example.com` et/ou `example.com` devra attendre 5 minutes à partir de l'heure d'arrivée initiale de la connexion. Nous ne faisons pas attendre séparément `test.example.com` et `example.com` chacun pendant 5 minutes (notre politique de greylisting s'applique au niveau du domaine racine).
 
 Notez que le greylisting ne s'applique pas à tout expéditeur figurant sur notre [liste blanche](#do-you-have-an-allowlist) (par exemple Meta, Amazon, Netflix, Google, Microsoft au moment de la rédaction).
+
+Une mise en attente distincte s'applique lorsqu'un message est refusé par sa destination pendant que nous le transférons (par exemple, la boîte vers laquelle vous redirigez le refuse). Nous mettons alors en attente les nouvelles tentatives de ce même message, identifié par son [empreinte](#how-do-you-determine-an-email-fingerprint), pendant 1 heure, et l'expéditeur reçoit le même code de statut 450 avec ce délai. L'attente est de 5 minutes lorsque la destination était injoignable ou saturée (par exemple une boîte pleine), et les expéditeurs de notre [liste blanche](#do-you-have-an-allowlist) attendent 10 minutes (1 minute dans ces deux cas). Cela évite que le même refus se répète auprès de la destination, ce qui nuirait à notre réputation auprès d'elle. Pour mettre fin à ces délais, corrigez la cause du premier refus, visible dans [Mon compte → Journaux](/my-account/logs).
 
 ### Avez-vous une liste noire {#do-you-have-a-denylist}
 
@@ -5450,8 +5470,8 @@ Les demandes de suppression de la liste noire peuvent être faites à <https://f
 Les expéditeurs détectés comme envoyant du spam ou du contenu viral seront ajoutés à la liste noire selon la procédure suivante :
 
 1. L'[empreinte initiale du message](#how-do-you-determine-an-email-fingerprint) est mise en greylist dès détection de spam ou de blocage par une liste noire d'un expéditeur "fiable" (par exemple `gmail.com`, `microsoft.com`, `apple.com`).
-   * Si l'expéditeur était sur la liste blanche, le message est mis en greylist pendant 1 heure.
-   * Si l'expéditeur n'est pas sur la liste blanche, le message est mis en greylist pendant 6 heures.
+   * Si l'expéditeur était sur la liste blanche, le message est mis en greylist pendant 10 minutes.
+   * Si l'expéditeur n'est pas sur la liste blanche, le message est mis en greylist pendant 1 heure.
 2. Nous analysons les clés de la liste noire à partir des informations de l'expéditeur et du message, et pour chacune de ces clés nous créons (si elle n'existe pas déjà) un compteur, l'incrémentons de 1, et le mettons en cache pendant 24 heures.
    * Pour les expéditeurs sur liste blanche :
      * Ajouter une clé pour l'adresse email "MAIL FROM" de l'enveloppe si elle a passé le SPF ou s'il n'y a pas de SPF, et si ce n'était pas [un nom d'utilisateur postmaster](#what-are-postmaster-addresses) ou [un nom d'utilisateur no-reply](#what-are-no-reply-addresses).

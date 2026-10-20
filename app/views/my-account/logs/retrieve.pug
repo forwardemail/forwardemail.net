@@ -242,6 +242,9 @@ block body
           h3.h5= t("Message Headers")
           table.table.table-hover.table-bordered.table-striped
             each key in Object.keys(log.meta.session.headers)
-              tr
-                td: strong= key
-                td= log.meta.session.headers[key]
+              //- a header that occurs more than once gets a row per value
+              - const repeats = _.isObject(log.meta.session.repeatedHeaders) && Array.isArray(log.meta.session.repeatedHeaders[key]) && key.toLowerCase() !== "bcc" ? log.meta.session.repeatedHeaders[key] : [log.meta.session.headers[key]];
+              each value in repeats
+                tr
+                  td: strong= key
+                  td= value

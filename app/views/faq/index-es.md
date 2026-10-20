@@ -89,6 +89,7 @@
   * [¿Por qué los dominios recién registrados o caducados recientemente requieren un plan de pago?](#why-do-newly-registered-or-recently-expired-domains-require-a-paid-plan)
   * [Cuáles son las configuraciones de servidor SMTP](#what-are-your-smtp-server-configuration-settings)
   * [Cuáles son las configuraciones de servidor IMAP](#what-are-your-imap-server-configuration-settings)
+  * [¿Qué carpetas tiene un buzón nuevo?](#what-folders-does-a-new-mailbox-have)
   * [Cuáles son las configuraciones de servidor POP3](#what-are-your-pop3-server-configuration-settings)
   * [Cómo configuro autodiscovery de correo para mi dominio](#how-do-i-set-up-email-autodiscovery-for-my-domain)
 * [Seguridad](#security-1)
@@ -3906,6 +3907,23 @@ Para conectarse con IMAP, el **usuario IMAP** debe ser la dirección de correo e
 
 Por favor, consulte [¿Soportan la recepción de correo con IMAP](#do-you-support-receiving-email-with-imap) para instrucciones paso a paso.
 
+### ¿Qué carpetas tiene un buzón nuevo? {#what-folders-does-a-new-mailbox-have}
+
+Un buzón nuevo empieza con las carpetas siguientes. Cada carpeta excepto `INBOX` tiene un [atributo de uso especial (RFC 6154)](https://www.rfc-editor.org/rfc/rfc6154.html), que es lo que usan los clientes de correo, incluidos nuestro [webmail](https://mail.forwardemail.net) y nuestras [aplicaciones](/download), para encontrar las carpetas de enviados, borradores, papelera y spam, se llamen como se llamen.
+
+| Carpeta     | Uso especial | Si la eliminas                                                                                                                    |
+| ----------- | ------------ | --------------------------------------------------------------------------------------------------------------------------------- |
+| `INBOX`     | –            | No se puede eliminar ([RFC 9051](https://www.rfc-editor.org/rfc/rfc9051.html#section-6.3.4)), y no permitimos cambiarle el nombre |
+| `Sent Mail` | `\Sent`      | La volvemos a crear                                                                                                               |
+| `Drafts`    | `\Drafts`    | La volvemos a crear                                                                                                               |
+| `Trash`     | `\Trash`     | La volvemos a crear                                                                                                               |
+| `Spam`      | `\Junk`      | Sigue eliminada                                                                                                                   |
+| `Archive`   | `\Archive`   | Sigue eliminada                                                                                                                   |
+
+* **Spam y Junk:** los buzones más antiguos también pueden tener una carpeta `Junk`. Tanto `Spam` como `Junk` están marcadas como `\Junk`, así que cualquiera de las dos sirve como carpeta de spam, y puedes eliminar la que no uses. El correo que se archiva en `Junk` (por ejemplo, mediante un [script Sieve](#do-you-support-sieve-email-filtering)) va a `Spam` cuando no existe una carpeta `Junk`.
+* **Cambio de nombre:** reconocemos estas carpetas por su nombre. Si cambias el nombre de `Sent Mail`, `Drafts` o `Trash`, la carpeta renombrada pasa a ser una carpeta normal y volvemos a crear la original. Es mejor conservar sus nombres; de todos modos, la mayoría de los clientes las muestran con sus propios nombres (como "Enviados").
+* **Conservación:** los mensajes de `Trash` y `Spam` (y de `Junk`, si la tienes) se eliminan después de 30 días como máximo, y antes a medida que el buzón se llena (hasta 1 día), salvo que configures una conservación para el alias.
+
 ### ¿Cuáles son los ajustes de configuración de su servidor POP3? {#what-are-your-pop3-server-configuration-settings}
 
 Nuestro servidor es `pop3.forwardemail.net` y también se supervisa en nuestra <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">página de estado</a>.
@@ -5419,9 +5437,9 @@ Esta nueva regla permite usar solo las siguientes extensiones de nombres de domi
 
 ### ¿Tienes una lista gris {#do-you-have-a-greylist}
 
-Sí, tenemos una política de [lista gris de correo electrónico](https://en.wikipedia.org/wiki/Greylisting_\(email\)) muy laxa. La lista gris solo se aplica a remitentes que no están en nuestra lista blanca y dura en nuestra caché por 30 días.
+Sí, tenemos una política de [lista gris de correo electrónico](https://en.wikipedia.org/wiki/Greylisting_\(email\)) muy laxa. La lista gris solo se aplica a remitentes que no están en nuestra lista blanca y dura en nuestra caché por 5 días.
 
-Para cualquier remitente nuevo, almacenamos una clave en nuestra base de datos Redis por 30 días con un valor establecido en la hora de llegada inicial de su primera solicitud. Luego rechazamos su correo electrónico con un código de estado de reintento 450 y solo permitimos que pase una vez que hayan pasado 5 minutos.
+Para cualquier remitente nuevo, almacenamos una clave en nuestra base de datos Redis por 5 días con un valor establecido en la hora de llegada inicial de su primera solicitud. Luego rechazamos su correo electrónico con un código de estado de reintento 450 y solo permitimos que pase una vez que hayan pasado 5 minutos.
 
 Si han esperado con éxito 5 minutos desde esta hora de llegada inicial, entonces sus correos electrónicos serán aceptados y no recibirán este código de estado 450.
 
@@ -5430,6 +5448,8 @@ La clave consiste en el dominio raíz FQDN o la dirección IP del remitente. Est
 Por ejemplo, si un correo electrónico proviene de `test.example.com` antes de que veamos un correo de `example.com`, entonces cualquier correo de `test.example.com` y/o `example.com` tendrá que esperar 5 minutos desde la hora de llegada inicial de la conexión. No hacemos que tanto `test.example.com` como `example.com` esperen sus propios períodos de 5 minutos (nuestra política de lista gris se aplica a nivel del dominio raíz).
 
 Ten en cuenta que la lista gris no se aplica a ningún remitente en nuestra [lista blanca](#do-you-have-an-allowlist) (por ejemplo, Meta, Amazon, Netflix, Google, Microsoft al momento de esta redacción).
+
+Se aplica una retención aparte cuando un mensaje es rechazado en su destino mientras lo reenviamos (por ejemplo, el buzón al que reenvía lo rechaza). Entonces retenemos los reintentos de ese mismo mensaje, identificado por su [huella](#how-do-you-determine-an-email-fingerprint), durante 1 hora, y el remitente recibe el mismo código de estado 450 con esa espera. La retención es de 5 minutos cuando no se pudo contactar con el destino o este no tenía capacidad (como un buzón lleno), y los remitentes de nuestra [lista de permitidos](#do-you-have-an-allowlist) esperan 10 minutos (1 minuto en esos dos casos). Así se evita que el mismo rechazo se repita en el destino, lo que dañaría nuestra reputación allí. Para acabar con estos retrasos, corrija la causa del primer rechazo, que aparece en [Mi cuenta → Registros](/my-account/logs).
 
 ### ¿Tienes una lista negra {#do-you-have-a-denylist}
 
@@ -5450,8 +5470,8 @@ Las solicitudes de eliminación de la lista negra pueden solicitarse en <https:/
 Los remitentes detectados enviando spam o contenido de virus serán añadidos a la lista negra con el siguiente enfoque:
 
 1. La [huella digital del mensaje inicial](#how-do-you-determine-an-email-fingerprint) se pone en lista gris al detectar spam o lista de bloqueo de un remitente "confiable" (por ejemplo, `gmail.com`, `microsoft.com`, `apple.com`).
-   * Si el remitente estaba en la lista blanca, el mensaje se pone en lista gris por 1 hora.
-   * Si el remitente no está en la lista blanca, el mensaje se pone en lista gris por 6 horas.
+   * Si el remitente estaba en la lista blanca, el mensaje se pone en lista gris por 10 minutos.
+   * Si el remitente no está en la lista blanca, el mensaje se pone en lista gris por 1 hora.
 2. Analizamos claves de la lista negra a partir de la información del remitente y mensaje, y para cada una de estas claves creamos (si no existe ya) un contador, lo incrementamos en 1 y lo almacenamos en caché por 24 horas.
    * Para remitentes en lista blanca:
      * Añadir una clave para la dirección de correo electrónico "MAIL FROM" del sobre si pasó SPF o no tiene SPF, y no era [un nombre de usuario postmaster](#what-are-postmaster-addresses) ni [un nombre de usuario no-reply](#what-are-no-reply-addresses).

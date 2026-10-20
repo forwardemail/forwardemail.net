@@ -89,6 +89,7 @@
   * [Mengapa domain yang baru didaftarkan atau baru kedaluwarsa memerlukan paket berbayar](#why-do-newly-registered-or-recently-expired-domains-require-a-paid-plan)
   * [Apa pengaturan konfigurasi server SMTP Anda](#what-are-your-smtp-server-configuration-settings)
   * [Apa pengaturan konfigurasi server IMAP Anda](#what-are-your-imap-server-configuration-settings)
+  * [Folder apa saja yang dimiliki kotak surat baru](#what-folders-does-a-new-mailbox-have)
   * [Apa pengaturan konfigurasi server POP3 Anda](#what-are-your-pop3-server-configuration-settings)
   * [Bagaimana cara mengatur autodiscovery email untuk domain saya](#how-do-i-set-up-email-autodiscovery-for-my-domain)
 * [Keamanan](#security-1)
@@ -3905,6 +3906,23 @@ Untuk terhubung dengan IMAP, **pengguna IMAP** harus berupa alamat email dari al
 
 Silakan lihat [Apakah Anda mendukung penerimaan email dengan IMAP](#do-you-support-receiving-email-with-imap) untuk petunjuk langkah demi langkah.
 
+### Folder apa saja yang dimiliki kotak surat baru {#what-folders-does-a-new-mailbox-have}
+
+Kotak surat baru dimulai dengan folder di bawah ini. Setiap folder selain `INBOX` memiliki [atribut special-use (RFC 6154)](https://www.rfc-editor.org/rfc/rfc6154.html), yang digunakan klien email, termasuk [klien webmail](https://mail.forwardemail.net) dan [aplikasi](/download) kami, untuk menemukan folder terkirim, draf, sampah, dan spam apa pun namanya.
+
+| Folder      | Special-use | Jika Anda menghapusnya                                                                                                                      |
+| ----------- | ----------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| `INBOX`     | –           | Tidak dapat dihapus ([RFC 9051](https://www.rfc-editor.org/rfc/rfc9051.html#section-6.3.4)), dan kami tidak mengizinkan penggantian namanya |
+| `Sent Mail` | `\Sent`     | Kami membuatnya lagi                                                                                                                        |
+| `Drafts`    | `\Drafts`   | Kami membuatnya lagi                                                                                                                        |
+| `Trash`     | `\Trash`    | Kami membuatnya lagi                                                                                                                        |
+| `Spam`      | `\Junk`     | Tetap terhapus                                                                                                                              |
+| `Archive`   | `\Archive`  | Tetap terhapus                                                                                                                              |
+
+* **Spam dan Junk:** kotak surat lama mungkin juga memiliki folder `Junk`. `Spam` dan `Junk` sama-sama ditandai `\Junk`, jadi keduanya dapat dipakai sebagai folder spam Anda, dan Anda dapat menghapus yang tidak Anda gunakan. Email yang dimasukkan ke `Junk` (misalnya oleh [skrip Sieve](#do-you-support-sieve-email-filtering)) masuk ke `Spam` jika tidak ada folder `Junk`.
+* **Mengganti nama:** kami mengenali folder ini dari namanya. Jika Anda mengganti nama `Sent Mail`, `Drafts`, atau `Trash`, folder yang diganti namanya menjadi folder biasa dan kami membuat folder aslinya lagi. Jadi, pertahankan namanya; sebagian besar klien tetap menampilkannya dengan nama mereka sendiri (seperti "Terkirim").
+* **Retensi:** pesan di `Trash` dan `Spam` (serta `Junk`, jika Anda memilikinya) dihapus setelah paling lama 30 hari, dan lebih cepat seiring kotak surat makin penuh (hingga 1 hari), kecuali Anda menetapkan retensi untuk alias tersebut.
+
 ### Apa saja pengaturan konfigurasi server POP3 Anda {#what-are-your-pop3-server-configuration-settings}
 
 Server kami adalah `pop3.forwardemail.net` dan juga dipantau di <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">halaman status</a> kami.
@@ -5418,9 +5436,9 @@ Aturan baru ini hanya mengizinkan ekstensi nama domain berikut untuk digunakan p
 
 ### Apakah Anda memiliki greylist {#do-you-have-a-greylist}
 
-Ya, kami menggunakan kebijakan [greylisting email](https://en.wikipedia.org/wiki/Greylisting_\(email\)) yang sangat longgar. Greylisting hanya berlaku untuk pengirim yang tidak ada dalam allowlist kami dan bertahan dalam cache kami selama 30 hari.
+Ya, kami menggunakan kebijakan [greylisting email](https://en.wikipedia.org/wiki/Greylisting_\(email\)) yang sangat longgar. Greylisting hanya berlaku untuk pengirim yang tidak ada dalam allowlist kami dan bertahan dalam cache kami selama 5 hari.
 
-Untuk pengirim baru, kami menyimpan kunci di database Redis kami selama 30 hari dengan nilai yang diatur ke waktu kedatangan awal dari permintaan pertama mereka. Kami kemudian menolak email mereka dengan kode status retry 450 dan hanya mengizinkannya lewat setelah 5 menit berlalu.
+Untuk pengirim baru, kami menyimpan kunci di database Redis kami selama 5 hari dengan nilai yang diatur ke waktu kedatangan awal dari permintaan pertama mereka. Kami kemudian menolak email mereka dengan kode status retry 450 dan hanya mengizinkannya lewat setelah 5 menit berlalu.
 
 Jika mereka berhasil menunggu selama 5 menit dari waktu kedatangan awal ini, maka email mereka akan diterima dan mereka tidak akan menerima kode status 450 ini.
 
@@ -5429,6 +5447,8 @@ Kunci terdiri dari domain root FQDN atau alamat IP pengirim. Ini berarti bahwa s
 Misalnya, jika email datang dari `test.example.com` sebelum kami melihat email dari `example.com`, maka email dari `test.example.com` dan/atau `example.com` harus menunggu 5 menit dari waktu kedatangan awal koneksi. Kami tidak membuat `test.example.com` dan `example.com` masing-masing menunggu periode 5 menit mereka sendiri (kebijakan greylisting kami berlaku pada tingkat domain root).
 
 Perlu dicatat bahwa greylisting tidak berlaku untuk pengirim yang ada di [allowlist](#do-you-have-an-allowlist) kami (misalnya Meta, Amazon, Netflix, Google, Microsoft pada saat penulisan ini).
+
+Penahanan terpisah berlaku ketika pesan ditolak oleh tujuannya saat kami meneruskannya (misalnya, kotak surat tujuan penerusan Anda menolaknya). Kami lalu menahan percobaan ulang untuk pesan yang sama, yang dikenali dari [sidik jarinya](#how-do-you-determine-an-email-fingerprint), selama 1 jam, dan pengirim menerima kode status 450 yang sama dengan waktu tunggu tersebut. Penahanan berlangsung 5 menit jika tujuan tidak dapat dijangkau atau kehabisan kapasitas (seperti kotak surat penuh), dan pengirim di [daftar izin](#do-you-have-an-allowlist) kami menunggu 10 menit (1 menit dalam dua kasus tersebut). Ini mencegah penolakan yang sama terulang di tujuan, yang akan merusak reputasi kami di sana. Untuk mengakhiri penundaan ini, perbaiki penyebab penolakan pertama, yang dapat Anda lihat di [Akun Saya → Log](/my-account/logs).
 
 ### Apakah Anda memiliki denylist {#do-you-have-a-denylist}
 
@@ -5449,8 +5469,8 @@ Permintaan penghapusan denylist dapat diajukan di <https://forwardemail.net/deny
 Pengirim yang terdeteksi mengirim spam atau konten virus akan ditambahkan ke denylist dengan pendekatan berikut:
 
 1. [Sidik jari pesan awal](#how-do-you-determine-an-email-fingerprint) di-greylist saat terdeteksi spam atau blocklist dari pengirim "terpercaya" (misalnya `gmail.com`, `microsoft.com`, `apple.com`).
-   * Jika pengirim ada dalam allowlist, pesan di-greylist selama 1 jam.
-   * Jika pengirim tidak ada dalam allowlist, pesan di-greylist selama 6 jam.
+   * Jika pengirim ada dalam allowlist, pesan di-greylist selama 10 menit.
+   * Jika pengirim tidak ada dalam allowlist, pesan di-greylist selama 1 jam.
 2. Kami mengurai kunci denylist dari informasi pengirim dan pesan, dan untuk setiap kunci ini kami membuat (jika belum ada) penghitung, menambahnya sebanyak 1, dan menyimpannya selama 24 jam.
    * Untuk pengirim yang ada dalam allowlist:
      * Tambahkan kunci untuk alamat email "MAIL FROM" envelope jika memiliki SPF yang lolos atau tanpa SPF, dan bukan [username postmaster](#what-are-postmaster-addresses) atau [username no-reply](#what-are-no-reply-addresses).

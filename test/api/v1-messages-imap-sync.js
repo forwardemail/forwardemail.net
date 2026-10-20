@@ -1101,3 +1101,33 @@ test('labels given to a new message are kept when its keywords reach the label l
   t.is(res.body.labels.length, 10);
   t.true(res.body.labels.includes('work'));
 });
+
+test('moving to "Junk" uses the Spam folder when there is no Junk folder', async (t) => {
+  const { imap, session, alias } = t.context;
+  const { id } = await appendMessage(t, 'INBOX', 'spam via api');
+
+  const res = await updateMessage(t, id, { folder: 'Junk' });
+  t.is(res.status, 200);
+  t.is(res.body.folder_path, 'Spam');
+
+  // no second spam folder was created
+  await getDatabase(imap, alias, session);
+  t.falsy(await Mailboxes.findOne(imap, session, { path: 'Junk' }));
+
+  const list = await t.context.api
+    .get('/v1/messages?folder=Junk')
+    .set('Authorization', t.context.auth);
+  t.is(list.status, 200);
+  t.true(list.body.some((m) => m.id === id));
+});
+
+test('moving to "Junk" uses an existing Junk folder', async (t) => {
+  const { imap, session, alias } = t.context;
+  await getDatabase(imap, alias, session);
+  await Mailboxes.create({ instance: imap, session, path: 'Junk' });
+
+  const { id } = await appendMessage(t, 'INBOX', 'old junk folder');
+  const res = await updateMessage(t, id, { folder: 'Junk' });
+  t.is(res.status, 200);
+  t.is(res.body.folder_path, 'Junk');
+});

@@ -118,3 +118,40 @@ test('every service names a Privacy Ratings entry or opts out', (t) => {
     .filter(Boolean);
   t.is(new Set(paths).size, paths.length);
 });
+
+test('every service has a scored Internet.nl website and email report', (t) => {
+  for (const a of config.alternatives) {
+    for (const [kind, href, value] of [
+      ['site', a.internetnl_site_href, a.internetnl_site_value],
+      ['mail', a.internetnl_mail_href, a.internetnl_mail_value]
+    ]) {
+      t.regex(
+        href,
+        new RegExp(`^https://batch\\.internet\\.nl/${kind}/[^/]+/\\d+/$`),
+        `${a.name} ${kind}`
+      );
+      t.true(
+        Number.isInteger(value) && value >= 0 && value <= 100,
+        `${a.name} ${kind}`
+      );
+    }
+  }
+});
+
+test('WEB.DE can be compared with Forward Email', async (t) => {
+  const webde = config.alternatives.find((a) => a.name === 'WEB.DE');
+  t.truthy(webde);
+
+  const window = await getPage(
+    t,
+    '/en/blog/forward-email-vs-web-de-email-service-comparison'
+  );
+  const hrefs = new Set(
+    [...window.document.querySelectorAll('a')].map((a) =>
+      a.getAttribute('href')
+    )
+  );
+  t.true(hrefs.has(webde.internetnl_site_href));
+  t.true(hrefs.has(webde.internetnl_mail_href));
+  t.true(window.document.body.textContent.includes('WEB.DE'));
+});

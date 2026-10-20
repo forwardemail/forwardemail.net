@@ -89,6 +89,7 @@
   * [Dlaczego nowo zarejestrowane lub niedawno wygasłe domeny wymagają płatnego planu](#why-do-newly-registered-or-recently-expired-domains-require-a-paid-plan)
   * [Jakie są ustawienia konfiguracji serwera SMTP](#what-are-your-smtp-server-configuration-settings)
   * [Jakie są ustawienia konfiguracji serwera IMAP](#what-are-your-imap-server-configuration-settings)
+  * [Jakie foldery ma nowa skrzynka pocztowa](#what-folders-does-a-new-mailbox-have)
   * [Jakie są ustawienia konfiguracji serwera POP3](#what-are-your-pop3-server-configuration-settings)
   * [Jak ustawić autodiscovery poczty dla mojej domeny](#how-do-i-set-up-email-autodiscovery-for-my-domain)
 * [Bezpieczeństwo](#security-1)
@@ -3904,6 +3905,23 @@ Aby połączyć się przez IMAP, **użytkownik IMAP** musi być adresem e-mail a
 
 Proszę zapoznać się z [Czy obsługujecie odbieranie e-maili przez IMAP](#do-you-support-receiving-email-with-imap) aby uzyskać instrukcje krok po kroku.
 
+### Jakie foldery ma nowa skrzynka pocztowa {#what-folders-does-a-new-mailbox-have}
+
+Nowa skrzynka pocztowa zaczyna z poniższymi folderami. Każdy folder oprócz `INBOX` ma [atrybut special-use (RFC 6154)](https://www.rfc-editor.org/rfc/rfc6154.html), dzięki któremu klienci poczty, w tym nasz [klient poczty webowej](https://mail.forwardemail.net) i [aplikacje](/download), znajdują foldery wysłanych, wersji roboczych, kosza i spamu niezależnie od ich nazwy.
+
+| Folder      | Special-use | Jeśli go usuniesz                                                                                                                    |
+| ----------- | ----------- | ------------------------------------------------------------------------------------------------------------------------------------ |
+| `INBOX`     | –           | Nie można go usunąć ([RFC 9051](https://www.rfc-editor.org/rfc/rfc9051.html#section-6.3.4)), a my nie pozwalamy na zmianę jego nazwy |
+| `Sent Mail` | `\Sent`     | Tworzymy go ponownie                                                                                                                 |
+| `Drafts`    | `\Drafts`   | Tworzymy go ponownie                                                                                                                 |
+| `Trash`     | `\Trash`    | Tworzymy go ponownie                                                                                                                 |
+| `Spam`      | `\Junk`     | Pozostaje usunięty                                                                                                                   |
+| `Archive`   | `\Archive`  | Pozostaje usunięty                                                                                                                   |
+
+* **Spam i Junk:** starsze skrzynki mogą mieć też folder `Junk`. Zarówno `Spam`, jak i `Junk` są oznaczone jako `\Junk`, więc każdy z nich może służyć jako folder spamu, a ten, którego nie używasz, możesz usunąć. Poczta kierowana do `Junk` (na przykład przez [skrypt Sieve](#do-you-support-sieve-email-filtering)) trafia do `Spam`, gdy folder `Junk` nie istnieje.
+* **Zmiana nazwy:** rozpoznajemy te foldery po nazwach. Jeśli zmienisz nazwę `Sent Mail`, `Drafts` lub `Trash`, folder o nowej nazwie staje się zwykłym folderem, a my ponownie tworzymy oryginał. Zachowaj więc ich nazwy; większość klientów i tak wyświetla je pod własnymi nazwami (np. „Wysłane”).
+* **Okres przechowywania:** wiadomości w `Trash` i `Spam` (oraz w `Junk`, jeśli go masz) są usuwane po maksymalnie 30 dniach, a wcześniej w miarę zapełniania się skrzynki (nawet po 1 dniu), chyba że ustawisz okres przechowywania dla aliasu.
+
 ### Jakie są ustawienia konfiguracyjne serwera POP3 {#what-are-your-pop3-server-configuration-settings}
 
 Nasz serwer to `pop3.forwardemail.net` i jest również monitorowany na naszej <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">stronie statusu</a>.
@@ -5417,9 +5435,9 @@ Ta nowa zasada pozwala na używanie tylko następujących rozszerzeń nazw domen
 
 ### Czy masz szarą listę {#do-you-have-a-greylist}
 
-Tak, stosujemy bardzo łagodną politykę [szarego listowania e-maili](https://en.wikipedia.org/wiki/Greylisting_\(email\)). Szare listowanie dotyczy tylko nadawców, którzy nie znajdują się na naszej liście dozwolonych i jest przechowywane w naszej pamięci podręcznej przez 30 dni.
+Tak, stosujemy bardzo łagodną politykę [szarego listowania e-maili](https://en.wikipedia.org/wiki/Greylisting_\(email\)). Szare listowanie dotyczy tylko nadawców, którzy nie znajdują się na naszej liście dozwolonych i jest przechowywane w naszej pamięci podręcznej przez 5 dni.
 
-Dla każdego nowego nadawcy przechowujemy klucz w naszej bazie Redis przez 30 dni z wartością ustawioną na czas pierwszego przyjścia ich żądania. Następnie odrzucamy ich e-mail z kodem statusu ponownej próby 450 i pozwalamy na jego przejście dopiero po upływie 5 minut.
+Dla każdego nowego nadawcy przechowujemy klucz w naszej bazie Redis przez 5 dni z wartością ustawioną na czas pierwszego przyjścia ich żądania. Następnie odrzucamy ich e-mail z kodem statusu ponownej próby 450 i pozwalamy na jego przejście dopiero po upływie 5 minut.
 
 Jeśli nadawca pomyślnie odczeka 5 minut od tego początkowego czasu przyjścia, jego e-maile zostaną zaakceptowane i nie otrzyma on kodu statusu 450.
 
@@ -5428,6 +5446,8 @@ Klucz składa się z pełnej nazwy domeny (FQDN) lub adresu IP nadawcy. Oznacza 
 Na przykład, jeśli e-mail pochodzi z `test.example.com` zanim zobaczymy e-mail z `example.com`, to każdy e-mail z `test.example.com` i/lub `example.com` będzie musiał odczekać 5 minut od początkowego czasu przyjścia połączenia. Nie wymagamy, aby zarówno `test.example.com`, jak i `example.com` czekały osobno swoje 5 minut (nasza polityka szarego listowania stosuje się na poziomie domeny głównej).
 
 Należy zauważyć, że szare listowanie nie dotyczy żadnego nadawcy z naszej [listy dozwolonych](#do-you-have-an-allowlist) (np. Meta, Amazon, Netflix, Google, Microsoft na moment pisania tego tekstu).
+
+Osobna blokada obowiązuje, gdy wiadomość zostanie odrzucona przez miejsce docelowe podczas przekazywania (na przykład skrzynka, na którą przekazujesz pocztę, ją odrzuci). Wstrzymujemy wtedy kolejne próby tej samej wiadomości, rozpoznawanej po jej [odcisku](#how-do-you-determine-an-email-fingerprint), na 1 godzinę, a nadawca otrzymuje ten sam kod stanu 450 z takim czasem oczekiwania. Blokada trwa 5 minut, gdy miejsce docelowe było nieosiągalne lub przeciążone (na przykład pełna skrzynka), a nadawcy z naszej [listy dozwolonych](#do-you-have-an-allowlist) czekają 10 minut (1 minutę w tych dwóch przypadkach). Dzięki temu to samo odrzucenie nie powtarza się w miejscu docelowym, co szkodziłoby tam naszej reputacji. Aby zakończyć te opóźnienia, usuń przyczynę pierwszego odrzucenia, widoczną w [Moje konto → Logi](/my-account/logs).
 
 ### Czy masz czarną listę {#do-you-have-a-denylist}
 
@@ -5448,8 +5468,8 @@ Prośby o usunięcie z czarnej listy można składać pod adresem <https://forwa
 Nadawcy wykryci jako wysyłający spam lub zawartość wirusową będą dodawani do czarnej listy według następującego schematu:
 
 1. [Początkowy odcisk wiadomości](#how-do-you-determine-an-email-fingerprint) jest szary listowany po wykryciu spamu lub umieszczeniu na liście blokującej od „zaufanego” nadawcy (np. `gmail.com`, `microsoft.com`, `apple.com`).
-   * Jeśli nadawca był na liście dozwolonych, wiadomość jest szaro listowana przez 1 godzinę.
-   * Jeśli nadawca nie jest na liście dozwolonych, wiadomość jest szaro listowana przez 6 godzin.
+   * Jeśli nadawca był na liście dozwolonych, wiadomość jest szaro listowana przez 10 minut.
+   * Jeśli nadawca nie jest na liście dozwolonych, wiadomość jest szaro listowana przez 1 godzinę.
 2. Parsujemy klucze czarnej listy z informacji o nadawcy i wiadomości, i dla każdego z tych kluczy tworzymy (jeśli jeszcze nie istnieje) licznik, zwiększamy go o 1 i przechowujemy w pamięci podręcznej przez 24 godziny.
    * Dla nadawców z listy dozwolonych:
      * Dodajemy klucz dla adresu e-mail „MAIL FROM” z koperty, jeśli przeszedł SPF lub nie miał SPF, i nie był [adresatem postmaster](#what-are-postmaster-addresses) ani [adresatem no-reply](#what-are-no-reply-addresses).

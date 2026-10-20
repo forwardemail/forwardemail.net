@@ -89,6 +89,7 @@
   * [Por que domínios recém-registrados ou expirados recentemente exigem um plano pago](#why-do-newly-registered-or-recently-expired-domains-require-a-paid-plan)
   * [Quais são as configurações do servidor SMTP](#what-are-your-smtp-server-configuration-settings)
   * [Quais são as configurações do servidor IMAP](#what-are-your-imap-server-configuration-settings)
+  * [Quais pastas uma nova caixa de correio tem](#what-folders-does-a-new-mailbox-have)
   * [Quais são as configurações do servidor POP3](#what-are-your-pop3-server-configuration-settings)
   * [Como configuro autodiscovery de email para meu domínio](#how-do-i-set-up-email-autodiscovery-for-my-domain)
 * [Segurança](#security-1)
@@ -3905,6 +3906,23 @@ Para conectar-se via IMAP, o **usuário IMAP** deve ser o endereço de email de 
 
 Por favor, consulte [Vocês suportam o recebimento de email com IMAP](#do-you-support-receiving-email-with-imap) para instruções passo a passo.
 
+### Quais pastas uma nova caixa de correio tem {#what-folders-does-a-new-mailbox-have}
+
+Uma nova caixa de correio começa com as pastas abaixo. Cada pasta, exceto `INBOX`, tem um [atributo de uso especial (RFC 6154)](https://www.rfc-editor.org/rfc/rfc6154.html), que é como os clientes de email, incluindo nosso [webmail](https://mail.forwardemail.net) e nossos [apps](/download), encontram as pastas de enviados, rascunhos, lixeira e spam, seja qual for o nome delas.
+
+| Pasta       | Uso especial | Se você excluí-la                                                                                                          |
+| ----------- | ------------ | -------------------------------------------------------------------------------------------------------------------------- |
+| `INBOX`     | –            | Não pode ser excluída ([RFC 9051](https://www.rfc-editor.org/rfc/rfc9051.html#section-6.3.4)), e não permitimos renomeá-la |
+| `Sent Mail` | `\Sent`      | Nós a criamos novamente                                                                                                    |
+| `Drafts`    | `\Drafts`    | Nós a criamos novamente                                                                                                    |
+| `Trash`     | `\Trash`     | Nós a criamos novamente                                                                                                    |
+| `Spam`      | `\Junk`      | Ela continua excluída                                                                                                      |
+| `Archive`   | `\Archive`   | Ela continua excluída                                                                                                      |
+
+* **Spam e Junk:** caixas de correio mais antigas também podem ter uma pasta `Junk`. Tanto `Spam` quanto `Junk` são marcadas como `\Junk`, então qualquer uma funciona como sua pasta de spam, e você pode excluir a que não usa. Emails arquivados em `Junk` (por exemplo, por um [script Sieve](#do-you-support-sieve-email-filtering)) vão para `Spam` quando não existe uma pasta `Junk`.
+* **Renomear:** reconhecemos essas pastas pelo nome. Se você renomear `Sent Mail`, `Drafts` ou `Trash`, a pasta renomeada se torna uma pasta comum e criamos a original novamente. Por isso, mantenha os nomes; a maioria dos clientes já as mostra com seus próprios nomes (como "Enviados").
+* **Retenção:** mensagens em `Trash` e `Spam` (e em `Junk`, se você tiver uma) são excluídas após no máximo 30 dias, e antes à medida que a caixa de correio enche (até 1 dia), a menos que você defina uma retenção para o alias.
+
 ### Quais são as configurações do seu servidor POP3 {#what-are-your-pop3-server-configuration-settings}
 
 Nosso servidor é `pop3.forwardemail.net` e também é monitorado em nossa <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">página de status</a>.
@@ -5418,9 +5436,9 @@ Esta nova regra permite apenas as seguintes extensões de nome de domínio para 
 
 ### Você tem uma greylist {#do-you-have-a-greylist}
 
-Sim, usamos uma política de [greylisting de email](https://en.wikipedia.org/wiki/Greylisting_\(email\)) muito flexível. O greylisting só se aplica a remetentes que não estão na nossa allowlist e permanece em nosso cache por 30 dias.
+Sim, usamos uma política de [greylisting de email](https://en.wikipedia.org/wiki/Greylisting_\(email\)) muito flexível. O greylisting só se aplica a remetentes que não estão na nossa allowlist e permanece em nosso cache por 5 dias.
 
-Para qualquer remetente novo, armazenamos uma chave em nosso banco de dados Redis por 30 dias com um valor definido como o horário inicial de chegada da sua primeira solicitação. Em seguida, rejeitamos o email com um código de status de retry 450 e só permitimos a passagem após 5 minutos terem se passado.
+Para qualquer remetente novo, armazenamos uma chave em nosso banco de dados Redis por 5 dias com um valor definido como o horário inicial de chegada da sua primeira solicitação. Em seguida, rejeitamos o email com um código de status de retry 450 e só permitimos a passagem após 5 minutos terem se passado.
 
 Se eles esperarem com sucesso por 5 minutos a partir desse horário inicial de chegada, então seus emails serão aceitos e eles não receberão mais esse código de status 450.
 
@@ -5429,6 +5447,8 @@ A chave consiste no domínio raiz FQDN ou no endereço IP do remetente. Isso sig
 Por exemplo, se um email vier de `test.example.com` antes de vermos um email vindo de `example.com`, então qualquer email de `test.example.com` e/ou `example.com` terá que esperar 5 minutos a partir do horário inicial de chegada da conexão. Não fazemos com que tanto `test.example.com` quanto `example.com` esperem seus próprios períodos de 5 minutos (nossa política de greylisting se aplica no nível do domínio raiz).
 
 Note que o greylisting não se aplica a nenhum remetente em nossa [allowlist](#do-you-have-an-allowlist) (por exemplo, Meta, Amazon, Netflix, Google, Microsoft no momento desta escrita).
+
+Uma retenção separada se aplica quando uma mensagem é rejeitada no destino enquanto a encaminhamos (por exemplo, a caixa para a qual você encaminha a rejeita). Nesse caso, retemos novas tentativas dessa mesma mensagem, identificada pela sua [impressão digital](#how-do-you-determine-an-email-fingerprint), por 1 hora, e o remetente recebe o mesmo código de status 450 com essa espera. A retenção é de 5 minutos quando o destino não pôde ser alcançado ou estava sem capacidade (como uma caixa cheia), e remetentes na nossa [lista de permissões](#do-you-have-an-allowlist) aguardam 10 minutos (1 minuto nesses dois casos). Isso evita que a mesma rejeição se repita no destino, o que prejudicaria nossa reputação lá. Para acabar com esses atrasos, corrija a causa da primeira rejeição, exibida em [Minha conta → Logs](/my-account/logs).
 
 ### Você tem uma denylist {#do-you-have-a-denylist}
 
@@ -5449,8 +5469,8 @@ Solicitações de remoção da denylist podem ser feitas em <https://forwardemai
 Remetentes detectados enviando spam ou conteúdo de vírus serão adicionados à denylist da seguinte forma:
 
 1. A [impressão digital inicial da mensagem](#how-do-you-determine-an-email-fingerprint) é greylistada ao detectar spam ou blocklist de um remetente "confiável" (por exemplo, `gmail.com`, `microsoft.com`, `apple.com`).
-   * Se o remetente estava na allowlist, a mensagem é greylistada por 1 hora.
-   * Se o remetente não está na allowlist, a mensagem é greylistada por 6 horas.
+   * Se o remetente estava na allowlist, a mensagem é greylistada por 10 minutos.
+   * Se o remetente não está na allowlist, a mensagem é greylistada por 1 hora.
 2. Extraímos chaves para a denylist a partir das informações do remetente e da mensagem, e para cada uma dessas chaves criamos (se ainda não existir) um contador, incrementamos em 1 e armazenamos em cache por 24 horas.
    * Para remetentes na allowlist:
      * Adicionamos uma chave para o endereço de email do envelope "MAIL FROM" se ele passou SPF ou não tiver SPF, e não for [um nome de usuário postmaster](#what-are-postmaster-addresses) ou [um nome de usuário no-reply](#what-are-no-reply-addresses).

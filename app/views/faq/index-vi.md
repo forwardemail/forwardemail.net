@@ -89,6 +89,7 @@
   * [Tại sao các tên miền mới đăng ký hoặc mới hết hạn cần gói trả phí](#why-do-newly-registered-or-recently-expired-domains-require-a-paid-plan)
   * [Cài đặt cấu hình máy chủ SMTP của bạn là gì](#what-are-your-smtp-server-configuration-settings)
   * [Cài đặt cấu hình máy chủ IMAP của bạn là gì](#what-are-your-imap-server-configuration-settings)
+  * [Hộp thư mới có những thư mục nào](#what-folders-does-a-new-mailbox-have)
   * [Cài đặt cấu hình máy chủ POP3 của bạn là gì](#what-are-your-pop3-server-configuration-settings)
   * [Làm thế nào để thiết lập tự động phát hiện email cho tên miền của tôi](#how-do-i-set-up-email-autodiscovery-for-my-domain)
 * [Bảo Mật](#security-1)
@@ -3904,6 +3905,23 @@ Nó hỗ trợ cả IPv4 và IPv6 và có thể truy cập qua các cổng `993`
 
 Vui lòng tham khảo [Bạn có hỗ trợ nhận email bằng IMAP không](#do-you-support-receiving-email-with-imap) để biết hướng dẫn từng bước.
 
+### Hộp thư mới có những thư mục nào {#what-folders-does-a-new-mailbox-have}
+
+Hộp thư mới bắt đầu với các thư mục dưới đây. Mỗi thư mục ngoài `INBOX` có một [thuộc tính special-use (RFC 6154)](https://www.rfc-editor.org/rfc/rfc6154.html), là cách các trình khách email, bao gồm [trình khách webmail](https://mail.forwardemail.net) và [ứng dụng](/download) của chúng tôi, tìm các thư mục thư đã gửi, thư nháp, thùng rác và thư rác dù chúng có tên gì.
+
+| Thư mục     | Special-use | Nếu bạn xóa nó                                                                                                                |
+| ----------- | ----------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| `INBOX`     | –           | Không thể xóa ([RFC 9051](https://www.rfc-editor.org/rfc/rfc9051.html#section-6.3.4)), và chúng tôi không cho phép đổi tên nó |
+| `Sent Mail` | `\Sent`     | Chúng tôi tạo lại nó                                                                                                          |
+| `Drafts`    | `\Drafts`   | Chúng tôi tạo lại nó                                                                                                          |
+| `Trash`     | `\Trash`    | Chúng tôi tạo lại nó                                                                                                          |
+| `Spam`      | `\Junk`     | Nó vẫn bị xóa                                                                                                                 |
+| `Archive`   | `\Archive`  | Nó vẫn bị xóa                                                                                                                 |
+
+* **Spam và Junk:** các hộp thư cũ hơn cũng có thể có thư mục `Junk`. Cả `Spam` và `Junk` đều được đánh dấu `\Junk`, vì vậy bạn có thể dùng thư mục nào làm thư mục thư rác cũng được, và có thể xóa thư mục bạn không dùng. Thư được chuyển vào `Junk` (ví dụ bởi một [script Sieve](#do-you-support-sieve-email-filtering)) sẽ vào `Spam` khi không có thư mục `Junk`.
+* **Đổi tên:** chúng tôi nhận diện các thư mục này theo tên. Nếu bạn đổi tên `Sent Mail`, `Drafts` hoặc `Trash`, thư mục đã đổi tên sẽ trở thành thư mục thông thường và chúng tôi tạo lại thư mục gốc. Vì vậy, hãy giữ nguyên tên của chúng; dù sao thì hầu hết các trình khách cũng hiển thị chúng bằng tên riêng (chẳng hạn "Đã gửi").
+* **Thời hạn lưu giữ:** thư trong `Trash` và `Spam` (và `Junk`, nếu bạn có) bị xóa sau tối đa 30 ngày, và sớm hơn khi hộp thư đầy dần (xuống còn 1 ngày), trừ khi bạn đặt thời hạn lưu giữ cho bí danh.
+
 ### Cấu hình máy chủ POP3 của bạn là gì {#what-are-your-pop3-server-configuration-settings}
 
 Máy chủ của chúng tôi là `pop3.forwardemail.net` và cũng được giám sát trên <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">trang trạng thái</a> của chúng tôi.
@@ -5417,9 +5435,9 @@ Quy tắc mới này chỉ cho phép các phần mở rộng tên miền sau đ�
 
 ### Bạn có sử dụng greylist {#do-you-have-a-greylist}
 
-Vâng, chúng tôi sử dụng chính sách [greylisting email](https://en.wikipedia.org/wiki/Greylisting_\(email\)) rất lỏng lẻo. Greylisting chỉ áp dụng cho những người gửi không có trong danh sách cho phép của chúng tôi và được lưu trong bộ nhớ đệm của chúng tôi trong 30 ngày.
+Vâng, chúng tôi sử dụng chính sách [greylisting email](https://en.wikipedia.org/wiki/Greylisting_\(email\)) rất lỏng lẻo. Greylisting chỉ áp dụng cho những người gửi không có trong danh sách cho phép của chúng tôi và được lưu trong bộ nhớ đệm của chúng tôi trong 5 ngày.
 
-Đối với bất kỳ người gửi mới nào, chúng tôi lưu một khóa trong cơ sở dữ liệu Redis của mình trong 30 ngày với giá trị được đặt là thời gian đến ban đầu của yêu cầu đầu tiên của họ. Sau đó, chúng tôi từ chối email của họ với mã trạng thái thử lại 450 và chỉ cho phép email đó đi qua khi đã qua 5 phút.
+Đối với bất kỳ người gửi mới nào, chúng tôi lưu một khóa trong cơ sở dữ liệu Redis của mình trong 5 ngày với giá trị được đặt là thời gian đến ban đầu của yêu cầu đầu tiên của họ. Sau đó, chúng tôi từ chối email của họ với mã trạng thái thử lại 450 và chỉ cho phép email đó đi qua khi đã qua 5 phút.
 
 Nếu họ đã chờ thành công 5 phút kể từ thời gian đến ban đầu này, thì email của họ sẽ được chấp nhận và họ sẽ không nhận mã trạng thái 450 này.
 
@@ -5428,6 +5446,8 @@ Khóa bao gồm hoặc là tên miền gốc FQDN hoặc địa chỉ IP của n
 Ví dụ, nếu một email đến từ `test.example.com` trước khi chúng tôi thấy một email đến từ `example.com`, thì bất kỳ email nào từ `test.example.com` và/hoặc `example.com` sẽ phải chờ 5 phút kể từ thời gian đến ban đầu của kết nối. Chúng tôi không bắt cả `test.example.com` và `example.com` phải chờ riêng biệt 5 phút (chính sách greylisting của chúng tôi áp dụng ở cấp độ tên miền gốc).
 
 Lưu ý rằng greylisting không áp dụng cho bất kỳ người gửi nào trong [danh sách cho phép](#do-you-have-an-allowlist) của chúng tôi (ví dụ: Meta, Amazon, Netflix, Google, Microsoft tại thời điểm viết này).
+
+Một cơ chế giữ lại riêng được áp dụng khi một thư bị nơi nhận từ chối trong lúc chúng tôi chuyển tiếp (ví dụ: hộp thư mà bạn chuyển tiếp đến từ chối thư). Khi đó, chúng tôi giữ lại các lần thử gửi lại của chính thư đó, được nhận diện qua [dấu vân tay](#how-do-you-determine-an-email-fingerprint) của nó, trong 1 giờ, và người gửi nhận cùng mã trạng thái 450 với thời gian chờ này. Thời gian giữ là 5 phút khi không thể kết nối tới nơi nhận hoặc nơi nhận hết dung lượng (chẳng hạn hộp thư đầy), và người gửi trong [danh sách cho phép](#do-you-have-an-allowlist) của chúng tôi chờ 10 phút (1 phút trong hai trường hợp đó). Điều này giúp cùng một lần từ chối không lặp lại tại nơi nhận, vốn sẽ làm tổn hại uy tín của chúng tôi ở đó. Để chấm dứt các độ trễ này, hãy khắc phục nguyên nhân của lần từ chối đầu tiên, hiển thị trong [Tài khoản của tôi → Nhật ký](/my-account/logs).
 
 ### Bạn có sử dụng denylist {#do-you-have-a-denylist}
 
@@ -5448,8 +5468,8 @@ Yêu cầu gỡ bỏ denylist có thể được gửi tại <https://forwardema
 Người gửi bị phát hiện gửi spam hoặc nội dung virus sẽ được thêm vào denylist theo cách sau:
 
 1. [Dấu vân tay tin nhắn ban đầu](#how-do-you-determine-an-email-fingerprint) bị greylist khi phát hiện spam hoặc bị chặn từ người gửi "đáng tin cậy" (ví dụ: `gmail.com`, `microsoft.com`, `apple.com`).
-   * Nếu người gửi đã được cho phép, tin nhắn bị greylist trong 1 giờ.
-   * Nếu người gửi không được cho phép, tin nhắn bị greylist trong 6 giờ.
+   * Nếu người gửi đã được cho phép, tin nhắn bị greylist trong 10 phút.
+   * Nếu người gửi không được cho phép, tin nhắn bị greylist trong 1 giờ.
 2. Chúng tôi phân tích các khóa denylist từ thông tin của người gửi và tin nhắn, và với mỗi khóa này chúng tôi tạo (nếu chưa tồn tại) một bộ đếm, tăng nó lên 1, và lưu trong bộ nhớ đệm 24 giờ.
    * Đối với người gửi được cho phép:
      * Thêm một khóa cho địa chỉ email "MAIL FROM" trong phong bì nếu nó có SPF hợp lệ hoặc không có SPF, và không phải là [tên người dùng postmaster](#what-are-postmaster-addresses) hoặc [tên người dùng no-reply](#what-are-no-reply-addresses).

@@ -145,6 +145,37 @@ test('POST otp/setup > successful', async (t) => {
   t.true(res.text.includes('Scan this QR code'));
 });
 
+test('POST otp/setup > the token field is not filled as a username', async (t) => {
+  // (a password manager took the token and password fields for a login form
+  //  and filled the token field with the account email address)
+  const { web, user, password } = t.context;
+
+  user[config.passport.fields.otpEnabled] = false;
+  await user.save();
+
+  const res = await web.post(`/en${config.otpRoutePrefix}/setup`).send({
+    token: null,
+    password
+  });
+  t.is(res.status, 200);
+
+  const tokenInput = res.text.match(/<input[^>]*id="input-token"[^>]*>/)[0];
+  t.regex(tokenInput, /autocomplete="one-time-code"/);
+  t.regex(tokenInput, /inputmode="numeric"/);
+
+  // the account as the username field, before the token field
+  const usernameIndex = res.text.search(
+    /<input[^>]*autocomplete="username"[^>]*>/
+  );
+  t.true(usernameIndex > -1);
+  t.true(usernameIndex < res.text.indexOf('id="input-token"'));
+  t.true(
+    res.text
+      .match(/<input[^>]*autocomplete="username"[^>]*>/)[0]
+      .includes(`value="${user.email}"`)
+  );
+});
+
 test('POST otp/setup > successful with token', async (t) => {
   // get test server
   const { web, user, password } = t.context;

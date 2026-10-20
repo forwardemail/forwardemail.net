@@ -89,6 +89,7 @@
   * [Miért igényelnek fizetős csomagot az újonnan regisztrált vagy nemrég lejárt domainek](#why-do-newly-registered-or-recently-expired-domains-require-a-paid-plan)
   * [Mik az SMTP szerver beállításai](#what-are-your-smtp-server-configuration-settings)
   * [Mik az IMAP szerver beállításai](#what-are-your-imap-server-configuration-settings)
+  * [Milyen mappák vannak egy új postaládában](#what-folders-does-a-new-mailbox-have)
   * [Mik a POP3 szerver beállításai](#what-are-your-pop3-server-configuration-settings)
   * [Hogyan állítsam be az email automatikus felismerést a domainemhez](#how-do-i-set-up-email-autodiscovery-for-my-domain)
 * [Biztonság](#security-1)
@@ -3905,6 +3906,23 @@ Ahhoz, hogy IMAP-pal csatlakozzon, az **IMAP felhasználónév** az alias e-mail
 
 Kérjük, tekintse meg a [Támogatják az e-mail fogadást IMAP-pal](#do-you-support-receiving-email-with-imap) részt a lépésről lépésre szóló útmutatásért.
 
+### Milyen mappák vannak egy új postaládában {#what-folders-does-a-new-mailbox-have}
+
+Egy új postaláda az alábbi mappákkal indul. Az `INBOX` kivételével mindegyik mappának van [special-use attribútuma (RFC 6154)](https://www.rfc-editor.org/rfc/rfc6154.html), amely alapján az email kliensek, köztük a [webmail kliensünk](https://mail.forwardemail.net) és az [alkalmazásaink](/download), megtalálják az elküldött, piszkozat, kuka és spam mappákat, bármi is a nevük.
+
+| Mappa       | Special-use | Ha törlöd                                                                                                                  |
+| ----------- | ----------- | -------------------------------------------------------------------------------------------------------------------------- |
+| `INBOX`     | –           | Nem törölhető ([RFC 9051](https://www.rfc-editor.org/rfc/rfc9051.html#section-6.3.4)), és az átnevezését sem engedélyezzük |
+| `Sent Mail` | `\Sent`     | Újra létrehozzuk                                                                                                           |
+| `Drafts`    | `\Drafts`   | Újra létrehozzuk                                                                                                           |
+| `Trash`     | `\Trash`    | Újra létrehozzuk                                                                                                           |
+| `Spam`      | `\Junk`     | Törölve marad                                                                                                              |
+| `Archive`   | `\Archive`  | Törölve marad                                                                                                              |
+
+* **Spam és Junk:** a régebbi postaládákban `Junk` mappa is lehet. A `Spam` és a `Junk` is `\Junk` jelölésű, így bármelyik használható spam mappaként, és azt, amelyiket nem használod, törölheted. A `Junk` mappába sorolt levelek (például egy [Sieve szkript](#do-you-support-sieve-email-filtering) által) a `Spam` mappába kerülnek, ha nincs `Junk` mappa.
+* **Átnevezés:** ezeket a mappákat a nevük alapján ismerjük fel. Ha átnevezed a `Sent Mail`, `Drafts` vagy `Trash` mappát, az átnevezett mappa közönséges mappává válik, és az eredetit újra létrehozzuk. Ezért inkább hagyd meg a nevüket; a legtöbb kliens úgyis saját néven jeleníti meg őket (például „Elküldött”).
+* **Megőrzés:** a `Trash` és `Spam` (valamint a `Junk`, ha van ilyen) mappában lévő üzenetek legfeljebb 30 nap után törlődnek, a postaláda telítődésével pedig egyre hamarabb (akár 1 nap után), hacsak nem állítasz be megőrzési időt az aliashoz.
+
 ### Mik az POP3 szerver konfigurációs beállításai {#what-are-your-pop3-server-configuration-settings}
 
 A szerverünk `pop3.forwardemail.net`, és a <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">állapotoldalunkon</a> is figyeljük.
@@ -5418,9 +5436,9 @@ Ez az új szabály csak az alábbi domain névkiterjesztések használatát enge
 
 ### Van szürkelista {#do-you-have-a-greylist}
 
-Igen, nagyon laza [email szürkelista](https://en.wikipedia.org/wiki/Greylisting_\(email\)) szabályzatot alkalmazunk. A szürkelista csak az engedélyező listánkon nem szereplő feladókra vonatkozik, és 30 napig marad a gyorsítótárunkban.
+Igen, nagyon laza [email szürkelista](https://en.wikipedia.org/wiki/Greylisting_\(email\)) szabályzatot alkalmazunk. A szürkelista csak az engedélyező listánkon nem szereplő feladókra vonatkozik, és 5 napig marad a gyorsítótárunkban.
 
-Bármely új feladó esetén eltárolunk egy kulcsot a Redis adatbázisunkban 30 napra, amelynek értéke az első kérésük kezdeti érkezési ideje. Ezután elutasítjuk az e-mailjüket egy 450-es újrapróbálkozási státuszkóddal, és csak akkor engedjük át, ha eltelt 5 perc.
+Bármely új feladó esetén eltárolunk egy kulcsot a Redis adatbázisunkban 5 napra, amelynek értéke az első kérésük kezdeti érkezési ideje. Ezután elutasítjuk az e-mailjüket egy 450-es újrapróbálkozási státuszkóddal, és csak akkor engedjük át, ha eltelt 5 perc.
 
 Ha sikeresen megvárják az 5 percet a kezdeti érkezési időtől számítva, akkor az e-mailjeiket elfogadjuk, és nem kapják meg a 450-es státuszkódot.
 
@@ -5429,6 +5447,8 @@ A kulcs vagy a teljesen minősített domain név (FQDN) gyökérdomainje, vagy a
 Például, ha egy e-mail a `test.example.com`-ról érkezik, mielőtt látnánk e-mailt az `example.com`-ról, akkor bármely e-mail a `test.example.com`-ról és/vagy az `example.com`-ról 5 percet kell várjon a kapcsolat kezdeti érkezési idejétől számítva. Nem váratjuk meg külön-külön a `test.example.com`-ot és az `example.com`-ot 5-5 percig (a szürkelistázási szabályzatunk a gyökérdomain szintjén érvényes).
 
 Megjegyzendő, hogy a szürkelista nem vonatkozik az [engedélyező listánkon](#do-you-have-an-allowlist) szereplő feladókra (pl. Meta, Amazon, Netflix, Google, Microsoft a jelen írás idején).
+
+Külön visszatartás érvényes, ha egy üzenetet továbbítás közben a célállomás elutasít (például az a postafiók, ahová továbbít, elutasítja). Ilyenkor ugyanannak az üzenetnek az újabb kézbesítési kísérleteit, amelyeket az [ujjlenyomata](#how-do-you-determine-an-email-fingerprint) alapján ismerünk fel, 1 órán át visszatartjuk, és a feladó ugyanazt a 450-es állapotkódot kapja ezzel a várakozási idővel. A visszatartás 5 perc, ha a célállomás nem volt elérhető vagy nem volt kapacitása (például megtelt postafiók), az [engedélyezési listánkon](#do-you-have-an-allowlist) szereplő feladók pedig 10 percet várnak (e két esetben 1 percet). Így ugyanaz az elutasítás nem ismétlődik a célállomásnál, ami ott rontaná a hírnevünket. A késések megszüntetéséhez javítsa ki az első elutasítás okát, amelyet a [Fiókom → Naplók](/my-account/logs) oldalon talál.
 
 ### Van tiltólista {#do-you-have-a-denylist}
 
@@ -5449,8 +5469,8 @@ Tiltólista eltávolítási kérelmek kérhetők a <https://forwardemail.net/den
 Azokat a feladókat, akik spameket vagy vírusos tartalmat küldenek, a következő módon tesszük tiltólistára:
 
 1. Az [elsődleges üzenet ujjlenyomatát](#how-do-you-determine-an-email-fingerprint) szürkelistázzuk, ha spam vagy blokkolólista kerül észlelésre egy „megbízható” feladótól (pl. `gmail.com`, `microsoft.com`, `apple.com`).
-   * Ha a feladó engedélyezett volt, az üzenet 1 órára szürkelistázva lesz.
-   * Ha a feladó nem engedélyezett, az üzenet 6 órára szürkelistázva lesz.
+   * Ha a feladó engedélyezett volt, az üzenet 10 percre szürkelistázva lesz.
+   * Ha a feladó nem engedélyezett, az üzenet 1 órára szürkelistázva lesz.
 2. A tiltólista kulcsokat a feladótól és az üzenettől származó információkból kinyerjük, és mindegyikhez létrehozunk (ha még nem létezik) egy számlálót, amelyet 1-gyel növelünk, és 24 órára gyorsítótárazunk.
    * Engedélyezett feladók esetén:
      * Hozzáadunk egy kulcsot a boríték „MAIL FROM” e-mail címéhez, ha az SPF-je megfelelt vagy nem volt SPF, és nem [postmaster felhasználónév](#what-are-postmaster-addresses) vagy [no-reply felhasználónév](#what-are-no-reply-addresses).

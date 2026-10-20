@@ -45,7 +45,16 @@ const SINGLE_KEYS = new Set([
   'subject'
 ]);
 
-function getHeaders(headers, specificKey = null) {
+//
+// Headers whose repeats are never kept (see `getHeadersWithRepeats`).
+//
+// Logs only show a Bcc header once it has been filtered down to the viewer's
+// own addresses (see `retrieve-log.js`, `list-logs.js` and `get-logs-csv.js`),
+// so its other occurrences must not reach a log at all.
+//
+const UNREPEATED_KEYS = new Set(['bcc']);
+
+function parseHeaders(headers, specificKey, repeated) {
   const _headers = {};
 
   //
@@ -96,10 +105,12 @@ function getHeaders(headers, specificKey = null) {
     const index = line.indexOf(':');
     const key = line.slice(0, index);
     const lc = key.toLowerCase();
+    const seen = Object.hasOwn(_headers, key);
 
     // only keep the first value for certain keys
     // <https://github.com/nodemailer/mailparser/blob/ac11f78429cf13da42162e996a05b875030ae1c1/lib/mail-parser.js#L395-L413>
-    if (_headers[key] && SINGLE_KEYS.has(lc)) continue;
+    // (unless every occurrence is wanted, see `getHeadersWithRepeats`)
+    if (_headers[key] && SINGLE_KEYS.has(lc) && !repeated) continue;
 
     // unfold the header: every whitespace run that contains a line break
     // becomes a single space (runs without a line break are kept as-is)
@@ -107,7 +118,7 @@ function getHeaders(headers, specificKey = null) {
     // NOTE: a pattern like `/\s*\r?\n\s*/g` backtracks quadratically on long
     //       whitespace runs without a newline (e.g. 100k spaces took ~12s),
     //       so we match each maximal run once and decide in the callback
-    _headers[key] = line
+    let value = line
       .slice(index + 1)
       .trim()
       .replace(/\s+/g, (ws) => (ws.includes('\n') ? ' ' : ws));
@@ -121,9 +132,16 @@ function getHeaders(headers, specificKey = null) {
     //
     // if (ENCODED_HEADERS.has(lc)) {
     try {
-      _headers[key] = headers.libmime.decodeWords(_headers[key]);
+      value = headers.libmime.decodeWords(value);
     } catch {}
     // }
+
+    if (repeated && key && key !== '__proto__' && !UNREPEATED_KEYS.has(lc)) {
+      if (Array.isArray(repeated[key])) repeated[key].push(value);
+      else if (seen) repeated[key] = [_headers[key], value];
+    }
+
+    if (!_headers[key] || !SINGLE_KEYS.has(lc)) _headers[key] = value;
 
     if (typeof specificKey === 'string' && lc === specificKey.toLowerCase())
       return _headers[key];
@@ -134,4 +152,22 @@ function getHeaders(headers, specificKey = null) {
   return _headers;
 }
 
+function getHeaders(headers, specificKey = null) {
+  return parseHeaders(headers, specificKey);
+}
+
+//
+// The same headers as `getHeaders(headers)`, together with every value of
+// each header that occurs more than once (in message order, keyed like
+// `headers`), since `headers` keeps a single value per key.
+//
+// (e.g. a message signed by both Amazon SES and the sender's own domain has
+//  two DKIM-Signature headers, and a log must show both of them)
+//
+function getHeadersWithRepeats(headers) {
+  const repeated = {};
+  return { headers: parseHeaders(headers, null, repeated), repeated };
+}
+
 module.exports = getHeaders;
+module.exports.getHeadersWithRepeats = getHeadersWithRepeats;

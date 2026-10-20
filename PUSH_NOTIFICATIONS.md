@@ -118,10 +118,10 @@ Apple issues mail providers a dedicated topic for this, for example `com.apple.m
 
 Mail push only uses this certificate. When `APNS_MAIL_CERT_PATH` and `APNS_MAIL_KEY_PATH` are set, the IMAP server advertises `XAPPLEPUSHSERVICE`, answers with `APNS_MAIL_TOPIC`, and every Mail push uses this certificate. Without them the capability is not advertised and iOS fetches on its schedule instead; there is no fallback to the XServer certificates, since iOS Mail does not take pushes on the XServer topic. Calendar and Contacts push use the XServer certificates obtained with `APPLE_ID`.
 
-| Variable              | Value                                                                |
-| --------------------- | -------------------------------------------------------------------- |
-| `APNS_MAIL_CERT_PATH` | `/var/www/production/apns-mail.pem` (PEM certificate)                |
-| `APNS_MAIL_KEY_PATH`  | `/var/www/production/apns-mail.key` (unencrypted PEM private key)    |
+| Variable              | Value                                                               |
+| --------------------- | ------------------------------------------------------------------- |
+| `APNS_MAIL_CERT_PATH` | `/var/www/production/apns-mail.pem` (PEM certificate)               |
+| `APNS_MAIL_KEY_PATH`  | `/var/www/production/apns-mail.key` (unencrypted PEM private key)   |
 | `APNS_MAIL_TOPIC`     | Optional; defaults to the certificate's subject UID (the bundle ID) |
 
 On startup the server checks that the key matches the certificate, the certificate has not expired, and the topic is one the certificate allows. If any check fails it logs a fatal error and Mail push is off; the load is retried every 5 minutes, but the IMAP server only decides whether to advertise `XAPPLEPUSHSERVICE` when it starts, so restart it after fixing the certificate.
@@ -208,18 +208,18 @@ Production logs only `error` and `fatal`, so a refused or skipped push leaves no
 pm2 logs | grep '\[APNs\]'
 ```
 
-| Line                                       | Meaning                                                                                                     |
-| ------------------------------------------ | ----------------------------------------------------------------------------------------------------------- |
-| `Mail certificate loaded`                  | The process uses `APNS_MAIL_CERT_PATH`; `not configured` or `failed to load` means Mail push is off         |
-| `XAPPLEPUSHSERVICE registered`             | iOS registered; `topic` must be the Apple-issued topic                                                      |
-| `skip: alias has no push registrations`    | iOS never sent `XAPPLEPUSHSERVICE` for this alias (account not set to Push, or capability not advertised)     |
-| `skip: mailbox not subscribed`             | The change was in a mailbox the device did not ask for                                                       |
-| `skip: registered for a topic we no longer send on` | The device registered on another topic (e.g. XServer) and must connect over IMAP again        |
-| `coalesced`                                | A push for this device is already queued and covers this change                                              |
-| `sending`                                  | `registeredTopic` is the topic the device was given (`(not stored)`: registered before topics were kept); `topic` is this push's |
-| `sent`                                     | APNs accepted the push (`apnsId` identifies it)                                                              |
-| `retrying on a new connection`             | APNs did not answer or the connection dropped                                                                |
-| `refused` with `DeviceTokenNotForTopic`    | The device is registered under another topic; reconnect it as described above                               |
+| Line                                                | Meaning                                                                                                                          |
+| --------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| `Mail certificate loaded`                           | The process uses `APNS_MAIL_CERT_PATH`; `not configured` or `failed to load` means Mail push is off                              |
+| `XAPPLEPUSHSERVICE registered`                      | iOS registered; `topic` must be the Apple-issued topic                                                                           |
+| `skip: alias has no push registrations`             | iOS never sent `XAPPLEPUSHSERVICE` for this alias (account not set to Push, or capability not advertised)                        |
+| `skip: mailbox not subscribed`                      | The change was in a mailbox the device did not ask for                                                                           |
+| `skip: registered for a topic we no longer send on` | The device registered on another topic (e.g. XServer) and must connect over IMAP again                                           |
+| `coalesced`                                         | A push for this device is already queued and covers this change                                                                  |
+| `sending`                                           | `registeredTopic` is the topic the device was given (`(not stored)`: registered before topics were kept); `topic` is this push's |
+| `sent`                                              | APNs accepted the push (`apnsId` identifies it)                                                                                  |
+| `retrying on a new connection`                      | APNs did not answer or the connection dropped                                                                                    |
+| `refused` with `DeviceTokenNotForTopic`             | The device is registered under another topic; reconnect it as described above                                                    |
 
 If a device gets `sent` on the topic it registered with and still shows nothing, check on the device: the account must be set to **Push** under **Settings → Apps → Mail → Mail Accounts → Fetch New Data**, Push must be on at the top of that screen, and Low Power Mode pauses push.
 

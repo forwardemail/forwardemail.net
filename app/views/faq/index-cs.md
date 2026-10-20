@@ -89,6 +89,7 @@
   * [Proč nově registrované nebo nedávno expirované domény vyžadují placený plán](#why-do-newly-registered-or-recently-expired-domains-require-a-paid-plan)
   * [Jaká jsou nastavení konfigurace vašeho SMTP serveru](#what-are-your-smtp-server-configuration-settings)
   * [Jaká jsou nastavení konfigurace vašeho IMAP serveru](#what-are-your-imap-server-configuration-settings)
+  * [Jaké složky má nová poštovní schránka](#what-folders-does-a-new-mailbox-have)
   * [Jaká jsou nastavení konfigurace vašeho POP3 serveru](#what-are-your-pop3-server-configuration-settings)
   * [Jak nastavit autodiscovery emailu pro mou doménu](#how-do-i-set-up-email-autodiscovery-for-my-domain)
 * [Bezpečnost](#security-1)
@@ -3905,6 +3906,23 @@ Pro připojení přes IMAP musí být **IMAP uživatel** emailová adresa aliasu
 
 Podívejte se na [Podporujete přijímání emailů přes IMAP](#do-you-support-receiving-email-with-imap) pro podrobné instrukce krok za krokem.
 
+### Jaké složky má nová poštovní schránka {#what-folders-does-a-new-mailbox-have}
+
+Nová poštovní schránka začíná se složkami uvedenými níže. Každá složka kromě `INBOX` má [atribut special-use (RFC 6154)](https://www.rfc-editor.org/rfc/rfc6154.html), podle kterého emailoví klienti, včetně našeho [webmailového klienta](https://mail.forwardemail.net) a [aplikací](/download), najdou složky odeslané pošty, konceptů, koše a spamu bez ohledu na jejich název.
+
+| Složka      | Special-use | Pokud ji smažete                                                                                                         |
+| ----------- | ----------- | ------------------------------------------------------------------------------------------------------------------------ |
+| `INBOX`     | –           | Nelze ji smazat ([RFC 9051](https://www.rfc-editor.org/rfc/rfc9051.html#section-6.3.4)) a její přejmenování nepovolujeme |
+| `Sent Mail` | `\Sent`     | Vytvoříme ji znovu                                                                                                       |
+| `Drafts`    | `\Drafts`   | Vytvoříme ji znovu                                                                                                       |
+| `Trash`     | `\Trash`    | Vytvoříme ji znovu                                                                                                       |
+| `Spam`      | `\Junk`     | Zůstane smazaná                                                                                                          |
+| `Archive`   | `\Archive`  | Zůstane smazaná                                                                                                          |
+
+* **Spam a Junk:** starší schránky mohou mít také složku `Junk`. `Spam` i `Junk` jsou označeny jako `\Junk`, takže jako složku pro spam můžete používat kteroukoli z nich a tu, kterou nepoužíváte, můžete smazat. Pošta zařazená do `Junk` (například [Sieve skriptem](#do-you-support-sieve-email-filtering)) se uloží do `Spam`, pokud složka `Junk` neexistuje.
+* **Přejmenování:** tyto složky rozpoznáváme podle názvu. Pokud přejmenujete `Sent Mail`, `Drafts` nebo `Trash`, přejmenovaná složka se stane běžnou složkou a původní vytvoříme znovu. Ponechte jim proto jejich názvy; většina klientů je stejně zobrazuje pod vlastními názvy (například „Odeslané“).
+* **Doba uchování:** zprávy ve složkách `Trash` a `Spam` (a `Junk`, pokud ji máte) se smažou nejpozději po 30 dnech a dříve, jak se schránka zaplňuje (až po 1 dni), pokud pro alias nenastavíte dobu uchování.
+
 ### Jaké jsou vaše konfigurační nastavení POP3 serveru {#what-are-your-pop3-server-configuration-settings}
 
 Náš server je `pop3.forwardemail.net` a je také monitorován na naší <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">stavové stránce</a>.
@@ -5418,9 +5436,9 @@ Toto nové pravidlo umožňuje používat na našem bezplatném plánu pouze ná
 
 ### Máte šedý seznam {#do-you-have-a-greylist}
 
-Ano, používáme velmi volnou politiku [šedého seznamu e-mailů](https://en.wikipedia.org/wiki/Greylisting_\(email\)). Šedý seznam se vztahuje pouze na odesílatele, kteří nejsou na našem povoleném seznamu, a v naší cache zůstává po dobu 30 dnů.
+Ano, používáme velmi volnou politiku [šedého seznamu e-mailů](https://en.wikipedia.org/wiki/Greylisting_\(email\)). Šedý seznam se vztahuje pouze na odesílatele, kteří nejsou na našem povoleném seznamu, a v naší cache zůstává po dobu 5 dnů.
 
-Pro každého nového odesílatele uložíme klíč v naší databázi Redis na 30 dní s hodnotou nastavenou na čas prvního příchodu jejich požadavku. Poté jejich e-mail odmítneme s kódem stavu 450 a povolíme jeho průchod až po uplynutí 5 minut.
+Pro každého nového odesílatele uložíme klíč v naší databázi Redis na 5 dní s hodnotou nastavenou na čas prvního příchodu jejich požadavku. Poté jejich e-mail odmítneme s kódem stavu 450 a povolíme jeho průchod až po uplynutí 5 minut.
 
 Pokud úspěšně počkají 5 minut od tohoto počátečního času příchodu, jejich e-maily budou přijaty a neobdrží tento stavový kód 450.
 
@@ -5429,6 +5447,8 @@ Klíč se skládá buď z FQDN kořenové domény, nebo z IP adresy odesílatele
 Například pokud přijde e-mail z `test.example.com` dříve, než uvidíme e-mail z `example.com`, pak každý e-mail z `test.example.com` a/nebo `example.com` bude muset počkat 5 minut od počátečního času příchodu spojení. Nevyžadujeme, aby `test.example.com` a `example.com` čekaly každá své vlastní 5minutové období (naše politika šedého seznamu se vztahuje na úrovni kořenové domény).
 
 Vezměte na vědomí, že šedý seznam se nevztahuje na žádného odesílatele na našem [povoleném seznamu](#do-you-have-an-allowlist) (např. Meta, Amazon, Netflix, Google, Microsoft v době psaní tohoto textu).
+
+Samostatné pozdržení platí, když zprávu při přeposílání odmítne cíl (například ji odmítne schránka, na kterou přeposíláte). Další pokusy o doručení téže zprávy, rozpoznané podle jejího [otisku](#how-do-you-determine-an-email-fingerprint), pak pozdržíme na 1 hodinu a odesílatel dostane stejný stavový kód 450 s touto čekací dobou. Pozdržení trvá 5 minut, když cíl nebyl dostupný nebo neměl kapacitu (například plná schránka), a odesílatelé na našem [seznamu povolených](#do-you-have-an-allowlist) čekají 10 minut (v těchto dvou případech 1 minutu). Tím se stejné odmítnutí u cíle neopakuje, což by tam poškodilo naši pověst. Zpoždění skončí, když odstraníte příčinu prvního odmítnutí, kterou najdete v [Můj účet → Protokoly](/my-account/logs).
 
 ### Máte černý seznam {#do-you-have-a-denylist}
 
@@ -5449,8 +5469,8 @@ Všechny žádosti o odstranění z černého seznamu jsou sledovány v reálné
 Odesílatelé, u kterých je detekováno odesílání spamu nebo virů, budou přidáni do černého seznamu následujícím způsobem:
 
 1. [Počáteční otisk zprávy](#how-do-you-determine-an-email-fingerprint) je zařazen do šedého seznamu při detekci spamu nebo bloklistu od „důvěryhodného“ odesílatele (např. `gmail.com`, `microsoft.com`, `apple.com`).
-   * Pokud byl odesílatel na povoleném seznamu, zpráva je zařazena do šedého seznamu na 1 hodinu.
-   * Pokud odesílatel není na povoleném seznamu, zpráva je zařazena do šedého seznamu na 6 hodin.
+   * Pokud byl odesílatel na povoleném seznamu, zpráva je zařazena do šedého seznamu na 10 minut.
+   * Pokud odesílatel není na povoleném seznamu, zpráva je zařazena do šedého seznamu na 1 hodinu.
 2. Parsujeme klíče černého seznamu z informací o odesílateli a zprávě, a pro každý z těchto klíčů vytvoříme (pokud již neexistuje) čítač, zvýšíme ho o 1 a uložíme do cache na 24 hodin.
    * Pro odesílatele na povoleném seznamu:
      * Přidáme klíč pro e-mailovou adresu v obálce „MAIL FROM“, pokud prošla SPF nebo neměla SPF, a nebyla [postmaster uživatelské jméno](#what-are-postmaster-addresses) nebo [no-reply uživatelské jméno](#what-are-no-reply-addresses).

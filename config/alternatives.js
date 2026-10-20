@@ -71,9 +71,9 @@ const obj = {
     // hardenize (on root domain)
     '<a target="_blank" rel="noopener noreferrer" href="https://www.hardenize.com/report/aol.com/1705298152">Fail</a>',
     // internetnl_site (on root domain)
-    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/site/aol.com/2577668/">55%</a>',
+    '<a target="_blank" rel="noopener noreferrer" href="https://batch.internet.nl/site/aol.com/22080999/">61/100</a>',
     // internetnl_mail (on root domain)
-    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/aol.com/1121781/">42%</a>',
+    '<a target="_blank" rel="noopener noreferrer" href="https://batch.internet.nl/mail/aol.com/22483483/">28/100</a>',
     // ssl_labs
     'B',
     // privacy_ratings (<category>/<entry> on privacyratings.com)
@@ -118,9 +118,9 @@ const obj = {
     // hardenize (on root domain)
     '<a target="_blank" rel="noopener noreferrer" href="https://www.hardenize.com/report/yahoo.com/1705359927>">Fail</a>',
     // internetnl_site (on root domain)
-    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/site/yahoo.com/2577663/">73/100</a>',
+    '<a target="_blank" rel="noopener noreferrer" href="https://batch.internet.nl/site/yahoo.com/22081055/">51/100</a>',
     // internetnl_mail (on root domain)
-    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/yahoo.com/1121778/">38/100</a>',
+    '<a target="_blank" rel="noopener noreferrer" href="https://batch.internet.nl/mail/yahoo.com/22483508/">26/100</a>',
     // ssl_labs
     'B',
     // privacy_ratings (<category>/<entry> on privacyratings.com)
@@ -164,9 +164,9 @@ const obj = {
     // hardenize (on root domain)
     '<a target="_blank" rel="noopener noreferrer" href="https://www.hardenize.com/report/activecampaign.com/1705384565">Fail</a>',
     // internetnl_site (on root domain)
-    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/site/activecampaign.com/2577845/">68/100</a>',
+    '<a target="_blank" rel="noopener noreferrer" href="https://batch.internet.nl/site/activecampaign.com/22080966/">73/100</a>',
     // internetnl_mail (on root domain)
-    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/activecampaign.com/1121872/">60/100</a>',
+    '<a target="_blank" rel="noopener noreferrer" href="https://batch.internet.nl/mail/activecampaign.com/22483473/">69/100</a>',
     // ssl_labs
     'A',
     // privacy_ratings (<category>/<entry> on privacyratings.com)
@@ -210,9 +210,9 @@ const obj = {
     // hardenize (on root domain)
     '<a target="_blank" rel="noopener noreferrer" href="https://www.hardenize.com/report/amazon.com/1705384778">Fail</a>',
     // internetnl_site (on root domain)
-    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/site/amazon.com/2577850/">52/100</a>',
+    '<a target="_blank" rel="noopener noreferrer" href="https://batch.internet.nl/site/amazon.com/22080922/">61/100</a>',
     // internetnl_mail (on root domain)
-    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/amazon.com/1121876/">60/100</a>',
+    '<a target="_blank" rel="noopener noreferrer" href="https://batch.internet.nl/mail/amazon.com/22483493/">61/100</a>',
     // ssl_labs
     'B',
     // privacy_ratings (<category>/<entry> on privacyratings.com)
@@ -256,9 +256,9 @@ const obj = {
     // hardenize (on root domain)
     '<a target="_blank" rel="noopener noreferrer" href="https://www.hardenize.com/report/amazon.com/1705384778">Fail</a>',
     // internetnl_site (on root domain)
-    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/site/amazon.com/2577850/">52/100</a>',
+    '<a target="_blank" rel="noopener noreferrer" href="https://batch.internet.nl/site/amazon.com/22080922/">61/100</a>',
     // internetnl_mail (on root domain)
-    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/amazon.com/1121876/">60/100</a>',
+    '<a target="_blank" rel="noopener noreferrer" href="https://batch.internet.nl/mail/amazon.com/22483493/">61/100</a>',
     // ssl_labs
     'B',
     // privacy_ratings (<category>/<entry> on privacyratings.com)
@@ -302,9 +302,9 @@ const obj = {
     // hardenize (on root domain)
     '<a target="_blank" rel="noopener noreferrer" href="https://www.hardenize.com/report/apple.com/1705299256">Fail</a>',
     // internetnl_site (on root domain)
-    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/site/apple.com/2577797/">68/100</a>',
-    // internetnl_mail (on root domain)
-    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/apple.com/">Fail</a>',
+    '<a target="_blank" rel="noopener noreferrer" href="https://batch.internet.nl/site/apple.com/22080944/">46/100</a>',
+    // internetnl_mail (on icloud.com, the domain of iCloud Mail)
+    '<a target="_blank" rel="noopener noreferrer" href="https://batch.internet.nl/mail/icloud.com/22463670/">49/100</a>',
     // ssl_labs
     'Not_Available',
     // privacy_ratings (<category>/<entry> on privacyratings.com)
@@ -349,9 +349,9 @@ const obj = {
     // hardenize (on root domain)
     '<a target="_blank" rel="noopener noreferrer" href="https://www.hardenize.com/report/brevo.com/1705380761">Fail</a>',
     // internetnl_site (on root domain)
-    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/site/brevo.com/2577800/">70/100</a>',
+    '<a target="_blank" rel="noopener noreferrer" href="https://batch.internet.nl/site/brevo.com/22081016/">75/100</a>',
     // internetnl_mail (on root domain)
-    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/brevo.com/1121849/">77/100</a>',
+    '<a target="_blank" rel="noopener noreferrer" href="https://batch.internet.nl/mail/brevo.com/22483496/">77/100</a>',
     // ssl_labs
     'A+',
     // privacy_ratings (<category>/<entry> on privacyratings.com)
@@ -395,9 +395,9 @@ const obj = {
     // hardenize (on root domain)
     '<a target="_blank" rel="noopener noreferrer" href="https://www.hardenize.com/report/customer.io/1705381301">Fail</a>',
     // internetnl_site (on root domain)
-    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/site/customer.io/2577803/>49/100</a>',
+    '<a target="_blank" rel="noopener noreferrer" href="https://batch.internet.nl/site/customer.io/22056747/">66/100</a>',
     // internetnl_mail (on root domain)
-    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/customer.io/1121850/">72/100</a>',
+    '<a target="_blank" rel="noopener noreferrer" href="https://batch.internet.nl/mail/customer.io/22483516/">70/100</a>',
     // ssl_labs
     'B',
     // privacy_ratings (<category>/<entry> on privacyratings.com)
@@ -441,9 +441,9 @@ const obj = {
     // hardenize (on root domain)
     '<a target="_blank" rel="noopener noreferrer" href="https://www.hardenize.com/report/elasticemail.com/1705381568">Fail</a>',
     // internetnl_site (on root domain)
-    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/site/elasticemail.com/2577806/">49/100</a>',
+    '<a target="_blank" rel="noopener noreferrer" href="https://batch.internet.nl/site/elasticemail.com/22080988/">61/100</a>',
     // internetnl_mail (on root domain)
-    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/elasticemail.com/1121852/">72/100</a>',
+    '<a target="_blank" rel="noopener noreferrer" href="https://batch.internet.nl/mail/elasticemail.com/22483517/">77/100</a>',
     // ssl_labs
     'A',
     // privacy_ratings (<category>/<entry> on privacyratings.com)
@@ -487,9 +487,9 @@ const obj = {
     // hardenize (on root domain)
     '<a target="_blank" rel="noopener noreferrer" href="https://www.hardenize.com/report/fastmail.com">Fail</a>',
     // internetnl_site (on root domain)
-    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/site/fastmail.com/2577809/">34/100</a>',
+    '<a target="_blank" rel="noopener noreferrer" href="https://batch.internet.nl/site/fastmail.com/22081030/">50/100</a>',
     // internetnl_mail (on root domain)
-    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/fastmail.com/1121853/">44/100</a>',
+    '<a target="_blank" rel="noopener noreferrer" href="https://batch.internet.nl/mail/fastmail.com/22483529/">51/100</a>',
     // ssl_labs
     'A+',
     // privacy_ratings (<category>/<entry> on privacyratings.com)
@@ -533,9 +533,9 @@ const obj = {
     // hardenize (on root domain)
     '<a target="_blank" rel="noopener noreferrer" href="https://www.hardenize.com/report/forwardemail.net/1705359887">Pass</a>',
     // internetnl_site (on root domain)
-    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/site/forwardemail.net/2577814/">100/100</a>',
+    '<a target="_blank" rel="noopener noreferrer" href="https://batch.internet.nl/site/forwardemail.net/22081043/">100/100</a>',
     // internetnl_mail (on root domain)
-    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/forwardemail.net/1121856/">100/100</a>',
+    '<a target="_blank" rel="noopener noreferrer" href="https://batch.internet.nl/mail/forwardemail.net/22483458/">92/100</a>',
     // ssl_labs
     'A+',
     // privacy_ratings (<category>/<entry> on privacyratings.com)
@@ -580,9 +580,9 @@ const obj = {
     // hardenize (on root domain)
     '<a target="_blank" rel="noopener noreferrer" href="https://www.hardenize.com/report/gmx.com/1705382687">Fail</a>',
     // internetnl_site (on root domain)
-    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/site/gmx.com/2577815/">81/100</a>',
+    '<a target="_blank" rel="noopener noreferrer" href="https://batch.internet.nl/site/gmx.com/22080939/">84/100</a>',
     // internetnl_mail (on root domain)
-    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/gmx.com/1121857/">87/100</a>',
+    '<a target="_blank" rel="noopener noreferrer" href="https://batch.internet.nl/mail/gmx.com/22483503/">54/100</a>',
     // ssl_labs
     'A+',
     // privacy_ratings (<category>/<entry> on privacyratings.com)
@@ -626,9 +626,9 @@ const obj = {
     // hardenize (on root domain)
     '<a target="_blank" rel="noopener noreferrer" href="https://www.hardenize.com/report/gandi.net/1705382736">Fail</a>',
     // internetnl_site (on root domain)
-    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/site/gandi.net/2577821/">70/100</a>',
+    '<a target="_blank" rel="noopener noreferrer" href="https://batch.internet.nl/site/gandi.net/22081013/">73/100</a>',
     // internetnl_mail (on root domain)
-    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/gandi.net/1121858/">69/100</a>',
+    '<a target="_blank" rel="noopener noreferrer" href="https://batch.internet.nl/mail/gandi.net/22483455/">70/100</a>',
     // ssl_labs
     'A',
     // privacy_ratings (<category>/<entry> on privacyratings.com)
@@ -673,9 +673,9 @@ const obj = {
     // hardenize (on root domain)
     '<a target="_blank" rel="noopener noreferrer" href="https://www.hardenize.com/report/getresponse.com/1705382992">Fail</a>',
     // internetnl_site (on root domain)
-    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/site/getresponse.com/2577824/">49/100</a>',
+    '<a target="_blank" rel="noopener noreferrer" href="https://batch.internet.nl/site/getresponse.com/22080981/">48/100</a>',
     // internetnl_mail (on root domain)
-    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/getresponse.com/1121860/">65/100</a>',
+    '<a target="_blank" rel="noopener noreferrer" href="https://batch.internet.nl/mail/getresponse.com/22483481/">79/100</a>',
     // ssl_labs
     'A',
     // privacy_ratings (<category>/<entry> on privacyratings.com)
@@ -719,9 +719,9 @@ const obj = {
     // hardenize (on root domain)
     '<a target="_blank" rel="noopener noreferrer" href="https://www.hardenize.com/report/gmail.com/1705216000">Fail</a>',
     // internetnl_site (on root domain)
-    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/site/gmail.com/2577826/">65/100</a>',
+    '<a target="_blank" rel="noopener noreferrer" href="https://batch.internet.nl/site/gmail.com/22080955/">70/100</a>',
     // internetnl_mail (on root domain)
-    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/getresponse.com/1121860/">65/100</a>',
+    '<a target="_blank" rel="noopener noreferrer" href="https://batch.internet.nl/mail/getresponse.com/22483481/">79/100</a>',
     // ssl_labs
     'B',
     // privacy_ratings (<category>/<entry> on privacyratings.com)
@@ -765,9 +765,9 @@ const obj = {
     // hardenize (on root domain)
     '<a target="_blank" rel="noopener noreferrer" href="https://www.hardenize.com/report/godaddy.com/1705383264">Fail</a>',
     // internetnl_site (on root domain)
-    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/site/godaddy.com/2577830/">52/100</a>',
+    '<a target="_blank" rel="noopener noreferrer" href="https://batch.internet.nl/site/godaddy.com/22080977/">47/100</a>',
     // internetnl_mail (on root domain)
-    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/godaddy.com/1121862/">65/100</a>',
+    '<a target="_blank" rel="noopener noreferrer" href="https://batch.internet.nl/mail/godaddy.com/22483486/">74/100</a>',
     // ssl_labs
     'A',
     // privacy_ratings (<category>/<entry> on privacyratings.com)
@@ -811,9 +811,9 @@ const obj = {
     // hardenize (on root domain)
     '<a target="_blank" rel="noopener noreferrer" href="https://www.hardenize.com/report/hey.com/1705383257">Fail</a>',
     // internetnl_site (on root domain)
-    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/site/hey.com/2577831/">52/100</a>',
+    '<a target="_blank" rel="noopener noreferrer" href="https://batch.internet.nl/site/hey.com/22081046/">64/100</a>',
     // internetnl_mail (on root domain)
-    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/hey.com/1121863/">65/100</a>',
+    '<a target="_blank" rel="noopener noreferrer" href="https://batch.internet.nl/mail/hey.com/22483524/">54/100</a>',
     // ssl_labs
     'A+',
     // privacy_ratings (<category>/<entry> on privacyratings.com)
@@ -857,9 +857,9 @@ const obj = {
     // hardenize (on root domain)
     '<a target="_blank" rel="noopener noreferrer" href="https://www.hardenize.com/report/hubspot.com/1705384195">Fail</a>',
     // internetnl_site (on root domain)
-    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/site/hubspot.com/2577836/">94/100</a>',
+    '<a target="_blank" rel="noopener noreferrer" href="https://batch.internet.nl/site/hubspot.com/22081021/">98/100</a>',
     // internetnl_mail (on root domain)
-    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/hubspot.com/1121866/">62/100</a>',
+    '<a target="_blank" rel="noopener noreferrer" href="https://batch.internet.nl/mail/hubspot.com/22483461/">77/100</a>',
     // ssl_labs
     'A+',
     // privacy_ratings (<category>/<entry> on privacyratings.com)
@@ -903,9 +903,9 @@ const obj = {
     // hardenize (on root domain)
     '<a target="_blank" rel="noopener noreferrer" href="https://www.hardenize.com/report/improvmx.com/1705384235">Fail</a>',
     // internetnl_site (on root domain)
-    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/site/improvmx.com/2577837/">66/100</a>',
+    '<a target="_blank" rel="noopener noreferrer" href="https://batch.internet.nl/site/improvmx.com/22080933/">93/100</a>',
     // internetnl_mail (on root domain)
-    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/improvmx.com/1121867/">85/100</a>',
+    '<a target="_blank" rel="noopener noreferrer" href="https://batch.internet.nl/mail/improvmx.com/22483463/">69/100</a>',
     // ssl_labs
     'A+',
     // privacy_ratings (<category>/<entry> on privacyratings.com)
@@ -951,9 +951,9 @@ const obj = {
     // hardenize (on root domain)
     '<a target="_blank" rel="noopener noreferrer" href="https://www.hardenize.com/report/klaviyo.com/1705384402">Fail</a>',
     // internetnl_site (on root domain)
-    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/site/klaviyo.com/2577841/">52/100</a>',
+    '<a target="_blank" rel="noopener noreferrer" href="https://batch.internet.nl/site/klaviyo.com/22081029/">66/100</a>',
     // internetnl_mail (on root domain)
-    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/klaviyo.com/1121869/">72/100</a>',
+    '<a target="_blank" rel="noopener noreferrer" href="https://batch.internet.nl/mail/klaviyo.com/22483531/">73/100</a>',
     // ssl_labs
     'A',
     // privacy_ratings (<category>/<entry> on privacyratings.com)
@@ -998,13 +998,60 @@ const obj = {
     // hardenize (on root domain)
     '<a target="_blank" rel="noopener noreferrer" href="https://www.hardenize.com/report/mail.com/1705384404">Fail</a>',
     // internetnl_site (on root domain)
-    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/site/mail.com/2577844/">81/100</a>',
+    '<a target="_blank" rel="noopener noreferrer" href="https://batch.internet.nl/site/mail.com/22081033/">84/100</a>',
     // internetnl_mail (on root domain)
-    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/mail.com/1121870/">83/100</a>',
+    '<a target="_blank" rel="noopener noreferrer" href="https://batch.internet.nl/mail/mail.com/22483475/">74/100</a>',
     // ssl_labs
     'A+',
     // privacy_ratings (<category>/<entry> on privacyratings.com)
     'email-providers/mail-com'
+  ],
+  'WEB.DE': [
+    // sister service of GMX and Mail.com
+    // description
+    'Secure email account from Germany',
+    // website
+    'https://web.de/email/',
+    // oss
+    false,
+    // sandboxed
+    false,
+    // tti
+    false,
+    // pricing
+    '€3.99/mo',
+    // storage
+    '5 GB',
+    // attachment_limit
+    '100 MB',
+    // unlimited_domains
+    false,
+    // unlimited_aliases
+    false,
+    // smtp
+    true,
+    // imap
+    true,
+    // pop3
+    true,
+    // api
+    false,
+    // e2ee
+    false,
+    // openpgp
+    true,
+    // wkd
+    false,
+    // hardenize (on root domain)
+    '<a target="_blank" rel="noopener noreferrer" href="https://www.hardenize.com/report/web.de/1792251019">Fail</a>',
+    // internetnl_site (on root domain)
+    '<a target="_blank" rel="noopener noreferrer" href="https://batch.internet.nl/site/web.de/22080958/">86/100</a>',
+    // internetnl_mail (on root domain)
+    '<a target="_blank" rel="noopener noreferrer" href="https://batch.internet.nl/mail/web.de/22483478/">82/100</a>',
+    // ssl_labs
+    'A+',
+    // privacy_ratings (<category>/<entry> on privacyratings.com)
+    false
   ],
   Migadu: [
     // description
@@ -1044,9 +1091,9 @@ const obj = {
     // hardenize (on root domain)
     '<a target="_blank" rel="noopener noreferrer" href="https://www.hardenize.com/report/migadu.com/1723989512">Fail</a>',
     // internetnl_site (on root domain)
-    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/site/migadu.com/2920307/">92/100</a>',
+    '<a target="_blank" rel="noopener noreferrer" href="https://batch.internet.nl/site/migadu.com/22081040/">95/100</a>',
     // internetnl_mail (on root domain)
-    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/migadu.com/1313797/">97/100</a>',
+    '<a target="_blank" rel="noopener noreferrer" href="https://batch.internet.nl/mail/migadu.com/22483497/">84/100</a>',
     // ssl_labs
     'A',
     // privacy_ratings (<category>/<entry> on privacyratings.com)
@@ -1092,9 +1139,9 @@ const obj = {
     // hardenize (on root domain)
     '<a target="_blank" rel="noopener noreferrer" href="https://www.hardenize.com/report/mailbox.org/1704462519">Fail</a>',
     // internetnl_site (on root domain)
-    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/site/mailbox.org/2560359/">92/100</a>',
+    '<a target="_blank" rel="noopener noreferrer" href="https://batch.internet.nl/site/mailbox.org/22080965/">95/100</a>',
     // internetnl_mail (on root domain)
-    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/mailbox.org/1111658/">71/100</a>',
+    '<a target="_blank" rel="noopener noreferrer" href="https://batch.internet.nl/mail/mailbox.org/22483491/">78/100</a>',
     // ssl_labs
     'A+',
     // privacy_ratings (<category>/<entry> on privacyratings.com)
@@ -1139,9 +1186,9 @@ const obj = {
     // hardenize (on root domain)
     '<a target="_blank" rel="noopener noreferrer" href="https://www.hardenize.com/report/mailchimp.com/1705384573">Fail</a>',
     // internetnl_site (on root domain)
-    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/site/mailchimp.com/2577847/">52/100</a>',
+    '<a target="_blank" rel="noopener noreferrer" href="https://batch.internet.nl/site/mailchimp.com/22081000/">63/100</a>',
     // internetnl_mail (on root domain)
-    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/mailchimp.com/1121873/">77/100</a>',
+    '<a target="_blank" rel="noopener noreferrer" href="https://batch.internet.nl/mail/mailchimp.com/22483484/">59/100</a>',
     // ssl_labs
     'A',
     // privacy_ratings (<category>/<entry> on privacyratings.com)
@@ -1185,9 +1232,9 @@ const obj = {
     // hardenize (on root domain)
     '<a target="_blank" rel="noopener noreferrer" href="https://www.hardenize.com/report/mailersend.com/1705384808">Fail</a>',
     // internetnl_site (on root domain)
-    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/site/mailersend.com/2577852/">68/100</a>',
+    '<a target="_blank" rel="noopener noreferrer" href="https://batch.internet.nl/site/mailersend.com/22081032/">71/100</a>',
     // internetnl_mail (on root domain)
-    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/mailersend.com/1121875/">52/100</a>',
+    '<a target="_blank" rel="noopener noreferrer" href="https://batch.internet.nl/mail/mailersend.com/22483501/">50/100</a>',
     // ssl_labs
     'A',
     // privacy_ratings (<category>/<entry> on privacyratings.com)
@@ -1231,9 +1278,9 @@ const obj = {
     // hardenize (on root domain)
     '<a target="_blank" rel="noopener noreferrer" href="https://www.hardenize.com/report/mailfence.com/1705387158">Fail</a>',
     // internetnl_site (on root domain)
-    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/site/mailfence.com/2577854/">66/100</a>',
+    '<a target="_blank" rel="noopener noreferrer" href="https://batch.internet.nl/site/mailfence.com/22080949/">25/100</a>',
     // internetnl_mail (on root domain)
-    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/mailfence.com/1121878/">50/100</a>',
+    '<a target="_blank" rel="noopener noreferrer" href="https://batch.internet.nl/mail/mailfence.com/22483451/">25/100</a>',
     // ssl_labs
     'A+',
     // privacy_ratings (<category>/<entry> on privacyratings.com)
@@ -1277,9 +1324,9 @@ const obj = {
     // hardenize (on root domain)
     '<a target="_blank" rel="noopener noreferrer" href="https://www.hardenize.com/report/mailgun.com/1705391746">Fail</a>',
     // internetnl_site (on root domain)
-    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/site/mailgun.com/2577956/">55/100</a>',
+    '<a target="_blank" rel="noopener noreferrer" href="https://batch.internet.nl/site/mailgun.com/22080950/">47/100</a>',
     // internetnl_mail (on root domain)
-    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/mailgun.com/1121954/">65/100</a>',
+    '<a target="_blank" rel="noopener noreferrer" href="https://batch.internet.nl/mail/mailgun.com/22483466/">61/100</a>',
     // ssl_labs
     'A+',
     // privacy_ratings (<category>/<entry> on privacyratings.com)
@@ -1323,9 +1370,9 @@ const obj = {
     // hardenize (on root domain)
     '<a target="_blank" rel="noopener noreferrer" href="https://www.hardenize.com/report/mailjet.com/1705391910">Fail</a>',
     // internetnl_site (on root domain)
-    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/site/mailjet.com/2577960/">40/100</a>',
+    '<a target="_blank" rel="noopener noreferrer" href="https://batch.internet.nl/site/mailjet.com/22080990/">57/100</a>',
     // internetnl_mail (on root domain)
-    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/mailjet.com/1121957/">52/100</a>',
+    '<a target="_blank" rel="noopener noreferrer" href="https://batch.internet.nl/mail/mailjet.com/22483492/">59/100</a>',
     // ssl_labs
     'A+',
     // privacy_ratings (<category>/<entry> on privacyratings.com)
@@ -1369,9 +1416,9 @@ const obj = {
     // hardenize (on root domain)
     '<a target="_blank" rel="noopener noreferrer" href="https://www.hardenize.com/report/mailtrap.io/1705392152">Fail</a>',
     // internetnl_site (on root domain)
-    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/site/mailtrap.io/2577972/">68/100</a>',
+    '<a target="_blank" rel="noopener noreferrer" href="https://batch.internet.nl/site/mailtrap.io/22080963/">76/100</a>',
     // internetnl_mail (on root domain)
-    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/mailtrap.io/1121966/">50/100</a>',
+    '<a target="_blank" rel="noopener noreferrer" href="https://batch.internet.nl/mail/mailtrap.io/22483462/">52/100</a>',
     // ssl_labs
     'A',
     // privacy_ratings (<category>/<entry> on privacyratings.com)
@@ -1416,9 +1463,9 @@ const obj = {
     // hardenize (on root domain)
     '<a target="_blank" rel="noopener noreferrer" href="https://www.hardenize.com/report/mailchimp.com/1705384573">Fail</a>',
     // internetnl_site (on root domain)
-    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/site/mailchimp.com/2577847/">52/100</a>',
+    '<a target="_blank" rel="noopener noreferrer" href="https://batch.internet.nl/site/mailchimp.com/22081000/">63/100</a>',
     // internetnl_mail (on root domain)
-    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/mailchimp.com/1121873/">77/100</a>',
+    '<a target="_blank" rel="noopener noreferrer" href="https://batch.internet.nl/mail/mailchimp.com/22483484/">59/100</a>',
     // ssl_labs
     'A',
     // privacy_ratings (<category>/<entry> on privacyratings.com)
@@ -1462,9 +1509,9 @@ const obj = {
     // hardenize (on root domain)
     '<a target="_blank" rel="noopener noreferrer" href="https://www.hardenize.com/report/messagebird.com/1705392302">Fail</a>',
     // internetnl_site (on root domain)
-    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/site/messagebird.com/2577976/">73/100</a>',
+    '<a target="_blank" rel="noopener noreferrer" href="https://batch.internet.nl/site/messagebird.com/22080900/">80/100</a>',
     // internetnl_mail (on root domain)
-    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/messagebird.com/1121967/">77/100</a>',
+    '<a target="_blank" rel="noopener noreferrer" href="https://batch.internet.nl/mail/messagebird.com/22483482/">77/100</a>',
     // ssl_labs
     'A+',
     // privacy_ratings (<category>/<entry> on privacyratings.com)
@@ -1508,9 +1555,9 @@ const obj = {
     // hardenize (on root domain)
     '<a target="_blank" rel="noopener noreferrer" href="https://www.hardenize.com/report/microsoft.com/1705393951">Fail</a>',
     // internetnl_site (on root domain)
-    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/site/microsoft.com/2578031/">73/100</a>',
+    '<a target="_blank" rel="noopener noreferrer" href="https://batch.internet.nl/site/microsoft.com/22080928/">80/100</a>',
     // internetnl_mail (on root domain)
-    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/microsoft.com/1122001/">65/100</a>',
+    '<a target="_blank" rel="noopener noreferrer" href="https://batch.internet.nl/mail/microsoft.com/22483489/">71/100</a>',
     // ssl_labs
     'A+',
     // privacy_ratings (<category>/<entry> on privacyratings.com)
@@ -1554,9 +1601,9 @@ const obj = {
     // hardenize (on root domain)
     '<a target="_blank" rel="noopener noreferrer" href="https://www.hardenize.com/report/123-reg.co.uk/1705421094">Fail</a>',
     // internetnl_site (on root domain)
-    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/site/123-reg.co.uk/2579020/">70/100</a>',
+    '<a target="_blank" rel="noopener noreferrer" href="https://batch.internet.nl/site/123-reg.co.uk/22080974/">75/100</a>',
     // internetnl_mail (on root domain)
-    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/123-reg.co.uk/1122457/">52/100</a>',
+    '<a target="_blank" rel="noopener noreferrer" href="https://batch.internet.nl/mail/123-reg.co.uk/22483479/">59/100</a>',
     // ssl_labs
     'A',
     // privacy_ratings (<category>/<entry> on privacyratings.com)
@@ -1600,9 +1647,9 @@ const obj = {
     // hardenize (on root domain)
     '<a target="_blank" rel="noopener noreferrer" href="https://www.hardenize.com/report/namecheap.com/1705420715">Fail</a>',
     // internetnl_site (on root domain)
-    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/site/namecheap.com/2579010/">47/100</a>',
+    '<a target="_blank" rel="noopener noreferrer" href="https://batch.internet.nl/site/namecheap.com/22081074/">82/100</a>',
     // internetnl_mail (on root domain)
-    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/namecheap.com/1122455/">62/100</a>',
+    '<a target="_blank" rel="noopener noreferrer" href="https://batch.internet.nl/mail/namecheap.com/22483554/">72/100</a>',
     // ssl_labs
     'A+',
     // privacy_ratings (<category>/<entry> on privacyratings.com)
@@ -1646,9 +1693,9 @@ const obj = {
     // hardenize (on root domain)
     '<a target="_blank" rel="noopener noreferrer" href="https://www.hardenize.com/report/pobox.com/1705421279">Fail</a>',
     // internetnl_site (on root domain)
-    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/site/pobox.com/2579026/">34/100</a>',
+    '<a target="_blank" rel="noopener noreferrer" href="https://batch.internet.nl/site/pobox.com/22081045/">48/100</a>',
     // internetnl_mail (on root domain)
-    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/pobox.com/1122459/">35/100</a>',
+    '<a target="_blank" rel="noopener noreferrer" href="https://batch.internet.nl/mail/pobox.com/22483548/">51/100</a>',
     // ssl_labs
     'B',
     // privacy_ratings (<category>/<entry> on privacyratings.com)
@@ -1693,9 +1740,9 @@ const obj = {
     // hardenize (on root domain)
     '<a target="_blank" rel="noopener noreferrer" href="https://www.hardenize.com/report/postmarkapp.com/1705421468">Fail</a>',
     // internetnl_site (on root domain)
-    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/site/postmarkapp.com/2579032/">49/100</a>',
+    '<a target="_blank" rel="noopener noreferrer" href="https://batch.internet.nl/site/postmarkapp.com/22080961/">50/100</a>',
     // internetnl_mail (on root domain)
-    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/postmarkapp.com/1122464/">77/100</a>',
+    '<a target="_blank" rel="noopener noreferrer" href="https://batch.internet.nl/mail/postmarkapp.com/22483514/">69/100</a>',
     // ssl_labs
     'B',
     // privacy_ratings (<category>/<entry> on privacyratings.com)
@@ -1739,9 +1786,9 @@ const obj = {
     // hardenize
     '<a target="_blank" rel="noopener noreferrer" href="https://www.hardenize.com/report/protonmail.com/1704459294">Fail</a>',
     // internetnl_site
-    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/site/protonmail.com/2560226/">66/100</a>',
+    '<a target="_blank" rel="noopener noreferrer" href="https://batch.internet.nl/site/protonmail.com/22081039/">73/100</a>',
     // internetnl_mail
-    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/protonmail.com/1111619/">75/100</a>',
+    '<a target="_blank" rel="noopener noreferrer" href="https://batch.internet.nl/mail/protonmail.com/22483452/">72/100</a>',
     // ssl_labs
     'A+',
     // privacy_ratings (<category>/<entry> on privacyratings.com)
@@ -1785,9 +1832,9 @@ const obj = {
     // hardenize (on root domain)
     '<a target="_blank" rel="noopener noreferrer" href="https://www.hardenize.com/report/resend.com/1705421701">Fail</a>',
     // internetnl_site (on root domain)
-    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/site/resend.com/2579038/">52/100</a>',
+    '<a target="_blank" rel="noopener noreferrer" href="https://batch.internet.nl/site/resend.com/22081070/">66/100</a>',
     // internetnl_mail (on root domain)
-    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/resend.com/1122468/">72/100</a>',
+    '<a target="_blank" rel="noopener noreferrer" href="https://batch.internet.nl/mail/resend.com/22483494/">73/100</a>',
     // ssl_labs
     'A+',
     // privacy_ratings (<category>/<entry> on privacyratings.com)
@@ -1831,9 +1878,9 @@ const obj = {
     // hardenize (on root domain)
     '<a target="_blank" rel="noopener noreferrer" href="https://www.hardenize.com/report/smtp2go.com/1705423161">Fail</a>',
     // internetnl_site (on root domain)
-    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/site/smtp2go.com/2579059/">32/100</a>',
+    '<a target="_blank" rel="noopener noreferrer" href="https://batch.internet.nl/site/smtp2go.com/22080927/">34/100</a>',
     // internetnl_mail (on root domain)
-    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/smtp2go.com/1122482/">65/100</a>',
+    '<a target="_blank" rel="noopener noreferrer" href="https://batch.internet.nl/mail/smtp2go.com/22483512/">67/100</a>',
     // ssl_labs
     'A',
     // privacy_ratings (<category>/<entry> on privacyratings.com)
@@ -1877,9 +1924,9 @@ const obj = {
     // hardenize (on root domain)
     '<a target="_blank" rel="noopener noreferrer" href="https://www.hardenize.com/report/sendgrid.com/1705423356">Fail</a>',
     // internetnl_site (on root domain)
-    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/site/sendgrid.com/2579063/">55/100</a>',
+    '<a target="_blank" rel="noopener noreferrer" href="https://batch.internet.nl/site/sendgrid.com/22081050/">61/100</a>',
     // internetnl_mail (on root domain)
-    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/sendgrid.com/1122483/">60/100</a>',
+    '<a target="_blank" rel="noopener noreferrer" href="https://batch.internet.nl/mail/sendgrid.com/22483488/">77/100</a>',
     // ssl_labs
     'A',
     // privacy_ratings (<category>/<entry> on privacyratings.com)
@@ -1925,9 +1972,9 @@ const obj = {
     // hardenize
     '<a target="_blank" rel="noopener noreferrer" href="https://www.hardenize.com/report/skiff.com/1705453431">Pass</a>',
     // internetnl_site
-    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/site/skiff.com/2560253/">97/100</a>',
+    '<a target="_blank" rel="noopener noreferrer" href="https://batch.internet.nl/site/skiff.com/22080971/">95/100</a>',
     // internetnl_mail
-    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/skiff.com/1111628/">87/100</a>',
+    '<a target="_blank" rel="noopener noreferrer" href="https://batch.internet.nl/mail/skiff.com/22483469/">100/100</a>',
     // ssl_labs
     'A+'
   ],
@@ -1971,9 +2018,9 @@ const obj = {
     // hardenize
     '<a target="_blank" rel="noopener noreferrer" href="https://www.hardenize.com/report/startmail.com/1705361614">Fail</a>',
     // internetnl_site
-    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/site/startmail.com/2560203/">100/100</a>',
+    '<a target="_blank" rel="noopener noreferrer" href="https://batch.internet.nl/site/startmail.com/22080980/">100/100</a>',
     // internetnl_mail
-    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/startmail.com/1111613/">83/100</a>',
+    '<a target="_blank" rel="noopener noreferrer" href="https://batch.internet.nl/mail/startmail.com/22483460/">94/100</a>',
     // ssl_labs
     'A+',
     // privacy_ratings (<category>/<entry> on privacyratings.com)
@@ -2017,9 +2064,9 @@ const obj = {
     // hardenize (on root domain)
     '<a target="_blank" rel="noopener noreferrer" href="https://www.hardenize.com/report/titan.email/1705365327">Fail</a>',
     // internetnl_site (on root domain)
-    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/site/titan.email/2577697/">55/100</a>',
+    '<a target="_blank" rel="noopener noreferrer" href="https://batch.internet.nl/site/titan.email/22080992/">64/100</a>',
     // internetnl_mail (on root domain)
-    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/titan.email/1121813/">55/100</a>',
+    '<a target="_blank" rel="noopener noreferrer" href="https://batch.internet.nl/mail/titan.email/22483499/">60/100</a>',
     // ssl_labs
     'A+',
     // privacy_ratings (<category>/<entry> on privacyratings.com)
@@ -2063,9 +2110,9 @@ const obj = {
     // hardenize (on root domain)
     '<a target="_blank" rel="noopener noreferrer" href="https://www.hardenize.com/report/tuta.com">Fail</a>',
     // internetnl_site (on root domain)
-    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/site/tuta.com/2560241/">100/100</a>',
+    '<a target="_blank" rel="noopener noreferrer" href="https://batch.internet.nl/site/tuta.com/22080997/">100/100</a>',
     // internetnl_mail (on root domain)
-    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/tuta.com/1111623/">87/100</a>',
+    '<a target="_blank" rel="noopener noreferrer" href="https://batch.internet.nl/mail/tuta.com/22483453/">84/100</a>',
     // ssl_labs
     'A',
     // privacy_ratings (<category>/<entry> on privacyratings.com)
@@ -2110,9 +2157,9 @@ const obj = {
     // hardenize (on root domain)
     '<a target="_blank" rel="noopener noreferrer" href="https://www.hardenize.com/report/yahoo.com/1705359927>">Fail</a>',
     // internetnl_site (on root domain)
-    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/site/yahoo.com/2577663/">73/100</a>',
+    '<a target="_blank" rel="noopener noreferrer" href="https://batch.internet.nl/site/yahoo.com/22081055/">51/100</a>',
     // internetnl_mail (on root domain)
-    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/yahoo.com/1121778/">38/100</a>',
+    '<a target="_blank" rel="noopener noreferrer" href="https://batch.internet.nl/mail/yahoo.com/22483508/">26/100</a>',
     // ssl_labs
     'B',
     // privacy_ratings (<category>/<entry> on privacyratings.com)
@@ -2155,9 +2202,9 @@ const obj = {
     // hardenize (on root domain)
     '<a target="_blank" rel="noopener noreferrer" href="https://www.hardenize.com/report/yandex.com/1705424812">Fail</a>',
     // internetnl_site (on root domain)
-    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/site/yandex.com/2579085/">65/100</a>',
+    '<a target="_blank" rel="noopener noreferrer" href="https://batch.internet.nl/site/yandex.com/22081015/">75/100</a>',
     // internetnl_mail (on root domain)
-    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/yandex.com/1122501/">71/100</a>',
+    '<a target="_blank" rel="noopener noreferrer" href="https://batch.internet.nl/mail/yandex.com/22483467/">74/100</a>',
     // ssl_labs
     'B',
     // privacy_ratings (<category>/<entry> on privacyratings.com)
@@ -2201,9 +2248,9 @@ const obj = {
     // hardenize (on root domain)
     '<a target="_blank" rel="noopener noreferrer" href="https://www.hardenize.com/report/zoho.com/1705425088">Fail</a>',
     // internetnl_site (on root domain)
-    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/site/zoho.com/2579088/">55/100</a>',
+    '<a target="_blank" rel="noopener noreferrer" href="https://batch.internet.nl/site/zoho.com/22080946/">64/100</a>',
     // internetnl_mail (on root domain)
-    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/zoho.com/1122504/">62/100</a>',
+    '<a target="_blank" rel="noopener noreferrer" href="https://batch.internet.nl/mail/zoho.com/22483504/">64/100</a>',
     // ssl_labs
     'A+',
     // privacy_ratings (<category>/<entry> on privacyratings.com)
@@ -2247,9 +2294,9 @@ const obj = {
     // hardenize (on root domain)
     '<a target="_blank" rel="noopener noreferrer" href="https://www.hardenize.com/report/cloudflare.com/1705459129">Fail</a>',
     // internetnl_site (on root domain)
-    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/site/cloudflare.com/2579602/">92/100</a>',
+    '<a target="_blank" rel="noopener noreferrer" href="https://batch.internet.nl/site/cloudflare.com/22081010/">88/100</a>',
     // internetnl_mail (on root domain)
-    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/cloudflare.com/1122887/">62/100</a>',
+    '<a target="_blank" rel="noopener noreferrer" href="https://batch.internet.nl/mail/cloudflare.com/22483518/">74/100</a>',
     // ssl_labs
     'B',
     // privacy_ratings (<category>/<entry> on privacyratings.com)
@@ -2293,9 +2340,9 @@ const obj = {
     // hardenize (on root domain)
     '<a target="_blank" rel="noopener noreferrer" href="https://www.hardenize.com/report/smtp.com/1705459078">Fail</a>',
     // internetnl_site (on root domain)
-    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/site/smtp.com/2579603/">49/100</a>',
+    '<a target="_blank" rel="noopener noreferrer" href="https://batch.internet.nl/site/smtp.com/22080931/">62/100</a>',
     // internetnl_mail (on root domain)
-    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/smtp.com/1122885/">72/100</a>',
+    '<a target="_blank" rel="noopener noreferrer" href="https://batch.internet.nl/mail/smtp.com/22483502/">65/100</a>',
     // ssl_labs
     'A',
     // privacy_ratings (<category>/<entry> on privacyratings.com)
@@ -2339,9 +2386,9 @@ const obj = {
     // hardenize (on root domain)
     '<a target="_blank" rel="noopener noreferrer" href="https://www.hardenize.com/report/simplelogin.io/1705459076">Fail</a>',
     // internetnl_site (on root domain)
-    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/site/simplelogin.io/2579605/">76/100</a>',
+    '<a target="_blank" rel="noopener noreferrer" href="https://batch.internet.nl/site/simplelogin.io/22081065/">82/100</a>',
     // internetnl_mail (on root domain)
-    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/simplelogin.io/1122888/">87/100</a>',
+    '<a target="_blank" rel="noopener noreferrer" href="https://batch.internet.nl/mail/simplelogin.io/22483454/">90/100</a>',
     // ssl_labs
     'A+',
     // privacy_ratings (<category>/<entry> on privacyratings.com)
@@ -2385,9 +2432,9 @@ const obj = {
     // hardenize (on root domain)
     '<a target="_blank" rel="noopener noreferrer" href="https://www.hardenize.com/report/addy.io/1705459145">Pass</a>',
     // internetnl_site (on root domain)
-    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/site/addy.io/2579606/">100/100</a>',
+    '<a target="_blank" rel="noopener noreferrer" href="https://batch.internet.nl/site/addy.io/22080903/">100/100</a>',
     // internetnl_mail (on root domain)
-    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/addy.io/1122890/">100/100</a>',
+    '<a target="_blank" rel="noopener noreferrer" href="https://batch.internet.nl/mail/addy.io/22483507/">90/100</a>',
     // ssl_labs
     'A+',
     // privacy_ratings (<category>/<entry> on privacyratings.com)
@@ -2431,9 +2478,9 @@ const obj = {
     // hardenize (on root domain)
     '<a target="_blank" rel="noopener noreferrer" href="https://www.hardenize.com/report/intercom.com/1705459146">Fail</a>',
     // internetnl_site (on root domain)
-    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/site/intercom.com/2579607/">52/100</a>',
+    '<a target="_blank" rel="noopener noreferrer" href="https://batch.internet.nl/site/intercom.com/22081067/">62/100</a>',
     // internetnl_mail (on root domain)
-    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/intercom.com/1122886/">72/100</a>',
+    '<a target="_blank" rel="noopener noreferrer" href="https://batch.internet.nl/mail/intercom.com/22483472/">73/100</a>',
     // ssl_labs
     'A+',
     // privacy_ratings (<category>/<entry> on privacyratings.com)
@@ -2477,9 +2524,9 @@ const obj = {
     // hardenize (on root domain)
     '<a target="_blank" rel="noopener noreferrer" href="https://www.hardenize.com/report/drift.com/1705459071">Fail</a>',
     // internetnl_site (on root domain)
-    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/site/drift.com/2579611/">71/100</a>',
+    '<a target="_blank" rel="noopener noreferrer" href="https://batch.internet.nl/site/drift.com/22081036/">58/100</a>',
     // internetnl_mail (on root domain)
-    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/drift.com/1122892/">56/100</a>',
+    '<a target="_blank" rel="noopener noreferrer" href="https://batch.internet.nl/mail/drift.com/22483474/">74/100</a>',
     // ssl_labs
     'A',
     // privacy_ratings (<category>/<entry> on privacyratings.com)
@@ -2523,9 +2570,9 @@ const obj = {
     // hardenize (on root domain)
     '<a target="_blank" rel="noopener noreferrer" href="https://www.hardenize.com/report/crisp.chat/1705459166">Fail</a>',
     // internetnl_site (on root domain)
-    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/site/crisp.chat/2579609/">94/100</a>',
+    '<a target="_blank" rel="noopener noreferrer" href="https://batch.internet.nl/site/crisp.chat/22080976/">91/100</a>',
     // internetnl_mail (on root domain)
-    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/crisp.chat/1122891/">80/100</a>',
+    '<a target="_blank" rel="noopener noreferrer" href="https://batch.internet.nl/mail/crisp.chat/22483456/">80/100</a>',
     // ssl_labs
     'B',
     // privacy_ratings (<category>/<entry> on privacyratings.com)
@@ -2569,9 +2616,9 @@ const obj = {
     // hardenize (on root domain)
     '<a target="_blank" rel="noopener noreferrer" href="https://www.hardenize.com/report/helpscout.com/1705459167">Fail</a>',
     // internetnl_site (on root domain)
-    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/site/helpscout.com/2579604/">52/100</a>',
+    '<a target="_blank" rel="noopener noreferrer" href="https://batch.internet.nl/site/helpscout.com/22081052/">62/100</a>',
     // internetnl_mail (on root domain)
-    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/helpscout.com/1122889/">68/100</a>',
+    '<a target="_blank" rel="noopener noreferrer" href="https://batch.internet.nl/mail/helpscout.com/22483510/">67/100</a>',
     // ssl_labs
     'A',
     // privacy_ratings (<category>/<entry> on privacyratings.com)
@@ -2615,9 +2662,9 @@ const obj = {
     // hardenize (on root domain)
     '<a target="_blank" rel="noopener noreferrer" href="https://www.hardenize.com/report/zendesk.com/1705459069">Fail</a>',
     // internetnl_site (on root domain)
-    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/site/zendesk.com/2579610/">49/100</a>',
+    '<a target="_blank" rel="noopener noreferrer" href="https://batch.internet.nl/site/zendesk.com/22080919/">59/100</a>',
     // internetnl_mail (on root domain)
-    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/zendesk.com/1122893/">70/100</a>',
+    '<a target="_blank" rel="noopener noreferrer" href="https://batch.internet.nl/mail/zendesk.com/22483522/">45/100</a>',
     // ssl_labs
     'A',
     // privacy_ratings (<category>/<entry> on privacyratings.com)
@@ -2661,9 +2708,9 @@ const obj = {
     // hardenize (on root domain)
     '<a target="_blank" rel="noopener noreferrer" href="https://www.hardenize.com/report/olark.com/1705459170">Fail</a>',
     // internetnl_site (on root domain)
-    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/site/olark.com/2579612/">52/100</a>',
+    '<a target="_blank" rel="noopener noreferrer" href="https://batch.internet.nl/site/olark.com/22081019/">59/100</a>',
     // internetnl_mail (on root domain)
-    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/olark.com/1122895/">77/100</a>',
+    '<a target="_blank" rel="noopener noreferrer" href="https://batch.internet.nl/mail/olark.com/22483520/">77/100</a>',
     // ssl_labs
     'B',
     // privacy_ratings (<category>/<entry> on privacyratings.com)
@@ -2707,9 +2754,9 @@ const obj = {
     // hardenize (on root domain)
     '<a target="_blank" rel="noopener noreferrer" href="https://www.hardenize.com/report/helpcrunch.com/1705459190">Fail</a>',
     // internetnl_site (on root domain)
-    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/site/helpcrunch.com/2579614/">68/100</a>',
+    '<a target="_blank" rel="noopener noreferrer" href="https://batch.internet.nl/site/helpcrunch.com/22080960/">73/100</a>',
     // internetnl_mail (on root domain)
-    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/helpcrunch.com/1122896/">77/100</a>',
+    '<a target="_blank" rel="noopener noreferrer" href="https://batch.internet.nl/mail/helpcrunch.com/22483500/">77/100</a>',
     // ssl_labs
     'B',
     // privacy_ratings (<category>/<entry> on privacyratings.com)
@@ -2753,9 +2800,9 @@ const obj = {
     // hardenize (on root domain)
     '<a target="_blank" rel="noopener noreferrer" href="https://www.hardenize.com/report/posteo.de/1722691888">Fail</a>',
     // internetnl_site (on root domain)
-    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/site/posteo.de/2910817/">33/100</a>',
+    '<a target="_blank" rel="noopener noreferrer" href="https://batch.internet.nl/site/posteo.de/22080968/">100/100</a>',
     // internetnl_mail (on root domain)
-    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/posteo.de/1308586/">83/100</a>',
+    '<a target="_blank" rel="noopener noreferrer" href="https://batch.internet.nl/mail/posteo.de/22483471/">62/100</a>',
     // ssl_labs
     'A+',
     // privacy_ratings (<category>/<entry> on privacyratings.com)
@@ -2799,9 +2846,9 @@ const obj = {
     // hardenize (on root domain)
     '<a target="_blank" rel="noopener noreferrer" href="https://www.hardenize.com/report/mimecast.com/1723138070">Fail</a>',
     // internetnl_site (on root domain)
-    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/site/mimecast.com/2910819/">34/100</a>',
+    '<a target="_blank" rel="noopener noreferrer" href="https://batch.internet.nl/site/mimecast.com/22080993/">35/100</a>',
     // internetnl_mail (on root domain)
-    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/mimecast.com/1308587/">52/100</a>',
+    '<a target="_blank" rel="noopener noreferrer" href="https://batch.internet.nl/mail/mimecast.com/22483464/">22/100</a>',
     // ssl_labs
     'A',
     // privacy_ratings (<category>/<entry> on privacyratings.com)
@@ -2845,9 +2892,9 @@ const obj = {
     // hardenize (on root domain)
     '<a target="_blank" rel="noopener noreferrer" href="https://www.hardenize.com/report/proofpoint.com/1723138425">Fail</a>',
     // internetnl_site (on root domain)
-    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/site/proofpoint.com/2910823/">73/100</a>',
+    '<a target="_blank" rel="noopener noreferrer" href="https://batch.internet.nl/site/proofpoint.com/22081058/">78/100</a>',
     // internetnl_mail (on root domain)
-    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/proofpoint.com/1308590/">60/100</a>',
+    '<a target="_blank" rel="noopener noreferrer" href="https://batch.internet.nl/mail/proofpoint.com/22483513/">63/100</a>',
     // ssl_labs
     'A+',
     // privacy_ratings (<category>/<entry> on privacyratings.com)
@@ -2891,9 +2938,9 @@ const obj = {
     // hardenize (on root domain)
     '<a target="_blank" rel="noopener noreferrer" href="https://www.hardenize.com/report/spamtitan.com/1723139616">Fail</a>',
     // internetnl_site (on root domain)
-    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/site/spamtitan.com/2910843/">47/100</a>',
+    '<a target="_blank" rel="noopener noreferrer" href="https://batch.internet.nl/site/spamtitan.com/22080964/">61/100</a>',
     // internetnl_mail (on root domain)
-    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/spamtitan.com/1308598/">40/100</a>',
+    '<a target="_blank" rel="noopener noreferrer" href="https://batch.internet.nl/mail/spamtitan.com/22483450/">38/100</a>',
     // ssl_labs
     'A',
     // privacy_ratings (<category>/<entry> on privacyratings.com)
@@ -2937,9 +2984,9 @@ const obj = {
     // hardenize (on root domain)
     '<a target="_blank" rel="noopener noreferrer" href="https://www.hardenize.com/report/barracuda.com">Fail</a>',
     // internetnl_site (on root domain)
-    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/site/barracuda.com/2910849/">49/100</a>',
+    '<a target="_blank" rel="noopener noreferrer" href="https://batch.internet.nl/site/barracuda.com/22080912/">59/100</a>',
     // internetnl_mail (on root domain)
-    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/barracuda.com/1308599/">55/100</a>',
+    '<a target="_blank" rel="noopener noreferrer" href="https://batch.internet.nl/mail/barracuda.com/22483457/">54/100</a>',
     // ssl_labs
     'B',
     // privacy_ratings (<category>/<entry> on privacyratings.com)
@@ -2983,9 +3030,9 @@ const obj = {
     // hardenize (on root domain)
     '<a target="_blank" rel="noopener noreferrer" href="https://www.hardenize.com/report/cisco.com/1723142293">Fail</a>',
     // internetnl_site (on root domain)
-    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/site/cisco.com/2910858/">68/100</a>',
+    '<a target="_blank" rel="noopener noreferrer" href="https://batch.internet.nl/site/cisco.com/22080996/">73/100</a>',
     // internetnl_mail (on root domain)
-    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/cisco.com/1308607/">70/100</a>',
+    '<a target="_blank" rel="noopener noreferrer" href="https://batch.internet.nl/mail/cisco.com/22483477/">76/100</a>',
     // ssl_labs
     'A-',
     // privacy_ratings (<category>/<entry> on privacyratings.com)
@@ -3030,9 +3077,9 @@ const obj = {
     // hardenize (on root domain)
     '<a target="_blank" rel="noopener noreferrer" href="https://www.hardenize.com/report/fortinet.com/1723142304">Fail</a>',
     // internetnl_site (on root domain)
-    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/site/fortinet.com/2910861/">29/100</a>',
+    '<a target="_blank" rel="noopener noreferrer" href="https://batch.internet.nl/site/fortinet.com/22080998/">32/100</a>',
     // internetnl_mail (on root domain)
-    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/fortinet.com/1308608/">46/100</a>',
+    '<a target="_blank" rel="noopener noreferrer" href="https://batch.internet.nl/mail/fortinet.com/22483490/">37/100</a>',
     // ssl_labs
     'A',
     // privacy_ratings (<category>/<entry> on privacyratings.com)
@@ -3077,9 +3124,9 @@ const obj = {
     // hardenize (on root domain)
     '<a target="_blank" rel="noopener noreferrer" href="https://www.hardenize.com/report/darktrace.com/1723140960">Fail</a>',
     // internetnl_site (on root domain)
-    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/site/darktrace.com/2910859/">79/100</a>',
+    '<a target="_blank" rel="noopener noreferrer" href="https://batch.internet.nl/site/darktrace.com/22080898/">82/100</a>',
     // internetnl_mail (on root domain)
-    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/darktrace.com/1308606/">85/100</a>',
+    '<a target="_blank" rel="noopener noreferrer" href="https://batch.internet.nl/mail/darktrace.com/22483498/">84/100</a>',
     // ssl_labs
     'A+',
     // privacy_ratings (<category>/<entry> on privacyratings.com)
@@ -3124,9 +3171,9 @@ const obj = {
     // hardenize (on root domain)
     '<a target="_blank" rel="noopener noreferrer" href="https://www.hardenize.com/report/abnormalsecurity.com/1723140967">Fail</a>',
     // internetnl_site (on root domain)
-    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/site/abnormalsecurity.com/2910860/">52/100</a>',
+    '<a target="_blank" rel="noopener noreferrer" href="https://batch.internet.nl/site/abnormalsecurity.com/22080970/">66/100</a>',
     // internetnl_mail (on root domain)
-    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/abnormalsecurity.com/1308610/">77/100</a>',
+    '<a target="_blank" rel="noopener noreferrer" href="https://batch.internet.nl/mail/abnormalsecurity.com/22483468/">77/100</a>',
     // ssl_labs
     'A+',
     // privacy_ratings (<category>/<entry> on privacyratings.com)
@@ -3171,9 +3218,9 @@ const obj = {
     // hardenize (on root domain)
     '<a target="_blank" rel="noopener noreferrer" href="https://www.hardenize.com/report/spamhero.com/1723140651">Fail</a>',
     // internetnl_site (on root domain)
-    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/site/spamhero.com/2910862/">34/100</a>',
+    '<a target="_blank" rel="noopener noreferrer" href="https://batch.internet.nl/site/spamhero.com/22080973/">21/100</a>',
     // internetnl_mail (on root domain)
-    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/spamhero.com/1308609/">41/100</a>',
+    '<a target="_blank" rel="noopener noreferrer" href="https://batch.internet.nl/mail/spamhero.com/22483511/">27/100</a>',
     // ssl_labs
     'A',
     // privacy_ratings (<category>/<entry> on privacyratings.com)
@@ -3217,9 +3264,9 @@ const obj = {
     // hardenize (on root domain)
     '<a target="_blank" rel="noopener noreferrer" href="https://www.hardenize.com/report/vadesecure.com/1723141625">Fail</a>',
     // internetnl_site (on root domain)
-    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/site/vadesecure.com/2910874/">47/100</a>',
+    '<a target="_blank" rel="noopener noreferrer" href="https://batch.internet.nl/site/vadesecure.com/22081027/">61/100</a>',
     // internetnl_mail (on root domain)
-    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/vadesecure.com/1308613/">61/100</a>',
+    '<a target="_blank" rel="noopener noreferrer" href="https://batch.internet.nl/mail/vadesecure.com/22483515/">71/100</a>',
     // ssl_labs
     'A',
     // privacy_ratings (<category>/<entry> on privacyratings.com)
@@ -3263,9 +3310,9 @@ const obj = {
     // hardenize (on root domain)
     '<a target="_blank" rel="noopener noreferrer" href="https://www.hardenize.com/report/n-able.com/1723141972">Fail</a>',
     // internetnl_site (on root domain)
-    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/site/n-able.com/2910876/">47/100</a',
+    '<a target="_blank" rel="noopener noreferrer" href="https://batch.internet.nl/site/n-able.com/22080948/">79/100</a>',
     // internetnl_mail (on root domain)
-    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/n-able.com/1308615/">56/100</a>',
+    '<a target="_blank" rel="noopener noreferrer" href="https://batch.internet.nl/mail/n-able.com/22483459/">77/100</a>',
     // ssl_labs
     'A',
     // privacy_ratings (<category>/<entry> on privacyratings.com)
@@ -3309,9 +3356,9 @@ const obj = {
     // hardenize (on root domain)
     '<a target="_blank" rel="noopener noreferrer" href="https://www.hardenize.com/report/duocircle.com/1723143105">Fail</a>',
     // internetnl_site (on root domain)
-    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/site/duocircle.com/2910878/">47/100</a>',
+    '<a target="_blank" rel="noopener noreferrer" href="https://batch.internet.nl/site/duocircle.com/22081025/">66/100</a>',
     // internetnl_mail (on root domain)
-    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/duocircle.com/1308620/">72/100</a>',
+    '<a target="_blank" rel="noopener noreferrer" href="https://batch.internet.nl/mail/duocircle.com/22483470/">73/100</a>',
     // ssl_labs
     'A',
     // privacy_ratings (<category>/<entry> on privacyratings.com)
@@ -3355,9 +3402,9 @@ const obj = {
     // hardenize (on root domain)
     '<a target="_blank" rel="noopener noreferrer" href="https://www.hardenize.com/report/oopspam.com/1723145721">Fail</a>',
     // internetnl_site (on root domain)
-    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/site/oopspam.com/2910897/">49/100</a>',
+    '<a target="_blank" rel="noopener noreferrer" href="https://batch.internet.nl/site/oopspam.com/22081044/">71/100</a>',
     // internetnl_mail (on root domain)
-    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/oopspam.com/1308635/">61/100</a>',
+    '<a target="_blank" rel="noopener noreferrer" href="https://batch.internet.nl/mail/oopspam.com/22483485/">67/100</a>',
     // ssl_labs
     'A',
     // privacy_ratings (<category>/<entry> on privacyratings.com)
@@ -3401,9 +3448,9 @@ const obj = {
     // hardenize (on root domain)
     '<a target="_blank" rel="noopener noreferrer" href="https://www.hardenize.com/report/libraesva.com/1723145854">Fail</a>',
     // internetnl_site (on root domain)
-    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/site/libraesva.com/2910898/">68/100</a>',
+    '<a target="_blank" rel="noopener noreferrer" href="https://batch.internet.nl/site/libraesva.com/22080926/">75/100</a>',
     // internetnl_mail (on root domain)
-    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/libraesva.com/1308636/">62/100</a>',
+    '<a target="_blank" rel="noopener noreferrer" href="https://batch.internet.nl/mail/libraesva.com/22483495/">59/100</a>',
     // ssl_labs
     'A',
     // privacy_ratings (<category>/<entry> on privacyratings.com)
@@ -3447,9 +3494,9 @@ const obj = {
     // hardenize (on root domain)
     '<a target="_blank" rel="noopener noreferrer" href="https://www.hardenize.com/report/trustifi.com/1723145991">Fail</a>',
     // internetnl_site (on root domain)
-    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/site/trustifi.com/2910899/">66/100</a>',
+    '<a target="_blank" rel="noopener noreferrer" href="https://batch.internet.nl/site/trustifi.com/22080978/">72/100</a>',
     // internetnl_mail (on root domain)
-    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/trustifi.com/1308638/">65/100</a>',
+    '<a target="_blank" rel="noopener noreferrer" href="https://batch.internet.nl/mail/trustifi.com/22483476/">67/100</a>',
     // ssl_labs
     'A',
     // privacy_ratings (<category>/<entry> on privacyratings.com)
@@ -3493,9 +3540,9 @@ const obj = {
     // hardenize (on root domain)
     '<a target="_blank" rel="noopener noreferrer" href="https://www.hardenize.com/report/avanan.com/1723146216">Fail</a>',
     // internetnl_site (on root domain)
-    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/site/avanan.com/2910900/">76/100</a>',
+    '<a target="_blank" rel="noopener noreferrer" href="https://batch.internet.nl/site/avanan.com/22081059/">57/100</a>',
     // internetnl_mail (on root domain)
-    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/avanan.com/1308639/">77/100</a>',
+    '<a target="_blank" rel="noopener noreferrer" href="https://batch.internet.nl/mail/avanan.com/22483506/">67/100</a>',
     // ssl_labs
     'A+',
     // privacy_ratings (<category>/<entry> on privacyratings.com)
@@ -3539,9 +3586,9 @@ const obj = {
     // hardenize (on root domain)
     '<a target="_blank" rel="noopener noreferrer" href="https://www.hardenize.com/report/heimdalsecurity.com/1723146419">Fail</a>',
     // internetnl_site (on root domain)
-    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/site/heimdalsecurity.com/2910906/">79/100</a>',
+    '<a target="_blank" rel="noopener noreferrer" href="https://batch.internet.nl/site/heimdalsecurity.com/22081035/">86/100</a>',
     // internetnl_mail (on root domain)
-    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/heimdalsecurity.com/1308647/">65/100</a>',
+    '<a target="_blank" rel="noopener noreferrer" href="https://batch.internet.nl/mail/heimdalsecurity.com/22483487/">71/100</a>',
     // ssl_labs
     'A+',
     // privacy_ratings (<category>/<entry> on privacyratings.com)
@@ -3585,9 +3632,9 @@ const obj = {
     // hardenize (on root domain)
     '<a target="_blank" rel="noopener noreferrer" href="https://www.hardenize.com/report/altospam.com/1723146088">Fail</a>',
     // internetnl_site (on root domain)
-    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/site/altospam.com/2910901/">97/100</a>',
+    '<a target="_blank" rel="noopener noreferrer" href="https://batch.internet.nl/site/altospam.com/22080906/">73/100</a>',
     // internetnl_mail (on root domain)
-    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/altospam.com/1308643/">85/100</a>',
+    '<a target="_blank" rel="noopener noreferrer" href="https://batch.internet.nl/mail/altospam.com/22483509/">54/100</a>',
     // ssl_labs
     'A+',
     // privacy_ratings (<category>/<entry> on privacyratings.com)
@@ -3631,9 +3678,9 @@ const obj = {
     // hardenize (on root domain)
     '<a target="_blank" rel="noopener noreferrer" href="https://www.hardenize.com/report/mailinblack.com/1723146261">Fail</a>',
     // internetnl_site (on root domain)
-    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/site/mailinblack.com/2910902/">45/100</a>',
+    '<a target="_blank" rel="noopener noreferrer" href="https://batch.internet.nl/site/mailinblack.com/22080957/">61/100</a>',
     // internetnl_mail (on root domain)
-    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/mailinblack.com/1308641/">48/100</a>',
+    '<a target="_blank" rel="noopener noreferrer" href="https://batch.internet.nl/mail/mailinblack.com/22483505/">79/100</a>',
     // ssl_labs
     'B',
     // privacy_ratings (<category>/<entry> on privacyratings.com)
@@ -3677,9 +3724,9 @@ const obj = {
     // hardenize (on root domain)
     '<a target="_blank" rel="noopener noreferrer" href="https://www.hardenize.com/report/egress.com/1723146158">Fail</a>',
     // internetnl_site (on root domain)
-    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/site/egress.com/2910903/">49/100</a>',
+    '<a target="_blank" rel="noopener noreferrer" href="https://batch.internet.nl/site/egress.com/22081006/">57/100</a>',
     // internetnl_mail (on root domain)
-    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/egress.com/1308642/">61/100</a>',
+    '<a target="_blank" rel="noopener noreferrer" href="https://batch.internet.nl/mail/egress.com/22483465/">71/100</a>',
     // ssl_labs
     'A',
     // privacy_ratings (<category>/<entry> on privacyratings.com)
@@ -3723,9 +3770,9 @@ const obj = {
     // hardenize (on root domain)
     '<a target="_blank" rel="noopener noreferrer" href="https://www.hardenize.com/report/spamscanner.net/1723146305">Fail</a>',
     // internetnl_site (on root domain)
-    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/site/spamscanner.net/2910904/">52/100</a>',
+    '<a target="_blank" rel="noopener noreferrer" href="https://batch.internet.nl/site/spamscanner.net/22081011/">61/100</a>',
     // internetnl_mail (on root domain)
-    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/spamscanner.net/1308645/">65/100</a>',
+    '<a target="_blank" rel="noopener noreferrer" href="https://batch.internet.nl/mail/spamscanner.net/22483480/">72/100</a>',
     // ssl_labs
     'A',
     // privacy_ratings (<category>/<entry> on privacyratings.com)

@@ -89,6 +89,7 @@
   * [새로 등록되었거나 최근 만료된 도메인에 유료 플랜이 필요한 이유는 무엇인가요](#why-do-newly-registered-or-recently-expired-domains-require-a-paid-plan)
   * [SMTP 서버 구성 설정은 어떻게 되나요](#what-are-your-smtp-server-configuration-settings)
   * [IMAP 서버 구성 설정은 어떻게 되나요](#what-are-your-imap-server-configuration-settings)
+  * [새 메일박스에는 어떤 폴더가 있나요](#what-folders-does-a-new-mailbox-have)
   * [POP3 서버 구성 설정은 어떻게 되나요](#what-are-your-pop3-server-configuration-settings)
   * [도메인용 이메일 자동 검색 설정 방법](#how-do-i-set-up-email-autodiscovery-for-my-domain)
 * [보안](#security-1)
@@ -3905,6 +3906,23 @@ IMAP에 연결하려면 **IMAP 사용자**가 <a href="/my-account/domains" targ
 
 단계별 지침은 [IMAP으로 이메일 수신을 지원하나요](#do-you-support-receiving-email-with-imap)를 참조하세요.
 
+### 새 메일박스에는 어떤 폴더가 있나요 {#what-folders-does-a-new-mailbox-have}
+
+새 메일박스에는 아래 폴더가 기본으로 생성됩니다. `INBOX`를 제외한 각 폴더에는 [special-use 속성(RFC 6154)](https://www.rfc-editor.org/rfc/rfc6154.html)이 있으며, 저희 [웹메일](https://mail.forwardemail.net)과 [앱](/download)을 포함한 이메일 클라이언트는 이 속성을 통해 이름과 관계없이 보낸편지함, 임시보관함, 휴지통, 스팸 폴더를 찾습니다.
+
+| 폴더          | Special-use | 삭제하면                                                                                               |
+| ----------- | ----------- | -------------------------------------------------------------------------------------------------- |
+| `INBOX`     | –           | 삭제할 수 없으며([RFC 9051](https://www.rfc-editor.org/rfc/rfc9051.html#section-6.3.4)), 이름 변경도 허용하지 않습니다 |
+| `Sent Mail` | `\Sent`     | 다시 생성됩니다                                                                                           |
+| `Drafts`    | `\Drafts`   | 다시 생성됩니다                                                                                           |
+| `Trash`     | `\Trash`    | 다시 생성됩니다                                                                                           |
+| `Spam`      | `\Junk`     | 삭제된 상태로 유지됩니다                                                                                      |
+| `Archive`   | `\Archive`  | 삭제된 상태로 유지됩니다                                                                                      |
+
+* **Spam과 Junk:** 오래된 메일박스에는 `Junk` 폴더도 있을 수 있습니다. `Spam`과 `Junk` 모두 `\Junk`로 표시되므로 어느 쪽이든 스팸 폴더로 사용할 수 있으며, 사용하지 않는 폴더는 삭제해도 됩니다. `Junk`로 분류된 메일(예: [Sieve 스크립트](#do-you-support-sieve-email-filtering)에 의해)은 `Junk` 폴더가 없으면 `Spam`으로 들어갑니다.
+* **이름 변경:** 이 폴더들은 이름으로 인식됩니다. `Sent Mail`, `Drafts`, `Trash`의 이름을 바꾸면 이름이 바뀐 폴더는 일반 폴더가 되고 원래 폴더가 다시 생성됩니다. 따라서 이름을 그대로 유지하세요. 대부분의 클라이언트는 어차피 자체 이름(예: "보낸편지함")으로 표시합니다.
+* **보관 기간:** `Trash`와 `Spam`(그리고 `Junk`가 있는 경우 `Junk`)의 메시지는 별칭에 보관 기간을 설정하지 않는 한 최대 30일 후 삭제되며, 메일박스가 찰수록 더 일찍(최소 1일) 삭제됩니다.
+
 ### POP3 서버 구성 설정은 무엇인가요 {#what-are-your-pop3-server-configuration-settings}
 
 저희 서버는 `pop3.forwardemail.net`이며 <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">상태 페이지</a>에서도 모니터링되고 있습니다.
@@ -5418,9 +5436,9 @@ DNS 또는 연결 오류가 발생하면 `DATA` 명령에 SMTP 응답 코드 421
 
 ### 그레이리스트가 있나요? {#do-you-have-a-greylist}
 
-네, 저희는 매우 느슨한 [이메일 그레이리스트](https://en.wikipedia.org/wiki/Greylisting_\(email\)) 정책을 사용하고 있습니다. 그레이리스트는 허용 목록에 없는 발신자에게만 적용되며, 캐시에 30일 동안 유지됩니다.
+네, 저희는 매우 느슨한 [이메일 그레이리스트](https://en.wikipedia.org/wiki/Greylisting_\(email\)) 정책을 사용하고 있습니다. 그레이리스트는 허용 목록에 없는 발신자에게만 적용되며, 캐시에 5일 동안 유지됩니다.
 
-새로운 발신자에 대해서는 Redis 데이터베이스에 30일 동안 키를 저장하며, 값은 첫 요청의 초기 도착 시간으로 설정됩니다. 이후 이메일을 450 재시도 상태 코드로 거부하고 5분이 경과한 후에만 통과를 허용합니다.
+새로운 발신자에 대해서는 Redis 데이터베이스에 5일 동안 키를 저장하며, 값은 첫 요청의 초기 도착 시간으로 설정됩니다. 이후 이메일을 450 재시도 상태 코드로 거부하고 5분이 경과한 후에만 통과를 허용합니다.
 
 초기 도착 시간으로부터 5분을 성공적으로 기다린 경우, 해당 발신자의 이메일은 수락되며 450 상태 코드를 받지 않습니다.
 
@@ -5429,6 +5447,8 @@ DNS 또는 연결 오류가 발생하면 `DATA` 명령에 SMTP 응답 코드 421
 예를 들어, `test.example.com`에서 이메일이 먼저 도착하고 `example.com`에서 이메일이 도착하기 전이라면, `test.example.com` 및/또는 `example.com`에서 오는 모든 이메일은 연결의 초기 도착 시간으로부터 5분을 기다려야 합니다. `test.example.com`과 `example.com` 각각이 별도의 5분 대기 시간을 갖지 않습니다(그레이리스트 정책은 루트 도메인 수준에서 적용됩니다).
 
 그레이리스트는 저희 [허용 목록](#do-you-have-an-allowlist)에 있는 발신자(예: 이 문서 작성 시점의 Meta, Amazon, Netflix, Google, Microsoft)에는 적용되지 않습니다.
+
+전달 중인 메시지가 목적지에서 거부되면(예: 전달 대상 메일함이 거부하는 경우) 별도의 보류가 적용됩니다. 이때 같은 메시지의 재시도를 해당 메시지의 [지문](#how-do-you-determine-an-email-fingerprint)으로 식별하여 1시간 동안 보류하며, 발신자는 그 대기 시간과 함께 동일한 450 상태 코드를 받습니다. 목적지에 연결할 수 없었거나 용량이 부족한 경우(예: 메일함이 가득 찬 경우)에는 5분간 보류하며, [허용 목록](#do-you-have-an-allowlist)에 있는 발신자는 10분(이 두 경우에는 1분) 동안 보류됩니다. 이렇게 하면 같은 거부가 목적지에서 반복되지 않아, 그곳에서의 평판이 손상되는 것을 막을 수 있습니다. 이러한 지연을 없애려면 [내 계정 → 로그](/my-account/logs)에 표시되는 첫 번째 거부의 원인을 해결하세요.
 
 ### 거부 목록이 있나요? {#do-you-have-a-denylist}
 
@@ -5449,8 +5469,8 @@ DNS 또는 연결 오류가 발생하면 `DATA` 명령에 SMTP 응답 코드 421
 스팸 또는 바이러스 콘텐츠를 보내는 것으로 감지된 발신자는 다음 절차에 따라 거부 목록에 추가됩니다:
 
 1. [초기 메시지 지문](#how-do-you-determine-an-email-fingerprint)은 "신뢰된" 발신자(예: `gmail.com`, `microsoft.com`, `apple.com`)로부터 스팸 또는 블랙리스트가 감지되면 그레이리스트 처리됩니다.
-   * 발신자가 허용 목록에 있으면 메시지는 1시간 동안 그레이리스트 처리됩니다.
-   * 발신자가 허용 목록에 없으면 메시지는 6시간 동안 그레이리스트 처리됩니다.
+   * 발신자가 허용 목록에 있으면 메시지는 10분 동안 그레이리스트 처리됩니다.
+   * 발신자가 허용 목록에 없으면 메시지는 1시간 동안 그레이리스트 처리됩니다.
 2. 발신자 및 메시지 정보에서 거부 목록 키를 파싱하고, 각 키에 대해(존재하지 않으면) 카운터를 생성하여 1씩 증가시키고 24시간 동안 캐시합니다.
    * 허용 목록 발신자의 경우:
      * SPF가 통과했거나 SPF가 없고 [postmaster 사용자 이름](#what-are-postmaster-addresses) 또는 [no-reply 사용자 이름](#what-are-no-reply-addresses)이 아닌 경우, 봉투 "MAIL FROM" 이메일 주소에 대한 키를 추가합니다.

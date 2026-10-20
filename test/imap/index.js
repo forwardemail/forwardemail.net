@@ -31,6 +31,7 @@ const nodemailer = require('nodemailer');
 const openpgp = require('openpgp');
 const pWaitFor = require('p-wait-for');
 const splitLines = require('split-lines');
+const pify = require('pify');
 const test = require('ava');
 const { ImapFlow } = require('imapflow');
 const { Semaphore } = require('@shopify/semaphore');
@@ -45,6 +46,7 @@ const Aliases = require('#models/aliases');
 const Attachments = require('#models/attachments');
 const TemporaryMessages = require('#models/temporary-messages');
 const Mailboxes = require('#models/mailboxes');
+const onAppend = require('#helpers/imap/on-append');
 const Messages = require('#models/messages');
 const config = require('#config');
 const env = require('#config/env');
@@ -5618,4 +5620,95 @@ test('an existing mailbox at auto_vacuum=NONE is converted on open', async (t) =
   t.teardown(() => db.open && db.close());
   t.is(db.pragma('auto_vacuum', { simple: true }), 1);
   t.is(db.pragma('integrity_check', { simple: true }), 'ok');
+});
+
+const onAppendPromise = pify(onAppend, { multiArgs: true });
+
+function spamMessage(t) {
+  const { alias, domain } = t.context;
+  return Buffer.from(
+    [
+      'From: someone@example.com',
+      `To: ${alias.name}@${domain.name}`,
+      'Subject: buy now',
+      'Message-ID: <spam-test@example.com>',
+      '',
+      'spam',
+      ''
+    ].join('\r\n')
+  );
+}
+
+test('a new mailbox has one spam folder, named Spam', async (t) => {
+  const list = await t.context.imapFlow.list();
+  const paths = list.map((box) => box.path).sort();
+  t.deepEqual(paths, [
+    'Archive',
+    'Drafts',
+    'INBOX',
+    'Sent Mail',
+    'Spam',
+    'Trash'
+  ]);
+  const spam = list.find((box) => box.path === 'Spam');
+  t.is(spam.specialUse, '\\Junk');
+});
+
+test('mail delivered to "Junk" is stored in the Spam folder', async (t) => {
+  // (e.g. a Sieve script with `fileinto "Junk"` on a mailbox without Junk)
+  await t.context.imapFlow.list();
+  await onAppendPromise.call(
+    t.context.imap,
+    'Junk',
+    [],
+    new Date(),
+    spamMessage(t),
+    { ...t.context.session, checkForExisting: true }
+  );
+
+  const spam = await Mailboxes.findOne(t.context.imap, t.context.session, {
+    path: 'Spam'
+  });
+  const messages = await Messages.find(t.context.imap, t.context.session, {
+    mailbox: spam._id
+  });
+  t.is(messages.length, 1);
+  t.true(messages[0].junk);
+
+  const junk = await Mailboxes.findOne(t.context.imap, t.context.session, {
+    path: 'Junk'
+  });
+  t.falsy(junk);
+});
+
+test('an IMAP client cannot append to a "Junk" folder that does not exist', async (t) => {
+  await t.context.imapFlow.list();
+  const err = await t.throwsAsync(
+    t.context.imapFlow.append('Junk', spamMessage(t), [], new Date())
+  );
+  t.regex(
+    String(err.serverResponseCode || err.response?.code || err),
+    /trycreate/i
+  );
+});
+
+test('mail delivered to "junk" goes to an existing Junk folder in any case', async (t) => {
+  // (older mailboxes have both Spam and Junk)
+  await t.context.imapFlow.mailboxCreate('Junk');
+  await onAppendPromise.call(
+    t.context.imap,
+    'junk',
+    [],
+    new Date(),
+    spamMessage(t),
+    { ...t.context.session, checkForExisting: true }
+  );
+
+  const junk = await Mailboxes.findOne(t.context.imap, t.context.session, {
+    path: 'Junk'
+  });
+  const messages = await Messages.find(t.context.imap, t.context.session, {
+    mailbox: junk._id
+  });
+  t.is(messages.length, 1);
 });

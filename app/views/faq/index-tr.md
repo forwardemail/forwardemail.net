@@ -89,6 +89,7 @@
   * [Yeni kaydedilen veya yakın zamanda süresi dolan alan adları neden ücretli plan gerektirir](#why-do-newly-registered-or-recently-expired-domains-require-a-paid-plan)
   * [SMTP sunucu yapılandırma ayarlarınız nelerdir](#what-are-your-smtp-server-configuration-settings)
   * [IMAP sunucu yapılandırma ayarlarınız nelerdir](#what-are-your-imap-server-configuration-settings)
+  * [Yeni bir posta kutusunda hangi klasörler bulunur](#what-folders-does-a-new-mailbox-have)
   * [POP3 sunucu yapılandırma ayarlarınız nelerdir](#what-are-your-pop3-server-configuration-settings)
   * [Alan adım için e-posta otomatik keşfi nasıl ayarlanır](#how-do-i-set-up-email-autodiscovery-for-my-domain)
 * [Güvenlik](#security-1)
@@ -3905,6 +3906,23 @@ IMAP ile bağlanabilmek için, **IMAP kullanıcısı** <a href="/my-account/doma
 
 Adım adım talimatlar için lütfen [IMAP ile e-posta almayı destekliyor musunuz](#do-you-support-receiving-email-with-imap) bölümüne bakınız.
 
+### Yeni bir posta kutusunda hangi klasörler bulunur {#what-folders-does-a-new-mailbox-have}
+
+Yeni bir posta kutusu aşağıdaki klasörlerle başlar. `INBOX` dışındaki her klasörün bir [special-use özniteliği (RFC 6154)](https://www.rfc-editor.org/rfc/rfc6154.html) vardır; [webmail istemcimiz](https://mail.forwardemail.net) ve [uygulamalarımız](/download) dahil e-posta istemcileri, gönderilenler, taslaklar, çöp kutusu ve spam klasörlerini adları ne olursa olsun bu sayede bulur.
+
+| Klasör      | Special-use | Silerseniz                                                                                                                  |
+| ----------- | ----------- | --------------------------------------------------------------------------------------------------------------------------- |
+| `INBOX`     | –           | Silinemez ([RFC 9051](https://www.rfc-editor.org/rfc/rfc9051.html#section-6.3.4)) ve yeniden adlandırılmasına izin vermeyiz |
+| `Sent Mail` | `\Sent`     | Yeniden oluştururuz                                                                                                         |
+| `Drafts`    | `\Drafts`   | Yeniden oluştururuz                                                                                                         |
+| `Trash`     | `\Trash`    | Yeniden oluştururuz                                                                                                         |
+| `Spam`      | `\Junk`     | Silinmiş olarak kalır                                                                                                       |
+| `Archive`   | `\Archive`  | Silinmiş olarak kalır                                                                                                       |
+
+* **Spam ve Junk:** eski posta kutularında bir `Junk` klasörü de olabilir. Hem `Spam` hem de `Junk` `\Junk` olarak işaretlidir, bu nedenle ikisi de spam klasörünüz olarak kullanılabilir ve kullanmadığınızı silebilirsiniz. `Junk` klasörüne yönlendirilen postalar (örneğin bir [Sieve betiği](#do-you-support-sieve-email-filtering) tarafından), `Junk` klasörü yoksa `Spam` klasörüne gider.
+* **Yeniden adlandırma:** bu klasörleri adlarından tanırız. `Sent Mail`, `Drafts` veya `Trash` klasörünü yeniden adlandırırsanız, yeniden adlandırılan klasör sıradan bir klasöre dönüşür ve orijinalini yeniden oluştururuz. Bu yüzden adlarını koruyun; çoğu istemci zaten onları kendi adlarıyla gösterir ("Gönderilenler" gibi).
+* **Saklama:** `Trash` ve `Spam` (ve varsa `Junk`) içindeki iletiler, takma ad için bir saklama süresi belirlemediğiniz sürece en fazla 30 gün sonra, posta kutusu doldukça da daha erken (1 güne kadar) silinir.
+
 ### POP3 sunucu yapılandırma ayarlarınız nelerdir {#what-are-your-pop3-server-configuration-settings}
 
 Sunucumuz `pop3.forwardemail.net` olup, <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">durum sayfamızda</a> de izlenmektedir.
@@ -5418,9 +5436,9 @@ Bu yeni kural, ücretsiz planımızda yalnızca aşağıdaki alan adı uzantıla
 
 ### Bir gri listeye sahip misiniz? {#do-you-have-a-greylist}
 
-Evet, çok gevşek bir [e-posta gri listeleme](https://en.wikipedia.org/wiki/Greylisting_\(email\)) politikamız var. Gri listeleme yalnızca izin verilenler listemizde olmayan göndericiler için geçerlidir ve önbelleğimizde 30 gün boyunca saklanır.
+Evet, çok gevşek bir [e-posta gri listeleme](https://en.wikipedia.org/wiki/Greylisting_\(email\)) politikamız var. Gri listeleme yalnızca izin verilenler listemizde olmayan göndericiler için geçerlidir ve önbelleğimizde 5 gün boyunca saklanır.
 
-Yeni bir gönderici için, Redis veritabanımızda ilk isteğin geliş zamanını değer olarak ayarlayarak 30 gün boyunca bir anahtar saklarız. Ardından, e-postalarını 450 yeniden deneme durum kodu ile reddederiz ve yalnızca 5 dakika geçtikten sonra geçmelerine izin veririz.
+Yeni bir gönderici için, Redis veritabanımızda ilk isteğin geliş zamanını değer olarak ayarlayarak 5 gün boyunca bir anahtar saklarız. Ardından, e-postalarını 450 yeniden deneme durum kodu ile reddederiz ve yalnızca 5 dakika geçtikten sonra geçmelerine izin veririz.
 
 Gönderici, bu ilk geliş zamanından itibaren 5 dakika başarıyla beklediyse, e-postaları kabul edilir ve 450 durum kodunu almazlar.
 
@@ -5429,6 +5447,8 @@ Anahtar, ya FQDN kök alan adı ya da göndericinin IP adresinden oluşur. Bu, g
 Örneğin, bir e-posta `test.example.com` adresinden gelirse ve biz daha önce `example.com` adresinden bir e-posta görmemişsek, `test.example.com` ve/veya `example.com` adreslerinden gelen herhangi bir e-posta bağlantının ilk geliş zamanından itibaren 5 dakika beklemek zorunda kalır. `test.example.com` ve `example.com` için ayrı ayrı 5 dakikalık bekleme süreleri uygulamayız (gri listeleme politikamız kök alan adı düzeyinde geçerlidir).
 
 Gri listelemenin, [izin verilenler listemizde](#do-you-have-an-allowlist) bulunan herhangi bir göndericiye uygulanmadığını unutmayın (örneğin, bu yazının yazıldığı tarihte Meta, Amazon, Netflix, Google, Microsoft).
+
+Bir ileti iletilirken hedefinde reddedildiğinde (örneğin ilettiğiniz posta kutusu onu reddettiğinde) ayrı bir bekletme uygulanır. Bu durumda aynı iletinin, [parmak izinden](#how-do-you-determine-an-email-fingerprint) tanınan yeni denemelerini 1 saat bekletiriz ve gönderen bu bekleme süresiyle aynı 450 durum kodunu alır. Hedefe ulaşılamadığında veya hedefin kapasitesi dolduğunda (örneğin dolu bir posta kutusu) bekletme 5 dakikadır; [izin listemizdeki](#do-you-have-an-allowlist) gönderenler ise 10 dakika (bu iki durumda 1 dakika) bekler. Böylece aynı ret hedefte tekrarlanmaz; aksi halde oradaki itibarımız zarar görürdü. Bu gecikmeleri sona erdirmek için ilk reddin nedenini giderin; nedeni [Hesabım → Günlükler](/my-account/logs) bölümünde görebilirsiniz.
 
 ### Bir engelleme listesine sahip misiniz? {#do-you-have-a-denylist}
 
@@ -5449,8 +5469,8 @@ Engelleme listesi kaldırma talepleri <https://forwardemail.net/denylist> adresi
 Spam veya virüs içeriği gönderen göndericiler aşağıdaki yaklaşımla engelleme listesine eklenir:
 
 1. Spam veya "güvenilir" bir göndericiden (örneğin `gmail.com`, `microsoft.com`, `apple.com`) engelleme listesi tespiti yapıldığında, [ilk mesaj parmak izi](#how-do-you-determine-an-email-fingerprint) gri listeye alınır.
-   * Gönderici izin verilenler listesinde ise, mesaj 1 saat boyunca gri listede kalır.
-   * Gönderici izin verilenler listesinde değilse, mesaj 6 saat boyunca gri listede kalır.
+   * Gönderici izin verilenler listesinde ise, mesaj 10 dakika boyunca gri listede kalır.
+   * Gönderici izin verilenler listesinde değilse, mesaj 1 saat boyunca gri listede kalır.
 2. Gönderici ve mesajdan alınan bilgilerle engelleme listesi anahtarları ayrıştırılır ve her anahtar için (varsa zaten yoksa oluşturulur) bir sayaç oluşturulur, 1 artırılır ve 24 saat boyunca önbelleğe alınır.
    * İzin verilen göndericiler için:
      * SPF geçen veya SPF olmayan ve [postmaster kullanıcı adı](#what-are-postmaster-addresses) veya [no-reply kullanıcı adı](#what-are-no-reply-addresses) olmayan zarf "MAIL FROM" e-posta adresi için bir anahtar eklenir.

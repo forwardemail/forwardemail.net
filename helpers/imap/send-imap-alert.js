@@ -4,6 +4,7 @@
  */
 
 const bytes = require('@forwardemail/bytes');
+const isSANB = require('is-string-and-not-blank');
 const ms = require('ms');
 
 const Aliases = require('#models/aliases');
@@ -188,6 +189,23 @@ async function checkQuotaAlert(client, alias, aliasId, locale) {
 }
 
 //
+// Whether an admin pays for the domain's plan: their plan covers it, and it
+// has not expired or renews through an active subscription
+//
+function isInGoodStanding(user, domainPlan) {
+  const plans =
+    domainPlan === 'team' ? ['team'] : ['team', 'enhanced_protection'];
+  if (!plans.includes(user.plan)) return false;
+  if (
+    isSANB(user[config.userFields.stripeSubscriptionID]) ||
+    isSANB(user[config.userFields.paypalSubscriptionID])
+  )
+    return true;
+  const expiresAt = new Date(user[config.userFields.planExpiresAt]).getTime();
+  return Number.isFinite(expiresAt) && expiresAt >= Date.now();
+}
+
+//
 // Check if the domain's billing admin is in a grace period (payment past due).
 // Returns alert message if applicable, null otherwise.
 //
@@ -197,14 +215,20 @@ async function checkPaymentAlert(client, domain, aliasId, locale) {
   const dedupKey = `imap_alert:payment_grace_period:${aliasId}`;
 
   try {
-    // Find the admin member(s) and check if any are in grace period
-    const adminInGrace = domain.members.find(
+    const admins = domain.members.filter(
       (m) =>
-        m.user &&
-        m.group === 'admin' &&
-        !m.user[config.userFields.isBanned] &&
-        isWithinGracePeriod(m.user)
+        m.user && m.group === 'admin' && !m.user[config.userFields.isBanned]
     );
+
+    //
+    // the domain is in good standing when any admin on its plan is paid up or
+    // has an active subscription, whose renewal may not be recorded yet
+    // (the same rule as `helpers/validate-domain.js`)
+    //
+    if (admins.some((m) => isInGoodStanding(m.user, domain.plan))) return null;
+
+    // Check if any admin is in grace period
+    const adminInGrace = admins.find((m) => isWithinGracePeriod(m.user));
 
     if (!adminInGrace) return null;
 

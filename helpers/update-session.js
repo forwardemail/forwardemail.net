@@ -19,7 +19,17 @@ async function updateSession(body, headers, session) {
   //       and therefore it will be useful debugging information for the end user
   //       (since our error log UI renders these values in My Account > Logs)
   //
-  session.headers = getHeaders(headers);
+  //
+  // NOTE: `session.headers` holds one value per header, so every value of a
+  //       header that occurs more than once (e.g. two DKIM-Signature headers)
+  //       is kept in `session.repeatedHeaders` for the log view
+  //       (it is reset for each message of a connection)
+  //
+  const { headers: sessionHeaders, repeated } =
+    getHeaders.getHeadersWithRepeats(headers);
+  session.headers = sessionHeaders;
+  if (Object.keys(repeated).length > 0) session.repeatedHeaders = repeated;
+  else delete session.repeatedHeaders;
 
   // <https://github.com/andris9/mailsplit/issues/21>
   const from = getHeaders(headers, 'from');

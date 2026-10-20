@@ -89,6 +89,7 @@
   * [Perché i domini registrati di recente o scaduti di recente richiedono un piano a pagamento](#why-do-newly-registered-or-recently-expired-domains-require-a-paid-plan)
   * [Quali sono le impostazioni di configurazione del server SMTP](#what-are-your-smtp-server-configuration-settings)
   * [Quali sono le impostazioni di configurazione del server IMAP](#what-are-your-imap-server-configuration-settings)
+  * [Quali cartelle ha una nuova casella di posta](#what-folders-does-a-new-mailbox-have)
   * [Quali sono le impostazioni di configurazione del server POP3](#what-are-your-pop3-server-configuration-settings)
   * [Come configurare l'autodiscovery email per il mio dominio](#how-do-i-set-up-email-autodiscovery-for-my-domain)
 * [Sicurezza](#security-1)
@@ -3906,6 +3907,23 @@ Per connettersi con IMAP, l'**utente IMAP** deve essere l'indirizzo email di un 
 
 Si prega di fare riferimento a [Supportate la ricezione di email con IMAP](#do-you-support-receiving-email-with-imap) per istruzioni passo passo.
 
+### Quali cartelle ha una nuova casella di posta {#what-folders-does-a-new-mailbox-have}
+
+Una nuova casella di posta parte con le cartelle qui sotto. Ogni cartella diversa da `INBOX` ha un [attributo di uso speciale (RFC 6154)](https://www.rfc-editor.org/rfc/rfc6154.html), che permette ai client email, compresi la nostra [webmail](https://mail.forwardemail.net) e le nostre [app](/download), di trovare le cartelle di posta inviata, bozze, cestino e spam, qualunque sia il loro nome.
+
+| Cartella    | Uso speciale | Se la elimini                                                                                                                     |
+| ----------- | ------------ | --------------------------------------------------------------------------------------------------------------------------------- |
+| `INBOX`     | –            | Non può essere eliminata ([RFC 9051](https://www.rfc-editor.org/rfc/rfc9051.html#section-6.3.4)) e non ne consentiamo la rinomina |
+| `Sent Mail` | `\Sent`      | La ricreiamo                                                                                                                      |
+| `Drafts`    | `\Drafts`    | La ricreiamo                                                                                                                      |
+| `Trash`     | `\Trash`     | La ricreiamo                                                                                                                      |
+| `Spam`      | `\Junk`      | Resta eliminata                                                                                                                   |
+| `Archive`   | `\Archive`   | Resta eliminata                                                                                                                   |
+
+* **Spam e Junk:** le caselle di posta meno recenti possono avere anche una cartella `Junk`. Sia `Spam` sia `Junk` sono contrassegnate come `\Junk`, quindi entrambe funzionano come cartella spam e puoi eliminare quella che non usi. La posta archiviata in `Junk` (ad esempio da uno [script Sieve](#do-you-support-sieve-email-filtering)) finisce in `Spam` quando non esiste una cartella `Junk`.
+* **Rinomina:** riconosciamo queste cartelle dal nome. Se rinomini `Sent Mail`, `Drafts` o `Trash`, la cartella rinominata diventa una cartella normale e ricreiamo l'originale. Conserva quindi i loro nomi; la maggior parte dei client le mostra comunque con i propri nomi (come "Inviati").
+* **Conservazione:** i messaggi in `Trash` e `Spam` (e in `Junk`, se presente) vengono eliminati dopo al massimo 30 giorni, e prima man mano che la casella di posta si riempie (fino a 1 giorno), a meno che tu non imposti una conservazione per l'alias.
+
 ### Quali sono le impostazioni di configurazione del server POP3 {#what-are-your-pop3-server-configuration-settings}
 
 Il nostro server è `pop3.forwardemail.net` ed è monitorato anche sulla nostra <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">pagina di stato</a>.
@@ -5419,9 +5437,9 @@ Questa nuova regola consente di usare solo le seguenti estensioni di nomi di dom
 
 ### Hai una greylist {#do-you-have-a-greylist}
 
-Sì, utilizziamo una politica di [greylisting email](https://en.wikipedia.org/wiki/Greylisting_\(email\)) molto permissiva. Il greylisting si applica solo ai mittenti non presenti nella nostra allowlist e rimane nella nostra cache per 30 giorni.
+Sì, utilizziamo una politica di [greylisting email](https://en.wikipedia.org/wiki/Greylisting_\(email\)) molto permissiva. Il greylisting si applica solo ai mittenti non presenti nella nostra allowlist e rimane nella nostra cache per 5 giorni.
 
-Per ogni nuovo mittente, memorizziamo una chiave nel nostro database Redis per 30 giorni con un valore impostato sull'orario di arrivo iniziale della loro prima richiesta. Rifiutiamo quindi la loro email con un codice di stato di retry 450 e la lasciamo passare solo dopo che sono trascorsi 5 minuti.
+Per ogni nuovo mittente, memorizziamo una chiave nel nostro database Redis per 5 giorni con un valore impostato sull'orario di arrivo iniziale della loro prima richiesta. Rifiutiamo quindi la loro email con un codice di stato di retry 450 e la lasciamo passare solo dopo che sono trascorsi 5 minuti.
 
 Se hanno atteso con successo 5 minuti da questo orario di arrivo iniziale, allora le loro email saranno accettate e non riceveranno più questo codice di stato 450.
 
@@ -5430,6 +5448,8 @@ La chiave consiste nel dominio root FQDN o nell'indirizzo IP del mittente. Ciò 
 Ad esempio, se un'email proviene da `test.example.com` prima che vediamo un'email provenire da `example.com`, allora qualsiasi email da `test.example.com` e/o `example.com` dovrà attendere 5 minuti dall'orario di arrivo iniziale della connessione. Non facciamo attendere separatamente sia `test.example.com` che `example.com` per i loro rispettivi periodi di 5 minuti (la nostra politica di greylisting si applica a livello di dominio root).
 
 Nota che il greylisting non si applica a nessun mittente presente nella nostra [allowlist](#do-you-have-an-allowlist) (ad esempio Meta, Amazon, Netflix, Google, Microsoft al momento della scrittura).
+
+Si applica un blocco separato quando un messaggio viene rifiutato dalla destinazione mentre lo inoltriamo (ad esempio, la casella a cui inoltri lo rifiuta). In quel caso tratteniamo i nuovi tentativi di quello stesso messaggio, identificato dalla sua [impronta](#how-do-you-determine-an-email-fingerprint), per 1 ora, e il mittente riceve lo stesso codice di stato 450 con quell'attesa. Il blocco è di 5 minuti quando la destinazione non era raggiungibile o era al limite della capacità (ad esempio una casella piena), e i mittenti nella nostra [lista consentiti](#do-you-have-an-allowlist) attendono 10 minuti (1 minuto in questi due casi). Così lo stesso rifiuto non si ripete presso la destinazione, cosa che danneggerebbe la nostra reputazione presso di essa. Per eliminare questi ritardi, correggi la causa del primo rifiuto, visibile in [Il mio account → Log](/my-account/logs).
 
 ### Hai una denylist {#do-you-have-a-denylist}
 
@@ -5450,8 +5470,8 @@ Le richieste di rimozione dalla denylist possono essere effettuate su <https://f
 I mittenti rilevati come inviatori di spam o contenuti virus saranno aggiunti alla denylist secondo il seguente approccio:
 
 1. L'[impronta iniziale del messaggio](#how-do-you-determine-an-email-fingerprint) viene greylistata al rilevamento di spam o inserimento in blocklist da un mittente "fidato" (ad esempio `gmail.com`, `microsoft.com`, `apple.com`).
-   * Se il mittente era nella allowlist, il messaggio viene greylistato per 1 ora.
-   * Se il mittente non è nella allowlist, il messaggio viene greylistato per 6 ore.
+   * Se il mittente era nella allowlist, il messaggio viene greylistato per 10 minuti.
+   * Se il mittente non è nella allowlist, il messaggio viene greylistato per 1 ora.
 2. Analizziamo le chiavi della denylist dalle informazioni del mittente e del messaggio, e per ciascuna di queste chiavi creiamo (se non esiste già) un contatore, lo incrementiamo di 1 e lo memorizziamo in cache per 24 ore.
    * Per i mittenti nella allowlist:
      * Aggiungiamo una chiave per l'indirizzo email "MAIL FROM" della busta se ha superato SPF o non ha SPF, e non era [un nome utente postmaster](#what-are-postmaster-addresses) o [un nome utente no-reply](#what-are-no-reply-addresses).

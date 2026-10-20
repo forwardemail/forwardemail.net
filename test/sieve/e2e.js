@@ -1404,7 +1404,7 @@ keep;
   const junk = await checkMailbox(t, {
     email,
     password,
-    mailbox: 'Junk',
+    mailbox: 'Spam',
     expectedCount: 1
   });
 
@@ -3160,7 +3160,7 @@ if header :contains "X-Spam-Status" "Yes" {
     const junk = await checkMailbox(t, {
       email,
       password,
-      mailbox: 'Junk',
+      mailbox: 'Spam',
       expectedCount: 1,
       checkFlags: ['\\Seen']
     });

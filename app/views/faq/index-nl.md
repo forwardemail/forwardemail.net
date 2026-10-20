@@ -89,6 +89,7 @@
   * [Waarom hebben nieuw geregistreerde of recent verlopen domeinen een betaald abonnement nodig](#why-do-newly-registered-or-recently-expired-domains-require-a-paid-plan)
   * [Wat zijn uw SMTP-serverconfiguratie-instellingen](#what-are-your-smtp-server-configuration-settings)
   * [Wat zijn uw IMAP-serverconfiguratie-instellingen](#what-are-your-imap-server-configuration-settings)
+  * [Welke mappen heeft een nieuwe mailbox](#what-folders-does-a-new-mailbox-have)
   * [Wat zijn uw POP3-serverconfiguratie-instellingen](#what-are-your-pop3-server-configuration-settings)
   * [Hoe stel ik e-mail autodiscovery in voor mijn domein](#how-do-i-set-up-email-autodiscovery-for-my-domain)
 * [Beveiliging](#security-1)
@@ -3905,6 +3906,23 @@ Om verbinding te maken met IMAP, moet de **IMAP-gebruiker** het e-mailadres zijn
 
 Zie [Ondersteunt u het ontvangen van e-mail met IMAP](#do-you-support-receiving-email-with-imap) voor stapsgewijze instructies.
 
+### Welke mappen heeft een nieuwe mailbox {#what-folders-does-a-new-mailbox-have}
+
+Een nieuwe mailbox begint met de onderstaande mappen. Elke map behalve `INBOX` heeft een [special-use-kenmerk (RFC 6154)](https://www.rfc-editor.org/rfc/rfc6154.html), waarmee e-mailclients, waaronder onze [webmail](https://mail.forwardemail.net) en [apps](/download), de mappen voor verzonden items, concepten, prullenbak en spam vinden, hoe ze ook heten.
+
+| Map         | Special-use | Als je hem verwijdert                                                                                                                        |
+| ----------- | ----------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| `INBOX`     | –           | Kan niet worden verwijderd ([RFC 9051](https://www.rfc-editor.org/rfc/rfc9051.html#section-6.3.4)), en we staan niet toe dat je hem hernoemt |
+| `Sent Mail` | `\Sent`     | We maken hem opnieuw aan                                                                                                                     |
+| `Drafts`    | `\Drafts`   | We maken hem opnieuw aan                                                                                                                     |
+| `Trash`     | `\Trash`    | We maken hem opnieuw aan                                                                                                                     |
+| `Spam`      | `\Junk`     | Hij blijft verwijderd                                                                                                                        |
+| `Archive`   | `\Archive`  | Hij blijft verwijderd                                                                                                                        |
+
+* **Spam en Junk:** oudere mailboxen kunnen ook een map `Junk` hebben. Zowel `Spam` als `Junk` zijn gemarkeerd als `\Junk`, dus beide werken als je spammap, en je kunt de map verwijderen die je niet gebruikt. E-mail die in `Junk` wordt opgeslagen (bijvoorbeeld door een [Sieve-script](#do-you-support-sieve-email-filtering)), gaat naar `Spam` als er geen map `Junk` is.
+* **Hernoemen:** we herkennen deze mappen aan hun naam. Als je `Sent Mail`, `Drafts` of `Trash` hernoemt, wordt de hernoemde map een gewone map en maken we het origineel opnieuw aan. Laat hun namen dus ongewijzigd; de meeste clients tonen ze toch onder hun eigen naam (zoals "Verzonden").
+* **Bewaartermijn:** berichten in `Trash` en `Spam` (en `Junk`, als je die hebt) worden na maximaal 30 dagen verwijderd, en eerder naarmate de mailbox voller raakt (tot 1 dag), tenzij je een bewaartermijn voor de alias instelt.
+
 ### Wat zijn uw POP3-serverconfiguratie-instellingen {#what-are-your-pop3-server-configuration-settings}
 
 Onze server is `pop3.forwardemail.net` en wordt ook gemonitord op onze <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">statuspagina</a>.
@@ -5418,9 +5436,9 @@ Deze nieuwe regel staat alleen de volgende domeinnaamextensies toe op ons gratis
 
 ### Heeft u een greylist {#do-you-have-a-greylist}
 
-Ja, we hanteren een zeer soepele [email greylisting](https://en.wikipedia.org/wiki/Greylisting_\(email\)) policy. Greylisting geldt alleen voor afzenders die niet op onze allowlist staan en blijft 30 dagen in onze cache.
+Ja, we hanteren een zeer soepele [email greylisting](https://en.wikipedia.org/wiki/Greylisting_\(email\)) policy. Greylisting geldt alleen voor afzenders die niet op onze allowlist staan en blijft 5 dagen in onze cache.
 
-Voor elke nieuwe afzender slaan we een sleutel op in onze Redis-database voor 30 dagen met een waarde die is ingesteld op de initiële aankomsttijd van hun eerste verzoek. Vervolgens weigeren we hun e-mail met een retry-statuscode 450 en laten we deze pas door zodra er 5 minuten zijn verstreken.
+Voor elke nieuwe afzender slaan we een sleutel op in onze Redis-database voor 5 dagen met een waarde die is ingesteld op de initiële aankomsttijd van hun eerste verzoek. Vervolgens weigeren we hun e-mail met een retry-statuscode 450 en laten we deze pas door zodra er 5 minuten zijn verstreken.
 
 Als ze succesvol 5 minuten hebben gewacht vanaf deze initiële aankomsttijd, worden hun e-mails geaccepteerd en ontvangen ze deze 450-statuscode niet meer.
 
@@ -5429,6 +5447,8 @@ De sleutel bestaat uit ofwel het FQDN rootdomein of het IP-adres van de afzender
 Bijvoorbeeld, als een e-mail afkomstig is van `test.example.com` voordat we een e-mail van `example.com` zien, dan moet elke e-mail van `test.example.com` en/of `example.com` 5 minuten wachten vanaf de initiële aankomsttijd van de verbinding. We laten zowel `test.example.com` als `example.com` niet elk hun eigen 5 minuten wachten (onze greylisting policy geldt op rootdomeinniveau).
 
 Let op dat greylisting niet geldt voor afzenders op onze [allowlist](#do-you-have-an-allowlist) (bijv. Meta, Amazon, Netflix, Google, Microsoft op het moment van schrijven).
+
+Een aparte wachttijd geldt wanneer een bericht tijdens het doorsturen door de bestemming wordt geweigerd (bijvoorbeeld wanneer de mailbox waarnaar u doorstuurt het weigert). We houden dan nieuwe pogingen van datzelfde bericht, herkend aan zijn [vingerafdruk](#how-do-you-determine-an-email-fingerprint), 1 uur tegen, en de afzender krijgt dezelfde statuscode 450 met die wachttijd. De wachttijd is 5 minuten als de bestemming niet bereikbaar was of geen capaciteit had (zoals een volle mailbox), en afzenders op onze [allowlist](#do-you-have-an-allowlist) wachten 10 minuten (1 minuut in die twee gevallen). Zo herhaalt dezelfde weigering zich niet bij de bestemming, wat onze reputatie daar zou schaden. Los de oorzaak van de eerste weigering op om deze vertragingen te beëindigen; u vindt die in [Mijn account → Logs](/my-account/logs).
 
 ### Heeft u een denylist {#do-you-have-a-denylist}
 
@@ -5449,8 +5469,8 @@ Verzoeken tot verwijdering van de denylist kunnen worden ingediend via <https://
 Afzenders die worden gedetecteerd als het verzenden van spam of virusinhoud worden als volgt aan de denylist toegevoegd:
 
 1. De [initiële berichtfingerprint](#how-do-you-determine-an-email-fingerprint) wordt greylisted bij detectie van spam of blocklist van een "vertrouwde" afzender (bijv. `gmail.com`, `microsoft.com`, `apple.com`).
-   * Als de afzender op de allowlist stond, wordt het bericht 1 uur greylisted.
-   * Als de afzender niet op de allowlist staat, wordt het bericht 6 uur greylisted.
+   * Als de afzender op de allowlist stond, wordt het bericht 10 minuten greylisted.
+   * Als de afzender niet op de allowlist staat, wordt het bericht 1 uur greylisted.
 2. We halen denylist-sleutels uit informatie van de afzender en het bericht, en voor elk van deze sleutels maken we (indien nog niet aanwezig) een teller aan, verhogen deze met 1 en cachen deze 24 uur.
    * Voor allowlisted afzenders:
      * Voeg een sleutel toe voor het envelope "MAIL FROM" e-mailadres als het een geslaagde SPF had of geen SPF, en het geen [postmaster gebruikersnaam](#what-are-postmaster-addresses) of [no-reply gebruikersnaam](#what-are-no-reply-addresses) was.

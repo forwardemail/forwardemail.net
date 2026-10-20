@@ -21,6 +21,7 @@ const Aliases = require('#models/aliases');
 const AttachmentStorage = require('#helpers/attachment-storage');
 const Indexer = require('#helpers/indexer');
 const Mailboxes = require('#models/mailboxes');
+const getJunkMailbox = require('#helpers/get-junk-mailbox');
 const Messages = require('#models/messages');
 const _ = require('#helpers/lodash');
 const env = require('#config/env');
@@ -412,10 +413,15 @@ async function findFolderByPath(ctx, path) {
   });
   if (mailbox) return mailbox;
   const normalized = normalizeFolderPath(path);
-  if (normalized === path) return null;
-  return Mailboxes.findOne(ctx.instance, ctx.state.session, {
-    path: normalized
-  });
+  if (normalized !== path) {
+    const match = await Mailboxes.findOne(ctx.instance, ctx.state.session, {
+      path: normalized
+    });
+    if (match) return match;
+  }
+
+  // "Junk" or "Spam" when the mailbox only has the other one
+  return getJunkMailbox(ctx.instance, ctx.state.session, normalized);
 }
 
 // a folder to put a message in, as IMAP CREATE accepts it

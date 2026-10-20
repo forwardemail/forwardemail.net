@@ -89,6 +89,7 @@
   * [Miksi äskettäin rekisteröidyt tai hiljattain vanhentuneet verkkotunnukset vaativat maksullisen paketin](#why-do-newly-registered-or-recently-expired-domains-require-a-paid-plan)
   * [Mitkä ovat SMTP-palvelimen asetukset](#what-are-your-smtp-server-configuration-settings)
   * [Mitkä ovat IMAP-palvelimen asetukset](#what-are-your-imap-server-configuration-settings)
+  * [Mitä kansioita uudessa postilaatikossa on](#what-folders-does-a-new-mailbox-have)
   * [Mitkä ovat POP3-palvelimen asetukset](#what-are-your-pop3-server-configuration-settings)
   * [Kuinka määrittää sähköpostin automaattinen etsintä domainilleni](#how-do-i-set-up-email-autodiscovery-for-my-domain)
 * [Turvallisuus](#security-1)
@@ -3904,6 +3905,23 @@ Jotta voi muodostaa yhteyden IMAP:iin, **IMAP-käyttäjän** on oltava aliaksen 
 
 Katso ohjeet vaihe vaiheelta kohdasta [Tuetteko sähköpostin vastaanottamista IMAP:lla](#do-you-support-receiving-email-with-imap).
 
+### Mitä kansioita uudessa postilaatikossa on {#what-folders-does-a-new-mailbox-have}
+
+Uudessa postilaatikossa on aluksi alla luetellut kansiot. Jokaisella kansiolla `INBOX`-kansiota lukuun ottamatta on [special-use-attribuutti (RFC 6154)](https://www.rfc-editor.org/rfc/rfc6154.html), jonka avulla sähköpostiohjelmat, myös [webmail-asiakasohjelmamme](https://mail.forwardemail.net) ja [sovelluksemme](/download), löytävät lähetettyjen, luonnosten, roskakorin ja roskapostin kansiot niiden nimestä riippumatta.
+
+| Kansio      | Special-use | Jos poistat sen                                                                                                                    |
+| ----------- | ----------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| `INBOX`     | –           | Sitä ei voi poistaa ([RFC 9051](https://www.rfc-editor.org/rfc/rfc9051.html#section-6.3.4)), emmekä salli sen nimeämistä uudelleen |
+| `Sent Mail` | `\Sent`     | Luomme sen uudelleen                                                                                                               |
+| `Drafts`    | `\Drafts`   | Luomme sen uudelleen                                                                                                               |
+| `Trash`     | `\Trash`    | Luomme sen uudelleen                                                                                                               |
+| `Spam`      | `\Junk`     | Se pysyy poistettuna                                                                                                               |
+| `Archive`   | `\Archive`  | Se pysyy poistettuna                                                                                                               |
+
+* **Spam ja Junk:** vanhemmissa postilaatikoissa voi olla myös `Junk`-kansio. Sekä `Spam` että `Junk` on merkitty `\Junk`-attribuutilla, joten kumpaa tahansa voi käyttää roskapostikansiona, ja voit poistaa sen, jota et käytä. Kun posti ohjataan `Junk`-kansioon (esimerkiksi [Sieve-skriptillä](#do-you-support-sieve-email-filtering)), se menee `Spam`-kansioon, jos `Junk`-kansiota ei ole.
+* **Uudelleennimeäminen:** tunnistamme nämä kansiot niiden nimistä. Jos nimeät kansion `Sent Mail`, `Drafts` tai `Trash` uudelleen, uudelleennimetystä kansiosta tulee tavallinen kansio ja luomme alkuperäisen uudelleen. Pidä siis nimet ennallaan; useimmat ohjelmat näyttävät ne joka tapauksessa omilla nimillään (kuten "Lähetetyt").
+* **Säilytysaika:** `Trash`- ja `Spam`-kansioiden (sekä `Junk`-kansion, jos sinulla on sellainen) viestit poistetaan viimeistään 30 päivän kuluttua, ja sitä aiemmin postilaatikon täyttyessä (jopa 1 päivän kuluttua), ellet määritä aliakselle säilytysaikaa.
+
 ### Mitkä ovat POP3-palvelimen asetukset {#what-are-your-pop3-server-configuration-settings}
 
 Palvelimemme on `pop3.forwardemail.net` ja sitä valvotaan myös <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">tilasivullamme</a>.
@@ -5417,9 +5435,9 @@ Tämä uusi sääntö sallii seuraavien verkkotunnuksen päätteiden käytön va
 
 ### Onko teillä harmaalista {#do-you-have-a-greylist}
 
-Kyllä, meillä on käytössä hyvin löysä [sähköpostin harmaalistaus](https://en.wikipedia.org/wiki/Greylisting_\(email\)) -käytäntö. Harmaalista koskee vain lähettäjiä, jotka eivät ole sallittujen listalla, ja se säilyy välimuistissamme 30 päivää.
+Kyllä, meillä on käytössä hyvin löysä [sähköpostin harmaalistaus](https://en.wikipedia.org/wiki/Greylisting_\(email\)) -käytäntö. Harmaalista koskee vain lähettäjiä, jotka eivät ole sallittujen listalla, ja se säilyy välimuistissamme 5 päivää.
 
-Uuden lähettäjän kohdalla tallennamme Redis-tietokantaamme avaimen 30 päiväksi, jonka arvona on heidän ensimmäisen pyynnön saapumisaika. Hylkäämme heidän sähköpostinsa tilakoodilla 450 ja hyväksymme sen vasta, kun 5 minuuttia on kulunut.
+Uuden lähettäjän kohdalla tallennamme Redis-tietokantaamme avaimen 5 päiväksi, jonka arvona on heidän ensimmäisen pyynnön saapumisaika. Hylkäämme heidän sähköpostinsa tilakoodilla 450 ja hyväksymme sen vasta, kun 5 minuuttia on kulunut.
 
 Jos he ovat odottaneet onnistuneesti 5 minuuttia tästä alkuperäisestä saapumisajasta, heidän sähköpostinsa hyväksytään eikä heille lähetetä tätä 450-tilakoodia.
 
@@ -5428,6 +5446,8 @@ Avain koostuu joko FQDN-juuriverkkotunnuksesta tai lähettäjän IP-osoitteesta.
 Esimerkiksi, jos sähköposti tulee osoitteesta `test.example.com` ennen kuin näemme sähköpostia osoitteesta `example.com`, niin kaikki sähköpostit osoitteista `test.example.com` ja/tai `example.com` joutuvat odottamaan 5 minuuttia yhteyden alkuperäisestä saapumisajasta. Emme pakota sekä `test.example.com` että `example.com` odottamaan kumpaakin omaa 5 minuutin jaksoaan (harmaalistakäytäntömme koskee juuriverkkotunnuksen tasoa).
 
 Huomaa, että harmaalista ei koske ketään lähettäjää, joka on meidän [sallittujen listalla](#do-you-have-an-allowlist) (esim. Meta, Amazon, Netflix, Google, Microsoft tämän kirjoitushetken mukaan).
+
+Erillinen pidätys koskee viestiä, jonka kohde hylkää, kun välitämme sitä eteenpäin (esimerkiksi postilaatikko, johon välität viestit, hylkää sen). Pidätämme silloin saman viestin uudet yritykset, jotka tunnistetaan sen [sormenjäljestä](#how-do-you-determine-an-email-fingerprint), 1 tunnin ajan, ja lähettäjä saa saman tilakoodin 450 tällä odotusajalla. Pidätys on 5 minuuttia, kun kohdetta ei tavoitettu tai sen kapasiteetti oli täynnä (kuten täysi postilaatikko), ja [sallittujen listallamme](#do-you-have-an-allowlist) olevat lähettäjät odottavat 10 minuuttia (näissä kahdessa tapauksessa 1 minuutin). Näin sama hylkäys ei toistu kohteessa, mikä vahingoittaisi mainettamme siellä. Viiveet loppuvat, kun korjaat ensimmäisen hylkäyksen syyn, jonka näet kohdassa [Oma tili → Lokit](/my-account/logs).
 
 ### Onko teillä estolista {#do-you-have-a-denylist}
 
@@ -5448,8 +5468,8 @@ Estolistalta poistopyynnöt voi tehdä osoitteessa <https://forwardemail.net/den
 Lähettäjät, joiden havaitaan lähettävän roskapostia tai virusmateriaalia, lisätään estolistalle seuraavasti:
 
 1. [Alkuperäinen viestin sormenjälki](#how-do-you-determine-an-email-fingerprint) harmaalistataan, kun roskaposti tai estolista havaitaan "luotetulta" lähettäjältä (esim. `gmail.com`, `microsoft.com`, `apple.com`).
-   * Jos lähettäjä oli sallittujen listalla, viesti harmaalistataan tunniksi.
-   * Jos lähettäjä ei ole sallittujen listalla, viesti harmaalistataan kuudeksi tunniksi.
+   * Jos lähettäjä oli sallittujen listalla, viesti harmaalistataan 10 minuutiksi.
+   * Jos lähettäjä ei ole sallittujen listalla, viesti harmaalistataan tunniksi.
 2. Jäsennämme estolistan avaimet lähettäjän ja viestin tiedoista, ja jokaiselle näistä avaimista luomme (jos ei vielä ole olemassa) laskurin, kasvatamme sitä yhdellä ja välimuistimme sen 24 tunniksi.
    * Sallittujen lähettäjien osalta:
      * Lisää avain kirjekuoren "MAIL FROM" -sähköpostiosoitteelle, jos sillä oli läpäisevä SPF tai ei SPF:tä, eikä se ollut [postimestarin käyttäjänimi](#what-are-postmaster-addresses) tai [ei-vastaus-käyttäjänimi](#what-are-no-reply-addresses).

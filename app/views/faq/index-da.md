@@ -89,6 +89,7 @@
   * [Hvorfor kræver nyregistrerede eller nyligt udløbne domæner en betalt plan](#why-do-newly-registered-or-recently-expired-domains-require-a-paid-plan)
   * [Hvad er jeres SMTP server konfigurationsindstillinger](#what-are-your-smtp-server-configuration-settings)
   * [Hvad er jeres IMAP server konfigurationsindstillinger](#what-are-your-imap-server-configuration-settings)
+  * [Hvilke mapper har en ny postkasse](#what-folders-does-a-new-mailbox-have)
   * [Hvad er jeres POP3 server konfigurationsindstillinger](#what-are-your-pop3-server-configuration-settings)
   * [Hvordan opsætter jeg email autodiscovery for mit domæne](#how-do-i-set-up-email-autodiscovery-for-my-domain)
 * [Sikkerhed](#security-1)
@@ -3906,6 +3907,23 @@ For at oprette forbindelse med IMAP skal **IMAP-brugeren** være email-adressen 
 
 Se venligst [Understøtter I modtagelse af email med IMAP](#do-you-support-receiving-email-with-imap) for trin-for-trin instruktioner.
 
+### Hvilke mapper har en ny postkasse {#what-folders-does-a-new-mailbox-have}
+
+En ny postkasse starter med mapperne nedenfor. Hver mappe undtagen `INBOX` har en [special-use-attribut (RFC 6154)](https://www.rfc-editor.org/rfc/rfc6154.html), som email-klienter, herunder vores [webmail](https://mail.forwardemail.net) og [apps](/download), bruger til at finde mapperne for sendt post, kladder, papirkurv og spam, uanset hvad de hedder.
+
+| Mappe       | Special-use | Hvis du sletter den                                                                                                               |
+| ----------- | ----------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| `INBOX`     | –           | Den kan ikke slettes ([RFC 9051](https://www.rfc-editor.org/rfc/rfc9051.html#section-6.3.4)), og vi tillader ikke, at den omdøbes |
+| `Sent Mail` | `\Sent`     | Vi opretter den igen                                                                                                              |
+| `Drafts`    | `\Drafts`   | Vi opretter den igen                                                                                                              |
+| `Trash`     | `\Trash`    | Vi opretter den igen                                                                                                              |
+| `Spam`      | `\Junk`     | Den forbliver slettet                                                                                                             |
+| `Archive`   | `\Archive`  | Den forbliver slettet                                                                                                             |
+
+* **Spam og Junk:** ældre postkasser kan også have en `Junk`-mappe. Både `Spam` og `Junk` er markeret som `\Junk`, så begge kan bruges som din spammappe, og du kan slette den, du ikke bruger. Mail, der sorteres i `Junk` (for eksempel af et [Sieve-script](#do-you-support-sieve-email-filtering)), havner i `Spam`, når der ikke er nogen `Junk`-mappe.
+* **Omdøbning:** vi genkender disse mapper på deres navne. Hvis du omdøber `Sent Mail`, `Drafts` eller `Trash`, bliver den omdøbte mappe en almindelig mappe, og vi opretter den oprindelige igen. Behold derfor deres navne; de fleste klienter viser dem alligevel under deres egne navne (som "Sendt").
+* **Opbevaring:** beskeder i `Trash` og `Spam` (og `Junk`, hvis du har en) slettes efter højst 30 dage, og tidligere, efterhånden som postkassen bliver fyldt (ned til 1 dag), medmindre du angiver en opbevaringsperiode for aliasset.
+
 ### Hvad er jeres POP3-server konfigurationsindstillinger {#what-are-your-pop3-server-configuration-settings}
 
 Vores server er `pop3.forwardemail.net` og overvåges også på vores <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">statusside</a>.
@@ -5419,9 +5437,9 @@ Denne nye regel tillader kun følgende domæneendelser at blive brugt på vores 
 
 ### Har I en greylist {#do-you-have-a-greylist}
 
-Ja, vi har en meget lempelig [email greylisting](https://en.wikipedia.org/wiki/Greylisting_\(email\)) politik i brug. Greylisting gælder kun for afsendere, der ikke er på vores allowlist, og varer i vores cache i 30 dage.
+Ja, vi har en meget lempelig [email greylisting](https://en.wikipedia.org/wiki/Greylisting_\(email\)) politik i brug. Greylisting gælder kun for afsendere, der ikke er på vores allowlist, og varer i vores cache i 5 dage.
 
-For enhver ny afsender gemmer vi en nøgle i vores Redis-database i 30 dage med en værdi sat til den oprindelige ankomsttid for deres første anmodning. Vi afviser derefter deres email med en retry statuskode 450 og tillader kun, at den går igennem, når der er gået 5 minutter.
+For enhver ny afsender gemmer vi en nøgle i vores Redis-database i 5 dage med en værdi sat til den oprindelige ankomsttid for deres første anmodning. Vi afviser derefter deres email med en retry statuskode 450 og tillader kun, at den går igennem, når der er gået 5 minutter.
 
 Hvis de med succes har ventet i 5 minutter fra denne oprindelige ankomsttid, vil deres emails blive accepteret, og de vil ikke modtage denne 450 statuskode.
 
@@ -5430,6 +5448,8 @@ Nøglen består enten af FQDN root-domænet eller afsenderens IP-adresse. Det be
 For eksempel, hvis en email kommer fra `test.example.com` før vi ser en email komme fra `example.com`, så skal enhver email fra `test.example.com` og/eller `example.com` vente 5 minutter fra den oprindelige ankomsttid for forbindelsen. Vi får ikke både `test.example.com` og `example.com` til hver at vente deres egne 5 minutters perioder (vores greylisting-politik gælder på root-domæneniveau).
 
 Bemærk, at greylisting ikke gælder for nogen afsender på vores [allowlist](#do-you-have-an-allowlist) (f.eks. Meta, Amazon, Netflix, Google, Microsoft på tidspunktet for denne skrivning).
+
+En særskilt spærring gælder, når en besked afvises af destinationen, mens vi videresender den (for eksempel når postkassen, du videresender til, afviser den). Vi holder så nye forsøg med den samme besked, genkendt på dens [fingeraftryk](#how-do-you-determine-an-email-fingerprint), tilbage i 1 time, og afsenderen får den samme statuskode 450 med den ventetid. Spærringen er 5 minutter, når destinationen ikke kunne nås eller manglede kapacitet (som en fuld postkasse), og afsendere på vores [tilladelsesliste](#do-you-have-an-allowlist) venter 10 minutter (1 minut i de to tilfælde). Det forhindrer, at den samme afvisning gentager sig hos destinationen, hvilket ville skade vores omdømme der. Ret årsagen til den første afvisning for at stoppe forsinkelserne; du finder den under [Min konto → Logfiler](/my-account/logs).
 
 ### Har I en denylist {#do-you-have-a-denylist}
 
@@ -5450,8 +5470,8 @@ Anmodninger om fjernelse fra denylist kan anmodes om på <https://forwardemail.n
 Afsendere, der opdages at sende spam eller virusindhold, vil blive tilføjet til denylisten efter følgende fremgangsmåde:
 
 1. Det [oprindelige beskedfingeraftryk](#how-do-you-determine-an-email-fingerprint) greylistes ved påvisning af spam eller blocklist fra en "betroet" afsender (f.eks. `gmail.com`, `microsoft.com`, `apple.com`).
-   * Hvis afsenderen var allowlistet, greylistes beskeden i 1 time.
-   * Hvis afsenderen ikke er allowlistet, greylistes beskeden i 6 timer.
+   * Hvis afsenderen var allowlistet, greylistes beskeden i 10 minutter.
+   * Hvis afsenderen ikke er allowlistet, greylistes beskeden i 1 time.
 2. Vi parser denylist-nøgler fra information fra afsenderen og beskeden, og for hver af disse nøgler opretter vi (hvis den ikke allerede findes) en tæller, øger den med 1 og cacher den i 24 timer.
    * For allowlistede afsendere:
      * Tilføj en nøgle for kuvertens "MAIL FROM" emailadresse, hvis den havde bestået SPF eller ingen SPF, og den ikke var [en postmaster-brugernavn](#what-are-postmaster-addresses) eller [et no-reply-brugernavn](#what-are-no-reply-addresses).

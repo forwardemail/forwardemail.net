@@ -90,6 +90,7 @@
   * [Why do newly registered or recently expired domains require a paid plan](#why-do-newly-registered-or-recently-expired-domains-require-a-paid-plan)
   * [What are your SMTP server configuration settings](#what-are-your-smtp-server-configuration-settings)
   * [What are your IMAP server configuration settings](#what-are-your-imap-server-configuration-settings)
+  * [What folders does a new mailbox have](#what-folders-does-a-new-mailbox-have)
   * [What are your POP3 server configuration settings](#what-are-your-pop3-server-configuration-settings)
   * [How do I set up email autodiscovery for my domain](#how-do-i-set-up-email-autodiscovery-for-my-domain)
 * [Security](#security-1)
@@ -142,7 +143,7 @@
   * [Is this well-tested](#is-this-well-tested)
   * [Do you pass along SMTP response messages and codes](#do-you-pass-along-smtp-response-messages-and-codes)
   * [How do you prevent spammers and ensure good email forwarding reputation](#how-do-you-prevent-spammers-and-ensure-good-email-forwarding-reputation)
-  * [How can I verify a domain is genuinely using Forward Email](#how-can-i-verify-a-domain-is-using-forward-email)
+  * [How can I verify a domain is genuinely using Forward Email {#how-can-i-verify-a-domain-is-using-forward-email}](#how-can-i-verify-a-domain-is-genuinely-using-forward-email-how-can-i-verify-a-domain-is-using-forward-email)
   * [How do you perform DNS lookups on domain names](#how-do-you-perform-dns-lookups-on-domain-names)
 * [Account and Billing](#account-and-billing)
   * [How do I delete my account](#how-do-i-delete-my-account)
@@ -3957,6 +3958,23 @@ In order to connect with IMAP, the **IMAP user** must be the email address of an
 
 Please refer to [Do you support receiving email with IMAP](#do-you-support-receiving-email-with-imap) for step by step instructions.
 
+### What folders does a new mailbox have
+
+A new mailbox starts with the folders below. Each folder other than `INBOX` has a [special-use attribute (RFC 6154)](https://www.rfc-editor.org/rfc/rfc6154.html), which is how email clients, including our [webmail](https://mail.forwardemail.net) and [apps](/download), find the sent, drafts, trash and spam folders whatever they are called.
+
+| Folder      | Special-use | If you delete it                                                                                                              |
+| ----------- | ----------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| `INBOX`     | –           | It cannot be deleted ([RFC 9051](https://www.rfc-editor.org/rfc/rfc9051.html#section-6.3.4)), and we do not allow renaming it |
+| `Sent Mail` | `\Sent`     | We create it again                                                                                                            |
+| `Drafts`    | `\Drafts`   | We create it again                                                                                                            |
+| `Trash`     | `\Trash`    | We create it again                                                                                                            |
+| `Spam`      | `\Junk`     | It stays deleted                                                                                                              |
+| `Archive`   | `\Archive`  | It stays deleted                                                                                                              |
+
+* **Spam and Junk:** older mailboxes may also have a `Junk` folder. Both `Spam` and `Junk` are marked `\Junk`, so either works as your spam folder, and you can delete the one you do not use. Mail filed into `Junk` (for example by a [Sieve script](#do-you-support-sieve-email-filtering)) goes to `Spam` when there is no `Junk` folder.
+* **Renaming:** we recognize these folders by their names. If you rename `Sent Mail`, `Drafts` or `Trash`, the renamed folder becomes an ordinary folder and we create the original again. Keep their names instead; most clients show them under their own names (such as "Sent") anyway.
+* **Retention:** messages in `Trash` and `Spam` (and `Junk`, if you have one) are deleted after at most 30 days, and sooner as the mailbox fills up (down to 1 day), unless you set a retention for the alias.
+
 ### What are your POP3 server configuration settings
 
 Our server is `pop3.forwardemail.net` and is also monitored on our <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">status page</a>.
@@ -5492,9 +5510,9 @@ This new rule allows only the following domain name extensions to be used on our
 
 ### Do you have a greylist
 
-Yes, we have a very lax [email greylisting](https://en.wikipedia.org/wiki/Greylisting_\(email\)) policy used.  Greylisting only applies for senders not on our allowlist and lasts in our cache for 30 days.
+Yes, we have a very lax [email greylisting](https://en.wikipedia.org/wiki/Greylisting_\(email\)) policy used.  Greylisting only applies for senders not on our allowlist and lasts in our cache for 5 days.
 
-For any new sender, we store a key in our Redis database for 30 days with a value set to the initial arrival time of their first request.  We then reject their email with a retry status code of 450 and only allow it to pass once 5 minutes has passed.
+For any new sender, we store a key in our Redis database for 5 days with a value set to the initial arrival time of their first request.  We then reject their email with a retry status code of 450 and only allow it to pass once 5 minutes has passed.
 
 If they have successfully waited for 5 minutes from this initial arrival time, then their emails will be accepted and they will not receive this 450 status code.
 
@@ -5503,6 +5521,8 @@ The key consists of either the FQDN root domain or the sender's IP address.  Thi
 For example, if an email comes from `test.example.com` before we see an email come from `example.com`, then any email from `test.example.com` and/or `example.com` will have to wait 5 minutes from the initial arrival time of the connection.  We do not make both `test.example.com` and `example.com` each wait their own 5 minute periods (our greylisting policy applies at the root domain level).
 
 Note that greylisting does not apply to any sender on our [allowlist](#do-you-have-an-allowlist) (e.g. Meta, Amazon, Netflix, Google, Microsoft at the time of this writing).
+
+A separate hold applies when a message bounces at its destination as we forward it (for example, the mailbox you forward to rejects it). We then hold retries of that same message, identified by its [fingerprint](#how-do-you-determine-an-email-fingerprint), for 1 hour, and the sender gets the same 450 status code with that wait. The hold is 5 minutes when the destination could not be reached or was out of capacity (such as a full mailbox), and senders on our [allowlist](#do-you-have-an-allowlist) are held for 10 minutes (1 minute in those two cases). This keeps the same rejection from repeating at the destination, which would hurt our reputation there. To end these delays, fix the cause of the first rejection, shown in [My Account → Logs](/my-account/logs).
 
 ### Do you have a denylist
 
@@ -5523,8 +5543,8 @@ Denylist removal requests can be requested at <https://forwardemail.net/denylist
 Senders that are detected to be sending spam or virus content will be added to the denylist in the following approach:
 
 1. The [initial message fingerprint](#how-do-you-determine-an-email-fingerprint) is greylisted upon detection of spam or blocklist from a "trusted" sender (e.g. `gmail.com`, `microsoft.com`, `apple.com`).
-   * If the sender was allowlisted, the message is greylisted for 1 hour.
-   * If the sender is not allowlisted, the message is greylisted for 6 hours.
+   * If the sender was allowlisted, the message is greylisted for 10 minutes.
+   * If the sender is not allowlisted, the message is greylisted for 1 hour.
 2. We parse denylist keys from information from the sender and message, and for each of these keys we create (if one does not already exist) a counter, increment it by 1, and cache it for 24 hours.
    * For allowlisted senders:
      * Add a key for the envelope "MAIL FROM" email address if it had passing SPF or no SPF, and it was not [a postmaster username](#what-are-postmaster-addresses) or [a no-reply username](#what-are-no-reply-addresses).

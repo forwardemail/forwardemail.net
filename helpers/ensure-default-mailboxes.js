@@ -11,7 +11,7 @@ const sendNotification = require('#helpers/send-notification');
 
 //
 // RFC 6154 Compliance: Only essential mailboxes are required to persist
-// Other special-use mailboxes (Spam, Junk, Archive) can be deleted by users
+// Other special-use mailboxes (Spam, Archive) can be deleted by users
 //
 // However, on initial setup (when INBOX doesn't exist), we create all default
 // mailboxes to provide a complete starting configuration for new users
@@ -24,11 +24,16 @@ const REQUIRED_PATHS = [
 ];
 
 // All default mailboxes created on initial setup
+//
+// NOTE: only "Spam" is created as the spam folder (\Junk special-use, see
+//       `app/models/mailboxes.js`), since two folders for spam confused
+//       users and clients (mail filed to "Junk" is stored in "Spam" when there
+//       is no "Junk" folder, see `helpers/imap/on-append.js`)
+//
 const DEFAULT_PATHS = [
   'INBOX',
   'Sent Mail',
   'Spam',
-  'Junk',
   'Trash',
   'Drafts',
   // NOTE: we explicitly keep out "All Mail" (it's basically a virtual mailbox)

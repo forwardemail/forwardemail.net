@@ -35,6 +35,7 @@ const {
 } = require('#helpers/bandwidth-limiter');
 const deriveLabelsFromFlags = require('#helpers/derive-labels-from-flags');
 const Mailboxes = require('#models/mailboxes');
+const getJunkMailbox = require('#helpers/get-junk-mailbox');
 const Messages = require('#models/messages');
 const Threads = require('#models/threads');
 const WKD = require('#helpers/wkd');
@@ -172,6 +173,16 @@ async function onAppend(path, flags, date, raw, session, fn) {
     let mailbox = await Mailboxes.findOne(this, session, {
       path
     });
+
+    //
+    // mail we deliver (e.g. a Sieve `fileinto "Junk"`) to a spam folder name
+    // the mailbox does not have goes to its spam folder by special-use
+    // (new mailboxes only have "Spam", older ones may have "Junk" as well)
+    //
+    if (!mailbox && session.checkForExisting) {
+      mailbox = await getJunkMailbox(this, session, path);
+      if (mailbox) path = mailbox.path;
+    }
 
     //
     // <https://www.rfc-editor.org/rfc/rfc3502.html#section-6.3.11>

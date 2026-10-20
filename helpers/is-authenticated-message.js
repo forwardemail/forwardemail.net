@@ -37,6 +37,31 @@ const UBUNTU_DOMAINS = Object.keys(config.ubuntuTeamMapping);
 //
 const MAX_DKIM_SIGNATURES = 10;
 
+//
+// DNS errors fetching a DKIM key that may clear on a retry
+//
+// (mailauth reports any other lookup error as temperror too, including a name
+//  a sender can make invalid on purpose, e.g. a selector with a comma, which
+//  must not turn a DMARC rejection into a temporary one)
+//
+const TRANSIENT_DNS_ERRORS = new Set([
+  'ETIMEOUT',
+  'ETIMEDOUT',
+  'ESERVFAIL',
+  'ECONNREFUSED',
+  'ECONNRESET',
+  'EAI_AGAIN',
+  'ECANCELLED'
+]);
+
+// mailauth sets the comment of a DKIM temperror to "DNS failure: <code>"
+function isTransientDKIMError(status) {
+  if (status.result !== 'temperror' || typeof status.comment !== 'string')
+    return false;
+  const match = /^DNS failure: (\S+)$/.exec(status.comment);
+  return Boolean(match) && TRANSIENT_DNS_ERRORS.has(match[1]);
+}
+
 // Header field lines beginning at column zero with the given name. Folded
 // lines can contain arbitrary text and must not count as fields.
 function countHeaderFields(headers, re) {
@@ -180,6 +205,32 @@ async function isAuthenticatedMessage(headers, body, session, resolver) {
   }
 
   session.hadAlignedAndPassingDKIM = session.alignedDKIMResults.length > 0;
+
+  //
+  // a transient DNS failure fetching the key of an aligned DKIM signature
+  // leaves it at temperror and DMARC at fail, though the signature may well be valid
+  // (RFC 7489 Section 6.6.2), so a DMARC rejection is then temporary
+  // (e.g. a message from Amazon SES has an unaligned SPF pass, and only its
+  //  DKIM signature for the From domain can pass DMARC)
+  //
+  session.hadAlignedTemporaryDKIMError =
+    !session.hadAlignedAndPassingDKIM &&
+    _.isObject(session.dkim) &&
+    _.isArray(session.dkim.results) &&
+    session.dkim.results.some(
+      (result) =>
+        _.isObject(result) &&
+        _.isObject(result.status) &&
+        isSANB(result.status.aligned) &&
+        isTransientDKIMError(result.status)
+    );
+
+  // a DMARC failure is only permanent when no part of it was a DNS failure
+  const dmarcResponseCode =
+    session.spf.status.result === 'temperror' ||
+    session.hadAlignedTemporaryDKIMError
+      ? 421
+      : 550;
 
   //
   // NOTE: since our SPF check does not have PTR support
@@ -354,8 +405,8 @@ async function isAuthenticatedMessage(headers, body, session, resolver) {
     throw new SMTPError(
       "The email sent has failed DMARC validation and is rejected due to the domain's DMARC policy",
       {
-        // if spf status was temperror then retry
-        responseCode: session.spf.status.result === 'temperror' ? 421 : 550
+        // if spf or an aligned dkim signature had a temperror then retry
+        responseCode: dmarcResponseCode
       }
     );
   }
@@ -383,7 +434,7 @@ async function isAuthenticatedMessage(headers, body, session, resolver) {
     throw new SMTPError(
       "The email sent has failed DMARC validation and is rejected due to the domain's DMARC policy",
       {
-        responseCode: session.spf.status.result === 'temperror' ? 421 : 550
+        responseCode: dmarcResponseCode
       }
     );
   }

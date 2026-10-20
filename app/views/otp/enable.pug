@@ -140,6 +140,17 @@ block body
         .col-xs-12.col-sm-12.col-md-6.offset-md-3.col-lg-6.offset-lg-3
           h1.my-3.py-3.text-center= t("Setup OTP")
           form(action=ctx.path, method="POST")
+            //- the account for password managers, so they do not fill the
+            //- token field below as the username (it has no name, so it is
+            //- not submitted)
+            input.d-none(
+              type="email",
+              autocomplete="username",
+              value=user.email,
+              readonly,
+              tabindex="-1",
+              aria-hidden="true"
+            )
             .form-group
               label(for="otp-step-one")
                 != t('<strong>Step 1:</strong> Install and open an <a href="#" data-toggle="modal-anchor" data-target="#authenticator-apps-modal">authenticator app</a>.')
@@ -156,6 +167,8 @@ block body
               input#input-token.form-control.form-control-lg(
                 type="text",
                 name="token",
+                inputmode="numeric",
+                autocomplete="one-time-code",
                 required,
                 placeholder=" ",
                 class=user[config.userFields.hasSetPassword] ? undefined : "verification-form"
@@ -175,6 +188,7 @@ block body
                   input#otp-token.form-control(
                     type="text",
                     readonly,
+                    autocomplete="off",
                     value=user[config.passport.fields.otpToken]
                   )
                   .input-group-append

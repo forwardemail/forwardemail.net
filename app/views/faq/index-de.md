@@ -89,6 +89,7 @@
   * [Warum benötigen neu registrierte oder kürzlich abgelaufene Domains einen kostenpflichtigen Plan](#why-do-newly-registered-or-recently-expired-domains-require-a-paid-plan)
   * [Wie lauten Ihre SMTP-Server-Konfigurationseinstellungen](#what-are-your-smtp-server-configuration-settings)
   * [Wie lauten Ihre IMAP-Server-Konfigurationseinstellungen](#what-are-your-imap-server-configuration-settings)
+  * [Welche Ordner hat ein neues Postfach](#what-folders-does-a-new-mailbox-have)
   * [Wie lauten Ihre POP3-Server-Konfigurationseinstellungen](#what-are-your-pop3-server-configuration-settings)
   * [Wie richte ich E-Mail-Autodiscovery für meine Domain ein](#how-do-i-set-up-email-autodiscovery-for-my-domain)
 * [Sicherheit](#security-1)
@@ -3905,6 +3906,23 @@ Um sich mit IMAP zu verbinden, muss der **IMAP-Benutzer** die E-Mail-Adresse ein
 
 Bitte siehe [Unterstützen Sie das Empfangen von E-Mails mit IMAP](#do-you-support-receiving-email-with-imap) für Schritt-für-Schritt-Anleitungen.
 
+### Welche Ordner hat ein neues Postfach {#what-folders-does-a-new-mailbox-have}
+
+Ein neues Postfach beginnt mit den folgenden Ordnern. Jeder Ordner außer `INBOX` hat ein [Special-Use-Attribut (RFC 6154)](https://www.rfc-editor.org/rfc/rfc6154.html), über das E-Mail-Clients, einschließlich unseres [Webmail-Clients](https://mail.forwardemail.net) und unserer [Apps](/download), die Ordner für gesendete Nachrichten, Entwürfe, Papierkorb und Spam finden, unabhängig von ihrem Namen.
+
+| Ordner      | Special-Use | Wenn Sie ihn löschen                                                                                                                            |
+| ----------- | ----------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| `INBOX`     | –           | Er kann nicht gelöscht werden ([RFC 9051](https://www.rfc-editor.org/rfc/rfc9051.html#section-6.3.4)), und wir erlauben nicht, ihn umzubenennen |
+| `Sent Mail` | `\Sent`     | Wir legen ihn neu an                                                                                                                            |
+| `Drafts`    | `\Drafts`   | Wir legen ihn neu an                                                                                                                            |
+| `Trash`     | `\Trash`    | Wir legen ihn neu an                                                                                                                            |
+| `Spam`      | `\Junk`     | Er bleibt gelöscht                                                                                                                              |
+| `Archive`   | `\Archive`  | Er bleibt gelöscht                                                                                                                              |
+
+* **Spam und Junk:** Ältere Postfächer können auch einen `Junk`-Ordner haben. Sowohl `Spam` als auch `Junk` sind als `\Junk` markiert, daher kann jeder der beiden als Ihr Spam-Ordner dienen, und Sie können den nicht genutzten löschen. E-Mails, die in `Junk` einsortiert werden (zum Beispiel durch ein [Sieve-Skript](#do-you-support-sieve-email-filtering)), landen in `Spam`, wenn es keinen `Junk`-Ordner gibt.
+* **Umbenennen:** Wir erkennen diese Ordner an ihren Namen. Wenn Sie `Sent Mail`, `Drafts` oder `Trash` umbenennen, wird der umbenannte Ordner zu einem normalen Ordner und wir legen das Original neu an. Behalten Sie die Namen daher bei; die meisten Clients zeigen die Ordner ohnehin unter eigenen Namen an (etwa „Gesendet“).
+* **Aufbewahrung:** Nachrichten in `Trash` und `Spam` (und `Junk`, falls vorhanden) werden nach höchstens 30 Tagen gelöscht, und früher, je voller das Postfach wird (bis hinunter zu 1 Tag), sofern Sie für den Alias keine Aufbewahrungsdauer festlegen.
+
 ### Wie lauten Ihre POP3-Server-Konfigurationseinstellungen {#what-are-your-pop3-server-configuration-settings}
 
 Unser Server ist `pop3.forwardemail.net` und wird auch auf unserer <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">Statusseite</a> überwacht.
@@ -5418,9 +5436,9 @@ Diese neue Regel erlaubt nur die folgenden Domain-Endungen in unserem kostenlose
 
 ### Haben Sie eine Greylist {#do-you-have-a-greylist}
 
-Ja, wir verwenden eine sehr lockere [E-Mail-Greylisting](https://en.wikipedia.org/wiki/Greylisting_\(email\))-Richtlinie. Greylisting gilt nur für Absender, die nicht auf unserer Allowlist stehen, und bleibt für 30 Tage in unserem Cache.
+Ja, wir verwenden eine sehr lockere [E-Mail-Greylisting](https://en.wikipedia.org/wiki/Greylisting_\(email\))-Richtlinie. Greylisting gilt nur für Absender, die nicht auf unserer Allowlist stehen, und bleibt für 5 Tage in unserem Cache.
 
-Für jeden neuen Absender speichern wir einen Schlüssel in unserer Redis-Datenbank für 30 Tage mit einem Wert, der auf die anfängliche Ankunftszeit ihrer ersten Anfrage gesetzt ist. Wir lehnen dann ihre E-Mail mit einem Retry-Statuscode 450 ab und erlauben sie erst, wenn 5 Minuten vergangen sind.
+Für jeden neuen Absender speichern wir einen Schlüssel in unserer Redis-Datenbank für 5 Tage mit einem Wert, der auf die anfängliche Ankunftszeit ihrer ersten Anfrage gesetzt ist. Wir lehnen dann ihre E-Mail mit einem Retry-Statuscode 450 ab und erlauben sie erst, wenn 5 Minuten vergangen sind.
 
 Wenn sie erfolgreich 5 Minuten seit dieser anfänglichen Ankunftszeit gewartet haben, werden ihre E-Mails akzeptiert und sie erhalten diesen 450-Statuscode nicht mehr.
 
@@ -5429,6 +5447,8 @@ Der Schlüssel besteht entweder aus der FQDN-Root-Domain oder der IP-Adresse des
 Zum Beispiel, wenn eine E-Mail von `test.example.com` kommt, bevor wir eine E-Mail von `example.com` sehen, dann müssen alle E-Mails von `test.example.com` und/oder `example.com` 5 Minuten ab der anfänglichen Ankunftszeit der Verbindung warten. Wir lassen nicht sowohl `test.example.com` als auch `example.com` jeweils ihre eigenen 5-Minuten-Perioden warten (unsere Greylisting-Richtlinie gilt auf Root-Domain-Ebene).
 
 Beachten Sie, dass Greylisting für keinen Absender auf unserer [Allowlist](#do-you-have-an-allowlist) gilt (z. B. Meta, Amazon, Netflix, Google, Microsoft zum Zeitpunkt dieses Schreibens).
+
+Eine gesonderte Sperre gilt, wenn eine Nachricht beim Weiterleiten am Ziel abgewiesen wird (zum Beispiel, wenn das Postfach, an das Sie weiterleiten, sie ablehnt). Wir halten dann weitere Zustellversuche genau dieser Nachricht, erkannt an ihrem [Fingerabdruck](#how-do-you-determine-an-email-fingerprint), für 1 Stunde zurück, und der Absender erhält denselben Statuscode 450 mit dieser Wartezeit. Die Sperre beträgt 5 Minuten, wenn das Ziel nicht erreichbar oder ausgelastet war (etwa bei einem vollen Postfach), und Absender auf unserer [Allowlist](#do-you-have-an-allowlist) warten 10 Minuten (in diesen beiden Fällen 1 Minute). So wiederholt sich dieselbe Ablehnung am Ziel nicht, was unserem Ruf dort schaden würde. Um diese Verzögerungen zu beenden, beheben Sie die Ursache der ersten Ablehnung, die Sie unter [Mein Konto → Protokolle](/my-account/logs) finden.
 
 ### Haben Sie eine Denylist {#do-you-have-a-denylist}
 
@@ -5449,8 +5469,8 @@ Anfragen zur Entfernung von der Denylist können unter <https://forwardemail.net
 Absender, die beim Versand von Spam- oder Vireninhalten erkannt werden, werden nach folgendem Verfahren in die Denylist aufgenommen:
 
 1. Der [anfängliche Nachrichten-Fingerabdruck](#how-do-you-determine-an-email-fingerprint) wird bei Erkennung von Spam oder Blocklist von einem „vertrauenswürdigen“ Absender (z. B. `gmail.com`, `microsoft.com`, `apple.com`) greylisted.
-   * Wenn der Absender auf der Allowlist war, wird die Nachricht für 1 Stunde greylisted.
-   * Wenn der Absender nicht auf der Allowlist ist, wird die Nachricht für 6 Stunden greylisted.
+   * Wenn der Absender auf der Allowlist war, wird die Nachricht für 10 Minuten greylisted.
+   * Wenn der Absender nicht auf der Allowlist ist, wird die Nachricht für 1 Stunde greylisted.
 2. Wir parsen Denylist-Schlüssel aus Informationen des Absenders und der Nachricht, und für jeden dieser Schlüssel erstellen wir (falls noch nicht vorhanden) einen Zähler, erhöhen ihn um 1 und cachen ihn für 24 Stunden.
    * Für allowlistete Absender:
      * Fügen Sie einen Schlüssel für die Envelope-"MAIL FROM"-E-Mail-Adresse hinzu, wenn diese SPF bestanden hat oder kein SPF vorhanden war, und es sich nicht um [einen Postmaster-Benutzernamen](#what-are-postmaster-addresses) oder [einen No-Reply-Benutzernamen](#what-are-no-reply-addresses) handelt.

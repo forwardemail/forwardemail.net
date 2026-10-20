@@ -117,11 +117,11 @@ Routine monitors remain email-only. They cover resource use, SSH activity, USB d
 
 It checks:
 
-- The certificate served at `WEB_URL`.
-- Certificate files. These are the TLS certificate and CA bundle (`/var/www/production/.ssl-cert` and `.ssl-ca`, plus the MongoDB and Valkey copies), the Apple Mail push certificate for IMAP `XAPPLEPUSHSERVICE` (`apns-mail.pem`), and every `*_CERT_PATH` and `*_CA_PATH` in the app's `.env`. Every certificate in a chain or bundle is checked.
-- The OpenPGP key that signs `security.txt` (`GPG_SECURITY_KEY`). A subkey that expired and was replaced does not count.
-- The certificate each local TLS service actually serves (node, mongod, valkey), including the STARTTLS ports. A process keeps the certificate it started with, so after `certificates.yml` deploys a renewed one, this shows any process that still needs a reload.
-- The Calendar and Contacts push certificates cached in Redis (`aps_certs`), from the first `bree` host. The cache renews itself before they expire, so these are reported only when it would not.
+* The certificate served at `WEB_URL`.
+* Certificate files. These are the TLS certificate and CA bundle (`/var/www/production/.ssl-cert` and `.ssl-ca`, plus the MongoDB and Valkey copies), the Apple Mail push certificate for IMAP `XAPPLEPUSHSERVICE` (`apns-mail.pem`), and every `*_CERT_PATH` and `*_CA_PATH` in the app's `.env`. Every certificate in a chain or bundle is checked.
+* The OpenPGP key that signs `security.txt` (`GPG_SECURITY_KEY`). A subkey that expired and was replaced does not count.
+* The certificate each local TLS service actually serves (node, mongod, valkey), including the STARTTLS ports. A process keeps the certificate it started with, so after `certificates.yml` deploys a renewed one, this shows any process that still needs a reload.
+* The Calendar and Contacts push certificates cached in Redis (`aps_certs`), from the first `bree` host. The cache renews itself before they expire, so these are reported only when it would not.
 
 Apple `.p8` keys (Sign in with Apple, APNs token authentication), DKIM keys and Firebase service-account keys do not expire, so they are not checked.
 
