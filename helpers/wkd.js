@@ -115,31 +115,47 @@ function WKD(resolver, client) {
         : {
             connect: {
               lookup(hostname, options, fn) {
+                // Node 20+ asks for every address (`all: true`, for
+                // autoSelectFamily) and the resolver then returns an array,
+                // so all addresses are requested and each one is validated
                 resolver
-                  .lookup(hostname, options)
-                  .then(async (result) => {
+                  .lookup(hostname, { ...options, all: true })
+                  .then(async (results) => {
+                    const addresses = (
+                      Array.isArray(results) ? results : [results]
+                    ).filter((result) => result?.address);
+                    if (addresses.length === 0) {
+                      const err = new Error(`No address found for ${hostname}`);
+                      err.code = 'ENOTFOUND';
+                      fn(err);
+                      return;
+                    }
+
                     // FWD-01-006: Validate resolved IP at connection time
                     // to prevent TOCTOU DNS rebinding attacks
-                    if (
-                      result?.address &&
-                      (await WKD.isPrivateTarget(result.address, resolver))
-                    ) {
-                      fn(
-                        new Error(
-                          `Resolved IP ${result.address} is a private address`
-                        )
-                      );
-                      return;
+                    for (const { address } of addresses) {
+                      if (await WKD.isPrivateTarget(address, resolver)) {
+                        fn(
+                          new Error(
+                            `Resolved IP ${address} is a private address`
+                          )
+                        );
+                        return;
+                      }
                     }
 
                     // Handle both Node 18 (address, family) and Node 20+
                     // (all:true expects [{address, family}] array) formats
                     if (options.all) {
-                      fn(null, [
-                        { address: result?.address, family: result?.family }
-                      ]);
+                      fn(
+                        null,
+                        addresses.map(({ address, family }) => ({
+                          address,
+                          family
+                        }))
+                      );
                     } else {
-                      fn(null, result?.address, result?.family);
+                      fn(null, addresses[0].address, addresses[0].family);
                     }
                   })
                   .catch((err) => fn(err));
