@@ -640,6 +640,7 @@ localeRouter
   .get('/self-hosted', render('self-hosted'))
   .get('/resources', render('resources'))
   .get('/guides', render('guides'))
+  .get('/projects', render('projects'))
   // feed
   .get('/blog/feed/atom', web.feed)
   .get('/blog/feed/rss', web.feed)

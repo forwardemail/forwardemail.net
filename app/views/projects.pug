@@ -1,0 +1,47 @@
+extends layout
+
+include _fe-page-header
+
+block body
+  //- Our other projects (config/projects.js, also listed in the Resources
+  //- menu), as cards like the guides page. A card has two links, the site
+  //- and its source code, so the card itself is not a link.
+  .fe-landing(class=isFeHeroUnderBar ? "fe-landing--flush" : "")
+    +fePageHeader({ id: "fe-projects", icon: "fa fa-code", eyebrow: t("Open-source"), title: t("Our Projects"), body: t("Open-source sites and tools from the Forward Email team, built alongside our email service.") })
+      .fe-page-header__meta
+        +feByline
+    section.fe-section.fe-surface-light.fe-section--pad-sm.fe-body.no-search
+      .fe-container
+        ul.fe-grid.fe-grid--md-2.fe-grid--lg-3
+          each project, i in config.projects
+            li.fe-panel.fe-card.fe-project-card
+              .fe-card__media
+                img(
+                  loading=i <= 2 ? false : "lazy",
+                  src=manifest(project.image),
+                  alt=project.name,
+                  width="1200",
+                  height="630"
+                )
+              .fe-card__body
+                h2.fe-card__title.notranslate= project.name
+                p.fe-text.fe-card__text= t(project.description)
+                h3.fe-project-card__label.fe-label= t("Why we built it")
+                p.fe-text.fe-card__text= t(project.why)
+                .fe-project-card__actions
+                  a.fe-btn.fe-btn--hero.fe-btn--md(
+                    href=project.url,
+                    target="_blank",
+                    rel="noopener noreferrer"
+                  )
+                    i.fa.fa-external-link(aria-hidden="true")
+                    = t("Visit Project")
+                    span.sr-only.notranslate= ` ${project.name}`
+                  a.fe-btn.fe-btn--ghost.fe-btn--md(
+                    href=project.repo,
+                    target="_blank",
+                    rel="noopener noreferrer"
+                  )
+                    i.fa.fa-github(aria-hidden="true")
+                    = t("View Source Code")
+                    span.sr-only.notranslate= ` ${project.name}`

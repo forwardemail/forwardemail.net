@@ -502,51 +502,13 @@ nav.navbar(class=navbarClasses.join(" "), aria-label=t("Main menu"))
                         = t(titleize(humanize(resourcePage.replace("/", ""))))
                 hr.dropdown-divider
                 .dropdown-header= t("Our Projects")
-                a.dropdown-item(
-                  href="https://privacyratings.com",
-                  target="_blank",
-                  rel="noopener noreferrer"
-                ) PrivacyRatings.com
-                a.dropdown-item(
-                  href="https://spamscanner.net",
-                  target="_blank",
-                  rel="noopener noreferrer"
-                ) SpamScanner.net
-                a.dropdown-item(
-                  href="https://attestium.com",
-                  target="_blank",
-                  rel="noopener noreferrer"
-                ) Attestium.com
-                a.dropdown-item(
-                  href="https://terminalemail.com",
-                  target="_blank",
-                  rel="noopener noreferrer"
-                ) TerminalEmail.com
-                a.dropdown-item(
-                  href="https://alumniemail.com",
-                  target="_blank",
-                  rel="noopener noreferrer"
-                ) AlumniEmail.com
-                a.dropdown-item(
-                  href="https://timetoinbox.com",
-                  target="_blank",
-                  rel="noopener noreferrer"
-                ) TimeToInbox.com
-                a.dropdown-item(
-                  href="https://serverauditing.com",
-                  target="_blank",
-                  rel="noopener noreferrer"
-                ) ServerAuditing.com
-                a.dropdown-item(
-                  href="https://sshmonitor.com",
-                  target="_blank",
-                  rel="noopener noreferrer"
-                ) SSHMonitor.com
-                a.dropdown-item(
-                  href="https://sslmonitor.com",
-                  target="_blank",
-                  rel="noopener noreferrer"
-                ) SSLMonitor.com
+                //- (the same list as the projects page, see config/projects.js)
+                each project in config.projects
+                  a.dropdown-item.notranslate(
+                    href=project.url,
+                    target="_blank",
+                    rel="noopener noreferrer"
+                  )= project.name
 
         //- Guides
         li.nav-item.dropdown.no-js
@@ -705,7 +667,7 @@ nav.navbar(class=navbarClasses.join(" "), aria-label=t("Main menu"))
                         = t(doc.shortTitle || doc.title.replace("Best ", ""))
 
         //- Company
-        - const companyPages = ["/event-feed", "/about", "/security", "/privacy", "/terms", "/gdpr", "/dpa", "/report-abuse", "/press"];
+        - const companyPages = ["/event-feed", "/about", "/projects", "/security", "/privacy", "/terms", "/gdpr", "/dpa", "/report-abuse", "/press"];
         - const isCompanyPage = companyPages.includes(ctx.pathWithoutLocale);
         li.nav-item.dropdown.no-js
           form.mb-0

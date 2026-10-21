@@ -908,6 +908,25 @@ html.no-js .fe-console__rail-wrap {
   }
 }
 
+// On tablets and phones the panels already sit inside the container gutter,
+// so their own side padding stays small and the content gets the width
+// (the panel edges still line up with the sections around them).
+@include fe-down(lg) {
+  .fe-feature,
+  .fe-sending,
+  .fe-proof__card {
+    padding-inline: var(--fe-space-5);
+  }
+}
+
+@include fe-down(md) {
+  .fe-feature,
+  .fe-sending,
+  .fe-proof__card {
+    padding-inline: var(--fe-space-4);
+  }
+}
+
 @include fe-down(md) {
   // The rail becomes a horizontal scroller: six equal columns at this width
   // would truncate every tab label. The hint, edge fade, and buttons make the
@@ -1030,7 +1049,8 @@ html.no-js .fe-console__rail-wrap {
     grid-row: 2;
     grid-column: 1 / -1;
     padding-inline: var(--fe-space-1);
-    margin: var(--fe-space-5) 0 0;
+    // (space below it too, before the view's own text starts)
+    margin: var(--fe-space-5) 0 var(--fe-space-6);
     font-size: var(--fe-text-label);
     color: var(--fe-fg-secondary);
     text-align: center;

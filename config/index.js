@@ -50,6 +50,7 @@ const payments = require('./payments');
 const metaConfig = require('./meta-config');
 const alternatives = require('./alternatives');
 const topCompetitors = require('./top-competitors');
+const projects = require('./projects');
 const _ = require('#helpers/lodash');
 const getIpBucket = require('#helpers/get-ip-bucket');
 
@@ -2261,6 +2262,7 @@ config.views.locals.manifest = manifestRev({
 
 config.alternatives = alternatives;
 config.topCompetitors = topCompetitors;
+config.projects = projects;
 
 config.views.locals.pkgVersion =
   env.NODE_ENV === 'test' ? '0.0.1' : pkg.version;
@@ -2270,6 +2272,7 @@ config.views.locals.config = _.pick(config, [
   'smtpMessageMaxSize',
   'alternatives',
   'topCompetitors',
+  'projects',
   'argon2',
   'smtpLimitMessages',
   'smtpLimitDuration',

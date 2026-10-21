@@ -368,6 +368,27 @@
   transform: translateX(2px);
 }
 
+// Projects page: a card with two links (the site and its source code), so
+// it has buttons instead of the stretched link.
+.fe-project-card__label {
+  margin: var(--fe-space-2) 0 0;
+  color: var(--fe-fg-secondary);
+}
+
+.fe-project-card__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--fe-space-3);
+  margin-top: auto;
+  padding-top: var(--fe-space-4);
+}
+
+// (on a phone the two buttons stack and fill the card)
+.fe-project-card__actions .fe-btn {
+  flex: 1 1 auto;
+  white-space: nowrap;
+}
+
 // ============================================
 // STATUS PAGES (404 / 500)
 // ============================================

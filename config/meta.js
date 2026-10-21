@@ -58,6 +58,10 @@ module.exports = function (config, isSitemap = false) {
       `Learn about Forward Email's journey from open-source project to the most trusted privacy-focused email service. Discover our commitment to transparency, security, and user privacy.`,
       'img/articles/about.webp'
     ],
+    '/projects': [
+      `Our Projects - Open-Source Sites and Tools by Forward Email`,
+      `Privacy Ratings, Spam Scanner, Attestium and more open-source projects from the Forward Email team, each with a link to its site and its source code.`
+    ],
     '/press': [
       `Press & Media Kit - Forward Email Brand Assets & Resources`,
       `Download Forward Email logos, brand guidelines, screenshots, and media assets. Press inquiries welcome. Get official graphics and branding for articles and publications.`,

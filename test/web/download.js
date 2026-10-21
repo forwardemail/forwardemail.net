@@ -211,8 +211,10 @@ test.serial(
     const actions = window.document.querySelector(
       '.fe-download-hero .fe-actions'
     );
-    const terminal = actions.querySelector('a[href="#fe-download-terminal"]');
-    t.is(terminal.textContent.trim(), 'Install in the terminal');
+    const terminal = [...actions.querySelectorAll('a')].find(
+      (a) => a.textContent.trim() === 'Install in the terminal'
+    );
+    t.truthy(terminal);
     // bootstrap's display classes: none below 768px, and from 768px the
     // inline-flex every .fe-btn has
     t.true(terminal.classList.contains('d-none'));
@@ -224,6 +226,41 @@ test.serial(
     );
     t.is(others.length, 3);
     for (const a of others) t.false(a.classList.contains('d-none'));
+  }
+);
+
+test.serial(
+  'the hero terminal button goes to the top of the Terminal section with its video',
+  async (t) => {
+    const html = await getDownloadPage(t, releaseWithTerminal);
+    const { window } = new JSDOM(html);
+    t.teardown(() => window.close());
+    const { document } = window;
+
+    const terminal = [
+      ...document.querySelectorAll('.fe-download-hero .fe-actions a')
+    ].find((a) => a.textContent.trim() === 'Install in the terminal');
+    const href = terminal.getAttribute('href');
+    t.true(href.startsWith('#'));
+    const target = document.querySelector(href);
+    t.truthy(target);
+
+    // the next section is the one titled "Your inbox in a terminal." with
+    // the terminal video, not the install card further down
+    const section = target.nextElementSibling;
+    t.is(section.tagName, 'SECTION');
+    t.is(
+      section.querySelector('h2').textContent.trim(),
+      'Your inbox in a terminal.'
+    );
+    const video = section.querySelector('.fe-download-group__intro');
+    t.truthy(video);
+    const card = document.querySelector('#fe-download-terminal');
+    t.truthy(card);
+    // (the card comes after the video in the section)
+    const order = [...section.querySelectorAll('*')];
+    t.true(order.indexOf(video) < order.indexOf(card));
+    t.not(target, card);
   }
 );
 
