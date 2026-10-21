@@ -377,6 +377,20 @@ function formatReportPeriod(startDate, endDate, locale = 'en') {
 async function processUser(user, endDate) {
   if (isCancelled) return;
 
+  //
+  // A report goes out every HIGH_PRIORITY_FREQUENCY_DAYS at the most, so a
+  // user who got one more recently cannot get another now: skip them before
+  // reading any of their logs (each check below reads every log of the
+  // user's domains over days, for every paid user, every day).
+  //
+  const lastSentAt = user[config.userFields.dailyLogAlertSentAt];
+  if (
+    lastSentAt &&
+    dayjs(endDate).diff(dayjs(lastSentAt), 'hour') <
+      HIGH_PRIORITY_FREQUENCY_DAYS * 24 - 1
+  )
+    return;
+
   try {
     // Get all domains where user is admin
     const userDomains = await Domains.find({
@@ -411,7 +425,6 @@ async function processUser(user, endDate) {
     const frequencyDays = getReportFrequencyDays(previewStats);
 
     // Check if enough time has passed since last report
-    const lastSentAt = user[config.userFields.dailyLogAlertSentAt];
     if (lastSentAt) {
       const hoursSinceLastSent = dayjs(endDate).diff(dayjs(lastSentAt), 'hour');
       const requiredHours = frequencyDays * 24 - 1; // Subtract 1 hour for timing flexibility
@@ -424,7 +437,11 @@ async function processUser(user, endDate) {
 
     // Now get the actual stats for the report period
     const startDate = dayjs(endDate).subtract(frequencyDays, 'day').toDate();
-    const stats = await getLogStats(domainIds, startDate, endDate);
+    // (the preview already covers the same period for a low priority report)
+    const stats =
+      frequencyDays === LOW_PRIORITY_FREQUENCY_DAYS
+        ? previewStats
+        : await getLogStats(domainIds, startDate, endDate);
 
     // Double-check there's still significant activity in the actual period
     if (!hasSignificantActivity(stats)) {
@@ -557,11 +574,24 @@ async function processUser(user, endDate) {
       // - Non-banned
       // - Verified email
       // - Paid plan (enhanced_protection or team)
-      // Note: We don't filter by last sent time here because frequency varies by activity
+      // - Not sent a report within the shortest frequency (a report is sent
+      //   every 3 or 4 days depending on activity, so one sent less than 3
+      //   days ago rules the user out whatever the activity)
       const query = {
         [config.userFields.hasVerifiedEmail]: true,
         [config.userFields.isBanned]: false,
-        plan: { $in: ['enhanced_protection', 'team'] }
+        plan: { $in: ['enhanced_protection', 'team'] },
+        $or: [
+          { [config.userFields.dailyLogAlertSentAt]: { $exists: false } },
+          { [config.userFields.dailyLogAlertSentAt]: null },
+          {
+            [config.userFields.dailyLogAlertSentAt]: {
+              $lte: dayjs(endDate)
+                .subtract(HIGH_PRIORITY_FREQUENCY_DAYS * 24 - 1, 'hour')
+                .toDate()
+            }
+          }
+        ]
       };
 
       // Process eligible users with concurrency for better performance,

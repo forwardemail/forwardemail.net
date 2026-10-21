@@ -125,3 +125,66 @@ test.serial(
     t.is(cells[8], '550');
   }
 );
+
+test.serial(
+  'reads logs as plain data without the large fields the CSV does not use',
+  async (t) => {
+    const _id = new mongoose.Types.ObjectId();
+    const at = new Date(now.getTime() + 1);
+    await Logs.collection.insertOne({
+      _id,
+      message: 'delivered',
+      bounce_category: 'none',
+      keywords: Array.from({ length: 1000 }, (_, i) => `keyword-${i}`),
+      text_message: 'x'.repeat(10_000),
+      meta: {
+        level: 'info',
+        session: {
+          id: 'session-plain',
+          headers: { Subject: 'Plain subject', To: 'to@example.com' }
+        },
+        app: { hostname: 'mx1.example.com' }
+      },
+      created_at: at,
+      updated_at: at
+    });
+
+    // what the database is asked for, and every log built as a document
+    const commands = [];
+    const debug = (collection, method, ...args) => {
+      if (collection === Logs.collection.name && method === 'find')
+        commands.push(args);
+    };
+
+    mongoose.set('debug', debug);
+    const { $init } = Logs.prototype;
+    let built = 0;
+    Logs.prototype.$init = function (...args) {
+      built++;
+      return $init.apply(this, args);
+    };
+
+    t.teardown(() => {
+      mongoose.set('debug', false);
+      Logs.prototype.$init = $init;
+    });
+
+    const { gzip } = await getLogsCsv(
+      now,
+      { created_at: { $gte: at, $lte: at } },
+      true
+    );
+    const lines = zlib.gunzipSync(gzip).toString().trim().split('\n');
+    t.is(lines.length, 2);
+    // the row still has the log's id, subject and hostname
+    t.true(lines[1].startsWith(`"${_id.toString()}","session-plain",`));
+    t.true(lines[1].includes('Plain subject'));
+    t.true(lines[1].includes('mx1.example.com'));
+
+    t.is(built, 0);
+    t.is(commands.length, 1);
+    const projection = JSON.stringify(commands[0]);
+    t.true(projection.includes('"keywords":0'));
+    t.true(projection.includes('"text_message":0'));
+  }
+);

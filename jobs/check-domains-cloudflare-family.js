@@ -64,6 +64,7 @@ const Graceful = require('@ladjs/graceful');
 const Redis = require('@ladjs/redis');
 const dayjs = require('dayjs-with-plugins');
 const mongoose = require('mongoose');
+const ms = require('ms');
 const parseErr = require('parse-err');
 const safeStringify = require('fast-safe-stringify');
 const { encode } = require('html-entities');
@@ -102,6 +103,21 @@ graceful.listen();
 // `helpers/create-family-resolver`)
 //
 const resolvers = createDomainCheckResolvers(client, logger);
+
+//
+// A full pass over every domain (1.6M+) takes many hours, and a run used to
+// start again from the first domain every time: it ran without a break (bree
+// does not stop a run, `timeout` is only the delay before the first one),
+// keeping a core busy, and every deploy or restart started it over, so the
+// newest domains, last in `_id` order, could go unchecked for days. Each run
+// now continues after the last domain the previous run checked (saved in
+// Redis as it goes), stops after MAX_RUNTIME, and starts over from the first
+// domain after the last one.
+//
+const CHECKPOINT_KEY = 'check_domains_cloudflare_family:last_id';
+const MAX_RUNTIME =
+  ms(process.env.CHECK_DOMAINS_CLOUDFLARE_FAMILY_MAX_RUNTIME || '50m') ||
+  ms('50m');
 
 // store boolean if the job is cancelled
 let isCancelled = false;
@@ -370,6 +386,11 @@ ${
         }
       ]
     };
+    // continue after the last domain checked (see CHECKPOINT_KEY)
+    const lastId = await client.get(CHECKPOINT_KEY);
+    if (lastId && mongoose.isObjectIdOrHexString(lastId))
+      query._id = { $gt: new mongoose.Types.ObjectId(lastId) };
+
     const total = await Domains.countDocuments(query);
 
     logger.info(
@@ -377,6 +398,8 @@ ${
     );
 
     if (total === 0) {
+      // (the next run starts over from the first domain)
+      if (query._id) await client.del(CHECKPOINT_KEY);
       logger.info('No domains to check – exiting');
       if (parentPort) parentPort.postMessage('done');
       else process.exit(0);
@@ -400,6 +423,23 @@ ${
     };
 
     let processed = 0;
+    // the last domain checked (in `_id` order, the order they are read in)
+    let checkedId = null;
+    let stoppedEarly = false;
+    const shouldStop = () => {
+      // (called before each batch: every domain read before it was checked)
+      if (checkedId)
+        client
+          .set(CHECKPOINT_KEY, checkedId, 'PX', ms('30d'))
+          .catch((err) => logger.error(err));
+      // (each run checks at least one batch, so every run moves on)
+      if (isCancelled || (checkedId && Date.now() - startTime >= MAX_RUNTIME)) {
+        stoppedEarly = true;
+        return true;
+      }
+
+      return false;
+    };
 
     await forEachInBatches(
       // eslint-disable-next-line unicorn/no-array-callback-reference
@@ -415,10 +455,12 @@ ${
       {
         batchSize: CONCURRENCY * 10,
         concurrency: CONCURRENCY,
-        shouldStop: () => isCancelled
+        shouldStop
       },
       async (domain) => {
         if (isCancelled) return;
+        if (!checkedId || String(domain._id) > checkedId)
+          checkedId = String(domain._id);
 
         try {
           await processDomain(domain, ctx);
@@ -441,6 +483,14 @@ ${
         }
       }
     );
+
+    // continue from here next time, or from the first domain after a full pass
+    if (stoppedEarly) {
+      if (checkedId)
+        await client.set(CHECKPOINT_KEY, checkedId, 'PX', ms('30d'));
+    } else {
+      await client.del(CHECKPOINT_KEY);
+    }
 
     const totalDuration = Date.now() - startTime;
 

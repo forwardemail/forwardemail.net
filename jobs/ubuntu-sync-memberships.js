@@ -144,7 +144,9 @@ async function syncMemberships() {
       return;
     }
 
-    if (parentPort) parentPort.postMessage('error');
-    else process.exit(1);
+    // (exit with an error code: on an 'error' message bree keeps the worker,
+    // which its open connections keep alive, so it held its slot and the job
+    // never ran again until a restart)
+    process.exit(1);
   }
 })();

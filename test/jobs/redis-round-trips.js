@@ -27,6 +27,7 @@ const test = require('ava');
 const { MongoMemoryServer } = require('mongodb-memory-server');
 
 const config = require('#config');
+const cookieOptions = require('#config/cookies');
 
 const ROOT = path.join(__dirname, '..', '..');
 
@@ -227,20 +228,21 @@ test.serial(
     t.true(keptPttls.every((pttl) => pttl > 0 && pttl <= ms('1h')));
 
     //
-    // Requests: a SCAN for each page of 1000 keys under each of the 13
-    // prefixes (with room for pages Redis returns short), and at most two
-    // more for a page (its TTLs, and the TTLs it sets). A request for each
-    // key would be over 7500 here.
+    // Requests: one walk of the keyspace, a SCAN for each page of 1000 keys
+    // (with room for pages Redis returns short), not one walk per prefix (a
+    // SCAN with MATCH still walks every key), and at most three more for a
+    // page (its TTLs, and the TTLs it sets for fingerprint and denylist keys).
+    // A request for each key would be over 7500 here.
     //
     const keysInRedis = await redis.dbsize();
     const { writes, scans } = proxy.counts;
     t.log({ keysInRedis, writes, scans });
     t.true(
-      scans <= 13 * (2 * Math.ceil(keysInRedis / 1000) + 2),
+      scans <= 2 * Math.ceil(keysInRedis / 1000) + 2,
       `${scans} scans of ${keysInRedis} keys`
     );
     t.true(
-      writes - scans <= 2 * scans + 50,
+      writes - scans <= 3 * scans + 50,
       `${writes - scans} other requests`
     );
   }
@@ -313,5 +315,242 @@ test.serial(
     // and each address, in turn, would be 72), and a few to connect
     t.log(proxy.counts);
     t.true(proxy.counts.writes <= 12 + 10, `${proxy.counts.writes} requests`);
+  }
+);
+
+test.serial(
+  'cleanup-expired-sessions sets missing session TTLs a page of keys at a time',
+  async (t) => {
+    const run = randomBytes(6).toString('hex');
+    const proxy = await createCountingProxy();
+    t.teardown(async () => {
+      await proxy.close();
+      await removeKeys(`koa:sess:${run}*`);
+    });
+
+    const without = [];
+    const withTTL = [];
+    const p = redis.pipeline();
+    for (let i = 0; i < 2500; i++) {
+      without.push(`koa:sess:${run}:${i}`);
+      withTTL.push(`koa:sess:${run}:ttl:${i}`);
+      p.set(without[i], '{}');
+      p.set(withTTL[i], '{}', 'PX', ms('1h'));
+    }
+
+    await p.exec();
+
+    const result = await runJob('cleanup-expired-sessions', {
+      ...databases(run),
+      BREE_REDIS_HOST: '127.0.0.1',
+      BREE_REDIS_PORT: String(proxy.port)
+    });
+    t.is(result.error, undefined);
+    t.is(result.exitCode, 0);
+
+    // every session got its TTL, and the ones that had one kept it
+    const maxAge = Math.floor(cookieOptions.maxAge / 1000);
+    for (const ttl of await Promise.all(without.map((key) => redis.ttl(key))))
+      t.true(ttl > maxAge - 60 && ttl <= maxAge, `${ttl}`);
+    for (const ttl of await Promise.all(withTTL.map((key) => redis.ttl(key))))
+      t.true(ttl > 0 && ttl <= 3600, `${ttl}`);
+
+    // a SCAN for each page of about 1000 keys, and at most two more a page
+    const keysInRedis = await redis.dbsize();
+    const { writes, scans } = proxy.counts;
+    t.log({ keysInRedis, writes, scans });
+    t.true(
+      scans <= 2 * Math.ceil(keysInRedis / 1000) + 2,
+      `${scans} scans of ${keysInRedis} keys`
+    );
+    t.true(
+      writes - scans <= 2 * scans + 50,
+      `${writes - scans} other requests`
+    );
+  }
+);
+
+test.serial(
+  'session-management reads sessions a page of keys at a time',
+  async (t) => {
+    const run = randomBytes(6).toString('hex');
+    const proxy = await createCountingProxy();
+    const conn = await mongoose
+      .createConnection(databases(run).MONGO_URI)
+      .asPromise();
+    t.teardown(async () => {
+      await proxy.close();
+      await removeKeys(`koa:sess:${run}*`);
+      await conn.dropDatabase();
+      await conn.close();
+    });
+
+    const _id = new mongoose.Types.ObjectId();
+    const now = new Date();
+    await conn.db.collection('users').insertOne({
+      _id,
+      id: _id.toString(),
+      email: `sessions@${run}.example`,
+      group: 'user',
+      sessions: [],
+      created_at: now,
+      updated_at: now
+    });
+
+    // sessions of the user, of a user that no longer exists, and signed out
+    const own = [];
+    const gone = [];
+    const p = redis.pipeline();
+    for (let i = 0; i < 1500; i++) {
+      own.push(`${run}-own-${i}`);
+      p.set(
+        `koa:sess:${own[i]}`,
+        JSON.stringify({ passport: { user: _id.toString() } }),
+        'PX',
+        ms('1h')
+      );
+    }
+
+    for (let i = 0; i < 20; i++) {
+      gone.push(`koa:sess:${run}-gone-${i}`);
+      p.set(
+        gone[i],
+        JSON.stringify({
+          passport: { user: new mongoose.Types.ObjectId().toString() }
+        }),
+        'PX',
+        ms('1h')
+      );
+    }
+
+    for (let i = 0; i < 500; i++)
+      p.set(`koa:sess:${run}-anon-${i}`, '{}', 'PX', ms('1h'));
+    await p.exec();
+
+    const result = await runJob('session-management', {
+      ...databases(run),
+      BREE_REDIS_HOST: '127.0.0.1',
+      BREE_REDIS_PORT: String(proxy.port)
+    });
+    t.is(result.error, undefined);
+    t.is(result.exitCode, 0);
+
+    // the user's sessions are recorded, those of the missing user removed
+    const user = await conn.db.collection('users').findOne({ _id });
+    t.deepEqual([...user.sessions].sort(), [...own].sort());
+    t.is(await redis.exists(...gone), 0);
+    t.is(await redis.exists(`koa:sess:${run}-anon-0`), 1);
+
+    // a SCAN for each page of about 1000 keys (it read 10 at a time), one
+    // more for the page's sessions, and one for each removed session
+    const keysInRedis = await redis.dbsize();
+    const { writes, scans } = proxy.counts;
+    t.log({ keysInRedis, writes, scans });
+    t.true(
+      scans <= 2 * Math.ceil(keysInRedis / 1000) + 2,
+      `${scans} scans of ${keysInRedis} keys`
+    );
+    t.true(
+      writes - scans <= scans + gone.length + 50,
+      `${writes - scans} other requests`
+    );
+  }
+);
+
+test.serial(
+  'sync-paid-alias-allowlist takes paid domains off the deny, silent and backscatter lists in one walk of the keys',
+  async (t) => {
+    const run = randomBytes(6).toString('hex');
+    const proxy = await createCountingProxy();
+    const conn = await mongoose
+      .createConnection(databases(run).MONGO_URI)
+      .asPromise();
+    t.teardown(async () => {
+      await proxy.close();
+      await removeKeys(`*${run}*`);
+      await conn.dropDatabase();
+      await conn.close();
+    });
+
+    const oid = () => new mongoose.Types.ObjectId();
+    const now = new Date();
+    const ownerId = oid();
+    await conn.db.collection('users').insertOne({
+      _id: ownerId,
+      id: ownerId.toString(),
+      email: `owner@${run}.example`,
+      group: 'user',
+      plan: 'team',
+      is_banned: false,
+      created_at: now,
+      updated_at: now
+    });
+    const domainId = oid();
+    await conn.db.collection('domains').insertOne({
+      _id: domainId,
+      id: domainId.toString(),
+      name: `paid-${run}.com`,
+      plan: 'team',
+      has_txt_record: true,
+      members: [{ user: ownerId, group: 'admin' }],
+      created_at: now,
+      updated_at: now
+    });
+    await conn.db.collection('aliases').insertOne({
+      _id: oid(),
+      name: 'hi',
+      domain: domainId,
+      user: ownerId,
+      is_enabled: true,
+      recipients: [`someone@dest-${run}.org`],
+      created_at: now,
+      updated_at: now
+    });
+
+    // an address of the paid domain on each list (taken off), other entries
+    // (kept), and enough other
+    // keys that each walk of the keyspace takes several pages
+    const p = redis.pipeline();
+    for (const prefix of ['denylist', 'silent', 'backscatter']) {
+      p.set(`${prefix}:someone@paid-${run}.com`, 'true');
+      p.set(`${prefix}:other-${run}.org`, 'true');
+    }
+
+    for (let i = 0; i < 40_000; i++)
+      p.set(`filler:${run}:${i}`, '1', 'PX', ms('1h'));
+    await p.exec();
+    await redis.del('banned_user_ids');
+
+    const result = await runJob('sync-paid-alias-allowlist', {
+      ...databases(run),
+      BREE_REDIS_HOST: '127.0.0.1',
+      BREE_REDIS_PORT: String(proxy.port)
+    });
+    t.is(result.error, undefined);
+    t.is(result.exitCode, 0);
+
+    for (const prefix of ['denylist', 'silent', 'backscatter']) {
+      t.is(
+        await redis.get(`${prefix}:someone@paid-${run}.com`),
+        null,
+        `${prefix} list`
+      );
+      t.is(
+        await redis.get(`${prefix}:other-${run}.org`),
+        'true',
+        `${prefix} list`
+      );
+    }
+
+    t.is(await redis.get(`allowlist:paid-${run}.com`), 'true');
+
+    // one walk of the keyspace (pages of about 10000 keys), not one a list
+    const keysInRedis = await redis.dbsize();
+    const { scans } = proxy.counts;
+    t.log({ keysInRedis, scans });
+    t.true(
+      scans <= 2 * Math.ceil(keysInRedis / 10_000) + 2,
+      `${scans} scans of ${keysInRedis} keys`
+    );
   }
 );

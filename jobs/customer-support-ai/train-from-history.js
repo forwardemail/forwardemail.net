@@ -7,6 +7,7 @@
 require('#helpers/polyfill-towellformed');
 
 const process = require('node:process');
+const { setTimeout: delay } = require('node:timers/promises');
 const { parentPort } = require('node:worker_threads');
 
 const Graceful = require('@ladjs/graceful');
@@ -207,12 +208,14 @@ ${content}`;
       process.exit(0);
     }
   } catch (err) {
-    logger.error('Historical email training job failed', { err });
+    await Promise.race([
+      logger.error('Historical email training job failed', { err }),
+      delay(10_000)
+    ]);
 
-    if (parentPort) {
-      parentPort.postMessage('error');
-    } else {
-      process.exit(1);
-    }
+    // (exit with an error code: on an 'error' message bree keeps the worker,
+    // which its open connections keep alive, so it held its slot and the job
+    // never ran again until a restart)
+    process.exit(1);
   }
 })();

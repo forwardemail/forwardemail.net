@@ -22,6 +22,10 @@ const Logs = require('#models/logs');
 // Index hint for created_at queries
 const CREATED_AT_INDEX_HINT = { created_at: 1 };
 
+// large fields the CSV does not use (every other field is kept)
+const UNUSED_FIELDS =
+  '-keywords -text_message -domains -hash -domains_checked_at';
+
 function makeDelimitedString(arr) {
   // <https://stackoverflow.com/a/17808731>
   // (values such as the subject and SMTP response come from external senders)
@@ -55,7 +59,9 @@ async function getLogsCsv(
   let gzip;
 
   try {
-    const writeStream = zlib.createGzip({ level: 9 });
+    // (level 6 is zlib's default: level 9 took about twice the CPU for a file
+    // a few percent smaller)
+    const writeStream = zlib.createGzip({ level: 6 });
     const written = pipeline(writeStream, fs.createWriteStream(tmpFilePath));
     // don't treat an early failure as unhandled; it is awaited below
     written.catch(() => {});
@@ -124,11 +130,19 @@ async function getLogsCsv(
     //
     const csvDeliveredFingerprints = new Set();
 
+    //
+    // Read as plain objects (lean) without the large fields the CSV does not
+    // use: every log of the range (hundreds of thousands in four hours for the
+    // bounce report) was built into a full Mongoose document, which took most
+    // of a CPU core for up to an hour each run.
+    //
     // eslint-disable-next-line unicorn/no-array-callback-reference
     for await (const log of Logs.find(query)
+      .select(UNUSED_FIELDS)
       .hint(CREATED_AT_INDEX_HINT)
       .sort({ created_at: 1 })
-      .cursor()
+      .lean()
+      .cursor({ batchSize: 1000 })
       .addCursorFlag('noCursorTimeout', true)) {
       if (!log?.meta?.session?.id) continue;
 
@@ -276,7 +290,7 @@ async function getLogsCsv(
       await write(
         makeDelimitedString([
           // ID
-          log.id,
+          String(log._id),
           // Session ID
           log.meta.session.id,
           // Date

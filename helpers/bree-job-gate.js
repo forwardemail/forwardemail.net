@@ -3,9 +3,13 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
+const fs = require('node:fs');
+const os = require('node:os');
 const v8 = require('node:v8');
 
 const ms = require('ms');
+
+const { intervalOf: jobIntervalOf } = require('./bree-schedule');
 
 //
 // Every bree job runs in its own worker thread, and every worker loads the app
@@ -38,14 +42,24 @@ const FREQUENT_INTERVAL = ms('15m');
 // counted against the cap any more (it cannot be allowed to block every job)
 const EXIT_WAIT_MS = ms('1m');
 
-function toMs(value) {
-  if (typeof value === 'number' && Number.isFinite(value)) return value;
-  if (typeof value === 'string') {
-    const parsed = ms(value);
-    if (Number.isFinite(parsed)) return parsed;
+/**
+ * Memory the host can still give out without swapping, in bytes: the
+ * kernel's MemAvailable (free memory plus what it can reclaim, such as the
+ * page cache), or free memory where /proc/meminfo is not available.
+ *
+ * @returns {number}
+ */
+function getAvailableMemory() {
+  try {
+    const match = /^MemAvailable:\s+(\d+) kB/m.exec(
+      fs.readFileSync('/proc/meminfo', 'utf8')
+    );
+    if (match) return Number(match[1]) * 1024;
+  } catch {
+    // not Linux
   }
 
-  return Number.POSITIVE_INFINITY;
+  return os.freemem();
 }
 
 /**
@@ -54,6 +68,16 @@ function toMs(value) {
  * @param {number} [options.maxConcurrent] - Worker threads allowed at once
  * @param {number} [options.reservedForFrequent] - Of those, slots only jobs
  *   running every 15 minutes or more often may use
+ * @param {Object} [options.memory] - Guard against running the host out of
+ *   memory (the bree host has no swap: when memory runs out it stalls, SSH
+ *   included, long before the kernel kills anything)
+ * @param {number} [options.memory.pauseBelow] - While less memory than this
+ *   (bytes) is available, jobs that are not frequent wait in the queue
+ * @param {number} [options.memory.stopBelow] - Below this, the job that is not
+ *   frequent and has run the longest is stopped (it runs again next time)
+ * @param {Function} [options.memory.available] - Available memory in bytes
+ *   (defaults to MemAvailable from /proc/meminfo)
+ * @param {number} [options.memory.checkMs] - How often to check (10s)
  * @param {Object} [options.logger] - Logger
  * @returns {Object} Gate state (for monitoring and tests)
  */
@@ -64,6 +88,19 @@ function createJobGate(bree, options = {}) {
     Math.max(0, Number(options.reservedForFrequent ?? 3))
   );
   const { logger } = options;
+  const memory = options.memory
+    ? {
+        available: getAvailableMemory,
+        checkMs: ms('10s'),
+        pauseBelow: 0,
+        stopBelow: 0,
+        ...options.memory
+      }
+    : null;
+  // when each running job's worker was created (to find the longest running)
+  const startedAt = new Map();
+  let memoryTimer;
+  let lowMemory = false;
 
   // jobs started through the gate whose worker is running (or starting)
   const active = new Set();
@@ -77,9 +114,7 @@ function createJobGate(bree, options = {}) {
   const originalRun = bree.run.bind(bree);
 
   function intervalOf(name) {
-    const job = bree.config.jobs.find((j) => j.name === name);
-    if (!job) return Number.POSITIVE_INFINITY;
-    return toMs(job.interval);
+    return jobIntervalOf(bree.config.jobs.find((j) => j.name === name));
   }
 
   function isFrequent(name) {
@@ -93,6 +128,8 @@ function createJobGate(bree, options = {}) {
   function hasSlot(name) {
     if (used() >= maxConcurrent) return false;
     if (isFrequent(name)) return true;
+    // (a long job is held back while the host is low on memory)
+    if (lowMemory) return false;
     let slow = 0;
     for (const n of active) if (!isFrequent(n)) slow++;
     for (const n of exiting.values()) if (!isFrequent(n)) slow++;
@@ -156,11 +193,13 @@ function createJobGate(bree, options = {}) {
   bree.on('worker created', (name) => {
     const worker = bree.workers.get(name);
     if (worker) workers.set(name, worker);
+    startedAt.set(name, Date.now());
   });
 
   bree.on('worker deleted', (name) => {
     const worker = workers.get(name);
     workers.delete(name);
+    startedAt.delete(name);
     if (!active.delete(name)) return;
 
     // Node sets threadId to -1 once the thread has exited
@@ -186,6 +225,74 @@ function createJobGate(bree, options = {}) {
     drain();
   });
 
+  //
+  // Memory guard: below `pauseBelow` jobs that are not frequent stay queued
+  // (and start again once memory is back); below `stopBelow` the one of them
+  // that has run the longest is stopped, one per check. A stopped job keeps its
+  // schedule and runs again next time; it is logged as a failed run.
+  //
+  function checkMemory() {
+    let available;
+    try {
+      available = memory.available();
+    } catch (err) {
+      logger?.error?.(err);
+      return;
+    }
+
+    if (!Number.isFinite(available)) return;
+
+    const wasLow = lowMemory;
+    lowMemory = available < memory.pauseBelow;
+    if (lowMemory && !wasLow)
+      logger?.warn?.('host low on memory, holding back long jobs', {
+        available,
+        pauseBelow: memory.pauseBelow,
+        running: [...active]
+      });
+    else if (!lowMemory && wasLow) {
+      logger?.info?.('host memory recovered, starting held back jobs', {
+        available
+      });
+      drain();
+    }
+
+    if (available >= memory.stopBelow) return;
+
+    let oldest;
+    for (const name of active) {
+      if (isFrequent(name) || !startedAt.has(name)) continue;
+      if (!oldest || startedAt.get(name) < startedAt.get(oldest)) oldest = name;
+    }
+
+    const worker = oldest && workers.get(oldest);
+    if (!worker) return;
+    logger?.error?.(
+      new Error(
+        `Stopped job "${oldest}" because the host is almost out of memory`
+      ),
+      {
+        job: { name: oldest, startedAt: new Date(startedAt.get(oldest)) },
+        available,
+        stopBelow: memory.stopBelow
+      }
+    );
+    // (stopped once: it is not chosen again while its thread exits)
+    startedAt.delete(oldest);
+    worker.terminate().catch((err) => logger?.error?.(err));
+  }
+
+  function startMemoryGuard() {
+    if (!memory || memoryTimer) return;
+    memoryTimer = setInterval(checkMemory, memory.checkMs);
+    if (typeof memoryTimer.unref === 'function') memoryTimer.unref();
+  }
+
+  function stopMemoryGuard() {
+    if (memoryTimer) clearInterval(memoryTimer);
+    memoryTimer = undefined;
+  }
+
   // Nothing waiting may start while bree shuts down (graceful stop on deploy
   // or restart): drop the queue and stop draining it until started again.
   const originalStop = bree.stop.bind(bree);
@@ -195,6 +302,7 @@ function createJobGate(bree, options = {}) {
     } else {
       stopping = true;
       queued.clear();
+      stopMemoryGuard();
     }
 
     return originalStop(name);
@@ -202,7 +310,12 @@ function createJobGate(bree, options = {}) {
 
   const originalStart = bree.start.bind(bree);
   bree.start = async function (name) {
-    if (!name) stopping = false;
+    if (!name) {
+      stopping = false;
+      if (memory) checkMemory();
+      startMemoryGuard();
+    }
+
     return originalStart(name);
   };
 
@@ -211,7 +324,11 @@ function createJobGate(bree, options = {}) {
     exiting,
     queued,
     maxConcurrent,
-    reservedForFrequent
+    reservedForFrequent,
+    checkMemory: memory ? checkMemory : undefined,
+    get lowMemory() {
+      return lowMemory;
+    }
   };
 }
 
@@ -268,5 +385,6 @@ module.exports = {
   createJobGate,
   trackExitCodes,
   capWorkerHeap,
+  getAvailableMemory,
   FREQUENT_INTERVAL
 };

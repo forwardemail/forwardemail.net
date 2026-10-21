@@ -9,6 +9,7 @@ require('#helpers/polyfill-towellformed');
 const fs = require('node:fs');
 const path = require('node:path');
 const process = require('node:process');
+const { setTimeout: delay } = require('node:timers/promises');
 const { parentPort } = require('node:worker_threads');
 
 const Graceful = require('@ladjs/graceful');
@@ -322,8 +323,13 @@ async function runWithConcurrency(items, limit, worker) {
     if (parentPort) parentPort.postMessage('done');
     else process.exit(0);
   } catch (err) {
-    logger.error(err, { context: 'extract support archive' });
-    if (parentPort) parentPort.postMessage('error');
-    else process.exit(1);
+    await Promise.race([
+      logger.error(err, { context: 'extract support archive' }),
+      delay(10_000)
+    ]);
+    // (exit with an error code: on an 'error' message bree keeps the worker,
+    // which its open connections keep alive, so it held its slot and the job
+    // never ran again until a restart)
+    process.exit(1);
   }
 })();

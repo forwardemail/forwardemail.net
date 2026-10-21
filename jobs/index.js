@@ -217,9 +217,10 @@ let jobs = [
   // (stating that they have until March 31st to configure it for no extra cost)
   // otherwise send the same email but without the configuration
   //
+  // (a monthly reminder: every hour is often enough)
   {
     name: 'domain-restrictions-reminder',
-    interval: '5m',
+    interval: '1h',
     timeout: 0
   },
   {
@@ -350,7 +351,7 @@ let jobs = [
     timeout: 0,
     path: path.join(__dirname, '..', 'scripts', 'backfill-analytics.js')
   },
-  // Aggregate current analytics hours immediately and then every hour.
+  // Aggregate current analytics hours every hour.
   {
     name: 'aggregate-analytics',
     interval: '1h',

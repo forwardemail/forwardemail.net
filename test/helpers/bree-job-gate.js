@@ -406,3 +406,98 @@ test('capWorkerHeap only accepts a positive whole number of megabytes', (t) => {
     t.throws(() => capWorkerHeap(value), { instanceOf: TypeError });
   }
 });
+
+test('holds long jobs back while the host is low on memory, then starts them', async (t) => {
+  const root = makeRoot(t, { slow: sleeper(50), frequent: sleeper(50) });
+  const bree = new Bree({
+    root,
+    logger: quietLogger,
+    jobs: [
+      { name: 'slow', interval: '1h' },
+      { name: 'frequent', interval: '1m' }
+    ]
+  });
+  let available = 100;
+  const gate = createJobGate(bree, {
+    maxConcurrent: 5,
+    reservedForFrequent: 1,
+    memory: {
+      available: () => available,
+      pauseBelow: 1000,
+      stopBelow: 10,
+      checkMs: 50
+    },
+    logger: quietLogger
+  });
+  const state = watch(bree);
+  await bree.start();
+  t.true(gate.lowMemory);
+
+  await bree.run('slow');
+  await bree.run('frequent');
+  // (a frequent job still runs, the long one waits)
+  t.true(await waitFor(() => state.started.includes('frequent'), 2000));
+  t.false(state.started.includes('slow'));
+  t.true(gate.queued.has('slow'));
+
+  available = 5000;
+  t.true(await waitFor(() => state.started.includes('slow'), 2000));
+  t.false(gate.lowMemory);
+  await bree.stop();
+});
+
+test('stops the longest running long job when the host is almost out of memory', async (t) => {
+  const root = makeRoot(t, {
+    first: sleeper(4000),
+    second: sleeper(4000),
+    frequent: sleeper(4000)
+  });
+  const bree = new Bree({
+    root,
+    logger: quietLogger,
+    jobs: [
+      { name: 'first', interval: '1h' },
+      { name: 'second', interval: '1h' },
+      { name: 'frequent', interval: '1m' }
+    ]
+  });
+  let available = 10_000;
+  const errors = [];
+  createJobGate(bree, {
+    maxConcurrent: 5,
+    reservedForFrequent: 1,
+    memory: {
+      available: () => available,
+      pauseBelow: 1000,
+      stopBelow: 100,
+      checkMs: 50
+    },
+    logger: { ...quietLogger, error: (err) => errors.push(err) }
+  });
+  const exitCodes = trackExitCodes(bree);
+  const state = watch(bree);
+  await bree.start();
+  await bree.run('frequent');
+  await bree.run('first');
+  t.true(await waitFor(() => state.running === 2));
+  await delay(100);
+  await bree.run('second');
+  t.true(await waitFor(() => state.running === 3));
+
+  available = 50;
+  // the oldest long job is stopped, one per check, never the frequent one
+  t.true(await waitFor(() => !bree.workers.has('first'), 5000));
+  t.true(errors.some((err) => /first/.test(err.message)));
+  available = 10_000;
+  await delay(300);
+  t.true(bree.workers.has('frequent'));
+  t.not(exitCodes.get('first'), 0);
+  await bree.stop();
+});
+
+test('getAvailableMemory reads a number of bytes', (t) => {
+  const { getAvailableMemory } = require('#helpers/bree-job-gate');
+  const available = getAvailableMemory();
+  t.true(Number.isFinite(available) && available > 0);
+  t.true(available <= os.totalmem());
+});

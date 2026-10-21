@@ -16,6 +16,7 @@ require('#config/env');
 require('#config/mongoose');
 
 const process = require('node:process');
+const zlib = require('node:zlib');
 const { parentPort } = require('node:worker_threads');
 const { setTimeout } = require('node:timers/promises');
 
@@ -633,19 +634,28 @@ async function processAliasesBatch(
 }
 
 // Optimized function to process Redis streams with error handling
-// eslint-disable-next-line max-params
-async function processRedisStream(client, pattern, set, targetSet, p) {
+
+//
+// Remove the entries of the allowlist from the denylist, silent and
+// backscatter lists: `targets` maps each key prefix (e.g. 'denylist:') to the
+// Set the removed values are added to. The keyspace is walked once for all of
+// them (a SCAN with MATCH still walks every key, so one SCAN per prefix walked
+// all of Redis three times every run).
+//
+async function processRedisStreams(client, targets, set, p) {
   try {
-    const prefix = pattern.replace('*', '');
-    for await (const keys of client.scanStream({
-      match: pattern,
+    const prefixes = [...targets.keys()];
+    for await (const page of client.scanStream({
       count: 10000,
       type: 'string',
       // hold one page at a time (a readable stream buffers 16 by default)
       highWaterMark: 1
     })) {
       const matched = new Set();
-      for (const key of keys) {
+      for (const key of page) {
+        const prefix = prefixes.find((candidate) => key.startsWith(candidate));
+        if (!prefix) continue;
+        const targetSet = targets.get(prefix);
         try {
           const keyWithoutPrefix = key.replace(prefix, '');
 
@@ -681,7 +691,9 @@ async function processRedisStream(client, pattern, set, targetSet, p) {
       }
     }
   } catch (err) {
-    logger.error(`Error processing Redis stream ${pattern}:`, err);
+    logger.error('Error processing Redis streams', err, {
+      prefixes: [...targets.keys()]
+    });
     throw err;
   }
 }
@@ -714,15 +726,20 @@ async function processRedisStream(client, pattern, set, targetSet, p) {
 
     // Process Redis streams with error handling
     const denylistSet = new Set();
-    await processRedisStream(client, 'denylist:*', set, denylistSet, p);
-    stats.denylistRemovals = denylistSet.size;
-
     const silentSet = new Set();
-    await processRedisStream(client, 'silent:*', set, silentSet, p);
-    stats.silentRemovals = silentSet.size;
-
     const backscatterSet = new Set();
-    await processRedisStream(client, 'backscatter:*', set, backscatterSet, p);
+    await processRedisStreams(
+      client,
+      new Map([
+        ['denylist:', denylistSet],
+        ['silent:', silentSet],
+        ['backscatter:', backscatterSet]
+      ]),
+      set,
+      p
+    );
+    stats.denylistRemovals = denylistSet.size;
+    stats.silentRemovals = silentSet.size;
     stats.backscatterRemovals = backscatterSet.size;
 
     await p.flush();
@@ -772,18 +789,20 @@ async function processRedisStream(client, pattern, set, targetSet, p) {
           stats.entriesFilteredHardcoded +
           stats.entriesFilteredInvalidTld
         } filtered`,
+        // (gzip-compressed: the full allowlist alone is every paid
+        // recipient domain and address, sent every run)
         attachments: [
           {
-            filename: 'allowlist-full.csv',
-            content: allowlistCsvContent.join('\n')
+            filename: 'allowlist-full.csv.gz',
+            content: zlib.gzipSync(allowlistCsvContent.join('\n'))
           },
           {
-            filename: 'removals.csv',
-            content: removalsCsvContent.join('\n')
+            filename: 'removals.csv.gz',
+            content: zlib.gzipSync(removalsCsvContent.join('\n'))
           },
           {
-            filename: 'denylisted-filtered.csv',
-            content: denylistedCsvContent.join('\n')
+            filename: 'denylisted-filtered.csv.gz',
+            content: zlib.gzipSync(denylistedCsvContent.join('\n'))
           }
         ]
       },

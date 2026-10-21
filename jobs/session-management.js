@@ -49,9 +49,16 @@ graceful.listen();
     for await (const keys of client.scanStream({
       match: `koa:sess:*`,
       type: 'string',
+      // (a SCAN reads about this many keys: without it Redis reads 10 at a
+      // time, a round trip for every 10 keys of the whole keyspace)
+      count: 1000,
       // hold one page at a time (a readable stream buffers 16 by default)
       highWaterMark: 1
     })) {
+      if (keys.length === 0) continue;
+      // the page's sessions in one round trip (instead of a GET for each)
+      const values = await client.mget(keys);
+      const valueOf = new Map(keys.map((key, index) => [key, values[index]]));
       // `GET $key` returns JSON string
       // when `JSON.parse` is called it looks like this:
       // json = {
@@ -74,7 +81,7 @@ graceful.listen();
         keys,
         async (key) => {
           try {
-            const value = await client.get(key);
+            const value = valueOf.get(key);
             const json = JSON.parse(value);
             const id = key.replace('koa:sess:', '');
             //

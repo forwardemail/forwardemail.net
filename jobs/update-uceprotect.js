@@ -47,6 +47,7 @@ const LISTS = [
   }
 ];
 const SEVEN_DAYS_TO_MS = ms('7d');
+const PIPELINE_SIZE = 10_000;
 
 graceful.listen();
 
@@ -79,13 +80,21 @@ async function mapper(list) {
   // log how many we're adding
   logger.info('adding ips to list', { list, count: ips.length });
 
+  //
   // add to the cache for 7d (the same time that UCEProtect keeps it for)
-  const p = client.pipeline();
-  for (const ip of ips) {
-    p.set(`${list.prefix}:${ip}`, 'true', 'PX', SEVEN_DAYS_TO_MS);
-  }
+  //
+  // (in pipelines of PIPELINE_SIZE: one pipeline for the whole list held a
+  // queued command and then a reply for every IP, hundreds of thousands,
+  // in memory at once, every hour)
+  //
+  for (let i = 0; i < ips.length; i += PIPELINE_SIZE) {
+    const p = client.pipeline();
+    for (const ip of ips.slice(i, i + PIPELINE_SIZE)) {
+      p.set(`${list.prefix}:${ip}`, 'true', 'PX', SEVEN_DAYS_TO_MS);
+    }
 
-  await p.exec();
+    await p.exec();
+  }
 
   logger.info('successfully added ips to list', { list, count: ips.length });
 }

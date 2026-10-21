@@ -122,59 +122,72 @@ async function setTTLOnKeys(keys, prefix, result) {
     // denylist keys as they are found. Collecting every key without a TTL
     // first (to remediate afterwards) held millions of keys in memory.
     //
-    for (const prefix of MONITORED_PREFIXES) {
-      let cursor = '0';
+    // One SCAN over the whole keyspace, each key matched to its prefix here:
+    // a SCAN with MATCH still walks every key in Redis (MATCH only filters
+    // what is returned), so one SCAN per prefix walked all of Redis 13 times
+    // each run, taking hours.
+    //
+    let cursor = '0';
+    do {
+      const [newCursor, page] = await client.scan(
+        cursor,
+        'COUNT',
+        TTL_CONFIG.scanCount
+      );
+      cursor = newCursor;
 
-      do {
-        const [newCursor, keys] = await client.scan(
-          cursor,
-          'MATCH',
-          `${prefix}*`,
-          'COUNT',
-          TTL_CONFIG.scanCount
+      // the page's keys under each monitored prefix
+      const byPrefix = new Map();
+      for (const key of page) {
+        const prefix = MONITORED_PREFIXES.find((p) => key.startsWith(p));
+        if (!prefix) continue;
+        if (!byPrefix.has(prefix)) byPrefix.set(prefix, []);
+        byPrefix.get(prefix).push(key);
+      }
+
+      const keys = [...byPrefix.values()].flat();
+      totalScanned += keys.length;
+
+      if (keys.length > 0) {
+        const ttls = pipelineReplies(
+          await client.pipeline(keys.map((key) => ['ttl', key])).exec()
         );
-        cursor = newCursor;
-        totalScanned += keys.length;
+        const ttlOf = new Map(keys.map((key, index) => [key, ttls[index]]));
 
-        if (keys.length > 0) {
-          const ttls = pipelineReplies(
-            await client.pipeline(keys.map((key) => ['ttl', key])).exec()
-          );
-
+        for (const [prefix, prefixKeys] of byPrefix) {
           // ttl = -1 means key has no expiry
-          const withoutTTL = keys.filter((key, index) => ttls[index] === -1);
+          const withoutTTL = prefixKeys.filter((key) => ttlOf.get(key) === -1);
+          if (withoutTTL.length === 0) continue;
 
-          if (withoutTTL.length > 0) {
-            totalWithoutTTL += withoutTTL.length;
+          totalWithoutTTL += withoutTTL.length;
 
-            // count keys without TTL (and keep a few samples)
-            if (!keysWithoutTTL[prefix]) {
-              keysWithoutTTL[prefix] = {
-                count: 0,
-                samples: []
-              };
-            }
+          // count keys without TTL (and keep a few samples)
+          if (!keysWithoutTTL[prefix]) {
+            keysWithoutTTL[prefix] = {
+              count: 0,
+              samples: []
+            };
+          }
 
-            keysWithoutTTL[prefix].count += withoutTTL.length;
+          keysWithoutTTL[prefix].count += withoutTTL.length;
 
-            for (const key of withoutTTL) {
-              if (keysWithoutTTL[prefix].samples.length >= 5) break;
-              keysWithoutTTL[prefix].samples.push(key);
-            }
+          for (const key of withoutTTL) {
+            if (keysWithoutTTL[prefix].samples.length >= 5) break;
+            keysWithoutTTL[prefix].samples.push(key);
+          }
 
-            // set TTL on fingerprint and denylist keys
-            if (REMEDIATION_TTL.has(prefix)) {
-              if (!ttlSetResults[prefix])
-                ttlSetResults[prefix] = { setCount: 0, errorCount: 0 };
-              await setTTLOnKeys(withoutTTL, prefix, ttlSetResults[prefix]);
-            }
+          // set TTL on fingerprint and denylist keys
+          if (REMEDIATION_TTL.has(prefix)) {
+            if (!ttlSetResults[prefix])
+              ttlSetResults[prefix] = { setCount: 0, errorCount: 0 };
+            await setTTLOnKeys(withoutTTL, prefix, ttlSetResults[prefix]);
           }
         }
+      }
 
-        // Add small delay between scans to be resource-friendly
-        await delay(TTL_CONFIG.scanDelay);
-      } while (cursor !== '0');
-    }
+      // Add small delay between scans to be resource-friendly
+      await delay(TTL_CONFIG.scanDelay);
+    } while (cursor !== '0');
 
     logger.info('completed Redis TTL monitoring', {
       totalScanned,
@@ -263,9 +276,11 @@ These keys should have TTL set to prevent unbounded Redis memory growth.`;
     if (parentPort) parentPort.postMessage('done');
     else process.exit(0);
   } catch (err) {
-    logger.error(err);
+    await Promise.race([logger.error(err), delay(10_000)]);
 
-    if (parentPort) parentPort.postMessage('error');
-    else process.exit(1);
+    // (exit with an error code: on an 'error' message bree keeps the worker,
+    // which its open connections keep alive, so it held its slot and the job
+    // never ran again until a restart)
+    process.exit(1);
   }
 })();

@@ -117,27 +117,53 @@ graceful.listen();
         // return early if the job was already cancelled
         if (isCancelled) return;
 
-        const user = await Users.findById(id).lean().exec();
-        if (!user) return;
-
-        let domains = await Domains.find({
-          'members.user': user._id,
-          has_mx_record: true
+        //
+        // only the domains this could email about: not already set up on a
+        // paid plan (as of the last DNS check, see jobs/check-domains.js) and
+        // not reminded in the past month; and only their names first, since
+        // most of them have names without restrictions
+        //
+        // (this used to look up DNS for every domain of every paid user with
+        // a name outside the good list, every five minutes, including all
+        // those already set up and never emailed)
+        //
+        const candidates = await Domains.find({
+          members: { $elemMatch: { user: id, group: 'admin' } },
+          has_mx_record: true,
+          $and: [
+            { $or: [{ plan: 'free' }, { has_txt_record: { $ne: true } }] },
+            {
+              $or: [
+                { restrictions_reminder_sent_at: null },
+                {
+                  restrictions_reminder_sent_at: {
+                    $lte: dayjs().subtract(1, 'month').toDate()
+                  }
+                }
+              ]
+            }
+          ]
         })
+          .select('_id name')
           .lean()
           .exec();
 
-        domains = domains.filter((d) => {
-          // if user was not an admin then return false
-          const member = d.members.find(
-            (m) => m.user.toString() === user.id && m.group === 'admin'
-          );
-          if (!member) return false;
-          const { isGood, isDisposable, isRestricted } =
-            Domains.getNameRestrictions(d.name);
-          if (!isGood || isDisposable || isRestricted) return true;
-          return false;
-        });
+        const domainIds = candidates
+          .filter((d) => {
+            const { isGood, isDisposable, isRestricted } =
+              Domains.getNameRestrictions(d.name);
+            return !isGood || isDisposable || isRestricted;
+          })
+          .map((d) => d._id);
+
+        if (domainIds.length === 0) return;
+
+        const user = await Users.findById(id).lean().exec();
+        if (!user) return;
+
+        let domains = await Domains.find({ _id: { $in: domainIds } })
+          .lean()
+          .exec();
 
         if (domains.length === 0) return;
 
