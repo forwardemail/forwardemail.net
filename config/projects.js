@@ -7,7 +7,8 @@
 // Our other projects, in the order the "Our Projects" menu and the projects
 // page list them. `description` and `why` are phrases (translated in views).
 // `image` is each site's Open Graph image (1200x630), taken from its repo
-// and saved under assets/img/projects/.
+// and saved under assets/img/projects/ (for a project whose repo has only a
+// wide banner, the banner centered on white at 1200x630).
 //
 module.exports = [
   {
@@ -90,5 +91,50 @@ module.exports = [
     description:
       'A free Bash script that checks your SSL/TLS certificates each day and emails you before any of them expire.',
     why: 'The script emails its report through the Forward Email API or a local sendmail, so you hear about an expiring certificate before your visitors do.'
+  },
+  {
+    name: 'Tangerine',
+    url: 'https://forwardemail.github.io/tangerine',
+    repo: 'https://github.com/forwardemail/tangerine',
+    image: 'img/projects/tangerine.webp',
+    description:
+      'A drop-in replacement for the Node.js DNS resolver that sends lookups over DNS over HTTPS (DoH), with retries, timeouts, server rotation and caching.',
+    why: 'Our mail servers look up MX, SPF, DKIM and DMARC records for every message. Tangerine sends those lookups encrypted over HTTPS and caches the answers, so they stay private and fast.'
+  },
+  {
+    name: 'Bree',
+    url: 'https://jobscheduler.net/#/',
+    repo: 'https://github.com/breejs/bree',
+    image: 'img/projects/bree.webp',
+    description:
+      'A job scheduler for Node.js that runs each job in its own worker thread, on a cron expression, a date, an interval or a human-friendly time, with concurrency limits and graceful shutdown.',
+    why: 'Forward Email runs dozens of background jobs, from DNS checks to renewal reminders. Bree runs them on our own servers without a separate queue service, and a job that fails does not stop the others.'
+  },
+  {
+    name: 'Cabin',
+    url: 'https://cabinjs.com',
+    repo: 'https://github.com/cabinjs/cabin',
+    image: 'img/projects/cabin.webp',
+    description:
+      'A logging library for JavaScript and Node.js. It logs requests and errors from Express, Koa and Lad apps and from the browser, and can send them to Slack, Sentry, Datadog, Papertrail or your own endpoint.',
+    why: 'Logs can leak personal data. Cabin masks passwords, card numbers, tokens and other sensitive fields before anything is written, so we keep our logs on our own servers instead of handing them to a logging service.'
+  },
+  {
+    name: 'Lad',
+    url: 'https://lad.js.org',
+    repo: 'https://github.com/ladjs/lad',
+    image: 'img/projects/lad.webp',
+    description:
+      'A full-stack Node.js framework built on Koa, with a web server, an API server, a Bree job scheduler, translations, email templates and security settings ready from the start.',
+    why: 'Forward Email is built with Lad. The framework behind our web app and API is open source, so anyone can start a project from the same foundation.'
+  },
+  {
+    name: 'Lass',
+    url: 'https://lass.js.org',
+    repo: 'https://github.com/lassjs/lass',
+    image: 'img/projects/lass.webp',
+    description:
+      'A command-line tool that creates a new Node.js package with tests, linting, formatting, commit checks, a README and a license already set up.',
+    why: 'We maintain many npm packages, including Tangerine, Bree and Cabin. Lass starts each new one the same way, so every package has the same tests and checks from its first commit.'
   }
 ];

@@ -37,7 +37,12 @@ const PROJECTS = [
   ['https://timetoinbox.com', 'Time to Inbox'],
   ['https://serverauditing.com', 'Server Auditing'],
   ['https://sshmonitor.com', 'SSH Monitor'],
-  ['https://sslmonitor.com', 'SSL Monitor']
+  ['https://sslmonitor.com', 'SSL Monitor'],
+  ['https://forwardemail.github.io/tangerine', 'Tangerine'],
+  ['https://jobscheduler.net/#/', 'Bree'],
+  ['https://cabinjs.com', 'Cabin'],
+  ['https://lad.js.org', 'Lad'],
+  ['https://lass.js.org', 'Lass']
 ];
 
 test('the Resources menu lists our projects under a header', async (t) => {

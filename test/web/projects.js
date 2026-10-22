@@ -21,7 +21,7 @@ test.beforeEach(utils.setupWebServer);
 test.afterEach.always(utils.teardownWebServer);
 
 test('the projects page has a card for each project', async (t) => {
-  t.is(config.projects.length, 9);
+  t.is(config.projects.length, 14);
   const res = await t.context.web.get('/en/projects');
   t.is(res.status, 200);
   const { document } = new JSDOM(res.text).window;
