@@ -1546,14 +1546,17 @@ const MAX_DECODED_BYTES = 512 * 1024;
 // send it, decompressed up to `MAX_DECODED_BYTES` (also when it was cut
 // short); null when it cannot be
 //
+// (never Brotli: the page comes from whoever registered the domain, and the
+//  Brotli decoder in Node.js v18 can be exploited with a crafted stream, see
+//  `refuse-unsafe-encoding`)
+//
 function decompress(buffer, encoding) {
   const create = {
     gzip: () => zlib.createGunzip(),
     'x-gzip': () => zlib.createGunzip(),
     deflate: () => zlib.createInflate(),
     // (a "deflate" body without its zlib header, as some servers send it)
-    'deflate-raw': () => zlib.createInflateRaw(),
-    br: () => zlib.createBrotliDecompress()
+    'deflate-raw': () => zlib.createInflateRaw()
   }[encoding];
   if (!create) return Promise.resolve(null);
   return new Promise((resolve) => {

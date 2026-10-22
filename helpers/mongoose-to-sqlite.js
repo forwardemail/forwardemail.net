@@ -1495,8 +1495,18 @@ function parseSchema(Model, modelName = '') {
       case 'Buffer': {
         // stored as native BLOB (backwards compatible with hex text)
         data_type = 'blob';
-        getter = (v) => decodeAttachmentBody(v);
-        setter = (v) => encodeAttachmentBody(v);
+        // (an attachment's `size` is the length of its original body, which
+        //  tells a compressed body from one stored as-is; any other Buffer,
+        //  such as `TemporaryMessages.raw`, is stored so that its magic
+        //  header alone tells them apart)
+        if (name === 'Attachments' && key === 'body') {
+          getter = (v, doc) => decodeAttachmentBody(v, doc?.size);
+          setter = (v) => encodeAttachmentBody(v);
+        } else {
+          getter = (v) => decodeAttachmentBody(v);
+          setter = (v) => encodeAttachmentBody(v, { withoutSize: true });
+        }
+
         break;
       }
 
@@ -1708,7 +1718,7 @@ function syncConvertResult(Model, doc) {
 
   for (const key in doc) {
     if (Model.mapping[key]) {
-      obj[key] = Model.mapping[key].getter(doc[key]);
+      obj[key] = Model.mapping[key].getter(doc[key], doc);
     } else {
       // sometimes we have a legacy column such as "uid"
       // which is a type String and so we can easily add mapping
@@ -1732,7 +1742,7 @@ async function convertResult(
 
   for (const key in doc) {
     if (Model.mapping[key]) {
-      obj[key] = Model.mapping[key].getter(doc[key]);
+      obj[key] = Model.mapping[key].getter(doc[key], doc);
     } else {
       // sometimes we have a legacy column such as "uid" (or "method" for CalendarEvents)
       // which is a type String or it just has a null value, so we can easily add mapping

@@ -11,6 +11,21 @@ const { Buffer } = require('node:buffer');
 const sharp = require('sharp');
 
 //
+// sharp only ever decodes the SVG built here (and the PNG or JPEG made from
+// it), so the libvips loaders with known decoder bugs are turned off for the
+// whole process (GHSA-f88m-g3jw-g9cj, GHSA-rgj7-g3m4-5g8c,
+// GHSA-wq5f-xc86-pv6w): an image in one of these formats is refused.
+//
+sharp.block({
+  operation: [
+    'VipsForeignLoadNsgif',
+    'VipsForeignLoadTiff',
+    'VipsForeignLoadVips',
+    'VipsForeignLoadHeif'
+  ]
+});
+
+//
 // Open Graph image (1200 x 630) of a page.
 //
 // The image is an SVG built here and rasterized by sharp.  Its text is laid

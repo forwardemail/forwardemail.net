@@ -13,6 +13,9 @@ const undici = require('undici');
 
 const isPrivateHost = require('#helpers/is-private-host');
 const normalizeRdapUrl = require('#helpers/normalize-rdap-url');
+const {
+  refuseUnsafeResponseEncoding
+} = require('#helpers/refuse-unsafe-encoding');
 
 //
 // `fetch` for WHOIS/RDAP lookups of user-supplied domains.
@@ -51,7 +54,12 @@ function lookup(hostname, options, fn) {
   });
 }
 
-const dispatcher = new undici.Agent({ connect: { lookup } });
+// (a Brotli body from an RDAP server, or a registrar server it redirects
+//  to, must not be decoded, and fetch decodes one whatever was asked for:
+//  see helpers/refuse-unsafe-encoding.js)
+const dispatcher = new undici.Agent({ connect: { lookup } }).compose(
+  refuseUnsafeResponseEncoding
+);
 
 async function assertPublicTarget(url) {
   if (url.protocol !== 'https:' && url.protocol !== 'http:')
@@ -65,8 +73,14 @@ async function rdapFetch(input, options = {}) {
   for (let redirects = 0; ; redirects++) {
     await assertPublicTarget(url);
 
+    // (fetch asks for Brotli by default, which the dispatcher refuses: ask
+    //  for gzip or deflate instead, unless the caller chose)
+    const headers = new undici.Headers(options.headers);
+    if (!headers.has('accept-encoding'))
+      headers.set('accept-encoding', 'gzip, deflate');
     const response = await undici.fetch(url, {
       ...options,
+      headers,
       redirect: 'manual',
       dispatcher: rdapFetch.dispatcher
     });

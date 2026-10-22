@@ -2035,6 +2035,22 @@ test('the HTML in an <svg> is read as HTML', (t) => {
   }
 });
 
+test.serial('a Brotli page is not decoded', async (t) => {
+  const zlib = require('node:zlib');
+  // (the page comes from whoever registered the domain, and the Brotli
+  //  decoder in Node.js v18 is not safe with a stream they craft)
+  const casino = page(
+    '<p>Play at the best online casino with free spins every day.</p>'
+  );
+  const result = await servePage(
+    'https://www.mail.example.com/',
+    zlib.brotliCompressSync(casino),
+    () => getDomainCategorization('mail.example.com', OPTIONS),
+    { 'content-encoding': 'br' }
+  );
+  t.false(result.categories.includes('gambling'));
+});
+
 test.serial('a page compressed or in a legacy charset is read', async (t) => {
   const { Buffer } = require('node:buffer');
   const zlib = require('node:zlib');
@@ -2053,8 +2069,7 @@ test.serial('a page compressed or in a legacy charset is read', async (t) => {
   for (const [encoding, compress] of [
     ['gzip', zlib.gzipSync],
     ['deflate', zlib.deflateSync],
-    ['deflate', zlib.deflateRawSync],
-    ['br', zlib.brotliCompressSync]
+    ['deflate', zlib.deflateRawSync]
   ]) {
     const result = await read(compress(casino), {
       'content-encoding': encoding

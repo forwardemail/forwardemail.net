@@ -365,6 +365,99 @@ function readZipEntry(entry) {
   }
 }
 
+// (a DMARC report ZIP holds one entry with a short flat name, e.g.
+//  "example.com!example.org!1700000000!1700086400.xml")
+const MAX_ZIP_ENTRIES = 16;
+const MAX_ZIP_NAME_LENGTH = 255;
+const MAX_ZIP_EXTRA_LENGTH = 1024;
+
+// (end of central directory, central directory header, ZIP64 locator)
+const ZIP_EOCD_SIGNATURE = 0x06_05_4b_50;
+const ZIP_CENTRAL_SIGNATURE = 0x02_01_4b_50;
+const ZIP64_LOCATOR_SIGNATURE = 0x07_06_4b_50;
+const ZIP64_RECORD_SIGNATURE = 0x06_06_4b_50;
+
+//
+// The end of central directory record adm-zip 0.6.0 reads (`readMainHeader`
+// in its zipFile.js), or -1 when it would read a ZIP64 record instead (or
+// none): it searches back from the end of the archive, and after each end
+// record it finds it searches 20 bytes further back, for an earlier end
+// record (which it then reads) or a ZIP64 signature.
+//
+function findEndOfCentralDirectory(buffer) {
+  if (buffer.length < 22) return -1;
+  let i = buffer.length - 22;
+  let last = Math.max(0, i - 0xff_ff);
+  let eocd = -1;
+  for (; i >= last && i >= 0; i--) {
+    if (buffer[i] !== 0x50) continue;
+    const signature = buffer.readUInt32LE(i);
+    if (signature === ZIP_EOCD_SIGNATURE) {
+      eocd = i;
+      last = i - 20;
+    } else if (
+      signature === ZIP64_LOCATOR_SIGNATURE ||
+      signature === ZIP64_RECORD_SIGNATURE
+    ) {
+      return -1;
+    }
+  }
+
+  return eocd;
+}
+
+/**
+ * Check a ZIP archive's central directory before adm-zip reads it
+ *
+ * NOTE: the archive comes from whoever sent the email, and adm-zip builds
+ *       every parent path of every entry name when it lists the entries, at
+ *       a cost in time and memory that grows with the square of the name's
+ *       length (so one long name is enough to hold the process): only an
+ *       archive with a few entries with short names, as DMARC reports have,
+ *       is read.
+ *
+ * @param {Buffer} buffer - ZIP archive buffer
+ * @returns {boolean} whether adm-zip may read it
+ */
+function isReadableZip(buffer) {
+  // (the record adm-zip reads, and no ZIP64; the record and its comment end
+  //  the archive, as they do in every archive a report generator makes)
+  const eocd = findEndOfCentralDirectory(buffer);
+  if (
+    eocd === -1 ||
+    eocd + 22 + buffer.readUInt16LE(eocd + 20) !== buffer.length
+  )
+    return false;
+
+  const entries = buffer.readUInt16LE(eocd + 10);
+  const size = buffer.readUInt32LE(eocd + 12);
+  const offset = buffer.readUInt32LE(eocd + 16);
+  if (
+    entries === 0 ||
+    entries > MAX_ZIP_ENTRIES ||
+    offset + size > eocd ||
+    buffer.readUInt16LE(eocd + 8) !== entries
+  )
+    return false;
+
+  let position = offset;
+  for (let i = 0; i < entries; i++) {
+    if (
+      position + 46 > offset + size ||
+      buffer.readUInt32LE(position) !== ZIP_CENTRAL_SIGNATURE
+    )
+      return false;
+    const nameLength = buffer.readUInt16LE(position + 28);
+    const extraLength =
+      buffer.readUInt16LE(position + 30) + buffer.readUInt16LE(position + 32);
+    if (nameLength > MAX_ZIP_NAME_LENGTH || extraLength > MAX_ZIP_EXTRA_LENGTH)
+      return false;
+    position += 46 + nameLength + extraLength;
+  }
+
+  return position <= offset + size;
+}
+
 /**
  * Extract XML content from a ZIP archive
  * @param {Buffer} buffer - ZIP archive buffer
@@ -372,6 +465,11 @@ function readZipEntry(entry) {
  */
 function extractZip(buffer) {
   try {
+    if (!isReadableZip(buffer)) {
+      logger.debug('ZIP archive is not one a DMARC report would be');
+      return null;
+    }
+
     const zip = new AdmZip(buffer);
     const entries = zip.getEntries();
 

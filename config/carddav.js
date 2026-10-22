@@ -18,6 +18,9 @@ const config = require('.');
 const koaRedirectBackPolyfill = require('#helpers/koa-redirect-back-polyfill');
 
 const createTangerine = require('#helpers/create-tangerine');
+const {
+  refuseUnsafeRequestEncoding
+} = require('#helpers/refuse-unsafe-encoding');
 const i18n = require('#helpers/i18n');
 const logger = require('#helpers/logger');
 const denylistMiddleware = require('#helpers/denylist-request');
@@ -72,6 +75,9 @@ module.exports = {
   logger: cabin,
   i18n,
   hookBeforeSetup(app) {
+    // (before the body parser, which would Brotli-decode the body: see
+    //  helpers/refuse-unsafe-encoding.js)
+    app.use(refuseUnsafeRequestEncoding);
     // Koa v3 polyfill for ctx.redirect('back')
     // @see https://github.com/koajs/koa/releases/tag/v3.0.0
     app.use(koaRedirectBackPolyfill({ fallbackUrl: '/' }));

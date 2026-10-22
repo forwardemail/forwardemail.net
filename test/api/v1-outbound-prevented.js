@@ -42,7 +42,8 @@ test.beforeEach(utils.setupApiServer);
 test.beforeEach(utils.setupFactories);
 test.afterEach.always(utils.teardownApiServer);
 
-test('a message with an executable attachment is prevented, and only that message', async (t) => {
+// a paid domain with outbound SMTP, and a way to send from one of its aliases
+async function setup(t) {
   const user = await t.context.userFactory
     .withState({
       plan: 'enhanced_protection',
@@ -94,6 +95,12 @@ test('a message with an executable attachment is prevented, and only that messag
         text: 'please see the attachment',
         attachments
       });
+
+  return { user, domain, alias, send };
+}
+
+test('a message with an executable attachment is prevented, and only that message', async (t) => {
+  const { user, domain, send } = await setup(t);
 
   // a Windows executable (its magic number and its extension both give it
   // away)
@@ -160,4 +167,41 @@ test('a message with an executable attachment is prevented, and only that messag
   ]);
   t.is(ok.status, 200, `${JSON.stringify(ok.body)}`);
   t.is(await Emails.countDocuments({ domain: domain._id }), 1);
+});
+
+//
+// Spam Scanner's file type check (file-type 16.5.4) looped forever on an ASF
+// file with a sub-header shorter than its own header (GHSA-5v7r-6r5c-r473),
+// which held the whole process (see helpers/harden-file-type.js).
+//
+test('an attachment the file type check could not finish is still checked', async (t) => {
+  const { domain, send } = await setup(t);
+
+  // (an ASF header object, then a sub-header that gives its size as 0)
+  const content = Buffer.alloc(256);
+  Buffer.from([
+    0x30, 0x26, 0xb2, 0x75, 0x8e, 0x66, 0xcf, 0x11, 0xa6, 0xd9, 0x00, 0xaa,
+    0x00, 0x62, 0xce, 0x6c
+  ]).copy(content);
+  content.writeBigUInt64LE(256n, 16);
+  content.fill(0x11, 30, 46);
+  content.writeBigUInt64LE(0n, 46);
+
+  // (and the same after an ID3 tag, which file-type skips first: its size
+  //  bytes are read as file-type reads them, here 0x80 * 2^7 bytes)
+  const id3 = Buffer.from([0x49, 0x44, 0x33, 4, 0, 0, 0, 0, 0x80, 0]);
+  const tagged = Buffer.concat([id3, Buffer.alloc(0x80 * 2 ** 7), content]);
+
+  for (const [i, file] of [content, tagged].entries()) {
+    const res = await send([
+      {
+        filename: 'clip.wmv',
+        content: file.toString('base64'),
+        encoding: 'base64',
+        contentType: 'video/x-ms-wmv'
+      }
+    ]);
+    t.is(res.status, 200, `${JSON.stringify(res.body)}`);
+    t.is(await Emails.countDocuments({ domain: domain._id }), i + 1);
+  }
 });

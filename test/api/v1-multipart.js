@@ -118,3 +118,81 @@ test('parsed body shape', async (t) => {
   t.is(body.ok.length, 1001);
   t.is(body.ok[1000], 'kept');
 });
+
+//
+// multer 2.0.2 never settled a request whose client went away in the middle
+// of a file upload, which kept the request and its context in memory.
+//
+// (an app whose upload middleware runs after `delay` ms of other work)
+async function listenUpload(t, delay) {
+  const state = { settled: 0 };
+  const app = new Koa();
+  app.use(async (ctx, next) => {
+    try {
+      await next();
+    } finally {
+      state.settled++;
+    }
+  });
+  app.use(async (ctx, next) => {
+    await new Promise((resolve) => {
+      setTimeout(resolve, delay);
+    });
+    return next();
+  });
+  app.use(
+    createMultipart(
+      { limits: { files: 1, fileSize: 1024 * 1024 } },
+      { rawErrors: true }
+    ).fields([{ name: 'attachment', maxCount: 1 }])
+  );
+  app.use((ctx) => {
+    ctx.body = 'ok';
+  });
+  const server = http.createServer(app.callback());
+  await new Promise((resolve) => {
+    server.listen(0, '127.0.0.1', resolve);
+  });
+  t.teardown(() => server.close());
+  state.port = server.address().port;
+  return state;
+}
+
+// starts an upload and leaves after `after` ms
+async function abandonUpload(port, after) {
+  const boundary = 'x-boundary';
+  const req = http.request({
+    host: '127.0.0.1',
+    port,
+    method: 'POST',
+    headers: {
+      'content-type': `multipart/form-data; boundary=${boundary}`,
+      'content-length': 100_000
+    }
+  });
+  req.on('error', () => {});
+  req.write(
+    `--${boundary}\r\nContent-Disposition: form-data; name="attachment"; filename="a.bin"\r\nContent-Type: application/octet-stream\r\n\r\n${'a'.repeat(
+      1000
+    )}`
+  );
+  await new Promise((resolve) => {
+    setTimeout(resolve, after);
+  });
+  req.destroy();
+}
+
+test('an upload the client abandons is settled', async (t) => {
+  // (while it is read, and before it is read)
+  for (const [delay, after] of [
+    [0, 200],
+    [400, 100]
+  ]) {
+    const state = await listenUpload(t, delay);
+    await abandonUpload(state.port, after);
+    await new Promise((resolve) => {
+      setTimeout(resolve, delay + 500);
+    });
+    t.is(state.settled, 1, `after ${delay} ms`);
+  }
+});

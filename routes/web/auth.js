@@ -4,6 +4,7 @@
  */
 
 const crypto = require('node:crypto');
+const process = require('node:process');
 const querystring = require('node:querystring');
 const { promisify } = require('node:util');
 
@@ -25,6 +26,7 @@ const logger = require('#helpers/logger');
 const parseLoginSuccessRedirect = require('#helpers/parse-login-success-redirect');
 const rateLimit = require('#helpers/rate-limit');
 const syncUbuntuUser = require('#helpers/sync-ubuntu-user');
+const { UBUNTU_CLAIMED_ID } = require('#helpers/passport-verified-email');
 const web = require('#controllers/web');
 const { Domains, Users } = require('#models');
 
@@ -33,6 +35,90 @@ const store = new SessionChallengeStore();
 const storeChallenge = promisify(store.challenge).bind(store);
 
 const router = new Router({ prefix: '/auth' });
+
+//
+// Ubuntu SSO only ever talks to Ubuntu One.
+//
+// passport-openid takes the OpenID provider from the request: an
+// `openid_identifier` starts discovery at any URL, and an assertion names
+// its own `claimed_id` and `op_endpoint`, which the server then fetches and
+// asks to confirm the assertion (with `request`, outside every SSRF check).
+// So anyone could make the server fetch any URL, and run a provider of
+// their own that asserts any email address and signs in to that account.
+//
+// Initiation therefore never takes an identifier (it always starts at
+// login.ubuntu.com), and a callback must name Ubuntu One as its provider,
+// with an Ubuntu One identity, before passport sees it.
+//
+const UBUNTU_NS = 'http://specs.openid.net/auth/2.0';
+const UBUNTU_OP_ENDPOINT = 'https://login.ubuntu.com/+openid';
+// (a field name no request can have, so passport-openid never reads one)
+const NO_IDENTIFIER_FIELD = Symbol('no OpenID identifier');
+
+function pinUbuntuProvider(ctx, next) {
+  if (
+    isSANB(ctx.params.provider) &&
+    ctx.params.provider.toLowerCase() !== 'ubuntu'
+  )
+    return next();
+
+  const invalid = () => Boom.badRequest(ctx.translateError('INVALID_PROVIDER'));
+
+  // (passport-ubuntu adds a POST body to the URL, so the URL of a POST must
+  //  not carry parameters of its own)
+  if (ctx.method === 'POST' && ctx.querystring) throw invalid();
+
+  // (passport-openid reads an identifier from the body first, whatever the
+  //  method, then from the query; and from now on reads none at all)
+  const body =
+    ctx.request.body && typeof ctx.request.body === 'object'
+      ? ctx.request.body
+      : {};
+  const query = ctx.query || {};
+  if (Object.hasOwn(body, 'openid_identifier')) throw invalid();
+  if (Object.hasOwn(query, 'openid_identifier')) throw invalid();
+  const strategy = ctx.passport?._strategy?.('ubuntu');
+  if (strategy) strategy._identifierField = NO_IDENTIFIER_FIELD;
+
+  const isCallback = ctx.path.endsWith('/ok');
+  if (!isCallback) {
+    // (nothing from the request is used to start signing in)
+    if (
+      [...Object.keys(body), ...Object.keys(query)].some((key) =>
+        key.startsWith('openid')
+      )
+    )
+      throw invalid();
+    return next();
+  }
+
+  const params = ctx.method === 'POST' ? body : query;
+  const keys = Object.keys(params);
+
+  const mode = params['openid.mode'];
+  if (mode === undefined || mode === 'cancel') return next();
+
+  for (const key of keys) {
+    if (key.startsWith('openid') && typeof params[key] !== 'string')
+      throw invalid();
+  }
+
+  const claimedId = params['openid.claimed_id'];
+  const returnTo = params['openid.return_to'];
+  if (
+    params['openid.ns'] !== UBUNTU_NS ||
+    params['openid.op_endpoint'] !== UBUNTU_OP_ENDPOINT ||
+    typeof claimedId !== 'string' ||
+    !UBUNTU_CLAIMED_ID.test(claimedId) ||
+    params['openid.identity'] !== claimedId ||
+    typeof returnTo !== 'string' ||
+    (isSANB(process.env.UBUNTU_CALLBACK_URL) &&
+      !returnTo.startsWith(process.env.UBUNTU_CALLBACK_URL))
+  )
+    throw invalid();
+
+  return next();
+}
 
 function callbackCheck(ctx, next) {
   if (
@@ -218,6 +304,7 @@ router
   .get(
     '/:provider',
     web.auth.catchError,
+    pinUbuntuProvider,
     web.auth.parseReturnOrRedirectTo,
     (ctx, next) =>
       ctx.params.provider !== 'webauthn' &&
@@ -232,8 +319,14 @@ router
           )(ctx, next)
         : next()
   )
-  .get('/:provider/ok', web.auth.catchError, callbackCheck, callbackRedirect)
-  .post('/ubuntu', (ctx, next) =>
+  .get(
+    '/:provider/ok',
+    web.auth.catchError,
+    pinUbuntuProvider,
+    callbackCheck,
+    callbackRedirect
+  )
+  .post('/ubuntu', pinUbuntuProvider, (ctx, next) =>
     ctx.passport.authenticate('ubuntu')(ctx, next)
   )
   .post(
@@ -255,6 +348,7 @@ router
 
       return next();
     },
+    pinUbuntuProvider,
     callbackCheck,
     callbackRedirect
   )

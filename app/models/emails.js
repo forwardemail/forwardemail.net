@@ -52,6 +52,7 @@ const env = require('#config/env');
 const getBlockedHashes = require('#helpers/get-blocked-hashes');
 const getErrorCode = require('#helpers/get-error-code');
 const getHeaders = require('#helpers/get-headers');
+const getUnsafeAddressHeader = require('#helpers/get-unsafe-address-header');
 const getEmailMessageStream = require('#helpers/get-email-message-stream');
 const i18n = require('#helpers/i18n');
 const isCodeBug = require('#helpers/is-code-bug');
@@ -1510,6 +1511,14 @@ Emails.statics.queue = async function (
 
   const { headers } = messageSplitter;
 
+  // (before anything parses an address, see helpers/get-unsafe-address-header.js)
+  const unsafe = await getUnsafeAddressHeader([
+    messageSplitter.rawHeaders,
+    body
+  ]);
+  if (unsafe)
+    throw Boom.badRequest(`The "${unsafe.key}" header ${unsafe.reason}`);
+
   //
   // RFC 5322 permits exactly one From field, and the check below reads a
   // single one: with a second field (e.g. "FROM:", "From :", one on the
@@ -1941,7 +1950,13 @@ Emails.statics.queue = async function (
         ![config.supportEmail, config.abuseEmail].includes(to.toLowerCase())
     )
   ) {
-    if (!SpamScanner) SpamScanner = require('spamscanner');
+    if (!SpamScanner) {
+      SpamScanner = require('spamscanner');
+      // (see helpers/harden-file-type.js)
+      // eslint-disable-next-line import/no-unassigned-import
+      require('#helpers/harden-file-type');
+    }
+
     if (!scanner)
       scanner = new SpamScanner({
         logger,

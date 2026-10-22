@@ -232,6 +232,125 @@ test.serial(
   }
 );
 
+test('does not read a ZIP whose entry names would take long to list', async (t) => {
+  // (a deeply nested entry name, which adm-zip lists at a cost that grows
+  //  with the square of its length)
+  const content = zipOf(
+    `${'d/'.repeat(16_000)}report.xml`,
+    Buffer.from(report(1))
+  );
+  const started = Date.now();
+  const parsed = await parseDmarcReport({
+    content,
+    contentType: 'application/zip',
+    filename: 'report.zip'
+  });
+  const took = Date.now() - started;
+  t.is(parsed, null);
+  t.true(took < 500, `took ${took} ms`);
+});
+
+//
+// adm-zip reads the end of central directory record it finds searching back
+// from the end, but then reads an earlier one 20 bytes before it, or a ZIP64
+// record, if there is one: the archives below show a short entry name in
+// the record at the end, while adm-zip reads the long one.
+//
+function endOfCentralDirectory(buffer) {
+  return buffer.lastIndexOf(Buffer.from([0x50, 0x4b, 0x05, 0x06]));
+}
+
+function endRecord({ size, offset }) {
+  const record = Buffer.alloc(22);
+  record.writeUInt32LE(0x06_05_4b_50, 0);
+  record.writeUInt16LE(1, 8);
+  record.writeUInt16LE(1, 10);
+  record.writeUInt32LE(size, 12);
+  record.writeUInt32LE(offset, 16);
+  return record;
+}
+
+function disguisedZips() {
+  const long = zipOf(
+    `${'d/'.repeat(16_000)}report.xml`,
+    Buffer.from(report(1))
+  );
+  const short = zipOf('report.xml', Buffer.from(report(1)));
+  const shortEnd = endOfCentralDirectory(short);
+  const shortDirectory = short.subarray(
+    short.readUInt32LE(shortEnd + 16),
+    short.readUInt32LE(shortEnd + 16) + short.readUInt32LE(shortEnd + 12)
+  );
+  const longEnd = endOfCentralDirectory(long);
+  const head = long.subarray(0, longEnd);
+
+  // (the archive's own record 20 bytes before another one)
+  const earlier = Buffer.concat([
+    head,
+    shortDirectory,
+    long.subarray(longEnd, longEnd + 20),
+    endRecord({ size: shortDirectory.length, offset: head.length })
+  ]);
+
+  // (a ZIP64 record, with its locator signature just before the end record)
+  const zip64 = Buffer.alloc(56);
+  zip64.writeUInt32LE(0x06_06_4b_50, 0);
+  zip64.writeBigUInt64LE(44n, 4);
+  zip64.writeUInt16LE(45, 12);
+  zip64.writeUInt16LE(45, 14);
+  zip64.writeBigUInt64LE(1n, 24);
+  zip64.writeBigUInt64LE(1n, 32);
+  zip64.writeBigUInt64LE(BigInt(long.readUInt32LE(longEnd + 12)), 40);
+  zip64.writeBigUInt64LE(BigInt(long.readUInt32LE(longEnd + 16)), 48);
+  const locator = Buffer.from([0x50, 0x4b, 0x06, 0x07]);
+  const withZip64 = Buffer.concat([
+    head,
+    zip64,
+    shortDirectory,
+    locator,
+    endRecord({
+      size: shortDirectory.length + locator.length,
+      offset: head.length + zip64.length
+    })
+  ]);
+
+  return { earlier, withZip64 };
+}
+
+test('does not read a ZIP whose long entry names are behind another record', async (t) => {
+  for (const [label, content] of Object.entries(disguisedZips())) {
+    // (adm-zip itself would list the long name)
+    t.true(
+      new AdmZip(content)
+        .getEntries()
+        .some((entry) => entry.entryName.length > 255),
+      `${label}`
+    );
+    const started = Date.now();
+
+    const parsed = await parseDmarcReport({
+      content,
+      contentType: 'application/zip',
+      filename: 'report.zip'
+    });
+    const took = Date.now() - started;
+    t.is(parsed, null, `${label}`);
+    t.true(took < 500, `${label} took ${took} ms`);
+  }
+});
+
+test('does not read a ZIP with more entries than a DMARC report has', async (t) => {
+  const zip = new AdmZip();
+  for (let i = 0; i < 20; i++)
+    zip.addFile(`report-${i}.xml`, Buffer.from(report(1)));
+  const parsed = await parseDmarcReport({
+    content: zip.toBuffer(),
+    contentType: 'application/zip',
+    filename: 'report.zip'
+  });
+  t.is(parsed, null);
+});
+
 test('parses an ordinary DMARC report inside a ZIP attachment', async (t) => {
   for (const stored of [false, true]) {
     const content = zipOf('report.xml', Buffer.from(report(2)), { stored });

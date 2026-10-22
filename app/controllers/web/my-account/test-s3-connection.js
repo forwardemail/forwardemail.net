@@ -6,6 +6,7 @@
 const http = require('node:http');
 const https = require('node:https');
 const net = require('node:net');
+const process = require('node:process');
 
 const { S3Client, HeadBucketCommand } = require('@aws-sdk/client-s3');
 // Resolve NodeHttpHandler from the S3 client's dependency tree (not a direct dep)
@@ -21,6 +22,8 @@ const { isPrivateHostResolved } = require('#helpers/is-private-host');
 const config = require('#config');
 const { Domains } = require('#models');
 const checkS3BucketAccess = require('#helpers/check-s3-bucket-access');
+// eslint-disable-next-line import/no-unassigned-import
+require('#helpers/harden-aws-xml');
 const { decrypt } = require('#helpers/encrypt-decrypt');
 
 /**
@@ -161,12 +164,16 @@ async function testS3Connection(ctx) {
 
   // Create a custom request handler that pins DNS to the resolved IP.
   // Node 22+ calls lookup with {all:true} expecting [{address, family}] array.
+  // (it answers on the next tick, as `dns.lookup` does: on Node.js v18 an
+  //  error connecting to an address given synchronously, such as one of a
+  //  family the host has no route for, is thrown before `node:http` has an
+  //  'error' listener on the socket)
   const family = net.isIPv6(pinnedIP) ? 6 : 4;
   const pinnedLookup = (_hostname, options, cb) => {
     if (options.all) {
-      cb(null, [{ address: pinnedIP, family }]);
+      process.nextTick(cb, null, [{ address: pinnedIP, family }]);
     } else {
-      cb(null, pinnedIP, family);
+      process.nextTick(cb, null, pinnedIP, family);
     }
   };
 

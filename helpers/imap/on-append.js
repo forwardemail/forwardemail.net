@@ -36,6 +36,7 @@ const {
 const deriveLabelsFromFlags = require('#helpers/derive-labels-from-flags');
 const Mailboxes = require('#models/mailboxes');
 const getJunkMailbox = require('#helpers/get-junk-mailbox');
+const getUnsafeAddressHeader = require('#helpers/get-unsafe-address-header');
 const Messages = require('#models/messages');
 const Threads = require('#models/threads');
 const WKD = require('#helpers/wkd');
@@ -88,6 +89,12 @@ async function onAppend(path, flags, date, raw, session, fn) {
         throw new IMAPError(
           i18n.translate('IMAP_MESSAGE_SIZE_EXCEEDED', session.user.locale)
         );
+
+      // (before the message is parsed, see helpers/get-unsafe-address-header.js;
+      //  for every message added, an upload or one from the API)
+      const unsafe = raw ? await getUnsafeAddressHeader(raw) : undefined;
+      if (unsafe)
+        throw new IMAPError(`The "${unsafe.key}" header ${unsafe.reason}`);
 
       const [bool, response] = await this.wsp.request({
         action: 'append',

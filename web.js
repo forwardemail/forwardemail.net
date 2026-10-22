@@ -24,6 +24,8 @@ const Users = require('#models/users');
 const config = require('#config');
 const logger = require('#helpers/logger');
 const setupMongoose = require('#helpers/setup-mongoose');
+const useHttp1Server = require('#helpers/use-http1-server');
+const useProxyIpHeader = require('#helpers/use-proxy-ip-header');
 const webConfig = require('#config/web');
 
 const webSharedConfig = sharedConfig('WEB');
@@ -33,7 +35,9 @@ const redis = new Redis(
   webSharedConfig.redisMonitor
 );
 
-const web = new Web(webConfig(redis), Users);
+// (HTTPS over HTTP/1.1 only, see helpers/use-http1-server; and behind a
+//  proxy such as Cloudflare, see helpers/use-proxy-ip-header)
+const web = useProxyIpHeader(useHttp1Server(new Web(webConfig(redis), Users)));
 const graceful = new Graceful({
   mongooses: [mongoose],
   servers: [web.server],

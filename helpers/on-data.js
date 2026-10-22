@@ -15,6 +15,7 @@ const ServerShutdownError = require('#helpers/server-shutdown-error');
 const checkSRS = require('#helpers/check-srs');
 const config = require('#config');
 const env = require('#config/env');
+const getUnsafeAddressHeader = require('#helpers/get-unsafe-address-header');
 const isSilentBanned = require('#helpers/is-silent-banned');
 const onDataMX = require('#helpers/on-data-mx');
 const onDataSMTP = require('#helpers/on-data-smtp');
@@ -98,6 +99,18 @@ async function onData(stream, _session, fn) {
       throw new SMTPError('Headers unable to be parsed');
 
     const { headers } = messageSplitter;
+
+    // (before anything parses an address, see helpers/get-unsafe-address-header.js)
+    const unsafe = await getUnsafeAddressHeader([
+      messageSplitter.rawHeaders,
+      body
+    ]);
+    if (unsafe)
+      throw new SMTPError(`The "${unsafe.key}" header ${unsafe.reason}`, {
+        // (temporary on the MX server, as for every new rejection rule there,
+        //  so a rollback loses no mail)
+        responseCode: this.constructor.name === 'MX' ? 421 : 552
+      });
 
     // update session object with useful debug info for error logs
     // (also subsequently throws an error if "From" header was not valid per RFC 5322)

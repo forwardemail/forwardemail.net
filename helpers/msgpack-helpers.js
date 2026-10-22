@@ -100,9 +100,12 @@ function hasBrotliMagic(buf) {
  * Uses a magic header to indicate compression
  *
  * @param {Buffer} body - The attachment body
+ * @param {Object} [options]
+ * @param {boolean} [options.withoutSize] - The value is read back without the
+ *   length of the original body (every Buffer column but `Attachments.body`)
  * @returns {Buffer} - Compressed buffer with magic header, or original if compression doesn't help
  */
-function encodeAttachmentBody(body) {
+function encodeAttachmentBody(body, { withoutSize = false } = {}) {
   // Handle mongoose Binary objects (from toObject())
   // Binary has a .buffer property containing the actual Buffer
   if (
@@ -123,7 +126,16 @@ function encodeAttachmentBody(body) {
 
   // Only use compression if it actually saves space
   // (need to account for the 4-byte magic header)
-  if (compressed.length + ATTACHMENT_MAGIC.length < body.length) {
+  //
+  // A value read back without its size can only be told apart by the magic
+  // header, so a body that itself starts with "FEBR" (a message whose first
+  // bytes the sender or a Sieve `addheader` chose) is always stored
+  // compressed: stored as-is it would be handed to the Brotli decoder on read
+  //
+  if (
+    compressed.length + ATTACHMENT_MAGIC.length < body.length ||
+    (withoutSize && hasBrotliMagic(body))
+  ) {
     // Compression helped - use compressed format with magic header
     const result = Buffer.allocUnsafe(
       ATTACHMENT_MAGIC.length + compressed.length
@@ -142,9 +154,10 @@ function encodeAttachmentBody(body) {
  * Handles old hex format, old native BLOB, and new compressed format
  *
  * @param {Buffer|string} value - The stored value
+ * @param {number} [size] - The original body length (the attachment's `size`)
  * @returns {Buffer|null} - The decoded attachment body
  */
-function decodeAttachmentBody(value) {
+function decodeAttachmentBody(value, size) {
   // Handle null/undefined
   if (value === null || value === undefined) {
     return null;
@@ -157,6 +170,15 @@ function decodeAttachmentBody(value) {
 
   // Check for new compressed format with magic header
   if (Buffer.isBuffer(value) && hasBrotliMagic(value)) {
+    //
+    // A body is only stored compressed when that makes it shorter, so a value
+    // at least as long as the original body is the body itself, stored as-is
+    // because it did not compress: an attachment whose content starts with
+    // "FEBR" (which anyone can send) must be returned unchanged, and never be
+    // handed to the Brotli decoder
+    //
+    if (Number.isSafeInteger(size) && value.length >= size) return value;
+
     try {
       return zlib.brotliDecompressSync(
         value.subarray(ATTACHMENT_MAGIC.length),

@@ -3,6 +3,11 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
+// (first, so that it is in place before anything connects anywhere; see
+//  `helpers/harden-node`)
+// eslint-disable-next-line import/no-unassigned-import
+require('#helpers/harden-node');
+
 // NOTE: DO NOT CHANGE THIS
 // eslint-disable-next-line unicorn/prefer-node-protocol
 const path = require('path');

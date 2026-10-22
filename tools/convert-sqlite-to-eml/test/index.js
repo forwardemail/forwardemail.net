@@ -1,5 +1,5 @@
 import { Buffer } from 'node:buffer';
-import { randomUUID } from 'node:crypto';
+import { randomBytes, randomUUID } from 'node:crypto';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
@@ -14,6 +14,7 @@ import {
   decodeAttachmentBody,
   recursivelyParse,
   formatHeaders,
+  getAttachmentBody,
   parseArgs
 } from '../index.js';
 
@@ -84,6 +85,16 @@ test('decodeAttachmentBody returns raw buffer as-is', (t) => {
   t.is(result.toString(), 'raw attachment data');
 });
 
+test('decodeAttachmentBody decodes a body the server compressed (FEBR)', (t) => {
+  const body = Buffer.from('This is the attachment body content '.repeat(20));
+  const stored = Buffer.concat([
+    Buffer.from('FEBR'),
+    zlib.brotliCompressSync(body)
+  ]);
+  t.true(stored.length < body.length);
+  t.deepEqual(decodeAttachmentBody(stored, body.length), body);
+});
+
 test('decodeAttachmentBody decodes brotli-compressed with magic header', (t) => {
   const body = Buffer.from('This is the attachment body content');
   const compressed = zlib.brotliCompressSync(body);
@@ -92,6 +103,40 @@ test('decodeAttachmentBody decodes brotli-compressed with magic header', (t) => 
   const result = decodeAttachmentBody(stored);
   t.true(Buffer.isBuffer(result));
   t.is(result.toString(), 'This is the attachment body content');
+});
+
+//
+// An attachment's content is whatever the sender put in it. One that starts
+// with the marker of a compressed body and does not compress further is
+// stored as-is (its stored length is then its size), and must come back as
+// sent, never read as a compressed body.
+//
+function markedBody(marker = Buffer.from('FEBR')) {
+  return Buffer.concat([marker, zlib.brotliCompressSync(randomBytes(4096))]);
+}
+
+test('decodeAttachmentBody returns a body stored as-is that starts with the marker', (t) => {
+  for (const marker of [
+    Buffer.from('FEBR'),
+    Buffer.from([0x00, 0x42, 0x52, 0x00])
+  ]) {
+    const body = markedBody(marker);
+    t.deepEqual(decodeAttachmentBody(body, body.length), body);
+  }
+});
+
+test('getAttachmentBody returns a body stored as-is that starts with the marker', (t) => {
+  const database = new Database(':memory:');
+  database.exec(
+    'CREATE TABLE Attachments (_id TEXT, hash TEXT, body BLOB, size INTEGER)'
+  );
+  const body = markedBody();
+  database
+    .prepare('INSERT INTO Attachments VALUES (?, ?, ?, ?)')
+    .run('att1', 'hash1', body, body.length);
+
+  t.deepEqual(getAttachmentBody(database, 'hash1'), body);
+  database.close();
 });
 
 test('decodeAttachmentBody decodes hex-encoded string', (t) => {

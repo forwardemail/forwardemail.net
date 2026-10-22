@@ -10,6 +10,12 @@
 // address and not verify it.  Accounts already linked to the provider
 // profile still sign in by its ID.
 //
+// Ubuntu One is an OpenID provider, and an assertion names its own provider
+// and identity: only an identity at Ubuntu One gives an address (the routes
+// refuse any other provider too, see routes/web/auth.js).
+//
+const UBUNTU_CLAIMED_ID = /^https:\/\/login\.ubuntu\.com\/\+id\/[A-Za-z\d]+$/;
+
 const isVerified = (value) => value === true || value === 'true';
 
 function useVerifiedProviderEmails(passport) {
@@ -17,6 +23,13 @@ function useVerifiedProviderEmails(passport) {
   const getEmailFromProfile = passport.getEmailFromProfile.bind(passport);
 
   passport.getEmailFromProfile = (provider, profile) => {
+    if (provider === 'ubuntu')
+      return profile &&
+        typeof profile.claimedIdentifier === 'string' &&
+        UBUNTU_CLAIMED_ID.test(profile.claimedIdentifier)
+        ? getEmailFromProfile(provider, profile)
+        : undefined;
+
     if (
       (provider !== 'google' && provider !== 'github') ||
       !profile ||
@@ -43,3 +56,4 @@ function useVerifiedProviderEmails(passport) {
 }
 
 module.exports = useVerifiedProviderEmails;
+module.exports.UBUNTU_CLAIMED_ID = UBUNTU_CLAIMED_ID;

@@ -18,6 +18,7 @@
     "#models/logs": false,
     "#config/mongoose": false,
     "#config/env": false,
+    "#helpers/harden-node": false,
     "./helpers/lodash": false,
     "./helpers/is-code-bug": false,
     "./helpers/is-tls-error": false,

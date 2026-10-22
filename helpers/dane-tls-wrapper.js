@@ -193,7 +193,12 @@ function verifyTrustAnchorChain(socket, chain, tlsaRecords, hostname) {
     Date.parse(leaf.validFrom) > now ||
     Date.parse(leaf.validTo) < now ||
     typeof hostname !== 'string' ||
-    !leaf.checkHost(hostname)
+    // (the name check runs in JavaScript rather than through
+    //  `X509Certificate#checkHost`: OpenSSL 3.0.13 in Node.js v18 can read
+    //  an invalid address while matching a name against an otherName
+    //  subject alternative name (CVE-2024-6119), and this certificate comes
+    //  from the remote mail server)
+    tls.checkServerIdentity(hostname, leaf.toLegacyObject()) !== undefined
   )
     return false;
 

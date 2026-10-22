@@ -11,6 +11,10 @@ const undici = require('undici');
 
 const env = require('#config/env');
 const logger = require('#helpers/logger');
+const {
+  ACCEPT_ENCODING,
+  getDispatcher
+} = require('#helpers/refuse-unsafe-encoding');
 
 // Redis cache key for X posts
 const CACHE_KEY = 'event_feed:x_posts';
@@ -174,8 +178,11 @@ async function getXPosts(options = {}) {
       method: 'GET',
       headers: {
         Authorization: `Bearer ${env.X_API_BEARER_TOKEN}`,
+        'Accept-Encoding': ACCEPT_ENCODING,
         'Content-Type': 'application/json'
-      }
+      },
+      // (never decodes Brotli, see helpers/refuse-unsafe-encoding.js)
+      dispatcher: getDispatcher()
     });
 
     if (!response.ok) {

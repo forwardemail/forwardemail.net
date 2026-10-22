@@ -1,5 +1,6 @@
 const { Buffer } = require('node:buffer');
 const crypto = require('node:crypto');
+const zlib = require('node:zlib');
 
 const Database = require('better-sqlite3-multiple-ciphers');
 const getStream = require('get-stream');
@@ -194,6 +195,76 @@ test('retrieves attachment bodies and honors IMAP byte ranges', async (t) => {
     storage.get({}, 'sha256:missing', instance, session)
   );
   t.is(missing.code, 'FileNotFound');
+});
+
+//
+// An attachment's content is whatever the sender put in it. One that starts
+// with the "FEBR" marker of a compressed body and does not compress further
+// is stored as-is, and must come back as sent: never read as a compressed
+// body (and so never handed to the Brotli decoder).
+//
+function markedBody() {
+  return Buffer.concat([
+    Buffer.from('FEBR'),
+    zlib.brotliCompressSync(crypto.randomBytes(4096))
+  ]);
+}
+
+test('returns an attachment that starts with the compression marker as sent', async (t) => {
+  const body = markedBody();
+  const { db, instance, session, storage } = t.context;
+  const created = await storage.create(
+    instance,
+    session,
+    createNode('ATT00001', body)
+  );
+
+  // (stored as-is, since it did not compress)
+  const row = db
+    .prepare('SELECT body, size FROM Attachments WHERE hash = ?')
+    .get(created.hash);
+  t.deepEqual(Buffer.from(row.body), body);
+  t.is(row.size, body.length);
+
+  const attachment = await storage.get({}, created.hash, instance, session);
+  t.deepEqual(Buffer.from(attachment.body), body);
+  t.is(attachment.length, body.length);
+});
+
+test('returns an attachment that starts with the compression marker as sent through the worker transport', async (t) => {
+  const body = markedBody();
+  const { db, session, storage } = t.context;
+  const instance = createWspInstance(db);
+  session.db = Object.create(db, {
+    readonly: { value: true }
+  });
+
+  const created = await storage.create(
+    instance,
+    session,
+    createNode('ATT00001', body)
+  );
+  const attachment = await storage.get({}, created.hash, instance, session);
+  t.deepEqual(Buffer.from(attachment.body), body);
+});
+
+test('still decompresses an attachment stored compressed', async (t) => {
+  const body = Buffer.from('compressible attachment body '.repeat(200));
+  const { db, instance, session, storage } = t.context;
+  const created = await storage.create(
+    instance,
+    session,
+    createNode('ATT00001', body)
+  );
+
+  const row = db
+    .prepare('SELECT body FROM Attachments WHERE hash = ?')
+    .get(created.hash);
+  t.is(Buffer.from(row.body).subarray(0, 4).toString(), 'FEBR');
+  t.true(row.body.length < body.length);
+
+  const attachment = await storage.get({}, created.hash, instance, session);
+  t.deepEqual(Buffer.from(attachment.body), body);
 });
 
 test('releases every duplicate attachment reference from a message', async (t) => {

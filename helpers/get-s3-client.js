@@ -8,6 +8,8 @@ const { S3Client } = require('@aws-sdk/client-s3');
 const env = require('#config/env');
 const { decrypt } = require('#helpers/encrypt-decrypt');
 const getSafeS3RequestHandler = require('#helpers/get-safe-s3-request-handler');
+// eslint-disable-next-line import/no-unassigned-import
+require('#helpers/harden-aws-xml');
 
 //
 // Default S3 client using environment variables

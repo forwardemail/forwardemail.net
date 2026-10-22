@@ -38,6 +38,7 @@ const config = require('#config');
 const createWebSocketAsPromised = require('#helpers/create-websocket-as-promised');
 const logger = require('#helpers/logger');
 const { MAX_DKIM_SIGNATURES } = require('#helpers/is-authenticated-message');
+const { MAX_SEPARATORS } = require('#helpers/get-unsafe-address-header');
 
 let getPort;
 import('get-port').then((obj) => {
@@ -354,4 +355,107 @@ test('concurrent connections are counted per /64 for IPv6 clients', async (t) =>
   const again = await greet(port);
   sockets.push(again.socket);
   t.regex(again.greeting, /^220 /);
+});
+
+// a header folded the way RFC 5322 asks (lines well under 998 characters)
+function fold(name, items, separator = ',') {
+  const lines = [];
+  let line = `${name}: ${items[0]}`;
+  for (const item of items.slice(1)) {
+    if (line.length > 900) {
+      lines.push(line + separator);
+      line = ` ${item}`;
+    } else {
+      line += `${separator}${item}`;
+    }
+  }
+
+  lines.push(line);
+  return lines.join('\r\n');
+}
+
+//
+// The address parsers take time quadratic in the length of an address list
+// (see helpers/get-unsafe-address-header.js), so such a message is refused
+// before any of them reads it.
+//
+test('refuses a message with an address list longer than any real one', async (t) => {
+  const { domain, received, send } = await setupForwarding(t);
+  const from = fold('From', [
+    'sender@acme-mail.net',
+    ...Array.from({ length: MAX_SEPARATORS + 1 }, () => 'x')
+  ]);
+  const raw = message(domain).replace('From: sender@acme-mail.net', () => from);
+
+  const started = Date.now();
+  const err = await t.throwsAsync(send(raw));
+  t.is(err.responseCode, 421);
+  t.regex(err.message, /"From" header has too many addresses/);
+  t.true(Date.now() - started < ms('5s'));
+  t.is(received.length, 0);
+});
+
+test('refuses an address header with a word longer than a line', async (t) => {
+  const { domain, received, send } = await setupForwarding(t);
+  const err = await t.throwsAsync(
+    send(
+      message(domain, {
+        headers: [`Cc: friend@acme-mail.net, ${'a.'.repeat(600)}`]
+      })
+    )
+  );
+  t.is(err.responseCode, 421);
+  t.regex(err.message, /"Cc" header has a word that is too long/);
+  t.is(received.length, 0);
+});
+
+//
+// The address parsers also read the headers of a message embedded as
+// message/rfc822, so an oversized header hidden in one is refused too.
+//
+test('refuses an oversized address header inside an embedded message', async (t) => {
+  const { domain, received, send } = await setupForwarding(t);
+  const items = Array.from({ length: MAX_SEPARATORS + 1 }, () => 'x');
+  const inner = [
+    fold('To', ['a@acme-mail.net', ...items]),
+    'Subject: forwarded',
+    '',
+    'the original message'
+  ].join('\r\n');
+  const raw = [
+    'From: sender@acme-mail.net',
+    `To: test@${domain.name}`,
+    'Subject: fwd',
+    'Content-Type: multipart/mixed; boundary=outer',
+    '',
+    '--outer',
+    'Content-Type: message/rfc822',
+    '',
+    inner,
+    '',
+    '--outer--',
+    ''
+  ].join('\r\n');
+
+  const started = Date.now();
+  const err = await t.throwsAsync(send(raw));
+  t.is(err.responseCode, 421);
+  t.regex(err.message, /"To" header has too many addresses/);
+  t.true(Date.now() - started < ms('10s'));
+  t.is(received.length, 0);
+});
+
+test('accepts a message with a long list of recipients', async (t) => {
+  const { domain, received, send } = await setupForwarding(t);
+  const cc = fold(
+    'Cc',
+    Array.from(
+      { length: 300 },
+      (_, i) => `"Recipient, ${i}" <recipient-${i}@acme-mail.net>`
+    ),
+    ', '
+  );
+  await send(message(domain, { headers: [cc] }));
+  await pWaitFor(() => received.length === 1, { timeout: ms('10s') });
+  t.pass();
 });

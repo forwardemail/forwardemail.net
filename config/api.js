@@ -17,6 +17,9 @@ const sanitizeQueryLimit = require('#helpers/sanitize-query-limit');
 const validateHostHeader = require('#helpers/validate-host-header');
 
 const createTangerine = require('#helpers/create-tangerine');
+const {
+  refuseUnsafeRequestEncoding
+} = require('#helpers/refuse-unsafe-encoding');
 const i18n = require('#helpers/i18n');
 const logger = require('#helpers/logger');
 const analyticsMiddleware = require('#helpers/analytics-middleware');
@@ -56,6 +59,9 @@ module.exports = {
   logger: cabin,
   i18n,
   hookBeforeSetup(app) {
+    // (before the body parser, which would Brotli-decode the body: see
+    //  helpers/refuse-unsafe-encoding.js)
+    app.use(refuseUnsafeRequestEncoding);
     // before anything reads ctx.hostname / ctx.origin
     app.use(validateHostHeader());
     // `?limit=0` must not mean "no limit" (see helpers/sanitize-query-limit.js)

@@ -865,3 +865,40 @@ test.serial(
     t.deepEqual(addresses, [`${'a'.repeat(128)}@testdomain.com`]);
   }
 );
+
+//
+// re2 aborts the process on a replacement result too large for a string
+// (GHSA-8hcv-x26h-mcgp), and a TXT record can ask for a result that grows
+// with the square of the username, which the sender chooses: such a
+// replacement is refused before it runs.
+//
+test('a regular expression replacement that could grow too large is not run', async (t) => {
+  const RE2 = require('re2');
+  const replace = RE2.prototype[Symbol.replace];
+  let replaced = 0;
+  RE2.prototype[Symbol.replace] = function (...args) {
+    replaced++;
+    return Reflect.apply(replace, this, args);
+  };
+
+  t.teardown(() => {
+    RE2.prototype[Symbol.replace] = replace;
+  });
+
+  const ctx = makeContext({
+    // (a regular expression without a known ending stays global, and the
+    //  whole element is the template)
+    [ROOT]: [[`forward-email=/(.)/g${"$'".repeat(40)}`]]
+  });
+  const err = await t.throwsAsync(run(ctx, `${'a'.repeat(200)}@${ROOT}`));
+  t.regex(err.message, /oversized regular expression/);
+  t.is(replaced, 0);
+
+  // (and an ordinary replacement still runs)
+  const ordinary = makeContext({
+    [ROOT]: [['forward-email=/^(support|info)$/:user+$1@example.com']]
+  });
+  const { addresses } = await run(ordinary, `support@${ROOT}`);
+  t.deepEqual(addresses, ['user+support@example.com']);
+  t.is(replaced, 1);
+});

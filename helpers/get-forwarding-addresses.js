@@ -48,6 +48,24 @@ function parseFilter(address) {
 const REGEX_INTERPOLATED_DOLLAR = new RE2(/(\$)([1-9]\d*|[$&`'])/);
 
 //
+// re2 1.22.1 aborts the process when the result of `replace` is too large
+// for a string (GHSA-8hcv-x26h-mcgp), and with a global regular expression
+// whose template has many `$` tokens (`$&`, `` $` ``, `$'` and `$<name>` each insert up to
+// the whole username, at every match) the result grows with the square of
+// the username: a domain's TXT record chooses both, and any sender chooses
+// the username.  So a replacement that could produce more than this is
+// refused before it runs (no address it makes can be over 254 octets anyway).
+//
+const MAX_REGEX_REPLACEMENT_LENGTH = 1024 * 1024;
+const REGEX_REPLACEMENT_TOKENS = /\$(?:[1-9]\d*|<[^>]*>|[$&`'])/g;
+
+function getMaxReplacementLength(regex, target, input) {
+  const tokens = target.match(REGEX_REPLACEMENT_TOKENS)?.length || 0;
+  const matches = regex.global ? input.length + 1 : 1;
+  return matches * (target.length + tokens * input.length) + input.length;
+}
+
+//
 // Domains whose DNS is re-checked before their mail is refused as "does not
 // exist". The Ubuntu team domains have intermittently been answered without
 // their site verification TXT record or MX (their nameservers are not
@@ -1009,6 +1027,15 @@ async function getForwardingAddresses(
             .join(domain);
 
         const hasDollarInterpolation = REGEX_INTERPOLATED_DOLLAR.test(target);
+
+        if (
+          hasDollarInterpolation &&
+          getMaxReplacementLength(regex, target, username.toLowerCase()) >
+            MAX_REGEX_REPLACEMENT_LENGTH
+        )
+          throw new SMTPError(
+            `Domain of ${domain} has an invalid "${config.recordPrefix}" TXT record due to an oversized regular expression email address match`
+          );
 
         const substitutedAlias = hasDollarInterpolation
           ? username.toLowerCase().replace(regex, target)

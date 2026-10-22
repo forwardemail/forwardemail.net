@@ -34,8 +34,22 @@ import { appendContactsAndCalendarsToArchive } from './resources.js';
 // Register the encrypted zip format
 archiver.registerFormat('zip-encrypted', archiverZipEncrypted);
 
-// Magic bytes for brotli-compressed attachment bodies
-const ATTACHMENT_MAGIC = Buffer.from([0x00, 0x42, 0x52, 0x00]);
+// Magic bytes for brotli-compressed attachment bodies: "FEBR" is what the
+// server writes (see helpers/msgpack-helpers.js), and the other one is still
+// read as before
+const ATTACHMENT_MAGICS = [
+  Buffer.from('FEBR'),
+  Buffer.from([0x00, 0x42, 0x52, 0x00])
+];
+const ATTACHMENT_MAGIC_LENGTH = 4;
+
+function hasAttachmentMagic(value) {
+  return ATTACHMENT_MAGICS.some(
+    (magic) =>
+      value.length >= magic.length &&
+      value.subarray(0, magic.length).equals(magic)
+  );
+}
 
 /**
  * Parse command-line arguments into a key-value object.
@@ -220,8 +234,14 @@ function decodeMetadata(value) {
 /**
  * Decode an attachment body from storage.
  * Handles old hex format, raw buffer, and new brotli-compressed format.
+ *
+ * `size` is the original body length (the row's `size`): a body is only
+ * stored compressed when that makes it shorter, so a value at least as long
+ * is the body itself, stored as-is, even when it starts with the marker
+ * (which any sender can put at the start of an attachment); it must not be
+ * handed to the Brotli decoder.
  */
-function decodeAttachmentBody(value) {
+function decodeAttachmentBody(value, size) {
   if (value === null || value === undefined) return null;
 
   if (value instanceof Uint8Array && !Buffer.isBuffer(value)) {
@@ -229,16 +249,11 @@ function decodeAttachmentBody(value) {
   }
 
   // Check for brotli-compressed format with magic header
-  if (
-    Buffer.isBuffer(value) &&
-    value.length >= ATTACHMENT_MAGIC.length &&
-    value[0] === ATTACHMENT_MAGIC[0] &&
-    value[1] === ATTACHMENT_MAGIC[1] &&
-    value[2] === ATTACHMENT_MAGIC[2] &&
-    value[3] === ATTACHMENT_MAGIC[3]
-  ) {
+  if (Buffer.isBuffer(value) && hasAttachmentMagic(value)) {
+    if (Number.isSafeInteger(size) && value.length >= size) return value;
+
     try {
-      return zlib.brotliDecompressSync(value.subarray(ATTACHMENT_MAGIC.length));
+      return zlib.brotliDecompressSync(value.subarray(ATTACHMENT_MAGIC_LENGTH));
     } catch {
       return value;
     }
@@ -276,10 +291,11 @@ function formatHeaders(headers) {
  */
 function getAttachmentBody(database, hash) {
   const row = database
-    .prepare('SELECT body FROM Attachments WHERE hash = ?')
+    // (`*` rather than naming `size`, which an old database may not have)
+    .prepare('SELECT * FROM Attachments WHERE hash = ?')
     .get(hash);
   if (!row) return Buffer.alloc(0);
-  return decodeAttachmentBody(row.body);
+  return decodeAttachmentBody(row.body, row.size);
 }
 
 /**

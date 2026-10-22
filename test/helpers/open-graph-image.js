@@ -283,6 +283,32 @@ test('without a star count the image shows none', async (t) => {
   t.true(svg.includes('>forwardemail.net<'));
 });
 
+test('images in formats it never makes are not decoded', async (t) => {
+  const pixel = {
+    create: { width: 2, height: 2, channels: 3, background: '#f00' }
+  };
+  const [gif, tiff, heif] = await Promise.all([
+    sharp(pixel).gif().toBuffer(),
+    sharp(pixel).tiff().toBuffer(),
+    sharp(pixel).avif().toBuffer()
+  ]);
+  for (const image of [gif, tiff, heif]) {
+    await t.throwsAsync(sharp(image).png().toBuffer(), {
+      message: /unsupported image format/
+    });
+  }
+
+  // (and the formats it does make still are)
+  const png = await sharp(pixel).png().toBuffer();
+  const jpeg = await sharp(pixel).jpeg().toBuffer();
+  const [pngMetadata, jpegMetadata] = await Promise.all([
+    sharp(png).metadata(),
+    sharp(jpeg).metadata()
+  ]);
+  t.is(pngMetadata.format, 'png');
+  t.is(jpegMetadata.format, 'jpeg');
+});
+
 test('assets/img/social.png is the image the script renders now', async (t) => {
   // the image is generated and served on Linux; on macOS sharp rasterizes
   // the same text differently (thousands of pixels differ), so a fresh

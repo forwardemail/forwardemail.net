@@ -130,6 +130,50 @@ function toBadRequest(middleware) {
   };
 }
 
+//
+// multer 2.0.2 never settles when the client goes away in the middle of an
+// upload (fixed in 2.1.0), so the request, its context and what was read of
+// the upload stayed in memory for good: the middleware now ends with an
+// error when the request is aborted before its body was read.
+//
+function settleOnAbort(middleware) {
+  return function (ctx, next) {
+    // (multer only reads multipart bodies)
+    if (!ctx.is('multipart')) return middleware(ctx, next);
+    const { req } = ctx;
+    return new Promise((resolve, reject) => {
+      let settled = false;
+      const onClose = () => {
+        if (settled || req.readableEnded) return;
+        settled = true;
+        req.unpipe();
+        const err = Boom.badRequest('The request was aborted');
+        err.code = 'ECONNABORTED';
+        reject(err);
+      };
+
+      // (the client may have gone while earlier middleware ran)
+      if (req.destroyed && !req.readableEnded) {
+        onClose();
+        return;
+      }
+
+      req.once('close', onClose);
+      const settle = (fn) => (value) => {
+        req.removeListener('close', onClose);
+        if (settled) return;
+        settled = true;
+        fn(value);
+      };
+
+      Promise.resolve(middleware(ctx, next)).then(
+        settle(resolve),
+        settle(reject)
+      );
+    });
+  };
+}
+
 /**
  * Create a @koa/multer instance with finite limits.
  *
@@ -146,14 +190,16 @@ function createMultipart(options = {}, { rawErrors = false } = {}) {
     limits: { ...DEFAULT_LIMITS, ...options.limits }
   });
 
-  if (rawErrors) return upload;
+  const wrap = rawErrors
+    ? settleOnAbort
+    : (middleware) => toBadRequest(settleOnAbort(middleware));
 
   return {
-    none: () => toBadRequest(upload.none()),
-    fields: (fields) => toBadRequest(upload.fields(fields)),
-    single: (name) => toBadRequest(upload.single(name)),
-    array: (name, maxCount) => toBadRequest(upload.array(name, maxCount)),
-    any: () => toBadRequest(upload.any())
+    none: () => wrap(upload.none()),
+    fields: (fields) => wrap(upload.fields(fields)),
+    single: (name) => wrap(upload.single(name)),
+    array: (name, maxCount) => wrap(upload.array(name, maxCount)),
+    any: () => wrap(upload.any())
   };
 }
 

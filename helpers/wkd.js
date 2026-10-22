@@ -16,6 +16,7 @@ const ms = require('ms');
 const undici = require('undici');
 
 const { isPrivateHostResolved } = require('./is-private-host');
+const { refuseUnsafeResponseEncoding } = require('./refuse-unsafe-encoding');
 const TimeoutError = require('./timeout-error');
 const i18n = require('./i18n');
 const logger = require('./logger');
@@ -95,6 +96,11 @@ function WKD(resolver, client) {
           new TimeoutError(`${url} took longer than ${DURATION}`)
         );
     }, ms(DURATION));
+    //
+    // (the key comes from the recipient's own server, so a Brotli body from
+    // it must not be decoded, and fetch decodes one whatever was asked for:
+    // see helpers/refuse-unsafe-encoding.js)
+    //
     const dispatcher = new undici.Agent({
       headersTimeout: ms(DURATION),
       connectTimeout: ms(DURATION),
@@ -146,7 +152,7 @@ function WKD(resolver, client) {
               }
             }
           })
-    });
+    }).compose(refuseUnsafeResponseEncoding);
     try {
       //
       // Redirects are followed manually so that each target is validated

@@ -7,7 +7,10 @@ const http = require('node:http');
 const net = require('node:net');
 const test = require('ava');
 
-const { HeadBucketCommand } = require('@aws-sdk/client-s3');
+const {
+  HeadBucketCommand,
+  ListObjectsV2Command
+} = require('@aws-sdk/client-s3');
 
 const { encrypt } = require('#helpers/encrypt-decrypt');
 const {
@@ -355,4 +358,45 @@ test('an endpoint that accepts the connection and never answers times out', asyn
   server.close();
   t.true(Date.now() - started < 10_000);
   t.is(getS3ErrorMessage(err), 'Unable to connect to the S3 endpoint');
+});
+
+//
+// A custom endpoint answers with whatever XML its owner likes, and the AWS
+// SDK's own XML parser expands DOCTYPE entities without limit: a response
+// with a DTD is refused (S3 never sends one), and ordinary ones still parse.
+//
+function listing(body) {
+  return `<?xml version="1.0" encoding="UTF-8"?>${body}<ListBucketResult xmlns="http://s3.amazonaws.com/doc/2006-03-01/"><Name>mybucket</Name><KeyCount>1</KeyCount><MaxKeys>1000</MaxKeys><IsTruncated>false</IsTruncated><Contents><Key>${
+    body ? '&k;' : 'backup.sqlite'
+  }</Key><Size>1</Size></Contents></ListBucketResult>`;
+}
+
+test('a custom S3 response with a DTD is not parsed', async (t) => {
+  let body = '';
+  const server = await listen((req, res) => {
+    res.writeHead(200, { 'Content-Type': 'application/xml' });
+    res.end(listing(body));
+  });
+  const client = createCustomS3Client({
+    endpoint: `http://127.0.0.1:${server.address().port}`,
+    accessKeyId: 'AKID123',
+    secretAccessKey: 'secret123',
+    maxAttempts: 1
+  });
+  t.teardown(() => {
+    client.destroy();
+    server.close();
+  });
+
+  const ordinary = await client.send(
+    new ListObjectsV2Command({ Bucket: 'mybucket' })
+  );
+  t.is(ordinary.Contents[0].Key, 'backup.sqlite');
+
+  body = '<!DOCTYPE x [<!ENTITY k "expanded">]>';
+  const result = await client
+    .send(new ListObjectsV2Command({ Bucket: 'mybucket' }))
+    .catch((err) => err);
+  t.true(result instanceof Error);
+  t.not(result.Contents?.[0]?.Key, 'expanded');
 });

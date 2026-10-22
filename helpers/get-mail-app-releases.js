@@ -13,6 +13,10 @@ const undici = require('undici');
 
 const env = require('#config/env');
 const logger = require('#helpers/logger');
+const {
+  ACCEPT_ENCODING,
+  getDispatcher
+} = require('#helpers/refuse-unsafe-encoding');
 const singleFlightCache = require('#helpers/single-flight-cache');
 
 // Redis cache key for mail app releases
@@ -104,6 +108,7 @@ async function fetchLatestReleaseFromGitHub() {
 
     const headers = {
       Accept: 'application/vnd.github+json',
+      'Accept-Encoding': ACCEPT_ENCODING,
       'User-Agent': 'ForwardEmail/1.0',
       'X-GitHub-Api-Version': '2022-11-28'
     };
@@ -116,6 +121,8 @@ async function fetchLatestReleaseFromGitHub() {
     const response = await undici.fetch(url, {
       method: 'GET',
       headers,
+      // (never decodes Brotli, see helpers/refuse-unsafe-encoding.js)
+      dispatcher: getDispatcher(),
       // Bound the outbound call. This runs inline on a /download view whenever
       // the Redis cache is cold, so without this a slow or hung GitHub API would
       // stall that request (and the background poller) for undici's full default

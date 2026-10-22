@@ -11,6 +11,10 @@ const undici = require('undici');
 
 const env = require('#config/env');
 const logger = require('#helpers/logger');
+const {
+  ACCEPT_ENCODING,
+  getDispatcher
+} = require('#helpers/refuse-unsafe-encoding');
 
 // Redis cache key for GitHub releases
 const CACHE_KEY = 'event_feed:github_releases';
@@ -86,6 +90,7 @@ async function fetchReleasesFromRepo(repo, count) {
 
   const headers = {
     Accept: 'application/vnd.github+json',
+    'Accept-Encoding': ACCEPT_ENCODING,
     'User-Agent': 'ForwardEmail/1.0',
     'X-GitHub-Api-Version': '2022-11-28'
   };
@@ -97,7 +102,9 @@ async function fetchReleasesFromRepo(repo, count) {
 
   const response = await undici.fetch(url, {
     method: 'GET',
-    headers
+    headers,
+    // (never decodes Brotli, see helpers/refuse-unsafe-encoding.js)
+    dispatcher: getDispatcher()
   });
 
   if (!response.ok) {
