@@ -440,6 +440,7 @@ async function onDataSMTP(session, date, headers, body) {
         to: session?.envelope?.rcptTo,
         Emails,
         Users,
+        Domains,
         client: this.client,
         now
       });

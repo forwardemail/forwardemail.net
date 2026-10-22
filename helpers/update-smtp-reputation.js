@@ -24,7 +24,9 @@ const recordSmtpReputationReport = require('#helpers/record-smtp-reputation-repo
 const {
   isConsumerDomain,
   normalizeRecipientExpression,
-  senderRejectionExpression
+  senderRejectionExpression,
+  isExternalExpression,
+  getOwnRecipients
 } = require('#helpers/smtp-reputation-recipients');
 
 const {
@@ -47,7 +49,7 @@ const ONE_DAY = 24 * 60 * 60 * 1000;
 const PAID_PLANS = ['enhanced_protection', 'team'];
 
 //
-// only messages with a final delivery outcome are used for the bounce rate
+// only messages with a final delivery outcome are used for the rejection rate
 // (messages still queued or deferred have no outcome yet)
 //
 const FINAL_STATUSES = ['sent', 'partially_sent', 'bounced', 'rejected'];
@@ -105,106 +107,16 @@ function notEvaluatedSince(start) {
 }
 
 //
-// Every suffix of the domain of `address` (e.g. "a.b.example.com" gives
-// "a.b.example.com", "b.example.com", "example.com" and "com")
+// The sender's own domains and addresses (see `getOwnRecipients`): every
+// verified domain the user is a member of and every domain they sent from in
+// the range
 //
-function domainSuffixes(address) {
-  return {
-    $let: {
-      vars: {
-        parts: {
-          $split: [{ $arrayElemAt: [{ $split: [address, '@'] }, -1] }, '.']
-        }
-      },
-      in: {
-        $map: {
-          input: { $range: [0, { $size: '$$parts' }] },
-          as: 'start',
-          in: {
-            $reduce: {
-              input: {
-                $slice: ['$$parts', '$$start', { $size: '$$parts' }]
-              },
-              initialValue: '',
-              in: {
-                $cond: [
-                  { $eq: ['$$value', ''] },
-                  '$$this',
-                  { $concat: ['$$value', '.', '$$this'] }
-                ]
-              }
-            }
-          }
-        }
-      }
-    }
-  };
-}
-
-//
-// Whether `variable` (an address) is a recipient outside the sender's own
-// domains (including their subdomains) and address
-// (`$literal` so values are never read as field paths or variables)
-//
-function isExternal(variable, own) {
-  const address = { $toLower: variable };
-  return {
-    $and: [
-      { $eq: [{ $type: variable }, 'string'] },
-      { $not: [{ $in: [address, { $literal: own.addresses }] }] },
-      {
-        $eq: [
-          {
-            $size: {
-              $setIntersection: [
-                domainSuffixes(address),
-                { $literal: own.roots }
-              ]
-            }
-          },
-          0
-        ]
-      }
-    ]
-  };
-}
-
-//
-// The sender's own domains and addresses (mail to these does not count
-// toward reputation, so sending to yourself earns nothing): every domain the
-// user is a member of and every domain they sent from in the range, by root
-// domain (so subdomains count as their own too)
-// (the verified domains messages were sent from, not their return
-// addresses, which can be any address, e.g. on gmail.com)
-//
-async function getOwnRecipients(user, range) {
+async function getOwn(user, range) {
   const sentFrom = await Emails.distinct('domain', {
     user: user._id,
     created_at: range
   });
-  const domains = await Domains.find({
-    // (a domain can be added to an account without verifying it, so only
-    // verified ones count, e.g. not gmail.com added to hide bounces from Gmail)
-    $or: [
-      {
-        'members.user': user._id,
-        $or: [{ has_txt_record: true }, { has_smtp: true }]
-      },
-      { _id: { $in: sentFrom } }
-    ]
-  })
-    .select('name')
-    .lean()
-    .exec();
-  const roots = new Set();
-  for (const name of domains.map((d) => d.name)) {
-    if (typeof name === 'string' && name) roots.add(parseRootDomain(name));
-  }
-
-  return {
-    addresses: typeof user.email === 'string' ? [user.email.toLowerCase()] : [],
-    roots: [...roots]
-  };
+  return getOwnRecipients({ Domains, user, domainIds: sentFrom });
 }
 
 //
@@ -214,10 +126,10 @@ async function getOwnRecipients(user, range) {
 //   (every message the sender sent, the same way the daily threshold is
 //   enforced; not bounce notifications or auto-replies we generate)
 // - `outcomes`: unique recipients outside the sender's own domains and how
-//   many of them were rejected for the sender's own doing, per day each
-//   message was due to be sent (so mail to yourself, extra recipients on a
-//   message, or repeating mail to one address cannot dilute a bounce rate,
-//   and scheduling mail for later cannot hide it)
+//   many of them rejected the mail as spam or a virus, per day each message
+//   was due to be sent (so mail to yourself, extra recipients on a message,
+//   or repeating mail to one address cannot dilute the rate, and scheduling
+//   mail for later cannot hide it)
 // - `recipients`: unique delivered recipients outside the sender's own
 //   domains (variants of one mailbox count once), per local day and recipient
 //   root domain, and how many of them were delivered to truth source mail
@@ -259,7 +171,7 @@ async function loadHistory(user, from, lastEnd) {
       recipients: new Map()
     };
 
-  const own = await getOwnRecipients(user, recipientsRange);
+  const own = await getOwn(user, recipientsRange);
   const day = {
     $dateToString: {
       format: '%Y-%m-%d',
@@ -328,7 +240,7 @@ async function loadHistory(user, from, lastEnd) {
                     $filter: {
                       input: { $ifNull: ['$accepted', []] },
                       as: 'r',
-                      cond: isExternal('$$r', own)
+                      cond: isExternalExpression('$$r', own)
                     }
                   },
                   as: 'r',
@@ -349,7 +261,7 @@ async function loadHistory(user, from, lastEnd) {
                         $and: [
                           { $eq: [{ $type: '$$e.recipient' }, 'string'] },
                           senderRejectionExpression('$$e'),
-                          isExternal('$$e.recipient', own)
+                          isExternalExpression('$$e.recipient', own, 'names')
                         ]
                       }
                     }
@@ -429,7 +341,7 @@ async function loadHistory(user, from, lastEnd) {
         }
       },
       { $unwind: '$delivered' },
-      { $match: { $expr: isExternal('$delivered.r', own) } },
+      { $match: { $expr: isExternalExpression('$delivered.r', own) } },
       {
         $project: {
           day: 1,
@@ -684,19 +596,22 @@ async function sendCeilingAlert(user, limit, peak) {
  *
  * - A day with spam/virus verdicts from truth sources about their own sending
  *   at the reset rate of the day's recipients (for different recipients, at
- *   least a few, one on a consumer domain), or a severe bounce/reject rate,
+ *   least a few, one on a consumer domain), or a severe spam/virus
+ *   rejection rate,
  *   resets the user to the first tier and pauses moving up for
  *   `config.smtpReputationHoldDays`.
  * - A bad day (truth source verdicts at the bad day rate of the day's
  *   recipients, or about members who borrowed their threshold at that rate of
- *   the members' recipients, or a bounce/reject rate at or above the
+ *   the members' recipients, or a spam/virus rejection rate at or above the
  *   threshold with enough external volume) steps the user down one tier.
  *   Automatic SMTP suspensions of aliases do not count on their own (they
- *   are absolute counts; the verdicts behind them do count).  Only rejections
- *   that are the sender's doing count (not e.g. our shared IP addresses on a
- *   blocklist), once per unique recipient (so repeating mail to one address
- *   cannot dilute a bounce rate), on the day each message was due to be sent.
- * - A clean day (enough qualifying recipients, low bounce/reject rate, no
+ *   are absolute counts; the verdicts behind them do count).  Only spam and
+ *   virus rejections count (not e.g. a recipient that does not exist, a full
+ *   mailbox, or our shared IP addresses on a blocklist), and never for mail
+ *   to the sender's own domains, once per unique recipient (so repeating mail
+ *   to one address cannot dilute the rate), on the day each message was due
+ *   to be sent.
+ * - A clean day (enough qualifying recipients, low spam/virus rejection rate, no
  *   slowdown for an unusual sending pattern) adds to the clean-day streak.
  * - The user moves up one tier once they have been paying without a break long
  *   enough, their clean streak is long enough, moving up is not paused, and
@@ -803,11 +718,11 @@ async function evaluateRange(user, fromDay, lastDay) {
       end,
       user[config.userFields.smtpReputationReviewedAt]
     );
-    // (a day where far more than the bad rate bounced or was rejected is as
+    // (a day where far more than the bad rate was rejected as spam or a virus is as
     // severe as spam reports, so a reputation cannot be spent on one blast)
     // (compared in whole recipients, so e.g. a rate of 15% is not missed to
     // floating point rounding)
-    // (and bounces do not count for a day that started before an admin
+    // (and rejections do not count for a day that started before an admin
     // reviewed the sender, e.g. a day that was not evaluated yet when they set
     // the sender's tier)
     const reviewedAt = user[config.userFields.smtpReputationReviewedAt];
@@ -841,7 +756,8 @@ async function evaluateRange(user, fromDay, lastDay) {
         end.getTime() + config.smtpReputationHoldDays * ONE_DAY
       );
       // (why: reports, after which a minimum an admin approved does not
-      // apply, or only a severe bounce rate, after which it still does)
+      // apply, or only a severe spam/virus rejection rate, after which it
+      // still does)
       const reason = resetVerdicts >= thresholds.reset ? 'reports' : 'bounces';
       const isHeld = holdUntil && holdUntil.getTime() > end.getTime();
       if (!isHeld || reason === 'reports') holdReason = reason;

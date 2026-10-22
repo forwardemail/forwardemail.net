@@ -369,8 +369,9 @@ async function getUser(user) {
 // `options` is the status, or `{ status, to, truthSource, isBounce, error, date }`
 // where `to` picks the recipient of message `i` instead (and `truthSource`
 // is `'false'` for delivery to other mail servers, the way it is stored).
-// Bounced and rejected messages are rejected with `error` (by default the
-// recipient does not exist), and `date` is when the message was scheduled.
+// Bounced and rejected messages are rejected with `error` (by default as
+// spam, since only spam and virus rejections count against a sender), and
+// `date` is when the message was scheduled.
 //
 let recipientSequence = 0;
 async function recordSent(sender, count, createdAt, options = 'sent') {
@@ -381,8 +382,8 @@ async function recordSent(sender, count, createdAt, options = 'sent') {
     isBounce = false,
     error = {
       responseCode: 550,
-      response: '550 5.1.1 User unknown',
-      bounceInfo: { category: 'recipient', action: 'reject' }
+      response: '550 5.7.1 Message rejected as spam',
+      bounceInfo: { category: 'spam', action: 'reject' }
     },
     date = createdAt
   } = typeof options === 'string' ? { status: options } : options;
@@ -1594,6 +1595,74 @@ test.serial(
   }
 );
 
+//
+// rejections that are not spam or virus verdicts (e.g. order updates to
+// customers whose addresses no longer exist)
+//
+const NOT_ABUSE_ERRORS = [
+  {
+    responseCode: 550,
+    response: '550 5.1.1 User unknown',
+    bounceInfo: { category: 'recipient', action: 'reject' }
+  },
+  {
+    responseCode: 552,
+    response: '552 5.2.2 Mailbox full',
+    bounceInfo: { category: 'capacity', action: 'reject' }
+  },
+  {
+    responseCode: 554,
+    response: '554 5.7.1 Message rejected due to local policy',
+    bounceInfo: { category: 'policy', action: 'reject' }
+  }
+];
+
+test.serial(
+  'only spam and virus rejections count against reputation',
+  async (t) => {
+    const bad = Math.ceil(
+      config.smtpReputationMinSample * config.smtpReputationMaxBadRate
+    );
+
+    // (even far above the severe rate)
+    for (const error of NOT_ABUSE_ERRORS) {
+      const sender = await createSender(t);
+      await setReputation(sender.user, 2, 2);
+      await recordSent(
+        sender,
+        config.smtpReputationMinSample - bad,
+        yesterday()
+      );
+      await recordSent(
+        sender,
+        bad * config.smtpReputationSevereBadRateMultiplier * 2,
+        yesterday(),
+        { status: 'bounced', error }
+      );
+      await updateSmtpReputation(yesterday());
+      const user = await getUser(sender.user);
+      t.is(user[config.userFields.smtpReputationTier], 2);
+      t.falsy(user[config.userFields.smtpReputationHoldUntil]);
+    }
+
+    // (virus rejections do, as spam rejections do)
+    const sender = await createSender(t);
+    await setReputation(sender.user, 2, 2);
+    await recordSent(sender, config.smtpReputationMinSample - bad, yesterday());
+    await recordSent(sender, bad, yesterday(), {
+      status: 'bounced',
+      error: {
+        responseCode: 554,
+        response: '554 5.7.1 Virus found',
+        bounceInfo: { category: 'virus', action: 'reject' }
+      }
+    });
+    await updateSmtpReputation(yesterday());
+    const user = await getUser(sender.user);
+    t.is(user[config.userFields.smtpReputationTier], 1);
+  }
+);
+
 test.serial(
   'mail to your own domains does not dilute a bounce rate',
   async (t) => {
@@ -1815,6 +1884,158 @@ test.serial('a high recent bounce rate slows sending down', async (t) => {
   await assertSlowedDown(t, bouncing);
 });
 
+test.serial('only spam and virus rejections slow sending down', async (t) => {
+  const recent = dayjs().subtract(30, 'minute').toDate();
+  const total = config.smtpVelocityBounceMinSample;
+  const bad = Math.ceil(total * config.smtpVelocityMaxBounceRate);
+
+  for (const error of NOT_ABUSE_ERRORS) {
+    const sender = await createSender(t);
+    await recordSent(sender, total - bad, recent);
+    await recordSent(sender, bad * 3, recent, { status: 'bounced', error });
+    await assertAccepted(t, sender);
+  }
+
+  // (virus rejections do, as spam rejections do)
+  const sender = await createSender(t);
+  await recordSent(sender, total - bad, recent);
+  await recordSent(sender, bad, recent, {
+    status: 'bounced',
+    error: {
+      responseCode: 554,
+      response: '554 5.7.1 Virus found',
+      bounceInfo: { category: 'virus', action: 'reject' }
+    }
+  });
+  await assertSlowedDown(t, sender);
+});
+
+test.serial('spam rejections cannot be hidden from the slowdown', async (t) => {
+  const recent = dayjs().subtract(30, 'minute').toDate();
+  const total = config.smtpVelocityBounceMinSample;
+  const bad = Math.ceil(total * config.smtpVelocityMaxBounceRate);
+  const spam = {
+    responseCode: 550,
+    response: '550 5.7.1 Message rejected as spam',
+    bounceInfo: { category: 'spam', action: 'reject' }
+  };
+
+  // among bounces for other reasons (e.g. to made up addresses)
+  {
+    const sender = await createSender(t);
+    await recordSent(sender, total - bad, recent);
+    await recordSent(sender, bad, recent, 'bounced');
+    await recordSent(sender, total - bad - 10, recent, {
+      status: 'bounced',
+      error: NOT_ABUSE_ERRORS[0]
+    });
+    await assertSlowedDown(t, sender);
+  }
+
+  // on messages also delivered to an address of the sender's own
+  {
+    const sender = await createSender(t);
+    await recordSent(sender, total - bad, recent);
+    const docs = [];
+    for (let i = 0; i < bad; i++) {
+      const _id = new mongoose.Types.ObjectId();
+      const seed = `seed${i}@${sender.domain.name}`;
+      const target = `target${i}@partial.example`;
+      docs.push({
+        _id,
+        id: _id.toString(),
+        user: sender.user._id,
+        domain: sender.domain._id,
+        alias: sender.alias._id,
+        status: 'partially_sent',
+        is_bounce: false,
+        is_locked: false,
+        envelope: {
+          from: `${sender.alias.name}@${sender.domain.name}`,
+          to: [seed, target]
+        },
+        accepted: [seed],
+        rejectedErrors: [{ ...spam, recipient: target, date: recent }],
+        date: recent,
+        created_at: recent,
+        updated_at: recent
+      });
+    }
+
+    await Emails.collection.insertMany(docs);
+    await assertSlowedDown(t, sender);
+  }
+
+  // by a domain on the account that is not verified, or by another domain
+  // under the same shared parent as one of the sender's own (e.g. a
+  // dynamic DNS name)
+  for (const verified of [false, true]) {
+    const sender = await createSender(t);
+    const other = await t.context.domainFactory
+      .withState({
+        members: [{ user: sender.user._id, group: 'admin' }],
+        plan: sender.user.plan,
+        resolver: sender.resolver
+      })
+      .create();
+    const name = `mine${verified ? 'verified' : ''}.eu.org`;
+    await Domains.collection.updateOne(
+      { _id: other._id },
+      { $set: { name, has_txt_record: verified, has_smtp: false } }
+    );
+    await recordSent(sender, total - bad, recent);
+    await recordSent(sender, bad, recent, {
+      status: 'bounced',
+      to: (i) =>
+        verified ? `someone${i}@theirs.eu.org` : `someone${i}@${name}`
+    });
+    await assertSlowedDown(t, sender);
+  }
+});
+
+test.serial(
+  'rejections by your own domains do not slow sending down',
+  async (t) => {
+    const recent = dayjs().subtract(30, 'minute').toDate();
+    const total = config.smtpVelocityBounceMinSample;
+    const bad = Math.ceil(total * config.smtpVelocityMaxBounceRate);
+
+    // (rejected by the domain sent from, and by another verified domain on
+    // the account, e.g. addresses there that were removed)
+    const sender = await createSender(t);
+    const other = await t.context.domainFactory
+      .withState({
+        members: [{ user: sender.user._id, group: 'admin' }],
+        plan: sender.user.plan,
+        resolver: sender.resolver
+      })
+      .create();
+    await Domains.collection.updateOne(
+      { _id: other._id },
+      { $set: { has_txt_record: true } }
+    );
+    await recordSent(sender, total - bad, recent);
+    await recordSent(sender, bad, recent, {
+      status: 'bounced',
+      to: (i) => `removed${i}@${sender.domain.name}`
+    });
+    await recordSent(sender, bad, recent, {
+      status: 'bounced',
+      to: (i) => `removed${i}@mail.${other.name}`
+    });
+    await assertAccepted(t, sender);
+
+    // (nor does mail to your own domains dilute rejections elsewhere)
+    const diluted = await createSender(t);
+    await recordSent(diluted, total - bad, recent);
+    await recordSent(diluted, bad, recent, 'bounced');
+    await recordSent(diluted, total - bad - 10, recent, {
+      to: (i) => `me${i}@${diluted.domain.name}`
+    });
+    await assertSlowedDown(t, diluted);
+  }
+);
+
 test.serial(
   'subdomains of one domain count as one recipient domain',
   async (t) => {
@@ -1920,7 +2141,8 @@ test.serial('bounce rates count recipients, not messages', async (t) => {
       rejectedErrors: rejected.map((recipient) => ({
         recipient,
         responseCode: 550,
-        message: '550 5.1.1 User unknown'
+        response: '550 5.7.1 Message rejected as spam',
+        bounceInfo: { category: 'spam', action: 'reject' }
       })),
       date: yesterday(),
       created_at: yesterday(),
@@ -3602,8 +3824,8 @@ test.serial(
           {
             recipient: `gone${i}@retried.example`,
             responseCode: 550,
-            response: '550 5.1.1 User unknown',
-            bounceInfo: { category: 'recipient', action: 'reject' }
+            response: '550 5.7.1 Message rejected as spam',
+            bounceInfo: { category: 'spam', action: 'reject' }
           },
           {
             recipient: `later${i}@retried.example`,
@@ -4526,8 +4748,8 @@ test.serial(
           {
             recipient: `gone${i}@retried.example`,
             responseCode: 550,
-            response: '550 5.1.1 User unknown',
-            bounceInfo: { category: 'recipient', action: 'reject' }
+            response: '550 5.7.1 Message rejected as spam',
+            bounceInfo: { category: 'spam', action: 'reject' }
           },
           {
             recipient: `later${i}@down.example`,

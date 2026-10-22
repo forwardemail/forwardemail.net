@@ -878,9 +878,12 @@ const config = {
       minRecipientDomains: 150
     }
   ],
-  // minimum external messages sent in a day before its bounce/reject rate counts
+  // minimum external messages sent in a day before its spam/virus rejection
+  // rate counts
   smtpReputationMinSample: 20,
-  // bounce + reject rate at or above which a day counts against reputation
+  // spam and virus rejection rate at or above which a day counts against
+  // reputation (other bounces, e.g. a recipient that does not exist, and mail
+  // to the sender's own domains do not count)
   smtpReputationMaxBadRate: 0.05,
   // busiest day in the lookback must reach this share of the threshold (in
   // qualifying recipients) to move up
@@ -932,8 +935,8 @@ const config = {
   smtpReputationTruthSourceStrikeRate: 0.003,
   smtpReputationTruthSourceStrikesMax: 50,
   smtpReputationHoldDays: 30,
-  // a day where at least this multiple of the bad rate bounced or was
-  // rejected (with enough external recipients) also resets the sender
+  // a day where at least this multiple of the bad rate was rejected as spam
+  // or a virus (with enough external recipients) also resets the sender
   smtpReputationSevereBadRateMultiplier: 3,
   //
   // Mailbox providers' own consumer domains: reports and recipients there are
@@ -1029,7 +1032,8 @@ const config = {
   // recipients (across all messages) a sender can reach in a day, as a
   // multiple of the day's allowance (a message can have many recipients)
   smtpVelocityRecipientsMultiplier: 2,
-  // hard bounce/reject rate over recent hours at which sending is slowed down
+  // spam and virus rejection rate over recent hours (by recipients outside
+  // the sender's own domains) at which sending is slowed down
   smtpVelocityBounceWindow: ms('6h'),
   smtpVelocityBounceMinSample: 50,
   smtpVelocityMaxBounceRate: 0.1,

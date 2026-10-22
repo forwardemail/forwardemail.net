@@ -13,7 +13,10 @@ const getUserSmtpLimit = require('#helpers/get-user-smtp-limit');
 const logger = require('#helpers/logger');
 const { getSmtpDayKey, getSmtpDayStart } = require('#helpers/get-smtp-day');
 const {
-  senderRejectionExpression
+  senderRejectionExpression,
+  isExternalExpression,
+  getOwnRecipients,
+  getOwnFromNames
 } = require('#helpers/smtp-reputation-recipients');
 
 const {
@@ -36,7 +39,6 @@ function noop() {}
 const CHECK_CACHE_TTL = 15 * 1000;
 
 const FINAL_STATUSES = ['sent', 'partially_sent', 'bounced', 'rejected'];
-const BAD_STATUSES = ['bounced', 'rejected'];
 
 //
 // Fields that must be selected on a user for the slowdown check
@@ -542,7 +544,9 @@ async function reserveMessage({
  *   and more than a multiple of their own busiest hour (so senders with a
  *   regular blast pattern are not slowed down), or than a admin-approved
  *   minimum
- * - "bounces": too many of their recent messages bounced or were rejected
+ * - "bounces": too many of their recent messages to recipients outside their
+ *   own domains were rejected as spam or a virus (other bounces, e.g. a
+ *   recipient that does not exist, do not count)
  * - "backlog": too many of their messages from the last day are still queued
  *   for delivery (scheduled messages, messages being retried after a
  *   recipient deferral, and messages awaiting approval are not counted)
@@ -571,12 +575,29 @@ async function reserveMessage({
  * @param {Date} [options.date] - When the message is scheduled to be sent
  * @param {Object} options.Emails - Emails model
  * @param {Object} options.Users - Users model
+ * @param {Object} [options.Domains] - Domains model (to find the sender's own
+ *   domains, see `getOwnRecipients`)
  * @param {Object} [options.client] - Redis client (reservations, alerts and
  *   check caching)
  * @param {Date} [options.now] - When the counts were read
  * @returns {Promise<Function>} Call if the message ends up not being queued
  *   (so it and its recipients do not count toward today's totals)
  */
+//
+// The sender's own domains and address for the bounce check: the domain sent
+// from and every verified domain they are a member of (without the Domains
+// model, only the domain sent from)
+//
+async function getVelocityOwnRecipients({ Domains, user, domain }) {
+  if (Domains)
+    return getOwnRecipients({
+      Domains,
+      user,
+      domainIds: domain && domain._id ? [domain._id] : []
+    });
+  return getOwnFromNames(user, [domain && domain.name]);
+}
+
 async function checkSmtpVelocity({
   user,
   domain,
@@ -592,6 +613,7 @@ async function checkSmtpVelocity({
   date,
   Emails,
   Users,
+  Domains,
   client,
   // (the same time the counts were read at, so a message checked across
   // midnight UTC does not carry one day's counts into the next day's keys)
@@ -897,53 +919,81 @@ async function checkSmtpVelocity({
           },
           { limit: backlogLimit }
         ),
-        Emails.aggregate([
-          {
-            $match: {
-              user: user._id,
-              created_at: {
-                $gte: new Date(now.getTime() - config.smtpVelocityBounceWindow)
-              },
-              status: { $in: FINAL_STATUSES },
-              is_bounce: { $ne: true }
-            }
-          },
-          {
-            $group: {
-              _id: null,
-              total: { $sum: 1 },
-              // (only rejections that are the sender's doing, not e.g. our
-              // shared IP addresses on a blocklist)
-              bad: {
-                $sum: {
-                  $cond: [
+        // (mail to the sender's own domains counts neither way)
+        getVelocityOwnRecipients({ Domains, user, domain }).then((own) =>
+          Emails.aggregate([
+            {
+              $match: {
+                user: user._id,
+                created_at: {
+                  $gte: new Date(
+                    now.getTime() - config.smtpVelocityBounceWindow
+                  )
+                },
+                status: { $in: FINAL_STATUSES },
+                is_bounce: { $ne: true }
+              }
+            },
+            {
+              $project: {
+                // (rejected as spam or a virus by a recipient outside the
+                // sender's own domains, whatever else the message's other
+                // recipients did, e.g. a seed address of the sender's own that
+                // accepted it)
+                bad: {
+                  $gt: [
                     {
-                      $and: [
-                        { $in: ['$status', BAD_STATUSES] },
-                        {
-                          $gt: [
-                            {
-                              $size: {
-                                $filter: {
-                                  input: { $ifNull: ['$rejectedErrors', []] },
-                                  as: 'e',
-                                  cond: senderRejectionExpression('$$e')
-                                }
-                              }
-                            },
-                            0
-                          ]
+                      $size: {
+                        $filter: {
+                          input: { $ifNull: ['$rejectedErrors', []] },
+                          as: 'e',
+                          cond: {
+                            $and: [
+                              senderRejectionExpression('$$e'),
+                              isExternalExpression(
+                                '$$e.recipient',
+                                own,
+                                'names'
+                              )
+                            ]
+                          }
                         }
-                      ]
+                      }
                     },
-                    1,
                     0
+                  ]
+                },
+                // (delivered to a recipient outside the sender's own domains)
+                delivered: {
+                  $anyElementTrue: [
+                    {
+                      $map: {
+                        input: {
+                          $cond: [{ $isArray: '$accepted' }, '$accepted', []]
+                        },
+                        as: 'r',
+                        in: isExternalExpression('$$r', own)
+                      }
+                    }
                   ]
                 }
               }
+            },
+            {
+              $group: {
+                _id: null,
+                // (only messages that were delivered or rejected as spam or a
+                // virus outside the sender's own domains count, so mail to
+                // yourself or bounces for other reasons, e.g. to addresses that
+                // do not exist, cannot dilute the rate)
+                total: {
+                  $sum: { $cond: [{ $or: ['$bad', '$delivered'] }, 1, 0] }
+                },
+                bad: { $sum: { $cond: ['$bad', 1, 0] } }
+              }
             }
-          }
-        ])
+          ])
+        )
       ]);
 
       const recentTotal = outcomes ? outcomes.total : 0;
@@ -960,7 +1010,7 @@ async function checkSmtpVelocity({
       ) {
         reason = 'bounces';
         details['Recent messages'] = recentTotal;
-        details['Bounced or rejected (last 6 hours)'] = recentBad;
+        details['Rejected as spam or virus (last 6 hours)'] = recentBad;
       } else if (backlog >= backlogLimit) {
         reason = 'backlog';
         details['Waiting in queue'] = backlog;

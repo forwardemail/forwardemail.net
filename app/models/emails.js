@@ -1372,6 +1372,7 @@ Emails.pre('save', async function (next) {
         to: this.envelope?.to,
         Emails: EmailModel,
         Users,
+        Domains,
         client: redis,
         now
       });
