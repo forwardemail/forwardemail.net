@@ -3223,9 +3223,13 @@ test.serial(
 
 //
 // a mail server at a truth source (MX `mx.truthsource.com`) for `gmail.com`
-// that rejects every recipient as spam
+// that rejects every recipient (as spam by default)
 //
-async function useSpamRejectingTruthSource(t, resolver) {
+async function useSpamRejectingTruthSource(
+  t,
+  resolver,
+  { responseCode = 550, message = '5.7.1 Message rejected as spam' } = {}
+) {
   if (!getPort) await pWaitFor(() => Boolean(getPort), { timeout: ms('30s') });
   const port = await getPort();
   const server = new SMTPServer({
@@ -3233,8 +3237,8 @@ async function useSpamRejectingTruthSource(t, resolver) {
     secure: false,
     logger: false,
     onRcptTo(address, session, fn) {
-      const err = new Error('5.7.1 Message rejected as spam');
-      err.responseCode = 550;
+      const err = new Error(message);
+      err.responseCode = responseCode;
       fn(err);
     }
   });
@@ -3374,6 +3378,35 @@ test.serial(
     await updateSmtpReputation(yesterday());
     user = await getUser(sender.user);
     t.is(user[config.userFields.smtpReputationTier], 3);
+  }
+);
+
+test.serial(
+  "Apple's [HM08] local policy rejections do not suspend a sender or record a report",
+  async (t) => {
+    // (an alias would be suspended after the first spam verdict here)
+    useConfig(t, 'smtpSpamSuspensionSpamThreshold', 1);
+    useConfig(t, 'smtpSpamSuspensionMinUniqueRecipients', 1);
+    const sender = await createSender(t);
+    await setReputation(sender.user, 3, 2);
+    const port = await useSpamRejectingTruthSource(t, sender.resolver, {
+      responseCode: 554,
+      message:
+        '5.7.1 [HM08] Message rejected due to local policy. Please visit https://support.apple.com/en-us/HT204137. Txn ID 00000000-0000-4000-8000-000000000000'
+    });
+    await queueAndProcess(t, sender, port, 'someone@gmail.com');
+
+    // the alias is not suspended and no report is recorded
+    const alias = await Aliases.findById(sender.alias._id).lean().exec();
+    t.not(alias.is_smtp_suspended, true);
+    const user = await getUser(sender.user);
+    t.deepEqual(user[config.userFields.smtpReputationReports] || [], []);
+
+    // (the message still bounces, from the truth source, as a policy rejection)
+    const email = await Emails.findOne({ user: sender.user._id }).lean().exec();
+    t.is(email.status, 'bounced');
+    t.is(email.rejectedErrors[0].truthSource, 'truthsource.com');
+    t.is(email.rejectedErrors[0].bounceInfo.category, 'policy');
   }
 );
 

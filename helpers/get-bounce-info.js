@@ -409,19 +409,25 @@ function getBounceInfo(err) {
   } else if (
     //
     // if it was apple (icloud.com, me.com, or mac.com)
-    // then note that this error [CS01] or [HM08] Message rejected due to local policy
-    // indicates that blocklist or spam was detected and so treat it appropriately
-    //
-    // NOTE: [HM08] without our IP address is spam (content-based), not blocklist
+    // then [CS01] Message rejected due to local policy is a spam verdict
+    // and [HM08] is a local policy block (a blocklist when it names our IP)
     //
     response.includes('[HM08] Message rejected due to local policy') &&
     response.includes(IP_ADDRESS)
   )
     bounceInfo.category = 'blocklist';
-  else if (
-    response.includes('[HM08] Message rejected due to local policy') ||
-    response.includes('[CS01] Message rejected due to local policy')
-  )
+  else if (response.includes('[HM08] Message rejected due to local policy')) {
+    //
+    // [HM08] without our IP address is Apple's generic local policy block
+    // (usually sending IP or domain reputation), not a verdict that the
+    // message itself is spam, so it is a policy rejection
+    // (it still bounces, but does not suspend the alias or record a spam
+    // report against the sender)
+    // <https://support.apple.com/en-us/HT204137>
+    //
+    bounceInfo.category = 'policy';
+    bounceInfo.action = 'reject';
+  } else if (response.includes('[CS01] Message rejected due to local policy'))
     bounceInfo.category = 'spam';
   //
   // if it was spectrum/charter/rr then if blocked then retry
