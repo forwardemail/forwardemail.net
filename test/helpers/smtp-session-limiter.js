@@ -22,6 +22,7 @@ const createTangerine = require('#helpers/create-tangerine');
 const logger = require('#helpers/logger');
 const sendEmail = require('#helpers/send-email');
 const {
+  backOffSmtpSessions,
   getSessionGroup,
   isSessionLimitError
 } = require('#helpers/smtp-session-limiter');
@@ -45,11 +46,19 @@ test.beforeEach(async (t) => {
   // (restored after each test)
   t.context.limits = config.smtpSessionLimits;
   t.context.wait = config.smtpSessionLimitWait;
+  t.context.rates = {
+    smtpSessionStartsPerMinute: config.smtpSessionStartsPerMinute,
+    smtpSessionLimitBackoffStartsPerMinute:
+      config.smtpSessionLimitBackoffStartsPerMinute,
+    smtpSessionLimitGlobalStartsPerMinute:
+      config.smtpSessionLimitGlobalStartsPerMinute
+  };
 });
 
 test.afterEach.always(async (t) => {
   config.smtpSessionLimits = t.context.limits;
   config.smtpSessionLimitWait = t.context.wait;
+  Object.assign(config, t.context.rates);
   t.context.client.disconnect();
   t.context.subscriber.disconnect();
   if (t.context.server)
@@ -130,6 +139,12 @@ async function spoofMx(t, records) {
     ])
   );
   return domain;
+}
+
+// (a test that counts new sessions per minute starts early in a minute)
+async function startOfMinute() {
+  const second = Date.now() % 60_000;
+  if (second > 40_000) await delay(60_000 - second + 100);
 }
 
 function send(t, domain, port) {
@@ -236,6 +251,8 @@ test.serial(
       { exchange: '127.0.0.1', priority: 10 }
     ]);
     config.smtpSessionLimits = new Map([[IP_ADDRESS, 10]]);
+    // (only the sessions open at once are limited here)
+    config.smtpSessionLimitBackoffStartsPerMinute = 100;
 
     const err = await t.throwsAsync(send(t, domain, port));
     t.is(stats.connections, 1, 'only one session was opened');
@@ -311,6 +328,188 @@ test.serial(
       stats.maxActive > config.smtpSessionLimitBackoffMax,
       `${stats.maxActive} sessions at once`
     );
+  }
+);
+
+test.serial(
+  'each IP opens only so many new sessions a minute to a provider',
+  async (t) => {
+    const { port, stats } = await createServer(t, { dataDelay: 0 });
+    const domain = await spoofMx(t, [{ exchange: IP_ADDRESS, priority: 5 }]);
+    config.smtpSessionLimits = new Map([[IP_ADDRESS, 10]]);
+    config.smtpSessionStartsPerMinute = 4;
+    await startOfMinute();
+
+    const results = [];
+    for (let i = 0; i < 6; i++) {
+      // (one at a time: only the rate limits them)
+
+      results.push(await send(t, domain, port).catch((err) => err));
+    }
+
+    t.is(results.filter((r) => r instanceof Error).length, 2);
+    for (const err of results.filter((r) => r instanceof Error)) {
+      t.true(err.isSessionLimit);
+      t.is(err.responseCode, 421);
+    }
+
+    // (the deferred ones never connected)
+    t.is(stats.connections, 4);
+  }
+);
+
+test.serial(
+  'a throttle of the sending domain slows down every server',
+  async (t) => {
+    let throttled = true;
+    const { port, stats } = await createServer(t, {
+      dataDelay: 0,
+      greeting() {
+        if (!throttled) return;
+        throttled = false;
+        const err = new Error(
+          '4.2.0 Throttled - https://postmaster.comcast.net/smtp-error-codes.php#RL000010'
+        );
+        err.responseCode = 451;
+        return err;
+      }
+    });
+    const domain = await spoofMx(t, [{ exchange: IP_ADDRESS, priority: 5 }]);
+    config.smtpSessionLimits = new Map([[IP_ADDRESS, 10]]);
+    config.smtpSessionLimitBackoffStartsPerMinute = 100;
+    config.smtpSessionLimitGlobalStartsPerMinute = 4;
+    await startOfMinute();
+
+    const err = await t.throwsAsync(send(t, domain, port));
+    t.true(err.isSessionLimit);
+    t.regex(err.message, /RL0{4}10/);
+
+    // every server backs off (not only this IP)
+    const { client } = t.context;
+    t.truthy(await client.get(`smtp_session_limit:global:${IP_ADDRESS}`));
+    t.is(
+      await client.get(`smtp_session_limit:${IP_ADDRESS}:${IP_ADDRESS}`),
+      null
+    );
+
+    // other servers already opened 3 of the 4 sessions all may open this minute
+    const minute = Math.floor(Date.now() / 60_000);
+    await client.set(
+      `smtp_session_starts:global:${IP_ADDRESS}:${minute}`,
+      3,
+      'PX',
+      120_000
+    );
+
+    const first = await send(t, domain, port);
+    t.deepEqual(first.accepted, [`user@${domain}`]);
+    const deferred = await t.throwsAsync(send(t, domain, port));
+    t.true(deferred.isSessionLimit);
+    t.is(deferred.responseCode, 421);
+
+    // (the throttled session and the one delivered; the deferred one never
+    // connected)
+    t.is(stats.connections, 2);
+  }
+);
+
+test.serial(
+  'a back-off still getting replies after the first half of it gets longer',
+  async (t) => {
+    const { client, resolver } = t.context;
+    const domain = await spoofMx(t, [{ exchange: IP_ADDRESS, priority: 5 }]);
+    config.smtpSessionLimits = new Map([[IP_ADDRESS, 10]]);
+    const key = `smtp_session_limit:${IP_ADDRESS}:${IP_ADDRESS}`;
+    const tooMany = {
+      responseCode: 421,
+      response:
+        '421 resimta-c2p-000000.sys.comcast.net Too many sessions opened'
+    };
+
+    await backOffSmtpSessions({
+      client,
+      resolver,
+      target: domain,
+      err: tooMany
+    });
+    const ttl = await client.pttl(key);
+    t.true(ttl > ms('4m') && ttl <= config.smtpSessionLimitBackoff);
+
+    // (replies early in it are about deliveries already under way)
+    await backOffSmtpSessions({
+      client,
+      resolver,
+      target: domain,
+      err: tooMany
+    });
+    const kept = await client.get(key);
+    t.true(kept.startsWith('0:'));
+
+    // a reply after the first half of it doubles it
+    await client.set(key, `0:${Date.now() - ms('3m')}`, 'PX', ms('2m'));
+    await backOffSmtpSessions({
+      client,
+      resolver,
+      target: domain,
+      err: tooMany
+    });
+    const doubled = await client.get(key);
+    t.true(doubled.startsWith('1:'));
+    t.true((await client.pttl(key)) > ms('9m'));
+
+    // up to the maximum
+    await client.set(key, `9:${Date.now() - ms('31m')}`, 'PX', ms('29m'));
+    await backOffSmtpSessions({
+      client,
+      resolver,
+      target: domain,
+      err: tooMany
+    });
+    t.true(
+      (await client.pttl(key)) <= config.smtpSessionLimitBackoffMaxDuration
+    );
+    t.true((await client.pttl(key)) > ms('59m'));
+
+    // (a throttle of the IP itself only slows down this IP)
+    await client.del(key);
+    await backOffSmtpSessions({
+      client,
+      resolver,
+      target: domain,
+      err: {
+        responseCode: 421,
+        response:
+          '421 4.2.0 192.0.2.1 Throttled - try again later. Please see https://postmaster.comcast.net/smtp-error-codes.php#RL000003'
+      }
+    });
+    t.truthy(await client.get(key));
+    t.is(await client.get(`smtp_session_limit:global:${IP_ADDRESS}`), null);
+
+    // (nor does a reply about unauthenticated mail, which is about one sender)
+    await client.del(key);
+    await backOffSmtpSessions({
+      client,
+      resolver,
+      target: domain,
+      err: {
+        responseCode: 451,
+        response:
+          '451 4.2.0 Throttled - https://postmaster.comcast.net/smtp-error-codes.php#RL000020'
+      }
+    });
+    t.truthy(await client.get(key));
+    t.is(await client.get(`smtp_session_limit:global:${IP_ADDRESS}`), null);
+
+    // (a back-off set before this change, with the value "true", gets longer)
+    await client.set(key, 'true', 'PX', ms('1m'));
+    await backOffSmtpSessions({
+      client,
+      resolver,
+      target: domain,
+      err: tooMany
+    });
+    const upgraded = await client.get(key);
+    t.true(upgraded.startsWith('1:'));
   }
 );
 

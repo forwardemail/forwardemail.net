@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
+const { randomUUID } = require('node:crypto');
 const process = require('node:process');
 const zlib = require('node:zlib');
 
@@ -20,6 +21,10 @@ const query = {
   created_at: { $gte: new Date(now.getTime() - 60_000), $lte: now }
 };
 
+//
+// (each log has its own `hash`, as one saved through the model does: the
+// model's unique index on it may be built before these are inserted)
+//
 test.before(async () => {
   // the query hints the created_at index
   await Logs.collection.createIndex({ created_at: 1 });
@@ -29,6 +34,7 @@ test.before(async () => {
     docs.push({
       _id,
       id: _id.toString(),
+      hash: randomUUID(),
       message: 'delivered',
       bounce_category: 'none',
       meta: { session: { id: `session-${i}`, fingerprint: `fp-${i}` } },
@@ -83,6 +89,7 @@ test.serial(
     await Logs.collection.insertOne({
       _id,
       id: _id.toString(),
+      hash: randomUUID(),
       message: 'bounced',
       bounce_category: 'other',
       err: {
@@ -133,6 +140,7 @@ test.serial(
     const at = new Date(now.getTime() + 1);
     await Logs.collection.insertOne({
       _id,
+      hash: randomUUID(),
       message: 'delivered',
       bounce_category: 'none',
       keywords: Array.from({ length: 1000 }, (_, i) => `keyword-${i}`),

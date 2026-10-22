@@ -12,7 +12,7 @@
 //
 
 const { execFile } = require('node:child_process');
-const { randomBytes } = require('node:crypto');
+const { randomBytes, randomUUID } = require('node:crypto');
 const fs = require('node:fs');
 const os = require('node:os');
 const path = require('node:path');
@@ -206,6 +206,7 @@ test.serial(
         logs.push({
           _id,
           id: _id.toString(),
+          hash: randomUUID(),
           message,
           bounce_category: category,
           domains: [d._id],

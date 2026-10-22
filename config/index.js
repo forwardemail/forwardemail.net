@@ -791,16 +791,32 @@ const config = {
   // <https://www.xfinity.com/support/articles/email-errors>
   //
   smtpSessionLimits: new Map([['comcast.net', 10]]),
-  // after a "too many sessions" or rate limit (e.g. Comcast RL000003) reply,
-  // allow at most this many sessions to that provider (from that IP) for this
-  // long (only for providers listed above)
+  // new sessions each IP may open to such a provider per minute (a session
+  // closed on our side may still count on theirs, so the limit on sessions
+  // open at once alone does not bound what they see)
+  smtpSessionStartsPerMinute: 60,
+  //
+  // After a "too many sessions" or throttle reply, allow fewer sessions to
+  // that provider for a while (only for providers listed above): at most this
+  // many open at once and this many new ones per minute from each IP, and,
+  // after a throttle of the sending domain (e.g. Comcast RL000010, which
+  // counts mail from every one of our servers), this many new ones per minute
+  // from all of them together. Another such reply after the first half of a
+  // back-off doubles its length, up to the maximum.
+  //
   smtpSessionLimitBackoffMax: 2,
+  smtpSessionLimitBackoffStartsPerMinute: 6,
+  smtpSessionLimitGlobalStartsPerMinute: 20,
   smtpSessionLimitBackoff: ms('5m'),
+  smtpSessionLimitBackoffMaxDuration: ms('1h'),
   // how long a delivery waits for a free session before it is deferred (421)
   // (kept short since it holds a queue slot or an inbound SMTP session)
   smtpSessionLimitWait: ms('5s'),
   // a session that was never released (e.g. a crash) stops counting after this
   smtpSessionTTL: ms('5m'),
+  // sessions to the providers above end with QUIT (see `helpers/smtp-quit.js`),
+  // and the connection is closed at the latest this long after it
+  smtpQuitTimeout: ms('5s'),
   smtpLimitMessages: SMTP_LIMIT_MESSAGES,
   // senders on the Team plan start (and are never reset below) this daily
   // threshold instead of the first tier's, and move up from the first tier

@@ -24,6 +24,8 @@ const isPrivateHost = require('./is-private-host');
 const parseRootDomain = require('./parse-root-domain');
 const { prepareDaneTlsOptions } = require('./dane-tls-wrapper');
 const { createPublicResolve, publicConnectHook } = require('./public-mx-guard');
+// eslint-disable-next-line import/no-unassigned-import
+require('./smtp-quit');
 
 const env = require('#config/env');
 const config = require('#config');
@@ -449,6 +451,19 @@ async function getTransporter(options = {}, err) {
 
   const opportunisticTLS = Boolean(!requireTLS && !ignoreTLS);
 
+  //
+  // end the session with QUIT for providers that limit how many sessions an
+  // IP may have open (e.g. Comcast), which may count one dropped without it
+  // for a while (see `helpers/smtp-quit.js`)
+  //
+  const mxName = isSANB(mx.hostname) ? mx.hostname : target;
+  const quitBeforeClose = Boolean(
+    isSANB(mxName) &&
+      config.smtpSessionLimits.has(
+        isIP(mxName) ? mxName : parseRootDomain(mxName)
+      )
+  );
+
   const transporter = nodemailer.createTransport({
     ...transporterConfig,
     secure: false,
@@ -461,6 +476,7 @@ async function getTransporter(options = {}, err) {
     tls,
     host: mx.host,
     port: mx.port,
+    quitBeforeClose,
     ...(mx.socket ? { connection: mx.socket } : {})
   });
 

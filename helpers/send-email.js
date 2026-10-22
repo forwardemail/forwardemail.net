@@ -591,7 +591,7 @@ async function deliver(
       err.isSessionLimit = true;
       err.isCodeBug = false;
       err.responseCode = 421;
-      await backOffSmtpSessions({ client, resolver, target });
+      await backOffSmtpSessions({ client, resolver, target, err });
       logger.warn(err, { session, resolver });
       throw err;
     }
@@ -802,7 +802,7 @@ async function deliver(
           err.isSessionLimit = true;
           err.isCodeBug = false;
           err.responseCode = 421;
-          await backOffSmtpSessions({ client, resolver, target });
+          await backOffSmtpSessions({ client, resolver, target, err });
           logger.warn(err, { session, resolver });
           throw err;
         }
