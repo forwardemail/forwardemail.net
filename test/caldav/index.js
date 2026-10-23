@@ -13,9 +13,9 @@ const ms = require('ms');
 const pWaitFor = require('p-wait-for');
 const splitLines = require('split-lines');
 const test = require('ava');
-const tsdav = require('tsdav');
 const undici = require('undici');
 const { Semaphore } = require('@shopify/semaphore');
+const { tsdav } = require('../utils');
 
 const utils = require('../utils');
 const CalDAV = require('../../caldav-server');

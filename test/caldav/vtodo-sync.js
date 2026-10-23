@@ -23,8 +23,8 @@ const ip = require('ip');
 const ms = require('ms');
 const pWaitFor = require('p-wait-for');
 const test = require('ava');
-const tsdav = require('tsdav');
 const ICAL = require('ical.js');
+const { tsdav } = require('../utils');
 
 const utils = require('../utils');
 const CalDAV = require('../../caldav-server');

@@ -29,7 +29,7 @@ const ms = require('ms');
 const pWaitFor = require('p-wait-for');
 const test = require('ava');
 const undici = require('undici');
-const tsdav = require('tsdav');
+const { tsdav } = require('../utils');
 
 const utils = require('../utils');
 const CalDAV = require('../../caldav-server');

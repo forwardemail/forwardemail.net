@@ -5,6 +5,7 @@
 
 const { Buffer } = require('node:buffer');
 const { randomUUID } = require('node:crypto');
+const { setTimeout: delay } = require('node:timers/promises');
 
 const x509 = require('@peculiar/x509');
 const { Crypto } = require('@peculiar/webcrypto');
@@ -20,6 +21,7 @@ const mongoose = require('mongoose');
 const request = require('supertest');
 const { MongoMemoryServer } = require('mongodb-memory-server');
 const { listen } = require('async-listen');
+const tsdav = require('tsdav');
 
 const API = require('../api-server');
 
@@ -412,6 +414,36 @@ async function generateSmtpKeys() {
 }
 
 exports.generateSmtpKeys = generateSmtpKeys;
+
+//
+// tsdav's `createAccount` runs DAV account discovery as a chain of PROPFIND
+// requests (service discovery, then the principal URL, then the home set) and
+// does not retry any of them. When the full suite runs its shards in parallel,
+// a single one of those requests can transiently fail under the load, and
+// tsdav then throws `cannot find homeUrl` from a test's `beforeEach` (the
+// failure only ever appears under that contention, never in isolation).
+//
+// Discovery is read-only and idempotent, so this wraps `createAccount` to
+// retry it a few times with exponential backoff. Tests use this via
+// `require('../utils').tsdav` in place of a direct `require('tsdav')`.
+//
+async function createAccountWithRetry(options, attempts = 6) {
+  let lastError;
+  for (let attempt = 1; attempt <= attempts; attempt++) {
+    try {
+      return await tsdav.createAccount(options);
+    } catch (err) {
+      lastError = err;
+      if (attempt === attempts) break;
+
+      await delay(Math.min(2000, 200 * 2 ** (attempt - 1)));
+    }
+  }
+
+  throw lastError;
+}
+
+exports.tsdav = { ...tsdav, createAccount: createAccountWithRetry };
 
 // Rendered pages embed rev-hashed asset filenames (e.g.
 // favicon-32x32-e8ecadcbfb.png) and their subresource-integrity hashes, both a

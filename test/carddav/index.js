@@ -9,8 +9,8 @@ const ip = require('ip');
 const ms = require('ms');
 const pWaitFor = require('p-wait-for');
 const test = require('ava');
-const tsdav = require('tsdav');
 const { Semaphore } = require('@shopify/semaphore');
+const { tsdav } = require('../utils');
 
 const utils = require('../utils');
 const CardDAV = require('../../carddav-server');
