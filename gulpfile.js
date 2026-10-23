@@ -61,7 +61,7 @@ const rename = require('gulp-rename');
 const reporter = require('postcss-reporter');
 const rev = require('gulp-rev');
 const revSri = require('gulp-rev-sri');
-const sass = require('gulp-sass')(require('node-sass'));
+const sass = require('gulp-sass')(require('sass'));
 const sourcemaps = require('gulp-sourcemaps');
 const stylelint = require('@ronilaukkarinen/gulp-stylelint');
 const terser = require('gulp-terser');
@@ -538,7 +538,18 @@ function cssDev() {
       stylelint({
         reporters: [{ formatter: 'string', console: true }]
       }),
-      sass().on('error', sass.logError),
+      sass({
+        quietDeps: true,
+        silenceDeprecations: [
+          'legacy-js-api',
+          'import',
+          'slash-div',
+          'color-functions',
+          'mixed-decls',
+          'global-builtin',
+          'abs-percent'
+        ]
+      }).on('error', sass.logError),
       postcss([...cssPostcssPlugins(), reporter()]),
       halves,
       order(CONCAT_CSS_ORDER),
@@ -570,7 +581,18 @@ function css() {
         reporters: [{ formatter: 'string', console: true }]
       }),
       // sourcemaps.init()
-      sass().on('error', sass.logError),
+      sass({
+        quietDeps: true,
+        silenceDeprecations: [
+          'legacy-js-api',
+          'import',
+          'slash-div',
+          'color-functions',
+          'mixed-decls',
+          'global-builtin',
+          'abs-percent'
+        ]
+      }).on('error', sass.logError),
       postcss([
         ...cssPostcssPlugins(),
         cssnano({ autoprefixer: false }),
