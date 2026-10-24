@@ -69,6 +69,43 @@ test.afterEach.always(() => {
 });
 
 test.serial(
+  'local MX delivery requires an explicit self-hosted opt-in',
+  (t) => {
+    const original = {
+      NODE_ENV: env.NODE_ENV,
+      SELF_HOSTED: env.SELF_HOSTED,
+      SMTP_ALLOW_LOCAL_MX: env.SMTP_ALLOW_LOCAL_MX
+    };
+
+    try {
+      env.NODE_ENV = 'production';
+
+      env.SELF_HOSTED = 'false';
+      env.SMTP_ALLOW_LOCAL_MX = 'true';
+      t.true(getTransporter.shouldBlockLocalAddresses());
+
+      env.SELF_HOSTED = 'true';
+      env.SMTP_ALLOW_LOCAL_MX = 'false';
+      t.true(getTransporter.shouldBlockLocalAddresses());
+
+      env.SELF_HOSTED = 'true';
+      env.SMTP_ALLOW_LOCAL_MX = 'true';
+      t.false(getTransporter.shouldBlockLocalAddresses());
+
+      env.NODE_ENV = 'test';
+      env.SELF_HOSTED = 'false';
+      env.SMTP_ALLOW_LOCAL_MX = 'false';
+      t.false(getTransporter.shouldBlockLocalAddresses());
+    } finally {
+      for (const [key, value] of Object.entries(original)) {
+        if (value === undefined) delete env[key];
+        else env[key] = value;
+      }
+    }
+  }
+);
+
+test.serial(
   'getTransporter does not connect to non-public MX addresses',
   async (t) => {
     const connect = stubConnect();
@@ -90,6 +127,42 @@ test.serial(
       t.is(connect.callCount, 0, 'no connection may be attempted');
     } finally {
       env.NODE_ENV = NODE_ENV;
+    }
+  }
+);
+
+test.serial(
+  'self-hosted local MX opt-in still rejects non-public destinations',
+  async (t) => {
+    const connect = stubConnect();
+    const original = {
+      NODE_ENV: env.NODE_ENV,
+      SELF_HOSTED: env.SELF_HOSTED,
+      SMTP_ALLOW_LOCAL_MX: env.SMTP_ALLOW_LOCAL_MX
+    };
+
+    env.NODE_ENV = 'production';
+    env.SELF_HOSTED = 'true';
+    env.SMTP_ALLOW_LOCAL_MX = 'true';
+
+    try {
+      const err = await t.throwsAsync(
+        getTransporter({
+          target: 'evil.example',
+          port: 25,
+          resolver: createResolver(PRIVATE_RECORDS),
+          logger,
+          cache: { get: async () => false, set: async () => false }
+        })
+      );
+
+      t.is(err.category, 'dns');
+      t.is(connect.callCount, 0, 'no connection may be attempted');
+    } finally {
+      for (const [key, value] of Object.entries(original)) {
+        if (value === undefined) delete env[key];
+        else env[key] = value;
+      }
     }
   }
 );

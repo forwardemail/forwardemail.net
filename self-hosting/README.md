@@ -12,6 +12,7 @@ This section documents the CI/CD workflow for ForwardEmail's self-hosted solutio
 * [Deployment Process](#deployment-process)
   * [Installation](#installation)
   * [Docker Compose Configuration](#docker-compose-configuration)
+  * [Delivery to Domains Hosted on the Same Server](#delivery-to-domains-hosted-on-the-same-server)
 * [Maintenance Features](#maintenance-features)
   * [Automatic Updates](#automatic-updates)
   * [Backup and Restore](#backup-and-restore)
@@ -131,6 +132,21 @@ The `docker-compose-self-hosted.yml` file defines all the services required for 
 * **redis**: In-memory data store (uses the `redis:latest` image)
 
 Every Forward Email service shares the same application Docker image and only differs by its entry point (the `command`), which keeps the architecture modular while simplifying maintenance; the `nginx`, `mongodb`, and `redis` services use their respective official upstream images.
+
+
+### Delivery to Domains Hosted on the Same Server
+
+By default, outbound SMTP delivery blocks MX addresses that resolve to an IP address assigned to the local host. This is a security safeguard, but it can prevent delivery between domains hosted by the same self-hosted Forward Email server when their MX records resolve to the server's public IP address.
+
+Self-hosted installations can explicitly allow this use case by setting the following environment variable:
+
+```env
+SMTP_ALLOW_LOCAL_MX=true
+```
+
+The default is `false`.
+
+This option only relaxes the local-interface check for self-hosted installations. Non-public destinations such as loopback, private, link-local, and carrier-grade NAT addresses continue to be rejected by the public MX guard.
 
 
 ## Maintenance Features
