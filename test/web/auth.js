@@ -13,6 +13,7 @@ const utils = require('../utils');
 
 const config = require('#config');
 const phrases = require('#config/phrases');
+const getGmailVariantsQuery = require('#helpers/get-gmail-variants-query');
 const { Users } = require('#models');
 
 test.before(utils.setupMongoose);
@@ -136,6 +137,58 @@ test('if user exists then try to log them in if they were accidentally on the re
     JSON.parse(res.text).message,
     phrases.PASSPORT_NO_SALT_VALUE_STORED_ERROR
   );
+});
+
+test('one Gmail account cannot sign up again with dots, a plus tag or googlemail.com', async (t) => {
+  const { web } = t.context;
+  const name = `gmailtest${cryptoRandomString({ length: 8, type: 'numeric' })}`;
+  await t.context.userFactory
+    .withState({ email: `${name.slice(0, 4)}.${name.slice(4)}@gmail.com` })
+    .create();
+
+  for (const email of [
+    `${name}@gmail.com`,
+    `${name.slice(0, 2)}.${name.slice(2, 6)}.${name.slice(6)}@gmail.com`,
+    `${name}+signup@gmail.com`,
+    `${name.slice(0, 3)}.${name.slice(3)}+1@googlemail.com`,
+    `${name.toUpperCase()}@Gmail.com`
+  ]) {
+    const res = await web.post('/en/register').send({
+      email,
+      password: falso.randPassword()
+    });
+    t.is(res.status, 400, `${email} should be refused`);
+    t.is(JSON.parse(res.text).message, phrases.GMAIL_ACCOUNT_ALREADY_EXISTS);
+  }
+
+  t.is(
+    await Users.countDocuments(getGmailVariantsQuery(`${name}@gmail.com`)),
+    1
+  );
+
+  // (another Gmail account can sign up)
+  const other = await web.post('/en/register').send({
+    email: `${name}0@gmail.com`,
+    password: falso.randPassword()
+  });
+  t.is(other.status, 302);
+  t.is(other.header.location, '/en/my-account');
+});
+
+test('dots and plus tags still make different accounts outside Gmail', async (t) => {
+  const { web } = t.context;
+  const name = `othertest${cryptoRandomString({ length: 8, type: 'numeric' })}`;
+  await t.context.userFactory
+    .withState({ email: `${name.slice(0, 4)}.${name.slice(4)}@example.com` })
+    .create();
+
+  for (const email of [`${name}@example.com`, `${name}+1@example.com`]) {
+    const res = await web.post('/en/register').send({
+      email,
+      password: falso.randPassword()
+    });
+    t.is(res.status, 302, `${email} should sign up`);
+  }
 });
 
 test('allows password reset for valid email (HTML)', async (t) => {

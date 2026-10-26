@@ -37,6 +37,7 @@ const _ = require('#helpers/lodash');
 const config = require('#config');
 const createTangerine = require('#helpers/create-tangerine');
 const email = require('#helpers/email');
+const getGmailVariantsQuery = require('#helpers/get-gmail-variants-query');
 const { isSameAuditValue } = require('#helpers/audit-changes');
 const getUbuntuMembersMap = require('#helpers/get-ubuntu-members-map');
 const i18n = require('#helpers/i18n');
@@ -1176,6 +1177,39 @@ Users.virtual(config.userFields.verificationPinHasExpired).get(function () {
 
 // setInterval(crawlDisposable, ms('1d'));
 // crawlDisposable();
+
+//
+// One Gmail account can only have one user: Gmail ignores dots and anything
+// after a plus sign (+), and googlemail.com is the same as gmail.com, so e.g.
+// "first.last+1@gmail.com" cannot sign up (or change to that address) when
+// "firstlast@gmail.com" already has an account
+// (only when the email is new or changed, so existing users can still save)
+//
+Users.pre('save', async function (next) {
+  if (!this.isNew && !this.isModified('email')) return next();
+
+  try {
+    const query = getGmailVariantsQuery(this.email);
+    if (!query) return next();
+
+    const exists = await this.constructor.exists({
+      ...query,
+      _id: { $ne: this._id }
+    });
+    if (!exists) return next();
+
+    const error = Boom.badRequest(
+      i18n.api.t({
+        phrase: config.i18n.phrases.GMAIL_ACCOUNT_ALREADY_EXISTS,
+        locale: this[config.lastLocaleField]
+      })
+    );
+    error.no_translate = true;
+    next(error);
+  } catch (err) {
+    next(err);
+  }
+});
 
 // This ensures that `email` was already validated, trimmed, lowercased
 Users.pre('save', async function (next) {

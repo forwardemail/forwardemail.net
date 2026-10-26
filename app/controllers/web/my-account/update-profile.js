@@ -15,6 +15,7 @@ const _ = require('#helpers/lodash');
 
 const config = require('#config');
 const emailHelper = require('#helpers/email');
+const getGmailVariantsQuery = require('#helpers/get-gmail-variants-query');
 const invalidateOtherSessions = require('#helpers/invalidate-other-sessions');
 const isEmail = require('#helpers/is-email');
 const { Users } = require('#models');
@@ -216,6 +217,17 @@ async function updateProfile(ctx) {
       throw Boom.badRequest(
         ctx.translateError('EMAIL_CHANGE_ALREADY_EXISTS', query.email)
       );
+
+    // (or another user already has the same Gmail account)
+    const gmailQuery = getGmailVariantsQuery(query.email);
+    if (
+      gmailQuery &&
+      (await Users.exists({
+        ...gmailQuery,
+        _id: { $ne: ctx.state.user._id }
+      }))
+    )
+      throw Boom.badRequest(ctx.translateError('GMAIL_ACCOUNT_ALREADY_EXISTS'));
 
     // set the reset token and expiry
     ctx.state.user[config.userFields.changeEmailTokenExpiresAt] = dayjs()

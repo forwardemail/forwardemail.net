@@ -184,3 +184,76 @@ test('an expired link opened in the browser leads to the pending change', async 
   t.true(profile.text.includes(phrases.LINK_EXPIRED_OR_INVALID));
   t.true(profile.text.includes('resend-email-change'));
 });
+
+test('cannot change to another account’s Gmail address with dots or a plus tag', async (t) => {
+  const { password, token, user, web } = t.context;
+  const name = `gmailowner${randomUUID().replaceAll('-', '').slice(0, 8)}`;
+  await t.context.userFactory
+    .withState({ email: `${name}@gmail.com` })
+    .create();
+  const variant = `${name.slice(0, 5)}.${name.slice(5)}+mine@googlemail.com`;
+
+  // when requesting the change
+  await Users.updateOne(
+    { _id: user._id },
+    {
+      $unset: {
+        [config.userFields.changeEmailToken]: 1,
+        [config.userFields.changeEmailTokenExpiresAt]: 1,
+        [config.userFields.changeEmailNewAddress]: 1
+      }
+    }
+  );
+  let response = await web
+    .put('/en/my-account/profile')
+    .set('Accept', 'application/json')
+    .send({ email: variant, password });
+  t.is(response.status, 400);
+  t.is(response.body.message, phrases.GMAIL_ACCOUNT_ALREADY_EXISTS);
+
+  // and when confirming a change requested before the other account existed
+  await Users.updateOne(
+    { _id: user._id },
+    {
+      $set: {
+        [config.userFields.changeEmailToken]: token,
+        [config.userFields.changeEmailTokenExpiresAt]: new Date(
+          Date.now() + 60_000
+        ),
+        [config.userFields.changeEmailNewAddress]: variant
+      }
+    }
+  );
+  response = await web
+    .post(`/en/my-account/change-email/${token}`)
+    .set('Accept', 'application/json')
+    .send({ password });
+  t.is(response.status, 400);
+  t.is(response.body.message, phrases.GMAIL_ACCOUNT_ALREADY_EXISTS);
+  const unchanged = await Users.findById(user._id);
+  t.is(unchanged.email, user.email);
+});
+
+test('can change to a variant of your own Gmail address, and existing accounts can still be saved', async (t) => {
+  const { user } = t.context;
+  const name = `gmailself${randomUUID().replaceAll('-', '').slice(0, 8)}`;
+
+  // (e.g. two accounts made before this check, for one Gmail account)
+  const existing = await t.context.userFactory
+    .withState({ email: `${name}@gmail.com` })
+    .create();
+  const duplicate = await t.context.userFactory.create();
+  await Users.collection.updateOne(
+    { _id: duplicate._id },
+    { $set: { email: `${name.slice(0, 4)}.${name.slice(4)}@gmail.com` } }
+  );
+  existing[config.passport.fields.givenName] = 'Test';
+  await t.notThrowsAsync(existing.save());
+
+  // (changing to your own Gmail account in another form)
+  const self = await Users.findById(user._id);
+  self.email = `${name}x@gmail.com`;
+  await self.save();
+  self.email = `${name.slice(0, 3)}.${name.slice(3)}x+tag@gmail.com`;
+  await t.notThrowsAsync(self.save());
+});

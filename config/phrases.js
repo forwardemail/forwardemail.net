@@ -739,6 +739,8 @@ module.exports = {
   PASSPORT_MISSING_USERNAME_ERROR: 'Please enter an email address.',
   PASSPORT_USER_EXISTS_ERROR:
     'A user with the given email address is already registered.  Please try to log in or reset the password if this account belongs to you.',
+  GMAIL_ACCOUNT_ALREADY_EXISTS:
+    'An account already exists for this Gmail address.  Gmail ignores dots and anything after a plus sign (+), so addresses that only differ by these belong to the same Gmail account.  Please log in to that account or use a different email address.',
   PLAN_ALREADY_ACTIVE: 'This plan is already active, please refresh.',
   UPGRADE_PLAN: 'Upgrade Plan',
   INVALID_PLAN: 'Invalid plan selected.',
