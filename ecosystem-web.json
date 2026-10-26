@@ -17,9 +17,7 @@
       "env_production": {
         "NODE_ENV": "production",
         "HTTP_PORT": 443,
-        "HTTP_PROTOCOL": "https",
-        "TRUST_PROXY": "true",
-        "WEB_PROXY_IP_HEADER": "CF-Connecting-IP"
+        "HTTP_PROTOCOL": "https"
       }
     },
     {
