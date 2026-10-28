@@ -781,14 +781,14 @@ async function processEmail({ email, port = 25, resolver, client }) {
           .catch((err) => logger.fatal(err, { ignore_hook: true }));
         //
         // support is asked to review it (like SMTP access requests), with
-        // replies going to the domain's admins and a link to the domain
-        // (it was a Bcc of the email above, so a reply went to ourselves)
+        // replies going to the user who sent it (the domain's admins when
+        // the user has no email) and a link to the domain
         //
         emailHelper({
           template: 'alert',
           message: {
             to: config.supportEmail,
-            replyTo: obj.to,
+            replyTo: user?.email || obj.to,
             subject
           },
           locals: {

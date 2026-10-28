@@ -11,12 +11,14 @@ const config = require('#config');
 const emailHelper = require('#helpers/email');
 const {
   UNAVAILABLE,
+  isAwaitingVerdict,
   getDomainCheckVerdict
 } = require('#helpers/domain-check-verdict');
 const i18n = require('#helpers/i18n');
 const logger = require('#helpers/logger');
 const _ = require('#helpers/lodash');
 const isTimeoutError = require('#helpers/is-timeout-error');
+const requestSMTPApproval = require('#helpers/request-smtp-approval');
 
 // <https://github.com/nodejs/node/blob/08dd4b1723b20d56fbedf37d52e736fe09715f80/lib/dns.js#L296-L320>
 // <https://docs.rs/c-ares/4.0.3/c_ares/enum.Error.html>
@@ -60,8 +62,13 @@ const DNS_RETRY_CODES = new Set([
  *   - `app/controllers/web/my-account/verify-smtp.js` (web/API verify button)
  *   - `helpers/on-data-smtp.js` (SMTP DATA handler)
  *   - `app/models/emails.js` (API email queue method)
+ *   - `helpers/check-smtp-domain.js` (hourly SMTP check)
  *
  * when `domain.has_smtp` is not yet `true` and DNS records are verified.
+ *
+ * With `requestApproval`, a domain that is not approved automatically is
+ * sent to support for a manual review (once, see `request-smtp-approval`),
+ * unless the domain check has no verdict for it yet (a later check sends it).
  *
  * @param   {object}  options
  * @param   {object}  options.domain         Mongoose Domain document (must NOT be lean)
@@ -75,9 +82,15 @@ const DNS_RETRY_CODES = new Set([
  * @param   {Array}   [options.userDomains]  Pre-loaded array of user's admin domains
  *                                           (e.g. `ctx.state.domains`); if not provided,
  *                                           will be queried from the database
+ * @param   {boolean} [options.requestApproval]  Ask support to approve a domain
+ *                                           that is not approved automatically
  * @returns {Promise<object>}  Result object with:
  *   - `isVerified` {boolean}  Whether DKIM, Return-Path, and DMARC all pass
  *   - `isAutoApproved` {boolean}  Whether the domain was auto-approved
+ *   - `isApprovalRequested` {boolean}  Whether support was asked to approve it
+ *                                        now (see `requestApproval`)
+ *   - `hasExistingApprovedDomains` {boolean}
+ *   - `hasSomeSuspendedDomains` {boolean}
  *   - `ns` {Array|false}  Nameservers from verifySMTP
  *   - `dkim` {boolean}
  *   - `returnPath` {boolean}
@@ -95,7 +108,7 @@ const DNS_RETRY_CODES = new Set([
  *   - `hasDNSError` {boolean}
  */
 async function checkAndAutoApproveSMTP(options) {
-  const { domain, resolver, userDomains, client } = options;
+  const { domain, resolver, userDomains, client, requestApproval } = options;
   let { user, userId } = options;
 
   //
@@ -134,6 +147,9 @@ async function checkAndAutoApproveSMTP(options) {
   const result = {
     isVerified,
     isAutoApproved: false,
+    isApprovalRequested: false,
+    hasExistingApprovedDomains: false,
+    hasSomeSuspendedDomains: false,
     ns,
     dkim,
     returnPath,
@@ -159,7 +175,7 @@ async function checkAndAutoApproveSMTP(options) {
   //
   if (!user && userId) {
     user = await Users.findById(userId)
-      .select('id has_passed_kyc')
+      .select('id email has_passed_kyc')
       .lean()
       .exec();
   }
@@ -229,6 +245,8 @@ async function checkAndAutoApproveSMTP(options) {
   }
 
   if (verdict) result.flaggedCategories = verdict.categories;
+  result.hasExistingApprovedDomains = hasExistingApprovedDomains;
+  result.hasSomeSuspendedDomains = hasSomeSuspendedDomains;
 
   // Check if domain TLD is in config.goodDomains
   const domainTld = domain.name.split('.').pop().toLowerCase();
@@ -250,7 +268,26 @@ async function checkAndAutoApproveSMTP(options) {
       ((hasLegitimateHosting && !hasSomeSuspendedDomains) ||
         (hasExistingApprovedDomains && !hasSomeSuspendedDomains)));
 
-  if (!shouldAutoApprove) return result;
+  if (!shouldAutoApprove) {
+    //
+    // a manual review is needed: support is asked once
+    // (while the domain check has no verdict yet, or it cannot be read,
+    //  support is not asked, since it may still be approved automatically;
+    //  a later check asks once it has one)
+    //
+    if (requestApproval && !isAwaitingVerdict(result.flaggedCategories))
+      result.isApprovalRequested = await requestSMTPApproval({
+        domain,
+        userEmail: user.email,
+        ns,
+        hasLegitimateHosting,
+        flaggedCategories: result.flaggedCategories,
+        hasSomeSuspendedDomains,
+        hasExistingApprovedDomains
+      });
+
+    return result;
+  }
 
   //
   // 5. Auto-approve: set has_smtp and save
@@ -293,7 +330,9 @@ async function checkAndAutoApproveSMTP(options) {
       message: `
         <ul>
           <li><strong>Auto-approved:</strong> true</li>
-          <li><strong>Has passed KYC:</strong> ${user.has_passed_kyc.toString()}</li>${
+          <li><strong>Has passed KYC:</strong> ${String(
+            Boolean(user.has_passed_kyc)
+          )}</li>${
         verdict
           ? `<li><strong>Flagged by Domain Check:</strong> ${_.escape(
               verdict.categories.join(', ')

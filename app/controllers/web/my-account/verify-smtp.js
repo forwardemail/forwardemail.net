@@ -10,10 +10,6 @@ const _ = require('#helpers/lodash');
 
 const Domains = require('#models/domains');
 const checkAndAutoApproveSMTP = require('#helpers/check-and-auto-approve-smtp');
-const {
-  isAwaitingVerdict,
-  claimAwaitingNotice
-} = require('#helpers/domain-check-verdict');
 const config = require('#config');
 const emailHelper = require('#helpers/email');
 const i18n = require('#helpers/i18n');
@@ -38,14 +34,16 @@ async function verifySMTP(ctx) {
 
     //
     // Use the shared auto-approval helper to run DNS verification
-    // and attempt auto-approval if criteria are met.
+    // and attempt auto-approval if criteria are met
+    // (otherwise support is asked to approve it, once)
     //
     const result = await checkAndAutoApproveSMTP({
       domain,
       resolver: ctx.resolver,
       client: ctx.client,
       user: ctx.state.user,
-      userDomains: ctx.state.domains
+      userDomains: ctx.state.domains,
+      requestApproval: true
     });
 
     const {
@@ -57,11 +55,10 @@ async function verifySMTP(ctx) {
       spf,
       autoconfig,
       autodiscover,
-      hasLegitimateHosting,
-      flaggedCategories,
       errors,
       isVerified,
       isAutoApproved,
+      isApprovalRequested,
       hasDNSError
     } = result;
 
@@ -136,101 +133,16 @@ async function verifySMTP(ctx) {
       }
     } else if (!domain.has_smtp && isVerified && !isAutoApproved) {
       //
-      // Domain is verified but was NOT auto-approved by the shared helper
-      // (i.e. user did not meet auto-approval criteria).
-      // Notify admins that the domain is pending manual approval.
+      // Domain is verified but was NOT auto-approved by the shared helper:
+      // it is pending a manual approval (support was asked by the helper,
+      // once, and the domain's admins were told)
       //
       domain.missing_smtp_sent_at = undefined;
-
-      if (!_.isDate(domain.smtp_verified_at)) {
-        // otherwise if the domain was newly verified
-        // and doesn't have smtp yet then email admins
-        const hasExistingApprovedDomains = ctx.state.domains.some(
-          (d) =>
-            d.has_smtp &&
-            !d.is_smtp_suspended &&
-            d.group === 'admin' &&
-            d._id.toString() !== domain._id.toString()
+      if (isApprovalRequested && !ctx.api)
+        ctx.flash(
+          'success',
+          i18n.translate('SMTP_ACCESS_PENDING', locale, domain.name)
         );
-
-        const hasSomeSuspendedDomains = ctx.state.domains.some(
-          (d) => d.is_smtp_suspended && d.group === 'admin'
-        );
-
-        const subject = i18n.translate(
-          'SMTP_ACCESS_SUBJECT',
-          locale,
-          domain.name
-        );
-        const message = i18n.translate(
-          'SMTP_ACCESS_PENDING',
-          locale,
-          domain.name
-        );
-        //
-        // (while the domain check has no verdict yet, or it cannot be read,
-        //  only support is told, at most once in 10 minutes, and again
-        //  once it has one, so support sees the real one; the user is told
-        //  once)
-        //
-        const isAwaiting = isAwaitingVerdict(flaggedCategories);
-        const tellSupport =
-          !isAwaiting || (await claimAwaitingNotice(ctx.client, domain._id));
-        await Promise.all([
-          isAwaiting
-            ? null
-            : emailHelper({
-                template: 'alert',
-                message: {
-                  to,
-                  subject
-                },
-                locals: {
-                  message,
-                  locale
-                }
-              }),
-          tellSupport &&
-            emailHelper({
-              template: 'alert',
-              message: {
-                to: config.supportEmail,
-                replyTo: to,
-                subject
-              },
-              locals: {
-                message: `
-              <ul>
-                <li><strong>Legitimate Hosting</strong> ${hasLegitimateHosting.toString()}</li>
-                <li><strong>Flagged by Domain Check</strong> ${
-                  flaggedCategories.length > 0
-                    ? _.escape(flaggedCategories.join(', '))
-                    : 'No'
-                }</li>
-                <li><strong>Suspended Domains</strong> ${hasSomeSuspendedDomains.toString()}</li>
-                <li><strong>Approved Domains</strong> ${hasExistingApprovedDomains.toString()}</li>
-                <li>
-                  <strong>NS Provider(s):</strong>
-                  ${
-                    ns && ns.length > 0
-                      ? `<ul><li>${ns.join('</li><li>')}</li></ul>`
-                      : ''
-                  }
-                </li>
-              </ul>
-              <a href="${
-                config.urls.web
-              }/admin/domains?name=${encodeURIComponent(
-                  domain.name
-                )}" class="btn btn-dark btn-md">Review Domain</a>
-              `.trim(),
-                locale
-              }
-            })
-        ]);
-        if (!isAwaiting) domain.smtp_verified_at = new Date();
-        if (!ctx.api) ctx.flash('success', message);
-      }
     } else if (
       isAutoApproved && //
       // The shared helper already saved the domain with has_smtp = true,

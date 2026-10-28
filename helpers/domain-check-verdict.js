@@ -122,31 +122,6 @@ async function replaceDomainCheckVerdict(
 }
 
 /**
- * Whether to tell support about a domain held until its verdict can be had
- * (see `isAwaitingVerdict`): once in 10 minutes, not on every "Verify"
- * click, and not when Redis cannot say.
- *
- * @param   {object}  client    Redis client
- * @param   {*}       domainId
- * @returns {Promise<boolean>}
- */
-async function claimAwaitingNotice(client, domainId) {
-  if (!client) return false;
-  try {
-    const claimed = await client.set(
-      `domain_check_awaiting_notice:${String(domainId)}`,
-      '1',
-      'PX',
-      PENDING_TTL_MS,
-      'NX'
-    );
-    return claimed === 'OK';
-  } catch {
-    return false;
-  }
-}
-
-/**
  * Hold a new domain while its first check runs (not one with a verdict).
  *
  * @param   {object}  client    Redis client
@@ -220,7 +195,6 @@ module.exports = {
   PENDING,
   UNAVAILABLE,
   isAwaitingVerdict,
-  claimAwaitingNotice,
   setDomainCheckPending,
   INVALID_VERDICT,
   setDomainCheckVerdict,

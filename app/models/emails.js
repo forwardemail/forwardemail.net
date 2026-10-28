@@ -1680,11 +1680,13 @@ Emails.statics.queue = async function (
           _emailsResolver = createTangerine(redis, logger);
         }
 
+        // (support is asked to approve one that is not approved automatically)
         const { isAutoApproved } = await checkAndAutoApproveSMTP({
           domain,
           resolver: _emailsResolver,
           client: redis,
-          userId
+          userId,
+          requestApproval: true
         });
 
         if (isAutoApproved) {
