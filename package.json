@@ -368,7 +368,7 @@
     "gulp-pug-linter": "1.5.0",
     "gulp-purgecss": "5.0.0",
     "gulp-remark": "9.0.0",
-    "gulp-rev": "9.0.0",
+    "gulp-rev": "12.0.0",
     "gulp-rev-all": "3.0.0",
     "gulp-rev-sri": "0.0.4",
     "gulp-sass": "5.1.0",
