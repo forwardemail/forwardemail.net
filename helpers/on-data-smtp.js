@@ -196,13 +196,11 @@ async function onDataSMTP(session, date, headers, body) {
       }
 
       if (sendingUserId) {
-        // (support is asked to approve one that is not approved automatically)
         const { isAutoApproved } = await checkAndAutoApproveSMTP({
           domain,
           resolver: this.resolver,
           client: this.client,
-          userId: sendingUserId,
-          requestApproval: true
+          userId: sendingUserId
         });
 
         if (isAutoApproved) {
