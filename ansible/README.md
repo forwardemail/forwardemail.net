@@ -31,6 +31,7 @@ ansible/
 │   ├── security.yml            # Security baseline, monitoring, and send-only alerts
 │   ├── node.yml                # Node.js & PM2 deployment
 │   ├── chrony-timesync.yml     # Reusable time synchronization (chrony)
+│   ├── drop-ipv4-tcp-options.yml # Drop IPv4 TCP packets with IP options (CVE-2026-98432)
 │   ├── system-optimization.yml # Reusable system-wide optimization (tmpfs, mount options)
 │   ├── amd-ryzen-numa.yml      # Reusable AMD Ryzen NUMA optimization
 │   ├── sysctl-high-traffic.yml # Reusable high-traffic server kernel tuning
@@ -482,6 +483,28 @@ Security audit procedures for service accounts:
 * 🔐 SSH key management
 * 📝 Access logging
 * 🛡️ Security hardening
+
+### IPv4 TCP options drop (CVE-2026-98432)
+
+CVE-2026-98432 is a remote use-after-free in the Linux IPv4 TCP handshake, reached by a SYN that carries IP options. Every server that accepts IPv4 TCP connections is exposed until it boots a fixed kernel.
+
+`drop-ipv4-tcp-options.yml` (run by `security.yml` on every server):
+
+* Drops IPv4 TCP packets that carry IP options, before connection tracking, in its own nftables table (`drop_ipv4_tcp_options`) loaded by its own systemd unit. It does not use `nftables.service`, whose default config flushes the UFW rules, and the play fails if it is enabled. IPv6 and non-TCP traffic are untouched. Legitimate TCP does not use IPv4 options, so the rule stays as hardening.
+* Turns off multipath TCP (`net.mptcp.enabled = 0`), which the published exploit needs. Nothing we run opens multipath TCP listeners.
+
+The fix is Ubuntu's patched kernel ([tracker](https://ubuntu.com/security/CVE-2026-98432)) and a reboot into it. `unattended-upgrades` installs it and reboots every server except the `mongo`, `redis` and `logs` groups, which need a manual reboot.
+
+On a server:
+
+```bash
+nft list table ip drop_ipv4_tcp_options   # rule and dropped packet count
+sysctl net.mptcp.enabled                  # 0
+ss -Mlnp                                  # multipath TCP listeners (none)
+uname -r                                  # running kernel
+```
+
+Test: `sudo ansible/scripts/test-drop-ipv4-tcp-options.sh`
 
 ### Shared SSH bans (fail2ban)
 

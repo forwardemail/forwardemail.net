@@ -24,6 +24,11 @@
   vars:
     target_hosts: "{{ security_target_hosts | default('all') }}"
 
+- name: Import IPv4 TCP options drop playbook (CVE-2026-98432)
+  import_playbook: drop-ipv4-tcp-options.yml
+  vars:
+    target_hosts: "{{ security_target_hosts | default('all') }}"
+
 - hosts: "{{ security_target_hosts | default('all') }}"
   name: Security
   become: true

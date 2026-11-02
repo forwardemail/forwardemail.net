@@ -1,0 +1,20 @@
+#!/usr/sbin/nft -f
+# Copyright (c) Forward Email LLC
+# SPDX-License-Identifier: BUSL-1.1
+#
+# Managed by Ansible (drop-ipv4-tcp-options.yml)
+#
+# Drop IPv4 TCP packets that carry IP options (header longer than 20 bytes).
+# Mitigates CVE-2026-98432. Runs before connection tracking and does not
+# touch IPv6 or non-TCP traffic.
+
+# create, delete and recreate so reloading is atomic and idempotent
+table ip drop_ipv4_tcp_options
+delete table ip drop_ipv4_tcp_options
+
+table ip drop_ipv4_tcp_options {
+  chain prerouting {
+    type filter hook prerouting priority -300; policy accept;
+    meta l4proto tcp ip hdrlength > 5 counter drop
+  }
+}

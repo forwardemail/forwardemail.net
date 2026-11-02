@@ -1,0 +1,174 @@
+# Copyright (c) Forward Email LLC
+# SPDX-License-Identifier: BUSL-1.1
+
+---
+# Drop IPv4 TCP packets that carry IP options, and turn off multipath TCP
+#
+# Mitigates CVE-2026-98432, a remote use-after-free in the Linux IPv4 TCP
+# handshake that a peer reaches by sending IP options (Record Route or
+# Timestamp) in its SYN. The real fix is a patched kernel and a reboot;
+# this keeps servers protected until then. Legitimate TCP traffic does not
+# carry IPv4 options, so the rule stays in place afterwards as hardening.
+#
+# The rule lives in its own nftables table, loaded by its own systemd unit.
+# nftables.service is not used: its /etc/nftables.conf flushes the whole
+# ruleset, which would remove the UFW rules.
+#
+# References:
+#   https://ubuntu.com/security/CVE-2026-98432
+#   https://github.com/torvalds/linux/commit/e3f33b0a1d89d738e2b913dab519226eaf76e15b
+#
+# Usage:
+#   - name: Import IPv4 TCP options drop playbook
+#     import_playbook: drop-ipv4-tcp-options.yml
+#     vars:
+#       target_hosts: all  # or specific host group
+
+- hosts: "{{ target_hosts }}"
+  name: "Drop IPv4 TCP packets with IP options (CVE-2026-98432)"
+  become: true
+  become_user: root
+  vars:
+    # must match the table in files/drop-ipv4-tcp-options.nft
+    nft_table: drop_ipv4_tcp_options
+    nft_rules_file: /etc/nftables.d/drop-ipv4-tcp-options.nft
+    nft_service: drop-ipv4-tcp-options
+
+  handlers:
+    # reload (atomic nft -f), not restart: a restart deletes the table first
+    - name: Reload IPv4 TCP options rule
+      systemd:
+        name: "{{ nft_service }}"
+        state: reloaded
+        daemon_reload: true
+
+  tasks:
+    - name: Install nftables
+      apt:
+        name: nftables
+        state: present
+        update_cache: true
+        cache_valid_time: 3600
+
+    # its default /etc/nftables.conf flushes the whole ruleset at boot,
+    # which would remove this rule and the UFW rules
+    - name: Check nftables.service is not enabled
+      command: systemctl is-enabled nftables.service
+      register: nftables_service_enabled
+      check_mode: false
+      changed_when: false
+      failed_when: nftables_service_enabled.stdout == 'enabled'
+
+    - name: Create /etc/nftables.d
+      file:
+        path: /etc/nftables.d
+        state: directory
+        owner: root
+        group: root
+        mode: '0755'
+
+    # tested by ansible/scripts/test-drop-ipv4-tcp-options.sh
+    - name: Write IPv4 TCP options rule
+      copy:
+        src: "{{ playbook_dir }}/files/drop-ipv4-tcp-options.nft"
+        dest: "{{ nft_rules_file }}"
+        owner: root
+        group: root
+        mode: '0644'
+        validate: /usr/sbin/nft -c -f %s
+      notify: Reload IPv4 TCP options rule
+
+    - name: Install systemd unit for IPv4 TCP options rule
+      copy:
+        dest: "/etc/systemd/system/{{ nft_service }}.service"
+        owner: root
+        group: root
+        mode: '0644'
+        content: |
+          # Managed by Ansible (drop-ipv4-tcp-options.yml)
+          [Unit]
+          Description=Drop IPv4 TCP packets with IP options (CVE-2026-98432)
+          Wants=network-pre.target
+          Before=network-pre.target shutdown.target
+          After=nftables.service
+          Conflicts=shutdown.target
+          DefaultDependencies=no
+
+          [Service]
+          Type=oneshot
+          RemainAfterExit=yes
+          ExecStart=/usr/sbin/nft -f {{ nft_rules_file }}
+          ExecReload=/usr/sbin/nft -f {{ nft_rules_file }}
+          ExecStop=/usr/sbin/nft delete table ip {{ nft_table }}
+
+          [Install]
+          WantedBy=sysinit.target
+      notify: Reload IPv4 TCP options rule
+
+    - name: Enable and start IPv4 TCP options rule
+      systemd:
+        name: "{{ nft_service }}"
+        enabled: true
+        state: started
+        daemon_reload: true
+      # the unit file is not written in check mode
+      ignore_errors: "{{ ansible_check_mode }}"
+
+    - name: Apply rule changes now
+      meta: flush_handlers
+
+    - name: Verify IPv4 TCP options rule is loaded
+      command: "nft list table ip {{ nft_table }}"
+      register: nft_table_check
+      changed_when: false
+      failed_when: "nft_table_check.rc != 0 or 'hdrlength' not in nft_table_check.stdout"
+
+    # The published exploit needs a multipath TCP listener. Nothing
+    # we run opens one (Node.js, MongoDB, Redis/Valkey and Unbound use plain
+    # TCP), so turning it off costs nothing.
+    - name: Check for multipath TCP support
+      stat:
+        path: /proc/sys/net/mptcp/enabled
+      register: mptcp_sysctl
+
+    - name: Turn off multipath TCP
+      ansible.posix.sysctl:
+        name: net.mptcp.enabled
+        value: '0'
+        state: present
+        sysctl_file: /etc/sysctl.d/90-disable-mptcp.conf
+        sysctl_set: true
+        reload: true
+      when: mptcp_sysctl.stat.exists
+
+    - name: List multipath TCP listeners
+      command: ss -Mlnp
+      register: mptcp_listeners
+      check_mode: false
+      changed_when: false
+      failed_when: false
+      when: mptcp_sysctl.stat.exists
+
+    - name: Warn about multipath TCP listeners opened before the change
+      debug:
+        msg: >-
+          WARNING: multipath TCP listeners are still open (restart their
+          services): {{ mptcp_listeners.stdout_lines[1:] }}
+      when:
+        - mptcp_sysctl.stat.exists
+        - mptcp_listeners.stdout_lines | default([]) | length > 1
+
+    - name: Get running kernel
+      command: uname -r
+      register: running_kernel
+      check_mode: false
+      changed_when: false
+
+    - name: Report kernel status
+      debug:
+        msg: >-
+          Running kernel {{ running_kernel.stdout }}. The rule above is a
+          mitigation; the fix is Ubuntu's patched kernel (see
+          https://ubuntu.com/security/CVE-2026-98432) and a reboot into it.
+          unattended-upgrades installs it, and reboots every host except
+          the mongo, redis and logs groups, which need a manual reboot.
