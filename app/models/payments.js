@@ -633,15 +633,25 @@ async function getPDFReceipt(
     );
   };
 
+  //
+  // this renders the full site layout outside of a request,
+  // so it must provide the same helpers that the request middleware
+  // puts on `ctx.state` (e.g. `l` from @ladjs/i18n), and the receipt's
+  // own (private) path so the layout doesn't treat it as the homepage
+  //
+  const pathWithoutLocale = `/my-account/billing/${payment.reference}`;
+  const l = (p = '') => `/${locale}${p}`;
+
   const locals = {
     ...config.views.locals,
     ctx: {
-      path: '/',
-      pathWithoutLocale: '/',
+      path: l(pathWithoutLocale),
+      pathWithoutLocale,
       get() {
         return '';
       }
     },
+    l,
     locale,
     payment,
     user,
