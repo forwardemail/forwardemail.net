@@ -827,6 +827,7 @@ async function processEmail({ email, port = 25, resolver, client }) {
       canonicalization: 'relaxed/relaxed',
       algorithm: 'rsa-sha256',
       signTime: new Date(),
+      headerList: config.dkimHeaderList,
       signatureData: [
         {
           signingDomain: punycode.toASCII(domain.name),

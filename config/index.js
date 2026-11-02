@@ -21,6 +21,7 @@ const tlds = require('tlds');
 const splitLines = require('split-lines');
 const { Iconv } = require('iconv');
 const { boolean } = require('boolean');
+const { defaultDKIMFieldNames } = require('mailauth/lib/tools');
 
 const noReplyList = require('reserved-email-addresses-list/no-reply-list.json');
 
@@ -706,6 +707,43 @@ const config = {
     algorithm: 'rsa-sha256',
     canonicalization: 'relaxed/relaxed'
   },
+
+  //
+  // header fields covered by our DKIM signatures (only signed when present)
+  //
+  // mailauth's defaults (RFC 6376 Section 5.4.1, List-*, BIMI-Selector) plus:
+  //
+  // - List-Unsubscribe-Post: RFC 8058 Section 4 (MUST be signed for one-click)
+  // - CFBL-Address/CFBL-Feedback-ID: RFC 9477 Section 3.1.4 (MUST be signed)
+  // - Feedback-ID: Gmail Feedback Loop (DKIM signed by the sender's domain)
+  // - MT-Priority: RFC 6758 Section 7 (SHOULD be DKIM protected)
+  // - Autocrypt: sender's public key (Autocrypt Level 1)
+  // - Author: RFC 9057 (MUST NOT be modified once present)
+  // - Disposition-Notification-To/Options: read receipt address (RFC 8098)
+  // - Content-Disposition/Content-Language: top-level body rendering
+  //
+  // NOTE: never add fields that are trace data or may be removed in transit,
+  //       which would break the signature (e.g. Received, Return-Path,
+  //       Comments, Keywords, Precedence, TLS-Required which relays may drop
+  //       per RFC 8689 Section 4.1, and Require-Recipient-Valid-Since which
+  //       MUST NOT be signed per RFC 7293 Section 10)
+  //
+  // NOTE: mailauth requires a colon-separated string (an array is ignored)
+  //
+  dkimHeaderList: [
+    defaultDKIMFieldNames,
+    'List-Unsubscribe-Post',
+    'CFBL-Address',
+    'CFBL-Feedback-ID',
+    'Feedback-ID',
+    'MT-Priority',
+    'Autocrypt',
+    'Author',
+    'Disposition-Notification-To',
+    'Disposition-Notification-Options',
+    'Content-Disposition',
+    'Content-Language'
+  ].join(':'),
 
   socketTimeout: ms('3m'),
   POSTMASTER_USERNAMES,

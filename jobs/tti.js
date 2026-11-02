@@ -247,6 +247,7 @@ Forward Email
                   canonicalization: 'relaxed/relaxed',
                   algorithm: 'rsa-sha256',
                   signTime: new Date(),
+                  headerList: config.dkimHeaderList,
                   signatureData: [config.signatureData]
                 });
 
@@ -310,6 +311,7 @@ Forward Email
                     canonicalization: 'relaxed/relaxed',
                     algorithm: 'rsa-sha256',
                     signTime: new Date(),
+                    headerList: config.dkimHeaderList,
                     signatureData: [config.signatureData]
                   });
 

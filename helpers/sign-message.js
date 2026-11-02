@@ -17,6 +17,7 @@ async function signMessage(raw, domain) {
     canonicalization: 'relaxed/relaxed',
     algorithm: 'rsa-sha256',
     signTime: new Date(),
+    headerList: config.dkimHeaderList,
     signatureData: domain
       ? [
           {
