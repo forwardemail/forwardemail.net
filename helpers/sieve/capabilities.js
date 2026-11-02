@@ -361,12 +361,9 @@ function inspectCommand(command, requirements, unsupported) {
     }
 
     case 'Redirect': {
-      addRequirement(
-        requirements,
-        'redirect',
-        command.location,
-        'uses redirect'
-      );
+      // `redirect` is an RFC 5228 base-language action and must not need a
+      // require declaration.  Declaring it is still accepted for clients that
+      // already emit `require ["redirect"]`.
       if (command.copy) {
         addRequirement(requirements, 'copy', command.location, 'uses :copy');
       }

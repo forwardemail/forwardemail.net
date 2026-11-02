@@ -182,9 +182,11 @@ SieveScripts.pre('save', async function (next) {
 
     if (!validationResult.valid) {
       throw Boom.badRequest(
-        i18n.translateError('SIEVE_SCRIPT_INVALID', this.locale, {
-          errors: this.validation_errors.map((e) => e.message).join(', ')
-        })
+        i18n.translateError(
+          'SIEVE_SCRIPT_INVALID',
+          this.locale,
+          this.validation_errors.map((e) => e.message).join(', ')
+        )
       );
     }
 
@@ -197,9 +199,11 @@ SieveScripts.pre('save', async function (next) {
         message
       }));
       throw Boom.badRequest(
-        i18n.translateError('SIEVE_SCRIPT_INVALID', this.locale, {
-          errors: capabilityResult.errors.join(', ')
-        })
+        i18n.translateError(
+          'SIEVE_SCRIPT_INVALID',
+          this.locale,
+          capabilityResult.errors.join(', ')
+        )
       );
     }
 

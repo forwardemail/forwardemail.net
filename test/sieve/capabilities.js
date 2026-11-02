@@ -113,6 +113,36 @@ describe('Sieve capability contract', () => {
     assert.strictEqual(result.reject, null);
   });
 
+  it('accepts redirect without a require declaration', async () => {
+    const script = 'redirect "recipient@example.com";';
+    const result = validateSieveCapabilities(parse(script));
+
+    assert.strictEqual(result.valid, true);
+    assert.deepStrictEqual(result.required, []);
+
+    const handler = new SieveFilterHandler({
+      logger: { debug() {}, error() {}, info() {}, warn() {} }
+    });
+    const executed = await handler.executeScript(script, {
+      body: '',
+      headers: {},
+      size: 0
+    });
+    assert.deepStrictEqual(executed.redirect, [
+      { address: 'recipient@example.com', copy: false }
+    ]);
+  });
+
+  it('still requires copy for redirect :copy', () => {
+    const result = validateSieveCapabilities(
+      parse('redirect :copy "recipient@example.com";')
+    );
+
+    assert.strictEqual(result.valid, false);
+    assert.deepStrictEqual(result.required, ['copy']);
+    assert.match(result.errors[0], /uses :copy but it is not declared/);
+  });
+
   it('accepts special-use standard-folder checks', () => {
     const result = validateSieveCapabilities(
       parse(
