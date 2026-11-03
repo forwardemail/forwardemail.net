@@ -11,6 +11,8 @@ Bu bölüm, ForwardEmail'in kendi kendine barındırılan çözümü için CI/CD
 * [Dağıtım Süreci](#deployment-process)
   * [Kurulum](#installation)
   * [Docker Compose Yapılandırması](#docker-compose-configuration)
+  * [Aynı sunucuda barındırılan alan adlarına teslim](#delivery-to-domains-hosted-on-the-same-server)
+  * [Google veya GitHub erişimi iptal edildiğinde oturumları sonlandırma](#ending-sessions-when-google-or-github-access-is-revoked)
 * [Bakım Özellikleri](#maintenance-features)
   * [Otomatik Güncellemeler](#automatic-updates)
   * [Yedekleme ve Geri Yükleme](#backup-and-restore)
@@ -122,6 +124,30 @@ Bu betik:
 * **SQLite**: E-postaları depolamak için veritabanı
 
 Her servis aynı Docker imajını kullanır ancak farklı giriş noktaları kullanır, bu da bakımın basitleştirilmesini sağlarken modüler bir mimariye olanak tanır.
+
+### Aynı sunucuda barındırılan alan adlarına teslim {#delivery-to-domains-hosted-on-the-same-server}
+
+Giden e-posta, adresi sunucunun kendisine ait olan bir MX sunucusuna teslim edilmez. Bir sunucu birden fazla alan adını barındırıyorsa ve bunların MX kayıtları sunucunun genel adresini gösteriyorsa, bu alan adlarından birinden diğerine gönderilen e-posta reddedilir.
+
+Buna izin vermek için şunu ayarlayın:
+
+```env
+SMTP_ALLOW_LOCAL_MX=true
+```
+
+Varsayılan değer `false`'tur ve ayar yalnızca `SELF_HOSTED=true` olduğunda geçerlidir. E-posta yine de hiçbir zaman loopback, özel, link-local veya operatör düzeyinde NAT (CGNAT) adreslerine teslim edilmez.
+
+### Google veya GitHub erişimi iptal edildiğinde oturumları sonlandırma {#ending-sessions-when-google-or-github-access-is-revoked}
+
+Kendi sunucunuzda barındırılan bir kurulumda, Google veya GitHub ile açılmış oturumlar varsayılan olarak sağlayıcıda denetlenmez: Bu uygulamanın erişimini orada iptal etmek oturumları kapatmaz ve oturumlar süreleri dolana kadar açık kalır.
+
+Erişim iptal edilir edilmez sonlandırmak için şunu ayarlayın:
+
+```env
+AUTH_OAUTH_REVOCATION_CHECK=true
+```
+
+Sağlayıcı bu durumda arka planda yaklaşık 5 dakikada bir sorgulanır (yanıt vermediği sürece dakikada bir). Sağlayıcıdaki bir kesinti kimsenin oturumunu kapatmaz; sağlayıcının hiç kabul etmediği bir belirteç de kapatmaz.
 
 ## Bakım Özellikleri {#maintenance-features}
 

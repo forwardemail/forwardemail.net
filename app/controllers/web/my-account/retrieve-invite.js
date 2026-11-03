@@ -11,6 +11,7 @@ const mongoose = require('mongoose');
 const { encode } = require('html-entities');
 
 const config = require('#config');
+const { isEmailProven } = require('#helpers/clear-unverified-sign-ins');
 const normalizeInviteEmail = require('#helpers/normalize-invite-email');
 const { Domains } = require('#models');
 
@@ -142,7 +143,8 @@ async function retrieveInvite(ctx) {
   // address and accept. Verifying sends a code to the invited inbox, and the
   // verify page comes back here.
   //
-  if (!ctx.state.user[config.userFields.hasVerifiedEmail]) {
+  // (an address only counted as verified for a paid plan is not enough)
+  if (!isEmailProven(ctx.state.user)) {
     if (ctx.api)
       throw Boom.forbidden(ctx.translateError('EMAIL_VERIFICATION_REQUIRED'));
     const redirectTo = ctx.state.l(

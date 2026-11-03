@@ -6,6 +6,7 @@
 const Boom = require('@hapi/boom');
 
 const config = require('#config');
+const { isEmailProven } = require('#helpers/clear-unverified-sign-ins');
 
 //
 // Sign-in methods (passkeys, two-factor) can only be added once the email
@@ -14,7 +15,8 @@ const config = require('#config');
 // verifies (or recovers) it would otherwise keep working for them afterwards.
 //
 async function ensureVerifiedEmail(ctx, next) {
-  if (ctx.state.user?.[config.userFields.hasVerifiedEmail]) return next();
+  // (an address only counted as verified for a paid plan is not enough)
+  if (isEmailProven(ctx.state.user)) return next();
 
   if (ctx.method === 'GET' && ctx.accepts('html')) {
     ctx.flash('warning', ctx.translate('EMAIL_VERIFICATION_REQUIRED'));

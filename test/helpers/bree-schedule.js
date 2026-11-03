@@ -275,8 +275,12 @@ test('catchUp runs each overdue job through bree, spaced apart', async (t) => {
     { name: 'one', interval: '1d', offset: '1h' },
     { name: 'two', interval: '1d', offset: '2h' }
   ]);
-  await recordCompletion(client, 'one', new Date(Date.now() - ms('3d')));
-  await recordCompletion(client, 'two', new Date(Date.now() - ms('2d')));
+  // (at noon: between 1am and 2am the 1am run of today was due after the
+  // 2am run of yesterday, which put "two" first)
+  const now = new Date();
+  now.setHours(12, 0, 0, 0);
+  await recordCompletion(client, 'one', new Date(now.getTime() - ms('3d')));
+  await recordCompletion(client, 'two', new Date(now.getTime() - ms('2d')));
   const runs = [];
   const bree = {
     async run(name) {
@@ -284,6 +288,7 @@ test('catchUp runs each overdue job through bree, spaced apart', async (t) => {
     }
   };
   const names = await catchUp(bree, client, scheduled, {
+    now,
     spacing: 200,
     logger: quietLogger
   });

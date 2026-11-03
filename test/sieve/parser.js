@@ -616,7 +616,7 @@ describe('Sieve Parser - MIME Commands (RFC 5703)', () => {
     const fep = ast.commands.find((c) => c.type === 'Foreverypart');
     const ifCmd = fep.block[0];
     assert.ok(ifCmd.test.mimeParam);
-    assert.strictEqual(ifCmd.test.mimeParam, 'charset');
+    assert.deepStrictEqual(ifCmd.test.mimeParam, ['charset']);
   });
 
   it('should parse notify command (alias for enotify)', () => {
@@ -657,3 +657,503 @@ describe('Sieve Parser - MIME Commands (RFC 5703)', () => {
     assert.strictEqual(ifCmd.test.last, true);
   });
 });
+
+/* eslint-disable no-template-curly-in-string */
+describe('Sieve Parser - RFC conformance', () => {
+  // the test of the first "if" of a script
+  const testOf = (script) =>
+    parse(script).commands.find((c) => c.type === 'If').test;
+  const last = (script) => parse(script).commands.at(-1);
+
+  describe('lexical rules (RFC 5228 section 2.4)', () => {
+    it('drops the backslash of an undefined escape', () => {
+      assert.deepStrictEqual(
+        testOf('if header :contains "subject" "a\\qb\\.c" { keep; }').keys,
+        ['aqb.c']
+      );
+    });
+
+    it('ends a multi-line string only at a line holding a single "."', () => {
+      const cmd = last('require "reject";\nreject text:\nHello.\nWorld\n.\n;');
+      assert.strictEqual(cmd.message, 'Hello.\nWorld\n');
+    });
+
+    it('removes dot-stuffing from multi-line strings', () => {
+      const cmd = last('require "reject";\nreject text:\n..line\n.foo\n.\n;');
+      assert.strictEqual(cmd.message, '.line\n.foo\n');
+    });
+
+    it('keeps blank lines, indentation and "#" in multi-line strings', () => {
+      const cmd = last(
+        'require "reject";\nreject text: # comment\n\n  # not a comment\n.\n;'
+      );
+      assert.strictEqual(cmd.message, '\n  # not a comment\n');
+    });
+
+    it('accepts "text:" in any case', () => {
+      assert.strictEqual(
+        last('require "reject";\nreject TEXT:\nx\n.\n;').message,
+        'x\n'
+      );
+    });
+
+    it('rejects a bracket comment after "text:"', () => {
+      assert.throws(
+        () => parse('require "reject";\nreject text: /* c */\nx\n.\n;'),
+        /Sieve syntax error/
+      );
+    });
+
+    it('does not take a command name from the start of a longer word', () => {
+      assert.throws(() => parse('iftrue { keep; }'), /Unknown command/);
+    });
+
+    it('rejects unknown tagged arguments instead of reading them as strings', () => {
+      for (const script of [
+        'if header :containz "subject" { keep; }',
+        'require "fileinto"; fileinto :bogus;',
+        'require "editheader"; deleteheader :bogus "X-A";'
+      ]) {
+        assert.throws(() => parse(script), /Sieve syntax error/, script);
+      }
+    });
+  });
+
+  describe('tagged arguments (RFC 5228 section 2.6)', () => {
+    it('accepts tagged arguments in any order', () => {
+      let test = testOf(
+        'if address :is :domain "from" "example.com" { keep; }'
+      );
+      assert.strictEqual(test.addressPart, 'domain');
+      assert.strictEqual(test.matchType, 'is');
+
+      test = testOf(
+        'if address :comparator "i;octet" :contains :localpart "from" "x" { keep; }'
+      );
+      assert.strictEqual(test.comparator, 'i;octet');
+      assert.strictEqual(test.matchType, 'contains');
+      assert.strictEqual(test.addressPart, 'localpart');
+
+      test = testOf(
+        'require "envelope"; if envelope :comparator "i;ascii-casemap" :all "from" "x" { keep; }'
+      );
+      assert.strictEqual(test.addressPart, 'all');
+
+      assert.strictEqual(
+        testOf('require "body"; if body :contains :raw "x" { keep; }')
+          .bodyTransform,
+        'raw'
+      );
+      assert.strictEqual(
+        testOf(
+          'require "date"; if date :is :zone "+0100" "date" "year" "2020" { keep; }'
+        ).zone,
+        '+0100'
+      );
+      assert.strictEqual(
+        testOf(
+          'require "date"; if currentdate :is :zone "+0100" "year" "2020" { keep; }'
+        ).zone,
+        '+0100'
+      );
+      assert.strictEqual(
+        testOf(
+          'require "environment"; if environment :comparator "i;octet" :is "domain" "x" { keep; }'
+        ).comparator,
+        'i;octet'
+      );
+
+      const fileinto = last(
+        'require ["fileinto", "copy", "imap4flags", "mailbox"]; fileinto :flags "\\\\Seen" :create :copy "x";'
+      );
+      assert.deepStrictEqual(fileinto.flags, ['\\Seen']);
+      assert.strictEqual(fileinto.copy, true);
+      assert.strictEqual(fileinto.create, true);
+
+      const deleteheader = last(
+        'require "editheader"; deleteheader :comparator "i;octet" :contains "X-A" "v";'
+      );
+      assert.strictEqual(deleteheader.matchType, 'contains');
+      assert.strictEqual(deleteheader.comparator, 'i;octet');
+    });
+
+    it('does not read a tag as the variable list of hasflag', () => {
+      const test = testOf(
+        'require "imap4flags"; if hasflag :comparator "i;ascii-casemap" :is "\\\\Seen" { keep; }'
+      );
+      assert.strictEqual(test.matchType, 'is');
+      assert.strictEqual(test.variableName, null);
+      assert.strictEqual(test.variables, null);
+      assert.deepStrictEqual(test.flags, ['\\Seen']);
+
+      const withVariables = testOf(
+        'require ["imap4flags", "variables"]; if hasflag ["a", "b"] "\\\\Seen" { keep; }'
+      );
+      assert.deepStrictEqual(withVariables.variables, ['a', 'b']);
+      assert.strictEqual(withVariables.variableName, 'a');
+    });
+
+    it('rejects repeated and conflicting tagged arguments', () => {
+      for (const script of [
+        'if header :is :contains "subject" "x" { keep; }',
+        'if header :comparator "i;octet" :comparator "i;octet" "subject" "x" { keep; }',
+        'if address :all :domain "from" "x" { keep; }',
+        'require "vacation"; vacation :subject "a" :subject "b" "x";',
+        // RFC 6131 section 2
+        'require "vacation-seconds"; vacation :days 1 :seconds 3600 "x";',
+        // RFC 5260 section 4.1
+        'require "date"; if date :zone "+0100" :originalzone "date" "year" "2020" { keep; }',
+        // RFC 7352 section 3
+        'require "duplicate"; if duplicate :header "message-id" :uniqueid "x" { discard; }'
+      ]) {
+        assert.throws(
+          () => parse(script),
+          /Duplicate or conflicting tagged argument/,
+          script
+        );
+      }
+    });
+  });
+
+  describe('require (RFC 5228 section 3.2)', () => {
+    it('rejects require after another command', () => {
+      assert.throws(
+        () => parse('keep;\nrequire "fileinto";\nfileinto "x";'),
+        /require must come before any other command/
+      );
+    });
+
+    it('rejects require inside a block', () => {
+      assert.throws(
+        () => parse('if true { require "fileinto"; }'),
+        /require must come before any other command/
+      );
+    });
+  });
+
+  describe('index (RFC 5260 section 6)', () => {
+    it('parses :index and :last on address and date', () => {
+      const address = testOf(
+        'require "index"; if address :index 2 :last "from" "a@b.c" { keep; }'
+      );
+      assert.strictEqual(address.index, 2);
+      assert.strictEqual(address.last, true);
+
+      const date = testOf(
+        'require ["date", "relational", "index"];\nif date :value "gt" :index 2 :zone "-0500" "received" "iso8601" "2007-02-26T09:00:00-05:00" { keep; }'
+      );
+      assert.strictEqual(date.index, 2);
+      assert.strictEqual(date.last, false);
+      assert.strictEqual(date.zone, '-0500');
+      assert.deepStrictEqual(date.matchType, { type: 'value', operator: 'gt' });
+    });
+
+    it('rejects :last without :index and an :index of 0', () => {
+      assert.throws(
+        () =>
+          parse('require "index"; if header :last "received" "x" { keep; }'),
+        /:last requires :index/
+      );
+      assert.throws(
+        () =>
+          parse('require "index"; if header :index 0 "received" "x" { keep; }'),
+        /:index must be 1 or more/
+      );
+    });
+  });
+
+  describe('editheader (RFC 5293)', () => {
+    it('parses deleteheader :index with :last', () => {
+      const cmd = last(
+        'require "editheader"; deleteheader :index 1 :last "X-A";'
+      );
+      assert.strictEqual(cmd.index, 1);
+      assert.strictEqual(cmd.last, true);
+      assert.strictEqual(cmd.name, 'X-A');
+      assert.deepStrictEqual(cmd.values, []);
+    });
+
+    it('rejects deleteheader :last without :index', () => {
+      assert.throws(
+        () => parse('require "editheader"; deleteheader :last "X-A";'),
+        /:last requires :index/
+      );
+    });
+  });
+
+  describe('variables (RFC 5229)', () => {
+    it('parses :lowerfirst and :upperfirst', () => {
+      assert.deepStrictEqual(
+        last('require "variables"; set :lowerfirst "a" "ABC";').modifiers,
+        ['lowerfirst']
+      );
+      assert.deepStrictEqual(
+        last('require "variables"; set :upperfirst "a" "abc";').modifiers,
+        ['upperfirst']
+      );
+    });
+
+    it('orders modifiers by precedence', () => {
+      assert.deepStrictEqual(
+        last('require "variables"; set :upperfirst :lower "b" "juMBlEd";')
+          .modifiers,
+        ['lower', 'upperfirst']
+      );
+      assert.deepStrictEqual(
+        last(
+          'require ["variables", "enotify"]; set :length :encodeurl :quotewildcard "b" "a*";'
+        ).modifiers,
+        ['quotewildcard', 'encodeurl', 'length']
+      );
+    });
+
+    it('rejects two modifiers of the same precedence', () => {
+      assert.throws(
+        () => parse('require "variables"; set :lower :upper "b" "x";'),
+        /Duplicate or conflicting tagged argument/
+      );
+    });
+
+    it('rejects names that are not identifiers', () => {
+      for (const name of ['1', 'a-b', 'ns.x', '${a}', '']) {
+        assert.throws(
+          () => parse(`require "variables"; set "${name}" "x";`),
+          /Invalid variable name/,
+          name
+        );
+      }
+    });
+  });
+
+  describe('encoded-character (RFC 5228 section 2.4.2.4)', () => {
+    const keysOf = (value) =>
+      testOf(
+        `require "encoded-character"; if header :contains "subject" "${value}" { keep; }`
+      ).keys[0];
+
+    it('decodes hex and unicode encodings', () => {
+      assert.strictEqual(keysOf('$${hex:24 24}'), '$$$');
+      assert.strictEqual(keysOf('${hex: 40 }'), '@');
+      assert.strictEqual(keysOf('${HEX: 40}'), '@');
+      assert.strictEqual(keysOf('${hex:4${hex:30}}'), '${hex:40}');
+      assert.strictEqual(keysOf('${unicode:40}'), '@');
+      assert.strictEqual(keysOf('${UnICoDE:0000040}'), '@');
+      assert.strictEqual(keysOf('${hex:C3 A9}${unicode:e9}'), 'éé');
+    });
+
+    it('leaves malformed encodings as they are', () => {
+      for (const value of [
+        '${hex:40',
+        '${hex:400}',
+        '${ unicode:40}',
+        '${Unicode:Cool}',
+        '${hex:}'
+      ]) {
+        assert.strictEqual(keysOf(value), value);
+      }
+    });
+
+    it('rejects code points that are not Unicode scalar values', () => {
+      for (const value of ['${unicode:200000}', '${Unicode:DF01}']) {
+        assert.throws(() => keysOf(value), /Invalid Unicode value/, value);
+      }
+    });
+
+    it('checks the names of variables after decoding', () => {
+      const cmd = last(
+        'require ["encoded-character", "variables"]; set "${hex:61}" "x";'
+      );
+      assert.strictEqual(cmd.name, 'a');
+      assert.throws(
+        () =>
+          parse(
+            'require ["encoded-character", "variables"]; set "${hex:2d}" "x";'
+          ),
+        /Invalid variable name: "-"/
+      );
+      assert.strictEqual(
+        last(
+          'require ["encoded-character", "mime", "variables"]; foreverypart { extracttext "${unicode:62}"; }'
+        ).block[0].name,
+        'b'
+      );
+    });
+
+    it('leaves encodings literal without require', () => {
+      assert.deepStrictEqual(
+        testOf('if header :contains "subject" "${hex:40}" { keep; }').keys,
+        ['${hex:40}']
+      );
+    });
+  });
+
+  describe('relational (RFC 5231)', () => {
+    it('accepts relational operators in any case', () => {
+      assert.deepStrictEqual(
+        testOf('require "relational"; if header :value "GT" "x" "5" { keep; }')
+          .matchType,
+        { type: 'value', operator: 'gt' }
+      );
+    });
+  });
+
+  describe('MIME (RFC 5703)', () => {
+    it('parses :mime and :anychild on address', () => {
+      const test = testOf(
+        'require "mime"; if address :mime :anychild :all "from" "a@b.c" { keep; }'
+      );
+      assert.strictEqual(test.mime, true);
+      assert.strictEqual(test.anychild, true);
+    });
+
+    it('parses a :param list', () => {
+      assert.deepStrictEqual(
+        testOf(
+          'require "mime"; if header :mime :param ["charset", "name"] "content-type" "x" { keep; }'
+        ).mimeParam,
+        ['charset', 'name']
+      );
+    });
+
+    it('rejects :anychild without :mime', () => {
+      for (const script of [
+        'require "mime"; if header :anychild "content-type" "x" { keep; }',
+        'require "mime"; if exists :anychild "x" { keep; }'
+      ]) {
+        assert.throws(() => parse(script), /:anychild requires :mime/, script);
+      }
+    });
+
+    it('parses extracttext modifiers', () => {
+      const cmd = last(
+        'require ["mime", "variables"]; foreverypart { extracttext :first 5 :upper "x"; }'
+      ).block[0];
+      assert.deepStrictEqual(cmd.modifiers, ['upper']);
+      assert.strictEqual(cmd.first, 5);
+    });
+
+    it('rejects break and extracttext outside a matching foreverypart', () => {
+      for (const script of [
+        'require "mime"; break;',
+        'require "mime"; foreverypart :name "a" { break :name "b"; }',
+        'require ["mime", "variables"]; extracttext "x";'
+      ]) {
+        assert.throws(
+          () => parse(script),
+          /outside of foreverypart|no enclosing foreverypart/,
+          script
+        );
+      }
+
+      assert.doesNotThrow(() =>
+        parse(
+          'require "mime"; foreverypart :name "a" { foreverypart { break :name "a"; } }'
+        )
+      );
+    });
+  });
+
+  describe('enotify (RFC 5435)', () => {
+    it('takes the method as a positional argument', () => {
+      const cmd = last(
+        'require "enotify"; notify :importance "1" :message "hi" "mailto:a@b.c";'
+      );
+      assert.strictEqual(cmd.method, 'mailto:a@b.c');
+      assert.strictEqual(cmd.importance, '1');
+      assert.strictEqual(cmd.message, 'hi');
+    });
+
+    it('rejects a missing method and an invalid importance', () => {
+      assert.throws(
+        () => parse('require "enotify"; notify :message "x";'),
+        /notify requires a method/
+      );
+      assert.throws(
+        () =>
+          parse('require "enotify"; notify :importance "9" "mailto:a@b.c";'),
+        /:importance must be/
+      );
+    });
+
+    it('parses valid_notify_method and notify_method_capability', () => {
+      const valid = testOf(
+        'require "enotify"; if valid_notify_method ["mailto:", "xmpp:"] { keep; }'
+      );
+      assert.strictEqual(valid.type, 'ValidNotifyMethodTest');
+      assert.deepStrictEqual(valid.uris, ['mailto:', 'xmpp:']);
+
+      const test = testOf(
+        'require "enotify"; if notify_method_capability :contains "xmpp:a@b.c" "Online" "yes" { keep; }'
+      );
+      assert.strictEqual(test.type, 'NotifyMethodCapabilityTest');
+      assert.strictEqual(test.uri, 'xmpp:a@b.c');
+      assert.strictEqual(test.capability, 'Online');
+      assert.strictEqual(test.matchType, 'contains');
+      assert.deepStrictEqual(test.keys, ['yes']);
+    });
+  });
+
+  describe('ihave (RFC 5463)', () => {
+    it('parses unknown commands when ihave is required', () => {
+      const ast = parse('require "ihave"; if ihave "foo" { foo :bar "x" 1; }');
+      assert.deepStrictEqual(
+        ast.commands[1].block.map((c) => [c.type, c.name]),
+        [['UnknownCommand', 'foo']]
+      );
+    });
+
+    it('rejects unknown commands without ihave', () => {
+      assert.throws(() => parse('foo "bar";'), /Unknown command "foo"/);
+    });
+
+    it('parses unknown tests when ihave is required', () => {
+      const ast = parse(
+        'require "ihave"; if ihave "foo" { if anyof (not foo :bar "x" 2, baz ["a"] (true, false)) { keep; } }'
+      );
+      const { test } = ast.commands[1].block[0];
+      assert.strictEqual(test.tests[0].test.type, 'UnknownTest');
+      assert.strictEqual(test.tests[0].test.name, 'foo');
+      assert.strictEqual(test.tests[1].type, 'UnknownTest');
+      assert.strictEqual(test.tests[1].name, 'baz');
+    });
+
+    it('rejects unknown tests without ihave', () => {
+      assert.throws(
+        () => parse('if foo "bar" { keep; }'),
+        /Unknown test "foo"/
+      );
+      // (a known test with bad arguments stays a syntax error)
+      assert.throws(
+        () => parse('require "ihave"; if header :bogus "a" "b" { keep; }'),
+        /Sieve syntax error/
+      );
+    });
+
+    it('parses the error command', () => {
+      const cmd = last(
+        'require "ihave"; if not ihave "foo" { error "need foo"; }'
+      ).block[0];
+      assert.strictEqual(cmd.type, 'Error');
+      assert.strictEqual(cmd.message, 'need foo');
+    });
+  });
+
+  describe('special-use (RFC 8579)', () => {
+    it('parses specialuse_exists without a mailbox', () => {
+      const test = testOf(
+        'require "special-use"; if specialuse_exists "\\\\Junk" { keep; }'
+      );
+      assert.strictEqual(test.mailbox, null);
+      assert.deepStrictEqual(test.attributes, ['\\Junk']);
+    });
+
+    it('parses specialuse_exists with a mailbox', () => {
+      const test = testOf(
+        'require "special-use"; if specialuse_exists "Spam" ["\\\\Junk"] { keep; }'
+      );
+      assert.strictEqual(test.mailbox, 'Spam');
+      assert.deepStrictEqual(test.attributes, ['\\Junk']);
+    });
+  });
+});
+/* eslint-enable no-template-curly-in-string */

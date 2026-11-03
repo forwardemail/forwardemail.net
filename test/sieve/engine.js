@@ -5,6 +5,7 @@
  * Sieve Engine Tests
  */
 
+const { Buffer } = require('node:buffer');
 const { describe, it } = require('node:test');
 const assert = require('node:assert');
 
@@ -521,9 +522,8 @@ describe('Sieve Engine', () => {
   describe('Variables extension', () => {
     it('should set and use variable', async () => {
       const script = `
-        require "variables";
+        require ["variables", "fileinto"];
         set "folder" "Archive";
-        require "fileinto";
         fileinto "\${folder}";
       `;
       const result = await executeScript(script, createMessage());
@@ -2092,5 +2092,467 @@ describe('Core Sieve tests (RFC 5228 Section 5)', () => {
         );
       });
     });
+  });
+});
+
+describe('Sieve Engine - RFC conformance of tests and actions', () => {
+  // the mailboxes a run files into, in order
+  const filed = (result) =>
+    result.actions.filter((a) => a.type === 'fileinto').map((a) => a.mailbox);
+
+  it('counts header fields, addresses and strings for :count (RFC 5231)', async () => {
+    const message = createMessage({
+      headers: {
+        to: 'a@example.com, b@example.com',
+        cc: 'c@example.com',
+        received: ['from a by b; Mon, 1 Jan 2024 00:00:00 +0000', 'from c'],
+        subject: 'Hi'
+      }
+    });
+    const result = await executeScript(
+      `require ["relational", "comparator-i;ascii-numeric", "fileinto", "variables"];
+      if address :count "ge" :comparator "i;ascii-numeric" ["to", "cc"] "3" { fileinto "ThreeAddresses"; }
+      if address :count "ge" :comparator "i;ascii-numeric" "to" "3" { fileinto "WrongAddresses"; }
+      if header :count "ge" :comparator "i;ascii-numeric" "received" "3" { fileinto "WrongFields"; }
+      if header :count "ge" :comparator "i;ascii-numeric" ["received", "subject"] "3" { fileinto "ThreeFields"; }
+      if header :count "eq" :comparator "i;ascii-numeric" "x-missing" "0" { fileinto "NoField"; }
+      if string :count "eq" :comparator "i;ascii-numeric" ["a", "", "b"] "2" { fileinto "TwoStrings"; }`,
+      message
+    );
+    assert.deepStrictEqual(filed(result), [
+      'ThreeAddresses',
+      'ThreeFields',
+      'NoField',
+      'TwoStrings'
+    ]);
+  });
+
+  it('compares :value in the order of the comparator (RFC 4790, RFC 5231)', async () => {
+    const message = createMessage({ headers: { 'x-n': '10' } });
+    const result = await executeScript(
+      `require ["relational", "comparator-i;ascii-numeric", "fileinto"];
+      if header :value "gt" :comparator "i;ascii-numeric" "x-n" "9" { fileinto "Numeric"; }
+      if header :value "gt" "x-n" "9" { fileinto "Text"; }
+      if header :is :comparator "i;ascii-numeric" "x-n" "010" { fileinto "Equal"; }
+      if header :value "lt" :comparator "i;ascii-numeric" "x-n" "none" { fileinto "Infinity"; }`,
+      message
+    );
+    // ("10" sorts before "9" as text)
+    assert.deepStrictEqual(filed(result), ['Numeric', 'Equal', 'Infinity']);
+  });
+
+  it('sets match variables from :matches and :regex (RFC 5229)', async () => {
+    const message = createMessage({
+      headers: { subject: 'Mail from Bob Smith' }
+    });
+    const result = await executeScript(
+      `require ["variables", "regex"];
+      if header :matches "subject" "* from *" { set "who" "\${2}"; set "all" "\${0}"; set "none" "\${3}"; }
+      if header :regex "subject" "^mail (from) (.*)$" { set "regex" "\${1}-\${2}"; }`,
+      message
+    );
+    assert.strictEqual(result.variables.who, 'Bob Smith');
+    assert.strictEqual(result.variables.all, 'Mail from Bob Smith');
+    assert.strictEqual(result.variables.none, '');
+    assert.strictEqual(result.variables.regex, 'from-Bob Smith');
+  });
+
+  it('reads a backslash in :matches as making the next character literal', async () => {
+    const message = createMessage({
+      headers: { subject: 'ad', 'x-a': 'a1', 'x-q': 'what?' },
+      body: 'first line\nsecond line'
+    });
+    const result = await executeScript(
+      `require ["fileinto", "body"];
+      if header :matches "subject" "a\\\\d" { fileinto "Literal"; }
+      if header :matches "x-a" "a\\\\d" { fileinto "Digit"; }
+      if header :matches "x-q" "what\\\\?" { fileinto "Question"; }
+      if body :matches "first*second*" { fileinto "Lines"; }`,
+      message
+    );
+    assert.deepStrictEqual(filed(result), ['Literal', 'Question', 'Lines']);
+  });
+
+  it('matches :regex with the case of the comparator', async () => {
+    const result = await executeScript(
+      `require ["fileinto", "regex"];
+      if header :regex :comparator "i;octet" "subject" "^TEST" { fileinto "Octet"; }
+      if header :regex "subject" "^TEST" { fileinto "Casemap"; }`,
+      createMessage({ headers: { subject: 'test subject' } })
+    );
+    assert.deepStrictEqual(filed(result), ['Casemap']);
+  });
+
+  it('matches envelope senders, recipients and subaddresses as the RFCs say', async () => {
+    const message = {
+      ...createMessage({
+        headers: { to: 'user@example.com, list+@example.com' }
+      }),
+      // (the delivery gives the recipient as a list)
+      envelope: { from: '', to: ['user+tag@example.com'] }
+    };
+    const result = await executeScript(
+      `require ["envelope", "subaddress", "relational", "comparator-i;ascii-numeric", "fileinto"];
+      if envelope :is "from" "" { fileinto "NullSender"; }
+      if envelope :count "eq" :comparator "i;ascii-numeric" "from" "0" { fileinto "NoSender"; }
+      if envelope :detail "to" "tag" { fileinto "Detail"; }
+      if address :detail :is "to" "" { fileinto "EmptyDetail"; }
+      if address :detail :count "eq" :comparator "i;ascii-numeric" "to" "2" { fileinto "Counted"; }`,
+      message
+    );
+    // (user@example.com has no detail, which no key matches)
+    assert.deepStrictEqual(filed(result), [
+      'NullSender',
+      'NoSender',
+      'Detail',
+      'EmptyDetail',
+      'Counted'
+    ]);
+  });
+
+  it('finds the addresses in groups and next to comments (RFC 5228 5.1)', async () => {
+    const result = await executeScript(
+      `require "fileinto";
+      if address :is "to" "b@example.org" { fileinto "Group"; }
+      if address :is "cc" "c@example.org" { fileinto "Comment"; }
+      if address :is "to" "team" { fileinto "GroupName"; }`,
+      createMessage({
+        headers: {
+          to: 'team: a@example.org, b@example.org;',
+          cc: 'c@example.org (Carol)'
+        }
+      })
+    );
+    assert.deepStrictEqual(filed(result), ['Group', 'Comment']);
+  });
+
+  it('does not see properties of objects as headers', async () => {
+    const result = await executeScript(
+      `require "fileinto";
+      if exists "constructor" { fileinto "Constructor"; }
+      if header :contains "__proto__" "" { fileinto "Proto"; }`,
+      createMessage()
+    );
+    assert.deepStrictEqual(filed(result), []);
+  });
+
+  it('fails an environment test for an item that does not exist (RFC 5183)', async () => {
+    const result = await executeScript(
+      `require ["environment", "fileinto"];
+      if environment :is "vnd.unknown" "" { fileinto "Unknown"; }
+      if environment :is "location" "MDA" { fileinto "Location"; }`,
+      createMessage()
+    );
+    assert.deepStrictEqual(filed(result), ['Location']);
+  });
+
+  it('extracts the date parts of RFC 5260', async () => {
+    const message = createMessage({
+      headers: {
+        date: 'Tue, 1 Jul 2003 10:52:37 +0200',
+        received: 'from a by b; Wed, 2 Jul 2003 01:00:00 -0500'
+      }
+    });
+    const result = await executeScript(
+      `require ["date", "variables"];
+      if date :matches :originalzone "date" "iso8601" "*" { set "iso" "\${0}"; }
+      if date :matches :zone "+0000" "date" "std11" "*" { set "std11" "\${0}"; }
+      if date :matches :zone "+0000" "date" "julian" "*" { set "julian" "\${0}"; }
+      if date :matches :originalzone "date" "zone" "*" { set "zone" "\${0}"; }
+      if date :matches :zone "+0000" "received" "date" "*" { set "received" "\${0}"; }
+      if date :matches :zone "-0500" "date" "hour" "*" { set "hour" "\${0}"; }
+      if currentdate :matches :zone "+0530" "zone" "*" { set "now" "\${0}"; }`,
+      message
+    );
+    assert.strictEqual(result.variables.iso, '2003-07-01T10:52:37+02:00');
+    assert.strictEqual(
+      result.variables.std11,
+      'Tue, 01 Jul 2003 08:52:37 +0000'
+    );
+    assert.strictEqual(result.variables.julian, '52821');
+    assert.strictEqual(result.variables.zone, '+0200');
+    assert.strictEqual(result.variables.received, '2003-07-02');
+    assert.strictEqual(result.variables.hour, '03');
+    assert.strictEqual(result.variables.now, '+0530');
+  });
+
+  it('matches body :raw, :content and :text (RFC 5173)', async () => {
+    const raw = Buffer.from(
+      [
+        'From: a@example.com',
+        'Content-Type: multipart/alternative; boundary="b"',
+        '',
+        '--b',
+        'Content-Type: text/plain; charset=iso-8859-1',
+        'Content-Transfer-Encoding: base64',
+        '',
+        Buffer.from('Grüße', 'latin1').toString('base64'),
+        '--b',
+        'Content-Type: text/html',
+        '',
+        '<b>Hello</b>',
+        '--b--',
+        ''
+      ].join('\r\n')
+    );
+    const message = {
+      ...createMessage(),
+      raw,
+      body: { text: 'Grüße', html: '<b>Hello</b>' },
+      mimeParts: [
+        {
+          contentType: 'multipart/alternative',
+          multipart: 'alternative',
+          headers: {},
+          body: '',
+          parentIndex: -1
+        },
+        {
+          contentType: 'text/plain',
+          charset: 'iso-8859-1',
+          encoding: 'base64',
+          headers: {},
+          body: Buffer.from('Grüße', 'latin1').toString('base64'),
+          parentIndex: 0
+        },
+        {
+          contentType: 'text/html',
+          encoding: '',
+          headers: {},
+          body: '<b>Hello</b>',
+          parentIndex: 0
+        }
+      ]
+    };
+    const result = await executeScript(
+      `require ["body", "fileinto"];
+      if body :raw :contains "R3L832U=" { fileinto "Raw"; }
+      if body :raw :contains "Grüße" { fileinto "RawDecoded"; }
+      if body :content "text/plain" :contains "Grüße" { fileinto "Plain"; }
+      if body :content "text/plain" :contains "Hello" { fileinto "PlainHtml"; }
+      if body :content "text" :contains "<b>" { fileinto "Html"; }
+      if body :content "multipart" :contains "text/plain" { fileinto "Multipart"; }
+      if body :text :contains "Grüße" { fileinto "Text"; }`,
+      message
+    );
+    assert.deepStrictEqual(filed(result), ['Raw', 'Plain', 'Html', 'Text']);
+  });
+
+  it('handles flags as RFC 5232 says', async () => {
+    const result = await executeScript(
+      `require ["imap4flags", "fileinto", "variables", "relational", "comparator-i;ascii-numeric"];
+      addflag "\\\\Seen \\\\Flagged";
+      addflag ["\\\\seen", "", "\\\\Recent"];
+      if hasflag :count "eq" :comparator "i;ascii-numeric" "2" { fileinto "Two"; }
+      removeflag "\\\\SEEN";
+      keep :flags "\\\\Answered";
+      setflag "fv" "\\\\Draft Work";
+      if hasflag :is "fv" "work" { fileinto :flags "\${fv}" "FromVariable"; }`,
+      createMessage()
+    );
+    assert.deepStrictEqual(filed(result), ['Two', 'FromVariable']);
+    assert.deepStrictEqual(
+      result.actions.find((a) => a.type === 'keep').flags,
+      ['\\Answered']
+    );
+    assert.deepStrictEqual(
+      result.actions.find((a) => a.mailbox === 'FromVariable').flags,
+      ['\\Draft', 'Work']
+    );
+    assert.deepStrictEqual(result.flags, ['\\Flagged']);
+  });
+
+  it('fails a script that rejects twice or rejects and replies (RFC 5429, RFC 5230)', async () => {
+    for (const script of [
+      'require "reject"; reject "a"; reject "b";',
+      'require ["reject", "vacation"]; vacation "away"; reject "no";',
+      'require "vacation"; vacation :subject "A" "a"; vacation :subject "B" "b";'
+    ]) {
+      await assert.rejects(executeScript(script, createMessage()), script);
+    }
+  });
+
+  it('shows header changes to later tests (RFC 5293)', async () => {
+    const message = createMessage({
+      headers: { 'x-foo': ['one', 'two', 'three'] }
+    });
+    const result = await executeScript(
+      `require ["editheader", "fileinto", "index"];
+      addheader "X-A" "1";
+      if header :is "x-a" "1" { fileinto "Added"; }
+      deleteheader "subject";
+      if exists "subject" { fileinto "StillThere"; }
+      deleteheader :index 1 "x-foo";
+      if header :index 1 "x-foo" "two" { fileinto "FirstDeleted"; }
+      deleteheader :index 1 "x-foo" "zzz";
+      if header :index 1 "x-foo" "two" { fileinto "NotMatched"; }`,
+      message
+    );
+    assert.deepStrictEqual(filed(result), [
+      'Added',
+      'FirstDeleted',
+      'NotMatched'
+    ]);
+  });
+
+  it('accepts a mailto URI with its recipient in a to field (RFC 6068)', async () => {
+    const result = await executeScript(
+      'require "enotify"; notify "mailto:?to=a@example.com&subject=x";',
+      createMessage()
+    );
+    assert.ok(result.actions.some((a) => a.type === 'notify'));
+  });
+
+  it('reads the text of HTML with long runs of "<" quickly', async () => {
+    const start = Date.now();
+    await executeScript(
+      'require "body"; if body :contains "x" { keep; }',
+      createMessage({
+        body: { text: '', html: '<a' + '<'.repeat(200_000) }
+      })
+    );
+    assert.ok(Date.now() - start < 2000, `took ${Date.now() - start}ms`);
+  });
+
+  it('fails a notify to a method that is not supported (RFC 5435)', async () => {
+    await assert.rejects(
+      executeScript(
+        'require "enotify"; notify :method "xmpp:a@example.com" :message "m";',
+        createMessage()
+      ),
+      /notify method/
+    );
+  });
+
+  it('visits only the parts in the outer part in nested foreverypart loops', async () => {
+    const message = {
+      ...createMessage(),
+      mimeParts: [
+        {
+          contentType: 'multipart/mixed',
+          multipart: 'mixed',
+          headers: {},
+          parentIndex: -1
+        },
+        {
+          contentType: 'multipart/alternative',
+          multipart: 'alternative',
+          headers: {},
+          parentIndex: 0
+        },
+        { contentType: 'text/plain', headers: {}, parentIndex: 1 },
+        { contentType: 'text/html', headers: {}, parentIndex: 1 },
+        { contentType: 'application/octet-stream', headers: {}, parentIndex: 0 }
+      ]
+    };
+    const result = await executeScript(
+      `require ["foreverypart", "variables"];
+      set "n" "";
+      foreverypart { foreverypart { set "n" "\${n}x"; } }
+      foreverypart { if true { break; set "n" "after"; } }`,
+      message
+    );
+    // (4 parts in the message, 2 in the alternative part, none in the rest)
+    assert.strictEqual(result.variables.n, 'xxxxxx');
+  });
+
+  it('counts a duplicate only from deliveries before, once the script ran (RFC 7352)', async () => {
+    const stored = new Map();
+    const duplicateCache = {
+      has: async (key) => stored.has(key),
+      add: async (key, seconds) => stored.set(key, seconds)
+    };
+    const script = `require ["duplicate", "fileinto"];
+      if duplicate { fileinto "D1"; }
+      if duplicate { fileinto "D2"; }
+      if duplicate :seconds 0 :handle "zero" { fileinto "Zero"; }`;
+    const message = createMessage({ headers: { 'message-id': '<a@b>' } });
+    const first = await executeScript(script, message, {
+      context: { duplicateCache }
+    });
+    assert.deepStrictEqual(filed(first), []);
+    assert.deepStrictEqual([...stored.keys()], ['default:<a@b>']);
+    const second = await executeScript(script, message, {
+      context: { duplicateCache }
+    });
+    assert.deepStrictEqual(filed(second), ['D1', 'D2']);
+
+    // (a run that fails stores nothing)
+    stored.clear();
+    await assert.rejects(
+      executeScript(
+        'require ["duplicate", "reject"]; if duplicate { keep; } reject "a"; reject "b";',
+        message,
+        { context: { duplicateCache } }
+      )
+    );
+    assert.strictEqual(stored.size, 0);
+  });
+
+  it('does not enable variables with ihave (RFC 5463)', async () => {
+    const result = await executeScript(
+      `require ["ihave", "fileinto"];
+      if ihave "variables" { fileinto "Variables"; }
+      if ihave "fileinto" { fileinto "Fileinto"; }`,
+      createMessage()
+    );
+    assert.deepStrictEqual(filed(result), ['Fileinto']);
+  });
+
+  it('reads only the parameter named with :param (RFC 5703)', async () => {
+    const message = {
+      ...createMessage(),
+      mimeParts: [
+        {
+          contentType: 'application/pdf',
+          headers: {
+            'content-disposition': 'attachment; filename="report.pdf"'
+          },
+          parentIndex: -1
+        }
+      ]
+    };
+    const result = await executeScript(
+      `require ["foreverypart", "mime", "fileinto"];
+      foreverypart {
+        if header :mime :param "name" "content-disposition" "*" { fileinto "Name"; }
+        if header :mime :param "filename" "content-disposition" "report.pdf" { fileinto "Filename"; }
+      }`,
+      message
+    );
+    assert.deepStrictEqual(filed(result), ['Filename']);
+  });
+
+  it('applies :encodeurl and counts :length in characters', async () => {
+    const result = await executeScript(
+      `require ["variables", "enotify"];
+      set :encodeurl "url" "a b&c*";
+      set :length "length" "é\u{1F600}";`,
+      createMessage()
+    );
+    assert.strictEqual(result.variables.url, 'a%20b%26c%2A');
+    assert.strictEqual(result.variables.length, '2');
+  });
+
+  it('extracts text in its charset (RFC 5703)', async () => {
+    const message = {
+      ...createMessage(),
+      mimeParts: [
+        {
+          contentType: 'text/plain',
+          charset: 'iso-8859-1',
+          encoding: 'base64',
+          headers: {},
+          body: Buffer.from('Grüße', 'latin1').toString('base64'),
+          parentIndex: -1
+        }
+      ]
+    };
+    const result = await executeScript(
+      `require ["foreverypart", "extracttext", "variables"];
+      foreverypart { extracttext "text"; }`,
+      message
+    );
+    assert.strictEqual(result.variables.text, 'Grüße');
   });
 });

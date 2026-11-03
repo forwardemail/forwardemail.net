@@ -35,6 +35,11 @@ try {
   };
 }
 
+// an RFC 5322 field-name: printable US-ASCII except ":"
+function isFieldName(name) {
+  return typeof name === 'string' && /^[!-9;-~]+$/.test(name);
+}
+
 /**
  * Create a new Sieve engine instance
  * @param {Object} options - Engine options
@@ -64,7 +69,7 @@ class SieveFilterHandler {
     this.logger = options.logger || console;
     this.sendMail = options.sendMail;
     this.vacationStore = options.vacationStore;
-    this.engine = createEngine({ logger: this.logger });
+    this.engine = options.engine || createEngine({ logger: this.logger });
   }
 
   /**
@@ -178,11 +183,17 @@ class SieveFilterHandler {
 
       // Convert engine result to integration format
       const result = {
+        // (each mailbox once, with the flags and :create of its last
+        // fileinto, RFC 5228 section 2.10.3 and RFC 5232 section 3)
         fileinto: [],
+        // (each address once)
         redirect: [],
         vacation: null,
         discard: false,
         reject: null,
+        // (an explicit keep, with the flags of the last one, or null)
+        keep: null,
+        // (the internal variable at the end, the flags of an implicit keep)
         flags: engineResult.flags || [],
         headerChanges: [],
         replaceActions: [],
@@ -190,41 +201,51 @@ class SieveFilterHandler {
         implicitKeep: engineResult.implicitKeep !== false
       };
 
+      const folders = new Map();
+      const addresses = new Map();
+
       // Process actions from engine result
       for (const action of engineResult.actions) {
         switch (action.type) {
           case 'fileinto': {
-            // Map special-use attribute to folder name if specified (RFC 8579)
-            let folder = action.mailbox;
-            if (action.specialuse) {
-              const specialUseMap = {
-                '\\Archive': 'Archive',
-                '\\Drafts': 'Drafts',
-                '\\Flagged': 'Flagged',
-                '\\Junk': 'Junk',
-                '\\Sent': 'Sent',
-                '\\Trash': 'Trash',
-                '\\All': 'All Mail',
-                '\\Important': 'Important'
-              };
-              folder = specialUseMap[action.specialuse] || action.mailbox;
-            }
-
-            result.fileinto.push({
+            // (INBOX is the one mailbox name that is not case-sensitive)
+            const folder =
+              action.mailbox.toUpperCase() === 'INBOX'
+                ? 'INBOX'
+                : action.mailbox;
+            const previous = folders.get(folder);
+            const entry = {
               folder,
               flags: action.flags || [],
-              create: action.create || false,
-              copy: action.copy || false,
-              specialuse: action.specialuse || null
-            });
+              create: Boolean(action.create) || Boolean(previous?.create),
+              copy: Boolean(action.copy) && (!previous || previous.copy),
+              // (the special-use attribute to look for first, RFC 8579;
+              // the mailbox it names is found where the message is stored)
+              specialuse: action.specialuse || previous?.specialuse || null
+            };
+            if (previous) Object.assign(previous, entry);
+            else {
+              folders.set(folder, entry);
+              result.fileinto.push(entry);
+            }
+
             break;
           }
 
           case 'redirect': {
-            result.redirect.push({
-              address: action.address,
-              copy: action.copy || false
-            });
+            const key = action.address.toLowerCase();
+            const previous = addresses.get(key);
+            if (previous) {
+              previous.copy &&= Boolean(action.copy);
+            } else {
+              const entry = {
+                address: action.address,
+                copy: Boolean(action.copy)
+              };
+              addresses.set(key, entry);
+              result.redirect.push(entry);
+            }
+
             break;
           }
 
@@ -235,7 +256,7 @@ class SieveFilterHandler {
 
           case 'reject':
           case 'ereject': {
-            result.reject = {
+            result.reject ||= {
               message: action.message,
               type: action.type
             };
@@ -248,32 +269,46 @@ class SieveFilterHandler {
               message: action.message,
               from: action.from,
               addresses: action.addresses || [],
-              days: action.days || 7,
-              seconds: action.seconds,
+              // (null when not given, see parse-payload.js)
+              days: action.days ?? null,
+              seconds: action.seconds ?? null,
               mime: action.mime || false,
-              handle: action.handle
+              handle: action.handle ?? null,
+              // (the arguments before variables were expanded, which
+              // identify the response when there is no :handle, RFC 5230
+              // section 4.2)
+              tracking: action.tracking ?? null
             };
             break;
           }
 
-          case 'addheader': {
-            result.headerChanges.push({
-              action: 'add',
-              name: action.name,
-              value: action.value,
-              last: action.last || false
-            });
-            break;
-          }
-
+          case 'addheader':
           case 'deleteheader': {
-            result.headerChanges.push({
-              action: 'delete',
-              name: action.name,
-              index: action.index,
-              matchType: action.matchType,
-              values: action.values
-            });
+            // RFC 5293 sections 4 and 5: a field-name that is not one is an
+            // error (so the script fails and the message is kept as it came)
+            if (!isFieldName(action.name))
+              throw new Error(
+                `Invalid header field name for ${action.type}: ${action.name}`
+              );
+
+            result.headerChanges.push(
+              action.type === 'addheader'
+                ? {
+                    action: 'add',
+                    name: action.name,
+                    value: action.value,
+                    last: action.last || false
+                  }
+                : {
+                    action: 'delete',
+                    name: action.name,
+                    index: action.index ?? null,
+                    last: action.last || false,
+                    matchType: action.matchType,
+                    comparator: action.comparator,
+                    values: action.values
+                  }
+            );
             break;
           }
 
@@ -283,8 +318,8 @@ class SieveFilterHandler {
               method: action.method,
               message: action.message,
               from: action.from,
-              importance: action.importance || 'normal',
-              options: action.options || {}
+              importance: action.importance || '2',
+              options: action.options || []
             });
             logger.info('sieve notify action', {
               ignore_hook: true,
@@ -298,27 +333,21 @@ class SieveFilterHandler {
           }
 
           case 'replace': {
-            // RFC 5703 §5: replace the body of a MIME part
+            // RFC 5703 section 5: replace a MIME part (partIndex null for
+            // the whole message)
             result.replaceActions.push({
-              partIndex: action.partIndex,
+              partIndex: action.partIndex ?? null,
               replacement: action.replacement,
               mime: action.mime || false,
-              subject: action.subject || null,
-              from: action.from || null
+              subject: action.subject ?? null,
+              from: action.from ?? null
             });
             break;
           }
 
           case 'keep': {
-            // Keep is implicit, just merge flags
-            if (action.flags && action.flags.length > 0) {
-              for (const flag of action.flags) {
-                if (!result.flags.includes(flag)) {
-                  result.flags.push(flag);
-                }
-              }
-            }
-
+            // (an implicit keep is the last keep, with the flags at the end)
+            result.keep = { flags: action.flags || [] };
             break;
           }
 
@@ -330,6 +359,10 @@ class SieveFilterHandler {
           }
         }
       }
+
+      // (only an explicit keep is result.keep, an implicit one is
+      // result.implicitKeep with result.flags)
+      if (result.implicitKeep) result.keep = null;
 
       return result;
     } catch (err) {
@@ -379,15 +412,8 @@ class SieveFilterHandler {
         }
 
         case 'fileinto': {
-          // Merge action flags with global flags from result
-          const fileFlags = [...(action.flags || [])];
-          if (result.flags) {
-            for (const flag of result.flags) {
-              if (!fileFlags.includes(flag)) {
-                fileFlags.push(flag);
-              }
-            }
-          }
+          // (the flags of this copy, RFC 5232 section 5)
+          const fileFlags = action.flags || [];
 
           applied.filed.push({
             mailbox: action.mailbox,
@@ -615,7 +641,7 @@ class SieveFilterHandler {
       action.handle
     );
 
-    const interval = action.seconds || (action.days || 7) * 86_400;
+    const interval = action.seconds ?? (action.days || 7) * 86_400;
 
     if (this.vacationStore) {
       const lastResponse = await this.vacationStore.get(vacationKey);
@@ -631,8 +657,13 @@ class SieveFilterHandler {
     const response = {
       to: senderAddress,
       from: action.from || context.userAddress,
+      // RFC 5230 section 5.3
       subject:
-        action.subject || `Re: ${message.headers?.subject || 'Your message'}`,
+        typeof action.subject === 'string'
+          ? action.subject
+          : message.headers?.subject
+          ? `Auto: ${message.headers.subject}`
+          : 'Automated reply',
       inReplyTo: message.headers?.['message-id'],
       references: message.headers?.['message-id'],
       autoSubmitted: 'auto-replied',

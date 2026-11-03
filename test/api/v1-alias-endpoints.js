@@ -1422,6 +1422,64 @@ Test`.trim()
   t.is(res.body.subject, `${emoji('blush')} testing this`);
 });
 
+//
+// An alias without IMAP only sends mail: it sends with the API as it does
+// with SMTP, and reads its account, every time (not only once its "IMAP not
+// enabled" email was sent), and still cannot open its mailbox (contacts,
+// calendars, messages).
+//
+test('an alias without IMAP sends email with alias auth', async (t) => {
+  const { api } = t.context;
+  const { alias, domain, pass } = await createTestAlias(t);
+  await Aliases.findByIdAndUpdate(alias._id, { $set: { has_imap: false } });
+  const auth = createAliasAuth(`${alias.name}@${domain.name}`, pass);
+
+  for (let i = 0; i < 2; i++) {
+    const res = await api
+      .post('/v1/emails')
+      .set('Authorization', auth)
+      .set('Accept', 'application/json')
+      .send({
+        from: `${alias.name}@${domain.name}`,
+        to: 'foo@bar.com',
+        subject: `test ${i}`,
+        text: 'test'
+      });
+    t.is(res.status, 200, `send ${i}: ${res.text}`);
+  }
+
+  const list = await api
+    .get('/v1/emails')
+    .set('Authorization', auth)
+    .set('Accept', 'application/json');
+  t.is(list.status, 200, `${list.text}`);
+  t.is(list.body.length, 2);
+
+  const limit = await api
+    .get('/v1/emails/limit')
+    .set('Authorization', auth)
+    .set('Accept', 'application/json');
+  t.is(limit.status, 200, `${limit.text}`);
+
+  // (nor its account settings, which need no IMAP either)
+  for (let i = 0; i < 2; i++) {
+    const account = await api
+      .get('/v1/account')
+      .set('Authorization', auth)
+      .set('Accept', 'application/json');
+    t.is(account.status, 200, `${account.text}`);
+    t.is(account.body.has_imap, false);
+  }
+
+  for (const path of ['/v1/contacts', '/v1/calendars', '/v1/messages']) {
+    const res = await api
+      .get(path)
+      .set('Authorization', auth)
+      .set('Accept', 'application/json');
+    t.is(res.status, 401, `${path}: ${res.text}`);
+  }
+});
+
 test('alias auth cannot send email as another alias or a non-existent address', async (t) => {
   const { api } = t.context;
   // the alias owner is a domain admin, which must not widen what the alias can send as

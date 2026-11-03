@@ -42,6 +42,10 @@ const {
 } = require('#helpers/otp-remember-me');
 const _ = require('#helpers/lodash');
 const regenerateSessionOnLogin = require('#helpers/regenerate-session-on-login');
+const {
+  checkOAuthSession,
+  rememberReplacedGrants
+} = require('#helpers/oauth-session-revocation');
 const useVerifiedProviderEmails = require('#helpers/passport-verified-email');
 
 const Users = require('#models/users');
@@ -772,10 +776,14 @@ module.exports = (redis) => ({
         return next();
       // redirect
       ctx.status = 301;
-      let port;
+      let port = '';
       if (ctx.host.split(':').length === 2) port = ':' + ctx.host.split(':')[1];
       ctx.redirect(`${ctx.protocol}://${config.webHost}${port}${ctx.url}`);
     });
+
+    // a session signed in with Google or GitHub ends once the user revokes
+    // this application at the provider
+    app.use(checkOAuthSession);
 
     // if user has OTP remember me then set on session
     // and/or
@@ -937,6 +945,7 @@ module.exports = (redis) => ({
   },
   hookBeforePassport(app) {
     useVerifiedProviderEmails(app.context.passport);
+    rememberReplacedGrants(app.context.passport);
 
     app.use(async (ctx, next) => {
       if (!ctx.api && ctx.method === 'GET' && ctx.accepts('html')) {

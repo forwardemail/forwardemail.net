@@ -23,6 +23,7 @@ const { isWithinGracePeriod } = require('#helpers/is-within-grace-period');
 const logger = require('#helpers/logger');
 const parseHostFromDomainOrAddress = require('#helpers/parse-host-from-domain-or-address');
 const parseUsername = require('#helpers/parse-username');
+const getUsernameVariants = require('#helpers/get-username-variants');
 
 //
 // Permanent rejections that mean the destination itself is broken and that
@@ -218,6 +219,25 @@ async function getRecipients(bounce, resolver) {
     .populate('user', USER_FIELDS)
     .lean()
     .exec();
+
+  // (or named with another form of the name, e.g. decomposed, see #619)
+  if (!alias) {
+    const names = getUsernameVariants(
+      parseUsername.parseUnicodeUsername(bounce.address)
+    );
+    [alias] = getUsernameVariants.filterPreferredAliases(
+      await Aliases.find({
+        domain: domain._id,
+        name: { $in: getUsernameVariants.getQueryNames(names) }
+      })
+        .select(aliasFields)
+        .populate('user', USER_FIELDS)
+        .lean()
+        .exec(),
+      names,
+      parseUsername.parseLocalPart(bounce.address)
+    );
+  }
 
   // mail to an address without its own alias is handled by the catch-all
   if (!alias)

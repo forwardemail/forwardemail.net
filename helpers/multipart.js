@@ -22,6 +22,7 @@
 // It also gives every parser finite limits (multer has none by default).
 //
 
+const { Buffer } = require('node:buffer');
 const path = require('node:path');
 
 const Boom = require('@hapi/boom');
@@ -174,6 +175,123 @@ function settleOnAbort(middleware) {
   };
 }
 
+//
+// Limit on the whole multipart body. multer only limits each field, file
+// and count, so a body of 200 fields of 1 MB (sent before authentication,
+// then held open) kept about 400 MB per request in memory. A body that
+// declares a larger Content-Length is refused before it is read, and one
+// sent without (chunked) is cut off once it goes over.
+//
+const DEFAULT_MAX_TOTAL_BYTES = 10 * 1024 * 1024;
+
+//
+// Closing a socket while the client is still sending makes the kernel answer
+// with a reset, and a client that gets the reset first (macOS) never reads
+// the 413 written just before it. So the rest of the body is read and
+// thrown away for a short while after the answer, and then the connection
+// is closed (a "lingering close", as nginx does).
+//
+const LINGER_MS = 2000;
+
+function lingerThenClose(req) {
+  const { socket } = req;
+  // (Node ends and destroys a `Connection: close` socket as soon as the
+  // answer is written; only end it, so it keeps reading until we close it)
+  socket.destroySoon = () => socket.end();
+  // (a body that goes on is cut off after LINGER_MS)
+  const timer = setTimeout(() => socket.destroy(), LINGER_MS);
+  timer.unref();
+  socket.once('close', () => clearTimeout(timer));
+  // (a body that ends is closed once the answer is out)
+  req.once('end', () => {
+    if (socket.writableFinished) socket.destroy();
+    else socket.once('finish', () => socket.destroy());
+  });
+  req.resume();
+}
+
+//
+// Answer 413 and close the connection once the answer is out, reading what
+// the client still sends for a short while (see lingerThenClose)
+//
+function sendTooLarge(req, res, maxTotalBytes) {
+  const body = JSON.stringify(
+    Boom.entityTooLarge(
+      `Request body exceeds the maximum size of ${maxTotalBytes} bytes.`
+    ).output.payload
+  );
+  res.writeHead(413, {
+    'Content-Type': 'application/json; charset=utf-8',
+    'Content-Length': Buffer.byteLength(body),
+    Connection: 'close'
+  });
+  lingerThenClose(req);
+  res.end(body);
+}
+
+function limitTotalSize(middleware, maxTotalBytes) {
+  return async function (ctx, next) {
+    // (multer only reads multipart bodies)
+    if (!ctx.is('multipart')) return middleware(ctx, next);
+
+    const { req, res } = ctx;
+
+    //
+    // A body that says it is larger is refused before it is read (but read
+    // and thrown away while the answer goes out, as below: a client still
+    // sending it got a broken pipe rather than the 413 on macOS)
+    //
+    const declared = ctx.get('content-length');
+    if (/^\d+$/.test(declared) && Number(declared) > maxTotalBytes) {
+      ctx.respond = false;
+      sendTooLarge(req, res, maxTotalBytes);
+      return;
+    }
+
+    let received = 0;
+    let exceeded = false;
+    //
+    // (multer is cut off from the body, so it may never settle: a body that
+    // ends while the rest of it is read reads as a body multer got whole, so
+    // the abort above does not settle it either; the request is done here)
+    //
+    let onExceeded;
+    const cutOff = new Promise((resolve) => {
+      onExceeded = resolve;
+    });
+    const onData = (chunk) => {
+      received += chunk.length;
+      if (exceeded || received <= maxTotalBytes) return;
+      exceeded = true;
+      onExceeded();
+      req.unpipe();
+      // (answered here and the connection closed once the answer is out:
+      // the rest of a chunked body could go on without end, and closing the
+      // connection first left no way to send the 413)
+      if (res.headersSent) {
+        req.destroy();
+        return;
+      }
+
+      sendTooLarge(req, res, maxTotalBytes);
+    };
+
+    // (attached in the same tick multer pipes the request into its parser,
+    // so both see every chunk)
+    req.on('data', onData);
+    try {
+      await Promise.race([middleware(ctx, next), cutOff]);
+    } catch (err) {
+      if (!exceeded) throw err;
+    } finally {
+      req.removeListener('data', onData);
+    }
+
+    // (the 413 is already sent)
+    if (exceeded) ctx.respond = false;
+  };
+}
+
 /**
  * Create a @koa/multer instance with finite limits.
  *
@@ -182,17 +300,22 @@ function settleOnAbort(middleware) {
  * @param {Object} [settings]
  * @param {boolean} [settings.rawErrors] - rethrow MulterError as is, for a
  *   route that maps multer's error codes to its own messages
+ * @param {number} [settings.maxTotalBytes] - limit on the whole body
  * @returns {Object} the @koa/multer instance
  */
-function createMultipart(options = {}, { rawErrors = false } = {}) {
+function createMultipart(
+  options = {},
+  { rawErrors = false, maxTotalBytes = DEFAULT_MAX_TOTAL_BYTES } = {}
+) {
   const upload = koaMulter({
     ...options,
     limits: { ...DEFAULT_LIMITS, ...options.limits }
   });
 
   const wrap = rawErrors
-    ? settleOnAbort
-    : (middleware) => toBadRequest(settleOnAbort(middleware));
+    ? (middleware) => limitTotalSize(settleOnAbort(middleware), maxTotalBytes)
+    : (middleware) =>
+        limitTotalSize(toBadRequest(settleOnAbort(middleware)), maxTotalBytes);
 
   return {
     none: () => wrap(upload.none()),

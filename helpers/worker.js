@@ -34,7 +34,6 @@ const parseErr = require('parse-err');
 const safeStringify = require('fast-safe-stringify');
 const { encode } = require('html-entities');
 const sharedConfig = require('@ladjs/shared-config');
-const splitLines = require('split-lines');
 const {
   GetObjectCommand,
   CreateBucketCommand,
@@ -54,7 +53,7 @@ const appendContactsAndCalendarsToArchive = require('#helpers/append-contacts-an
 const Messages = require('#models/messages');
 const Indexer = require('#helpers/indexer');
 const ServerShutdownError = require('#helpers/server-shutdown-error');
-const asctime = require('#helpers/asctime');
+const formatMboxMessage = require('#helpers/format-mbox-message');
 const createArchiveThrottle = require('#helpers/archive-throttle');
 const checkDiskSpace = require('#helpers/check-disk-space');
 const closeDatabase = require('#helpers/close-database');
@@ -1701,14 +1700,14 @@ async function backup(payload) {
             // (waits for the archive to read the stream before writing more)
             await throttle.write(
               stream,
-              `From ${
+              formatMboxMessage(
                 message.mimeTree?.parsedHeader?.from?.find(
                   (obj) =>
                     typeof obj.address === 'string' && isEmail(obj.address)
-                )?.address || 'MAILER-DAEMON'
-              } ${asctime(new Date(message.hdate))}\n${splitLines(
-                content.trim()
-              ).join('\n')}\n\n`
+                )?.address || 'MAILER-DAEMON',
+                new Date(message.hdate),
+                content
+              )
             );
           }
 

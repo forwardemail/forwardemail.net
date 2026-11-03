@@ -1109,45 +1109,45 @@ sequenceDiagram
 
 | RFC 或 规范 | 能力 | 支持的行为 |
 | --- | --- | --- |
-| [RFC 5228](https://datatracker.ietf.org/doc/html/rfc5228) | Core Sieve | 支持 `keep`、`discard`、`stop`、条件块，以及基础的 `address`、`header`、`exists`、`size` 和布尔测试。`fileinto` 和 `redirect` 通过入站投递管道进行投递。 |
+| [RFC 5228](https://datatracker.ietf.org/doc/html/rfc5228) | Core Sieve, `encoded-character` | 支持 `keep`、`discard`、`stop`、条件块，以及基础的 `address`、`header`、`exists`、`size` 和布尔测试。`fileinto` 会将邮件存入所指定的每个文件夹。`redirect` 无需 `require`，通过出站队列发送；该队列只接受 From 为该别名、且所在域名启用了出站 SMTP 的邮件，其他邮件会保留在收件箱中。当要求 `encoded-character` 时，会解码 `${hex:...}` 和 `${unicode:...}`。 |
 | [RFC 5429](https://datatracker.ietf.org/doc/html/rfc5429) | `reject`, `ereject` | 使用所提供的消息进行 SMTP 拒绝。 |
-| [RFC 5230](https://datatracker.ietf.org/doc/html/rfc5230) | `vacation` | 启用带有滥用控制的休假自动回复。 |
+| [RFC 5230](https://datatracker.ietf.org/doc/html/rfc5230) | `vacation` | 启用带有滥用控制的休假自动回复，在每个 `:days` 周期内（默认 7 天）对每个发件人最多回复一次。 |
 | [RFC 6131](https://datatracker.ietf.org/doc/html/rfc6131) | `vacation-seconds` | `:seconds` 间隔控制休假回复的 TTL。 |
 | [RFC 5232](https://datatracker.ietf.org/doc/html/rfc5232) | `imap4flags` | 在邮箱存储期间应用标志。 |
 | [RFC 5173](https://datatracker.ietf.org/doc/html/rfc5173) | `body` | 消息正文内容匹配。 |
 | [RFC 5229](https://datatracker.ietf.org/doc/html/rfc5229) | `variables` | 变量展开及支持的修饰符。 |
 | [RFC 5231](https://datatracker.ietf.org/doc/html/rfc5231) | `relational` | 支持 `:count` 和 `:value` 比较。 |
-| [RFC 4790](https://datatracker.ietf.org/doc/html/rfc4790) | Comparators | 支持 `i;ascii-casemap` 和 `i;octet`。不公布 `i;ascii-numeric`。 |
+| [RFC 4790](https://datatracker.ietf.org/doc/html/rfc4790) | Comparators | 支持 `i;ascii-casemap`、`i;octet` 和 `i;ascii-numeric`。 |
 | [RFC 3894](https://datatracker.ietf.org/doc/html/rfc3894) | `copy` | 在 `fileinto` 和 `redirect` 上支持 `:copy`。 |
-| [RFC 5293](https://datatracker.ietf.org/doc/html/rfc5293) | `editheader` | 在存储之前更改头部，但受保护的身份验证和投递路由字段除外。 |
+| [RFC 5293](https://datatracker.ietf.org/doc/html/rfc5293) | `editheader` | 在存储之前更改头部，后续测试可见所做更改，但受保护的身份验证和投递路由字段、`Received` 和 `Auto-Submitted` 除外。 |
 | [RFC 5260](https://datatracker.ietf.org/doc/html/rfc5260) | `date`, `index` | 支持 `currentdate` 和头部日期测试，以及 `:index` 和 `:last`。 |
-| [RFC 5435](https://datatracker.ietf.org/doc/html/rfc5435) | `enotify` | 使用 `mailto:` 通知并带有速率限制。接受传统的 `require "notify"` 声明作为别名，但公布为 `enotify`。 |
+| [RFC 5435](https://datatracker.ietf.org/doc/html/rfc5435) | `enotify` | 使用 `mailto:` 通知并带有速率限制，绝不针对自动发送的邮件。接受传统的 `require "notify"` 声明作为别名，但公布为 `enotify`。 |
 | [RFC 5183](https://datatracker.ietf.org/doc/html/rfc5183) | `environment` | 支持的会话环境值。 |
-| [RFC 5490](https://datatracker.ietf.org/doc/html/rfc5490) | `mailbox` | 仅支持 `fileinto :create`。不支持实时的 `mailboxexists` 查询。 |
-| [RFC 8579](https://datatracker.ietf.org/doc/html/rfc8579) | `special-use` | 标准文件夹的 `:specialuse` 映射和确定性的 `specialuse_exists` 检查。 |
+| [RFC 5490](https://datatracker.ietf.org/doc/html/rfc5490) | `mailbox` | 支持 `fileinto :create` 和 `mailboxexists`，后者查询该别名的文件夹。 |
+| [RFC 8579](https://datatracker.ietf.org/doc/html/rfc8579) | `special-use` | `fileinto :specialuse` 投递到具有该特殊用途的文件夹，`specialuse_exists` 查询该别名的文件夹。 |
 | [RFC 7352](https://datatracker.ietf.org/doc/html/rfc7352) | `duplicate` | 基于 Redis 的重复投递检测。 |
-| [RFC 5463](https://datatracker.ietf.org/doc/html/rfc5463) | `ihave` | 检查一个宣告的能力是否可用。 |
+| [RFC 5463](https://datatracker.ietf.org/doc/html/rfc5463) | `ihave` | 检查一个宣告的能力是否可用，并支持 `error` 命令。 |
 | [RFC 5233](https://datatracker.ietf.org/doc/html/rfc5233) | `subaddress` | 支持地址的 `:user` 和 `:detail` 部分。 |
 | [draft-ietf-sieve-regex](https://datatracker.ietf.org/doc/html/draft-ietf-sieve-regex) | `regex` | 使用 [RE2](https://github.com/uhop/node-re2) 进行正则表达式匹配。 |
-| [RFC 5703](https://datatracker.ietf.org/doc/html/rfc5703) | `mime` | MIME 测试及 `foreverypart`、`break`、`extracttext` 和 `replace`。`enclose` 被拒绝，因为它没有安全的投递实现。 |
+| [RFC 5703](https://datatracker.ietf.org/doc/html/rfc5703) | `foreverypart`, `extracttext`, `replace`, `mime` | MIME 测试及 `foreverypart`、`break`、`extracttext` 和 `replace`。按照旧脚本的预期，`mime` 同样会启用这些命令。`enclose` 被拒绝，因为它没有安全的投递实现。 |
 
 #### 支持的 Sieve 扩展 {#supported-sieve-extensions}
 
 | 扩展 | 行为 | 投递或执行方式 |
 | --- | --- | --- |
-| `fileinto` | 将邮件归档到文件夹。 | 存储到所选的 IMAP 文件夹。`fileinto :create` 需要 `mailbox`。 |
+| `fileinto` | 将邮件归档到文件夹。 | 存储到所选的 IMAP 文件夹。`fileinto :create` 和 `mailboxexists` 需要 `mailbox`。 |
 | `copy` | 在添加 `fileinto` 或 `redirect` 的同时保留原始投递。 | 由投递管道应用。 |
-| `redirect` | 将副本或替换投递发送到另一个收件人。 | 按常规出站路径入队，受域策略、拒绝列表检查和速率限制约束。 |
+| `redirect` | 将邮件发送到另一个收件人。 | 对于 From 为该别名、且所在域名启用了出站 SMTP 的邮件，按常规出站路径入队，受域策略、拒绝列表检查和速率限制约束。其他邮件会保留在收件箱中。 |
 | `reject` / `ereject` | 使用 SMTP 错误拒绝邮件。 | 通过 MX 投递路径返回。 |
 | `vacation` / `vacation-seconds` | 发送自动回复。 | 带有收件人和时间间隔的速率限制后入队。 |
 | `imap4flags` | 设置或测试 IMAP 标志。 | 在消息存储时应用。 |
-| `envelope`, `body`, `date`, `index`, `regex`, `subaddress`, `relational` | 测试消息和信封数据。 | 由 Sieve 引擎评估。 |
+| `envelope`, `body`, `date`, `index`, `regex`, `subaddress`, `relational`, `comparator-i;ascii-numeric` | 测试消息和信封数据。 | 由 Sieve 引擎评估。 |
 | `variables`, `duplicate`, `ihave` | 存储值、检测重复并检查能力。 | 变量为脚本本地；重复状态使用 Redis。 |
-| `editheader` | 添加或删除非受保护的头部。 | 不能修改身份验证和投递路由头部。 |
+| `editheader` | 添加或删除非受保护的头部。 | 不能修改身份验证和投递路由头部、`Received` 和 `Auto-Submitted`。 |
 | `enotify` | 使用 `mailto:` 发送通知。 | 带有通知速率限制后入队。 |
 | `environment` | 读取受支持的会话环境数据。 | 由 Sieve 引擎评估。 |
-| `special-use` | 指向标准用途文件夹。 | 映射标准文件夹并提供确定性的 `specialuse_exists` 结果。 |
-| `mime` | 检查并更改受支持的 MIME 部分。 | 需要通用的 `mime` 能力。不单独公布 RFC 5703 的各个命令。 |
+| `special-use` | 指向标准用途文件夹。 | 投递到并查询该别名的特殊用途文件夹。 |
+| `foreverypart`, `extracttext`, `replace`, `mime` | 检查并更改受支持的 MIME 部分。 | 由 Sieve 引擎评估。按照旧脚本的预期，`mime` 同样会启用这三个命令。 |
 
 #### 不支持的 Sieve 功能 {#sieve-extensions-not-supported}
 
@@ -1156,11 +1156,9 @@ sequenceDiagram
 | 功能 | RFC 或 规范 | 原因 |
 | --- | --- | --- |
 | `enclose` | [RFC 5703](https://datatracker.ietf.org/doc/html/rfc5703) | 创建一个包含原始消息的新邮件在端到端上无法安全实现。 |
-| `mailboxexists` | [RFC 5490](https://datatracker.ietf.org/doc/html/rfc5490) | 无法进行实时的 IMAP 邮箱状态查询。 |
 | `include` | [RFC 6609](https://datatracker.ietf.org/doc/html/rfc6609) | 不提供全局和包含脚本的存储。 |
 | `mboxmetadata` / `servermetadata` | [RFC 5490](https://datatracker.ietf.org/doc/html/rfc5490) | 不支持 IMAP METADATA 集成。 |
 | `fcc` | [RFC 8580](https://datatracker.ietf.org/doc/html/rfc8580) | 不支持已发送邮件的归档集成。 |
-| `encoded-character` | [RFC 5228](https://datatracker.ietf.org/doc/html/rfc5228) | 未实现 `${hex:...}` 语法。 |
 | External lists | [RFC 6134](https://datatracker.ietf.org/doc/html/rfc6134) | 不支持 `valid_ext_list` 和其他外部列表操作。 |
 
 #### Sieve 处理流程 {#sieve-processing-flow}
@@ -1197,7 +1195,7 @@ sequenceDiagram
 
 #### 安全功能 {#security-features}
 
-Forward Email 在脚本被存储、激活或执行之前会对完整脚本进行验证。它会拒绝未声明或不可用的能力，限制脚本大小和 MIME 部分迭代，使用 [RE2](https://github.com/uhop/node-re2) 进行正则表达式匹配，对重定向、休假回复和通知进行速率限制，拒绝不安全的重定向目标，并防止 `editheader` 更改身份验证或投递路由头部。重定向和休假速率限制状态保存在 [Redis](https://github.com/redis/redis)，而已投递邮件则存储在 [SQLite](https://github.com/sqlite/sqlite)。
+Forward Email 在脚本被存储、激活或执行之前会对完整脚本进行验证。它会拒绝未声明或不可用的能力，限制脚本大小和 MIME 部分迭代，使用 [RE2](https://github.com/uhop/node-re2) 进行正则表达式匹配，对重定向、休假回复和通知进行速率限制，拒绝不安全的重定向目标，并防止 `editheader` 更改身份验证或投递路由头部、`Received` 或 `Auto-Submitted`。运行时间过长，或创建过多操作、标记或变量的脚本会被停止，邮件会被保留。重定向和休假速率限制状态保存在 [Redis](https://github.com/redis/redis)，而已投递邮件则存储在 [SQLite](https://github.com/sqlite/sqlite)。
 
 #### 示例 Sieve 脚本 {#example-sieve-scripts}
 
@@ -1233,8 +1231,6 @@ if header :contains "X-Spam-Status" "Yes" {
 **重定向发票：**
 
 ```sieve
-require ["redirect"];
-
 if header :contains "Subject" "invoice" {
     redirect "recipient@example.com";
 }
@@ -1260,7 +1256,7 @@ Forward Email 提供完整的 ManageSieve 协议支持，用于远程管理筛�
 | **服务器**              | `imap.forwardemail.net` |
 | **端口（STARTTLS）**     | `2190`（推荐）          |
 | **端口（隐式 TLS）**     | `4190`                  |
-| **认证方式**            | PLAIN（通过 TLS）       |
+| **认证方式**            | PLAIN 和 LOGIN（通过 TLS） |
 
 > **注意：** 端口 2190 使用 STARTTLS（从明文升级到 TLS），兼容大多数 ManageSieve 客户端，包括 [sieve-connect](https://github.com/philpennock/sieve-connect)。端口 4190 使用隐式 TLS（连接开始即 TLS），适用于支持该方式的客户端。
 
@@ -1268,7 +1264,8 @@ Forward Email 提供完整的 ManageSieve 协议支持，用于远程管理筛�
 
 | 命令           | 描述                                   |
 | -------------- | -------------------------------------- |
-| `AUTHENTICATE` | 使用 PLAIN 机制进行认证                 |
+| `AUTHENTICATE` | 使用 PLAIN 或 LOGIN 机制进行认证         |
+| `STARTTLS`     | 在端口 2190 上将连接升级为 TLS            |
 | `CAPABILITY`   | 列出服务器功能和扩展                   |
 | `HAVESPACE`    | 检查是否有空间存储脚本                 |
 | `PUTSCRIPT`    | 上传新脚本                            |

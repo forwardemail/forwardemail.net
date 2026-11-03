@@ -315,6 +315,40 @@ test('rejects WebSocket credentials in query parameters', async (t) => {
   );
 });
 
+//
+// A page on another site cannot set the Authorization header on a WebSocket
+// handshake, so one that arrives with it was added by the browser (Basic
+// credentials it remembered from its login prompt): the connection is made
+// without them, as it would be from that page without them.
+//
+test('does not use credentials a browser sent for another site', async (t) => {
+  const { apiURL } = t.context;
+  const { alias, domain, pass } = await createTestAlias(t);
+  const wsURL = apiURL.replace(/^http/, 'ws') + '/v1/ws';
+
+  const ambient = await connectWebSocket(wsURL, {
+    Authorization: createAliasAuth(`${alias.name}@${domain.name}`, pass),
+    'Sec-Fetch-Site': 'cross-site',
+    'Sec-Fetch-Mode': 'websocket',
+    Origin: 'https://attacker.example'
+  });
+  t.context._openWebSockets.push(ambient);
+  const welcome = await waitForMessage(ambient);
+  t.is(welcome.event, 'connected');
+  t.is(welcome.broadcastOnly, true);
+  t.falsy(welcome.aliasId);
+
+  // (the same credentials from a page on the same site still connect)
+  const ws = await connectWebSocket(wsURL, {
+    Authorization: createAliasAuth(`${alias.name}@${domain.name}`, pass),
+    'Sec-Fetch-Site': 'same-site',
+    'Sec-Fetch-Mode': 'websocket'
+  });
+  t.context._openWebSockets.push(ws);
+  const msg = await waitForMessage(ws);
+  t.is(msg.aliasId, alias.id);
+});
+
 test('establishes WebSocket connection with alias auth', async (t) => {
   const { apiURL } = t.context;
   const { alias, domain, pass } = await createTestAlias(t);
@@ -359,6 +393,45 @@ function waitForClose(ws, timeoutMs = 10_000) {
     });
   });
 }
+
+//
+// Each fragment of an unfinished message is kept until the message ends, so
+// a peer sending tiny (or empty) fragments could make the server hold
+// millions of them (GHSA-96hv-2xvq-fx4p, fixed in ws 8.21).
+//
+test('closes a connection that sends too many message fragments', async (t) => {
+  const { apiURL } = t.context;
+  const wsURL = apiURL.replace(/^http/, 'ws') + '/v1/ws';
+
+  const ws = await connectWebSocket(wsURL, {});
+  t.context._openWebSockets.push(ws);
+  const msg = await waitForMessage(ws);
+  t.is(msg.event, 'connected');
+
+  const closed = waitForClose(ws);
+  for (let i = 0; i < 20_000; i++) {
+    ws.send('', { fin: false });
+  }
+
+  t.is(await closed, 1008);
+});
+
+// A typed array reason other than a Buffer used to be copied into an
+// uninitialized buffer only partly, sending stale memory to the peer
+// (GHSA-58qx-3vcg-4xpx, fixed in ws 8.20.1).
+test('refuses a close reason that is not a string or bytes', async (t) => {
+  const { apiURL } = t.context;
+  const wsURL = apiURL.replace(/^http/, 'ws') + '/v1/ws';
+
+  const ws = await connectWebSocket(wsURL, {});
+  t.context._openWebSockets.push(ws);
+  await waitForMessage(ws);
+
+  t.throws(() => ws.close(1000, new Uint16Array(8)), {
+    instanceOf: TypeError
+  });
+  ws.close();
+});
 
 // ─── First-Message Authentication (?auth=message) ─────────────────────────
 

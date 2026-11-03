@@ -11,6 +11,8 @@ Tato část dokumentuje pracovní postup CI/CD pro samoobslužné řešení Forw
 * [Proces nasazení](#deployment-process)
   * [Instalace](#installation)
   * [Konfigurace Docker Compose](#docker-compose-configuration)
+  * [Doručování do domén hostovaných na stejném serveru](#delivery-to-domains-hosted-on-the-same-server)
+  * [Ukončení relací při odvolání přístupu u Googlu nebo GitHubu](#ending-sessions-when-google-or-github-access-is-revoked)
 * [Funkce údržby](#maintenance-features)
   * [Automatické aktualizace](#automatic-updates)
   * [Zálohování a obnovení](#backup-and-restore)
@@ -121,6 +123,30 @@ Soubor `docker-compose-self-hosted.yml` definuje všechny služby potřebné pro
 * **SQLite**: Databáze pro ukládání e-mailů
 
 Každá služba používá stejný obraz Dockeru, ale s různými vstupními body, což umožňuje modulární architekturu a zároveň zjednodušuje údržbu.
+
+### Doručování do domén hostovaných na stejném serveru {#delivery-to-domains-hosted-on-the-same-server}
+
+Odchozí pošta se nedoručuje na server MX s adresou, která patří samotnému serveru. Pokud jeden server hostuje více domén a jejich záznamy MX ukazují na jeho veřejnou adresu, pošta z jedné z těchto domén do jiné je odmítnuta.
+
+Chcete-li to povolit, nastavte:
+
+```env
+SMTP_ALLOW_LOCAL_MX=true
+```
+
+Výchozí hodnota je `false` a nastavení platí jen při `SELF_HOSTED=true`. Pošta se i nadále nikdy nedoručuje na adresy loopback, soukromé, link-local ani na adresy NAT na úrovni operátora (CGNAT).
+
+### Ukončení relací při odvolání přístupu u Googlu nebo GitHubu {#ending-sessions-when-google-or-github-access-is-revoked}
+
+Při vlastním hostování se relace přihlášené přes Google nebo GitHub ve výchozím nastavení u poskytovatele neověřují: odvolání přístupu této aplikace u něj je neodhlásí a zůstávají přihlášené, dokud nevyprší.
+
+Chcete-li je ukončit, jakmile je přístup odvolán, nastavte:
+
+```env
+AUTH_OAUTH_REVOCATION_CHECK=true
+```
+
+Poskytovatel je pak dotazován na pozadí, zhruba každých 5 minut (každou minutu, dokud neodpovídá). Výpadek u poskytovatele nikoho neodhlásí a nikoho neodhlásí ani token, který poskytovatel nikdy nepřijal.
 
 ## Funkce údržby {#maintenance-features}
 

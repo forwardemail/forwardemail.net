@@ -62,6 +62,47 @@ test('a header with a long whitespace run is processed in linear time', (t) => {
   t.true(elapsed < 500, `took ${elapsed}ms`);
 });
 
+test('many folded header lines are processed in linear time', (t) => {
+  // 60k folded headers (about 540 KB); unfolding with `splice()` was
+  // quadratic in the number of lines and took tens of seconds
+  const headers = parse(
+    'Subject: hi\r\n' + 'X-Fold: a\r\n b\r\n'.repeat(60_000) + '\r\n'
+  );
+  const start = Date.now();
+  const { headers: all, repeated } = getHeaders.getHeadersWithRepeats(headers);
+  t.is(getHeaders(headers, 'from'), undefined);
+  const elapsed = Date.now() - start;
+  t.is(all.Subject, 'hi');
+  t.is(all['X-Fold'], 'a b');
+  t.is(repeated['X-Fold'].length, 60_000);
+  t.true(elapsed < 3000, `took ${elapsed}ms`);
+});
+
+test('a long run of bare CR characters is processed in linear time', (t) => {
+  // trimming trailing line breaks with `/[\r\n]+$/` backtracked
+  // quadratically on this (160 KB took about a minute)
+  const headers = parse(
+    'Subject: a' +
+      '\r'.repeat(200_000) +
+      'b\r\nFrom: x@example.com\r\n' +
+      '\r'.repeat(200_000) +
+      '\r\n\r\n'
+  );
+  const start = Date.now();
+  const all = getHeaders(headers);
+  const elapsed = Date.now() - start;
+  t.is(all.From, 'x@example.com');
+  t.true(all.Subject.startsWith('a\r'));
+  t.true(elapsed < 1000, `took ${elapsed}ms`);
+});
+
+test('a leading mbox "From " line is dropped, with its folded lines', (t) => {
+  const headers = parse(
+    'From sender@example.com Mon Jan  1 00:00:00 2024\r\n x\r\nSubject: hi\r\n\r\n'
+  );
+  t.deepEqual(getHeaders(headers), { Subject: 'hi' });
+});
+
 const DUPLICATES = [
   'DKIM-Signature: v=1; a=rsa-sha256; d=amazonses.com; s=one;',
   '  b=first',

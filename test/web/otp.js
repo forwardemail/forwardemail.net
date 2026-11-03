@@ -416,6 +416,25 @@ test('POST otp/keys > invalid recovery key', async (t) => {
   t.is(JSON.parse(res.text).message, phrases.INVALID_RECOVERY_KEY);
 });
 
+test('POST otp/keys > a recovery key works only once when sent twice at once', async (t) => {
+  const { web, user } = t.context;
+  user[config.userFields.otpRecoveryKeys] = ['1', '2', '3'];
+  await user.save();
+
+  const responses = await Promise.all(
+    Array.from({ length: 5 }, () =>
+      web.post(`/en${config.otpRoutePrefix}/keys`).send({ recovery_key: '1' })
+    )
+  );
+  t.deepEqual(
+    responses.map((res) => res.status).sort(),
+    [302, 400, 400, 400, 400]
+  );
+
+  const query = await Users.findOne({ email: user.email });
+  t.deepEqual([...query[config.userFields.otpRecoveryKeys]], ['2', '3']);
+});
+
 test('POST otp/keys > recovery keys reset', async (t) => {
   // get test server
   const { web, user } = t.context;

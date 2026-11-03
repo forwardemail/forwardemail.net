@@ -1109,45 +1109,45 @@ sequenceDiagram
 
 | RFC หรือข้อกำหนด | ความสามารถ | พฤติกรรมที่รองรับ |
 | --- | --- | --- |
-| [RFC 5228](https://datatracker.ietf.org/doc/html/rfc5228) | Core Sieve | `keep`, `discard`, `stop`, บล็อกตามเงื่อนไข และการทดสอบพื้นฐาน `address`, `header`, `exists`, `size` และการทดสอบบูลีน. `fileinto` และ `redirect` ถูกส่งผ่านท่อจัดส่งขาเข้า. |
+| [RFC 5228](https://datatracker.ietf.org/doc/html/rfc5228) | Core Sieve, `encoded-character` | `keep`, `discard`, `stop`, บล็อกตามเงื่อนไข และการทดสอบพื้นฐาน `address`, `header`, `exists`, `size` และการทดสอบบูลีน. `fileinto` จัดเก็บข้อความลงในทุกโฟลเดอร์ที่ระบุ. `redirect` ไม่ต้องใช้ `require` และถูกส่งผ่านคิวขาออก ซึ่งรับเฉพาะข้อความที่มี From เป็นนามแฝง บนโดเมนที่มี SMTP ขาออก ส่วนข้อความอื่นจะถูกเก็บไว้ในกล่องจดหมายเข้า. `${hex:...}` และ `${unicode:...}` จะถูกถอดรหัสเมื่อมีการร้องขอ `encoded-character`. |
 | [RFC 5429](https://datatracker.ietf.org/doc/html/rfc5429) | `reject`, `ereject` | การปฏิเสธแบบ SMTP พร้อมข้อความที่ระบุ. |
-| [RFC 5230](https://datatracker.ietf.org/doc/html/rfc5230) | `vacation` | การตอบกลับแบบ vacation ถูกจัดคิวพร้อมการควบคุมการละเมิด. |
+| [RFC 5230](https://datatracker.ietf.org/doc/html/rfc5230) | `vacation` | การตอบกลับแบบ vacation ถูกจัดคิวพร้อมการควบคุมการละเมิด สูงสุดหนึ่งครั้งต่อผู้ส่งในแต่ละช่วง `:days` (ค่าเริ่มต้น 7 วัน). |
 | [RFC 6131](https://datatracker.ietf.org/doc/html/rfc6131) | `vacation-seconds` | ช่วงเวลา `:seconds` ควบคุม TTL ของการตอบกลับ vacation. |
 | [RFC 5232](https://datatracker.ietf.org/doc/html/rfc5232) | `imap4flags` | แฟลกถูกนำไปใช้ระหว่างการเก็บในกล่องจดหมาย. |
 | [RFC 5173](https://datatracker.ietf.org/doc/html/rfc5173) | `body` | การจับคู่เนื้อหาของส่วนเนื้อข้อความ (message-body). |
 | [RFC 5229](https://datatracker.ietf.org/doc/html/rfc5229) | `variables` | การขยายตัวแปรและตัวดัดแปลงที่รองรับ. |
 | [RFC 5231](https://datatracker.ietf.org/doc/html/rfc5231) | `relational` | การเปรียบเทียบ `:count` และ `:value`. |
-| [RFC 4790](https://datatracker.ietf.org/doc/html/rfc4790) | Comparators | รองรับ `i;ascii-casemap` และ `i;octet`. `i;ascii-numeric` ไม่ได้ประกาศ. |
+| [RFC 4790](https://datatracker.ietf.org/doc/html/rfc4790) | Comparators | รองรับ `i;ascii-casemap`, `i;octet` และ `i;ascii-numeric`. |
 | [RFC 3894](https://datatracker.ietf.org/doc/html/rfc3894) | `copy` | รองรับ `:copy` บน `fileinto` และ `redirect`. |
-| [RFC 5293](https://datatracker.ietf.org/doc/html/rfc5293) | `editheader` | การเปลี่ยนแปลงเฮดเดอร์ก่อนการเก็บ โดยยกเว้นฟิลด์การพิสูจน์ตัวตนและการกำหนดเส้นทางการส่งที่ได้รับการป้องกัน. |
+| [RFC 5293](https://datatracker.ietf.org/doc/html/rfc5293) | `editheader` | การเปลี่ยนแปลงเฮดเดอร์ก่อนการเก็บ ซึ่งการทดสอบถัดไปจะเห็นผล โดยยกเว้นฟิลด์การพิสูจน์ตัวตนและการกำหนดเส้นทางการส่งที่ได้รับการป้องกัน `Received` และ `Auto-Submitted`. |
 | [RFC 5260](https://datatracker.ietf.org/doc/html/rfc5260) | `date`, `index` | การทดสอบ `currentdate` และวันที่ในเฮดเดอร์ รวมถึง `:index` และ `:last`. |
-| [RFC 5435](https://datatracker.ietf.org/doc/html/rfc5435) | `enotify` | การแจ้งเตือนแบบ `mailto:` พร้อมจำกัดอัตรา. คำประกาศเก่า `require "notify"` ยอมรับเป็นชื่อเรียกแทน แต่ประกาศความสามารถเป็น `enotify`. |
+| [RFC 5435](https://datatracker.ietf.org/doc/html/rfc5435) | `enotify` | การแจ้งเตือนแบบ `mailto:` พร้อมจำกัดอัตรา และไม่ส่งสำหรับข้อความอัตโนมัติ. คำประกาศเก่า `require "notify"` ยอมรับเป็นชื่อเรียกแทน แต่ประกาศความสามารถเป็น `enotify`. |
 | [RFC 5183](https://datatracker.ietf.org/doc/html/rfc5183) | `environment` | ค่าต่างๆ ของสภาพแวดล้อมเซสชันที่รองรับ. |
-| [RFC 5490](https://datatracker.ietf.org/doc/html/rfc5490) | `mailbox` | รองรับเฉพาะ `fileinto :create`. การสืบค้น `mailboxexists` แบบสดไม่รองรับ. |
-| [RFC 8579](https://datatracker.ietf.org/doc/html/rfc8579) | `special-use` | การแมปโฟลเดอร์มาตรฐานด้วย `:specialuse` และการตรวจสอบ `specialuse_exists` แบบกำหนดผลลัพธ์ได้. |
+| [RFC 5490](https://datatracker.ietf.org/doc/html/rfc5490) | `mailbox` | รองรับ `fileinto :create` และ `mailboxexists` ซึ่งตรวจสอบโฟลเดอร์ของนามแฝง. |
+| [RFC 8579](https://datatracker.ietf.org/doc/html/rfc8579) | `special-use` | `fileinto :specialuse` จัดเก็บลงโฟลเดอร์ที่มีการใช้งานพิเศษนั้น และ `specialuse_exists` ตรวจสอบโฟลเดอร์ของนามแฝง. |
 | [RFC 7352](https://datatracker.ietf.org/doc/html/rfc7352) | `duplicate` | การตรวจจับการส่งซ้ำโดยใช้ Redis เป็นแบ็กเอนด์. |
-| [RFC 5463](https://datatracker.ietf.org/doc/html/rfc5463) | `ihave` | ตรวจสอบว่าความสามารถที่ประกาศนั้นใช้งานได้หรือไม่. |
+| [RFC 5463](https://datatracker.ietf.org/doc/html/rfc5463) | `ihave` | ตรวจสอบว่าความสามารถที่ประกาศนั้นใช้งานได้หรือไม่ และรองรับคำสั่ง `error`. |
 | [RFC 5233](https://datatracker.ietf.org/doc/html/rfc5233) | `subaddress` | ส่วนที่อยู่ `:user` และ `:detail`. |
 | [draft-ietf-sieve-regex](https://datatracker.ietf.org/doc/html/draft-ietf-sieve-regex) | `regex` | การจับคู่ด้วยนิพจน์ปกติโดยใช้ [RE2](https://github.com/uhop/node-re2). |
-| [RFC 5703](https://datatracker.ietf.org/doc/html/rfc5703) | `mime` | การทดสอบ MIME และ `foreverypart`, `break`, `extracttext`, และ `replace`. ปฏิเสธ `enclose` เนื่องจากไม่มีการใช้งานที่ปลอดภัยสำหรับการจัดส่งแบบครบวงจร. |
+| [RFC 5703](https://datatracker.ietf.org/doc/html/rfc5703) | `foreverypart`, `extracttext`, `replace`, `mime` | การทดสอบ MIME และ `foreverypart`, `break`, `extracttext`, และ `replace`. `mime` เปิดใช้คำสั่งเหล่านี้ด้วยตามที่สคริปต์รุ่นเก่าคาดหวัง. ปฏิเสธ `enclose` เนื่องจากไม่มีการใช้งานที่ปลอดภัยสำหรับการจัดส่งแบบครบวงจร. |
 
 #### ส่วนขยาย Sieve ที่รองรับ {#supported-sieve-extensions}
 
 | ส่วนขยาย | พฤติกรรม | การจัดส่งหรือการบังคับใช้ |
 | --- | --- | --- |
-| `fileinto` | จัดเก็บข้อความลงโฟลเดอร์. | ถูกเก็บในโฟลเดอร์ IMAP ที่เลือก. `fileinto :create` ต้องการ `mailbox`. |
+| `fileinto` | จัดเก็บข้อความลงโฟลเดอร์. | ถูกเก็บในโฟลเดอร์ IMAP ที่เลือก. `fileinto :create` และ `mailboxexists` ต้องการ `mailbox`. |
 | `copy` | คงการส่งต้นฉบับไว้พร้อมเพิ่ม `fileinto` หรือ `redirect`. | นำไปใช้โดยท่อจัดส่ง. |
-| `redirect` | ส่งสำเนาหรือส่งทดแทนไปยังผู้รับอื่น. | ถูกจัดคิวผ่านเส้นทางส่งออกปกติ ภายใต้ประมวลนโยบายโดเมน การตรวจสอบรายการปฏิเสธ และการจำกัดอัตรา. |
+| `redirect` | ส่งข้อความไปยังผู้รับอื่น. | ถูกจัดคิวผ่านเส้นทางส่งออกปกติสำหรับข้อความที่มี From เป็นนามแฝง บนโดเมนที่มี SMTP ขาออก ภายใต้นโยบายโดเมน การตรวจสอบรายการปฏิเสธ และการจำกัดอัตรา. ข้อความอื่นจะถูกเก็บไว้ในกล่องจดหมายเข้า. |
 | `reject` / `ereject` | ปฏิเสธข้อความด้วยข้อผิดพลาด SMTP. | ส่งกลับผ่านเส้นทางการจัดส่ง MX. |
 | `vacation` / `vacation-seconds` | ส่งการตอบกลับอัตโนมัติ. | จัดคิวพร้อมจำกัดอัตราตามผู้รับและช่วงเวลา. |
 | `imap4flags` | ตั้งค่าหรือทดสอบแฟลก IMAP. | นำไปใช้เมื่อตัวข้อความถูกเก็บ. |
-| `envelope`, `body`, `date`, `index`, `regex`, `subaddress`, `relational` | ทดสอบข้อมูลข้อความและซองจดหมาย. | ประเมินโดยเอนจิน Sieve. |
+| `envelope`, `body`, `date`, `index`, `regex`, `subaddress`, `relational`, `comparator-i;ascii-numeric` | ทดสอบข้อมูลข้อความและซองจดหมาย. | ประเมินโดยเอนจิน Sieve. |
 | `variables`, `duplicate`, `ihave` | จัดเก็บค่า ตรวจจับการซ้ำ และตรวจสอบความสามารถ. | ตัวแปรเป็นระดับสคริปต์; สถานะการซ้ำใช้ Redis. |
-| `editheader` | เพิ่มหรือลบเฮดเดอร์ที่ไม่ได้รับการปกป้อง. | เฮดเดอร์การพิสูจน์ตัวตนและการกำหนดเส้นทางการส่งไม่สามารถแก้ไขได้. |
+| `editheader` | เพิ่มหรือลบเฮดเดอร์ที่ไม่ได้รับการปกป้อง. | เฮดเดอร์การพิสูจน์ตัวตนและการกำหนดเส้นทางการส่ง `Received` และ `Auto-Submitted` ไม่สามารถแก้ไขได้. |
 | `enotify` | ส่งการแจ้งเตือนโดยใช้ `mailto:`. | จัดคิวพร้อมจำกัดอัตราการแจ้งเตือน. |
 | `environment` | อ่านข้อมูลสภาพแวดล้อมเซสชันที่รองรับ. | ประเมินโดยเอนจิน Sieve. |
-| `special-use` | จัดการกับโฟลเดอร์การใช้งานมาตรฐาน. | แมปโฟลเดอร์มาตรฐานและให้ผลลัพธ์ `specialuse_exists` แบบกำหนดได้. |
-| `mime` | ตรวจสอบและเปลี่ยนส่วน MIME ที่รองรับ. | ต้องการความสามารถทั่วไป `mime`. คำสั่ง RFC 5703 แต่ละคำสั่งไม่ได้ประกาศแยกกัน. |
+| `special-use` | จัดการกับโฟลเดอร์การใช้งานมาตรฐาน. | จัดเก็บลงและตรวจสอบโฟลเดอร์การใช้งานพิเศษของนามแฝง. |
+| `foreverypart`, `extracttext`, `replace`, `mime` | ตรวจสอบและเปลี่ยนส่วน MIME ที่รองรับ. | ประเมินโดยเอนจิน Sieve. `mime` เปิดใช้ทั้งสามคำสั่งด้วยตามที่สคริปต์รุ่นเก่าคาดหวัง. |
 
 #### ฟีเจอร์ Sieve ที่ไม่รองรับ {#sieve-extensions-not-supported}
 
@@ -1156,11 +1156,9 @@ sequenceDiagram
 | คุณสมบัติ | RFC หรือข้อกำหนด | เหตุผล |
 | --- | --- | --- |
 | `enclose` | [RFC 5703](https://datatracker.ietf.org/doc/html/rfc5703) | การสร้างข้อความใหม่ที่ห่อหุ้มข้อความต้นฉบับไม่มีการใช้งานที่ปลอดภัยแบบ end-to-end. |
-| `mailboxexists` | [RFC 5490](https://datatracker.ietf.org/doc/html/rfc5490) | การสืบค้นสถานะกล่องจดหมาย IMAP แบบสดไม่พร้อมใช้งาน. |
 | `include` | [RFC 6609](https://datatracker.ietf.org/doc/html/rfc6609) | การจัดเก็บสคริปต์ระดับโลกและสคริปต์ที่รวมอยู่ไม่พร้อมใช้งาน. |
 | `mboxmetadata` / `servermetadata` | [RFC 5490](https://datatracker.ietf.org/doc/html/rfc5490) | การบูรณาการ IMAP METADATA ไม่พร้อมใช้งาน. |
 | `fcc` | [RFC 8580](https://datatracker.ietf.org/doc/html/rfc8580) | การรวมระบบการจัดเก็บอีเมลที่ส่งแล้ว (sent-mail filing) ไม่พร้อมใช้งาน. |
-| `encoded-character` | [RFC 5228](https://datatracker.ietf.org/doc/html/rfc5228) | ไวยากรณ์ `${hex:...}` ยังไม่ได้ถูกใช้งาน. |
 | External lists | [RFC 6134](https://datatracker.ietf.org/doc/html/rfc6134) | `valid_ext_list` และการทำงานอื่นๆ กับรายการภายนอกไม่พร้อมใช้งาน. |
 
 #### Sieve processing flow {#sieve-processing-flow}
@@ -1197,7 +1195,7 @@ sequenceDiagram
 
 #### คุณสมบัติด้านความปลอดภัย {#security-features}
 
-Forward Email ตรวจสอบสคริปต์ทั้งหมดก่อนที่จะถูกเก็บ เปิดใช้งาน หรือนำไปประมวลผล โดยจะปฏิเสธความสามารถที่ไม่ได้ประกาศหรือไม่พร้อมใช้งาน จำกัดขนาดสคริปต์และการวนส่วน MIME ใช้ [RE2](https://github.com/uhop/node-re2) สำหรับการจับคู่แบบนิพจน์ปกติ จำกัดอัตราการส่งสำหรับ redirect, การตอบ vacation และการแจ้งเตือน ปฏิเสธจุดหมายปลายทาง redirect ที่ไม่ปลอดภัย และป้องกันไม่ให้ `editheader` เปลี่ยนแปลงเฮดเดอร์การพิสูจน์ตัวตนหรือการกำหนดเส้นทางการส่ง สถานะการจำกัดอัตราสำหรับ redirect และ vacation ถูกเก็บใน [Redis](https://github.com/redis/redis) ขณะที่อีเมลที่ส่งแล้วถูกเก็บด้วย [SQLite](https://github.com/sqlite/sqlite)
+Forward Email ตรวจสอบสคริปต์ทั้งหมดก่อนที่จะถูกเก็บ เปิดใช้งาน หรือนำไปประมวลผล โดยจะปฏิเสธความสามารถที่ไม่ได้ประกาศหรือไม่พร้อมใช้งาน จำกัดขนาดสคริปต์และการวนส่วน MIME ใช้ [RE2](https://github.com/uhop/node-re2) สำหรับการจับคู่แบบนิพจน์ปกติ จำกัดอัตราการส่งสำหรับ redirect, การตอบ vacation และการแจ้งเตือน ปฏิเสธจุดหมายปลายทาง redirect ที่ไม่ปลอดภัย และป้องกันไม่ให้ `editheader` เปลี่ยนแปลงเฮดเดอร์การพิสูจน์ตัวตนหรือการกำหนดเส้นทางการส่ง `Received` หรือ `Auto-Submitted` สคริปต์ที่ทำงานนานเกินไปหรือสร้างการกระทำ แฟล็ก หรือตัวแปรมากเกินไปจะถูกหยุด และข้อความจะถูกเก็บไว้ สถานะการจำกัดอัตราสำหรับ redirect และ vacation ถูกเก็บใน [Redis](https://github.com/redis/redis) ขณะที่อีเมลที่ส่งแล้วถูกเก็บด้วย [SQLite](https://github.com/sqlite/sqlite)
 
 #### ตัวอย่างสคริปต์ Sieve {#example-sieve-scripts}
 
@@ -1233,8 +1231,6 @@ if header :contains "X-Spam-Status" "Yes" {
 **เปลี่ยนเส้นทางใบแจ้งหนี้:**
 
 ```sieve
-require ["redirect"];
-
 if header :contains "Subject" "invoice" {
     redirect "recipient@example.com";
 }
@@ -1260,7 +1256,7 @@ Forward Email ให้การสนับสนุนโปรโตคอล
 | **Server**              | `imap.forwardemail.net` |
 | **Port (STARTTLS)**     | `2190` (แนะนำ)          |
 | **Port (Implicit TLS)** | `4190`                  |
-| **Authentication**      | PLAIN (ผ่าน TLS)        |
+| **Authentication**      | PLAIN และ LOGIN (ผ่าน TLS) |
 
 > **หมายเหตุ:** พอร์ต 2190 ใช้ STARTTLS (อัปเกรดจาก plain เป็น TLS) และเข้ากันได้กับไคลเอนต์ ManageSieve ส่วนใหญ่รวมถึง [sieve-connect](https://github.com/philpennock/sieve-connect) พอร์ต 4190 ใช้ implicit TLS (TLS ตั้งแต่เริ่มเชื่อมต่อ) สำหรับไคลเอนต์ที่รองรับ
 
@@ -1268,7 +1264,8 @@ Forward Email ให้การสนับสนุนโปรโตคอล
 
 | Command        | Description                             |
 | -------------- | --------------------------------------- |
-| `AUTHENTICATE` | ยืนยันตัวตนโดยใช้กลไก PLAIN           |
+| `AUTHENTICATE` | ยืนยันตัวตนโดยใช้กลไก PLAIN หรือ LOGIN |
+| `STARTTLS`     | อัปเกรดการเชื่อมต่อเป็น TLS บนพอร์ต 2190 |
 | `CAPABILITY`   | แสดงรายการความสามารถและส่วนขยายของเซิร์ฟเวอร์ |
 | `HAVESPACE`    | ตรวจสอบว่าสามารถเก็บสคริปต์ได้หรือไม่ |
 | `PUTSCRIPT`    | อัปโหลดสคริปต์ใหม่                    |

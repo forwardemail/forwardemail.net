@@ -385,6 +385,12 @@ class ApnsClient {
   // Always resolves; a timeout or dropped connection resolves as status 0.
   //
   async send(note, deviceToken) {
+    // a device token is hex and goes into the request path, so nothing else
+    // is sent; APNs answers a malformed token with this same failure, which
+    // removes the token
+    if (typeof deviceToken !== 'string' || !/^[\da-f]+$/i.test(deviceToken))
+      return failure(deviceToken, 400, 'BadDeviceToken');
+
     let client;
     try {
       client = await this.connect();

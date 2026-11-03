@@ -11,6 +11,8 @@
 * [部署过程](#deployment-process)
   * [安装](#installation)
   * [Docker Compose配置](#docker-compose-configuration)
+  * [投递到同一服务器上托管的域名](#delivery-to-domains-hosted-on-the-same-server)
+  * [Google 或 GitHub 访问权限被撤销时结束会话](#ending-sessions-when-google-or-github-access-is-revoked)
 * [维护特点](#maintenance-features)
   * [自动更新](#automatic-updates)
   * [备份和还原](#backup-and-restore)
@@ -122,6 +124,30 @@ bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.ne
 * **SQLite**：用于存储电子邮件的数据库
 
 每个服务使用相同的 Docker 镜像但具有不同的入口点，从而实现模块化架构并简化维护。
+
+### 投递到同一服务器上托管的域名 {#delivery-to-domains-hosted-on-the-same-server}
+
+外发邮件不会投递到地址属于服务器自身的 MX 服务器。当一台服务器托管多个域名且其 MX 记录指向该服务器的公网地址时，从其中一个域名发往另一个域名的邮件会被拒绝。
+
+如需允许，请设置：
+
+```env
+SMTP_ALLOW_LOCAL_MX=true
+```
+
+默认值为 `false`，且该设置仅在 `SELF_HOSTED=true` 时生效。邮件仍然不会投递到环回、私有、链路本地或运营商级 NAT（CGNAT）地址。
+
+### Google 或 GitHub 访问权限被撤销时结束会话 {#ending-sessions-when-google-or-github-access-is-revoked}
+
+在自托管安装中，默认不会向提供商核验通过 Google 或 GitHub 登录的会话：在提供商处撤销本应用的访问权限不会使这些会话退出，它们会一直保持登录状态直到过期。
+
+如需在访问权限被撤销后立即结束这些会话，请设置：
+
+```env
+AUTH_OAUTH_REVOCATION_CHECK=true
+```
+
+之后将在后台向提供商查询，大约每 5 分钟一次（提供商无响应期间每分钟一次）。提供商故障不会使任何人退出登录，提供商从未接受过的令牌也不会。
 
 ## 维护功能 {#maintenance-features}
 

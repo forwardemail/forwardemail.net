@@ -4,6 +4,7 @@
  */
 
 const { Buffer } = require('node:buffer');
+const dns = require('node:dns');
 
 // undici.fetch needs String.prototype.toWellFormed (not in Node 18)
 // eslint-disable-next-line import/no-unassigned-import
@@ -15,6 +16,7 @@ const isHTML = require('is-html');
 const ms = require('ms');
 const undici = require('undici');
 
+const createValidatingLookup = require('./create-validating-lookup');
 const { isPrivateHostResolved } = require('./is-private-host');
 const { refuseUnsafeResponseEncoding } = require('./refuse-unsafe-encoding');
 const TimeoutError = require('./timeout-error');
@@ -105,53 +107,25 @@ function WKD(resolver, client) {
       headersTimeout: ms(DURATION),
       connectTimeout: ms(DURATION),
       bodyTimeout: ms(DURATION),
-      //
-      //
-      // TODO: there is a bug in tangerine where if we supply
-      //       a custom resolver in self-hosted mode then
-      //       it causes an uncaught exception it appears
-      //
-      //
-      // TODO: an uncaught exception occurs here in self hosting sometimes (?)
-      // TypeError: Cannot read properties of undefined (reading 'length')
-      // (which means it occurs in tangerine under the hood)
-      //
-      ...(config.isSelfHosted
-        ? {}
-        : {
-            connect: {
-              lookup(hostname, options, fn) {
-                resolver
-                  .lookup(hostname, options)
-                  .then(async (result) => {
-                    // FWD-01-006: Validate resolved IP at connection time
-                    // to prevent TOCTOU DNS rebinding attacks
-                    if (
-                      result?.address &&
-                      (await WKD.isPrivateTarget(result.address, resolver))
-                    ) {
-                      fn(
-                        new Error(
-                          `Resolved IP ${result.address} is a private address`
-                        )
-                      );
-                      return;
-                    }
-
-                    // Handle both Node 18 (address, family) and Node 20+
-                    // (all:true expects [{address, family}] array) formats
-                    if (options.all) {
-                      fn(null, [
-                        { address: result?.address, family: result?.family }
-                      ]);
-                    } else {
-                      fn(null, result?.address, result?.family);
-                    }
-                  })
-                  .catch((err) => fn(err));
-              }
-            }
-          })
+      connect: {
+        // FWD-01-006: validate the resolved IP at connection time to
+        // prevent TOCTOU DNS rebinding attacks (every address, when
+        // Node 20 and later ask for all of them, see #617)
+        //
+        // (self-hosted installs look the host up with the system resolver:
+        // tangerine threw "Cannot read properties of undefined (reading
+        // 'length')" there as the connect lookup; it is checked all the same,
+        // as a host that passed the check above can resolve to an internal
+        // address when connecting)
+        //
+        lookup: createValidatingLookup({
+          lookup: (hostname, options) =>
+            config.isSelfHosted
+              ? dns.promises.lookup(hostname, options)
+              : resolver.lookup(hostname, options),
+          isBlocked: (address) => WKD.isPrivateTarget(address, resolver)
+        })
+      }
     }).compose(refuseUnsafeResponseEncoding);
     try {
       //
@@ -203,10 +177,10 @@ function WKD(resolver, client) {
       // A compressed WKD response is never legitimate. `undici.fetch`
       // auto-decompresses a chained `Content-Encoding` header, and a
       // malicious WKD server can nest thousands of gzip layers to burn CPU
-      // and memory (GHSA-g9mf-h72j-4rw9). The upstream fix ships in undici
-      // >=7.18.2, which requires Node 20 (undici >=7.13.0 needs the `File`
-      // global), so it cannot be taken on Node 18. The decompression work
-      // accrues while the body is consumed, so reject before reading it.
+      // and memory (GHSA-g9mf-h72j-4rw9). undici >=7.18.2 limits the chain
+      // (installed with patches/undici@7.29.1.patch so it runs on Node 18),
+      // and this still refuses any compression at all. The decompression
+      // work accrues while the body is consumed, so reject before reading it.
       //
       const contentEncoding = response.headers.get('content-encoding');
       if (

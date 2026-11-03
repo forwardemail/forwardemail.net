@@ -11,6 +11,8 @@ Cette section documente le flux de travail CI/CD pour la solution auto-hébergé
 * [Processus de déploiement](#deployment-process)
   * [Installation](#installation)
   * [Configuration de Docker Compose](#docker-compose-configuration)
+  * [Distribution vers des domaines hébergés sur le même serveur](#delivery-to-domains-hosted-on-the-same-server)
+  * [Fin des sessions lorsque l'accès Google ou GitHub est révoqué](#ending-sessions-when-google-or-github-access-is-revoked)
 * [Caractéristiques de maintenance](#maintenance-features)
   * [Mises à jour automatiques](#automatic-updates)
   * [Sauvegarde et restauration](#backup-and-restore)
@@ -122,6 +124,30 @@ Le fichier `docker-compose-self-hosted.yml` définit tous les services requis po
 * **SQLite** : Base de données pour le stockage des e-mails
 
 Chaque service utilise la même image Docker mais avec des points d'entrée différents, permettant une architecture modulaire tout en simplifiant la maintenance.
+
+### Distribution vers des domaines hébergés sur le même serveur {#delivery-to-domains-hosted-on-the-same-server}
+
+Le courrier sortant n'est pas distribué à un serveur MX dont l'adresse appartient au serveur lui-même. Lorsqu'un serveur héberge plusieurs domaines et que leurs enregistrements MX pointent vers son adresse publique, le courrier envoyé d'un de ces domaines à un autre est refusé.
+
+Pour l'autoriser, définissez :
+
+```env
+SMTP_ALLOW_LOCAL_MX=true
+```
+
+La valeur par défaut est `false`, et ce paramètre ne s'applique que si `SELF_HOSTED=true`. Le courrier n'est jamais distribué aux adresses de bouclage (loopback), privées, lien-local ou de NAT de niveau opérateur (CGNAT).
+
+### Fin des sessions lorsque l'accès Google ou GitHub est révoqué {#ending-sessions-when-google-or-github-access-is-revoked}
+
+Sur une installation auto-hébergée, les sessions ouvertes avec Google ou GitHub ne sont pas vérifiées auprès du fournisseur par défaut : révoquer l'accès de cette application chez lui ne les ferme pas, et elles restent ouvertes jusqu'à leur expiration.
+
+Pour y mettre fin dès que l'accès est révoqué, définissez :
+
+```env
+AUTH_OAUTH_REVOCATION_CHECK=true
+```
+
+Le fournisseur est alors interrogé en arrière-plan, environ toutes les 5 minutes (toutes les minutes tant qu'il ne répond pas). Une panne du fournisseur ne déconnecte personne, pas plus qu'un jeton que le fournisseur n'a jamais accepté.
 
 ## Fonctionnalités de maintenance {#maintenance-features}
 

@@ -271,34 +271,35 @@ class SieveValidator {
   }
 
   /**
+   * Call `fn` for each command, also the ones in blocks
+   * @param {Object[]} commands - Commands of the AST
+   * @param {Function} fn - Called with each command
+   */
+  forEachCommand(commands, fn) {
+    for (const cmd of commands || []) {
+      fn(cmd);
+      this.forEachCommand(cmd.block, fn);
+      for (const branch of cmd.elsif || []) {
+        fn(branch);
+        this.forEachCommand(branch.block, fn);
+      }
+
+      this.forEachCommand(cmd.else, fn);
+    }
+  }
+
+  /**
    * Check if script has overly broad rules
    * @param {Object} ast - The parsed AST
    * @returns {boolean} True if broad rules found
    */
   hasBroadRules(ast) {
-    const checkCommands = (commands) => {
-      for (const cmd of commands) {
-        if (
-          (cmd.type === 'if' || cmd.type === 'elsif') && // Check for "if true" pattern
-          cmd.test &&
-          cmd.test.type === 'true'
-        ) {
-          return true;
-        }
-
-        if (cmd.then && checkCommands(cmd.then)) {
-          return true;
-        }
-
-        if (cmd.else && checkCommands(cmd.else)) {
-          return true;
-        }
-      }
-
-      return false;
-    };
-
-    return checkCommands(ast.commands);
+    let found = false;
+    this.forEachCommand(ast.commands, (cmd) => {
+      // "if true" pattern
+      if (cmd.test && cmd.test.type === 'TrueTest') found = true;
+    });
+    return found;
   }
 
   /**
@@ -309,48 +310,41 @@ class SieveValidator {
   checkVacationConfiguration(ast) {
     const recommendations = [];
 
-    const checkCommands = (commands) => {
-      for (const cmd of commands) {
-        if (cmd.type === 'vacation') {
-          // Check for missing subject
-          if (!cmd.subject) {
-            recommendations.push({
-              type: 'vacation_no_subject',
-              message:
-                'Vacation auto-reply has no subject. Consider adding a subject for clarity.'
-            });
-          }
+    this.forEachCommand(ast.commands, (cmd) => {
+      if (cmd.type !== 'Vacation') return;
 
-          // Check for missing from address
-          if (!cmd.from) {
-            recommendations.push({
-              type: 'vacation_no_from',
-              message:
-                'Vacation auto-reply has no :from address. The default sender address will be used.'
-            });
-          }
-
-          // Check for very short interval
-          if (cmd.seconds && cmd.seconds < 3600) {
-            recommendations.push({
-              type: 'vacation_short_interval',
-              message:
-                'Vacation interval is less than 1 hour. This may result in excessive auto-replies.'
-            });
-          }
-        }
-
-        if (cmd.then) {
-          checkCommands(cmd.then);
-        }
-
-        if (cmd.else) {
-          checkCommands(cmd.else);
-        }
+      // Check for missing subject
+      if (!cmd.subject) {
+        recommendations.push({
+          type: 'vacation_no_subject',
+          message:
+            'Vacation auto-reply has no subject. Consider adding a subject for clarity.'
+        });
       }
-    };
 
-    checkCommands(ast.commands);
+      // Check for missing from address
+      if (!cmd.from) {
+        recommendations.push({
+          type: 'vacation_no_from',
+          message:
+            'Vacation auto-reply has no :from address. The default sender address will be used.'
+        });
+      }
+
+      // Check for very short interval
+      if (
+        cmd.seconds !== null &&
+        cmd.seconds !== undefined &&
+        cmd.seconds < 3600
+      ) {
+        recommendations.push({
+          type: 'vacation_short_interval',
+          message:
+            'Vacation interval is less than 1 hour. This may result in excessive auto-replies.'
+        });
+      }
+    });
+
     return recommendations;
   }
 

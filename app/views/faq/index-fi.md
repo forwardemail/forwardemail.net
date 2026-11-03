@@ -2892,24 +2892,22 @@ Täydellinen, toteutukseen perustuva ominaisuuslista ja RFC-muistiinpanot ovat s
 | Kategoria | Ominaisuudet ja toiminta |
 | --- | --- |
 | Core language | `keep`, `discard`, `stop`, ehdolliset lohkot sekä perus `address`, `header`, `exists`, `size` ja boolean-testit. |
-| Delivery | `fileinto`, `copy`, `redirect`, `mailbox` `fileinto :create` -käyttöä varten, ja `special-use` vakiokansion `:specialuse`-kartoitusta ja `specialuse_exists`-tarkistusta varten. |
-| Tests and comparisons | `envelope`, `body`, `date`, `index`, `regex`, `subaddress`, `relational`, `i;ascii-casemap`, ja `i;octet`. |
-| State and variables | `variables`, `imap4flags`, `duplicate`, ja `ihave`. |
+| Delivery | `fileinto`, `copy`, `redirect`, `mailbox` komentoja `fileinto :create` ja `mailboxexists` varten, ja `special-use` komentoja `fileinto :specialuse` ja `specialuse_exists` varten. |
+| Tests and comparisons | `envelope`, `body`, `date`, `index`, `regex`, `subaddress`, `relational`, `i;ascii-casemap`, `i;octet`, ja `i;ascii-numeric`. |
+| State and variables | `variables`, `encoded-character`, `imap4flags`, `duplicate`, ja `ihave`. |
 | Actions and responses | `reject`, `ereject`, `vacation`, `vacation-seconds`, ja `enotify` `mailto:`-osoitteita käyttäen. Vanha `require "notify"` -ilmoitus hyväksytään syöttöaliasena `enotify`-toiminnolle, mutta `enotify` on ilmoitettu ominaisuus. |
-| Message processing | `editheader`, `environment`, ja `mime`, mukaan lukien `foreverypart`, `break`, `extracttext`, ja `replace`. |
+| Message processing | `editheader`, `environment`, `foreverypart` (ja `break`), `extracttext`, `replace`, ja `mime`, joka ottaa myös nämä kolme komentoa käyttöön. |
 
-`redirect` lähetetään normaalin lähtevän jonon kautta. Se on alisteinen määritetylle redirect-domain-politiikalle, estolistatarkistuksille ja nopeusrajoituksille. `editheader` ei voi muokata suojattuja todennus- tai toimitusreitityksen otsikoita.
+`redirect` ei tarvitse `require`-lausetta. Se lähetetään normaalin lähtevän jonon kautta, joka hyväksyy vain viestin, jonka From on aliaksesi, verkkotunnuksessa, jossa on lähtevä SMTP; muut viestit säilytetään saapuneissasi. Uudelleenohjaukset ovat alisteisia määritetylle redirect-domain-politiikalle, estolistatarkistuksille ja nopeusrajoituksille. `editheader` ei voi muokata suojattuja todennus- tai toimitusreitityksen otsikoita eikä `Received`- tai `Auto-Submitted`-otsikkoa.
 
 #### Ominaisuudet, joita ei tueta
 
 | Ominaisuus | Syy |
 | --- | --- |
 | `enclose` | Uuden viestin luominen, joka kapseloi alkuperäisen viestin, ei ole toteutettu. |
-| `mailboxexists` | Forward Email ei tee reaaliaikaisia IMAP-postilaatikon tilakyselyitä. `fileinto :create` on edelleen käytettävissä `mailbox`-kautta. |
 | `include` | Globaalien ja sisällytettävien skriptien tallennus ei ole saatavilla. |
 | `mboxmetadata` / `servermetadata` | IMAP METADATA -integraatiota ei ole saatavilla. |
 | `fcc` | Lähetettyjen viestien arkistointiin liittyvää integraatiota ei ole saatavilla. |
-| `encoded-character` | `${hex:...}`-syntaksia ei ole toteutettu. |
 | External lists | `valid_ext_list` ja muut ulkoisten listojen toiminnot eivät ole saatavilla. |
 
 #### Esimerkkiset Sieve-skriptit
@@ -2946,8 +2944,6 @@ if address :is "from" "boss@example.com" {
 **Uudelleenohjaa viesti:**
 
 ```sieve
-require ["redirect"];
-
 if header :contains "Subject" "invoice" {
     redirect "recipient@example.com";
 }

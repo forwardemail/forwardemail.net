@@ -11,6 +11,8 @@ Phần này ghi lại quy trình làm việc CI/CD cho giải pháp tự lưu tr
 * [Quy trình triển khai](#deployment-process)
   * [Cài đặt](#installation)
   * [Cấu hình Docker Compose](#docker-compose-configuration)
+  * [Gửi thư đến các tên miền được lưu trữ trên cùng một máy chủ](#delivery-to-domains-hosted-on-the-same-server)
+  * [Kết thúc phiên khi quyền truy cập Google hoặc GitHub bị thu hồi](#ending-sessions-when-google-or-github-access-is-revoked)
 * [Tính năng bảo trì](#maintenance-features)
   * [Cập nhật tự động](#automatic-updates)
   * [Sao lưu và khôi phục](#backup-and-restore)
@@ -122,6 +124,30 @@ Tệp `docker-compose-self-hosted.yml` xác định tất cả các dịch vụ 
 * **SQLite**: Cơ sở dữ liệu lưu trữ email
 
 Mỗi dịch vụ đều sử dụng cùng một hình ảnh Docker nhưng có các điểm vào khác nhau, cho phép sử dụng kiến trúc mô-đun đồng thời đơn giản hóa việc bảo trì.
+
+### Gửi thư đến các tên miền được lưu trữ trên cùng một máy chủ {#delivery-to-domains-hosted-on-the-same-server}
+
+Thư đi không được gửi đến máy chủ MX có địa chỉ thuộc về chính máy chủ. Khi một máy chủ lưu trữ nhiều tên miền và bản ghi MX của chúng trỏ đến địa chỉ công khai của máy chủ, thư từ một tên miền này đến tên miền khác sẽ bị từ chối.
+
+Để cho phép, hãy đặt:
+
+```env
+SMTP_ALLOW_LOCAL_MX=true
+```
+
+Giá trị mặc định là `false`, và thiết lập này chỉ có hiệu lực khi `SELF_HOSTED=true`. Thư vẫn không bao giờ được gửi đến các địa chỉ loopback, riêng tư, link-local hoặc NAT cấp nhà mạng (CGNAT).
+
+### Kết thúc phiên khi quyền truy cập Google hoặc GitHub bị thu hồi {#ending-sessions-when-google-or-github-access-is-revoked}
+
+Trên bản cài đặt tự lưu trữ, theo mặc định các phiên đăng nhập bằng Google hoặc GitHub không được kiểm tra với nhà cung cấp: thu hồi quyền truy cập của ứng dụng này ở đó không đăng xuất chúng, và chúng vẫn đăng nhập cho đến khi hết hạn.
+
+Để kết thúc các phiên đó ngay khi quyền truy cập bị thu hồi, hãy đặt:
+
+```env
+AUTH_OAUTH_REVOCATION_CHECK=true
+```
+
+Khi đó nhà cung cấp được hỏi ở chế độ nền, khoảng 5 phút một lần (mỗi phút trong khi nhà cung cấp không phản hồi). Sự cố ở nhà cung cấp không đăng xuất ai, và token chưa từng được nhà cung cấp chấp nhận cũng vậy.
 
 ## Tính năng bảo trì {#maintenance-features}
 

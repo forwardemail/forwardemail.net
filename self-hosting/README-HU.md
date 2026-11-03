@@ -11,6 +11,8 @@ Ez a szakasz a ForwardEmail saját üzemeltetésű megoldásának CI/CD-munkafol
 * [Telepítési folyamat](#deployment-process)
   * [Telepítés](#installation)
   * [Docker Composition konfiguráció](#docker-compose-configuration)
+  * [Kézbesítés az ugyanazon a szerveren tárolt domainekre](#delivery-to-domains-hosted-on-the-same-server)
+  * [Munkamenetek lezárása a Google- vagy GitHub-hozzáférés visszavonásakor](#ending-sessions-when-google-or-github-access-is-revoked)
 * [Karbantartási jellemzők](#maintenance-features)
   * [Automatikus frissítések](#automatic-updates)
   * [Biztonsági mentés és visszaállítás](#backup-and-restore)
@@ -122,6 +124,30 @@ A `docker-compose-self-hosted.yml` fájl határozza meg az önállóan üzemelte
 * **SQLite**: E-mailek tárolására szolgáló adatbázis
 
 Minden szolgáltatás ugyanazt a Docker-rendszerképet használja, de eltérő belépési pontokkal, ami lehetővé teszi a moduláris architektúrát, miközben egyszerűsíti a karbantartást.
+
+### Kézbesítés az ugyanazon a szerveren tárolt domainekre {#delivery-to-domains-hosted-on-the-same-server}
+
+A kimenő leveleket a rendszer nem kézbesíti olyan MX-szerverre, amelynek címe magához a szerverhez tartozik. Ha egy szerver több domaint szolgál ki, és ezek MX-rekordjai a nyilvános címére mutatnak, az egyik domainről a másikra küldött leveleket elutasítja.
+
+Ennek engedélyezéséhez állítsa be:
+
+```env
+SMTP_ALLOW_LOCAL_MX=true
+```
+
+Az alapértelmezett érték `false`, és a beállítás csak `SELF_HOSTED=true` esetén érvényes. Loopback, privát, link-local vagy szolgáltatói szintű NAT (CGNAT) címekre továbbra sem történik kézbesítés.
+
+### Munkamenetek lezárása a Google- vagy GitHub-hozzáférés visszavonásakor {#ending-sessions-when-google-or-github-access-is-revoked}
+
+Saját üzemeltetésű telepítésnél a Google-lal vagy GitHubbal bejelentkezett munkameneteket a rendszer alapértelmezés szerint nem ellenőrzi a szolgáltatónál: ha ott visszavonják ennek az alkalmazásnak a hozzáférését, a munkamenetek nem zárulnak le, és lejáratukig bejelentkezve maradnak.
+
+Ha a hozzáférés visszavonása után le szeretné zárni őket, állítsa be:
+
+```env
+AUTH_OAUTH_REVOCATION_CHECK=true
+```
+
+A szolgáltatót ekkor a háttérben kérdezi meg a rendszer, nagyjából 5 percenként (percenként, amíg nem válaszol). A szolgáltató kiesése senkit sem jelentkeztet ki, és az a token sem, amelyet a szolgáltató soha nem fogadott el.
 
 ## Karbantartási funkciók {#maintenance-features}
 

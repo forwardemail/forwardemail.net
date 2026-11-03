@@ -2893,24 +2893,22 @@ Tam, uygulama tarafından desteklenen yetenek listesi ve RFC notları [Sieve pro
 | Kategori | Yetenekler ve davranış |
 | --- | --- |
 | Temel dil | `keep`, `discard`, `stop`, koşullu bloklar ve temel `address`, `header`, `exists`, `size` ve boolean testleri. |
-| Teslimat | `fileinto`, `copy`, `redirect`, `mailbox` (`fileinto :create` için) ve standart klasör `:specialuse` eşlemesi ile `special-use` ve `specialuse_exists`. |
-| Testler ve karşılaştırmalar | `envelope`, `body`, `date`, `index`, `regex`, `subaddress`, `relational`, `i;ascii-casemap` ve `i;octet`. |
-| Durum ve değişkenler | `variables`, `imap4flags`, `duplicate` ve `ihave`. |
+| Teslimat | `fileinto`, `copy`, `redirect`, `mailbox` (`fileinto :create` ve `mailboxexists` için) ve `special-use` (`fileinto :specialuse` ve `specialuse_exists` için). |
+| Testler ve karşılaştırmalar | `envelope`, `body`, `date`, `index`, `regex`, `subaddress`, `relational`, `i;ascii-casemap`, `i;octet` ve `i;ascii-numeric`. |
+| Durum ve değişkenler | `variables`, `encoded-character`, `imap4flags`, `duplicate` ve `ihave`. |
 | Eylemler ve yanıtlar | `reject`, `ereject`, `vacation`, `vacation-seconds` ve `enotify` ( `mailto:` kullanılarak). Kalıcı bildirim bildirimi olan `require "notify"` girdi takma adı olarak `enotify` kabul edilir, ancak duyurulan yetenek `enotify`'dir. |
-| Mesaj işleme | `editheader`, `environment` ve `mime`, `foreverypart`, `break`, `extracttext` ve `replace` dahil. |
+| Mesaj işleme | `editheader`, `environment`, `foreverypart` (`break` ile), `extracttext`, `replace` ve bu üç komutu da etkinleştiren `mime`. |
 
-`redirect` normal giden kuyruk üzerinden teslim edilir. Yapılandırılmış redirect-domain politikası, reddetme listesi kontrolleri ve hız sınırlamalarına tabidir. `editheader` korumalı kimlik doğrulama veya teslimat-yönlendirme başlıklarını değiştiremez.
+`redirect` için `require` gerekmez. İleti normal giden kuyruk üzerinden gönderilir; bu kuyruk yalnızca From adresi takma adınız olan, giden SMTP'ye sahip bir alan adındaki iletileri kabul eder, diğer tüm iletiler gelen kutunuzda tutulur. Yönlendirmeler yapılandırılmış redirect-domain politikası, reddetme listesi kontrolleri ve hız sınırlamalarına tabidir. `editheader` korumalı kimlik doğrulama veya teslimat-yönlendirme başlıklarını, `Received` ya da `Auto-Submitted` başlığını değiştiremez.
 
 #### Desteklenmeyen özellikler
 
 | Özellik | Sebep |
 | --- | --- |
 | `enclose` | Orijinal mesajı kapsayan yeni bir mesaj oluşturma uygulanmamıştır. |
-| `mailboxexists` | Forward Email canlı IMAP posta kutusu durumu sorgulamaları yapmaz. `fileinto :create` `mailbox` üzerinden kullanılmaya devam eder. |
 | `include` | Küresel ve eklenen betik depolaması mevcut değildir. |
 | `mboxmetadata` / `servermetadata` | IMAP METADATA entegrasyonu mevcut değildir. |
 | `fcc` | Gönderilen posta dosyalama entegrasyonu mevcut değildir. |
-| `encoded-character` | `${hex:...}` sözdizimi uygulanmamıştır. |
 | External lists | `valid_ext_list` ve diğer dış-liste işlemleri mevcut değildir. |
 
 #### Örnek Sieve betikleri
@@ -2947,8 +2945,6 @@ if address :is "from" "boss@example.com" {
 **Redirect a message:**
 
 ```sieve
-require ["redirect"];
-
 if header :contains "Subject" "invoice" {
     redirect "recipient@example.com";
 }

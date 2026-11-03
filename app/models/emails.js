@@ -60,6 +60,7 @@ const logger = require('#helpers/logger');
 const parseAddresses = require('#helpers/parse-addresses');
 const parseHostFromDomainOrAddress = require('#helpers/parse-host-from-domain-or-address');
 const parseUsername = require('#helpers/parse-username');
+const getUsernameVariants = require('#helpers/get-username-variants');
 const SMTPError = require('#helpers/smtp-error');
 const checkSmtpVelocity = require('#helpers/check-smtp-velocity');
 
@@ -1462,6 +1463,79 @@ Emails.statics.getMessage = async function (obj, returnString = false) {
 // options.dsn (for DSN from API)
 // options.rcptTo (for DSN from SMTP)
 
+//
+// The alias an address on the domain is for, when no alias is named exactly
+// that way: of the aliases named with another form of its local part
+// ("fællestest" or "xn--fllestest-g3a", composed or decomposed), the one
+// named the way it was given (#619). With `userId`, only when that alias is
+// the user's (the other form may be someone else's).
+//
+async function findAliasByName(domainId, name, userId) {
+  const names = getUsernameVariants(name);
+  if (names.length === 0) return;
+
+  const aliases = await Aliases.find({
+    domain: domainId,
+    name: { $in: getUsernameVariants.getQueryNames(names) }
+  }).populate('user', `id ${config.userFields.isBanned}`);
+  const [preferred] = getUsernameVariants.filterPreferredAliases(
+    aliases,
+    names,
+    name.toLowerCase()
+  );
+  if (!preferred || !userId) return preferred;
+  return getUserId(preferred) === userId ? preferred : undefined;
+}
+
+function getUserId(alias) {
+  const user = alias?.user;
+  if (!user) return;
+  return typeof user === 'object' && user._id
+    ? user._id.toString()
+    : user.toString();
+}
+
+//
+// Whether the From address may be used by the alias sending. As before, the
+// From address must be the alias in punycode; a From address that names
+// another user's alias with the other form of the name (two aliases named
+// "fællestest" and "xn--fllestest-g3a") is not, unless sent by an admin of
+// the domain, who may send as any address on it. The alias named another way
+// (e.g. decomposed) is accepted too, when no other user's alias is named the
+// way the From address is written.
+//
+// (`fromLocal` is the local part of the From address as it is written,
+// lowercase, and `fromName` the same NFC normalized)
+//
+async function isFromAlias({
+  alias,
+  domain,
+  from,
+  fromLocal,
+  fromName,
+  isAdmin
+}) {
+  if (!from) return false;
+  const domainName = punycode.toASCII(domain.name);
+  // (whether the alias the From address names is this one's user's)
+  const isOwnName = async () => {
+    // (a name with one form only, e.g. any ASCII name, has no twin)
+    if (isAdmin || getUsernameVariants(fromName).length < 2) return true;
+    const named = await findAliasByName(domain._id, fromLocal || fromName);
+    return !named || getUserId(named) === getUserId(alias);
+  };
+
+  if (from === `${punycode.toASCII(alias.name)}@${domainName}`)
+    return isOwnName();
+
+  if (from.slice(from.lastIndexOf('@') + 1) !== domainName) return false;
+  if (!fromName) return false;
+  if (getUsernameVariants.normalizeUsername(alias.name) === fromName)
+    return isOwnName();
+  const named = await findAliasByName(domain._id, fromLocal || fromName);
+  return Boolean(named && named._id.toString() === alias._id.toString());
+}
+
 Emails.statics.queue = async function (
   options = {},
   locale = i18n.config.defaultLocale
@@ -1547,6 +1621,9 @@ Emails.statics.queue = async function (
   // (avoids confusing "Invalid DKIM signature" error message)
   //
   let from;
+  // (its local part, without a "+" tag, as written and NFC normalized)
+  let fromLocal;
+  let fromName;
 
   const obj = getHeaders(headers);
 
@@ -1564,6 +1641,8 @@ Emails.statics.queue = async function (
       // so that users can send with "+" address filtering
       //
       const name = parseUsername(addresses[0]); // converts to ASCII
+      fromLocal = parseUsername.parseLocalPart(addresses[0]);
+      fromName = parseUsername.parseUnicodeUsername(addresses[0]);
       const domain = parseHostFromDomainOrAddress(addresses[0]); // converts to ASCII
       from = `${name}@${domain}`; // ASCII formatted From address header
     }
@@ -1794,6 +1873,14 @@ Emails.statics.queue = async function (
               name: aliasName.split('+')[0].toLowerCase()
             }
       ).populate('user', `id ${config.userFields.isBanned}`);
+
+      // (a member's alias named with another form of the name, see #619)
+      if (!alias && member.group !== 'admin')
+        alias = await findAliasByName(
+          domain._id,
+          aliasName.split('+')[0],
+          userId
+        );
     }
 
     //
@@ -1873,6 +1960,12 @@ Emails.statics.queue = async function (
       domain: domain._id,
       name: aliasName.split('+')[0]
     }).populate('user', `id ${config.userFields.isBanned}`);
+    // (named with another form of the name, see #619)
+    alias ||= await findAliasByName(
+      domain._id,
+      aliasName.split('+')[0],
+      userId
+    );
     if (alias && alias.user[config.userFields.isBanned])
       throw Boom.forbidden(i18n.translateError('ALIAS_ACCOUNT_BANNED', locale));
     if (alias && !alias.is_enabled)
@@ -1900,9 +1993,15 @@ Emails.statics.queue = async function (
   else if (
     !options.catchall &&
     alias &&
-    from !==
-      `${punycode.toASCII(alias.name)}@${punycode.toASCII(domain.name)}` &&
-    !isBounce
+    !isBounce &&
+    !(await isFromAlias({
+      alias,
+      domain,
+      from,
+      fromLocal,
+      fromName,
+      isAdmin: member.group === 'admin'
+    }))
   )
     throw Boom.forbidden(
       i18n.translateError(

@@ -21,6 +21,7 @@ const net = require('node:net');
 const undici = require('undici');
 
 const { isPrivateHostResolved } = require('#helpers/is-private-host');
+const resolvePinnedAddress = require('#helpers/resolve-pinned-address');
 
 /**
  * Perform an HTTP request with DNS pinning to prevent SSRF via DNS rebinding.
@@ -40,19 +41,10 @@ async function safeFetch(url, options = {}) {
     throw new TypeError('safeFetch requires a Tangerine resolver');
   }
 
-  // Resolve DNS once through the shared Tangerine resolver, then pin that
-  // validated address to the outbound connection.
-  let pinnedIP;
-  if (net.isIPv4(hostname) || net.isIPv6(hostname)) {
-    pinnedIP = hostname;
-  } else {
-    const addresses = await tangerineResolver.resolve4(hostname);
-    if (!addresses || addresses.length === 0) {
-      throw new Error(`DNS resolution failed for ${hostname}`);
-    }
-
-    pinnedIP = addresses[0];
-  }
+  // Resolve DNS once through the shared Tangerine resolver (A, or AAAA for a
+  // host on IPv6 only), then pin that validated address to the outbound
+  // connection.
+  const pinnedIP = await resolvePinnedAddress(hostname, tangerineResolver);
 
   // Validate the resolved IP is not private/internal
   if (await isPrivateHostResolved(pinnedIP, tangerineResolver)) {

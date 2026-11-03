@@ -1109,45 +1109,45 @@ sequenceDiagram
 
 | RFC or specification | Capability | Supported behavior |
 | --- | --- | --- |
-| [RFC 5228](https://datatracker.ietf.org/doc/html/rfc5228) | Core Sieve | `keep`, `discard`, `stop`, умовні блоки, та базові тести `address`, `header`, `exists`, `size` і булеві тести. `fileinto` і `redirect` доставляються через вхідний конвеєр доставки. |
+| [RFC 5228](https://datatracker.ietf.org/doc/html/rfc5228) | Core Sieve, `encoded-character` | `keep`, `discard`, `stop`, умовні блоки, та базові тести `address`, `header`, `exists`, `size` і булеві тести. `fileinto` зберігає повідомлення в кожній вказаній папці. `redirect` не потребує `require` і надсилається через вихідну чергу, яка приймає лише повідомлення, у якого From — це псевдонім, на домені з вихідним SMTP; будь-яке інше повідомлення залишається у вхідних. `${hex:...}` і `${unicode:...}` декодуються, коли потрібне `encoded-character`. |
 | [RFC 5429](https://datatracker.ietf.org/doc/html/rfc5429) | `reject`, `ereject` | SMTP-відхилення з наданим повідомленням. |
-| [RFC 5230](https://datatracker.ietf.org/doc/html/rfc5230) | `vacation` | Відповіді `vacation` ставляться в чергу з контролем зловживань. |
+| [RFC 5230](https://datatracker.ietf.org/doc/html/rfc5230) | `vacation` | Відповіді `vacation` ставляться в чергу з контролем зловживань, не частіше одного разу на відправника за кожен період `:days` (типово 7 днів). |
 | [RFC 6131](https://datatracker.ietf.org/doc/html/rfc6131) | `vacation-seconds` | Інтервал `:seconds` контролює термін дії відповіді `vacation`. |
 | [RFC 5232](https://datatracker.ietf.org/doc/html/rfc5232) | `imap4flags` | Прапорці застосовуються під час збереження в поштову скриньку. |
 | [RFC 5173](https://datatracker.ietf.org/doc/html/rfc5173) | `body` | Пошук збігів у вмісті тіла повідомлення. |
 | [RFC 5229](https://datatracker.ietf.org/doc/html/rfc5229) | `variables` | Розгортання змінних та підтримувані модифікатори. |
 | [RFC 5231](https://datatracker.ietf.org/doc/html/rfc5231) | `relational` | Порівняння `:count` та `:value`. |
-| [RFC 4790](https://datatracker.ietf.org/doc/html/rfc4790) | Comparators | `i;ascii-casemap` та `i;octet`. `i;ascii-numeric` не оголошується. |
+| [RFC 4790](https://datatracker.ietf.org/doc/html/rfc4790) | Comparators | `i;ascii-casemap`, `i;octet` та `i;ascii-numeric`. |
 | [RFC 3894](https://datatracker.ietf.org/doc/html/rfc3894) | `copy` | Параметр `:copy` для `fileinto` та `redirect`. |
-| [RFC 5293](https://datatracker.ietf.org/doc/html/rfc5293) | `editheader` | Зміни заголовків перед збереженням, за винятком захищених полів аутентифікації та полів маршрутизації доставки. |
+| [RFC 5293](https://datatracker.ietf.org/doc/html/rfc5293) | `editheader` | Зміни заголовків перед збереженням, видимі для подальших тестів, за винятком захищених полів аутентифікації та полів маршрутизації доставки, `Received` і `Auto-Submitted`. |
 | [RFC 5260](https://datatracker.ietf.org/doc/html/rfc5260) | `date`, `index` | Тести `currentdate` та дати в заголовках, а також `:index` і `:last`. |
-| [RFC 5435](https://datatracker.ietf.org/doc/html/rfc5435) | `enotify` | Сповіщення `mailto:` з обмеженнями частоти. Успадкована декларація `require "notify"` приймається як псевдонім, але оголошується `enotify`. |
+| [RFC 5435](https://datatracker.ietf.org/doc/html/rfc5435) | `enotify` | Сповіщення `mailto:` з обмеженнями частоти, ніколи для автоматичних повідомлень. Успадкована декларація `require "notify"` приймається як псевдонім, але оголошується `enotify`. |
 | [RFC 5183](https://datatracker.ietf.org/doc/html/rfc5183) | `environment` | Підтримувані значення середовища сесії. |
-| [RFC 5490](https://datatracker.ietf.org/doc/html/rfc5490) | `mailbox` | Лише `fileinto :create`. Живі запити `mailboxexists` не підтримуються. |
-| [RFC 8579](https://datatracker.ietf.org/doc/html/rfc8579) | `special-use` | Відображення стандартних папок через `:specialuse` та детерміністичні перевірки `specialuse_exists`. |
+| [RFC 5490](https://datatracker.ietf.org/doc/html/rfc5490) | `mailbox` | `fileinto :create` та `mailboxexists`, який перевіряє папки псевдоніма. |
+| [RFC 8579](https://datatracker.ietf.org/doc/html/rfc8579) | `special-use` | `fileinto :specialuse` поміщає повідомлення в папку з цим спеціальним призначенням, а `specialuse_exists` перевіряє папки псевдоніма. |
 | [RFC 7352](https://datatracker.ietf.org/doc/html/rfc7352) | `duplicate` | Виявлення дубльованих доставок з підтримкою Redis. |
-| [RFC 5463](https://datatracker.ietf.org/doc/html/rfc5463) | `ihave` | Перевіряє, чи доступна оголошена можливість. |
+| [RFC 5463](https://datatracker.ietf.org/doc/html/rfc5463) | `ihave` | Перевіряє, чи доступна оголошена можливість, а також команда `error`. |
 | [RFC 5233](https://datatracker.ietf.org/doc/html/rfc5233) | `subaddress` | Частини адреси `:user` та `:detail`. |
 | [draft-ietf-sieve-regex](https://datatracker.ietf.org/doc/html/draft-ietf-sieve-regex) | `regex` | Пошук за регулярними виразами з використанням [RE2](https://github.com/uhop/node-re2). |
-| [RFC 5703](https://datatracker.ietf.org/doc/html/rfc5703) | `mime` | MIME-тести та `foreverypart`, `break`, `extracttext` і `replace`. `enclose` відхиляється, оскільки не має безпечної реалізації доставки. |
+| [RFC 5703](https://datatracker.ietf.org/doc/html/rfc5703) | `foreverypart`, `extracttext`, `replace`, `mime` | MIME-тести та `foreverypart`, `break`, `extracttext` і `replace`. `mime` також вмикає ці команди, як очікують старіші скрипти. `enclose` відхиляється, оскільки не має безпечної реалізації доставки. |
 
 #### Підтримувані розширення Sieve {#supported-sieve-extensions}
 
 | Extension | Behavior | Delivery or enforcement |
 | --- | --- | --- |
-| `fileinto` | Поміщає повідомлення у папку. | Зберігається у вибраній папці IMAP. `fileinto :create` вимагає `mailbox`. |
+| `fileinto` | Поміщає повідомлення у папку. | Зберігається у вибраній папці IMAP. `fileinto :create` і `mailboxexists` вимагають `mailbox`. |
 | `copy` | Зберігає оригінальну доставку і додає `fileinto` або `redirect`. | Застосовується в процесі доставки. |
-| `redirect` | Надсилає копію або замінну доставку іншому отримувачу. | Поміщається в чергу через звичайний вихідний шлях, з урахуванням політики домену, перевірок у списку заборон і обмежень частоти. |
+| `redirect` | Надсилає повідомлення іншому отримувачу. | Поміщається в чергу через звичайний вихідний шлях для повідомлення, у якого From — це псевдонім, на домені з вихідним SMTP, з урахуванням політики домену, перевірок у списку заборон і обмежень частоти. Будь-яке інше повідомлення залишається у вхідних. |
 | `reject` / `ereject` | Відхиляє повідомлення з SMTP-помилкою. | Повертається через шлях доставки MX. |
 | `vacation` / `vacation-seconds` | Надсилає автоматичну відповідь. | Поміщається в чергу з обмеженнями за отримувачем та інтервалами. |
 | `imap4flags` | Встановлює або перевіряє прапорці IMAP. | Застосовується під час збереження повідомлення. |
-| `envelope`, `body`, `date`, `index`, `regex`, `subaddress`, `relational` | Перевіряє дані повідомлення та конверта. | Оцінюються Sieve-движком. |
+| `envelope`, `body`, `date`, `index`, `regex`, `subaddress`, `relational`, `comparator-i;ascii-numeric` | Перевіряє дані повідомлення та конверта. | Оцінюються Sieve-движком. |
 | `variables`, `duplicate`, `ihave` | Зберігає значення, виявляє дублікати та перевіряє можливості. | Змінні локальні для скрипта; стан дублікатів використовує Redis. |
-| `editheader` | Додає або видаляє незахищені заголовки. | Заголовки аутентифікації та маршрутизації доставки не можуть бути змінені. |
+| `editheader` | Додає або видаляє незахищені заголовки. | Заголовки аутентифікації та маршрутизації доставки, `Received` і `Auto-Submitted` не можуть бути змінені. |
 | `enotify` | Надсилає сповіщення через `mailto:`. | Поміщається в чергу з обмеженнями на кількість сповіщень. |
 | `environment` | Читає підтримувані дані середовища сесії. | Оцінюється Sieve-движком. |
-| `special-use` | Опрацьовує папки стандартного призначення. | Відображає стандартні папки та забезпечує детерміністичні результати `specialuse_exists`. |
-| `mime` | Перевіряє та змінює підтримувані MIME-частини. | Вимагає загальну можливість `mime`. Окремі команди з RFC 5703 не оголошуються окремо. |
+| `special-use` | Опрацьовує папки стандартного призначення. | Поміщає повідомлення в папки спеціального призначення псевдоніма та перевіряє їх. |
+| `foreverypart`, `extracttext`, `replace`, `mime` | Перевіряє та змінює підтримувані MIME-частини. | Оцінюється Sieve-движком. `mime` також вмикає ці три команди, як очікують старіші скрипти. |
 
 #### Функції Sieve, які не підтримуються {#sieve-extensions-not-supported}
 
@@ -1156,11 +1156,9 @@ sequenceDiagram
 | Feature | RFC or specification | Reason |
 | --- | --- | --- |
 | `enclose` | [RFC 5703](https://datatracker.ietf.org/doc/html/rfc5703) | Створення нового повідомлення, яке вміщує оригінальне повідомлення, не реалізовано безпечно від початку до кінця. |
-| `mailboxexists` | [RFC 5490](https://datatracker.ietf.org/doc/html/rfc5490) | Живі запити стану поштової скриньки IMAP недоступні. |
 | `include` | [RFC 6609](https://datatracker.ietf.org/doc/html/rfc6609) | Глобальне та включене зберігання скриптів недоступне. |
 | `mboxmetadata` / `servermetadata` | [RFC 5490](https://datatracker.ietf.org/doc/html/rfc5490) | Інтеграція з IMAP METADATA недоступна. |
 | `fcc` | [RFC 8580](https://datatracker.ietf.org/doc/html/rfc8580) | Інтеграція для збереження надісланих листів недоступна. |
-| `encoded-character` | [RFC 5228](https://datatracker.ietf.org/doc/html/rfc5228) | Синтаксис `${hex:...}` не реалізовано. |
 | External lists | [RFC 6134](https://datatracker.ietf.org/doc/html/rfc6134) | `valid_ext_list` та інші операції зовнішніх списків недоступні. |
 
 #### Sieve processing flow {#sieve-processing-flow}
@@ -1197,7 +1195,7 @@ sequenceDiagram
 
 #### Механізми безпеки {#security-features}
 
-Forward Email перевіряє повний скрипт перед його збереженням, активацією або виконанням. Воно відхиляє неоголошені та недоступні можливості, обмежує розмір скрипта і ітерацію MIME-частин, використовує [RE2](https://github.com/uhop/node-re2) для порівняння регулярних виразів, застосовує обмеження частоти для перенаправлень, відповідей `vacation` та сповіщень, забороняє небезпечні місця призначення для перенаправлень та не дозволяє `editheader` змінювати заголовки автентифікації або маршрутизації доставки. Стан обмежень частоти для перенаправлень та `vacation` зберігається в [Redis](https://github.com/redis/redis), натомість доставлена пошта зберігається в [SQLite](https://github.com/sqlite/sqlite).
+Forward Email перевіряє повний скрипт перед його збереженням, активацією або виконанням. Воно відхиляє неоголошені та недоступні можливості, обмежує розмір скрипта і ітерацію MIME-частин, використовує [RE2](https://github.com/uhop/node-re2) для порівняння регулярних виразів, застосовує обмеження частоти для перенаправлень, відповідей `vacation` та сповіщень, забороняє небезпечні місця призначення для перенаправлень та не дозволяє `editheader` змінювати заголовки автентифікації або маршрутизації доставки, `Received` чи `Auto-Submitted`. Скрипт, який виконується надто довго або створює надто багато дій, прапорців чи змінних, зупиняється, а повідомлення зберігається. Стан обмежень частоти для перенаправлень та `vacation` зберігається в [Redis](https://github.com/redis/redis), натомість доставлена пошта зберігається в [SQLite](https://github.com/sqlite/sqlite).
 
 #### Приклади Sieve-скриптів {#example-sieve-scripts}
 
@@ -1233,8 +1231,6 @@ if header :contains "X-Spam-Status" "Yes" {
 **Перенаправлення рахунків:**
 
 ```sieve
-require ["redirect"];
-
 if header :contains "Subject" "invoice" {
     redirect "recipient@example.com";
 }
@@ -1260,7 +1256,7 @@ Forward Email надає повну підтримку протоколу Manage
 | **Сервер**              | `imap.forwardemail.net` |
 | **Порт (STARTTLS)**     | `2190` (рекомендовано)  |
 | **Порт (Implicit TLS)** | `4190`                  |
-| **Аутентифікація**      | PLAIN (через TLS)       |
+| **Аутентифікація**      | PLAIN і LOGIN (через TLS) |
 
 > **Примітка:** Порт 2190 використовує STARTTLS (покращення з plain до TLS) і сумісний з більшістю клієнтів ManageSieve, включно з [sieve-connect](https://github.com/philpennock/sieve-connect). Порт 4190 використовує implicit TLS (TLS з початку з’єднання) для клієнтів, які це підтримують.
 
@@ -1268,7 +1264,8 @@ Forward Email надає повну підтримку протоколу Manage
 
 | Команда        | Опис                                   |
 | -------------- | ------------------------------------- |
-| `AUTHENTICATE` | Аутентифікація за допомогою механізму PLAIN |
+| `AUTHENTICATE` | Аутентифікація за допомогою механізму PLAIN або LOGIN |
+| `STARTTLS`     | Переведення з'єднання на TLS на порту 2190            |
 | `CAPABILITY`   | Перелік можливостей та розширень сервера |
 | `HAVESPACE`    | Перевірка, чи можна зберегти скрипт  |
 | `PUTSCRIPT`    | Завантаження нового скрипта           |

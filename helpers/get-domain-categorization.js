@@ -63,6 +63,7 @@ const pkg = require('../package.json');
 
 const { hasLegitimateHosting } = require('#helpers/check-domain-reputation');
 const { isBlockedAnswer } = require('#helpers/create-family-resolver');
+const createValidatingLookup = require('#helpers/create-validating-lookup');
 const {
   DISPOSABLE_SERVICE_NAMES
 } = require('#helpers/get-domain-name-restrictions');
@@ -97,21 +98,12 @@ const { isPrivateHostResolved } = isPrivateHost;
 // invariant must be enforced at the connection itself so it holds on every
 // hop. The custom `connect` handles IP literals; hostnames still flow
 // through the validating lookup.
+// (every address is checked: Node 20 and later ask for all of them)
 const baseConnect = undici.buildConnector({
-  lookup(hostname, options, fn) {
-    dns.lookup(hostname, options, (err, address, family) => {
-      if (err) return fn(err);
-      if (address && isPrivateHost(address)) {
-        const error = new Error(
-          `Resolved IP ${address} is a private/reserved address`
-        );
-        error.code = 'EPRIVATEADDR';
-        return fn(error);
-      }
-
-      return fn(null, address, family);
-    });
-  }
+  lookup: createValidatingLookup({
+    lookup: (hostname, options) => dns.promises.lookup(hostname, options),
+    isBlocked: (address) => isPrivateHost(address)
+  })
 });
 
 const dispatcher = new undici.Agent({

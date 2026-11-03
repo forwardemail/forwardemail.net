@@ -19,6 +19,19 @@ const Domains = require('#models/domains');
 const Users = require('#models/users');
 const config = require('#config');
 const email = require('#helpers/email');
+const getUsernameVariants = require('#helpers/get-username-variants');
+
+const { getQueryNames, normalizeUsername } = getUsernameVariants;
+
+// (as names were matched before: an invalid punycode name is left as it is)
+function getPunycodeUnicode(name) {
+  try {
+    return punycode.toUnicode(name);
+  } catch {
+    return name;
+  }
+}
+
 const i18n = require('#helpers/i18n');
 const isEmail = require('#helpers/is-email');
 const logger = require('#helpers/logger');
@@ -43,6 +56,8 @@ async function getForwardingConfiguration({
   verificationRecord,
   domainName,
   username = false,
+  // (other forms of the username, e.g. the Unicode one of a punycode name)
+  usernameVariants: variants,
   ignoreBilling,
   client,
   locale = i18n.config.defaultLocale
@@ -68,6 +83,30 @@ async function getForwardingConfiguration({
   if (domainName !== undefined && !isVerifiedHost(domain.name, domainName))
     return {};
 
+  //
+  // the forms of the username alias names are matched with: the ones they
+  // were matched with before (as given, and decoded from punycode), then its
+  // other forms (Unicode NFC normalized, or punycode), so that an alias named
+  // "fællestest" gets mail to it (#619) and an "xn--fllestest-g3a" one keeps
+  // getting it
+  //
+  const usernameVariants = username
+    ? [
+        ...new Set(
+          [
+            username,
+            getPunycodeUnicode(username),
+            ...getUsernameVariants(username),
+            ...(Array.isArray(variants) ? variants : [])
+          ].filter((name) => isSANB(name))
+        )
+      ]
+    : [];
+  const usernameNames = getQueryNames(usernameVariants);
+  const isUsernameMatch = (name) =>
+    usernameVariants.includes(name) ||
+    usernameVariants.includes(normalizeUsername(name));
+
   let hasMultiplePGP = false;
   let hasMultipleSMIME = false;
 
@@ -80,7 +119,7 @@ async function getForwardingConfiguration({
 
     aliasQuery = {
       domain: domain._id,
-      name: username
+      name: { $in: usernameNames }
     };
   } else {
     // if domain.is_catchall_regex_disabled and !username then throw error
@@ -92,7 +131,7 @@ async function getForwardingConfiguration({
     if (domain.is_catchall_regex_disabled) {
       aliasQuery = {
         domain: domain._id,
-        name: username
+        name: { $in: usernameNames }
       };
     } else {
       // it is faster to query without $regex
@@ -108,13 +147,17 @@ async function getForwardingConfiguration({
         typeof domain.has_regex === 'boolean' &&
         !domain.has_regex
       ) {
-        aliasQuery.name = username;
+        aliasQuery.name = { $in: usernameNames };
       }
     }
   }
 
   // safeguard to prevent returning all aliases
   if (_.isEmpty(aliasQuery)) throw new TypeError('Alias query was empty');
+
+  // (looked up by name: the alias named as given was used, and the one
+  // decoded from punycode only when there was none)
+  const isLookupByName = Boolean(aliasQuery.name);
 
   // eslint-disable-next-line unicorn/no-array-callback-reference
   let aliases = await Aliases.find(aliasQuery)
@@ -126,31 +169,34 @@ async function getForwardingConfiguration({
 
   // TODO: vacation_responder
 
+  if (aliases.length === 0) return {};
+
   //
-  // NOTE: we are doing it this way for backwards compatibility for now
-  //       (in the future we should probably just to `toUnicode` some users already converted so this supports legacy)
-  //       (e.g. some users have aliases starting with "xn--" right now which means they already realized this bug)
+  // which names the username matches: as before, when an alias is named the
+  // way it matched before (as given, or decoded from punycode), otherwise
+  // its other forms, so nothing that got mail before gets it differently
   //
-  // if there were no aliases found but a `username` was passed
-  // then we can attempt to convert ASCII to Unicode and perform a lookup
-  if (
-    aliases.length === 0 &&
-    username &&
-    punycode.toUnicode(username) !== username
-  ) {
-    aliases = await Aliases.find({
-      domain: domain._id,
-      name: punycode.toUnicode(username)
-    })
-      .select(
-        'id user has_imap has_pgp public_key has_smime smime_certificate recipients name is_enabled error_code_if_disabled has_recipient_verification verified_recipients vacation_responder'
-      )
-      .lean()
-      .exec();
-    if (aliases.length > 0) username = punycode.toUnicode(username);
+  const oldNames = username ? [username, getPunycodeUnicode(username)] : [];
+  const tiers = isLookupByName
+    ? [[oldNames[0]], [oldNames[1]]]
+    : [[oldNames[0], oldNames[1]]];
+  let matchNames;
+  if (username) {
+    const named = aliases.filter(
+      (alias) =>
+        _.isString(alias.name) &&
+        alias.name !== '*' &&
+        !alias.name.startsWith('/')
+    );
+    for (const tier of tiers) {
+      if (named.some((alias) => tier.includes(alias.name))) {
+        matchNames = (name) => tier.includes(name);
+        break;
+      }
+    }
   }
 
-  if (aliases.length === 0) return {};
+  matchNames ||= isUsernameMatch;
 
   //
   // if the domain was global then filter aliases
@@ -444,10 +490,11 @@ async function getForwardingConfiguration({
       for (const recipient of alias.recipients) {
         if (!isEmail(recipient)) continue;
         const [rcptName, rcptDomain] = recipient.split('@');
-        if (rcptName !== username && rcptName !== punycode.toUnicode(username))
-          continue;
+        if (!isUsernameMatch(rcptName)) continue;
         if (rcptDomain !== domain.name) continue;
-        const id = aliasIdsWithIMAPByName[rcptName];
+        const id =
+          aliasIdsWithIMAPByName[rcptName] ||
+          aliasIdsWithIMAPByName[normalizeUsername(rcptName)];
         if (!id) continue;
         if (body.alias_ids.includes(id)) continue;
         // rudimentary limitation to max of 25 IMAP storage inboxes at once
@@ -497,7 +544,8 @@ async function getForwardingConfiguration({
 
   // create a mapping in advance for
   // recursive IMAP storage support
-  const aliasIdsWithIMAPByName = {};
+  // (no prototype, so a name such as "constructor" finds nothing)
+  const aliasIdsWithIMAPByName = Object.create(null);
   if (username) {
     for (const alias of aliases) {
       if (
@@ -508,6 +556,7 @@ async function getForwardingConfiguration({
         !alias.name.startsWith('/')
       ) {
         aliasIdsWithIMAPByName[alias.name] = alias.id;
+        aliasIdsWithIMAPByName[normalizeUsername(alias.name)] ||= alias.id;
       }
     }
   }
@@ -613,9 +662,12 @@ async function getForwardingConfiguration({
         }
 
         if (regex) {
+          // (a "g" regular expression keeps its position between tests)
           if (
-            regex.test(username) ||
-            regex.test(punycode.toUnicode(username))
+            usernameVariants.some((variant) => {
+              regex.lastIndex = 0;
+              return regex.test(variant);
+            })
           ) {
             pushToBody(alias);
           }
@@ -625,8 +677,7 @@ async function getForwardingConfiguration({
       }
     }
 
-    if (username !== alias.name && punycode.toUnicode(username) !== alias.name)
-      continue;
+    if (!matchNames(alias.name)) continue;
 
     pushToBody(alias);
   }

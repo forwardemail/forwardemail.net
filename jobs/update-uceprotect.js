@@ -9,7 +9,9 @@ require('#helpers/polyfill-towellformed');
 require('#config/env');
 
 const process = require('node:process');
+const { promisify } = require('node:util');
 const { parentPort } = require('node:worker_threads');
+const zlib = require('node:zlib');
 
 const Graceful = require('@ladjs/graceful');
 const Redis = require('@ladjs/redis');
@@ -22,7 +24,6 @@ const safeStringify = require('fast-safe-stringify');
 const { encode } = require('html-entities');
 const splitLines = require('split-lines');
 const validator = require('@forwardemail/validator');
-const { ungzip } = require('node-gzip');
 
 const config = require('#config');
 const emailHelper = require('#helpers/email');
@@ -49,6 +50,13 @@ const LISTS = [
 const SEVEN_DAYS_TO_MS = ms('7d');
 const PIPELINE_SIZE = 10_000;
 
+//
+// The lists are fetched over plain HTTP, so the decompressed size is bounded
+// rather than letting a tampered response (a gzip bomb) inflate without limit.
+//
+const MAX_LIST_BYTES = 256 * 1024 * 1024;
+const gunzip = promisify(zlib.gunzip);
+
 graceful.listen();
 
 async function mapper(list) {
@@ -65,7 +73,7 @@ async function mapper(list) {
     res.headers['content-type'] === 'application/octet-stream' ||
     res.headers['content-encoding'] === 'gzip'
   )
-    res.body = await ungzip(res.body);
+    res.body = await gunzip(res.body, { maxOutputLength: MAX_LIST_BYTES });
   const lines = splitLines(res.body.toString());
   const ips = [];
   for (const line of lines) {

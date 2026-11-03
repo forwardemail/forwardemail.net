@@ -11,6 +11,8 @@ W tej sekcji opisano przebieg prac CI/CD dla samodzielnie hostowanego rozwiązan
 * [Proces wdrażania](#deployment-process)
   * [Instalacja](#installation)
   * [Konfiguracja Docker Compose](#docker-compose-configuration)
+  * [Dostarczanie do domen hostowanych na tym samym serwerze](#delivery-to-domains-hosted-on-the-same-server)
+  * [Kończenie sesji po cofnięciu dostępu w Google lub GitHub](#ending-sessions-when-google-or-github-access-is-revoked)
 * [Funkcje konserwacyjne](#maintenance-features)
   * [Automatyczne aktualizacje](#automatic-updates)
   * [Kopia zapasowa i przywracanie](#backup-and-restore)
@@ -122,6 +124,30 @@ Plik `docker-compose-self-hosted.yml` definiuje wszystkie usługi wymagane dla r
 * **SQLite**: Baza danych do przechowywania wiadomości e-mail
 
 Każda usługa korzysta z tego samego obrazu Docker, ale z różnymi punktami wejścia, co pozwala na modułową architekturę przy jednoczesnym uproszczeniu konserwacji.
+
+### Dostarczanie do domen hostowanych na tym samym serwerze {#delivery-to-domains-hosted-on-the-same-server}
+
+Poczta wychodząca nie jest dostarczana do serwera MX pod adresem należącym do samego serwera. Gdy jeden serwer hostuje kilka domen, a ich rekordy MX wskazują na jego adres publiczny, poczta z jednej z tych domen do innej jest odrzucana.
+
+Aby na to zezwolić, ustaw:
+
+```env
+SMTP_ALLOW_LOCAL_MX=true
+```
+
+Wartość domyślna to `false`, a ustawienie działa tylko przy `SELF_HOSTED=true`. Poczta nadal nigdy nie jest dostarczana na adresy pętli zwrotnej (loopback), prywatne, link-local ani adresy NAT operatorskiego (CGNAT).
+
+### Kończenie sesji po cofnięciu dostępu w Google lub GitHub {#ending-sessions-when-google-or-github-access-is-revoked}
+
+W instalacji hostowanej samodzielnie sesje zalogowane przez Google lub GitHub domyślnie nie są sprawdzane u dostawcy: cofnięcie tam dostępu tej aplikacji ich nie wylogowuje i pozostają zalogowane do czasu wygaśnięcia.
+
+Aby kończyć je, gdy tylko dostęp zostanie cofnięty, ustaw:
+
+```env
+AUTH_OAUTH_REVOCATION_CHECK=true
+```
+
+Dostawca jest wtedy pytany w tle, mniej więcej co 5 minut (co minutę, dopóki nie odpowiada). Awaria po stronie dostawcy nikogo nie wylogowuje, podobnie jak token, którego dostawca nigdy nie zaakceptował.
 
 ## Funkcje konserwacyjne {#maintenance-features}
 

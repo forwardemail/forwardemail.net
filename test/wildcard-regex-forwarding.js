@@ -902,3 +902,234 @@ test('a regular expression replacement that could grow too large is not run', as
   t.deepEqual(addresses, ['user+support@example.com']);
   t.is(replaced, 1);
 });
+
+// (a lookup changes the records it reads in place: answer with copies, as a
+// resolver reading its cache does, so the same records can be read again)
+function answerWithCopies(ctx) {
+  const counts = { lookups: 0 };
+  const { resolveTxt } = ctx.resolver;
+  ctx.resolver.resolveTxt = async function (...args) {
+    counts.lookups++;
+    return structuredClone(await Reflect.apply(resolveTxt, this, args));
+  };
+
+  return counts;
+}
+
+//
+// every address a lookup returns is looked up again (up to ten levels), so a
+// record whose entries each return a new address doubled the lookups at each
+// level: the lookups are shared by one budget for the whole expansion
+//
+test('a record that multiplies its addresses at each level stays bounded', async (t) => {
+  const ctx = makeContext({
+    [ROOT]: [[`forward-email=/^(.*)$/:$1a@${ROOT},/^(.*)$/:$1b@${ROOT}`]]
+  });
+  const counts = answerWithCopies(ctx);
+
+  // (whatever it resolves to, the addresses stay within the limit)
+  const result = await run(ctx, `x@${ROOT}`).catch((err) => err);
+  if (result instanceof Error) t.is(result.responseCode, 421);
+  else t.true(result.addresses.length <= 10);
+  // (2047 lookups before, and twice as many for each level added)
+  t.true(counts.lookups < 1000, `${counts.lookups} TXT lookups`);
+});
+
+//
+// each address of the record itself is looked up, as before, however many
+// there are (a paid domain allows up to 1000): the budget is for what they
+// expand to
+//
+test('every address of a record with many addresses is looked up', async (t) => {
+  // (a host of its own: the limit set below is seen by the other tests)
+  const top = `many.${ROOT}`;
+  const other = `other.${ROOT}`;
+  const recipients = Array.from({ length: 150 }, (_, i) => `r${i}@${other}`);
+  const ctx = makeContext({
+    [top]: [[`forward-email=x:${recipients.join(',x:')}`]],
+    [other]: [[`forward-email=/^r(\\d+)$/:dest$1@example.net`]]
+  });
+  answerWithCopies(ctx);
+  await ctx.client.set(`v1_max_forwarded:${top}`, 1000);
+  const { addresses } = await run(ctx, `x@${top}`);
+  t.deepEqual(
+    addresses.sort(),
+    Array.from({ length: 150 }, (_, i) => `dest${i}@example.net`).sort()
+  );
+});
+
+// (and so is each address of a level below with many addresses)
+test('every address of a nested record with many addresses is looked up', async (t) => {
+  // (a host of its own: the limit set below is seen by the other tests)
+  const top = `nested.${ROOT}`;
+  const middle = `middle.${ROOT}`;
+  const other = `other.${ROOT}`;
+  const recipients = Array.from({ length: 150 }, (_, i) => `r${i}@${other}`);
+  const ctx = makeContext({
+    [top]: [[`forward-email=x:y@${middle}`]],
+    [middle]: [[`forward-email=y:${recipients.join(',y:')}`]],
+    [other]: [[`forward-email=/^r(\\d+)$/:dest$1@example.net`]]
+  });
+  answerWithCopies(ctx);
+  for (const domain of [top, middle])
+    await ctx.client.set(`v1_max_forwarded:${domain}`, 1000);
+  const { addresses } = await run(ctx, `x@${top}`);
+  t.deepEqual(
+    addresses.sort(),
+    Array.from({ length: 150 }, (_, i) => `dest${i}@example.net`).sort()
+  );
+});
+
+// (and so are several such lists side by side)
+test('every address of lists side by side is looked up', async (t) => {
+  // (a host of its own: the limit set below is seen by the other tests)
+  const top = `sides.${ROOT}`;
+  const teams = ['a', 'b'].map((name) => `${name}.${ROOT}`);
+  const other = `other.${ROOT}`;
+  const records = {
+    [top]: [
+      [`forward-email=x:${teams.map((team) => `y@${team}`).join(',x:')}`]
+    ],
+    [other]: [[`forward-email=/^r(\\d+)$/:dest$1@example.net`]]
+  };
+  for (const [i, team] of teams.entries())
+    records[team] = [
+      [
+        `forward-email=y:${Array.from(
+          { length: 150 },
+          (_, n) => `r${i * 150 + n}@${other}`
+        ).join(',y:')}`
+      ]
+    ];
+  const ctx = makeContext(records);
+  answerWithCopies(ctx);
+  for (const domain of [top, ...teams])
+    await ctx.client.set(`v1_max_forwarded:${domain}`, 1000);
+  const { addresses } = await run(ctx, `x@${top}`);
+  t.deepEqual(
+    addresses.sort(),
+    Array.from({ length: 300 }, (_, i) => `dest${i}@example.net`).sort()
+  );
+});
+
+//
+// lists of lists of mailboxes (IMAP), which are not forwarded anywhere, are
+// looked up to their end, as before, on a domain that may forward to only
+// 10 addresses (serial: it sets the paid plan answer, which other tests
+// change)
+//
+test.serial('every address written in nested lists is looked up', async (t) => {
+  // (a host of its own: the limit set below is seen by the other tests)
+  const top = `lists.${ROOT}`;
+  const mail = `mail.${ROOT}`;
+  const groups = Array.from({ length: 10 }, (_, i) => `g${i}.${ROOT}`);
+  const records = {
+    [top]: [[`forward-email=x:${groups.map((g) => `team@${g}`).join(',x:')}`]],
+    [mail]: [['forward-email-site-verification=mail123']]
+  };
+  for (const [i, group] of groups.entries())
+    records[group] = [
+      [
+        `forward-email=team:${Array.from(
+          { length: 15 },
+          (_, n) => `m${i * 15 + n}@${mail}`
+        ).join(',team:')}`
+      ]
+    ];
+  const ctx = makeContext(records);
+  answerWithCopies(ctx);
+  const asked = new Set();
+  paidPlanHandler = async ({ username }) => {
+    asked.add(username);
+    return { has_imap: true, mapping: [] };
+  };
+
+  const result = await run(ctx, `x@${top}`);
+  t.is(asked.size, 150);
+  t.true(result.hasIMAP);
+  t.deepEqual(result.addresses, []);
+});
+
+//
+// a record written as a graph whose addresses share the ones below them,
+// without any regular expression, looked each one up again for each path to
+// it: 3 addresses at each of 9 levels made about 30,000 lookups
+//
+test.serial(
+  'a record whose addresses share the ones below stays bounded',
+  async (t) => {
+    const host = `graph.${ROOT}`;
+    const entries = ['start:n1x0', 'start:n1x1', 'start:n1x2'].map(
+      (entry) => `${entry}@${host}`
+    );
+    for (let level = 1; level < 9; level++)
+      for (let i = 0; i < 3; i++)
+        for (let j = 0; j < 3; j++)
+          entries.push(`n${level}x${i}:n${level + 1}x${j}@${host}`);
+    const ctx = makeContext({
+      [host]: [[`forward-email=${entries.join(',')}`]]
+    });
+    const counts = answerWithCopies(ctx);
+    await run(ctx, `start@${host}`).catch((err) => err);
+    t.true(counts.lookups < 300, `${counts.lookups} TXT lookups`);
+  }
+);
+
+//
+// a long record on a domain that may forward to few addresses (it is
+// refused once looked up) does not buy more lookups than that limit allows
+//
+// (serial: it keeps the CPU busy for a few seconds, and on a host of its own,
+// apart from the root domain documents other tests make)
+test.serial(
+  'a long record does not raise the lookups past the address limit',
+  async (t) => {
+    const host = `long.${ROOT}`;
+    const entries = Array.from(
+      { length: 1000 },
+      (_, i) => `/^(.*)$/:$1${i}@${host}`
+    );
+    const ctx = makeContext({
+      [host]: [[`forward-email=${entries.join(',')}`]]
+    });
+    const counts = answerWithCopies(ctx);
+    const result = await run(ctx, `x@${host}`).catch((err) => err);
+    t.true(result instanceof Error);
+    t.is(result.responseCode, 421);
+    t.true(counts.lookups < 300, `${counts.lookups} TXT lookups`);
+  }
+);
+
+//
+// splitting a long record into its entries copied the rest of the record for
+// every entry (quadratic, and it blocked the event loop for every recipient)
+//
+test('a record with many entries is split in linear time', async (t) => {
+  const entries = Array.from(
+    { length: 6000 },
+    (_, i) => `user${i}:dest${i}@example.net`
+  );
+  const ctx = makeContext({
+    [ROOT]: [[`forward-email=${entries.join(',')}`]]
+  });
+  answerWithCopies(ctx);
+  const start = Date.now();
+  const { addresses } = await run(ctx, `user5999@${ROOT}`);
+  const elapsed = Date.now() - start;
+  t.deepEqual(addresses, ['dest5999@example.net']);
+  t.true(elapsed < 1000, `took ${elapsed}ms`);
+
+  // (regular expression entries, which may hold commas, split as before)
+  const regex = makeContext({
+    [ROOT]: [
+      [
+        `forward-email=/^a{1,2}$/:one@example.net,/^b,c$/i:two@example.net,plain:three@example.net`
+      ]
+    ]
+  });
+  answerWithCopies(regex);
+  const one = await run(regex, `aa@${ROOT}`);
+  t.deepEqual(one.addresses, ['one@example.net']);
+  const three = await run(regex, `plain@${ROOT}`);
+  t.deepEqual(three.addresses, ['three@example.net']);
+});

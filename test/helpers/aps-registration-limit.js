@@ -141,3 +141,45 @@ test('IMAP registrations keep only the newest', async (t) => {
   t.is(aps.length, MAX_APS_REGISTRATIONS);
   t.is(aps.at(-1).device_token, token(total - 1));
 });
+
+async function registerImap(t, n, mailboxes) {
+  const server = {
+    logger: new Axe({ silent: true }),
+    async refreshSession() {}
+  };
+  const session = { user: { alias_id: t.context.alias.id } };
+  return new Promise((resolve) => {
+    onXAPPLEPUSHSERVICE.call(
+      server,
+      accountId(n),
+      token(n),
+      'com.apple.mobilemail',
+      mailboxes,
+      session,
+      resolve
+    );
+  });
+}
+
+// (every mailbox chosen keeps its pushes, however many there are)
+test('IMAP registrations keep every mailbox name a user chose', async (t) => {
+  const mailboxes = [
+    'INBOX',
+    ...Array.from({ length: 500 }, (_, i) => `Folder ${i}`)
+  ];
+  t.falsy(await registerImap(t, 1, mailboxes));
+  const [registration] = await registrations(t.context.alias);
+  t.deepEqual(registration.mailboxes, mailboxes);
+});
+
+test('IMAP registrations with an oversized list push for every mailbox', async (t) => {
+  const mailboxes = [
+    'INBOX',
+    'x'.repeat(100_000),
+    ...Array.from({ length: 5000 }, (_, i) => `Folder ${i}`)
+  ];
+  t.falsy(await registerImap(t, 1, mailboxes));
+  const [registration] = await registrations(t.context.alias);
+  // (an empty list is every mailbox, see isSubscribed in helpers/send-apn.js)
+  t.deepEqual(registration.mailboxes, []);
+});

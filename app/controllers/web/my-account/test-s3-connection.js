@@ -19,6 +19,7 @@ const isSANB = require('is-string-and-not-blank');
 const { isURL } = require('@forwardemail/validator');
 
 const { isPrivateHostResolved } = require('#helpers/is-private-host');
+const resolvePinnedAddress = require('#helpers/resolve-pinned-address');
 const config = require('#config');
 const { Domains } = require('#models');
 const checkS3BucketAccess = require('#helpers/check-s3-bucket-access');
@@ -141,18 +142,10 @@ async function testS3Connection(ctx) {
   //
   // Use Tangerine resolver (Redis-backed, cached) from Koa context
   const { resolver } = ctx;
+  // (A, or AAAA for an endpoint on IPv6 only)
   let pinnedIP;
   try {
-    const isIPv6 = net.isIPv6(parsedEndpoint.hostname);
-    const isIPv4 = net.isIPv4(parsedEndpoint.hostname);
-    if (isIPv4 || isIPv6) {
-      pinnedIP = parsedEndpoint.hostname;
-    } else {
-      const addresses = await resolver.resolve4(parsedEndpoint.hostname);
-      if (!addresses || addresses.length === 0)
-        throw new Error('No DNS records');
-      pinnedIP = addresses[0];
-    }
+    pinnedIP = await resolvePinnedAddress(parsedEndpoint.hostname, resolver);
   } catch {
     throw Boom.badRequest(ctx.translateError('CUSTOM_S3_INVALID_ENDPOINT'));
   }

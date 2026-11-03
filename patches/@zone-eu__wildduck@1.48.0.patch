@@ -1,0 +1,84 @@
+diff --git a/imap-core/lib/indexer/parse-mime-tree.js b/imap-core/lib/indexer/parse-mime-tree.js
+index 9f281833ec41a0c7fc841c83b098f89da60a469b..bbffda18cd8d151036a1632d388e3f9d1687cdbc 100644
+--- a/imap-core/lib/indexer/parse-mime-tree.js
++++ b/imap-core/lib/indexer/parse-mime-tree.js
+@@ -191,36 +191,55 @@ class MIMEParser {
+     processNodeHeader() {
+         let key, value;
+ 
+-        for (let i = this._node.header.length - 1; i >= 0; i--) {
+-            if (i && this._node.header[i].match(/^\s/)) {
+-                this._node.header[i - 1] = this._node.header[i - 1] + '\r\n' + this._node.header[i];
+-                this._node.header.splice(i, 1);
++        // NOTE: unfold without `splice()` so this stays linear in the number of
++        //       header lines (they come from whoever sent the message)
++        let merged = [];
++        for (let i = 0; i < this._node.header.length; i++) {
++            let line = this._node.header[i];
++            if (i && merged.length && /^\s/.test(line)) {
++                merged[merged.length - 1].push(line);
+             } else {
+-                value = this._node.header[i].split(':');
+-                key = (value.shift() || '').trim().toLowerCase();
+-                value = value.join(':').trim();
+-
+-                // Do not touch headers that have strange looking keys, keep these
+-                // only in the unparsed array
+-                if (/[^a-zA-Z0-9\-*]/.test(key) || key.length >= 100) {
+-                    continue;
+-                }
++                merged.push([line]);
++            }
++        }
++        this._node.header = merged.map(parts => parts.join('\r\n'));
++
++        // NOTE: group the values by name from the last line up, then build each
++        //       field once (`unshift()` for every repeated name was quadratic);
++        //       as before, names are in the order of their last line from the
++        //       bottom, a repeated name is an array in message order, and only
++        //       its last value is unfolded
++        let values = new Map();
++        for (let i = this._node.header.length - 1; i >= 0; i--) {
++            value = this._node.header[i].split(':');
++            key = (value.shift() || '').trim().toLowerCase();
++            value = value.join(':').trim();
+ 
+-                // assume UTF-8 for binary headers
+-                value = Buffer.from(value, 'binary').toString();
++            // Do not touch headers that have strange looking keys, keep these
++            // only in the unparsed array
++            if (/[^a-zA-Z0-9\-*]/.test(key) || key.length >= 100) {
++                continue;
++            }
+ 
+-                if (key in this._node.parsedHeader) {
+-                    if (Array.isArray(this._node.parsedHeader[key])) {
+-                        this._node.parsedHeader[key].unshift(value);
+-                    } else {
+-                        this._node.parsedHeader[key] = [value, this._node.parsedHeader[key]];
+-                    }
+-                } else {
+-                    this._node.parsedHeader[key] = value.replace(/\s*\r?\n\s*/g, ' ');
+-                }
++            // assume UTF-8 for binary headers
++            value = Buffer.from(value, 'binary').toString();
++
++            let list = values.get(key);
++            if (list) {
++                list.push(value);
++            } else {
++                values.set(key, [value]);
+             }
+         }
+ 
++        for (let [name, list] of values) {
++            // NOTE: `/\s*\r?\n\s*/g` backtracks quadratically on a long
++            //       whitespace run without a line break, so match each
++            //       maximal run once and decide in the callback
++            list[0] = list[0].replace(/\s+/g, ws => (ws.includes('\n') ? ' ' : ws));
++            this._node.parsedHeader[name] = list.length === 1 ? list[0] : list.reverse();
++        }
++
+         // always ensure the presence of Content-Type
+         if (!this._node.parsedHeader['content-type']) {
+             this._node.parsedHeader['content-type'] = 'text/plain';

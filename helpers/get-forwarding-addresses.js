@@ -29,6 +29,7 @@ const i18n = require('#helpers/i18n');
 const getForwardingConfiguration = require('#helpers/get-forwarding-configuration');
 const getKeyInfo = require('#helpers/get-key-info');
 const getMaxForwardedAddresses = require('#helpers/get-max-forwarded-addresses');
+const getUsernameVariants = require('#helpers/get-username-variants');
 const isEmail = require('#helpers/is-email');
 const isExpiredOrNewlyCreated = require('#helpers/is-expired-or-newly-created');
 const isRetryableError = require('#helpers/is-retryable-error');
@@ -145,6 +146,29 @@ async function lookupRecordsWithoutCache(resolver, domain, answers) {
 const MAX_RECURSIVE_FORWARDING_DEPTH = 10;
 const MAX_FORWARDING_ADDRESS_LENGTH = 254;
 const RECURSION_DEPTHS = new WeakMap();
+//
+// The depth limit alone still let each level look up every address the level
+// above returned: a record such as
+// "/^(.*)$/:$1a@example.com,/^(.*)$/:$1b@example.com" doubles the lookups at
+// each level (and the address limit below is only checked once a whole level
+// is done), and records written as a graph whose addresses share the ones
+// below them do the same without any regular expression (each address is
+// looked up again for each path to it). So one budget of lookups is shared
+// by all an address expands to, and an address past it is forwarded as it
+// is, as one past the depth limit is. The budget is 100 lookups and two more
+// for each address the domain lets the address be forwarded to (a domain
+// counts up to as many addresses as an alias may have recipients, and a paid
+// domain with longer lists can raise its limit).
+//
+const MAX_RECURSIVE_LOOKUPS = 100;
+const MAX_LEVEL_LENGTH = 1000;
+//
+// (a lookup of an address that stores mail and is forwarded nowhere, such as
+// a mailbox in a list of lists of mailboxes, adds nothing to forward: so many
+// of those are not counted against the budget)
+//
+const MAX_MAILBOX_LOOKUPS = 1000;
+const RECURSION_BUDGETS = new WeakMap();
 
 async function getForwardingAddresses(
   address,
@@ -153,6 +177,7 @@ async function getForwardingAddresses(
   session
 ) {
   const recursionDepth = RECURSION_DEPTHS.get(recursive) || 0;
+  const recursionBudget = RECURSION_BUDGETS.get(recursive) || { lookups: 0 };
   let hasIMAP = false;
   let aliasPublicKey = false;
   let aliasSmimeCertificate = false;
@@ -488,6 +513,22 @@ async function getForwardingAddresses(
   const username = isEmail(address) ? parseUsername(address) : false;
 
   //
+  // the forms of the username that names and regular expressions in the
+  // records are matched with: the punycode one first (the only one they were
+  // matched with before, so whatever matched before matches the same way),
+  // then the Unicode one, NFC normalized, so that "fællestest:…" or a
+  // regular expression for "fællestest" matches too (#619)
+  //
+  const usernameVariants = username
+    ? [
+        ...new Set([
+          username,
+          ...getUsernameVariants(parseUsername.parseUnicodeUsername(address))
+        ])
+      ]
+    : [];
+
+  //
   // store if the domain was bad and not on paid plan (required for bad domains)
   //
   let badDomainExtension = true;
@@ -524,6 +565,7 @@ async function getForwardingAddresses(
       verificationRecord: verifications[0],
       domainName: verificationHost,
       username,
+      usernameVariants,
       ignoreBilling,
       client: this.client
     });
@@ -597,55 +639,72 @@ async function getForwardingAddresses(
   // e.g. *+test@example.com => user@gmail.com
   // record = "forward-email=user@gmail.com"
 
+  //
+  // (one pass from left to right: splitting off one entry and recursing on a
+  // copy of the rest was quadratic in the length of the record)
+  //
   function splitString(str) {
-    if (str.indexOf('/') === 0) {
-      //
-      // find the regex terminator (the colon after the closing slash+flags)
-      // by checking all possible flag endings: /gi:, /ig:, /g:, /i:, /:
-      // this must handle regex patterns that contain commas (e.g. {0,1})
-      // and patterns that contain literal ",/" inside character classes
-      //
-      // we find the EARLIEST (leftmost) occurrence of any ending to ensure
-      // we split at the first regex's boundary, not a later regex's ending
-      //
-      const SPLIT_REGEX_FLAG_ENDINGS = ['/gi:', '/ig:', '/g:', '/i:', '/:'];
-      let index = -1;
-      let bestPos = Number.POSITIVE_INFINITY;
-      for (const ending of SPLIT_REGEX_FLAG_ENDINGS) {
-        const pos = str.indexOf(ending);
-        if (pos !== -1 && pos !== 0 && pos < bestPos) {
-          bestPos = pos;
-          index = pos + ending.length - 1; // point to the ':'
+    //
+    // the regex terminator is the colon after the closing slash+flags, found
+    // by checking all possible flag endings: /gi:, /ig:, /g:, /i:, /:
+    // this must handle regex patterns that contain commas (e.g. {0,1})
+    // and patterns that contain literal ",/" inside character classes
+    //
+    const SPLIT_REGEX_FLAG_ENDINGS = ['/gi:', '/ig:', '/g:', '/i:', '/:'];
+    // next index of each ending (-1 for none), looked up again only once an
+    // entry starts past it
+    const nextEnding = new Map();
+    const entries = [];
+    let start = 0;
+    for (;;) {
+      if (str.startsWith('/', start)) {
+        //
+        // we find the EARLIEST (leftmost) occurrence of any ending to ensure
+        // we split at the first regex's boundary, not a later regex's ending
+        //
+        let index = -1;
+        let bestPos = Number.POSITIVE_INFINITY;
+        for (const ending of SPLIT_REGEX_FLAG_ENDINGS) {
+          let pos = nextEnding.get(ending);
+          if (pos === undefined || (pos !== -1 && pos < start)) {
+            pos = str.indexOf(ending, start);
+            nextEnding.set(ending, pos);
+          }
+
+          if (pos !== -1 && pos !== start && pos < bestPos) {
+            bestPos = pos;
+            index = pos + ending.length - 1; // point to the ':'
+          }
         }
+
+        //
+        // if we found a valid regex ending, find the next comma AFTER
+        // the full regex entry (regex + colon + recipient address)
+        // if we did not find a valid ending, the rest is one entry
+        // (this avoids splitting on commas inside the regex pattern,
+        // e.g. commas inside character classes)
+        //
+        const lastComma = index === -1 ? -1 : str.indexOf(',', index);
+        if (lastComma === -1) {
+          entries.push(str.slice(start));
+          return entries;
+        }
+
+        entries.push(str.slice(start, lastComma));
+        if (lastComma === str.length - 1) return entries;
+        start = lastComma + 1;
+        continue;
       }
 
-      //
-      // if we found a valid regex ending, find the next comma AFTER
-      // the full regex entry (regex + colon + recipient address)
-      // if we did not find a valid ending, the entire str is one entry
-      // (this avoids splitting on commas inside the regex pattern)
-      //
-      if (index === -1) {
-        // no recognized ending found; treat entire string as one entry
-        // (this handles edge cases like commas inside character classes)
-        return [str];
+      const comma = str.indexOf(',', start);
+      if (comma === -1) {
+        entries.push(str.slice(start));
+        return entries;
       }
 
-      const lastComma = str.indexOf(',', index);
-      if (lastComma === -1) return [str];
-      if (lastComma === str.length - 1) return [str.slice(0, lastComma)];
-      return [
-        str.slice(0, lastComma),
-        ...splitString(str.slice(lastComma + 1))
-      ];
+      entries.push(str.slice(start, comma));
+      start = comma + 1;
     }
-
-    return str.includes(',')
-      ? [
-          str.slice(0, str.indexOf(',')),
-          ...splitString(str.slice(str.indexOf(',') + 1))
-        ]
-      : [str];
   }
 
   // remove trailing whitespaces from each address listed
@@ -814,6 +873,39 @@ async function getForwardingAddresses(
 
   // store if we have a global redirect or not
   const globalForwardingAddresses = [];
+
+  //
+  // the form of the username the records are matched with: as before (in
+  // punycode) when a record names it that way, so whatever got the mail
+  // before still does, otherwise its other forms (so "fællestest:…" gets
+  // mail to it, #619)
+  //
+  let isUsername = () => false;
+  // (and regular expressions are tested with the forms it is matched with)
+  let matchedUsernames = usernameVariants;
+  if (username) {
+    const names = [];
+    for (const element of addresses) {
+      if (!_.isString(element)) continue;
+      const value = element.trim().replace(/^!{1,3}/, '');
+      if (value.startsWith('/')) continue;
+      const index = value.indexOf(':');
+      names.push(index === -1 ? value : value.slice(0, index));
+    }
+
+    const isNamedAsBefore = names.some(
+      (name) => name.toLowerCase() === username
+    );
+    if (isNamedAsBefore) matchedUsernames = [username];
+    isUsername = isNamedAsBefore
+      ? (name) => _.isString(name) && name.toLowerCase() === username
+      : (name) =>
+          _.isString(name) &&
+          (usernameVariants.includes(name.toLowerCase()) ||
+            usernameVariants.includes(
+              getUsernameVariants.normalizeUsername(name)
+            ));
+  }
 
   for (let element of addresses) {
     // convert addresses to lowercase
@@ -1005,7 +1097,16 @@ async function getForwardingAddresses(
           .catch((cacheErr) => logger.fatal(cacheErr));
       }
 
-      if (username && regex && regex.test(username.toLowerCase())) {
+      // (a "g" regular expression keeps its position between tests)
+      const matchedUsername = regex
+        ? matchedUsernames.find((variant) => {
+            regex.lastIndex = 0;
+            return regex.test(variant);
+          })
+        : undefined;
+      if (regex) regex.lastIndex = 0;
+
+      if (matchedUsername) {
         //
         // opt-in subdomain-aware substitution:
         // replace the literal tokens %SUBDOMAIN% and %HOST% in the target
@@ -1030,7 +1131,7 @@ async function getForwardingAddresses(
 
         if (
           hasDollarInterpolation &&
-          getMaxReplacementLength(regex, target, username.toLowerCase()) >
+          getMaxReplacementLength(regex, target, matchedUsername) >
             MAX_REGEX_REPLACEMENT_LENGTH
         )
           throw new SMTPError(
@@ -1038,7 +1139,7 @@ async function getForwardingAddresses(
           );
 
         const substitutedAlias = hasDollarInterpolation
-          ? username.toLowerCase().replace(regex, target)
+          ? matchedUsername.replace(regex, target)
           : target;
 
         // RFC 5321 limits a mailbox address to 254 octets. Enforce the bound
@@ -1112,25 +1213,19 @@ async function getForwardingAddresses(
       // check if we have a match (and if it is ignored)
       if (_.isString(addr[0]) && addr[0].indexOf('!') === 0) {
         // !!! -> 550
-        if (
-          addr[0].indexOf('!!!') === 0 &&
-          username === addr[0].toLowerCase().slice(3)
-        ) {
+        if (addr[0].indexOf('!!!') === 0 && isUsername(addr[0].slice(3))) {
           hardRejected = true;
           break;
         }
 
         // !! -> 421
-        if (
-          addr[0].indexOf('!!') === 0 &&
-          username === addr[0].toLowerCase().slice(2)
-        ) {
+        if (addr[0].indexOf('!!') === 0 && isUsername(addr[0].slice(2))) {
           softRejected = true;
           break;
         }
 
         // ! -> 250
-        if (username === addr[0].toLowerCase().slice(1)) {
+        if (isUsername(addr[0].slice(1))) {
           ignored = true;
           break;
         }
@@ -1151,7 +1246,7 @@ async function getForwardingAddresses(
           `${lowerCaseAddress} domain of ${domain} has an invalid "${config.recordPrefix}" TXT record due to an invalid email address of "${element}"`
         );
 
-      if (_.isString(addr[0]) && username === addr[0].toLowerCase()) {
+      if (isUsername(addr[0])) {
         if (isURL(addr[1], config.isURLOptions))
           forwardingAddresses.push(addr[1]);
         else forwardingAddresses.push(addr[1].toLowerCase());
@@ -1217,77 +1312,6 @@ async function getForwardingAddresses(
   //       (e.g. we don't do MX lookup on the TXT we're forwarding to)
   // allow one recursive lookup on forwarding addresses
   const recursivelyForwardedAddresses = [];
-
-  const { length } = forwardingAddresses;
-  for (let x = 0; x < length; x++) {
-    const forwardingAddress = forwardingAddresses[x];
-    try {
-      if (recursive.includes(forwardingAddress)) continue;
-      if (isURL(forwardingAddress, config.isURLOptions)) continue;
-
-      // Preserve the historical single recursive lookup while preventing a
-      // substitution result from recursively producing another new address.
-      if (recursionDepth >= MAX_RECURSIVE_FORWARDING_DEPTH) continue;
-
-      const newRecursive = [...forwardingAddresses, ...recursive];
-      RECURSION_DEPTHS.set(newRecursive, recursionDepth + 1);
-
-      // prevent a double-lookup if user is using + symbols
-      if (isEmail(address) && forwardingAddress.includes('+'))
-        newRecursive.push(
-          `${parseUsername(address)}@${parseHostFromDomainOrAddress(address)}`
-        );
-
-      // support recursive IMAP lookup
-
-      const data = await getForwardingAddresses.call(
-        this,
-        forwardingAddress,
-        newRecursive,
-        ignoreBilling,
-        session
-      );
-
-      if (data.hasIMAP) hasIMAP = true;
-      if (
-        data.aliasIds &&
-        Array.isArray(data.aliasIds) &&
-        data.aliasIds.length > 0
-      ) {
-        if (!aliasIds) aliasIds = [];
-        for (const id of data.aliasIds) {
-          if (!aliasIds.includes(id)) aliasIds.push(id);
-        }
-      }
-
-      // if address was ignored then skip adding it
-      if (data.ignored) continue;
-      if (data.softRejected) continue;
-      if (data.hardRejected) continue;
-
-      // if it was recursive then remove the original
-      if (data.addresses.length > 0 || data.hasIMAP)
-        recursivelyForwardedAddresses.push(forwardingAddress);
-      // add the recursively forwarded addresses
-      for (const element of data.addresses) {
-        forwardingAddresses.push(element);
-      }
-    } catch (err) {
-      if (!err.notConfigured && !err.isDnsRecheck)
-        logger.error(err, { session, resolver: this.resolver });
-    }
-  }
-
-  // make the forwarding addresses unique
-  // (and omit the recursively forwarded addresses)
-  forwardingAddresses = _.uniq(
-    _.compact(
-      forwardingAddresses.map((addr) => {
-        if (!recursivelyForwardedAddresses.includes(addr)) return addr;
-        return null;
-      })
-    )
-  );
 
   // lookup here to determine max forwarded addresses on the domain
   // if max number of forwarding addresses exceeded
@@ -1356,6 +1380,115 @@ async function getForwardingAddresses(
       }
     }
   }
+
+  //
+  // (the lookups an expansion may make: as many as the addresses it may end
+  // up with, twice, so a list whose addresses each forward on is looked up
+  // to its end, see MAX_RECURSIVE_LOOKUPS)
+  //
+  if (recursionDepth === 0)
+    recursionBudget.max =
+      MAX_RECURSIVE_LOOKUPS +
+      2 * Math.min(maxForwardedAddresses, MAX_LEVEL_LENGTH);
+
+  const { length } = forwardingAddresses;
+  // (looked up once, rather than the list searched for each address)
+  const recursiveSet = new Set(recursive);
+  for (let x = 0; x < length; x++) {
+    // Preserve the historical single recursive lookup while preventing a
+    // substitution result from recursively producing another new address.
+    // (once past the depth or the budget, no other address is looked up
+    // either)
+    if (recursionDepth >= MAX_RECURSIVE_FORWARDING_DEPTH) break;
+    if (
+      recursionBudget.lookups >= (recursionBudget.max || MAX_RECURSIVE_LOOKUPS)
+    )
+      break;
+
+    const forwardingAddress = forwardingAddresses[x];
+    try {
+      if (recursiveSet.has(forwardingAddress)) continue;
+      if (isURL(forwardingAddress, config.isURLOptions)) continue;
+      recursionBudget.lookups++;
+
+      const newRecursive = [...forwardingAddresses, ...recursive];
+      RECURSION_DEPTHS.set(newRecursive, recursionDepth + 1);
+      RECURSION_BUDGETS.set(newRecursive, recursionBudget);
+
+      // prevent a double-lookup if user is using + symbols
+      if (isEmail(address) && forwardingAddress.includes('+'))
+        newRecursive.push(
+          `${parseUsername(address)}@${parseHostFromDomainOrAddress(address)}`
+        );
+
+      // support recursive IMAP lookup
+
+      // (to tell a mailbox, which looks nothing else up, see below)
+      const { lookups } = recursionBudget;
+      const mailboxes = recursionBudget.mailboxes || 0;
+      const data = await getForwardingAddresses.call(
+        this,
+        forwardingAddress,
+        newRecursive,
+        ignoreBilling,
+        session
+      );
+
+      // (an address that stores mail, is forwarded nowhere and looked
+      // nothing else up, see MAX_MAILBOX_LOOKUPS)
+      if (
+        data.hasIMAP &&
+        Array.isArray(data.addresses) &&
+        data.addresses.length === 0 &&
+        recursionBudget.lookups === lookups &&
+        (recursionBudget.mailboxes || 0) === mailboxes &&
+        mailboxes < MAX_MAILBOX_LOOKUPS
+      ) {
+        recursionBudget.mailboxes = mailboxes + 1;
+        recursionBudget.lookups--;
+      }
+
+      if (data.hasIMAP) hasIMAP = true;
+      if (
+        data.aliasIds &&
+        Array.isArray(data.aliasIds) &&
+        data.aliasIds.length > 0
+      ) {
+        if (!aliasIds) aliasIds = [];
+        for (const id of data.aliasIds) {
+          if (!aliasIds.includes(id)) aliasIds.push(id);
+        }
+      }
+
+      // if address was ignored then skip adding it
+      if (data.ignored) continue;
+      if (data.softRejected) continue;
+      if (data.hardRejected) continue;
+
+      // if it was recursive then remove the original
+      if (data.addresses.length > 0 || data.hasIMAP)
+        recursivelyForwardedAddresses.push(forwardingAddress);
+      // add the recursively forwarded addresses
+      for (const element of data.addresses) {
+        forwardingAddresses.push(element);
+      }
+    } catch (err) {
+      if (!err.notConfigured && !err.isDnsRecheck)
+        logger.error(err, { session, resolver: this.resolver });
+    }
+  }
+
+  // make the forwarding addresses unique
+  // (and omit the recursively forwarded addresses)
+  const forwarded = new Set(recursivelyForwardedAddresses);
+  forwardingAddresses = _.uniq(
+    _.compact(
+      forwardingAddresses.map((addr) => {
+        if (!forwarded.has(addr)) return addr;
+        return null;
+      })
+    )
+  );
 
   if (forwardingAddresses.length > maxForwardedAddresses) {
     throw new SMTPError(

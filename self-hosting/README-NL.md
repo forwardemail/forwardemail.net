@@ -11,6 +11,8 @@ In dit gedeelte wordt de CI/CD-workflow voor de zelfgehoste oplossing van Forwar
 * [Implementatieproces](#deployment-process)
   * [Installatie](#installation)
   * [Docker Compose-configuratie](#docker-compose-configuration)
+  * [Bezorging aan domeinen op dezelfde server](#delivery-to-domains-hosted-on-the-same-server)
+  * [Sessies beëindigen wanneer toegang bij Google of GitHub wordt ingetrokken](#ending-sessions-when-google-or-github-access-is-revoked)
 * [Onderhoudsfuncties](#maintenance-features)
   * [Automatische updates](#automatic-updates)
   * [Back-up en herstel](#backup-and-restore)
@@ -122,6 +124,30 @@ Het bestand `docker-compose-self-hosted.yml` definieert alle services die nodig 
 * **SQLite**: Database voor het opslaan van e-mails
 
 Elke service gebruikt dezelfde Docker-image, maar met verschillende toegangspunten. Dit maakt een modulaire architectuur mogelijk en vereenvoudigt tegelijkertijd het onderhoud.
+
+### Bezorging aan domeinen op dezelfde server {#delivery-to-domains-hosted-on-the-same-server}
+
+Uitgaande e-mail wordt niet bezorgd bij een MX-server op een adres van de server zelf. Als één server meerdere domeinen host en hun MX-records naar het openbare adres van de server wijzen, wordt e-mail van het ene domein naar het andere geweigerd.
+
+Stel het volgende in om dit toe te staan:
+
+```env
+SMTP_ALLOW_LOCAL_MX=true
+```
+
+De standaardwaarde is `false`, en de instelling geldt alleen bij `SELF_HOSTED=true`. E-mail wordt nog steeds nooit bezorgd op loopback-, privé-, link-local- of carrier-grade NAT-adressen.
+
+### Sessies beëindigen wanneer toegang bij Google of GitHub wordt ingetrokken {#ending-sessions-when-google-or-github-access-is-revoked}
+
+Bij een zelfgehoste installatie worden sessies die met Google of GitHub zijn aangemeld standaard niet bij de provider gecontroleerd: als de toegang van deze applicatie daar wordt ingetrokken, worden ze niet afgemeld en blijven ze aangemeld tot ze verlopen.
+
+Stel het volgende in om ze te beëindigen zodra de toegang is ingetrokken:
+
+```env
+AUTH_OAUTH_REVOCATION_CHECK=true
+```
+
+De provider wordt dan op de achtergrond geraadpleegd, ongeveer elke 5 minuten (elke minuut zolang hij niet antwoordt). Een storing bij de provider meldt niemand af, en een token dat de provider nooit heeft geaccepteerd evenmin.
 
 ## Onderhoudsfuncties {#maintenance-features}
 

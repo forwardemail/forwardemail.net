@@ -2893,24 +2893,22 @@ A teljes, implementációval alátámasztott képességlista és RFC megjegyzés
 | Kategória | Képességek és viselkedés |
 | --- | --- |
 | Alapnyelv | `keep`, `discard`, `stop`, feltételes blokkok, és az alapvető `address`, `header`, `exists`, `size`, és logikai tesztek. |
-| Kézbesítés | `fileinto`, `copy`, `redirect`, `mailbox` a `fileinto :create` számára, és `special-use` a szabványos mappa `:specialuse` leképezéséhez valamint `specialuse_exists`. |
-| Tesztek és összehasonlítások | `envelope`, `body`, `date`, `index`, `regex`, `subaddress`, `relational`, `i;ascii-casemap`, és `i;octet`. |
-| Állapot és változók | `variables`, `imap4flags`, `duplicate`, és `ihave`. |
+| Kézbesítés | `fileinto`, `copy`, `redirect`, `mailbox` a `fileinto :create` és a `mailboxexists` számára, és `special-use` a `fileinto :specialuse` és a `specialuse_exists` számára. |
+| Tesztek és összehasonlítások | `envelope`, `body`, `date`, `index`, `regex`, `subaddress`, `relational`, `i;ascii-casemap`, `i;octet`, és `i;ascii-numeric`. |
+| Állapot és változók | `variables`, `encoded-character`, `imap4flags`, `duplicate`, és `ihave`. |
 | Műveletek és válaszok | `reject`, `ereject`, `vacation`, `vacation-seconds`, és `enotify` `mailto:` használatával. A régebbi deklaráció, a `require "notify"` elfogadott bemeneti aliaszként az `enotify` számára, de az ajánlott képesség az `enotify`. |
-| Üzenetfeldolgozás | `editheader`, `environment`, és `mime`, beleértve a `foreverypart`, `break`, `extracttext`, és `replace`. |
+| Üzenetfeldolgozás | `editheader`, `environment`, `foreverypart` (a `break` paranccsal), `extracttext`, `replace`, és `mime`, amely ezt a három parancsot is engedélyezi. |
 
-A `redirect` a normál kimenő soron keresztül kerül kézbesítésre. Alá van vetve a konfigurált átirányítási tartomány szabályzatának, tiltólistázási ellenőrzéseknek és a rá vonatkozó sebességkorlátozásoknak. Az `editheader` nem módosíthat védett hitelesítési vagy kézbesítési útválasztási fejlécet.
+A `redirect` nem igényel `require` utasítást. A normál kimenő soron keresztül kerül elküldésre, amely csak olyan üzenetet fogad el, amelynek From mezője az Ön aliasa, kimenő SMTP-vel rendelkező domainen; minden más üzenet a beérkező mappájában marad. Az átirányításokra a konfigurált átirányítási tartomány szabályzata, a tiltólistázási ellenőrzések és a sebességkorlátozások vonatkoznak. Az `editheader` nem módosíthat védett hitelesítési vagy kézbesítési útválasztási fejlécet, sem a `Received` vagy az `Auto-Submitted` fejlécet.
 
 #### Nem támogatott funkciók
 
 | Funkció | Indoklás |
 | --- | --- |
 | `enclose` | Új üzenet létrehozása, amely beágyazza az eredeti üzenetet, nincs megvalósítva. |
-| `mailboxexists` | A Forward Email nem végez élő IMAP postafiók-állapot lekérdezéseket. A `fileinto :create` továbbra is elérhető a `mailbox` révén. |
 | `include` | Globális és beillesztett szkript-tárolás nem érhető el. |
 | `mboxmetadata` / `servermetadata` | IMAP METADATA integráció nem áll rendelkezésre. |
 | `fcc` | A küldött levelek archiválásának integrációja nem érhető el. |
-| `encoded-character` | A `${hex:...}` szintaxis nincs megvalósítva. |
 | Külső listák | A `valid_ext_list` és egyéb külső-lista műveletek nem érhetők el. |
 
 #### Példa Sieve szkriptek
@@ -2947,8 +2945,6 @@ if address :is "from" "boss@example.com" {
 **Redirect a message:**
 
 ```sieve
-require ["redirect"];
-
 if header :contains "Subject" "invoice" {
     redirect "recipient@example.com";
 }

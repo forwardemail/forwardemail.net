@@ -3,6 +3,9 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
+const { Buffer } = require('node:buffer');
+const crypto = require('node:crypto');
+
 const cryptoRandomString = require('crypto-random-string');
 const falso = require('@ngneat/falso');
 const request = require('supertest');
@@ -255,6 +258,87 @@ test('resets password with valid email and token (JSON)', async (t) => {
 
   t.is(res.status, 302);
   t.is(res.header.location, '/en');
+});
+
+test('a reset link changes the password only once when used twice at once', async (t) => {
+  const { web } = t.context;
+  const user = await t.context.userFactory
+    .withState({
+      password: falso.randPassword(),
+      [config.userFields.resetToken]: 'token',
+      [config.userFields.resetTokenExpiresAt]: new Date(Date.now() + 10000)
+    })
+    .create();
+  const { email } = user;
+
+  // (the same link open in several tabs, each sent at the same moment)
+  const passwords = Array.from({ length: 5 }, () => falso.randPassword());
+  const responses = await Promise.all(
+    passwords.map((password) =>
+      web.post('/en/reset-password/token').send({ email, password })
+    )
+  );
+
+  const changed = responses.filter((res) => res.status === 302);
+  t.is(changed.length, 1);
+  for (const res of responses.filter((res) => res.status !== 302)) {
+    t.is(res.status, 400);
+    t.is(JSON.parse(res.text).message, phrases.INVALID_RESET_PASSWORD);
+  }
+
+  // the password is the one the accepted request set
+  const stored = await Users.findOne({ email });
+  t.falsy(stored[config.userFields.resetToken]);
+  const accepted = passwords.find((_, i) => responses[i].status === 302);
+  const { user: authenticated } = await stored.authenticate(accepted);
+  t.truthy(authenticated);
+});
+
+// (as before, a password that is refused leaves the link usable)
+test('a reset link still works after a weak password was refused', async (t) => {
+  const { web } = t.context;
+  const user = await t.context.userFactory
+    .withState({
+      password: falso.randPassword(),
+      [config.userFields.resetToken]: 'token',
+      [config.userFields.resetTokenExpiresAt]: new Date(Date.now() + 100_000)
+    })
+    .create();
+  const { email } = user;
+
+  const weak = await web
+    .post('/en/reset-password/token')
+    .send({ email, password: 'password' });
+  t.is(weak.status, 400);
+  t.regex(JSON.parse(weak.text).message, /strength/i);
+
+  const password = falso.randPassword();
+  const res = await web
+    .post('/en/reset-password/token')
+    .send({ email, password });
+  t.is(res.status, 302);
+  const stored = await Users.findOne({ email });
+  t.falsy(stored[config.userFields.resetToken]);
+  const { user: authenticated } = await stored.authenticate(password);
+  t.truthy(authenticated);
+});
+
+test('fails resetting password with an expired reset token', async (t) => {
+  const { web } = t.context;
+  const user = await t.context.userFactory
+    .withState({
+      password: falso.randPassword(),
+      [config.userFields.resetToken]: 'token',
+      [config.userFields.resetTokenExpiresAt]: new Date(Date.now() - 1000)
+    })
+    .create();
+
+  const res = await web
+    .post('/en/reset-password/token')
+    .send({ email: user.email, password: falso.randPassword() });
+
+  t.is(res.status, 400);
+  t.is(JSON.parse(res.text).message, phrases.RESET_TOKEN_EXPIRED);
 });
 
 test('fails resetting password for non-existent user', async (t) => {
@@ -543,6 +627,84 @@ test('a password reset of a never-verified account removes sign-ins someone else
   t.not(fresh[config.userFields.apiToken], 'token-of-whoever-created-it');
 });
 
+//
+// A paid plan counts the address as verified, but anyone can sign up with an
+// address they do not own and pay; the account must still lose what they
+// added once the owner takes it over, and get no passkey or two-factor first.
+//
+test('paying for a plan does not prove an address someone signed up with', async (t) => {
+  const { web } = t.context;
+  const password = falso.randPassword();
+  let user = await t.context.userFactory.make();
+  user[config.userFields.hasVerifiedEmail] = false;
+  user = await Users.register(user, password);
+  t.true(user[config.userFields.emailProofPending]);
+
+  user.plan = 'enhanced_protection';
+  user[config.userFields.apiToken] = 'token-of-whoever-created-it';
+  user[config.userFields.resetToken] = 'paid-reset-token';
+  user[config.userFields.resetTokenExpiresAt] = new Date(Date.now() + 10000);
+  user = await user.save();
+  // (still counted as verified for the plan, as before)
+  t.true(user[config.userFields.hasVerifiedEmail]);
+
+  // (no passkey before the address is verified with its code)
+  const agent = request.agent(t.context._web.server);
+  await agent.post('/en/login').send({ email: user.email, password });
+  const passkey = await agent
+    .post('/en/my-account/passkeys/confirm-password')
+    .set('Accept', 'application/json')
+    .set('Origin', t.context.webURL)
+    .send({ password });
+  t.is(passkey.status, 403);
+
+  // (the owner of the address resets the password)
+  const res = await web
+    .post('/en/reset-password/paid-reset-token')
+    .set({ Accept: 'text/html' })
+    .send({ email: user.email, password: falso.randPassword() });
+  t.is(res.status, 302);
+
+  const fresh = await Users.findById(user._id).lean().exec();
+  t.truthy(fresh[config.userFields.apiToken]);
+  t.not(fresh[config.userFields.apiToken], 'token-of-whoever-created-it');
+  t.falsy(fresh[config.userFields.emailProofPending]);
+  t.true(fresh[config.userFields.hasVerifiedEmail]);
+});
+
+test('an address verified with its code is proven, also on a paid plan', async (t) => {
+  const password = falso.randPassword();
+  let user = await t.context.userFactory.make();
+  user[config.userFields.hasVerifiedEmail] = false;
+  user = await Users.register(user, password);
+  user.plan = 'enhanced_protection';
+  user[config.userFields.verificationPin] = '123456';
+  user[config.userFields.verificationPinExpiresAt] = new Date(
+    Date.now() + 60_000
+  );
+  user[config.userFields.verificationPinSentAt] = new Date();
+  user = await user.save();
+
+  const agent = request.agent(t.context._web.server);
+  await agent.post('/en/login').send({ email: user.email, password });
+  const verified = await agent
+    .post('/en/verify')
+    .set('Accept', 'application/json')
+    .set('Origin', t.context.webURL)
+    .send({ pin: '123456' });
+  t.is(verified.status, 200);
+
+  const fresh = await Users.findById(user._id).lean().exec();
+  t.true(fresh[config.userFields.hasVerifiedEmail]);
+  t.falsy(fresh[config.userFields.emailProofPending]);
+
+  // (and existing accounts, verified before this, are as they were)
+  const older = await t.context.userFactory
+    .withState({ [config.userFields.hasVerifiedEmail]: true })
+    .create();
+  t.falsy(older[config.userFields.emailProofPending]);
+});
+
 test('a password reset of a verified account keeps its passkeys and API token', async (t) => {
   const { web } = t.context;
   const password = falso.randPassword();
@@ -635,4 +797,189 @@ test('GET /logout ignores a cross-site navigation (CSRF)', async (t) => {
   const loggedOut = await web.get('/en/my-account/security');
   t.is(loggedOut.status, 302);
   t.true(loggedOut.header.location.includes('/login'));
+});
+
+//
+// A passkey signs in with neither the password nor two-factor, so a session
+// someone else held for a moment could add one and keep a way back in;
+// adding or removing one asks for the current password (as two-factor does).
+//
+const cbor = require(require.resolve('cbor', {
+  paths: [require.resolve('@forwardemail/passport-fido2-webauthn')]
+}));
+
+// (a software authenticator: a "none" attestation of a new P-256 key)
+async function createPasskeyResponse(web, origin, challenge) {
+  if (!challenge) {
+    const { body } = await web
+      .post('/auth/webauthn/challenge')
+      .set('Accept', 'application/json')
+      .send({});
+    challenge = body.challenge;
+  }
+
+  const clientDataJSON = Buffer.from(
+    JSON.stringify({
+      type: 'webauthn.create',
+      challenge,
+      origin,
+      crossOrigin: false
+    })
+  );
+  const { publicKey } = crypto.generateKeyPairSync('ec', {
+    namedCurve: 'P-256'
+  });
+  const jwk = publicKey.export({ format: 'jwk' });
+  const coseKey = new Map([
+    [1, 2],
+    [3, -7],
+    [-1, 1],
+    [-2, Buffer.from(jwk.x, 'base64url')],
+    [-3, Buffer.from(jwk.y, 'base64url')]
+  ]);
+  const credentialId = crypto.randomBytes(16);
+  const length = Buffer.alloc(2);
+  length.writeUInt16BE(credentialId.length);
+  const authData = Buffer.concat([
+    crypto.createHash('sha256').update(new URL(origin).hostname).digest(),
+    // (user present, attested credential data)
+    Buffer.from([0x41]),
+    Buffer.alloc(4),
+    Buffer.alloc(16),
+    length,
+    credentialId,
+    cbor.encode(coseKey)
+  ]);
+  return {
+    clientDataJSON: clientDataJSON.toString('base64url'),
+    attestationObject: cbor
+      .encode({ fmt: 'none', attStmt: {}, authData })
+      .toString('base64url'),
+    transports: []
+  };
+}
+
+test('adding or removing a passkey asks for the current password', async (t) => {
+  const password = falso.randPassword();
+  let user = await t.context.userFactory.make();
+  user = await Users.register(user, password);
+  user[config.userFields.hasSetPassword] = true;
+  user[config.userFields.hasVerifiedEmail] = true;
+  await user.save();
+  const web = request.agent(t.context._web.server);
+  await web.post('/en/login').send({ email: user.email, password });
+  const origin = t.context.webURL;
+
+  for (const attempt of [{}, { password: 'not-the-password' }]) {
+    const res = await web
+      .post('/en/my-account/passkeys')
+      .set('Accept', 'application/json')
+      .set('Origin', origin)
+
+      .send({ response: await createPasskeyResponse(web, origin), ...attempt });
+    t.is(res.status, 400);
+    t.is(res.body.message, phrases.INVALID_PASSWORD);
+  }
+
+  let fresh = await Users.findById(user._id).lean();
+  t.deepEqual(fresh.passkeys, []);
+
+  // (the password is checked before the browser is asked for a passkey)
+  const wrong = await web
+    .post('/en/my-account/passkeys/confirm-password')
+    .set('Accept', 'application/json')
+    .set('Origin', origin)
+    .send({ password: 'not-the-password' });
+  t.is(wrong.status, 400);
+  t.is(wrong.body.message, phrases.INVALID_PASSWORD);
+  // (a retry right after failed ones waits a moment, as at sign in)
+  await new Promise((resolve) => {
+    setTimeout(resolve, 2000);
+  });
+  const right = await web
+    .post('/en/my-account/passkeys/confirm-password')
+    .set('Accept', 'application/json')
+    .set('Origin', origin)
+    .send({ password });
+  t.is(right.status, 200);
+  // (with the challenge for the passkey, so the browser is asked right after)
+  t.is(typeof right.body.challenge, 'string');
+
+  const added = await web
+    .post('/en/my-account/passkeys')
+    .set('Accept', 'application/json')
+    .set('Origin', origin)
+    .send({
+      response: await createPasskeyResponse(web, origin, right.body.challenge),
+      password
+    });
+  t.is(added.status, 200);
+  fresh = await Users.findById(user._id).lean();
+  const [passkey] = fresh.passkeys;
+  t.truthy(passkey);
+
+  const notRemoved = await web
+    .delete(`/en/my-account/passkeys/${passkey._id}`)
+    .set('Accept', 'application/json')
+    .send({});
+  t.is(notRemoved.status, 400);
+  fresh = await Users.findById(user._id).lean();
+  t.is(fresh.passkeys.length, 1);
+
+  const removed = await web
+    .delete(`/en/my-account/passkeys/${passkey._id}`)
+    .set('Accept', 'application/json')
+    .send({ password });
+  t.is(removed.status, 200);
+  fresh = await Users.findById(user._id).lean();
+  t.is(fresh.passkeys.length, 0);
+});
+
+//
+// A request to change the email mails a link to any address, and its answer
+// says whether an account already uses that address; cancelling it made
+// room for the next one at once, so they were sent without any limit.
+//
+test('email change requests are rate limited', async (t) => {
+  const password = falso.randPassword();
+  let user = await t.context.userFactory.make();
+  user = await Users.register(user, password);
+  user[config.userFields.hasSetPassword] = true;
+  user[config.userFields.hasVerifiedEmail] = true;
+  await user.save();
+  const web = request.agent(t.context._web.server);
+  await web.post('/en/login').send({ email: user.email, password });
+
+  for (let i = 0; i < 10; i++) {
+    const res = await web
+      .put('/en/my-account/profile')
+      .set('Accept', 'application/json')
+      .send({
+        email: `change-${i}-${cryptoRandomString({ length: 8 })}@example.com`,
+        password
+      });
+    t.is(res.status, 200);
+
+    const cancelled = await web
+      .put('/en/my-account/profile/cancel-email-change')
+      .set('Accept', 'application/json')
+      .send({});
+    t.is(cancelled.status, 200);
+  }
+
+  const res = await web
+    .put('/en/my-account/profile')
+    .set('Accept', 'application/json')
+    .send({
+      email: `change-${cryptoRandomString({ length: 8 })}@example.com`,
+      password
+    });
+  t.is(res.status, 429);
+
+  // (other profile changes are not limited by it)
+  const named = await web
+    .put('/en/my-account/profile')
+    .set('Accept', 'application/json')
+    .send({ given_name: 'Somebody' });
+  t.is(named.status, 200);
 });

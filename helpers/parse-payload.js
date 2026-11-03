@@ -38,6 +38,7 @@ const isEmail = require('#helpers/is-email');
 
 const Aliases = require('#models/aliases');
 const Domains = require('#models/domains');
+const Mailboxes = require('#models/mailboxes');
 const { Emails, SieveScripts } = require('#models');
 const SMTPError = require('#helpers/smtp-error');
 const TemporaryMessages = require('#models/temporary-messages');
@@ -153,6 +154,19 @@ const CHECKPOINTS = ['PASSIVE', 'FULL', 'RESTART', 'TRUNCATE'];
 
 const HOSTNAME = os.hostname();
 const IP_ADDRESS = ip.address();
+
+//
+// The mailbox Forward Email creates with each special-use, for a Sieve
+// fileinto :specialuse while the alias's mailboxes cannot be read (see
+// helpers/ensure-default-mailboxes.js)
+//
+const SPECIAL_USE_PATHS = {
+  '\\archive': 'Archive',
+  '\\drafts': 'Drafts',
+  '\\junk': 'Spam',
+  '\\sent': 'Sent Mail',
+  '\\trash': 'Trash'
+};
 
 const PAYLOAD_ACTIONS = new Set([
   'sync', // no db
@@ -1469,13 +1483,40 @@ async function parsePayload(data, ws) {
               //
               let sieveResult = {
                 action: 'keep',
-                folder: 'INBOX',
-                flags: [],
+                deliveries: [
+                  {
+                    folder: 'INBOX',
+                    flags: [],
+                    create: false,
+                    specialuse: null
+                  }
+                ],
                 reject: null,
                 redirects: [],
                 vacation: null,
-                discarded: false
+                modifiedRaw: null
               };
+
+              //
+              // The mailboxes of the alias, for the mailboxexists and
+              // specialuse_exists tests and fileinto :specialuse (RFC 5490 and
+              // RFC 8579), only while its database is open here (null
+              // otherwise); special-use attributes are case-insensitive
+              //
+              let sieveMailboxes;
+              const getSieveMailboxes = async () => {
+                if (!session.db) return null;
+                sieveMailboxes ||= await Mailboxes.find(this, session, {});
+                return sieveMailboxes;
+              };
+
+              const withSpecialUse = (mailboxes, attribute) =>
+                mailboxes.filter(
+                  (mailbox) =>
+                    typeof mailbox.specialUse === 'string' &&
+                    mailbox.specialUse.toLowerCase() ===
+                      String(attribute).toLowerCase()
+                );
 
               try {
                 // Create Sieve integration instance
@@ -1490,14 +1531,44 @@ async function parsePayload(data, ws) {
                   aliasId: session.user.alias_id,
                   aliasAddress: session.user.username,
                   raw: payload.raw,
+                  // (the null reverse-path is '', and the recipient is the
+                  // address the message was sent to, with any +detail)
                   envelope: payload.envelope || {
-                    from: payload.sender,
-                    to: [session.user.username]
+                    from: payload.sender || '',
+                    to: [
+                      isSANB(obj.address) ? obj.address : session.user.username
+                    ]
                   },
                   session: {
                     remoteAddress: payload.remoteAddress,
                     resolvedClientHostname: payload.resolvedClientHostname
-                  }
+                  },
+                  ...(session.db
+                    ? {
+                        async mailboxExists(name) {
+                          const mailboxes = await getSieveMailboxes();
+                          const path =
+                            String(name).toUpperCase() === 'INBOX'
+                              ? 'INBOX'
+                              : name;
+                          return mailboxes.some((m) => m.path === path);
+                        },
+                        async specialUseExists(attributes, mailbox) {
+                          let mailboxes = await getSieveMailboxes();
+                          if (mailbox !== null && mailbox !== undefined)
+                            mailboxes = mailboxes.filter(
+                              (m) => m.path === mailbox
+                            );
+                          return (
+                            mailboxes.length > 0 &&
+                            attributes.every(
+                              (attribute) =>
+                                withSpecialUse(mailboxes, attribute).length > 0
+                            )
+                          );
+                        }
+                      }
+                    : {})
                 });
 
                 // Handle rejection - return SMTP error
@@ -1508,112 +1579,72 @@ async function parsePayload(data, ws) {
                   );
                 }
 
-                // Handle discard - skip storage entirely
-                if (sieveResult.action === 'discard' || sieveResult.discarded) {
-                  logger.info('sieve discarded message', {
-                    user: { id: session.user.alias_user_id },
-                    domains: [
-                      new mongoose.Types.ObjectId(session.user.domain_id)
-                    ],
-                    session,
-                    ignore_hook: false,
-                    alias: session.user.username,
-                    sender: payload.sender
-                  });
-                  // Still process redirects if any have :copy flag
-                  if (
-                    sieveResult.redirects &&
-                    sieveResult.redirects.length > 0
-                  ) {
-                    for (const redirect of sieveResult.redirects) {
-                      if (redirect.copy) {
-                        try {
-                          // Queue the redirect email using Emails.queue
-                          await Emails.queue({
-                            info: {
-                              message: payload.raw,
-                              envelope: {
-                                from: session.user.username,
-                                to: [redirect.address]
-                              }
-                            },
-                            user: { id: session.user.alias_user_id },
-                            is_bounce: false
-                          });
-                        } catch (err) {
-                          logger.error('sieve redirect failed', {
-                            user: { id: session.user.alias_user_id },
-                            domains: [
-                              new mongoose.Types.ObjectId(
-                                session.user.domain_id
-                              )
-                            ],
-                            session,
-                            ignore_hook: false,
-                            err,
-                            redirect
-                          });
+                // (the message as the script left it, with its header changes
+                // and replaced parts, for redirects as for storage, RFC 5293
+                // section 7)
+                const sieveRaw = sieveResult.modifiedRaw
+                  ? Buffer.from(sieveResult.modifiedRaw)
+                  : payload.raw;
+
+                //
+                // Redirects, with :copy or not (RFC 5228 section 4.2).  A
+                // message with an empty envelope sender is not redirected: the
+                // redirect would need an empty one too, which Emails.queue
+                // cannot send (a redirect ignored by policy, as RFC 5228
+                // allows, and one that fails does not cancel the implicit keep)
+                //
+                let isRedirected = false;
+                for (const redirect of sieveResult.redirects || []) {
+                  if (!isSANB(payload.sender)) {
+                    logger.debug('sieve redirect of a null sender skipped', {
+                      user: { id: session.user.alias_user_id },
+                      ignore_hook: true
+                    });
+                    continue;
+                  }
+
+                  try {
+                    // Queue the redirect email using Emails.queue
+                    await Emails.queue({
+                      info: {
+                        message: sieveRaw,
+                        envelope: {
+                          from: session.user.username,
+                          to: [redirect.address]
                         }
-                      }
-                    }
-                  }
-
-                  return; // Skip storage
-                }
-
-                // Handle redirects without :copy flag (forward only, no local storage)
-                if (sieveResult.redirects && sieveResult.redirects.length > 0) {
-                  const forwardOnly = sieveResult.redirects.filter(
-                    (r) => !r.copy
-                  );
-                  if (forwardOnly.length > 0 && sieveResult.action !== 'keep') {
-                    // (if no redirect could be queued, e.g. the sender reached
-                    // their sending threshold, the message is stored instead
-                    // of being lost)
-                    let redirected = 0;
-                    for (const redirect of forwardOnly) {
-                      try {
-                        // Queue the redirect email using Emails.queue
-                        await Emails.queue({
-                          info: {
-                            message: payload.raw,
-                            envelope: {
-                              from: session.user.username,
-                              to: [redirect.address]
-                            }
-                          },
-                          user: { id: session.user.alias_user_id },
-                          is_bounce: false
-                        });
-                        redirected++;
-                      } catch (err) {
-                        logger.error('sieve redirect failed', {
-                          user: { id: session.user.alias_user_id },
-                          domains: [
-                            new mongoose.Types.ObjectId(session.user.domain_id)
-                          ],
-                          session,
-                          ignore_hook: false,
-                          err,
-                          redirect
-                        });
-                      }
-                    }
-
-                    // If only forwarding (no keep), skip local storage
-                    if (
-                      redirected > 0 &&
-                      sieveResult.action !== 'keep' &&
-                      !sieveResult.folder
-                    ) {
-                      return;
-                    }
+                      },
+                      user: { id: session.user.alias_user_id },
+                      is_bounce: false
+                    });
+                    if (!redirect.copy) isRedirected = true;
+                  } catch (err) {
+                    logger.error('sieve redirect failed', {
+                      user: { id: session.user.alias_user_id },
+                      domains: [
+                        new mongoose.Types.ObjectId(session.user.domain_id)
+                      ],
+                      session,
+                      ignore_hook: false,
+                      err,
+                      redirect
+                    });
                   }
                 }
+
+                if (sieveResult.isKeptIfNotRedirected && !isRedirected)
+                  sieveResult.deliveries = [
+                    {
+                      folder: 'INBOX',
+                      flags: sieveResult.keepFlags || [],
+                      create: false,
+                      specialuse: null
+                    }
+                  ];
 
                 // Handle vacation auto-reply (similar to on-data-mx.js sendVacationResponder)
                 if (sieveResult.vacation) {
                   try {
+                    const { vacation } = sieveResult;
                     //
                     // Vacation auto-replies (RFC 5230) are addressed to the human
                     // sender (From header), not the envelope return-path (MAIL FROM),
@@ -1627,11 +1658,26 @@ async function parsePayload(data, ws) {
                         ? payload.autoReplyTo
                         : '';
 
+                    //
                     // Check cache if we've already sent this vacation reply
+                    // (RFC 5230 section 4.2: a response is told apart by its
+                    // :handle, or else by its :subject, :from, :mime and
+                    // reason, as written before variables are expanded)
+                    //
                     const vacationKey = `${
                       config.fingerprintPrefix
                     }:vacation:${revHash(
-                      encoder.pack([session.user.alias_id, vacationTo])
+                      encoder.pack([
+                        session.user.alias_id,
+                        vacationTo,
+                        vacation.handle ??
+                          vacation.tracking ?? [
+                            vacation.subject ?? null,
+                            vacation.from ?? null,
+                            Boolean(vacation.mime),
+                            vacation.message ?? null
+                          ]
+                      ])
                     )}`;
 
                     const vacationCache = await this.client.get(vacationKey);
@@ -1642,8 +1688,8 @@ async function parsePayload(data, ws) {
                       vacationTo !== '' &&
                       [
                         session.user.username,
-                        ...(Array.isArray(sieveResult.vacation.addresses)
-                          ? sieveResult.vacation.addresses
+                        ...(Array.isArray(vacation.addresses)
+                          ? vacation.addresses
                           : [])
                       ].some((address) => isAddressedTo(headers, address));
                     if (!isEligible) {
@@ -1666,27 +1712,20 @@ async function parsePayload(data, ws) {
                         ignore_hook: true
                       });
                     } else if (!vacationCache) {
-                      // Calculate vacation TTL from :seconds or :days (vacation-seconds extension RFC 6131)
-                      // Default is 4 days if not specified
-                      let vacationTtlMs;
-                      if (sieveResult.vacation.seconds) {
-                        // vacation-seconds extension - use seconds directly
-                        // Minimum 60 seconds per RFC 6131
-                        vacationTtlMs =
-                          Math.max(60, sieveResult.vacation.seconds) * 1000;
-                      } else if (sieveResult.vacation.days) {
-                        // Standard vacation :days parameter
-                        // Minimum 1 day, maximum 31 days per RFC 5230
-                        vacationTtlMs =
-                          Math.min(31, Math.max(1, sieveResult.vacation.days)) *
-                          24 *
-                          60 *
-                          60 *
-                          1000;
-                      } else {
-                        // Default 4 days
-                        vacationTtlMs = ms('4d');
-                      }
+                      //
+                      // The period a sender gets one response in: :seconds
+                      // (RFC 6131, at least a minute) or :days (RFC 5230
+                      // section 4.1, at least 1), at most 31 days, and 7 days
+                      // without either
+                      //
+                      const vacationTtlMs = Math.min(
+                        ms('31d'),
+                        Number.isFinite(vacation.seconds)
+                          ? Math.max(60, vacation.seconds) * 1000
+                          : Number.isFinite(vacation.days)
+                          ? Math.max(1, vacation.days) * ms('1d')
+                          : ms('7d')
+                      );
 
                       // Set cache with calculated TTL to prevent duplicate replies
                       await this.client.set(
@@ -1701,26 +1740,33 @@ async function parsePayload(data, ws) {
                         'text/plain; charset=utf-8'
                       );
                       rootNode.setHeader('To', vacationTo);
-                      rootNode.setHeader('From', session.user.username);
+                      // (a :from of the alias, see getOwnFrom in sieve/integration.js)
+                      rootNode.setHeader(
+                        'From',
+                        vacation.from || session.user.username
+                      );
 
-                      // Gmail sets Precedence to "bulk" and X-Autoreply to "yes"
-                      const originalSubject = payload.subject || '';
+                      // RFC 5230 section 5.3
                       rootNode.setHeader(
                         'Subject',
-                        isSANB(originalSubject)
-                          ? `${
-                              sieveResult.vacation.subject || 'Auto-Reply'
-                            } Re: ${originalSubject}`
-                          : sieveResult.vacation.subject || 'Auto-Reply'
+                        typeof vacation.subject === 'string'
+                          ? vacation.subject
+                          : isSANB(headerSubject)
+                          ? `Auto: ${headerSubject}`
+                          : 'Automated reply'
                       );
+                      // Gmail sets Precedence to "bulk" and X-Autoreply to "yes"
                       rootNode.setHeader('Precedence', 'bulk');
                       rootNode.setHeader('X-Autoreply', 'yes');
                       rootNode.setHeader('Auto-Submitted', 'auto-replied');
 
                       // Set In-Reply-To and References if original message had Message-ID
-                      if (payload.messageId) {
-                        rootNode.setHeader('In-Reply-To', payload.messageId);
-                        rootNode.setHeader('References', payload.messageId);
+                      const messageId = headers
+                        ? getHeaders(headers, 'message-id')
+                        : '';
+                      if (isSANB(messageId)) {
+                        rootNode.setHeader('In-Reply-To', messageId);
+                        rootNode.setHeader('References', messageId);
                       }
 
                       rootNode.setHeader(
@@ -1746,16 +1792,48 @@ async function parsePayload(data, ws) {
                         ].join(', ')}`
                       );
 
-                      rootNode.setContent(
-                        sieveResult.vacation.message ||
-                          sieveResult.vacation.body ||
-                          ''
-                      );
+                      let vacationMessage;
+                      if (vacation.mime) {
+                        //
+                        // RFC 5230 section 4.4: the reason is a MIME entity,
+                        // its headers (without 8bit text, section 5) taking
+                        // the place of the Content- ones
+                        //
+                        const entity = String(vacation.message || '').replace(
+                          /\r?\n/g,
+                          '\r\n'
+                        );
+                        const end = entity.indexOf('\r\n\r\n');
+                        const entityHeaders =
+                          end === -1 ? entity : entity.slice(0, end);
+                        if (!/^[\t\r\n -~]*$/.test(entityHeaders))
+                          throw new TypeError(
+                            'Sieve vacation :mime headers must not have 8bit text'
+                          );
+                        vacationMessage = Buffer.concat([
+                          Buffer.from(
+                            rootNode
+                              .buildHeaders()
+                              .split(/\r\n(?![ \t])/)
+                              .filter(
+                                (field) =>
+                                  !/^content-(type|transfer-encoding)\s*:/i.test(
+                                    field
+                                  )
+                              )
+                              .join('\r\n') + '\r\n'
+                          ),
+                          Buffer.from(end === -1 ? `${entity}\r\n\r\n` : entity)
+                        ]);
+                      } else {
+                        rootNode.setContent(vacation.message || '');
+                        vacationMessage = rootNode.createReadStream();
+                      }
 
                       // Queue the email using Emails.queue like on-data-mx.js
                       const vacationEmail = await Emails.queue({
                         info: {
-                          message: rootNode.createReadStream(),
+                          message: vacationMessage,
                           envelope: {
                             from: punycode.toASCII(session.user.username),
                             to: [vacationTo]
@@ -1785,6 +1863,54 @@ async function parsePayload(data, ws) {
                     });
                   }
                 }
+
+                // Nothing to store (discarded, or only redirected)
+                if (sieveResult.deliveries.length === 0) {
+                  logger.info('sieve message not stored', {
+                    user: { id: session.user.alias_user_id },
+                    domains: [
+                      new mongoose.Types.ObjectId(session.user.domain_id)
+                    ],
+                    session,
+                    ignore_hook: false,
+                    alias: session.user.username,
+                    sender: payload.sender
+                  });
+                  return;
+                }
+
+                //
+                // fileinto :specialuse (RFC 8579 section 4): the mailbox with
+                // that special-use, the one named if it has it; while the
+                // database is not open, the mailbox Forward Email creates with
+                // it, and the one named for any other (each mailbox once)
+                //
+                const mailboxes = await getSieveMailboxes();
+                const deliveries = new Map();
+                for (const delivery of sieveResult.deliveries) {
+                  if (delivery.specialuse) {
+                    const found = mailboxes
+                      ? withSpecialUse(mailboxes, delivery.specialuse)
+                          .map((m) => m.path)
+                          .sort()
+                      : [
+                          Object.hasOwn(
+                            SPECIAL_USE_PATHS,
+                            delivery.specialuse.toLowerCase()
+                          )
+                            ? SPECIAL_USE_PATHS[
+                                delivery.specialuse.toLowerCase()
+                              ]
+                            : null
+                        ].filter(Boolean);
+                    if (found.length > 0 && !found.includes(delivery.folder))
+                      delivery.folder = found[0];
+                  }
+
+                  deliveries.set(delivery.folder, delivery);
+                }
+
+                sieveResult.deliveries = [...deliveries.values()];
               } catch (err) {
                 // If Sieve processing fails, log and continue with default delivery
                 if (err instanceof SMTPError) throw err; // Re-throw SMTP errors (reject)
@@ -1800,9 +1926,21 @@ async function parsePayload(data, ws) {
                 });
               }
 
-              // Use Sieve-determined folder and flags
-              const targetFolder = sieveResult.folder || 'INBOX';
-              const targetFlags = sieveResult.flags || [];
+              //
+              // Use Sieve-determined folder and flags (the first mailbox; the
+              // message is copied to the others once stored, see below).  A
+              // keep comes first: when only one mailbox can be stored (the
+              // alias's database is not open here), it is the INBOX the user
+              // expects, as with fileinto :copy.
+              //
+              const [sieveDelivery, ...sieveCopies] =
+                sieveResult.deliveries.length > 0
+                  ? _.sortBy(sieveResult.deliveries, (delivery) =>
+                      delivery.folder === 'INBOX' ? 0 : 1
+                    )
+                  : [{ folder: 'INBOX', flags: [], create: false }];
+              const targetFolder = sieveDelivery.folder || 'INBOX';
+              const targetFlags = sieveDelivery.flags || [];
 
               // Use modified raw message if header changes were applied (editheader extension)
               // NOTE: use a per-alias copy so encryption (S/MIME, PGP) below
@@ -1810,6 +1948,68 @@ async function parsePayload(data, ws) {
               let messageRaw = sieveResult.modifiedRaw
                 ? Buffer.from(sieveResult.modifiedRaw)
                 : Buffer.from(payload.raw);
+
+              //
+              // The message in each other mailbox of the script (fileinto and
+              // keep, RFC 5228), once it is in the first one in the alias's
+              // database.  An append there would see the copy already stored
+              // (`checkForExisting` looks at every mailbox), so each copy is
+              // recorded once instead (a delivery that is tried again does not
+              // store it twice).
+              //
+              const storeSieveCopies = async () => {
+                for (const copy of sieveCopies) {
+                  const copyKey = `${
+                    config.fingerprintPrefix
+                  }:sieve:copy:${revHash(
+                    encoder.pack([
+                      session.user.alias_id,
+                      fingerprint,
+                      copy.folder
+                    ])
+                  )}`;
+                  try {
+                    if (await this.client.get(copyKey)) continue;
+                    await onAppendPromise.call(
+                      this,
+                      copy.folder,
+                      copy.flags || [],
+                      _.isDate(payload.date)
+                        ? payload.date
+                        : new Date(payload.date),
+                      messageRaw,
+                      {
+                        user: { ...session.user },
+                        db: session.db,
+                        remoteAddress: payload.remoteAddress,
+                        resolvedRootClientHostname:
+                          payload.resolvedRootClientHostname,
+                        resolvedClientHostname: payload.resolvedClientHostname,
+                        allowlistValue: payload.allowlistValue,
+                        selected: false,
+                        retries: 0,
+                        createFolder: copy.create || false
+                      }
+                    );
+                    await this.client.set(copyKey, true, 'PX', ms('30d'));
+                  } catch (err) {
+                    logger.error('sieve fileinto copy failed', {
+                      user: { id: session.user.alias_user_id },
+                      session,
+                      ignore_hook: false,
+                      err,
+                      folder: copy.folder
+                    });
+                  }
+                }
+              };
+
+              if (sieveCopies.length > 0 && !session.db)
+                logger.warn('sieve fileinto copies need the open mailbox', {
+                  user: { id: session.user.alias_user_id },
+                  ignore_hook: true,
+                  folders: sieveCopies.map((copy) => copy.folder)
+                });
 
               // NOTE: onAppend sends its own APN ping and newMessage
               // notification, so only the tmp storage path below notifies
@@ -1850,10 +2050,11 @@ async function parsePayload(data, ws) {
                       retries: 0,
 
                       // Sieve fileinto :create flag - auto-create folder if it doesn't exist
-                      createFolder: sieveResult.create || false
+                      createFolder: sieveDelivery.create || false
                     }
                   );
                   appendedToMainDb = true;
+                  await storeSieveCopies();
                 } catch (_err) {
                   // in order to ensure tmp write still occurs
                   delete session.db;
@@ -1934,11 +2135,12 @@ async function parsePayload(data, ws) {
                         selected: false,
                         checkForExisting: true,
                         retries: 0,
-                        createFolder: sieveResult.create || false
+                        createFolder: sieveDelivery.create || false
                       }
                     );
                     // Successfully wrote to main DB, skip tmp fallback
                     // (onAppend already sent APN + newMessage notification)
+                    await storeSieveCopies();
 
                     // Release per-alias raw buffer for GC
                     messageRaw = null;
@@ -2967,9 +3169,10 @@ async function parsePayload(data, ws) {
         const key = `backup_check:${payload.session.user.alias_id}`;
 
         // only allow one backup every 30m (even if err/restart/shutdown)
-        const cache = await this.client.get(key);
+        // (claimed in one step, so two requests at once cannot both run)
+        const claimed = await this.client.set(key, true, 'PX', ms('30m'), 'NX');
 
-        if (cache) {
+        if (!claimed) {
           const err = Boom.clientTimeout(
             i18n.translateError(
               'BACKUP_IN_PROGRESS',
@@ -2981,9 +3184,6 @@ async function parsePayload(data, ws) {
         }
 
         try {
-          // set cache so we don't run two backups at once
-          await this.client.set(key, true, 'PX', ms('30m'));
-
           // check when we actually did the last user backup
           const alias = await Aliases.findById(payload.session.user.alias_id)
             .lean()

@@ -11,6 +11,8 @@ Bagian ini mendokumentasikan alur kerja CI/CD untuk solusi yang dihosting sendir
 * [Proses Penyebaran](#deployment-process)
   * [Instalasi](#installation)
   * [Konfigurasi Docker Compose](#docker-compose-configuration)
+  * [Pengiriman ke domain yang dihosting di server yang sama](#delivery-to-domains-hosted-on-the-same-server)
+  * [Mengakhiri sesi saat akses Google atau GitHub dicabut](#ending-sessions-when-google-or-github-access-is-revoked)
 * [Fitur Perawatan](#maintenance-features)
   * [Pembaruan Otomatis](#automatic-updates)
   * [Pencadangan dan Pemulihan](#backup-and-restore)
@@ -122,6 +124,30 @@ File `docker-compose-self-hosted.yml` mendefinisikan semua layanan yang diperluk
 * **SQLite**: Basis data untuk menyimpan email
 
 Setiap layanan menggunakan citra Docker yang sama tetapi dengan titik masuk yang berbeda, memungkinkan arsitektur modular sekaligus menyederhanakan pemeliharaan.
+
+### Pengiriman ke domain yang dihosting di server yang sama {#delivery-to-domains-hosted-on-the-same-server}
+
+Email keluar tidak dikirim ke server MX yang alamatnya milik server itu sendiri. Jika satu server menghosting beberapa domain dan catatan MX-nya mengarah ke alamat publik server tersebut, email dari salah satu domain ke domain lainnya akan ditolak.
+
+Untuk mengizinkannya, atur:
+
+```env
+SMTP_ALLOW_LOCAL_MX=true
+```
+
+Nilai bawaannya adalah `false`, dan pengaturan ini hanya berlaku jika `SELF_HOSTED=true`. Email tetap tidak pernah dikirim ke alamat loopback, privat, link-local, atau NAT tingkat operator (CGNAT).
+
+### Mengakhiri sesi saat akses Google atau GitHub dicabut {#ending-sessions-when-google-or-github-access-is-revoked}
+
+Pada instalasi yang di-host sendiri, sesi yang masuk dengan Google atau GitHub secara bawaan tidak diperiksa ke penyedia: mencabut akses aplikasi ini di sana tidak mengeluarkannya, dan sesi tetap masuk hingga kedaluwarsa.
+
+Untuk mengakhirinya begitu akses dicabut, atur:
+
+```env
+AUTH_OAUTH_REVOCATION_CHECK=true
+```
+
+Penyedia kemudian ditanya di latar belakang, kira-kira setiap 5 menit (setiap menit selama penyedia tidak menjawab). Gangguan pada penyedia tidak mengeluarkan siapa pun, begitu pula token yang tidak pernah diterima oleh penyedia.
 
 ## Fitur Pemeliharaan {#maintenance-features}
 

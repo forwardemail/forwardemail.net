@@ -934,9 +934,36 @@ window.addEventListener(
                 'You are not logged in, please refresh and try again'
               );
 
+            // (a new passkey signs in without the password or two-factor, so
+            // adding one asks for the current password first)
+            const $button = $(ev.currentTarget);
+            let password;
+            if ($button.data('password-required')) {
+              // (translated button labels, see app/views/layout.pug)
+              const swalDefaults = window._swalDefaults || {};
+              const result = await Swal.fire({
+                confirmButtonText: swalDefaults.confirmButtonText || 'OK',
+                cancelButtonText: swalDefaults.cancelButtonText || 'Cancel',
+                reverseButtons: Boolean(swalDefaults.reverseButtons),
+                title: $button.data('password-label'),
+                input: 'password',
+                inputAttributes: { autocomplete: 'current-password' },
+                showCancelButton: true
+              });
+              if (!result.value) return;
+              password = result.value;
+            }
+
             spinner.show();
 
-            const response = await sendRequest({}, '/auth/webauthn/challenge');
+            // (checking the password also gives the challenge: one request
+            // between the click and the browser prompt, as without it)
+            const response = password
+              ? await sendRequest(
+                  { password },
+                  `/${window.LOCALE}/my-account/passkeys/confirm-password`
+                )
+              : await sendRequest({}, '/auth/webauthn/challenge');
 
             // Check if any errors occurred
             if (response.err) throw response.err;
@@ -1007,6 +1034,8 @@ window.addEventListener(
 
             if (credential.response.getTransports)
               body.response.transports = credential.response.getTransports();
+
+            if (password) body.password = password;
 
             const webauthnResponse = await sendRequest(
               body,

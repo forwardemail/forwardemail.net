@@ -83,6 +83,7 @@ const omitExtraFields = [
   config.userFields.changeEmailNewAddress,
   config.userFields.hasSetPassword,
   config.userFields.hasVerifiedEmail,
+  config.userFields.emailProofPending,
   config.userFields.verificationPinExpiresAt,
   config.userFields.verificationPin,
   config.userFields.verificationPinSentAt,
@@ -695,6 +696,18 @@ object[config.userFields.hasVerifiedEmail] = {
   default: true, // Manually set to false during web/API signup
   index: true
 };
+//
+// Set on an account created with an address it has not verified, until the
+// address is verified with its PIN or by signing in with Google, GitHub,
+// Apple or Ubuntu. A paid plan counts the address as verified (see the
+// pre-save hook) but proves nothing about who owns it, so what gives access
+// on behalf of the owner (passkeys, two-factor, the clean-up when the owner
+// takes the account over) checks this too (see isEmailProven in
+// helpers/clear-unverified-sign-ins.js).
+//
+// (no default: accounts created before it are as they were)
+//
+object[config.userFields.emailProofPending] = Boolean;
 object[config.userFields.verificationPinExpiresAt] = Date;
 object[config.userFields.verificationPinSentAt] = Date;
 object[config.userFields.verificationPin] = {
@@ -917,6 +930,16 @@ function getCurrentPlanSetAt(plan, payments) {
 // Plan expires at should get updated everytime the user is saved
 Users.pre('save', async function (next) {
   const user = this;
+
+  // (see emailProofPending: an address verified here, before a paid plan
+  // counts it as verified below, is proven)
+  if (user.isNew && !user[config.userFields.hasVerifiedEmail])
+    user[config.userFields.emailProofPending] = true;
+  else if (
+    user.isModified(config.userFields.hasVerifiedEmail) &&
+    user[config.userFields.hasVerifiedEmail]
+  )
+    user[config.userFields.emailProofPending] = undefined;
 
   // If self-hosted then always set to a date in the future
   if (config.isSelfHosted) {

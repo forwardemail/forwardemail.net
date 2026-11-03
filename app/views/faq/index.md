@@ -2933,25 +2933,23 @@ The complete, implementation-backed capability list and RFC notes are available 
 | Category              | Capabilities and behavior                                                                                                                                                                                              |
 | --------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Core language         | `keep`, `discard`, `stop`, conditional blocks, and the base `address`, `header`, `exists`, `size`, and boolean tests.                                                                                                  |
-| Delivery              | `fileinto`, `copy`, `redirect`, `mailbox` for `fileinto :create`, and `special-use` for standard-folder `:specialuse` mapping and `specialuse_exists`.                                                                 |
-| Tests and comparisons | `envelope`, `body`, `date`, `index`, `regex`, `subaddress`, `relational`, `i;ascii-casemap`, and `i;octet`.                                                                                                            |
-| State and variables   | `variables`, `imap4flags`, `duplicate`, and `ihave`.                                                                                                                                                                   |
+| Delivery              | `fileinto`, `copy`, `redirect`, `mailbox` for `fileinto :create` and `mailboxexists`, and `special-use` for `fileinto :specialuse` and `specialuse_exists`.                                                            |
+| Tests and comparisons | `envelope`, `body`, `date`, `index`, `regex`, `subaddress`, `relational`, `i;ascii-casemap`, `i;octet`, and `i;ascii-numeric`.                                                                                         |
+| State and variables   | `variables`, `encoded-character`, `imap4flags`, `duplicate`, and `ihave`.                                                                                                                                              |
 | Actions and responses | `reject`, `ereject`, `vacation`, `vacation-seconds`, and `enotify` using `mailto:`. The legacy declaration `require "notify"` is accepted as an input alias for `enotify`, but `enotify` is the advertised capability. |
-| Message processing    | `editheader`, `environment`, and `mime`, including `foreverypart`, `break`, `extracttext`, and `replace`.                                                                                                              |
+| Message processing    | `editheader`, `environment`, `foreverypart` (with `break`), `extracttext`, `replace`, and `mime`, which also enables those three commands.                                                                             |
 
-`redirect` is delivered through the normal outbound queue. It is subject to the configured redirect-domain policy, denylist checks, and rate limits. `editheader` cannot modify protected authentication or delivery-routing headers.
+`redirect` needs no `require`. It is sent through the normal outbound queue, which takes only a message whose From is your alias, on a domain with outbound SMTP; any other message is kept in your inbox. Redirects are subject to the configured redirect-domain policy, denylist checks, and rate limits. `editheader` cannot modify protected authentication or delivery-routing headers, `Received`, or `Auto-Submitted`.
 
 #### Features not supported
 
-| Feature                           | Reason                                                                                                               |
-| --------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
-| `enclose`                         | Creating a new message that encloses the original message is not implemented.                                        |
-| `mailboxexists`                   | Forward Email does not make live IMAP mailbox-state queries. `fileinto :create` remains available through `mailbox`. |
-| `include`                         | Global and included script storage is not available.                                                                 |
-| `mboxmetadata` / `servermetadata` | IMAP METADATA integration is not available.                                                                          |
-| `fcc`                             | Sent-mail filing integration is not available.                                                                       |
-| `encoded-character`               | The `${hex:...}` syntax is not implemented.                                                                          |
-| External lists                    | `valid_ext_list` and other external-list operations are not available.                                               |
+| Feature                           | Reason                                                                        |
+| --------------------------------- | ----------------------------------------------------------------------------- |
+| `enclose`                         | Creating a new message that encloses the original message is not implemented. |
+| `include`                         | Global and included script storage is not available.                          |
+| `mboxmetadata` / `servermetadata` | IMAP METADATA integration is not available.                                   |
+| `fcc`                             | Sent-mail filing integration is not available.                                |
+| External lists                    | `valid_ext_list` and other external-list operations are not available.        |
 
 #### Example Sieve scripts
 
@@ -2987,8 +2985,6 @@ if address :is "from" "boss@example.com" {
 **Redirect a message:**
 
 ```sieve
-require ["redirect"];
-
 if header :contains "Subject" "invoice" {
     redirect "recipient@example.com";
 }

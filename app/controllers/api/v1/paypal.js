@@ -858,7 +858,7 @@ ${encode(safeStringify(parseErr(err), null, 2))}</code></pre>`
           locals: {
             user: user.toObject(),
             message: `
-<p>Hello ${user[config.userFields.fullEmail]},</p>
+<p>Hello ${encode(user[config.userFields.fullEmail])},</p>
 
 <p>We encountered an issue processing your recent PayPal payment due to PayPal's infrastructure problems.</p>
 
@@ -1014,3 +1014,4 @@ async function webhook(ctx) {
 }
 
 module.exports = webhook;
+module.exports.processEvent = processEvent;

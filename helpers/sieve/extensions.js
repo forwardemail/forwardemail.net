@@ -22,6 +22,8 @@
 
 const RE2 = require('re2');
 
+const { interpolate } = require('./variable-references');
+
 /**
  * Extension registry and metadata
  */
@@ -504,9 +506,7 @@ class VariablesExtension {
    * @returns {string} Interpolated string
    */
   interpolate(string_) {
-    return string_.replaceAll(/\${([^}]+)}/g, (match, varName) =>
-      this.get(varName)
-    );
+    return interpolate(string_, (varName) => this.get(varName));
   }
 
   /**

@@ -426,3 +426,60 @@ test('CardDAV responses do not double-escape special characters (Issue #573)', a
   t.true(xmlOutput.includes('&lt;HomePage&gt;'));
   t.false(xmlOutput.includes('&amp;lt;'));
 });
+
+//
+// A stored vCard is text from the client, so it is always escaped in a
+// multistatus response, even when it starts with "<" and ends with ">"
+// (which otherwise took the branch that emits server-built values as raw
+// XML).
+//
+test('address-data that looks like XML is escaped, not emitted raw', (t) => {
+  const { getAddressbookQueryXML } = require('./../../helpers/carddav-xml');
+  const content =
+    '<x:injected xmlns:x="urn:x">owned</x:injected>BEGIN:VCARD\r\nVERSION:3.0\r\nFN:a\r\nN:a;;;;\r\nEND:VCARD<!---->';
+  const xmlOutput = getAddressbookQueryXML(
+    [{ href: '/dav/test/addressbooks/default/1.vcf', etag: '"1"', content }],
+    ['address-data', 'getetag', 'resourcetype']
+  );
+  t.false(xmlOutput.includes('<x:injected'));
+  t.true(xmlOutput.includes('&lt;x:injected'));
+  // (server-built XML values are still emitted as elements)
+  t.true(xmlOutput.includes('<d:getetag>'));
+});
+
+//
+// An address book's name and description are text from the client too:
+// only the values the server builds as XML are emitted raw.
+//
+test('an address book name that looks like XML is escaped, not emitted raw', (t) => {
+  const { getMultistatusXML } = require('./../../helpers/carddav-xml');
+  // (the props routes/carddav builds for an address book)
+  const xmlOutput = getMultistatusXML([
+    {
+      href: '/dav/test/addressbooks/default/',
+      propstat: [
+        {
+          props: [
+            {
+              name: 'd:displayname',
+              value: '<x:injected xmlns:x="urn:x">name</x:injected>'
+            },
+            {
+              name: 'card:addressbook-description',
+              value: '<x:injected xmlns:x="urn:x">description</x:injected>'
+            },
+            {
+              name: 'd:resourcetype',
+              value: '<d:collection/><card:addressbook/>'
+            }
+          ],
+          status: '200 OK'
+        }
+      ]
+    }
+  ]);
+  t.false(xmlOutput.includes('<x:injected'));
+  t.true(xmlOutput.includes('&lt;x:injected'));
+  // (server-built XML is still emitted as elements)
+  t.true(xmlOutput.includes('<card:addressbook/>'));
+});

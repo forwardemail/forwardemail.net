@@ -1608,6 +1608,7 @@ const config = {
     changeEmailNewAddress: 'change_email_new_address',
     hasSetPassword: 'has_set_password',
     hasVerifiedEmail: 'has_verified_email',
+    emailProofPending: 'email_proof_pending',
     pendingRecovery: 'pending_recovery',
     verificationPinExpiresAt: 'verification_pin_expires_at',
     verificationPinSentAt: 'verification_pin_sent_at',

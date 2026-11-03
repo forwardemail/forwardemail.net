@@ -11,6 +11,8 @@ Questa sezione documenta il flusso di lavoro CI/CD per la soluzione self-hosted 
 * [Processo di distribuzione](#deployment-process)
   * [Installazione](#installation)
   * [Configurazione Docker Compose](#docker-compose-configuration)
+  * [Consegna a domini ospitati sullo stesso server](#delivery-to-domains-hosted-on-the-same-server)
+  * [Chiusura delle sessioni quando l'accesso a Google o GitHub viene revocato](#ending-sessions-when-google-or-github-access-is-revoked)
 * [Caratteristiche di manutenzione](#maintenance-features)
   * [Aggiornamenti automatici](#automatic-updates)
   * [Backup e ripristino](#backup-and-restore)
@@ -122,6 +124,30 @@ Il file `docker-compose-self-hosted.yml` definisce tutti i servizi richiesti per
 * **SQLite**: Database per l'archiviazione delle email
 
 Ogni servizio utilizza la stessa immagine Docker ma con punti di ingresso diversi, consentendo un'architettura modulare e semplificando al contempo la manutenzione.
+
+### Consegna a domini ospitati sullo stesso server {#delivery-to-domains-hosted-on-the-same-server}
+
+La posta in uscita non viene consegnata a un server MX il cui indirizzo appartiene al server stesso. Quando un server ospita più domini e i loro record MX puntano al suo indirizzo pubblico, la posta inviata da uno di questi domini a un altro viene rifiutata.
+
+Per consentirlo, impostare:
+
+```env
+SMTP_ALLOW_LOCAL_MX=true
+```
+
+Il valore predefinito è `false` e l'impostazione si applica solo quando `SELF_HOSTED=true`. La posta non viene comunque mai consegnata a indirizzi di loopback, privati, link-local o di NAT di livello carrier (CGNAT).
+
+### Chiusura delle sessioni quando l'accesso a Google o GitHub viene revocato {#ending-sessions-when-google-or-github-access-is-revoked}
+
+In un'installazione self-hosted, le sessioni aperte con Google o GitHub non vengono verificate presso il provider per impostazione predefinita: revocare lì l'accesso di questa applicazione non le chiude, e restano aperte fino alla scadenza.
+
+Per chiuderle non appena l'accesso viene revocato, impostare:
+
+```env
+AUTH_OAUTH_REVOCATION_CHECK=true
+```
+
+Il provider viene quindi interrogato in background, circa ogni 5 minuti (ogni minuto finché non risponde). Un'interruzione del provider non disconnette nessuno, né lo fa un token che il provider non ha mai accettato.
 
 ## Funzionalità di manutenzione {#maintenance-features}
 

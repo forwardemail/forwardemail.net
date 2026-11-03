@@ -18,13 +18,15 @@
  */
 
 const { Buffer } = require('node:buffer');
-const { Readable } = require('node:stream');
+const { Readable, Transform } = require('node:stream');
 
 const libmime = require('libmime');
 const mongoose = require('mongoose');
-const RE2 = require('re2');
 const { simpleParser } = require('mailparser');
-const { Splitter } = require('mailsplit');
+const getStream = require('get-stream');
+const MimeNode = require('nodemailer/lib/mime-node');
+const addressParser = require('nodemailer/lib/addressparser');
+const { Splitter, Joiner } = require('mailsplit');
 const SieveEngine = require('./engine');
 const { SUPPORTED_CAPABILITIES, getCapability } = require('./capabilities');
 const { SieveFilterHandler } = require('./filter-handler');
@@ -55,6 +57,19 @@ try {
   };
 }
 
+//
+// Headers a script can never add or delete, whatever the configuration:
+// RFC 5293 section 6 (deleting Received and Auto-Submitted MUST NOT be
+// permitted) and RFC 5703 section 5 (the Original-Subject and Original-From
+// a replace adds cannot be changed)
+//
+const REQUIRED_PROTECTED_HEADERS = [
+  'received',
+  'auto-submitted',
+  'original-subject',
+  'original-from'
+];
+
 // Default Sieve configuration
 const DEFAULT_CONFIG = {
   maxScriptSize: 1024 * 1024, // 1MB (matches Dovecot default)
@@ -78,12 +93,207 @@ const DEFAULT_CONFIG = {
   enabledExtensions: SUPPORTED_CAPABILITIES
 };
 
+//
+// A function telling whether a header field ({ value } as in the message,
+// folded and maybe encoded) matches a deleteheader value-pattern, as the
+// header test would (RFC 5293 section 5): unfolded and decoded, with the
+// match type (:is by default) and comparator (i;ascii-casemap by default)
+// of the engine, so the stored message loses the fields later tests no
+// longer see
+//
+function getValueMatcher(pattern, matchType, comparator) {
+  const test = SieveEngine.prototype.createMatcher(
+    pattern,
+    matchType || 'is',
+    comparator || 'i;ascii-casemap'
+  );
+
+  return (header) => {
+    let value = header.value.replace(/\r?\n[ \t]+/g, ' ').trim();
+    try {
+      value = libmime.decodeWords(value);
+    } catch {}
+
+    return test(value);
+  };
+}
+
+const CRLF = Buffer.from('\r\n');
+
+// (text with CRLF line ends)
+function toCRLF(value) {
+  return String(value ?? '').replace(/\r?\n/g, '\r\n');
+}
+
+//
+// Make a mailsplit node the part a replace action gives (RFC 5703 section
+// 5), changing its headers, and return its new body: without :mime the
+// replacement as text/plain in UTF-8, with :mime the MIME entity it is (its
+// headers and content).  The headers of the part about its content (the
+// "Content-" ones) are replaced, all others are kept, and for the whole
+// message :subject and :from set Subject and From, the ones before kept as
+// Original-Subject and Original-From.
+//
+function setReplacement(node, action) {
+  const { headers } = node;
+  // (the names first: removing changes the list)
+  const names = headers.getList().map(({ key }) => key);
+  for (const name of names)
+    if (name.startsWith('content-')) headers.remove(name);
+
+  let body;
+  if (action.mime) {
+    const entity = toCRLF(action.replacement);
+    const end = entity.indexOf('\r\n\r\n');
+    const head = end === -1 ? entity : entity.slice(0, end);
+    body = Buffer.from(end === -1 ? '' : entity.slice(end + 4));
+    let index = headers.getList().length;
+    // (only its MIME headers, the "Content-" ones, RFC 5703 section 5: any
+    // other, such as Received or Authentication-Results, could otherwise be
+    // set where a script cannot add it, even from text of the message)
+    for (const field of head.split(/\r\n(?![ \t])/)) {
+      const colon = field.indexOf(':');
+      if (
+        colon > 0 &&
+        field.slice(0, colon).trim().toLowerCase().startsWith('content-')
+      )
+        headers.addFormatted(field.slice(0, colon), field, index++);
+    }
+  } else {
+    const text = toCRLF(action.replacement);
+    // (7bit when it can be, base64 otherwise)
+    const is7bit =
+      /^[\t\r\n\u0020-\u007E]*$/.test(text) &&
+      text.split('\r\n').every((line) => line.length <= 998);
+    body = is7bit
+      ? Buffer.from(text)
+      : Buffer.from(
+          Buffer.from(text)
+            .toString('base64')
+            .replace(/.{76}(?!$)/g, '$&\r\n')
+        );
+    headers.add(
+      'Content-Type',
+      'text/plain; charset=utf-8',
+      Number.POSITIVE_INFINITY
+    );
+    headers.add(
+      'Content-Transfer-Encoding',
+      is7bit ? '7bit' : 'base64',
+      Number.POSITIVE_INFINITY
+    );
+  }
+
+  // (the whole message, and :subject and :from are ignored with :mime)
+  if (action.partIndex === null && !action.mime) {
+    if (!headers.hasHeader('mime-version'))
+      headers.add('MIME-Version', '1.0', Number.POSITIVE_INFINITY);
+    const set = (name, value, encoded) => {
+      const original = headers.getList().find(({ key }) => key === name);
+      if (original) {
+        headers.remove(`original-${name}`);
+        headers.addFormatted(
+          `Original-${name}`,
+          `Original-${name[0].toUpperCase()}${name.slice(
+            1
+          )}:${original.line.slice(original.line.indexOf(':') + 1)}`
+        );
+        headers.remove(name);
+      }
+
+      headers.add(`${name[0].toUpperCase()}${name.slice(1)}`, encoded);
+    };
+
+    if (typeof action.subject === 'string')
+      set(
+        'subject',
+        action.subject,
+        libmime.encodeWords(action.subject.replace(/[\r\n]+/g, ' '), 'Q', 52)
+      );
+    // (a :from that is not an address list is ignored)
+    if (
+      typeof action.from === 'string' &&
+      !/[\r\n]/.test(action.from) &&
+      addressParser(action.from).some((a) => /@/.test(a.address || ''))
+    )
+      set('from', action.from, libmime.encodeWords(action.from, 'Q', 52));
+  }
+
+  // (mailsplit parses the content type of a node from its headers)
+  node.contentType =
+    headers.getFirst('content-type').split(';')[0].trim().toLowerCase() ||
+    'text/plain';
+  return body;
+}
+
+//
+// The address of a :from (vacation, notify) only when it is the alias
+// itself, with any display name, or null: a script cannot send as another
+// address (RFC 5230 section 4.3 and RFC 5435 section 3.3 suggest such a
+// value is ignored)
+//
+function getOwnFrom(value, aliasAddress) {
+  if (typeof value !== 'string' || /[\r\n]/.test(value)) return null;
+  const addresses = addressParser(value);
+  if (
+    addresses.length !== 1 ||
+    typeof addresses[0].address !== 'string' ||
+    addresses[0].address.toLowerCase() !== String(aliasAddress).toLowerCase()
+  )
+    return null;
+  return value.trim();
+}
+
+//
+// The parts of a mailto: URI (RFC 6068) a notification uses: its "to" and
+// "cc" addresses, "subject" and "body", or null for another method
+//
+function parseMailto(method) {
+  const match =
+    typeof method === 'string' && /^mailto:([^?]*)(\?.*)?$/i.exec(method);
+  if (!match) return null;
+  const decode = (value) => {
+    try {
+      return decodeURIComponent(value);
+    } catch {
+      return value;
+    }
+  };
+
+  const split = (value) =>
+    decode(value)
+      .split(',')
+      .map((address) => address.trim())
+      .filter(Boolean);
+  const result = { to: split(match[1]), cc: [], subject: null, body: null };
+  for (const pair of (match[2] || '').slice(1).split('&')) {
+    const index = pair.indexOf('=');
+    if (index === -1) continue;
+    const name = decode(pair.slice(0, index)).toLowerCase();
+    const value = pair.slice(index + 1);
+    // (other headers, e.g. From, Auto-Submitted or Received, are ignored)
+    if (name === 'to' || name === 'cc') result[name].push(...split(value));
+    else if (name === 'subject' || name === 'body')
+      result[name] = decode(value);
+  }
+
+  return result;
+}
+
 /**
  * Sieve Integration Manager
  *
  * Manages Sieve script execution for incoming mail.
  */
 class SieveIntegration {
+  //
+  // The work header changes may take (see applyHeaderChanges): a header
+  // block of 1MB holds about 100,000 headers, so an ordinary script stays far
+  // below it, while thousands of changes or values against every header took
+  // minutes for each message
+  //
+  static MAX_HEADER_EDIT_WORK = 20_000_000;
+
   /**
    * Create a new SieveIntegration instance
    * @param {Object} options - Configuration options
@@ -97,6 +307,12 @@ class SieveIntegration {
     this.client = options.client;
     this.resolver = options.resolver;
     this.config = { ...DEFAULT_CONFIG, ...options.config };
+    this.config.protectedHeaders = [
+      ...new Set([
+        ...(this.config.protectedHeaders || DEFAULT_CONFIG.protectedHeaders),
+        ...REQUIRED_PROTECTED_HEADERS
+      ])
+    ];
     this.config.enabledExtensions = [
       ...new Set(
         (this.config.enabledExtensions || [])
@@ -124,48 +340,42 @@ class SieveIntegration {
       logger
     });
 
-    // Initialize engine with enabled capabilities
+    //
+    // The engine scripts run in (every supported capability, as the filter
+    // handler's own engine had; see filter-handler.js), enforcing the
+    // protected headers and redirect domains as the script runs
+    //
     this.engine = new SieveEngine({
-      capabilities: this.config.enabledExtensions,
-      protectedHeaders: this.config.protectedHeaders || [
-        'from',
-        'sender',
-        'return-path',
-        'dkim-signature',
-        'arc-seal',
-        'arc-message-signature',
-        'arc-authentication-results',
-        'authentication-results',
-        'received',
-        'received-spf',
-        'message-id',
-        'date',
-        'mime-version',
-        'content-type',
-        'content-transfer-encoding'
-      ],
+      logger,
+      protectedHeaders: this.config.protectedHeaders,
       allowedRedirectDomains: this.config.allowedRedirectDomains || [],
       redirectDomainBlacklist: this.config.redirectDomainBlacklist || []
     });
   }
 
   /**
-   * Process an incoming message through Sieve filtering
-   *
-   * @param {Object} params - Processing parameters
-   * @param {string} params.aliasId - Alias ID to get scripts for
-   * @param {string} params.aliasAddress - Full email address of the alias
-   * @param {Buffer} params.raw - Raw message content
-   * @param {Object} params.envelope - SMTP envelope (from, to)
-   * @param {Object} params.session - Session information
-   * @returns {Promise<Object>} Processing result with actions to take
+   * The result of a message without a script (or whose script failed):
+   * kept in INBOX as it came
+   * @returns {Object} Processing result
    */
-  async processMessage({ aliasId, aliasAddress, raw, envelope, session }) {
-    const result = {
-      // Default action is to keep the message in INBOX
+  static getDefaultResult() {
+    return {
+      // keep, discard (not stored), redirect (only redirected), or reject
       action: 'keep',
+      // where the message is stored, each mailbox once (see processMessage)
+      deliveries: [
+        { folder: 'INBOX', flags: [], create: false, specialuse: null }
+      ],
+      // (the first of deliveries, and the others)
       folder: 'INBOX',
       flags: [],
+      create: false,
+      specialuse: null,
+      additionalFolders: [],
+      // (the flags of an implicit keep, and whether to keep the message in
+      // INBOX when no redirect could be sent, see parse-payload.js)
+      keepFlags: [],
+      isKeptIfNotRedirected: false,
       reject: null,
       redirects: [],
       vacation: null,
@@ -181,6 +391,33 @@ class SieveIntegration {
       duplicateId: null,
       isDuplicate: false
     };
+  }
+
+  /**
+   * Process an incoming message through Sieve filtering
+   *
+   * @param {Object} params - Processing parameters
+   * @param {string} params.aliasId - Alias ID to get scripts for
+   * @param {string} params.aliasAddress - Full email address of the alias
+   * @param {Buffer} params.raw - Raw message content
+   * @param {Object} params.envelope - SMTP envelope (from, to)
+   * @param {Object} params.session - Session information
+   * @param {Function} [params.mailboxExists] - async (name) => whether the
+   *   alias has the mailbox
+   * @param {Function} [params.specialUseExists] - async (attributes,
+   *   mailbox) => whether the alias has mailboxes with those special-uses
+   * @returns {Promise<Object>} Processing result with actions to take
+   */
+  async processMessage({
+    aliasId,
+    aliasAddress,
+    raw,
+    envelope,
+    session,
+    mailboxExists,
+    specialUseExists
+  }) {
+    const result = SieveIntegration.getDefaultResult();
 
     try {
       if (!this.store || typeof this.store.getActiveScript !== 'function') {
@@ -205,6 +442,9 @@ class SieveIntegration {
         store: this.store,
         rateLimiter: this.rateLimiter,
         auditLogger: this.auditLogger,
+        // (with the protected headers and redirect domains of this
+        // integration, enforced as the script runs)
+        engine: this.engine,
         aliasId,
         aliasAddress
       });
@@ -223,6 +463,10 @@ class SieveIntegration {
           aliasAddress,
           session,
           duplicateCache,
+          // (the mailboxes of the alias, for mailboxexists and
+          // specialuse_exists, RFC 5490 and RFC 8579)
+          mailboxExists,
+          specialUseExists,
           // Environment info from session for RFC 5183
           domain: aliasAddress.split('@')[1] || '',
           host: session?.resolvedClientHostname || '',
@@ -231,86 +475,15 @@ class SieveIntegration {
         }
       );
 
-      // Map filter result to integration result
-      if (filterResult.discard) {
-        result.action = 'discard';
-        result.discarded = true;
-        // Log discard action for user debugging
-        logger.info('sieve discarded', {
-          ignore_hook: false,
-          session,
-          sieve: {
-            action: 'discard',
-            script: script.name,
-            alias: aliasAddress
-          }
-        });
-      } else if (filterResult.reject) {
-        result.action = 'reject';
-        result.reject = filterResult.reject;
-        // Log reject action for user debugging
-        logger.info('sieve rejected', {
-          ignore_hook: false,
-          session,
-          sieve: {
-            action: 'reject',
-            script: script.name,
-            alias: aliasAddress,
-            reason: filterResult.reject.message || filterResult.reject
-          }
-        });
-      } else {
-        result.action = 'keep';
-      }
-
-      // Set folder (fileinto action)
-      if (filterResult.fileinto && filterResult.fileinto.length > 0) {
-        // Use the first fileinto destination as primary folder
-        result.folder = filterResult.fileinto[0].folder;
-        // Pass through :create flag for auto-creating folders
-        result.create = filterResult.fileinto[0].create || false;
-        // Additional fileinto destinations for copies
-        result.additionalFolders = filterResult.fileinto
-          .slice(1)
-          .map((f) => ({ folder: f.folder, create: f.create || false }));
-        // Log fileinto action for user debugging
-        logger.info('sieve fileinto', {
-          ignore_hook: false,
-          session,
-          sieve: {
-            action: 'fileinto',
-            script: script.name,
-            alias: aliasAddress,
-            folder: result.folder,
-            additionalFolders: result.additionalFolders
-          }
-        });
-      }
-
-      // Set flags (imap4flags).  A message filed into a folder gets the
-      // flags of that `fileinto`, as they were when it ran, with the ones
-      // its `:flags` names (RFC 5232); a kept one gets the flags at the end.
-      const flags = filterResult.fileinto?.[0]
-        ? filterResult.fileinto[0].flags || []
-        : filterResult.flags || [];
-
-      if (flags.length > 0) {
-        result.flags = flags;
-        // Log flags action for user debugging
-        logger.info('sieve flags', {
-          ignore_hook: false,
-          session,
-          sieve: {
-            action: 'setflag',
-            script: script.name,
-            alias: aliasAddress,
-            flags: result.flags
-          }
-        });
-      }
-
       // Handle redirects
-      if (filterResult.redirect && filterResult.redirect.length > 0) {
+      // (whether a redirect without :copy was taken, which cancels the
+      // implicit keep; one that is refused here does not, RFC 5228 4.2)
+      let isRedirected = false;
+      if (
+        !filterResult.reject &&
+        filterResult.redirect &&
+        filterResult.redirect.length > 0
+      ) {
         // Check denylist for all redirect addresses first
         const redirectAddresses = filterResult.redirect.map((r) => r.address);
         const denylistResult = await checkDenylist(
@@ -354,6 +527,7 @@ class SieveIntegration {
               address: redirect.address,
               copy: redirect.copy || false
             });
+            if (!redirect.copy) isRedirected = true;
             await this.rateLimiter.recordRedirect(aliasId, redirect.address);
             this.auditLogger.logRedirect(
               aliasId,
@@ -394,11 +568,120 @@ class SieveIntegration {
         }
       }
 
+      //
+      // Where the message is stored (RFC 5228 section 2.10.2): INBOX for a
+      // keep (explicit, or implicit unless something cancelled it), and each
+      // mailbox of a fileinto; discard only cancels the implicit keep.  A
+      // mailbox is delivered to once, the last flags winning (RFC 5232).
+      //
+      const isCancelled =
+        filterResult.discard ||
+        Boolean(filterResult.keep) ||
+        filterResult.fileinto.some((f) => !f.copy);
+      const isImplicitKeep =
+        filterResult.implicitKeep || (!isCancelled && !isRedirected);
+      result.keepFlags = filterResult.flags || [];
+      // (a redirect alone cancelled it: if it cannot be sent, the message is
+      // kept after all, see parse-payload.js)
+      result.isKeptIfNotRedirected = !isImplicitKeep && !isCancelled;
+
+      const deliveries = new Map();
+      const deliver = (folder, flags, create = false, specialuse = null) => {
+        const previous = deliveries.get(folder);
+        deliveries.set(folder, {
+          folder,
+          flags,
+          create: create || Boolean(previous?.create),
+          specialuse: specialuse || previous?.specialuse || null
+        });
+      };
+
+      if (filterResult.keep) deliver('INBOX', filterResult.keep.flags || []);
+      for (const f of filterResult.fileinto)
+        deliver(f.folder, f.flags || [], f.create, f.specialuse);
+      if (isImplicitKeep) deliver('INBOX', result.keepFlags);
+
+      result.deliveries = [...deliveries.values()];
+      const [primary] = result.deliveries;
+      result.folder = primary ? primary.folder : null;
+      result.flags = primary ? primary.flags : [];
+      result.create = primary ? primary.create : false;
+      result.specialuse = primary ? primary.specialuse : null;
+      result.additionalFolders = result.deliveries.slice(1);
+      result.discarded = !primary;
+      result.action = primary
+        ? 'keep'
+        : filterResult.discard
+        ? 'discard'
+        : 'redirect';
+
+      //
+      // A reject refuses the message: nothing else delivers it (RFC 5429
+      // section 2.4 does not recommend delivering a rejected message), and
+      // it is checked before discard, which only cancels the implicit keep
+      //
+      if (filterResult.reject) {
+        Object.assign(result, {
+          deliveries: [],
+          folder: null,
+          flags: [],
+          create: false,
+          specialuse: null,
+          additionalFolders: [],
+          isKeptIfNotRedirected: false,
+          discarded: false
+        });
+        result.action = 'reject';
+        result.reject = filterResult.reject;
+        // Log reject action for user debugging
+        logger.info('sieve rejected', {
+          ignore_hook: false,
+          session,
+          sieve: {
+            action: 'reject',
+            script: script.name,
+            alias: aliasAddress,
+            reason: filterResult.reject.message || filterResult.reject
+          }
+        });
+      }
+
+      if (filterResult.discard) {
+        // Log discard action for user debugging
+        logger.info('sieve discarded', {
+          ignore_hook: false,
+          session,
+          sieve: {
+            action: 'discard',
+            script: script.name,
+            alias: aliasAddress
+          }
+        });
+      }
+
+      if (filterResult.fileinto.length > 0) {
+        // Log fileinto action for user debugging
+        logger.info('sieve fileinto', {
+          ignore_hook: false,
+          session,
+          sieve: {
+            action: 'fileinto',
+            script: script.name,
+            alias: aliasAddress,
+            folders: result.deliveries.map((d) => d.folder)
+          }
+        });
+      }
+
       // Handle vacation auto-reply
       if (filterResult.vacation) {
         const vacationCheck = await this.rateLimiter.checkVacation(aliasId);
         if (vacationCheck.allowed) {
-          result.vacation = filterResult.vacation;
+          result.vacation = {
+            ...filterResult.vacation,
+            // (a :from other than the alias is ignored, RFC 5230 section 4.3)
+            from: getOwnFrom(filterResult.vacation.from, aliasAddress)
+          };
           this.auditLogger.logVacation(
             aliasId,
             envelope.from,
@@ -467,7 +750,7 @@ class SieveIntegration {
       ) {
         // Apply replace actions to the raw message
         const sourceRaw = result.modifiedRaw || raw;
-        result.modifiedRaw = this.applyReplaceActions(
+        result.modifiedRaw = await this.applyReplaceActions(
           sourceRaw,
           filterResult.replaceActions
         );
@@ -484,9 +767,35 @@ class SieveIntegration {
       }
 
       // Handle notifications (enotify extension)
-      if (filterResult.notifications && filterResult.notifications.length > 0) {
+      //
+      // (not for a message that is itself automatic, RFC 5436 section 2.7,
+      // and once for each address in a run)
+      //
+      const autoSubmitted = [message.headers['auto-submitted']]
+        .flat()
+        .filter((value) => typeof value === 'string');
+      const isAutoSubmitted = autoSubmitted.some(
+        (value) => value.split(';')[0].trim().toLowerCase() !== 'no'
+      );
+      const notified = new Set();
+      if (
+        !isAutoSubmitted &&
+        filterResult.notifications &&
+        filterResult.notifications.length > 0
+      ) {
         for (const notification of filterResult.notifications) {
           try {
+            const mailto = parseMailto(notification.method);
+            const recipients = mailto
+              ? [...mailto.to, ...mailto.cc].map((a) => a.toLowerCase())
+              : [];
+            if (
+              recipients.length > 0 &&
+              recipients.every((address) => notified.has(address))
+            )
+              continue;
+            for (const address of recipients) notified.add(address);
+
             // Rate limit notifications (same bucket as vacations - 10/hour)
             const notifyRateCheck = await this.rateLimiter.checkNotification(
               aliasId
@@ -514,7 +823,8 @@ class SieveIntegration {
               aliasId,
               aliasAddress,
               envelope,
-              session
+              session,
+              headers: message.headers
             });
             await this.rateLimiter.recordNotification(aliasId);
             result.notifications.push({
@@ -594,7 +904,13 @@ class SieveIntegration {
         type: 'execution_error',
         message: err.message
       });
-      // On error, fall back to default behavior (keep in INBOX)
+      // On error, fall back to default behavior (keep in INBOX, as the
+      // message came, RFC 5228 section 2.10.6 and RFC 5293 section 7)
+      Object.assign(result, SieveIntegration.getDefaultResult(), {
+        scriptExecuted: result.scriptExecuted,
+        errors: result.errors,
+        notifications: result.notifications
+      });
     }
 
     return result;
@@ -619,7 +935,9 @@ class SieveIntegration {
     // key and value, ensuring Sieve conditions like
     //   header :contains "List-Unsubscribe" "example.com"
     // work correctly.
-    const headers = {};
+    // (an object without a prototype: a header named "__proto__" is a
+    // header like any other)
+    const headers = Object.create(null);
     if (parsed.headerLines && parsed.headerLines.length > 0) {
       for (const line of parsed.headerLines) {
         const lowerKey = line.key.toLowerCase();
@@ -633,7 +951,7 @@ class SieveIntegration {
           headerValue = libmime.decodeWords(headerValue);
         } catch {}
 
-        if (headers[lowerKey]) {
+        if (lowerKey in headers) {
           if (Array.isArray(headers[lowerKey])) {
             headers[lowerKey].push(headerValue);
           } else {
@@ -669,7 +987,7 @@ class SieveIntegration {
             .join(', ');
         }
 
-        if (headers[lowerKey]) {
+        if (lowerKey in headers) {
           if (Array.isArray(headers[lowerKey])) {
             headers[lowerKey].push(headerValue);
           } else {
@@ -713,10 +1031,14 @@ class SieveIntegration {
 
     return {
       headers,
-      envelope: {
-        from: envelope.from || parsed.from?.value?.[0]?.address || '',
-        to: envelope.to || parsed.to?.value?.map((v) => v.address) || []
-      },
+      // (the envelope as given, "" for the null reverse-path; the headers
+      // only stand in when there is none at all)
+      envelope: envelope
+        ? { from: envelope.from ?? '', to: envelope.to ?? [] }
+        : {
+            from: parsed.from?.value?.[0]?.address || '',
+            to: parsed.to?.value?.map((v) => v.address) || []
+          },
       body: {
         text: parsed.text || '',
         html: parsed.html || ''
@@ -742,8 +1064,9 @@ class SieveIntegration {
     return new Promise((resolve) => {
       const splitter = new Splitter();
       const parts = [];
+      // (the index of each node, for the parent index of its children)
+      const indexes = new Map();
       let currentPart = null;
-      let bodySize = 0;
 
       // Safety timeout to prevent hanging on malformed messages
       const timeout = setTimeout(() => {
@@ -765,9 +1088,20 @@ class SieveIntegration {
             disposition: chunk.disposition || false,
             filename: chunk.filename || false,
             multipart: chunk.multipart || false,
-            headers: {},
+            // (the part it is in, -1 for the message itself; see
+            // getDescendantParts in engine.js)
+            parentIndex:
+              chunk.parentNode && indexes.has(chunk.parentNode)
+                ? indexes.get(chunk.parentNode)
+                : -1,
+            // (by lowercase name, a value for each time a name is given, as
+            // in parseMessageForSieve)
+            headers: Object.create(null),
+            // (the octets of the body, one character each ("latin1"), still
+            // in its Content-Transfer-Encoding and charset)
             body: ''
           };
+          indexes.set(chunk, parts.length);
 
           // Parse part headers
           try {
@@ -788,8 +1122,16 @@ class SieveIntegration {
               const colonIdx = line.indexOf(':');
               if (colonIdx > 0) {
                 const name = line.slice(0, colonIdx).trim().toLowerCase();
-                const value = line.slice(colonIdx + 1).trim();
-                currentPart.headers[name] = value;
+                let value = line.slice(colonIdx + 1).trim();
+                try {
+                  value = libmime.decodeWords(value);
+                } catch {}
+
+                const { headers } = currentPart;
+                if (!(name in headers)) headers[name] = value;
+                else if (Array.isArray(headers[name]))
+                  headers[name].push(value);
+                else headers[name] = [headers[name], value];
               }
             }
           } catch {
@@ -797,16 +1139,16 @@ class SieveIntegration {
           }
 
           parts.push(currentPart);
-          bodySize = 0;
-        } else if (
-          chunk.type === 'body' &&
-          currentPart && // Accumulate body content with size limit
-          bodySize < MAX_BODY_SIZE
-        ) {
-          const text = chunk.value ? chunk.value.toString() : '';
-          const remaining = MAX_BODY_SIZE - bodySize;
-          currentPart.body += text.slice(0, remaining);
-          bodySize += text.length;
+        } else if (chunk.type === 'body' && chunk.value) {
+          // (the part the body is of, none past MAX_MIME_PARTS; at most
+          // MAX_BODY_SIZE octets of it)
+          const part = parts[indexes.get(chunk.node)];
+          if (part && part.body.length < MAX_BODY_SIZE)
+            part.body += chunk.value.toString(
+              'latin1',
+              0,
+              Math.min(chunk.value.length, MAX_BODY_SIZE - part.body.length)
+            );
         }
       });
 
@@ -893,16 +1235,19 @@ class SieveIntegration {
       return raw;
     }
 
-    const rawStr = raw.toString('utf8');
-    // Split into headers and body at first double CRLF
-    const headerEndIndex = rawStr.indexOf('\r\n\r\n');
+    if (!Buffer.isBuffer(raw)) raw = Buffer.from(raw);
+
+    // Split into headers and body at first double CRLF (the body is kept as
+    // the octets it is: as UTF-8 text an 8bit body in another charset lost
+    // every octet that is not UTF-8)
+    const headerEndIndex = raw.indexOf('\r\n\r\n');
     if (headerEndIndex === -1) {
       // No body separator found, treat entire message as headers
       return raw;
     }
 
-    let headerSection = rawStr.slice(0, headerEndIndex);
-    const bodySection = rawStr.slice(headerEndIndex);
+    let headerSection = raw.subarray(0, headerEndIndex).toString('utf8');
+    const bodySection = raw.subarray(headerEndIndex);
 
     // Parse existing headers into array of {name, value} objects
     const headerLines = headerSection.split('\r\n');
@@ -925,6 +1270,7 @@ class SieveIntegration {
         if (colonIndex > 0) {
           currentHeader = {
             name: line.slice(0, colonIndex),
+            lower: line.slice(0, colonIndex).toLowerCase(),
             value: line.slice(colonIndex + 1)
           };
         } else {
@@ -936,6 +1282,23 @@ class SieveIntegration {
     if (currentHeader) {
       headers.push(currentHeader);
     }
+
+    //
+    // NOTE: the headers come from whoever sent the message and the changes
+    //       from the script, so the work is counted (headers looked at, and
+    //       values tested against each match) and bounded: a change for a
+    //       name no header has is skipped, and past MAX_HEADER_EDIT_WORK the
+    //       message is kept as it came, as for any error of the script
+    //
+    const counts = new Map();
+    for (const header of headers)
+      counts.set(header.lower, (counts.get(header.lower) || 0) + 1);
+    let work = 0;
+    const spend = (amount) => {
+      work += amount;
+      if (work > SieveIntegration.MAX_HEADER_EDIT_WORK)
+        throw new Error('Sieve header changes exceeded the work allowed');
+    };
 
     // Apply changes
     for (const change of changes) {
@@ -962,219 +1325,220 @@ class SieveIntegration {
           .replace(/\r\n|\r|\n/g, ' ')
           .replaceAll('\u0000', '');
 
+        //
+        // RFC 5293 section 4: a value that is not ASCII is encoded (RFC 2047)
+        // and a long one folded, so the field is one RFC 5322 allows
+        //
+        const folded = libmime
+          .foldLines(
+            `${change.name}: ${
+              /[^\u0020-\u007E\t]/.test(safeValue)
+                ? libmime.encodeWords(safeValue, 'Q', 52)
+                : safeValue
+            }`,
+            76
+          )
+          .trimEnd();
+
         const newHeader = {
           name: change.name,
-          value: ' ' + safeValue
+          lower: change.name.toLowerCase(),
+          value: folded.slice(change.name.length + 1)
         };
+        counts.set(newHeader.lower, (counts.get(newHeader.lower) || 0) + 1);
         if (change.last) {
           // Add at end of headers
+          spend(1);
           headers.push(newHeader);
         } else {
           // Add at beginning of headers
+          spend(headers.length);
           headers.unshift(newHeader);
         }
       } else if (change.action === 'delete') {
         // Find and remove matching headers
+        //
+        // NOTE: the headers come from whoever sent the message, so this must
+        //       stay linear in their number (removing them one at a time with
+        //       `splice()` is quadratic); matches are kept or dropped in a
+        //       single pass, and each pattern is compiled once
         const nameLower = change.name.toLowerCase();
-        let matchCount = 0;
-        for (let i = headers.length - 1; i >= 0; i--) {
-          if (headers[i].name.toLowerCase() === nameLower) {
-            // Check if specific index is requested
-            if (change.index !== undefined) {
-              matchCount++;
-              if (matchCount === change.index) {
-                headers.splice(i, 1);
-                break;
-              }
-            } else if (change.values && change.values.length > 0) {
-              // Check if value matches
-              const headerValue = headers[i].value.trim();
-              const matches = change.values.some((v) => {
-                if (change.matchType === 'is') {
-                  return headerValue.toLowerCase() === v.toLowerCase();
-                }
+        const count = counts.get(nameLower);
+        if (!count) continue;
+        const values = (change.values || []).map((value) =>
+          getValueMatcher(value, change.matchType, change.comparator)
+        );
+        spend(headers.length + count * values.length);
 
-                if (change.matchType === 'contains') {
-                  return headerValue.toLowerCase().includes(v.toLowerCase());
-                }
-
-                if (change.matchType === 'matches') {
-                  // use RE2 to prevent ReDoS from user-supplied glob patterns
-                  try {
-                    const regex = new RE2(
-                      '^' +
-                        v
-                          .replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
-                          .replace(/\\\*/g, '.*')
-                          .replace(/\\\?/g, '.') +
-                        '$',
-                      'i'
-                    );
-                    return regex.test(headerValue);
-                  } catch {
-                    return false;
-                  }
-                }
-
-                return false;
-              });
-              if (matches) {
-                headers.splice(i, 1);
-              }
-            } else {
-              // Delete all matching headers
-              headers.splice(i, 1);
-            }
-          }
+        //
+        // RFC 5293 section 5: without ":index" every field of the name is
+        // deleted (the parser gives `index: null`), with it only the one it
+        // counts to, from the first (or with ":last" from the last), and in
+        // either case only if its value matches a value-pattern, if any are
+        // given (matched as by the header test: unfolded and decoded)
+        //
+        const isEveryField = !Number.isInteger(change.index);
+        const target = change.last ? count - change.index : change.index - 1;
+        let position = 0;
+        let kept = 0;
+        for (const header of headers) {
+          if (
+            header.lower === nameLower &&
+            (isEveryField || position++ === target) &&
+            (values.length === 0 || values.some((matcher) => matcher(header)))
+          )
+            continue;
+          headers[kept++] = header;
         }
+
+        counts.set(nameLower, count - (headers.length - kept));
+        headers.length = kept;
       }
     }
 
     // Rebuild header section
     headerSection = headers.map((h) => h.name + ':' + h.value).join('\r\n');
 
-    return Buffer.from(headerSection + bodySection, 'utf8');
+    return Buffer.concat([Buffer.from(headerSection, 'utf8'), bodySection]);
   }
 
   /**
-   * Apply RFC 5703 replace actions to a raw MIME message.
-   * Replaces the body of specified MIME parts while preserving headers.
+   * Apply RFC 5703 replace actions to a raw MIME message: each replaces the
+   * part its partIndex is the index of (in the parts of parseMimeTree, the
+   * same order), or the whole message for a partIndex of null, with a
+   * text/plain part or, with :mime, the MIME entity given.  A multipart part
+   * replaced loses its children.
    *
    * @param {Buffer} raw - The raw message
-   * @param {Array} replaceActions - Array of {partIndex, replacement, mime}
-   * @returns {Buffer} Modified raw message
+   * @param {Array} replaceActions - Array of {partIndex, replacement, mime,
+   *   subject, from}
+   * @returns {Promise<Buffer>} Modified raw message
    */
-  applyReplaceActions(raw, replaceActions) {
+  async applyReplaceActions(raw, replaceActions) {
     if (!replaceActions || replaceActions.length === 0) return raw;
 
-    let rawStr = raw.toString('utf8');
+    // (the last replace of a part wins)
+    const actions = new Map();
+    for (const action of replaceActions)
+      actions.set(action.partIndex ?? 0, action);
 
-    // Find the boundary from the unfolded top-level Content-Type without
-    // mutating the original folded header in the output message.
-    const headerEndIndex = rawStr.search(/\r?\n\r?\n/);
-    const topLevelHeaders = rawStr
-      .slice(0, headerEndIndex === -1 ? rawStr.length : headerEndIndex)
-      .replace(/\r?\n[ \t]+/g, ' ');
-    const ctMatch = topLevelHeaders.match(
-      /^content-type:[^\r\n]*boundary="?([^"\s;]+)"?/im
+    const indexes = new Map();
+    // (the part replaced last: what is in it is left out)
+    let replaced = null;
+    const isInReplaced = (node) => {
+      if (!replaced) return false;
+      for (let n = node; n; n = n.parentNode) if (n === replaced) return true;
+      return false;
+    };
+
+    const transform = new Transform({
+      objectMode: true,
+      transform(chunk, _encoding, done) {
+        const node = chunk.type === 'node' ? chunk : chunk.node;
+        if (chunk.type === 'node') indexes.set(chunk, indexes.size);
+        if (isInReplaced(node)) return done();
+        const action = chunk.type === 'node' && actions.get(indexes.get(chunk));
+        if (!action) return done(null, chunk);
+
+        replaced = chunk;
+        const body = setReplacement(chunk, action);
+        this.push(chunk);
+        // (a multipart part's closing boundary, left out, ended the line)
+        done(null, {
+          type: 'body',
+          node: chunk,
+          value: chunk.multipart ? Buffer.concat([body, CRLF]) : body
+        });
+      }
+    });
+
+    return getStream.buffer(
+      Readable.from(raw).pipe(new Splitter()).pipe(transform).pipe(new Joiner())
     );
-    if (!ctMatch) {
-      // Not a multipart message — cannot apply replace
-      return raw;
-    }
-
-    const boundary = ctMatch[1];
-    const delimiter = '--' + boundary;
-    const parts = rawStr.split(delimiter);
-
-    // parts[0] = preamble, parts[1..n-1] = MIME parts, parts[n] = epilogue (starts with --)
-    // MIME part indices in the engine are 0-based over the parsed tree;
-    // for a simple multipart message, part index 0 = the multipart wrapper,
-    // indices 1..n map to the split segments parts[1..n].
-    for (const action of replaceActions) {
-      // The engine assigns partIndex relative to the flattened MIME tree.
-      // For top-level multipart, child parts start at index 1.
-      const segIdx = action.partIndex;
-      if (segIdx < 1 || segIdx >= parts.length - 1) continue;
-
-      const segment = parts[segIdx];
-      // Split segment into headers and body at first blank line
-      const blankLine = segment.indexOf('\r\n\r\n');
-      if (blankLine === -1) continue;
-
-      const partHeaders = segment.slice(0, blankLine);
-      // Replace the body with the replacement text
-      parts[segIdx] = partHeaders + '\r\n\r\n' + action.replacement + '\r\n';
-    }
-
-    rawStr = parts.join(delimiter);
-    return Buffer.from(rawStr, 'utf8');
   }
 
   /**
-   * Send a notification (enotify extension)
+   * Send a notification (enotify extension, mailto method of RFC 5436)
    *
    * @param {Object} notification - Notification details
-   * @param {Object} context - Context information
+   * @param {Object} context - Context information (aliasAddress, session,
+   *   headers of the message that triggered it)
    * @returns {Promise<void>}
    */
   async sendNotification(notification, context) {
-    const { method, message, from, importance } = notification;
+    const mailto = parseMailto(notification.method);
+    if (!mailto)
+      throw new Error(
+        `Unsupported notification method: ${notification.method}`
+      );
+    const recipients = [...mailto.to, ...mailto.cc];
+    if (recipients.length === 0)
+      throw new Error(`Invalid notification method: ${notification.method}`);
 
-    // Parse the notification method URI
-    const methodMatch = method.match(/^([a-z]+):(.+)$/i);
-    if (!methodMatch) {
-      throw new Error(`Invalid notification method: ${method}`);
+    // Access Emails model via mongoose connection to avoid circular dependency
+    const conn = mongoose.connections.find(
+      (c) => c[Symbol.for('connection.name')] === 'MONGO_URI'
+    );
+    if (!conn || !conn.models || !conn.models.Emails) {
+      throw new Error(
+        'Email notification not available - Emails model not loaded'
+      );
     }
 
-    const [, scheme, target] = methodMatch;
+    const { Emails } = conn.models;
 
-    switch (scheme.toLowerCase()) {
-      case 'mailto': {
-        // Send email notification
-        // Access Emails model via mongoose connection to avoid circular dependency
-        const conn = mongoose.connections.find(
-          (c) => c[Symbol.for('connection.name')] === 'MONGO_URI'
-        );
-        if (!conn || !conn.models || !conn.models.Emails) {
-          throw new Error(
-            'Email notification not available - Emails model not loaded'
-          );
-        }
+    // (a header of the message that triggered it)
+    const getHeader = (name) =>
+      [context.headers?.[name]].flat().find((v) => typeof v === 'string') || '';
 
-        const { Emails } = conn.models;
+    //
+    // RFC 5436 section 2.7: the subject is the :message, or the "subject" of
+    // the URI, or that of the message; the body the "body" of the URI (here
+    // with the :message, or the From and Subject of the message, RFC 5435
+    // section 3.6, without one); From is a :from of the alias's own address,
+    // or the alias (other values are ignored, RFC 5435 section 3.3), and
+    // "Auto-Submitted: auto-notified" names the owner of the script
+    //
+    const subject =
+      notification.message ||
+      mailto.subject ||
+      getHeader('subject') ||
+      `Notification from ${context.aliasAddress}`;
+    const body =
+      mailto.body ??
+      (notification.message ||
+        `From: ${getHeader('from')}\r\nSubject: ${getHeader('subject')}`);
 
-        // Parse mailto URI
-        const emailTarget = target.split('?')[0];
-        const subjectMatch =
-          message || `Notification from ${context.aliasAddress}`;
+    const node = new MimeNode('text/plain; charset=utf-8');
+    node.setHeader(
+      'From',
+      getOwnFrom(notification.from, context.aliasAddress) ||
+        context.aliasAddress
+    );
+    if (mailto.to.length > 0) node.setHeader('To', mailto.to.join(', '));
+    if (mailto.cc.length > 0) node.setHeader('Cc', mailto.cc.join(', '));
+    node.setHeader('Subject', subject.replace(/[\r\n]+/g, ' '));
+    node.setHeader('Auto-Submitted', {
+      prepared: true,
+      value: `auto-notified; owner-email="${context.aliasAddress}"`
+    });
+    node.setHeader('X-Sieve-Notify', 'true');
+    node.setHeader(
+      'X-Sieve-Importance',
+      ['1', '2', '3'].includes(notification.importance)
+        ? notification.importance
+        : '2'
+    );
+    node.setContent(body);
 
-        //
-        // The notification is assembled as a raw RFC 5322 string, so the
-        // script-supplied :from / :message / :importance values (and the
-        // mailto target) must not be able to terminate a header line.
-        // Emails.queue() independently enforces that the From header equals
-        // an alias the user owns, so this is defense-in-depth against raw
-        // header injection rather than a standalone control.
-        //
-        const headerSafe = (value) =>
-          String(value ?? '')
-            .replace(/\r\n|\r|\n/g, ' ')
-            .replaceAll('\u0000', '');
-        const fromHeader = headerSafe(from || context.aliasAddress);
-        const toHeader = headerSafe(emailTarget);
-        const subjectHeader = headerSafe(subjectMatch);
-        const importanceHeader = headerSafe(importance || 'normal');
-
-        await Emails.queue({
-          info: {
-            message: `From: ${fromHeader}\r\nTo: ${toHeader}\r\nSubject: ${subjectHeader}\r\nX-Sieve-Notify: true\r\nX-Sieve-Importance: ${importanceHeader}\r\n\r\n${
-              message || 'You have received a notification.'
-            }`,
-            envelope: {
-              from: from || context.aliasAddress,
-              to: [emailTarget]
-            }
-          },
-          user: { id: context.session?.user?.alias_user_id || context.aliasId },
-          is_bounce: false
-        });
-        break;
-      }
-
-      case 'xmpp': {
-        // XMPP notifications not implemented - log and skip
-        logger.warn('sieve notify xmpp not implemented', {
-          ignore_hook: true,
-          sieve: { method, target }
-        });
-        throw new Error('XMPP notifications are not implemented');
-      }
-
-      default: {
-        throw new Error(`Unsupported notification scheme: ${scheme}`);
-      }
-    }
+    await Emails.queue({
+      info: {
+        message: node.createReadStream(),
+        envelope: { from: context.aliasAddress, to: recipients }
+      },
+      user: { id: context.session?.user?.alias_user_id || context.aliasId },
+      is_bounce: false
+    });
   }
 
   /**

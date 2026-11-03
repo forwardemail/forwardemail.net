@@ -22,6 +22,9 @@
 const ICAL = require('ical.js');
 const { ensureVTimezones } = require('#helpers/generate-vtimezone');
 
+// (far more than any calendar has overrides)
+const MAX_ADDED_EXDATES = 10_000;
+
 /**
  * Normalize ICS data by adding missing EXDATEs for detached instances.
  *
@@ -63,11 +66,46 @@ function normalizeIcs(icsData) {
 
     if (masters.length === 0 || overrides.length === 0) return icsData;
 
+    //
+    // Group the overrides by UID in one pass, so the work below is linear in
+    // the number of components instead of masters x overrides, and add at
+    // most so many EXDATEs in all (a UID has a single master per RFC 5545;
+    // repeating the same EXDATEs on thousands of duplicate masters let a
+    // small body add millions of properties and use gigabytes of memory,
+    // while a calendar with a few duplicate masters gets them on each, as
+    // before) (and each RECURRENCE-ID of a UID once, the first override with
+    // it, so many overrides of one instance are not each checked against
+    // each master)
+    //
+    const overridesByUid = new Map();
+    for (const override of overrides) {
+      const overrideUid = override.getFirstPropertyValue('uid');
+      if (!overrideUid) continue;
+      const recurrenceId = override.getFirstProperty('recurrence-id');
+      if (!recurrenceId) continue;
+      const recIdValue = recurrenceId.getFirstValue();
+      if (!recIdValue) continue;
+      const recIdIcs = recIdValue.toICALString();
+      if (!overridesByUid.has(overrideUid))
+        overridesByUid.set(overrideUid, new Map());
+      const byRecId = overridesByUid.get(overrideUid);
+      if (!byRecId.has(recIdIcs))
+        byRecId.set(recIdIcs, {
+          recIdValue,
+          tzid: recurrenceId.getParameter('tzid'),
+          valueType: recurrenceId.getParameter('value')
+        });
+    }
+
     let modified = false;
+    let added = 0;
 
     for (const master of masters) {
+      if (added >= MAX_ADDED_EXDATES) break;
       const masterUid = master.getFirstPropertyValue('uid');
       if (!masterUid) continue;
+      const uidOverrides = overridesByUid.get(masterUid);
+      if (!uidOverrides) continue;
 
       // Collect existing EXDATE values from the master
       const existingExdates = new Set();
@@ -80,30 +118,19 @@ function normalizeIcs(icsData) {
       }
 
       // Find overrides for this master's UID
-      for (const override of overrides) {
-        const overrideUid = override.getFirstPropertyValue('uid');
-        if (overrideUid !== masterUid) continue;
-
-        const recurrenceId = override.getFirstProperty('recurrence-id');
-        if (!recurrenceId) continue;
-
-        const recIdValue = recurrenceId.getFirstValue();
-        if (!recIdValue) continue;
-
-        const recIdIcs = recIdValue.toICALString();
+      for (const [recIdIcs, { recIdValue, tzid, valueType }] of uidOverrides) {
+        if (added >= MAX_ADDED_EXDATES) break;
 
         // Check if this RECURRENCE-ID date already has an EXDATE
         if (!existingExdates.has(recIdIcs)) {
           // Add the missing EXDATE to the master
           // Preserve the TZID from the RECURRENCE-ID if present
           const exdateProp = new ICAL.Property('exdate');
-          const tzid = recurrenceId.getParameter('tzid');
           if (tzid) {
             exdateProp.setParameter('tzid', tzid);
           }
 
           // Match the value type (DATE vs DATE-TIME)
-          const valueType = recurrenceId.getParameter('value');
           if (valueType) {
             exdateProp.setParameter('value', valueType);
           }
@@ -111,6 +138,7 @@ function normalizeIcs(icsData) {
           exdateProp.setValue(recIdValue.clone());
           master.addProperty(exdateProp);
           existingExdates.add(recIdIcs);
+          added++;
           modified = true;
         }
       }

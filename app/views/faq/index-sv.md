@@ -2893,24 +2893,22 @@ Den fullständiga, implementationsstödda listan över funktioner och RFC-noteri
 | Kategori | Funktioner och beteende |
 | --- | --- |
 | Kärnspråk | `keep`, `discard`, `stop`, villkorsblock, och grundläggande tester `address`, `header`, `exists`, `size` och booleska tester. |
-| Leverans | `fileinto`, `copy`, `redirect`, `mailbox` för `fileinto :create`, och `special-use` för standardmappens `:specialuse`-mappning och `specialuse_exists`. |
-| Tester och jämförelser | `envelope`, `body`, `date`, `index`, `regex`, `subaddress`, `relational`, `i;ascii-casemap`, och `i;octet`. |
-| Tillstånd och variabler | `variables`, `imap4flags`, `duplicate`, och `ihave`. |
+| Leverans | `fileinto`, `copy`, `redirect`, `mailbox` för `fileinto :create` och `mailboxexists`, och `special-use` för `fileinto :specialuse` och `specialuse_exists`. |
+| Tester och jämförelser | `envelope`, `body`, `date`, `index`, `regex`, `subaddress`, `relational`, `i;ascii-casemap`, `i;octet`, och `i;ascii-numeric`. |
+| Tillstånd och variabler | `variables`, `encoded-character`, `imap4flags`, `duplicate`, och `ihave`. |
 | Åtgärder och svar | `reject`, `ereject`, `vacation`, `vacation-seconds`, och `enotify` med `mailto:`. Den äldre deklarationen `require "notify"` accepteras som en indataalias för `enotify`, men `enotify` är den annonserade funktionen. |
-| Meddelandehantering | `editheader`, `environment`, och `mime`, inklusive `foreverypart`, `break`, `extracttext`, och `replace`. |
+| Meddelandehantering | `editheader`, `environment`, `foreverypart` (med `break`), `extracttext`, `replace`, och `mime`, som också aktiverar de tre kommandona. |
 
-`redirect` levereras genom den normala utgående kön. Den omfattas av den konfigurerade redirect-domain-policyn, denylist-kontroller och hastighetsbegränsningar. `editheader` kan inte ändra skyddade autentiserings- eller leveransrutningshuvuden.
+`redirect` behöver ingen `require`. Den skickas genom den normala utgående kön, som bara tar emot ett meddelande vars From är ditt alias, på en domän med utgående SMTP; alla andra meddelanden behålls i din inkorg. Redirects omfattas av den konfigurerade redirect-domain-policyn, denylist-kontroller och hastighetsbegränsningar. `editheader` kan inte ändra skyddade autentiserings- eller leveransrutningshuvuden, `Received` eller `Auto-Submitted`.
 
 #### Funktioner som inte stöds
 
 | Funktion | Orsak |
 | --- | --- |
 | `enclose` | Att skapa ett nytt meddelande som kapslar in originalmeddelandet är inte implementerat. |
-| `mailboxexists` | Forward Email gör inga live IMAP-förfrågningar om brevlådestatus. `fileinto :create` förblir tillgängligt via `mailbox`. |
 | `include` | Global och inkluderad skriptlagring är inte tillgänglig. |
 | `mboxmetadata` / `servermetadata` | IMAP METADATA-integration är inte tillgänglig. |
 | `fcc` | Integration för arkivering av skickad post är inte tillgänglig. |
-| `encoded-character` | Syntaxen `${hex:...}` är inte implementerad. |
 | Externa listor | `valid_ext_list` och andra operationer för externa listor är inte tillgängliga. |
 
 #### Exempel på Sieve-skript
@@ -2947,8 +2945,6 @@ if address :is "from" "boss@example.com" {
 **Redirect a message:**
 
 ```sieve
-require ["redirect"];
-
 if header :contains "Subject" "invoice" {
     redirect "recipient@example.com";
 }

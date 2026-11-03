@@ -101,36 +101,43 @@ function deduplicateIcsProperties(icsData) {
 
     let modified = false;
 
+    //
+    // NOTE: properties are dropped from each component's jCal property list
+    //       in a single pass, before ical.js hydrates any of them, rather than
+    //       with `component.removeProperty()` (which searches and splices the
+    //       list each time, so a component with tens of thousands of duplicate
+    //       properties held the event loop for seconds to minutes)
+    //
     for (const component of components) {
       const isJournal = component.name === 'vjournal';
+      const jCalProps = component.jCal[1];
 
       //
       // Deduplicate single-instance properties.
       // Strategy: iterate all properties in reverse order, track seen names,
-      // mark earlier duplicates for removal (keeps last occurrence).
+      // drop earlier duplicates (keeps last occurrence).
       //
-      const allProps = component.getAllProperties();
-      const toRemove = [];
       const seen = new Set();
+      const keep = Array.from({ length: jCalProps.length }).fill(true);
+      let removed = 0;
 
-      for (const prop of [...allProps].reverse()) {
-        const { name } = prop;
+      for (let i = jCalProps.length - 1; i >= 0; i--) {
+        const name = jCalProps[i][0];
         if (!SINGLE_INSTANCE_PROPS.has(name)) continue;
 
         // In VJOURNAL, some properties are allowed to repeat
         if (isJournal && VJOURNAL_MULTI_INSTANCE.has(name)) continue;
 
         if (seen.has(name)) {
-          toRemove.push(prop);
+          keep[i] = false;
+          removed++;
         } else {
           seen.add(name);
         }
       }
 
-      for (const prop of toRemove) {
-        component.removeProperty(prop);
-        modified = true;
-      }
+      let props = removed > 0 ? jCalProps.filter((_, i) => keep[i]) : jCalProps;
+      if (removed > 0) modified = true;
 
       //
       // Deduplicate EXDATE values.
@@ -143,11 +150,14 @@ function deduplicateIcsProperties(icsData) {
       // We must collect ALL values across ALL EXDATE properties, deduplicate
       // by their serialized string form, and reconstruct.
       //
-      const exdateProps = component.getAllProperties('exdate');
+      const exdateProps = props
+        .filter((p) => p[0] === 'exdate')
+        .map((p) => new ICAL.Property(p, component));
       if (exdateProps.length > 0) {
         // Collect all values with their parameters (TZID, VALUE=DATE, etc.)
         // Group by parameter signature so we don't mix DATE vs DATE-TIME
         const groups = new Map(); // paramKey -> Map<dateString, ICAL.Time>
+        let originalCount = 0;
 
         for (const prop of exdateProps) {
           // Build a parameter key to group compatible EXDATE values
@@ -169,6 +179,7 @@ function deduplicateIcsProperties(icsData) {
 
           // getValues() returns all values from a multi-value property
           const values = prop.getValues();
+          originalCount += values.length;
           for (const val of values) {
             if (val) {
               const key = val.toICALString();
@@ -179,11 +190,6 @@ function deduplicateIcsProperties(icsData) {
         }
 
         // Calculate total unique values vs total original values
-        let originalCount = 0;
-        for (const prop of exdateProps) {
-          originalCount += prop.getValues().length;
-        }
-
         let uniqueCount = 0;
         for (const group of groups.values()) {
           uniqueCount += group.values.size;
@@ -192,11 +198,10 @@ function deduplicateIcsProperties(icsData) {
         // Only modify if we actually found duplicates
         if (uniqueCount < originalCount || exdateProps.length > groups.size) {
           // Remove all existing EXDATE properties
-          for (const prop of exdateProps) {
-            component.removeProperty(prop);
-          }
+          props = props.filter((p) => p[0] !== 'exdate');
 
           // Reconstruct one EXDATE property per parameter group
+          // (appended at the end, as `addProperty()` would)
           for (const group of groups.values()) {
             const values = [...group.values.values()];
             if (values.length === 0) continue;
@@ -217,12 +222,14 @@ function deduplicateIcsProperties(icsData) {
               newProp.setValues(values);
             }
 
-            component.addProperty(newProp);
+            props.push(newProp.toJSON());
           }
 
           modified = true;
         }
       }
+
+      if (props !== jCalProps) component.jCal[1] = props;
     }
 
     if (!modified) return icsData;

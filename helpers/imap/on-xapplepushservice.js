@@ -11,6 +11,9 @@ const apnsDebug = require('#helpers/apns-debug');
 const getApnTopic = require('#helpers/get-apn-topic');
 const pushApsRegistration = require('#helpers/push-aps-registration');
 const refineAndLogError = require('#helpers/refine-and-log-error');
+const {
+  MAX_MAILBOX_PATH_LENGTH
+} = require('#helpers/imap/validate-mailbox-path');
 
 //
 // IMAP XAPPLEPUSHSERVICE handler.
@@ -57,6 +60,18 @@ const DEVICE_TOKEN_REGEX = /^[\da-f]{64}$/i;
 // iOS sends a UUID; it is echoed back in every push payload
 const ACCOUNT_ID_REGEX = /^[\da-f]{8}(?:-[\da-f]{4}){3}-[\da-f]{12}$/i;
 
+//
+// The mailbox names a registration lists are only stored with it. Mail sends
+// the ones the user chose to be told about; without a limit, a client could
+// send a megabyte of names with each of the alias's registrations and grow
+// the alias document (read on every sign in) to its 16 MB limit. A list
+// longer than this is stored empty, which pushes for every mailbox, so no
+// mailbox the user chose misses its pushes. (a name longer than a mailbox
+// path may be is not one: see helpers/imap/validate-mailbox-path.js)
+//
+const MAX_MAILBOX_NAMES_LENGTH = 32 * 1024;
+const MAX_MAILBOX_NAME_LENGTH = MAX_MAILBOX_PATH_LENGTH;
+
 // eslint-disable-next-line max-params
 async function onXAPPLEPUSHSERVICE(
   accountID,
@@ -96,6 +111,23 @@ async function onXAPPLEPUSHSERVICE(
 
     if (typeof accountID !== 'string' || !ACCOUNT_ID_REGEX.test(accountID))
       throw new IMAPError('Invalid account ID');
+
+    let names = Array.isArray(mailboxes)
+      ? [
+          ...new Set(
+            mailboxes.filter(
+              (name) =>
+                typeof name === 'string' &&
+                name.length <= MAX_MAILBOX_NAME_LENGTH
+            )
+          )
+        ]
+      : [];
+    if (
+      names.reduce((sum, name) => sum + name.length, 0) >
+      MAX_MAILBOX_NAMES_LENGTH
+    )
+      names = [];
 
     const aliasId = session.user.alias_id;
 
@@ -145,7 +177,7 @@ async function onXAPPLEPUSHSERVICE(
       account_id: accountID,
       device_token: deviceToken,
       subtopic: subTopic,
-      mailboxes,
+      mailboxes: names,
       topic
     });
     if (pushResult.matchedCount === 0)

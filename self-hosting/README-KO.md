@@ -11,6 +11,8 @@
 * [배포 프로세스](#deployment-process)
   * [설치](#installation)
   * [Docker Compose 구성](#docker-compose-configuration)
+  * [같은 서버에서 호스팅되는 도메인으로의 배달](#delivery-to-domains-hosted-on-the-same-server)
+  * [Google 또는 GitHub 액세스가 취소되면 세션 종료](#ending-sessions-when-google-or-github-access-is-revoked)
 * [유지 관리 기능](#maintenance-features)
   * [자동 업데이트](#automatic-updates)
   * [백업 및 복원](#backup-and-restore)
@@ -122,6 +124,30 @@ bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.ne
 * **SQLite**: 이메일 저장 데이터베이스
 
 각 서비스는 동일한 Docker 이미지를 사용하지만 진입점이 다르므로 유지관리를 간소화하는 동시에 모듈식 아키텍처가 가능합니다.
+
+### 같은 서버에서 호스팅되는 도메인으로의 배달 {#delivery-to-domains-hosted-on-the-same-server}
+
+발신 메일은 서버 자신의 주소에 있는 MX 서버로 배달되지 않습니다. 한 서버가 여러 도메인을 호스팅하고 그 MX 레코드가 서버의 공인 주소를 가리키면, 이 도메인 중 하나에서 다른 도메인으로 보내는 메일이 거부됩니다.
+
+이를 허용하려면 다음을 설정하세요.
+
+```env
+SMTP_ALLOW_LOCAL_MX=true
+```
+
+기본값은 `false`이며, 이 설정은 `SELF_HOSTED=true`일 때만 적용됩니다. 루프백, 사설, 링크 로컬, 통신사급 NAT(CGNAT) 주소로는 여전히 메일이 배달되지 않습니다.
+
+### Google 또는 GitHub 액세스가 취소되면 세션 종료 {#ending-sessions-when-google-or-github-access-is-revoked}
+
+자체 호스팅 설치에서는 Google 또는 GitHub로 로그인한 세션을 기본적으로 제공업체에 확인하지 않습니다. 따라서 제공업체에서 이 애플리케이션의 액세스를 취소해도 로그아웃되지 않으며, 세션이 만료될 때까지 로그인 상태가 유지됩니다.
+
+액세스가 취소되는 즉시 세션을 종료하려면 다음을 설정하세요.
+
+```env
+AUTH_OAUTH_REVOCATION_CHECK=true
+```
+
+그러면 제공업체에 백그라운드에서 약 5분마다 확인합니다(제공업체가 응답하지 않는 동안에는 1분마다). 제공업체 장애로는 아무도 로그아웃되지 않으며, 제공업체가 한 번도 수락한 적이 없는 토큰으로도 로그아웃되지 않습니다.
 
 ## 유지 관리 기능 {#maintenance-features}
 

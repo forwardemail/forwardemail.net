@@ -11,6 +11,8 @@
 * [展開プロセス](#deployment-process)
   * [インストール](#installation)
   * [Docker Compose の設定](#docker-compose-configuration)
+  * [同じサーバーでホストされているドメインへの配信](#delivery-to-domains-hosted-on-the-same-server)
+  * [Google または GitHub のアクセスが取り消されたときのセッション終了](#ending-sessions-when-google-or-github-access-is-revoked)
 * [メンテナンス機能](#maintenance-features)
   * [自動更新](#automatic-updates)
   * [バックアップと復元](#backup-and-restore)
@@ -122,6 +124,30 @@ bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.ne
 * **SQLite**: メール保存用データベース
 
 各サービスは同じ Docker イメージを使用しますが、エントリ ポイントが異なるため、モジュール式アーキテクチャが可能になり、メンテナンスが簡素化されます。
+
+### 同じサーバーでホストされているドメインへの配信 {#delivery-to-domains-hosted-on-the-same-server}
+
+送信メールは、サーバー自身のアドレスにある MX サーバーには配信されません。1 台のサーバーで複数のドメインをホストし、それらの MX レコードがサーバーのパブリックアドレスを指している場合、あるドメインから別のドメインへのメールは拒否されます。
+
+これを許可するには、次のように設定します。
+
+```env
+SMTP_ALLOW_LOCAL_MX=true
+```
+
+デフォルトは `false` で、この設定は `SELF_HOSTED=true` の場合にのみ適用されます。ループバック、プライベート、リンクローカル、キャリアグレード NAT（CGNAT）のアドレスには引き続き配信されません。
+
+### Google または GitHub のアクセスが取り消されたときのセッション終了 {#ending-sessions-when-google-or-github-access-is-revoked}
+
+セルフホスト環境では、Google または GitHub でサインインしたセッションは、デフォルトではプロバイダーに確認されません。そのため、プロバイダー側でこのアプリケーションのアクセスを取り消してもサインアウトされず、有効期限が切れるまでサインインしたままになります。
+
+アクセスが取り消された時点でこれらのセッションを終了するには、次のように設定します。
+
+```env
+AUTH_OAUTH_REVOCATION_CHECK=true
+```
+
+その場合、プロバイダーへの確認はバックグラウンドでおよそ 5 分ごとに行われます（プロバイダーが応答しない間は 1 分ごと）。プロバイダーの障害によって誰かがサインアウトされることはなく、プロバイダーが一度も受け入れたことのないトークンでも同様です。
 
 ## メンテナンス機能 {#maintenance-features}
 

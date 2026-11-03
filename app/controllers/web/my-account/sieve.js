@@ -10,6 +10,7 @@ const isSANB = require('is-string-and-not-blank');
 const mongoose = require('mongoose');
 const { SieveScripts } = require('#models');
 const config = require('#config');
+const { SUPPORTED_CAPABILITIES } = require('#helpers/sieve/capabilities');
 const { validate } = require('#helpers/sieve/parser');
 const { SieveSecurityValidator } = require('#helpers/sieve/security');
 
@@ -514,32 +515,7 @@ async function validateSieveScript(ctx) {
  */
 async function getSieveCapabilities(ctx) {
   ctx.body = {
-    capabilities: config.sieve?.enabledExtensions || [
-      'fileinto',
-      'reject',
-      'ereject',
-      'vacation',
-      'vacation-seconds',
-      'variables',
-      'imap4flags',
-      'body',
-      'copy',
-      'relational',
-      'editheader',
-      'date',
-      'index',
-      'duplicate',
-      'special-use',
-      'mailbox',
-      'ihave',
-      'include',
-      'regex',
-      'subaddress',
-      'environment',
-      'enotify',
-      'envelope',
-      'comparator-i;ascii-numeric'
-    ],
+    capabilities: config.sieve?.enabledExtensions || SUPPORTED_CAPABILITIES,
     limits: {
       max_script_size: config.sieve?.maxScriptSize || 1024 * 1024,
       max_script_count: config.sieve?.maxScriptCount || 15,

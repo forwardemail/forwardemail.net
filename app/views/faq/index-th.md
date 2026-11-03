@@ -2892,24 +2892,22 @@ It supports both IPv4 and IPv6 and is available over port `443` (HTTPS).
 | ประเภท | ความสามารถและพฤติกรรม |
 | --- | --- |
 | ภาษาหลัก | `keep`, `discard`, `stop`, บล็อกตามเงื่อนไข และการทดสอบพื้นฐาน `address`, `header`, `exists`, `size` และการทดสอบบูลีน |
-| การจัดส่ง | `fileinto`, `copy`, `redirect`, `mailbox` สำหรับ `fileinto :create` และ `special-use` สำหรับการแมปโฟลเดอร์มาตรฐาน `:specialuse` และ `specialuse_exists` |
-| การทดสอบและการเปรียบเทียบ | `envelope`, `body`, `date`, `index`, `regex`, `subaddress`, `relational`, `i;ascii-casemap`, และ `i;octet` |
-| สถานะและตัวแปร | `variables`, `imap4flags`, `duplicate`, และ `ihave` |
+| การจัดส่ง | `fileinto`, `copy`, `redirect`, `mailbox` สำหรับ `fileinto :create` และ `mailboxexists` และ `special-use` สำหรับ `fileinto :specialuse` และ `specialuse_exists` |
+| การทดสอบและการเปรียบเทียบ | `envelope`, `body`, `date`, `index`, `regex`, `subaddress`, `relational`, `i;ascii-casemap`, `i;octet`, และ `i;ascii-numeric` |
+| สถานะและตัวแปร | `variables`, `encoded-character`, `imap4flags`, `duplicate`, และ `ihave` |
 | การกระทำและการตอบกลับ | `reject`, `ereject`, `vacation`, `vacation-seconds`, และ `enotify` โดยใช้ `mailto:` ประกาศเก่า `require "notify"` ถูกยอมรับเป็นนามแฝงของอินพุตสำหรับ `enotify` แต่ `enotify` คือตัวความสามารถที่ประกาศจริง |
-| การประมวลผลข้อความ | `editheader`, `environment`, และ `mime` รวมถึง `foreverypart`, `break`, `extracttext`, และ `replace` |
+| การประมวลผลข้อความ | `editheader`, `environment`, `foreverypart` (พร้อม `break`), `extracttext`, `replace`, และ `mime` ซึ่งเปิดใช้สามคำสั่งดังกล่าวด้วย |
 
-`redirect` จะส่งผ่านคิวขาออกปกติ และอยู่ภายใต้นโยบาย redirect-domain ที่ตั้งค่าไว้ การตรวจสอบ denylist และข้อจำกัดอัตรา (`rate limits`) `editheader` ไม่สามารถแก้ไขเฮดเดอร์ที่ได้รับการป้องกันด้านการพิสูจน์ตัวตนหรือการกำหนดเส้นทางการส่งได้
+`redirect` ไม่ต้องใช้ `require` โดยจะส่งผ่านคิวขาออกปกติ ซึ่งรับเฉพาะข้อความที่มี From เป็นนามแฝงของคุณ บนโดเมนที่มี SMTP ขาออก ส่วนข้อความอื่นจะถูกเก็บไว้ในกล่องจดหมายเข้าของคุณ การ redirect อยู่ภายใต้นโยบาย redirect-domain ที่ตั้งค่าไว้ การตรวจสอบ denylist และข้อจำกัดอัตรา (`rate limits`) `editheader` ไม่สามารถแก้ไขเฮดเดอร์ที่ได้รับการป้องกันด้านการพิสูจน์ตัวตนหรือการกำหนดเส้นทางการส่ง รวมถึง `Received` หรือ `Auto-Submitted` ได้
 
 #### คุณสมบัติที่ไม่รองรับ
 
 | คุณสมบัติ | เหตุผล |
 | --- | --- |
 | `enclose` | การสร้างข้อความใหม่ที่ห่อข้อความเดิมไม่ได้ถูกนำมาใช้ |
-| `mailboxexists` | Forward Email ไม่ทำการสอบถามสถานะกล่องจดหมาย IMAP แบบเรียลไทม์ `fileinto :create` ยังคงใช้ได้ผ่าน `mailbox` |
 | `include` | ไม่มีการเก็บสคริปต์แบบรวมหรือสคริปต์ทั่วโลก |
 | `mboxmetadata` / `servermetadata` | ไม่มีการผสาน IMAP METADATA |
 | `fcc` | ไม่มีการผสานการจัดเก็บเมลที่ส่งแล้ว |
-| `encoded-character` | ไวยากรณ์ `${hex:...}` ยังไม่ได้ถูกนำมาใช้ |
 | รายการภายนอก | `valid_ext_list` และการดำเนินการรายการภายนอกอื่น ๆ ไม่พร้อมใช้งาน |
 
 #### ตัวอย่างสคริปต์ Sieve
@@ -2946,8 +2944,6 @@ if address :is "from" "boss@example.com" {
 **ส่งต่อข้อความ:**
 
 ```sieve
-require ["redirect"];
-
 if header :contains "Subject" "invoice" {
     redirect "recipient@example.com";
 }

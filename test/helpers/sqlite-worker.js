@@ -7,6 +7,7 @@ const Redis = require('ioredis-mock');
 const test = require('ava');
 
 const config = require('#config');
+const acquireBackupDedup = require('#helpers/acquire-backup-dedup');
 const { MAX_CONCURRENCY } = require('#helpers/sqlite-worker-config');
 
 const CHANNEL = `sqlite_backup_queue:${config.env}`;
@@ -119,6 +120,74 @@ test.serial(
 
     // Clean up
     await publisher.del(BUSY_KEY);
+  }
+);
+
+//
+// A sign in while the worker was busy took the daily backup claim and
+// started no backup, so no sign in that day started one (#611).
+//
+test.serial(
+  'a busy worker leaves the daily backup to a later sign in',
+  async (t) => {
+    const aliasId = 'backup-dedup-busy-alias';
+    const backupKey = acquireBackupDedup.getBackupDedupKey(aliasId);
+
+    await publisher.del(BUSY_KEY, backupKey);
+    await publisher.set(BUSY_KEY, '1');
+
+    t.false(await acquireBackupDedup(publisher, aliasId));
+    t.is(await publisher.get(backupKey), null);
+
+    await publisher.del(BUSY_KEY);
+
+    t.true(await acquireBackupDedup(publisher, aliasId));
+    t.is(await publisher.get(backupKey), '1');
+    // (once a day)
+    t.false(await acquireBackupDedup(publisher, aliasId));
+
+    await publisher.del(backupKey);
+  }
+);
+
+test.serial(
+  'signing in asks for the daily backup once, and not while busy',
+  async (t) => {
+    const aliasId = 'backup-dedup-sign-in-alias';
+    const requests = [];
+    const server = {
+      client: publisher,
+      logger: { debug() {} },
+      wsp: {
+        async request(payload) {
+          requests.push(payload);
+          return true;
+        }
+      }
+    };
+    const user = { alias_id: aliasId };
+    const signIn = async () => {
+      acquireBackupDedup.requestDailyBackup(server, user, {});
+      // (it runs in the background)
+      for (let i = 0; i < 5; i++) await tick();
+    };
+
+    await publisher.del(
+      BUSY_KEY,
+      acquireBackupDedup.getBackupDedupKey(aliasId)
+    );
+    await publisher.set(BUSY_KEY, '2');
+    await signIn();
+    t.is(requests.length, 0);
+
+    await publisher.del(BUSY_KEY);
+    await signIn();
+    await signIn();
+    t.is(requests.length, 1);
+    t.is(requests[0].action, 'backup');
+    t.is(requests[0].session.user, user);
+
+    await publisher.del(acquireBackupDedup.getBackupDedupKey(aliasId));
   }
 );
 

@@ -12,6 +12,36 @@ const { parseStringPromise, processors } = require('xml2js');
 
 const assertSafeXml = require('#helpers/assert-safe-xml');
 
+//
+// Properties whose value the server builds as XML (an href, a resource type,
+// a privilege set). Any other value is escaped: a stored vCard, an address
+// book's name or description (text from the client) that starts with "<"
+// and ends with ">" would otherwise be emitted as raw XML into the
+// multistatus response.
+//
+const RAW_XML_PROPS = new Set([
+  'cal:calendar-home-set',
+  'card:addressbook-home-set',
+  'card:supported-address-data',
+  'cs:push-transports',
+  'd:current-user-principal',
+  'd:current-user-privilege-set',
+  'd:owner',
+  'd:principal-collection-set',
+  'd:principal-URL',
+  'd:resourcetype',
+  'd:supported-report-set'
+]);
+
+function isRawXmlValue(prop) {
+  return (
+    RAW_XML_PROPS.has(prop.name) &&
+    typeof prop.value === 'string' &&
+    prop.value.startsWith('<') &&
+    prop.value.endsWith('>')
+  );
+}
+
 /**
  * Encode special characters for XML content to prevent parsing errors
  * @param {string} str - String to encode
@@ -271,11 +301,7 @@ function getMultistatusXML(responses) {
       const propEl = propstatEl.ele('d:prop');
 
       for (const prop of propstat.props) {
-        if (
-          prop.value &&
-          prop.value.startsWith('<') &&
-          prop.value.endsWith('>')
-        ) {
+        if (isRawXmlValue(prop)) {
           // Handle XML value
           propEl.ele(prop.name).raw(prop.value);
         } else {
@@ -633,11 +659,7 @@ function getSyncCollectionXML(addressBook, changes, props) {
         const propEl = propstatEl.ele('d:prop');
 
         for (const prop of propstat.props) {
-          if (
-            prop.value &&
-            prop.value.startsWith('<') &&
-            prop.value.endsWith('>')
-          ) {
+          if (isRawXmlValue(prop)) {
             // Handle XML value
             propEl.ele(prop.name).raw(prop.value);
           } else {

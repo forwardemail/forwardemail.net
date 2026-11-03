@@ -15,7 +15,7 @@ const _ = require('#helpers/lodash');
 const isEmail = require('#helpers/is-email');
 const config = require('#config');
 const email = require('#helpers/email');
-const decrypt = require('#helpers/encrypt-decrypt');
+const { decrypt } = require('#helpers/encrypt-decrypt');
 const { Inquiries } = require('#models');
 const parseHostFromDomainOrAddress = require('#helpers/parse-host-from-domain-or-address');
 const parseRootDomain = require('#helpers/parse-root-domain');
@@ -41,14 +41,16 @@ async function validate(ctx, next) {
   let { q } = ctx.request.body;
 
   // normalize by converting to lowercase and trimming
-  q = q.toLowerCase().trim();
+  // (an encrypted value is case sensitive, so it is decrypted as it was sent)
+  const raw = q.trim();
+  q = raw.toLowerCase();
 
   if (!isFQDN(q) && !isIP(q) && !isEmail(q)) {
     // check if it was encrypted value and can be decrypted without error
     // and the decrypted value is a FQDN, IP, or Email
     // otherwise throw the same error as above
     try {
-      q = decrypt(q);
+      q = decrypt(raw).toLowerCase().trim();
       ctx.state.isEncrypted = true;
     } catch (err) {
       ctx.logger.warn(err);

@@ -10,6 +10,7 @@
 // that did, and the envelope sender is only a truth source when SPF passed.
 //
 
+const { Buffer } = require('node:buffer');
 const zlib = require('node:zlib');
 const { randomUUID } = require('node:crypto');
 
@@ -70,7 +71,7 @@ function report(domain, id = randomUUID()) {
 
 async function send(
   t,
-  { policyDomain, mailFrom, spf = 'none', dmarc = 'none' }
+  { policyDomain, mailFrom, spf = 'none', dmarc = 'none', attachments }
 ) {
   const info = await nodemailer
     .createTransport({ streamTransport: true, buffer: true })
@@ -79,7 +80,7 @@ async function send(
       to: `dmarc-${t.context.domain.id}@${config.webHost}`,
       subject: 'Report Domain: example',
       text: 'DMARC aggregate report',
-      attachments: [
+      attachments: attachments || [
         {
           filename: 'report.xml.gz',
           contentType: 'application/gzip',
@@ -179,4 +180,82 @@ test('the envelope sender is only a truth source when SPF passed', async (t) => 
     false,
     true
   ]);
+});
+
+//
+// A compressed attachment that inflates to just under the XML structural
+// limits, so it is fully parsed before it fails (a few KB that cost about a
+// second each to decompress and parse).
+//
+const COSTLY = zlib.gzipSync(
+  '<?xml version="1.0"?><feedback>' +
+    '<a></a>'.repeat(599_000) +
+    '<b>'.repeat(200),
+  { level: 9 }
+);
+
+test('only the first few attachments are tried as a report', async (t) => {
+  const attachments = Array.from({ length: 30 }, (_, i) => ({
+    filename: `report-${i}.xml.gz`,
+    contentType: 'application/gzip',
+    content: COSTLY
+  }));
+  // (a real report after them is not looked at)
+  attachments.push({
+    filename: 'report.xml.gz',
+    contentType: 'application/gzip',
+    content: zlib.gzipSync(report(t.context.domain.name))
+  });
+  const start = Date.now();
+  const result = await send(t, {
+    policyDomain: t.context.domain.name,
+    mailFrom: 'noreply-dmarc@reporter.example.com',
+    dmarc: 'pass',
+    attachments
+  });
+  const elapsed = Date.now() - start;
+  t.is(result, null);
+  t.is(await count(t), 0);
+  // (every attachment tried took about a second each)
+  t.true(elapsed < 15_000, `took ${elapsed}ms`);
+});
+
+test('a report after another attachment is still found', async (t) => {
+  await send(t, {
+    policyDomain: t.context.domain.name,
+    mailFrom: 'noreply-dmarc@reporter.example.com',
+    dmarc: 'pass',
+    attachments: [
+      { filename: 'notes.txt', contentType: 'text/plain', content: 'hi' },
+      {
+        filename: 'report.xml.gz',
+        contentType: 'application/gzip',
+        content: zlib.gzipSync(report(t.context.domain.name))
+      }
+    ]
+  });
+  t.is(await count(t), 1);
+});
+
+test('images before a report do not use up the attempts', async (t) => {
+  const logo = {
+    contentType: 'image/png',
+    content: Buffer.from('89504e470d0a1a0a', 'hex')
+  };
+  await send(t, {
+    policyDomain: t.context.domain.name,
+    mailFrom: 'noreply-dmarc@reporter.example.com',
+    dmarc: 'pass',
+    attachments: [
+      { ...logo, filename: 'logo-1.png', cid: 'logo-1' },
+      { ...logo, filename: 'logo-2.png', cid: 'logo-2' },
+      { ...logo, filename: 'logo-3.png', cid: 'logo-3' },
+      {
+        filename: 'report.xml.gz',
+        contentType: 'application/gzip',
+        content: zlib.gzipSync(report(t.context.domain.name))
+      }
+    ]
+  });
+  t.is(await count(t), 1);
 });

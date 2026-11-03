@@ -193,7 +193,7 @@ graceful.listen();
             locals: {
               user: payment.user.toObject(),
               message: `
-<p>Hello ${payment.user[config.userFields.fullEmail]},</p>
+<p>Hello ${encode(payment.user[config.userFields.fullEmail])},</p>
 
 <p>We were unable to process your PayPal payment due to PayPal's infrastructure issues.</p>
 

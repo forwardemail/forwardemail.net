@@ -11,6 +11,8 @@ Esta sección documenta el flujo de trabajo de CI/CD para la solución autohospe
 * [Proceso de implementación](#deployment-process)
   * [Instalación](#installation)
   * [Configuración de Docker Compose](#docker-compose-configuration)
+  * [Entrega a dominios alojados en el mismo servidor](#delivery-to-domains-hosted-on-the-same-server)
+  * [Cierre de sesiones al revocar el acceso en Google o GitHub](#ending-sessions-when-google-or-github-access-is-revoked)
 * [Funciones de mantenimiento](#maintenance-features)
   * [Actualizaciones automáticas](#automatic-updates)
   * [Copia de seguridad y restauración](#backup-and-restore)
@@ -122,6 +124,30 @@ El archivo `docker-compose-self-hosted.yml` define todos los servicios necesario
 * **SQLite**: Base de datos para almacenar correos electrónicos
 
 Cada servicio utiliza la misma imagen de Docker pero con diferentes puntos de entrada, lo que permite una arquitectura modular y simplifica el mantenimiento.
+
+### Entrega a dominios alojados en el mismo servidor {#delivery-to-domains-hosted-on-the-same-server}
+
+El correo saliente no se entrega a un servidor MX cuya dirección pertenece al propio servidor. Cuando un servidor aloja varios dominios y sus registros MX apuntan a su dirección pública, se rechaza el correo de uno de esos dominios a otro.
+
+Para permitirlo, establezca:
+
+```env
+SMTP_ALLOW_LOCAL_MX=true
+```
+
+El valor predeterminado es `false`, y la opción solo se aplica cuando `SELF_HOSTED=true`. El correo nunca se entrega a direcciones de loopback, privadas, de enlace local (link-local) o de NAT de nivel de operador (CGNAT).
+
+### Cierre de sesiones al revocar el acceso en Google o GitHub {#ending-sessions-when-google-or-github-access-is-revoked}
+
+En una instalación autoalojada, las sesiones iniciadas con Google o GitHub no se comprueban con el proveedor de forma predeterminada: revocar allí el acceso de esta aplicación no las cierra, y siguen abiertas hasta que caducan.
+
+Para cerrarlas en cuanto se revoque el acceso, establezca:
+
+```env
+AUTH_OAUTH_REVOCATION_CHECK=true
+```
+
+El proveedor se consulta entonces en segundo plano, aproximadamente cada 5 minutos (cada minuto mientras no responda). Una caída del proveedor no cierra la sesión de nadie, ni tampoco un token que el proveedor nunca ha aceptado.
 
 ## Funciones de mantenimiento {#maintenance-features}
 

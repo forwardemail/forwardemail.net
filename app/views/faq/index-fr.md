@@ -2894,24 +2894,22 @@ La liste complète des capacités, étayée par l'implémentation, et les notes 
 | Catégorie | Capacités et comportement |
 | --- | --- |
 | Langage de base | `keep`, `discard`, `stop`, blocs conditionnels, et les tests de base `address`, `header`, `exists`, `size`, et booléens. |
-| Livraison | `fileinto`, `copy`, `redirect`, `mailbox` pour `fileinto :create`, et `special-use` pour le mappage de dossier standard `:specialuse` et `specialuse_exists`. |
-| Tests et comparaisons | `envelope`, `body`, `date`, `index`, `regex`, `subaddress`, `relational`, `i;ascii-casemap`, et `i;octet`. |
-| État et variables | `variables`, `imap4flags`, `duplicate`, et `ihave`. |
+| Livraison | `fileinto`, `copy`, `redirect`, `mailbox` pour `fileinto :create` et `mailboxexists`, et `special-use` pour `fileinto :specialuse` et `specialuse_exists`. |
+| Tests et comparaisons | `envelope`, `body`, `date`, `index`, `regex`, `subaddress`, `relational`, `i;ascii-casemap`, `i;octet`, et `i;ascii-numeric`. |
+| État et variables | `variables`, `encoded-character`, `imap4flags`, `duplicate`, et `ihave`. |
 | Actions et réponses | `reject`, `ereject`, `vacation`, `vacation-seconds`, et `enotify` utilisant `mailto:`. La déclaration héritée `require "notify"` est acceptée comme alias d'entrée pour `enotify`, mais `enotify` est la capacité annoncée. |
-| Traitement des messages | `editheader`, `environment`, et `mime`, y compris `foreverypart`, `break`, `extracttext`, et `replace`. |
+| Traitement des messages | `editheader`, `environment`, `foreverypart` (avec `break`), `extracttext`, `replace`, et `mime`, qui active aussi ces trois commandes. |
 
-`redirect` est envoyé via la file de sortie normale. Il est soumis à la politique de domaine de redirection configurée, aux vérifications de denylist et aux limites de débit. `editheader` ne peut pas modifier les en-têtes protégés d'authentification ou de routage de livraison.
+`redirect` ne nécessite pas de `require`. Il est envoyé via la file de sortie normale, qui n'accepte qu'un message dont le From est votre alias, sur un domaine disposant du SMTP sortant ; tout autre message est conservé dans votre boîte de réception. Les redirections sont soumises à la politique de domaine de redirection configurée, aux vérifications de denylist et aux limites de débit. `editheader` ne peut pas modifier les en-têtes protégés d'authentification ou de routage de livraison, `Received` ni `Auto-Submitted`.
 
 #### Fonctionnalités non prises en charge
 
 | Fonctionnalité | Raison |
 | --- | --- |
 | `enclose` | La création d'un nouveau message qui encapsule le message original n'est pas implémentée. |
-| `mailboxexists` | Forward Email n'effectue pas de requêtes en direct sur l'état des boîtes IMAP. `fileinto :create` reste disponible via `mailbox`. |
 | `include` | Le stockage global et des scripts inclus n'est pas disponible. |
 | `mboxmetadata` / `servermetadata` | L'intégration IMAP METADATA n'est pas disponible. |
 | `fcc` | L'intégration d'archivage des messages envoyés n'est pas disponible. |
-| `encoded-character` | La syntaxe `${hex:...}` n'est pas implémentée. |
 | External lists | `valid_ext_list` et autres opérations de liste externe ne sont pas disponibles. |
 
 #### Exemples de scripts Sieve
@@ -2948,8 +2946,6 @@ if address :is "from" "boss@example.com" {
 **Rediriger un message :**
 
 ```sieve
-require ["redirect"];
-
 if header :contains "Subject" "invoice" {
     redirect "recipient@example.com";
 }

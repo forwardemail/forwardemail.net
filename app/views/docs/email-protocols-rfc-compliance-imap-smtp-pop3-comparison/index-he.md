@@ -1109,45 +1109,45 @@ sequenceDiagram
 
 | RFC או מפרט | יכולת | התנהגות נתמכת |
 | --- | --- | --- |
-| [RFC 5228](https://datatracker.ietf.org/doc/html/rfc5228) | Core Sieve | `keep`, `discard`, `stop`, בלוקים מותנים, ובדיקות בסיסיות של `address`, `header`, `exists`, `size`, ובדיקות בוליאניות. `fileinto` ו-`redirect` נמסרים דרך צינור המסירה הנכנס. |
+| [RFC 5228](https://datatracker.ietf.org/doc/html/rfc5228) | Core Sieve, `encoded-character` | `keep`, `discard`, `stop`, בלוקים מותנים, ובדיקות בסיסיות של `address`, `header`, `exists`, `size`, ובדיקות בוליאניות. `fileinto` שומר את ההודעה בכל תיקייה שצוינה. `redirect` אינו דורש `require` ונשלח דרך תור היציאה, שמקבל רק הודעה שה-From שלה הוא הכינוי, בדומיין עם SMTP יוצא; כל הודעה אחרת נשמרת בתיבת הדואר הנכנס. `${hex:...}` ו-`${unicode:...}` מפוענחים כאשר נדרש `encoded-character`. |
 | [RFC 5429](https://datatracker.ietf.org/doc/html/rfc5429) | `reject`, `ereject` | דחיית SMTP עם ההודעה שסופקה. |
-| [RFC 5230](https://datatracker.ietf.org/doc/html/rfc5230) | `vacation` | תשובות חופשה מועליות בתור עם בקרים נגד שימוש לרעה. |
+| [RFC 5230](https://datatracker.ietf.org/doc/html/rfc5230) | `vacation` | תשובות חופשה מועליות בתור עם בקרים נגד שימוש לרעה, לכל היותר פעם אחת לכל שולח בכל תקופת `:days` (7 ימים כברירת מחדל). |
 | [RFC 6131](https://datatracker.ietf.org/doc/html/rfc6131) | `vacation-seconds` | פרמטר `:seconds` שולט על זמני החיים (TTL) של תגובת החופשה. |
 | [RFC 5232](https://datatracker.ietf.org/doc/html/rfc5232) | `imap4flags` | דגלים מוחלים במהלך אחסון בתיבת הדואר. |
 | [RFC 5173](https://datatracker.ietf.org/doc/html/rfc5173) | `body` | התאמת תוכן גוף ההודעה. |
 | [RFC 5229](https://datatracker.ietf.org/doc/html/rfc5229) | `variables` | הרחבת משתנים ומודיפיירים נתמכים. |
 | [RFC 5231](https://datatracker.ietf.org/doc/html/rfc5231) | `relational` | השוואות `:count` ו-`:value`. |
-| [RFC 4790](https://datatracker.ietf.org/doc/html/rfc4790) | Comparators | `i;ascii-casemap` ו-`i;octet`. `i;ascii-numeric` אינו מוכרז. |
+| [RFC 4790](https://datatracker.ietf.org/doc/html/rfc4790) | Comparators | `i;ascii-casemap`, `i;octet` ו-`i;ascii-numeric`. |
 | [RFC 3894](https://datatracker.ietf.org/doc/html/rfc3894) | `copy` | `:copy` על `fileinto` ו-`redirect`. |
-| [RFC 5293](https://datatracker.ietf.org/doc/html/rfc5293) | `editheader` | שינויים בכותרות לפני האחסון, למעט שדות אימות והפניית מסירה המוגנים. |
+| [RFC 5293](https://datatracker.ietf.org/doc/html/rfc5293) | `editheader` | שינויים בכותרות לפני האחסון, הנראים לבדיקות מאוחרות יותר, למעט שדות אימות והפניית מסירה המוגנים, `Received` ו-`Auto-Submitted`. |
 | [RFC 5260](https://datatracker.ietf.org/doc/html/rfc5260) | `date`, `index` | בדיקות `currentdate` ותאריכי כותרות, בנוסף `:index` ו-`:last`. |
-| [RFC 5435](https://datatracker.ietf.org/doc/html/rfc5435) | `enotify` | התראות `mailto:` עם מגבלות קצב. ההצהרה הישנה `require "notify"` מתקבלת ככינוי, אך `enotify` היא היכולת שמפורסמת. |
+| [RFC 5435](https://datatracker.ietf.org/doc/html/rfc5435) | `enotify` | התראות `mailto:` עם מגבלות קצב, אף פעם לא עבור הודעות אוטומטיות. ההצהרה הישנה `require "notify"` מתקבלת ככינוי, אך `enotify` היא היכולת שמפורסמת. |
 | [RFC 5183](https://datatracker.ietf.org/doc/html/rfc5183) | `environment` | ערכי סביבה של הסשן הנתמכים. |
-| [RFC 5490](https://datatracker.ietf.org/doc/html/rfc5490) | `mailbox` | `fileinto :create` בלבד. שאילתות חיות של `mailboxexists` לא נתמכות. |
-| [RFC 8579](https://datatracker.ietf.org/doc/html/rfc8579) | `special-use` | מיפוי תקני של תיקיות עם `:specialuse` ובדיקות דטרמניסטיות של `specialuse_exists`. |
+| [RFC 5490](https://datatracker.ietf.org/doc/html/rfc5490) | `mailbox` | `fileinto :create` ו-`mailboxexists`, שבודק את התיקיות של הכינוי. |
+| [RFC 8579](https://datatracker.ietf.org/doc/html/rfc8579) | `special-use` | `fileinto :specialuse` שומר בתיקייה בעלת השימוש המיוחד הזה, ו-`specialuse_exists` בודק את התיקיות של הכינוי. |
 | [RFC 7352](https://datatracker.ietf.org/doc/html/rfc7352) | `duplicate` | זיהוי מסירות כפולות מבוסס Redis. |
-| [RFC 5463](https://datatracker.ietf.org/doc/html/rfc5463) | `ihave` | בודק האם יכולת שפורסמה זמינה. |
+| [RFC 5463](https://datatracker.ietf.org/doc/html/rfc5463) | `ihave` | בודק האם יכולת שפורסמה זמינה, וכן הפקודה `error`. |
 | [RFC 5233](https://datatracker.ietf.org/doc/html/rfc5233) | `subaddress` | חלקי כתובת `:user` ו-`:detail`. |
 | [draft-ietf-sieve-regex](https://datatracker.ietf.org/doc/html/draft-ietf-sieve-regex) | `regex` | התאמת ביטויים רגולריים באמצעות [RE2](https://github.com/uhop/node-re2). |
-| [RFC 5703](https://datatracker.ietf.org/doc/html/rfc5703) | `mime` | בדיקות MIME ו-`foreverypart`, `break`, `extracttext`, ו-`replace`. `enclose` נדחתה משום שאין לה מימוש מסירה בטוח מקצה לקצה. |
+| [RFC 5703](https://datatracker.ietf.org/doc/html/rfc5703) | `foreverypart`, `extracttext`, `replace`, `mime` | בדיקות MIME ו-`foreverypart`, `break`, `extracttext`, ו-`replace`. `mime` מפעיל גם את הפקודות האלה, כפי שסקריפטים ישנים מצפים. `enclose` נדחתה משום שאין לה מימוש מסירה בטוח מקצה לקצה. |
 
 #### הרחבות Sieve נתמכות {#supported-sieve-extensions}
 
 | הרחבה | התנהגות | מסירה או אכיפה |
 | --- | --- | --- |
-| `fileinto` | שומר הודעה בתיקייה. | נשמר בתיקיית IMAP שנבחרה. `fileinto :create` דורש `mailbox`. |
+| `fileinto` | שומר הודעה בתיקייה. | נשמר בתיקיית IMAP שנבחרה. `fileinto :create` ו-`mailboxexists` דורשים `mailbox`. |
 | `copy` | משאיר את המסירה המקורית תוך הוספת `fileinto` או `redirect`. | מיושם על ידי צנרת המסירה. |
-| `redirect` | שולח עותק או החלפת מסירה לנמען אחר. | מועלית בתור דרך נתיב היצוא הרגיל, תלויה במדיניות הדומיין, בבדיקות הרשימות השחורות, ובמגבלות קצב. |
+| `redirect` | שולח את ההודעה לנמען אחר. | מועלית בתור דרך נתיב היצוא הרגיל עבור הודעה שה-From שלה הוא הכינוי, בדומיין עם SMTP יוצא, תלויה במדיניות הדומיין, בבדיקות הרשימות השחורות, ובמגבלות קצב. כל הודעה אחרת נשמרת בתיבת הדואר הנכנס. |
 | `reject` / `ereject` | דוחה הודעה עם שגיאת SMTP. | מוחזרת דרך נתיב מסירת ה-MX. |
 | `vacation` / `vacation-seconds` | שולח תגובה אוטומטית. | מועלית בתור עם מגבלות קצב לנמען ולמרווחי זמן. |
 | `imap4flags` | קובע או בודק דגלים של IMAP. | מוחל כאשר ההודעה מאוחסנת. |
-| `envelope`, `body`, `date`, `index`, `regex`, `subaddress`, `relational` | בודק נתוני הודעה ועטיפה. | מוערך על ידי מנוע Sieve. |
+| `envelope`, `body`, `date`, `index`, `regex`, `subaddress`, `relational`, `comparator-i;ascii-numeric` | בודק נתוני הודעה ועטיפה. | מוערך על ידי מנוע Sieve. |
 | `variables`, `duplicate`, `ihave` | שומר ערכים, מזהה כפילויות, ובודק יכולות. | משתנים הם מקומיים לסקריפט; מצב כפילויות מנוהל באמצעות Redis. |
-| `editheader` | מוסיף או מוחק כותרות שאינן מוגנות. | כותרות אימות והפניית מסירה אינן ניתנות לשינוי. |
+| `editheader` | מוסיף או מוחק כותרות שאינן מוגנות. | כותרות אימות והפניית מסירה, `Received` ו-`Auto-Submitted` אינן ניתנות לשינוי. |
 | `enotify` | שולח התראה באמצעות `mailto:`. | מועלית בתור עם מגבלות קצב להתראות. |
 | `environment` | קורא נתוני סביבה נתמכים של הסשן. | מוערך על ידי מנוע Sieve. |
-| `special-use` | מתייחס לתיקיות שימוש-סטנדרטיות. | ממפה תיקיות סטנדרטיות ומספק תוצאות דטרמניסטיות עבור `specialuse_exists`. |
-| `mime` | בוחן ומשנה חלקי MIME נתמכים. | דורש את היכולת הגנרית `mime`. פקודות RFC 5703 בודדות אינן מפורסמות בנפרד. |
+| `special-use` | מתייחס לתיקיות שימוש-סטנדרטיות. | שומר בתיקיות השימוש המיוחד של הכינוי ובודק אותן. |
+| `foreverypart`, `extracttext`, `replace`, `mime` | בוחן ומשנה חלקי MIME נתמכים. | מוערך על ידי מנוע Sieve. `mime` מפעיל גם את שלוש הפקודות, כפי שסקריפטים ישנים מצפים. |
 
 #### תכונות Sieve שאינן נתמכות {#sieve-extensions-not-supported}
 
@@ -1156,11 +1156,9 @@ sequenceDiagram
 | תכונה | RFC או מפרט | סיבה |
 | --- | --- | --- |
 | `enclose` | [RFC 5703](https://datatracker.ietf.org/doc/html/rfc5703) | יצירת הודעה חדשה שעוטפת את ההודעה המקורית אינה מיושמת באופן בטוח מקצה לקצה. |
-| `mailboxexists` | [RFC 5490](https://datatracker.ietf.org/doc/html/rfc5490) | שאילתות חיות על מצב תיבת ה-IMAP אינן זמינות. |
 | `include` | [RFC 6609](https://datatracker.ietf.org/doc/html/rfc6609) | אחסון סקריפט גלובלי או כלילת סקריפטים אינו זמין. |
 | `mboxmetadata` / `servermetadata` | [RFC 5490](https://datatracker.ietf.org/doc/html/rfc5490) | אינטגרציה עם IMAP METADATA אינה זמינה. |
 | `fcc` | [RFC 8580](https://datatracker.ietf.org/doc/html/rfc8580) | אינטגרציה של תיוק דואר שנשלח אינה זמינה. |
-| `encoded-character` | [RFC 5228](https://datatracker.ietf.org/doc/html/rfc5228) | תחביר `${hex:...}` אינו מיושם. |
 | External lists | [RFC 6134](https://datatracker.ietf.org/doc/html/rfc6134) | `valid_ext_list` ופעולות רשימות חיצוניות אחרות אינן זמינות. |
 
 #### זרימת עיבוד Sieve {#sieve-processing-flow}
@@ -1197,7 +1195,7 @@ sequenceDiagram
 
 #### תכונות אבטחה {#security-features}
 
-Forward Email מאמתת את הסקריפט המלא לפני שהוא מאוחסן, מופעל או מיושם. היא דוחה יכולות שלא הוצהרו ואינן זמינות, מגבילה את גודל הסקריפט ואת איטרציית חלקי ה-MIME, משתמשת ב-[RE2](https://github.com/uhop/node-re2) להתאמות ביטויים רגולריים, מגבילה קצבים עבור הפניות (redirects), תגובות חופשה והודעות התראה, אוסרת יעדי הפניה לא בטוחים, ומונעת מ-`editheader` לשנות שדות אימות או הפניית מסירה. מצב מגבלות הקצב עבור הפניות ותשובות חופשה נשמר ב-[Redis](https://github.com/redis/redis), בעוד דואר שנמסר נשמר באמצעות [SQLite](https://github.com/sqlite/sqlite).
+Forward Email מאמתת את הסקריפט המלא לפני שהוא מאוחסן, מופעל או מיושם. היא דוחה יכולות שלא הוצהרו ואינן זמינות, מגבילה את גודל הסקריפט ואת איטרציית חלקי ה-MIME, משתמשת ב-[RE2](https://github.com/uhop/node-re2) להתאמות ביטויים רגולריים, מגבילה קצבים עבור הפניות (redirects), תגובות חופשה והודעות התראה, אוסרת יעדי הפניה לא בטוחים, ומונעת מ-`editheader` לשנות שדות אימות או הפניית מסירה, `Received` או `Auto-Submitted`. סקריפט שרץ זמן רב מדי או יוצר יותר מדי פעולות, דגלים או משתנים נעצר, וההודעה נשמרת. מצב מגבלות הקצב עבור הפניות ותשובות חופשה נשמר ב-[Redis](https://github.com/redis/redis), בעוד דואר שנמסר נשמר באמצעות [SQLite](https://github.com/sqlite/sqlite).
 
 #### דוגמאות סקריפטי Sieve {#example-sieve-scripts}
 
@@ -1233,8 +1231,6 @@ if header :contains "X-Spam-Status" "Yes" {
 **הפנה חשבוניות:**
 
 ```sieve
-require ["redirect"];
-
 if header :contains "Subject" "invoice" {
     redirect "recipient@example.com";
 }
@@ -1260,7 +1256,7 @@ Forward Email מספק תמיכה מלאה בפרוטוקול ManageSieve לני
 | **שרת**                | `imap.forwardemail.net` |
 | **פורט (STARTTLS)**     | `2190` (מומלץ)          |
 | **פורט (TLS מרומז)**    | `4190`                  |
-| **אימות**               | PLAIN (על גבי TLS)      |
+| **אימות**               | PLAIN ו-LOGIN (על גבי TLS) |
 
 > **הערה:** פורט 2190 משתמש ב-STARTTLS (שדרוג מחיבור רגיל ל-TLS) ותואם לרוב לקוחות ManageSieve כולל [sieve-connect](https://github.com/philpennock/sieve-connect). פורט 4190 משתמש ב-TLS מרומז (TLS מההתחלה) ללקוחות התומכים בכך.
 
@@ -1268,7 +1264,8 @@ Forward Email מספק תמיכה מלאה בפרוטוקול ManageSieve לני
 
 | פקודה          | תיאור                                   |
 | -------------- | --------------------------------------- |
-| `AUTHENTICATE` | אימות באמצעות מנגנון PLAIN              |
+| `AUTHENTICATE` | אימות באמצעות מנגנון PLAIN או LOGIN     |
+| `STARTTLS`     | שדרוג החיבור ל-TLS בפורט 2190           |
 | `CAPABILITY`   | הצגת יכולות והרחבות השרת                |
 | `HAVESPACE`    | בדיקת אפשרות לאחסן סקריפט             |
 | `PUTSCRIPT`    | העלאת סקריפט חדש                       |

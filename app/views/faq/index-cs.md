@@ -2893,24 +2893,22 @@ Ano. Forward Email podporuje server-side filtrování pomocí [Sieve](https://en
 | Kategorie | Schopnosti a chování |
 | --- | --- |
 | Core language | `keep`, `discard`, `stop`, podmíněné bloky a základní testy `address`, `header`, `exists`, `size` a logické testy. |
-| Delivery | `fileinto`, `copy`, `redirect`, `mailbox` pro `fileinto :create`, a `special-use` pro mapování standardních složek `:specialuse` a `specialuse_exists`. |
-| Tests and comparisons | `envelope`, `body`, `date`, `index`, `regex`, `subaddress`, `relational`, `i;ascii-casemap`, a `i;octet`. |
-| State and variables | `variables`, `imap4flags`, `duplicate`, a `ihave`. |
+| Delivery | `fileinto`, `copy`, `redirect`, `mailbox` pro `fileinto :create` a `mailboxexists`, a `special-use` pro `fileinto :specialuse` a `specialuse_exists`. |
+| Tests and comparisons | `envelope`, `body`, `date`, `index`, `regex`, `subaddress`, `relational`, `i;ascii-casemap`, `i;octet`, a `i;ascii-numeric`. |
+| State and variables | `variables`, `encoded-character`, `imap4flags`, `duplicate`, a `ihave`. |
 | Actions and responses | `reject`, `ereject`, `vacation`, `vacation-seconds`, a `enotify` používající `mailto:`. Zastaralé prohlášení `require "notify"` je přijímáno jako vstupní alias pro `enotify`, ale `enotify` je inzerovaná schopnost. |
-| Message processing | `editheader`, `environment`, a `mime`, včetně `foreverypart`, `break`, `extracttext`, a `replace`. |
+| Message processing | `editheader`, `environment`, `foreverypart` (s `break`), `extracttext`, `replace`, a `mime`, který tyto tři příkazy také povoluje. |
 
-`redirect` je doručováno přes běžnou odchozí frontu. Podléhá nakonfigurované politice pro přesměrování domén, kontrolám denylistu a limitům rychlosti. `editheader` nemůže upravovat chráněné hlavičky ověřování nebo směrování doručení.
+`redirect` nepotřebuje `require`. Odesílá se přes běžnou odchozí frontu, která přijme jen zprávu, jejíž From je váš alias, na doméně s odchozím SMTP; každá jiná zpráva zůstane ve vaší doručené poště. Přesměrování podléhají nakonfigurované politice pro přesměrování domén, kontrolám denylistu a limitům rychlosti. `editheader` nemůže upravovat chráněné hlavičky ověřování nebo směrování doručení, `Received` ani `Auto-Submitted`.
 
 #### Funkce, které nejsou podporovány
 
 | Funkce | Důvod |
 | --- | --- |
 | `enclose` | Vytvoření nové zprávy, která obaluje původní zprávu, není implementováno. |
-| `mailboxexists` | Forward Email neprovádí živé dotazy na stav IMAP schránek. `fileinto :create` zůstává dostupné přes `mailbox`. |
 | `include` | Globální a vkládané úložiště skriptů není k dispozici. |
 | `mboxmetadata` / `servermetadata` | Integrace IMAP METADATA není k dispozici. |
 | `fcc` | Integrace pro ukládání odeslané pošty není k dispozici. |
-| `encoded-character` | Syntax `${hex:...}` není implementována. |
 | External lists | `valid_ext_list` a další operace s externími seznamy nejsou k dispozici. |
 
 #### Příklady Sieve skriptů
@@ -2947,8 +2945,6 @@ if address :is "from" "boss@example.com" {
 **Redirect a message:**
 
 ```sieve
-require ["redirect"];
-
 if header :contains "Subject" "invoice" {
     redirect "recipient@example.com";
 }

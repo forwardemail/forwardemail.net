@@ -1109,45 +1109,45 @@ Tabel membedakan implementasi lengkap dari perilaku yang tercantum dengan perila
 
 | RFC or specification | Capability | Supported behavior |
 | --- | --- | --- |
-| [RFC 5228](https://datatracker.ietf.org/doc/html/rfc5228) | Core Sieve | `keep`, `discard`, `stop`, blok kondisional, dan tes dasar `address`, `header`, `exists`, `size`, dan boolean. `fileinto` dan `redirect` dikirim melalui pipeline pengiriman masuk. |
+| [RFC 5228](https://datatracker.ietf.org/doc/html/rfc5228) | Core Sieve, `encoded-character` | `keep`, `discard`, `stop`, blok kondisional, dan tes dasar `address`, `header`, `exists`, `size`, dan boolean. `fileinto` menyimpan pesan di setiap folder yang disebutkan. `redirect` tidak memerlukan `require` dan dikirim melalui antrean keluar, yang hanya menerima pesan dengan From berupa alias, pada domain dengan SMTP keluar; pesan lainnya disimpan di kotak masuk. `${hex:...}` dan `${unicode:...}` didekode ketika `encoded-character` diminta. |
 | [RFC 5429](https://datatracker.ietf.org/doc/html/rfc5429) | `reject`, `ereject` | Penolakan SMTP dengan pesan yang disediakan. |
-| [RFC 5230](https://datatracker.ietf.org/doc/html/rfc5230) | `vacation` | Balasan `vacation` dimasukkan ke antrian dengan kontrol penyalahgunaan. |
+| [RFC 5230](https://datatracker.ietf.org/doc/html/rfc5230) | `vacation` | Balasan `vacation` dimasukkan ke antrian dengan kontrol penyalahgunaan, paling banyak sekali per pengirim untuk setiap periode `:days` (default 7 hari). |
 | [RFC 6131](https://datatracker.ietf.org/doc/html/rfc6131) | `vacation-seconds` | Interval `:seconds` mengontrol TTL balasan `vacation`. |
 | [RFC 5232](https://datatracker.ietf.org/doc/html/rfc5232) | `imap4flags` | Flag diterapkan saat penyimpanan ke kotak surat. |
 | [RFC 5173](https://datatracker.ietf.org/doc/html/rfc5173) | `body` | Pencocokan isi badan pesan. |
 | [RFC 5229](https://datatracker.ietf.org/doc/html/rfc5229) | `variables` | Perluasan variabel dan modifier yang didukung. |
 | [RFC 5231](https://datatracker.ietf.org/doc/html/rfc5231) | `relational` | Perbandingan `:count` dan `:value`. |
-| [RFC 4790](https://datatracker.ietf.org/doc/html/rfc4790) | Comparators | `i;ascii-casemap` dan `i;octet`. `i;ascii-numeric` tidak diiklankan. |
+| [RFC 4790](https://datatracker.ietf.org/doc/html/rfc4790) | Comparators | `i;ascii-casemap`, `i;octet`, dan `i;ascii-numeric`. |
 | [RFC 3894](https://datatracker.ietf.org/doc/html/rfc3894) | `copy` | `:copy` pada `fileinto` dan `redirect`. |
-| [RFC 5293](https://datatracker.ietf.org/doc/html/rfc5293) | `editheader` | Perubahan header sebelum penyimpanan, kecuali field autentikasi dan routing pengiriman yang dilindungi. |
+| [RFC 5293](https://datatracker.ietf.org/doc/html/rfc5293) | `editheader` | Perubahan header sebelum penyimpanan, terlihat oleh tes berikutnya, kecuali field autentikasi dan routing pengiriman yang dilindungi, `Received`, dan `Auto-Submitted`. |
 | [RFC 5260](https://datatracker.ietf.org/doc/html/rfc5260) | `date`, `index` | Tes `currentdate` dan tanggal header, serta `:index` dan `:last`. |
-| [RFC 5435](https://datatracker.ietf.org/doc/html/rfc5435) | `enotify` | Notifikasi `mailto:` dengan pembatasan tingkat. Deklarasi warisan `require "notify"` diterima sebagai alias, tetapi `enotify` yang diiklankan. |
+| [RFC 5435](https://datatracker.ietf.org/doc/html/rfc5435) | `enotify` | Notifikasi `mailto:` dengan pembatasan tingkat, tidak pernah untuk pesan otomatis. Deklarasi warisan `require "notify"` diterima sebagai alias, tetapi `enotify` yang diiklankan. |
 | [RFC 5183](https://datatracker.ietf.org/doc/html/rfc5183) | `environment` | Nilai environment sesi yang didukung. |
-| [RFC 5490](https://datatracker.ietf.org/doc/html/rfc5490) | `mailbox` | `fileinto :create` saja. Query `mailboxexists` langsung tidak didukung. |
-| [RFC 8579](https://datatracker.ietf.org/doc/html/rfc8579) | `special-use` | Pemetaaan folder-standar `:specialuse` dan pemeriksaan `specialuse_exists` yang deterministik. |
+| [RFC 5490](https://datatracker.ietf.org/doc/html/rfc5490) | `mailbox` | `fileinto :create` dan `mailboxexists`, yang memeriksa folder milik alias. |
+| [RFC 8579](https://datatracker.ietf.org/doc/html/rfc8579) | `special-use` | `fileinto :specialuse` menyimpan ke folder dengan penggunaan khusus tersebut, dan `specialuse_exists` memeriksa folder milik alias. |
 | [RFC 7352](https://datatracker.ietf.org/doc/html/rfc7352) | `duplicate` | Deteksi pengiriman duplikat berbasis Redis. |
-| [RFC 5463](https://datatracker.ietf.org/doc/html/rfc5463) | `ihave` | Memeriksa apakah sebuah kemampuan yang diiklankan tersedia. |
+| [RFC 5463](https://datatracker.ietf.org/doc/html/rfc5463) | `ihave` | Memeriksa apakah sebuah kemampuan yang diiklankan tersedia, serta perintah `error`. |
 | [RFC 5233](https://datatracker.ietf.org/doc/html/rfc5233) | `subaddress` | Bagian alamat `:user` dan `:detail`. |
 | [draft-ietf-sieve-regex](https://datatracker.ietf.org/doc/html/draft-ietf-sieve-regex) | `regex` | Pencocokan ekspresi reguler menggunakan [RE2](https://github.com/uhop/node-re2). |
-| [RFC 5703](https://datatracker.ietf.org/doc/html/rfc5703) | `mime` | Tes MIME dan `foreverypart`, `break`, `extracttext`, dan `replace`. `enclose` ditolak karena tidak memiliki implementasi pengiriman yang aman. |
+| [RFC 5703](https://datatracker.ietf.org/doc/html/rfc5703) | `foreverypart`, `extracttext`, `replace`, `mime` | Tes MIME dan `foreverypart`, `break`, `extracttext`, dan `replace`. `mime` juga mengaktifkan perintah-perintah ini, sebagaimana diharapkan skrip lama. `enclose` ditolak karena tidak memiliki implementasi pengiriman yang aman. |
 
 #### Ekstensi Sieve yang didukung {#supported-sieve-extensions}
 
 | Extension | Behavior | Delivery or enforcement |
 | --- | --- | --- |
-| `fileinto` | Menempatkan pesan ke folder. | Disimpan di folder IMAP yang dipilih. `fileinto :create` membutuhkan `mailbox`. |
+| `fileinto` | Menempatkan pesan ke folder. | Disimpan di folder IMAP yang dipilih. `fileinto :create` dan `mailboxexists` membutuhkan `mailbox`. |
 | `copy` | Menjaga pengiriman asli sambil menambah `fileinto` atau `redirect`. | Diterapkan oleh pipeline pengiriman. |
-| `redirect` | Mengirim salinan atau pengiriman pengganti ke penerima lain. | Dimasukkan ke antrian melalui jalur keluar normal, tunduk pada kebijakan domain, pemeriksaan denylist, dan pembatasan kecepatan. |
+| `redirect` | Mengirim pesan ke penerima lain. | Dimasukkan ke antrian melalui jalur keluar normal untuk pesan dengan From berupa alias, pada domain dengan SMTP keluar, tunduk pada kebijakan domain, pemeriksaan denylist, dan pembatasan kecepatan. Pesan lainnya disimpan di kotak masuk. |
 | `reject` / `ereject` | Menolak pesan dengan error SMTP. | Dikembalikan melalui jalur pengiriman MX. |
 | `vacation` / `vacation-seconds` | Mengirim balasan otomatis. | Dimasukkan ke antrian dengan pembatasan tingkat berdasarkan penerima dan interval. |
 | `imap4flags` | Mengatur atau menguji flag IMAP. | Diterapkan saat pesan disimpan. |
-| `envelope`, `body`, `date`, `index`, `regex`, `subaddress`, `relational` | Menguji data pesan dan envelope. | Dievaluasi oleh mesin Sieve. |
+| `envelope`, `body`, `date`, `index`, `regex`, `subaddress`, `relational`, `comparator-i;ascii-numeric` | Menguji data pesan dan envelope. | Dievaluasi oleh mesin Sieve. |
 | `variables`, `duplicate`, `ihave` | Menyimpan nilai, mendeteksi duplikat, dan memeriksa kemampuan. | Variabel bersifat lokal terhadap skrip; status duplikat menggunakan Redis. |
-| `editheader` | Menambah atau menghapus header yang tidak dilindungi. | Header autentikasi dan routing pengiriman tidak dapat diubah. |
+| `editheader` | Menambah atau menghapus header yang tidak dilindungi. | Header autentikasi dan routing pengiriman, `Received`, dan `Auto-Submitted` tidak dapat diubah. |
 | `enotify` | Mengirim notifikasi menggunakan `mailto:`. | Dimasukkan ke antrian dengan pembatasan tingkat notifikasi. |
 | `environment` | Membaca data environment sesi yang didukung. | Dievaluasi oleh mesin Sieve. |
-| `special-use` | Menangani folder penggunaan-standar. | Memetakan folder standar dan memberikan hasil `specialuse_exists` yang deterministik. |
-| `mime` | Memeriksa dan mengubah bagian MIME yang didukung. | Memerlukan kemampuan generik `mime`. Perintah RFC 5703 individu tidak diiklankan secara terpisah. |
+| `special-use` | Menangani folder penggunaan-standar. | Menyimpan ke dan memeriksa folder penggunaan khusus milik alias. |
+| `foreverypart`, `extracttext`, `replace`, `mime` | Memeriksa dan mengubah bagian MIME yang didukung. | Dievaluasi oleh mesin Sieve. `mime` juga mengaktifkan ketiga perintah tersebut, sebagaimana diharapkan skrip lama. |
 
 #### Fitur Sieve yang tidak didukung {#sieve-extensions-not-supported}
 
@@ -1156,11 +1156,9 @@ Fitur-fitur ini ditolak sebelum persistensi, aktivasi, penerimaan ManageSieve, a
 | Feature | RFC or specification | Reason |
 | --- | --- | --- |
 | `enclose` | [RFC 5703](https://datatracker.ietf.org/doc/html/rfc5703) | Membuat pesan baru yang menyertakan pesan asli tidak diimplementasikan dengan aman end-to-end. |
-| `mailboxexists` | [RFC 5490](https://datatracker.ietf.org/doc/html/rfc5490) | Query status kotak surat IMAP secara langsung tidak tersedia. |
 | `include` | [RFC 6609](https://datatracker.ietf.org/doc/html/rfc6609) | Penyimpanan skrip global dan yang di-include tidak tersedia. |
 | `mboxmetadata` / `servermetadata` | [RFC 5490](https://datatracker.ietf.org/doc/html/rfc5490) | Integrasi IMAP METADATA tidak tersedia. |
 | `fcc` | [RFC 8580](https://datatracker.ietf.org/doc/html/rfc8580) | Integrasi pengarsipan email terkirim tidak tersedia. |
-| `encoded-character` | [RFC 5228](https://datatracker.ietf.org/doc/html/rfc5228) | Sintaks `${hex:...}` tidak diimplementasikan. |
 | External lists | [RFC 6134](https://datatracker.ietf.org/doc/html/rfc6134) | Operasi `valid_ext_list` dan operasi daftar-eksternal lainnya tidak tersedia. |
 
 #### Alur pemrosesan Sieve {#sieve-processing-flow}
@@ -1197,7 +1195,7 @@ sequenceDiagram
 
 #### Fitur keamanan {#security-features}
 
-Forward Email memvalidasi keseluruhan skrip sebelum disimpan, diaktifkan, atau dieksekusi. Ia menolak kemampuan yang tidak dideklarasikan atau tidak tersedia, membatasi ukuran skrip dan iterasi bagian MIME, menggunakan [RE2](https://github.com/uhop/node-re2) untuk pencocokan ekspresi reguler, membatasi laju untuk redirect, balasan `vacation`, dan notifikasi, menolak tujuan redirect yang tidak aman, dan mencegah `editheader` mengubah header autentikasi atau routing pengiriman. Status pembatasan laju untuk redirect dan `vacation` disimpan di [Redis](https://github.com/redis/redis), sedangkan email yang dikirim disimpan dengan [SQLite](https://github.com/sqlite/sqlite).
+Forward Email memvalidasi keseluruhan skrip sebelum disimpan, diaktifkan, atau dieksekusi. Ia menolak kemampuan yang tidak dideklarasikan atau tidak tersedia, membatasi ukuran skrip dan iterasi bagian MIME, menggunakan [RE2](https://github.com/uhop/node-re2) untuk pencocokan ekspresi reguler, membatasi laju untuk redirect, balasan `vacation`, dan notifikasi, menolak tujuan redirect yang tidak aman, dan mencegah `editheader` mengubah header autentikasi atau routing pengiriman, `Received`, atau `Auto-Submitted`. Skrip yang berjalan terlalu lama atau membuat terlalu banyak tindakan, flag, atau variabel akan dihentikan, dan pesan tetap disimpan. Status pembatasan laju untuk redirect dan `vacation` disimpan di [Redis](https://github.com/redis/redis), sedangkan email yang dikirim disimpan dengan [SQLite](https://github.com/sqlite/sqlite).
 
 #### Contoh skrip Sieve {#example-sieve-scripts}
 
@@ -1233,8 +1231,6 @@ if header :contains "X-Spam-Status" "Yes" {
 **Alihkan faktur:**
 
 ```sieve
-require ["redirect"];
-
 if header :contains "Subject" "invoice" {
     redirect "recipient@example.com";
 }
@@ -1260,7 +1256,7 @@ Forward Email menyediakan dukungan penuh protokol ManageSieve untuk mengelola sk
 | **Server**              | `imap.forwardemail.net` |
 | **Port (STARTTLS)**     | `2190` (direkomendasikan) |
 | **Port (Implicit TLS)** | `4190`                  |
-| **Autentikasi**         | PLAIN (melalui TLS)     |
+| **Autentikasi**         | PLAIN dan LOGIN (melalui TLS) |
 
 > **Catatan:** Port 2190 menggunakan STARTTLS (upgrade dari plain ke TLS) dan kompatibel dengan sebagian besar klien ManageSieve termasuk [sieve-connect](https://github.com/philpennock/sieve-connect). Port 4190 menggunakan TLS implisit (TLS sejak awal koneksi) untuk klien yang mendukungnya.
 
@@ -1268,7 +1264,8 @@ Forward Email menyediakan dukungan penuh protokol ManageSieve untuk mengelola sk
 
 | Perintah       | Deskripsi                              |
 | -------------- | ------------------------------------ |
-| `AUTHENTICATE` | Autentikasi menggunakan mekanisme PLAIN |
+| `AUTHENTICATE` | Autentikasi menggunakan mekanisme PLAIN atau LOGIN |
+| `STARTTLS`     | Meningkatkan koneksi ke TLS pada port 2190         |
 | `CAPABILITY`   | Daftar kemampuan dan ekstensi server |
 | `HAVESPACE`    | Periksa apakah skrip dapat disimpan   |
 | `PUTSCRIPT`    | Unggah skrip baru                     |

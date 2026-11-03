@@ -11,6 +11,8 @@ Dette afsnit dokumenterer CI/CD-arbejdsgangen for ForwardEmails selvhostede løs
 * [Implementeringsproces](#deployment-process)
   * [Installation](#installation)
   * [Docker Compose-konfiguration](#docker-compose-configuration)
+  * [Levering til domæner på samme server](#delivery-to-domains-hosted-on-the-same-server)
+  * [Afslutning af sessioner, når adgangen hos Google eller GitHub tilbagekaldes](#ending-sessions-when-google-or-github-access-is-revoked)
 * [Vedligeholdelsesfunktioner](#maintenance-features)
   * [Automatiske opdateringer](#automatic-updates)
   * [Sikkerhedskopiering og gendannelse](#backup-and-restore)
@@ -122,6 +124,30 @@ Dette script:
 * **SQLite**: Database til lagring af e-mails
 
 Hver tjeneste bruger det samme Docker-billede, men med forskellige indgangspunkter, hvilket muliggør en modulær arkitektur og forenkler vedligeholdelsen.
+
+### Levering til domæner på samme server {#delivery-to-domains-hosted-on-the-same-server}
+
+Udgående e-mail leveres ikke til en MX-server på en adresse, der tilhører serveren selv. Når én server hoster flere domæner, og deres MX-poster peger på dens offentlige adresse, afvises e-mail fra ét af disse domæner til et andet.
+
+For at tillade det skal du angive:
+
+```env
+SMTP_ALLOW_LOCAL_MX=true
+```
+
+Standardværdien er `false`, og indstillingen gælder kun, når `SELF_HOSTED=true`. E-mail leveres stadig aldrig til loopback-, private, link-local- eller carrier-grade NAT-adresser.
+
+### Afslutning af sessioner, når adgangen hos Google eller GitHub tilbagekaldes {#ending-sessions-when-google-or-github-access-is-revoked}
+
+På en selvhostet installation kontrolleres sessioner, der er logget ind med Google eller GitHub, som standard ikke hos udbyderen: Tilbagekaldes denne applikations adgang dér, logges de ikke ud, og de forbliver logget ind, indtil de udløber.
+
+For at afslutte dem, så snart adgangen er tilbagekaldt, skal du angive:
+
+```env
+AUTH_OAUTH_REVOCATION_CHECK=true
+```
+
+Udbyderen spørges derefter i baggrunden, cirka hvert 5. minut (hvert minut, så længe den ikke svarer). Et nedbrud hos udbyderen logger ingen ud, og det gør et token heller ikke, som udbyderen aldrig har godkendt.
 
 ## Vedligeholdelsesfunktioner {#maintenance-features}
 

@@ -179,6 +179,48 @@ function askToConfirmPlanChange(ctx, redirectTo) {
   }
 }
 
+//
+// A checkout (Stripe session, PayPal order or subscription) is only credited
+// when it is new. The link back from checkout carries its id, and it could be
+// opened again any time later: after the plan had changed since (e.g. to
+// Enhanced Protection, with the remaining time converted), it moved the plan
+// start back to that checkout's payment, counted that payment again, and the
+// conversion credit was given again, so each round about doubled the time.
+//
+// A payment recorded for the checkout before this request, with the plan
+// changed after that payment, is such a replay; the webhook that recorded
+// it first (the usual race) started the plan at that payment instead.
+//
+async function isReplayedCheckout(ctx, conditions, originalPlanSetAt) {
+  const $or = conditions
+    .filter(Boolean)
+    .map((condition) => ({ user: ctx.state.user._id, ...condition }));
+  if ($or.length === 0 || Number.isNaN(originalPlanSetAt.getTime()))
+    return false;
+  const payment = await Payments.findOne({ $or })
+    .sort({ invoice_at: 1 })
+    .select('invoice_at')
+    .lean();
+  return Boolean(
+    payment &&
+      new Date(payment.invoice_at).getTime() < originalPlanSetAt.getTime()
+  );
+}
+
+function leaveReplayedCheckout(ctx, redirectTo) {
+  ctx.logger.warn('checkout opened again after the plan changed', {
+    user: ctx.state.user.id,
+    query: _.pick(ctx.query, [
+      'plan',
+      'session_id',
+      'paypal_order_id',
+      'paypal_subscription_id'
+    ])
+  });
+  if (ctx.accepts('html')) ctx.redirect(redirectTo);
+  else ctx.body = { redirectTo };
+}
+
 async function retrieveDomainBilling(ctx) {
   const isAccountUpgrade =
     ctx.pathWithoutLocale === '/my-account/billing/upgrade';
@@ -612,6 +654,28 @@ async function retrieveDomainBilling(ctx) {
         const err = ctx.translateError('ASYNC_PAYMENT');
         err.is_success = true;
         throw err;
+      }
+
+      if (
+        await isReplayedCheckout(
+          ctx,
+          [
+            { stripe_session_id: session.id },
+            isSANB(session.payment_intent) && {
+              stripe_payment_intent_id: session.payment_intent
+            },
+            isSANB(session.subscription) && {
+              [config.userFields.stripeSubscriptionID]: session.subscription
+            },
+            isSANB(session.client_reference_id) && {
+              reference: session.client_reference_id
+            }
+          ],
+          originalPlanSetAt
+        )
+      ) {
+        leaveReplayedCheckout(ctx, redirectTo);
+        return;
       }
 
       // if they upgraded their plan then store it on the user object
@@ -1128,6 +1192,17 @@ async function retrieveDomainBilling(ctx) {
       if (body.purchase_units[0].reference_id !== ctx.state.user.id)
         throw ctx.translateError('UNKNOWN_ERROR');
 
+      if (
+        await isReplayedCheckout(
+          ctx,
+          [{ paypal_order_id: body.id }],
+          originalPlanSetAt
+        )
+      ) {
+        leaveReplayedCheckout(ctx, redirectTo);
+        return;
+      }
+
       // store customer
       ctx.state.user[config.userFields.paypalPayerID] = body.payer.payer_id;
 
@@ -1384,6 +1459,17 @@ ${encode(safeStringify(parseErr(err), null, 2))}</code></pre>`
       // (older ones have none), so one created by another account is refused
       if (isSANB(body.custom_id) && body.custom_id !== ctx.state.user.id)
         throw ctx.translateError('UNKNOWN_ERROR');
+
+      if (
+        await isReplayedCheckout(
+          ctx,
+          [{ [config.userFields.paypalSubscriptionID]: body.id }],
+          originalPlanSetAt
+        )
+      ) {
+        leaveReplayedCheckout(ctx, redirectTo);
+        return;
+      }
 
       // a subscription can only ever be credited to one account
       if (
@@ -2138,4 +2224,100 @@ ${encode(safeStringify(parseErr(err), null, 2))}</code></pre>`
   }
 }
 
-module.exports = retrieveDomainBilling;
+//
+// One plan change of a user at a time. Requests sent together (a double
+// click, or a script) each loaded the plan as it was before, so each one
+// gave the conversion credit for the remaining time; the credits added up.
+// A request that waited for another one, and finds the plan changed since
+// it was loaded, goes on with the user as it is now.
+//
+const PLAN_CHANGE_LOCK_MS = ms('2m');
+// (shorter than the request timeout, so a request that waited does not
+// change the plan after the user was shown a timeout)
+const PLAN_CHANGE_WAIT_MS = ms('15s');
+// (deletes the lock only when it is still the one this request took)
+const RELEASE_LOCK = `if redis.call("get", KEYS[1]) == ARGV[1] then return redis.call("del", KEYS[1]) end return 0`;
+
+function isPlanChange(ctx) {
+  return (
+    isSANB(ctx.query.session_id) ||
+    isSANB(ctx.query.paypal_order_id) ||
+    isSANB(ctx.query.paypal_subscription_id) ||
+    (isSANB(ctx.query.plan) && ctx.query.plan !== ctx.state.user.plan)
+  );
+}
+
+function getPlanSetAt(user) {
+  const value = user[config.userFields.planSetAt];
+  // (the schema default, which a lean read leaves out)
+  return _.isDate(value) || isSANB(value)
+    ? new Date(value).getTime()
+    : user._id.getTimestamp().getTime();
+}
+
+async function retrieveDomainBillingOnePlanChange(ctx) {
+  if (!ctx.client || !ctx.state.user || !isPlanChange(ctx))
+    return retrieveDomainBilling(ctx);
+
+  const key = `plan_change_lock:${ctx.state.user.id}`;
+  const token = `${Date.now()}:${Math.random()}`;
+  let locked = false;
+  try {
+    await pWaitFor(
+      async () => {
+        try {
+          locked = Boolean(
+            await ctx.client.set(key, token, 'PX', PLAN_CHANGE_LOCK_MS, 'NX')
+          );
+          return locked;
+        } catch (err) {
+          // (without Redis the payment a user returns with is still applied)
+          ctx.logger.fatal(err);
+          return true;
+        }
+      },
+      { interval: 250, timeout: PLAN_CHANGE_WAIT_MS }
+    );
+  } catch {
+    // (another plan change of the user is still being made: Billing shows
+    // it once it is done, as a page opened again would)
+    const redirectTo = ctx.state.l('/my-account/billing');
+    if (ctx.accepts('html')) ctx.redirect(redirectTo);
+    else ctx.body = { redirectTo };
+    return;
+  }
+
+  try {
+    if (locked) {
+      const fresh = await Users.findById(ctx.state.user._id)
+        .select(`_id plan ${config.userFields.planSetAt}`)
+        .lean();
+      //
+      // (the plan changed since the user was loaded, by another request or
+      // a payment webhook: the request goes on with the user as it is now,
+      // the same as when it was opened after that change, so it does not
+      // convert the time the other change already converted)
+      //
+      if (
+        fresh &&
+        (fresh.plan !== ctx.state.user.plan ||
+          getPlanSetAt(fresh) !== getPlanSetAt(ctx.state.user))
+      ) {
+        const user = await Users.findOne({ id: ctx.state.user.id });
+        if (user) ctx.state.user = user;
+      }
+    }
+
+    return await retrieveDomainBilling(ctx);
+  } finally {
+    if (locked) {
+      try {
+        await ctx.client.eval(RELEASE_LOCK, 1, key, token);
+      } catch (err) {
+        ctx.logger.fatal(err);
+      }
+    }
+  }
+}
+
+module.exports = retrieveDomainBillingOnePlanChange;

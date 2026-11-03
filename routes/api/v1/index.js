@@ -14,8 +14,10 @@ const { boolean } = require('boolean');
 const _ = require('#helpers/lodash');
 const api = require('#controllers/api');
 const config = require('#config');
+const env = require('#config/env');
 const createMultipart = require('#helpers/multipart');
 const ensureApiTokenOrAliasAuth = require('#helpers/ensure-api-token-or-alias-auth');
+const isAmbientBrowserCredential = require('#helpers/is-ambient-browser-credential');
 const policies = require('#helpers/policies');
 const rateLimit = require('#helpers/rate-limit');
 const web = require('#controllers/web');
@@ -59,12 +61,31 @@ const fileUpload = createMultipart(
     //   cb(null, true);
     // }
   },
-  // the route below maps multer's error codes to its own messages
-  { rawErrors: true }
+  {
+    // the route below maps multer's error codes to its own messages
+    rawErrors: true,
+    // a message is at most SMTP_MESSAGE_MAX_SIZE (50 MB by default), and
+    // attachments sent as base64 field values are a third larger than that
+    maxTotalBytes: Math.max(
+      bytes('100MB'),
+      2 * bytes(env.SMTP_MESSAGE_MAX_SIZE)
+    )
+  }
 );
 
 const router = new Router({
   prefix: '/v1'
+});
+
+//
+// Refuse an Authorization header that a browser sent on its own for another
+// site's page (Basic credentials it remembered from its login prompt), so a
+// page elsewhere cannot submit a form to the API as the signed-in alias.
+//
+router.use((ctx, next) => {
+  if (isAmbientBrowserCredential(ctx.headers))
+    throw Boom.forbidden(ctx.translateError('INVALID_API_CREDENTIALS'));
+  return next();
 });
 
 // (a login with an alias password, or a domain-wide catch-all password,
@@ -698,8 +719,21 @@ router
 
 // push tokens (APNs, FCM, UnifiedPush, Web Push)
 // Supports both alias auth and API token auth via ensureApiTokenOrAliasAuth
+// (an API token user must have a verified email and not be banned, the same
+// as on every other route that takes an API token)
 router
-  .use('/push-tokens', ensureApiTokenOrAliasAuth)
+  .use(
+    '/push-tokens',
+    ensureApiTokenOrAliasAuth,
+    async (ctx, next) => {
+      if (ctx.state?.session?.db) return next();
+      await policies.checkVerifiedEmail(ctx, next);
+    },
+    async (ctx, next) => {
+      if (ctx.state?.session?.db) return next();
+      await web.myAccount.ensureNotBanned(ctx, next);
+    }
+  )
   .get('/push-tokens', api.v1.pushTokens.list)
   .post('/push-tokens', api.v1.pushTokens.create)
   .delete('/push-tokens', api.v1.pushTokens.removeAll)

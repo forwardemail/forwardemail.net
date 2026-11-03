@@ -31,6 +31,9 @@ const {
 const DMARC_RATE_LIMIT_PER_DOMAIN_PER_DAY = 100; // Max 100 reports per domain per day
 const DMARC_RATE_LIMIT_PER_SENDER_PER_HOUR = 50; // Max 50 reports per sender IP per hour
 
+// Max attachments of one message tried as a report (see below)
+const MAX_ATTACHMENT_ATTEMPTS = 3;
+
 /**
  * Check if sender is a truth source (trusted sender)
  * @param {string} fromDomain - The domain from the From header or envelope
@@ -270,8 +273,22 @@ async function processDmarcReport(session, raw, resolver, client) {
     }
 
     // Try to parse DMARC report from attachments
+    //
+    // NOTE: a report is sent as a single attachment (RFC 7489 section
+    //       7.2.1.1), but each attempt can decompress and parse a few MB
+    //       of XML, so only the first few are tried (otherwise one message
+    //       with thousands of small compressed attachments that each fail
+    //       to parse held the event loop for hours)
+    //       (an image, such as an inline logo, is never the report, so
+    //       it does not use up one of them)
     let dmarcReport = null;
-    for (const attachment of parsed.attachments) {
+    const candidates = parsed.attachments.filter(
+      (attachment) =>
+        !String(attachment.contentType || '')
+          .toLowerCase()
+          .startsWith('image/')
+    );
+    for (const attachment of candidates.slice(0, MAX_ATTACHMENT_ATTEMPTS)) {
       dmarcReport = await parseDmarcReport(attachment);
       if (dmarcReport) break;
     }

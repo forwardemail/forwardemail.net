@@ -2894,24 +2894,22 @@ RSA証明書とECC（楕円曲線暗号）証明書の両方をサポートし�
 | カテゴリ | 機能と動作 |
 | --- | --- |
 | コア言語 | `keep`, `discard`, `stop`, 条件ブロック、および基本的な `address`, `header`, `exists`, `size`、およびブールテスト。 |
-| 配信 | `fileinto`, `copy`, `redirect`, `mailbox`（`fileinto :create` 用）、および標準フォルダの `:specialuse` マッピングと `specialuse_exists` のための `special-use`。 |
-| テストと比較 | `envelope`, `body`, `date`, `index`, `regex`, `subaddress`, `relational`, `i;ascii-casemap`, および `i;octet`。 |
-| 状態と変数 | `variables`, `imap4flags`, `duplicate`, および `ihave`。 |
+| 配信 | `fileinto`, `copy`, `redirect`, `mailbox`（`fileinto :create` と `mailboxexists` 用）、および `special-use`（`fileinto :specialuse` と `specialuse_exists` 用）。 |
+| テストと比較 | `envelope`, `body`, `date`, `index`, `regex`, `subaddress`, `relational`, `i;ascii-casemap`, `i;octet`, および `i;ascii-numeric`。 |
+| 状態と変数 | `variables`, `encoded-character`, `imap4flags`, `duplicate`, および `ihave`。 |
 | アクションと応答 | `reject`, `ereject`, `vacation`, `vacation-seconds`, および `enotify`（`mailto:` を使用）。レガシーな宣言 `require "notify"` は `enotify` の入力エイリアスとして受け入れられますが、公開されている capability は `enotify` です。 |
-| メッセージ処理 | `editheader`, `environment`, および `mime`（`foreverypart`, `break`, `extracttext`, `replace` を含む）。 |
+| メッセージ処理 | `editheader`, `environment`, `foreverypart`（`break` を含む）, `extracttext`, `replace`, および `mime`（これら 3 つのコマンドも有効にします）。 |
 
-`redirect` は通常の送信キューを通じて配信されます。これは構成されたリダイレクトドメインポリシー、denylist チェック、およびレート制限の対象となります。`editheader` は保護された認証ヘッダーや配信ルーティングヘッダーを変更できません。
+`redirect` は `require` を必要としません。通常の送信キューを通じて送られ、このキューは From がエイリアスで、送信 SMTP が有効なドメインのメッセージのみを受け付けます。それ以外のメッセージは受信トレイに保持されます。リダイレクトは構成されたリダイレクトドメインポリシー、denylist チェック、およびレート制限の対象となります。`editheader` は保護された認証ヘッダーや配信ルーティングヘッダー、`Received`、`Auto-Submitted` を変更できません。
 
 #### サポートされていない機能
 
 | 機能 | 理由 |
 | --- | --- |
 | `enclose` | 元のメッセージを包む新しいメッセージを作成する機能は実装されていません。 |
-| `mailboxexists` | Forward Email はライブの IMAP メールボックス状態クエリを行いません。`fileinto :create` は `mailbox` を通じて引き続き利用可能です。 |
 | `include` | グローバルおよび include されたスクリプトの保存は利用できません。 |
 | `mboxmetadata` / `servermetadata` | IMAP METADATA 統合は利用できません。 |
 | `fcc` | 送信メールのファイリング統合は利用できません。 |
-| `encoded-character` | `${hex:...}` 構文は実装されていません。 |
 | External lists | `valid_ext_list` およびその他の外部リスト操作は利用できません。 |
 
 #### Sieve スクリプトの例
@@ -2948,8 +2946,6 @@ if address :is "from" "boss@example.com" {
 **メッセージをリダイレクトする:**
 
 ```sieve
-require ["redirect"];
-
 if header :contains "Subject" "invoice" {
     redirect "recipient@example.com";
 }

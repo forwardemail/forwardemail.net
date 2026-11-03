@@ -54,6 +54,49 @@ const SINGLE_KEYS = new Set([
 //
 const UNREPEATED_KEYS = new Set(['bcc']);
 
+// remove trailing CR and LF characters (linear, see `parseHeaders`)
+function trimLineBreaks(str) {
+  let end = str.length;
+  while (end > 0) {
+    const code = str.codePointAt(end - 1);
+    if (code !== 0x0d && code !== 0x0a) break;
+    end--;
+  }
+
+  return end === str.length ? str : str.slice(0, end);
+}
+
+function splitLines(str) {
+  return str.split(/\r?\n/);
+}
+
+//
+// join folded lines onto the header line they continue, and drop a leading
+// mbox "From " or HTTP "POST " line, the same as mailsplit does
+// <https://github.com/andris9/mailsplit/blob/37b0d216d84bae0b2efacd65a3c2d89d8452b323/lib/headers.js#L190-L231>
+// (walking forward instead of splicing, so it stays linear)
+//
+function unfoldLines(rawLines) {
+  const lines = [];
+  for (const [i, raw] of rawLines.entries()) {
+    const chr = raw.charAt(0);
+    if (i && (chr === ' ' || chr === '\t') && lines.length > 0) {
+      lines[lines.length - 1].push(raw);
+    } else {
+      lines.push([raw]);
+    }
+  }
+
+  const result = [];
+  for (const [i, parts] of lines.entries()) {
+    const line = parts.join('\r\n');
+    if (!i && (/^from /i.test(line) || /^post /i.test(line))) continue;
+    result.push({ line });
+  }
+
+  return result;
+}
+
 function parseHeaders(headers, specificKey, repeated) {
   const _headers = {};
 
@@ -71,35 +114,17 @@ function parseHeaders(headers, specificKey, repeated) {
   //
   // <https://github.com/andris9/mailsplit/blob/37b0d216d84bae0b2efacd65a3c2d89d8452b323/lib/headers.js#L190-L231>
   // NOTE: we don't want toString('binary') like above mailsplit code has otherwise we lose unicode chars
-  const lines = headers.headers
-    .toString()
-    .replace(/[\r\n]+$/, '')
-    .split(/\r?\n/);
-
-  for (let i = lines.length - 1; i >= 0; i--) {
-    const chr = lines[i].charAt(0);
-    if (i && (chr === ' ' || chr === '\t')) {
-      lines[i - 1] += '\r\n' + lines[i];
-      lines.splice(i, 1);
-    } else {
-      const line = lines[i];
-      if (!i && /^from /i.test(line)) {
-        lines.splice(i, 1);
-        continue;
-      } else if (!i && /^post /i.test(line)) {
-        lines.splice(i, 1);
-        continue;
-      }
-
-      const key = headers._normalizeHeader(
-        line.slice(0, Math.max(0, line.indexOf(':')))
-      );
-      lines[i] = {
-        key,
-        line
-      };
-    }
-  }
+  //
+  // NOTE: both steps below must stay linear in the size of the header block,
+  //       since it comes from whoever sent the message (and is only bounded by
+  //       the message size): a `/[\r\n]+$/` trim backtracks quadratically on
+  //       a long run of bare CR characters, and unfolding with `lines.splice()`
+  //       is quadratic in the number of folded lines (a few hundred KB of
+  //       either held the event loop for over a minute)
+  //
+  const lines = unfoldLines(
+    splitLines(trimLineBreaks(headers.headers.toString()))
+  );
 
   for (const { line } of lines) {
     const index = line.indexOf(':');

@@ -1109,45 +1109,45 @@ Tabulka rozlišuje úplnou implementaci uvedeného chování od úmyslně omezen
 
 | RFC or specification | Capability | Supported behavior |
 | --- | --- | --- |
-| [RFC 5228](https://datatracker.ietf.org/doc/html/rfc5228) | Core Sieve | `keep`, `discard`, `stop`, podmíněné bloky a základní testy `address`, `header`, `exists`, `size` a booleovské testy. `fileinto` a `redirect` jsou zpracovávány prostřednictvím příchozího doručovacího potrubí. |
+| [RFC 5228](https://datatracker.ietf.org/doc/html/rfc5228) | Core Sieve, `encoded-character` | `keep`, `discard`, `stop`, podmíněné bloky a základní testy `address`, `header`, `exists`, `size` a booleovské testy. `fileinto` uloží zprávu do každé uvedené složky. `redirect` nepotřebuje `require` a odesílá se přes odchozí frontu, která přijme jen zprávu, jejíž From je alias, na doméně s odchozím SMTP; každá jiná zpráva zůstane v doručené poště. `${hex:...}` a `${unicode:...}` se dekódují, pokud je vyžadováno `encoded-character`. |
 | [RFC 5429](https://datatracker.ietf.org/doc/html/rfc5429) | `reject`, `ereject` | Odmítnutí přes SMTP s poskytnutou zprávou. |
-| [RFC 5230](https://datatracker.ietf.org/doc/html/rfc5230) | `vacation` | Automatické odpovědi (vacation) jsou zařazeny do fronty s opatřeními proti zneužití. |
+| [RFC 5230](https://datatracker.ietf.org/doc/html/rfc5230) | `vacation` | Automatické odpovědi (vacation) jsou zařazeny do fronty s opatřeními proti zneužití, nejvýše jednou na odesílatele za každé období `:days` (výchozí 7 dní). |
 | [RFC 6131](https://datatracker.ietf.org/doc/html/rfc6131) | `vacation-seconds` | Interval `:seconds` řídí TTL odpovědi dovolené. |
 | [RFC 5232](https://datatracker.ietf.org/doc/html/rfc5232) | `imap4flags` | Příznaky se aplikují při ukládání do schránky. |
 | [RFC 5173](https://datatracker.ietf.org/doc/html/rfc5173) | `body` | Porovnávání obsahu těla zprávy. |
 | [RFC 5229](https://datatracker.ietf.org/doc/html/rfc5229) | `variables` | Rozbalování proměnných a podporované modifikátory. |
 | [RFC 5231](https://datatracker.ietf.org/doc/html/rfc5231) | `relational` | Porovnávání pomocí `:count` a `:value`. |
-| [RFC 4790](https://datatracker.ietf.org/doc/html/rfc4790) | Comparators | `i;ascii-casemap` a `i;octet`. `i;ascii-numeric` není inzerován. |
+| [RFC 4790](https://datatracker.ietf.org/doc/html/rfc4790) | Comparators | `i;ascii-casemap`, `i;octet` a `i;ascii-numeric`. |
 | [RFC 3894](https://datatracker.ietf.org/doc/html/rfc3894) | `copy` | `:copy` u `fileinto` a `redirect`. |
-| [RFC 5293](https://datatracker.ietf.org/doc/html/rfc5293) | `editheader` | Změny hlaviček před uložením, s výjimkou chráněných polí pro autentizaci a směrování doručení. |
+| [RFC 5293](https://datatracker.ietf.org/doc/html/rfc5293) | `editheader` | Změny hlaviček před uložením, viditelné pro pozdější testy, s výjimkou chráněných polí pro autentizaci a směrování doručení, `Received` a `Auto-Submitted`. |
 | [RFC 5260](https://datatracker.ietf.org/doc/html/rfc5260) | `date`, `index` | Testy `currentdate` a data v hlavičkách, plus `:index` a `:last`. |
-| [RFC 5435](https://datatracker.ietf.org/doc/html/rfc5435) | `enotify` | Notifikace `mailto:` s omezením rychlosti. Zastaralé `require "notify"` je akceptováno jako alias, ale inzerováno je `enotify`. |
+| [RFC 5435](https://datatracker.ietf.org/doc/html/rfc5435) | `enotify` | Notifikace `mailto:` s omezením rychlosti, nikdy pro automatické zprávy. Zastaralé `require "notify"` je akceptováno jako alias, ale inzerováno je `enotify`. |
 | [RFC 5183](https://datatracker.ietf.org/doc/html/rfc5183) | `environment` | Podporované hodnoty prostředí relace. |
-| [RFC 5490](https://datatracker.ietf.org/doc/html/rfc5490) | `mailbox` | Pouze `fileinto :create`. Živé dotazy `mailboxexists` nejsou podporovány. |
-| [RFC 8579](https://datatracker.ietf.org/doc/html/rfc8579) | `special-use` | Mapování standardních složek `:specialuse` a deterministické kontroly `specialuse_exists`. |
+| [RFC 5490](https://datatracker.ietf.org/doc/html/rfc5490) | `mailbox` | `fileinto :create` a `mailboxexists`, který kontroluje složky aliasu. |
+| [RFC 8579](https://datatracker.ietf.org/doc/html/rfc8579) | `special-use` | `fileinto :specialuse` ukládá do složky s daným zvláštním použitím a `specialuse_exists` kontroluje složky aliasu. |
 | [RFC 7352](https://datatracker.ietf.org/doc/html/rfc7352) | `duplicate` | Detekce duplicitního doručení s využitím Redis. |
-| [RFC 5463](https://datatracker.ietf.org/doc/html/rfc5463) | `ihave` | Kontroluje, zda je inzerovaná schopnost dostupná. |
+| [RFC 5463](https://datatracker.ietf.org/doc/html/rfc5463) | `ihave` | Kontroluje, zda je inzerovaná schopnost dostupná, a podporuje příkaz `error`. |
 | [RFC 5233](https://datatracker.ietf.org/doc/html/rfc5233) | `subaddress` | Části adresy `:user` a `:detail`. |
 | [draft-ietf-sieve-regex](https://datatracker.ietf.org/doc/html/draft-ietf-sieve-regex) | `regex` | Porovnávání regulárních výrazů s použitím [RE2](https://github.com/uhop/node-re2). |
-| [RFC 5703](https://datatracker.ietf.org/doc/html/rfc5703) | `mime` | MIME testy a `foreverypart`, `break`, `extracttext` a `replace`. `enclose` je odmítnuto, protože nemá bezpečnou implementaci doručení. |
+| [RFC 5703](https://datatracker.ietf.org/doc/html/rfc5703) | `foreverypart`, `extracttext`, `replace`, `mime` | MIME testy a `foreverypart`, `break`, `extracttext` a `replace`. `mime` tyto příkazy také povoluje, jak očekávají starší skripty. `enclose` je odmítnuto, protože nemá bezpečnou implementaci doručení. |
 
 #### Supported Sieve extensions {#supported-sieve-extensions}
 
 | Extension | Behavior | Delivery or enforcement |
 | --- | --- | --- |
-| `fileinto` | Uloží zprávu do složky. | Uloženo do vybrané IMAP složky. `fileinto :create` vyžaduje `mailbox`. |
+| `fileinto` | Uloží zprávu do složky. | Uloženo do vybrané IMAP složky. `fileinto :create` a `mailboxexists` vyžadují `mailbox`. |
 | `copy` | Ponechá původní doručení a zároveň přidá `fileinto` nebo `redirect`. | Aplikováno doručovacím procesem. |
-| `redirect` | Odesílá kopii nebo nahrazené doručení jinému příjemci. | Zařazeno do fronty běžnou odchozí cestou, podléhá politice domény, kontrolám denylistu a omezením rychlosti. |
+| `redirect` | Odešle zprávu jinému příjemci. | Zařazeno do fronty běžnou odchozí cestou pro zprávu, jejíž From je alias, na doméně s odchozím SMTP; podléhá politice domény, kontrolám denylistu a omezením rychlosti. Každá jiná zpráva zůstane v doručené poště. |
 | `reject` / `ereject` | Odmítne zprávu s chybou SMTP. | Vráceno přes MX doručovací cestu. |
 | `vacation` / `vacation-seconds` | Odesílá automatickou odpověď. | Zařazeno do fronty s omezením počtu odpovědí podle příjemce a intervalu. |
 | `imap4flags` | Nastavuje nebo testuje IMAP příznaky. | Aplikováno při uložení zprávy. |
-| `envelope`, `body`, `date`, `index`, `regex`, `subaddress`, `relational` | Testuje data zprávy a obálky. | Vyhodnoceno Sieve motorem. |
+| `envelope`, `body`, `date`, `index`, `regex`, `subaddress`, `relational`, `comparator-i;ascii-numeric` | Testuje data zprávy a obálky. | Vyhodnoceno Sieve motorem. |
 | `variables`, `duplicate`, `ihave` | Ukládá hodnoty, detekuje duplicity a kontroluje schopnosti. | Proměnné jsou lokální ke skriptu; stav duplicit používá Redis. |
-| `editheader` | Přidává nebo maže nechráněné hlavičky. | Hlavičky pro autentizaci a směrování doručení nelze upravovat. |
+| `editheader` | Přidává nebo maže nechráněné hlavičky. | Hlavičky pro autentizaci a směrování doručení, `Received` a `Auto-Submitted` nelze upravovat. |
 | `enotify` | Odesílá notifikaci pomocí `mailto:`. | Zařazeno do fronty s omezením rychlosti notifikací. |
 | `environment` | Čte podporovaná data prostředí relace. | Vyhodnoceno Sieve motorem. |
-| `special-use` | Řeší standardní využití složek. | Mapuje standardní složky a poskytuje deterministické výsledky `specialuse_exists`. |
-| `mime` | Inspektuje a mění podporované MIME části. | Požaduje obecnou schopnost `mime`. Jednotlivé příkazy RFC 5703 nejsou inzerovány samostatně. |
+| `special-use` | Řeší standardní využití složek. | Ukládá do složek aliasu se zvláštním použitím a kontroluje je. |
+| `foreverypart`, `extracttext`, `replace`, `mime` | Inspektuje a mění podporované MIME části. | Vyhodnoceno Sieve motorem. `mime` také povoluje tyto tři příkazy, jak očekávají starší skripty. |
 
 #### Sieve features not supported {#sieve-extensions-not-supported}
 
@@ -1156,11 +1156,9 @@ Tyto funkce jsou odmítnuty před uložením, aktivací, přijetím ManageSieve 
 | Feature | RFC or specification | Reason |
 | --- | --- | --- |
 | `enclose` | [RFC 5703](https://datatracker.ietf.org/doc/html/rfc5703) | Vytvoření nové zprávy, která obaluje původní zprávu, není bezpečně implementováno end-to-end. |
-| `mailboxexists` | [RFC 5490](https://datatracker.ietf.org/doc/html/rfc5490) | Živé dotazy na stav IMAP schránky nejsou dostupné. |
 | `include` | [RFC 6609](https://datatracker.ietf.org/doc/html/rfc6609) | Globální a vkládané úložiště skriptů není dostupné. |
 | `mboxmetadata` / `servermetadata` | [RFC 5490](https://datatracker.ietf.org/doc/html/rfc5490) | Integrace IMAP METADATA není dostupná. |
 | `fcc` | [RFC 8580](https://datatracker.ietf.org/doc/html/rfc8580) | Integrace ukládání odeslané pošty není dostupná. |
-| `encoded-character` | [RFC 5228](https://datatracker.ietf.org/doc/html/rfc5228) | Syntax `${hex:...}` není implementována. |
 | External lists | [RFC 6134](https://datatracker.ietf.org/doc/html/rfc6134) | Operace `valid_ext_list` a další operace s externími seznamy nejsou dostupné. |
 
 #### Sieve processing flow {#sieve-processing-flow}
@@ -1197,7 +1195,7 @@ sequenceDiagram
 
 #### Security features {#security-features}
 
-Forward Email ověřuje celý skript před jeho uložením, aktivací nebo spuštěním. Odmítá neohlášené a nedostupné schopnosti, omezuje velikost skriptu a iteraci MIME částí, používá [RE2](https://github.com/uhop/node-re2) pro porovnávání regulárních výrazů, omezuje rychlost přesměrování, automatických odpovědí a notifikací, zakazuje nebezpečná cílová přesměrování a zabraňuje `editheader` měnit hlavičky pro autentizaci nebo směrování doručení. Stav omezení rychlosti pro přesměrování a automatické odpovědi je uchováván v [Redis](https://github.com/redis/redis), zatímco doručené pošty jsou ukládány pomocí [SQLite](https://github.com/sqlite/sqlite).
+Forward Email ověřuje celý skript před jeho uložením, aktivací nebo spuštěním. Odmítá neohlášené a nedostupné schopnosti, omezuje velikost skriptu a iteraci MIME částí, používá [RE2](https://github.com/uhop/node-re2) pro porovnávání regulárních výrazů, omezuje rychlost přesměrování, automatických odpovědí a notifikací, zakazuje nebezpečná cílová přesměrování a zabraňuje `editheader` měnit hlavičky pro autentizaci nebo směrování doručení, `Received` či `Auto-Submitted`. Skript, který běží příliš dlouho nebo vytvoří příliš mnoho akcí, příznaků či proměnných, je zastaven a zpráva je zachována. Stav omezení rychlosti pro přesměrování a automatické odpovědi je uchováván v [Redis](https://github.com/redis/redis), zatímco doručené pošty jsou ukládány pomocí [SQLite](https://github.com/sqlite/sqlite).
 
 #### Example Sieve scripts {#example-sieve-scripts}
 
@@ -1233,8 +1231,6 @@ if header :contains "X-Spam-Status" "Yes" {
 **Přesměrování faktur:**
 
 ```sieve
-require ["redirect"];
-
 if header :contains "Subject" "invoice" {
     redirect "recipient@example.com";
 }
@@ -1260,7 +1256,7 @@ Forward Email poskytuje plnou podporu protokolu ManageSieve pro vzdálenou sprá
 | **Server**              | `imap.forwardemail.net` |
 | **Port (STARTTLS)**     | `2190` (doporučeno)     |
 | **Port (Implicitní TLS)** | `4190`                |
-| **Autentizace**         | PLAIN (přes TLS)        |
+| **Autentizace**         | PLAIN a LOGIN (přes TLS) |
 
 > **Poznámka:** Port 2190 používá STARTTLS (přechod z plain na TLS) a je kompatibilní s většinou ManageSieve klientů včetně [sieve-connect](https://github.com/philpennock/sieve-connect). Port 4190 používá implicitní TLS (TLS od začátku spojení) pro klienty, kteří to podporují.
 
@@ -1268,7 +1264,8 @@ Forward Email poskytuje plnou podporu protokolu ManageSieve pro vzdálenou sprá
 
 | Příkaz         | Popis                                   |
 | -------------- | --------------------------------------- |
-| `AUTHENTICATE` | Autentizace pomocí mechanismu PLAIN     |
+| `AUTHENTICATE` | Autentizace pomocí mechanismu PLAIN nebo LOGIN |
+| `STARTTLS`     | Přepnutí spojení na TLS na portu 2190          |
 | `CAPABILITY`   | Výpis schopností a rozšíření serveru    |
 | `HAVESPACE`    | Kontrola, zda lze uložit skript         |
 | `PUTSCRIPT`    | Nahrání nového skriptu                   |

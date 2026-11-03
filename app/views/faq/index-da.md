@@ -2894,24 +2894,22 @@ Den komplette, implementations-understøttede kapabilitetsliste og RFC-noter fin
 | Kategori | Kapabiliteter og opførsel |
 | --- | --- |
 | Kernesprog | `keep`, `discard`, `stop`, betingede blokke, og de grundlæggende tests `address`, `header`, `exists`, `size`, og boolske tests. |
-| Levering | `fileinto`, `copy`, `redirect`, `mailbox` for `fileinto :create`, og `special-use` til standard-mappe `:specialuse` kortlægning samt `specialuse_exists`. |
-| Tests og sammenligninger | `envelope`, `body`, `date`, `index`, `regex`, `subaddress`, `relational`, `i;ascii-casemap`, og `i;octet`. |
-| Tilstand og variabler | `variables`, `imap4flags`, `duplicate`, og `ihave`. |
+| Levering | `fileinto`, `copy`, `redirect`, `mailbox` for `fileinto :create` og `mailboxexists`, og `special-use` til `fileinto :specialuse` samt `specialuse_exists`. |
+| Tests og sammenligninger | `envelope`, `body`, `date`, `index`, `regex`, `subaddress`, `relational`, `i;ascii-casemap`, `i;octet`, og `i;ascii-numeric`. |
+| Tilstand og variabler | `variables`, `encoded-character`, `imap4flags`, `duplicate`, og `ihave`. |
 | Handlinger og svar | `reject`, `ereject`, `vacation`, `vacation-seconds`, og `enotify` ved brug af `mailto:`. Den ældre deklaration `require "notify"` accepteres som et input-alias for `enotify`, men `enotify` er den annoncerede kapabilitet. |
-| Beskedbehandling | `editheader`, `environment`, og `mime`, inklusive `foreverypart`, `break`, `extracttext`, og `replace`. |
+| Beskedbehandling | `editheader`, `environment`, `foreverypart` (med `break`), `extracttext`, `replace`, og `mime`, som også aktiverer de tre kommandoer. |
 
-`redirect` leveres gennem den normale udgående kø. Den er underlagt den konfigurerede redirect-domænepolitik, denylist-kontroller og hastighedsbegrænsninger. `editheader` kan ikke ændre beskyttede autentifikations- eller leverings-routing-headere.
+`redirect` kræver ingen `require`. Den sendes gennem den normale udgående kø, som kun tager imod en meddelelse, hvis From er dit alias, på et domæne med udgående SMTP; alle andre meddelelser beholdes i din indbakke. Redirects er underlagt den konfigurerede redirect-domænepolitik, denylist-kontroller og hastighedsbegrænsninger. `editheader` kan ikke ændre beskyttede autentifikations- eller leverings-routing-headere, `Received` eller `Auto-Submitted`.
 
 #### Ikke understøttede funktioner
 
 | Funktion | Årsag |
 | --- | --- |
 | `enclose` | Oprettelse af en ny besked, der indkapsler den originale besked, er ikke implementeret. |
-| `mailboxexists` | Forward Email foretager ikke live IMAP-forespørgsler om postkasses tilstand. `fileinto :create` forbliver tilgængelig via `mailbox`. |
 | `include` | Global og inkluderet script-lagring er ikke tilgængelig. |
 | `mboxmetadata` / `servermetadata` | IMAP METADATA-integration er ikke tilgængelig. |
 | `fcc` | Integration til arkivering af sendte beskeder er ikke tilgængelig. |
-| `encoded-character` | `${hex:...}` syntaksen er ikke implementeret. |
 | Eksterne lister | `valid_ext_list` og andre operationer med eksterne lister er ikke tilgængelige. |
 
 #### Eksempel på Sieve-scripts
@@ -2948,8 +2946,6 @@ if address :is "from" "boss@example.com" {
 **Omdiriger en besked:**
 
 ```sieve
-require ["redirect"];
-
 if header :contains "Subject" "invoice" {
     redirect "recipient@example.com";
 }

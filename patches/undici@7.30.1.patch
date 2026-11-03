@@ -1,0 +1,82 @@
+diff --git a/lib/web/fetch/formdata-parser.js b/lib/web/fetch/formdata-parser.js
+index a4622ae..5442f03 100644
+--- a/lib/web/fetch/formdata-parser.js
++++ b/lib/web/fetch/formdata-parser.js
+@@ -5,6 +5,8 @@ const { HTTP_TOKEN_CODEPOINTS } = require('./data-url')
+ const { makeEntry } = require('./formdata')
+ const { webidl } = require('../webidl')
+ const assert = require('node:assert')
++// Node.js 18 has no global File (it is exported by node:buffer)
++const File = globalThis.File ?? require('node:buffer').File
+ const { isomorphicDecode } = require('../infra')
+ 
+ const dd = Buffer.from('--')
+diff --git a/lib/web/fetch/formdata.js b/lib/web/fetch/formdata.js
+index c21fb06..18ad1bf 100644
+--- a/lib/web/fetch/formdata.js
++++ b/lib/web/fetch/formdata.js
+@@ -4,6 +4,8 @@ const { iteratorMixin } = require('./util')
+ const { kEnumerableProperty } = require('../../core/util')
+ const { webidl } = require('../webidl')
+ const nodeUtil = require('node:util')
++// Node.js 18 has no global File (it is exported by node:buffer)
++const File = globalThis.File ?? require('node:buffer').File
+ 
+ // https://xhr.spec.whatwg.org/#formdata
+ class FormData {
+diff --git a/lib/web/subresource-integrity/subresource-integrity.js b/lib/web/subresource-integrity/subresource-integrity.js
+index f7d165a..5a2c594 100644
+--- a/lib/web/subresource-integrity/subresource-integrity.js
++++ b/lib/web/subresource-integrity/subresource-integrity.js
+@@ -250,6 +250,11 @@ function parseMetadata (metadata) {
+  * @returns {string}
+  */
+ const applyAlgorithmToBytes = (algorithm, bytes) => {
++  // crypto.hash() is not available on Node.js 18
++  if (typeof crypto.hash !== 'function') {
++    return crypto.createHash(algorithm).update(bytes).digest('base64')
++  }
++
+   return crypto.hash(algorithm, bytes, 'base64')
+ }
+ 
+diff --git a/lib/web/webidl/index.js b/lib/web/webidl/index.js
+index 5866485..21eb059 100644
+--- a/lib/web/webidl/index.js
++++ b/lib/web/webidl/index.js
+@@ -527,14 +527,17 @@ webidl.nullableConverter = function (converter) {
+ webidl.is.USVString = function (value) {
+   return (
+     typeof value === 'string' &&
+-    value.isWellFormed()
++    // String.prototype.isWellFormed() is not available on Node.js 18
++    (typeof value.isWellFormed === 'function'
++      ? value.isWellFormed()
++      : !/[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?<![\uD800-\uDBFF])[\uDC00-\uDFFF]/.test(value))
+   )
+ }
+ 
+ webidl.is.ReadableStream = webidl.util.MakeTypeAssertion(ReadableStream)
+ webidl.is.Blob = webidl.util.MakeTypeAssertion(Blob)
+ webidl.is.URLSearchParams = webidl.util.MakeTypeAssertion(URLSearchParams)
+-webidl.is.File = webidl.util.MakeTypeAssertion(File)
++webidl.is.File = webidl.util.MakeTypeAssertion(globalThis.File ?? require('node:buffer').File)
+ webidl.is.URL = webidl.util.MakeTypeAssertion(URL)
+ webidl.is.AbortSignal = webidl.util.MakeTypeAssertion(AbortSignal)
+ webidl.is.MessagePort = webidl.util.MakeTypeAssertion(MessagePort)
+diff --git a/lib/web/websocket/connection.js b/lib/web/websocket/connection.js
+index c258f4d..34165b0 100644
+--- a/lib/web/websocket/connection.js
++++ b/lib/web/websocket/connection.js
+@@ -160,7 +160,10 @@ function establishWebSocketConnection (url, protocols, client, handler, options)
+       //    trailing whitespace, the client MUST _Fail the WebSocket
+       //    Connection_.
+       const secWSAccept = response.headersList.get('Sec-WebSocket-Accept')
+-      const digest = crypto.hash('sha1', keyValue + uid, 'base64')
++      // crypto.hash() is not available on Node.js 18
++      const digest = typeof crypto.hash === 'function'
++        ? crypto.hash('sha1', keyValue + uid, 'base64')
++        : crypto.createHash('sha1').update(keyValue + uid).digest('base64')
+       if (secWSAccept !== digest) {
+         failHandshake(handler, response, 1002, 'Incorrect hash received in Sec-WebSocket-Accept header.')
+         return

@@ -2893,24 +2893,22 @@ De volledige, door de implementatie ondersteunde lijst met mogelijkheden en RFC-
 | Categorie | Mogelijkheden en gedrag |
 | --- | --- |
 | Kern | `keep`, `discard`, `stop`, voorwaardelijke blokken, en de basis `address`, `header`, `exists`, `size` en booleaanse tests. |
-| Aflevering | `fileinto`, `copy`, `redirect`, `mailbox` voor `fileinto :create`, en `special-use` voor standaardmap `:specialuse`-mapping en `specialuse_exists`. |
-| Tests en vergelijkingen | `envelope`, `body`, `date`, `index`, `regex`, `subaddress`, `relational`, `i;ascii-casemap` en `i;octet`. |
-| Status en variabelen | `variables`, `imap4flags`, `duplicate` en `ihave`. |
+| Aflevering | `fileinto`, `copy`, `redirect`, `mailbox` voor `fileinto :create` en `mailboxexists`, en `special-use` voor `fileinto :specialuse` en `specialuse_exists`. |
+| Tests en vergelijkingen | `envelope`, `body`, `date`, `index`, `regex`, `subaddress`, `relational`, `i;ascii-casemap`, `i;octet` en `i;ascii-numeric`. |
+| Status en variabelen | `variables`, `encoded-character`, `imap4flags`, `duplicate` en `ihave`. |
 | Acties en reacties | `reject`, `ereject`, `vacation`, `vacation-seconds` en `enotify` die `mailto:` gebruikt. De verouderde declaratie `require "notify"` wordt geaccepteerd als een invoeralias voor `enotify`, maar `enotify` is de geadverteerde mogelijkheid. |
-| Berichtverwerking | `editheader`, `environment` en `mime`, inclusief `foreverypart`, `break`, `extracttext` en `replace`. |
+| Berichtverwerking | `editheader`, `environment`, `foreverypart` (met `break`), `extracttext`, `replace` en `mime`, dat deze drie commando's ook inschakelt. |
 
-`redirect` wordt via de normale uitgaande wachtrij afgeleverd. Het is onderhevig aan het geconfigureerde redirect-domeinbeleid, denylist-controles en snelheidslimieten. `editheader` kan geen beschermde authenticatie- of bezorgrouteringskoppen wijzigen.
+`redirect` heeft geen `require` nodig. Het wordt verzonden via de normale uitgaande wachtrij, die alleen een bericht accepteert waarvan de From je alias is, op een domein met uitgaande SMTP; elk ander bericht blijft in je inbox. Redirects zijn onderhevig aan het geconfigureerde redirect-domeinbeleid, denylist-controles en snelheidslimieten. `editheader` kan geen beschermde authenticatie- of bezorgrouteringskoppen, `Received` of `Auto-Submitted` wijzigen.
 
 #### Niet-ondersteunde functies
 
 | Functie | Reden |
 | --- | --- |
 | `enclose` | Het aanmaken van een nieuw bericht dat het originele bericht insluit is niet geïmplementeerd. |
-| `mailboxexists` | Forward Email voert geen live IMAP-mailboxstatusopvragingen uit. `fileinto :create` blijft beschikbaar via `mailbox`. |
 | `include` | Globale en opgenomen scriptopslag is niet beschikbaar. |
 | `mboxmetadata` / `servermetadata` | IMAP METADATA-integratie is niet beschikbaar. |
 | `fcc` | Integratie voor het archiveren van verzonden e-mail is niet beschikbaar. |
-| `encoded-character` | De `${hex:...}`-syntaxis is niet geïmplementeerd. |
 | External lists | `valid_ext_list` en andere bewerkingen met externe lijsten zijn niet beschikbaar. |
 
 #### Voorbeeld Sieve-scripts
@@ -2947,8 +2945,6 @@ if address :is "from" "boss@example.com" {
 **Redirect a message:**
 
 ```sieve
-require ["redirect"];
-
 if header :contains "Subject" "invoice" {
     redirect "recipient@example.com";
 }

@@ -822,3 +822,63 @@ test('POST /v1/push-tokens > rejects a UnifiedPush endpoint on a privileged port
     });
   t.is(res.status, 400);
 });
+
+// ─── account checks for API token users ─────────────────────────────────────
+
+test('POST /v1/push-tokens > refuses an API token of a banned user', async (t) => {
+  const { user, alias } = await createTestAlias(t);
+  user[config.userFields.isBanned] = true;
+  await user.save();
+
+  const res = await t.context.api
+    .post('/v1/push-tokens')
+    .set('Authorization', createApiTokenAuth(user.api_token))
+    .send({
+      platform: 'fcm',
+      token: 'f'.repeat(152),
+      alias_id: alias._id.toString()
+    });
+
+  t.not(res.status, 201);
+  t.is(await PushTokens.countDocuments({ alias_id: alias._id }), 0);
+});
+
+// ─── credentials a browser sent on its own for another site ────────────────
+
+test('POST /v1/push-tokens > refuses credentials sent with a cross-site form', async (t) => {
+  const { domain, alias, pass } = await createTestAlias(t);
+  const aliasEmail = `${alias.name}@${domain.name}`;
+
+  const res = await t.context.api
+    .post('/v1/push-tokens')
+    .set('Authorization', createAliasAuth(aliasEmail, pass))
+    .set('Sec-Fetch-Site', 'cross-site')
+    .set('Sec-Fetch-Mode', 'navigate')
+    .type('form')
+    .send({ platform: 'apns', token: 'b'.repeat(64) });
+
+  t.is(res.status, 403);
+  t.is(await PushTokens.countDocuments({ alias_id: alias._id }), 0);
+});
+
+test('POST /v1/push-tokens > accepts credentials from a same-site page or a cross-site fetch', async (t) => {
+  const { domain, alias, pass } = await createTestAlias(t);
+  const aliasEmail = `${alias.name}@${domain.name}`;
+
+  // (a cross-site fetch sets the header itself, as an app on another
+  // origin does, whatever its body is)
+  for (const [site, mode, token, type] of [
+    ['same-site', 'navigate', 'c'.repeat(64), 'json'],
+    ['cross-site', 'cors', 'd'.repeat(64), 'json'],
+    ['cross-site', 'cors', 'e'.repeat(64), 'form']
+  ]) {
+    const res = await t.context.api
+      .post('/v1/push-tokens')
+      .set('Authorization', createAliasAuth(aliasEmail, pass))
+      .set('Sec-Fetch-Site', site)
+      .set('Sec-Fetch-Mode', mode)
+      .type(type)
+      .send({ platform: 'apns', token });
+    t.is(res.status, 201, `${site} ${mode} ${type}`);
+  }
+});

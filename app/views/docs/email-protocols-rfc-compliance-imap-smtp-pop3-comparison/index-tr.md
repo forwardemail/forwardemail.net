@@ -1109,45 +1109,45 @@ Tablo, listelenen davranışın tam uygulanmasını kasıtlı olarak sınırlı 
 
 | RFC veya spesifikasyon | Özellik | Desteklenen davranış |
 | --- | --- | --- |
-| [RFC 5228](https://datatracker.ietf.org/doc/html/rfc5228) | Core Sieve | `keep`, `discard`, `stop`, koşullu bloklar ve temel `address`, `header`, `exists`, `size` ve boolean testleri. `fileinto` ve `redirect` gelen teslimat hattı üzerinden teslim edilir. |
+| [RFC 5228](https://datatracker.ietf.org/doc/html/rfc5228) | Core Sieve, `encoded-character` | `keep`, `discard`, `stop`, koşullu bloklar ve temel `address`, `header`, `exists`, `size` ve boolean testleri. `fileinto` iletiyi belirtilen her klasöre kaydeder. `redirect` için `require` gerekmez; ileti giden kuyruk üzerinden gönderilir ve bu kuyruk yalnızca From adresi takma ad olan, giden SMTP'ye sahip bir alan adındaki iletileri kabul eder, diğer tüm iletiler gelen kutusunda tutulur. `encoded-character` istendiğinde `${hex:...}` ve `${unicode:...}` kodları çözülür. |
 | [RFC 5429](https://datatracker.ietf.org/doc/html/rfc5429) | `reject`, `ereject` | Sağlanan mesaj ile SMTP reddi. |
-| [RFC 5230](https://datatracker.ietf.org/doc/html/rfc5230) | `vacation` | Tatil cevapları kötüye kullanım kontrolleri ile kuyruğa alınır. |
+| [RFC 5230](https://datatracker.ietf.org/doc/html/rfc5230) | `vacation` | Tatil cevapları kötüye kullanım kontrolleri ile kuyruğa alınır; her `:days` döneminde (varsayılan 7 gün) gönderen başına en fazla bir kez gönderilir. |
 | [RFC 6131](https://datatracker.ietf.org/doc/html/rfc6131) | `vacation-seconds` | `:seconds` aralığı tatil-yanıtı TTL'sini kontrol eder. |
 | [RFC 5232](https://datatracker.ietf.org/doc/html/rfc5232) | `imap4flags` | Bayraklar posta kutusuna kaydetme sırasında uygulanır. |
 | [RFC 5173](https://datatracker.ietf.org/doc/html/rfc5173) | `body` | Mesaj-gövde içeriği eşleştirme. |
 | [RFC 5229](https://datatracker.ietf.org/doc/html/rfc5229) | `variables` | Değişken genişletme ve desteklenen değiştiriciler. |
 | [RFC 5231](https://datatracker.ietf.org/doc/html/rfc5231) | `relational` | `:count` ve `:value` karşılaştırmaları. |
-| [RFC 4790](https://datatracker.ietf.org/doc/html/rfc4790) | Comparators | `i;ascii-casemap` ve `i;octet`. `i;ascii-numeric` duyurulmaz. |
+| [RFC 4790](https://datatracker.ietf.org/doc/html/rfc4790) | Comparators | `i;ascii-casemap`, `i;octet` ve `i;ascii-numeric`. |
 | [RFC 3894](https://datatracker.ietf.org/doc/html/rfc3894) | `copy` | `fileinto` ve `redirect` üzerinde `:copy`. |
-| [RFC 5293](https://datatracker.ietf.org/doc/html/rfc5293) | `editheader` | Depolamadan önce başlık değişiklikleri, korunan kimlik doğrulama ve teslimat-rota alanları hariç. |
+| [RFC 5293](https://datatracker.ietf.org/doc/html/rfc5293) | `editheader` | Depolamadan önce başlık değişiklikleri, sonraki testler tarafından görülür; korunan kimlik doğrulama ve teslimat-rota alanları, `Received` ve `Auto-Submitted` hariç. |
 | [RFC 5260](https://datatracker.ietf.org/doc/html/rfc5260) | `date`, `index` | `currentdate` ve başlık-tarihi testleri, ayrıca `:index` ve `:last`. |
-| [RFC 5435](https://datatracker.ietf.org/doc/html/rfc5435) | `enotify` | Oran sınırlı `mailto:` bildirimleri. Eski `require "notify"` bildirimi alias olarak kabul edilir, ancak `enotify` duyurulur. |
+| [RFC 5435](https://datatracker.ietf.org/doc/html/rfc5435) | `enotify` | Oran sınırlı `mailto:` bildirimleri; otomatik iletiler için asla gönderilmez. Eski `require "notify"` bildirimi alias olarak kabul edilir, ancak `enotify` duyurulur. |
 | [RFC 5183](https://datatracker.ietf.org/doc/html/rfc5183) | `environment` | Desteklenen oturum ortamı değerleri. |
-| [RFC 5490](https://datatracker.ietf.org/doc/html/rfc5490) | `mailbox` | Sadece `fileinto :create`. Canlı `mailboxexists` sorguları desteklenmez. |
-| [RFC 8579](https://datatracker.ietf.org/doc/html/rfc8579) | `special-use` | Standard-klasör `:specialuse` eşlemesi ve deterministik `specialuse_exists` kontrolleri. |
+| [RFC 5490](https://datatracker.ietf.org/doc/html/rfc5490) | `mailbox` | `fileinto :create` ve takma adın klasörlerini sorgulayan `mailboxexists`. |
+| [RFC 8579](https://datatracker.ietf.org/doc/html/rfc8579) | `special-use` | `fileinto :specialuse` iletiyi o özel kullanıma sahip klasöre dosyalar, `specialuse_exists` ise takma adın klasörlerini sorgular. |
 | [RFC 7352](https://datatracker.ietf.org/doc/html/rfc7352) | `duplicate` | Redis tabanlı çift teslimat tespiti. |
-| [RFC 5463](https://datatracker.ietf.org/doc/html/rfc5463) | `ihave` | Duyurulan bir yeteneğin mevcut olup olmadığını kontrol eder. |
+| [RFC 5463](https://datatracker.ietf.org/doc/html/rfc5463) | `ihave` | Duyurulan bir yeteneğin mevcut olup olmadığını kontrol eder ve `error` komutunu destekler. |
 | [RFC 5233](https://datatracker.ietf.org/doc/html/rfc5233) | `subaddress` | `:user` ve `:detail` adres parçaları. |
 | [draft-ietf-sieve-regex](https://datatracker.ietf.org/doc/html/draft-ietf-sieve-regex) | `regex` | [RE2](https://github.com/uhop/node-re2) kullanılarak düzenli ifade eşleştirme. |
-| [RFC 5703](https://datatracker.ietf.org/doc/html/rfc5703) | `mime` | MIME testleri ve `foreverypart`, `break`, `extracttext`, ve `replace`. `enclose` güvenli bir teslimat uygulaması olmadığı için reddedilir. |
+| [RFC 5703](https://datatracker.ietf.org/doc/html/rfc5703) | `foreverypart`, `extracttext`, `replace`, `mime` | MIME testleri ve `foreverypart`, `break`, `extracttext`, ve `replace`. Eski betiklerin beklediği gibi `mime` de bu komutları etkinleştirir. `enclose` güvenli bir teslimat uygulaması olmadığı için reddedilir. |
 
 #### Desteklenen Sieve eklentileri {#supported-sieve-extensions}
 
 | Eklenti | Davranış | Teslimat veya uygulama |
 | --- | --- | --- |
-| `fileinto` | Bir mesajı bir klasöre dosyalar. | Seçilen IMAP klasöründe depolanır. `fileinto :create` için `mailbox` gerekir. |
+| `fileinto` | Bir mesajı bir klasöre dosyalar. | Seçilen IMAP klasöründe depolanır. `fileinto :create` ve `mailboxexists` için `mailbox` gerekir. |
 | `copy` | `fileinto` veya `redirect` eklerken orijinal teslimatı korur. | Teslimat hattı tarafından uygulanır. |
-| `redirect` | Bir kopya veya yerine geçen teslimatı başka bir alıcıya gönderir. | Normal çıkış yolundan kuyruklanır; alan politikası, engelleme listesi kontrolleri ve oran sınırlamalarına tabidir. |
+| `redirect` | İletiyi başka bir alıcıya gönderir. | From adresi takma ad olan ve giden SMTP'ye sahip bir alan adındaki ileti normal çıkış yolundan kuyruklanır; alan politikası, engelleme listesi kontrolleri ve oran sınırlamalarına tabidir. Diğer tüm iletiler gelen kutusunda tutulur. |
 | `reject` / `ereject` | Bir mesajı SMTP hatası ile reddeder. | MX teslimat yolu üzerinden döndürülür. |
 | `vacation` / `vacation-seconds` | Otomatik bir yanıt gönderir. | Alıcı ve aralık oran sınırlamalarıyla kuyruğa alınır. |
 | `imap4flags` | IMAP bayraklarını ayarlar veya test eder. | Mesaj depolandığında uygulanır. |
-| `envelope`, `body`, `date`, `index`, `regex`, `subaddress`, `relational` | Mesaj ve zarf verilerini test eder. | Sieve motoru tarafından değerlendirilir. |
+| `envelope`, `body`, `date`, `index`, `regex`, `subaddress`, `relational`, `comparator-i;ascii-numeric` | Mesaj ve zarf verilerini test eder. | Sieve motoru tarafından değerlendirilir. |
 | `variables`, `duplicate`, `ihave` | Değerleri saklar, çiftleri tespit eder ve yetenekleri kontrol eder. | Değişkenler betik-yerelidir; çift durumu Redis kullanır. |
-| `editheader` | Korunmayan başlıkları ekler veya siler. | Kimlik doğrulama ve teslimat-rota başlıkları değiştirilemez. |
+| `editheader` | Korunmayan başlıkları ekler veya siler. | Kimlik doğrulama ve teslimat-rota başlıkları, `Received` ve `Auto-Submitted` değiştirilemez. |
 | `enotify` | `mailto:` kullanarak bir bildirim gönderir. | Bildirim oran sınırlamaları ile kuyruğa alınır. |
 | `environment` | Desteklenen oturum ortamı verilerini okur. | Sieve motoru tarafından değerlendirilir. |
-| `special-use` | Standart-kullanım klasörlerini ele alır. | Standart klasörleri eşler ve deterministik `specialuse_exists` sonuçları sağlar. |
-| `mime` | Desteklenen MIME parçalarını inceler ve değiştirir. | Genel `mime` yeteneği gerekir. Bireysel RFC 5703 komutleri ayrı ayrı duyurulmaz. |
+| `special-use` | Standart-kullanım klasörlerini ele alır. | Takma adın özel kullanım klasörlerine dosyalar ve bu klasörleri sorgular. |
+| `foreverypart`, `extracttext`, `replace`, `mime` | Desteklenen MIME parçalarını inceler ve değiştirir. | Sieve motoru tarafından değerlendirilir. Eski betiklerin beklediği gibi `mime` de üç komutu etkinleştirir. |
 
 #### Desteklenmeyen Sieve özellikleri {#sieve-extensions-not-supported}
 
@@ -1156,11 +1156,9 @@ Bu özellikler kalıcılık, etkinleştirme, ManageSieve kabulü veya filtre yü
 | Özellik | RFC veya spesifikasyon | Sebep |
 | --- | --- | --- |
 | `enclose` | [RFC 5703](https://datatracker.ietf.org/doc/html/rfc5703) | Orijinal mesajı içeren yeni bir mesaj oluşturmak uçtan uca güvenli şekilde uygulanmamıştır. |
-| `mailboxexists` | [RFC 5490](https://datatracker.ietf.org/doc/html/rfc5490) | Canlı IMAP posta kutusu durum sorguları mevcut değildir. |
 | `include` | [RFC 6609](https://datatracker.ietf.org/doc/html/rfc6609) | Global ve dahil edilen betik depolama mevcut değildir. |
 | `mboxmetadata` / `servermetadata` | [RFC 5490](https://datatracker.ietf.org/doc/html/rfc5490) | IMAP METADATA entegrasyonu mevcut değildir. |
 | `fcc` | [RFC 8580](https://datatracker.ietf.org/doc/html/rfc8580) | Gönderilen-posta dosyalama entegrasyonu mevcut değildir. |
-| `encoded-character` | [RFC 5228](https://datatracker.ietf.org/doc/html/rfc5228) | `${hex:...}` sözdizimi uygulanmamıştır. |
 | External lists | [RFC 6134](https://datatracker.ietf.org/doc/html/rfc6134) | `valid_ext_list` ve diğer dış-liste işlemleri mevcut değildir. |
 
 #### Sieve işleme akışı {#sieve-processing-flow}
@@ -1197,7 +1195,7 @@ sequenceDiagram
 
 #### Güvenlik özellikleri {#security-features}
 
-Forward Email, betik depolanmadan, etkinleştirilmeden veya yürütülmeden önce tamamını doğrular. Beyan edilmemiş ve mevcut olmayan yetenekleri reddeder, betik boyutunu ve MIME-parça yinelemesini sınırlar, düzenli ifade eşleştirme için [RE2](https://github.com/uhop/node-re2) kullanır, yönlendirmeleri, tatil yanıtlarını ve bildirimleri oranla sınırlar, güvensiz yönlendirme hedeflerini engeller ve `editheader`'ın kimlik doğrulama veya teslimat-rota başlıklarını değiştirmesini önler. Yönlendirme ve tatil oran sınırı durumu [Redis](https://github.com/redis/redis)'ta tutulurken, teslim edilen postalar [SQLite](https://github.com/sqlite/sqlite) ile depolanır.
+Forward Email, betik depolanmadan, etkinleştirilmeden veya yürütülmeden önce tamamını doğrular. Beyan edilmemiş ve mevcut olmayan yetenekleri reddeder, betik boyutunu ve MIME-parça yinelemesini sınırlar, düzenli ifade eşleştirme için [RE2](https://github.com/uhop/node-re2) kullanır, yönlendirmeleri, tatil yanıtlarını ve bildirimleri oranla sınırlar, güvensiz yönlendirme hedeflerini engeller ve `editheader`'ın kimlik doğrulama veya teslimat-rota başlıklarını, `Received` ya da `Auto-Submitted` başlığını değiştirmesini önler. Çok uzun çalışan ya da çok fazla eylem, bayrak veya değişken oluşturan bir betik durdurulur ve ileti saklanır. Yönlendirme ve tatil oran sınırı durumu [Redis](https://github.com/redis/redis)'ta tutulurken, teslim edilen postalar [SQLite](https://github.com/sqlite/sqlite) ile depolanır.
 
 #### Örnek Sieve betikleri {#example-sieve-scripts}
 
@@ -1233,8 +1231,6 @@ if header :contains "X-Spam-Status" "Yes" {
 **Faturaları yönlendir:**
 
 ```sieve
-require ["redirect"];
-
 if header :contains "Subject" "invoice" {
     redirect "recipient@example.com";
 }
@@ -1260,7 +1256,7 @@ Forward Email, Eleme betiklerini uzaktan yönetmek için tam ManageSieve protoko
 | **Sunucu**              | `imap.forwardemail.net` |
 | **Port (STARTTLS)**     | `2190` (önerilen)       |
 | **Port (Gizli TLS)**    | `4190`                  |
-| **Kimlik Doğrulama**    | PLAIN (TLS üzerinden)   |
+| **Kimlik Doğrulama**    | PLAIN ve LOGIN (TLS üzerinden) |
 
 > **Not:** 2190 portu STARTTLS kullanır (düz bağlantıdan TLS'ye yükseltme) ve [sieve-connect](https://github.com/philpennock/sieve-connect) dahil çoğu ManageSieve istemcisi ile uyumludur. 4190 portu ise bağlantı başlangıcından itibaren TLS (gizli TLS) kullanır ve bu özelliği destekleyen istemciler içindir.
 
@@ -1268,7 +1264,8 @@ Forward Email, Eleme betiklerini uzaktan yönetmek için tam ManageSieve protoko
 
 | Komut          | Açıklama                               |
 | -------------- | ------------------------------------- |
-| `AUTHENTICATE` | PLAIN mekanizması ile kimlik doğrulama |
+| `AUTHENTICATE` | PLAIN veya LOGIN mekanizması ile kimlik doğrulama |
+| `STARTTLS`     | 2190 numaralı bağlantı noktasında bağlantıyı TLS'e yükseltme |
 | `CAPABILITY`   | Sunucu yetenekleri ve uzantıları listeler |
 | `HAVESPACE`    | Betiğin saklanabilirliğini kontrol eder |
 | `PUTSCRIPT`    | Yeni betik yükler                      |

@@ -505,6 +505,37 @@ test.serial(
   }
 );
 
+//
+// A device token goes into the APNs request path; one stored without the
+// format check (e.g. from a DAV subscription) must not reach another path.
+//
+test.serial(
+  'a device token that is not hex is never sent and is removed',
+  async (t) => {
+    const sendApn = require('#helpers/send-apn');
+    const { alias } = t.context;
+    await useXServer(null);
+
+    const ok = token(200);
+    const bad = `${token(201)}/../../../../3/device/${token(202)}`;
+    await setRegistrations(
+      alias,
+      [ok, bad].map((device_token) => ({ device_token, topic: TOPIC }))
+    );
+    const before = requests.length;
+
+    await sendApn(createRedis(), alias.id, 'INBOX');
+
+    const paths = requests.slice(before).map((r) => r.headers[':path']);
+    t.deepEqual(paths, [`/3/device/${ok}`]);
+    const aps = await registrations(alias);
+    t.deepEqual(
+      aps.map((a) => a.device_token),
+      [ok]
+    );
+  }
+);
+
 test.serial(
   'Mail pushes go out only on the Apple-issued topic, never on XServer',
   async (t) => {

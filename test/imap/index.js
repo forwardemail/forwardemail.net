@@ -411,6 +411,36 @@ test('an alias without IMAP cannot sign in with a login cached by SMTP', async (
   t.true(await smtpLogin());
 });
 
+//
+// The first refused login sends a one-time "IMAP is not enabled" email and
+// records that it was sent; the refusal used to be part of sending it, so
+// every login after the first one opened the mailbox.
+//
+test('an alias without IMAP stays refused after the first refused login', async (t) => {
+  const { domain, alias, pass } = t.context;
+  const username = `${alias.name}@${domain.name}`;
+
+  await Aliases.findByIdAndUpdate(alias._id, {
+    $set: { has_imap: false, imap_not_enabled_sent_at: new Date() }
+  });
+  await t.context.client.del(getAuthCacheKey(username, pass));
+
+  for (let i = 0; i < 2; i++) {
+    const imapFlow = new ImapFlow({
+      host: IP_ADDRESS,
+      port: t.context.port,
+      secure: t.context.secure,
+      logger,
+      tls,
+      auth: { user: username, pass }
+    });
+
+    const err = await t.throwsAsync(imapFlow.connect());
+    t.true(err.authenticationFailed);
+    t.regex(err.response, /does not have IMAP enabled/);
+  }
+});
+
 test('does not reveal alias existence or state on failed login', async (t) => {
   const { domain, alias, pass } = t.context;
 

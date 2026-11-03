@@ -1,0 +1,79 @@
+diff --git a/lib/headers.js b/lib/headers.js
+index 87b502be99ad56862229215758a294e07cbb76ef..b60806e8ab5446c9e56d773a223953628259c7ed 100644
+--- a/lib/headers.js
++++ b/lib/headers.js
+@@ -208,35 +208,47 @@ class Headers {
+             return;
+         }
+ 
+-        let lines = this.headers
+-            .toString('binary')
+-            .replace(/[\r\n]+$/, '')
+-            .split(/\r?\n/);
+-
+-        for (let i = lines.length - 1; i >= 0; i--) {
+-            let chr = lines[i].charAt(0);
+-            if (i && (chr === ' ' || chr === '\t')) {
+-                lines[i - 1] += '\r\n' + lines[i];
+-                lines.splice(i, 1);
++        // NOTE: this must stay linear in the size of the header block, since it
++        //       comes from whoever sent the message: a `/[\r\n]+$/` trim
++        //       backtracks quadratically on a long run of bare CR characters,
++        //       and unfolding with `lines.splice()` is quadratic in the number
++        //       of folded lines
++        let str = this.headers.toString('binary');
++        let end = str.length;
++        while (end > 0 && (str.charCodeAt(end - 1) === 0x0d || str.charCodeAt(end - 1) === 0x0a)) {
++            end--;
++        }
++
++        let rawLines = str.slice(0, end).split(/\r?\n/);
++        let isFolding =
++            typeof this._isFoldingChar === 'function' ? chr => this._isFoldingChar(chr) : chr => chr === ' ' || chr === '\t';
++
++        let groups = [];
++        for (let i = 0; i < rawLines.length; i++) {
++            if (i && groups.length && isFolding(rawLines[i].charAt(0))) {
++                groups[groups.length - 1].push(rawLines[i]);
+             } else {
+-                let line = lines[i];
+-                if (!i && /^From /i.test(line)) {
+-                    // mbox file
+-                    this.mbox = line;
+-                    lines.splice(i, 1);
+-                    continue;
+-                } else if (!i && /^POST /i.test(line)) {
+-                    // HTTP POST request
+-                    this.http = line;
+-                    lines.splice(i, 1);
+-                    continue;
+-                }
+-                let key = this._normalizeHeader(line.substr(0, line.indexOf(':')));
+-                lines[i] = {
+-                    key,
+-                    line
+-                };
++                groups.push([rawLines[i]]);
++            }
++        }
++
++        let lines = [];
++        for (let i = 0; i < groups.length; i++) {
++            let line = groups[i].join('\r\n');
++            if (!i && /^From /i.test(line)) {
++                // mbox file
++                this.mbox = line;
++                continue;
++            } else if (!i && /^POST /i.test(line)) {
++                // HTTP POST request
++                this.http = line;
++                continue;
+             }
++            let key = this._normalizeHeader(line.substr(0, line.indexOf(':')));
++            lines.push({
++                key,
++                line
++            });
+         }
+ 
+         this.lines = lines;

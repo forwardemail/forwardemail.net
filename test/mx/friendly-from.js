@@ -273,11 +273,12 @@ async function setup(t, exchange) {
   // allowlist our IP (as outlook.com is) so it is not greylisted
   await t.context.client.set(`allowlist:${IP_ADDRESS}`, true);
 
-  async function send() {
+  async function send(extraHeaders = []) {
     const message = Buffer.from(
       [
         `From: Jamie Lane <${originalFrom}>`,
         `To: ${alias.name}@${domain.name}`,
+        ...extraHeaders,
         'Subject: Lock in your Seats',
         `Message-ID: <${crypto.randomUUID()}@test.com>`,
         `Date: ${new Date().toUTCString()}`,
@@ -376,5 +377,30 @@ test.serial(
     t.is(attempts.length, 2);
     t.true(attempts[0].includes(`<${originalFrom}>`));
     assertFriendlyFrom(t, attempts[1], originalFrom);
+  }
+);
+
+test.serial(
+  'converts IDN domains in address headers without decoding encoded words',
+  async (t) => {
+    const { alias, domain, attempts, send } = await setup(t, IP_ADDRESS);
+
+    // a 7-bit Cc whose encoded display name holds a bare CR, a header and an
+    // address list (the "@ä" made the old code write its decoded text back)
+    const word = `=?utf-8?B?${Buffer.from(
+      'x\rBcc: dump@evil.example\r, ceo@bank.example, y@ä'
+    ).toString('base64')}?=`;
+    const cc = `Cc: ${word} <cc@example.com>`;
+    const info = await send([cc, 'Reply-To: Ann <ann@exämple.com>']);
+    t.deepEqual(info.accepted, [`${alias.name}@${domain.name}`]);
+
+    const [raw] = attempts;
+    const lines = raw.split('\r\n');
+    t.true(lines.includes(cc));
+    t.false(raw.includes('dump@evil.example'));
+    t.false(raw.includes('ceo@bank.example'));
+    t.false(raw.includes('\rBcc'));
+    // (a raw UTF-8 domain is still converted)
+    t.true(lines.includes('Reply-To: Ann <ann@xn--exmple-cua.com>'));
   }
 );

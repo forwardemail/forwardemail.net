@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
+const { getVariableReferences } = require('./variable-references');
+
 // RFC 5228 tests that are part of the base language.  They do not need a
 // require statement, although accepting one is harmless for compatibility.
 const CORE_CAPABILITIES = Object.freeze([
@@ -19,19 +21,25 @@ const CORE_CAPABILITIES = Object.freeze([
 
 // This is the sole advertised capability manifest.  Every entry has an
 // execution path in the delivery integration, not just parser support.
+// ("redirect" is part of the base language; declaring it is accepted as a
+// no-op for older scripts.)
 const SUPPORTED_CAPABILITIES = Object.freeze([
   'body',
   'comparator-i;ascii-casemap',
+  'comparator-i;ascii-numeric',
   'comparator-i;octet',
   'copy',
   'date',
   'duplicate',
   'editheader',
+  'encoded-character',
   'enotify',
   'envelope',
   'ereject',
   'environment',
+  'extracttext',
   'fileinto',
+  'foreverypart',
   'ihave',
   'imap4flags',
   'index',
@@ -41,6 +49,7 @@ const SUPPORTED_CAPABILITIES = Object.freeze([
   'reject',
   'relational',
   'regex',
+  'replace',
   'special-use',
   'subaddress',
   'vacation',
@@ -50,6 +59,20 @@ const SUPPORTED_CAPABILITIES = Object.freeze([
 
 const SUPPORTED_CAPABILITY_SET = new Set(SUPPORTED_CAPABILITIES);
 const CORE_CAPABILITY_SET = new Set(CORE_CAPABILITIES);
+
+// Capabilities that declaring another one enables too: "vacation-seconds"
+// implies "vacation" (RFC 6131 section 2), and "mime" has always enabled
+// all the RFC 5703 commands here.
+const IMPLIED_CAPABILITIES = {
+  mime: ['extracttext', 'foreverypart', 'replace'],
+  'vacation-seconds': ['vacation']
+};
+
+// Comparators that need no require (RFC 5228 section 2.7.3)
+const BASE_COMPARATORS = new Set(['i;ascii-casemap', 'i;octet']);
+
+// Extensions that "ihave" cannot enable (RFC 5463 section 4)
+const NOT_IHAVE_CAPABILITIES = new Set(['encoded-character', 'variables']);
 
 function getCapability(value) {
   const capability = typeof value === 'string' ? value.toLowerCase() : '';
@@ -64,39 +87,73 @@ function isSupportedCapability(capability) {
   return CORE_CAPABILITY_SET.has(value) || SUPPORTED_CAPABILITY_SET.has(value);
 }
 
-function addRequirement(requirements, capability, location, reason) {
+function addUnsupported(context, location, feature, reason) {
+  context.unsupported.push({ location, feature, reason });
+}
+
+//
+// Note that a capability is used; it is an error unless it was declared
+// with require (or enabled by an earlier "ihave" test, RFC 5463 section 3)
+//
+function addRequirement(context, capability, location, reason) {
   const value = getCapability(capability);
-  if (!requirements.has(value)) {
-    requirements.set(value, {
+  if (!context.requirements.has(value)) {
+    context.requirements.set(value, {
       capability: value,
       location,
       reason
     });
   }
+
+  if (!context.enabled.has(value) && !context.missing.has(value)) {
+    context.missing.add(value);
+    addUnsupported(
+      context,
+      location,
+      value,
+      `${reason} but it is not declared with require`
+    );
+  }
 }
 
-function addUnsupported(unsupported, location, feature, reason) {
-  unsupported.push({ location, feature, reason });
+// comparators other than the base ones are extensions (RFC 5228 2.7.3)
+function inspectComparator(node, context) {
+  const comparator =
+    typeof node.comparator === 'string' ? node.comparator.toLowerCase() : '';
+  if (comparator && !BASE_COMPARATORS.has(comparator)) {
+    addRequirement(
+      context,
+      `comparator-${comparator}`,
+      node.location,
+      `uses the ${comparator} comparator`
+    );
+  }
 }
 
-function inspectStringCapabilities(value, requirements, unsupported, seen) {
+// RFC 5435 section 6
+function inspectModifiers(node, context) {
+  if ((node.modifiers || []).includes('encodeurl')) {
+    addRequirement(context, 'enotify', node.location, 'uses :encodeurl');
+  }
+}
+
+function inspectStringCapabilities(value, context, seen) {
   if (typeof value === 'string') {
-    if (/\${hex:/i.test(value)) {
-      addUnsupported(
-        unsupported,
-        null,
-        'encoded-character',
-        'encoded-character syntax is not implemented'
-      );
+    const names = getVariableReferences(value);
+    if (names.length > 0) {
+      addRequirement(context, 'variables', null, 'uses variable interpolation');
     }
 
-    if (/\${(?!hex:)[^}]+}/i.test(value)) {
-      addRequirement(
-        requirements,
-        'variables',
-        null,
-        'uses variable interpolation'
-      );
+    // no supported extension defines a namespace (RFC 5229 section 3)
+    for (const name of names) {
+      if (name.includes('.')) {
+        addUnsupported(
+          context,
+          null,
+          'variables',
+          `"\${${name}}" references an unknown namespace`
+        );
+      }
     }
 
     return;
@@ -106,24 +163,17 @@ function inspectStringCapabilities(value, requirements, unsupported, seen) {
   seen.add(value);
 
   for (const child of Object.values(value)) {
-    inspectStringCapabilities(child, requirements, unsupported, seen);
+    inspectStringCapabilities(child, context, seen);
   }
 }
 
-function inspectTest(test, requirements, unsupported) {
+function inspectTest(test, context) {
   if (!test) return;
 
-  if (test.comparator === 'i;octet') {
-    addRequirement(
-      requirements,
-      'comparator-i;octet',
-      test.location,
-      'uses the i;octet comparator'
-    );
-  }
+  inspectComparator(test, context);
 
   if (test.matchType === 'regex') {
-    addRequirement(requirements, 'regex', test.location, 'uses :regex');
+    addRequirement(context, 'regex', test.location, 'uses :regex');
   }
 
   if (
@@ -131,126 +181,105 @@ function inspectTest(test, requirements, unsupported) {
     (test.matchType.type === 'count' || test.matchType.type === 'value')
   ) {
     addRequirement(
-      requirements,
+      context,
       'relational',
       test.location,
       'uses a relational match type'
     );
   }
 
-  if (test.index || test.last) {
-    addRequirement(
-      requirements,
-      'index',
-      test.location,
-      'uses :index or :last'
-    );
+  // (header, address and date; the :last of duplicate is its own)
+  if (test.index) {
+    addRequirement(context, 'index', test.location, 'uses :index');
+  }
+
+  if (test.mime || test.anychild) {
+    addRequirement(context, 'mime', test.location, 'uses :mime');
   }
 
   switch (test.type) {
     case 'AllofTest':
     case 'AnyofTest': {
-      for (const child of test.tests)
-        inspectTest(child, requirements, unsupported);
+      for (const child of test.tests) inspectTest(child, context);
       break;
     }
 
     case 'NotTest': {
-      inspectTest(test.test, requirements, unsupported);
+      inspectTest(test.test, context);
       break;
     }
 
-    case 'AddressTest': {
+    case 'AddressTest':
+    case 'EnvelopeTest': {
+      if (test.type === 'EnvelopeTest') {
+        addRequirement(context, 'envelope', test.location, 'uses envelope');
+      }
+
       if (test.addressPart === 'user' || test.addressPart === 'detail') {
         addRequirement(
-          requirements,
+          context,
           'subaddress',
           test.location,
           `uses :${test.addressPart}`
         );
       }
 
-      if (test.mime) {
-        addRequirement(requirements, 'mime', test.location, 'uses :mime');
-      }
-
-      break;
-    }
-
-    case 'HeaderTest':
-    case 'ExistsTest': {
-      if (test.mime) {
-        addRequirement(requirements, 'mime', test.location, 'uses :mime');
-      }
-
-      break;
-    }
-
-    case 'EnvelopeTest': {
-      addRequirement(requirements, 'envelope', test.location, 'uses envelope');
       break;
     }
 
     case 'BodyTest': {
-      addRequirement(requirements, 'body', test.location, 'uses body');
+      addRequirement(context, 'body', test.location, 'uses body');
       break;
     }
 
     case 'DateTest':
     case 'CurrentdateTest': {
-      addRequirement(requirements, 'date', test.location, 'uses date');
+      addRequirement(context, 'date', test.location, 'uses date');
       break;
     }
 
     case 'HasflagTest': {
-      addRequirement(requirements, 'imap4flags', test.location, 'uses hasflag');
+      addRequirement(context, 'imap4flags', test.location, 'uses hasflag');
       break;
     }
 
     case 'StringTest': {
-      addRequirement(requirements, 'variables', test.location, 'uses string');
+      addRequirement(context, 'variables', test.location, 'uses string');
       break;
     }
 
     case 'EnvironmentTest': {
-      addRequirement(
-        requirements,
-        'environment',
-        test.location,
-        'uses environment'
-      );
+      addRequirement(context, 'environment', test.location, 'uses environment');
       break;
     }
 
     case 'DuplicateTest': {
-      addRequirement(
-        requirements,
-        'duplicate',
-        test.location,
-        'uses duplicate'
-      );
+      addRequirement(context, 'duplicate', test.location, 'uses duplicate');
       break;
     }
 
     case 'IhaveTest': {
-      addRequirement(requirements, 'ihave', test.location, 'uses ihave');
+      addRequirement(context, 'ihave', test.location, 'uses ihave');
+      // extension checks are left to run time from here on (RFC 5463
+      // section 3)
+      context.ihave = true;
+      for (const capability of test.capabilities) {
+        const value = getCapability(capability);
+        if (!NOT_IHAVE_CAPABILITIES.has(value)) context.enabled.add(value);
+      }
+
       break;
     }
 
     case 'MailboxexistsTest': {
-      addUnsupported(
-        unsupported,
-        test.location,
-        'mailboxexists',
-        'live mailbox existence checks are not implemented'
-      );
+      addRequirement(context, 'mailbox', test.location, 'uses mailboxexists');
       break;
     }
 
     case 'MetadataTest':
     case 'MetadataexistsTest': {
       addUnsupported(
-        unsupported,
+        context,
         test.location,
         test.type === 'MetadataTest' ? 'metadata' : 'metadataexists',
         'IMAP metadata checks are not implemented'
@@ -260,7 +289,7 @@ function inspectTest(test, requirements, unsupported) {
 
     case 'SpecialuseexistsTest': {
       addRequirement(
-        requirements,
+        context,
         'special-use',
         test.location,
         'uses specialuse_exists'
@@ -270,11 +299,33 @@ function inspectTest(test, requirements, unsupported) {
 
     case 'ValidextlistTest': {
       addUnsupported(
-        unsupported,
+        context,
         test.location,
         'valid_ext_list',
         'external list checks are not implemented'
       );
+      break;
+    }
+
+    case 'ValidNotifyMethodTest':
+    case 'NotifyMethodCapabilityTest': {
+      addRequirement(
+        context,
+        'enotify',
+        test.location,
+        test.type === 'ValidNotifyMethodTest'
+          ? 'uses valid_notify_method'
+          : 'uses notify_method_capability'
+      );
+      break;
+    }
+
+    // (parsed only so that "ihave" can guard it, RFC 5463)
+    case 'UnknownTest': {
+      if (!context.ihave) {
+        addUnsupported(context, test.location, test.name, 'unknown test');
+      }
+
       break;
     }
 
@@ -284,55 +335,45 @@ function inspectTest(test, requirements, unsupported) {
   }
 }
 
-function inspectCommand(command, requirements, unsupported) {
+function inspectCommand(command, context) {
   switch (command.type) {
     case 'Keep': {
       if ((command.flags || []).length > 0) {
-        addRequirement(
-          requirements,
-          'imap4flags',
-          command.location,
-          'uses :flags'
-        );
+        addRequirement(context, 'imap4flags', command.location, 'uses :flags');
       }
 
       break;
     }
 
     case 'If': {
-      inspectTest(command.test, requirements, unsupported);
+      inspectTest(command.test, context);
       for (const child of command.block) {
-        inspectCommand(child, requirements, unsupported);
+        inspectCommand(child, context);
       }
 
       for (const branch of command.elsif || []) {
-        inspectTest(branch.test, requirements, unsupported);
+        inspectTest(branch.test, context);
         for (const child of branch.block) {
-          inspectCommand(child, requirements, unsupported);
+          inspectCommand(child, context);
         }
       }
 
       for (const child of command.else || []) {
-        inspectCommand(child, requirements, unsupported);
+        inspectCommand(child, context);
       }
 
       break;
     }
 
     case 'Fileinto': {
-      addRequirement(
-        requirements,
-        'fileinto',
-        command.location,
-        'uses fileinto'
-      );
+      addRequirement(context, 'fileinto', command.location, 'uses fileinto');
       if (command.copy) {
-        addRequirement(requirements, 'copy', command.location, 'uses :copy');
+        addRequirement(context, 'copy', command.location, 'uses :copy');
       }
 
       if (command.specialuse) {
         addRequirement(
-          requirements,
+          context,
           'special-use',
           command.location,
           'uses :specialuse'
@@ -340,21 +381,11 @@ function inspectCommand(command, requirements, unsupported) {
       }
 
       if ((command.flags || []).length > 0) {
-        addRequirement(
-          requirements,
-          'imap4flags',
-          command.location,
-          'uses :flags'
-        );
+        addRequirement(context, 'imap4flags', command.location, 'uses :flags');
       }
 
       if (command.create) {
-        addRequirement(
-          requirements,
-          'mailbox',
-          command.location,
-          'uses :create'
-        );
+        addRequirement(context, 'mailbox', command.location, 'uses :create');
       }
 
       break;
@@ -365,32 +396,27 @@ function inspectCommand(command, requirements, unsupported) {
       // require declaration.  Declaring it is still accepted for clients that
       // already emit `require ["redirect"]`.
       if (command.copy) {
-        addRequirement(requirements, 'copy', command.location, 'uses :copy');
+        addRequirement(context, 'copy', command.location, 'uses :copy');
       }
 
       break;
     }
 
     case 'Reject': {
-      addRequirement(requirements, 'reject', command.location, 'uses reject');
+      addRequirement(context, 'reject', command.location, 'uses reject');
       break;
     }
 
     case 'Ereject': {
-      addRequirement(requirements, 'ereject', command.location, 'uses ereject');
+      addRequirement(context, 'ereject', command.location, 'uses ereject');
       break;
     }
 
     case 'Vacation': {
-      addRequirement(
-        requirements,
-        'vacation',
-        command.location,
-        'uses vacation'
-      );
+      addRequirement(context, 'vacation', command.location, 'uses vacation');
       if (command.seconds !== null && command.seconds !== undefined) {
         addRequirement(
-          requirements,
+          context,
           'vacation-seconds',
           command.location,
           'uses :seconds'
@@ -401,7 +427,8 @@ function inspectCommand(command, requirements, unsupported) {
     }
 
     case 'Set': {
-      addRequirement(requirements, 'variables', command.location, 'uses set');
+      addRequirement(context, 'variables', command.location, 'uses set');
+      inspectModifiers(command, context);
       break;
     }
 
@@ -409,7 +436,7 @@ function inspectCommand(command, requirements, unsupported) {
     case 'Addflag':
     case 'Removeflag': {
       addRequirement(
-        requirements,
+        context,
         'imap4flags',
         command.location,
         `uses ${command.type.toLowerCase()}`
@@ -420,60 +447,85 @@ function inspectCommand(command, requirements, unsupported) {
     case 'Addheader':
     case 'Deleteheader': {
       addRequirement(
-        requirements,
+        context,
         'editheader',
         command.location,
         `uses ${command.type.toLowerCase()}`
       );
+      inspectComparator(command, context);
       break;
     }
 
     case 'Notify': {
-      addRequirement(requirements, 'enotify', command.location, 'uses notify');
+      addRequirement(context, 'enotify', command.location, 'uses notify');
       break;
     }
 
     case 'Foreverypart':
-    case 'Break':
-    case 'Replace': {
+    case 'Break': {
       addRequirement(
-        requirements,
-        'mime',
+        context,
+        'foreverypart',
         command.location,
         `uses ${command.type.toLowerCase()}`
       );
       if (command.type === 'Foreverypart') {
         for (const child of command.block) {
-          inspectCommand(child, requirements, unsupported);
+          inspectCommand(child, context);
         }
       }
 
       break;
     }
 
+    case 'Replace': {
+      addRequirement(context, 'replace', command.location, 'uses replace');
+      break;
+    }
+
     case 'Extracttext': {
       addRequirement(
-        requirements,
-        'mime',
+        context,
+        'extracttext',
         command.location,
         'uses extracttext'
       );
       addRequirement(
-        requirements,
+        context,
         'variables',
         command.location,
         'extracttext stores a variable'
       );
+      inspectModifiers(command, context);
       break;
     }
 
     case 'Enclose': {
       addUnsupported(
-        unsupported,
+        context,
         command.location,
         'enclose',
         'message enclosure delivery is not implemented'
       );
+      break;
+    }
+
+    case 'Error': {
+      addRequirement(context, 'ihave', command.location, 'uses error');
+      break;
+    }
+
+    // (parsed only so that "ihave" can guard it, RFC 5463)
+    case 'UnknownCommand': {
+      if (!context.ihave) {
+        addUnsupported(
+          context,
+          command.location,
+          command.name,
+          'unknown command'
+        );
+      }
+
       break;
     }
 
@@ -484,10 +536,6 @@ function inspectCommand(command, requirements, unsupported) {
 }
 
 function validateSieveCapabilities(ast) {
-  const requirements = new Map();
-  const unsupported = [];
-  const declared = new Set();
-
   if (!ast || !Array.isArray(ast.commands)) {
     return {
       valid: false,
@@ -503,15 +551,34 @@ function validateSieveCapabilities(ast) {
     };
   }
 
+  const declared = new Set();
+  const context = {
+    requirements: new Map(),
+    unsupported: [],
+    // declared capabilities and the ones they imply
+    enabled: new Set(),
+    // capabilities reported as not declared
+    missing: new Set(),
+    // whether an "ihave" test came before
+    ihave: false
+  };
+
   for (const command of ast.commands) {
     if (command.type !== 'Require') continue;
 
     for (const capability of command.capabilities || []) {
       const value = getCapability(capability);
       declared.add(value);
+      context.enabled.add(value);
+      for (const implied of Object.hasOwn(IMPLIED_CAPABILITIES, value)
+        ? IMPLIED_CAPABILITIES[value]
+        : []) {
+        context.enabled.add(implied);
+      }
+
       if (!isSupportedCapability(value)) {
         addUnsupported(
-          unsupported,
+          context,
           command.location,
           value || String(capability),
           'capability is not available'
@@ -522,32 +589,21 @@ function validateSieveCapabilities(ast) {
 
   for (const command of ast.commands) {
     if (command.type !== 'Require') {
-      inspectCommand(command, requirements, unsupported);
+      inspectCommand(command, context);
     }
   }
 
-  inspectStringCapabilities(ast, requirements, unsupported, new Set());
+  inspectStringCapabilities(ast, context, new Set());
 
-  for (const requirement of requirements.values()) {
-    if (!declared.has(requirement.capability)) {
-      addUnsupported(
-        unsupported,
-        requirement.location,
-        requirement.capability,
-        `${requirement.reason} but it is not declared with require`
-      );
-    }
-  }
-
-  const errors = unsupported.map(
+  const errors = context.unsupported.map(
     (entry) => `Unsupported Sieve feature "${entry.feature}": ${entry.reason}`
   );
 
   return {
     valid: errors.length === 0,
     declared: [...declared],
-    required: [...requirements.keys()],
-    unsupported,
+    required: [...context.requirements.keys()],
+    unsupported: context.unsupported,
     errors
   };
 }

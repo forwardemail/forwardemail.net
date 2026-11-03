@@ -16,13 +16,17 @@ const {
   SessionChallengeStore
 } = require('@forwardemail/passport-fido2-webauthn');
 
+const _ = require('#helpers/lodash');
 const config = require('#config');
 const completeWebauthnAuthentication = require('#helpers/complete-webauthn-authentication');
 const emailHelper = require('#helpers/email');
 const getUbuntuMembersMap = require('#helpers/get-ubuntu-members-map');
 const invalidateOtherSessions = require('#helpers/invalidate-other-sessions');
 const clearUnverifiedSignIns = require('#helpers/clear-unverified-sign-ins');
+
+const { isEmailProven } = clearUnverifiedSignIns;
 const logger = require('#helpers/logger');
+const { markOAuthSession } = require('#helpers/oauth-session-revocation');
 const parseLoginSuccessRedirect = require('#helpers/parse-login-success-redirect');
 const rateLimit = require('#helpers/rate-limit');
 const syncUbuntuUser = require('#helpers/sync-ubuntu-user');
@@ -157,6 +161,41 @@ function callbackCheck(ctx, next) {
     : next();
 }
 
+//
+// An OAuth provider reports a failed sign in with `error` and
+// `error_description` in the callback URL, which anyone can link to.
+// passport-oauth2 turns `error_description` into the error message (or, for
+// `access_denied`, into the failure message that `failureFlash` stores),
+// and flash messages are rendered as HTML, so the text is escaped first.
+//
+const PROVIDER_ERROR_FIELDS = ['error', 'error_description', 'error_uri'];
+
+// (returns a copy with the error fields escaped, or the object unchanged)
+function escapeErrorFields(params) {
+  if (!params || typeof params !== 'object') return params;
+  if (!PROVIDER_ERROR_FIELDS.some((key) => Object.hasOwn(params, key)))
+    return params;
+  const escaped = { ...params };
+  for (const key of PROVIDER_ERROR_FIELDS) {
+    if (!Object.hasOwn(escaped, key)) continue;
+    const value = escaped[key];
+    escaped[key] = _.escape(
+      Array.isArray(value) ? value.join(' ') : String(value)
+    );
+  }
+
+  return escaped;
+}
+
+function escapeProviderError(ctx, next) {
+  const query = escapeErrorFields(ctx.query);
+  if (query !== ctx.query) ctx.query = query;
+  // (Sign in with Apple posts its callback, errors included, as a form)
+  const body = escapeErrorFields(ctx.request.body);
+  if (body !== ctx.request.body) ctx.request.body = body;
+  return next();
+}
+
 async function callbackRedirect(ctx, next) {
   if (!ctx.passport) return next();
 
@@ -187,10 +226,23 @@ async function callbackRedirect(ctx, next) {
   // sessions, and clear any outstanding reset tokens.
   //
   const oauthProviders = new Set(['apple', 'google', 'github', 'ubuntu']);
+
+  // (ends when the user revokes this application at the provider, see
+  // helpers/oauth-session-revocation.js)
+  // (a database error here leaves the session unchecked, not the sign in failed)
+  if (ctx.isAuthenticated()) {
+    try {
+      await markOAuthSession(ctx, ctx.params.provider);
+    } catch (err) {
+      ctx.logger.fatal(err);
+    }
+  }
+
   if (
     ctx.isAuthenticated() &&
     oauthProviders.has(ctx.params.provider) &&
-    !ctx.state.user[config.userFields.hasVerifiedEmail]
+    // (also an address only counted as verified for a paid plan)
+    !isEmailProven(ctx.state.user)
   ) {
     const user = await Users.findById(ctx.state.user._id);
     if (user) {
@@ -322,6 +374,7 @@ router
   .get(
     '/:provider/ok',
     web.auth.catchError,
+    escapeProviderError,
     pinUbuntuProvider,
     callbackCheck,
     callbackRedirect
@@ -348,6 +401,7 @@ router
 
       return next();
     },
+    escapeProviderError,
     pinUbuntuProvider,
     callbackCheck,
     callbackRedirect

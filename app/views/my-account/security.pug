@@ -119,6 +119,18 @@ block body
                                 name="_method",
                                 value="DELETE"
                               )
+                              if user[config.userFields.hasSetPassword]
+                                .form-group.floating-label.mb-1
+                                  input.form-control.form-control-sm(
+                                    id=`input-remove-passkey-${passkey.id}-password`,
+                                    type="password",
+                                    autocomplete="current-password",
+                                    name="password",
+                                    required
+                                  )
+                                  label(
+                                    for=`input-remove-passkey-${passkey.id}-password`
+                                  )= t("Confirm Password")
                               button.btn.btn-danger.btn-sm(type="submit")
                                 i.fa.fa-trash
                                 = " "
@@ -236,7 +248,9 @@ block body
                   = t("We allow you to manage up to 30 passkeys at once, so that you can log in with all of your devices with ease.")
                 a.btn-webauthn-register.btn.btn-primary.btn-md(
                   href="#",
-                  role="button"
+                  role="button",
+                  data-password-required=user[config.userFields.hasSetPassword] ? "true" : false,
+                  data-password-label=t("Confirm Password")
                 )= t("Add New Passkey")
               .card-footer.text-right
                 ul.list-inline.mb-0

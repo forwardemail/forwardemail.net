@@ -2890,24 +2890,22 @@ Tasks.org 是一个流行的开源任务管理器，与 Forward Email 的 CalDAV
 | 类别 | 功能与行为 |
 | --- | --- |
 | 核心语言 | `keep`, `discard`, `stop`, 条件块，以及基本的 `address`, `header`, `exists`, `size` 和布尔测试。 |
-| 投递 | `fileinto`, `copy`, `redirect`, 用于 `fileinto :create` 的 `mailbox`，以及用于标准文件夹 `:specialuse` 映射和 `specialuse_exists` 的 `special-use`。 |
-| 测试和比较 | `envelope`, `body`, `date`, `index`, `regex`, `subaddress`, `relational`, `i;ascii-casemap`, 和 `i;octet`。 |
-| 状态与变量 | `variables`, `imap4flags`, `duplicate`, 和 `ihave`。 |
+| 投递 | `fileinto`, `copy`, `redirect`, 用于 `fileinto :create` 和 `mailboxexists` 的 `mailbox`，以及用于 `fileinto :specialuse` 和 `specialuse_exists` 的 `special-use`。 |
+| 测试和比较 | `envelope`, `body`, `date`, `index`, `regex`, `subaddress`, `relational`, `i;ascii-casemap`, `i;octet`, 和 `i;ascii-numeric`。 |
+| 状态与变量 | `variables`, `encoded-character`, `imap4flags`, `duplicate`, 和 `ihave`。 |
 | 操作与响应 | `reject`, `ereject`, `vacation`, `vacation-seconds`, 以及使用 `mailto:` 的 `enotify`。遗留声明 `require "notify"` 被接受作为 `enotify` 的输入别名，但 `enotify` 是对外声明的功能。 |
-| 消息处理 | `editheader`, `environment`, 和 `mime`，包括 `foreverypart`, `break`, `extracttext`, 和 `replace`。 |
+| 消息处理 | `editheader`, `environment`, `foreverypart`（含 `break`）, `extracttext`, `replace`, 和 `mime`，后者也会启用这三个命令。 |
 
-`redirect` 会通过常规的外发队列发送。它受配置的重定向域策略、拒绝列表检查和速率限制的约束。`editheader` 无法修改受保护的认证或投递路由头。
+`redirect` 无需 `require`。它通过常规的外发队列发送，该队列只接受 From 为您的别名、且所在域名启用了出站 SMTP 的邮件；其他邮件会保留在您的收件箱中。重定向受配置的重定向域策略、拒绝列表检查和速率限制的约束。`editheader` 无法修改受保护的认证或投递路由头、`Received` 或 `Auto-Submitted`。
 
 #### 不支持的功能
 
 | 功能 | 原因 |
 | --- | --- |
 | `enclose` | 未实现创建包含原始邮件的新邮件的功能。 |
-| `mailboxexists` | Forward Email 不进行实时的 IMAP 邮箱状态查询。`fileinto :create` 仍可通过 `mailbox` 使用。 |
 | `include` | 不提供全局和包含脚本存储。 |
 | `mboxmetadata` / `servermetadata` | 未集成 IMAP METADATA。 |
 | `fcc` | 未提供发件存档的归档集成功能。 |
-| `encoded-character` | 未实现 `${hex:...}` 语法。 |
 | 外部列表 | 不提供 `valid_ext_list` 及其他外部列表操作。 |
 
 #### 示例 Sieve 脚本
@@ -2944,8 +2942,6 @@ if address :is "from" "boss@example.com" {
 **Redirect a message:**
 
 ```sieve
-require ["redirect"];
-
 if header :contains "Subject" "invoice" {
     redirect "recipient@example.com";
 }

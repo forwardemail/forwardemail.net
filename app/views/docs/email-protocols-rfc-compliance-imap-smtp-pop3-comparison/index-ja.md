@@ -1109,45 +1109,45 @@ sequenceDiagram
 
 | RFC または仕様 | 機能 | サポートされる動作 |
 | --- | --- | --- |
-| [RFC 5228](https://datatracker.ietf.org/doc/html/rfc5228) | Core Sieve | `keep`, `discard`, `stop`, 条件ブロック、および基本の `address`, `header`, `exists`, `size`、およびブールテスト。`fileinto` と `redirect` はインバウンド配信パイプライン経由で配信されます。 |
+| [RFC 5228](https://datatracker.ietf.org/doc/html/rfc5228) | Core Sieve, `encoded-character` | `keep`, `discard`, `stop`, 条件ブロック、および基本の `address`, `header`, `exists`, `size`、およびブールテスト。`fileinto` は指定された各フォルダーにメッセージを保存します。`redirect` は `require` を必要とせず、送信キューを通じて送られます。送信キューは From がエイリアスで、送信 SMTP が有効なドメインのメッセージのみを受け付け、それ以外のメッセージは受信トレイに保持されます。`encoded-character` が要求されている場合、`${hex:...}` と `${unicode:...}` はデコードされます。 |
 | [RFC 5429](https://datatracker.ietf.org/doc/html/rfc5429) | `reject`, `ereject` | 提供されたメッセージを使った SMTP リジェクト。 |
-| [RFC 5230](https://datatracker.ietf.org/doc/html/rfc5230) | `vacation` | バケーション返信はアビューズ制御付きでキューに入れられます。 |
+| [RFC 5230](https://datatracker.ietf.org/doc/html/rfc5230) | `vacation` | バケーション返信はアビューズ制御付きでキューに入れられ、`:days` 期間（デフォルトは 7 日）ごとに送信者あたり最大 1 回です。 |
 | [RFC 6131](https://datatracker.ietf.org/doc/html/rfc6131) | `vacation-seconds` | `:seconds` 間隔がバケーション応答の TTL を制御します。 |
 | [RFC 5232](https://datatracker.ietf.org/doc/html/rfc5232) | `imap4flags` | フラグはメールボックス保存時に適用されます。 |
 | [RFC 5173](https://datatracker.ietf.org/doc/html/rfc5173) | `body` | メッセージ本文の内容マッチング。 |
 | [RFC 5229](https://datatracker.ietf.org/doc/html/rfc5229) | `variables` | 変数展開とサポートされる修飾子。 |
 | [RFC 5231](https://datatracker.ietf.org/doc/html/rfc5231) | `relational` | `:count` と `:value` の比較。 |
-| [RFC 4790](https://datatracker.ietf.org/doc/html/rfc4790) | Comparators | `i;ascii-casemap` と `i;octet`。`i;ascii-numeric` はアドバタイズされません。 |
+| [RFC 4790](https://datatracker.ietf.org/doc/html/rfc4790) | Comparators | `i;ascii-casemap`、`i;octet`、`i;ascii-numeric`。 |
 | [RFC 3894](https://datatracker.ietf.org/doc/html/rfc3894) | `copy` | `fileinto` と `redirect` の `:copy`。 |
-| [RFC 5293](https://datatracker.ietf.org/doc/html/rfc5293) | `editheader` | 保存前のヘッダー変更（認証および配信ルーティングの保護されたフィールドを除く）。 |
+| [RFC 5293](https://datatracker.ietf.org/doc/html/rfc5293) | `editheader` | 保存前のヘッダー変更（後続のテストに反映。認証および配信ルーティングの保護されたフィールド、`Received`、`Auto-Submitted` を除く）。 |
 | [RFC 5260](https://datatracker.ietf.org/doc/html/rfc5260) | `date`, `index` | `currentdate` とヘッダ日付テスト、さらに `:index` と `:last`。 |
-| [RFC 5435](https://datatracker.ietf.org/doc/html/rfc5435) | `enotify` | レート制限付きの `mailto:` 通知。旧来の `require "notify"` 宣言はエイリアスとして受け入れられますが、`enotify` がアドバタイズされます。 |
+| [RFC 5435](https://datatracker.ietf.org/doc/html/rfc5435) | `enotify` | レート制限付きの `mailto:` 通知（自動送信メッセージには送信しません）。旧来の `require "notify"` 宣言はエイリアスとして受け入れられますが、`enotify` がアドバタイズされます。 |
 | [RFC 5183](https://datatracker.ietf.org/doc/html/rfc5183) | `environment` | サポートされるセッション環境値。 |
-| [RFC 5490](https://datatracker.ietf.org/doc/html/rfc5490) | `mailbox` | `fileinto :create` のみ。ライブの `mailboxexists` クエリはサポートされません。 |
-| [RFC 8579](https://datatracker.ietf.org/doc/html/rfc8579) | `special-use` | 標準フォルダーの `:specialuse` マッピングと決定論的な `specialuse_exists` チェック。 |
+| [RFC 5490](https://datatracker.ietf.org/doc/html/rfc5490) | `mailbox` | `fileinto :create` と、エイリアスのフォルダーを照会する `mailboxexists`。 |
+| [RFC 8579](https://datatracker.ietf.org/doc/html/rfc8579) | `special-use` | `fileinto :specialuse` はその特別用途を持つフォルダーに格納し、`specialuse_exists` はエイリアスのフォルダーを照会します。 |
 | [RFC 7352](https://datatracker.ietf.org/doc/html/rfc7352) | `duplicate` | Redis による重複配信検出。 |
-| [RFC 5463](https://datatracker.ietf.org/doc/html/rfc5463) | `ihave` | アドバタイズされた機能が利用可能かどうかをチェック。 |
+| [RFC 5463](https://datatracker.ietf.org/doc/html/rfc5463) | `ihave` | アドバタイズされた機能が利用可能かどうかのチェックと、`error` コマンド。 |
 | [RFC 5233](https://datatracker.ietf.org/doc/html/rfc5233) | `subaddress` | アドレスの `:user` と `:detail` 部分。 |
 | [draft-ietf-sieve-regex](https://datatracker.ietf.org/doc/html/draft-ietf-sieve-regex) | `regex` | [RE2](https://github.com/uhop/node-re2) を使用した正規表現マッチング。 |
-| [RFC 5703](https://datatracker.ietf.org/doc/html/rfc5703) | `mime` | MIME テストと `foreverypart`, `break`, `extracttext`, および `replace`。`enclose` は安全な配信実装がないため拒否されます。 |
+| [RFC 5703](https://datatracker.ietf.org/doc/html/rfc5703) | `foreverypart`, `extracttext`, `replace`, `mime` | MIME テストと `foreverypart`, `break`, `extracttext`, および `replace`。古いスクリプトが想定するとおり、`mime` でもこれらのコマンドが有効になります。`enclose` は安全な配信実装がないため拒否されます。 |
 
 #### サポートされる Sieve 拡張 {#supported-sieve-extensions}
 
 | 拡張 | 動作 | 配信または強制方法 |
 | --- | --- | --- |
-| `fileinto` | メッセージをフォルダーに格納します。 | 選択された IMAP フォルダーに保存されます。`fileinto :create` は `mailbox` を必要とします。 |
+| `fileinto` | メッセージをフォルダーに格納します。 | 選択された IMAP フォルダーに保存されます。`fileinto :create` と `mailboxexists` は `mailbox` を必要とします。 |
 | `copy` | `fileinto` や `redirect` を追加しつつ元の配信を保持します。 | 配信パイプラインによって適用されます。 |
-| `redirect` | 別の受信者へコピーまたは置換配信を送ります。 | ドメインポリシー、拒否リストチェック、およびレート制限の対象として通常のアウトバウンド経路を通じてキューに入れられます。 |
+| `redirect` | メッセージを別の受信者へ送ります。 | From がエイリアスで、送信 SMTP が有効なドメインのメッセージは、ドメインポリシー、拒否リストチェック、およびレート制限の対象として通常のアウトバウンド経路を通じてキューに入れられます。それ以外のメッセージは受信トレイに保持されます。 |
 | `reject` / `ereject` | SMTP エラーでメッセージを拒否します。 | MX 配信経路を通じて返されます。 |
 | `vacation` / `vacation-seconds` | 自動返信を送信します。 | 受信者および間隔のレート制限付きでキューに入れられます。 |
 | `imap4flags` | IMAP フラグを設定またはテストします。 | メッセージが保存されるときに適用されます。 |
-| `envelope`, `body`, `date`, `index`, `regex`, `subaddress`, `relational` | メッセージおよびエンベロープのデータをテストします。 | Sieve エンジンによって評価されます。 |
+| `envelope`, `body`, `date`, `index`, `regex`, `subaddress`, `relational`, `comparator-i;ascii-numeric` | メッセージおよびエンベロープのデータをテストします。 | Sieve エンジンによって評価されます。 |
 | `variables`, `duplicate`, `ihave` | 値を保存し、重複を検出し、機能をチェックします。 | 変数はスクリプトローカル；重複状態は Redis を使用します。 |
-| `editheader` | 保護されていないヘッダーを追加または削除します。 | 認証および配信ルーティングヘッダーは変更できません。 |
+| `editheader` | 保護されていないヘッダーを追加または削除します。 | 認証および配信ルーティングヘッダー、`Received`、`Auto-Submitted` は変更できません。 |
 | `enotify` | `mailto:` を使って通知を送信します。 | 通知のレート制限付きでキューに入れられます。 |
 | `environment` | サポートされるセッション環境データを読み取ります。 | Sieve エンジンによって評価されます。 |
-| `special-use` | 標準用途フォルダーに対応します。 | 標準フォルダーをマップし、決定論的な `specialuse_exists` 結果を提供します。 |
-| `mime` | サポートされる MIME パートを検査および変更します。 | ジェネリックな `mime` 機能を必要とします。個別の RFC 5703 コマンドは個別にはアドバタイズされません。 |
+| `special-use` | 標準用途フォルダーに対応します。 | エイリアスの特別用途フォルダーへの格納と照会を行います。 |
+| `foreverypart`, `extracttext`, `replace`, `mime` | サポートされる MIME パートを検査および変更します。 | Sieve エンジンによって評価されます。古いスクリプトが想定するとおり、`mime` でもこれら 3 つのコマンドが有効になります。 |
 
 #### サポートされていない Sieve 機能 {#sieve-extensions-not-supported}
 
@@ -1156,11 +1156,9 @@ sequenceDiagram
 | 機能 | RFC または仕様 | 理由 |
 | --- | --- | --- |
 | `enclose` | [RFC 5703](https://datatracker.ietf.org/doc/html/rfc5703) | 元のメッセージを内包する新しいメッセージを作成することは、エンドツーエンドで安全に実装されていません。 |
-| `mailboxexists` | [RFC 5490](https://datatracker.ietf.org/doc/html/rfc5490) | ライブな IMAP メールボックス状態クエリは利用できません。 |
 | `include` | [RFC 6609](https://datatracker.ietf.org/doc/html/rfc6609) | グローバルおよびインクルードされたスクリプトの保存は利用できません。 |
 | `mboxmetadata` / `servermetadata` | [RFC 5490](https://datatracker.ietf.org/doc/html/rfc5490) | IMAP METADATA の統合は利用できません。 |
 | `fcc` | [RFC 8580](https://datatracker.ietf.org/doc/html/rfc8580) | 送信メールの仕分け統合は利用できません。 |
-| `encoded-character` | [RFC 5228](https://datatracker.ietf.org/doc/html/rfc5228) | `${hex:...}` 構文は実装されていません。 |
 | 外部リスト | [RFC 6134](https://datatracker.ietf.org/doc/html/rfc6134) | `valid_ext_list` およびその他の外部リスト操作は利用できません。 |
 
 #### Sieve 処理フロー {#sieve-processing-flow}
@@ -1197,7 +1195,7 @@ sequenceDiagram
 
 #### セキュリティ機能 {#security-features}
 
-Forward Email はスクリプトが保存、 有効化、または実行される前にスクリプト全体を検証します。宣言されていない、または利用不可の機能を拒否し、スクリプトサイズと MIME パート反復を制限し、正規表現マッチングには [RE2](https://github.com/uhop/node-re2) を使用し、リダイレクト、バケーション返信、および通知にレート制限をかけ、危険なリダイレクト先を拒否し、`editheader` が認証や配信ルーティングのヘッダーを変更するのを防ぎます。リダイレクトとバケーションのレート制限状態は [Redis](https://github.com/redis/redis) に保持され、配信されたメールは [SQLite](https://github.com/sqlite/sqlite) に保存されます。
+Forward Email はスクリプトが保存、 有効化、または実行される前にスクリプト全体を検証します。宣言されていない、または利用不可の機能を拒否し、スクリプトサイズと MIME パート反復を制限し、正規表現マッチングには [RE2](https://github.com/uhop/node-re2) を使用し、リダイレクト、バケーション返信、および通知にレート制限をかけ、危険なリダイレクト先を拒否し、`editheader` が認証や配信ルーティングのヘッダー、`Received`、`Auto-Submitted` を変更するのを防ぎます。実行時間が長すぎるスクリプトや、アクション、フラグ、変数を作りすぎるスクリプトは停止され、メッセージは保持されます。リダイレクトとバケーションのレート制限状態は [Redis](https://github.com/redis/redis) に保持され、配信されたメールは [SQLite](https://github.com/sqlite/sqlite) に保存されます。
 
 #### Sieve スクリプトの例 {#example-sieve-scripts}
 
@@ -1233,8 +1231,6 @@ if header :contains "X-Spam-Status" "Yes" {
 **請求書をリダイレクトする:**
 
 ```sieve
-require ["redirect"];
-
 if header :contains "Subject" "invoice" {
     redirect "recipient@example.com";
 }
@@ -1260,7 +1256,7 @@ Forward EmailはSieveスクリプトをリモート管理するためのManageSi
 | **サーバー**            | `imap.forwardemail.net` |
 | **ポート (STARTTLS)**   | `2190` (推奨)           |
 | **ポート (Implicit TLS)** | `4190`                  |
-| **認証方式**            | PLAIN (TLS上で)          |
+| **認証方式**            | PLAIN および LOGIN (TLS上で) |
 
 > **注意:** ポート2190はSTARTTLS（平文からTLSへのアップグレード）を使用し、[sieve-connect](https://github.com/philpennock/sieve-connect)を含むほとんどのManageSieveクライアントと互換性があります。ポート4190は暗黙のTLS（接続開始時からTLS）を使用し、それをサポートするクライアント向けです。
 
@@ -1268,7 +1264,8 @@ Forward EmailはSieveスクリプトをリモート管理するためのManageSi
 
 | コマンド        | 説明                                   |
 | -------------- | --------------------------------------- |
-| `AUTHENTICATE` | PLAINメカニズムによる認証               |
+| `AUTHENTICATE` | PLAIN または LOGIN メカニズムによる認証    |
+| `STARTTLS`     | ポート 2190 で接続を TLS にアップグレード    |
 | `CAPABILITY`   | サーバーの機能および拡張機能の一覧表示 |
 | `HAVESPACE`    | スクリプトを保存可能か確認               |
 | `PUTSCRIPT`    | 新しいスクリプトをアップロード           |

@@ -11,6 +11,8 @@ Det här avsnittet dokumenterar CI/CD-arbetsflödet för ForwardEmails självhos
 * [Implementeringsprocess](#deployment-process)
   * [Installation](#installation)
   * [Docker Compose-konfiguration](#docker-compose-configuration)
+  * [Leverans till domäner på samma server](#delivery-to-domains-hosted-on-the-same-server)
+  * [Avsluta sessioner när åtkomsten hos Google eller GitHub återkallas](#ending-sessions-when-google-or-github-access-is-revoked)
 * [Underhållsfunktioner](#maintenance-features)
   * [Automatiska uppdateringar](#automatic-updates)
   * [Säkerhetskopiering och återställning](#backup-and-restore)
@@ -122,6 +124,30 @@ Filen `docker-compose-self-hosted.yml` definierar alla tjänster som krävs för
 * **SQLite**: Databas för lagring av e-postmeddelanden
 
 Varje tjänst använder samma Docker-avbildning men med olika startpunkter, vilket möjliggör en modulär arkitektur samtidigt som underhållet förenklas.
+
+### Leverans till domäner på samma server {#delivery-to-domains-hosted-on-the-same-server}
+
+Utgående e-post levereras inte till en MX-server på en adress som tillhör servern själv. När en server är värd för flera domäner och deras MX-poster pekar på dess offentliga adress avvisas e-post från en av dessa domäner till en annan.
+
+För att tillåta det, ange:
+
+```env
+SMTP_ALLOW_LOCAL_MX=true
+```
+
+Standardvärdet är `false`, och inställningen gäller bara när `SELF_HOSTED=true`. E-post levereras fortfarande aldrig till loopback-, privata, länklokala eller carrier-grade NAT-adresser.
+
+### Avsluta sessioner när åtkomsten hos Google eller GitHub återkallas {#ending-sessions-when-google-or-github-access-is-revoked}
+
+I en egen installation kontrolleras sessioner som loggats in med Google eller GitHub som standard inte hos leverantören: om programmets åtkomst återkallas där loggas de inte ut, utan förblir inloggade tills de går ut.
+
+För att avsluta dem så snart åtkomsten har återkallats, ange:
+
+```env
+AUTH_OAUTH_REVOCATION_CHECK=true
+```
+
+Leverantören tillfrågas då i bakgrunden, ungefär var 5:e minut (varje minut så länge den inte svarar). Ett avbrott hos leverantören loggar inte ut någon, och det gör inte heller en token som leverantören aldrig har godkänt.
 
 ## Underhållsfunktioner {#maintenance-features}
 

@@ -691,7 +691,6 @@ if duplicate :header "X-Custom-ID" {
     it('should test for available capabilities', async () => {
       const script = `require "ihave";
 if ihave "fileinto" {
-  require "fileinto";
   fileinto "HasFileinto";
 }`;
 
@@ -729,6 +728,9 @@ if ihave "nonexistent-extension" {
       const script = `require ["mailbox", "fileinto"];
 if mailboxexists "INBOX" {
   fileinto "INBOX";
+}
+if mailboxexists ["INBOX", "Missing"] {
+  fileinto "Missing";
 }`;
 
       const ast = parse(script);
@@ -736,9 +738,26 @@ if mailboxexists "INBOX" {
       const email = createTestEmail();
       const message = parseEmailToMessage(email);
 
-      const result = await engine.execute(ast, message);
-      const fileintoAction = result.actions.find((a) => a.type === 'fileinto');
-      assert.strictEqual(fileintoAction.mailbox, 'INBOX');
+      // (the mailboxes are looked up for the delivery)
+      const result = await engine.execute(ast, message, {
+        mailboxExists: async (name) => name === 'INBOX'
+      });
+      const mailboxes = result.actions
+        .filter((a) => a.type === 'fileinto')
+        .map((a) => a.mailbox);
+      assert.deepStrictEqual(mailboxes, ['INBOX']);
+    });
+
+    it('finds no mailbox when they cannot be looked up', async () => {
+      const ast = parse(`require ["mailbox", "fileinto"];
+if mailboxexists "INBOX" {
+  fileinto "Found";
+}`);
+      const result = await new SieveEngine().execute(
+        ast,
+        parseEmailToMessage(createTestEmail())
+      );
+      assert.ok(!result.actions.some((a) => a.type === 'fileinto'));
     });
 
     it('should support :create flag with fileinto', async () => {
@@ -769,7 +788,15 @@ if specialuse_exists ["\\\\Junk"] {
       const email = createTestEmail();
       const message = parseEmailToMessage(email);
 
-      const result = await engine.execute(ast, message);
+      // (the special-use mailboxes are looked up for the delivery)
+      const result = await engine.execute(ast, message, {
+        async specialUseExists(attributes, mailbox) {
+          return (
+            mailbox === null &&
+            attributes.every((a) => a.toLowerCase() === '\\junk')
+          );
+        }
+      });
       const fileintoAction = result.actions.find((a) => a.type === 'fileinto');
       assert.strictEqual(fileintoAction.mailbox, 'Junk');
     });

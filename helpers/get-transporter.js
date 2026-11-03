@@ -8,6 +8,7 @@ const { callbackify } = require('node:util');
 const { isIP } = require('node:net');
 
 const Axe = require('axe');
+const { boolean } = require('boolean');
 const ip = require('ip');
 const isFQDN = require('is-fqdn');
 const isSANB = require('is-string-and-not-blank');
@@ -32,6 +33,20 @@ const config = require('#config');
 
 const asyncMxConnect = pify(mxConnect);
 const maxConnectTime = ms('1m');
+
+//
+// Whether an MX at an address of this host's own network interfaces is
+// refused. A self-hosted install that hosts several domains, with MX records
+// pointing at its public address, delivers mail from one to another only
+// with `SMTP_ALLOW_LOCAL_MX=true` (#610). Every destination must still be a
+// public unicast address (`publicConnectHook` and `createPublicResolve`).
+//
+function shouldBlockLocalAddresses() {
+  return (
+    env.NODE_ENV !== 'test' &&
+    !(boolean(env.SELF_HOSTED) && boolean(env.SMTP_ALLOW_LOCAL_MX))
+  );
+}
 
 const transporterConfig = {
   debug: config.env !== 'test',
@@ -270,11 +285,11 @@ async function getTransporter(options = {}, err) {
       // <https://github.com/zone-eu/mx-connect/blob/f9e20ceff5a4a7cfb85fba58ca2f040aaa7c2358/lib/get-connection.js#L6>
       maxConnectTime,
       dnsOptions: {
-        // NOTE: if we merge code then this will need adjusted
-        blockLocalAddresses: env.NODE_ENV !== 'test',
+        blockLocalAddresses: shouldBlockLocalAddresses(),
         // <https://github.com/zone-eu/mx-connect/pull/4>
-        // (A/AAAA answers are limited to public unicast addresses since
-        // `blockLocalAddresses` only covers the loopback and private ranges)
+        // (A/AAAA answers are limited to public unicast addresses whatever
+        // `blockLocalAddresses` is, which only covers the loopback and
+        // private ranges and this host's own addresses)
         // (this resolver is also the one used to look up and connect to the
         // MTA-STS policy host, so the policy is never fetched from an
         // internal address either)
@@ -492,3 +507,4 @@ async function getTransporter(options = {}, err) {
 }
 
 module.exports = getTransporter;
+module.exports.shouldBlockLocalAddresses = shouldBlockLocalAddresses;

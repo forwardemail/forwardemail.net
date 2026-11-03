@@ -2893,24 +2893,22 @@ IPv4와 IPv6 모두를 지원하며 포트 `443`(HTTPS)에서 이용 가능합�
 | 범주 | 기능 및 동작 |
 | --- | --- |
 | 코어 언어 | `keep`, `discard`, `stop`, 조건 블록 및 기본 `address`, `header`, `exists`, `size` 및 불리언 테스트. |
-| 배달 | `fileinto`, `copy`, `redirect`, `mailbox`( `fileinto :create` 용), 및 표준 폴더 `:specialuse` 매핑을 위한 `special-use`와 `specialuse_exists`. |
-| 테스트 및 비교 | `envelope`, `body`, `date`, `index`, `regex`, `subaddress`, `relational`, `i;ascii-casemap`, 및 `i;octet`. |
-| 상태 및 변수 | `variables`, `imap4flags`, `duplicate`, 및 `ihave`. |
+| 배달 | `fileinto`, `copy`, `redirect`, `mailbox`(`fileinto :create` 및 `mailboxexists` 용), 및 `special-use`(`fileinto :specialuse` 및 `specialuse_exists` 용). |
+| 테스트 및 비교 | `envelope`, `body`, `date`, `index`, `regex`, `subaddress`, `relational`, `i;ascii-casemap`, `i;octet`, 및 `i;ascii-numeric`. |
+| 상태 및 변수 | `variables`, `encoded-character`, `imap4flags`, `duplicate`, 및 `ihave`. |
 | 동작 및 응답 | `reject`, `ereject`, `vacation`, `vacation-seconds`, 및 `enotify` (mailto: 사용). 레거시 선언인 `require "notify"`는 `enotify`의 입력 별칭으로 허용되지만, 광고된 capability는 `enotify`입니다. |
-| 메시지 처리 | `editheader`, `environment`, 및 `mime` (여기에는 `foreverypart`, `break`, `extracttext`, 및 `replace` 포함). |
+| 메시지 처리 | `editheader`, `environment`, `foreverypart`(`break` 포함), `extracttext`, `replace`, 및 `mime`(이 세 명령도 활성화). |
 
-`redirect`는 일반 아웃바운드 큐를 통해 전달됩니다. 구성된 리다이렉트 도메인 정책, 차단 목록 검사 및 속도 제한의 적용을 받습니다. `editheader`는 보호된 인증 헤더나 전달 라우팅 헤더를 수정할 수 없습니다.
+`redirect`는 `require`가 필요 없습니다. 일반 아웃바운드 큐를 통해 전송되며, 이 큐는 From이 별칭이고 발신 SMTP가 있는 도메인의 메시지만 받습니다. 그 외의 메시지는 받은편지함에 보관됩니다. 리다이렉트는 구성된 리다이렉트 도메인 정책, 차단 목록 검사 및 속도 제한의 적용을 받습니다. `editheader`는 보호된 인증 헤더나 전달 라우팅 헤더, `Received`, `Auto-Submitted`를 수정할 수 없습니다.
 
 #### 지원되지 않는 기능
 
 | 기능 | 사유 |
 | --- | --- |
 | `enclose` | 원본 메시지를 포함하는 새 메시지 생성은 구현되어 있지 않습니다. |
-| `mailboxexists` | Forward Email은 실시간 IMAP 메일박스 상태 쿼리를 수행하지 않습니다. `fileinto :create`는 여전히 `mailbox`를 통해 사용 가능합니다. |
 | `include` | 전역 및 포함된 스크립트 저장소는 제공되지 않습니다. |
 | `mboxmetadata` / `servermetadata` | IMAP METADATA 통합을 사용할 수 없습니다. |
 | `fcc` | 발신 메일 파일링 통합을 사용할 수 없습니다. |
-| `encoded-character` | `${hex:...}` 구문은 구현되어 있지 않습니다. |
 | 외부 리스트 | `valid_ext_list` 및 기타 외부 리스트 작업은 사용할 수 없습니다. |
 
 #### Sieve 스크립트 예시
@@ -2947,8 +2945,6 @@ if address :is "from" "boss@example.com" {
 **메시지 리다이렉트:**
 
 ```sieve
-require ["redirect"];
-
 if header :contains "Subject" "invoice" {
     redirect "recipient@example.com";
 }

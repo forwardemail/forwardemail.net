@@ -14,6 +14,7 @@
 
 const { describe, it, beforeEach } = require('node:test');
 const assert = require('node:assert');
+const { Buffer } = require('node:buffer');
 const path = require('node:path');
 
 const {
@@ -958,5 +959,738 @@ describe('Sieve Security - Notification Rate Limiting', () => {
     // 11th notification should be denied (limit is 10/hour)
     const eleventh = await limiter.checkNotification(aliasId);
     assert.strictEqual(eleventh.allowed, false);
+  });
+});
+
+describe('Sieve Security - deleteheader on many headers', () => {
+  // (`SieveIntegration` is loaded here, and not at the top of this file, so
+  // the other suites above do not depend on it)
+  const { SieveIntegration } = require(path.join(
+    __dirname,
+    '../../helpers/sieve/integration'
+  ));
+
+  // the headers come from whoever sent the message: removing matches one
+  // at a time with `splice()` was quadratic in their number
+  const many = (n) =>
+    Buffer.from(
+      'Subject: hi\r\n' +
+        Array.from(
+          { length: n },
+          (_, i) => `X-Spam: ${i}\r\nX-Other: ${i}\r\n`
+        ).join('') +
+        'X-Keep: yes\r\n\r\nbody'
+    );
+
+  it('deletes every match of many headers in linear time', async () => {
+    const sieve = new SieveIntegration({});
+    const start = Date.now();
+    const result = await sieve.applyHeaderChanges(many(100_000), [
+      { action: 'delete', name: 'x-spam' }
+    ]);
+    const elapsed = Date.now() - start;
+    const lines = result.toString().split('\r\n');
+    assert.ok(!lines.some((line) => line.startsWith('X-Spam:')));
+    assert.strictEqual(
+      lines.filter((line) => line.startsWith('X-Other:')).length,
+      100_000
+    );
+    assert.strictEqual(lines[0], 'Subject: hi');
+    assert.ok(result.toString().endsWith('X-Keep: yes\r\n\r\nbody'));
+    assert.ok(elapsed < 2000, `took ${elapsed}ms`);
+  });
+
+  it('deletes matching values of many headers in linear time', async () => {
+    const sieve = new SieveIntegration({});
+    const start = Date.now();
+    const result = await sieve.applyHeaderChanges(many(100_000), [
+      {
+        action: 'delete',
+        name: 'X-Spam',
+        matchType: 'matches',
+        values: ['*0', '1?']
+      }
+    ]);
+    const elapsed = Date.now() - start;
+    const remaining = result
+      .toString()
+      .split('\r\n')
+      .filter((line) => line.startsWith('X-Spam:'))
+      .map((line) => line.slice('X-Spam: '.length));
+    assert.strictEqual(remaining.length, 100_000 - 10_000 - 9);
+    assert.ok(!remaining.includes('10'));
+    assert.ok(!remaining.includes('19'));
+    assert.ok(remaining.includes('1'));
+    assert.ok(remaining.includes('101'));
+    assert.ok(elapsed < 2000, `took ${elapsed}ms`);
+  });
+
+  it('keeps the other deleteheader forms working', async () => {
+    const sieve = new SieveIntegration({});
+    const raw = Buffer.from(
+      'X-A: one\r\nX-A: Two\r\nX-A: three\r\nX-B: b\r\n\r\nbody'
+    );
+    // (:index counts from the first, RFC 5293 section 5)
+    const byIndex = await sieve.applyHeaderChanges(raw, [
+      { action: 'delete', name: 'x-a', index: 1 }
+    ]);
+    assert.strictEqual(
+      byIndex.toString(),
+      'X-A: Two\r\nX-A: three\r\nX-B: b\r\n\r\nbody'
+    );
+    const byValue = await sieve.applyHeaderChanges(raw, [
+      { action: 'delete', name: 'x-a', matchType: 'is', values: ['two'] },
+      { action: 'delete', name: 'x-a', matchType: 'contains', values: ['HRE'] }
+    ]);
+    assert.strictEqual(byValue.toString(), 'X-A: one\r\nX-B: b\r\n\r\nbody');
+  });
+
+  // (a deleteheader without ":index", as the parser gives it, deleted
+  // nothing: its `index` is null)
+  it('deletes every match for a deleteheader without :index', async () => {
+    const { parse } = require(path.join(
+      __dirname,
+      '../../helpers/sieve/parser'
+    ));
+    const { commands } = parse(
+      'require ["editheader"];\ndeleteheader "X-A";\ndeleteheader :contains "X-B" "drop";'
+    );
+    const changes = commands
+      .filter((command) => command.type === 'Deleteheader')
+      .map((command) => ({
+        action: 'delete',
+        name: command.name,
+        index: command.index,
+        matchType: command.matchType,
+        values: command.values
+      }));
+    assert.strictEqual(changes[0].index, null);
+    const sieve = new SieveIntegration({});
+    const result = await sieve.applyHeaderChanges(
+      Buffer.from(
+        'X-A: one\r\nX-B: keep\r\nX-A: two\r\nX-B: please drop\r\n\r\nbody'
+      ),
+      changes
+    );
+    assert.strictEqual(result.toString(), 'X-B: keep\r\n\r\nbody');
+  });
+});
+
+describe('Sieve Security - variable size', () => {
+  const { executeScript, validateScript } = require(path.join(
+    __dirname,
+    '../../helpers/sieve/index'
+  ));
+  const { MAX_VARIABLE_LENGTH } = require(path.join(
+    __dirname,
+    '../../helpers/sieve/variable-references'
+  ));
+
+  const message = () => ({
+    headers: { from: 'sender@example.com', subject: 'hi' },
+    envelope: { from: 'sender@example.com', to: 'user@example.com' },
+    size: 100,
+    body: 'body'
+  });
+
+  it('caps a variable that set commands keep multiplying', async () => {
+    // (each line makes the variable ten times longer: 10^8 characters and
+    // hundreds of MB after seven of them, every test on it then took seconds)
+    const script = [
+      'require ["variables"];',
+      'set "a" "AAAAAAAAAA";',
+      ...Array.from(
+        { length: 7 },
+        // eslint-disable-next-line no-template-curly-in-string
+        () => 'set "a" "${a}${a}${a}${a}${a}${a}${a}${a}${a}${a}";'
+      ),
+      ...Array.from(
+        { length: 5 },
+        // eslint-disable-next-line no-template-curly-in-string
+        () => 'if string :contains "${a}${a}" "zz" { stop; }'
+      ),
+      'keep;'
+    ].join('\n');
+    assert.strictEqual(validateScript(script).valid, true);
+
+    const start = Date.now();
+    const result = await executeScript(script, message());
+    const elapsed = Date.now() - start;
+    assert.strictEqual(result.variables.a.length, MAX_VARIABLE_LENGTH);
+    assert.ok(MAX_VARIABLE_LENGTH >= 4000); // (RFC 5229, section 3)
+    assert.ok(elapsed < 2000, `took ${elapsed}ms`);
+  });
+
+  it('a message with many headers cannot use up the expansion limit', async () => {
+    // (each key was expanded again for every value of the header, so 85,000
+    // Subject lines went past the limit and the message was kept, skipping
+    // the user's filter)
+    const script = [
+      'require ["variables"];',
+      'set "w1" "cheap-meds-promo.example.net";',
+      'set "w2" "casino-bonus-offer.example.org";',
+      // eslint-disable-next-line no-template-curly-in-string
+      'if header :contains "subject" ["${w1}", "${w2}"] { discard; stop; }',
+      'keep;'
+    ].join('\n');
+    const subjects = Array.from({ length: 200_000 }, () => 's');
+    subjects.push('see casino-bonus-offer.example.org now');
+    const result = await executeScript(script, {
+      ...message(),
+      headers: { from: 'sender@example.com', subject: subjects }
+    });
+    assert.deepStrictEqual(
+      result.actions.map((action) => action.type),
+      ['discard']
+    );
+  });
+
+  it('a message with many large parts cannot use up the expansion limit', async () => {
+    // (the text of each part, up to 100KB, counted as it was expanded, so a
+    // message with about 42 of them skipped the user's filter)
+    const script = [
+      'require ["mime", "variables", "fileinto"];',
+      'foreverypart {',
+      '  extracttext "t";',
+      '  set "u" "${t}";', // eslint-disable-line no-template-curly-in-string
+      // eslint-disable-next-line no-template-curly-in-string
+      '  if string :contains "${u}" "invoice" { fileinto "Invoices"; }',
+      '}'
+    ].join('\n');
+    assert.strictEqual(validateScript(script).valid, true);
+    const mimeParts = Array.from({ length: 90 }, () => ({
+      contentType: 'text/plain',
+      headers: { 'content-type': 'text/plain' },
+      body: 'x'.repeat(100_000)
+    }));
+    mimeParts.push({
+      contentType: 'text/plain',
+      headers: { 'content-type': 'text/plain' },
+      body: 'please pay this invoice'
+    });
+    const result = await executeScript(script, { ...message(), mimeParts });
+    assert.deepStrictEqual(
+      result.actions.map((action) => `${action.type} ${action.mailbox}`),
+      ['fileinto Invoices']
+    );
+  });
+
+  it('stops a script that makes thousands of long flags', async () => {
+    // (each flag was a new 100KB string kept to the end: a script of 20,000
+    // of them ran the delivery process out of memory)
+    const script = [
+      'require ["variables", "imap4flags"];',
+      'set "a" "eeeeeeeeee";',
+      ...Array.from(
+        { length: 4 },
+        // eslint-disable-next-line no-template-curly-in-string
+        () => 'set "a" "${a}${a}${a}${a}${a}${a}${a}${a}${a}${a}";'
+      ),
+      `addflag [${Array.from({ length: 2000 }, (_, i) => `"${i}\${a}"`).join(
+        ', '
+      )}];`
+    ].join('\n');
+    assert.strictEqual(validateScript(script).valid, true);
+    await assert.rejects(executeScript(script, message()), {
+      message: 'Sieve script exceeded the total length of expanded variables'
+    });
+  });
+
+  it('stops a script that sets thousands of long variables', async () => {
+    const script = [
+      'require ["variables"];',
+      'set "a" "eeeeeeeeee";',
+      ...Array.from(
+        { length: 4 },
+        // eslint-disable-next-line no-template-curly-in-string
+        () => 'set "a" "${a}${a}${a}${a}${a}${a}${a}${a}${a}${a}";'
+      ),
+      ...Array.from(
+        { length: 2000 },
+
+        (_, i) => `set :upper "v${i}" "\${a}";`
+      )
+    ].join('\n');
+    assert.strictEqual(validateScript(script).valid, true);
+    await assert.rejects(executeScript(script, message()), {
+      message: 'Sieve script exceeded the total length of variables'
+    });
+  });
+
+  it('a variable set again for each large part keeps only its last value', async () => {
+    // (it is the length of the variables as they are that counts; the first
+    // 100KB of the parts are kept, see MAX_VARIABLE_LENGTH)
+    const script = [
+      'require ["mime", "variables", "fileinto"];',
+      'foreverypart {',
+      '  extracttext "t";',
+      '  set "all" "${all} ${t}";', // eslint-disable-line no-template-curly-in-string
+      '}',
+      // eslint-disable-next-line no-template-curly-in-string
+      'if string :contains "${all}" "invoice" { fileinto "Invoices"; }'
+    ].join('\n');
+    assert.strictEqual(validateScript(script).valid, true);
+    const mimeParts = [
+      {
+        contentType: 'text/plain',
+        headers: { 'content-type': 'text/plain' },
+        body: 'please pay this invoice'
+      },
+      ...Array.from({ length: 90 }, () => ({
+        contentType: 'text/plain',
+        headers: { 'content-type': 'text/plain' },
+        body: 'x'.repeat(100_000)
+      }))
+    ];
+    const result = await executeScript(script, { ...message(), mimeParts });
+    assert.deepStrictEqual(
+      result.actions.map((action) => `${action.type} ${action.mailbox}`),
+      ['fileinto Invoices']
+    );
+  });
+
+  it('stops a script with thousands of flags or actions', async () => {
+    const flags = [
+      'require ["imap4flags"];',
+      `addflag [${Array.from({ length: 1500 }, (_, i) => `"f${i}"`).join(
+        ', '
+      )}];`
+    ].join('\n');
+    assert.strictEqual(validateScript(flags).valid, true);
+    await assert.rejects(executeScript(flags, message()), {
+      message: 'Sieve script exceeded the number of flags'
+    });
+
+    const SieveEngine = require(path.join(
+      __dirname,
+      '../../helpers/sieve/engine'
+    ));
+    const { MAX_ACTIONS } = SieveEngine;
+    SieveEngine.MAX_ACTIONS = 10;
+    try {
+      const actions = [
+        'require ["fileinto", "copy"];',
+        ...Array.from({ length: 20 }, (_, i) => `fileinto :copy "f${i}";`)
+      ].join('\n');
+      await assert.rejects(executeScript(actions, message()), {
+        message: 'Sieve script exceeded the number of actions'
+      });
+    } finally {
+      SieveEngine.MAX_ACTIONS = MAX_ACTIONS;
+    }
+  });
+
+  it('parses a header of many addresses, or long spaces, in linear time', async () => {
+    const script = [
+      'require ["fileinto"];',
+      'if address :is "from" "bad@spam.example" { fileinto "Spam"; }'
+    ].join('\n');
+    for (const from of [
+      Array.from({ length: 125_000 }, (_, i) => `u${i}@x.example`).join(',') +
+        ',bad@spam.example',
+      'a' + ' '.repeat(200_000) + '"x<b@c.example>, bad@spam.example'
+    ]) {
+      const start = Date.now();
+
+      const result = await executeScript(script, {
+        ...message(),
+        headers: { from, subject: 'hi' }
+      });
+      const elapsed = Date.now() - start;
+      assert.deepStrictEqual(
+        result.actions.map((action) => `${action.type} ${action.mailbox}`),
+        ['fileinto Spam']
+      );
+      assert.ok(elapsed < 2000, `took ${elapsed}ms`);
+    }
+  });
+
+  it('stops a script that spends too long matching', async () => {
+    // (30 sources of 100KB each, against 2000 keys, took about 30 seconds)
+    const SieveEngine = require(path.join(
+      __dirname,
+      '../../helpers/sieve/engine'
+    ));
+    const { MAX_MATCH_TIME } = SieveEngine;
+    SieveEngine.MAX_MATCH_TIME = 500;
+    try {
+      const sources = Array.from({ length: 30 }, (_, i) => `b${i}`);
+      const script = [
+        'require ["variables"];',
+        'set "a" "xxxxxxxxxx";',
+        ...Array.from(
+          { length: 4 },
+          // eslint-disable-next-line no-template-curly-in-string
+          () => 'set "a" "${a}${a}${a}${a}${a}${a}${a}${a}${a}${a}";'
+        ),
+        ...sources.map((name, i) => `set "${name}" "${i}\${a}";`),
+        `if string :matches [${sources
+          .map((name) => `"\${${name}}"`)
+          .join(', ')}] [${Array.from(
+          { length: 2000 },
+          (_, i) => `"*k${i}*"`
+        ).join(', ')}] { discard; }`,
+        'keep;'
+      ].join('\n');
+      assert.strictEqual(validateScript(script).valid, true);
+      const start = Date.now();
+      await assert.rejects(executeScript(script, message()), {
+        message: 'Sieve script exceeded the time it may run'
+      });
+      const elapsed = Date.now() - start;
+      assert.ok(elapsed < 3000, `took ${elapsed}ms`);
+    } finally {
+      SieveEngine.MAX_MATCH_TIME = MAX_MATCH_TIME;
+    }
+  });
+
+  it('matches many header values against a long pattern quickly', async () => {
+    // (the pattern was lowercased and compiled again for every value)
+    const script = [
+      'require ["variables"];',
+      'set "a" "xxxxxxxxxx";',
+      ...Array.from(
+        { length: 4 },
+        // eslint-disable-next-line no-template-curly-in-string
+        () => 'set "a" "${a}${a}${a}${a}${a}${a}${a}${a}${a}${a}";'
+      ),
+      // eslint-disable-next-line no-template-curly-in-string
+      'if header :matches "subject" ["${a}*", "*a"] { discard; stop; }',
+      'keep;'
+    ].join('\n');
+    const subjects = Array.from({ length: 5000 }, () => 's');
+    subjects.push('ends with a');
+    const start = Date.now();
+    const result = await executeScript(script, {
+      ...message(),
+      headers: { from: 'sender@example.com', subject: subjects }
+    });
+    const elapsed = Date.now() - start;
+    assert.deepStrictEqual(
+      result.actions.map((action) => action.type),
+      ['discard']
+    );
+    assert.ok(elapsed < 2000, `took ${elapsed}ms`);
+  });
+
+  it('stops a script that expands a variable thousands of times', async () => {
+    // (each key is expanded to 100KB and compiled as a pattern on its own:
+    // 3000 of them took about 30 seconds for every message)
+    const script = [
+      'require ["variables"];',
+      'set "a" "xxxxxxxxxx";',
+      ...Array.from(
+        { length: 4 },
+        // eslint-disable-next-line no-template-curly-in-string
+        () => 'set "a" "${a}${a}${a}${a}${a}${a}${a}${a}${a}${a}";'
+      ),
+      `if header :matches "subject" [${Array.from(
+        { length: 3000 },
+        // eslint-disable-next-line no-template-curly-in-string
+        () => '"${a}"'
+      ).join(', ')}] { discard; }`,
+      'keep;'
+    ].join('\n');
+    assert.strictEqual(validateScript(script).valid, true);
+
+    const start = Date.now();
+    await assert.rejects(executeScript(script, message()), {
+      message: 'Sieve script exceeded the total length of expanded variables'
+    });
+    const elapsed = Date.now() - start;
+    assert.ok(elapsed < 3000, `took ${elapsed}ms`);
+  });
+
+  it('checks a script full of unclosed "${" in linear time', () => {
+    const script = `require ["fileinto"];\nfileinto "${'${'.repeat(60_000)}";`;
+    const start = Date.now();
+    validateScript(script);
+    const elapsed = Date.now() - start;
+    assert.ok(elapsed < 2000, `took ${elapsed}ms`);
+  });
+
+  // ("${a${a}" is "${a" and then a reference, RFC 5229 section 3)
+  it('still expands variable references as before', async () => {
+    const script = [
+      'require ["variables"];',
+      'set "a" "x";',
+      // eslint-disable-next-line no-template-curly-in-string
+      'set "b" "${a}-${A}-${}-${missing}-${a${a}";',
+      'keep;'
+    ].join('\n');
+    assert.strictEqual(validateScript(script).valid, true);
+    const result = await executeScript(script, message());
+    assert.strictEqual(result.variables.b, 'x-x-${}--${ax');
+  });
+});
+
+describe('Sieve Security - work a script makes for each message', () => {
+  const { executeScript, validateScript } = require(path.join(
+    __dirname,
+    '../../helpers/sieve/index'
+  ));
+  const SieveEngine = require(path.join(
+    __dirname,
+    '../../helpers/sieve/engine'
+  ));
+  const { SieveIntegration } = require(path.join(
+    __dirname,
+    '../../helpers/sieve/integration'
+  ));
+  const { SieveFilterHandler } = require(path.join(
+    __dirname,
+    '../../helpers/sieve/filter-handler'
+  ));
+
+  const message = (extra = {}) => ({
+    headers: { from: 'sender@example.com', subject: 'hi' },
+    envelope: { from: 'sender@example.com', to: 'user@example.com' },
+    size: 100,
+    body: 'body',
+    ...extra
+  });
+
+  it('counts the time of tests with one key and a long value', async () => {
+    // (the time after the last count in a test was not counted, so
+    // hundreds of one-key tests on a long body were never stopped)
+    const { MAX_MATCH_TIME } = SieveEngine;
+    SieveEngine.MAX_MATCH_TIME = 200;
+    try {
+      const script = [
+        'require ["body"];',
+        ...Array.from(
+          { length: 2000 },
+          (_, i) => `if body :contains "k${i}" { stop; }`
+        )
+      ].join('\n');
+      assert.strictEqual(validateScript(script).valid, true);
+      await assert.rejects(
+        executeScript(script, message({ body: 'x'.repeat(2_000_000) })),
+        { message: 'Sieve script exceeded the time it may run' }
+      );
+    } finally {
+      SieveEngine.MAX_MATCH_TIME = MAX_MATCH_TIME;
+    }
+  });
+
+  it('extracts the text of a part once, however many loops reach it', async () => {
+    // (nested loops converted every part again for each part: 44s)
+    const script = [
+      'require ["mime", "variables"];',
+      'foreverypart { foreverypart { extracttext "t"; } }'
+    ].join('\n');
+    const html = `<p>${'word '.repeat(50_000)}</p>`;
+    // (90 parts: 8,190 iterations, under the instruction limit)
+    const mimeParts = Array.from({ length: 90 }, () => ({
+      contentType: 'text/html',
+      headers: { 'content-type': 'text/html' },
+      body: html
+    }));
+    const start = Date.now();
+    await executeScript(script, message({ mimeParts }));
+    const elapsed = Date.now() - start;
+    assert.ok(elapsed < 5000, `took ${elapsed}ms`);
+  });
+
+  it('merges the flags of many keep actions in linear time', async () => {
+    const script = [
+      'require ["imap4flags"];',
+      `setflag [${Array.from({ length: 1000 }, (_, i) => `"f${i}"`).join(
+        ', '
+      )}];`,
+      ...Array.from({ length: 9000 }, () => 'keep;')
+    ].join('\n');
+    const handler = new SieveFilterHandler({
+      logger: { debug() {}, error() {}, info() {}, warn() {} }
+    });
+    const start = Date.now();
+    const result = await handler.executeScript(script, message());
+    const elapsed = Date.now() - start;
+    assert.strictEqual(result.flags.length, 1000);
+    assert.ok(elapsed < 5000, `took ${elapsed}ms`);
+  });
+
+  it('bounds the work of header changes against many headers', async () => {
+    const sieve = new SieveIntegration({});
+    const raw = Buffer.from(
+      'Subject: hi\r\n' +
+        Array.from({ length: 100_000 }, (_, i) => `X-Foo: ${i}\r\n`).join('') +
+        '\r\nbody'
+    );
+
+    // (thousands of changes for a name no header has are skipped)
+    let start = Date.now();
+    const same = await sieve.applyHeaderChanges(
+      raw,
+      Array.from({ length: 10_000 }, () => ({
+        action: 'delete',
+        name: 'x-bar',
+        index: null
+      }))
+    );
+    assert.strictEqual(same.length, raw.length);
+    assert.ok(Date.now() - start < 2000, `took ${Date.now() - start}ms`);
+
+    // (thousands of values against every header stop, keeping the message)
+    start = Date.now();
+    await assert.rejects(
+      sieve.applyHeaderChanges(raw, [
+        {
+          action: 'delete',
+          name: 'x-foo',
+          index: null,
+          matchType: 'contains',
+          values: Array.from({ length: 20_000 }, (_, i) => `v${i}`)
+        }
+      ]),
+      { message: 'Sieve header changes exceeded the work allowed' }
+    );
+    assert.ok(Date.now() - start < 2000, `took ${Date.now() - start}ms`);
+
+    // (an ordinary change still applies)
+    const changed = await sieve.applyHeaderChanges(raw, [
+      {
+        action: 'delete',
+        name: 'x-foo',
+        index: null,
+        matchType: 'is',
+        values: ['1', '2']
+      }
+    ]);
+    assert.strictEqual(
+      changed
+        .toString()
+        .split('\r\n')
+        .filter((l) => l.startsWith('X-Foo:')).length,
+      99_998
+    );
+  });
+
+  it('stores a long duplicate ID hashed, for at most 30 days', async () => {
+    const stored = [];
+    const duplicateCache = {
+      async has() {
+        return false;
+      },
+      async add(key, seconds) {
+        stored.push({ key, seconds });
+      }
+    };
+    const script = [
+      'require ["duplicate"];',
+      'if duplicate :seconds 999999999 { discard; }',
+      'if duplicate :handle "short" { discard; }'
+    ].join('\n');
+    await executeScript(
+      script,
+      message({
+        headers: {
+          from: 'sender@example.com',
+          'message-id': `<${'a'.repeat(900_000)}@example.com>`
+        }
+      }),
+      { context: { duplicateCache } }
+    );
+    assert.strictEqual(stored.length, 2);
+    assert.ok(stored[0].key.length < 100, `${stored[0].key.length}`);
+    assert.strictEqual(stored[0].seconds, 30 * 24 * 60 * 60);
+    assert.ok(stored[1].key.startsWith('sha256:'));
+
+    // (a short ID is stored as it was, with the default of 7 days)
+    stored.length = 0;
+    await executeScript(
+      script,
+      message({
+        headers: { from: 'sender@example.com', 'message-id': '<a@b>' }
+      }),
+      { context: { duplicateCache } }
+    );
+    assert.strictEqual(stored[1].key, 'short:<a@b>');
+    assert.strictEqual(stored[1].seconds, 7 * 24 * 60 * 60);
+  });
+
+  it('stops a script with thousands of duplicate tests', async () => {
+    const script = [
+      'require ["duplicate"];',
+      ...Array.from(
+        { length: 1500 },
+        (_, i) => `if duplicate :handle "h${i}" { keep; }`
+      )
+    ].join('\n');
+    await assert.rejects(
+      executeScript(
+        script,
+        message({
+          headers: { from: 'sender@example.com', 'message-id': '<a@b>' }
+        })
+      ),
+      { message: 'Sieve script exceeded the number of duplicate tests' }
+    );
+  });
+
+  it('tests only the current part and its descendants with :anychild', async () => {
+    // (all the parts after the current one were tested, siblings too)
+    const script = [
+      'require ["mime", "fileinto", "copy"];',
+      'foreverypart {',
+      '  if header :mime :anychild :contains "x-tag" "hit" {',
+      '    fileinto :copy "Hit";',
+      '  }',
+      '}'
+    ].join('\n');
+    // multipart/mixed (0) > text/plain (1), multipart/alternative (2) >
+    // text/plain with the header (3)
+    const mimeParts = [
+      {
+        contentType: 'multipart/mixed',
+        multipart: 'mixed',
+        parentIndex: -1,
+        headers: {}
+      },
+      { contentType: 'text/plain', parentIndex: 0, headers: {} },
+      {
+        contentType: 'multipart/alternative',
+        multipart: 'alternative',
+        parentIndex: 0,
+        headers: {}
+      },
+      { contentType: 'text/plain', parentIndex: 2, headers: { 'x-tag': 'hit' } }
+    ];
+    const result = await executeScript(script, message({ mimeParts }));
+    // (from parts 0, 2 and 3, not from 1)
+    assert.strictEqual(
+      result.actions.filter((action) => action.type === 'fileinto').length,
+      3
+    );
+
+    // and the parsed parts say which part each is in
+    const sieve = new SieveIntegration({});
+    const parsed = await sieve.parseMimeTree(
+      Buffer.from(
+        [
+          'Content-Type: multipart/mixed; boundary=a',
+          '',
+          '--a',
+          'Content-Type: text/plain',
+          '',
+          'one',
+          '--a',
+          'Content-Type: multipart/alternative; boundary=b',
+          '',
+          '--b',
+          'Content-Type: text/plain',
+          'X-Tag: hit',
+          '',
+          'two',
+          '--b--',
+          '--a--',
+          ''
+        ].join('\r\n')
+      )
+    );
+    assert.deepStrictEqual(
+      parsed.map((part) => part.parentIndex),
+      [-1, 0, 0, 2]
+    );
   });
 });

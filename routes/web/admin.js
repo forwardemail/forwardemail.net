@@ -14,9 +14,11 @@ const web = require('#controllers/web');
 const router = new Router({ prefix: '/admin' });
 
 // inquiry replies take up to 3 attachments (see the routes below)
-const upload = createMultipart({
-  limits: { files: 3, fileSize: bytes('51MB') }
-});
+// (and the body as a whole holds all three)
+const upload = createMultipart(
+  { limits: { files: 3, fileSize: bytes('51MB') } },
+  { maxTotalBytes: bytes('160MB') }
+);
 
 router
   .use((ctx, next) => {

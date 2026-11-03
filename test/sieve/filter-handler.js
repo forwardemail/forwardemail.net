@@ -407,6 +407,17 @@ describe('Sieve Filter Handler', () => {
     });
   });
 
+  describe('Vacation subject', () => {
+    it('uses "Auto: " and the original subject by default (RFC 5230 5.3)', async () => {
+      await handler.handleVacation(
+        { type: 'vacation', message: 'away', days: 7 },
+        createMessage({ headers: { subject: 'Lunch?' } }),
+        { userAddress: 'recipient@example.com' }
+      );
+      assert.strictEqual(sentMails[0].subject, 'Auto: Lunch?');
+    });
+  });
+
   describe('WildDuck format conversion', () => {
     it('should convert keep action', () => {
       const result = {
@@ -546,5 +557,87 @@ describe('Sieve Filter Handler', () => {
       assert.strictEqual(regularApplied.kept, true);
       assert.strictEqual(regularApplied.filed.length, 0);
     });
+  });
+});
+
+describe('Sieve Filter Handler executeScript (RFC 5228 actions)', () => {
+  const handler = new SieveFilterHandler({
+    logger: { debug() {}, info() {}, warn() {}, error() {} }
+  });
+
+  it('gives each mailbox and address once, the last flags winning', async () => {
+    const result = await handler.executeScript(
+      'require ["fileinto", "imap4flags", "copy"]; fileinto :flags "A" "X"; fileinto :copy :flags "B" "x"; fileinto :flags "C" "X"; fileinto "inbox"; redirect :copy "a@example.com"; redirect "A@example.com";',
+      createMessage()
+    );
+    assert.deepStrictEqual(
+      result.fileinto.map(({ folder, flags, copy }) => ({
+        folder,
+        flags,
+        copy
+      })),
+      [
+        { folder: 'X', flags: ['C'], copy: false },
+        { folder: 'x', flags: ['B'], copy: true },
+        { folder: 'INBOX', flags: [], copy: false }
+      ]
+    );
+    assert.deepStrictEqual(result.redirect, [
+      { address: 'a@example.com', copy: false }
+    ]);
+  });
+
+  it('tells an explicit keep from the implicit one', async () => {
+    const explicit = await handler.executeScript(
+      'require "imap4flags"; keep :flags "A"; addflag "B";',
+      createMessage()
+    );
+    assert.deepStrictEqual(explicit.keep, { flags: ['A'] });
+    assert.strictEqual(explicit.implicitKeep, false);
+
+    const implicit = await handler.executeScript(
+      'require "imap4flags"; addflag "B";',
+      createMessage()
+    );
+    assert.strictEqual(implicit.keep, null);
+    assert.strictEqual(implicit.implicitKeep, true);
+    assert.deepStrictEqual(implicit.flags, ['B']);
+  });
+
+  it('leaves the special-use mailbox to be found where it is stored (RFC 8579)', async () => {
+    const result = await handler.executeScript(
+      'require ["fileinto", "special-use"]; fileinto :specialuse "\\\\Sent" "Mine";',
+      createMessage()
+    );
+    assert.strictEqual(result.fileinto[0].folder, 'Mine');
+    assert.strictEqual(result.fileinto[0].specialuse, '\\Sent');
+  });
+
+  it('fails for an invalid header field-name (RFC 5293 4)', async () => {
+    await assert.rejects(
+      handler.executeScript(
+        'require "editheader"; addheader "Bad Name" "x";',
+        createMessage()
+      ),
+      /Invalid header field name/
+    );
+  });
+
+  it('gives deleteheader :index with :last', async () => {
+    const result = await handler.executeScript(
+      'require "editheader"; deleteheader :index 2 :last "X-A" "v";',
+      createMessage()
+    );
+    assert.deepStrictEqual(result.headerChanges, [
+      {
+        action: 'delete',
+        name: 'X-A',
+        index: 2,
+        last: true,
+        matchType: 'is',
+        comparator: 'i;ascii-casemap',
+        values: ['v']
+      }
+    ]);
   });
 });

@@ -22,7 +22,9 @@ const SIEVE_TEST_FILES = [
   'test/sieve/security.js',
   'test/sieve/managesieve-server.js',
   'test/sieve/mx-integration.js',
-  'test/sieve/runtime-enforcement.js'
+  'test/sieve/runtime-enforcement.js',
+  'test/sieve/capabilities.js',
+  'test/sieve/integration-unit.js'
 ];
 
 function getTotalShards(value = process.env.LOCAL_TEST_SHARDS) {

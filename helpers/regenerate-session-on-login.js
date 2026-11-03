@@ -18,7 +18,8 @@ const AUTH_FIELDS = [
   'otp',
   'otp_remember_me',
   'otp_remember_me_issued',
-  '_admin_impersonation'
+  '_admin_impersonation',
+  'oauth'
 ];
 
 async function regenerateSession(ctx, user) {
@@ -26,6 +27,10 @@ async function regenerateSession(ctx, user) {
     return;
 
   const previous = ctx.session;
+
+  // (a new sign in decides whether the session depends on an OAuth provider;
+  // the OAuth callback marks it again, see helpers/oauth-session-revocation)
+  delete previous.oauth;
 
   // re-authenticating the same user (e.g. to refresh the user object) keeps
   // the session, since it is already bound to that user

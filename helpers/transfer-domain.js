@@ -8,6 +8,7 @@ const isSANB = require('is-string-and-not-blank');
 
 const config = require('#config');
 const i18n = require('#helpers/i18n');
+const { isEmailProven } = require('#helpers/clear-unverified-sign-ins');
 const { isWithinGracePeriod } = require('#helpers/is-within-grace-period');
 const { Aliases, Emails, SieveScripts } = require('#models');
 
@@ -27,7 +28,8 @@ function assertTargetCanOwnDomain(domain, user, locale) {
     );
   }
 
-  if (!user[config.userFields.hasVerifiedEmail]) {
+  // (an address only counted as verified for a paid plan is not enough)
+  if (!isEmailProven(user)) {
     throw Boom.badRequest(
       i18n.translateError('DOMAIN_TRANSFER_TARGET_UNVERIFIED', locale)
     );

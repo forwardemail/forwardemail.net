@@ -12,6 +12,8 @@ This section documents the CI/CD workflow for ForwardEmail's self-hosted solutio
 * [Deployment Process](#deployment-process)
   * [Installation](#installation)
   * [Docker Compose Configuration](#docker-compose-configuration)
+  * [Delivery to Domains Hosted on the Same Server](#delivery-to-domains-hosted-on-the-same-server)
+  * [Ending Sessions When Google or GitHub Access Is Revoked](#ending-sessions-when-google-or-github-access-is-revoked)
 * [Maintenance Features](#maintenance-features)
   * [Automatic Updates](#automatic-updates)
   * [Backup and Restore](#backup-and-restore)
@@ -131,6 +133,30 @@ The `docker-compose-self-hosted.yml` file defines all the services required for 
 * **redis**: In-memory data store (uses the `redis:latest` image)
 
 Every Forward Email service shares the same application Docker image and only differs by its entry point (the `command`), which keeps the architecture modular while simplifying maintenance; the `nginx`, `mongodb`, and `redis` services use their respective official upstream images.
+
+### Delivery to Domains Hosted on the Same Server
+
+Outbound mail is not delivered to an MX server at an address of the server itself. When one server hosts several domains and their MX records point at its public address, mail from one of these domains to another is refused.
+
+To allow it, set:
+
+```env
+SMTP_ALLOW_LOCAL_MX=true
+```
+
+The default is `false`, and the setting only applies when `SELF_HOSTED=true`. Mail is still never delivered to loopback, private, link-local or carrier-grade NAT addresses.
+
+### Ending Sessions When Google or GitHub Access Is Revoked
+
+On a self-hosted install, sessions signed in with Google or GitHub are not checked with the provider by default: revoking this application's access there does not sign them out, and they stay signed in until they expire.
+
+To end them once access is revoked, set:
+
+```env
+AUTH_OAUTH_REVOCATION_CHECK=true
+```
+
+The provider is then asked in the background, about every 5 minutes (every minute while it does not answer). An outage at the provider signs nobody out, nor does a token that the provider has never accepted.
 
 
 ## Maintenance Features

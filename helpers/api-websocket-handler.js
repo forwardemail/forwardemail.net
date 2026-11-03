@@ -18,6 +18,7 @@ const config = require('#config');
 const ensureApiTokenEnabled = require('#helpers/ensure-api-token-enabled');
 const getAccessibleAliasId = require('#helpers/get-accessible-alias-id');
 const getIpBucket = require('#helpers/get-ip-bucket');
+const isAmbientBrowserCredential = require('#helpers/is-ambient-browser-credential');
 const onAuth = require('#helpers/on-auth');
 const { encoder, decoder } = require('#helpers/encoder-decoder');
 const {
@@ -799,6 +800,15 @@ class ApiWebSocketHandler {
     // it must never fall through to the unauthenticated broadcast-only path.
     // (any Authorization header counts, so a malformed or non-Basic header
     // is refused with 401 instead of quietly connecting as broadcast-only)
+    //
+    // (credentials a browser remembered and sent for another site's page,
+    // which cannot set the header on a WebSocket handshake itself, are not
+    // used: the connection goes on as if it had none, with `?auth=message`
+    // or as broadcast-only, as one from that page without them would)
+    //
+    if (isAmbientBrowserCredential(request.headers))
+      delete request.headers.authorization;
+
     const hasCredentials = Boolean(request.headers.authorization);
 
     // `?auth=message`: browsers cannot set headers on a WebSocket handshake,

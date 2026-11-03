@@ -2892,24 +2892,22 @@ Danh sách capability đầy đủ, được hỗ trợ bởi triển khai, và 
 | Danh mục | Khả năng và hành vi |
 | --- | --- |
 | Ngôn ngữ cốt lõi | `keep`, `discard`, `stop`, khối điều kiện, và các test cơ bản `address`, `header`, `exists`, `size`, và boolean. |
-| Phân phối | `fileinto`, `copy`, `redirect`, `mailbox` cho `fileinto :create`, và `special-use` cho ánh xạ thư mục chuẩn `:specialuse` và `specialuse_exists`. |
-| Kiểm tra và so sánh | `envelope`, `body`, `date`, `index`, `regex`, `subaddress`, `relational`, `i;ascii-casemap`, và `i;octet`. |
-| Trạng thái và biến | `variables`, `imap4flags`, `duplicate`, và `ihave`. |
+| Phân phối | `fileinto`, `copy`, `redirect`, `mailbox` cho `fileinto :create` và `mailboxexists`, và `special-use` cho `fileinto :specialuse` và `specialuse_exists`. |
+| Kiểm tra và so sánh | `envelope`, `body`, `date`, `index`, `regex`, `subaddress`, `relational`, `i;ascii-casemap`, `i;octet`, và `i;ascii-numeric`. |
+| Trạng thái và biến | `variables`, `encoded-character`, `imap4flags`, `duplicate`, và `ihave`. |
 | Hành động và phản hồi | `reject`, `ereject`, `vacation`, `vacation-seconds`, và `enotify` sử dụng `mailto:`. Khai báo cũ `require "notify"` được chấp nhận như một bí danh đầu vào cho `enotify`, nhưng `enotify` là capability được quảng bá. |
-| Xử lý thông điệp | `editheader`, `environment`, và `mime`, bao gồm `foreverypart`, `break`, `extracttext`, và `replace`. |
+| Xử lý thông điệp | `editheader`, `environment`, `foreverypart` (cùng với `break`), `extracttext`, `replace`, và `mime`, vốn cũng bật ba lệnh đó. |
 
-`redirect` được gửi qua hàng đợi outbound thông thường. Nó tuân theo chính sách redirect-domain được cấu hình, kiểm tra denylist, và giới hạn tần suất. `editheader` không thể sửa các header được bảo vệ liên quan đến xác thực hoặc điều hướng giao nhận.
+`redirect` không cần `require`. Nó được gửi qua hàng đợi outbound thông thường, hàng đợi này chỉ nhận thư có From là bí danh của bạn, trên tên miền có SMTP outbound; mọi thư khác được giữ lại trong hộp thư đến của bạn. Các redirect tuân theo chính sách redirect-domain được cấu hình, kiểm tra denylist, và giới hạn tần suất. `editheader` không thể sửa các header được bảo vệ liên quan đến xác thực hoặc điều hướng giao nhận, `Received` hoặc `Auto-Submitted`.
 
 #### Các tính năng không được hỗ trợ
 
 | Tính năng | Lý do |
 | --- | --- |
 | `enclose` | Việc tạo một thông điệp mới bao gồm thông điệp gốc chưa được triển khai. |
-| `mailboxexists` | Forward Email không thực hiện các truy vấn trạng thái hộp thư IMAP trực tiếp. `fileinto :create` vẫn có sẵn thông qua `mailbox`. |
 | `include` | Lưu trữ script toàn cục và script được include không có sẵn. |
 | `mboxmetadata` / `servermetadata` | Tích hợp IMAP METADATA không có sẵn. |
 | `fcc` | Tích hợp lưu thư đã gửi không có sẵn. |
-| `encoded-character` | Cú pháp `${hex:...}` chưa được triển khai. |
 | External lists | `valid_ext_list` và các thao tác danh sách-ngoại khác không có sẵn. |
 
 #### Ví dụ về script Sieve
@@ -2946,8 +2944,6 @@ if address :is "from" "boss@example.com" {
 **Redirect a message:**
 
 ```sieve
-require ["redirect"];
-
 if header :contains "Subject" "invoice" {
     redirect "recipient@example.com";
 }

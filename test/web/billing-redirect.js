@@ -13,6 +13,7 @@
 //
 
 const dayjs = require('dayjs-with-plugins');
+const ms = require('ms');
 const falso = require('@ngneat/falso');
 const request = require('supertest');
 const sinon = require('sinon');
@@ -460,3 +461,168 @@ test.serial(
     );
   }
 );
+
+//
+// The link back from a checkout carries its id and can be opened again at
+// any time. Opened again after the plan changed (here to Team, with the
+// remaining time converted), it moved the plan start back to that checkout's
+// payment, counted the payment again and converted the time again: each
+// round about doubled the paid time.
+//
+async function payThenConvertThenReplay(t, pay) {
+  const { user } = t.context;
+  // (an earlier payment, so that switching plans converts the time instead
+  // of refunding the payment)
+  await Payments.create({
+    user: user._id,
+    amount: 300,
+    method: 'free_beta_program',
+    duration: ms('30d'),
+    plan: 'enhanced_protection',
+    kind: 'one-time',
+    invoice_at: dayjs().subtract(2, 'years').toDate()
+  });
+
+  const res = await pay();
+  t.is(res.status, 302);
+  // (a year of it; the test prices all map to 30 days)
+  await Payments.updateMany(
+    { user: user._id, method: { $ne: 'free_beta_program' } },
+    { $set: { duration: ms('1y') } }
+  );
+  const paid = await Users.findById(user._id);
+  await paid.save();
+  let fresh = await Users.findById(user._id).lean().exec();
+  t.is(fresh.plan, 'enhanced_protection');
+  t.true(
+    dayjs(fresh[config.userFields.planExpiresAt]).diff(dayjs(), 'months') >= 11
+  );
+
+  const switched = await t.context.web
+    .get('/en/my-account/billing/upgrade')
+    .set('Sec-Fetch-Site', 'same-origin')
+    .query({ plan: 'team' });
+  t.is(switched.status, 302);
+  fresh = await Users.findById(user._id).lean().exec();
+  t.is(fresh.plan, 'team');
+  const expiresAt = new Date(fresh[config.userFields.planExpiresAt]).getTime();
+  const payments = await Payments.countDocuments({ user: user._id });
+
+  const replayed = await pay();
+  t.is(replayed.status, 302);
+  fresh = await Users.findById(user._id).lean().exec();
+  t.is(fresh.plan, 'team');
+  t.is(new Date(fresh[config.userFields.planExpiresAt]).getTime(), expiresAt);
+  t.is(await Payments.countDocuments({ user: user._id }), payments);
+}
+
+test.serial(
+  'a Stripe checkout opened again after the plan changed credits nothing',
+  async (t) => {
+    const { user } = t.context;
+    const id = mockStripe(t, user[config.userFields.stripeCustomerID]);
+    stripe.checkout.sessions.listLineItems.resolves({
+      data: [
+        {
+          price: {
+            id: STRIPE_MAPPING.enhanced_protection['one-time']['1y'],
+            product: 'prod_ICStJG6fjZhEjl'
+          }
+        }
+      ]
+    });
+    stripe.paymentIntents.retrieve.resolves({
+      id: `pi_${id}`,
+      status: 'succeeded',
+      created: dayjs().subtract(2, 'days').unix(),
+      payment_method: 'pm_1'
+    });
+    await payThenConvertThenReplay(t, () =>
+      upgrade(t, { session_id: id }).set('Sec-Fetch-Site', 'same-origin')
+    );
+  }
+);
+
+test.serial(
+  'a PayPal order opened again after the plan changed credits nothing',
+  async (t) => {
+    const orderId = `ORDER-${t.context.id}`;
+    const paid = () => {
+      const body = order(t, {
+        status: 'COMPLETED',
+        captureStatus: 'COMPLETED'
+      });
+      body.create_time = dayjs().subtract(2, 'days').toISOString();
+      body.purchase_units[0].items[0].unit_amount.value = '36';
+      return body;
+    };
+
+    mockPayPal((request) => {
+      if (request === `GET /v2/checkout/orders/${orderId}`) return paid();
+      if (request === `POST /v2/checkout/orders/${orderId}/capture`)
+        throw paypalError(422, 'ORDER_ALREADY_CAPTURED');
+      throw new Error(`Unexpected ${request}`);
+    });
+    await payThenConvertThenReplay(t, () =>
+      upgrade(t, { paypal_order_id: orderId }).set(
+        'Sec-Fetch-Site',
+        'same-origin'
+      )
+    );
+  }
+);
+
+//
+// Plan changes sent together each loaded the plan as it was before, so each
+// one gave the conversion credit for the remaining time.
+//
+test.serial('plan changes sent together convert the time once', async (t) => {
+  const { user } = t.context;
+  await Payments.create({
+    user: user._id,
+    amount: 300,
+    method: 'free_beta_program',
+    duration: ms('30d'),
+    plan: 'enhanced_protection',
+    kind: 'one-time',
+    invoice_at: dayjs().subtract(2, 'years').toDate()
+  });
+  const id = mockStripe(t, user[config.userFields.stripeCustomerID]);
+  stripe.paymentIntents.retrieve.resolves({
+    id: `pi_${id}`,
+    status: 'succeeded',
+    created: dayjs().subtract(2, 'days').unix(),
+    payment_method: 'pm_1'
+  });
+  const res = await upgrade(t, { session_id: id });
+  t.is(res.status, 302);
+  await Payments.updateMany(
+    { user: user._id, method: { $ne: 'free_beta_program' } },
+    { $set: { duration: ms('1y') } }
+  );
+  const paid = await Users.findById(user._id);
+  await paid.save();
+
+  const responses = await Promise.all(
+    Array.from({ length: 5 }, () =>
+      t.context.web
+        .get('/en/my-account/billing/upgrade')
+        .set('Sec-Fetch-Site', 'same-origin')
+        .query({ plan: 'team' })
+    )
+  );
+  for (const res of responses) t.is(res.status, 302);
+
+  const fresh = await Users.findById(user._id).lean().exec();
+  t.is(fresh.plan, 'team');
+  const conversions = await Payments.find({
+    user: user._id,
+    method: 'plan_conversion'
+  }).lean();
+  t.true(conversions.length > 0);
+  // (one batch: they were all created at once)
+  t.is(
+    new Set(conversions.map((p) => new Date(p.invoice_at).getTime())).size,
+    1
+  );
+});

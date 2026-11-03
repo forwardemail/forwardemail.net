@@ -11,6 +11,8 @@ Tässä osiossa dokumentoidaan ForwardEmailin itse isännöidyn ratkaisun CI/CD-
 * [Käyttöönottoprosessi](#deployment-process)
   * [Asennus](#installation)
   * [Docker Composen konfigurointi](#docker-compose-configuration)
+  * [Toimitus samalla palvelimella oleviin verkkotunnuksiin](#delivery-to-domains-hosted-on-the-same-server)
+  * [Istuntojen päättäminen, kun Google- tai GitHub-käyttöoikeus perutaan](#ending-sessions-when-google-or-github-access-is-revoked)
 * [Huolto-ominaisuudet](#maintenance-features)
   * [Automaattiset päivitykset](#automatic-updates)
   * [Varmuuskopiointi ja palautus](#backup-and-restore)
@@ -122,6 +124,30 @@ Tämä skripti:
 * **SQLite**: Tietokanta sähköpostien tallentamiseen
 
 Jokainen palvelu käyttää samaa Docker-kuvaa, mutta eri aloituskohdilla, mikä mahdollistaa modulaarisen arkkitehtuurin ja yksinkertaistaa ylläpitoa.
+
+### Toimitus samalla palvelimella oleviin verkkotunnuksiin {#delivery-to-domains-hosted-on-the-same-server}
+
+Lähtevää postia ei toimiteta MX-palvelimelle, jonka osoite kuuluu palvelimelle itselleen. Kun yksi palvelin ylläpitää useita verkkotunnuksia ja niiden MX-tietueet osoittavat sen julkiseen osoitteeseen, posti yhdestä näistä verkkotunnuksista toiseen hylätään.
+
+Salli se asettamalla:
+
+```env
+SMTP_ALLOW_LOCAL_MX=true
+```
+
+Oletusarvo on `false`, ja asetus on voimassa vain, kun `SELF_HOSTED=true`. Postia ei edelleenkään koskaan toimiteta loopback-, yksityisiin, link-local- tai operaattoritason NAT (CGNAT) -osoitteisiin.
+
+### Istuntojen päättäminen, kun Google- tai GitHub-käyttöoikeus perutaan {#ending-sessions-when-google-or-github-access-is-revoked}
+
+Itse ylläpidetyssä asennuksessa Googlella tai GitHubilla kirjautuneita istuntoja ei oletuksena tarkisteta palveluntarjoajalta: tämän sovelluksen käyttöoikeuden peruminen siellä ei kirjaa niitä ulos, vaan ne pysyvät kirjautuneina, kunnes ne vanhenevat.
+
+Päätä ne heti, kun käyttöoikeus on peruttu, asettamalla:
+
+```env
+AUTH_OAUTH_REVOCATION_CHECK=true
+```
+
+Palveluntarjoajalta kysytään tällöin taustalla noin 5 minuutin välein (minuutin välein niin kauan kuin se ei vastaa). Palveluntarjoajan katkos ei kirjaa ketään ulos, eikä myöskään tunnus, jota palveluntarjoaja ei ole koskaan hyväksynyt.
 
 ## Ylläpito-ominaisuudet {#maintenance-features}
 

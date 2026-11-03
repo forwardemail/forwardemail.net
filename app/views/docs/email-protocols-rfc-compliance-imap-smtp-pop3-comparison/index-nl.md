@@ -1109,45 +1109,45 @@ De tabel onderscheidt volledige implementatie van het genoemde gedrag van opzett
 
 | RFC of specificatie | Mogelijkheid | Ondersteund gedrag |
 | --- | --- | --- |
-| [RFC 5228](https://datatracker.ietf.org/doc/html/rfc5228) | Core Sieve | `keep`, `discard`, `stop`, conditionele blokken, en de basis `address`, `header`, `exists`, `size`, en boolean-tests. `fileinto` en `redirect` worden afgeleverd via de inkomende bezorgingspijplijn. |
+| [RFC 5228](https://datatracker.ietf.org/doc/html/rfc5228) | Core Sieve, `encoded-character` | `keep`, `discard`, `stop`, conditionele blokken, en de basis `address`, `header`, `exists`, `size`, en boolean-tests. `fileinto` slaat het bericht op in elke genoemde map. `redirect` heeft geen `require` nodig en wordt verzonden via de uitgaande wachtrij, die alleen een bericht accepteert waarvan de From de alias is, op een domein met uitgaande SMTP; elk ander bericht blijft in de inbox. `${hex:...}` en `${unicode:...}` worden gedecodeerd wanneer `encoded-character` vereist is. |
 | [RFC 5429](https://datatracker.ietf.org/doc/html/rfc5429) | `reject`, `ereject` | SMTP-afwijzing met het meegeleverde bericht. |
-| [RFC 5230](https://datatracker.ietf.org/doc/html/rfc5230) | `vacation` | Afwezigheidsreacties worden in de wachtrij geplaatst met misbruikcontroles. |
+| [RFC 5230](https://datatracker.ietf.org/doc/html/rfc5230) | `vacation` | Afwezigheidsreacties worden in de wachtrij geplaatst met misbruikcontroles, hoogstens één keer per afzender per `:days`-periode (standaard 7 dagen). |
 | [RFC 6131](https://datatracker.ietf.org/doc/html/rfc6131) | `vacation-seconds` | Het `:seconds`-interval regelt de TTL van de afwezigheidsreactie. |
 | [RFC 5232](https://datatracker.ietf.org/doc/html/rfc5232) | `imap4flags` | Flags worden toegepast bij het opslaan in de mailbox. |
 | [RFC 5173](https://datatracker.ietf.org/doc/html/rfc5173) | `body` | Matching van berichtinhoud (body). |
 | [RFC 5229](https://datatracker.ietf.org/doc/html/rfc5229) | `variables` | Variabele-expansie en ondersteunde modificatoren. |
 | [RFC 5231](https://datatracker.ietf.org/doc/html/rfc5231) | `relational` | Vergelijkingen op `:count` en `:value`. |
-| [RFC 4790](https://datatracker.ietf.org/doc/html/rfc4790) | Comparators | `i;ascii-casemap` en `i;octet`. `i;ascii-numeric` wordt niet geadverteerd. |
+| [RFC 4790](https://datatracker.ietf.org/doc/html/rfc4790) | Comparators | `i;ascii-casemap`, `i;octet` en `i;ascii-numeric`. |
 | [RFC 3894](https://datatracker.ietf.org/doc/html/rfc3894) | `copy` | `:copy` op `fileinto` en `redirect`. |
-| [RFC 5293](https://datatracker.ietf.org/doc/html/rfc5293) | `editheader` | Aanpassingen aan headers vóór opslag, met uitzondering van beschermde authenticatie- en bezorgrouteringsvelden. |
+| [RFC 5293](https://datatracker.ietf.org/doc/html/rfc5293) | `editheader` | Aanpassingen aan headers vóór opslag, zichtbaar voor latere tests, met uitzondering van beschermde authenticatie- en bezorgrouteringsvelden, `Received` en `Auto-Submitted`. |
 | [RFC 5260](https://datatracker.ietf.org/doc/html/rfc5260) | `date`, `index` | `currentdate`- en header-datumtests, plus `:index` en `:last`. |
-| [RFC 5435](https://datatracker.ietf.org/doc/html/rfc5435) | `enotify` | `mailto:`-notificaties met snelheidslimieten. De verouderde declaratie `require "notify"` wordt als alias geaccepteerd, maar `enotify` wordt geadverteerd. |
+| [RFC 5435](https://datatracker.ietf.org/doc/html/rfc5435) | `enotify` | `mailto:`-notificaties met snelheidslimieten, nooit voor automatische berichten. De verouderde declaratie `require "notify"` wordt als alias geaccepteerd, maar `enotify` wordt geadverteerd. |
 | [RFC 5183](https://datatracker.ietf.org/doc/html/rfc5183) | `environment` | Ondersteunde sessie-omgevingwaarden. |
-| [RFC 5490](https://datatracker.ietf.org/doc/html/rfc5490) | `mailbox` | Alleen `fileinto :create`. Live `mailboxexists`-queries worden niet ondersteund. |
-| [RFC 8579](https://datatracker.ietf.org/doc/html/rfc8579) | `special-use` | Mapping van standaardmappen via `:specialuse` en deterministische `specialuse_exists`-controles. |
+| [RFC 5490](https://datatracker.ietf.org/doc/html/rfc5490) | `mailbox` | `fileinto :create` en `mailboxexists`, dat de mappen van de alias opzoekt. |
+| [RFC 8579](https://datatracker.ietf.org/doc/html/rfc8579) | `special-use` | `fileinto :specialuse` plaatst berichten in de map met dat speciale gebruik, en `specialuse_exists` zoekt de mappen van de alias op. |
 | [RFC 7352](https://datatracker.ietf.org/doc/html/rfc7352) | `duplicate` | Op Redis gebaseerde duplicaatdetectie voor bezorging. |
-| [RFC 5463](https://datatracker.ietf.org/doc/html/rfc5463) | `ihave` | Controleert of een geadverteerde capability beschikbaar is. |
+| [RFC 5463](https://datatracker.ietf.org/doc/html/rfc5463) | `ihave` | Controleert of een geadverteerde capability beschikbaar is, plus het `error`-commando. |
 | [RFC 5233](https://datatracker.ietf.org/doc/html/rfc5233) | `subaddress` | `:user`- en `:detail`-adresdelen. |
 | [draft-ietf-sieve-regex](https://datatracker.ietf.org/doc/html/draft-ietf-sieve-regex) | `regex` | Reguliere-expressie-matching met [RE2](https://github.com/uhop/node-re2). |
-| [RFC 5703](https://datatracker.ietf.org/doc/html/rfc5703) | `mime` | MIME-tests en `foreverypart`, `break`, `extracttext` en `replace`. `enclose` wordt afgewezen omdat het geen veilige bezorgingsimplementatie heeft. |
+| [RFC 5703](https://datatracker.ietf.org/doc/html/rfc5703) | `foreverypart`, `extracttext`, `replace`, `mime` | MIME-tests en `foreverypart`, `break`, `extracttext` en `replace`. `mime` schakelt deze commando's ook in, zoals oudere scripts verwachten. `enclose` wordt afgewezen omdat het geen veilige bezorgingsimplementatie heeft. |
 
 #### Ondersteunde Sieve-extensies {#supported-sieve-extensions}
 
 | Extensie | Gedrag | Bezorging of handhaving |
 | --- | --- | --- |
-| `fileinto` | Plaatst een bericht in een map. | Opgeslagen in de geselecteerde IMAP-map. `fileinto :create` vereist `mailbox`. |
+| `fileinto` | Plaatst een bericht in een map. | Opgeslagen in de geselecteerde IMAP-map. `fileinto :create` en `mailboxexists` vereisen `mailbox`. |
 | `copy` | Behoudt de originele bezorging terwijl `fileinto` of `redirect` wordt toegevoegd. | Toegepast door de bezorgingspijplijn. |
-| `redirect` | Verstuurt een kopie of vervangende bezorging naar een andere ontvanger. | In de wachtrij gezet via de normale uitgaande route, onderhevig aan domeinbeleid, denylist-controles, en snelheidslimieten. |
+| `redirect` | Verstuurt het bericht naar een andere ontvanger. | In de wachtrij gezet via de normale uitgaande route voor een bericht waarvan de From de alias is, op een domein met uitgaande SMTP, onderhevig aan domeinbeleid, denylist-controles, en snelheidslimieten. Elk ander bericht blijft in de inbox. |
 | `reject` / `ereject` | Weigert een bericht met een SMTP-fout. | Teruggestuurd via de MX-bezorgingsroute. |
 | `vacation` / `vacation-seconds` | Verstuurt een automatische reactie. | In de wachtrij geplaatst met ontvanger- en interval-snelheidslimieten. |
 | `imap4flags` | Stelt IMAP-flags in of test deze. | Toegepast wanneer het bericht wordt opgeslagen. |
-| `envelope`, `body`, `date`, `index`, `regex`, `subaddress`, `relational` | Test bericht- en envelopegegevens. | Geëvalueerd door de Sieve-engine. |
+| `envelope`, `body`, `date`, `index`, `regex`, `subaddress`, `relational`, `comparator-i;ascii-numeric` | Test bericht- en envelopegegevens. | Geëvalueerd door de Sieve-engine. |
 | `variables`, `duplicate`, `ihave` | Slaat waarden op, detecteert duplicaten en controleert capabilities. | Variabelen zijn script-lokaal; duplicaatstatus gebruikt Redis. |
-| `editheader` | Voegt niet-beschermde headers toe of verwijdert ze. | Authenticatie- en bezorgrouteringsheaders kunnen niet worden aangepast. |
+| `editheader` | Voegt niet-beschermde headers toe of verwijdert ze. | Authenticatie- en bezorgrouteringsheaders, `Received` en `Auto-Submitted` kunnen niet worden aangepast. |
 | `enotify` | Verstuurt een notificatie via `mailto:`. | In de wachtrij geplaatst met notificatie-snelheidslimieten. |
 | `environment` | Leest ondersteunde sessie-omgevingsgegevens. | Geëvalueerd door de Sieve-engine. |
-| `special-use` | Gaat over mappen met standaardgebruik. | Mapt standaardmappen en levert deterministische `specialuse_exists`-resultaten. |
-| `mime` | Inspecteert en wijzigt ondersteunde MIME-delen. | Vereist de generieke `mime`-capability. Individuele RFC 5703-commando's worden niet apart geadverteerd. |
+| `special-use` | Gaat over mappen met standaardgebruik. | Plaatst berichten in de mappen met speciaal gebruik van de alias en zoekt deze op. |
+| `foreverypart`, `extracttext`, `replace`, `mime` | Inspecteert en wijzigt ondersteunde MIME-delen. | Geëvalueerd door de Sieve-engine. `mime` schakelt ook de drie commando's in, zoals oudere scripts verwachten. |
 
 #### Sieve-functies niet ondersteund {#sieve-extensions-not-supported}
 
@@ -1156,11 +1156,9 @@ Deze functies worden afgewezen voordat ze worden opgeslagen, geactiveerd, door M
 | Functie | RFC of specificatie | Reden |
 | --- | --- | --- |
 | `enclose` | [RFC 5703](https://datatracker.ietf.org/doc/html/rfc5703) | Het aanmaken van een nieuw bericht dat het originele bericht omsluit, is niet veilig end-to-end geïmplementeerd. |
-| `mailboxexists` | [RFC 5490](https://datatracker.ietf.org/doc/html/rfc5490) | Live IMAP-mailboxstatusqueries zijn niet beschikbaar. |
 | `include` | [RFC 6609](https://datatracker.ietf.org/doc/html/rfc6609) | Globale en opgenomen scriptopslag is niet beschikbaar. |
 | `mboxmetadata` / `servermetadata` | [RFC 5490](https://datatracker.ietf.org/doc/html/rfc5490) | IMAP METADATA-integratie is niet beschikbaar. |
 | `fcc` | [RFC 8580](https://datatracker.ietf.org/doc/html/rfc8580) | Integratie voor het wegschrijven van verzonden e-mail is niet beschikbaar. |
-| `encoded-character` | [RFC 5228](https://datatracker.ietf.org/doc/html/rfc5228) | De `${hex:...}`-syntaxis is niet geïmplementeerd. |
 | External lists | [RFC 6134](https://datatracker.ietf.org/doc/html/rfc6134) | `valid_ext_list` en andere external-list-bewerkingen zijn niet beschikbaar. |
 
 #### Sieve processing flow {#sieve-processing-flow}
@@ -1197,7 +1195,7 @@ sequenceDiagram
 
 #### Beveiligingsfuncties {#security-features}
 
-Forward Email valideert het volledige script voordat het wordt opgeslagen, geactiveerd of uitgevoerd. Het wijst niet-gedeclareerde en niet-beschikbare capabilities af, beperkt scriptgrootte en iteratie over MIME-delen, gebruikt [RE2](https://github.com/uhop/node-re2) voor reguliere-expressiematching, past snelheidslimieten toe op redirects, afwezigheidsreacties en notificaties, weigert onveilige redirectbestemmingen en voorkomt dat `editheader` authenticatie- of bezorgrouteringsheaders wijzigt. De status van snelheidslimieten voor redirects en afwezigheidsreacties wordt opgeslagen in [Redis](https://github.com/redis/redis), terwijl bezorgde mail wordt opgeslagen met [SQLite](https://github.com/sqlite/sqlite).
+Forward Email valideert het volledige script voordat het wordt opgeslagen, geactiveerd of uitgevoerd. Het wijst niet-gedeclareerde en niet-beschikbare capabilities af, beperkt scriptgrootte en iteratie over MIME-delen, gebruikt [RE2](https://github.com/uhop/node-re2) voor reguliere-expressiematching, past snelheidslimieten toe op redirects, afwezigheidsreacties en notificaties, weigert onveilige redirectbestemmingen en voorkomt dat `editheader` authenticatie- of bezorgrouteringsheaders, `Received` of `Auto-Submitted` wijzigt. Een script dat te lang draait of te veel acties, flags of variabelen aanmaakt, wordt gestopt en het bericht blijft behouden. De status van snelheidslimieten voor redirects en afwezigheidsreacties wordt opgeslagen in [Redis](https://github.com/redis/redis), terwijl bezorgde mail wordt opgeslagen met [SQLite](https://github.com/sqlite/sqlite).
 
 #### Voorbeeld-Sieve-scripts {#example-sieve-scripts}
 
@@ -1233,8 +1231,6 @@ if header :contains "X-Spam-Status" "Yes" {
 **Omleiden van facturen:**
 
 ```sieve
-require ["redirect"];
-
 if header :contains "Subject" "invoice" {
     redirect "recipient@example.com";
 }
@@ -1260,7 +1256,7 @@ Forward Email biedt volledige ManageSieve protocolondersteuning voor het op afst
 | **Server**              | `imap.forwardemail.net` |
 | **Poort (STARTTLS)**    | `2190` (aanbevolen)     |
 | **Poort (Implicit TLS)**| `4190`                  |
-| **Authenticatie**       | PLAIN (over TLS)        |
+| **Authenticatie**       | PLAIN en LOGIN (over TLS) |
 
 > **Opmerking:** Poort 2190 gebruikt STARTTLS (upgrade van plain naar TLS) en is compatibel met de meeste ManageSieve clients, inclusief [sieve-connect](https://github.com/philpennock/sieve-connect). Poort 4190 gebruikt implicit TLS (TLS vanaf het begin van de verbinding) voor clients die dit ondersteunen.
 
@@ -1268,7 +1264,8 @@ Forward Email biedt volledige ManageSieve protocolondersteuning voor het op afst
 
 | Commando       | Beschrijving                           |
 | -------------- | ------------------------------------ |
-| `AUTHENTICATE` | Authenticeren met PLAIN mechanisme    |
+| `AUTHENTICATE` | Authenticeren met PLAIN- of LOGIN-mechanisme |
+| `STARTTLS`     | De verbinding upgraden naar TLS op poort 2190 |
 | `CAPABILITY`   | Lijst van servermogelijkheden en extensies |
 | `HAVESPACE`    | Controleren of script kan worden opgeslagen |
 | `PUTSCRIPT`    | Uploaden van een nieuw script         |

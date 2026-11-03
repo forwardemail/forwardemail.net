@@ -24,6 +24,8 @@ const isTimeoutError = require('./is-timeout-error');
 const refineAndLogError = require('./refine-and-log-error');
 const validateAlias = require('./validate-alias');
 const validateDomain = require('./validate-domain');
+const getUsernameVariants = require('#helpers/get-username-variants');
+const { requestDailyBackup } = require('#helpers/acquire-backup-dedup');
 const _ = require('#helpers/lodash');
 const isEmail = require('#helpers/is-email');
 
@@ -228,6 +230,13 @@ async function onAuth(auth, session, fn) {
     // `helpers/setup-auth-session.js` and `routes/api/v1/index.js`)
     const isCatchallSend = isAPI && session?.allowCatchallSend === true;
     const allowDomainToken = isSMTP || isCatchallSend;
+    // (the API routes that need no IMAP storage: the outbound email ones,
+    // which send and list sent mail as SMTP does, and the account ones, which
+    // read and change the alias's settings) (routes match in any case)
+    const isOutboundAPI =
+      isAPI &&
+      typeof session?.request?.path === 'string' &&
+      /^\/v1\/(?:emails|account)(?:\/|$)/i.test(session.request.path);
     // (per address, or per /64 for IPv6, see helpers/get-ip-bucket.js)
     const ipBucket = getIpBucket(session.remoteAddress);
     const authLimitKey = `auth_limit_${config.env}:${ipBucket}`;
@@ -283,6 +292,20 @@ async function onAuth(auth, session, fn) {
 
     // allow users to send/receive using "+" filter
     if (name && name.includes('+')) name = name.split('+')[0];
+
+    //
+    // the alias named exactly as given, as before, or else one named with
+    // another form of the name (Unicode or punycode, composed or decomposed:
+    // "fællestest" for "xn--fllestest-g3a", see #619), in that order
+    //
+    const aliasNames = isSANB(name)
+      ? [
+          ...new Set([
+            name,
+            ...getUsernameVariants.getQueryNames(getUsernameVariants(name))
+          ])
+        ]
+      : [];
 
     domainName = punycode.toUnicode(domainName);
 
@@ -462,7 +485,8 @@ async function onAuth(auth, session, fn) {
           // miss and refuses it below: a phone that sent mail and then
           // checked for new mail opened the mailbox, and a new one after
           // each hourly cleanup (jobs/cleanup-sqlite.js).
-          (isSMTP || user.alias_has_imap) &&
+          // (as the API routes that need no IMAP storage do, see below)
+          (isSMTP || isOutboundAPI || user.alias_has_imap) &&
           !isRekeying
         ) {
           // when the credentials were really checked (a revocation check
@@ -598,34 +622,8 @@ async function onAuth(auth, session, fn) {
 
             // daily backup (run in background)
             // Rate-limited: only fire backup once per alias per day
-            // skip if sqlite-worker is busy (Redis counter set by sqlite-worker)
-            const backupKey = `backup_dedup:${user.alias_id}`;
-            this.client
-              .set(backupKey, '1', 'PX', ms('1d'), 'NX')
-              .then((locked) => {
-                if (!locked) return;
-                return this.client
-                  .get(`sqlite_worker_busy:${config.env}`)
-                  .then((count) => {
-                    if (count && Number(count) > 0) return;
-                    return this.wsp
-                      .request(
-                        {
-                          action: 'backup',
-                          backup_at: new Date().toISOString(),
-                          session: { user }
-                        },
-                        0
-                      )
-                      .then((backup) => {
-                        this.logger.debug('backup complete', {
-                          backup,
-                          session
-                        });
-                      });
-                  });
-              })
-              .catch((err) => this.logger.debug(err, { session }));
+            // (not while sqlite-worker is busy, see helpers/acquire-backup-dedup)
+            requestDailyBackup(this, user, session);
           }
 
           return;
@@ -728,10 +726,18 @@ async function onAuth(auth, session, fn) {
           pipeline: [
             {
               $match: {
-                name,
+                name: { $in: aliasNames },
                 $expr: { $eq: ['$domain', '$$domainId'] }
               }
             },
+            {
+              $addFields: {
+                _name_rank: { $indexOfArray: [aliasNames, '$name'] }
+              }
+            },
+            { $sort: { _name_rank: 1 } },
+            { $limit: 1 },
+            { $project: { _name_rank: 0 } },
             {
               $lookup: {
                 from: 'users',
@@ -1111,79 +1117,84 @@ async function onAuth(auth, session, fn) {
     // alert them by email to inform them they need to enable IMAP
     // (otherwise they're not going to have any mail received)
     //
+    // (the email is sent once; the login is refused every time, the same as
+    // on a cache hit above) (sending mail with the API, as with SMTP, needs
+    // no IMAP)
+    //
     if (
       alias &&
       !alias.has_imap &&
-      !_.isDate(alias.imap_not_enabled_sent_at) &&
+      !isOutboundAPI &&
       (isIMAPorPOP3 || isCalDAV || isCardDAV || isAPI || isIMAP || isPOP3)
     ) {
-      this.client
-        .get(`imap_check:${alias.id}`)
-        .then(async (cache) => {
-          try {
-            // TODO: we can remove imap_check cache check in future
-            //       (this is for legacy compat for those that were sent in past 7d)
-            if (cache) {
+      if (!_.isDate(alias.imap_not_enabled_sent_at))
+        this.client
+          .get(`imap_check:${alias.id}`)
+          .then(async (cache) => {
+            try {
+              // TODO: we can remove imap_check cache check in future
+              //       (this is for legacy compat for those that were sent in past 7d)
+              if (cache) {
+                await Aliases.findByIdAndUpdate(alias._id, {
+                  $set: {
+                    imap_not_enabled_sent_at: new Date()
+                  }
+                });
+                return;
+              }
+
+              await this.client.set(
+                `imap_check:${alias.id}`,
+                true,
+                'PX',
+                ms('7d')
+              );
+
+              await email({
+                template: 'alert',
+                message: {
+                  to,
+                  subject: i18n.translate(
+                    'IMAP_NOT_ENABLED_SUBJECT',
+                    locale,
+                    `${alias.name}@${domain.name}`
+                  )
+                },
+                locals: {
+                  message: i18n.translate(
+                    'IMAP_NOT_ENABLED_MESSAGE',
+                    locale,
+                    `${alias.name}@${domain.name}`,
+                    `${config.urls.web}/${locale}/my-account/domains/${
+                      domain.name
+                    }/aliases?q=${encodeURIComponent(
+                      `${alias.name}@${domain.name}`
+                    )}`,
+                    `${alias.name}@${domain.name}`
+                  ),
+                  locale
+                }
+              });
+
               await Aliases.findByIdAndUpdate(alias._id, {
                 $set: {
                   imap_not_enabled_sent_at: new Date()
                 }
               });
-              return;
+            } catch (err) {
+              this.logger.fatal(err, { session, resolver: this.resolver });
+              // backoff for 30m for the next retry
+              this.client
+                .set(`imap_check:${alias.id}`, true, 'PX', ms('30m'))
+                .then()
+                .catch((err) =>
+                  this.logger.fatal(err, { session, resolver: this.resolver })
+                );
             }
-
-            await this.client.set(
-              `imap_check:${alias.id}`,
-              true,
-              'PX',
-              ms('7d')
-            );
-
-            await email({
-              template: 'alert',
-              message: {
-                to,
-                subject: i18n.translate(
-                  'IMAP_NOT_ENABLED_SUBJECT',
-                  locale,
-                  `${alias.name}@${domain.name}`
-                )
-              },
-              locals: {
-                message: i18n.translate(
-                  'IMAP_NOT_ENABLED_MESSAGE',
-                  locale,
-                  `${alias.name}@${domain.name}`,
-                  `${config.urls.web}/${locale}/my-account/domains/${
-                    domain.name
-                  }/aliases?q=${encodeURIComponent(
-                    `${alias.name}@${domain.name}`
-                  )}`,
-                  `${alias.name}@${domain.name}`
-                ),
-                locale
-              }
-            });
-
-            await Aliases.findByIdAndUpdate(alias._id, {
-              $set: {
-                imap_not_enabled_sent_at: new Date()
-              }
-            });
-          } catch (err) {
-            this.logger.fatal(err, { session, resolver: this.resolver });
-            // backoff for 30m for the next retry
-            this.client
-              .set(`imap_check:${alias.id}`, true, 'PX', ms('30m'))
-              .then()
-              .catch((err) =>
-                this.logger.fatal(err, { session, resolver: this.resolver })
-              );
-          }
-        })
-        .catch((err) =>
-          this.logger.fatal(err, { session, resolver: this.resolver })
-        );
+          })
+          .catch((err) =>
+            this.logger.fatal(err, { session, resolver: this.resolver })
+          );
 
       // throw an error
       throw new SMTPError(
@@ -1517,31 +1528,8 @@ async function onAuth(auth, session, fn) {
 
       // daily backup (run in background)
       // Rate-limited: only fire backup once per alias per day
-      // skip if sqlite-worker is busy (Redis counter set by sqlite-worker)
-      const backupKey2 = `backup_dedup:${user.alias_id}`;
-      this.client
-        .set(backupKey2, '1', 'PX', ms('1d'), 'NX')
-        .then((locked) => {
-          if (!locked) return;
-          return this.client
-            .get(`sqlite_worker_busy:${config.env}`)
-            .then((count) => {
-              if (count && Number(count) > 0) return;
-              return this.wsp
-                .request(
-                  {
-                    action: 'backup',
-                    backup_at: new Date().toISOString(),
-                    session: { user }
-                  },
-                  0
-                )
-                .then((backup) => {
-                  this.logger.debug('backup complete', { backup, session });
-                });
-            });
-        })
-        .catch((err) => this.logger.debug(err, { session }));
+      // (not while sqlite-worker is busy, see helpers/acquire-backup-dedup)
+      requestDailyBackup(this, user, session);
     }
   } catch (err) {
     //

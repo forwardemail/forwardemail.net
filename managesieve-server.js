@@ -360,7 +360,29 @@ class ManageSieveServer {
     }
 
     session.buffer += data.toString('utf8');
-    this.processBuffer(session);
+
+    //
+    // (one command at a time on a connection: data that arrived while a
+    // command was still running, such as a pipelined PUTSCRIPT while the one
+    // before checked the script count, used to start on it at once; that
+    // let both pass the same check, and read the script that belonged to
+    // the first one as a command)
+    //
+    // (a run that is queued and not started yet reads this data too, so
+    // only one is queued however many chunks arrive meanwhile)
+    if (session.processQueued) return;
+    session.processQueued = true;
+    session.processing = (session.processing || Promise.resolve())
+      .then(() => {
+        session.processQueued = false;
+        return this.processBuffer(session);
+      })
+      .catch((err) => {
+        this.logger.error(err, {
+          component: 'ManageSieve',
+          sessionId: session.id
+        });
+      });
   }
 
   //
@@ -409,6 +431,8 @@ class ManageSieveServer {
       const authData = session.buffer.slice(0, crlfIndex);
       session.buffer = session.buffer.slice(crlfIndex + 2);
       await this.handleAuthContinuation(session, authData);
+      // (a command sent right after it is in the buffer already)
+      if (session.buffer.length > 0) await this.processBuffer(session);
       return;
     }
 

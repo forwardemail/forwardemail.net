@@ -1109,45 +1109,45 @@ sequenceDiagram
 
 | RFC 또는 명세 | 기능 | 지원되는 동작 |
 | --- | --- | --- |
-| [RFC 5228](https://datatracker.ietf.org/doc/html/rfc5228) | Core Sieve | `keep`, `discard`, `stop`, 조건 블록 및 기본 `address`, `header`, `exists`, `size` 및 불리언 테스트. `fileinto` 및 `redirect`는 인바운드 전달 파이프라인을 통해 전달됩니다. |
+| [RFC 5228](https://datatracker.ietf.org/doc/html/rfc5228) | Core Sieve, `encoded-character` | `keep`, `discard`, `stop`, 조건 블록 및 기본 `address`, `header`, `exists`, `size` 및 불리언 테스트. `fileinto`는 지정된 각 폴더에 메시지를 저장합니다. `redirect`는 `require`가 필요 없으며 발신 큐를 통해 전송됩니다. 발신 큐는 From이 별칭이고 발신 SMTP가 있는 도메인의 메시지만 받으며, 그 외의 메시지는 받은편지함에 보관됩니다. `encoded-character`가 요구되면 `${hex:...}` 및 `${unicode:...}`가 디코딩됩니다. |
 | [RFC 5429](https://datatracker.ietf.org/doc/html/rfc5429) | `reject`, `ereject` | 지정된 메시지로 SMTP 거부를 수행합니다. |
-| [RFC 5230](https://datatracker.ietf.org/doc/html/rfc5230) | `vacation` | 부재중 회신은 남용 제어와 함께 큐에 저장됩니다. |
+| [RFC 5230](https://datatracker.ietf.org/doc/html/rfc5230) | `vacation` | 부재중 회신은 남용 제어와 함께 큐에 저장되며, 각 `:days` 기간(기본값 7일)마다 발신자당 최대 한 번입니다. |
 | [RFC 6131](https://datatracker.ietf.org/doc/html/rfc6131) | `vacation-seconds` | `:seconds` 간격은 부재중 응답의 TTL을 제어합니다. |
 | [RFC 5232](https://datatracker.ietf.org/doc/html/rfc5232) | `imap4flags` | 메일박스 저장 시 플래그가 적용됩니다. |
 | [RFC 5173](https://datatracker.ietf.org/doc/html/rfc5173) | `body` | 메시지 본문 내용 매칭. |
 | [RFC 5229](https://datatracker.ietf.org/doc/html/rfc5229) | `variables` | 변수 확장 및 지원되는 수정자. |
 | [RFC 5231](https://datatracker.ietf.org/doc/html/rfc5231) | `relational` | `:count` 및 `:value` 비교. |
-| [RFC 4790](https://datatracker.ietf.org/doc/html/rfc4790) | Comparators | `i;ascii-casemap` 및 `i;octet`. `i;ascii-numeric`는 광고되지 않습니다. |
+| [RFC 4790](https://datatracker.ietf.org/doc/html/rfc4790) | Comparators | `i;ascii-casemap`, `i;octet` 및 `i;ascii-numeric`. |
 | [RFC 3894](https://datatracker.ietf.org/doc/html/rfc3894) | `copy` | `fileinto`와 `redirect`의 `:copy`. |
-| [RFC 5293](https://datatracker.ietf.org/doc/html/rfc5293) | `editheader` | 저장 전에 헤더 변경(인증 및 전달 라우팅 보호 필드 제외). |
+| [RFC 5293](https://datatracker.ietf.org/doc/html/rfc5293) | `editheader` | 저장 전에 헤더 변경(이후 테스트에 반영되며, 인증 및 전달 라우팅 보호 필드, `Received`, `Auto-Submitted` 제외). |
 | [RFC 5260](https://datatracker.ietf.org/doc/html/rfc5260) | `date`, `index` | `currentdate`와 헤더-날짜 테스트, 그리고 `:index` 및 `:last`. |
-| [RFC 5435](https://datatracker.ietf.org/doc/html/rfc5435) | `enotify` | 비율 제한이 있는 `mailto:` 알림. 기존의 `require "notify"` 선언은 별칭으로 허용되지만, `enotify`가 광고됩니다. |
+| [RFC 5435](https://datatracker.ietf.org/doc/html/rfc5435) | `enotify` | 비율 제한이 있는 `mailto:` 알림(자동 메시지에는 보내지 않음). 기존의 `require "notify"` 선언은 별칭으로 허용되지만, `enotify`가 광고됩니다. |
 | [RFC 5183](https://datatracker.ietf.org/doc/html/rfc5183) | `environment` | 지원되는 세션 환경 값. |
-| [RFC 5490](https://datatracker.ietf.org/doc/html/rfc5490) | `mailbox` | `fileinto :create`만 지원됩니다. 실시간 `mailboxexists` 쿼리는 지원되지 않습니다. |
-| [RFC 8579](https://datatracker.ietf.org/doc/html/rfc8579) | `special-use` | 표준 폴더의 `:specialuse` 매핑과 결정론적 `specialuse_exists` 확인. |
+| [RFC 5490](https://datatracker.ietf.org/doc/html/rfc5490) | `mailbox` | `fileinto :create` 및 별칭의 폴더를 조회하는 `mailboxexists`. |
+| [RFC 8579](https://datatracker.ietf.org/doc/html/rfc8579) | `special-use` | `fileinto :specialuse`는 해당 특수 용도의 폴더에 저장하고, `specialuse_exists`는 별칭의 폴더를 조회합니다. |
 | [RFC 7352](https://datatracker.ietf.org/doc/html/rfc7352) | `duplicate` | Redis 기반의 중복 전달 감지. |
-| [RFC 5463](https://datatracker.ietf.org/doc/html/rfc5463) | `ihave` | 광고된 기능이 사용 가능한지 확인합니다. |
+| [RFC 5463](https://datatracker.ietf.org/doc/html/rfc5463) | `ihave` | 광고된 기능이 사용 가능한지 확인하며, `error` 명령도 지원합니다. |
 | [RFC 5233](https://datatracker.ietf.org/doc/html/rfc5233) | `subaddress` | `:user` 및 `:detail` 주소 부분. |
 | [draft-ietf-sieve-regex](https://datatracker.ietf.org/doc/html/draft-ietf-sieve-regex) | `regex` | 정규식 매칭 — [RE2](https://github.com/uhop/node-re2)를 사용합니다. |
-| [RFC 5703](https://datatracker.ietf.org/doc/html/rfc5703) | `mime` | MIME 테스트 및 `foreverypart`, `break`, `extracttext`, `replace`. `enclose`는 안전한 전달 구현이 없어 거부됩니다. |
+| [RFC 5703](https://datatracker.ietf.org/doc/html/rfc5703) | `foreverypart`, `extracttext`, `replace`, `mime` | MIME 테스트 및 `foreverypart`, `break`, `extracttext`, `replace`. 이전 스크립트가 기대하는 대로 `mime`도 이 명령들을 활성화합니다. `enclose`는 안전한 전달 구현이 없어 거부됩니다. |
 
 #### 지원되는 Sieve 확장 {#supported-sieve-extensions}
 
 | 확장 | 동작 | 전달 또는 적용 |
 | --- | --- | --- |
-| `fileinto` | 메시지를 폴더에 저장합니다. | 선택된 IMAP 폴더에 저장됩니다. `fileinto :create`는 `mailbox`를 필요로 합니다. |
+| `fileinto` | 메시지를 폴더에 저장합니다. | 선택된 IMAP 폴더에 저장됩니다. `fileinto :create` 및 `mailboxexists`는 `mailbox`를 필요로 합니다. |
 | `copy` | 원본 전달을 유지하면서 `fileinto` 또는 `redirect`를 추가합니다. | 전달 파이프라인에서 적용됩니다. |
-| `redirect` | 다른 수신자에게 복사본 또는 대체 전달을 보냅니다. | 도메인 정책, 차단 목록 검사 및 속도 제한의 영향을 받으며 일반 아웃바운드 경로를 통해 큐에 저장됩니다. |
+| `redirect` | 메시지를 다른 수신자에게 보냅니다. | From이 별칭이고 발신 SMTP가 있는 도메인의 메시지는 도메인 정책, 차단 목록 검사 및 속도 제한의 영향을 받으며 일반 아웃바운드 경로를 통해 큐에 저장됩니다. 그 외의 메시지는 받은편지함에 보관됩니다. |
 | `reject` / `ereject` | SMTP 오류로 메시지를 거부합니다. | MX 전달 경로를 통해 반환됩니다. |
 | `vacation` / `vacation-seconds` | 자동 회신을 보냅니다. | 수신자 및 간격에 따른 속도 제한과 함께 큐에 저장됩니다. |
 | `imap4flags` | IMAP 플래그를 설정하거나 검사합니다. | 메시지가 저장될 때 적용됩니다. |
-| `envelope`, `body`, `date`, `index`, `regex`, `subaddress`, `relational` | 메시지 및 봉투 데이터를 검사합니다. | Sieve 엔진에 의해 평가됩니다. |
+| `envelope`, `body`, `date`, `index`, `regex`, `subaddress`, `relational`, `comparator-i;ascii-numeric` | 메시지 및 봉투 데이터를 검사합니다. | Sieve 엔진에 의해 평가됩니다. |
 | `variables`, `duplicate`, `ihave` | 값을 저장하고 중복을 감지하며 기능을 확인합니다. | 변수는 스크립트 로컬입니다; 중복 상태는 Redis를 사용합니다. |
-| `editheader` | 보호되지 않은 헤더를 추가하거나 삭제합니다. | 인증 및 전달 라우팅 헤더는 수정할 수 없습니다. |
+| `editheader` | 보호되지 않은 헤더를 추가하거나 삭제합니다. | 인증 및 전달 라우팅 헤더, `Received`, `Auto-Submitted`는 수정할 수 없습니다. |
 | `enotify` | `mailto:`를 사용하여 알림을 전송합니다. | 알림 속도 제한과 함께 큐에 저장됩니다. |
 | `environment` | 지원되는 세션 환경 데이터를 읽습니다. | Sieve 엔진에 의해 평가됩니다. |
-| `special-use` | 표준 사용 폴더를 처리합니다. | 표준 폴더를 매핑하고 결정론적 `specialuse_exists` 결과를 제공합니다. |
-| `mime` | 지원되는 MIME 파트를 검사하고 변경합니다. | 일반 `mime` 기능을 요구합니다. 개별 RFC 5703 명령은 별도로 광고되지 않습니다. |
+| `special-use` | 표준 사용 폴더를 처리합니다. | 별칭의 특수 용도 폴더에 저장하고 조회합니다. |
+| `foreverypart`, `extracttext`, `replace`, `mime` | 지원되는 MIME 파트를 검사하고 변경합니다. | Sieve 엔진에 의해 평가됩니다. 이전 스크립트가 기대하는 대로 `mime`도 세 명령을 활성화합니다. |
 
 #### 지원되지 않는 Sieve 기능 {#sieve-extensions-not-supported}
 
@@ -1156,11 +1156,9 @@ sequenceDiagram
 | 기능 | RFC 또는 명세 | 이유 |
 | --- | --- | --- |
 | `enclose` | [RFC 5703](https://datatracker.ietf.org/doc/html/rfc5703) | 원본 메시지를 포함하는 새 메시지 생성은 종단 간으로 안전하게 구현되지 않았습니다. |
-| `mailboxexists` | [RFC 5490](https://datatracker.ietf.org/doc/html/rfc5490) | 실시간 IMAP 메일박스 상태 쿼리는 제공되지 않습니다. |
 | `include` | [RFC 6609](https://datatracker.ietf.org/doc/html/rfc6609) | 전역 및 포함된 스크립트 저장소는 제공되지 않습니다. |
 | `mboxmetadata` / `servermetadata` | [RFC 5490](https://datatracker.ietf.org/doc/html/rfc5490) | IMAP METADATA 통합은 제공되지 않습니다. |
 | `fcc` | [RFC 8580](https://datatracker.ietf.org/doc/html/rfc8580) | 발송 메일 보관 통합은 제공되지 않습니다. |
-| `encoded-character` | [RFC 5228](https://datatracker.ietf.org/doc/html/rfc5228) | `${hex:...}` 구문은 구현되어 있지 않습니다. |
 | External lists | [RFC 6134](https://datatracker.ietf.org/doc/html/rfc6134) | `valid_ext_list` 및 기타 외부 목록 관련 작업은 사용할 수 없습니다. |
 
 #### Sieve 처리 흐름 {#sieve-processing-flow}
@@ -1197,7 +1195,7 @@ sequenceDiagram
 
 #### 보안 기능 {#security-features}
 
-Forward Email은 스크립트를 저장, 활성화 또는 실행하기 전에 전체 스크립트를 검증합니다. 선언되지 않았거나 사용 불가능한 기능을 거부하고, 스크립트 크기와 MIME 파트 반복을 제한하며, 정규식 매칭에 [RE2](https://github.com/uhop/node-re2)를 사용하고, 리디렉트·부재중 회신·알림에 대해 비율 제한을 적용하고, 안전하지 않은 리디렉트 목적지를 차단하며, `editheader`가 인증 또는 전달 라우팅 헤더를 변경하지 못하도록 합니다. 리디렉트 및 부재중 회신의 비율 제한 상태는 [Redis](https://github.com/redis/redis)에 보관되며, 전달된 메일은 [SQLite](https://github.com/sqlite/sqlite)에 저장됩니다.
+Forward Email은 스크립트를 저장, 활성화 또는 실행하기 전에 전체 스크립트를 검증합니다. 선언되지 않았거나 사용 불가능한 기능을 거부하고, 스크립트 크기와 MIME 파트 반복을 제한하며, 정규식 매칭에 [RE2](https://github.com/uhop/node-re2)를 사용하고, 리디렉트·부재중 회신·알림에 대해 비율 제한을 적용하고, 안전하지 않은 리디렉트 목적지를 차단하며, `editheader`가 인증 또는 전달 라우팅 헤더, `Received`, `Auto-Submitted`를 변경하지 못하도록 합니다. 너무 오래 실행되거나 작업, 플래그, 변수를 너무 많이 만드는 스크립트는 중지되며, 메시지는 보관됩니다. 리디렉트 및 부재중 회신의 비율 제한 상태는 [Redis](https://github.com/redis/redis)에 보관되며, 전달된 메일은 [SQLite](https://github.com/sqlite/sqlite)에 저장됩니다.
 
 #### Sieve 예제 스크립트 {#example-sieve-scripts}
 
@@ -1233,8 +1231,6 @@ if header :contains "X-Spam-Status" "Yes" {
 **송장 리디렉트:**
 
 ```sieve
-require ["redirect"];
-
 if header :contains "Subject" "invoice" {
     redirect "recipient@example.com";
 }
@@ -1260,7 +1256,7 @@ Forward Email은 Sieve 스크립트를 원격으로 관리하기 위한 ManageSi
 | **서버**                | `imap.forwardemail.net` |
 | **포트 (STARTTLS)**     | `2190` (권장)           |
 | **포트 (암시적 TLS)**   | `4190`                  |
-| **인증**                | PLAIN (TLS 위에서)      |
+| **인증**                | PLAIN 및 LOGIN (TLS 위에서) |
 
 > **참고:** 포트 2190은 STARTTLS(평문에서 TLS로 업그레이드)를 사용하며 [sieve-connect](https://github.com/philpennock/sieve-connect)를 포함한 대부분의 ManageSieve 클라이언트와 호환됩니다. 포트 4190은 암시적 TLS(연결 시작부터 TLS)를 사용하며 이를 지원하는 클라이언트용입니다.
 
@@ -1268,7 +1264,8 @@ Forward Email은 Sieve 스크립트를 원격으로 관리하기 위한 ManageSi
 
 | 명령어          | 설명                                   |
 | -------------- | ------------------------------------- |
-| `AUTHENTICATE` | PLAIN 메커니즘을 사용한 인증           |
+| `AUTHENTICATE` | PLAIN 또는 LOGIN 메커니즘을 사용한 인증  |
+| `STARTTLS`     | 포트 2190에서 연결을 TLS로 업그레이드     |
 | `CAPABILITY`   | 서버 기능 및 확장 목록 조회             |
 | `HAVESPACE`    | 스크립트 저장 가능 여부 확인            |
 | `PUTSCRIPT`    | 새 스크립트 업로드                     |

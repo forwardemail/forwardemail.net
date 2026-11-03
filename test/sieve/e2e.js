@@ -1073,8 +1073,8 @@ test.serial('date - currentdate test for time-based filtering', async (t) => {
   const currentHour = new Date().getHours();
 
   const sieveScript = `
-require ["fileinto", "date", "relational"];
-if currentdate :value "ge" "hour" "${currentHour}" {
+require ["fileinto", "date", "relational", "comparator-i;ascii-numeric"];
+if currentdate :value "ge" :comparator "i;ascii-numeric" "hour" "${currentHour}" {
   fileinto "CurrentHour";
 }
 `;

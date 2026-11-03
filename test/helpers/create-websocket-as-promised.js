@@ -3,13 +3,17 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
+const { once } = require('node:events');
 const net = require('node:net');
 const { setTimeout } = require('node:timers/promises');
 
 const ms = require('ms');
+const pWaitFor = require('p-wait-for');
 const test = require('ava');
+const { WebSocketServer } = require('ws');
 
 const createWebSocketAsPromised = require('#helpers/create-websocket-as-promised');
+const { encoder, decoder } = require('#helpers/encoder-decoder');
 
 //
 // A TCP server that accepts every connection and drops it at once, so the
@@ -28,6 +32,42 @@ async function startDroppingServer(t) {
   t.teardown(() => server.close());
   return { port: server.address().port, attempts: () => attempts };
 }
+
+//
+// ReconnectingWebSocket sets each socket it opens to "blob" (the browser
+// default), which ws honours since 8.18: every binary answer from the SQLite
+// server then arrived as a Blob that msgpackr could not decode
+// <https://github.com/websockets/ws/issues/2239>.
+//
+test('binary answers are decoded, also after a reconnect', async (t) => {
+  t.timeout(ms('1m'));
+  let connections = 0;
+  const wss = new WebSocketServer({ port: 0, host: '127.0.0.1' });
+  await once(wss, 'listening');
+  t.teardown(() => wss.close());
+  wss.on('connection', (ws) => {
+    connections++;
+    ws.on('message', (data) => {
+      const { id } = decoder.unpack(data);
+      ws.send(encoder.pack({ id, data: { answer: connections } }));
+      // (the first connection drops after its answer, so the second request
+      // goes over a socket ReconnectingWebSocket opened again)
+      if (connections === 1) ws.terminate();
+    });
+  });
+
+  const wsp = createWebSocketAsPromised({
+    host: '127.0.0.1',
+    port: wss.address().port
+  });
+  t.teardown(() => wsp.close());
+
+  t.deepEqual(await wsp.request({ action: 'size' }, 0), { answer: 1 });
+  await pWaitFor(() => wsp.isOpened && connections === 2, {
+    timeout: ms('15s')
+  }).catch(() => {});
+  t.deepEqual(await wsp.request({ action: 'size' }, 0), { answer: 2 });
+});
 
 test('close() stops a client that never managed to connect', async (t) => {
   t.timeout(ms('1m'));

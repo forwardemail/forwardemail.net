@@ -250,6 +250,20 @@ function createWebSocketClass(options) {
     constructor(url, protocols) {
       super(url, protocols, options);
     }
+
+    //
+    // ReconnectingWebSocket sets every socket it opens to "blob" (the browser
+    // default). ws ignored that before 8.18 and honours it since, so every
+    // message arrived as a Blob, which msgpackr cannot decode
+    // <https://github.com/websockets/ws/issues/2239>. Messages stay Buffers.
+    //
+    get binaryType() {
+      return super.binaryType;
+    }
+
+    set binaryType(type) {
+      super.binaryType = type === 'blob' ? 'nodebuffer' : type;
+    }
   };
 }
 

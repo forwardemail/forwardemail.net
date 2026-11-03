@@ -11,6 +11,8 @@ Denne delen dokumenterer CI/CD-arbeidsflyten for ForwardEmails selvhostede løsn
 * [Distribusjonsprosess](#deployment-process)
   * [Installasjon](#installation)
   * [Docker Compose-konfigurasjon](#docker-compose-configuration)
+  * [Levering til domener på samme server](#delivery-to-domains-hosted-on-the-same-server)
+  * [Avslutte økter når tilgangen hos Google eller GitHub tilbakekalles](#ending-sessions-when-google-or-github-access-is-revoked)
 * [Vedlikeholdsfunksjoner](#maintenance-features)
   * [Automatiske oppdateringer](#automatic-updates)
   * [Sikkerhetskopiering og gjenoppretting](#backup-and-restore)
@@ -122,6 +124,30 @@ Dette skriptet:
 * **SQLite**: Database for lagring av e-poster
 
 Hver tjeneste bruker det samme Docker-imaget, men med forskjellige inngangspunkter, noe som gir mulighet for en modulær arkitektur samtidig som vedlikeholdet forenkles.
+
+### Levering til domener på samme server {#delivery-to-domains-hosted-on-the-same-server}
+
+Utgående e-post leveres ikke til en MX-server på en adresse som tilhører serveren selv. Når én server er vert for flere domener og MX-postene deres peker på den offentlige adressen, avvises e-post fra ett av disse domenene til et annet.
+
+For å tillate det, angi:
+
+```env
+SMTP_ALLOW_LOCAL_MX=true
+```
+
+Standardverdien er `false`, og innstillingen gjelder bare når `SELF_HOSTED=true`. E-post leveres fortsatt aldri til loopback-, private, link-local- eller carrier-grade NAT-adresser.
+
+### Avslutte økter når tilgangen hos Google eller GitHub tilbakekalles {#ending-sessions-when-google-or-github-access-is-revoked}
+
+På en selvhostet installasjon kontrolleres økter som er logget på med Google eller GitHub, som standard ikke hos leverandøren: Tilbakekalles denne applikasjonens tilgang der, logges de ikke ut, og de forblir pålogget til de utløper.
+
+For å avslutte dem så snart tilgangen er tilbakekalt, angi:
+
+```env
+AUTH_OAUTH_REVOCATION_CHECK=true
+```
+
+Leverandøren spørres da i bakgrunnen, omtrent hvert 5. minutt (hvert minutt så lenge den ikke svarer). Et avbrudd hos leverandøren logger ingen ut, og det gjør heller ikke et token som leverandøren aldri har godtatt.
 
 ## Vedlikeholdsfunksjoner {#maintenance-features}
 

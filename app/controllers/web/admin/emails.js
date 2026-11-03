@@ -124,6 +124,8 @@ async function retrieve(ctx) {
 
   // Eml download
   if (ctx.params.id.endsWith('.eml')) {
+    // (a download, never shown in the browser on our own origin)
+    ctx.attachment(`${ctx.state.email._id}.eml`);
     ctx.type = 'message/rfc822';
     ctx.body = await Emails.getMessage(ctx.state.email.message);
     return;

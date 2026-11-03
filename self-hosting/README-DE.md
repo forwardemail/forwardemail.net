@@ -11,6 +11,8 @@ Dieser Abschnitt dokumentiert den CI/CD-Workflow für die selbstgehostete Lösun
 * [Bereitstellungsprozess](#deployment-process)
   * [Installation](#installation)
   * [Docker Compose-Konfiguration](#docker-compose-configuration)
+  * [Zustellung an Domains auf demselben Server](#delivery-to-domains-hosted-on-the-same-server)
+  * [Sitzungen beenden, wenn der Zugriff bei Google oder GitHub widerrufen wird](#ending-sessions-when-google-or-github-access-is-revoked)
 * [Wartungsfunktionen](#maintenance-features)
   * [Automatische Updates](#automatic-updates)
   * [Sichern und Wiederherstellen](#backup-and-restore)
@@ -122,6 +124,30 @@ Die Datei `docker-compose-self-hosted.yml` definiert alle Dienste, die für die 
 * **SQLite**: Datenbank zur Speicherung von E-Mails
 
 Jeder Dienst verwendet dasselbe Docker-Image, jedoch mit unterschiedlichen Einstiegspunkten, was eine modulare Architektur ermöglicht und gleichzeitig die Wartung vereinfacht.
+
+### Zustellung an Domains auf demselben Server {#delivery-to-domains-hosted-on-the-same-server}
+
+Ausgehende E-Mails werden nicht an einen MX-Server zugestellt, dessen Adresse dem Server selbst gehört. Hostet ein Server mehrere Domains und zeigen deren MX-Einträge auf seine öffentliche Adresse, werden E-Mails von einer dieser Domains an eine andere abgelehnt.
+
+Um dies zu erlauben, setzen Sie:
+
+```env
+SMTP_ALLOW_LOCAL_MX=true
+```
+
+Der Standardwert ist `false`, und die Einstellung gilt nur bei `SELF_HOSTED=true`. An Loopback-, private, Link-Local- oder Carrier-Grade-NAT-Adressen wird weiterhin nie zugestellt.
+
+### Sitzungen beenden, wenn der Zugriff bei Google oder GitHub widerrufen wird {#ending-sessions-when-google-or-github-access-is-revoked}
+
+Bei einer selbstgehosteten Installation werden mit Google oder GitHub angemeldete Sitzungen standardmäßig nicht beim Anbieter geprüft: Wird der Zugriff dieser Anwendung dort widerrufen, werden sie nicht abgemeldet und bleiben angemeldet, bis sie ablaufen.
+
+Um sie zu beenden, sobald der Zugriff widerrufen wurde, setzen Sie:
+
+```env
+AUTH_OAUTH_REVOCATION_CHECK=true
+```
+
+Der Anbieter wird dann im Hintergrund etwa alle 5 Minuten abgefragt (jede Minute, solange er nicht antwortet). Ein Ausfall beim Anbieter meldet niemanden ab, ebenso wenig ein Token, das der Anbieter nie akzeptiert hat.
 
 ## Wartungsfunktionen {#maintenance-features}
 

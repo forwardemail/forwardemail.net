@@ -2893,24 +2893,22 @@ Tasks.org הוא מנהל משימות קוד פתוח פופולרי שעובד
 | קטגוריה | יכולות והתנהגות |
 | --- | --- |
 | שפת הליבה | `keep`, `discard`, `stop`, בלוקים מותנים, ובדיקות הבסיס `address`, `header`, `exists`, `size`, ובדיקות בוליאניות. |
-| מסירה | `fileinto`, `copy`, `redirect`, `mailbox` עבור `fileinto :create`, ו-`special-use` עבור מיפוי תיקיה סטנדרטית `:specialuse` ו-`specialuse_exists`. |
-| בדיקות והשוואות | `envelope`, `body`, `date`, `index`, `regex`, `subaddress`, `relational`, `i;ascii-casemap`, ו-`i;octet`. |
-| מצב ומשתנים | `variables`, `imap4flags`, `duplicate`, ו-`ihave`. |
+| מסירה | `fileinto`, `copy`, `redirect`, `mailbox` עבור `fileinto :create` ו-`mailboxexists`, ו-`special-use` עבור `fileinto :specialuse` ו-`specialuse_exists`. |
+| בדיקות והשוואות | `envelope`, `body`, `date`, `index`, `regex`, `subaddress`, `relational`, `i;ascii-casemap`, `i;octet`, ו-`i;ascii-numeric`. |
+| מצב ומשתנים | `variables`, `encoded-character`, `imap4flags`, `duplicate`, ו-`ihave`. |
 | פעולות ותשובות | `reject`, `ereject`, `vacation`, `vacation-seconds`, ו-`enotify` המשתמש ב-`mailto:`. ההצהרה הישנה `require "notify"` מתקבלת כ_ALIAS_ קלט עבור `enotify`, אך `enotify` היא היכולת המפורסמת. |
-| עיבוד הודעות | `editheader`, `environment`, ו-`mime`, כולל `foreverypart`, `break`, `extracttext`, ו-`replace`. |
+| עיבוד הודעות | `editheader`, `environment`, `foreverypart` (עם `break`), `extracttext`, `replace`, ו-`mime`, שמפעיל גם את שלוש הפקודות האלה. |
 
-`redirect` מועבר דרך תור היציאה הרגיל. הוא כפוף למדיניות התחום המוגדרת להפניות, לבדיקות רשימות מניעה, ולמגבלות קצב. `editheader` אינו יכול לשנות כותרות אימות או ניתוב מסירה שמוגנות.
+`redirect` אינו דורש `require`. הוא נשלח דרך תור היציאה הרגיל, שמקבל רק הודעה שה-From שלה הוא הכינוי שלך, בדומיין עם SMTP יוצא; כל הודעה אחרת נשמרת בתיבת הדואר הנכנס שלך. הפניות כפופות למדיניות התחום המוגדרת להפניות, לבדיקות רשימות מניעה, ולמגבלות קצב. `editheader` אינו יכול לשנות כותרות אימות או ניתוב מסירה שמוגנות, `Received` או `Auto-Submitted`.
 
 #### תכונות שלא נתמכות
 
 | תכונה | סיבה |
 | --- | --- |
 | `enclose` | יצירת הודעה חדשה הכוללת את ההודעה המקורית לא ממומשת. |
-| `mailboxexists` | Forward Email אינו מבצע שאילתות מצב תיבת IMAP חיות. `fileinto :create` נשאר זמין דרך `mailbox`. |
 | `include` | אחסון סקריפטים גלובלי וכלול אינו זמין. |
 | `mboxmetadata` / `servermetadata` | אינטגרציה עם IMAP METADATA אינה זמינה. |
 | `fcc` | אינטגרציית תיוק של דואר שנשלח אינה זמינה. |
-| `encoded-character` | התחביר `${hex:...}` לא ממומש. |
 | רשימות חיצוניות | `valid_ext_list` ופעולות רשימות-חיצוניות אחרות אינן זמינות. |
 
 #### דוגמאות של סקריפטים ב-Sieve
@@ -2947,8 +2945,6 @@ if address :is "from" "boss@example.com" {
 **Redirect a message:**
 
 ```sieve
-require ["redirect"];
-
 if header :contains "Subject" "invoice" {
     redirect "recipient@example.com";
 }

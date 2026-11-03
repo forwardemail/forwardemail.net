@@ -12,10 +12,66 @@
     return { type, ...props, location: location() };
   }
 
-  // Helper to flatten arrays
-  function flatten(arr) {
-    return arr.reduce((acc, val) => acc.concat(val), []);
+  // Precedence of the modifiers of "set" and "extracttext", applied largest
+  // first (RFC 5229 section 4.1, RFC 5435 section 6)
+  const MODIFIER_PRECEDENCE = {
+    lower: 40,
+    upper: 40,
+    lowerfirst: 30,
+    upperfirst: 30,
+    quotewildcard: 20,
+    encodeurl: 15,
+    length: 10
+  };
+
+  // Commands and tests defined by this grammar; any other identifier is
+  // parsed as an unknown one (only allowed with "ihave", see parser.js)
+  const KNOWN_COMMANDS = new Set([
+    'addflag', 'addheader', 'break', 'deleteheader', 'discard', 'else',
+    'elsif', 'enclose', 'ereject', 'error', 'extracttext', 'fileinto',
+    'foreverypart', 'if', 'keep', 'notify', 'redirect', 'reject',
+    'removeflag', 'replace', 'require', 'set', 'setflag', 'stop', 'vacation'
+  ]);
+  const KNOWN_TESTS = new Set([
+    'address', 'allof', 'anyof', 'body', 'currentdate', 'date', 'duplicate',
+    'envelope', 'environment', 'exists', 'false', 'hasflag', 'header',
+    'ihave', 'mailboxexists', 'metadata', 'metadataexists', 'not',
+    'notify_method_capability', 'size', 'specialuse_exists', 'string',
+    'true', 'valid_ext_list', 'valid_notify_method'
+  ]);
+
+  //
+  // Tagged arguments may be given in any order (RFC 5228 section 2.6.2), but
+  // none more than once and no conflicting ones together (section 2.6).
+  // Each tag rule returns [group, props]: two tags of one group conflict.
+  // `list` is the result of `(Tag _)*`.
+  //
+  function tags(list, defaults) {
+    const result = { ...defaults };
+    const seen = new Set();
+    for (const [[group, props]] of list) {
+      if (seen.has(group))
+        error(`Duplicate or conflicting tagged argument: ${group}`);
+      seen.add(group);
+      if (props.modifier) result.modifiers.push(props.modifier);
+      else Object.assign(result, props);
+    }
+
+    if (result.modifiers)
+      result.modifiers.sort(
+        (a, b) => MODIFIER_PRECEDENCE[b] - MODIFIER_PRECEDENCE[a]
+      );
+
+    // RFC 5260 section 6
+    if ('index' in defaults && result.last && result.index === null)
+      error(':last requires :index');
+
+    // RFC 5703 section 4.1
+    if (result.anychild && !result.mime) error(':anychild requires :mime');
+
+    return result;
   }
+
 }
 
 // Entry point - a Sieve script is a list of commands
@@ -32,6 +88,7 @@ CommandList
 Command
   = ControlCommand
   / ActionCommand
+  / UnknownCommand
 
 // Control Commands
 ControlCommand
@@ -40,9 +97,10 @@ ControlCommand
   / StopCommand
   / ForeverypartCommand
   / BreakCommand
+  / ErrorCommand
 
 IfCommand
-  = "if"i _ test:Test _ block:Block elsifParts:ElsifPart* elsePart:ElsePart? {
+  = "if"i W _ test:Test _ block:Block elsifParts:ElsifPart* elsePart:ElsePart? {
       return node('If', {
         test,
         block,
@@ -52,44 +110,67 @@ IfCommand
     }
 
 ElsifPart
-  = _ "elsif"i _ test:Test _ block:Block {
+  = _ "elsif"i W _ test:Test _ block:Block {
       return node('Elsif', { test, block });
     }
 
 ElsePart
-  = _ "else"i _ block:Block {
+  = _ "else"i W _ block:Block {
       return block;
     }
 
 RequireCommand
-  = "require"i _ capabilities:StringList _ ";" {
+  = "require"i W _ capabilities:StringList _ ";" {
       return node('Require', { capabilities });
     }
 
 StopCommand
-  = "stop"i _ ";" {
+  = "stop"i W _ ";" {
       return node('Stop');
     }
 
 // MIME Part Iteration (RFC 5703)
 ForeverypartCommand
-  = "foreverypart"i _ name:ForeverypartName? _ block:Block {
+  = "foreverypart"i W _ name:NameTag? _ block:Block {
       return node('Foreverypart', {
         name: name || null,
         block
       });
     }
 
-ForeverypartName
-  = ":name"i _ s:String _ { return s; }
-
 BreakCommand
-  = "break"i _ name:BreakName? _ ";" {
+  = "break"i W _ name:NameTag? _ ";" {
       return node('Break', { name: name || null });
     }
 
-BreakName
-  = ":name"i _ s:String _ { return s; }
+NameTag
+  = ":name"i W _ s:String { return s; }
+
+// Error Control (RFC 5463 section 5)
+ErrorCommand
+  = "error"i W _ message:String _ ";" {
+      return node('Error', { message });
+    }
+
+// A command this grammar does not know (RFC 5228 section 8.2), so that a
+// script can use it after testing for its extension with "ihave"
+UnknownCommand
+  = name:Identifier !{ return KNOWN_COMMANDS.has(name.toLowerCase()); }
+    _ (UnknownArgument _)* (";" / Block) {
+      return node('UnknownCommand', { name });
+    }
+
+// A test this grammar does not know, as UnknownCommand
+UnknownTest
+  = name:Identifier !{ return KNOWN_TESTS.has(name.toLowerCase()); }
+    (_ UnknownArgument)* (_ "(" _ TestList _ ")")? {
+      return node('UnknownTest', { name });
+    }
+
+UnknownArgument
+  = StringList
+  / Number
+  / ":" Identifier
 
 // Action Commands
 ActionCommand
@@ -112,47 +193,47 @@ ActionCommand
   / NotifyCommand
 
 KeepCommand
-  = "keep"i _ flags:FlagsTag? _ ";" {
-      return node('Keep', { flags: flags || [] });
+  = "keep"i W _ t:(FlagsTag _)* ";" {
+      return node('Keep', tags(t, { flags: [] }));
     }
 
 FileintoCommand
-  = "fileinto"i _ copy:CopyTag? _ create:CreateTag? _ specialuse:SpecialuseTag? _ flags:FlagsTag? _ mailbox:String _ ";" {
+  = "fileinto"i W _ t:(FileintoTag _)* mailbox:String _ ";" {
       return node('Fileinto', {
         mailbox,
-        copy: copy || false,
-        create: create || false,
-        specialuse: specialuse || null,
-        flags: flags || []
+        ...tags(t, { copy: false, create: false, specialuse: null, flags: [] })
       });
     }
 
+FileintoTag
+  = CopyTag
+  / CreateTag
+  / SpecialuseTag
+  / FlagsTag
+
 RedirectCommand
-  = "redirect"i _ copy:CopyTag? _ address:String _ ";" {
-      return node('Redirect', {
-        address,
-        copy: copy || false
-      });
+  = "redirect"i W _ t:(CopyTag _)* address:String _ ";" {
+      return node('Redirect', { address, ...tags(t, { copy: false }) });
     }
 
 DiscardCommand
-  = "discard"i _ ";" {
+  = "discard"i W _ ";" {
       return node('Discard');
     }
 
 RejectCommand
-  = "reject"i _ message:String _ ";" {
+  = "reject"i W _ message:String _ ";" {
       return node('Reject', { message });
     }
 
 ErejectCommand
-  = "ereject"i _ message:String _ ";" {
+  = "ereject"i W _ message:String _ ";" {
       return node('Ereject', { message });
     }
 
 // IMAP4 Flags Extension (RFC 5232)
 SetflagCommand
-  = "setflag"i _ variableName:FlagVariableName? _ flags:StringList _ ";" {
+  = "setflag"i W _ variableName:FlagVariableName? _ flags:StringList _ ";" {
       return node('Setflag', {
         variableName: variableName || null,
         flags
@@ -164,7 +245,7 @@ FlagVariableName
   = name:String &(_ StringList) { return name; }
 
 AddflagCommand
-  = "addflag"i _ variableName:FlagVariableName? _ flags:StringList _ ";" {
+  = "addflag"i W _ variableName:FlagVariableName? _ flags:StringList _ ";" {
       return node('Addflag', {
         variableName: variableName || null,
         flags
@@ -172,7 +253,7 @@ AddflagCommand
     }
 
 RemoveflagCommand
-  = "removeflag"i _ variableName:FlagVariableName? _ flags:StringList _ ";" {
+  = "removeflag"i W _ variableName:FlagVariableName? _ flags:StringList _ ";" {
       return node('Removeflag', {
         variableName: variableName || null,
         flags
@@ -181,195 +262,188 @@ RemoveflagCommand
 
 // Variables Extension (RFC 5229)
 SetCommand
-  = "set"i _ modifiers:SetModifier* _ name:String _ value:String _ ";" {
+  = "set"i W _ t:(SetModifier _)* name:String _ value:String _ ";" {
       return node('Set', {
-        modifiers,
+        modifiers: tags(t, { modifiers: [] }).modifiers,
         name,
         value
       });
     }
 
+// (longer names first: ":lower" must not match the start of ":lowerfirst")
 SetModifier
-  = ":lower"i _ { return 'lower'; }
-  / ":upper"i _ { return 'upper'; }
-  / ":lowerfirst"i _ { return 'lowerfirst'; }
-  / ":upperfirst"i _ { return 'upperfirst'; }
-  / ":quotewildcard"i _ { return 'quotewildcard'; }
-  / ":length"i _ { return 'length'; }
+  = ":" name:$("lowerfirst"i / "lower"i / "upperfirst"i / "upper"i / "quotewildcard"i / "length"i / "encodeurl"i) W {
+      const modifier = name.toLowerCase();
+      return [`modifiers of precedence ${MODIFIER_PRECEDENCE[modifier]}`, { modifier }];
+    }
 
 // Edit Header Extension (RFC 5293)
 AddheaderCommand
-  = "addheader"i _ last:LastTag? _ name:String _ value:String _ ";" {
+  = "addheader"i W _ t:(LastTag _)* name:String _ value:String _ ";" {
       return node('Addheader', {
-        last: last || false,
+        ...tags(t, { last: false }),
         name,
         value
       });
     }
 
 DeleteheaderCommand
-  = "deleteheader"i _ index:IndexTag? _ matchType:MatchType? _ comparator:Comparator? _ name:String _ values:StringList? _ ";" {
+  = "deleteheader"i W _ t:(DeleteheaderTag _)* name:String _ values:StringList? _ ";" {
       return node('Deleteheader', {
-        index: index || null,
-        matchType: matchType || 'is',
-        comparator: comparator || 'i;ascii-casemap',
+        ...tags(t, {
+          index: null,
+          last: false,
+          matchType: 'is',
+          comparator: 'i;ascii-casemap'
+        }),
         name,
         values: values || []
       });
     }
 
-// Vacation Extension (RFC 5230)
+DeleteheaderTag
+  = IndexTag
+  / LastTag
+  / ComparatorTag
+  / MatchTypeTag
+
+// Vacation Extension (RFC 5230, RFC 6131)
 VacationCommand
-  = "vacation"i _ args:VacationArgs _ message:String _ ";" {
+  = "vacation"i W _ t:(VacationTag _)* message:String _ ";" {
       return node('Vacation', {
-        ...args,
+        ...tags(t, {
+          days: null,
+          seconds: null,
+          subject: null,
+          from: null,
+          addresses: [],
+          mime: false,
+          handle: null
+        }),
         message
       });
     }
 
-VacationArgs
-  = args:(VacationArg _)* {
-      const result = {
-        days: null,
-        seconds: null,
-        subject: null,
-        from: null,
-        addresses: [],
-        mime: false,
-        handle: null
-      };
-      for (const [arg] of args) {
-        Object.assign(result, arg);
-      }
-      return result;
-    }
+VacationTag
+  = ":days"i W _ n:Number { return [':days or :seconds', { days: n }]; }
+  / ":seconds"i W _ n:Number { return [':days or :seconds', { seconds: n }]; }
+  / ":subject"i W _ s:String { return [':subject', { subject: s }]; }
+  / ":from"i W _ s:String { return [':from', { from: s }]; }
+  / ":addresses"i W _ a:StringList { return [':addresses', { addresses: a }]; }
+  / ":mime"i W { return [':mime', { mime: true }]; }
+  / ":handle"i W _ s:String { return [':handle', { handle: s }]; }
 
-VacationArg
-  = ":days"i _ n:Number { return { days: n }; }
-  / ":seconds"i _ n:Number { return { seconds: n }; }
-  / ":subject"i _ s:String { return { subject: s }; }
-  / ":from"i _ s:String { return { from: s }; }
-  / ":addresses"i _ a:StringList { return { addresses: a }; }
-  / ":mime"i { return { mime: true }; }
-  / ":handle"i _ s:String { return { handle: s }; }
-
-// MIME Extracttext Command (RFC 5703)
+// MIME Extracttext Command (RFC 5703 section 7)
 ExtracttextCommand
-  = "extracttext"i _ opts:ExtracttextOptions _ name:String _ ";" {
+  = "extracttext"i W _ t:(ExtracttextTag _)* name:String _ ";" {
       return node('Extracttext', {
-        ...opts,
+        ...tags(t, { modifiers: [], first: null }),
         name
       });
     }
 
-ExtracttextOptions
-  = opts:(ExtracttextOption _)* {
-      const result = { first: null };
-      for (const [opt] of opts) {
-        Object.assign(result, opt);
-      }
-      return result;
-    }
-
-ExtracttextOption
-  = ":first"i _ n:Number { return { first: n }; }
+ExtracttextTag
+  = SetModifier
+  / ":first"i W _ n:Number { return [':first', { first: n }]; }
 
 // MIME Replace Command (RFC 5703)
 ReplaceCommand
-  = "replace"i _ opts:ReplaceOptions _ replacement:String _ ";" {
+  = "replace"i W _ t:(ReplaceTag _)* replacement:String _ ";" {
       return node('Replace', {
-        ...opts,
+        ...tags(t, { mime: false, subject: null, from: null }),
         replacement
       });
     }
 
-ReplaceOptions
-  = opts:(ReplaceOption _)* {
-      const result = { mime: false, subject: null, from: null };
-      for (const [opt] of opts) {
-        Object.assign(result, opt);
-      }
-      return result;
-    }
-
-ReplaceOption
-  = ":mime"i _ { return { mime: true }; }
-  / ":subject"i _ s:String { return { subject: s }; }
-  / ":from"i _ s:String { return { from: s }; }
+ReplaceTag
+  = ":mime"i W { return [':mime', { mime: true }]; }
+  / ":subject"i W _ s:String { return [':subject', { subject: s }]; }
+  / ":from"i W _ s:String { return [':from', { from: s }]; }
 
 // MIME Enclose Command (RFC 5703)
 EncloseCommand
-  = "enclose"i _ opts:EncloseOptions _ value:String _ ";" {
+  = "enclose"i W _ t:(EncloseTag _)* value:String _ ";" {
       return node('Enclose', {
-        ...opts,
+        ...tags(t, { subject: null, headers: [] }),
         value
       });
     }
 
-EncloseOptions
-  = opts:(EncloseOption _)* {
-      const result = { subject: null, headers: [] };
-      for (const [opt] of opts) {
-        if (opt.header) {
-          result.headers.push(opt.header);
-        } else {
-          Object.assign(result, opt);
-        }
-      }
-      return result;
-    }
+EncloseTag
+  = ":subject"i W _ s:String { return [':subject', { subject: s }]; }
+  / ":headers"i W _ s:StringList { return [':headers', { headers: s }]; }
 
-EncloseOption
-  = ":subject"i _ s:String { return { subject: s }; }
-  / ":headers"i _ s:String { return { header: s }; }
-
-// Notify Extension (RFC 5435)
+// Notify Extension (RFC 5435); the method is positional, the ":method" tag
+// of draft versions is still accepted in its place
 NotifyCommand
-  = "notify"i _ args:NotifyArgs _ ";" {
-      return node('Notify', args);
-    }
-
-NotifyArgs
-  = args:(NotifyArg _)* {
-      const result = {
+  = "notify"i W _ t:(NotifyTag _)* method:String? _ ";" {
+      const result = tags(t, {
         method: null,
         from: null,
         importance: null,
         options: [],
         message: null
-      };
-      for (const [arg] of args) {
-        Object.assign(result, arg);
+      });
+      if (method !== null) {
+        if (result.method !== null)
+          error('Duplicate or conflicting tagged argument: :method');
+        result.method = method;
       }
-      return result;
+
+      if (result.method === null) error('notify requires a method');
+      return node('Notify', result);
     }
 
-NotifyArg
-  = ":method"i _ s:String { return { method: s }; }
-  / ":from"i _ s:String { return { from: s }; }
-  / ":importance"i _ s:String { return { importance: s }; }
-  / ":options"i _ a:StringList { return { options: a }; }
-  / ":message"i _ s:String { return { message: s }; }
+NotifyTag
+  = ":method"i W _ s:String { return [':method', { method: s }]; }
+  / ":from"i W _ s:String { return [':from', { from: s }]; }
+  / ":importance"i W _ s:String {
+      if (!['1', '2', '3'].includes(s))
+        error(':importance must be "1", "2" or "3"');
+      return [':importance', { importance: s }];
+    }
+  / ":options"i W _ a:StringList { return [':options', { options: a }]; }
+  / ":message"i W _ s:String { return [':message', { message: s }]; }
 
 // Tags
 CopyTag
-  = ":copy"i _ { return true; }
+  = ":copy"i W { return [':copy', { copy: true }]; }
 
 CreateTag
-  = ":create"i _ { return true; }
+  = ":create"i W { return [':create', { create: true }]; }
 
 // Special-Use Extension (RFC 8579)
 SpecialuseTag
-  = ":specialuse"i _ attr:String _ { return attr; }
+  = ":specialuse"i W _ attr:String { return [':specialuse', { specialuse: attr }]; }
 
 FlagsTag
-  = ":flags"i _ flags:StringList _ { return flags; }
+  = ":flags"i W _ flags:StringList { return [':flags', { flags }]; }
 
 LastTag
-  = ":last"i _ { return true; }
+  = ":last"i W { return [':last', { last: true }]; }
 
+// Index Extension (RFC 5260 section 6): fields are counted from 1
 IndexTag
-  = ":index"i _ n:Number _ { return n; }
+  = ":index"i W _ n:Number {
+      if (n < 1) error(':index must be 1 or more');
+      return [':index', { index: n }];
+    }
+
+MatchTypeTag
+  = m:MatchType { return ['match type', { matchType: m }]; }
+
+AddressPartTag
+  = p:AddressPart { return ['address part', { addressPart: p }]; }
+
+ComparatorTag
+  = ":comparator"i W _ name:String { return [':comparator', { comparator: name }]; }
+
+// MIME Tests (RFC 5703 section 4)
+MimeTag
+  = ":mime"i W { return [':mime', { mime: true }]; }
+
+AnychildTag
+  = ":anychild"i W { return [':anychild', { anychild: true }]; }
 
 // Tests
 Test
@@ -396,203 +470,243 @@ Test
   / MetadataexistsTest
   / SpecialuseexistsTest
   / ValidextlistTest
+  / ValidNotifyMethodTest
+  / NotifyMethodCapabilityTest
+  / UnknownTest
 
 AllofTest
-  = "allof"i _ "(" _ tests:TestList _ ")" {
+  = "allof"i W _ "(" _ tests:TestList _ ")" {
       return node('AllofTest', { tests });
     }
 
 AnyofTest
-  = "anyof"i _ "(" _ tests:TestList _ ")" {
+  = "anyof"i W _ "(" _ tests:TestList _ ")" {
       return node('AnyofTest', { tests });
     }
 
 NotTest
-  = "not"i _ test:Test {
+  = "not"i W _ test:Test {
       return node('NotTest', { test });
     }
 
 TrueTest
-  = "true"i {
+  = "true"i W {
       return node('TrueTest');
     }
 
 FalseTest
-  = "false"i {
+  = "false"i W {
       return node('FalseTest');
     }
 
 AddressTest
-  = "address"i _ addressPart:AddressPart? _ matchType:MatchType? _ comparator:Comparator? _ headers:StringList _ keys:StringList {
+  = "address"i W _ t:(AddressTag _)* headers:StringList _ keys:StringList {
       return node('AddressTest', {
-        addressPart: addressPart || 'all',
-        matchType: matchType || 'is',
-        comparator: comparator || 'i;ascii-casemap',
+        ...tags(t, {
+          addressPart: 'all',
+          matchType: 'is',
+          comparator: 'i;ascii-casemap',
+          index: null,
+          last: false,
+          mime: false,
+          anychild: false
+        }),
         headers,
         keys
       });
     }
+
+AddressTag
+  = AddressPartTag
+  / MatchTypeTag
+  / ComparatorTag
+  / IndexTag
+  / LastTag
+  / MimeTag
+  / AnychildTag
 
 HeaderTest
-  = "header"i _ opts:HeaderTestOptions _ headers:StringList _ keys:StringList {
+  = "header"i W _ t:(HeaderTag _)* headers:StringList _ keys:StringList {
       return node('HeaderTest', {
-        matchType: opts.matchType || 'is',
-        comparator: opts.comparator || 'i;ascii-casemap',
-        index: opts.index || null,
-        last: opts.last || false,
-        mime: opts.mime || false,
-        mimeType: opts.mimeType || null,
-        mimeParam: opts.mimeParam || null,
-        anychild: opts.anychild || false,
+        ...tags(t, {
+          matchType: 'is',
+          comparator: 'i;ascii-casemap',
+          index: null,
+          last: false,
+          mime: false,
+          mimeType: null,
+          mimeParam: null,
+          anychild: false
+        }),
         headers,
         keys
       });
     }
 
-HeaderTestOptions
-  = opts:(HeaderTestOption _)* {
-      const result = { matchType: null, comparator: null, index: null, last: false, mime: false, mimeType: null, mimeParam: null, anychild: false };
-      for (const [opt] of opts) {
-        Object.assign(result, opt);
-      }
-      return result;
-    }
+HeaderTag
+  = MatchTypeTag
+  / ComparatorTag
+  / IndexTag
+  / LastTag
+  / MimeTag
+  / AnychildTag
+  / MimeOptionTag
 
-HeaderTestOption
-  = m:MatchType { return { matchType: m }; }
-  / c:Comparator { return { comparator: c }; }
-  / ":index"i _ n:Number { return { index: n }; }
-  / ":last"i { return { last: true }; }
-  / ":mime"i { return { mime: true }; }
-  / ":type"i { return { mime: true, mimeType: 'type' }; }
-  / ":subtype"i { return { mime: true, mimeType: 'subtype' }; }
-  / ":contenttype"i { return { mime: true, mimeType: 'contenttype' }; }
-  / ":param"i _ p:String { return { mime: true, mimeType: 'param', mimeParam: p }; }
-  / ":anychild"i { return { anychild: true }; }
+// (a MIME option implies :mime, as it always has here)
+MimeOptionTag
+  = ":type"i W { return ['MIME option', { mime: true, mimeType: 'type' }]; }
+  / ":subtype"i W { return ['MIME option', { mime: true, mimeType: 'subtype' }]; }
+  / ":contenttype"i W { return ['MIME option', { mime: true, mimeType: 'contenttype' }]; }
+  / ":param"i W _ p:StringList { return ['MIME option', { mime: true, mimeType: 'param', mimeParam: p }]; }
 
 EnvelopeTest
-  = "envelope"i _ addressPart:AddressPart? _ matchType:MatchType? _ comparator:Comparator? _ parts:StringList _ keys:StringList {
+  = "envelope"i W _ t:(EnvelopeTag _)* parts:StringList _ keys:StringList {
       return node('EnvelopeTest', {
-        addressPart: addressPart || 'all',
-        matchType: matchType || 'is',
-        comparator: comparator || 'i;ascii-casemap',
+        ...tags(t, {
+          addressPart: 'all',
+          matchType: 'is',
+          comparator: 'i;ascii-casemap'
+        }),
         parts,
         keys
       });
     }
 
+EnvelopeTag
+  = AddressPartTag
+  / MatchTypeTag
+  / ComparatorTag
+
 SizeTest
-  = "size"i _ ":over"i _ size:Number {
+  = "size"i W _ ":over"i W _ size:Number {
       return node('SizeTest', { over: size });
     }
-  / "size"i _ ":under"i _ size:Number {
+  / "size"i W _ ":under"i W _ size:Number {
       return node('SizeTest', { under: size });
     }
 
 ExistsTest
-  = "exists"i _ opts:ExistsTestOptions _ headers:StringList {
+  = "exists"i W _ t:(ExistsTag _)* headers:StringList {
       return node('ExistsTest', {
-        mime: opts.mime || false,
-        anychild: opts.anychild || false,
+        ...tags(t, { mime: false, anychild: false }),
         headers
       });
     }
-  / "exists"i _ headers:StringList {
-      return node('ExistsTest', { mime: false, anychild: false, headers });
-    }
 
-ExistsTestOptions
-  = opts:(ExistsTestOption _)+ {
-      const result = { mime: false, anychild: false };
-      for (const [opt] of opts) {
-        Object.assign(result, opt);
-      }
-      return result;
-    }
-
-ExistsTestOption
-  = ":mime"i { return { mime: true }; }
-  / ":anychild"i { return { anychild: true }; }
+ExistsTag
+  = MimeTag
+  / AnychildTag
 
 // Body Extension (RFC 5173)
 BodyTest
-  = "body"i _ bodyTransform:BodyTransform? _ matchType:MatchType? _ comparator:Comparator? _ keys:StringList {
+  = "body"i W _ t:(BodyTag _)* keys:StringList {
       return node('BodyTest', {
-        bodyTransform: bodyTransform || 'text',
-        matchType: matchType || 'is',
-        comparator: comparator || 'i;ascii-casemap',
+        ...tags(t, {
+          bodyTransform: 'text',
+          matchType: 'is',
+          comparator: 'i;ascii-casemap'
+        }),
         keys
       });
     }
 
-BodyTransform
-  = ":raw"i _ { return 'raw'; }
-  / ":content"i _ contentTypes:StringList _ { return { type: 'content', contentTypes }; }
-  / ":text"i _ { return 'text'; }
+BodyTag
+  = BodyTransformTag
+  / MatchTypeTag
+  / ComparatorTag
+
+BodyTransformTag
+  = ":raw"i W { return ['body transform', { bodyTransform: 'raw' }]; }
+  / ":content"i W _ contentTypes:StringList {
+      return ['body transform', { bodyTransform: { type: 'content', contentTypes } }];
+    }
+  / ":text"i W { return ['body transform', { bodyTransform: 'text' }]; }
 
 // Date Extension (RFC 5260)
 DateTest
-  = "date"i _ zone:ZoneTag? _ originalZone:OriginalzoneTag? _ matchType:MatchType? _ comparator:Comparator? _ header:String _ datePart:String _ keys:StringList {
+  = "date"i W _ t:(DateTag _)* header:String _ datePart:String _ keys:StringList {
       return node('DateTest', {
-        zone: zone || null,
-        originalZone: originalZone || false,
-        matchType: matchType || 'is',
-        comparator: comparator || 'i;ascii-casemap',
+        ...tags(t, {
+          zone: null,
+          originalZone: false,
+          matchType: 'is',
+          comparator: 'i;ascii-casemap',
+          index: null,
+          last: false
+        }),
         header,
         datePart,
         keys
       });
     }
 
+DateTag
+  = ZoneTag
+  / ":originalzone"i W { return [':zone or :originalzone', { originalZone: true }]; }
+  / MatchTypeTag
+  / ComparatorTag
+  / IndexTag
+  / LastTag
+
 CurrentdateTest
-  = "currentdate"i _ zone:ZoneTag? _ matchType:MatchType? _ comparator:Comparator? _ datePart:String _ keys:StringList {
+  = "currentdate"i W _ t:(CurrentdateTag _)* datePart:String _ keys:StringList {
       return node('CurrentdateTest', {
-        zone: zone || null,
-        matchType: matchType || 'is',
-        comparator: comparator || 'i;ascii-casemap',
+        ...tags(t, {
+          zone: null,
+          matchType: 'is',
+          comparator: 'i;ascii-casemap'
+        }),
         datePart,
         keys
       });
     }
 
+CurrentdateTag
+  = ZoneTag
+  / MatchTypeTag
+  / ComparatorTag
+
 ZoneTag
-  = ":zone"i _ zone:String _ { return zone; }
+  = ":zone"i W _ zone:String { return [':zone or :originalzone', { zone }]; }
 
-OriginalzoneTag
-  = ":originalzone"i _ { return true; }
-
-// IMAP4 Flags Extension (RFC 5232)
+// IMAP4 Flags Extension (RFC 5232): an optional variable list comes
+// before the flags
 HasflagTest
-  = "hasflag"i _ matchType:MatchType? _ comparator:Comparator? _ variableName:HasflagVariableName? _ flags:StringList {
+  = "hasflag"i W _ t:(HasflagTag _)* variables:HasflagVariables? flags:StringList {
       return node('HasflagTest', {
-        matchType: matchType || 'is',
-        comparator: comparator || 'i;ascii-casemap',
-        variableName: variableName || null,
+        ...tags(t, { matchType: 'is', comparator: 'i;ascii-casemap' }),
+        variableName: variables ? variables[0] : null,
+        variables,
         flags
       });
     }
 
-// Variable name for hasflag test - must be followed by a string list
-HasflagVariableName
-  = name:String &(_ StringList) { return name; }
+HasflagTag
+  = MatchTypeTag
+  / ComparatorTag
+
+HasflagVariables
+  = list:StringList _ &StringList { return list; }
 
 // Variables Extension (RFC 5229)
 StringTest
-  = "string"i _ matchType:MatchType? _ comparator:Comparator? _ source:StringList _ keys:StringList {
+  = "string"i W _ t:(MatchComparatorTag _)* source:StringList _ keys:StringList {
       return node('StringTest', {
-        matchType: matchType || 'is',
-        comparator: comparator || 'i;ascii-casemap',
+        ...tags(t, { matchType: 'is', comparator: 'i;ascii-casemap' }),
         source,
         keys
       });
     }
 
+MatchComparatorTag
+  = MatchTypeTag
+  / ComparatorTag
+
 // Environment Extension (RFC 5183)
 EnvironmentTest
-  = "environment"i _ matchType:MatchType? _ comparator:Comparator? _ name:String _ keys:StringList {
+  = "environment"i W _ t:(MatchComparatorTag _)* name:String _ keys:StringList {
       return node('EnvironmentTest', {
-        matchType: matchType || 'is',
-        comparator: comparator || 'i;ascii-casemap',
+        ...tags(t, { matchType: 'is', comparator: 'i;ascii-casemap' }),
         name,
         keys
       });
@@ -600,44 +714,40 @@ EnvironmentTest
 
 // Duplicate Extension (RFC 7352)
 DuplicateTest
-  = "duplicate"i _ opts:DuplicateOptions {
-      return node('DuplicateTest', opts);
+  = "duplicate"i W _ t:(DuplicateTag _)* {
+      return node('DuplicateTest', tags(t, {
+        handle: null,
+        header: null,
+        uniqueid: null,
+        seconds: 7 * 24 * 60 * 60,
+        last: false
+      }));
     }
 
-DuplicateOptions
-  = opts:(DuplicateOption _)* {
-      const result = { handle: null, header: null, uniqueid: null, seconds: 7 * 24 * 60 * 60, last: false };
-      for (const [opt] of opts) {
-        Object.assign(result, opt);
-      }
-      return result;
-    }
-
-DuplicateOption
-  = ":handle"i _ h:String { return { handle: h }; }
-  / ":header"i _ h:String { return { header: h }; }
-  / ":uniqueid"i _ u:String { return { uniqueid: u }; }
-  / ":seconds"i _ s:Number { return { seconds: s }; }
-  / ":last"i { return { last: true }; }
+DuplicateTag
+  = ":handle"i W _ h:String { return [':handle', { handle: h }]; }
+  / ":header"i W _ h:String { return [':header or :uniqueid', { header: h }]; }
+  / ":uniqueid"i W _ u:String { return [':header or :uniqueid', { uniqueid: u }]; }
+  / ":seconds"i W _ s:Number { return [':seconds', { seconds: s }]; }
+  / ":last"i W { return [':last', { last: true }]; }
 
 // Ihave Extension (RFC 5463)
 IhaveTest
-  = "ihave"i _ capabilities:StringList {
+  = "ihave"i W _ capabilities:StringList {
       return node('IhaveTest', { capabilities });
     }
 
 // Mailbox Extension (RFC 5490)
 MailboxexistsTest
-  = "mailboxexists"i _ mailboxes:StringList {
+  = "mailboxexists"i W _ mailboxes:StringList {
       return node('MailboxexistsTest', { mailboxes });
     }
 
 // Mboxmetadata Extension (RFC 5490)
 MetadataTest
-  = "metadata"i _ matchType:MatchType? _ comparator:Comparator? _ mailbox:String _ annotation:String _ keys:StringList {
+  = "metadata"i W _ t:(MatchComparatorTag _)* mailbox:String _ annotation:String _ keys:StringList {
       return node('MetadataTest', {
-        matchType: matchType || 'is',
-        comparator: comparator || 'i;ascii-casemap',
+        ...tags(t, { matchType: 'is', comparator: 'i;ascii-casemap' }),
         mailbox,
         annotation,
         keys
@@ -645,20 +755,39 @@ MetadataTest
     }
 
 MetadataexistsTest
-  = "metadataexists"i _ mailbox:String _ annotations:StringList {
+  = "metadataexists"i W _ mailbox:String _ annotations:StringList {
       return node('MetadataexistsTest', { mailbox, annotations });
     }
 
-// Special-Use Extension (RFC 8579)
+// Special-Use Extension (RFC 8579): the mailbox is optional, so a single
+// string list is the attributes
 SpecialuseexistsTest
-  = "specialuse_exists"i _ mailbox:String? _ attributes:StringList {
-      return node('SpecialuseexistsTest', { mailbox: mailbox || null, attributes });
+  = "specialuse_exists"i W _ first:StringList second:(_ s:StringList { return s; })? {
+      if (!second) return node('SpecialuseexistsTest', { mailbox: null, attributes: first });
+      if (first.length !== 1) error('specialuse_exists takes a single mailbox name');
+      return node('SpecialuseexistsTest', { mailbox: first[0], attributes: second });
     }
 
 // Extlists Extension (RFC 6134)
 ValidextlistTest
-  = "valid_ext_list"i _ listNames:StringList {
+  = "valid_ext_list"i W _ listNames:StringList {
       return node('ValidextlistTest', { listNames });
+    }
+
+// Notify Extension (RFC 5435 sections 4 and 5)
+ValidNotifyMethodTest
+  = "valid_notify_method"i W _ uris:StringList {
+      return node('ValidNotifyMethodTest', { uris });
+    }
+
+NotifyMethodCapabilityTest
+  = "notify_method_capability"i W _ t:(MatchComparatorTag _)* uri:String _ capability:String _ keys:StringList {
+      return node('NotifyMethodCapabilityTest', {
+        uri,
+        capability,
+        ...tags(t, { matchType: 'is', comparator: 'i;ascii-casemap' }),
+        keys
+      });
     }
 
 TestList
@@ -668,32 +797,26 @@ TestList
 
 // Match Types
 MatchType
-  = ":is"i _ { return 'is'; }
-  / ":contains"i _ { return 'contains'; }
-  / ":matches"i _ { return 'matches'; }
-  / ":regex"i _ { return 'regex'; }
-  / ":count"i _ relOp:RelationalOp _ { return { type: 'count', operator: relOp }; }
-  / ":value"i _ relOp:RelationalOp _ { return { type: 'value', operator: relOp }; }
+  = ":is"i W { return 'is'; }
+  / ":contains"i W { return 'contains'; }
+  / ":matches"i W { return 'matches'; }
+  / ":regex"i W { return 'regex'; }
+  / ":count"i W _ relOp:RelationalOp { return { type: 'count', operator: relOp }; }
+  / ":value"i W _ relOp:RelationalOp { return { type: 'value', operator: relOp }; }
 
+// (case-insensitive, RFC 5231 section 4)
 RelationalOp
-  = "\"gt\"" { return 'gt'; }
-  / "\"ge\"" { return 'ge'; }
-  / "\"lt\"" { return 'lt'; }
-  / "\"le\"" { return 'le'; }
-  / "\"eq\"" { return 'eq'; }
-  / "\"ne\"" { return 'ne'; }
+  = '"' op:$("gt"i / "ge"i / "lt"i / "le"i / "eq"i / "ne"i) '"' {
+      return op.toLowerCase();
+    }
 
 // Address Parts (including Subaddress Extension RFC 5233)
 AddressPart
-  = ":localpart"i _ { return 'localpart'; }
-  / ":domain"i _ { return 'domain'; }
-  / ":all"i _ { return 'all'; }
-  / ":user"i _ { return 'user'; }
-  / ":detail"i _ { return 'detail'; }
-
-// Comparator
-Comparator
-  = ":comparator"i _ name:String _ { return name; }
+  = ":localpart"i W { return 'localpart'; }
+  / ":domain"i W { return 'domain'; }
+  / ":all"i W { return 'all'; }
+  / ":user"i W { return 'user'; }
+  / ":detail"i W { return 'detail'; }
 
 // Block
 Block
@@ -714,30 +837,29 @@ StringItems
 String
   = QuotedString
   / MultilineString
-  / TaggedString
 
 QuotedString
   = '"' chars:QuotedChar* '"' {
       return chars.join('');
     }
 
+// "\\" and "\"" are escapes; any other backslash is dropped (RFC 5228
+// section 2.4.2)
 QuotedChar
-  = '\\' c:[\\"] { return c; }
+  = '\\' c:. { return c; }
   / [^"\\]
 
+// "text:", spaces and an optional hash comment up to the end of the line,
+// then dot-stuffed lines up to a line holding only "." (RFC 5228 section
+// 2.4.2)
 MultilineString
-  = "text:" _ CRLF? lines:MultilineContent "." CRLF {
-      return lines;
+  = "text:"i [ \t]* ("#" [^\r\n]*)? CRLF lines:MultilineLine* "." CRLF {
+      return lines.join('');
     }
 
-MultilineContent
-  = lines:(!("." CRLF) .)* {
-      return lines.map(l => l[1]).join('');
-    }
-
-TaggedString
-  = ":" tag:Identifier {
-      return ':' + tag;
+MultilineLine
+  = !("." CRLF) line:$([^\r\n]* CRLF) {
+      return line.startsWith('..') ? line.slice(1) : line;
     }
 
 // Number with optional quantifier
@@ -755,9 +877,11 @@ Number
 
 // Identifier
 Identifier
-  = chars:[a-zA-Z_][a-zA-Z0-9_]* {
-      return chars[0] + (chars[1] ? chars[1].join('') : '');
-    }
+  = $([a-zA-Z_][a-zA-Z0-9_]*)
+
+// The end of a word: keywords and tags are not a prefix of a longer name
+W
+  = ![a-zA-Z0-9_]
 
 // Whitespace and Comments
 _

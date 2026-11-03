@@ -946,3 +946,38 @@ test('limits buffered data while the connection check is still running', async (
     t.true(session.buffer.length <= limit);
   }
 });
+
+//
+// Commands on one connection run one at a time: a PUTSCRIPT that arrived
+// while the one before was still checking the script count used to run
+// alongside it (passing the same count check, and reading the script of
+// the one before as a command).
+//
+test('pipelined PUTSCRIPT commands keep to the script limit', async (t) => {
+  t.context.managesieve.maxScriptCount = 2;
+  const client = await createClient(t.context.port);
+  await client.waitForGreeting();
+  const credentials = Buffer.from(
+    `\0${t.context.alias.name}@${t.context.domain.name}\0${t.context.pass}`
+  ).toString('base64');
+  await client.sendCommand(`AUTHENTICATE "PLAIN" "${credentials}"`);
+
+  const script = 'keep;';
+  for (let i = 0; i < 6; i++) {
+    client.write(`PUTSCRIPT "pipelined-${i}" {${script.length}+}\r\n`);
+    // (each in a TCP write of its own)
+
+    await delay(5);
+    client.write(`${script}\r\n`);
+
+    await delay(5);
+  }
+
+  const listed = await client.sendCommand('LISTSCRIPTS');
+  client.end();
+
+  const names = listed.filter((line) => line.includes('pipelined-'));
+  t.is(names.length, 2);
+  t.true(names[0].includes('pipelined-0'));
+  t.true(names[1].includes('pipelined-1'));
+});

@@ -2893,24 +2893,22 @@ Tasks.org — популярний відкритий менеджер завд�
 | Категорія | Можливості та поведінка |
 | --- | --- |
 | Базова мова | `keep`, `discard`, `stop`, умовні блоки, а також базові тести `address`, `header`, `exists`, `size` та булеві тести. |
-| Доставка | `fileinto`, `copy`, `redirect`, `mailbox` для `fileinto :create`, та `special-use` для відображення стандартної теки `:specialuse` і `specialuse_exists`. |
-| Тести та порівняння | `envelope`, `body`, `date`, `index`, `regex`, `subaddress`, `relational`, `i;ascii-casemap`, та `i;octet`. |
-| Стан і змінні | `variables`, `imap4flags`, `duplicate`, та `ihave`. |
+| Доставка | `fileinto`, `copy`, `redirect`, `mailbox` для `fileinto :create` і `mailboxexists`, та `special-use` для `fileinto :specialuse` і `specialuse_exists`. |
+| Тести та порівняння | `envelope`, `body`, `date`, `index`, `regex`, `subaddress`, `relational`, `i;ascii-casemap`, `i;octet`, та `i;ascii-numeric`. |
+| Стан і змінні | `variables`, `encoded-character`, `imap4flags`, `duplicate`, та `ihave`. |
 | Дії та відповіді | `reject`, `ereject`, `vacation`, `vacation-seconds`, та `enotify` з використанням `mailto:`. Успадкована декларація `require "notify"` приймається як вхідний псевдонім для `enotify`, але рекламована можливість — `enotify`. |
-| Обробка повідомлень | `editheader`, `environment`, та `mime`, включно з `foreverypart`, `break`, `extracttext`, та `replace`. |
+| Обробка повідомлень | `editheader`, `environment`, `foreverypart` (з `break`), `extracttext`, `replace`, та `mime`, який також вмикає ці три команди. |
 
-`redirect` доставляється через звичайну чергу вихідної пошти. Він підлягає політиці перенаправлення доменів, перевіркам списку заборон і лімітам частоти. `editheader` не може змінювати захищені заголовки автентифікації або маршрутизації доставки.
+`redirect` не потребує `require`. Він надсилається через звичайну чергу вихідної пошти, яка приймає лише повідомлення, у якого From — це ваш псевдонім, на домені з вихідним SMTP; будь-яке інше повідомлення залишається у ваших вхідних. Перенаправлення підлягають політиці перенаправлення доменів, перевіркам списку заборон і лімітам частоти. `editheader` не може змінювати захищені заголовки автентифікації або маршрутизації доставки, `Received` чи `Auto-Submitted`.
 
 #### Функції, які не підтримуються
 
 | Функція | Причина |
 | --- | --- |
 | `enclose` | Створення нового повідомлення, яке вкладає оригінальне, не реалізовано. |
-| `mailboxexists` | Forward Email не виконує запити стану поштових скриньок IMAP у реальному часі. `fileinto :create` залишається доступним через `mailbox`. |
 | `include` | Глобальне та включене збереження сценаріїв недоступне. |
 | `mboxmetadata` / `servermetadata` | Інтеграція IMAP METADATA недоступна. |
 | `fcc` | Інтеграція фіксації відправлених листів недоступна. |
-| `encoded-character` | Синтаксис `${hex:...}` не реалізовано. |
 | Зовнішні списки | `valid_ext_list` та інші операції з зовнішніми списками недоступні. |
 
 #### Приклади сценаріїв Sieve
@@ -2947,8 +2945,6 @@ if address :is "from" "boss@example.com" {
 **Перенаправити повідомлення:**
 
 ```sieve
-require ["redirect"];
-
 if header :contains "Subject" "invoice" {
     redirect "recipient@example.com";
 }

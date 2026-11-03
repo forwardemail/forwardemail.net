@@ -11,6 +11,8 @@
 * [عملية النشر](#deployment-process)
   * [تثبيت](#installation)
   * [تكوين Docker Compose](#docker-compose-configuration)
+  * [التسليم إلى النطاقات المستضافة على الخادم نفسه](#delivery-to-domains-hosted-on-the-same-server)
+  * [إنهاء الجلسات عند إلغاء الوصول في Google أو GitHub](#ending-sessions-when-google-or-github-access-is-revoked)
 * [ميزات الصيانة](#maintenance-features)
   * [التحديثات التلقائية](#automatic-updates)
   * [النسخ الاحتياطي والاستعادة](#backup-and-restore)
@@ -122,6 +124,30 @@ bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.ne
 * **SQLite**: قاعدة بيانات لتخزين رسائل البريد الإلكتروني
 
 تستخدم كل خدمة نفس صورة Docker ولكن بنقاط دخول مختلفة، مما يسمح بهندسة معيارية مع تبسيط الصيانة.
+
+### التسليم إلى النطاقات المستضافة على الخادم نفسه {#delivery-to-domains-hosted-on-the-same-server}
+
+لا يُسلَّم البريد الصادر إلى خادم MX يكون عنوانه أحد عناوين الخادم نفسه. عندما يستضيف خادم واحد عدة نطاقات وتشير سجلات MX الخاصة بها إلى عنوانه العام، يُرفض البريد المرسل من أحد هذه النطاقات إلى آخر.
+
+للسماح بذلك، اضبط:
+
+```env
+SMTP_ALLOW_LOCAL_MX=true
+```
+
+القيمة الافتراضية هي `false`، ولا ينطبق هذا الإعداد إلا عند `SELF_HOSTED=true`. ولا يُسلَّم البريد أبدًا إلى عناوين الاسترجاع (loopback) أو العناوين الخاصة أو عناوين الارتباط المحلي (link-local) أو عناوين NAT على مستوى المشغّل (CGNAT).
+
+### إنهاء الجلسات عند إلغاء الوصول في Google أو GitHub {#ending-sessions-when-google-or-github-access-is-revoked}
+
+في التثبيت المستضاف ذاتيًا، لا يُتحقَّق افتراضيًا لدى المزوّد من الجلسات التي سُجِّل الدخول إليها عبر Google أو GitHub: فإلغاء وصول هذا التطبيق هناك لا يُنهيها، وتبقى مسجّلة الدخول حتى تنتهي صلاحيتها.
+
+لإنهائها بمجرد إلغاء الوصول، اضبط:
+
+```env
+AUTH_OAUTH_REVOCATION_CHECK=true
+```
+
+يُسأل المزوّد حينها في الخلفية، مرة كل 5 دقائق تقريبًا (وكل دقيقة ما دام لا يجيب). ولا يؤدي تعطّل المزوّد إلى تسجيل خروج أي أحد، ولا يؤدي إلى ذلك رمز لم يقبله المزوّد قط.
 
 ## ميزات صيانة {#maintenance-features}
 

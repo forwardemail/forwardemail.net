@@ -94,7 +94,8 @@ async function list(ctx) {
       assertAllowedMongoQuery(query);
     } catch (err) {
       ctx.logger.warn(err);
-      throw Boom.badRequest(err.message);
+      // (the message can repeat the query, and is shown as HTML)
+      throw Boom.badRequest(_.escape(err.message));
     }
   }
 

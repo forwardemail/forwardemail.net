@@ -4,10 +4,12 @@
  */
 
 const http = require('node:http');
+const net = require('node:net');
 const { Buffer } = require('node:buffer');
 
 const Koa = require('koa');
 const falso = require('@ngneat/falso');
+const pWaitFor = require('p-wait-for');
 const test = require('ava');
 
 const utils = require('../utils');
@@ -195,4 +197,277 @@ test('an upload the client abandons is settled', async (t) => {
     });
     t.is(state.settled, 1, `after ${delay} ms`);
   }
+});
+
+//
+// Each field is limited (1 MB) but the body as a whole was not, so a body
+// of 200 fields of 1 MB, sent before authentication and then held open,
+// kept about 400 MB in memory per request.
+//
+function multipartBody(boundary, fields) {
+  return Buffer.from(
+    fields
+      .map(
+        ([name, value]) =>
+          `--${boundary}\r\nContent-Disposition: form-data; name="${name}"\r\n\r\n${value}\r\n`
+      )
+      .join('') + `--${boundary}--\r\n`
+  );
+}
+
+test('a multipart body over the total size limit is refused before auth', async (t) => {
+  const { api } = t.context;
+  const big = 'a'.repeat(1000 * 1000);
+  let req = api.post('/v1/account');
+  for (let i = 0; i < 11; i++) req = req.field(`f${i}`, big);
+  const res = await req;
+  t.is(res.status, 413);
+});
+
+test('a chunked multipart body over the total size limit is cut off', async (t) => {
+  const app = new Koa();
+  let reached = false;
+  // (and the request is settled, also when its body ends within the time
+  // the rest of it is read after the 413)
+  let settled = 0;
+  app.use(async (ctx, next) => {
+    try {
+      await next();
+    } finally {
+      settled++;
+    }
+  });
+  app.use(createMultipart().none());
+  app.use((ctx) => {
+    reached = true;
+    ctx.body = 'ok';
+  });
+  const server = http.createServer(app.callback());
+  await new Promise((resolve) => {
+    server.listen(0, '127.0.0.1', resolve);
+  });
+  t.teardown(() => server.close());
+
+  const boundary = 'x-boundary';
+  const body = multipartBody(
+    boundary,
+    Array.from({ length: 12 }, (_, i) => [`f${i}`, 'a'.repeat(1000 * 1000)])
+  );
+  const outcome = await new Promise((resolve) => {
+    const req = http.request(
+      {
+        host: '127.0.0.1',
+        port: server.address().port,
+        method: 'POST',
+        headers: {
+          'content-type': `multipart/form-data; boundary=${boundary}`,
+          'transfer-encoding': 'chunked'
+        }
+      },
+      (res) => {
+        res.resume();
+        resolve(res.statusCode);
+      }
+    );
+    req.on('error', () => resolve('closed'));
+    // (written in 64 KB chunks, without a Content-Length)
+    for (let i = 0; i < body.length; i += 65_536)
+      req.write(body.subarray(i, i + 65_536));
+    req.end();
+  });
+  t.false(reached);
+  // (answered before the connection is closed)
+  t.is(outcome, 413);
+  await pWaitFor(() => settled === 1, { timeout: 3000 }).catch(() => {});
+  t.is(settled, 1);
+});
+
+//
+// Closing the connection while the client is still sending made the kernel
+// answer with a reset, and a client that got the reset first (macOS) never
+// read the 413. A client that goes on sending after the 413 must not get a
+// reset, and the connection is closed once its body ends.
+//
+async function overLimitConnection(t) {
+  const app = new Koa();
+  app.use(createMultipart().none());
+  app.use((ctx) => {
+    ctx.body = 'ok';
+  });
+  const server = http.createServer(app.callback());
+  await new Promise((resolve) => {
+    server.listen(0, '127.0.0.1', resolve);
+  });
+  t.teardown(() => server.close());
+
+  // (a raw connection: an HTTP client stops sending once it has the answer)
+  const socket = net.connect({
+    port: server.address().port,
+    host: '127.0.0.1',
+    allowHalfOpen: true
+  });
+  t.teardown(() => socket.destroy());
+  const state = { response: '', error: null, closed: false };
+  socket.on('data', (data) => {
+    state.response += data;
+  });
+  socket.on('error', (err) => {
+    state.error = err;
+  });
+  socket.on('close', () => {
+    state.closed = true;
+  });
+
+  const part = '--x\r\nContent-Disposition: form-data; name="f"\r\n\r\n';
+  socket.write(
+    'POST / HTTP/1.1\r\nHost: localhost\r\n' +
+      'Content-Type: multipart/form-data; boundary=x\r\n' +
+      'Transfer-Encoding: chunked\r\n\r\n' +
+      `${Buffer.byteLength(part).toString(16)}\r\n${part}\r\n`
+  );
+  const frame = Buffer.concat([
+    Buffer.from('10000\r\n'),
+    Buffer.alloc(65_536, 'a'),
+    Buffer.from('\r\n')
+  ]);
+  const send = () => {
+    if (!socket.destroyed) socket.write(frame);
+  };
+
+  // (send until the 413 arrives)
+  while (!state.response.includes(' 413 ') && !state.closed) {
+    for (let i = 0; i < 16; i++) send();
+    await new Promise((resolve) => {
+      setTimeout(resolve, 5);
+    });
+  }
+
+  return { socket, state, send };
+}
+
+test('a chunked body still being sent after the 413 is read, not reset', async (t) => {
+  const { socket, state, send } = await overLimitConnection(t);
+  t.true(state.response.startsWith('HTTP/1.1 413 '));
+
+  // (the client goes on sending for a while, then ends its body)
+  for (let i = 0; i < 20; i++) {
+    for (let j = 0; j < 4; j++) send();
+    await new Promise((resolve) => {
+      setTimeout(resolve, 10);
+    });
+  }
+
+  t.is(state.error, null);
+  socket.end('9\r\n\r\n--x--\r\n\r\n0\r\n\r\n');
+  await new Promise((resolve) => {
+    if (state.closed) resolve();
+    else socket.once('close', resolve);
+  });
+  t.is(state.error, null);
+});
+
+test('a chunked body that goes on after the 413 is cut off', async (t) => {
+  const { socket, state, send } = await overLimitConnection(t);
+  t.true(state.response.startsWith('HTTP/1.1 413 '));
+
+  const timer = setInterval(() => {
+    for (let i = 0; i < 4; i++) send();
+  }, 10);
+  t.teardown(() => clearInterval(timer));
+  await new Promise((resolve) => {
+    if (state.closed) resolve();
+    else socket.once('close', resolve);
+  });
+  t.true(socket.destroyed);
+});
+
+// (as a client that asks to close the connection sends it, as supertest
+// does: the connection was closed with the body still coming, so the client
+// got a broken pipe, not the 413, on macOS)
+test('a body declared over the limit and still being sent is read after the 413', async (t) => {
+  const app = new Koa();
+  let reached = false;
+  app.use(createMultipart().none());
+  app.use((ctx) => {
+    reached = true;
+    ctx.body = 'ok';
+  });
+  const server = http.createServer(app.callback());
+  await new Promise((resolve) => {
+    server.listen(0, '127.0.0.1', resolve);
+  });
+  t.teardown(() => server.close());
+
+  const socket = net.connect({
+    port: server.address().port,
+    host: '127.0.0.1',
+    allowHalfOpen: true
+  });
+  t.teardown(() => socket.destroy());
+  const state = { response: '', error: null, closed: false };
+  socket.on('data', (data) => {
+    state.response += data;
+  });
+  socket.on('error', (err) => {
+    state.error = err;
+  });
+  socket.on('close', () => {
+    state.closed = true;
+  });
+
+  const length = 11 * 1024 * 1024;
+  socket.write(
+    'POST / HTTP/1.1\r\nHost: localhost\r\nConnection: close\r\n' +
+      'Content-Type: multipart/form-data; boundary=x\r\n' +
+      `Content-Length: ${length}\r\n\r\n`
+  );
+  await pWaitFor(() => state.response.includes(' 413 ') || state.closed, {
+    timeout: 3000
+  });
+  t.true(state.response.startsWith('HTTP/1.1 413 '));
+
+  // (the client sends its body after the answer, as one sending it at once
+  // would while the answer is on its way)
+  const chunk = Buffer.alloc(65_536, 'a');
+  for (let sent = 0; sent < length; sent += chunk.length) {
+    socket.write(chunk.subarray(0, Math.min(chunk.length, length - sent)));
+    if (sent % (1024 * 1024) === 0)
+      await new Promise((resolve) => {
+        setImmediate(resolve);
+      });
+  }
+
+  socket.end();
+  await new Promise((resolve) => {
+    if (state.closed) resolve();
+    else socket.once('close', resolve);
+  });
+  t.is(state.error, null);
+  t.false(reached);
+});
+
+test('a multipart body under the total size limit is still parsed', async (t) => {
+  const app = new Koa();
+  app.use(createMultipart().none());
+  app.use((ctx) => {
+    ctx.body = { sizes: Object.values(ctx.request.body).map((v) => v.length) };
+  });
+  const server = http.createServer(app.callback());
+  await new Promise((resolve) => {
+    server.listen(0, '127.0.0.1', resolve);
+  });
+  t.teardown(() => server.close());
+
+  const boundary = 'x-boundary';
+  const res = await fetch(`http://127.0.0.1:${server.address().port}/`, {
+    method: 'POST',
+    headers: { 'content-type': `multipart/form-data; boundary=${boundary}` },
+    body: multipartBody(
+      boundary,
+      Array.from({ length: 8 }, (_, i) => [`f${i}`, 'a'.repeat(1000 * 1000)])
+    )
+  });
+  t.is(res.status, 200);
+  const { sizes } = await res.json();
+  t.deepEqual(sizes, Array.from({ length: 8 }).fill(1e6));
 });

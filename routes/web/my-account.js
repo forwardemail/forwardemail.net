@@ -28,6 +28,7 @@ const _ = require('#helpers/lodash');
 
 const Users = require('#models/users');
 const config = require('#config');
+const confirmCurrentPassword = require('#helpers/confirm-current-password');
 const email = require('#helpers/email');
 const i18n = require('#helpers/i18n');
 const invalidateOtherSessions = require('#helpers/invalidate-other-sessions');
@@ -36,10 +37,13 @@ const policies = require('#helpers/policies');
 const rateLimit = require('#helpers/rate-limit');
 const web = require('#controllers/web');
 
+const changeEmailRateLimit = rateLimit(10, 'change email request');
+
 const router = new Router({ prefix: '/my-account' });
 
 const store = new SessionChallengeStore();
 const storeVerify = pify(store.verify, { multiArgs: true }).bind(store);
+const storeChallenge = pify(store.challenge).bind(store);
 
 const USER_PRESENT = 0x01;
 const USER_VERIFIED = 0x04;
@@ -587,13 +591,28 @@ router
     },
     web.myAccount.retrieveProfile
   )
-  .put('/profile', web.myAccount.updateProfile)
+  .put(
+    '/profile',
+    // (a request to change the email sends a message to any address, and
+    // tells whether an account uses it, so it is limited like a resend)
+    (ctx, next) =>
+      isSANB(ctx.request.body?.email) &&
+      ctx.request.body.email !== ctx.state.user.email
+        ? changeEmailRateLimit(ctx, next)
+        : next(),
+    web.myAccount.updateProfile
+  )
   .put(
     '/profile/resend-email-change',
     rateLimit(5, 'resend email change'),
     web.myAccount.resendEmailChange
   )
-  .put('/profile/cancel-email-change', web.myAccount.cancelEmailChange)
+  .put(
+    '/profile/cancel-email-change',
+    // (cancelling also ends the half hour before another request)
+    rateLimit(10, 'cancel email change'),
+    web.myAccount.cancelEmailChange
+  )
   .delete(
     '/profile/disconnect/:provider',
     rateLimit(10, 'disconnect oauth provider'),
@@ -669,6 +688,27 @@ router
   )
   .post('/recovery-keys', web.myAccount.recoveryKeys)
   // (only once the email is verified, see ensure-verified-email.js)
+  //
+  // (the password is checked before the browser makes the passkey, so a
+  // mistyped one does not leave a passkey on the device that was never
+  // added here; it is checked again when the passkey is added)
+  //
+  // (it answers with the challenge for the passkey too, so the browser prompt
+  // follows the password after one request, as it follows the button without
+  // one: some browsers only open it shortly after the click)
+  //
+  .post(
+    '/passkeys/confirm-password',
+    web.myAccount.ensureVerifiedEmail,
+    async (ctx) => {
+      await confirmCurrentPassword(ctx);
+      if (!ctx.passport.config.providers.webauthn)
+        throw Boom.badRequest(ctx.translateError('INVALID_PROVIDER'));
+      const challenge = await storeChallenge(ctx);
+      await ctx.saveSession();
+      ctx.body = { ok: true, challenge: base64url.encode(challenge) };
+    }
+  )
   .post('/passkeys', web.myAccount.ensureVerifiedEmail, async (ctx) => {
     //
     // TODO: note that the passport-fido2-webauthn codebase has a LOT of TODO statements
@@ -677,6 +717,8 @@ router
     // NOTE: this source code was inspired/mirrored from example here
     //       <https://github.com/passport/todos-express-webauthn>
     //
+
+    await confirmCurrentPassword(ctx);
 
     if (!_.isPlainObject(ctx?.request?.body?.response))
       throw new TypeError('Invalid response');
@@ -892,6 +934,7 @@ router
     else ctx.body = { redirectTo };
   })
   .del('/passkeys/:id', async (ctx) => {
+    await confirmCurrentPassword(ctx);
     const user = await Users.findById(ctx.state.user._id);
     if (!user) throw new TypeError('User does not exist');
     const passkey = user.passkeys.id(ctx.params.id);

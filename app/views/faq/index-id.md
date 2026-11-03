@@ -2893,24 +2893,22 @@ Daftar kemampuan lengkap yang didukung implementasi dan catatan RFC tersedia dal
 | Kategori | Kemampuan dan perilaku |
 | --- | --- |
 | Bahasa inti | `keep`, `discard`, `stop`, blok kondisional, dan tes dasar `address`, `header`, `exists`, `size`, dan tes boolean. |
-| Pengiriman | `fileinto`, `copy`, `redirect`, `mailbox` untuk `fileinto :create`, dan `special-use` untuk pemetaan folder-standar `:specialuse` serta `specialuse_exists`. |
-| Tes dan perbandingan | `envelope`, `body`, `date`, `index`, `regex`, `subaddress`, `relational`, `i;ascii-casemap`, dan `i;octet`. |
-| Status dan variabel | `variables`, `imap4flags`, `duplicate`, dan `ihave`. |
+| Pengiriman | `fileinto`, `copy`, `redirect`, `mailbox` untuk `fileinto :create` dan `mailboxexists`, dan `special-use` untuk `fileinto :specialuse` serta `specialuse_exists`. |
+| Tes dan perbandingan | `envelope`, `body`, `date`, `index`, `regex`, `subaddress`, `relational`, `i;ascii-casemap`, `i;octet`, dan `i;ascii-numeric`. |
+| Status dan variabel | `variables`, `encoded-character`, `imap4flags`, `duplicate`, dan `ihave`. |
 | Aksi dan respons | `reject`, `ereject`, `vacation`, `vacation-seconds`, dan `enotify` menggunakan `mailto:`. Deklarasi warisan `require "notify"` diterima sebagai alias input untuk `enotify`, tetapi `enotify` adalah kemampuan yang diiklankan. |
-| Pemrosesan pesan | `editheader`, `environment`, dan `mime`, termasuk `foreverypart`, `break`, `extracttext`, dan `replace`. |
+| Pemrosesan pesan | `editheader`, `environment`, `foreverypart` (dengan `break`), `extracttext`, `replace`, dan `mime`, yang juga mengaktifkan ketiga perintah tersebut. |
 
-`redirect` dikirim melalui antrean keluar normal. Itu tunduk pada kebijakan redirect-domain yang dikonfigurasi, pemeriksaan denylist, dan batas laju. `editheader` tidak dapat memodifikasi header otentikasi atau routing-pengantaran yang dilindungi.
+`redirect` tidak memerlukan `require`. Ini dikirim melalui antrean keluar normal, yang hanya menerima pesan dengan From berupa alias Anda, pada domain dengan SMTP keluar; pesan lainnya disimpan di kotak masuk Anda. Redirect tunduk pada kebijakan redirect-domain yang dikonfigurasi, pemeriksaan denylist, dan batas laju. `editheader` tidak dapat memodifikasi header otentikasi atau routing-pengantaran yang dilindungi, `Received`, atau `Auto-Submitted`.
 
 #### Fitur yang tidak didukung
 
 | Fitur | Alasan |
 | --- | --- |
 | `enclose` | Pembuatan pesan baru yang menyertakan pesan asli tidak diimplementasikan. |
-| `mailboxexists` | Forward Email tidak melakukan kueri status mailbox IMAP secara langsung. `fileinto :create` tetap tersedia melalui `mailbox`. |
 | `include` | Penyimpanan skrip global dan yang disertakan tidak tersedia. |
 | `mboxmetadata` / `servermetadata` | Integrasi IMAP METADATA tidak tersedia. |
 | `fcc` | Integrasi pemfilenan pesan terkirim tidak tersedia. |
-| `encoded-character` | Sintaks `${hex:...}` tidak diimplementasikan. |
 | Daftar eksternal | `valid_ext_list` dan operasi daftar-eksternal lainnya tidak tersedia. |
 
 #### Contoh skrip Sieve
@@ -2947,8 +2945,6 @@ if address :is "from" "boss@example.com" {
 **Redirect a message:**
 
 ```sieve
-require ["redirect"];
-
 if header :contains "Subject" "invoice" {
     redirect "recipient@example.com";
 }

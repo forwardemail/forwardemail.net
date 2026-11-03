@@ -1109,45 +1109,45 @@ A táblázat megkülönbözteti a felsorolt viselkedés teljes megvalósításá
 
 | RFC vagy specifikáció | Capability | Támogatott viselkedés |
 | --- | --- | --- |
-| [RFC 5228](https://datatracker.ietf.org/doc/html/rfc5228) | Core Sieve | `keep`, `discard`, `stop`, conditional blocks, and the base `address`, `header`, `exists`, `size`, and boolean tests. `fileinto` and `redirect` are delivered through the inbound delivery pipeline. |
+| [RFC 5228](https://datatracker.ietf.org/doc/html/rfc5228) | Core Sieve, `encoded-character` | `keep`, `discard`, `stop`, feltételes blokkok, valamint az alap `address`, `header`, `exists`, `size` és logikai tesztek. A `fileinto` minden megnevezett mappába elmenti az üzenetet. A `redirect` nem igényel `require` utasítást, és a kimenő soron keresztül kerül elküldésre, amely csak olyan üzenetet fogad el, amelynek From mezője az alias, kimenő SMTP-vel rendelkező domainen; minden más üzenet a beérkező mappában marad. A `${hex:...}` és `${unicode:...}` dekódolása megtörténik, ha a szkript igényli az `encoded-character` kiterjesztést. |
 | [RFC 5429](https://datatracker.ietf.org/doc/html/rfc5429) | `reject`, `ereject` | SMTP rejection with the supplied message. |
-| [RFC 5230](https://datatracker.ietf.org/doc/html/rfc5230) | `vacation` | Vacation replies are queued with abuse controls. |
+| [RFC 5230](https://datatracker.ietf.org/doc/html/rfc5230) | `vacation` | A vakációválaszok visszaélés elleni védelemmel kerülnek sorba, feladónként legfeljebb egyszer minden `:days` időszakban (alapértelmezés szerint 7 nap). |
 | [RFC 6131](https://datatracker.ietf.org/doc/html/rfc6131) | `vacation-seconds` | The `:seconds` interval controls the vacation-response TTL. |
 | [RFC 5232](https://datatracker.ietf.org/doc/html/rfc5232) | `imap4flags` | Flags are applied during mailbox storage. |
 | [RFC 5173](https://datatracker.ietf.org/doc/html/rfc5173) | `body` | Message-body content matching. |
 | [RFC 5229](https://datatracker.ietf.org/doc/html/rfc5229) | `variables` | Variable expansion and supported modifiers. |
 | [RFC 5231](https://datatracker.ietf.org/doc/html/rfc5231) | `relational` | `:count` and `:value` comparisons. |
-| [RFC 4790](https://datatracker.ietf.org/doc/html/rfc4790) | Comparators | `i;ascii-casemap` and `i;octet`. `i;ascii-numeric` is not advertised. |
+| [RFC 4790](https://datatracker.ietf.org/doc/html/rfc4790) | Comparators | `i;ascii-casemap`, `i;octet` és `i;ascii-numeric`. |
 | [RFC 3894](https://datatracker.ietf.org/doc/html/rfc3894) | `copy` | `:copy` on `fileinto` and `redirect`. |
-| [RFC 5293](https://datatracker.ietf.org/doc/html/rfc5293) | `editheader` | Header changes before storage, except protected authentication and delivery-routing fields. |
+| [RFC 5293](https://datatracker.ietf.org/doc/html/rfc5293) | `editheader` | Fejlécmódosítások tárolás előtt, amelyeket a későbbi tesztek is látnak, kivéve a védett hitelesítési és kézbesítési útvonal mezőket, a `Received` és az `Auto-Submitted` fejlécet. |
 | [RFC 5260](https://datatracker.ietf.org/doc/html/rfc5260) | `date`, `index` | `currentdate` and header-date tests, plus `:index` and `:last`. |
-| [RFC 5435](https://datatracker.ietf.org/doc/html/rfc5435) | `enotify` | `mailto:` notifications with rate limits. The legacy `require "notify"` declaration is accepted as an alias, but `enotify` is advertised. |
+| [RFC 5435](https://datatracker.ietf.org/doc/html/rfc5435) | `enotify` | `mailto:` értesítések sebességkorlátozással, automatikus üzenetekre soha. A régi `require "notify"` deklaráció aliasként elfogadott, de az `enotify` kerül meghirdetésre. |
 | [RFC 5183](https://datatracker.ietf.org/doc/html/rfc5183) | `environment` | Supported session environment values. |
-| [RFC 5490](https://datatracker.ietf.org/doc/html/rfc5490) | `mailbox` | `fileinto :create` only. Live `mailboxexists` queries are not supported. |
-| [RFC 8579](https://datatracker.ietf.org/doc/html/rfc8579) | `special-use` | Standard-folder `:specialuse` mapping and deterministic `specialuse_exists` checks. |
+| [RFC 5490](https://datatracker.ietf.org/doc/html/rfc5490) | `mailbox` | `fileinto :create` és `mailboxexists`, amely az alias mappáit ellenőrzi. |
+| [RFC 8579](https://datatracker.ietf.org/doc/html/rfc8579) | `special-use` | A `fileinto :specialuse` az adott speciális célú mappába helyezi az üzenetet, a `specialuse_exists` pedig az alias mappáit ellenőrzi. |
 | [RFC 7352](https://datatracker.ietf.org/doc/html/rfc7352) | `duplicate` | Redis-backed duplicate-delivery detection. |
-| [RFC 5463](https://datatracker.ietf.org/doc/html/rfc5463) | `ihave` | Checks whether an advertised capability is available. |
+| [RFC 5463](https://datatracker.ietf.org/doc/html/rfc5463) | `ihave` | Ellenőrzi, hogy egy meghirdetett képesség elérhető-e, valamint az `error` parancs. |
 | [RFC 5233](https://datatracker.ietf.org/doc/html/rfc5233) | `subaddress` | `:user` and `:detail` address parts. |
 | [draft-ietf-sieve-regex](https://datatracker.ietf.org/doc/html/draft-ietf-sieve-regex) | `regex` | Regular-expression matching using [RE2](https://github.com/uhop/node-re2). |
-| [RFC 5703](https://datatracker.ietf.org/doc/html/rfc5703) | `mime` | MIME tests and `foreverypart`, `break`, `extracttext`, and `replace`. `enclose` is rejected because it has no safe delivery implementation. |
+| [RFC 5703](https://datatracker.ietf.org/doc/html/rfc5703) | `foreverypart`, `extracttext`, `replace`, `mime` | MIME-tesztek, valamint `foreverypart`, `break`, `extracttext` és `replace`. A `mime` ezeket a parancsokat is engedélyezi, ahogy a régebbi szkriptek elvárják. Az `enclose` elutasításra kerül, mert nincs biztonságos kézbesítési megvalósítása. |
 
 #### Támogatott Sieve kiterjesztések {#supported-sieve-extensions}
 
 | Kiterjesztés | Viselkedés | Kézbesítés vagy érvényesítés |
 | --- | --- | --- |
-| `fileinto` | Files a message into a folder. | Stored in the selected IMAP folder. `fileinto :create` requires `mailbox`. |
+| `fileinto` | Üzenetet helyez egy mappába. | A kiválasztott IMAP-mappában tárolódik. A `fileinto :create` és a `mailboxexists` a `mailbox` kiterjesztést igényli. |
 | `copy` | Keeps the original delivery while adding `fileinto` or `redirect`. | Applied by the delivery pipeline. |
-| `redirect` | Sends a copy or replacement delivery to another recipient. | Queued through the normal outbound path, subject to domain policy, denylist checks, and rate limits. |
+| `redirect` | Az üzenetet egy másik címzettnek küldi. | A normál kimenő útvonalon kerül sorba, ha az üzenet From mezője az alias, kimenő SMTP-vel rendelkező domainen, a domain szabályzata, tiltólista-ellenőrzések és sebességkorlátok mellett. Minden más üzenet a beérkező mappában marad. |
 | `reject` / `ereject` | Rejects a message with an SMTP error. | Returned through the MX delivery path. |
 | `vacation` / `vacation-seconds` | Sends an automatic reply. | Queued with recipient and interval rate limits. |
 | `imap4flags` | Sets or tests IMAP flags. | Applied when the message is stored. |
-| `envelope`, `body`, `date`, `index`, `regex`, `subaddress`, `relational` | Tests message and envelope data. | Evaluated by the Sieve engine. |
+| `envelope`, `body`, `date`, `index`, `regex`, `subaddress`, `relational`, `comparator-i;ascii-numeric` | Az üzenet és a boríték adatait vizsgálja. | A Sieve-motor értékeli ki. |
 | `variables`, `duplicate`, `ihave` | Stores values, detects duplicates, and checks capabilities. | Variables are script-local; duplicate state uses Redis. |
-| `editheader` | Adds or deletes non-protected headers. | Authentication and delivery-routing headers cannot be modified. |
+| `editheader` | Nem védett fejléceket ad hozzá vagy töröl. | A hitelesítési és kézbesítési útvonal fejlécek, a `Received` és az `Auto-Submitted` nem módosíthatók. |
 | `enotify` | Sends a notification using `mailto:`. | Queued with notification rate limits. |
 | `environment` | Reads supported session environment data. | Evaluated by the Sieve engine. |
-| `special-use` | Addresses standard-use folders. | Maps standard folders and provides deterministic `specialuse_exists` results. |
-| `mime` | Inspects and changes supported MIME parts. | Requires the generic `mime` capability. Individual RFC 5703 commands are not advertised separately. |
+| `special-use` | Szabványos célú mappákat kezel. | Az alias speciális célú mappáiba helyez és ellenőrzi azokat. |
+| `foreverypart`, `extracttext`, `replace`, `mime` | Megvizsgálja és módosítja a támogatott MIME-részeket. | A Sieve-motor értékeli ki. A `mime` a három parancsot is engedélyezi, ahogy a régebbi szkriptek elvárják. |
 
 #### Sieve által nem támogatott funkciók {#sieve-extensions-not-supported}
 
@@ -1156,11 +1156,9 @@ Ezeket a funkciókat elutasítják még a perzisztencia, aktiválás, ManageSiev
 | Funkció | RFC vagy specifikáció | Indok |
 | --- | --- | --- |
 | `enclose` | [RFC 5703](https://datatracker.ietf.org/doc/html/rfc5703) | Az eredeti üzenetet magába foglaló új üzenet létrehozása nincs biztonságosan end-to-end megvalósítva. |
-| `mailboxexists` | [RFC 5490](https://datatracker.ietf.org/doc/html/rfc5490) | Élő IMAP postafiók állapot lekérdezések nem állnak rendelkezésre. |
 | `include` | [RFC 6609](https://datatracker.ietf.org/doc/html/rfc6609) | Globális és beágyazott szkript tárolás nem elérhető. |
 | `mboxmetadata` / `servermetadata` | [RFC 5490](https://datatracker.ietf.org/doc/html/rfc5490) | IMAP METADATA integráció nem elérhető. |
 | `fcc` | [RFC 8580](https://datatracker.ietf.org/doc/html/rfc8580) | Kimenő levelek fájlolásának integrációja nem elérhető. |
-| `encoded-character` | [RFC 5228](https://datatracker.ietf.org/doc/html/rfc5228) | A `${hex:...}` szintaxis nincs megvalósítva. |
 | External lists | [RFC 6134](https://datatracker.ietf.org/doc/html/rfc6134) | `valid_ext_list` and other external-list operations are not available. |
 
 #### Sieve feldolgozási folyamat {#sieve-processing-flow}
@@ -1197,7 +1195,7 @@ sequenceDiagram
 
 #### Biztonsági jellemzők {#security-features}
 
-A Forward Email érvényesíti a teljes szkriptet, mielőtt elmentik, aktiválják vagy végrehajtanák. Elutasítja a nem deklarált és nem elérhető képességeket, korlátozza a szkript méretét és a MIME-részek iterálását, reguláris kifejezésekhez a [RE2](https://github.com/uhop/node-re2)-t használja, aránykorlátozza a redirecteket, vakációválaszokat és értesítéseket, megtagadja a nem biztonságos átirányítási célokat, és megakadályozza, hogy az `editheader` megváltoztassa a hitelesítési vagy kézbesítési-útvonal fejléc mezőket. A redirect és vakáció aránykorlát állapota [Redis](https://github.com/redis/redis)-ben tárolódik, míg a kézbesített levelek [SQLite](https://github.com/sqlite/sqlite)-dal vannak tárolva.
+A Forward Email érvényesíti a teljes szkriptet, mielőtt elmentik, aktiválják vagy végrehajtanák. Elutasítja a nem deklarált és nem elérhető képességeket, korlátozza a szkript méretét és a MIME-részek iterálását, reguláris kifejezésekhez a [RE2](https://github.com/uhop/node-re2)-t használja, aránykorlátozza a redirecteket, vakációválaszokat és értesítéseket, megtagadja a nem biztonságos átirányítási célokat, és megakadályozza, hogy az `editheader` megváltoztassa a hitelesítési vagy kézbesítési-útvonal fejléc mezőket, a `Received` vagy az `Auto-Submitted` fejlécet. A túl sokáig futó, vagy túl sok műveletet, jelzőt vagy változót létrehozó szkript leáll, és az üzenet megmarad. A redirect és vakáció aránykorlát állapota [Redis](https://github.com/redis/redis)-ben tárolódik, míg a kézbesített levelek [SQLite](https://github.com/sqlite/sqlite)-dal vannak tárolva.
 
 #### Példa Sieve szkriptek {#example-sieve-scripts}
 
@@ -1233,8 +1231,6 @@ if header :contains "X-Spam-Status" "Yes" {
 **Számlák átirányítása:**
 
 ```sieve
-require ["redirect"];
-
 if header :contains "Subject" "invoice" {
     redirect "recipient@example.com";
 }
@@ -1260,7 +1256,7 @@ A Forward Email teljes ManageSieve protokoll támogatást nyújt a Sieve szkript
 | **Szerver**             | `imap.forwardemail.net` |
 | **Port (STARTTLS)**     | `2190` (ajánlott)       |
 | **Port (Implicit TLS)** | `4190`                  |
-| **Hitelesítés**         | PLAIN (TLS-en keresztül) |
+| **Hitelesítés**         | PLAIN és LOGIN (TLS-en keresztül) |
 
 > **Megjegyzés:** A 2190-es port STARTTLS-t használ (a sima kapcsolat TLS-re frissítése), és kompatibilis a legtöbb ManageSieve klienssel, beleértve a [sieve-connect](https://github.com/philpennock/sieve-connect) klienst is. A 4190-es port implicit TLS-t használ (TLS a kapcsolat kezdetétől), azoknak a klienseknek, amelyek támogatják.
 
@@ -1268,7 +1264,8 @@ A Forward Email teljes ManageSieve protokoll támogatást nyújt a Sieve szkript
 
 | Parancs        | Leírás                                  |
 | -------------- | --------------------------------------- |
-| `AUTHENTICATE` | Hitelesítés PLAIN mechanizmussal        |
+| `AUTHENTICATE` | Hitelesítés PLAIN vagy LOGIN mechanizmussal |
+| `STARTTLS`     | A kapcsolat TLS-re váltása a 2190-es porton |
 | `CAPABILITY`   | Szerver képességek és kiterjesztések listázása |
 | `HAVESPACE`    | Ellenőrzés, hogy a szkript tárolható-e  |
 | `PUTSCRIPT`    | Új szkript feltöltése                    |

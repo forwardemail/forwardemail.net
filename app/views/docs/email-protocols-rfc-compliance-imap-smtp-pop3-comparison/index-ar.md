@@ -1109,45 +1109,45 @@ sequenceDiagram
 
 | RFC أو المواصفة | Capability | السلوك المدعوم |
 | --- | --- | --- |
-| [RFC 5228](https://datatracker.ietf.org/doc/html/rfc5228) | Core Sieve | `keep`, `discard`, `stop`، الكتل الشرطية، واختبارات الأساس `address`، `header`, `exists`, `size` والاختبارات البوليانية. يتم تسليم `fileinto` و `redirect` عبر خط أنابيب التسليم الوارد. |
+| [RFC 5228](https://datatracker.ietf.org/doc/html/rfc5228) | Core Sieve, `encoded-character` | `keep`, `discard`, `stop`، الكتل الشرطية، واختبارات الأساس `address`، `header`, `exists`, `size` والاختبارات البوليانية. يخزن `fileinto` الرسالة في كل مجلد مذكور. لا يحتاج `redirect` إلى `require` ويُرسل عبر قائمة الانتظار الصادرة، التي لا تقبل إلا رسالة يكون مرسلها (From) هو الاسم المستعار، على نطاق يدعم SMTP الصادر؛ وتُحفظ أي رسالة أخرى في صندوق الوارد. يتم فك ترميز `${hex:...}` و `${unicode:...}` عند طلب `encoded-character`. |
 | [RFC 5429](https://datatracker.ietf.org/doc/html/rfc5429) | `reject`, `ereject` | رفض SMTP مع الرسالة المقدمة. |
-| [RFC 5230](https://datatracker.ietf.org/doc/html/rfc5230) | `vacation` | يتم وضع ردود الإجازة في قائمة الانتظار مع ضوابط إساءة الاستخدام. |
+| [RFC 5230](https://datatracker.ietf.org/doc/html/rfc5230) | `vacation` | يتم وضع ردود الإجازة في قائمة الانتظار مع ضوابط إساءة الاستخدام، بحد أقصى مرة واحدة لكل مرسل خلال كل فترة `:days` (7 أيام افتراضيًا). |
 | [RFC 6131](https://datatracker.ietf.org/doc/html/rfc6131) | `vacation-seconds` | يتحكم معامِل `:seconds` في زمن الحياة (TTL) لردود الإجازة. |
 | [RFC 5232](https://datatracker.ietf.org/doc/html/rfc5232) | `imap4flags` | تُطبّق العلامات أثناء تخزينها في صندوق البريد. |
 | [RFC 5173](https://datatracker.ietf.org/doc/html/rfc5173) | `body` | مطابقة محتوى جسم الرسالة. |
 | [RFC 5229](https://datatracker.ietf.org/doc/html/rfc5229) | `variables` | توسعة المتغيرات والمعدلات المدعومة. |
 | [RFC 5231](https://datatracker.ietf.org/doc/html/rfc5231) | `relational` | مقارنات `:count` و `:value`. |
-| [RFC 4790](https://datatracker.ietf.org/doc/html/rfc4790) | Comparators | `i;ascii-casemap` و `i;octet`. لا يتم الإعلان عن `i;ascii-numeric`. |
+| [RFC 4790](https://datatracker.ietf.org/doc/html/rfc4790) | Comparators | `i;ascii-casemap` و `i;octet` و `i;ascii-numeric`. |
 | [RFC 3894](https://datatracker.ietf.org/doc/html/rfc3894) | `copy` | دعم `:copy` على `fileinto` و `redirect`. |
-| [RFC 5293](https://datatracker.ietf.org/doc/html/rfc5293) | `editheader` | تغييرات الرؤوس قبل التخزين، باستثناء حقول المصادقة وحقول توجيه التسليم المحمية. |
+| [RFC 5293](https://datatracker.ietf.org/doc/html/rfc5293) | `editheader` | تغييرات الرؤوس قبل التخزين، وتراها الاختبارات اللاحقة، باستثناء حقول المصادقة وحقول توجيه التسليم المحمية و`Received` و`Auto-Submitted`. |
 | [RFC 5260](https://datatracker.ietf.org/doc/html/rfc5260) | `date`, `index` | اختبارات `currentdate` وتواريخ الرؤوس، بالإضافة إلى `:index` و `:last`. |
-| [RFC 5435](https://datatracker.ietf.org/doc/html/rfc5435) | `enotify` | إشعارات عبر `mailto:` مع حدود معدل. يتم قبول التصريح القديم `require "notify"` كمرادف، ولكن يتم الإعلان عن `enotify`. |
+| [RFC 5435](https://datatracker.ietf.org/doc/html/rfc5435) | `enotify` | إشعارات عبر `mailto:` مع حدود معدل، ولا تُرسل أبدًا للرسائل التلقائية. يتم قبول التصريح القديم `require "notify"` كمرادف، ولكن يتم الإعلان عن `enotify`. |
 | [RFC 5183](https://datatracker.ietf.org/doc/html/rfc5183) | `environment` | قيم بيئة الجلسة المدعومة. |
-| [RFC 5490](https://datatracker.ietf.org/doc/html/rfc5490) | `mailbox` | فقط `fileinto :create`. استعلامات `mailboxexists` الحية غير مدعومة. |
-| [RFC 8579](https://datatracker.ietf.org/doc/html/rfc8579) | `special-use` | تعيين المجلدات القياسية عبر `:specialuse` وفحوص `specialuse_exists` الحتمية. |
+| [RFC 5490](https://datatracker.ietf.org/doc/html/rfc5490) | `mailbox` | `fileinto :create` و `mailboxexists` الذي يتحقق من مجلدات الاسم المستعار. |
+| [RFC 8579](https://datatracker.ietf.org/doc/html/rfc8579) | `special-use` | يضع `fileinto :specialuse` الرسالة في المجلد ذي الاستخدام الخاص المحدد، ويتحقق `specialuse_exists` من مجلدات الاسم المستعار. |
 | [RFC 7352](https://datatracker.ietf.org/doc/html/rfc7352) | `duplicate` | اكتشاف التسليم المكرر مدعوم بواسطة Redis. |
-| [RFC 5463](https://datatracker.ietf.org/doc/html/rfc5463) | `ihave` | يتحقق ما إذا كانت قدرة معلنة متاحة. |
+| [RFC 5463](https://datatracker.ietf.org/doc/html/rfc5463) | `ihave` | يتحقق ما إذا كانت قدرة معلنة متاحة، بالإضافة إلى الأمر `error`. |
 | [RFC 5233](https://datatracker.ietf.org/doc/html/rfc5233) | `subaddress` | أجزاء العنوان `:user` و `:detail`. |
 | [draft-ietf-sieve-regex](https://datatracker.ietf.org/doc/html/draft-ietf-sieve-regex) | `regex` | مطابقة التعبيرات النمطية باستخدام [RE2](https://github.com/uhop/node-re2). |
-| [RFC 5703](https://datatracker.ietf.org/doc/html/rfc5703) | `mime` | اختبارات MIME وأوامر `foreverypart`, `break`, `extracttext`, و `replace`. يتم رفض `enclose` لأنه لا يمتلك تنفيذ توصيل آمن من الطرف إلى الطرف. |
+| [RFC 5703](https://datatracker.ietf.org/doc/html/rfc5703) | `foreverypart`, `extracttext`, `replace`, `mime` | اختبارات MIME وأوامر `foreverypart`, `break`, `extracttext`, و `replace`. يفعّل `mime` هذه الأوامر أيضًا كما تتوقع السكربتات الأقدم. يتم رفض `enclose` لأنه لا يمتلك تنفيذ توصيل آمن من الطرف إلى الطرف. |
 
 #### امتدادات Sieve المدعومة {#supported-sieve-extensions}
 
 | الامتداد | السلوك | التسليم أو التطبيق |
 | --- | --- | --- |
-| `fileinto` | يضع رسالة في مجلد. | يُخزّن في مجلد IMAP المحدد. يتطلب `fileinto :create` وجود `mailbox`. |
+| `fileinto` | يضع رسالة في مجلد. | يُخزّن في مجلد IMAP المحدد. يتطلب `fileinto :create` و `mailboxexists` وجود `mailbox`. |
 | `copy` | يحافظ على التسليم الأصلي أثناء إضافة `fileinto` أو `redirect`. | يُطبّق بواسطة خط أنابيب التسليم. |
-| `redirect` | يرسل نسخة أو تسليمًا بديلاً إلى مستلم آخر. | يوضع في قائمة الانتظار عبر مسار الإرسال العادي، مع مراعاة سياسة النطاق، وفحوص قوائم المنع، وحدود المعدل. |
+| `redirect` | يرسل الرسالة إلى مستلم آخر. | يوضع في قائمة الانتظار عبر مسار الإرسال العادي للرسالة التي يكون مرسلها (From) هو الاسم المستعار، على نطاق يدعم SMTP الصادر، مع مراعاة سياسة النطاق، وفحوص قوائم المنع، وحدود المعدل. تُحفظ أي رسالة أخرى في صندوق الوارد. |
 | `reject` / `ereject` | يرفض رسالة بخطأ SMTP. | يُعاد عبر مسار توصيل MX. |
 | `vacation` / `vacation-seconds` | يرسل ردًا تلقائيًا. | يوضع في قائمة الانتظار مع حدود معدل للمستلم والفاصل الزمني. |
 | `imap4flags` | يضبط أو يختبر علامات IMAP. | يُطبّق عند تخزين الرسالة. |
-| `envelope`, `body`, `date`, `index`, `regex`, `subaddress`, `relational` | يختبر بيانات الرسالة والظرف. | يقيمها محرك Sieve. |
+| `envelope`, `body`, `date`, `index`, `regex`, `subaddress`, `relational`, `comparator-i;ascii-numeric` | يختبر بيانات الرسالة والظرف. | يقيمها محرك Sieve. |
 | `variables`, `duplicate`, `ihave` | يخزن القيم، يكتشف التكرارات، ويتحقق من القدرات. | المتغيرات محلية للسكربت؛ حالة التكرار تستخدم Redis. |
-| `editheader` | يضيف أو يحذف رؤوسًا غير محمية. | لا يمكن تعديل رؤوس المصادقة أو توجيه التسليم. |
+| `editheader` | يضيف أو يحذف رؤوسًا غير محمية. | لا يمكن تعديل رؤوس المصادقة أو توجيه التسليم، ولا `Received` و`Auto-Submitted`. |
 | `enotify` | يرسل إشعارًا باستخدام `mailto:`. | يوضع في قائمة الانتظار مع حدود معدل الإشعارات. |
 | `environment` | يقرأ بيانات بيئة الجلسة المدعومة. | يقيمها محرك Sieve. |
-| `special-use` | يتعامل مع المجلدات ذات الاستخدام القياسي. | يعيّن المجلدات القياسية ويوفر نتائج `specialuse_exists` حتمية. |
-| `mime` | يفحص ويغير أجزاء MIME المدعومة. | يتطلب القدرة العامة `mime`. لا يتم الإعلان عن أوامر RFC 5703 الفردية بشكل منفصل. |
+| `special-use` | يتعامل مع المجلدات ذات الاستخدام القياسي. | يضع الرسائل في مجلدات الاستخدام الخاص للاسم المستعار ويتحقق منها. |
+| `foreverypart`, `extracttext`, `replace`, `mime` | يفحص ويغير أجزاء MIME المدعومة. | يقيمها محرك Sieve. يفعّل `mime` أيضًا الأوامر الثلاثة كما تتوقع السكربتات الأقدم. |
 
 #### ميزات Sieve غير المدعومة {#sieve-extensions-not-supported}
 
@@ -1156,11 +1156,9 @@ sequenceDiagram
 | الميزة | RFC أو المواصفة | السبب |
 | --- | --- | --- |
 | `enclose` | [RFC 5703](https://datatracker.ietf.org/doc/html/rfc5703) | إنشاء رسالة جديدة تغلف الرسالة الأصلية غير منفّذ بأمان من الطرف إلى الطرف. |
-| `mailboxexists` | [RFC 5490](https://datatracker.ietf.org/doc/html/rfc5490) | استعلامات حالة صندوق البريد الحية عبر IMAP غير متاحة. |
 | `include` | [RFC 6609](https://datatracker.ietf.org/doc/html/rfc6609) | تخزين السكربتات العامة والمضمّنة غير متوفر. |
 | `mboxmetadata` / `servermetadata` | [RFC 5490](https://datatracker.ietf.org/doc/html/rfc5490) | تكامل IMAP METADATA غير متاح. |
 | `fcc` | [RFC 8580](https://datatracker.ietf.org/doc/html/rfc8580) | تكامل حفظ الرسائل المرسلة غير متوفر. |
-| `encoded-character` | [RFC 5228](https://datatracker.ietf.org/doc/html/rfc5228) | بناء `${hex:...}` غير منفّذ. |
 | External lists | [RFC 6134](https://datatracker.ietf.org/doc/html/rfc6134) | `valid_ext_list` وعمليات القوائم الخارجية الأخرى غير متاحة. |
 
 #### Sieve processing flow {#sieve-processing-flow}
@@ -1197,7 +1195,7 @@ sequenceDiagram
 
 #### ميزات الأمان {#security-features}
 
-تتحقق Forward Email من السكربت بالكامل قبل تخزينه أو تفعيله أو تنفيذه. تُرفض القدرات غير المُعلنة وغير المتاحة، وتُحدّ من حجم السكربت وتكرار أجزاء MIME، وتستخدم [RE2](https://github.com/uhop/node-re2) لمطابقة التعبيرات النمطية، وتُقيّد بمعدلات إعادة التوجيه وردود الإجازة والإشعارات، وتمنع وجهات إعادة التوجيه غير الآمنة، وتمنع `editheader` من تغيير رؤوس المصادقة أو توجيه التسليم. تُخزن حالة حدود معدل إعادة التوجيه والإجازة في [Redis](https://github.com/redis/redis)، بينما تُخزن الرسائل المسلَّمة باستخدام [SQLite](https://github.com/sqlite/sqlite).
+تتحقق Forward Email من السكربت بالكامل قبل تخزينه أو تفعيله أو تنفيذه. تُرفض القدرات غير المُعلنة وغير المتاحة، وتُحدّ من حجم السكربت وتكرار أجزاء MIME، وتستخدم [RE2](https://github.com/uhop/node-re2) لمطابقة التعبيرات النمطية، وتُقيّد بمعدلات إعادة التوجيه وردود الإجازة والإشعارات، وتمنع وجهات إعادة التوجيه غير الآمنة، وتمنع `editheader` من تغيير رؤوس المصادقة أو توجيه التسليم أو `Received` أو `Auto-Submitted`. يتم إيقاف السكربت الذي يعمل لفترة طويلة جدًا أو ينشئ عددًا كبيرًا جدًا من الإجراءات أو العلامات أو المتغيرات، مع الاحتفاظ بالرسالة. تُخزن حالة حدود معدل إعادة التوجيه والإجازة في [Redis](https://github.com/redis/redis)، بينما تُخزن الرسائل المسلَّمة باستخدام [SQLite](https://github.com/sqlite/sqlite).
 
 #### أمثلة لسكربتات Sieve {#example-sieve-scripts}
 
@@ -1233,8 +1231,6 @@ if header :contains "X-Spam-Status" "Yes" {
 **إعادة توجيه الفواتير:**
 
 ```sieve
-require ["redirect"];
-
 if header :contains "Subject" "invoice" {
     redirect "recipient@example.com";
 }
@@ -1260,7 +1256,7 @@ if header :contains "Subject" "invoice" {
 | **الخادم**              | `imap.forwardemail.net` |
 | **المنفذ (STARTTLS)**   | `2190` (موصى به)        |
 | **المنفذ (TLS ضمني)**   | `4190`                  |
-| **المصادقة**            | PLAIN (عبر TLS)         |
+| **المصادقة**            | PLAIN و LOGIN (عبر TLS) |
 
 > **ملاحظة:** يستخدم المنفذ 2190 STARTTLS (ترقية من اتصال عادي إلى TLS) وهو متوافق مع معظم عملاء ManageSieve بما في ذلك [sieve-connect](https://github.com/philpennock/sieve-connect). يستخدم المنفذ 4190 TLS ضمني (TLS من بداية الاتصال) للعملاء الذين يدعمونه.
 
@@ -1268,7 +1264,8 @@ if header :contains "Subject" "invoice" {
 
 | الأمر          | الوصف                                   |
 | -------------- | --------------------------------------- |
-| `AUTHENTICATE` | المصادقة باستخدام آلية PLAIN             |
+| `AUTHENTICATE` | المصادقة باستخدام آلية PLAIN أو LOGIN    |
+| `STARTTLS`     | ترقية الاتصال إلى TLS على المنفذ 2190    |
 | `CAPABILITY`   | سرد قدرات الخادم والامتدادات            |
 | `HAVESPACE`    | التحقق مما إذا كان يمكن تخزين السكربت   |
 | `PUTSCRIPT`    | رفع سكربت جديد                         |

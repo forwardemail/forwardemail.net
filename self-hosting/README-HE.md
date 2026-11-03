@@ -11,6 +11,8 @@
 * [תהליך הפריסה](#deployment-process)
   * [הַתקָנָה](#installation)
   * [תצורת Docker Compose](#docker-compose-configuration)
+  * [מסירה לדומיינים המתארחים באותו שרת](#delivery-to-domains-hosted-on-the-same-server)
+  * [סיום הפעלות כאשר הגישה ב-Google או ב-GitHub מבוטלת](#ending-sessions-when-google-or-github-access-is-revoked)
 * [תכונות תחזוקה](#maintenance-features)
   * [עדכונים אוטומטיים](#automatic-updates)
   * [גיבוי ושחזור](#backup-and-restore)
@@ -122,6 +124,30 @@ bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.ne
 * **SQLite**: מסד נתונים לאחסון דוא"ל
 
 כל שירות משתמש באותה תמונת Docker אך עם נקודות כניסה שונות, מה שמאפשר ארכיטקטורה מודולרית תוך פישוט התחזוקה.
+
+### מסירה לדומיינים המתארחים באותו שרת {#delivery-to-domains-hosted-on-the-same-server}
+
+דואר יוצא אינו נמסר לשרת MX שכתובתו שייכת לשרת עצמו. כששרת אחד מארח כמה דומיינים ורשומות ה-MX שלהם מצביעות על הכתובת הציבורית שלו, דואר מאחד הדומיינים האלה לאחר נדחה.
+
+כדי לאפשר זאת, הגדירו:
+
+```env
+SMTP_ALLOW_LOCAL_MX=true
+```
+
+ערך ברירת המחדל הוא `false`, וההגדרה חלה רק כאשר `SELF_HOSTED=true`. דואר עדיין לעולם אינו נמסר לכתובות loopback, פרטיות, link-local או NAT ברמת ספק (CGNAT).
+
+### סיום הפעלות כאשר הגישה ב-Google או ב-GitHub מבוטלת {#ending-sessions-when-google-or-github-access-is-revoked}
+
+בהתקנה באירוח עצמי, הפעלות שהתחברו באמצעות Google או GitHub אינן נבדקות מול הספק כברירת מחדל: ביטול הגישה של יישום זה אצלו אינו מנתק אותן, והן נשארות מחוברות עד שתוקפן פג.
+
+כדי לסיים אותן ברגע שהגישה בוטלה, הגדירו:
+
+```env
+AUTH_OAUTH_REVOCATION_CHECK=true
+```
+
+הספק נשאל אז ברקע, בערך פעם ב-5 דקות (פעם בדקה כל עוד אינו עונה). תקלה אצל הספק אינה מנתקת אף אחד, וגם אסימון שהספק מעולם לא קיבל אינו מנתק אף אחד.
 
 ## תכונות תחזוקה {#maintenance-features}
 

@@ -22,6 +22,8 @@ const config = require('#config');
 const email = require('#helpers/email');
 const invalidateOtherSessions = require('#helpers/invalidate-other-sessions');
 const clearUnverifiedSignIns = require('#helpers/clear-unverified-sign-ins');
+
+const { isEmailProven } = clearUnverifiedSignIns;
 const isEmail = require('#helpers/is-email');
 const isSafeReturnTo = require('#helpers/is-safe-return-to');
 const parseLoginSuccessRedirect = require('#helpers/parse-login-success-redirect');
@@ -332,23 +334,29 @@ async function recoveryKey(ctx) {
 
   ctx.state.redirectTo = redirectTo;
 
-  let recoveryKeys = ctx.state.user[config.userFields.otpRecoveryKeys];
+  const key = ctx.request.body.recovery_key;
+  const field = config.userFields.otpRecoveryKeys;
 
-  // ensure recovery matches user list of keys
-  if (
-    !isSANB(ctx.request.body.recovery_key) ||
-    !Array.isArray(recoveryKeys) ||
-    recoveryKeys.length === 0 ||
-    !recoveryKeys.includes(ctx.request.body.recovery_key)
-  )
+  //
+  // remove the used key from the list in the same operation that checks it
+  // is there, so a key is strictly single-use (checked first and removed on
+  // save, two requests sent at once could both sign in with the same key)
+  //
+  const { modifiedCount } = isSANB(key)
+    ? await Users.updateOne(
+        { _id: ctx.state.user._id, [field]: key },
+        { $pull: { [field]: key } }
+      )
+    : { modifiedCount: 0 };
+  if (modifiedCount !== 1)
     throw Boom.badRequest(ctx.translateError('INVALID_RECOVERY_KEY'));
 
-  // remove used key from recovery key list
-  recoveryKeys = recoveryKeys.filter(
-    (key) => key !== ctx.request.body.recovery_key
-  );
+  // (the list as it is now, after any other request removed its key too)
+  ctx.state.user = await Users.findById(ctx.state.user._id);
+  let recoveryKeys = ctx.state.user[field];
 
-  const emptyRecoveryKeys = recoveryKeys.length === 0;
+  const emptyRecoveryKeys =
+    !Array.isArray(recoveryKeys) || recoveryKeys.length === 0;
   const type = emptyRecoveryKeys ? 'warning' : 'success';
   redirectTo = emptyRecoveryKeys
     ? ctx.state.l('/my-account/security')
@@ -363,8 +371,10 @@ async function recoveryKey(ctx) {
     );
   }
 
-  ctx.state.user[config.userFields.otpRecoveryKeys] = recoveryKeys;
-  ctx.state.user = await ctx.state.user.save();
+  if (emptyRecoveryKeys) {
+    ctx.state.user[field] = recoveryKeys;
+    ctx.state.user = await ctx.state.user.save();
+  }
 
   if (ctx.session) ctx.session.otp = 'totp-recovery';
 
@@ -611,34 +621,74 @@ async function resetPassword(ctx) {
     throw Boom.badRequest(ctx.translateError('INVALID_RESET_TOKEN'));
 
   // lookup the user that has this token and if it matches the email passed
-  let user = await Users.findOne({
+  const query = {
     email: body.email.trim().toLowerCase(),
     [config.userFields.resetToken]: ctx.params.token,
     [config.userFields.isBanned]: false
-  });
+  };
+
+  //
+  // The token is cleared in the same operation that finds it, so the link is
+  // strictly single-use: found first and cleared on save, two requests sent
+  // at once with the same link both found it, and both changed the password.
+  //
+  let user = await Users.findOneAndUpdate(
+    {
+      ...query,
+      // ensure that the reset token expires at value is in the future
+      [config.userFields.resetTokenExpiresAt]: { $gt: new Date() }
+    },
+    {
+      $unset: {
+        [config.userFields.resetToken]: 1,
+        [config.userFields.resetTokenExpiresAt]: 1
+      }
+    }
+  );
 
   if (!user)
-    throw Boom.badRequest(ctx.translateError('INVALID_RESET_PASSWORD'));
-
-  // ensure that the reset token expires at value is in the future (hasn't expired)
-  if (
-    !_.isDate(user[config.userFields.resetTokenExpiresAt]) ||
-    new Date(user[config.userFields.resetTokenExpiresAt]).getTime() < Date.now()
-  )
-    throw Boom.badRequest(ctx.translateError('RESET_TOKEN_EXPIRED'));
-
-  // clear the reset token before saving so the link is strictly single-use
-  // and cannot be replayed after the password has been changed
-  user[config.userFields.resetToken] = undefined;
-  user[config.userFields.resetTokenExpiresAt] = undefined;
+    throw Boom.badRequest(
+      ctx.translateError(
+        (await Users.exists(query))
+          ? 'RESET_TOKEN_EXPIRED'
+          : 'INVALID_RESET_PASSWORD'
+      )
+    );
 
   // the reset proves control of the email address, so an account that was
   // never verified (possibly created by someone else) loses every other way
   // in (see clear-unverified-sign-ins.js)
   clearUnverifiedSignIns(user);
 
-  await user.setPassword(body.password);
-  user = await user.save();
+  // (the document as it was found: its token is cleared in the database)
+  const resetTokenExpiresAt = user[config.userFields.resetTokenExpiresAt];
+  user[config.userFields.resetToken] = undefined;
+  user[config.userFields.resetTokenExpiresAt] = undefined;
+
+  try {
+    await user.setPassword(body.password);
+    user = await user.save();
+  } catch (err) {
+    //
+    // (the password was not changed, e.g. it was not strong enough: the
+    // link works again, as it did when it was only cleared on save, unless
+    // it was since used or replaced)
+    //
+    await Users.updateOne(
+      {
+        _id: user._id,
+        [config.userFields.resetToken]: { $exists: false }
+      },
+      {
+        $set: {
+          [config.userFields.resetToken]: ctx.params.token,
+          [config.userFields.resetTokenExpiresAt]: resetTokenExpiresAt
+        }
+      }
+    );
+    throw err;
+  }
+
   await ctx.login(user);
   // the password changed, so invalidate all other sessions. awaited so that any
   // other session is destroyed before the response is returned; a redis failure
@@ -797,8 +847,9 @@ async function verify(ctx) {
 
   ctx.state.redirectTo = redirectTo;
 
+  // (an address only counted as verified for a paid plan is verified here)
   if (
-    ctx.state.user[config.userFields.hasVerifiedEmail] &&
+    isEmailProven(ctx.state.user) &&
     !ctx.state.user[config.userFields.pendingRecovery]
   ) {
     const message = ctx.translate('EMAIL_ALREADY_VERIFIED');
@@ -911,6 +962,7 @@ async function verify(ctx) {
 
   // set has verified to true
   ctx.state.user[config.userFields.hasVerifiedEmail] = true;
+  ctx.state.user[config.userFields.emailProofPending] = undefined;
   ctx.state.user = await ctx.state.user.save();
 
   const pendingRecovery = ctx.state.user[config.userFields.pendingRecovery];

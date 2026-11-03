@@ -6,6 +6,7 @@
  * Sieve Parser - Parses Sieve scripts into an Abstract Syntax Tree (AST)
  */
 
+const { Buffer } = require('node:buffer');
 const fs = require('node:fs');
 const path = require('node:path');
 
@@ -39,6 +40,165 @@ try {
   }
 }
 
+function syntaxError(message, location) {
+  const error = new Error(
+    `Sieve syntax error at line ${location?.start?.line || '?'}, ` +
+      `column ${location?.start?.column || '?'}: ${message}`
+  );
+  error.location = location;
+  error.name = 'SieveSyntaxError';
+  return error;
+}
+
+//
+// Encoded characters (RFC 5228 section 2.4.2.4): "${hex:" with pairs of
+// hex digits or "${unicode:" with code points, separated by blanks. A
+// sequence that does not have this form is left as it is.
+//
+const ENCODED_CHARACTERS = /\${(hex|unicode):([\t\n\r \da-f]*)}/gi;
+
+function decodeEncodedCharacters(str, location) {
+  if (!str.includes('${')) return str;
+  const chunks = [];
+  let copied = 0;
+  for (const match of str.matchAll(ENCODED_CHARACTERS)) {
+    const values = match[2].trim().split(/[\t\n\r ]+/);
+    const hex = match[1].toLowerCase() === 'hex';
+    if (values[0] === '' || (hex && values.some((v) => v.length > 2))) continue;
+
+    chunks.push(Buffer.from(str.slice(copied, match.index)));
+    for (const value of values) {
+      const code = Number.parseInt(value, 16);
+      if (hex) {
+        chunks.push(Buffer.from([code]));
+        continue;
+      }
+
+      if (code > 0x10_ff_ff || (code >= 0xd8_00 && code <= 0xdf_ff))
+        throw syntaxError(
+          `Invalid Unicode value in encoded character: ${value}`,
+          location
+        );
+      chunks.push(Buffer.from(String.fromCodePoint(code)));
+    }
+
+    copied = match.index + match[0].length;
+  }
+
+  if (copied === 0) return str;
+  chunks.push(Buffer.from(str.slice(copied)));
+  // (octets of "${hex:...}" may be parts of UTF-8 characters)
+  return Buffer.concat(chunks).toString('utf8');
+}
+
+// replace each string in the AST (except node types) with `fn(string)`
+function mapStrings(value, fn, location) {
+  if (typeof value === 'string') return fn(value, location);
+  if (!value || typeof value !== 'object') return value;
+  if (Array.isArray(value)) {
+    for (const [i, item] of value.entries())
+      value[i] = mapStrings(item, fn, location);
+    return value;
+  }
+
+  for (const key of Object.keys(value)) {
+    if (key !== 'type' && key !== 'location')
+      value[key] = mapStrings(value[key], fn, value.location || location);
+  }
+
+  return value;
+}
+
+// unknown tests only when "ihave" may enable them (RFC 5463)
+function checkTest(test, context) {
+  if (test.type === 'UnknownTest' && !context.ihave)
+    throw syntaxError(`Unknown test "${test.name}"`, test.location);
+  for (const child of test.tests || []) checkTest(child, context);
+  if (test.test) checkTest(test.test, context);
+}
+
+//
+// Checks of where commands may be (that the grammar does not express):
+// require only first (RFC 5228 section 3.2), break and extracttext only in
+// foreverypart (RFC 5703 sections 3 and 7), names of variables to set that
+// are identifiers (RFC 5229 section 4), and unknown commands and tests only
+// when "ihave" may enable them (RFC 5463).
+//
+function checkCommands(commands, context) {
+  for (const command of commands) {
+    switch (command.type) {
+      case 'Require': {
+        if (!context.topLevel || context.afterRequire)
+          throw syntaxError(
+            'require must come before any other command',
+            command.location
+          );
+        break;
+      }
+
+      case 'Break': {
+        if (context.loops.length === 0)
+          throw syntaxError('break outside of foreverypart', command.location);
+        if (command.name !== null && !context.loops.includes(command.name))
+          throw syntaxError(
+            `break has no enclosing foreverypart named "${command.name}"`,
+            command.location
+          );
+        break;
+      }
+
+      case 'UnknownCommand': {
+        if (!context.ihave)
+          throw syntaxError(
+            `Unknown command "${command.name}"`,
+            command.location
+          );
+        break;
+      }
+
+      // (RFC 5229 section 4, RFC 5703 section 7)
+      case 'Set':
+      case 'Extracttext': {
+        if (command.type === 'Extracttext' && context.loops.length === 0)
+          throw syntaxError(
+            'extracttext outside of foreverypart',
+            command.location
+          );
+        if (!/^[a-z_]\w*$/i.test(command.name))
+          throw syntaxError(
+            `Invalid variable name: "${command.name}"`,
+            command.location
+          );
+        break;
+      }
+
+      default: {
+        break;
+      }
+    }
+
+    if (command.type !== 'Require' && context.topLevel)
+      context.afterRequire = true;
+
+    const inner = { ...context, topLevel: false };
+    if (command.type === 'If') {
+      checkTest(command.test, context);
+      checkCommands(command.block, inner);
+      for (const branch of command.elsif) {
+        checkTest(branch.test, context);
+        checkCommands(branch.block, inner);
+      }
+
+      if (command.else) checkCommands(command.else, inner);
+    } else if (command.type === 'Foreverypart') {
+      checkCommands(command.block, {
+        ...inner,
+        loops: [...context.loops, command.name]
+      });
+    }
+  }
+}
+
 /**
  * Parse a Sieve script into an AST
  * @param {string} script - The Sieve script to parse
@@ -50,20 +210,33 @@ function parse(script) {
     throw new TypeError('Script must be a string');
   }
 
+  let ast;
   try {
-    return parser.parse(script);
+    ast = parser.parse(script);
   } catch (err) {
     // Enhance error message with location info
-    const error = new Error(
-      `Sieve syntax error at line ${err.location?.start?.line || '?'}, ` +
-        `column ${err.location?.start?.column || '?'}: ${err.message}`
-    );
-    error.location = err.location;
+    const error = syntaxError(err.message, err.location);
     error.expected = err.expected;
     error.found = err.found;
-    error.name = 'SieveSyntaxError';
     throw error;
   }
+
+  const required = new Set(
+    getRequiredCapabilities(ast).map((capability) => capability.toLowerCase())
+  );
+  // (before variables are expanded, RFC 5229 section 3.1, and before the
+  // names of variables are checked)
+  if (required.has('encoded-character'))
+    mapStrings(ast, decodeEncodedCharacters, ast.location);
+
+  checkCommands(ast.commands, {
+    topLevel: true,
+    afterRequire: false,
+    loops: [],
+    ihave: required.has('ihave')
+  });
+
+  return ast;
 }
 
 /**

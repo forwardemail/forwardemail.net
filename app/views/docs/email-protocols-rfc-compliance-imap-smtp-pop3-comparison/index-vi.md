@@ -1109,45 +1109,45 @@ Bảng phân biệt việc triển khai đầy đủ của các hành vi đượ
 
 | RFC hoặc đặc tả | Khả năng | Mô tả hỗ trợ |
 | --- | --- | --- |
-| [RFC 5228](https://datatracker.ietf.org/doc/html/rfc5228) | Core Sieve | `keep`, `discard`, `stop`, các khối điều kiện, và các kiểm tra cơ bản `address`, `header`, `exists`, `size`, và các kiểm tra boolean. `fileinto` và `redirect` được xử lý thông qua pipeline phân phối inbound. |
+| [RFC 5228](https://datatracker.ietf.org/doc/html/rfc5228) | Core Sieve, `encoded-character` | `keep`, `discard`, `stop`, các khối điều kiện, và các kiểm tra cơ bản `address`, `header`, `exists`, `size`, và các kiểm tra boolean. `fileinto` lưu thư vào từng thư mục được chỉ định. `redirect` không cần `require` và được gửi qua hàng đợi outbound, hàng đợi này chỉ nhận thư có From là bí danh, trên tên miền có SMTP outbound; mọi thư khác được giữ lại trong hộp thư đến. `${hex:...}` và `${unicode:...}` được giải mã khi `encoded-character` được yêu cầu. |
 | [RFC 5429](https://datatracker.ietf.org/doc/html/rfc5429) | `reject`, `ereject` | Từ chối SMTP với thông điệp được cung cấp. |
-| [RFC 5230](https://datatracker.ietf.org/doc/html/rfc5230) | `vacation` | Các phản hồi vacation được đưa vào hàng đợi với cơ chế kiểm soát lạm dụng. |
+| [RFC 5230](https://datatracker.ietf.org/doc/html/rfc5230) | `vacation` | Các phản hồi vacation được đưa vào hàng đợi với cơ chế kiểm soát lạm dụng, tối đa một lần cho mỗi người gửi trong mỗi khoảng `:days` (mặc định 7 ngày). |
 | [RFC 6131](https://datatracker.ietf.org/doc/html/rfc6131) | `vacation-seconds` | Khoảng `:seconds` điều khiển TTL của phản hồi vacation. |
 | [RFC 5232](https://datatracker.ietf.org/doc/html/rfc5232) | `imap4flags` | Các flag được áp dụng khi lưu vào hộp thư. |
 | [RFC 5173](https://datatracker.ietf.org/doc/html/rfc5173) | `body` | So khớp nội dung thân thư. |
 | [RFC 5229](https://datatracker.ietf.org/doc/html/rfc5229) | `variables` | Mở rộng biến và các modifier được hỗ trợ. |
 | [RFC 5231](https://datatracker.ietf.org/doc/html/rfc5231) | `relational` | So sánh `:count` và `:value`. |
-| [RFC 4790](https://datatracker.ietf.org/doc/html/rfc4790) | Comparators | `i;ascii-casemap` và `i;octet`. `i;ascii-numeric` không được quảng bá. |
+| [RFC 4790](https://datatracker.ietf.org/doc/html/rfc4790) | Comparators | `i;ascii-casemap`, `i;octet`, và `i;ascii-numeric`. |
 | [RFC 3894](https://datatracker.ietf.org/doc/html/rfc3894) | `copy` | `:copy` trên `fileinto` và `redirect`. |
-| [RFC 5293](https://datatracker.ietf.org/doc/html/rfc5293) | `editheader` | Thay đổi header trước khi lưu, ngoại trừ các trường xác thực và điều hướng giao hàng được bảo vệ. |
+| [RFC 5293](https://datatracker.ietf.org/doc/html/rfc5293) | `editheader` | Thay đổi header trước khi lưu, các kiểm tra sau đó sẽ thấy, ngoại trừ các trường xác thực và điều hướng giao hàng được bảo vệ, `Received` và `Auto-Submitted`. |
 | [RFC 5260](https://datatracker.ietf.org/doc/html/rfc5260) | `date`, `index` | Kiểm tra `currentdate` và header-date, cùng với `:index` và `:last`. |
-| [RFC 5435](https://datatracker.ietf.org/doc/html/rfc5435) | `enotify` | Thông báo `mailto:` với giới hạn tần suất. Khai báo kế thừa `require "notify"` được chấp nhận như một bí danh, nhưng `enotify` được quảng bá. |
+| [RFC 5435](https://datatracker.ietf.org/doc/html/rfc5435) | `enotify` | Thông báo `mailto:` với giới hạn tần suất, không bao giờ cho thư tự động. Khai báo kế thừa `require "notify"` được chấp nhận như một bí danh, nhưng `enotify` được quảng bá. |
 | [RFC 5183](https://datatracker.ietf.org/doc/html/rfc5183) | `environment` | Các giá trị môi trường phiên được hỗ trợ. |
-| [RFC 5490](https://datatracker.ietf.org/doc/html/rfc5490) | `mailbox` | Chỉ `fileinto :create`. Các truy vấn `mailboxexists` trực tiếp không được hỗ trợ. |
-| [RFC 8579](https://datatracker.ietf.org/doc/html/rfc8579) | `special-use` | Ánh xạ thư mục chuẩn `:specialuse` và kiểm tra `specialuse_exists` có kết quả xác định. |
+| [RFC 5490](https://datatracker.ietf.org/doc/html/rfc5490) | `mailbox` | `fileinto :create` và `mailboxexists`, dùng để tra cứu các thư mục của bí danh. |
+| [RFC 8579](https://datatracker.ietf.org/doc/html/rfc8579) | `special-use` | `fileinto :specialuse` lưu vào thư mục có mục đích sử dụng đặc biệt đó, và `specialuse_exists` tra cứu các thư mục của bí danh. |
 | [RFC 7352](https://datatracker.ietf.org/doc/html/rfc7352) | `duplicate` | Phát hiện gửi trùng lặp dựa trên Redis. |
-| [RFC 5463](https://datatracker.ietf.org/doc/html/rfc5463) | `ihave` | Kiểm tra liệu một capability được quảng bá có khả dụng hay không. |
+| [RFC 5463](https://datatracker.ietf.org/doc/html/rfc5463) | `ihave` | Kiểm tra liệu một capability được quảng bá có khả dụng hay không, cùng với lệnh `error`. |
 | [RFC 5233](https://datatracker.ietf.org/doc/html/rfc5233) | `subaddress` | Các phần địa chỉ `:user` và `:detail`. |
 | [draft-ietf-sieve-regex](https://datatracker.ietf.org/doc/html/draft-ietf-sieve-regex) | `regex` | So khớp biểu thức chính quy sử dụng [RE2](https://github.com/uhop/node-re2). |
-| [RFC 5703](https://datatracker.ietf.org/doc/html/rfc5703) | `mime` | Kiểm tra MIME và `foreverypart`, `break`, `extracttext`, và `replace`. `enclose` bị từ chối vì không có triển khai chuyển phát an toàn. |
+| [RFC 5703](https://datatracker.ietf.org/doc/html/rfc5703) | `foreverypart`, `extracttext`, `replace`, `mime` | Kiểm tra MIME và `foreverypart`, `break`, `extracttext`, và `replace`. `mime` cũng bật các lệnh này, như các script cũ mong đợi. `enclose` bị từ chối vì không có triển khai chuyển phát an toàn. |
 
 #### Các extension Sieve được hỗ trợ {#supported-sieve-extensions}
 
 | Phần mở rộng | Hành vi | Giao hàng hoặc thực thi |
 | --- | --- | --- |
-| `fileinto` | Ghi một tin nhắn vào một thư mục. | Lưu trong thư mục IMAP đã chọn. `fileinto :create` yêu cầu `mailbox`. |
+| `fileinto` | Ghi một tin nhắn vào một thư mục. | Lưu trong thư mục IMAP đã chọn. `fileinto :create` và `mailboxexists` yêu cầu `mailbox`. |
 | `copy` | Giữ bản gốc của lần giao trong khi thêm `fileinto` hoặc `redirect`. | Được áp dụng bởi pipeline giao hàng. |
-| `redirect` | Gửi một bản sao hoặc giao thay thế tới người nhận khác. | Được xếp vào hàng qua đường đi outbound bình thường, chịu chính sách miền, kiểm tra danh sách chặn, và giới hạn tần suất. |
+| `redirect` | Gửi thư tới người nhận khác. | Được xếp vào hàng qua đường đi outbound bình thường đối với thư có From là bí danh, trên tên miền có SMTP outbound, chịu chính sách miền, kiểm tra danh sách chặn, và giới hạn tần suất. Mọi thư khác được giữ lại trong hộp thư đến. |
 | `reject` / `ereject` | Từ chối một tin nhắn với lỗi SMTP. | Trả lại qua đường dẫn giao hàng MX. |
 | `vacation` / `vacation-seconds` | Gửi phản hồi tự động. | Được đưa vào hàng đợi với giới hạn tần suất theo người nhận và theo khoảng thời gian. |
 | `imap4flags` | Đặt hoặc kiểm tra cờ IMAP. | Áp dụng khi tin nhắn được lưu. |
-| `envelope`, `body`, `date`, `index`, `regex`, `subaddress`, `relational` | Kiểm tra dữ liệu tin nhắn và phong bì. | Được đánh giá bởi engine Sieve. |
+| `envelope`, `body`, `date`, `index`, `regex`, `subaddress`, `relational`, `comparator-i;ascii-numeric` | Kiểm tra dữ liệu tin nhắn và phong bì. | Được đánh giá bởi engine Sieve. |
 | `variables`, `duplicate`, `ihave` | Lưu giá trị, phát hiện trùng lặp, và kiểm tra capability. | Các biến là cục bộ trong script; trạng thái trùng lặp sử dụng Redis. |
-| `editheader` | Thêm hoặc xóa các header không được bảo vệ. | Các header xác thực và điều hướng giao hàng không thể bị sửa đổi. |
+| `editheader` | Thêm hoặc xóa các header không được bảo vệ. | Các header xác thực và điều hướng giao hàng, `Received` và `Auto-Submitted` không thể bị sửa đổi. |
 | `enotify` | Gửi thông báo sử dụng `mailto:`. | Được xếp vào hàng với giới hạn tần suất thông báo. |
 | `environment` | Đọc dữ liệu môi trường phiên được hỗ trợ. | Được đánh giá bởi engine Sieve. |
-| `special-use` | Xử lý các thư mục dùng chuẩn. | Ánh xạ thư mục chuẩn và cung cấp kết quả `specialuse_exists` xác định. |
-| `mime` | Kiểm tra và thay đổi các phần MIME được hỗ trợ. | Yêu cầu capability chung `mime`. Các lệnh riêng lẻ theo RFC 5703 không được quảng bá riêng biệt. |
+| `special-use` | Xử lý các thư mục dùng chuẩn. | Lưu vào và tra cứu các thư mục dùng đặc biệt của bí danh. |
+| `foreverypart`, `extracttext`, `replace`, `mime` | Kiểm tra và thay đổi các phần MIME được hỗ trợ. | Được đánh giá bởi engine Sieve. `mime` cũng bật cả ba lệnh, như các script cũ mong đợi. |
 
 #### Các tính năng Sieve không được hỗ trợ {#sieve-extensions-not-supported}
 
@@ -1156,11 +1156,9 @@ Những tính năng này bị từ chối trước khi lưu trữ, kích hoạt,
 | Tính năng | RFC hoặc đặc tả | Lý do |
 | --- | --- | --- |
 | `enclose` | [RFC 5703](https://datatracker.ietf.org/doc/html/rfc5703) | Việc tạo một thông điệp mới bao bọc thông điệp gốc không được triển khai an toàn đầu-cuối. |
-| `mailboxexists` | [RFC 5490](https://datatracker.ietf.org/doc/html/rfc5490) | Các truy vấn trạng thái hộp thư IMAP trực tiếp không khả dụng. |
 | `include` | [RFC 6609](https://datatracker.ietf.org/doc/html/rfc6609) | Lưu trữ script toàn cục và script được include không khả dụng. |
 | `mboxmetadata` / `servermetadata` | [RFC 5490](https://datatracker.ietf.org/doc/html/rfc5490) | Tích hợp IMAP METADATA không khả dụng. |
 | `fcc` | [RFC 8580](https://datatracker.ietf.org/doc/html/rfc8580) | Tích hợp lưu bản sao thư gửi không khả dụng. |
-| `encoded-character` | [RFC 5228](https://datatracker.ietf.org/doc/html/rfc5228) | Cú pháp `${hex:...}` chưa được triển khai. |
 | External lists | [RFC 6134](https://datatracker.ietf.org/doc/html/rfc6134) | `valid_ext_list` và các thao tác danh sách ngoài khác không khả dụng. |
 
 #### Luồng xử lý Sieve {#sieve-processing-flow}
@@ -1197,7 +1195,7 @@ sequenceDiagram
 
 #### Tính năng bảo mật {#security-features}
 
-Forward Email xác thực toàn bộ script trước khi nó được lưu, kích hoạt, hoặc thực thi. Hệ thống từ chối các capability không khai báo và không có sẵn, giới hạn kích thước script và số lần lặp các phần MIME, sử dụng [RE2](https://github.com/uhop/node-re2) cho việc so khớp biểu thức chính quy, giới hạn tần suất cho redirect, phản hồi vacation và thông báo, từ chối các đích redirect không an toàn, và ngăn `editheader` thay đổi các header xác thực hoặc điều hướng giao hàng. Trạng thái giới hạn tần suất cho redirect và vacation được lưu trong [Redis](https://github.com/redis/redis), trong khi thư đã giao được lưu bằng [SQLite](https://github.com/sqlite/sqlite).
+Forward Email xác thực toàn bộ script trước khi nó được lưu, kích hoạt, hoặc thực thi. Hệ thống từ chối các capability không khai báo và không có sẵn, giới hạn kích thước script và số lần lặp các phần MIME, sử dụng [RE2](https://github.com/uhop/node-re2) cho việc so khớp biểu thức chính quy, giới hạn tần suất cho redirect, phản hồi vacation và thông báo, từ chối các đích redirect không an toàn, và ngăn `editheader` thay đổi các header xác thực hoặc điều hướng giao hàng, `Received` hoặc `Auto-Submitted`. Script chạy quá lâu hoặc tạo quá nhiều hành động, cờ hoặc biến sẽ bị dừng, và thư được giữ lại. Trạng thái giới hạn tần suất cho redirect và vacation được lưu trong [Redis](https://github.com/redis/redis), trong khi thư đã giao được lưu bằng [SQLite](https://github.com/sqlite/sqlite).
 
 #### Ví dụ script Sieve {#example-sieve-scripts}
 
@@ -1233,8 +1231,6 @@ if header :contains "X-Spam-Status" "Yes" {
 **Chuyển tiếp hóa đơn:**
 
 ```sieve
-require ["redirect"];
-
 if header :contains "Subject" "invoice" {
     redirect "recipient@example.com";
 }
@@ -1260,7 +1256,7 @@ Forward Email cung cấp hỗ trợ đầy đủ giao thức ManageSieve để q
 | **Máy chủ**             | `imap.forwardemail.net`  |
 | **Cổng (STARTTLS)**     | `2190` (khuyến nghị)     |
 | **Cổng (TLS ẩn danh)**  | `4190`                   |
-| **Xác thực**            | PLAIN (qua TLS)          |
+| **Xác thực**            | PLAIN và LOGIN (qua TLS) |
 
 > **Lưu ý:** Cổng 2190 sử dụng STARTTLS (nâng cấp từ kết nối thường sang TLS) và tương thích với hầu hết các client ManageSieve bao gồm [sieve-connect](https://github.com/philpennock/sieve-connect). Cổng 4190 sử dụng TLS ẩn danh (TLS ngay từ đầu kết nối) cho các client hỗ trợ.
 
@@ -1268,7 +1264,8 @@ Forward Email cung cấp hỗ trợ đầy đủ giao thức ManageSieve để q
 
 | Lệnh           | Mô tả                                  |
 | -------------- | ------------------------------------- |
-| `AUTHENTICATE` | Xác thực bằng cơ chế PLAIN             |
+| `AUTHENTICATE` | Xác thực bằng cơ chế PLAIN hoặc LOGIN  |
+| `STARTTLS`     | Nâng cấp kết nối lên TLS trên cổng 2190 |
 | `CAPABILITY`   | Liệt kê khả năng và phần mở rộng máy chủ |
 | `HAVESPACE`    | Kiểm tra xem có thể lưu kịch bản không |
 | `PUTSCRIPT`    | Tải lên kịch bản mới                   |

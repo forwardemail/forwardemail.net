@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
+const { Buffer } = require('node:buffer');
 const crypto = require('node:crypto');
 
 const test = require('ava');
@@ -10,7 +11,7 @@ const falso = require('@ngneat/falso');
 
 const utils = require('../utils');
 const config = require('#config');
-const { Users } = require('#models');
+const { Emails, Users } = require('#models');
 
 test.before(utils.setupMongoose);
 test.after.always(utils.teardownMongoose);
@@ -104,3 +105,61 @@ test.serial(
     t.true(domainLiteral.body.table.includes(domain.name));
   }
 );
+
+//
+// A query an admin search refuses is named in the error, which is shown as
+// HTML (the error page, or a flash message): a link to the search could put
+// a form of the attacker's on the page, posting to an admin route.
+//
+test.serial('a refused admin query is shown escaped', async (t) => {
+  const { web } = t.context;
+  const payload =
+    '<form action=/en/admin/users method=POST><button>Retry</button></form>';
+  const mongodbQuery = JSON.stringify({ [`$${payload}`]: 1 });
+
+  for (const path of [
+    '/en/admin/users',
+    '/en/admin/domains',
+    '/en/admin/inquiries',
+    '/en/admin/payments',
+    '/en/admin/emails',
+    '/en/admin/logs'
+  ]) {
+    const page = await web
+      .get(path)
+      .query({ mongodb_query: mongodbQuery })
+      .set('Accept', 'text/html');
+    t.is(page.status, 400, `${path}`);
+    t.false(page.text.includes('<form action=/en/admin/users'), `${path}`);
+    t.true(page.text.includes('&lt;form'), `${path}`);
+
+    const json = await web
+      .get(path)
+      .query({ mongodb_query: mongodbQuery })
+      .set('Accept', 'application/json');
+    t.is(json.status, 400, `${path}`);
+    t.false(json.body.message.includes('<form'), `${path}`);
+  }
+});
+
+// (a raw message is a download, never a page shown on our own origin)
+test.serial('an email downloaded as .eml is an attachment', async (t) => {
+  const { web, user } = t.context;
+  const { insertedId } = await Emails.collection.insertOne({
+    user: user._id,
+    message: Buffer.from(
+      'From: a@example.com\r\nSubject: hi\r\n\r\n<b>hi</b>\r\n'
+    ),
+    messageId: `<${crypto.randomUUID()}@example.com>`,
+    created_at: new Date(),
+    updated_at: new Date()
+  });
+
+  const res = await web.get(`/en/admin/emails/${insertedId}.eml`);
+  t.is(res.status, 200);
+  t.regex(res.headers['content-type'], /^message\/rfc822/);
+  t.regex(
+    res.headers['content-disposition'],
+    new RegExp(`^attachment; filename="${insertedId}\\.eml"`)
+  );
+});

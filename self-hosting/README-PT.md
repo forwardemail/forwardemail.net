@@ -11,6 +11,8 @@ Esta seção documenta o fluxo de trabalho de CI/CD para a solução auto-hosped
 * [Processo de Implantação](#deployment-process)
   * [Instalação](#installation)
   * [Configuração do Docker Compose](#docker-compose-configuration)
+  * [Entrega para domínios hospedados no mesmo servidor](#delivery-to-domains-hosted-on-the-same-server)
+  * [Encerrar sessões quando o acesso ao Google ou GitHub é revogado](#ending-sessions-when-google-or-github-access-is-revoked)
 * [Recursos de manutenção](#maintenance-features)
   * [Atualizações Automáticas](#automatic-updates)
   * [Backup e restauração](#backup-and-restore)
@@ -122,6 +124,30 @@ O arquivo `docker-compose-self-hosted.yml` define todos os serviços necessário
 * **SQLite**: Banco de dados para armazenar e-mails
 
 Cada serviço usa a mesma imagem do Docker, mas com pontos de entrada diferentes, permitindo uma arquitetura modular e simplificando a manutenção.
+
+### Entrega para domínios hospedados no mesmo servidor {#delivery-to-domains-hosted-on-the-same-server}
+
+O e-mail de saída não é entregue a um servidor MX cujo endereço pertence ao próprio servidor. Quando um servidor hospeda vários domínios e os registros MX deles apontam para o seu endereço público, o e-mail de um desses domínios para outro é recusado.
+
+Para permitir, defina:
+
+```env
+SMTP_ALLOW_LOCAL_MX=true
+```
+
+O padrão é `false`, e a configuração só se aplica quando `SELF_HOSTED=true`. O e-mail continua nunca sendo entregue a endereços de loopback, privados, link-local ou de NAT de nível de operadora (CGNAT).
+
+### Encerrar sessões quando o acesso ao Google ou GitHub é revogado {#ending-sessions-when-google-or-github-access-is-revoked}
+
+Em uma instalação auto-hospedada, as sessões conectadas com o Google ou o GitHub não são verificadas com o provedor por padrão: revogar lá o acesso deste aplicativo não as desconecta, e elas continuam conectadas até expirarem.
+
+Para encerrá-las assim que o acesso for revogado, defina:
+
+```env
+AUTH_OAUTH_REVOCATION_CHECK=true
+```
+
+O provedor passa então a ser consultado em segundo plano, aproximadamente a cada 5 minutos (a cada minuto enquanto não responder). Uma falha no provedor não desconecta ninguém, nem o faz um token que o provedor nunca aceitou.
 
 ## Recursos de manutenção {#maintenance-features}
 

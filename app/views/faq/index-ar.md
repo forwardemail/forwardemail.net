@@ -2893,24 +2893,22 @@ Tasks.org هو مدير مهام مفتوح المصدر شهير يعمل بش�
 | الفئة | القدرات والسلوك |
 | --- | --- |
 | اللغة الأساسية | `keep`, `discard`, `stop`, الكتل الشرطية، والاختبارات الأساسية `address`, `header`, `exists`, `size`, واختبارات القيم البوليانية. |
-| التسليم | `fileinto`, `copy`, `redirect`, `mailbox` لاستخدام `fileinto :create`، و`special-use` لربط المجلدات القياسية `:specialuse` و`specialuse_exists`. |
-| الاختبارات والمقارنات | `envelope`, `body`, `date`, `index`, `regex`, `subaddress`, `relational`, `i;ascii-casemap`, و`i;octet`. |
-| الحالة والمتغيرات | `variables`, `imap4flags`, `duplicate`, و`ihave`. |
+| التسليم | `fileinto`, `copy`, `redirect`, `mailbox` لاستخدام `fileinto :create` و`mailboxexists`، و`special-use` لاستخدام `fileinto :specialuse` و`specialuse_exists`. |
+| الاختبارات والمقارنات | `envelope`, `body`, `date`, `index`, `regex`, `subaddress`, `relational`, `i;ascii-casemap`, `i;octet`, و`i;ascii-numeric`. |
+| الحالة والمتغيرات | `variables`, `encoded-character`, `imap4flags`, `duplicate`, و`ihave`. |
 | الإجراءات والاستجابات | `reject`, `ereject`, `vacation`, `vacation-seconds`, و`enotify` باستخدام `mailto:`. يتم قبول التصريح القديم `require "notify"` كاسم مرادف إدخالي لـ `enotify`، لكن `enotify` هي القدرة المعلنة. |
-| معالجة الرسائل | `editheader`, `environment`, و`mime`، بما في ذلك `foreverypart`, `break`, `extracttext`, و`replace`. |
+| معالجة الرسائل | `editheader`, `environment`, `foreverypart` (مع `break`)، `extracttext`, `replace`, و`mime` الذي يفعّل هذه الأوامر الثلاثة أيضًا. |
 
-يتم تسليم `redirect` عبر قائمة الإرسال العادية. يخضع لسياسة النطاق المعاد التوجيه المكوّنة، وفحوصات قوائم المنع، وحدود المعدل. لا يمكن لـ `editheader` تعديل رؤوس المصادقة أو رؤوس توجيه التسليم المحمية.
+لا يحتاج `redirect` إلى `require`. يُرسل عبر قائمة الإرسال العادية، التي لا تقبل إلا رسالة يكون مرسلها (From) هو اسمك المستعار، على نطاق يدعم SMTP الصادر؛ وتُحفظ أي رسالة أخرى في صندوق الوارد الخاص بك. تخضع عمليات إعادة التوجيه لسياسة النطاق المعاد التوجيه المكوّنة، وفحوصات قوائم المنع، وحدود المعدل. لا يمكن لـ `editheader` تعديل رؤوس المصادقة أو رؤوس توجيه التسليم المحمية، ولا `Received` أو `Auto-Submitted`.
 
 #### الميزات غير المدعومة
 
 | الميزة | السبب |
 | --- | --- |
 | `enclose` | إنشاء رسالة جديدة تضم الرسالة الأصلية غير مُنفَّذ. |
-| `mailboxexists` | لا يقوم Forward Email بإجراء استعلامات حالة صندوق البريد IMAP مباشرة. يظل `fileinto :create` متاحًا عبر `mailbox`. |
 | `include` | لا يتوفر تخزين السكربتات العامة والمدرجة. |
 | `mboxmetadata` / `servermetadata` | لا يتوفر تكامل IMAP METADATA. |
 | `fcc` | لا يتوفر تكامل حفظ الرسائل المرسلة. |
-| `encoded-character` | ليست هناك تنفيذ لصياغة `${hex:...}`. |
 | External lists | `valid_ext_list` وعمليات القوائم الخارجية الأخرى غير متاحة. |
 
 #### أمثلة على سكربتات Sieve
@@ -2947,8 +2945,6 @@ if address :is "from" "boss@example.com" {
 **إعادة توجيه رسالة:**
 
 ```sieve
-require ["redirect"];
-
 if header :contains "Subject" "invoice" {
     redirect "recipient@example.com";
 }
