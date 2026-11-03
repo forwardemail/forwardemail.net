@@ -2586,6 +2586,18 @@ async function parsePayload(data, ws) {
                     object: 'message'
                   }
                 });
+
+                //
+                // ask an IMAP server with a session for this alias to sync the
+                // temporary mailbox now (this process has no password to do
+                // it), so clients in IDLE get EXISTS right away instead of on
+                // their next login (see `sqlite_sync_request` in imap-server)
+                //
+                this.client
+                  .publish('sqlite_sync_request', alias.id)
+                  .catch((err) =>
+                    logger.fatal(err, { session, resolver: this.resolver })
+                  );
               }
 
               // Release per-alias raw buffer for GC (iMIP below uses payload.raw)

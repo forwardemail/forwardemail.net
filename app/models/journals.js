@@ -38,8 +38,7 @@ const Journals = new mongoose.Schema(
     mailbox: {
       type: mongoose.Schema.ObjectId,
       ref: Mailboxes,
-      required: true,
-      index: true
+      required: true
     },
     message: {
       type: mongoose.Schema.ObjectId,
@@ -59,8 +58,7 @@ const Journals = new mongoose.Schema(
       type: Date
     },
     modseq: {
-      type: Number,
-      index: true
+      type: Number
     },
     command: {
       type: String,
@@ -93,6 +91,13 @@ const Journals = new mongoose.Schema(
     }
   }
 );
+
+//
+// Every notification makes each IMAP session read its mailbox changes with
+// `{ mailbox, modseq: { $gt } }` (see `getUpdates` in helpers/imap-notifier.js)
+// <https://github.com/nodemailer/wildduck/blob/master/indexes.yaml>
+//
+Journals.index({ mailbox: 1, modseq: 1 });
 
 Journals.plugin(mongooseCommonPlugin, {
   object: 'journal',

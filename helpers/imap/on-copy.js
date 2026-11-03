@@ -66,9 +66,11 @@ async function onCopy(connection, mailboxId, update, session, fn) {
       if (Array.isArray(entries) && entries.length > 0) {
         this.server.notifier
           .addEntries(this, session, targetMailbox._id, entries)
-          .then(() =>
-            this.server.notifier.fire(session.user.alias_id, update.destination)
-          )
+          //
+          // (no payload: an event with a payload is an action such as LOGOUT,
+          // so sessions would never read the new journal entries for EXISTS)
+          //
+          .then(() => this.server.notifier.fire(session.user.alias_id))
           .catch((err) =>
             this.logger.fatal(err, {
               connection,

@@ -1072,3 +1072,105 @@ test.serial(
     t.true(pttl > 0 && pttl <= ms('1m'));
   }
 );
+
+test.serial(
+  'a retry while an earlier attempt is still storing the message is deferred',
+  async (t) => {
+    const ctx = await setup(t);
+
+    const imap = new IMAP(
+      {
+        client: t.context.client,
+        subscriber: t.context.subscriber,
+        wsp: t.context.wsp
+      },
+      false
+    );
+    t.context.imap = imap;
+    const imapPort = await getPort();
+    await imap.listen(imapPort);
+
+    const box = await t.context.aliasFactory
+      .withState({
+        name: 'box',
+        user: ctx.admin._id,
+        domain: ctx.domain._id,
+        recipients: [],
+        has_imap: true
+      })
+      .create();
+    const pass = await box.createToken();
+    await box.save();
+
+    async function countInbox() {
+      const client = new ImapFlow({
+        host: IP_ADDRESS,
+        port: imapPort,
+        secure: false,
+        auth: { user: `box@${ctx.domain.name}`, pass },
+        tls,
+        logger: false
+      });
+      await client.connect();
+      try {
+        const lock = await client.getMailboxLock('INBOX');
+        try {
+          return client.mailbox.exists;
+        } finally {
+          lock.release();
+        }
+      } finally {
+        await client.logout();
+      }
+    }
+
+    // (logging in creates the mailbox)
+    t.is(await countInbox(), 0);
+
+    // the first attempt is slow to store the message and then times out
+    class TimeoutError extends Error {}
+    const { request } = t.context.wsp;
+    let release;
+    const held = new Promise((resolve) => {
+      release = resolve;
+    });
+    let holding = false;
+    t.context.wsp.request = async function (data, ...args) {
+      if (data.action === 'tmp' && !holding) {
+        holding = true;
+        await held;
+        throw new TimeoutError('Promise timed out after 60000 milliseconds');
+      }
+
+      return request.call(this, data, ...args);
+    };
+
+    t.teardown(() => {
+      t.context.wsp.request = request;
+    });
+
+    const id = randomUUID();
+    const first = ctx.send(['box'], id);
+    await pWaitFor(() => holding, { timeout: ms('30s') });
+
+    // meanwhile the sender retries (e.g. it gave up waiting): the retry is
+    // deferred, not accepted, since the first attempt can still fail
+    await ctx.clearGreylist();
+    const retry = await t.throwsAsync(ctx.send(['box'], id));
+    t.is(retry.responseCode, 421);
+
+    release();
+    const err = await t.throwsAsync(first);
+    t.is(err.responseCode, 421);
+
+    // the next retry stores the message
+    await ctx.clearGreylist();
+    const info = await ctx.send(['box'], id);
+    t.deepEqual(info.rejected, []);
+    await pWaitFor(async () => (await countInbox()) === 1, {
+      timeout: ms('30s'),
+      interval: ms('1s')
+    });
+    t.is(await countInbox(), 1);
+  }
+);

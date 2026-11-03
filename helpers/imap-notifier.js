@@ -329,25 +329,21 @@ class IMAPNotifier extends EventEmitter {
         entries
       });
 
-      // <https://mongodb.github.io/node-mongodb-native/4.9/interfaces/BulkResult.html>
+      //
+      // The documents are built above (`_id`, `id` and timestamps included),
+      // so they are inserted as they are in one command, rather than saved
+      // and validated one by one (e.g. one per message of an EXPUNGE).
+      //
+      // Journal entries are short-lived change notifications (3h TTL) read
+      // back from the primary, so waiting for a majority ack only delays
+      // every IDLE update (WildDuck writes them with `w: 1` as well).
+      //
       try {
-        if (docs.length <= 500) {
-          await conn.models.Journals.create(docs);
-        } else {
-          const bulkResult = await conn.models.Journals.bulkWrite(
-            docs.map((doc) => ({
-              insertOne: {
-                document: doc
-              }
-            })),
-            { ordered: false, skipValidation: true }
-          );
-          if (bulkResult?.result?.ok !== 1) {
-            const err = new TypeError('Bulk write errors');
-            err.bulkResult = bulkResult;
-            throw err;
-          }
-        }
+        await conn.models.Journals.insertMany(docs, {
+          ordered: false,
+          lean: true,
+          writeConcern: { w: 1 }
+        });
       } catch (err) {
         err.isCodeBug = true;
         err.docs = docs;

@@ -169,3 +169,40 @@ test('setupPragma > keeps the durability settings of a live mailbox', async (t) 
     } catch {}
   }
 });
+
+//
+// The optimize run on open analyzes tables whose indexes have no statistics
+// (e.g. an index just added to every mailbox), and an unlimited ANALYZE of a
+// large mailbox blocked the open, and every request waiting on it, for
+// seconds; it samples at most 400 rows per index instead.
+//
+test('setupPragma > bounds the ANALYZE that optimize runs on open', async (t) => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'setup-pragma-'));
+  t.teardown(() => fs.rmSync(dir, { recursive: true, force: true }));
+  const file = path.join(dir, 'live.sqlite');
+
+  let db = new Database(file);
+  await setupPragma(db, session('password'));
+  db.exec('CREATE TABLE t (id INTEGER PRIMARY KEY, value TEXT)');
+  const insert = db.prepare('INSERT INTO t (value) VALUES (?)');
+  db.transaction(() => {
+    for (let i = 0; i < 20_000; i++) insert.run(`value-${i % 100}`);
+  })();
+  // a new index without statistics
+  db.exec('CREATE INDEX t_value ON t (value)');
+  db.close();
+
+  db = new Database(file);
+  try {
+    await setupPragma(db, session('password'));
+    t.is(db.pragma('analysis_limit', { simple: true }), 400);
+    // the index was analyzed on open (from a sample of the table)
+    const stat = db
+      .prepare("SELECT stat FROM sqlite_stat1 WHERE idx = 't_value'")
+      .pluck()
+      .get();
+    t.truthy(stat);
+  } finally {
+    db.close();
+  }
+});

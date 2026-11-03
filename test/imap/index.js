@@ -2113,6 +2113,65 @@ test
   t.is(msg.subject, subject);
 });
 
+//
+// Syncs of the temporary mailbox run one at a time per alias, across
+// processes: one is asked for on each delivery by every IMAP process with a
+// session for the alias, and two at once could both append a message before
+// either removed it.
+//
+test('a sync of the temporary mailbox waits for the one running', async (t) => {
+  // (no open handle for the mailbox, so delivery uses the temporary mailbox)
+  await pWaitFor(
+    () => t.context.sqlite.databaseMap.evictAndClose(t.context.alias.id),
+    { timeout: ms('10s') }
+  );
+
+  // another process is syncing the alias
+  const key = `sync_temporary_mailbox:${t.context.alias.id}`;
+  await t.context.client.set(key, 'another-process', 'PX', ms('1m'));
+
+  const subject = randomUUID();
+  const result = await t.context.wsp.request(
+    {
+      action: 'tmp',
+      aliases: [
+        {
+          address: `${t.context.alias.name}@${t.context.domain.name}`,
+          id: t.context.alias.id
+        }
+      ],
+      remoteAddress: IP_ADDRESS,
+      date: new Date().toISOString(),
+      raw: Buffer.from(
+        [
+          `Date: ${new Date().toISOString()}`,
+          'To: foo@foo.com',
+          'From: beep@beep.com',
+          `Subject: ${subject}`,
+          '',
+          'test'
+        ].join('\r\n')
+      )
+    },
+    0
+  );
+  t.deepEqual(result, {});
+
+  const count = () =>
+    Messages.countDocuments(t.context.imap, t.context.session, { subject });
+  const sync = t.context.wsp.request(
+    { action: 'sync', session: t.context.session },
+    0
+  );
+  await setTimeout(ms('2s'));
+  t.is(await count(), 0);
+
+  // the other sync ends, and this one runs
+  await t.context.client.del(key);
+  await sync;
+  t.is(await count(), 1);
+});
+
 test('large mailbox', async (t) => {
   const { imapFlow, alias, domain } = t.context;
 
@@ -5650,6 +5709,45 @@ test('an existing mailbox at auto_vacuum=NONE is converted on open', async (t) =
   t.teardown(() => db.open && db.close());
   t.is(db.pragma('auto_vacuum', { simple: true }), 1);
   t.is(db.pragma('integrity_check', { simple: true }), 'ok');
+});
+
+//
+// FETCH CHANGEDSINCE (CONDSTORE/QRESYNC clients on every sync) finds the
+// changed messages in the (mailbox, uid, modseq) index instead of reading
+// every row of the mailbox, and APPEND and STORE no longer update indexes on
+// the compressed flags and labels, which are never queried in SQL.
+//
+test('mailbox indexes serve CHANGEDSINCE and skip flags and labels', async (t) => {
+  const { sqlite, alias, session } = t.context;
+  const db = await getDatabase(sqlite, alias, session);
+  const getIndexes = () =>
+    new Set(
+      db
+        .prepare(
+          "SELECT name FROM sqlite_master WHERE type = 'index' AND tbl_name = 'Messages'"
+        )
+        .pluck()
+        .all()
+    );
+  // (built in the background after the mailbox is opened)
+  await pWaitFor(() => getIndexes().has('Messages_mailbox_uid_modseq'), {
+    timeout: ms('10s')
+  });
+
+  const indexes = getIndexes();
+  t.false(indexes.has('Messages_mailbox_uid'));
+  t.false(indexes.has('Messages_flags'));
+  t.false(indexes.has('Messages_labels'));
+
+  const plan = db
+    .prepare(
+      'EXPLAIN QUERY PLAN SELECT "_id", "uid", "modseq" FROM "Messages" WHERE "mailbox" = ? AND "modseq" > ? ORDER BY "uid"'
+    )
+    .all('mailbox', 1)
+    .map((row) => row.detail)
+    .join('\n');
+  t.regex(plan, /USING (COVERING )?INDEX Messages_mailbox_uid_modseq /);
+  t.notRegex(plan, /TEMP B-TREE/);
 });
 
 const onAppendPromise = pify(onAppend, { multiArgs: true });

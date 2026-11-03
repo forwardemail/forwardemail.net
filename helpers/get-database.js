@@ -917,11 +917,25 @@ async function getDatabase(
           setImmediate(() => {
             try {
               if (!_dbForIdx.open) return;
+              //
+              // (mailbox, uid, modseq) serves everything (mailbox, uid) did,
+              // and lets FETCH CHANGEDSINCE (`modseq > ? ORDER BY uid`) skip
+              // unchanged messages without reading each row of the mailbox
+              //
               _dbForIdx
                 .prepare(
-                  'CREATE INDEX IF NOT EXISTS "Messages_mailbox_uid" ON "Messages" ("mailbox", "uid")'
+                  'CREATE INDEX IF NOT EXISTS "Messages_mailbox_uid_modseq" ON "Messages" ("mailbox", "uid", "modseq")'
                 )
                 .run();
+              _dbForIdx
+                .prepare('DROP INDEX IF EXISTS "Messages_mailbox_uid"')
+                .run();
+              //
+              // flags and labels are stored compressed and never queried in
+              // SQL, so their indexes only slowed down every APPEND and STORE
+              //
+              _dbForIdx.prepare('DROP INDEX IF EXISTS "Messages_flags"').run();
+              _dbForIdx.prepare('DROP INDEX IF EXISTS "Messages_labels"').run();
               _dbForIdx
                 .prepare(
                   'CREATE INDEX IF NOT EXISTS "Messages_mailbox_unseen" ON "Messages" ("mailbox", "unseen")'

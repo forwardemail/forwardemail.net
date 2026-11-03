@@ -79,10 +79,18 @@ function connect(port) {
     return read(new RegExp(`${id} (OK|NO|BAD)[^\\r\\n]*\\r\\n`));
   }
 
+  // start IDLE and resolve once the server is idling
+  async function idle() {
+    socket.write(`A${++tag} IDLE\r\n`);
+    await read(/\+ idling\r\n/);
+  }
+
   return {
     greeting: () => read(/\* OK[^\r\n]*\r\n/),
     command,
     append,
+    idle,
+    read,
     close: () => socket.destroy()
   };
 }
@@ -498,4 +506,51 @@ test('a deleted Trash folder that is created again is published', async (t) => {
   );
   const trash = await getMailbox(t, 'Trash');
   t.like(capture.events[1], { path: 'Trash', mailbox: trash._id.toString() });
+});
+
+//
+// Clients in IDLE are told about new messages right away (RFC 2177), not on
+// their next command or login.
+//
+
+test('a message stored in the temporary mailbox reaches a client in IDLE', async (t) => {
+  const imap = await t.context.connect();
+  await imap.command('SELECT INBOX');
+  await imap.idle();
+
+  // the SQLite server has no open handle for the mailbox (e.g. it was idle
+  // for a while, or delivery reached another SQLite worker), so the message
+  // goes to the temporary mailbox
+  await pWaitFor(
+    () => t.context.sqlite.databaseMap.evictAndClose(t.context.alias.id),
+    { timeout: ms('10s') }
+  );
+  const result = await t.context.wsp.request(
+    {
+      action: 'tmp',
+      aliases: [{ address: t.context.username, id: t.context.alias.id }],
+      remoteAddress: IP_ADDRESS,
+      date: new Date().toISOString(),
+      raw: Buffer.from(rfc822('delivered'))
+    },
+    0
+  );
+  t.deepEqual(result, {});
+
+  t.regex(await imap.read(/\* 1 EXISTS\r\n/), /\* 1 EXISTS/);
+});
+
+test('a message copied into a mailbox reaches a client in IDLE on it', async (t) => {
+  const watcher = await t.context.connect();
+  await watcher.command('SELECT Archive');
+  await watcher.idle();
+
+  const imap = await t.context.connect();
+  await imap.append('INBOX', rfc822('copied'));
+  await imap.command('SELECT INBOX');
+  // (past the notifier's debounce, so only the COPY can wake the watcher)
+  await delay(1500);
+  await imap.command('UID COPY 1 Archive');
+
+  t.regex(await watcher.read(/\* 1 EXISTS\r\n/), /\* 1 EXISTS/);
 });

@@ -12,6 +12,7 @@
 //
 
 const { Buffer } = require('node:buffer');
+const net = require('node:net');
 
 const Axe = require('axe');
 const bytes = require('@forwardemail/bytes');
@@ -27,10 +28,15 @@ const utils = require('../utils');
 const SQLite = require('../../sqlite-server');
 const IMAP = require('../../imap-server');
 
+const Messages = require('#models/messages');
 const config = require('#config');
 const createWebSocketAsPromised = require('#helpers/create-websocket-as-promised');
 const env = require('#config/env');
 const { encrypt } = require('#helpers/encrypt-decrypt');
+const {
+  prepareQuery,
+  syncConvertResult
+} = require('#helpers/mongoose-to-sqlite');
 
 // dynamically import get-port
 let getPort;
@@ -207,11 +213,9 @@ test.afterEach.always(async (t) => {
   } catch {}
 });
 
-test('a streamed FETCH reaches the requesting process only', async (t) => {
-  t.timeout(ms('5m'));
-  const { imapFlow, alias, domain, sqlite } = t.context;
-
-  // enough mail for the FETCH response to be streamed in at least one batch
+// enough mail for the FETCH response to be streamed in at least one batch
+async function appendStreamedMail(t) {
+  const { imapFlow, alias, domain } = t.context;
   const bodySize = Math.min(
     Math.floor(bytes(env.SMTP_MESSAGE_MAX_SIZE) * 0.5),
     300 * 1024
@@ -229,6 +233,14 @@ Content-Transfer-Encoding: 7bit
 ${String(i % 10).repeat(bodySize)}`.trim();
     await imapFlow.append('INBOX', Buffer.from(raw), [], new Date());
   }
+
+  return { bodySize, messageCount };
+}
+
+test('a streamed FETCH reaches the requesting process only', async (t) => {
+  t.timeout(ms('5m'));
+  const { imapFlow, sqlite } = t.context;
+  const { bodySize, messageCount } = await appendStreamedMail(t);
 
   // count the batches the SQLite server streams for this FETCH
   let streamed = 0;
@@ -266,4 +278,124 @@ ${String(i % 10).repeat(bodySize)}`.trim();
   const download = await imapFlow.download('1', undefined, { uid: true });
   const content = await getStream(download.content);
   t.true(content.length > bodySize);
+});
+
+//
+// While a large FETCH waits for its batches to be sent, other requests for
+// the mailbox (a delivery, STORE, EXPUNGE) can still write to it: a statement
+// iterator left open across those waits made the shared handle refuse every
+// write ("This database connection is busy executing a query").
+//
+test('the mailbox can be written to while a streamed FETCH is sent', async (t) => {
+  t.timeout(ms('5m'));
+  const { imapFlow, alias, sqlite } = t.context;
+  const { messageCount } = await appendStreamedMail(t);
+
+  const writes = [];
+  const { broadcast } = sqlite.wss;
+  sqlite.wss.broadcast = async (session, payload) => {
+    const db = sqlite.databaseMap.get(alias.id);
+    try {
+      db.prepare(
+        'UPDATE "Mailboxes" SET "modifyIndex" = "modifyIndex" WHERE "path" = ?'
+      ).run('INBOX');
+      writes.push(true);
+    } catch (err) {
+      writes.push(err.message);
+    }
+
+    return broadcast(session, payload);
+  };
+
+  await imapFlow.mailboxOpen('INBOX');
+  let fetched = 0;
+  for await (const message of imapFlow.fetch('1:*', {
+    uid: true,
+    source: true
+  })) {
+    if (message.source) fetched++;
+  }
+
+  t.is(fetched, messageCount);
+  t.true(writes.length > 0);
+  t.deepEqual(
+    writes,
+    writes.map(() => true)
+  );
+});
+
+//
+// A FETCH of message bodies marks them as seen once the response is sent;
+// a flag another request set meanwhile is kept, and the modseq of the
+// change is above the ones written meanwhile (CONDSTORE clients would miss
+// it otherwise).
+//
+test('a streamed FETCH that marks mail as seen keeps changes made meanwhile', async (t) => {
+  t.timeout(ms('5m'));
+  const { alias, domain, sqlite, port, pass } = t.context;
+  const { messageCount } = await appendStreamedMail(t);
+  const db = () => sqlite.databaseMap.get(alias.id);
+  const getModifyIndex = () =>
+    db()
+      .prepare('SELECT "modifyIndex" FROM "Mailboxes" WHERE "path" = ?')
+      .pluck()
+      .get('INBOX');
+  const before = getModifyIndex();
+
+  // another request flags the first message while the response is sent
+  const { broadcast } = sqlite.wss;
+  let changed = false;
+  sqlite.wss.broadcast = async (session, payload) => {
+    if (!changed) {
+      changed = true;
+      const { flags } = prepareQuery(Messages.mapping, {
+        flags: ['\\Flagged']
+      });
+      db()
+        .prepare(
+          'UPDATE "Messages" SET "flags" = ?, "modseq" = ? WHERE "uid" = 1'
+        )
+        .run(flags, before + 2);
+      db()
+        .prepare('UPDATE "Mailboxes" SET "modifyIndex" = ? WHERE "path" = ?')
+        .run(before + 2, 'INBOX');
+    }
+
+    return broadcast(session, payload);
+  };
+
+  const socket = net.connect(port, IP_ADDRESS);
+  t.teardown(() => socket.destroy());
+  let buffer = '';
+  socket.on('data', (data) => {
+    buffer += data.toString('binary');
+  });
+  const send = async (tag, line) => {
+    socket.write(`${tag} ${line}\r\n`);
+    await pWaitFor(() => buffer.includes(`${tag} OK`), {
+      timeout: ms('2m')
+    });
+  };
+
+  await pWaitFor(() => buffer.includes('* OK'), { timeout: ms('10s') });
+  await send('A1', `LOGIN "${alias.name}@${domain.name}" "${pass}"`);
+  await send('A2', 'SELECT INBOX');
+  // (BODY[] rather than BODY.PEEK[], so the messages are marked as seen)
+  await send('A3', 'UID FETCH 1:* (BODY[])');
+  t.true(changed);
+
+  const rows = db()
+    .prepare('SELECT "uid", "flags", "modseq" FROM "Messages"')
+    .all()
+    .map((row) =>
+      syncConvertResult(Messages, row, { uid: true, flags: true, modseq: true })
+    );
+  t.is(rows.length, messageCount);
+  for (const message of rows) {
+    t.true(message.flags.includes('\\Seen'));
+    t.is(message.modseq, before + 3);
+  }
+
+  t.true(rows.find((m) => m.uid === 1).flags.includes('\\Flagged'));
+  t.is(getModifyIndex(), before + 3);
 });

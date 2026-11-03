@@ -369,37 +369,18 @@ async function onFetch(mailboxId, options, session, fn) {
       rowCount++;
 
       if (markAsSeen) {
-        // RFC 7162: Any flag change MUST update the message's mod-sequence
-        // so CONDSTORE clients can detect the implicit \Seen change.
-        const newModseq = mailbox.modifyIndex + 1;
-        const updateSql = builder.build({
-          type: 'update',
-          table: 'Messages',
-          condition: {
-            _id: message._id.toString()
-          },
-          modifier: {
-            $set: prepareQuery(Messages.mapping, {
-              flags: message.flags,
-              unseen: false,
-              modseq: newModseq
-            })
-          }
-        });
-        ops.push([updateSql.query, updateSql.values]);
-
-        entries.push({
+        // (written once the response is sent, see below)
+        const entry = {
           ignore: session.id,
           command: 'FETCH',
           uid: message.uid,
-          // with the labels, as every FETCH shows them
-          flags: getImapFlags(message),
           message: message._id,
           thread: message.thread,
-          modseq: newModseq,
           // unseenChange is true when marking as seen via FETCH
           unseenChange: true
-        });
+        };
+        ops.push({ id: message._id.toString(), entry });
+        entries.push(entry);
       }
     };
 
@@ -410,9 +391,33 @@ async function onFetch(mailboxId, options, session, fn) {
         await processMessage(result);
       }
     } else {
-      // Multi-message path: iterate with byte-based flush for backpressure
-      for (const result of stmt.iterate(sql.values)) {
-        await processMessage(result);
+      //
+      // Multi-message path: read the rows a page at a time in uid order
+      //
+      // NOTE: an iterator must not stay open across the awaits below (e.g.
+      //       the byte-based flush, which waits on the IMAP server): while
+      //       one is open this handle refuses every write, so a large FETCH
+      //       made deliveries, STORE and EXPUNGE for the alias fail and retry
+      //       until it finished (and kept WAL checkpoints from completing)
+      //
+      const pageSize = projection.mimeTree ? 25 : 250;
+      let lastUid = 0;
+      for (;;) {
+        const page = builder.build({
+          type: 'select',
+          table: 'Messages',
+          condition: { $and: [condition, { uid: { $gt: lastUid } }] },
+          fields,
+          sort: 'uid',
+          limit: pageSize
+        });
+        const rows = session.db.prepare(page.query).all(page.values);
+        for (const result of rows) {
+          await processMessage(result);
+        }
+
+        if (rows.length < pageSize) break;
+        lastUid = rows.at(-1).uid;
       }
     }
 
@@ -424,28 +429,89 @@ async function onFetch(mailboxId, options, session, fn) {
         bytes: totalBytes
       });
 
-    // perform db operations
+    //
+    // mark the messages as seen
+    //
+    // NOTE: other requests can change the mailbox while the response is
+    //       sent, so the flags and modifyIndex are read again here: a flag
+    //       set meanwhile is kept, and the new modseq is above theirs
+    //
     if (ops.length > 0) {
+      const expunged = new Set();
       session.db
-        .transaction((txOps) => {
-          for (const op of txOps) {
-            session.db.prepare(op[0]).run(op[1]);
+        .transaction(() => {
+          const mbSelect = builder.build({
+            type: 'select',
+            table: 'Mailboxes',
+            fields: ['modifyIndex'],
+            condition: { _id: mailbox._id.toString() }
+          });
+          const modifyIndex = session.db
+            .prepare(mbSelect.query)
+            .pluck()
+            .get(mbSelect.values);
+          // (the mailbox was deleted meanwhile)
+          if (typeof modifyIndex !== 'number') {
+            for (const { entry } of ops) expunged.add(entry);
+            return;
           }
 
-          // RFC 7162: Update mailbox modifyIndex when markAsSeen changes flags
-          const mbSql = builder.build({
+          // RFC 7162: Any flag change MUST update the message's mod-sequence
+          // so CONDSTORE clients can detect the implicit \Seen change.
+          const modseq = modifyIndex + 1;
+
+          for (const { id, entry } of ops) {
+            const select = builder.build({
+              type: 'select',
+              table: 'Messages',
+              fields: ['flags', 'labels'],
+              condition: { _id: id }
+            });
+            const row = session.db.prepare(select.query).get(select.values);
+            if (!row) {
+              expunged.add(entry);
+              continue;
+            }
+
+            const message = syncConvertResult(Messages, row, {
+              flags: true,
+              labels: true
+            });
+            if (!message.flags.includes('\\Seen'))
+              message.flags.unshift('\\Seen');
+            const update = builder.build({
+              type: 'update',
+              table: 'Messages',
+              condition: { _id: id },
+              modifier: {
+                $set: prepareQuery(Messages.mapping, {
+                  flags: message.flags,
+                  unseen: false,
+                  modseq
+                })
+              }
+            });
+            session.db.prepare(update.query).run(update.values);
+            // with the labels, as every FETCH shows them
+            entry.flags = getImapFlags(message);
+            entry.modseq = modseq;
+          }
+
+          const mbUpdate = builder.build({
             type: 'update',
             table: 'Mailboxes',
-            condition: {
-              _id: mailbox._id.toString()
-            },
-            modifier: {
-              $set: { modifyIndex: mailbox.modifyIndex + 1 }
-            }
+            condition: { _id: mailbox._id.toString() },
+            modifier: { $set: { modifyIndex: modseq } }
           });
-          session.db.prepare(mbSql.query).run(mbSql.values);
+          session.db.prepare(mbUpdate.query).run(mbUpdate.values);
         })
-        .immediate(ops);
+        .immediate();
+
+      if (expunged.size > 0) {
+        const kept = entries.filter((entry) => !expunged.has(entry));
+        entries.length = 0;
+        entries.push(...kept);
+      }
     }
 
     fn(

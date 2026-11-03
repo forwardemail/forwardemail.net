@@ -132,3 +132,43 @@ test('reconnection attempts back off and never run in lockstep', async (t) => {
   // jitter: a fleet of clients does not pick the same delay
   t.true(new Set(delaysAt(3, 100)).size > 10);
 });
+
+//
+// A request whose connection drops before the response (e.g. the SQLite
+// server restarted) is sent again once the client reconnects, as one that
+// timed out is, instead of failing the delivery or command at once.
+//
+test('a request is sent again when the connection drops before the response', async (t) => {
+  t.timeout(ms('1m'));
+  const wss = new WebSocketServer({ host: '127.0.0.1', port: 0 });
+  await once(wss, 'listening');
+  t.teardown(() => wss.close());
+
+  let requests = 0;
+  wss.on('connection', (ws) => {
+    ws.on('message', (data) => {
+      requests++;
+      if (requests === 1) {
+        ws.terminate();
+        return;
+      }
+
+      const { id } = decoder.unpack(data);
+      ws.send(encoder.pack({ id, data: { ok: true } }));
+    });
+  });
+
+  const wsp = createWebSocketAsPromised({
+    host: '127.0.0.1',
+    port: wss.address().port
+  });
+  t.teardown(() => wsp.close());
+
+  const result = await wsp.request({
+    action: 'size',
+    session: { user: { alias_id: '6aaea73491eeee86a0c714f3' } },
+    timeout: ms('10s')
+  });
+  t.deepEqual(result, { ok: true });
+  t.is(requests, 2);
+});

@@ -682,15 +682,34 @@ async function imap(alias, headers, session, body) {
   // fingerprint+alias pair.  If another MX worker already claimed it,
   // `acquired` will be null and we skip delivery (prevents the race
   // where two workers both GET before either SETs).
+  //
+  // The claim is "pending" until the message is stored: a retry that arrives
+  // while an earlier attempt is still storing it (e.g. the sender timed out
+  // and reconnected) is deferred, since that attempt can still fail and
+  // release the claim, and accepting the retry would then lose the message.
+  // The short TTL covers the longest attempt (see the request below).
+  // (another address of this message for the same mailbox, e.g. To and Cc,
+  // is the same attempt: if storing fails, the whole message is retried)
+  //
   const fpKey = getFingerprintKey(session, alias.id);
-  const acquired = await this.client.set(
-    fpKey,
-    '1',
-    'PX',
-    config.fingerprintTTL,
-    'NX'
-  );
+  const pending = `pending:${session.id}`;
+  const acquired = await this.client.set(fpKey, pending, 'PX', ms('10m'), 'NX');
   if (!acquired) {
+    const claim = await this.client.get(fpKey);
+    if (claim !== '1' && claim !== pending) {
+      bounces.push({
+        address: alias.address,
+        destination: alias.address,
+        isMailbox: true,
+        err: new SMTPError(
+          `The mailbox for ${alias.address} is temporarily unavailable, please try again later.`,
+          { responseCode: 421, ignore_hook: true }
+        ),
+        host: HOSTNAME
+      });
+      return { accepted, bounces, vacationResponders };
+    }
+
     accepted.push(alias.address);
     if (alias.vacationResponder)
       vacationResponders.push(alias.vacationResponder);
@@ -751,47 +770,55 @@ async function imap(alias, headers, session, body) {
 
     // <https://github.com/websockets/ws/issues/1959>
     const startTime = Date.now();
-    const response = await this.wsp.request({
-      action: 'tmp',
-      sent_at: Date.now(),
-      aliases: [alias],
-      remoteAddress: session.remoteAddress,
-      resolvedRootClientHostname: session.resolvedRootClientHostname,
-      resolvedClientHostname: session.resolvedClientHostname,
-      allowlistValue: session.allowlistValue,
-      // (sieve vacation auto-replies follow the same rules as vacation
-      // responders, and go to the authenticated From address)
-      canAutoReply:
-        shouldSendVacationOrBounce(headers, session) &&
-        isAuthenticatedSender(session),
-      autoReplyTo: session.originalFromAddress,
-      // Pass sender for iMIP REPLY processing (sender/attendee match validation)
-      // Use checkSRS to unwrap SRS-rewritten addresses for proper sender/attendee matching
-      sender: session.envelope?.mailFrom?.address
-        ? checkSRS(session.envelope.mailFrom.address)
-        : undefined,
-      // the From header address only when it is authenticated (DMARC passed
-      // or DKIM aligned with it, and on the domain that was authenticated:
-      // not an address unwrapped from an SRS address on another domain), for
-      // iMIP organizer and attendee checks
-      authenticatedFrom:
-        isSANB(session.originalFromAddress) && isAuthenticatedSender(session)
-          ? session.originalFromAddress.toLowerCase()
+    //
+    // (one retry: with the default three, four one-minute timeouts outlast
+    // the sender's socket timeout and resend the whole message to a SQLite
+    // server that is already busy with it)
+    //
+    const response = await this.wsp.request(
+      {
+        action: 'tmp',
+        sent_at: Date.now(),
+        aliases: [alias],
+        remoteAddress: session.remoteAddress,
+        resolvedRootClientHostname: session.resolvedRootClientHostname,
+        resolvedClientHostname: session.resolvedClientHostname,
+        allowlistValue: session.allowlistValue,
+        // (sieve vacation auto-replies follow the same rules as vacation
+        // responders, and go to the authenticated From address)
+        canAutoReply:
+          shouldSendVacationOrBounce(headers, session) &&
+          isAuthenticatedSender(session),
+        autoReplyTo: session.originalFromAddress,
+        // Pass sender for iMIP REPLY processing (sender/attendee match validation)
+        // Use checkSRS to unwrap SRS-rewritten addresses for proper sender/attendee matching
+        sender: session.envelope?.mailFrom?.address
+          ? checkSRS(session.envelope.mailFrom.address)
           : undefined,
-      // the From header address when SPF passed for an envelope sender on
-      // its organizational domain (as DMARC counts SPF, for a domain without
-      // DMARC or aligned DKIM), for iMIP attendee replies only
-      spfAlignedFrom:
-        isSANB(session.originalFromAddress) && isSpfAlignedSender(session)
-          ? session.originalFromAddress.toLowerCase()
-          : undefined,
-      date:
-        typeof session.arrivalDate === 'string'
-          ? session.arrivalDate
-          : session.arrivalDate.toISOString(),
-      raw: Buffer.concat([sealHeaders, unsealed]),
-      timeout: ms('1m')
-    });
+        // the From header address only when it is authenticated (DMARC passed
+        // or DKIM aligned with it, and on the domain that was authenticated:
+        // not an address unwrapped from an SRS address on another domain), for
+        // iMIP organizer and attendee checks
+        authenticatedFrom:
+          isSANB(session.originalFromAddress) && isAuthenticatedSender(session)
+            ? session.originalFromAddress.toLowerCase()
+            : undefined,
+        // the From header address when SPF passed for an envelope sender on
+        // its organizational domain (as DMARC counts SPF, for a domain without
+        // DMARC or aligned DKIM), for iMIP attendee replies only
+        spfAlignedFrom:
+          isSANB(session.originalFromAddress) && isSpfAlignedSender(session)
+            ? session.originalFromAddress.toLowerCase()
+            : undefined,
+        date:
+          typeof session.arrivalDate === 'string'
+            ? session.arrivalDate
+            : session.arrivalDate.toISOString(),
+        raw: Buffer.concat([sealHeaders, unsealed]),
+        timeout: ms('1m')
+      },
+      1
+    );
     const messageTime = Date.now() - startTime;
 
     if (response[alias.address]) {
@@ -855,8 +882,11 @@ async function imap(alias, headers, session, body) {
         session
       });
 
-      // NOTE: fingerprint key was already claimed atomically via SET NX PX
-      // above before delivery began — no additional write needed here.
+      // the message is stored: a retry of it now skips this mailbox
+      await this.client
+        .set(fpKey, '1', 'PX', config.fingerprintTTL)
+        .catch((err) => logger.fatal(err));
+
       // push to accepted array
       accepted.push(alias.address);
       if (alias.vacationResponder)

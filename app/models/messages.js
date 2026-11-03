@@ -97,19 +97,18 @@ const Messages = new mongoose.Schema(
       index: true
     },
 
-    // TODO: does it need to be [{ type: String, index: true }] (?)
     // message flags (e.g. "\\Seen" or "\\Draft")
+    // (no index: stored compressed and matched in JS, never in SQL)
     flags: {
       type: Array,
-      required: true,
-      index: true
+      required: true
     },
 
     // user-defined labels (e.g. "work", "important", "project-x")
+    // (no index, as with flags)
     labels: {
       type: Array,
-      default: [],
-      index: true
+      default: []
     },
 
     // bytes

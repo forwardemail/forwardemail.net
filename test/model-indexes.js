@@ -97,3 +97,37 @@ test('the declared TTL, unique and partial indexes exist', async (t) => {
   const user = await find(Logs, 'user_1');
   t.truthy(user.partialFilterExpression);
 });
+
+//
+// Every IMAP notification makes each session read the changes to its
+// mailbox (`getUpdates` in helpers/imap-notifier.js); with only one-field
+// indexes MongoDB walks every journal entry of the mailbox for it.
+//
+test('IMAP updates are read from the journal by mailbox and modseq', async (t) => {
+  const Journals = getIsolatedModel(models.Journals);
+  await Journals.createIndexes();
+
+  const mailbox = new mongoose.Types.ObjectId();
+  const docs = [];
+  const entry = (mailbox, modseq) => {
+    const _id = new mongoose.Types.ObjectId();
+    return { _id, id: _id.toString(), mailbox, modseq, command: 'EXISTS' };
+  };
+
+  for (let modseq = 1; modseq <= 50; modseq++) {
+    docs.push(
+      entry(mailbox, modseq),
+      entry(new mongoose.Types.ObjectId(), modseq)
+    );
+  }
+
+  await Journals.insertMany(docs);
+
+  const explain = await Journals.find({ mailbox, modseq: { $gt: 45 } })
+    .lean()
+    .explain('executionStats');
+  t.is(explain.executionStats.nReturned, 5);
+  // only the entries returned were examined
+  t.is(explain.executionStats.totalKeysExamined, 5);
+  t.is(explain.executionStats.totalDocsExamined, 5);
+});

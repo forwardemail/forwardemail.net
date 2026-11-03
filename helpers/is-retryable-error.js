@@ -127,6 +127,15 @@ function isRetryableError(err) {
   if (isTimeoutError(err)) return true;
   if (isSocketError(err)) return true;
 
+  // websocket-as-promised: the connection dropped before the response
+  // (e.g. the SQLite server restarted), retried as a timeout is
+  if (
+    typeof err?.message === 'string' &&
+    (err.message.includes('WebSocket closed with reason') ||
+      err.message.includes('WebSocket is not opened'))
+  )
+    return true;
+
   // RFC 8689: REQUIRETLS errors should be retried (try other MX hosts)
   if (isRequireTLSError(err)) return true;
 

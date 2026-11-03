@@ -323,6 +323,7 @@ class IMAP {
       if (
         // channel !== 'sqlite_auth_request' &&
         channel !== 'sqlite_auth_reset' &&
+        channel !== 'sqlite_sync_request' &&
         channel !== 'pgp_reload' &&
         channel !== 'smime_reload'
       )
@@ -330,6 +331,26 @@ class IMAP {
       try {
         if (typeof id !== 'string' || !mongoose.isObjectIdOrHexString(id))
           throw new TypeError('Alias ID missing');
+
+        //
+        // A message was delivered to the alias's temporary mailbox (see
+        // helpers/parse-payload.js): sync it with the credentials of a session
+        // here, the sync appends it and notifies every session (e.g. EXISTS
+        // for clients in IDLE), so one session per process is enough (syncs
+        // of an alias run one at a time, see helpers/sync-temporary-mailbox)
+        //
+        if (channel === 'sqlite_sync_request') {
+          for (const connection of this.server.connections) {
+            if (connection?.session?.user?.alias_id !== id) continue;
+            await this.wsp.request(
+              { action: 'sync', session: { user: connection.session.user } },
+              0
+            );
+            break;
+          }
+
+          return;
+        }
 
         if (channel === 'sqlite_auth_reset') {
           // Evict cached auth for this alias so the old password
@@ -452,6 +473,7 @@ class IMAP {
     // this.subscriber.subscribe('sqlite_auth_request');
     this.subscriber.subscribe(
       'sqlite_auth_reset',
+      'sqlite_sync_request',
       'pgp_reload',
       'smime_reload'
     );
@@ -468,6 +490,7 @@ class IMAP {
     // this.subscriber.unsubscribe('sqlite_auth_request');
     this.subscriber.unsubscribe(
       'sqlite_auth_reset',
+      'sqlite_sync_request',
       'pgp_reload',
       'smime_reload'
     );

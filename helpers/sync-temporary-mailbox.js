@@ -3,7 +3,11 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
+const { randomUUID } = require('node:crypto');
+
 const bytes = require('@forwardemail/bytes');
+const ms = require('ms');
+const pWaitFor = require('p-wait-for');
 const pify = require('pify');
 
 const checkDiskSpace = require('./check-disk-space');
@@ -21,7 +25,35 @@ const TemporaryMessages = require('#models/temporary-messages');
 const onAppendPromise = pify(onAppend, { multiArgs: true });
 const builder = new Builder({ bufferAsNative: true });
 
+const RELEASE_LOCK_SCRIPT =
+  "if redis.call('get', KEYS[1]) == ARGV[1] then return redis.call('del', KEYS[1]) else return 0 end";
+
+//
+// One sync per alias at a time, across processes: two at once read the same
+// rows and could both append a message before either deletes it from the
+// temporary mailbox.  A sync asked for meanwhile (e.g. one per delivery, see
+// `sqlite_sync_request` in imap-server.js) waits for it and then runs.
+//
 async function syncTemporaryMailbox(session) {
+  if (!this.client) return sync.call(this, session);
+
+  const key = `sync_temporary_mailbox:${session.user.alias_id}`;
+  const owner = randomUUID();
+  await pWaitFor(
+    async () =>
+      (await this.client.set(key, owner, 'PX', ms('10m'), 'NX')) === 'OK',
+    { interval: 100, timeout: ms('30s') }
+  );
+  try {
+    return await sync.call(this, session);
+  } finally {
+    await this.client
+      .eval(RELEASE_LOCK_SCRIPT, 1, key, owner)
+      .catch((err) => logger.fatal(err, { session }));
+  }
+}
+
+async function sync(session) {
   let deleted = 0;
 
   let err;

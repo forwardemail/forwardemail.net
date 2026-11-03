@@ -169,7 +169,16 @@ async function setupPragma(db, session, cipher = 'chacha20') {
   //
   // (optimize may run ANALYZE, which attempts to write to a read-only handle)
   //
-  if (!db.readonly) db.pragma('optimize=0x10002;');
+  // Without `analysis_limit` the 0x10002 mask runs a full ANALYZE of any
+  // table with a new index or that grew tenfold, which on a large mailbox
+  // blocks the open (and every request waiting on it) for seconds; 400 rows
+  // per index is the value SQLite recommends (as `closeDatabase` uses too)
+  // <https://www.sqlite.org/lang_analyze.html#approx>
+  //
+  if (!db.readonly) {
+    db.pragma('analysis_limit=400');
+    db.pragma('optimize=0x10002;');
+  }
 
   //
   // load regex extension for REGEX support
