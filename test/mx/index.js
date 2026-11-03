@@ -42,6 +42,7 @@ const config = require('#config');
 const _ = require('#helpers/lodash');
 const createWebSocketAsPromised = require('#helpers/create-websocket-as-promised');
 const env = require('#config/env');
+const checkSRS = require('#helpers/check-srs');
 const getGreylistKey = require('#helpers/get-greylist-key');
 const isExpiredOrNewlyCreated = require('#helpers/is-expired-or-newly-created');
 const logger = require('#helpers/logger');
@@ -586,6 +587,180 @@ Test`.trim()
 
   t.is(email.status, 'sent');
   t.deepEqual(email.accepted, ['test@test.com']);
+});
+
+test('forwards mail with an SRS1 MAIL FROM signed by another forwarder', async (t) => {
+  const smtp = new MX({
+    client: t.context.client,
+    wsp: t.context.wsp
+  });
+  const { resolver } = smtp;
+  if (!getPort) await pWaitFor(() => Boolean(getPort), { timeout: ms('30s') });
+  const port = await getPort();
+  await smtp.listen(port);
+
+  // capture the MAIL FROM of the forwarded message
+  const mailFroms = [];
+  const serverPort = await getPort();
+  const server = new SMTPServer({
+    disabledCommands: ['AUTH'],
+    onMailFrom(address, session, fn) {
+      mailFroms.push(address.address);
+      fn();
+    },
+    onData(stream, session, fn) {
+      stream.resume();
+      stream.on('end', () => fn());
+    },
+    logger: false,
+    secure: false
+  });
+  await pify(server.listen.bind(server))(serverPort);
+
+  const user = await t.context.userFactory
+    .withState({
+      plan: 'enhanced_protection',
+      [config.userFields.planSetAt]: dayjs().startOf('day').toDate()
+    })
+    .create();
+
+  await t.context.paymentFactory
+    .withState({
+      user: user._id,
+      amount: 300,
+      invoice_at: dayjs().startOf('day').toDate(),
+      method: 'free_beta_program',
+      duration: ms('30d'),
+      plan: user.plan,
+      kind: 'one-time'
+    })
+    .create();
+
+  await user.save();
+
+  const domain = await t.context.domainFactory
+    .withState({
+      members: [{ user: user._id, group: 'admin' }],
+      plan: user.plan,
+      resolver,
+      smtp_port: serverPort.toString()
+    })
+    .create();
+
+  await t.context.aliasFactory
+    .withState({
+      name: 'team',
+      user: user._id,
+      domain: domain._id,
+      recipients: [IP_ADDRESS]
+    })
+    .create();
+
+  const map = new Map();
+
+  map.set(
+    `mx:${domain.name}`,
+    resolver.spoofPacket(
+      domain.name,
+      'MX',
+      [{ exchange: IP_ADDRESS, priority: 0 }],
+      true,
+      ms('5m')
+    )
+  );
+
+  map.set(
+    `txt:${domain.name}`,
+    resolver.spoofPacket(
+      domain.name,
+      'TXT',
+      [`${config.paidPrefix}${domain.verification_record}`],
+      true,
+      ms('5m')
+    )
+  );
+
+  // the forwarder (e.g. IONOS) is authorized to send for its SRS domain
+  map.set(
+    'txt:srs2.kundenserver.de',
+    resolver.spoofPacket(
+      'srs2.kundenserver.de',
+      'TXT',
+      [`v=spf1 ip4:${IP_ADDRESS} -all`],
+      true,
+      ms('5m')
+    )
+  );
+
+  map.set(
+    'txt:_dmarc.test.com',
+    resolver.spoofPacket(
+      '_dmarc.test.com',
+      'TXT',
+      ['v=DMARC1; p=none;'],
+      true,
+      ms('5m')
+    )
+  );
+
+  await resolver.options.cache.mset(map);
+
+  // set our local IP to allowlist so message does not get greylisted
+  await t.context.client.set(`allowlist:${IP_ADDRESS}`, true);
+
+  const mx = await asyncMxConnect({
+    target: IP_ADDRESS,
+    port: smtp.server.address().port,
+    dnsOptions: {
+      resolve: util.callbackify(resolver.resolve.bind(resolver))
+    }
+  });
+  const transporter = nodemailer.createTransport({
+    logger,
+    debug: true,
+    host: mx.host,
+    port: mx.port,
+    connection: mx.socket,
+    ignoreTLS: true,
+    secure: false,
+    tls
+  });
+
+  // IONOS signs SRS1 addresses with a hash that is not 4 hex characters
+  const info = await transporter.sendMail({
+    envelope: {
+      from: 'SRS1=vL/M=fe-bounces.test.com==95b6=IV=test.com=alan@srs2.kundenserver.de',
+      to: `team@${domain.name}`
+    },
+    raw: `
+To: team@${domain.name}
+From: alan@test.com
+Subject: test
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+
+Test`.trim()
+  });
+
+  t.deepEqual(info.accepted, [`team@${domain.name}`]);
+  t.is(mailFroms.length, 1);
+  t.true(
+    mailFroms[0].endsWith(
+      `=fe-bounces.test.com==95b6=IV=test.com=alan@${env.WEB_HOST}`
+    )
+  );
+
+  // bounces to our SRS1 address go back to the first forwarder's SRS0 address
+  // (including when the sender lowercases it)
+  for (const address of [mailFroms[0], mailFroms[0].toLowerCase()]) {
+    t.is(
+      checkSRS(address, true, true),
+      'SRS0=95b6=IV=test.com=alan@fe-bounces.test.com'
+    );
+  }
+
+  await smtp.close();
+  await pify(server.close.bind(server))();
 });
 
 //

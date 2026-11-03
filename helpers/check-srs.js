@@ -21,6 +21,18 @@ const REGEX_SRS1 = new RE2(/^srs1[+-=]\S+=\S+==\S+=\S{2}=\S+@\S+$/i);
 function checkSRS(address, shouldThrow = false, ignoreHook = false) {
   if (!REGEX_SRS0.test(address) && !REGEX_SRS1.test(address)) return address;
 
+  //
+  // the address as received is tried first, since changing the case of an
+  // address that was not lowercased could break its signature
+  // (e.g. a first hop that uses a lowercase timestamp or "+" separator)
+  //
+  try {
+    const reversed = srs.reverse(address);
+    if (typeof reversed === 'string') return reversed;
+  } catch {
+    // (tried again below with the case normalized)
+  }
+
   try {
     //
     // sometimes senders send to a lowercase version of the MAIL FROM
@@ -38,8 +50,15 @@ function checkSRS(address, shouldThrow = false, ignoreHook = false) {
     // SRS0=4f4d=T7=example.com=john
     // therefore keys 0 and 2 need capitalized
     //
-    if (local[0]) local[0] = local[0].toUpperCase(); // SRS0
-    if (local[2]) local[2] = local[2].toUpperCase(); // T7
+    // (for SRS1=4f4d=first.com==4f4d=T7=example.com=john the timestamp
+    // is key 5, or key 4 for SRS1=4f4d=first.com=+4f4d=T7=example.com=john
+    // and key 2 is the first hop domain which must not change)
+    //
+    if (local[0]) local[0] = local[0].toUpperCase(); // SRS0 or SRS1
+    let timestampIndex = 2;
+    if (local[0] === 'SRS1') timestampIndex = local[3] === '' ? 5 : 4;
+    if (local[timestampIndex])
+      local[timestampIndex] = local[timestampIndex].toUpperCase(); // T7
     const srsAddress = `${local.join('=')}@${domain}`;
     const reversed = srs.reverse(srsAddress);
     if (_.isNull(reversed)) {

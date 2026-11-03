@@ -126,6 +126,14 @@ const IP_ADDRESS = ip.address();
 
 const srs = new SRS(config.srs);
 
+//
+// other forwarders sign SRS1 addresses with their own hash format
+// (e.g. IONOS uses "SRS1=vL/M=..." instead of 4 hex characters), which
+// `sender-rewriting-scheme` rejects with "Invalid SRS1 address" even though
+// `srs.forward` replaces that hash with our own (so we normalize it first)
+//
+const REGEX_SRS1_HASH = new RE2(/^SRS1[+=-][^=]*=/);
+
 /*
 // TODO: re-enable spam scanner once v7 released
 const scanner = new SpamScanner({
@@ -1745,7 +1753,10 @@ async function forward(recipient, headers, session, body) {
       from = session.envelope.mailFrom.address;
     } else {
       from = srs.forward(
-        checkSRS(session.envelope.mailFrom.address),
+        checkSRS(session.envelope.mailFrom.address).replace(
+          REGEX_SRS1_HASH,
+          'SRS1=0000='
+        ),
         env.WEB_HOST
       );
       isSrsFrom = true;
