@@ -921,15 +921,22 @@ async function getDatabase(
               // (mailbox, uid, modseq) serves everything (mailbox, uid) did,
               // and lets FETCH CHANGEDSINCE (`modseq > ? ORDER BY uid`) skip
               // unchanged messages without reading each row of the mailbox
+              // (only built where (mailbox, uid) is not: building an index
+              // reads every message, which on a large mailbox blocks this
+              // process for seconds, so a mailbox that has one keeps it)
               //
-              _dbForIdx
+              const hasMailboxUid = _dbForIdx
                 .prepare(
-                  'CREATE INDEX IF NOT EXISTS "Messages_mailbox_uid_modseq" ON "Messages" ("mailbox", "uid", "modseq")'
+                  "SELECT 1 FROM sqlite_master WHERE type = 'index' AND name = 'Messages_mailbox_uid'"
                 )
-                .run();
-              _dbForIdx
-                .prepare('DROP INDEX IF EXISTS "Messages_mailbox_uid"')
-                .run();
+                .pluck()
+                .get();
+              if (!hasMailboxUid)
+                _dbForIdx
+                  .prepare(
+                    'CREATE INDEX IF NOT EXISTS "Messages_mailbox_uid_modseq" ON "Messages" ("mailbox", "uid", "modseq")'
+                  )
+                  .run();
               //
               // flags and labels are stored compressed and never queried in
               // SQL, so their indexes only slowed down every APPEND and STORE

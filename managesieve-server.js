@@ -17,7 +17,8 @@ const onAuth = require('#helpers/on-auth');
 const onClose = require('#helpers/on-close');
 const onConnect = require('#helpers/on-connect');
 const refineAndLogError = require('#helpers/refine-and-log-error');
-const { validate: validateSieve } = require('#helpers/sieve');
+// (with the capabilities, as saving the script checks them)
+const { validateScript: validateSieve } = require('#helpers/sieve');
 const createTangerine = require('#helpers/create-tangerine');
 
 const onConnectPromise = pify(onConnect);
@@ -225,7 +226,8 @@ class ManageSieveServer {
       domain: null,
       // (a "secure" server without a certificate is plain TCP)
       tlsStarted: this.secure && Boolean(this.tlsOptions),
-      buffer: '',
+      // (octets: a literal's size is in octets, RFC 5804 section 4)
+      buffer: Buffer.alloc(0),
       pendingAuthMechanism: null, // Track pending SASL authentication continuation
       // Properties for onConnect/onAuth compatibility
       remoteAddress: socket.remoteAddress,
@@ -347,19 +349,41 @@ class ManageSieveServer {
   appendToBuffer(session, data) {
     if (session.socket.destroyed) return;
     const MAX_BUFFER_SIZE = this.maxScriptSize + 4096;
-    if (session.buffer.length + data.length > MAX_BUFFER_SIZE) {
+    const length =
+      session.buffer.length + (session.literalLength || 0) + data.length;
+    if (length > MAX_BUFFER_SIZE) {
       this.logger.warn('ManageSieve buffer overflow, closing connection', {
         component: 'ManageSieve',
         sessionId: session.id,
-        bufferSize: session.buffer.length + data.length
+        bufferSize: length
       });
-      session.buffer = '';
+      session.buffer = Buffer.alloc(0);
+      session.literalChunks = null;
+      session.literalLength = 0;
       this.send(session, `${RESPONSE.BYE} "Buffer overflow"`);
       session.socket.destroy();
       return;
     }
 
-    session.buffer += data.toString('utf8');
+    //
+    // (a literal is kept in chunks until all of it arrived: joining the
+    // buffer with each chunk took quadratic time for a script sent in small
+    // chunks)
+    //
+    if (session.pendingLiteral && length < session.pendingLiteral.size) {
+      session.literalChunks ||= [];
+      session.literalChunks.push(data);
+      session.literalLength = (session.literalLength || 0) + data.length;
+      return;
+    }
+
+    session.buffer = Buffer.concat([
+      session.buffer,
+      ...(session.literalChunks || []),
+      data
+    ]);
+    session.literalChunks = null;
+    session.literalLength = 0;
 
     //
     // (one command at a time on a connection: data that arrived while a
@@ -428,8 +452,8 @@ class ManageSieveServer {
         return; // Wait for complete line
       }
 
-      const authData = session.buffer.slice(0, crlfIndex);
-      session.buffer = session.buffer.slice(crlfIndex + 2);
+      const authData = session.buffer.subarray(0, crlfIndex).toString('utf8');
+      session.buffer = session.buffer.subarray(crlfIndex + 2);
       await this.handleAuthContinuation(session, authData);
       // (a command sent right after it is in the buffer already)
       if (session.buffer.length > 0) await this.processBuffer(session);
@@ -440,8 +464,8 @@ class ManageSieveServer {
     if (session.pendingLiteral) {
       const { size, callback } = session.pendingLiteral;
       if (session.buffer.length >= size) {
-        const content = session.buffer.slice(0, size);
-        session.buffer = session.buffer.slice(size);
+        const content = session.buffer.subarray(0, size).toString('utf8');
+        session.buffer = session.buffer.subarray(size);
         session.pendingLiteral = null;
         await callback(content);
         // Continue processing remaining buffer
@@ -457,8 +481,8 @@ class ManageSieveServer {
       return; // Wait for complete line
     }
 
-    const line = session.buffer.slice(0, crlfIndex);
-    session.buffer = session.buffer.slice(crlfIndex + 2);
+    const line = session.buffer.subarray(0, crlfIndex).toString('utf8');
+    session.buffer = session.buffer.subarray(crlfIndex + 2);
 
     if (line.length > 0) {
       await this.processCommand(session, line);
@@ -909,7 +933,7 @@ class ManageSieveServer {
 
     session.socket = tlsSocket;
     session.tlsStarted = true;
-    session.buffer = '';
+    session.buffer = Buffer.alloc(0);
 
     // Re-attach event handlers
     tlsSocket.on('data', (data) => {
@@ -1014,14 +1038,26 @@ class ManageSieveServer {
     const scriptName = match[1];
     const scriptSize = Number.parseInt(match[2], 10);
 
+    //
+    // (the client sends the script without waiting, RFC 5804 section 4, so
+    // a refused one is still read, or it would be read as commands)
+    //
+    const refuse = async (response) => {
+      session.pendingLiteral = {
+        size: scriptSize,
+        callback: async () => this.send(session, response)
+      };
+      await this.processBuffer(session);
+    };
+
     // Validate script name
     if (scriptName.length > this.maxScriptNameLength) {
-      this.send(session, `${RESPONSE.NO} "Script name too long"`);
+      await refuse(`${RESPONSE.NO} "Script name too long"`);
       return;
     }
 
     if (!/^[\w.+-]+$/.test(scriptName)) {
-      this.send(session, `${RESPONSE.NO} "Invalid characters in script name"`);
+      await refuse(`${RESPONSE.NO} "Invalid characters in script name"`);
       return;
     }
 
@@ -1045,8 +1081,7 @@ class ManageSieveServer {
     });
 
     if (!existingScript && scriptCount >= this.maxScriptCount) {
-      this.send(
-        session,
+      await refuse(
         `${RESPONSE.NO} (QUOTA) "Maximum script count (${this.maxScriptCount}) reached"`
       );
       return;

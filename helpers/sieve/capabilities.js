@@ -107,12 +107,14 @@ function addRequirement(context, capability, location, reason) {
 
   if (!context.enabled.has(value) && !context.missing.has(value)) {
     context.missing.add(value);
-    addUnsupported(
-      context,
+    // (marked: a script saved before this was refused still runs, see
+    // helpers/sieve/filter-handler.js)
+    context.unsupported.push({
       location,
-      value,
-      `${reason} but it is not declared with require`
-    );
+      feature: value,
+      reason: `${reason} but it is not declared with require`,
+      undeclared: true
+    });
   }
 }
 

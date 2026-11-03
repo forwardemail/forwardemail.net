@@ -90,7 +90,7 @@ async function testScript(ctx) {
   }
 
   // Validate script first
-  const validation = sieve.validate(content);
+  const validation = sieve.validateScript(content);
   if (!validation.valid) {
     throw Boom.badRequest(
       ctx.translateError('SIEVE_INVALID_SCRIPT', validation.errors[0].message)
@@ -238,7 +238,7 @@ async function createScript(ctx) {
   }
 
   // Validate script syntax
-  const validation = sieve.validate(content);
+  const validation = sieve.validateScript(content);
   if (!validation.valid) {
     throw Boom.badRequest(
       ctx.translateError('SIEVE_INVALID_SCRIPT', validation.errors[0].message)
@@ -357,7 +357,7 @@ async function updateScript(ctx) {
   }
 
   // Validate script syntax
-  const validation = sieve.validate(content);
+  const validation = sieve.validateScript(content);
   if (!validation.valid) {
     throw Boom.badRequest(
       ctx.translateError('SIEVE_INVALID_SCRIPT', validation.errors[0].message)

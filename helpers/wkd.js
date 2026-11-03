@@ -178,7 +178,7 @@ function WKD(resolver, client) {
       // auto-decompresses a chained `Content-Encoding` header, and a
       // malicious WKD server can nest thousands of gzip layers to burn CPU
       // and memory (GHSA-g9mf-h72j-4rw9). undici >=7.18.2 limits the chain
-      // (installed with patches/undici@7.29.1.patch so it runs on Node 18),
+      // (installed with patches/undici@7.30.1.patch so it runs on Node 18),
       // and this still refuses any compression at all. The decompression
       // work accrues while the body is consumed, so reject before reading it.
       //

@@ -172,3 +172,79 @@ test('a request is sent again when the connection drops before the response', as
   t.deepEqual(result, { ok: true });
   t.is(requests, 2);
 });
+
+// (a server that drops the connection on the first request it gets)
+async function dropFirstRequest(t) {
+  t.timeout(ms('1m'));
+  const wss = new WebSocketServer({ host: '127.0.0.1', port: 0 });
+  await once(wss, 'listening');
+  t.teardown(() => wss.close());
+
+  const server = { requests: 0 };
+  wss.on('connection', (ws) => {
+    ws.on('message', (data) => {
+      server.requests++;
+      if (server.requests === 1) {
+        ws.terminate();
+        return;
+      }
+
+      const { id } = decoder.unpack(data);
+      ws.send(encoder.pack({ id, data: { ok: true } }));
+    });
+  });
+
+  server.wsp = createWebSocketAsPromised({
+    host: '127.0.0.1',
+    port: wss.address().port
+  });
+  t.teardown(() => server.wsp.close());
+  return server;
+}
+
+const session = { user: { alias_id: '6aaea73491eeee86a0c714f3' } };
+
+//
+// A request whose connection drops before the response may have run
+// already, so one that is not safe to run twice (an APPEND, or a statement
+// that writes) is not sent again (the client is told it failed for now).
+//
+for (const [name, data] of [
+  ['an APPEND', { action: 'append' }],
+  [
+    'a statement that writes',
+    {
+      action: 'stmt',
+      stmt: [
+        ['prepare', 'INSERT INTO "Calendars" ("_id") VALUES (?) RETURNING *'],
+        ['get', ['a']]
+      ]
+    }
+  ]
+]) {
+  test(`${name} is not sent again when the connection drops`, async (t) => {
+    const server = await dropFirstRequest(t);
+    const err = await t.throwsAsync(
+      server.wsp.request({ ...data, session, timeout: ms('10s') })
+    );
+    t.regex(err._message, /WebSocket closed with reason/);
+    // (temporary, as before)
+    t.is(err.responseCode, 421);
+    t.is(server.requests, 1);
+  });
+}
+
+test('a statement that only reads is sent again when the connection drops', async (t) => {
+  const server = await dropFirstRequest(t);
+  const result = await server.wsp.request({
+    action: 'stmt',
+    stmt: [
+      ['prepare', 'SELECT * FROM "Calendars" WHERE "_id" = ?'],
+      ['get', ['a']]
+    ],
+    session,
+    timeout: ms('10s')
+  });
+  t.deepEqual(result, { ok: true });
+  t.is(server.requests, 2);
+});

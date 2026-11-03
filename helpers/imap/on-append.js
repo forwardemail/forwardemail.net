@@ -186,7 +186,7 @@ async function onAppend(path, flags, date, raw, session, fn) {
     // the mailbox does not have goes to its spam folder by special-use
     // (new mailboxes only have "Spam", older ones may have "Junk" as well)
     //
-    if (!mailbox && session.checkForExisting) {
+    if (!mailbox && (session.checkForExisting || session.sieveCopy)) {
       mailbox = await getJunkMailbox(this, session, path);
       if (mailbox) path = mailbox.path;
     }

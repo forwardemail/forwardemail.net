@@ -116,6 +116,20 @@ const TLS_RETRY_ERROR_CODES = new Set([
   'ERR_SSL_PROTOCOL_ERROR'
 ]);
 
+//
+// websocket-as-promised: the connection dropped after the request was sent,
+// so the SQLite server may have run it already, and only a request that is
+// safe to run twice is sent again (see helpers/create-websocket-as-promised.js)
+//
+// (`_message` once refineAndLogError replaced the message)
+function isClosedBeforeResponse(err) {
+  return [err?.message, err?._message].some(
+    (message) =>
+      typeof message === 'string' &&
+      message.includes('WebSocket closed with reason')
+  );
+}
+
 function isRetryableError(err) {
   //
   // RFC 7672 Section 2.2: DANE verification failures are permanent errors.
@@ -130,8 +144,8 @@ function isRetryableError(err) {
   // websocket-as-promised: the connection dropped before the response
   // (e.g. the SQLite server restarted), retried as a timeout is
   if (
-    typeof err?.message === 'string' &&
-    (err.message.includes('WebSocket closed with reason') ||
+    isClosedBeforeResponse(err) ||
+    (typeof err?.message === 'string' &&
       err.message.includes('WebSocket is not opened'))
   )
     return true;
@@ -251,3 +265,4 @@ function isRetryableError(err) {
 }
 
 module.exports = isRetryableError;
+module.exports.isClosedBeforeResponse = isClosedBeforeResponse;

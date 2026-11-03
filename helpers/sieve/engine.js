@@ -1533,12 +1533,25 @@ class SieveEngine {
   evaluateAddressTest(test, state) {
     const { headers, addressPart } = test;
     const addresses = [];
-    for (const source of this.getHeaderSources(test, state)) {
-      for (const address of parseAddresses(
-        this.getFieldValues(source, headers, test)
-      ))
-        addresses.push(address);
-    }
+    //
+    // (each header value is parsed once a run, however many tests read it,
+    // and the time counts against MAX_MATCH_TIME: a script can hold
+    // thousands of tests, and a header can be large)
+    //
+    this.runTimed(state, () => {
+      state.parsedAddresses ||= new Map();
+      for (const source of this.getHeaderSources(test, state)) {
+        for (const value of this.getFieldValues(source, headers, test)) {
+          let parsed = state.parsedAddresses.get(value);
+          if (!parsed) {
+            parsed = parseAddresses(value);
+            state.parsedAddresses.set(value, parsed);
+          }
+
+          for (const address of parsed) addresses.push(address);
+        }
+      }
+    });
 
     return this.matchValues(
       this.getAddressParts(addresses, addressPart),
@@ -1702,11 +1715,12 @@ class SieveEngine {
    * @returns {boolean} Test result
    */
   evaluateBodyTest(test, state) {
-    return this.matchValues(
-      this.getBodyValues(test.bodyTransform, state),
-      test,
-      state
-    );
+    // (the time it takes to get the body counts against MAX_MATCH_TIME)
+    let values;
+    this.runTimed(state, () => {
+      values = this.getBodyValues(test.bodyTransform, state);
+    });
+    return this.matchValues(values, test, state);
   }
 
   /**
@@ -1719,14 +1733,24 @@ class SieveEngine {
    */
   getBodyValues(transform, state) {
     const { message } = state;
+    // (converted once a run, however many tests read it: HTML made plain
+    // and parts decoded can take long, and a script can hold many tests)
+    const getText = () => {
+      state.bodyText ??= this.getBodyText(message);
+      return state.bodyText;
+    };
 
     if (transform === 'raw' && message.raw) {
-      const raw = Buffer.isBuffer(message.raw)
-        ? message.raw
-        : Buffer.from(String(message.raw));
-      let start = raw.indexOf('\r\n\r\n');
-      start = start === -1 ? raw.indexOf('\n\n') + 2 : start + 4;
-      return [start < 2 ? '' : raw.subarray(start).toString()];
+      if (state.rawBody === undefined) {
+        const raw = Buffer.isBuffer(message.raw)
+          ? message.raw
+          : Buffer.from(String(message.raw));
+        let start = raw.indexOf('\r\n\r\n');
+        start = start === -1 ? raw.indexOf('\n\n') + 2 : start + 4;
+        state.rawBody = start < 2 ? '' : raw.subarray(start).toString();
+      }
+
+      return [state.rawBody];
     }
 
     if (typeof transform === 'object' && transform?.type === 'content') {
@@ -1736,9 +1760,7 @@ class SieveEngine {
       const values = [];
       for (const part of state.mimeParts.length > 0
         ? state.mimeParts
-        : [
-            { ...this.getMessagePart(state), text: this.getBodyText(message) }
-          ]) {
+        : [{ ...this.getMessagePart(state), text: getText() }]) {
         const contentType = (part.contentType || 'text/plain').toLowerCase();
         const type = contentType.split('/')[0];
         if (
@@ -1752,7 +1774,13 @@ class SieveEngine {
         // (multipart parts are searched only in their prologue and epilogue,
         // which are not kept)
         if (part.multipart || type === 'multipart') continue;
-        let text = this.decodePartContent(part);
+        state.decodedParts ||= new Map();
+        let text = state.decodedParts.get(part);
+        if (text === undefined) {
+          text = this.decodePartContent(part);
+          state.decodedParts.set(part, text);
+        }
+
         if (text === null) continue;
         // (a message/rfc822 part is searched only in its header)
         if (contentType === 'message/rfc822') {
@@ -1766,7 +1794,7 @@ class SieveEngine {
       return values;
     }
 
-    return [this.getBodyText(message)];
+    return [getText()];
   }
 
   /**
@@ -1948,9 +1976,19 @@ class SieveEngine {
       ? names.flatMap((name) => this.getFlagVariable(state, name))
       : [...state.flags];
 
+    //
+    // (the keys are match keys, not flags: they are split at spaces, but kept
+    // as written, so a :matches pattern or a variable is not dropped as an
+    // invalid flag before it is expanded, RFC 5232 section 4)
+    //
     return this.matchValues(
       values,
-      { ...test, keys: splitFlags(test.flags) },
+      {
+        ...test,
+        keys: (test.flags || []).flatMap((key) =>
+          toHeaderString(key).split(/\s+/).filter(Boolean)
+        )
+      },
       state
     );
   }
@@ -2750,8 +2788,11 @@ class SieveEngine {
   // a string test, against many keys, took minutes for every message), and so
   // do nested foreverypart loops; a script past it is stopped and the message
   // kept, as for any error. (Waiting on lookups is not counted.)
+  // Far shorter than Pigeonhole's: Pigeonhole runs each delivery in a process
+  // of its own, while here a run holds the process that stores the mail of
+  // many aliases (and one test is not interrupted, so they all wait on it).
   //
-  static MAX_MATCH_TIME = 30_000;
+  static MAX_MATCH_TIME = 2000;
 
   //
   // Every keep and fileinto keeps a copy of the flags: thousands of flags and

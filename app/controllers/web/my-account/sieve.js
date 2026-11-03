@@ -11,7 +11,8 @@ const mongoose = require('mongoose');
 const { SieveScripts } = require('#models');
 const config = require('#config');
 const { SUPPORTED_CAPABILITIES } = require('#helpers/sieve/capabilities');
-const { validate } = require('#helpers/sieve/parser');
+// (with the capabilities, as saving the script checks them)
+const { validateScript: validate } = require('#helpers/sieve');
 const { SieveSecurityValidator } = require('#helpers/sieve/security');
 
 // Security validator instance

@@ -2556,3 +2556,62 @@ describe('Sieve Engine - RFC conformance of tests and actions', () => {
     assert.strictEqual(result.variables.text, 'Grüße');
   });
 });
+
+describe('Match keys and the work a run does once', () => {
+  // (the keys of hasflag are match keys, RFC 5232 section 4)
+  it('hasflag matches :matches patterns and variables in its keys', async () => {
+    const result = await executeScript(
+      `require ["imap4flags", "variables", "fileinto"];
+      set "x" "foo";
+      addflag "foo";
+      if allof (hasflag :matches "f*", hasflag "\${x}") { fileinto "H"; }`,
+      createMessage()
+    );
+    assert.ok(
+      result.actions.some((a) => a.type === 'fileinto' && a.mailbox === 'H')
+    );
+  });
+
+  //
+  // A script can hold thousands of tests: the body is made plain text, each
+  // part decoded and each address header parsed once a run, not once a test
+  //
+  it('converts the body and parses addresses once however many tests read them', async () => {
+    const engine = new SieveEngine({ capabilities: SUPPORTED_CAPABILITIES });
+    const calls = { htmlToText: 0, decodePartContent: 0 };
+    for (const name of Object.keys(calls)) {
+      const fn = engine[name].bind(engine);
+      engine[name] = (...args) => {
+        calls[name]++;
+        return fn(...args);
+      };
+    }
+
+    const tests = Array.from({ length: 50 }, () =>
+      [
+        'if body :text :is "x" { keep; }',
+        'if body :content "text" :contains "x" { keep; }',
+        'if address :is "to" "x@example.com" { keep; }'
+      ].join('\n')
+    ).join('\n');
+    const message = {
+      ...createMessage(),
+      body: { text: '', html: '<p>hello</p>' },
+      mimeParts: ['one', 'two'].map((text) => ({
+        contentType: 'text/plain',
+        encoding: 'base64',
+        headers: {},
+        body: Buffer.from(text).toString('base64'),
+        parentIndex: -1
+      }))
+    };
+    const state = await engine.execute(
+      parse(`require ["body"];\n${tests}`),
+      message,
+      {}
+    );
+    assert.ok(state);
+    assert.strictEqual(calls.htmlToText, 1);
+    assert.strictEqual(calls.decodePartContent, 2);
+  });
+});

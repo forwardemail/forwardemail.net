@@ -510,3 +510,97 @@ test.serial('self-hosted installs do not check by default', async (t) => {
   await laterOn(t, 'github', agent);
   t.true(await isSignedIn(agent));
 });
+
+//
+// Anyone can register an account with an address they do not own.  When the
+// owner of the address then signs in with Google or GitHub, which proves
+// they control it, the account is theirs: the password, API token and
+// sessions set up before then stop working.
+//
+for (const plan of ['free', 'enhanced_protection']) {
+  test.serial(
+    `signing in with a provider takes over an account on the ${plan} plan that someone else registered`,
+    async (t) => {
+      let user = new Users({
+        email: provider.email,
+        [config.userFields.hasVerifiedEmail]: false
+      });
+      user = await Users.register(user, 'Attacker-Passw0rd!x');
+      user[config.userFields.hasSetPassword] = true;
+      // (a paid plan counts the address as verified, but not proven)
+      if (plan !== 'free') user.plan = plan;
+      await user.save();
+      const { [config.userFields.apiToken]: apiToken } = await Users.findById(
+        user._id
+      ).lean();
+
+      const attacker = request.agent(t.context._web.server);
+      await attacker.post('/en/login').send({
+        email: provider.email,
+        password: 'Attacker-Passw0rd!x'
+      });
+      t.true(await isSignedIn(attacker));
+
+      const owner = await signIn(t, 'google');
+      t.true(await isSignedIn(owner));
+
+      const after = await Users.findById(user._id);
+      t.true(after[config.userFields.hasVerifiedEmail]);
+      t.falsy(after[config.userFields.emailProofPending]);
+      t.false(after[config.userFields.hasSetPassword]);
+      t.not(after[config.userFields.apiToken], apiToken);
+      const { user: authenticated } = await after.authenticate(
+        'Attacker-Passw0rd!x'
+      );
+      t.falsy(authenticated);
+      t.false(await isSignedIn(attacker));
+    }
+  );
+}
+
+//
+// An account whose address was proven, and that the Ubuntu team sync marked
+// unverified to delete it once the user left the team (see
+// helpers/sync-ubuntu-user.js), keeps its password, API token and sessions
+// when its owner signs in with a provider again.
+//
+test.serial(
+  'signing in with a provider keeps an account the team sync marked unverified',
+  async (t) => {
+    let user = new Users({
+      email: provider.email,
+      [config.userFields.hasVerifiedEmail]: true
+    });
+    user = await Users.register(user, 'Owner-Passw0rd!x');
+    user[config.userFields.hasSetPassword] = true;
+    await user.save();
+    await Users.findByIdAndUpdate(user._id, {
+      $set: {
+        [config.userFields.hasVerifiedEmail]: false,
+        [config.userFields.emailProofPending]: false
+      }
+    });
+    const { [config.userFields.apiToken]: apiToken } = await Users.findById(
+      user._id
+    ).lean();
+
+    const other = request.agent(t.context._web.server);
+    await other.post('/en/login').send({
+      email: provider.email,
+      password: 'Owner-Passw0rd!x'
+    });
+    t.true(await isSignedIn(other));
+
+    const owner = await signIn(t, 'google');
+    t.true(await isSignedIn(owner));
+
+    const after = await Users.findById(user._id);
+    t.true(after[config.userFields.hasSetPassword]);
+    t.is(after[config.userFields.apiToken], apiToken);
+    const { user: authenticated } = await after.authenticate(
+      'Owner-Passw0rd!x'
+    );
+    t.truthy(authenticated);
+    t.true(await isSignedIn(other));
+  }
+);

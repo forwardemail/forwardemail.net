@@ -121,7 +121,7 @@ async function setup(t, { rcptTo = () => {} } = {}) {
       const addr = address.address.toLowerCase();
       const count = (attempts.get(addr) || 0) + 1;
       attempts.set(addr, count);
-      fn(rcptTo(addr, count));
+      Promise.resolve(rcptTo(addr, count)).then((err) => fn(err));
     },
     onData(stream, session, fn) {
       stream.pipe(
@@ -1172,5 +1172,49 @@ test.serial(
       interval: ms('1s')
     });
     t.is(await countInbox(), 1);
+  }
+);
+
+test.serial(
+  'a retry while an earlier attempt is still forwarding the message is deferred',
+  async (t) => {
+    // the first attempt is slow at the destination and then fails for now
+    let release;
+    const held = new Promise((resolve) => {
+      release = resolve;
+    });
+    let holding = false;
+    const ctx = await setup(t, {
+      async rcptTo(address, count) {
+        if (address !== ctx.addr('slow') || count !== 1) return;
+        holding = true;
+        await held;
+        return tryAgainLater();
+      }
+    });
+    await ctx.createAlias('slow', ['slow']);
+    await ctx.clearGreylist();
+
+    const id = randomUUID();
+    const first = ctx.send(['slow'], id);
+    await pWaitFor(() => holding, { timeout: ms('30s') });
+
+    // meanwhile the sender retries: the retry is deferred, not accepted,
+    // since the first attempt can still fail
+    const retry = await t.throwsAsync(ctx.send(['slow'], id));
+    t.is(retry.responseCode, 421);
+
+    release();
+    const err = await t.throwsAsync(first);
+    t.is(err.responseCode, 451);
+    t.is(ctx.received.get(ctx.addr('slow')), undefined);
+
+    // the next retry forwards the message, and one after that skips it
+    await ctx.clearGreylist();
+    const info = await ctx.send(['slow'], id);
+    t.deepEqual(info.rejected, []);
+    t.is(ctx.received.get(ctx.addr('slow')), 1);
+    await ctx.send(['slow'], id);
+    t.is(ctx.received.get(ctx.addr('slow')), 1);
   }
 );

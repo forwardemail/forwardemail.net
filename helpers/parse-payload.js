@@ -1506,7 +1506,12 @@ async function parsePayload(data, ws) {
               let sieveMailboxes;
               const getSieveMailboxes = async () => {
                 if (!session.db) return null;
-                sieveMailboxes ||= await Mailboxes.find(this, session, {});
+                // (no retries, so the message is stored without delay)
+                sieveMailboxes ||= await Mailboxes.find(
+                  this,
+                  { ...session, retries: 0 },
+                  {}
+                );
                 return sieveMailboxes;
               };
 
@@ -1885,7 +1890,11 @@ async function parsePayload(data, ws) {
                 // database is not open, the mailbox Forward Email creates with
                 // it, and the one named for any other (each mailbox once)
                 //
-                const mailboxes = await getSieveMailboxes();
+                const mailboxes = sieveResult.deliveries.some(
+                  (delivery) => delivery.specialuse
+                )
+                  ? await getSieveMailboxes()
+                  : null;
                 const deliveries = new Map();
                 for (const delivery of sieveResult.deliveries) {
                   if (delivery.specialuse) {
@@ -1950,66 +1959,36 @@ async function parsePayload(data, ws) {
                 : Buffer.from(payload.raw);
 
               //
-              // The message in each other mailbox of the script (fileinto and
-              // keep, RFC 5228), once it is in the first one in the alias's
-              // database.  An append there would see the copy already stored
-              // (`checkForExisting` looks at every mailbox), so each copy is
-              // recorded once instead (a delivery that is tried again does not
-              // store it twice).
+              // The message in each other mailbox of the script, once it is in
+              // the first one (from the temporary mailbox when it is stored
+              // there, see helpers/sync-temporary-mailbox.js)
               //
-              const storeSieveCopies = async () => {
-                for (const copy of sieveCopies) {
-                  const copyKey = `${
-                    config.fingerprintPrefix
-                  }:sieve:copy:${revHash(
-                    encoder.pack([
-                      session.user.alias_id,
-                      fingerprint,
-                      copy.folder
-                    ])
-                  )}`;
-                  try {
-                    if (await this.client.get(copyKey)) continue;
-                    await onAppendPromise.call(
-                      this,
-                      copy.folder,
-                      copy.flags || [],
-                      _.isDate(payload.date)
-                        ? payload.date
-                        : new Date(payload.date),
-                      messageRaw,
-                      {
-                        user: { ...session.user },
-                        db: session.db,
-                        remoteAddress: payload.remoteAddress,
-                        resolvedRootClientHostname:
-                          payload.resolvedRootClientHostname,
-                        resolvedClientHostname: payload.resolvedClientHostname,
-                        allowlistValue: payload.allowlistValue,
-                        selected: false,
-                        retries: 0,
-                        createFolder: copy.create || false
-                      }
-                    );
-                    await this.client.set(copyKey, true, 'PX', ms('30d'));
-                  } catch (err) {
-                    logger.error('sieve fileinto copy failed', {
-                      user: { id: session.user.alias_user_id },
-                      session,
-                      ignore_hook: false,
-                      err,
-                      folder: copy.folder
-                    });
+              const copies = sieveCopies.map(({ folder, flags }) => ({
+                folder,
+                flags
+              }));
+              const storeSieveCopies = () =>
+                syncTemporaryMailbox.storeSieveCopies.call(
+                  this,
+                  {
+                    user: { ...session.user },
+                    db: session.db,
+                    remoteAddress: payload.remoteAddress,
+                    resolvedRootClientHostname:
+                      payload.resolvedRootClientHostname,
+                    resolvedClientHostname: payload.resolvedClientHostname,
+                    allowlistValue: payload.allowlistValue,
+                    selected: false
+                  },
+                  {
+                    copies,
+                    fingerprint,
+                    date: _.isDate(payload.date)
+                      ? payload.date
+                      : new Date(payload.date),
+                    raw: messageRaw
                   }
-                }
-              };
-
-              if (sieveCopies.length > 0 && !session.db)
-                logger.warn('sieve fileinto copies need the open mailbox', {
-                  user: { id: session.user.alias_user_id },
-                  ignore_hook: true,
-                  folders: sieveCopies.map((copy) => copy.folder)
-                });
+                );
 
               // NOTE: onAppend sends its own APN ping and newMessage
               // notification, so only the tmp storage path below notifies
@@ -2521,7 +2500,8 @@ async function parsePayload(data, ws) {
                     remoteAddress: payload.remoteAddress,
                     // Sieve filtering results
                     mailbox: targetFolder,
-                    flags: targetFlags
+                    flags: targetFlags,
+                    ...(copies.length > 0 ? { copies } : {})
                   });
 
                   // update storage after temporary message created

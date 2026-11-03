@@ -4,11 +4,12 @@
  */
 
 const { randomUUID } = require('node:crypto');
+const { setTimeout } = require('node:timers/promises');
 
 const bytes = require('@forwardemail/bytes');
 const ms = require('ms');
-const pWaitFor = require('p-wait-for');
 const pify = require('pify');
+const revHash = require('rev-hash');
 
 const checkDiskSpace = require('./check-disk-space');
 const getPathToDatabase = require('./get-path-to-database');
@@ -19,34 +20,142 @@ const updateStorageUsed = require('./update-storage-used');
 const { syncConvertResult } = require('./mongoose-to-sqlite');
 const { Builder } = require('#helpers/json-sql');
 const refreshSession = require('#helpers/refresh-session');
+const { encoder } = require('#helpers/encoder-decoder');
 
+const Aliases = require('#models/aliases');
 const TemporaryMessages = require('#models/temporary-messages');
+const config = require('#config');
 
 const onAppendPromise = pify(onAppend, { multiArgs: true });
 const builder = new Builder({ bufferAsNative: true });
 
 const RELEASE_LOCK_SCRIPT =
   "if redis.call('get', KEYS[1]) == ARGV[1] then return redis.call('del', KEYS[1]) else return 0 end";
+const EXTEND_LOCK_SCRIPT =
+  "if redis.call('get', KEYS[1]) == ARGV[1] then return redis.call('pexpire', KEYS[1], ARGV[2]) else return 0 end";
+
+// (renewed while the sync runs, so a sync that died frees it soon)
+const LOCK_TTL = ms('1m');
+
+//
+// The message in each other mailbox a Sieve script filed it into (fileinto
+// and keep, RFC 5228), once it is stored in the first one.  As Pigeonhole's
+// sieve_max_actions, at most 32 mailboxes in all, and only while the quota
+// has room for each copy (the storage used does not count the ones just
+// stored yet).  An append would see the copy already stored
+// (`checkForExisting` looks at every mailbox), so each copy is claimed once
+// instead: a delivery tried again, or run twice at once, does not store it
+// twice (the claim lasts 5 minutes until the copy is stored, so a copy whose
+// process died is stored when the message is delivered again after that).
+//
+async function storeSieveCopies(session, message) {
+  const { copies, fingerprint, date, raw } = message;
+  if (!Array.isArray(copies) || copies.length === 0) return;
+
+  let quota;
+  try {
+    quota = await Aliases.isOverQuota(
+      {
+        id: session.user.alias_id,
+        domain: session.user.domain_id,
+        locale: session.user.locale
+      },
+      0,
+      this.client
+    );
+  } catch (err) {
+    logger.error(err, { session });
+    return;
+  }
+
+  const { storageUsed, maxQuotaPerAlias } = quota;
+  for (const [i, copy] of copies.entries()) {
+    if (i >= 31 || storageUsed + raw.length * (i + 2) > maxQuotaPerAlias) {
+      logger.warn('sieve fileinto copies not stored', {
+        user: { id: session.user.alias_user_id },
+        ignore_hook: true,
+        folders: copies.slice(i).map((copy) => copy.folder)
+      });
+      break;
+    }
+
+    const key = `${config.fingerprintPrefix}:sieve:copy:${revHash(
+      encoder.pack([session.user.alias_id, fingerprint, copy.folder])
+    )}`;
+    let claimed = false;
+    try {
+      claimed =
+        (await this.client.set(key, true, 'PX', ms('5m'), 'NX')) === 'OK';
+      if (!claimed) continue;
+      await onAppendPromise.call(
+        this,
+        copy.folder,
+        copy.flags || [],
+        date,
+        raw,
+        {
+          ...session,
+          checkForExisting: false,
+          sieveCopy: true,
+          // (created when missing, as the first mailbox is, see `sync`)
+          createFolder: true,
+          // (the user was alerted for the message once already)
+          suppressPushAlert: true
+        }
+      );
+      await this.client.set(key, true, 'PX', ms('30d'));
+    } catch (err) {
+      if (claimed)
+        this.client.del(key).catch((err) => logger.fatal(err, { session }));
+      logger.error('sieve fileinto copy failed', {
+        user: { id: session.user.alias_user_id },
+        ignore_hook: false,
+        err,
+        folder: copy.folder
+      });
+    }
+  }
+}
 
 //
 // One sync per alias at a time, across processes: two at once read the same
 // rows and could both append a message before either deletes it from the
 // temporary mailbox.  A sync asked for meanwhile (e.g. one per delivery, see
-// `sqlite_sync_request` in imap-server.js) waits for it and then runs.
+// `sqlite_sync_request` in imap-server.js) waits for it and then runs; after
+// 30 seconds it gives up, as the one running also syncs what arrived since it
+// started (the messages stay in the temporary mailbox until a sync runs).
 //
 async function syncTemporaryMailbox(session) {
   if (!this.client) return sync.call(this, session);
 
   const key = `sync_temporary_mailbox:${session.user.alias_id}`;
   const owner = randomUUID();
-  await pWaitFor(
-    async () =>
-      (await this.client.set(key, owner, 'PX', ms('10m'), 'NX')) === 'OK',
-    { interval: 100, timeout: ms('30s') }
-  );
+  const deadline = Date.now() + ms('30s');
+  while ((await this.client.set(key, owner, 'PX', LOCK_TTL, 'NX')) !== 'OK') {
+    if (Date.now() > deadline) {
+      logger.warn('temporary mailbox sync skipped while another one runs', {
+        session
+      });
+      return 0;
+    }
+
+    await setTimeout(100);
+  }
+
+  // (renewed on a timer, as one append can take longer than the lock lasts,
+  //  for at most 30 minutes, so a sync that never ends frees it too)
+  const start = Date.now();
+  const timer = setInterval(() => {
+    if (Date.now() - start > ms('30m')) return clearInterval(timer);
+    this.client
+      .eval(EXTEND_LOCK_SCRIPT, 1, key, owner, LOCK_TTL)
+      .catch((err) => logger.fatal(err, { session }));
+  }, LOCK_TTL / 3);
+
   try {
     return await sync.call(this, session);
   } finally {
+    clearInterval(timer);
     await this.client
       .eval(RELEASE_LOCK_SCRIPT, 1, key, owner)
       .catch((err) => logger.fatal(err, { session }));
@@ -160,6 +269,12 @@ async function sync(session) {
             }
           );
 
+          await storeSieveCopies.call(
+            this,
+            { ...session, remoteAddress: message.remoteAddress },
+            message
+          );
+
           // Track successfully appended message for batch delete
           appendedIds.push(m._id);
           deleted++;
@@ -209,3 +324,4 @@ async function sync(session) {
 }
 
 module.exports = syncTemporaryMailbox;
+module.exports.storeSieveCopies = storeSieveCopies;

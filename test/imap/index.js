@@ -46,6 +46,7 @@ const Aliases = require('#models/aliases');
 const Attachments = require('#models/attachments');
 const TemporaryMessages = require('#models/temporary-messages');
 const Mailboxes = require('#models/mailboxes');
+const SieveScripts = require('#models/sieve-scripts');
 const onAppend = require('#helpers/imap/on-append');
 const Messages = require('#models/messages');
 const config = require('#config');
@@ -2170,6 +2171,310 @@ test('a sync of the temporary mailbox waits for the one running', async (t) => {
   await t.context.client.del(key);
   await sync;
   t.is(await count(), 1);
+});
+
+//
+// A sync that gives up waiting leaves nothing behind that could take the
+// lock later (and then hold it with no sync running, so every sync of the
+// alias waited for it to expire).
+//
+test('a sync that gives up waiting does not take the lock later', async (t) => {
+  t.timeout(ms('2m'));
+  const { client } = t.context;
+  const key = `sync_temporary_mailbox:${t.context.alias.id}`;
+  await client.set(key, 'another-process', 'PX', ms('5m'));
+
+  // (a slow Redis: a check of the lock is still on its way at the deadline)
+  const { set } = client;
+  client.set = async function (...args) {
+    if (args[0] === key) await setTimeout(ms('5s'));
+    return set.apply(this, args);
+  };
+
+  t.teardown(() => {
+    client.set = set;
+  });
+
+  const result = await t.context.wsp
+    .request({ action: 'sync', session: t.context.session }, 0)
+    .catch((err) => err);
+  t.is(result, 0);
+
+  // the other process is done
+  await client.del(key);
+  await setTimeout(ms('6s'));
+  t.is(await client.get(key), null);
+});
+
+//
+// The lock is kept while a sync runs, however long one append takes (the
+// lock lasts a minute, and an append waiting on a busy mailbox can take
+// longer, so another sync could append the same messages meanwhile).
+//
+test('a sync keeps its lock while one append takes long', async (t) => {
+  t.timeout(ms('2m'));
+  const { client, alias, domain } = t.context;
+  await pWaitFor(() => t.context.sqlite.databaseMap.evictAndClose(alias.id), {
+    timeout: ms('10s')
+  });
+  const subject = randomUUID();
+  const result = await t.context.wsp.request(
+    {
+      action: 'tmp',
+      aliases: [{ address: `${alias.name}@${domain.name}`, id: alias.id }],
+      remoteAddress: IP_ADDRESS,
+      date: new Date().toISOString(),
+      raw: Buffer.from(
+        `Date: ${new Date().toUTCString()}\r\nFrom: a@example.com\r\nSubject: ${subject}\r\n\r\ntest`
+      )
+    },
+    0
+  );
+  t.deepEqual(result, {});
+
+  // (the append of the message waits 30 seconds)
+  const { get } = client;
+  let slowed = false;
+  client.get = async function (...args) {
+    if (!slowed && args[0] === `alias_quota_v2:${alias.id}`) {
+      slowed = true;
+      await setTimeout(ms('30s'));
+    }
+
+    return get.apply(this, args);
+  };
+
+  t.teardown(() => {
+    client.get = get;
+  });
+
+  const sync = t.context.wsp.request(
+    { action: 'sync', timeout: ms('1m'), session: t.context.session },
+    0
+  );
+  await pWaitFor(() => slowed, { timeout: ms('10s') });
+  await setTimeout(ms('28s'));
+  t.true((await client.pttl(`sync_temporary_mailbox:${alias.id}`)) > ms('40s'));
+  await sync;
+  await pWaitFor(
+    async () =>
+      (await Messages.countDocuments(t.context.imap, t.context.session, {
+        subject
+      })) === 1,
+    { timeout: ms('30s') }
+  );
+  t.pass();
+});
+
+//
+// A FETCH of `1:*` on a mailbox with an expunged message asks for a list of
+// uids; each page of the FETCH asks for its own part of that list, rather
+// than the whole list again (which made a FETCH of a large mailbox take time
+// in proportion to the square of its size).
+//
+test('a FETCH of a list of uids reads each page with its own uids', async (t) => {
+  t.timeout(ms('5m'));
+  const { imapFlow, sqlite, alias, domain } = t.context;
+  for (let i = 0; i < 60; i++) {
+    await imapFlow.append(
+      'INBOX',
+      Buffer.from(
+        [
+          `Date: ${new Date().toISOString()}`,
+          `To: ${alias.name}@${domain.name}`,
+          'From: sender@example.com',
+          `Subject: paged ${i}`,
+          '',
+          `body ${i}`
+        ].join('\r\n')
+      )
+    );
+  }
+
+  await imapFlow.mailboxOpen('INBOX');
+  await imapFlow.messageDelete('2', { uid: true });
+
+  const db = sqlite.databaseMap.get(alias.id);
+  const { prepare } = db;
+  const lists = [];
+  db.prepare = function (query, ...args) {
+    const match = /from "messages".* "uid" in \(([^)]*)\)/i.exec(query);
+    if (match) lists.push(match[1].split(',').length);
+    return prepare.call(this, query, ...args);
+  };
+
+  t.teardown(() => {
+    db.prepare = prepare;
+  });
+
+  let count = 0;
+  for await (const message of imapFlow.fetch(
+    '1:*',
+    { uid: true, source: true },
+    { uid: true }
+  )) {
+    if (message.source) count++;
+  }
+
+  t.is(count, 59);
+  t.true(lists.length >= 3);
+  t.true(lists.every((length) => length <= 25));
+});
+
+//
+// A Sieve script that files a message into several mailboxes stores it in
+// each of them (RFC 5228), from the temporary mailbox as well, once each,
+// and within the quota.
+//
+async function deliverWithSieve(t, content, count = 1) {
+  const { alias, domain, user } = t.context;
+  await SieveScripts.create({
+    alias: alias._id,
+    user: user._id,
+    domain: domain._id,
+    name: randomUUID(),
+    content,
+    is_active: true
+  });
+  const subject = randomUUID();
+  const raw = Buffer.from(
+    [
+      `Date: ${new Date().toUTCString()}`,
+      `Message-ID: <${subject}@example.com>`,
+      `To: ${alias.name}@${domain.name}`,
+      'From: sender@example.com',
+      `Subject: ${subject}`,
+      '',
+      'x'.repeat(10_000)
+    ].join('\r\n')
+  );
+  const results = await Promise.all(
+    Array.from({ length: count }, () =>
+      t.context.wsp.request(
+        {
+          action: 'tmp',
+          aliases: [{ address: `${alias.name}@${domain.name}`, id: alias.id }],
+          remoteAddress: IP_ADDRESS,
+          sender: 'sender@example.com',
+          date: new Date().toISOString(),
+          raw
+        },
+        0
+      )
+    )
+  );
+  for (const result of results) t.deepEqual(result, {});
+  return { subject, size: raw.length };
+}
+
+async function countByMailbox(t, subject) {
+  const { imap, session } = t.context;
+  const mailboxes = await Mailboxes.find(imap, session, {});
+  const paths = new Map(mailboxes.map((m) => [m._id.toString(), m.path]));
+  const counts = {};
+  for (const message of await Messages.find(imap, session, { subject })) {
+    const path = paths.get(message.mailbox.toString());
+    counts[path] = (counts[path] || 0) + 1;
+  }
+
+  return counts;
+}
+
+test('sieve copies of a message are stored once, with one alert', async (t) => {
+  const events = utils.captureNotifications(
+    t.context.client,
+    t.context.alias.id
+  );
+  t.teardown(() => events.stop());
+  const { subject } = await deliverWithSieve(
+    t,
+    'require ["fileinto", "mailbox", "copy"];\nfileinto :copy :create "A";\nfileinto :copy :create "B";\nfileinto :copy :create "C";',
+    3
+  );
+  t.deepEqual(await countByMailbox(t, subject), { INBOX: 1, A: 1, B: 1, C: 1 });
+  await pWaitFor(() => events.of('newMessage').length >= 4, {
+    timeout: ms('10s')
+  });
+  t.is(events.of('newMessage').filter((e) => !e.suppressAlert).length, 1);
+});
+
+test('a sieve copy to "Junk" goes to the spam folder', async (t) => {
+  const { subject } = await deliverWithSieve(
+    t,
+    'require ["fileinto", "copy"];\nfileinto :copy "Junk";'
+  );
+  t.deepEqual(await countByMailbox(t, subject), { INBOX: 1, Spam: 1 });
+});
+
+test('a sieve copy to a mailbox that does not exist creates it', async (t) => {
+  const { subject } = await deliverWithSieve(
+    t,
+    'require "fileinto";\nfileinto "Missing";\nkeep;'
+  );
+  t.deepEqual(await countByMailbox(t, subject), { INBOX: 1, Missing: 1 });
+});
+
+test('sieve copies of a message stay within the quota', async (t) => {
+  const { alias, client } = t.context;
+  const size = 10_200;
+  await Aliases.updateOne({ _id: alias._id }, { $set: { storage_used: 0 } });
+  await client.set(
+    `alias_quota_v2:${alias.id}`,
+    JSON.stringify({ maxQuotaPerAlias: size * 3, domainMaxQuota: 1e12 }),
+    'PX',
+    ms('1h')
+  );
+  const lines = ['require ["fileinto", "mailbox"];'];
+  for (let i = 0; i < 10; i++) lines.push(`fileinto :create "F${i}";`);
+  const { subject } = await deliverWithSieve(t, lines.join('\n'));
+  const counts = await countByMailbox(t, subject);
+  const stored = Object.values(counts).reduce((a, b) => a + b, 0);
+  t.true(stored >= 1 && stored <= 3, `${stored} stored`);
+});
+
+test('sieve copies of a message in the temporary mailbox are stored on sync', async (t) => {
+  await pWaitFor(
+    () => t.context.sqlite.databaseMap.evictAndClose(t.context.alias.id),
+    { timeout: ms('10s') }
+  );
+  const { subject } = await deliverWithSieve(
+    t,
+    'require ["fileinto", "mailbox", "copy"];\nfileinto :copy :create "Archive";'
+  );
+  await t.context.wsp.request(
+    { action: 'sync', session: t.context.session },
+    0
+  );
+  t.deepEqual(await countByMailbox(t, subject), { INBOX: 1, Archive: 1 });
+});
+
+test('a delivery without a sieve script does not list the mailboxes', async (t) => {
+  const { find } = Mailboxes;
+  let finds = 0;
+  Mailboxes.find = function (...args) {
+    finds++;
+    return find.apply(this, args);
+  };
+
+  t.teardown(() => {
+    Mailboxes.find = find;
+  });
+
+  const { alias, domain } = t.context;
+  const result = await t.context.wsp.request(
+    {
+      action: 'tmp',
+      aliases: [{ address: `${alias.name}@${domain.name}`, id: alias.id }],
+      remoteAddress: IP_ADDRESS,
+      date: new Date().toISOString(),
+      raw: Buffer.from(
+        `Date: ${new Date().toUTCString()}\r\nFrom: a@example.com\r\nSubject: ${randomUUID()}\r\n\r\ntest`
+      )
+    },
+    0
+  );
+  t.deepEqual(result, {});
+  t.is(finds, 0);
 });
 
 test('large mailbox', async (t) => {
@@ -5748,6 +6053,48 @@ test('mailbox indexes serve CHANGEDSINCE and skip flags and labels', async (t) =
     .join('\n');
   t.regex(plan, /USING (COVERING )?INDEX Messages_mailbox_uid_modseq /);
   t.notRegex(plan, /TEMP B-TREE/);
+});
+
+// (building it reads every message, which blocks for seconds on a large one)
+test('a mailbox with the (mailbox, uid) index keeps it', async (t) => {
+  const { sqlite, alias, session, client } = t.context;
+  let db = await getDatabase(sqlite, alias, session);
+  const getIndexes = () =>
+    new Set(
+      db
+        .prepare(
+          "SELECT name FROM sqlite_master WHERE type = 'index' AND tbl_name = 'Messages'"
+        )
+        .pluck()
+        .all()
+    );
+  await pWaitFor(() => getIndexes().has('Messages_mailbox_uid_modseq'), {
+    timeout: ms('10s')
+  });
+
+  // (a mailbox as it was before)
+  db.exec('DROP INDEX "Messages_mailbox_uid_modseq"');
+  db.exec(
+    'CREATE INDEX "Messages_mailbox_uid" ON "Messages" ("mailbox", "uid")'
+  );
+  db.exec('CREATE INDEX "Messages_flags" ON "Messages" ("flags")');
+
+  // opened again once its migration is due
+  sqlite.databaseMap.release(alias.id, db);
+  await pWaitFor(() => sqlite.databaseMap.evictAndClose(alias.id), {
+    timeout: ms('10s')
+  });
+  await client.del(`migrate_check:${alias.id}`);
+  delete session.db;
+  db = await getDatabase(sqlite, alias, session);
+  t.teardown(() => sqlite.databaseMap.release(alias.id, db));
+  await pWaitFor(() => !getIndexes().has('Messages_flags'), {
+    timeout: ms('10s')
+  });
+
+  const indexes = getIndexes();
+  t.true(indexes.has('Messages_mailbox_uid'));
+  t.false(indexes.has('Messages_mailbox_uid_modseq'));
 });
 
 const onAppendPromise = pify(onAppend, { multiArgs: true });

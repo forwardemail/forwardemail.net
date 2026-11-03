@@ -15,6 +15,7 @@ const _ = require('#helpers/lodash');
 const config = require('#config');
 const env = require('#config/env');
 const isRetryableError = require('#helpers/is-retryable-error');
+const { isClosedBeforeResponse } = require('#helpers/is-retryable-error');
 const logger = require('#helpers/logger');
 const recursivelyParse = require('#helpers/recursively-parse');
 const {
@@ -1123,7 +1124,7 @@ function isLiveDatabaseSession(session) {
   }
 }
 
-function wrapWithRetry(fn, model) {
+function wrapWithRetry(fn, model, isWrite = false) {
   return function (...args) {
     // arg[0] -> instance
     // arg[1] -> session
@@ -1142,7 +1143,11 @@ function wrapWithRetry(fn, model) {
         error.args = JSON.parse(safeStringify(args));
         logger.error(error);
 
-        if (isRetryableError(error)) {
+        // (a write over a connection that dropped may have run already)
+        if (
+          isRetryableError(error) &&
+          !(isWrite && isClosedBeforeResponse(error))
+        ) {
           //
           // If the database was evicted mid-operation, re-open it via
           // getDatabase -- but only when the operation is retried at all:
@@ -1209,12 +1214,12 @@ function dummyProofModel(model) {
   model.findAndCount = wrapWithRetry(findAndCount, model);
   model.findById = wrapWithRetry(findById, model);
   model.findOne = wrapWithRetry(findOne, model);
-  model.deleteOne = wrapWithRetry(deleteOne, model);
-  model.deleteMany = wrapWithRetry(deleteMany, model);
-  model.findByIdAndUpdate = wrapWithRetry(findByIdAndUpdate, model);
-  model.findOneAndUpdate = wrapWithRetry(findOneAndUpdate, model);
+  model.deleteOne = wrapWithRetry(deleteOne, model, true);
+  model.deleteMany = wrapWithRetry(deleteMany, model, true);
+  model.findByIdAndUpdate = wrapWithRetry(findByIdAndUpdate, model, true);
+  model.findOneAndUpdate = wrapWithRetry(findOneAndUpdate, model, true);
   model.distinct = wrapWithRetry(distinct, model);
-  model.updateMany = wrapWithRetry(updateMany, model);
+  model.updateMany = wrapWithRetry(updateMany, model, true);
 
   // disabled for now
   model.prototype.$__remove = noop('remove');
@@ -1232,7 +1237,8 @@ function dummyProofModel(model) {
         error.args = JSON.parse(safeStringify(args));
         logger.error(error);
 
-        if (isRetryableError(error)) return;
+        // (an insert over a connection that dropped may have run already)
+        if (isRetryableError(error) && !isClosedBeforeResponse(error)) return;
 
         throw error;
       }
@@ -1719,9 +1725,11 @@ function syncConvertResult(Model, doc) {
   for (const key in doc) {
     if (Model.mapping[key]) {
       obj[key] = Model.mapping[key].getter(doc[key], doc);
-    } else {
+    } else if (doc[key] !== null) {
       // sometimes we have a legacy column such as "uid"
       // which is a type String and so we can easily add mapping
+      // (or a column added by a newer version, empty on rows it did not
+      // write, as convertResult skips it)
       if (typeof doc[key] !== 'string')
         throw new TypeError(`Mapping for ${key} does not exist`);
       obj[key] = doc[key];

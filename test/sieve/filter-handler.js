@@ -641,3 +641,44 @@ describe('Sieve Filter Handler executeScript (RFC 5228 actions)', () => {
     ]);
   });
 });
+
+//
+// Scripts are checked strictly when saved; one saved before a missing
+// "require" was refused still runs at delivery (it uses only what is
+// supported), instead of failing on every message
+//
+describe('Scripts saved before require was enforced', () => {
+  it('still run when they only miss a require', async () => {
+    const handler = new SieveFilterHandler({});
+    const message = {
+      headers: { subject: 'x', 'x-spam-score': '7' },
+      envelope: { from: 'a@b.example', to: ['me+lists@x.example'] }
+    };
+    const numeric = await handler.executeScript(
+      'require ["relational", "fileinto"]; if header :value "ge" :comparator "i;ascii-numeric" "X-Spam-Score" "5" { fileinto "Junk"; }',
+      message
+    );
+    assert.deepStrictEqual(
+      numeric.fileinto.map((f) => f.folder),
+      ['Junk']
+    );
+    const detail = await handler.executeScript(
+      'require ["envelope", "fileinto"]; if envelope :detail "to" "lists" { fileinto "Lists"; }',
+      message
+    );
+    assert.deepStrictEqual(
+      detail.fileinto.map((f) => f.folder),
+      ['Lists']
+    );
+  });
+
+  it('do not run when they use what is not supported', async () => {
+    const handler = new SieveFilterHandler({});
+    await assert.rejects(
+      handler.executeScript('require "nonexistent"; keep;', {
+        headers: {},
+        envelope: {}
+      })
+    );
+  });
+});

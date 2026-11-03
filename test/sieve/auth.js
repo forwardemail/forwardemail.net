@@ -981,3 +981,138 @@ test('pipelined PUTSCRIPT commands keep to the script limit', async (t) => {
   t.true(names[0].includes('pipelined-0'));
   t.true(names[1].includes('pipelined-1'));
 });
+
+//
+// CHECKSCRIPT and PUTSCRIPT check what saving and running the script check:
+// a capability the script uses without "require" is refused (it used to be
+// reported valid, then refused when the script was saved or run)
+//
+test('should refuse a script that uses a capability it does not require', async (t) => {
+  const client = await createClient(t.context.port);
+  await client.waitForGreeting();
+
+  const credentials = Buffer.from(
+    `\0${t.context.alias.name}@${t.context.domain.name}\0${t.context.pass}`
+  ).toString('base64');
+  await client.sendCommand(`AUTHENTICATE "PLAIN" "${credentials}"`);
+
+  const script =
+    'require "fileinto"; if address :detail "to" "x" { fileinto "X"; }';
+  for (const command of ['CHECKSCRIPT', 'PUTSCRIPT "detail"']) {
+    const response = await client.sendCommand(
+      `${command} {${script.length}+}\r\n${script}`
+    );
+    t.true(
+      response.some((line) => line.startsWith('NO')),
+      `${command}: ${response.join(' ')}`
+    );
+  }
+
+  client.end();
+});
+
+//
+// A literal's size is in octets (RFC 5804 section 4): a script with
+// non-ASCII text (a folder named "Büro") is read whole, even when a
+// character arrives split across two packets
+//
+test('should read a script with non-ASCII text by its size in octets', async (t) => {
+  const client = await createClient(t.context.port);
+  await client.waitForGreeting();
+
+  const credentials = Buffer.from(
+    `\0${t.context.alias.name}@${t.context.domain.name}\0${t.context.pass}`
+  ).toString('base64');
+  await client.sendCommand(`AUTHENTICATE "PLAIN" "${credentials}"`);
+
+  const script = 'require "fileinto"; fileinto "Büro/Rechnungen";';
+  const data = Buffer.from(
+    `PUTSCRIPT "buero" {${Buffer.byteLength(script)}+}\r\n${script}\r\n`
+  );
+  // (split inside the two octets of "ü")
+  const split = data.indexOf(Buffer.from('ü')) + 1;
+  client.write(data.subarray(0, split));
+  await delay(200);
+  client.write(data.subarray(split));
+  await delay(1000);
+
+  // (nothing of the script was left to be read as a command)
+  const noop = await client.sendCommand('NOOP');
+  t.true(
+    noop.some((line) => line.startsWith('OK')),
+    `NOOP: ${noop.join(' ')}`
+  );
+
+  const get = await client.sendCommand('GETSCRIPT "buero"');
+  t.true(get.includes(script), `GETSCRIPT: ${get.join(' ')}`);
+
+  client.end();
+});
+
+//
+// A script that arrives in many packets is read whole and in order (the
+// packets of a literal are joined once all of it arrived)
+//
+test('should read a script that arrives in many packets', async (t) => {
+  const client = await createClient(t.context.port);
+  await client.waitForGreeting();
+
+  const credentials = Buffer.from(
+    `\0${t.context.alias.name}@${t.context.domain.name}\0${t.context.pass}`
+  ).toString('base64');
+  await client.sendCommand(`AUTHENTICATE "PLAIN" "${credentials}"`);
+
+  const script = `require "fileinto";\n${Array.from(
+    { length: 20 },
+    (_, i) => `if header :contains "subject" "ü${i}" { fileinto "F${i}"; }`
+  ).join('\n')}`;
+  const literal = Buffer.from(`${script}\r\n`);
+  client.write(`PUTSCRIPT "packets" {${Buffer.byteLength(script)}+}\r\n`);
+  for (let i = 0; i < literal.length; i += 50) {
+    await delay(5);
+    client.write(literal.subarray(i, i + 50));
+  }
+
+  await delay(1000);
+
+  const noop = await client.sendCommand('NOOP');
+  t.true(
+    noop.some((line) => line.startsWith('OK')),
+    `NOOP: ${noop.join(' ')}`
+  );
+
+  const get = await client.sendCommand('GETSCRIPT "packets"');
+  t.true(
+    get.join('\n').includes('fileinto "F19"'),
+    `GETSCRIPT: ${get.join(' ')}`
+  );
+  t.true(get.join('\n').includes('"ü0"'));
+
+  client.end();
+});
+
+//
+// A refused PUTSCRIPT still reads its script (the client sends it without
+// waiting), so no line of it is read as a command
+//
+test('should not read the script of a refused PUTSCRIPT as commands', async (t) => {
+  const client = await createClient(t.context.port);
+  await client.waitForGreeting();
+
+  const credentials = Buffer.from(
+    `\0${t.context.alias.name}@${t.context.domain.name}\0${t.context.pass}`
+  ).toString('base64');
+  await client.sendCommand(`AUTHENTICATE "PLAIN" "${credentials}"`);
+
+  const script = 'keep;\r\nkeep;';
+  const response = await client.sendCommand(
+    `PUTSCRIPT "bad name" {${script.length}+}\r\n${script}\r\nNOOP`
+  );
+  t.deepEqual(
+    response.map((line) => line.split(' ')[0]),
+    ['NO', 'OK'],
+    `${response.join(' ')}`
+  );
+
+  client.end();
+});

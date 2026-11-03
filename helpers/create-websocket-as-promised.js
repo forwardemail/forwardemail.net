@@ -20,6 +20,7 @@ const config = require('#config');
 const env = require('#config/env');
 const { getPrimaryApiSecret } = require('#helpers/api-secrets');
 const isRetryableError = require('#helpers/is-retryable-error');
+const { isClosedBeforeResponse } = require('#helpers/is-retryable-error');
 const isTimeoutError = require('#helpers/is-timeout-error');
 const logger = require('#helpers/logger');
 const parseError = require('#helpers/parse-error');
@@ -28,6 +29,44 @@ const refineAndLogError = require('#helpers/refine-and-log-error');
 const { encrypt } = require('#helpers/encrypt-decrypt');
 const { encoder, decoder } = require('#helpers/encoder-decoder');
 const { unpackMessagePack } = require('#helpers/unpack-messagepack');
+
+//
+// A request whose connection dropped before the response may have run on
+// the SQLite server already, so it is only sent again when running it twice
+// is safe: reads, and the delivery and sync of messages, which skip one that
+// is stored already (an APPEND or COPY sent again would store it twice)
+//
+const REPEATABLE_ACTIONS = new Set([
+  'fetch',
+  'get_quota',
+  'get_quota_root',
+  'list',
+  'lsub',
+  'open',
+  'search',
+  'size',
+  'status',
+  'subscribe',
+  'sync',
+  'tmp',
+  'unsubscribe'
+]);
+
+// (and statements that only read, as model reads send them; a write may
+// read too, with RETURNING, so the SQL is what tells)
+function isRepeatable(data) {
+  if (REPEATABLE_ACTIONS.has(data.action)) return true;
+  return (
+    data.action === 'stmt' &&
+    Array.isArray(data.stmt) &&
+    data.stmt.every(
+      (op) =>
+        !Array.isArray(op) ||
+        op[0] !== 'prepare' ||
+        (typeof op[1] === 'string' && /^\s*select\s/i.test(op[1]))
+    )
+  );
+}
 
 //
 // Reconnection policy of the long-lived client every process keeps to the
@@ -439,6 +478,8 @@ function createWebSocketAsPromised(options = {}) {
               maxTimeout: config.busyTimeout,
               factor: 1,
               onFailedAttempt(error) {
+                if (isClosedBeforeResponse(error) && !isRepeatable(data))
+                  throw error;
                 if (isRetryableError(error)) return;
 
                 throw error;

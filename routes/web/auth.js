@@ -238,14 +238,21 @@ async function callbackRedirect(ctx, next) {
     }
   }
 
-  if (
-    ctx.isAuthenticated() &&
-    oauthProviders.has(ctx.params.provider) &&
-    // (also an address only counted as verified for a paid plan)
-    !isEmailProven(ctx.state.user)
-  ) {
-    const user = await Users.findById(ctx.state.user._id);
-    if (user) {
+  //
+  // NOTE: `ctx.state.user` here is the `toObject()` the strategy returned,
+  //       which omits `_id` and the verification fields, so the account is
+  //       loaded by `id` and checked as stored
+  //
+  if (ctx.isAuthenticated() && oauthProviders.has(ctx.params.provider)) {
+    const user = await Users.findOne({ id: ctx.state.user.id });
+    // (also an address only counted as verified for a paid plan, but not one
+    // proven before that the Ubuntu team sync marked unverified to delete
+    // the account, see helpers/sync-ubuntu-user.js)
+    if (
+      user &&
+      !isEmailProven(user) &&
+      user[config.userFields.emailProofPending] !== false
+    ) {
       // (passkeys, two-factor and the API token, see clear-unverified-sign-ins.js)
       clearUnverifiedSignIns(user);
       user[config.userFields.hasVerifiedEmail] = true;
@@ -292,24 +299,28 @@ async function callbackRedirect(ctx, next) {
     isSANB(ctx.state.user[config.passport.fields.ubuntuUsername])
   ) {
     try {
+      // (by `id`: `ctx.state.user` has no `_id` here, see above)
+      const user = await Users.findOne({ id: ctx.state.user.id });
       const ubuntuDomains = Object.keys(config.ubuntuTeamMapping);
-      const existingMembership = await Domains.findOne({
-        name: { $in: ubuntuDomains },
-        plan: 'team',
-        has_txt_record: true,
-        'members.user': ctx.state.user._id
-      })
-        .lean()
-        .exec();
+      const existingMembership =
+        user &&
+        (await Domains.findOne({
+          name: { $in: ubuntuDomains },
+          plan: 'team',
+          has_txt_record: true,
+          'members.user': user._id
+        })
+          .lean()
+          .exec());
 
-      if (!existingMembership) {
+      if (user && !existingMembership) {
         const map = await getUbuntuMembersMap();
-        const user = await Users.findById(ctx.state.user._id);
-        if (user) {
-          await syncUbuntuUser(user, map);
-          user.last_ubuntu_sync = new Date();
-          await user.save();
-        }
+        await syncUbuntuUser(user, map);
+        // (as jobs/ubuntu-sync-memberships.js does: saving the user would
+        // sync it again with the older map of this process, which refuses it)
+        await Users.findByIdAndUpdate(user._id, {
+          $set: { last_ubuntu_sync: new Date() }
+        });
       }
     } catch (err) {
       logger.fatal(err);

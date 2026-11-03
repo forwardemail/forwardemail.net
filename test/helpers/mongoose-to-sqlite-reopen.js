@@ -57,3 +57,43 @@ test('only a session on the live mailbox is re-opened after an eviction', (t) =>
   // a handle without a file name cannot be matched: leave it alone
   t.false(isLiveDatabaseSession({ user, db: {} }));
 });
+
+//
+// A write over the WebSocket whose connection dropped before the response
+// may have run already, so it is not run again (a read is)
+//
+test('a write whose connection dropped is not run again', async (t) => {
+  const TemporaryMessages = require('#models/temporary-messages');
+  let requests = 0;
+  const instance = {
+    wsp: {
+      async request() {
+        requests++;
+        // (as wsp.request throws it, see refineAndLogError)
+        const err = new Error(
+          'An internal server error has occurred, please try again later.'
+        );
+        err._message = 'WebSocket closed with reason: undefined (1006).';
+        err.responseCode = 421;
+        throw err;
+      }
+    }
+  };
+  const session = {
+    db: { wsp: true, open: true },
+    user: {
+      alias_id: new mongoose.Types.ObjectId().toString(),
+      password: 'test-password'
+    }
+  };
+
+  await t.throwsAsync(
+    TemporaryMessages.updateMany(
+      instance,
+      session,
+      { mailbox: 'INBOX' },
+      { $set: { mailbox: 'Archive' } }
+    )
+  );
+  t.is(requests, 1);
+});

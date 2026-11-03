@@ -72,3 +72,11 @@ test('returns messages that compress and that do not as received', async (t) => 
   const random = crypto.randomBytes(4096);
   t.deepEqual(Buffer.from(await store(t, random)), random);
 });
+
+// (during a deploy an older version reads rows from a table that a newer one
+// added a column to)
+test('reads a row with an empty column the model does not have', async (t) => {
+  t.context.db.exec('ALTER TABLE TemporaryMessages ADD COLUMN later BLOB');
+  const raw = Buffer.from('Subject: test\r\n\r\ntest');
+  t.deepEqual(Buffer.from(await store(t, raw)), raw);
+});

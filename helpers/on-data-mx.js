@@ -1296,11 +1296,19 @@ async function forward(recipient, headers, session, body) {
   // prevent sending to the same webhook or email twice
   const key = getFingerprintKey(session, recipient.webhook || recipient.to[0]);
 
+  //
+  // The claim is "pending" until the destination has the message, as in
+  // `imap()`: a retry that arrives while an earlier attempt is still sending
+  // it is deferred, since that attempt can still fail and release the claim
+  // (the TTL covers the longest attempt, connecting to each MX host and the
+  // SMTP or webhook timeouts)
+  //
+  const pending = `pending:${session.id}`;
+  const claim = this.client.set(key, pending, 'PX', ms('30m'), 'NX');
+
   // Run denylist check concurrently with the fingerprint claim
   const [acquired] = await Promise.all([
-    // Atomic claim: SET NX PX prevents the race where two MX workers
-    // both read "0" before either increments.
-    this.client.set(key, '1', 'PX', config.fingerprintTTL, 'NX'),
+    claim,
     (async () => {
       //
       // NOTE: we send emails in series therefore we can check
@@ -1337,10 +1345,32 @@ async function forward(recipient, headers, session, body) {
         throw err;
       }
     })()
-  ]);
-  const accepted = [];
-  const bounces = [];
+  ]).catch(async (err) => {
+    // (nothing was sent, so a retry is not skipped)
+    if (await claim.catch(() => false))
+      await this.client.del(key).catch((err) => logger.fatal(err));
+    throw err;
+  });
+
   if (!acquired) {
+    const accepted = [];
+    const bounces = [];
+    // (an earlier attempt still sending it, or one that failed since)
+    const claimed = await this.client.get(key);
+    if (claimed !== '1' && claimed !== pending) {
+      bounces.push({
+        address: recipient.recipient,
+        destination: recipient.webhook || recipient.to[0],
+        host: recipient.host,
+        err: new SMTPError(
+          'Message delivery is already in progress, please try again later.',
+          { responseCode: 421, ignore_hook: true }
+        ),
+        recipient
+      });
+      return { accepted, bounces, vacationResponder: false };
+    }
+
     // NOTE: we group together recipients based off endpoint
     for (const replacement of Object.keys(recipient.replacements)) {
       if (!accepted.includes(replacement)) accepted.push(replacement);
@@ -1353,6 +1383,21 @@ async function forward(recipient, headers, session, body) {
         accepted.length > 0 ? recipient.vacationResponder : false
     };
   }
+
+  try {
+    return await send.call(this, recipient, headers, session, body);
+  } catch (err) {
+    // (an error before anything was sent, so a retry is not skipped)
+    if ((await this.client.get(key).catch(() => null)) === pending)
+      await this.client.del(key).catch((err) => logger.fatal(err));
+    throw err;
+  }
+}
+
+async function send(recipient, headers, session, body) {
+  const key = getFingerprintKey(session, recipient.webhook || recipient.to[0]);
+  const accepted = [];
+  const bounces = [];
 
   // add "Received" and "X-Original-To" headers to the message
   if (!headers.hasHeader('x-original-to')) {
@@ -1558,8 +1603,11 @@ async function forward(recipient, headers, session, body) {
         session
       });
 
-      // NOTE: fingerprint key was already claimed atomically via SET NX PX
-      // above before forwarding began — no additional write needed here.
+      // the webhook has the message: a retry of it now skips this webhook
+      await this.client
+        .set(key, '1', 'PX', config.fingerprintTTL)
+        .catch((err) => logger.fatal(err));
+
       // NOTE: we group together recipients based off endpoint
       for (const replacement of Object.keys(recipient.replacements)) {
         if (!accepted.includes(replacement)) accepted.push(replacement);
@@ -1826,13 +1874,20 @@ async function forward(recipient, headers, session, body) {
     // only rewrite if the header contains non-ASCII characters
     if (!/[\u0080-\uFFFF]/.test(raw)) continue;
     // replace domain parts of email addresses with their ACE equivalents
-    const downgraded = raw.replace(/(@)([^@\s>,;]+)/g, (match, at, domain) => {
-      try {
-        return `${at}${punycode.toASCII(domain)}`;
-      } catch {
-        return match;
+    // (only characters a domain can have: punycode keeps the ASCII ones of
+    // what it converts, so a match that ran into a quote, backslash or
+    // parenthesis could move where a quoted name or comment ends, and with
+    // it which address the header holds)
+    const downgraded = raw.replace(
+      /(@)([^\s"\\()<>[\],;:@]+)/g,
+      (match, at, domain) => {
+        try {
+          return `${at}${punycode.toASCII(domain)}`;
+        } catch {
+          return match;
+        }
       }
-    });
+    );
     if (downgraded !== raw) {
       line.line = Buffer.from(downgraded, 'utf8').toString('binary');
       headers.changed = true;
@@ -2058,9 +2113,12 @@ async function forward(recipient, headers, session, body) {
       session
     });
 
-    // NOTE: fingerprint key was already claimed atomically via SET NX PX
-    // above before forwarding began — no additional write needed here.
     if (info.accepted && info.accepted.length > 0) {
+      // the destination has the message: a retry of it now skips it
+      await this.client
+        .set(key, '1', 'PX', config.fingerprintTTL)
+        .catch((err) => logger.fatal(err));
+
       // (a reply relayed to an SRS address spends its reverse delivery)
       if (recipient.srs) spendSrsReverse(session, recipient.srsAddress);
 

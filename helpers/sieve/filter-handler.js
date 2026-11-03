@@ -19,8 +19,24 @@ const { parse } = require('./parser');
 const SieveEngine = require('./engine');
 const {
   SUPPORTED_CAPABILITIES,
+  isSupportedCapability,
   validateSieveCapabilities
 } = require('./capabilities');
+
+//
+// Whether a script can run: scripts are checked strictly when saved, but one
+// saved before a missing "require" was refused (e.g. :detail without
+// "subaddress", or the i;ascii-numeric comparator without its capability)
+// still runs, since everything it uses is supported
+//
+function canRun(capabilityResult) {
+  return (
+    capabilityResult.valid ||
+    capabilityResult.unsupported.every(
+      (entry) => entry.undeclared && isSupportedCapability(entry.feature)
+    )
+  );
+}
 
 // Use a no-op logger in test environments where the full config isn't available
 let logger;
@@ -95,7 +111,7 @@ class SieveFilterHandler {
       // Parse and execute the script
       const ast = parse(script.content);
       const capabilityResult = validateSieveCapabilities(ast);
-      if (!capabilityResult.valid) {
+      if (!canRun(capabilityResult)) {
         throw new Error(capabilityResult.errors.join('; '));
       }
 
@@ -163,7 +179,7 @@ class SieveFilterHandler {
       // Parse and execute the script
       const ast = parse(scriptContent);
       const capabilityResult = validateSieveCapabilities(ast);
-      if (!capabilityResult.valid) {
+      if (!canRun(capabilityResult)) {
         throw new Error(capabilityResult.errors.join('; '));
       }
 

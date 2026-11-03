@@ -46,7 +46,10 @@ const TemporaryMessages = new mongoose.Schema(
     flags: {
       type: [String],
       default: []
-    }
+    },
+    // Sieve filtering support - the other mailboxes to store the message to
+    // (each `{ folder, flags }`, see `storeSieveCopies`)
+    copies: mongoose.Schema.Types.Mixed
   },
   dummySchemaOptions
 );

@@ -419,7 +419,10 @@ async function syncUbuntuUser(user, map) {
             if (aliasCount === 0 && domainCount === 0)
               await user.constructor.findByIdAndUpdate(user._id, {
                 $set: {
-                  [config.userFields.hasVerifiedEmail]: false
+                  [config.userFields.hasVerifiedEmail]: false,
+                  // (the address was proven: signing in again does not
+                  // clear what the user set up, see routes/web/auth.js)
+                  [config.userFields.emailProofPending]: false
                 }
               });
           }

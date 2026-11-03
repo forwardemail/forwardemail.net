@@ -218,18 +218,6 @@ async function onFetch(mailboxId, options, session, fn) {
 
     // const count = await Messages.countDocuments(this, session, condition);
 
-    const sql = builder.build({
-      type: 'select',
-      table: 'Messages',
-      condition,
-      fields,
-      // sort required for IMAP UIDPLUS
-      sort: condition?.uid?.$eq ? undefined : 'uid'
-    });
-
-    // <https://github.com/m4heshd/better-sqlite3-multiple-ciphers/blob/master/docs/api.md#iteratebindparameters---iterator>
-    const stmt = session.db.prepare(sql.query);
-
     //
     // Single-message fast path: use stmt.get() instead of stmt.iterate()
     // to avoid iterator allocation overhead. This is the most common FETCH
@@ -386,7 +374,13 @@ async function onFetch(mailboxId, options, session, fn) {
 
     if (isSingleMessage) {
       // Fast path: single row lookup via .get() avoids iterator overhead
-      const result = stmt.get(sql.values);
+      const sql = builder.build({
+        type: 'select',
+        table: 'Messages',
+        condition,
+        fields
+      });
+      const result = session.db.prepare(sql.query).get(sql.values);
       if (result) {
         await processMessage(result);
       }
@@ -400,13 +394,21 @@ async function onFetch(mailboxId, options, session, fn) {
       //       made deliveries, STORE and EXPUNGE for the alias fail and retry
       //       until it finished (and kept WAL checkpoints from completing)
       //
+      // (a list of uids, e.g. `1:*` on a mailbox with an expunged message,
+      // is paged through as the list itself: repeating the whole list in
+      // every page made each page cost as much as the whole FETCH)
       const pageSize = projection.mimeTree ? 25 : 250;
+      const uids = Array.isArray(condition?.uid?.$in)
+        ? [...condition.uid.$in].sort((a, b) => a - b)
+        : null;
       let lastUid = 0;
-      for (;;) {
+      for (let i = 0; ; i += pageSize) {
         const page = builder.build({
           type: 'select',
           table: 'Messages',
-          condition: { $and: [condition, { uid: { $gt: lastUid } }] },
+          condition: uids
+            ? { ...condition, uid: { $in: uids.slice(i, i + pageSize) } }
+            : { $and: [condition, { uid: { $gt: lastUid } }] },
           fields,
           sort: 'uid',
           limit: pageSize
@@ -416,8 +418,13 @@ async function onFetch(mailboxId, options, session, fn) {
           await processMessage(result);
         }
 
-        if (rows.length < pageSize) break;
-        lastUid = rows.at(-1).uid;
+        if (uids) {
+          if (i + pageSize >= uids.length) break;
+        } else if (rows.length < pageSize) {
+          break;
+        } else {
+          lastUid = rows.at(-1).uid;
+        }
       }
     }
 
@@ -465,7 +472,8 @@ async function onFetch(mailboxId, options, session, fn) {
               type: 'select',
               table: 'Messages',
               fields: ['flags', 'labels'],
-              condition: { _id: id }
+              // (a message moved or expunged meanwhile is left as it is)
+              condition: { _id: id, mailbox: mailbox._id.toString() }
             });
             const row = session.db.prepare(select.query).get(select.values);
             if (!row) {
@@ -482,7 +490,7 @@ async function onFetch(mailboxId, options, session, fn) {
             const update = builder.build({
               type: 'update',
               table: 'Messages',
-              condition: { _id: id },
+              condition: { _id: id, mailbox: mailbox._id.toString() },
               modifier: {
                 $set: prepareQuery(Messages.mapping, {
                   flags: message.flags,

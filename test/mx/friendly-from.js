@@ -12,6 +12,7 @@ const ip = require('ip');
 const ms = require('ms');
 const mxConnect = require('@forwardemail/mx-connect');
 const nodemailer = require('nodemailer');
+const addressparser = require('nodemailer/lib/addressparser');
 const pWaitFor = require('p-wait-for');
 const pify = require('pify');
 const test = require('ava');
@@ -402,5 +403,42 @@ test.serial(
     t.false(raw.includes('\rBcc'));
     // (a raw UTF-8 domain is still converted)
     t.true(lines.includes('Reply-To: Ann <ann@xn--exmple-cua.com>'));
+  }
+);
+
+//
+// The conversion only ever changes a domain: a "@" inside a quoted name or a
+// comment, followed by a quote or backslash, must not end up moving where the
+// name or comment ends (which changed the address the header holds after its
+// DMARC was checked).
+//
+test.serial(
+  'converting IDN domains does not change which address a header holds',
+  async (t) => {
+    const { alias, domain, attempts, send } = await setup(t, IP_ADDRESS);
+
+    const replyTo =
+      'Reply-To: "x@\\é" <ann@example.com> (" <ceo@bank.example>)';
+    const comment = 'Cc: (x@\\é) cc@example.com (") ceo@bank.example';
+    const info = await send([
+      replyTo,
+      comment,
+      'Sender: Ann <ann@exämple.com>'
+    ]);
+    t.deepEqual(info.accepted, [`${alias.name}@${domain.name}`]);
+
+    const [raw] = attempts;
+    const headers = Object.fromEntries(
+      raw
+        .split('\r\n\r\n')[0]
+        .split('\r\n')
+        .map((line) => [line.slice(0, line.indexOf(':')), line])
+    );
+    const addresses = (line) =>
+      addressparser(line.slice(line.indexOf(':') + 1)).map((a) => a.address);
+    t.deepEqual(addresses(headers['Reply-To']), ['ann@example.com']);
+    t.deepEqual(addresses(headers.Cc), ['cc@example.com']);
+    // (a domain is still converted)
+    t.is(headers.Sender, 'Sender: Ann <ann@xn--exmple-cua.com>');
   }
 );
