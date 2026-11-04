@@ -21,7 +21,6 @@
   * [Accountwijzigingen](#account-changes)
   * [Wijzigingen in Domeininstellingen](#domain-settings-changes)
 * [Cookies en Sessies](#cookies-and-sessions)
-* [Analyse](#analytics)
 * [Apps en Webmail](#apps-and-webmail)
   * [Gegevens op uw apparaat](#data-on-your-device)
   * [Gegevens die de apps naar ons sturen](#data-the-apps-send-us)
@@ -40,7 +39,7 @@ Raadpleeg onze [Voorwaarden](/terms) aangezien deze sitebreed van toepassing zij
 
 ## Informatie Niet Verzameld {#information-not-collected}
 
-**Met uitzondering van de informatie die uitdrukkelijk in dit beleid wordt beschreven (waaronder [foutenlogboeken](#error-logs), [serverlogboeken](#server-logs), [uitgaande SMTP-e-mails](#outbound-smtp-emails), [accountinformatie](#account-information), [tijdelijke gegevensverwerking](#temporary-data-processing), [auditlogboeken](#audit-logs), [cookies en sessies](#cookies-and-sessions), [analytics](#analytics) en [apps en webmail](#apps-and-webmail)):**
+**Met uitzondering van de informatie die uitdrukkelijk in dit beleid wordt beschreven (waaronder [foutenlogboeken](#error-logs), [serverlogboeken](#server-logs), [uitgaande SMTP-e-mails](#outbound-smtp-emails), [accountinformatie](#account-information), [tijdelijke gegevensverwerking](#temporary-data-processing), [auditlogboeken](#audit-logs), [cookies en sessies](#cookies-and-sessions) en [apps en webmail](#apps-and-webmail)):**
 
 * Wij slaan geen doorgestuurde e-mails op op schijfopslag of in databases.
 * Wij slaan geen metagegevens over doorgestuurde e-mails op op schijfopslag of in databases.
@@ -60,15 +59,6 @@ Voor transparantie kunt u te allen tijde <a href="https://github.com/forwardemai
 * Wij slaan uw domeinnamen, aliassen en configuraties op die u aan ons verstrekt.
 * Wij slaan beperkte metagegevens voor accountbeveiliging op die nodig zijn om uw account te beschermen en de toegang te beheren, waaronder actieve website-sessie-identificatoren, tellers van mislukte inlogpogingen en de tijdstempel van de laatste inlogpoging.
 * Alle aanvullende informatie die u vrijwillig aan ons verstrekt, zoals opmerkingen of vragen die per e-mail of op onze <a href="/help">help</a>-pagina aan ons zijn voorgelegd.
-
-
-**Aanmeldingsattributie** (permanent opgeslagen op uw account):
-
-Wanneer u een account aanmaakt, slaan wij de volgende informatie op om te begrijpen hoe gebruikers onze dienst vinden:
-
-* Het verwijzende website-domein (niet de volledige URL)
-* De eerste pagina die u op onze site bezocht, waarbij waarden zoals domeinnamen, ID's en tokens in het pad zijn vervangen door tijdelijke aanduidingen
-* UTM-campagneparameters indien aanwezig in de URL
 
 ### E-mailopslag {#email-storage}
 
@@ -177,36 +167,6 @@ Voor domeinen met meerdere beheerders bieden we gedetailleerde auditlogging om t
   * Authenticatie en inlogstatus
   * Tweefactorauthenticatie "remember me"-functionaliteit
   * Flash-berichten en meldingen
-  * [Analytics](#analytics): de eerste pagina van uw bezoek, het verwijzende domein, UTM-campagneparameters en een paginateller
-
-
-## Analytics {#analytics}
-
-We gebruiken ons eigen privacygerichte analysetool om te begrijpen hoe onze diensten worden gebruikt. Dit systeem is ontworpen met privacy als kernprincipe:
-
-**Wat we NIET verzamelen:**
-
-* We slaan geen IP-adressen op
-* We plaatsen geen aparte cookie voor analytics
-* We gebruiken geen derde partij analysetools
-* We volgen bezoekers niet over dagen of sessies heen wanneer ze niet zijn ingelogd
-
-**Wat we WEL verzamelen:**
-
-* Geaggregeerde paginaweergaven en servicegebruik (SMTP, IMAP, POP3, API, enz.)
-* Type en versie van browser en besturingssysteem (geparsed uit user agent, ruwe data wordt verwijderd)
-* Apparaattype (desktop, mobiel, tablet)
-* Verwijzend domein (niet de volledige URL) en UTM-campagneparameters
-* E-mailclienttype voor mailprotocollen (bijv. Thunderbird, Outlook)
-* De opgevraagde pagina of het opgevraagde API-pad, waarin waarden zoals domeinnamen, ID's en tokens zijn vervangen door tijdelijke aanduidingen, en of het verzoek is gelukt
-* Bij websitebezoeken de eerste pagina van het bezoek en een paginateller, die in uw sessie worden bewaard (zie [Cookies en sessies](#cookies-and-sessions))
-* Wanneer u bent ingelogd, het ID van uw account, alias of domein, zodat we kunnen zien hoe elke dienst wordt gebruikt en problemen kunnen oplossen
-
-**Gegevensbewaring:**
-
-* Analyticsgebeurtenissen worden automatisch na 30 dagen verwijderd
-* Totalen per uur, die niet aan een account zijn gekoppeld, worden 90 dagen bewaard
-* Sessie-identificatoren rouleren dagelijks en kunnen niet worden gebruikt om bezoekers over dagen heen te volgen
 
 
 ## Apps en Webmail {#apps-and-webmail}

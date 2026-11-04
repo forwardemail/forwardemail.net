@@ -342,20 +342,6 @@ let jobs = [
     name: 'monitor-redis-ttl',
     interval: '6h',
     timeout: 0
-  },
-  // Repair missing/outdated dashboard summary generations every six hours.
-  // The repair excludes the three live hours handled by aggregate-analytics.
-  {
-    name: 'backfill-analytics',
-    interval: '6h',
-    timeout: 0,
-    path: path.join(__dirname, '..', 'scripts', 'backfill-analytics.js')
-  },
-  // Aggregate current analytics hours every hour.
-  {
-    name: 'aggregate-analytics',
-    interval: '1h',
-    timeout: 0
   }
 ];
 
@@ -395,17 +381,6 @@ if (boolean(process.env.CACHE_RESPONSES))
 
 if (boolean(process.env.SELF_HOSTED)) {
   jobs = [
-    {
-      name: 'backfill-analytics',
-      interval: '6h',
-      timeout: 0,
-      path: path.join(__dirname, '..', 'scripts', 'backfill-analytics.js')
-    },
-    {
-      name: 'aggregate-analytics',
-      interval: '1h',
-      timeout: 0
-    },
     {
       name: 'bounce-report',
       interval: '4h',

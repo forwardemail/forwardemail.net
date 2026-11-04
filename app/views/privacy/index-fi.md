@@ -21,7 +21,6 @@
   * [Tilin muutokset](#account-changes)
   * [Verkkotunnuksen asetusten muutokset](#domain-settings-changes)
 * [Evästeet ja istunnot](#cookies-and-sessions)
-* [Analytiikka](#analytics)
 * [Sovellukset ja webmail](#apps-and-webmail)
   * [Tiedot laitteellasi](#data-on-your-device)
   * [Tiedot, jotka sovellukset lähettävät meille](#data-the-apps-send-us)
@@ -40,7 +39,7 @@ Ole hyvä ja tutustu [käyttöehtoihimme](/terms), sillä ne koskevat koko sivus
 
 ## Tietoja, joita ei kerätä {#information-not-collected}
 
-**Lukuun ottamatta tässä käytännössä nimenomaisesti kuvattuja tietoja (mukaan lukien [virhelokit](#error-logs), [palvelinlokit](#server-logs), [lähtevät SMTP-sähköpostit](#outbound-smtp-emails), [tilitiedot](#account-information), [väliaikainen tietojenkäsittely](#temporary-data-processing), [tarkastuslokit](#audit-logs), [evästeet ja istunnot](#cookies-and-sessions), [analytiikka](#analytics) sekä [sovellukset ja webmail](#apps-and-webmail)):**
+**Lukuun ottamatta tässä käytännössä nimenomaisesti kuvattuja tietoja (mukaan lukien [virhelokit](#error-logs), [palvelinlokit](#server-logs), [lähtevät SMTP-sähköpostit](#outbound-smtp-emails), [tilitiedot](#account-information), [väliaikainen tietojenkäsittely](#temporary-data-processing), [tarkastuslokit](#audit-logs), [evästeet ja istunnot](#cookies-and-sessions) sekä [sovellukset ja webmail](#apps-and-webmail)):**
 
 * Emme tallenna mitään edelleenlähetettyjä sähköposteja levytilaan tai tietokantoihin.
 * Emme tallenna mitään metatietoja edelleenlähetetyistä sähköposteista levytilaan tai tietokantoihin.
@@ -60,15 +59,6 @@ Läpinäkyvyyden vuoksi voit milloin tahansa <a href="https://github.com/forward
 * Tallennamme verkkotunnuksesi, aliaksesi ja asetuksesi, jotka annat meille.
 * Tallennamme rajoitetusti tilin turvallisuuteen liittyviä metatietoja, joita tarvitaan tilisi suojaamiseen ja pääsyn hallintaan, mukaan lukien aktiiviset verkkosivuston istuntotunnisteet, epäonnistuneiden kirjautumisyritysten laskurit ja viimeisimmän kirjautumisyrityksen aikaleiman.
 * Kaikki lisätiedot, jotka annat meille vapaaehtoisesti, kuten kommentit tai kysymykset, jotka lähetät meille sähköpostitse tai <a href="/help">help</a>-sivullamme.
-
-
-**Rekisteröitymisen lähdetieto** (tallennetaan pysyvästi tilillesi):
-
-Kun luot tilin, tallennamme seuraavat tiedot ymmärtääksemme, miten käyttäjät löytävät palvelumme:
-
-* Viittaavan verkkosivuston verkkotunnus (ei koko URL-osoitetta)
-* Ensimmäinen sivu, jolla vierailit sivustollamme ja jonka polussa arvot, kuten verkkotunnukset, ID-tunnisteet ja tunnukset, on korvattu paikkamerkeillä
-* UTM-kampanjaparametrit, jos ne ovat URL-osoitteessa
 
 ### Sähköpostin tallennus {#email-storage}
 
@@ -177,36 +167,6 @@ Monen ylläpitäjän verkkotunnuksille tarjoamme yksityiskohtaisen tarkastusloki
   * Todennus ja kirjautumistila
   * Kaksivaiheisen todennuksen "remember me" -toiminnallisuus
   * Flash-viestit ja ilmoitukset
-  * [Analytiikka](#analytics): vierailusi ensimmäinen sivu, viittaavan sivuston verkkotunnus, kampanjaparametrit (UTM) ja sivumäärä
-
-
-## Analytiikka {#analytics}
-
-Käytämme omaa yksityisyyteen keskittyvää analytiikkajärjestelmää ymmärtääksemme, miten palvelujamme käytetään. Tämä järjestelmä on suunniteltu yksityisyyden periaatteen mukaisesti:
-
-**Mitä emme KERÄÄ:**
-
-* Emme tallenna IP-osoitteita
-* Emme aseta erillistä evästettä analytiikkaa varten
-* Emme käytä kolmansien osapuolten analytiikkapalveluita
-* Emme seuraa vierailijoita päivien tai istuntojen yli, kun he eivät ole kirjautuneet sisään
-
-**Mitä KERÄÄMME:**
-
-* Yhdistetyt sivun katselut ja palvelun käyttö (SMTP, IMAP, POP3, API jne.)
-* Selain- ja käyttöjärjestelmätyyppi ja -versio (käyttäjäagentista purettu, raakadata hylätty)
-* Laitetyyppi (työpöytä, mobiili, tabletti)
-* Viittaavan sivuston verkkotunnus (ei koko URL-osoitetta) ja kampanjaparametrit (UTM)
-* Sähköpostiohjelman tyyppi postiprotokollille (esim. Thunderbird, Outlook)
-* Pyydetty sivu tai API-polku, jossa arvot, kuten verkkotunnukset, ID-tunnisteet ja tunnukset, on korvattu paikkamerkeillä, sekä tieto siitä, onnistuiko pyyntö
-* Verkkosivustovierailun ensimmäinen sivu ja sivumäärä, jotka säilytetään istunnossasi (katso [Evästeet ja istunnot](#cookies-and-sessions))
-* Kun olet kirjautunut sisään, tilisi, aliaksesi tai verkkotunnuksesi tunniste, jotta näemme, miten kutakin palvelua käytetään, ja voimme selvittää ongelmia
-
-**Tietojen säilytys:**
-
-* Analytiikkatapahtumat poistetaan automaattisesti 30 päivän kuluttua
-* Tuntikohtaiset kokonaismäärät, joita ei ole liitetty mihinkään tiliin, säilytetään 90 päivää
-* Istuntotunnisteet vaihtuvat päivittäin eikä niitä voi käyttää vierailijoiden seuraamiseen päivien yli
 
 
 ## Sovellukset ja webmail {#apps-and-webmail}

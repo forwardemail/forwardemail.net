@@ -21,7 +21,6 @@
   * [Hesap Değişiklikleri](#account-changes)
   * [Alan Adı Ayarları Değişiklikleri](#domain-settings-changes)
 * [Çerezler ve Oturumlar](#cookies-and-sessions)
-* [Analitik](#analytics)
 * [Uygulamalar ve Webmail](#apps-and-webmail)
   * [Cihazınızdaki Veriler](#data-on-your-device)
   * [Uygulamaların Bize Gönderdiği Veriler](#data-the-apps-send-us)
@@ -40,7 +39,7 @@ Lütfen site genelinde geçerli olan [Şartlarımıza](/terms) bakınız.
 
 ## Toplanmayan Bilgiler {#information-not-collected}
 
-**Bu politikada açıkça belirtilen bilgiler ([hata günlükleri](#error-logs), [sunucu günlükleri](#server-logs), [giden SMTP e-postaları](#outbound-smtp-emails), [hesap bilgileri](#account-information), [geçici veri işleme](#temporary-data-processing), [denetim günlükleri](#audit-logs), [çerezler ve oturumlar](#cookies-and-sessions), [analitik](#analytics) ve [uygulamalar ve webmail](#apps-and-webmail) dahil olmak üzere) haricinde:**
+**Bu politikada açıkça belirtilen bilgiler ([hata günlükleri](#error-logs), [sunucu günlükleri](#server-logs), [giden SMTP e-postaları](#outbound-smtp-emails), [hesap bilgileri](#account-information), [geçici veri işleme](#temporary-data-processing), [denetim günlükleri](#audit-logs), [çerezler ve oturumlar](#cookies-and-sessions) ve [uygulamalar ve webmail](#apps-and-webmail) dahil olmak üzere) haricinde:**
 
 * Yönlendirilen hiçbir e-postayı disk depolama alanında veya veritabanlarında saklamıyoruz.
 * Yönlendirilen e-postalar hakkındaki hiçbir meta veriyi disk depolama alanında veya veritabanlarında saklamıyoruz.
@@ -60,15 +59,6 @@ Lütfen site genelinde geçerli olan [Şartlarımıza](/terms) bakınız.
 * Bize sağladığınız alan adlarınızı, takma adlarınızı ve yapılandırmalarınızı saklıyoruz.
 * Hesabınızı korumak ve erişimi yönetmek için gereken, aktif web sitesi oturum tanımlayıcıları, başarısız giriş denemesi sayaçları ve son giriş denemesinin zaman damgası dahil olmak üzere sınırlı hesap güvenliği meta verilerini saklıyoruz.
 * E-posta yoluyla veya <a href="/help">yardım</a> sayfamız üzerinden bize ilettiğiniz yorumlar veya sorular gibi, kendi isteğinizle sağladığınız diğer ek bilgiler.
-
-
-**Kayıt ataması** (hesabınızda kalıcı olarak saklanır):
-
-Bir hesap oluşturduğunuzda, kullanıcıların hizmetimizi nasıl bulduğunu anlamak için aşağıdaki bilgileri saklarız:
-
-* Yönlendiren web sitesi alan adı (tam URL değil)
-* Sitemizde ziyaret ettiğiniz ilk sayfa (yolundaki alan adları, kimlikler ve belirteçler gibi değerler yer tutucularla değiştirilmiş olarak)
-* URL'de mevcutsa UTM kampanya parametreleri
 
 ### E-posta Depolama {#email-storage}
 
@@ -177,36 +167,6 @@ Birden fazla yöneticisi olan alan adları için, ekiplerin yapılandırma deği
   * Kimlik doğrulama ve giriş durumu
   * İki faktörlü kimlik doğrulama "beni hatırla" işlevi
   * Anlık mesajlar ve bildirimler
-  * [Analitik](#analytics): ziyaretinizin ilk sayfası, yönlendiren alan adı, kampanya (UTM) parametreleri ve sayfa sayısı
-
-
-## Analitik {#analytics}
-
-Hizmetlerimizin nasıl kullanıldığını anlamak için kendi gizlilik odaklı analitik sistemimizi kullanıyoruz. Bu sistem gizliliği temel ilke olarak tasarlanmıştır:
-
-**Toplamadığımız Şeyler:**
-
-* IP adreslerini saklamıyoruz
-* Analitik için ayrı bir çerez yerleştirmiyoruz
-* Üçüncü taraf analitik servisleri kullanmıyoruz
-* Giriş yapmamış ziyaretçileri günler veya oturumlar boyunca takip etmiyoruz
-
-**Topladığımız Şeyler:**
-
-* Toplu sayfa görüntülemeleri ve hizmet kullanımı (SMTP, IMAP, POP3, API, vb.)
-* Tarayıcı ve işletim sistemi türü ile sürümü (kullanıcı aracısından ayrıştırılır, ham veri atılır)
-* Cihaz türü (masaüstü, mobil, tablet)
-* Yönlendiren alan adı (tam URL değil) ve kampanya (UTM) parametreleri
-* E-posta protokolleri için e-posta istemcisi türü (ör. Thunderbird, Outlook)
-* İstenen sayfa veya API yolu (içindeki alan adları, kimlikler ve belirteçler gibi değerler yer tutucularla değiştirilmiş olarak) ve isteğin başarılı olup olmadığı
-* Web sitesi ziyaretlerinde, ziyaretin ilk sayfası ve sayfa sayısı; bunlar oturumunuzda tutulur (bkz. [Çerezler ve Oturumlar](#cookies-and-sessions))
-* Giriş yaptığınızda, her hizmetin nasıl kullanıldığını görmek ve sorunları gidermek için hesabınızın, takma adınızın veya alan adınızın kimliği
-
-**Veri Saklama:**
-
-* Analitik olayları otomatik olarak 30 gün sonra silinir
-* Saatlik toplamlar 90 gün boyunca saklanır; bunlar hiçbir hesapla ilişkilendirilmez
-* Oturum tanımlayıcıları günlük olarak döner ve ziyaretçileri günler boyunca takip etmek için kullanılamaz
 
 
 ## Uygulamalar ve Webmail {#apps-and-webmail}

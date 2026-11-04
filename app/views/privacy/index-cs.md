@@ -21,7 +21,6 @@
   * [Změny účtu](#account-changes)
   * [Změny nastavení domény](#domain-settings-changes)
 * [Cookies a relace](#cookies-and-sessions)
-* [Analytika](#analytics)
 * [Aplikace a webmail](#apps-and-webmail)
   * [Data ve vašem zařízení](#data-on-your-device)
   * [Data, která nám aplikace odesílají](#data-the-apps-send-us)
@@ -40,7 +39,7 @@ Prosím, řiďte se našimi [Podmínkami](/terms), které platí pro celý web.
 
 ## Informace, které nejsou shromažďovány {#information-not-collected}
 
-**S výjimkou informací výslovně popsaných v těchto zásadách (včetně [chybových protokolů](#error-logs), [serverových protokolů](#server-logs), [odchozích e-mailů SMTP](#outbound-smtp-emails), [informací o účtu](#account-information), [dočasného zpracování dat](#temporary-data-processing), [protokolů auditu](#audit-logs), [souborů cookie a relací](#cookies-and-sessions), [analytiky](#analytics) a [aplikací a webmailu](#apps-and-webmail)):**
+**S výjimkou informací výslovně popsaných v těchto zásadách (včetně [chybových protokolů](#error-logs), [serverových protokolů](#server-logs), [odchozích e-mailů SMTP](#outbound-smtp-emails), [informací o účtu](#account-information), [dočasného zpracování dat](#temporary-data-processing), [protokolů auditu](#audit-logs), [souborů cookie a relací](#cookies-and-sessions) a [aplikací a webmailu](#apps-and-webmail)):**
 
 * Neukládáme žádné přeposílané e-maily na disková úložiště ani do databází.
 * Neukládáme žádná metadata o přeposílaných e-mailech na disková úložiště ani do databází.
@@ -60,15 +59,6 @@ Pro transparentnost můžete kdykoli <a href="https://github.com/forwardemail" t
 * Ukládáme vaše doménová jména, aliasy a konfigurace, které nám poskytnete.
 * Ukládáme omezená bezpečnostní metadata účtu potřebná k ochraně vašeho účtu a správě přístupu, včetně identifikátorů aktivních relací na webových stránkách, počítadel neúspěšných pokusů o přihlášení a časového razítka posledního pokusu o přihlášení.
 * Jakékoli další informace, které nám dobrovolně poskytnete, jako jsou komentáře nebo dotazy zaslané e-mailem nebo na naší stránce <a href="/help">nápovědy</a>.
-
-
-**Přiřazení registrace** (trvale uložené na vašem účtu):
-
-Když si vytvoříte účet, ukládáme následující informace, abychom pochopili, jak uživatelé nacházejí naši službu:
-
-* Doména odkazujícího webu (nikoli celá URL)
-* První stránka, kterou jste na našem webu navštívili, přičemž v její cestě jsou hodnoty, například názvy domén, ID a tokeny, nahrazeny zástupnými symboly
-* Parametry kampaně UTM, pokud jsou přítomny v URL
 
 ### Ukládání e-mailů {#email-storage}
 
@@ -177,36 +167,6 @@ Pro domény s více správci poskytujeme podrobné auditní záznamy, které pom
   * Ověřování a stav přihlášení
   * Funkci "pamatovat si mě" pro dvoufaktorové ověřování
   * Flash zprávy a upozornění
-  * [Analytiku](#analytics): první stránka vaší návštěvy, doména referreru, parametry kampaně (UTM) a počet zobrazených stránek
-
-
-## Analytics {#analytics}
-
-Používáme vlastní analytický systém zaměřený na ochranu soukromí, abychom pochopili, jak jsou naše služby používány. Tento systém je navržen s ochranou soukromí jako základním principem:
-
-**Co NE shromažďujeme:**
-
-* Neukládáme IP adresy
-* Nenastavujeme pro analytiku samostatný soubor cookie
-* Nepoužíváme žádné analytické služby třetích stran
-* Nesledujeme návštěvníky napříč dny nebo relacemi, pokud nejsou přihlášeni
-
-**Co shromažďujeme:**
-
-* Agregované zobrazení stránek a využití služeb (SMTP, IMAP, POP3, API atd.)
-* Typ a verze prohlížeče a operačního systému (parsováno z user agenta, surová data jsou vyřazena)
-* Typ zařízení (desktop, mobil, tablet)
-* Doména referreru (nikoli celá URL) a parametry kampaně (UTM)
-* Typ e-mailového klienta pro mailové protokoly (např. Thunderbird, Outlook)
-* Cesta požadované stránky nebo API, ve které jsou hodnoty, například názvy domén, ID a tokeny, nahrazeny zástupnými symboly, a informace o tom, zda byl požadavek úspěšný
-* U návštěv webu první stránka návštěvy a počet zobrazených stránek, uchovávané ve vaší relaci (viz [Cookies a relace](#cookies-and-sessions))
-* Když jste přihlášeni, ID vašeho účtu, aliasu nebo domény, abychom viděli, jak se jednotlivé služby používají, a mohli řešit problémy
-
-**Ukládání dat:**
-
-* Analytické události jsou automaticky mazány po 30 dnech
-* Hodinové součty, které nejsou propojeny s žádným účtem, jsou uchovávány 90 dní
-* Identifikátory relací se denně mění a nelze je použít ke sledování návštěvníků napříč dny
 
 
 ## Aplikace a webmail {#apps-and-webmail}

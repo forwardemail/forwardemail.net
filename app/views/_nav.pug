@@ -827,10 +827,6 @@ nav.navbar(class=navbarClasses.join(" "), aria-label=t("Main menu"))
                     href=l("/admin/jobs")
                   )= t("Jobs")
                   a.dropdown-item(
-                    class=ctx.pathWithoutLocale.startsWith("/admin/analytics") ? "active" : "",
-                    href=l("/admin/analytics")
-                  )= t("Analytics")
-                  a.dropdown-item(
                     class=ctx.pathWithoutLocale.startsWith("/admin/allowlist") ? "active" : "",
                     href=l("/admin/allowlist")
                   )= t("Allowlist")

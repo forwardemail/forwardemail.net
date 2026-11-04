@@ -21,7 +21,6 @@
   * [Kontenänderungen](#account-changes)
   * [Änderungen der Domain-Einstellungen](#domain-settings-changes)
 * [Cookies und Sitzungen](#cookies-and-sessions)
-* [Analysen](#analytics)
 * [Apps und Webmail](#apps-and-webmail)
   * [Daten auf Ihrem Gerät](#data-on-your-device)
   * [Daten, die die Apps an uns senden](#data-the-apps-send-us)
@@ -40,7 +39,7 @@ Bitte beachten Sie unsere [Nutzungsbedingungen](/terms), da diese für die gesam
 
 ## Nicht gesammelte Informationen {#information-not-collected}
 
-**Mit Ausnahme der in dieser Richtlinie ausdrücklich beschriebenen Informationen (einschließlich [Fehlerprotokolle](#error-logs), [Server-Protokolle](#server-logs), [ausgehende SMTP-E-Mails](#outbound-smtp-emails), [Kontoinformationen](#account-information), [temporäre Datenverarbeitung](#temporary-data-processing), [Audit-Protokolle](#audit-logs), [Cookies und Sitzungen](#cookies-and-sessions), [Analysen](#analytics) und [Apps und Webmail](#apps-and-webmail)):**
+**Mit Ausnahme der in dieser Richtlinie ausdrücklich beschriebenen Informationen (einschließlich [Fehlerprotokolle](#error-logs), [Server-Protokolle](#server-logs), [ausgehende SMTP-E-Mails](#outbound-smtp-emails), [Kontoinformationen](#account-information), [temporäre Datenverarbeitung](#temporary-data-processing), [Audit-Protokolle](#audit-logs), [Cookies und Sitzungen](#cookies-and-sessions) und [Apps und Webmail](#apps-and-webmail)):**
 
 * Wir speichern keine weitergeleiteten E-Mails auf Festplatten oder in Datenbanken.
 * Wir speichern keine Metadaten über weitergeleitete E-Mails auf Festplatten oder in Datenbanken.
@@ -60,15 +59,6 @@ Zur Transparenz können Sie jederzeit <a href="https://github.com/forwardemail" 
 * Wir speichern Ihre Domainnamen, Aliase und Konfigurationen, die Sie uns zur Verfügung stellen.
 * Wir speichern begrenzte Konto-Sicherheitsmetadaten, die zum Schutz Ihres Kontos und zur Zugriffsverwaltung erforderlich sind, einschließlich aktiver Website-Sitzungskennungen, Zähler für fehlgeschlagene Anmeldeversuche und des Zeitstempels des letzten Anmeldeversuchs.
 * Alle zusätzlichen Informationen, die Sie uns freiwillig zur Verfügung stellen, wie z. B. Kommentare oder Fragen, die Sie uns per E-Mail oder auf unserer <a href="/help">Hilfe</a>-Seite übermitteln.
-
-
-**Registrierungszuordnung** (wird dauerhaft in Ihrem Konto gespeichert):
-
-Wenn Sie ein Konto erstellen, speichern wir die folgenden Informationen, um zu verstehen, wie Nutzer unseren Dienst finden:
-
-* Die verweisende Website-Domain (nicht die vollständige URL)
-* Die erste Seite, die Sie auf unserer Website besucht haben, wobei in ihrem Pfad enthaltene Werte wie Domainnamen, IDs und Tokens durch Platzhalter ersetzt sind
-* UTM-Kampagnenparameter, falls in der URL vorhanden
 
 ### E-Mail-Speicherung {#email-storage}
 
@@ -177,36 +167,6 @@ Für Domains mit mehreren Administratoren bieten wir detaillierte Prüfprotokoll
   * Authentifizierung und Anmeldestatus
   * Zwei-Faktor-Authentifizierung "Angemeldet bleiben"-Funktion
   * Flash-Nachrichten und Benachrichtigungen
-  * [Analysen](#analytics): die erste Seite Ihres Besuchs, die Referrer-Domain, UTM-Kampagnenparameter und ein Seitenzähler
-
-
-## Analytics {#analytics}
-
-Wir verwenden unser eigenes datenschutzorientiertes Analysesystem, um zu verstehen, wie unsere Dienste genutzt werden. Dieses System ist mit Datenschutz als Kernprinzip konzipiert:
-
-**Was wir NICHT erfassen:**
-
-* Wir speichern keine IP-Adressen
-* Wir setzen kein separates Cookie für Analysen
-* Wir nutzen keine Analyse-Dienste von Drittanbietern
-* Wir verfolgen Besucher nicht über Tage oder Sitzungen hinweg, wenn sie nicht angemeldet sind
-
-**Was wir erfassen:**
-
-* Aggregierte Seitenaufrufe und Dienstnutzung (SMTP, IMAP, POP3, API usw.)
-* Typ und Version von Browser und Betriebssystem (aus dem User-Agent geparst, Rohdaten werden verworfen)
-* Gerätetyp (Desktop, Mobilgerät, Tablet)
-* Referrer-Domain (nicht die vollständige URL) und UTM-Kampagnenparameter
-* E-Mail-Client-Typ für Mail-Protokolle (z. B. Thunderbird, Outlook)
-* Die aufgerufene Seite oder der aufgerufene API-Pfad, wobei darin enthaltene Werte wie Domainnamen, IDs und Tokens durch Platzhalter ersetzt sind, und ob die Anfrage erfolgreich war
-* Bei Website-Besuchen die erste Seite des Besuchs und ein Seitenzähler, die in Ihrer Sitzung gespeichert werden (siehe [Cookies und Sitzungen](#cookies-and-sessions))
-* Wenn Sie angemeldet sind, die ID Ihres Kontos, Ihres Alias oder Ihrer Domain, damit wir sehen können, wie jeder Dienst genutzt wird, und Probleme beheben können
-
-**Datenaufbewahrung:**
-
-* Analyse-Ereignisse werden automatisch nach 30 Tagen gelöscht
-* Stündliche Summen, die mit keinem Konto verknüpft sind, werden 90 Tage lang aufbewahrt
-* Sitzungskennungen rotieren täglich und können nicht verwendet werden, um Besucher über Tage hinweg zu verfolgen
 
 
 ## Apps und Webmail {#apps-and-webmail}

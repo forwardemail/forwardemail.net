@@ -22,7 +22,6 @@ const {
 } = require('#helpers/refuse-unsafe-encoding');
 const i18n = require('#helpers/i18n');
 const logger = require('#helpers/logger');
-const analyticsMiddleware = require('#helpers/analytics-middleware');
 const denylistMiddleware = require('#helpers/denylist-request');
 
 const sharedAPIConfig = sharedConfig('API');
@@ -82,9 +81,6 @@ module.exports = {
     // Denylist middleware: checks referer, IP, user email, and resolved hostname
     // Also handles IPv6 to IPv4 conversion and PTR lookup for allowlist
     app.use(denylistMiddleware(RATELIMIT_ALLOWLIST));
-
-    // Analytics middleware for tracking API calls (excludes bots)
-    app.use(analyticsMiddleware({ service: 'api', trackAPICalls: true }));
   },
   bodyParserIgnoredPathGlobs: [
     '/v1/log',

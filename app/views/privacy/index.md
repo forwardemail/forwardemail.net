@@ -21,7 +21,6 @@
   * [Account Changes](#account-changes)
   * [Domain Settings Changes](#domain-settings-changes)
 * [Cookies and Sessions](#cookies-and-sessions)
-* [Analytics](#analytics)
 * [Apps and Webmail](#apps-and-webmail)
   * [Data on Your Device](#data-on-your-device)
   * [Data the Apps Send Us](#data-the-apps-send-us)
@@ -40,7 +39,7 @@ Please defer to our [Terms](/terms) as it applies sitewide.
 
 ## Information Not Collected
 
-**With the exception of the information expressly described in this policy (including [error logs](#error-logs), [server logs](#server-logs), [outbound SMTP emails](#outbound-smtp-emails), [account information](#account-information), [temporary data processing](#temporary-data-processing), [audit logs](#audit-logs), [cookies and sessions](#cookies-and-sessions), [analytics](#analytics), and [apps and webmail](#apps-and-webmail)):**
+**With the exception of the information expressly described in this policy (including [error logs](#error-logs), [server logs](#server-logs), [outbound SMTP emails](#outbound-smtp-emails), [account information](#account-information), [temporary data processing](#temporary-data-processing), [audit logs](#audit-logs), [cookies and sessions](#cookies-and-sessions), and [apps and webmail](#apps-and-webmail)):**
 
 * We do not store any forwarded emails to disk storage nor databases.
 * We do not store any metadata about forwarded emails to disk storage nor databases.
@@ -60,14 +59,6 @@ For transparency, at any time you can <a href="https://github.com/forwardemail" 
 * We store your domain names, aliases, and configurations that you provide us with.
 * We store limited account security metadata needed to protect your account and manage access, including active website session identifiers, failed login attempt counters, and the timestamp of the last login attempt.
 * Any additional information you voluntarily provide us, such as comments or questions submitted to us by email or on our <a href="/help">help</a> page.
-
-**Signup attribution** (stored permanently on your account):
-
-When you create an account, we store the following information to understand how users find our service:
-
-* The referring website domain (not full URL)
-* The first page you visited on our site, with values in its path such as domain names, IDs, and tokens replaced by placeholders
-* UTM campaign parameters if present in the URL
 
 ### Email Storage
 
@@ -176,36 +167,6 @@ For domains with multiple administrators, we provide detailed audit logging to h
   * Authentication and login state
   * Two-factor authentication "remember me" functionality
   * Flash messages and notifications
-  * [Analytics](#analytics): the first page of your visit, the referrer domain, campaign (UTM) parameters, and a page count
-
-
-## Analytics
-
-We use our own privacy-focused analytics system to understand how our services are used. This system is designed with privacy as a core principle:
-
-**What we do NOT collect:**
-
-* We do not store IP addresses
-* We do not set a separate cookie for analytics
-* We do not use any third-party analytics services
-* We do not track visitors across days or sessions when they are not signed in
-
-**What we DO collect:**
-
-* Aggregated page views and service usage (SMTP, IMAP, POP3, API, etc.)
-* Browser and operating system type and version (parsed from user agent, raw data discarded)
-* Device type (desktop, mobile, tablet)
-* Referrer domain (not full URL) and campaign (UTM) parameters
-* Email client type for mail protocols (e.g. Thunderbird, Outlook)
-* The page or API path requested, with values in it such as domain names, IDs, and tokens replaced by placeholders, and whether the request succeeded
-* For website visits, the first page of the visit and a page count, kept in your session (see [Cookies and Sessions](#cookies-and-sessions))
-* When you are signed in, the ID of your account, alias, or domain, so we can see how each service is used and troubleshoot problems
-
-**Data retention:**
-
-* Analytics events are automatically deleted after 30 days
-* Hourly totals, which are not linked to any account, are kept for 90 days
-* Session identifiers rotate daily and cannot be used to track visitors across days
 
 
 ## Apps and Webmail

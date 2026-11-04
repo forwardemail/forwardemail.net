@@ -56,7 +56,6 @@ const {
 const i18n = require('#helpers/i18n');
 const isErrorConstructorName = require('#helpers/is-error-constructor-name');
 const logger = require('#helpers/logger');
-const analyticsMiddleware = require('#helpers/analytics-middleware');
 const denylistMiddleware = require('#helpers/denylist-request');
 const noindexQueryStrings = require('#helpers/noindex-query-strings');
 const {
@@ -764,9 +763,6 @@ module.exports = (redis) => ({
 
       return next();
     });
-
-    // Analytics middleware for tracking page views (excludes bots)
-    app.use(analyticsMiddleware({ service: 'web', trackPageViews: true }));
 
     // redirect return-path CNAME to main domain
     // (e.g. fe-bounces.forwardemail.net > forwardemail.net)

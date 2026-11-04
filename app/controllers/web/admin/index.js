@@ -4,7 +4,6 @@
  */
 
 const aliases = require('./aliases');
-const analytics = require('./analytics');
 const users = require('./users');
 const domains = require('./domains');
 const dashboard = require('./dashboard');
@@ -18,7 +17,6 @@ const jobs = require('./jobs');
 
 module.exports = {
   aliases,
-  analytics,
   dashboard,
   users,
   domains,

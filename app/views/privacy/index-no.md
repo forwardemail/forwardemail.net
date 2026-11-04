@@ -21,7 +21,6 @@
   * [Endringer i konto](#account-changes)
   * [Endringer i domeninnstillinger](#domain-settings-changes)
 * [Informasjonskapsler og økter](#cookies-and-sessions)
-* [Analyse](#analytics)
 * [Apper og webmail](#apps-and-webmail)
   * [Data på enheten din](#data-on-your-device)
   * [Data som appene sender til oss](#data-the-apps-send-us)
@@ -40,7 +39,7 @@ Vennligst se våre [Vilkår](/terms) da disse gjelder for hele nettstedet.
 
 ## Informasjon som ikke samles inn {#information-not-collected}
 
-**Med unntak av informasjonen som uttrykkelig er beskrevet i denne personvernerklæringen (inkludert [feillogger](#error-logs), [serverlogger](#server-logs), [utgående SMTP-e-poster](#outbound-smtp-emails), [kontoinformasjon](#account-information), [midlertidig databehandling](#temporary-data-processing), [revisjonslogger](#audit-logs), [informasjonskapsler og økter](#cookies-and-sessions), [analyse](#analytics), og [apper og webmail](#apps-and-webmail)):**
+**Med unntak av informasjonen som uttrykkelig er beskrevet i denne personvernerklæringen (inkludert [feillogger](#error-logs), [serverlogger](#server-logs), [utgående SMTP-e-poster](#outbound-smtp-emails), [kontoinformasjon](#account-information), [midlertidig databehandling](#temporary-data-processing), [revisjonslogger](#audit-logs), [informasjonskapsler og økter](#cookies-and-sessions), og [apper og webmail](#apps-and-webmail)):**
 
 * Vi lagrer ingen videresendte e-poster på disk eller i databaser.
 * Vi lagrer ingen metadata om videresendte e-poster på disk eller i databaser.
@@ -60,15 +59,6 @@ For å være transparente kan du når som helst <a href="https://github.com/forw
 * Vi lagrer domenenavn, aliaser og konfigurasjoner du oppgir til oss.
 * Vi lagrer begrensede sikkerhetsmetadata for kontoen som er nødvendige for å beskytte kontoen din og administrere tilgang, inkludert aktive nettstedsøktidentifikatorer, tellere for mislykkede påloggingsforsøk og tidsstempelet for det siste påloggingsforsøket.
 * All tilleggsinformasjon du frivillig gir oss, for eksempel kommentarer eller spørsmål sendt til oss via e-post eller på vår <a href="/help">hjelp</a>-side.
-
-
-**Registreringsattribusjon** (lagres permanent på kontoen din):
-
-Når du oppretter en konto, lagrer vi følgende informasjon for å forstå hvordan brukere finner tjenesten vår:
-
-* Henvisende nettsteddomene (ikke full URL)
-* Den første siden du besøkte på nettstedet vårt, der verdier som domenenavn, ID-er og tokens i stien er erstattet med plassholdere
-* UTM-kampanjeparametere hvis de er til stede i URL-en
 
 ### E-postlagring {#email-storage}
 
@@ -177,36 +167,6 @@ For domener med flere administratorer tilbyr vi detaljert revisjonslogging for �
   * Autentisering og påloggingsstatus
   * Tofaktorautentisering "husk meg"-funksjonalitet
   * Flash-meldinger og varsler
-  * [Analyse](#analytics): den første siden under besøket ditt, henvisningsdomenet, kampanjeparametere (UTM) og et sideantall
-
-
-## Analytics {#analytics}
-
-Vi bruker vårt eget personvernfokuserte analyssystem for å forstå hvordan tjenestene våre brukes. Dette systemet er designet med personvern som et kjerneprinsipp:
-
-**Hva vi IKKE samler inn:**
-
-* Vi lagrer ikke IP-adresser
-* Vi setter ikke en separat informasjonskapsel for analyse
-* Vi bruker ingen tredjeparts analysetjenester
-* Vi sporer ikke besøkende over dager eller økter når de ikke er logget inn
-
-**Hva vi samler inn:**
-
-* Aggregert sidevisninger og tjenestebruk (SMTP, IMAP, POP3, API, osv.)
-* Nettleser- og operativsystemtype og -versjon (tolket fra brukeragent, rådata slettes)
-* Enhetstype (stasjonær, mobil, nettbrett)
-* Henvisningsdomene (ikke full URL) og kampanjeparametere (UTM)
-* E-postklienttype for e-postprotokoller (f.eks. Thunderbird, Outlook)
-* Den forespurte siden eller API-stien, der verdier som domenenavn, ID-er og tokens er erstattet med plassholdere, og om forespørselen lyktes
-* Ved besøk på nettstedet: den første siden under besøket og et sideantall, som lagres i økten din (se [Informasjonskapsler og økter](#cookies-and-sessions))
-* Når du er logget inn, ID-en til kontoen din, aliaset ditt eller domenet ditt, slik at vi kan se hvordan hver tjeneste brukes og feilsøke problemer
-
-**Databevaring:**
-
-* Analysehendelser slettes automatisk etter 30 dager
-* Samlede tall per time, som ikke er knyttet til noen konto, beholdes i 90 dager
-* Øktidentifikatorer roteres daglig og kan ikke brukes til å spore besøkende over dager
 
 
 ## Apper og webmail {#apps-and-webmail}

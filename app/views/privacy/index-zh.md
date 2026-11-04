@@ -21,7 +21,6 @@
   * [账户变更](#account-changes)
   * [域名设置变更](#domain-settings-changes)
 * [Cookies 和会话](#cookies-and-sessions)
-* [分析](#analytics)
 * [应用和网页邮箱](#apps-and-webmail)
   * [您设备上的数据](#data-on-your-device)
   * [应用发送给我们的数据](#data-the-apps-send-us)
@@ -40,7 +39,7 @@
 
 ## 未收集的信息 {#information-not-collected}
 
-**除本政策明确描述的信息外（包括[错误日志](#error-logs)、[服务器日志](#server-logs)、[出站 SMTP 电子邮件](#outbound-smtp-emails)、[账户信息](#account-information)、[临时数据处理](#temporary-data-processing)、[审计日志](#audit-logs)、[Cookie 和会话](#cookies-and-sessions)、[分析](#analytics)以及[应用和网页邮箱](#apps-and-webmail)）：**
+**除本政策明确描述的信息外（包括[错误日志](#error-logs)、[服务器日志](#server-logs)、[出站 SMTP 电子邮件](#outbound-smtp-emails)、[账户信息](#account-information)、[临时数据处理](#temporary-data-processing)、[审计日志](#audit-logs)、[Cookie 和会话](#cookies-and-sessions)以及[应用和网页邮箱](#apps-and-webmail)）：**
 
 * 我们不会将任何转发的电子邮件存储到磁盘存储或数据库中。
 * 我们不会将关于转发的电子邮件的任何元数据存储到磁盘存储或数据库中。
@@ -60,15 +59,6 @@
 * 我们存储您提供给我们的域名、别名和配置。
 * 我们存储保护您的账户和管理访问所需的有限账户安全元数据，包括活跃的网站会话标识符、失败的登录尝试计数器以及最后一次登录尝试的时间戳。
 * 您自愿提供给我们的任何额外信息，例如通过电子邮件或在我们的 <a href="/help">help</a> 页面上提交给我们的评论或问题。
-
-
-**注册归因**（永久存储在您的账户中）：
-
-当您创建账户时，我们存储以下信息以了解用户如何找到我们的服务：
-
-* 引荐网站域名（非完整 URL）
-* 您访问我们网站的第一个页面，其路径中的值（如域名、ID和令牌）会被替换为占位符
-* URL 中存在的 UTM 活动参数
 
 ### 邮件存储 {#email-storage}
 
@@ -175,36 +165,6 @@
   * 身份验证和登录状态
   * 双因素身份验证的"记住我"功能
   * 闪现消息和通知
-  * [分析](#analytics)：您本次访问的第一个页面、引荐域名、活动（UTM）参数和页面计数
-
-
-## Analytics {#analytics}
-
-我们使用自己的注重隐私的分析系统来了解我们的服务如何被使用。该系统以隐私为核心原则设计：
-
-**我们不收集的内容：**
-
-* 我们不存储IP地址
-* 我们不为分析单独设置Cookie
-* 我们不使用任何第三方分析服务
-* 我们不跨天或跨会话跟踪未登录的访客
-
-**我们收集的内容：**
-
-* 汇总的页面浏览量和服务使用情况（SMTP、IMAP、POP3、API等）
-* 浏览器和操作系统类型及版本（从用户代理解析，原始数据被丢弃）
-* 设备类型（桌面、移动、平板）
-* 引荐域名（非完整URL）以及活动（UTM）参数
-* 邮件协议的邮件客户端类型（例如 Thunderbird、Outlook）
-* 所请求的页面或API路径，其中的值（如域名、ID和令牌）会被替换为占位符，以及请求是否成功
-* 对于网站访问，该次访问的第一个页面和页面计数，保存在您的会话中（参见[Cookie 和会话](#cookies-and-sessions)）
-* 当您登录时，您的账户、别名或域名的ID，以便我们了解各项服务的使用情况并排查问题
-
-**数据保留：**
-
-* 分析事件会在30天后自动删除
-* 每小时汇总数据不与任何账户关联，会保留90天
-* 会话标识符每日轮换，无法用于跨天跟踪访客
 
 
 ## 应用和网页邮箱 {#apps-and-webmail}

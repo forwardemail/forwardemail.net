@@ -21,7 +21,6 @@
   * [Kontoændringer](#account-changes)
   * [Domæneindstillingsændringer](#domain-settings-changes)
 * [Cookies og Sessioner](#cookies-and-sessions)
-* [Analyse](#analytics)
 * [Apps og webmail](#apps-and-webmail)
   * [Data på din enhed](#data-on-your-device)
   * [Data, som appsene sender til os](#data-the-apps-send-us)
@@ -40,7 +39,7 @@ Se venligst vores [Vilkår](/terms), da de gælder på hele siden.
 
 ## Information Ikke Indsamlet {#information-not-collected}
 
-**Med undtagelse af de oplysninger, der udtrykkeligt er beskrevet i denne politik (herunder [fejllogs](#error-logs), [serverlogs](#server-logs), [udgående SMTP-e-mails](#outbound-smtp-emails), [kontoinformation](#account-information), [midlertidig databehandling](#temporary-data-processing), [revisionslogs](#audit-logs), [cookies og sessioner](#cookies-and-sessions), [analyse](#analytics) og [apps og webmail](#apps-and-webmail)):**
+**Med undtagelse af de oplysninger, der udtrykkeligt er beskrevet i denne politik (herunder [fejllogs](#error-logs), [serverlogs](#server-logs), [udgående SMTP-e-mails](#outbound-smtp-emails), [kontoinformation](#account-information), [midlertidig databehandling](#temporary-data-processing), [revisionslogs](#audit-logs), [cookies og sessioner](#cookies-and-sessions) og [apps og webmail](#apps-and-webmail)):**
 
 * Vi gemmer ikke videresendte e-mails på disk eller i databaser.
 * Vi gemmer ikke metadata om videresendte e-mails på disk eller i databaser.
@@ -60,15 +59,6 @@ For gennemsigtighed kan du til enhver tid <a href="https://github.com/forwardema
 * Vi gemmer dine domænenavne, aliaser og konfigurationer, som du giver os.
 * Vi gemmer begrænsede kontosikkerhedsmetadata, der er nødvendige for at beskytte din konto og administrere adgang, herunder aktive websteds-session-id'er, tællere for mislykkede loginforsøg og tidsstemplet for det sidste loginforsøg.
 * Enhver yderligere information, du frivilligt giver os, såsom kommentarer eller spørgsmål, der sendes til os via e-mail eller på vores <a href="/help">hjælpeside</a>.
-
-
-**Tilmeldingsattribution** (gemt permanent på din konto):
-
-Når du opretter en konto, gemmer vi følgende information for at forstå, hvordan brugere finder vores service:
-
-* Det henvisende websteds domæne (ikke fuld URL)
-* Den første side, du besøgte på vores site, med værdier i dens sti såsom domænenavne, id'er og tokens erstattet af pladsholdere
-* UTM-kampagneparametre, hvis de er til stede i URL'en
 
 ### E-mail Opbevaring {#email-storage}
 
@@ -177,36 +167,6 @@ For domæner med flere administratorer tilbyder vi detaljeret revisionslogning f
   * Autentificering og loginstatus
   * To-faktor-autentificerings "huske mig"-funktionalitet
   * Flash-beskeder og notifikationer
-  * [Analyse](#analytics): den første side under dit besøg, henvisningsdomænet, kampagneparametre (UTM) og et sideantal
-
-
-## Analytics {#analytics}
-
-Vi bruger vores eget privatlivsfokuserede analyssystem til at forstå, hvordan vores tjenester bruges. Dette system er designet med privatliv som et kerneprincip:
-
-**Hvad vi IKKE indsamler:**
-
-* Vi gemmer ikke IP-adresser
-* Vi sætter ikke en separat cookie til analyse
-* Vi bruger ikke nogen tredjeparts analysetjenester
-* Vi sporer ikke besøgende på tværs af dage eller sessioner, når de ikke er logget ind
-
-**Hvad vi GØR indsamle:**
-
-* Aggregerede sidevisninger og tjenestebrug (SMTP, IMAP, POP3, API osv.)
-* Browser- og operativsystemtype og -version (udtrukket fra user agent, rådata kasseres)
-* Enhedstype (desktop, mobil, tablet)
-* Henvisningsdomæne (ikke fuld URL) og kampagneparametre (UTM)
-* E-mailklienttype for mailprotokoller (f.eks. Thunderbird, Outlook)
-* Den anmodede side eller API-sti, hvor værdier såsom domænenavne, id'er og tokens er erstattet af pladsholdere, og om anmodningen lykkedes
-* Ved besøg på webstedet: den første side under besøget og et sideantal, som opbevares i din session (se [Cookies og Sessioner](#cookies-and-sessions))
-* Når du er logget ind, ID'et for din konto, dit alias eller dit domæne, så vi kan se, hvordan hver tjeneste bruges, og fejlfinde problemer
-
-**Dataopbevaring:**
-
-* Analysehændelser slettes automatisk efter 30 dage
-* Samlede tal pr. time, som ikke er knyttet til nogen konto, opbevares i 90 dage
-* Sessionsidentifikatorer roteres dagligt og kan ikke bruges til at spore besøgende på tværs af dage
 
 
 ## Apps og webmail {#apps-and-webmail}

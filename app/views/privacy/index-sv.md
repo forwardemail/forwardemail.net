@@ -21,7 +21,6 @@
   * [Kontoförändringar](#account-changes)
   * [Ändringar av domäninställningar](#domain-settings-changes)
 * [Cookies och sessioner](#cookies-and-sessions)
-* [Analys](#analytics)
 * [Appar och webbmail](#apps-and-webmail)
   * [Data på din enhet](#data-on-your-device)
   * [Data som apparna skickar till oss](#data-the-apps-send-us)
@@ -40,7 +39,7 @@ Vänligen hänvisa till våra [Villkor](/terms) eftersom de gäller för hela we
 
 ## Information som inte samlas in {#information-not-collected}
 
-**Med undantag för den information som uttryckligen beskrivs i denna policy (inklusive [felloggar](#error-logs), [serverloggar](#server-logs), [utgående SMTP-e-postmeddelanden](#outbound-smtp-emails), [kontoinformation](#account-information), [tillfällig databehandling](#temporary-data-processing), [granskningsloggar](#audit-logs), [cookies och sessioner](#cookies-and-sessions), [analys](#analytics) och [appar och webbmail](#apps-and-webmail)):**
+**Med undantag för den information som uttryckligen beskrivs i denna policy (inklusive [felloggar](#error-logs), [serverloggar](#server-logs), [utgående SMTP-e-postmeddelanden](#outbound-smtp-emails), [kontoinformation](#account-information), [tillfällig databehandling](#temporary-data-processing), [granskningsloggar](#audit-logs), [cookies och sessioner](#cookies-and-sessions) och [appar och webbmail](#apps-and-webmail)):**
 
 * Vi lagrar inte några vidarebefordrade e-postmeddelanden på disk eller i databaser.
 * Vi lagrar inte någon metadata om vidarebefordrade e-postmeddelanden på disk eller i databaser.
@@ -60,15 +59,6 @@ För transparens kan du när som helst <a href="https://github.com/forwardemail"
 * Vi lagrar dina domännamn, alias och konfigurationer som du förser oss med.
 * Vi lagrar begränsad säkerhetsmetadata för kontot som behövs för att skydda ditt konto och hantera åtkomst, inklusive aktiva sessionsidentifierare för webbplatsen, räknare för misslyckade inloggningsförsök och tidsstämpeln för det senaste inloggningsförsöket.
 * All ytterligare information som du frivilligt tillhandahåller oss, såsom kommentarer eller frågor som skickas till oss via e-post eller på vår <a href="/help">hjälp</a>-sida.
-
-
-**Registreringsattribution** (lagras permanent på ditt konto):
-
-När du skapar ett konto lagrar vi följande information för att förstå hur användare hittar vår tjänst:
-
-* Den hänvisande webbplatsens domän (inte fullständig URL)
-* Den första sidan du besökte på vår webbplats, där värden i dess sökväg såsom domännamn, ID:n och token ersätts med platshållare
-* UTM-kampanjparametrar om de finns i URL:en
 
 ### E-postlagring {#email-storage}
 
@@ -177,36 +167,6 @@ För domäner med flera administratörer tillhandahåller vi detaljerad revision
   * Autentisering och inloggningstillstånd
   * "Kom ihåg mig"-funktion för tvåfaktorsautentisering
   * Flash-meddelanden och aviseringar
-  * [Analys](#analytics): den första sidan under ditt besök, referensdomänen, kampanjparametrar (UTM) och ett sidantal
-
-
-## Analytics {#analytics}
-
-Vi använder vårt eget integritetsfokuserade analyssystem för att förstå hur våra tjänster används. Detta system är utformat med integritet som en kärnprincip:
-
-**Vad vi INTE samlar in:**
-
-* Vi lagrar inte IP-adresser
-* Vi sätter ingen separat cookie för analys
-* Vi använder inga tredjepartsanalystjänster
-* Vi spårar inte besökare över dagar eller sessioner när de inte är inloggade
-
-**Vad vi samlar in:**
-
-* Aggregerade sidvisningar och tjänstanvändning (SMTP, IMAP, POP3, API, etc.)
-* Webbläsar- och operativsystemtyp och -version (tolkat från user agent, rådata kastas)
-* Enhetstyp (stationär, mobil, surfplatta)
-* Referensdomän (inte fullständig URL) och kampanjparametrar (UTM)
-* E-postklienttyp för mailprotokoll (t.ex. Thunderbird, Outlook)
-* Den begärda sidan eller API-sökvägen, där värden såsom domännamn, ID:n och token ersätts med platshållare, och om förfrågan lyckades
-* Vid besök på webbplatsen: den första sidan under besöket och ett sidantal, som sparas i din session (se [Cookies och sessioner](#cookies-and-sessions))
-* När du är inloggad, ID:t för ditt konto, ditt alias eller din domän, så att vi kan se hur varje tjänst används och felsöka problem
-
-**Dataretention:**
-
-* Analyshändelser raderas automatiskt efter 30 dagar
-* Totalsiffror per timme, som inte är kopplade till något konto, sparas i 90 dagar
-* Sessionsidentifierare roteras dagligen och kan inte användas för att spåra besökare över dagar
 
 
 ## Appar och webbmail {#apps-and-webmail}

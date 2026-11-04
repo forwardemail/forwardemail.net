@@ -97,7 +97,7 @@ function getDeviceType(result, fallback) {
 }
 
 /**
- * Parse a user-agent into normalized analytics and display fields.
+ * Parse a user-agent into normalized display fields.
  * ua-parser-js remains authoritative for browsers, operating systems, devices,
  * and supported email clients.  Narrow fallbacks cover protocol identifiers
  * (for example DAVx5 and CalendarAgent) that are not HTTP user agents.

@@ -30,7 +30,6 @@ const _ = require('#helpers/lodash');
 const isEmail = require('#helpers/is-email');
 
 const Aliases = require('#models/aliases');
-const analytics = require('#helpers/analytics');
 const Domains = require('#models/domains');
 const config = require('#config');
 const env = require('#config/env');
@@ -532,59 +531,13 @@ async function onAuth(auth, session, fn) {
           fn(null, { user, authAt });
 
           //
-          // Still run side effects (analytics, sync) on cache hit
-          // so that deduplication and background sync continue to work.
+          // Still run side effects (sync) on cache hit
+          // so that background sync continues to work.
           //
           // NOTE: we intentionally skip the email alerts (CalDAV SMTP check,
           // IMAP-not-enabled check) on cache hit because those are weekly
           // courtesy checks that already have their own Redis-based dedup.
           //
-
-          // Track successful authentication for analytics (with deduplication)
-          {
-            let service = 'smtp';
-            if (isIMAP) service = 'imap';
-            else if (isPOP3) service = 'pop3';
-            else if (isCalDAV) service = 'caldav';
-            else if (isCardDAV) service = 'carddav';
-            else if (isAPI) service = 'api';
-
-            let ua = '';
-            if (isIMAP && session.clientId) {
-              ua = analytics.parseIMAPClientId(session.clientId);
-            } else if ((isCalDAV || isCardDAV || isAPI) && session.request) {
-              ua = session.request.get?.('user-agent') || '';
-            } else if (session.hostNameAppearsAs) {
-              ua = session.hostNameAppearsAs;
-            } else if (session.clientHostname) {
-              ua = session.clientHostname;
-            }
-
-            const sessionHash = analytics.generateSessionHash(
-              session.remoteAddress,
-              ua
-            );
-            const dedupKey = `analytics_auth_dedup:${sessionHash}:${service}`;
-
-            this.client
-              .get(dedupKey)
-              .then(async (exists) => {
-                if (!exists) {
-                  await this.client.set(dedupKey, '1', 'PX', ms('1h'));
-                  analytics.trackAuth({
-                    service,
-                    ip: session.remoteAddress,
-                    ua,
-                    user_id: user.id,
-                    domain_id: user.domain_id,
-                    success: true
-                  });
-                }
-              })
-              .catch((err) => {
-                this.logger.debug('Analytics dedup check error', { err });
-              });
-          }
 
           // Sync messages if applicable (IMAP, POP3, CalDAV, API)
           // Rate-limited: only fire sync once per alias every 30 seconds.
@@ -1433,69 +1386,6 @@ async function onAuth(auth, session, fn) {
     }
 
     fn(null, { user, authAt: authStartedAt });
-
-    // Track successful authentication for analytics (with deduplication)
-    // Privacy-focused: IP used for session hash only, not stored
-    // Deduplication prevents email clients that reconnect frequently from
-    // flooding the analytics database (e.g., IMAP IDLE reconnects every few minutes)
-    {
-      let service = 'smtp';
-      if (isIMAP) service = 'imap';
-      else if (isPOP3) service = 'pop3';
-      else if (isCalDAV) service = 'caldav';
-      else if (isCardDAV) service = 'carddav';
-      else if (isAPI) service = 'api';
-
-      // Determine User-Agent based on service type:
-      // - IMAP: Use session.clientId (from IMAP ID command, RFC 2971)
-      // - POP3: No standard client identification (protocol limitation)
-      // - CalDAV/CardDAV/API: Use HTTP User-Agent header from session.request
-      // - SMTP: Use session.hostNameAppearsAs (EHLO/HELO hostname sent by client)
-      let ua = '';
-      if (isIMAP && session.clientId) {
-        // IMAP ID command provides client identification (RFC 2971)
-        ua = analytics.parseIMAPClientId(session.clientId);
-      } else if ((isCalDAV || isCardDAV || isAPI) && session.request) {
-        // HTTP-based protocols have User-Agent header
-        ua = session.request.get?.('user-agent') || '';
-      } else if (session.hostNameAppearsAs) {
-        // SMTP uses EHLO/HELO hostname (what client sends, not resolved hostname)
-        ua = session.hostNameAppearsAs;
-      } else if (session.clientHostname) {
-        // Fallback to resolved hostname if EHLO/HELO not available
-        ua = session.clientHostname;
-      }
-      // Note: POP3 has no standard client identification mechanism
-
-      // Generate session hash for deduplication
-      const sessionHash = analytics.generateSessionHash(
-        session.remoteAddress,
-        ua
-      );
-      const dedupKey = `analytics_auth_dedup:${sessionHash}:${service}`;
-
-      // Only track one auth event per session/service per hour
-      this.client
-        .get(dedupKey)
-        .then(async (exists) => {
-          if (!exists) {
-            // Set dedup key with 1 hour TTL before tracking
-            await this.client.set(dedupKey, '1', 'PX', ms('1h'));
-            analytics.trackAuth({
-              service,
-              ip: session.remoteAddress,
-              ua,
-              user_id: user.id,
-              domain_id: user.domain_id,
-              success: true
-            });
-          }
-        })
-        .catch((err) => {
-          // Don't let analytics dedup errors affect authentication
-          this.logger.debug('Analytics dedup check error', { err });
-        });
-    }
 
     //
     // if we're on IMAP, POP3, CalDAV, or API server then sync messages with user
