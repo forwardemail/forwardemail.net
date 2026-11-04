@@ -89,9 +89,10 @@ const channels = [
     key: 'google-play',
     platform: 'android',
     name: 'Google Play',
-    state: 'soon',
-    // The play.google.com listing, once it leaves the internal track.
-    url: null
+    state: 'live',
+    // No `hl` parameter: Play picks the listing language from the visitor's
+    // account and browser, which beats pinning everyone to en_US.
+    url: 'https://play.google.com/store/apps/details?id=net.forwardemail.mail'
   },
   {
     key: 'obtainium',

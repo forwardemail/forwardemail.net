@@ -152,7 +152,7 @@ mixin feDownloadPlatforms
       +feDownloadGroup(group, "fe-download-desktop", t("Desktop"), t("Built for the machine you work on."), t("Every desktop build carries a signed auto updater, so you stay current without coming back here."))
     else if group.key === "mobile"
       span#fe-download-mobile.fe-download-anchor
-      +feDownloadGroup(group, "fe-download-mobile", t("Mobile"), t("The same mailbox in your pocket."), t("Installed directly rather than through a store, so you get the build exactly as it left CI."))
+      +feDownloadGroup(group, "fe-download-mobile", t("Mobile"), t("The same mailbox in your pocket."), t("Get it from Google Play, or install the build directly, exactly as it left CI."))
     else if group.key === "terminal"
       //- (the hero's "Install in the terminal" button links here, the top of
       //- the section with its video, not the card below it)
