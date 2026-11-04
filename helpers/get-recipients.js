@@ -17,6 +17,7 @@ const combineErrors = require('#helpers/combine-errors');
 const config = require('#config');
 const env = require('#config/env');
 const getErrorCode = require('#helpers/get-error-code');
+const isCodeBug = require('#helpers/is-code-bug');
 const getFingerprintKey = require('#helpers/get-fingerprint-key');
 const getForwardingAddresses = require('#helpers/get-forwarding-addresses');
 const getSettings = require('#helpers/get-settings');
@@ -616,7 +617,27 @@ async function getRecipients(session, scan) {
         });
       }
 
-      if (recipient.addresses.length > 0 || recipient.hasIMAP) return recipient;
+      if (recipient.addresses.length > 0 || recipient.hasIMAP) {
+        //
+        // an address that could not be checked (e.g. Redis was unavailable)
+        // is retried with the message, not skipped while the rest of the
+        // alias receives it (its details are not for the sender)
+        //
+        for (const err of errors) {
+          if (err instanceof DenylistError || err.name === 'DenylistError')
+            continue;
+          err.responseCode = getErrorCode(err);
+          if (!err._message) err._message = err.message;
+          err.message =
+            err.responseCode < 500
+              ? `Delivery to ${recipient.address} failed temporarily, please try again later`
+              : `Delivery to ${recipient.address} failed`;
+          bounces.push({ address: recipient.address, err, recipient });
+        }
+
+        return recipient;
+      }
+
       if (errors.length === 0) return;
       for (const err of errors) {
         logger.warn(err, { session, resolver: this.resolver });
@@ -625,6 +646,8 @@ async function getRecipients(session, scan) {
       const err = combineErrors(errors);
       if (errors.some((err) => err instanceof DenylistError))
         err.name = 'DenylistError';
+      // (so that one that failed on our side is retried, see `onDataMX`)
+      if (errors.some((err) => isCodeBug(err))) err.isCodeBug = true;
       // TODO: rewrite `err.response` and `err.message` if either/both start with diagnostic code
       err.responseCode = _.sortBy(errors.map((err) => getErrorCode(err)))[0];
       bounces.push({
@@ -705,11 +728,15 @@ async function getRecipients(session, scan) {
     }
 
     // if it has imap then push it
+    // (a mailbox that more than one recipient reaches is stored to once, see
+    // `onDataMX` in `helpers/on-data-mx.js`)
     if (recipient.hasIMAP && recipient.aliasIds) {
       for (const aliasId of recipient.aliasIds) {
         if (
           imap.some(
-            (obj) => obj.address === recipient.address && obj.id === aliasId
+            (obj) =>
+              obj.address === recipient.address &&
+              String(obj.id) === String(aliasId)
           )
         )
           continue;

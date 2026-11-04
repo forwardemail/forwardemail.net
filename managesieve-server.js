@@ -288,7 +288,10 @@ class ManageSieveServer {
           error: error.message
         });
         session._rejectConnectCheck(error);
-        this.send(session, `${RESPONSE.BYE} "${error.message}"`);
+        this.send(
+          session,
+          `${RESPONSE.BYE} "${this.escapeString(error.message)}"`
+        );
         socket.end();
       });
 
@@ -905,7 +908,10 @@ class ManageSieveServer {
         sessionId: session.id,
         error: error.message
       });
-      this.send(session, `${RESPONSE.NO} "${error.message}"`);
+      this.send(
+        session,
+        `${RESPONSE.NO} "${this.escapeString(error.message)}"`
+      );
     }
   }
 
@@ -1063,8 +1069,7 @@ class ManageSieveServer {
 
     // Check script size
     if (scriptSize > this.maxScriptSize) {
-      this.send(
-        session,
+      await refuse(
         `${RESPONSE.NO} (QUOTA/MAXSIZE) "Script too large (max ${this.maxScriptSize} bytes)"`
       );
       return;
@@ -1098,7 +1103,10 @@ class ManageSieveServer {
             throw new Error(validation.errors[0]?.message || 'Invalid script');
           }
         } catch (err) {
-          this.send(session, `${RESPONSE.NO} "Syntax error: ${err.message}"`);
+          this.send(
+            session,
+            `${RESPONSE.NO} "Syntax error: ${this.escapeString(err.message)}"`
+          );
           return;
         }
 
@@ -1295,8 +1303,18 @@ class ManageSieveServer {
 
     const scriptSize = Number.parseInt(match[1], 10);
 
+    // (the script is still read, or it would be read as commands, see
+    // handlePutScript; one far over the limit closes the connection)
     if (scriptSize > this.maxScriptSize) {
-      this.send(session, `${RESPONSE.NO} (QUOTA/MAXSIZE) "Script too large"`);
+      session.pendingLiteral = {
+        size: scriptSize,
+        callback: async () =>
+          this.send(
+            session,
+            `${RESPONSE.NO} (QUOTA/MAXSIZE) "Script too large"`
+          )
+      };
+      await this.processBuffer(session);
       return;
     }
 
@@ -1313,7 +1331,10 @@ class ManageSieveServer {
 
           this.send(session, `${RESPONSE.OK} "Script is valid"`);
         } catch (err) {
-          this.send(session, `${RESPONSE.NO} "Syntax error: ${err.message}"`);
+          this.send(
+            session,
+            `${RESPONSE.NO} "Syntax error: ${this.escapeString(err.message)}"`
+          );
         }
       }
     };
@@ -1397,9 +1418,14 @@ class ManageSieveServer {
 
   //
   // Escape string for ManageSieve protocol
+  // (a quoted string has no line breaks, RFC 5804 section 4: one in an error
+  // message, e.g. from a name in the script, would start a response line)
   //
   escapeString(string_) {
-    return string_.replaceAll('\\', '\\\\').replaceAll('"', String.raw`\"`);
+    return string_
+      .replaceAll('\\', '\\\\')
+      .replaceAll('"', String.raw`\"`)
+      .replaceAll(/[\r\n]+/g, ' ');
   }
 }
 

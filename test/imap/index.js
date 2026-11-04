@@ -44,6 +44,7 @@ const _ = require('#helpers/lodash');
 
 const Aliases = require('#models/aliases');
 const Attachments = require('#models/attachments');
+const Emails = require('#models/emails');
 const TemporaryMessages = require('#models/temporary-messages');
 const Mailboxes = require('#models/mailboxes');
 const SieveScripts = require('#models/sieve-scripts');
@@ -2396,6 +2397,73 @@ test('sieve copies of a message are stored once, with one alert', async (t) => {
     timeout: ms('10s')
   });
   t.is(events.of('newMessage').filter((e) => !e.suppressAlert).length, 1);
+});
+
+test('a sieve redirect is sent once, however many times the message is delivered', async (t) => {
+  const { queue } = Emails;
+  const sent = [];
+  let release;
+  const queued = new Promise((resolve) => {
+    release = resolve;
+  });
+  Emails.queue = async ({ info }) => {
+    sent.push(info.envelope.to);
+    await queued;
+    return {};
+  };
+
+  t.teardown(() => {
+    Emails.queue = queue;
+    release();
+  });
+
+  const { alias, domain, user } = t.context;
+  const address = `${alias.name}@${domain.name}`;
+  // (a redirect without :copy stores nothing, so each delivery ran it again)
+  await SieveScripts.create({
+    alias: alias._id,
+    user: user._id,
+    domain: domain._id,
+    name: randomUUID(),
+    content: 'redirect "elsewhere@example.net";',
+    is_active: true
+  });
+  const subject = randomUUID();
+  const raw = Buffer.from(
+    [
+      `Date: ${new Date().toUTCString()}`,
+      `Message-ID: <${subject}@example.com>`,
+      `To: ${address}`,
+      'From: sender@example.com',
+      `Subject: ${subject}`,
+      '',
+      'test'
+    ].join('\r\n')
+  );
+  const deliver = () =>
+    t.context.wsp.request(
+      {
+        action: 'tmp',
+        aliases: [{ address, id: alias.id }],
+        remoteAddress: IP_ADDRESS,
+        sender: 'sender@example.com',
+        date: new Date().toISOString(),
+        raw
+      },
+      0
+    );
+
+  // while one delivery is redirecting it, another is deferred (the first can
+  // still fail), and one after it does not redirect it again
+  const first = deliver();
+  await pWaitFor(() => sent.length > 0, { timeout: ms('10s') });
+  const second = await deliver();
+  t.is(second[address]?.responseCode, 421);
+  release();
+  t.deepEqual(await first, {});
+  t.deepEqual(await deliver(), {});
+  t.deepEqual(sent, [['elsewhere@example.net']]);
+  t.deepEqual(await countByMailbox(t, subject), {});
 });
 
 test('a sieve copy to "Junk" goes to the spam folder', async (t) => {

@@ -248,3 +248,53 @@ test('a statement that only reads is sent again when the connection drops', asyn
   t.deepEqual(result, { ok: true });
   t.is(server.requests, 2);
 });
+
+// (a server that never answers the first request it gets)
+async function holdFirstRequest(t) {
+  t.timeout(ms('1m'));
+  const wss = new WebSocketServer({ host: '127.0.0.1', port: 0 });
+  await once(wss, 'listening');
+  t.teardown(() => wss.close());
+
+  const server = { requests: 0 };
+  wss.on('connection', (ws) => {
+    ws.on('message', (data) => {
+      server.requests++;
+      if (server.requests === 1) return;
+      const { id } = decoder.unpack(data);
+      ws.send(encoder.pack({ id, data: { ok: true } }));
+    });
+  });
+
+  server.wsp = createWebSocketAsPromised({
+    host: '127.0.0.1',
+    port: wss.address().port
+  });
+  t.teardown(() => server.wsp.close());
+  return server;
+}
+
+//
+// A request that timed out may still be running on the SQLite server, so a
+// write is not sent again then either (it would be applied twice), and a
+// read is
+//
+test('an APPEND is not sent again when it times out', async (t) => {
+  const server = await holdFirstRequest(t);
+  const err = await t.throwsAsync(
+    server.wsp.request({ action: 'append', session, timeout: 1000 })
+  );
+  t.regex(err._message || err.message, /rejected by timeout/);
+  t.is(server.requests, 1);
+});
+
+test('a read is sent again when it times out', async (t) => {
+  const server = await holdFirstRequest(t);
+  const result = await server.wsp.request({
+    action: 'size',
+    session,
+    timeout: 1000
+  });
+  t.deepEqual(result, { ok: true });
+  t.is(server.requests, 2);
+});

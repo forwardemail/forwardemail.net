@@ -114,6 +114,11 @@ function isCodeBug(err) {
       err.code === 'ETXTBSY' ||
       err.code === 'EWOULDBLOCK' ||
       err.code === 'EXDEV' ||
+      // a DKIM or ARC signing key that is missing or could not be read
+      (typeof err.code === 'string' &&
+        (err.code.startsWith('ERR_CRYPTO_') ||
+          err.code.startsWith('ERR_OSSL_PEM_') ||
+          err.code === 'ERR_OSSL_UNSUPPORTED')) ||
       // pug related
       err.babylonError ||
       err.component ||

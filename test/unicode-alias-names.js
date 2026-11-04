@@ -217,6 +217,34 @@ test('an alias signs in with its name in either form', async (t) => {
   }
 });
 
+//
+// A name is matched as text (a name starting with "$" was read by MongoDB as
+// a field path or a variable, and every sign-in failed for now)
+//
+test('an alias whose name starts with "$" signs in', async (t) => {
+  const alias = await createAlias(t, '$$money', t.context.user.email, {
+    has_imap: true
+  });
+  const pass = await alias.createToken();
+  await alias.save();
+
+  const status = async (name, pass) => {
+    const res = await t.context.api
+      .get('/v1/sieve-scripts')
+      .set(
+        'Authorization',
+        `Basic ${Buffer.from(
+          `${name}@${t.context.domain.name}:${pass}`
+        ).toString('base64')}`
+      );
+    return res.status;
+  };
+
+  t.is(await status('$$money', pass), 200);
+  // (and a name that is not an alias is refused, not failed)
+  t.is(await status('$', pass), 401);
+});
+
 test('the alias signed in with is the one named as given', async (t) => {
   const unicode = await createAlias(t, FAELLES, t.context.user.email, {
     has_imap: true

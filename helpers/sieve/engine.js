@@ -273,6 +273,26 @@ function globToRegexSource(pattern, capture) {
 }
 
 //
+// The size of a :matches or :regex key for MAX_MATCH_COST: its length, and
+// the count of each counted repetition ("{n}" or "{n,m}"), which repeats
+// what it follows that many times (RE2 limits nested ones to 1000 in all)
+//
+function getMatchWeight(pattern) {
+  let weight = pattern.length;
+  for (const [, min, max] of pattern.matchAll(/{(\d+)(?:,(\d*))?}/g)) {
+    weight += Math.min(Number(max || min), 1000);
+  }
+
+  return weight;
+}
+
+// (see SieveEngine.MAX_MATCH_COST)
+function checkMatchCost(weight, value) {
+  if (weight * value.length > SieveEngine.MAX_MATCH_COST)
+    throw new Error('Sieve script exceeded the time it may run');
+}
+
+//
 // Split at each comma followed by an even number of double quotes (one not in
 // a quoted name), as /,(?=(?:[^"]*"[^"]*")*[^"]*$)/ did, but in one pass: the
 // lookahead read the rest of the value again at every comma, so a header of
@@ -674,6 +694,7 @@ class SieveEngine {
    * @param {Object} state - Execution state
    */
   async executeCommand(command, state) {
+    this.countStep(state);
     // (see MAX_ACTIONS)
     if (state.actions.length > SieveEngine.MAX_ACTIONS)
       throw new Error('Sieve script exceeded the number of actions');
@@ -1096,6 +1117,7 @@ class SieveEngine {
    * @returns {Promise<boolean>} Test result
    */
   async evaluateTest(test, state) {
+    this.countStep(state);
     try {
       return await this.evaluateTestType(test, state);
     } finally {
@@ -2152,8 +2174,13 @@ class SieveEngine {
 
       case 'matches': {
         const regex = this.compileGlob(normalizedPattern);
-        const matcher = (value, normalized = normalize(value)) =>
-          regex !== null && regex.test(normalized);
+        const weight = getMatchWeight(normalizedPattern);
+        const matcher = (value, normalized = normalize(value)) => {
+          if (regex === null) return false;
+          checkMatchCost(weight, normalized);
+          return regex.test(normalized);
+        };
+
         // (the value with its own case: the pattern ignores it as the
         // comparator does)
         matcher.capture = (value) =>
@@ -2172,10 +2199,13 @@ class SieveEngine {
           regex = new RE2(pattern, isCaseInsensitive ? 'is' : 's');
         } catch {}
 
+        const weight = getMatchWeight(pattern);
         const matcher = (value) => {
           if (regex === null) return false;
+          const string = toHeaderString(value);
+          checkMatchCost(weight, string);
           try {
-            return regex.test(toHeaderString(value));
+            return regex.test(string);
           } catch {
             return false;
           }
@@ -2795,6 +2825,24 @@ class SieveEngine {
   static MAX_MATCH_TIME = 2000;
 
   //
+  // One test of a :matches or :regex key is not interrupted, and once RE2
+  // cannot use its DFA (e.g. thousands of wildcards, or a large counted
+  // repetition after a loop) it takes about the size of the key times the
+  // length of the value (6-9ns for each, a 10KB key against a 100KB header
+  // held the process for 9s): a test that would cost more is stopped as for
+  // MAX_MATCH_TIME (a key of 20 characters still matches a 10MB body)
+  //
+  static MAX_MATCH_COST = 200_000_000;
+
+  //
+  // Every command and test a run executes, as Pigeonhole counts its
+  // instructions: the commands in nested foreverypart loops multiply, and
+  // they are not counted as MAX_MATCH_TIME (an "if true {}" took 0.2µs, so
+  // 10,000 of them in two nested loops over 100 parts held it for 19s)
+  //
+  static MAX_STEPS = 1_000_000;
+
+  //
   // Every keep and fileinto keeps a copy of the flags: thousands of flags and
   // of actions ran the delivery process out of memory (far more than any
   // script needs, and a script past them is stopped as for any error)
@@ -2819,6 +2867,17 @@ class SieveEngine {
     maxForeverypartDepth: 3,
     maxInstructionsPerScript: 10_000
   };
+
+  /**
+   * Count a command or test against MAX_STEPS
+   * @param {Object} state - Execution state
+   * @throws {Error} If the run took too many
+   */
+  countStep(state) {
+    state.steps = (state.steps || 0) + 1;
+    if (state.steps > SieveEngine.MAX_STEPS)
+      throw new Error('Sieve script exceeded the time it may run');
+  }
 
   /**
    * Increment instruction counter and check CPU limit

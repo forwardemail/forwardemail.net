@@ -5,6 +5,7 @@
 
 const { randomUUID } = require('node:crypto');
 const util = require('node:util');
+const http = require('node:http');
 const { Writable } = require('node:stream');
 const { setTimeout: delay } = require('node:timers/promises');
 
@@ -19,12 +20,27 @@ const sinon = require('sinon');
 
 const renderSpy = sinon.spy(Email.prototype, 'renderAll');
 
+//
+// Lets a test sign deliveries without our ARC key, as when it is missing (it
+// is bound when the MX server loads, so this must run before it does)
+//
+const mailauth = require('mailauth');
+
+const { sealMessage } = mailauth;
+let isSealKeyMissing = false;
+mailauth.sealMessage = async (raw, options) =>
+  sealMessage(
+    raw,
+    isSealKeyMissing ? { ...options, privateKey: undefined } : options
+  );
+
 const dayjs = require('dayjs-with-plugins');
 const { ImapFlow } = require('imapflow');
 const ip = require('ip');
 const ms = require('ms');
 const mxConnect = require('@forwardemail/mx-connect');
 const nodemailer = require('nodemailer');
+const Mail = require('nodemailer/lib/mailer');
 const pWaitFor = require('p-wait-for');
 const pify = require('pify');
 const test = require('ava');
@@ -38,6 +54,7 @@ const SQLite = require('../../sqlite-server');
 
 const Aliases = require('#models/aliases');
 const Domains = require('#models/domains');
+const SieveScripts = require('#models/sieve-scripts');
 const Users = require('#models/users');
 const clearAliasQuotaCache = require('#helpers/clear-alias-quota-cache');
 const config = require('#config');
@@ -1070,6 +1087,994 @@ test.serial(
     t.is(keys.length, 1);
     const pttl = await t.context.client.pttl(keys[0].slice(keyPrefix.length));
     t.true(pttl > 0 && pttl <= ms('1m'));
+  }
+);
+
+//
+// A mailbox on the MX server's domain (`name`), which can also forward to
+// `recipients` (names on the forwarding domain), and a way to count the
+// messages in its INBOX over IMAP
+//
+async function setupMailbox(t, ctx, name, recipients = []) {
+  if (!t.context.imap) {
+    const imap = new IMAP(
+      {
+        client: t.context.client,
+        subscriber: t.context.subscriber,
+        wsp: t.context.wsp
+      },
+      false
+    );
+    t.context.imap = imap;
+    t.context.imapPort = await getPort();
+    await imap.listen(t.context.imapPort);
+  }
+
+  const alias = await t.context.aliasFactory
+    .withState({
+      name,
+      user: ctx.admin._id,
+      domain: ctx.domain._id,
+      recipients: recipients.map((r) => ctx.addr(r)),
+      has_imap: true
+    })
+    .create();
+  const pass = await alias.createToken();
+  await alias.save();
+
+  async function countInbox() {
+    const client = new ImapFlow({
+      host: IP_ADDRESS,
+      port: t.context.imapPort,
+      secure: false,
+      auth: { user: `${name}@${ctx.domain.name}`, pass },
+      tls,
+      logger: false
+    });
+    await client.connect();
+    try {
+      const lock = await client.getMailboxLock('INBOX');
+      try {
+        return client.mailbox.exists;
+      } finally {
+        lock.release();
+      }
+    } finally {
+      await client.logout();
+    }
+  }
+
+  // (logging in creates the mailbox)
+  t.is(await countInbox(), 0);
+
+  return { address: `${name}@${ctx.domain.name}`, countInbox };
+}
+
+//
+// Have the MX server's requests to store messages in mailboxes go through
+// `fn(data, request)` (e.g. to make one time out as the SQLite server does
+// when it is overloaded)
+//
+function interceptMailboxStorage(t, fn) {
+  const request = t.context.wsp.request.bind(t.context.wsp);
+  t.context.wsp.request = async (data, ...args) =>
+    data?.action === 'tmp'
+      ? fn(data, () => request(data, ...args))
+      : request(data, ...args);
+  t.teardown(() => {
+    t.context.wsp.request = request;
+  });
+}
+
+// (as the WebSocket client rejects a request the SQLite server did not answer)
+function storageTimeout() {
+  const err = new Error(
+    'WebSocket request was rejected by timeout (60000 ms). RequestId: tmp:test'
+  );
+  err.name = 'TimeoutError';
+  return err;
+}
+
+async function waitForInbox(countInbox, expected) {
+  await pWaitFor(async () => (await countInbox()) === expected, {
+    timeout: ms('30s'),
+    interval: ms('1s')
+  });
+}
+
+test.serial(
+  'a mailbox that keeps timing out is retried past the partial delivery window',
+  async (t) => {
+    const { partialDeliveryRetryWindow } = config;
+    config.partialDeliveryRetryWindow = 1;
+    t.teardown(() => {
+      config.partialDeliveryRetryWindow = partialDeliveryRetryWindow;
+    });
+
+    const ctx = await setup(t);
+    const box = await setupMailbox(t, ctx, 'stalled', ['stalled-fwd']);
+
+    let isDown = true;
+    interceptMailboxStorage(t, async (data, request) => {
+      if (isDown) throw storageTimeout();
+      return request();
+    });
+
+    // (the destinations that received a message, see `claim` in
+    // `helpers/on-data-mx`)
+    const { keyPrefix } = t.context.client.options;
+    async function getDelivered() {
+      const delivered = [];
+      for (const key of await t.context.client.keys(`${keyPrefix}f:*:*`)) {
+        const name = key.slice(keyPrefix.length);
+        if ((await t.context.client.get(name)) === '1') delivered.push(name);
+      }
+
+      return delivered;
+    }
+
+    const before = new Set(await getDelivered());
+
+    const id = randomUUID();
+    const err = await t.throwsAsync(ctx.send(['stalled'], id));
+    t.is(err.responseCode, 421);
+    t.is(ctx.received.get(ctx.addr('stalled-fwd')), 1);
+
+    // (the forward is skipped on every retry, and for as long as the message
+    // keeps being retried: shorten what is left of its claim)
+    const after = await getDelivered();
+    const delivered = after.filter((key) => !before.has(key));
+    t.is(delivered.length, 1);
+    await t.context.client.pexpire(delivered[0], ms('1m'));
+
+    // past the window the mailbox is still down: the message is deferred,
+    // not accepted without it
+    await delay(50);
+    const retry = await t.throwsAsync(ctx.send(['stalled'], id));
+    t.is(retry.responseCode, 421);
+    t.true((await t.context.client.pttl(delivered[0])) > ms('23h'));
+    t.is(await box.countInbox(), 0);
+
+    // once it is back, the retry stores it
+    isDown = false;
+    const info = await ctx.send(['stalled'], id);
+    t.deepEqual(info.rejected, []);
+    await waitForInbox(box.countInbox, 1);
+    t.is(ctx.received.get(ctx.addr('stalled-fwd')), 1);
+
+    // no forwarding issue email is sent for our own mailbox
+    const emails = await getForwardingIssueEmails(box.address, 0);
+    t.is(emails.length, 0);
+  }
+);
+
+test.serial(
+  'a mailbox that fails on our side is retried until it has the message, while the rest is delivered once',
+  async (t) => {
+    const { partialDeliveryRetryWindow } = config;
+    config.partialDeliveryRetryWindow = 1;
+    t.teardown(() => {
+      config.partialDeliveryRetryWindow = partialDeliveryRetryWindow;
+    });
+
+    const ctx = await setup(t);
+    const box = await setupMailbox(t, ctx, 'split', ['split-a', 'split-b']);
+    const other = await setupMailbox(t, ctx, 'other');
+
+    // each way storing in our mailbox can fail for now, one per attempt
+    // (thrown by the WebSocket request, or replied by the SQLite server)
+    const failures = [
+      () => {
+        throw storageTimeout();
+      },
+      () => {
+        const err = new Error('Connection closed unexpectedly');
+        err.code = 'ECONNRESET';
+        throw err;
+      },
+      () => ({
+        [box.address]: {
+          name: 'SqliteError',
+          code: 'SQLITE_BUSY',
+          message: 'database is locked'
+        }
+      }),
+      () => ({
+        [box.address]: {
+          name: 'TypeError',
+          message: "Cannot read properties of undefined (reading 'id')"
+        }
+      }),
+      () => ({
+        [box.address]: {
+          name: 'ReplyError',
+          message: "READONLY You can't write against a read only replica."
+        }
+      }),
+      () => ({
+        [box.address]: {
+          name: 'MongoServerSelectionError',
+          message: 'Server selection timed out after 30000 ms'
+        }
+      })
+    ];
+    let fail;
+    interceptMailboxStorage(t, async (data, request) =>
+      fail && data.aliases.some((alias) => alias.address === box.address)
+        ? fail()
+        : request()
+    );
+
+    const id = randomUUID();
+    for (const [i, failure] of failures.entries()) {
+      fail = failure;
+      if (i > 0) {
+        // (past the retry window)
+        await delay(50);
+        await ctx.clearGreylist();
+      }
+
+      const err = await t.throwsAsync(ctx.send(['split', 'other'], id));
+      t.is(err.responseCode, 421, `attempt ${i + 1}`);
+      t.notRegex(
+        err.response,
+        /timeout|econnreset|sqlite|locked|cannot read|readonly|server selection/i
+      );
+    }
+
+    // the forwards and the other mailbox got it once, this mailbox not yet
+    t.is(ctx.received.get(ctx.addr('split-a')), 1);
+    t.is(ctx.received.get(ctx.addr('split-b')), 1);
+    t.is(await other.countInbox(), 1);
+    t.is(await box.countInbox(), 0);
+
+    // once storage is back, the retry stores it and nothing else twice
+    fail = undefined;
+    await ctx.clearGreylist();
+    const info = await ctx.send(['split', 'other'], id);
+    t.deepEqual(info.rejected, []);
+    await waitForInbox(box.countInbox, 1);
+    t.is(await other.countInbox(), 1);
+    t.is(ctx.received.get(ctx.addr('split-a')), 1);
+    t.is(ctx.received.get(ctx.addr('split-b')), 1);
+
+    // and no one is emailed about a failure of our own
+    const emails = await getForwardingIssueEmails(box.address, 0);
+    t.is(emails.length, 0);
+  }
+);
+
+test.serial(
+  'an internal error storing a message in a mailbox is temporary',
+  async (t) => {
+    const ctx = await setup(t);
+    const box = await setupMailbox(t, ctx, 'inbox');
+
+    // the SQLite server fails to store it with an error that is not about
+    // the message (e.g. a key it could not decrypt)
+    let isFailing = true;
+    interceptMailboxStorage(t, async (data, request) => {
+      if (!isFailing) return request();
+      return {
+        [box.address]: {
+          name: 'Error',
+          message: 'Decryption failed for all supported formats',
+          isCodeBug: false
+        }
+      };
+    });
+
+    const id = randomUUID();
+    const err = await t.throwsAsync(ctx.send(['inbox'], id));
+    t.is(err.responseCode, 421);
+    t.regex(err.response, /temporarily unavailable/);
+    t.notRegex(err.response, /Decryption/);
+
+    isFailing = false;
+    const info = await ctx.send(['inbox'], id);
+    t.deepEqual(info.rejected, []);
+    await waitForInbox(box.countInbox, 1);
+  }
+);
+
+test.serial(
+  'a forward that fails on our side is retried instead of bouncing',
+  async (t) => {
+    const ctx = await setup(t);
+    await ctx.createAlias('signed', ['signed']);
+
+    // our ARC signing key cannot be used (Node rejects with
+    // ERR_CRYPTO_SIGN_KEY_REQUIRED)
+    isSealKeyMissing = true;
+    t.teardown(() => {
+      isSealKeyMissing = false;
+    });
+
+    const id = randomUUID();
+    const err = await t.throwsAsync(ctx.send(['signed'], id));
+    t.is(err.responseCode, 421);
+    t.notRegex(err.response, /key/i);
+    t.false(ctx.received.has(ctx.addr('signed')));
+
+    // once it is fixed, the retry is delivered (it is not skipped as if the
+    // destination had the message)
+    isSealKeyMissing = false;
+    const info = await ctx.send(['signed'], id);
+    t.deepEqual(info.rejected, []);
+    t.is(ctx.received.get(ctx.addr('signed')), 1);
+  }
+);
+
+test.serial(
+  'a webhook that fails on our side is retried past the partial delivery window',
+  async (t) => {
+    const { partialDeliveryRetryWindow } = config;
+    config.partialDeliveryRetryWindow = 1;
+    t.teardown(() => {
+      config.partialDeliveryRetryWindow = partialDeliveryRetryWindow;
+    });
+
+    let hits = 0;
+    const server = http.createServer((req, res) => {
+      req.resume();
+      req.on('end', () => {
+        hits++;
+        res.end('OK');
+      });
+    });
+    await new Promise((resolve) => {
+      server.listen(0, '127.0.0.1', resolve);
+    });
+    t.teardown(() => {
+      server.close();
+    });
+
+    const ctx = await setup(t);
+    await t.context.aliasFactory
+      .withState({
+        name: 'hook',
+        user: ctx.admin._id,
+        domain: ctx.domain._id,
+        recipients: [
+          `http://127.0.0.1:${server.address().port}/hook`,
+          ctx.addr('hook-fwd')
+        ]
+      })
+      .create();
+
+    // our key for signing webhook requests cannot be read
+    await Domains.findByIdAndUpdate(ctx.domain._id, {
+      $set: { webhook_key: 'not-encrypted' }
+    });
+
+    const id = randomUUID();
+    const err = await t.throwsAsync(ctx.send(['hook'], id));
+    t.is(err.responseCode, 421);
+    t.is(ctx.received.get(ctx.addr('hook-fwd')), 1);
+    t.is(hits, 0);
+
+    // past the window the webhook is not given up on
+    await delay(50);
+    await ctx.clearGreylist();
+    const retry = await t.throwsAsync(ctx.send(['hook'], id));
+    t.is(retry.responseCode, 421);
+    t.is(hits, 0);
+
+    // once the key is fixed, the retry is delivered to the webhook only
+    await Domains.findByIdAndUpdate(ctx.domain._id, {
+      $unset: { webhook_key: 1 }
+    });
+    await t.context.client.del(`v1_settings:${ctx.domain.name}`);
+    await ctx.clearGreylist();
+    const info = await ctx.send(['hook'], id);
+    t.deepEqual(info.rejected, []);
+    t.is(hits, 1);
+    t.is(ctx.received.get(ctx.addr('hook-fwd')), 1);
+  }
+);
+
+test.serial(
+  'a forward that fails on our side while it is sent is retried past the partial delivery window',
+  async (t) => {
+    const { partialDeliveryRetryWindow } = config;
+    config.partialDeliveryRetryWindow = 1;
+    t.teardown(() => {
+      config.partialDeliveryRetryWindow = partialDeliveryRetryWindow;
+    });
+
+    const ctx = await setup(t);
+    const box = await setupMailbox(t, ctx, 'sent', ['sent-fwd']);
+
+    // a code bug while it is sent (our own handling gives it a 421, see
+    // `shouldThrow`, so it looks like a reply until it is told apart)
+    const { sendMail } = Mail.prototype;
+    let isBroken = true;
+    Mail.prototype.sendMail = function (data, ...args) {
+      if (isBroken && String(data?.envelope?.to).includes(ctx.addr('sent-fwd')))
+        return Promise.reject(
+          new TypeError("Cannot read properties of undefined (reading 'host')")
+        );
+      return sendMail.call(this, data, ...args);
+    };
+
+    t.teardown(() => {
+      Mail.prototype.sendMail = sendMail;
+    });
+
+    const id = randomUUID();
+    const err = await t.throwsAsync(ctx.send(['sent'], id));
+    t.is(err.responseCode, 421);
+    t.notRegex(err.response, /cannot read/i);
+    await waitForInbox(box.countInbox, 1);
+    t.false(ctx.received.has(ctx.addr('sent-fwd')));
+
+    // past the window it is still deferred, not given up on
+    await delay(50);
+    await ctx.clearGreylist();
+    const retry = await t.throwsAsync(ctx.send(['sent'], id));
+    t.is(retry.responseCode, 421);
+    t.false(ctx.received.has(ctx.addr('sent-fwd')));
+
+    // once it is fixed, the retry is delivered, and the mailbox keeps one copy
+    isBroken = false;
+    await ctx.clearGreylist();
+    const info = await ctx.send(['sent'], id);
+    t.deepEqual(info.rejected, []);
+    t.is(ctx.received.get(ctx.addr('sent-fwd')), 1);
+    t.is(await box.countInbox(), 1);
+
+    // and no one is emailed about a failure of our own
+    const emails = await getForwardingIssueEmails(box.address, 0);
+    t.is(emails.length, 0);
+  }
+);
+
+test.serial(
+  'a forward that rejects the message for good is not sent it again while the message is retried',
+  async (t) => {
+    let rejections = 0;
+    const ctx = await setup(t, {
+      rcptTo(address) {
+        if (address !== ctx.addr('gone')) return;
+        rejections++;
+        return userUnknown(address);
+      }
+    });
+    const box = await setupMailbox(t, ctx, 'keep', ['gone']);
+
+    // our mailbox storage is down, so the message is deferred
+    let isDown = true;
+    interceptMailboxStorage(t, async (data, request) => {
+      if (isDown) throw storageTimeout();
+      return request();
+    });
+
+    const id = randomUUID();
+    const err = await t.throwsAsync(ctx.send(['keep'], id));
+    t.is(err.responseCode, 421);
+    t.is(rejections, 1);
+
+    // a retry does not send it to the destination that rejected it again
+    await ctx.clearGreylist();
+    const retry = await t.throwsAsync(ctx.send(['keep'], id));
+    t.is(retry.responseCode, 421);
+    t.is(rejections, 1);
+
+    // once storage is back, the message is accepted, the mailbox has it,
+    // and the owner is told about the destination with its own reply
+    isDown = false;
+    await ctx.clearGreylist();
+    const info = await ctx.send(['keep'], id);
+    t.deepEqual(info.rejected, []);
+    await waitForInbox(box.countInbox, 1);
+    t.is(rejections, 1);
+    const emails = await getForwardingIssueEmails(box.address, 1);
+    t.is(emails.length, 1);
+    t.regex(emails[0].text, /User unknown/);
+  }
+);
+
+test.serial(
+  'a webhook that rejects the message for good is not sent it again while the message is retried',
+  async (t) => {
+    let hits = 0;
+    const server = http.createServer((req, res) => {
+      req.resume();
+      req.on('end', () => {
+        hits++;
+        // (a status the existing classification treats as permanent)
+        res.statusCode = 500;
+        res.end('Rejected');
+      });
+    });
+    await new Promise((resolve) => {
+      server.listen(0, '127.0.0.1', resolve);
+    });
+    t.teardown(() => {
+      server.close();
+    });
+
+    const ctx = await setup(t);
+    const box = await setupMailbox(t, ctx, 'hooked');
+    await Aliases.findOneAndUpdate(
+      { name: 'hooked', domain: ctx.domain._id },
+      {
+        $set: {
+          recipients: [`http://127.0.0.1:${server.address().port}/hook`]
+        }
+      }
+    );
+
+    // our mailbox storage is down, so the message is deferred
+    let isDown = true;
+    interceptMailboxStorage(t, async (data, request) => {
+      if (isDown) throw storageTimeout();
+      return request();
+    });
+
+    const id = randomUUID();
+    const err = await t.throwsAsync(ctx.send(['hooked'], id));
+    t.is(err.responseCode, 421);
+    t.is(hits, 1);
+
+    await ctx.clearGreylist();
+    const retry = await t.throwsAsync(ctx.send(['hooked'], id));
+    t.is(retry.responseCode, 421);
+    t.is(hits, 1);
+
+    isDown = false;
+    await ctx.clearGreylist();
+    const info = await ctx.send(['hooked'], id);
+    t.deepEqual(info.rejected, []);
+    await waitForInbox(box.countInbox, 1);
+    t.is(hits, 1);
+  }
+);
+
+test.serial(
+  'a destination that two aliases forward to is reported for each, and sent the message once',
+  async (t) => {
+    let rejections = 0;
+    const ctx = await setup(t, {
+      rcptTo(address) {
+        if (address !== ctx.addr('shared')) return;
+        rejections++;
+        return userUnknown(address);
+      }
+    });
+    await ctx.createAlias('first', ['shared']);
+    await ctx.createAlias('second', ['shared']);
+
+    // it is sent the message once, and each alias gets its own rejection
+    const err = await t.throwsAsync(ctx.send(['first', 'second']));
+    t.is(err.responseCode, 550);
+    t.is(rejections, 1);
+    t.regex(err.response, /first@/);
+    t.regex(err.response, /second@/);
+  }
+);
+
+test.serial(
+  'a forwarding address that could not be checked is retried, not skipped',
+  async (t) => {
+    const ctx = await setup(t);
+
+    // (a destination domain that is not allowlisted, so it is checked)
+    const destination = `fwd@checked-${randomUUID()}.org`;
+    const host = destination.split('@')[1];
+    await ctx.resolver.options.cache.mset(
+      new Map([
+        [
+          `mx:${host}`,
+          ctx.resolver.spoofPacket(
+            host,
+            'MX',
+            [{ exchange: IP_ADDRESS, priority: 0 }],
+            true,
+            ms('5m')
+          )
+        ]
+      ])
+    );
+    const box = await setupMailbox(t, ctx, 'checked');
+    await Aliases.findOneAndUpdate(
+      { name: 'checked', domain: ctx.domain._id },
+      { $set: { recipients: [destination] } }
+    );
+
+    // Redis fails while the forwarding address is checked
+    const { client } = t.context;
+    const get = client.get.bind(client);
+    let isFailing = true;
+    let failures = 0;
+    client.get = async (key, ...args) => {
+      if (isFailing && key === `allowlist:${destination}`) {
+        failures++;
+        throw new Error('Connection is closed.');
+      }
+
+      return get(key, ...args);
+    };
+
+    t.teardown(() => {
+      client.get = get;
+    });
+
+    // the mailbox gets it, and the message is deferred for the forward (whose
+    // address the sender is not told)
+    const id = randomUUID();
+    const err = await t.throwsAsync(ctx.send(['checked'], id));
+    t.true(failures > 0);
+    t.is(err.responseCode, 421);
+    t.notRegex(err.response, new RegExp(host));
+    await waitForInbox(box.countInbox, 1);
+    t.false(ctx.received.has(destination));
+
+    isFailing = false;
+    await ctx.clearGreylist();
+    const info = await ctx.send(['checked'], id);
+    t.deepEqual(info.rejected, []);
+    t.is(ctx.received.get(destination), 1);
+    t.is(await box.countInbox(), 1);
+  }
+);
+
+test.serial(
+  'a Sieve rejection of one address of a mailbox does not reject its other addresses',
+  async (t) => {
+    const ctx = await setup(t);
+    const box = await setupMailbox(t, ctx, 'tagged');
+    const alias = await Aliases.findOne({
+      name: 'tagged',
+      domain: ctx.domain._id
+    });
+    await SieveScripts.create({
+      user: ctx.admin._id,
+      domain: ctx.domain._id,
+      alias: alias._id,
+      name: 'Detail',
+      content:
+        'require ["envelope", "subaddress", "reject"];\nif envelope :detail "to" "spam" {\n  reject "Not here";\n}',
+      is_active: true
+    });
+
+    // the plus-addressed form is rejected, and the plain address still is
+    // stored to
+    const info = await ctx.send(['tagged+spam', 'tagged']);
+    t.deepEqual(info.rejected, []);
+    await waitForInbox(box.countInbox, 1);
+  }
+);
+
+test.serial(
+  'a mailbox reached through two recipients of a message is stored to once',
+  async (t) => {
+    // (as in production, where mailboxes are stored to at the same time)
+    const { concurrency } = config;
+    config.concurrency = 2;
+    t.teardown(() => {
+      config.concurrency = concurrency;
+    });
+
+    const ctx = await setup(t);
+    const box = await setupMailbox(t, ctx, 'twice');
+
+    let calls = 0;
+    interceptMailboxStorage(t, async (data, request) => {
+      calls++;
+      return request();
+    });
+
+    // (one recipient's delivery does not wait on the other's, as if it were
+    // another attempt still storing the message)
+    const info = await ctx.send(['twice', 'twice+tag']);
+    t.deepEqual(info.rejected, []);
+    t.is(calls, 1);
+    await waitForInbox(box.countInbox, 1);
+    await delay(1000);
+    t.is(await box.countInbox(), 1);
+  }
+);
+
+test.serial(
+  'a mailbox reached through two recipients is not accepted for one while storing it failed for the other',
+  async (t) => {
+    // (as in production, where mailboxes are stored to at the same time)
+    const { concurrency, partialDeliveryRetryWindow } = config;
+    config.concurrency = 2;
+    config.partialDeliveryRetryWindow = 1;
+    t.teardown(() => {
+      config.concurrency = concurrency;
+      config.partialDeliveryRetryWindow = partialDeliveryRetryWindow;
+    });
+
+    const ctx = await setup(t);
+    // (a mailbox only: on a custom port, an alias without forwarding
+    // addresses is also sent to that port)
+    await Domains.findByIdAndUpdate(ctx.domain._id, {
+      $set: { smtp_port: '25' }
+    });
+    const box = await setupMailbox(t, ctx, 'cramped');
+    await Aliases.findOneAndUpdate(
+      { name: 'cramped', domain: ctx.domain._id },
+      { $set: { max_quota: 1 } }
+    );
+    await clearAliasQuotaCache(t.context.client, ctx.domain._id);
+
+    const id = randomUUID();
+    const first = await t.throwsAsync(ctx.send(['cramped', 'cramped+tag'], id));
+    t.true(first.responseCode >= 400 && first.responseCode < 500);
+
+    // past the window the full mailbox is still not reported as having the
+    // message for either address
+    await delay(50);
+    await ctx.clearGreylist();
+    const err = await t.throwsAsync(ctx.send(['cramped', 'cramped+tag'], id));
+    t.true(err.responseCode >= 400 && err.responseCode < 500);
+    t.is(await box.countInbox(), 0);
+
+    // and once it has room, a retry stores it
+    await Aliases.findOneAndUpdate(
+      { name: 'cramped', domain: ctx.domain._id },
+      { $unset: { max_quota: 1 } }
+    );
+    await clearAliasQuotaCache(t.context.client, ctx.domain._id);
+    await ctx.clearGreylist();
+    const info = await ctx.send(['cramped', 'cramped+tag'], id);
+    t.deepEqual(info.rejected, []);
+    await waitForInbox(box.countInbox, 1);
+  }
+);
+
+test.serial(
+  'a mailbox another alias forwards into is stored once, and its address is not told to the sender',
+  async (t) => {
+    // (as in production, where mailboxes are stored to at the same time)
+    const { concurrency } = config;
+    config.concurrency = 2;
+    t.teardown(() => {
+      config.concurrency = concurrency;
+    });
+
+    const ctx = await setup(t);
+    const box = await setupMailbox(t, ctx, 'inner');
+    await t.context.aliasFactory
+      .withState({
+        name: 'outer',
+        user: ctx.admin._id,
+        domain: ctx.domain._id,
+        recipients: [box.address]
+      })
+      .create();
+
+    let calls = 0;
+    interceptMailboxStorage(t, async (data, request) => {
+      calls++;
+      return request();
+    });
+
+    // both recipients reach the mailbox: it is stored to once, and neither
+    // waits on the other as if it were another attempt
+    const info = await ctx.send(['outer', 'inner']);
+    t.deepEqual(info.rejected, []);
+    t.is(calls, 1);
+    await waitForInbox(box.countInbox, 1);
+
+    // the mailbox is full: the sender of mail to "outer" is not told the
+    // address of the mailbox it forwards into
+    await Aliases.findOneAndUpdate(
+      { name: 'inner', domain: ctx.domain._id },
+      { $set: { max_quota: 1 } }
+    );
+    await clearAliasQuotaCache(t.context.client, ctx.domain._id);
+    const err = await t.throwsAsync(ctx.send(['outer']));
+    t.is(err.responseCode, 421);
+    t.regex(err.response, /quota for .*outer@/i);
+    t.notRegex(err.response, /inner@/);
+  }
+);
+
+test.serial(
+  'a retry that arrives while a webhook is still being delivered is deferred for each alias it serves',
+  async (t) => {
+    // the webhook is slow to answer the first attempt
+    let isWaiting = false;
+    let answer;
+    const answered = new Promise((resolve) => {
+      answer = resolve;
+    });
+    t.teardown(() => answer());
+    const server = http.createServer((req, res) => {
+      req.resume();
+      req.on('end', async () => {
+        isWaiting = true;
+        await answered;
+        res.end('OK');
+      });
+    });
+    await new Promise((resolve) => {
+      server.listen(0, '127.0.0.1', resolve);
+    });
+    t.teardown(() => {
+      server.close();
+    });
+
+    const ctx = await setup(t);
+    const webhook = `http://127.0.0.1:${server.address().port}/hook`;
+    for (const name of ['wa', 'wb']) {
+      await t.context.aliasFactory
+        .withState({
+          name,
+          user: ctx.admin._id,
+          domain: ctx.domain._id,
+          recipients: [webhook]
+        })
+        .create();
+    }
+
+    const id = randomUUID();
+    const first = ctx.send(['wa', 'wb'], id).then(
+      (info) => ({ info }),
+      (err) => ({ err })
+    );
+    await pWaitFor(() => isWaiting, { timeout: ms('30s'), interval: 50 });
+
+    // both aliases are told it is still in progress
+    await ctx.clearGreylist();
+    const retry = await t.throwsAsync(ctx.send(['wa', 'wb'], id));
+    t.is(retry.responseCode, 421);
+    t.regex(retry.response, /wa@/);
+    t.regex(retry.response, /wb@/);
+
+    answer();
+    const { info } = await first;
+    t.deepEqual(info.rejected, []);
+  }
+);
+
+test.serial(
+  'a destination whose claim cannot be checked is retried, not skipped',
+  async (t) => {
+    const ctx = await setup(t);
+    await ctx.createAlias('claim', ['claim']);
+
+    // Redis fails to claim the destination (the connection was lost)
+    const { client } = t.context;
+    const set = client.set.bind(client);
+    let isFailing = true;
+    client.set = async (...args) => {
+      if (isFailing && args[1] === 'pending') {
+        isFailing = false;
+        throw new Error('Connection is closed.');
+      }
+
+      return set(...args);
+    };
+
+    t.teardown(() => {
+      client.set = set;
+    });
+
+    const id = randomUUID();
+    const err = await t.throwsAsync(ctx.send(['claim'], id));
+    t.is(err.responseCode, 421);
+    t.false(ctx.received.has(ctx.addr('claim')));
+
+    const info = await ctx.send(['claim'], id);
+    t.deepEqual(info.rejected, []);
+    t.is(ctx.received.get(ctx.addr('claim')), 1);
+  }
+);
+
+test.serial(
+  'a mailbox that stays full is emailed about as a storage issue',
+  async (t) => {
+    const { partialDeliveryRetryWindow } = config;
+    config.partialDeliveryRetryWindow = 1;
+    t.teardown(() => {
+      config.partialDeliveryRetryWindow = partialDeliveryRetryWindow;
+    });
+
+    const ctx = await setup(t);
+    const box = await setupMailbox(t, ctx, 'full', ['full-fwd']);
+    await Aliases.findOneAndUpdate(
+      { name: 'full', domain: ctx.domain._id },
+      { $set: { max_quota: 1 } }
+    );
+    await clearAliasQuotaCache(t.context.client, ctx.domain._id);
+
+    const id = randomUUID();
+    const err = await t.throwsAsync(ctx.send(['full'], id));
+    t.is(err.responseCode, 421);
+    t.is(ctx.received.get(ctx.addr('full-fwd')), 1);
+
+    // past the window the full mailbox is given up on, and its owner is told
+    // why, without the markup of the error
+    await delay(50);
+    await ctx.clearGreylist();
+    const info = await ctx.send(['full'], id);
+    t.deepEqual(info.rejected, []);
+    t.is(await box.countInbox(), 0);
+
+    const emails = await getForwardingIssueEmails(box.address, 1);
+    t.is(emails.length, 1);
+    t.regex(emails[0].subject, /Email delivery issue/);
+    t.regex(emails[0].text, /does not have enough storage for this message/);
+    t.regex(emails[0].text, /Mailbox quota for full@\S+\s+would be exceeded/);
+    t.notRegex(emails[0].text, /notranslate|<span/);
+  }
+);
+
+test.serial(
+  "a message the alias owner's Sieve script rejects is not emailed about",
+  async (t) => {
+    const ctx = await setup(t);
+    const box = await setupMailbox(t, ctx, 'picky', ['picky-fwd']);
+    const alias = await Aliases.findOne({
+      name: 'picky',
+      domain: ctx.domain._id
+    });
+    await SieveScripts.create({
+      user: ctx.admin._id,
+      domain: ctx.domain._id,
+      alias: alias._id,
+      name: 'Reject',
+      // (as if the address did not exist, which reads as a broken mailbox)
+      content: 'require "reject";\nreject "550 5.1.1 User unknown";',
+      is_active: true
+    });
+
+    // the mailbox rejects it for good, and the forward is delivered
+    const info = await ctx.send(['picky'], randomUUID());
+    t.deepEqual(info.rejected, []);
+    t.is(ctx.received.get(ctx.addr('picky-fwd')), 1);
+    t.is(await box.countInbox(), 0);
+
+    const emails = await getForwardingIssueEmails(box.address, 0);
+    t.is(emails.length, 0);
+  }
+);
+
+test.serial(
+  'the owner of a full mailbox is emailed about it, not the owners of an alias that forwards into it',
+  async (t) => {
+    const { partialDeliveryRetryWindow } = config;
+    config.partialDeliveryRetryWindow = 1;
+    t.teardown(() => {
+      config.partialDeliveryRetryWindow = partialDeliveryRetryWindow;
+    });
+
+    const ctx = await setup(t);
+    const box = await setupMailbox(t, ctx, 'owned', ['owned-fwd']);
+    await t.context.aliasFactory
+      .withState({
+        name: 'via',
+        user: ctx.admin._id,
+        domain: ctx.domain._id,
+        recipients: [box.address]
+      })
+      .create();
+    await Aliases.findOneAndUpdate(
+      { name: 'owned', domain: ctx.domain._id },
+      { $set: { max_quota: 1 } }
+    );
+    await clearAliasQuotaCache(t.context.client, ctx.domain._id);
+
+    // (the alias that forwards into the mailbox comes first)
+    const id = randomUUID();
+    const err = await t.throwsAsync(ctx.send(['via', 'owned'], id));
+    t.is(err.responseCode, 421);
+
+    // past the window the full mailbox is given up on
+    await delay(50);
+    await ctx.clearGreylist();
+    const info = await ctx.send(['via', 'owned'], id);
+    t.deepEqual(info.rejected, []);
+
+    const emails = await getForwardingIssueEmails(box.address, 1);
+    t.is(emails.length, 1);
+    const others = await getForwardingIssueEmails(`via@${ctx.domain.name}`, 0);
+    t.is(others.length, 0);
   }
 );
 

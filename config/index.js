@@ -1163,6 +1163,10 @@ const config = {
 
   fingerprintPrefix: 'f',
   fingerprintTTL: ms('1d'),
+  // (how long a forwarding address or webhook is held while it is delivered
+  // to, see `claim` in `helpers/on-data-mx.js`; longer than a delivery to
+  // every MX host of the destination can take)
+  fingerprintPendingTTL: ms('30m'),
 
   //
   // Once part of a message has been delivered, a destination that keeps
@@ -1170,7 +1174,11 @@ const config = {
   // accepted and the alias owner is emailed. This keeps a single slow or
   // full mailbox from making the sender give up on (and bounce) recipients
   // that already have the message. It must stay well below `fingerprintTTL`,
-  // which is how long delivered destinations are skipped on retry.
+  // which is how long delivered destinations are skipped on retry (renewed
+  // on each retry that skips them). A failure on our side (e.g. a code bug,
+  // Redis, MongoDB, or our mailbox storage timing out) is not given up on: it
+  // is deferred for as long as the sender retries (see `isInternalError` in
+  // `helpers/on-data-mx.js`).
   //
   partialDeliveryRetryWindow: ms('4h'),
 

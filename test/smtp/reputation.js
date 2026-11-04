@@ -901,7 +901,13 @@ test.serial('a gap in payments restarts paid tenure', async (t) => {
 
 test.serial("the job records each sender's recent normal volume", async (t) => {
   const sender = await createSender(t);
-  await recordSent(sender, 40, dayjs().subtract(10, 'day').toDate());
+  // (noon UTC, as `yesterday()`: days are counted in UTC, and a local time 10
+  // days ago can fall on another UTC day after a daylight saving change)
+  await recordSent(
+    sender,
+    40,
+    dayjs.utc().subtract(10, 'day').startOf('day').add(12, 'hour').toDate()
+  );
   await recordSent(sender, 20, yesterday());
 
   await updateSmtpReputation(yesterday());

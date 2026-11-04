@@ -1116,3 +1116,72 @@ test('should not read the script of a refused PUTSCRIPT as commands', async (t) 
 
   client.end();
 });
+
+//
+// A script over the size limit is refused, and still read (the client sends
+// it without waiting): its lines were read as commands, each answered
+//
+for (const command of ['PUTSCRIPT "big"', 'CHECKSCRIPT']) {
+  test(`should not read a script too large for ${
+    command.split(' ')[0]
+  } as commands`, async (t) => {
+    const client = await createClient(t.context.port);
+    await client.waitForGreeting();
+
+    const credentials = Buffer.from(
+      `\0${t.context.alias.name}@${t.context.domain.name}\0${t.context.pass}`
+    ).toString('base64');
+    await client.sendCommand(`AUTHENTICATE "PLAIN" "${credentials}"`);
+
+    const script = 'keep;\r\n'.repeat(
+      Math.ceil((config.sieve.maxScriptSize + 1) / 7)
+    );
+    const response = await client.sendCommand(
+      `${command} {${script.length}+}\r\n${script}\r\nNOOP`
+    );
+    t.deepEqual(
+      response.map((line) => line.split(' ')[0]),
+      ['NO', 'OK'],
+      `${response.slice(0, 5).join(' ')}`
+    );
+
+    client.end();
+  });
+}
+
+test('should not let a syntax error start a response line', async (t) => {
+  const client = await createClient(t.context.port);
+  await client.waitForGreeting();
+
+  const credentials = Buffer.from(
+    `\0${t.context.alias.name}@${t.context.domain.name}\0${t.context.pass}`
+  ).toString('base64');
+  await client.sendCommand(`AUTHENTICATE "PLAIN" "${credentials}"`);
+
+  // (the name of the variable is in the error message)
+  const script = 'require "variables";\r\nset "a\r\nOK \\"Injected\\"" "b";';
+  const response = await client.sendCommand(
+    `CHECKSCRIPT {${Buffer.byteLength(script)}+}\r\n${script}`
+  );
+  t.is(response.length, 1, `${response.join(' | ')}`);
+  t.regex(response[0], /^NO "Syntax error: .*\\"Injected\\"/);
+
+  client.end();
+});
+
+test('should quote the reason a sign in failed', async (t) => {
+  const client = await createClient(t.context.port);
+  await client.waitForGreeting();
+
+  // (the reason for a username that is not an address holds quotes)
+  const credentials = Buffer.from(`\0nobody\0${t.context.pass}`).toString(
+    'base64'
+  );
+  const response = await client.sendCommand(
+    `AUTHENTICATE "PLAIN" "${credentials}"`
+  );
+  t.is(response.length, 1, `${response.join(' | ')}`);
+  t.regex(response[0], /^NO "(?:[^"\\]|\\.)*"$/);
+
+  client.end();
+});

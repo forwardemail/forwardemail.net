@@ -1,1 +1,4 @@
-= striptags(`${emoji("warning")} ${t("Email forwarding issue for %s", alias)}`)
+if isMailbox
+  = striptags(`${emoji("warning")} ${t("Email delivery issue for %s", alias)}`)
+else
+  = striptags(`${emoji("warning")} ${t("Email forwarding issue for %s", alias)}`)

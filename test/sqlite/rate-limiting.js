@@ -169,7 +169,10 @@ ${subject}
 }
 
 // a delivery of the MX server on behalf of `hostname`
-function deliver(t, { hostname = SENDER_HOST } = {}) {
+function deliver(
+  t,
+  { hostname = SENDER_HOST, raw = rawMessage(randomUUID()) } = {}
+) {
   return t.context.wsp.request(
     {
       action: 'tmp',
@@ -182,7 +185,7 @@ function deliver(t, { hostname = SENDER_HOST } = {}) {
       remoteAddress: SENDER_ADDRESS,
       resolvedClientHostname: hostname,
       date: new Date().toISOString(),
-      raw: rawMessage(randomUUID())
+      raw
     },
     0
   );
@@ -247,6 +250,9 @@ test('an untrusted sender is limited to 50 messages a minute per domain, in a fi
   const err = await refused(t);
   t.is(err.responseCode, 421);
   t.regex(err.message, /burst limited to 50 messages\/min/);
+  // (why, for the email to the alias owner)
+  t.is(err.mailboxIssue, 'sender_rate_limit');
+  t.is(err.limitedSender, SENDER);
   t.is(storedMessages(t), 2);
 
   // a trusted sender is not
@@ -264,6 +270,7 @@ test('an untrusted sender is limited to 1,000 messages a day, per domain and in 
   let err = await refused(t);
   t.is(err.responseCode, 421);
   t.regex(err.message, /from 1001 messages to/);
+  t.is(err.mailboxIssue, 'sender_rate_limit');
   t.is(storedMessages(t), 0);
 
   // in total
@@ -288,9 +295,43 @@ test('a recipient mailbox takes at most 100,000 messages a day, whoever sends th
     const err = await refused(t, { hostname });
     t.is(err.responseCode, 421);
     t.regex(err.message, /limited to 100000 messages\/day/);
+    t.is(err.mailboxIssue, 'recipient_rate_limit');
+    // (the sender is not told the mailbox an address forwards into)
+    t.notRegex(err.message, /@/);
   }
 
+  // (the mailbox's own limit is not counted against the sender)
+  const { count } = await counters(t);
+  t.is(count, 0);
+
   t.is(storedMessages(t), 0);
+});
+
+test('a message the mailbox already has is not counted against the sender again', async (t) => {
+  const { alias, client, sqlite } = t.context;
+
+  // (e.g. the sender retried after the mail server timed out waiting for it
+  //  to be stored, while it was)
+  const raw = rawMessage(randomUUID());
+  t.deepEqual(await deliver(t, { raw }), {});
+  t.deepEqual(await deliver(t, { raw }), {});
+  t.is(storedMessages(t), 1);
+  let result = await counters(t);
+  t.is(result.count, 1);
+  t.is(result.specificCount, 1);
+
+  // the same when it is stored in the temporary mailbox (the live mailbox is
+  // not open on the server)
+  await client.publish('sqlite_auth_reset', alias.id);
+  await pWaitFor(() => !sqlite.databaseMap.get(alias.id), {
+    timeout: ms('10s')
+  });
+  const other = rawMessage(randomUUID());
+  t.deepEqual(await deliver(t, { raw: other }), {});
+  t.deepEqual(await deliver(t, { raw: other }), {});
+  result = await counters(t);
+  t.is(result.count, 2);
+  t.is(result.specificCount, 2);
 });
 
 test('the daily counters of a message that could not be stored are given back', async (t) => {

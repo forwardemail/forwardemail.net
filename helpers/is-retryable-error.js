@@ -118,15 +118,17 @@ const TLS_RETRY_ERROR_CODES = new Set([
 
 //
 // websocket-as-promised: the connection dropped after the request was sent,
-// so the SQLite server may have run it already, and only a request that is
-// safe to run twice is sent again (see helpers/create-websocket-as-promised.js)
+// or no response came in time, so the SQLite server may have run it already
+// (or may still be running it), and only a request that is safe to run twice
+// is sent again (see helpers/create-websocket-as-promised.js)
 //
 // (`_message` once refineAndLogError replaced the message)
 function isClosedBeforeResponse(err) {
   return [err?.message, err?._message].some(
     (message) =>
       typeof message === 'string' &&
-      message.includes('WebSocket closed with reason')
+      (message.includes('WebSocket closed with reason') ||
+        message.includes('WebSocket request was rejected by timeout'))
   );
 }
 

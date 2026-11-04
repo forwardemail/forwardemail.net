@@ -360,7 +360,7 @@ importers:
         version: 1.5.2
       awesome-mail-server-providers:
         specifier: github:forwardemail/awesome-mail-server-providers
-        version: git+https://git@github.com:forwardemail/awesome-mail-server-providers.git#1a8ad10f04d4c9295ea042fbff637f0245f9499c
+        version: git+https://github.com/forwardemail/awesome-mail-server-providers.git#1a8ad10f04d4c9295ea042fbff637f0245f9499c
       axe:
         specifier: 13.0.0
         version: 13.0.0
@@ -6162,8 +6162,8 @@ packages:
     resolution: {integrity: sha512-wvUjBtSGN7+7SjNpq/9M2Tg350UZD3q62IFZLbRAR1bSMlCo1ZaeW+BJ+D090e4hIIZLBcTDWe4Mh4jvUDajzQ==}
     engines: {node: '>= 0.4'}
 
-  awesome-mail-server-providers@git+https://git@github.com:forwardemail/awesome-mail-server-providers.git#1a8ad10f04d4c9295ea042fbff637f0245f9499c:
-    resolution: {commit: 1a8ad10f04d4c9295ea042fbff637f0245f9499c, repo: git@github.com:forwardemail/awesome-mail-server-providers.git, type: git}
+  awesome-mail-server-providers@git+https://github.com/forwardemail/awesome-mail-server-providers.git#1a8ad10f04d4c9295ea042fbff637f0245f9499c:
+    resolution: {commit: 1a8ad10f04d4c9295ea042fbff637f0245f9499c, repo: https://github.com/forwardemail/awesome-mail-server-providers.git, type: git}
     version: 0.0.0
     engines: {node: '>=18'}
 
@@ -12669,8 +12669,8 @@ packages:
   nan@2.30.0:
     resolution: {integrity: sha512-P5mokDkSvCGBz6mZDD/2l+w9QoICRXdCyZ9ONGmTePr40oihJg3Kpn0YU3twKd6PJnwSlLBWNQeOT6yWEV2c4A==}
 
-  nan@git+https://git@github.com:JCMais/nan.git#0ec2eca8b2fd7518affb3945d087e393ad839b7e:
-    resolution: {commit: 0ec2eca8b2fd7518affb3945d087e393ad839b7e, repo: git@github.com:JCMais/nan.git, type: git}
+  nan@git+https://github.com/JCMais/nan.git#0ec2eca8b2fd7518affb3945d087e393ad839b7e:
+    resolution: {commit: 0ec2eca8b2fd7518affb3945d087e393ad839b7e, repo: https://github.com/JCMais/nan.git, type: git}
     version: 2.22.0
 
   nanoid@3.3.18:
@@ -24623,7 +24623,7 @@ snapshots:
     dependencies:
       possible-typed-array-names: 1.1.0
 
-  awesome-mail-server-providers@git+https://git@github.com:forwardemail/awesome-mail-server-providers.git#1a8ad10f04d4c9295ea042fbff637f0245f9499c: {}
+  awesome-mail-server-providers@git+https://github.com/forwardemail/awesome-mail-server-providers.git#1a8ad10f04d4c9295ea042fbff637f0245f9499c: {}
 
   aws-sign2@0.7.0: {}
 
@@ -32886,7 +32886,7 @@ snapshots:
 
   nan@2.30.0: {}
 
-  nan@git+https://git@github.com:JCMais/nan.git#0ec2eca8b2fd7518affb3945d087e393ad839b7e: {}
+  nan@git+https://github.com/JCMais/nan.git#0ec2eca8b2fd7518affb3945d087e393ad839b7e: {}
 
   nanoid@3.3.18: {}
 
@@ -33075,7 +33075,7 @@ snapshots:
     dependencies:
       '@mapbox/node-pre-gyp': 1.0.11(encoding@0.1.13)
       env-paths: 2.2.0
-      nan: git+https://git@github.com:JCMais/nan.git#0ec2eca8b2fd7518affb3945d087e393ad839b7e
+      nan: git+https://github.com/JCMais/nan.git#0ec2eca8b2fd7518affb3945d087e393ad839b7e
       node-gyp: 10.2.0
       npmlog: 7.0.1
       rimraf: 5.0.5

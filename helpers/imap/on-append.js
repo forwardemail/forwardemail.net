@@ -731,7 +731,9 @@ async function onAppend(path, flags, date, raw, session, fn) {
           mailbox: existingMessage.mailbox || mailbox._id,
           mailboxPath: mailbox.path,
           size: existingMessage.size,
-          status: 'new'
+          status: 'new',
+          // (it was already stored, see `tmp` in `helpers/parse-payload.js`)
+          existing: true
         };
         fn(null, true, response);
         return;

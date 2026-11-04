@@ -457,6 +457,18 @@ async function atomicRateLimitIncrement(
   const specificCountKey = `imap_limit_count_${config.env}:${date}:${sender}:${root}`;
   const rcptKey = `imap_rcpt_count_${config.env}:${date}:${aliasId}`;
 
+  // Burst counter uses Lua script for fixed-window semantics:
+  // TTL is only set on the first increment (count==1), not on every message.
+  // (first, as it is never given back, so a failure here leaves nothing
+  // counted, see `giveBack` in `parsePayload`)
+  const burstKey = `imap_burst_${config.env}:${sender}:${root}`;
+  const burstCount = await client.eval(
+    BURST_INCR_SCRIPT,
+    1,
+    burstKey,
+    BURST_LIMIT_TTL_MS
+  );
+
   // Pipeline for daily counters (TTL always refreshed to 1d)
   const results = await client
     .pipeline()
@@ -472,16 +484,6 @@ async function atomicRateLimitIncrement(
     .pexpire(specificCountKey, ms('1d'))
     .pexpire(rcptKey, ms('1d'))
     .exec();
-
-  // Burst counter uses Lua script for fixed-window semantics:
-  // TTL is only set on the first increment (count==1), not on every message.
-  const burstKey = `imap_burst_${config.env}:${sender}:${root}`;
-  const burstCount = await client.eval(
-    BURST_INCR_SCRIPT,
-    1,
-    burstKey,
-    BURST_LIMIT_TTL_MS
-  );
 
   return {
     size: results[0][1],
@@ -1156,6 +1158,26 @@ async function parsePayload(data, ws) {
             let borrowedDb;
             let borrowedAliasId;
 
+            //
+            // what the message counted against the sender's daily limits (see
+            // `atomicRateLimitIncrement`), given back once if it is not stored
+            // or was already stored (e.g. a retry after we timed out waiting
+            // for it), so a failure on our side never counts against the sender
+            //
+            let countedRoot;
+            const giveBack = () => {
+              if (countedRoot === undefined) return;
+              const root = countedRoot;
+              countedRoot = undefined;
+              decrementRateLimiting(
+                this.client,
+                date,
+                sender,
+                root,
+                byteLength
+              ).catch((err) => logger.fatal(err));
+            };
+
             try {
               const alias = aliasMap.get(obj.id.toString()) || null;
 
@@ -1224,10 +1246,13 @@ async function parsePayload(data, ws) {
                   i18n.translate(
                     'IMAP_MAILBOX_MESSAGE_EXCEEDS_QUOTA',
                     session.user.locale || i18n.config.defaultLocale,
-                    session.user.username
+                    // (the address the sender wrote to, not the mailbox it
+                    // forwards into, which is not theirs to know)
+                    obj.address
                   ),
                   {
-                    responseCode: 421
+                    responseCode: 421,
+                    mailboxIssue: 'quota'
                   }
                 );
               }
@@ -1246,10 +1271,13 @@ async function parsePayload(data, ws) {
                   i18n.translate(
                     'IMAP_MAILBOX_MESSAGE_EXCEEDS_QUOTA',
                     session.user.locale || i18n.config.defaultLocale,
-                    session.user.username
+                    // (the address the sender wrote to, not the mailbox it
+                    // forwards into, which is not theirs to know)
+                    obj.address
                   ),
                   {
-                    responseCode: 421
+                    responseCode: 421,
+                    mailboxIssue: 'quota'
                   }
                 );
               }
@@ -1258,11 +1286,8 @@ async function parsePayload(data, ws) {
               // Atomic rate limiting: increment counters BEFORE storage
               // to eliminate TOCTOU race condition where concurrent requests
               // all read count=0 and all pass the check simultaneously.
+              // (see `giveBack` above)
               //
-              // NOTE: rateLimitIncremented is used to track whether we need
-              // to decrement on storage failure (see catch block below).
-              //
-              let rateLimitIncremented = false;
               if (
                 payload.remoteAddress !== IP_ADDRESS &&
                 sender !== env.WEB_HOST
@@ -1321,7 +1346,7 @@ async function parsePayload(data, ws) {
                   byteLength,
                   alias.id
                 );
-                rateLimitIncremented = true;
+                countedRoot = root;
 
                 // Per-recipient mailbox daily cap (all tiers)
                 if (rcptCount > RECIPIENT_DAILY_LIMIT) {
@@ -1337,10 +1362,8 @@ async function parsePayload(data, ws) {
                     })
                   );
                   const err = new SMTPError(
-                    `Recipient ${
-                      alias.address || alias.id
-                    } limited to ${RECIPIENT_DAILY_LIMIT} messages/day (current: ${rcptCount})`,
-                    { responseCode: 421 }
+                    `Mailbox limited to ${RECIPIENT_DAILY_LIMIT} messages/day (current: ${rcptCount})`,
+                    { responseCode: 421, mailboxIssue: 'recipient_rate_limit' }
                   );
                   err.payload = payload;
                   throw err;
@@ -1362,8 +1385,12 @@ async function parsePayload(data, ws) {
                       })
                     );
                     const err = new SMTPError(
-                      `${sender} burst limited to ${BURST_LIMIT_PER_MINUTE} messages/min to ${root} (current: ${burstCount})`,
-                      { responseCode: 421 }
+                      `${sender} burst limited to ${BURST_LIMIT_PER_MINUTE} messages/min (current: ${burstCount})`,
+                      {
+                        responseCode: 421,
+                        mailboxIssue: 'sender_rate_limit',
+                        limitedSender: sender
+                      }
                     );
                     err.payload = payload;
                     throw err;
@@ -1374,8 +1401,12 @@ async function parsePayload(data, ws) {
                     const err = new SMTPError(
                       `${sender} limited with current of ${bytes(
                         specificSize
-                      )} from ${specificCount} messages to ${root}`,
-                      { responseCode: 421 }
+                      )} from ${specificCount} messages to this domain`,
+                      {
+                        responseCode: 421,
+                        mailboxIssue: 'sender_rate_limit',
+                        limitedSender: sender
+                      }
                     );
                     err.payload = payload;
                     throw err;
@@ -1390,7 +1421,11 @@ async function parsePayload(data, ws) {
                       `${sender} limited to 100 GB with current of ${bytes(
                         size
                       )} from ${count} messages`,
-                      { responseCode: 421 }
+                      {
+                        responseCode: 421,
+                        mailboxIssue: 'sender_rate_limit',
+                        limitedSender: sender
+                      }
                     );
                     err.payload = payload;
                     throw err;
@@ -1402,7 +1437,11 @@ async function parsePayload(data, ws) {
                       `${sender} limited to 10 GB with current of ${bytes(
                         size
                       )} from ${count} messages`,
-                      { responseCode: 421 }
+                      {
+                        responseCode: 421,
+                        mailboxIssue: 'sender_rate_limit',
+                        limitedSender: sender
+                      }
                     );
                     err.payload = payload;
                     throw err;
@@ -1413,7 +1452,11 @@ async function parsePayload(data, ws) {
                     `${sender} limited with current of ${bytes(
                       size
                     )} from ${count} messages`,
-                    { responseCode: 421 }
+                    {
+                      responseCode: 421,
+                      mailboxIssue: 'sender_rate_limit',
+                      limitedSender: sender
+                    }
                   );
                   err.payload = payload;
                   throw err;
@@ -1580,7 +1623,7 @@ async function parsePayload(data, ws) {
                 if (sieveResult.action === 'reject' && sieveResult.reject) {
                   throw new SMTPError(
                     sieveResult.reject.message || sieveResult.reject,
-                    { responseCode: 550 }
+                    { responseCode: 550, mailboxIssue: 'sieve' }
                   );
                 }
 
@@ -1599,6 +1642,7 @@ async function parsePayload(data, ws) {
                 // allows, and one that fails does not cancel the implicit keep)
                 //
                 let isRedirected = false;
+                let isRedirectPending = false;
                 for (const redirect of sieveResult.redirects || []) {
                   if (!isSANB(payload.sender)) {
                     logger.debug('sieve redirect of a null sender skipped', {
@@ -1608,7 +1652,46 @@ async function parsePayload(data, ws) {
                     continue;
                   }
 
+                  //
+                  // Each redirect is sent once per message, as the copies of
+                  // fileinto are (see `storeSieveCopies`): the script runs
+                  // again when the delivery is tried again (e.g. the mailbox
+                  // was full, or the request was sent again after its
+                  // connection dropped), and a redirect is queued first.  The
+                  // claim is "pending" until it is queued: a delivery that
+                  // finds it so is deferred (the one sending it may still fail
+                  // or die, and its claim then ends after 5 minutes), so the
+                  // message is not lost, nor kept as if it were redirected
+                  //
+                  const redirectKey = `${
+                    config.fingerprintPrefix
+                  }:sieve:redirect:${revHash(
+                    encoder.pack([
+                      session.user.alias_id,
+                      fingerprint,
+                      redirect.address.toLowerCase()
+                    ])
+                  )}`;
+                  let claimed = false;
                   try {
+                    claimed =
+                      (await this.client.set(
+                        redirectKey,
+                        'pending',
+                        'PX',
+                        ms('5m'),
+                        'NX'
+                      )) === 'OK';
+                    if (!claimed) {
+                      if ((await this.client.get(redirectKey)) !== 'sent') {
+                        isRedirectPending = true;
+                        break;
+                      }
+
+                      if (!redirect.copy) isRedirected = true;
+                      continue;
+                    }
+
                     // Queue the redirect email using Emails.queue
                     await Emails.queue({
                       info: {
@@ -1621,8 +1704,18 @@ async function parsePayload(data, ws) {
                       user: { id: session.user.alias_user_id },
                       is_bounce: false
                     });
+                    // (if this fails it is sent again once the claim ends: a
+                    // duplicate rather than a lost message)
+                    await this.client
+                      .set(redirectKey, 'sent', 'PX', ms('30d'))
+                      .catch((err) => logger.fatal(err, { session }));
                     if (!redirect.copy) isRedirected = true;
                   } catch (err) {
+                    // (it is redirected when the message is delivered again)
+                    if (claimed)
+                      this.client
+                        .del(redirectKey)
+                        .catch((err) => logger.fatal(err, { session }));
                     logger.error('sieve redirect failed', {
                       user: { id: session.user.alias_user_id },
                       domains: [
@@ -1635,6 +1728,12 @@ async function parsePayload(data, ws) {
                     });
                   }
                 }
+
+                if (isRedirectPending)
+                  throw new SMTPError(
+                    `Delivery to ${session.user.username} is still in progress, please try again later`,
+                    { responseCode: 421, ignore_hook: true }
+                  );
 
                 if (sieveResult.isKeptIfNotRedirected && !isRedirected)
                   sieveResult.deliveries = [
@@ -1870,6 +1969,8 @@ async function parsePayload(data, ws) {
                 }
 
                 // Nothing to store (discarded, or only redirected)
+                // (it still counts against the sender: the message was
+                // accepted, and the alias owner's script chose to drop it)
                 if (sieveResult.deliveries.length === 0) {
                   logger.info('sieve message not stored', {
                     user: { id: session.user.alias_user_id },
@@ -1998,7 +2099,7 @@ async function parsePayload(data, ws) {
                 try {
                   // since we use onAppend it re-uses addEntries
                   // which notifies all connected imap users via EXISTS
-                  await onAppendPromise.call(
+                  const [, appended] = await onAppendPromise.call(
                     this,
                     targetFolder,
                     targetFlags,
@@ -2033,22 +2134,13 @@ async function parsePayload(data, ws) {
                     }
                   );
                   appendedToMainDb = true;
+                  // (a message it already has, see `giveBack`)
+                  if (appended?.existing) giveBack();
                   await storeSieveCopies();
                 } catch (_err) {
                   // in order to ensure tmp write still occurs
+                  // (the counters stay: it is stored there instead)
                   delete session.db;
-
-                  // Decrement rate-limit counters since storage failed
-                  // (keeps counters accurate for legitimate messages)
-                  if (rateLimitIncremented) {
-                    decrementRateLimiting(
-                      this.client,
-                      date,
-                      sender,
-                      root,
-                      byteLength
-                    ).catch((err) => logger.fatal(err));
-                  }
 
                   const err = Array.isArray(_err) ? _err[0] : _err;
                   if (isRetryableError(err)) {
@@ -2093,7 +2185,7 @@ async function parsePayload(data, ws) {
                   borrowedAliasId = session.user.alias_id;
                   session.db = recheckDb;
                   try {
-                    await onAppendPromise.call(
+                    const [, appended] = await onAppendPromise.call(
                       this,
                       targetFolder,
                       targetFlags,
@@ -2119,6 +2211,8 @@ async function parsePayload(data, ws) {
                     );
                     // Successfully wrote to main DB, skip tmp fallback
                     // (onAppend already sent APN + newMessage notification)
+                    // (a message it already has, see `giveBack`)
+                    if (appended?.existing) giveBack();
                     await storeSieveCopies();
 
                     // Release per-alias raw buffer for GC
@@ -2176,8 +2270,11 @@ async function parsePayload(data, ws) {
                     }
                   );
 
-                  // if already existed then return early
-                  if (count > 0) return;
+                  // if already existed then return early (see `giveBack`)
+                  if (count > 0) {
+                    giveBack();
+                    return;
+                  }
 
                   //
                   // note we don't need to do this logic above if a session was found in IMAP
@@ -2517,17 +2614,6 @@ async function parsePayload(data, ws) {
                   err.isCodeBug = true;
                   err.payload = _.omit(payload, 'raw');
                   logger.fatal(err);
-
-                  // Decrement rate-limit counters since storage failed
-                  if (rateLimitIncremented) {
-                    decrementRateLimiting(
-                      this.client,
-                      date,
-                      sender,
-                      root,
-                      byteLength
-                    ).catch((err_) => logger.fatal(err_));
-                  }
                 }
 
                 // NOTE: tmpDb lifecycle managed by temporaryDatabaseMap LRU
@@ -2675,6 +2761,8 @@ async function parsePayload(data, ws) {
                 }
               }
             } catch (err) {
+              // (it was not stored, unless the sender went over its own limit)
+              if (err.mailboxIssue !== 'sender_rate_limit') giveBack();
               err.payload = _.omit(payload, 'raw');
               err.isCodeBug = isCodeBug(err);
               logger.error(err);

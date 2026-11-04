@@ -1473,6 +1473,74 @@ describe('Sieve Security - work a script makes for each message', () => {
     }
   });
 
+  //
+  // One test is not interrupted, so the time limit came after it: these took
+  // 7s and 6s (and grow with the key and the value)
+  //
+  for (const [name, script, value] of [
+    [
+      'a :matches key of thousands of wildcards',
+      `require "fileinto";\nif header :matches "x-big" "${'*a'.repeat(
+        5000
+      )}" { fileinto "y"; }`,
+      'ab'.repeat(50_000)
+    ],
+    [
+      'a :regex key RE2 cannot run in linear time',
+      'require "regex";\nif header :regex "x-big" "(?:a|b)*a(?:a|b){1000}c" { discard; }',
+      Array.from({ length: 1_000_000 }, (_, i) =>
+        (i * 7919) % 3 === 0 ? 'a' : 'b'
+      ).join('')
+    ]
+  ]) {
+    it(`stops ${name} before it holds the process`, async () => {
+      assert.strictEqual(validateScript(script).valid, true);
+      const start = Date.now();
+      await assert.rejects(
+        executeScript(
+          script,
+          message({ headers: { subject: 'hi', 'x-big': value } })
+        ),
+        { message: 'Sieve script exceeded the time it may run' }
+      );
+      const elapsed = Date.now() - start;
+      assert.ok(elapsed < 1000, `took ${elapsed}ms`);
+    });
+  }
+
+  it('still matches a short key against a long body', async () => {
+    const result = await executeScript(
+      'require ["body", "regex"];\nif body :raw :regex "invoice-[0-9]{4}" { discard; }',
+      message({
+        raw: `Subject: hi\r\n\r\n${'x'.repeat(5_000_000)} invoice-1234`
+      })
+    );
+    assert.deepStrictEqual(
+      result.actions.map((action) => action.type),
+      ['discard']
+    );
+  });
+
+  it('stops nested foreverypart loops that run too many commands', async () => {
+    // (10,000 tests in two nested loops over 100 parts held it for 19s)
+    const script = `require "foreverypart";\nforeverypart { foreverypart { ${'if true {}'.repeat(
+      10_000
+    )} } }`;
+    const mimeParts = Array.from({ length: 100 }, (_, i) => ({
+      contentType: 'multipart/mixed',
+      multipart: true,
+      headers: {},
+      parentIndex: i === 0 ? null : i - 1
+    }));
+    const start = Date.now();
+    await assert.rejects(executeScript(script, message({ mimeParts })), {
+      message: 'Sieve script exceeded the time it may run'
+    });
+    // (0.4s on its own; node:test makes each await slower)
+    const elapsed = Date.now() - start;
+    assert.ok(elapsed < 10_000, `took ${elapsed}ms`);
+  });
+
   it('extracts the text of a part once, however many loops reach it', async () => {
     // (nested loops converted every part again for each part: 44s)
     const script = [

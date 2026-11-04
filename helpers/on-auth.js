@@ -732,7 +732,11 @@ async function onAuth(auth, session, fn) {
             },
             {
               $addFields: {
-                _name_rank: { $indexOfArray: [aliasNames, '$name'] }
+                // (as text: in an expression a name such as "$" or "$$x"
+                // would be read as a field path or a variable and fail)
+                _name_rank: {
+                  $indexOfArray: [{ $literal: aliasNames }, '$name']
+                }
               }
             },
             { $sort: { _name_rank: 1 } },

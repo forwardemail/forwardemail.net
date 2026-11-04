@@ -9,6 +9,7 @@ const isSANB = require('is-string-and-not-blank');
 const ms = require('ms');
 const pMapSeries = require('p-map-series');
 const revHash = require('rev-hash');
+const striptags = require('striptags');
 
 const Aliases = require('#models/aliases');
 const DenylistError = require('#helpers/denylist-error');
@@ -40,6 +41,32 @@ const MAX_ERROR_LENGTH = 1000;
 // the most of the original From and Subject that is included in the email
 // (they are chosen by the sender, so they are only shown as a short reference)
 const MAX_HEADER_LENGTH = 200;
+
+//
+// Why a message could not be stored in a mailbox, set on the error where the
+// mailbox store rejects it (see `#helpers/parse-payload`):
+//
+//   - "quota": the mailbox is out of storage
+//   - "sender_rate_limit": the sending server went over our inbound limits
+//   - "recipient_rate_limit": the mailbox went over its daily message limit
+//
+// Anything else is "unavailable" (e.g. the plan of the domain's admins ended),
+// shown with its error. A failure on our side (e.g. the mailbox store timing
+// out) is retried instead and never emailed about (see `isInternalError` in
+// `helpers/on-data-mx.js`), so a new `SMTPError` from the mailbox store
+// needs a `mailboxIssue` too, or it is retried as one of those.
+//
+const MAILBOX_ISSUES = new Set([
+  'quota',
+  'sender_rate_limit',
+  'recipient_rate_limit'
+]);
+
+function getMailboxIssue(err) {
+  return MAILBOX_ISSUES.has(err?.mailboxIssue)
+    ? err.mailboxIssue
+    : 'unavailable';
+}
 
 function truncate(value, max) {
   if (typeof value !== 'string') return value;
@@ -77,6 +104,9 @@ function isDestinationIssue(bounce) {
   // (e.g. "421 Too many sessions opened" from Comcast)
   //
   if (isSessionLimitError(bounce.err)) return false;
+
+  // the alias owner's own Sieve script rejected the message
+  if (bounce.isMailbox && bounce.err.mailboxIssue === 'sieve') return false;
 
   if (!bounce.err.bounceInfo) bounce.err.bounceInfo = getBounceInfo(bounce.err);
   const { category } = bounce.err.bounceInfo;
@@ -155,7 +185,12 @@ async function getVerificationRecord(domainName, resolver) {
 // whether an alias is set up to deliver to this destination
 function isAliasDestination(alias, bounce) {
   if (!alias || !alias.is_enabled) return false;
-  if (bounce.isMailbox) return Boolean(alias.has_imap);
+  // (and not another alias's mailbox that this one forwards into)
+  if (bounce.isMailbox)
+    return (
+      Boolean(alias.has_imap) &&
+      (!bounce.aliasId || String(alias._id) === String(bounce.aliasId))
+    );
   const destination = bounce.destination.toLowerCase();
   return (
     Array.isArray(alias.recipients) &&
@@ -287,7 +322,8 @@ async function getRecipients(bounce, resolver) {
 //
 // Email the alias owner and domain admins when a forwarding destination is
 // broken, with the receiving server's error. Sent at most once per
-// `config.forwardingIssueEmailInterval` for the same domain and destination.
+// `config.forwardingIssueEmailInterval` for the same domain and destination
+// (and, for a mailbox, the same reason).
 //
 // `outcome` is what happened to the message as a whole:
 //   - "accepted": other recipients received it (the sender got no bounce)
@@ -321,8 +357,24 @@ async function sendForwardingIssueEmails({
   await pMapSeries(issues, async (bounce) => {
     try {
       const domainName = parseHostFromDomainOrAddress(bounce.address);
+      //
+      // (a mailbox is keyed by the alias it was written to without its
+      // +tag, so its plus-addressed forms share one email, while an alias
+      // that forwards into it does not hold back the email to its owner, and
+      // by the reason too, so e.g. an email about its storage does not hold
+      // back one about a rate limit)
+      //
       const key = `forwarding_issue:${revHash(
-        [domainName, bounce.destination.toLowerCase()].join(' ')
+        [
+          domainName,
+          ...(bounce.isMailbox
+            ? [
+                String(bounce.aliasId || bounce.destination.toLowerCase()),
+                parseUsername(bounce.address),
+                getMailboxIssue(bounce.err)
+              ]
+            : [bounce.destination.toLowerCase()])
+        ].join(' ')
       )}`;
       const acquired = await client.set(
         key,
@@ -357,9 +409,25 @@ async function sendForwardingIssueEmails({
         return;
       }
 
-      const error = String(
-        bounce.err.original_message || bounce.err._message || bounce.err.message
-      );
+      const mailboxIssue = bounce.isMailbox
+        ? getMailboxIssue(bounce.err)
+        : undefined;
+
+      //
+      // An error from our mailbox store is not shown when it is about the
+      // sending server's traffic to all of our customers (the email explains
+      // the sender rate limit), and is otherwise shown as plain text (e.g. the
+      // quota message has markup)
+      //
+      let error =
+        mailboxIssue === 'sender_rate_limit'
+          ? undefined
+          : String(
+              bounce.err.original_message ||
+                bounce.err._message ||
+                bounce.err.message
+            );
+      if (error && bounce.isMailbox) error = striptags(error);
 
       const status = acceptedSet.has(bounce.address.toLowerCase())
         ? 'delivered_to_others'
@@ -380,6 +448,10 @@ async function sendForwardingIssueEmails({
             alias: bounce.address,
             destination: bounce.destination,
             isMailbox: Boolean(bounce.isMailbox),
+            mailboxIssue,
+            limitedSender: isSANB(bounce.err.limitedSender)
+              ? truncate(bounce.err.limitedSender, MAX_HEADER_LENGTH)
+              : undefined,
             isWebhook: !bounce.isMailbox && !bounce.destination.includes('@'),
             status,
             isRetryWindowExceeded: Boolean(bounce.isRetryWindowExceeded),

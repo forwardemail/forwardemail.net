@@ -81,7 +81,9 @@ const isAutoReplyOrMailingList = require('#helpers/is-auto-reply-or-mailing-list
 const isBackscatterer = require('#helpers/is-backscatterer');
 const isCodeBug = require('#helpers/is-code-bug');
 const isDenylisted = require('#helpers/is-denylisted');
-const isTimeoutError = require('#helpers/is-timeout-error');
+const isMongoError = require('#helpers/is-mongo-error');
+const isRedisError = require('#helpers/is-redis-error');
+const isRetryableError = require('#helpers/is-retryable-error');
 const isEmail = require('#helpers/is-email');
 const isGoogleMX = require('#helpers/is-google-mx');
 const isGreylisted = require('#helpers/is-greylisted');
@@ -661,6 +663,124 @@ function maskForwardingError(err, recipient) {
       : `Delivery to ${recipient.recipient} failed`;
 }
 
+//
+// Each destination of a message (a mailbox, a forwarding address or a
+// webhook) is claimed before it is delivered to (see `getFingerprintKey`),
+// so that a retry of the message never delivers it twice: the claim is
+// "pending" while it is delivered to, and "1" once it was. A retry that
+// arrives while it is still pending (e.g. the sender stopped waiting for our
+// reply) is deferred, since that delivery can still fail.
+//
+// Resolves to "acquired" (deliver it now, then mark it as delivered or
+// delete the claim), "delivered", "pending", or the rejection a forwarding
+// address or webhook gave on an earlier attempt ("rejected:" and its
+// bounces, see `forward`). (If marking it as delivered fails, it is
+// delivered again once its pending claim expires: a duplicate rather than a
+// lost message.) The pending claim outlasts the longest delivery attempt,
+// `ttl`.
+//
+async function claim(key, ttl = config.fingerprintPendingTTL) {
+  if (await this.client.set(key, 'pending', 'PX', ttl, 'NX')) return 'acquired';
+
+  const value = await this.client.get(key);
+  const isRejected = typeof value === 'string' && value.startsWith('rejected:');
+  // (a claim deleted meanwhile, or held by another attempt, is retried by the
+  // sender too)
+  if (value !== '1' && !isRejected) return 'pending';
+
+  // (it is skipped for as long as the message keeps being retried)
+  this.client
+    .pexpire(key, config.fingerprintTTL)
+    .catch((err) => logger.fatal(err));
+  return isRejected ? value : 'delivered';
+}
+
+//
+// A forwarding address or webhook that rejected the message for good keeps
+// its claim with that rejection (see `claim`), so that a retry (e.g. while
+// another destination is deferred) neither sends it again nor holds the
+// rejection against the sender again. (It replaces the release of the claim,
+// which Redis runs first, in order.)
+//
+function storeRejection(key, accepted, bounces) {
+  if (
+    accepted.length > 0 ||
+    bounces.length === 0 ||
+    !bounces.every((bounce) => getErrorCode(bounce.err) >= 500)
+  )
+    return;
+
+  const [{ address, err }] = bounces;
+  const short = (value) =>
+    typeof value === 'string' ? value.slice(0, 1000) : undefined;
+  this.client
+    .set(
+      key,
+      `rejected:${JSON.stringify({
+        address,
+        message: short(err.message),
+        _message: short(err._message || err.original_message),
+        response: short(err.response),
+        responseCode: getErrorCode(err)
+      })}`,
+      'PX',
+      config.fingerprintTTL
+    )
+    .catch((err) => logger.fatal(err));
+}
+
+// (a webhook key that cannot be read is an error on our side, see `isCodeBug`)
+function getWebhookSecret(recipient) {
+  try {
+    return decrypt(recipient.webhookKey);
+  } catch (err) {
+    err.isCodeBug = true;
+    throw err;
+  }
+}
+
+function createPendingError(address) {
+  return new SMTPError(
+    `Delivery to ${address} is still in progress, please try again later`,
+    { responseCode: 421, ignore_hook: true }
+  );
+}
+
+//
+// Whether a destination failed because of us and not the destination, so it
+// is retried for as long as the sender retries, and not given up on after
+// `config.partialDeliveryRetryWindow` (see `getDeliveryOutcome`).
+//
+// For a mailbox, that is anything but a reason from our mailbox storage (e.g.
+// it is full or went over a rate limit, see `mailboxIssue` in
+// `helpers/parse-payload.js`) or about the account (e.g. its plan ended, a
+// Boom error). For a
+// forward or a webhook, it is an error in our code, Redis or MongoDB, and not
+// a reply from the destination nor a failure to reach it.
+//
+function isInternalError(err, isMailbox = false) {
+  if (isMailbox) return !err.mailboxIssue && !err.isBoom;
+  // (these are retryable errors too)
+  if (isRedisError(err) || isMongoError(err)) return true;
+  // (a reply from the destination, or a failure to connect to it)
+  if (
+    err.syscall === 'connect' ||
+    (typeof err.response === 'string' &&
+      REGEX_SMTP_REPLY.test(err.response.trim()))
+  )
+    return false;
+  //
+  // (whether it is retryable is decided without the response code that our
+  // own handling may have given it, e.g. `shouldThrow` gives a code bug 421)
+  //
+  return (
+    isCodeBug(err) &&
+    !isRetryableError(
+      Object.create(err, { responseCode: { value: undefined } })
+    )
+  );
+}
+
 async function imap(alias, headers, session, body) {
   const accepted = [];
   const bounces = [];
@@ -678,38 +798,10 @@ async function imap(alias, headers, session, body) {
   //   },
   //   ...
   // ]
-  // Atomic claim: SET NX PX acquires a "delivery lock" for this
-  // fingerprint+alias pair.  If another MX worker already claimed it,
-  // `acquired` will be null and we skip delivery (prevents the race
-  // where two workers both GET before either SETs).
-  //
-  // The claim is "pending" until the message is stored: a retry that arrives
-  // while an earlier attempt is still storing it (e.g. the sender timed out
-  // and reconnected) is deferred, since that attempt can still fail and
-  // release the claim, and accepting the retry would then lose the message.
-  // The short TTL covers the longest attempt (see the request below).
-  // (another address of this message for the same mailbox, e.g. To and Cc,
-  // is the same attempt: if storing fails, the whole message is retried)
-  //
+  // (see `claim`; storing it takes a few minutes at most, see below)
   const fpKey = getFingerprintKey(session, alias.id);
-  const pending = `pending:${session.id}`;
-  const acquired = await this.client.set(fpKey, pending, 'PX', ms('10m'), 'NX');
-  if (!acquired) {
-    const claim = await this.client.get(fpKey);
-    if (claim !== '1' && claim !== pending) {
-      bounces.push({
-        address: alias.address,
-        destination: alias.address,
-        isMailbox: true,
-        err: new SMTPError(
-          `The mailbox for ${alias.address} is temporarily unavailable, please try again later.`,
-          { responseCode: 421, ignore_hook: true }
-        ),
-        host: HOSTNAME
-      });
-      return { accepted, bounces, vacationResponders };
-    }
-
+  const claimed = await claim.call(this, fpKey, ms('10m'));
+  if (claimed === 'delivered') {
     accepted.push(alias.address);
     if (alias.vacationResponder)
       vacationResponders.push(alias.vacationResponder);
@@ -718,6 +810,20 @@ async function imap(alias, headers, session, body) {
       bounces,
       vacationResponders
     };
+  }
+
+  if (claimed !== 'acquired') {
+    bounces.push({
+      address: alias.address,
+      destination: alias.address,
+      isMailbox: true,
+      err: createPendingError(alias.address),
+      host: HOSTNAME,
+      aliasId: alias.id,
+      // (an earlier attempt is still storing it)
+      isInternal: true
+    });
+    return { accepted, bounces, vacationResponders };
   }
 
   try {
@@ -838,17 +944,13 @@ async function imap(alias, headers, session, body) {
       // admins, an internal error) and must not reach the sender in the SMTP
       // reply or a bounce; the original is kept for logs and for the emails
       // to the alias owner and domain admins (see send-forwarding-issue-emails).
+      // It is temporary whatever its code, as it is not about the message.
       //
       if ((err.name !== 'SMTPError' || err.isBoom) && !err._message) {
-        // (the code and bounce category are decided from the original)
-        const code = getErrorCode(err);
         err._message = err.message;
         if (typeof err.response !== 'string') err.response = err._message;
-        err.responseCode = code;
-        err.message =
-          code < 500
-            ? `The mailbox for ${alias.address} is temporarily unavailable, please try again later.`
-            : `The mailbox for ${alias.address} is unavailable.`;
+        err.responseCode = 421;
+        err.message = `The mailbox for ${alias.address} is temporarily unavailable, please try again later.`;
       }
 
       bounces.push({
@@ -856,7 +958,9 @@ async function imap(alias, headers, session, body) {
         destination: alias.address,
         isMailbox: true,
         err,
-        host: env.SQLITE_HOST
+        host: env.SQLITE_HOST,
+        aliasId: alias.id,
+        isInternal: isInternalError(err, true)
       });
     } else {
       const messageSize = sealHeaders.length + unsealed.length;
@@ -905,11 +1009,14 @@ async function imap(alias, headers, session, body) {
     err.target = env.IMAP_HOST;
     //
     // Sanitize internal infrastructure errors (WebSocket timeouts, worker
-    // routing failures, etc.) so raw details are never exposed to senders
-    // in SMTP responses or bounce notifications.
+    // routing failures, signing the message, etc.) so raw details are never
+    // exposed to senders in SMTP responses or bounce notifications. They are
+    // temporary whatever their code, as above.
     //
-    if (isTimeoutError(err) && !err._message) {
+    if ((err.name !== 'SMTPError' || err.isBoom) && !err._message) {
       err._message = err.message;
+      if (typeof err.response !== 'string') err.response = err._message;
+      err.responseCode = 421;
       err.message =
         'Message delivery was temporarily interrupted, please try again later.';
     }
@@ -919,7 +1026,9 @@ async function imap(alias, headers, session, body) {
       destination: alias.address,
       isMailbox: true,
       err,
-      host: HOSTNAME
+      host: HOSTNAME,
+      aliasId: alias.id,
+      isInternal: isInternalError(err, true)
     });
   }
 
@@ -1297,107 +1406,38 @@ async function forward(recipient, headers, session, body) {
   const key = getFingerprintKey(session, recipient.webhook || recipient.to[0]);
 
   //
-  // The claim is "pending" until the destination has the message, as in
-  // `imap()`: a retry that arrives while an earlier attempt is still sending
-  // it is deferred, since that attempt can still fail and release the claim
-  // (the TTL covers the longest attempt, connecting to each MX host and the
-  // SMTP or webhook timeouts)
+  // NOTE: we send emails in series therefore we can check
+  //       if the sender was denylisted since sending started
+  //       so that we can stop the spam right away rather
+  //       then wait until we're done iterating over RCPT TO values
+  //       (before the destination is claimed, so nothing is held if it throws)
   //
-  const pending = `pending:${session.id}`;
-  const claim = this.client.set(key, pending, 'PX', ms('30m'), 'NX');
-
-  // Run denylist check concurrently with the fingerprint claim
-  const [acquired] = await Promise.all([
-    claim,
-    (async () => {
-      //
-      // NOTE: we send emails in series therefore we can check
-      //       if the sender was denylisted since sending started
-      //       so that we can stop the spam right away rather
-      //       then wait until we're done iterating over RCPT TO values
-      //
-      try {
-        await isDenylisted(
-          [recipient.webhook || recipient.to[0], ...session.attributes],
-          this.client,
-          this.resolver
-        );
-      } catch (err) {
-        // store a counter
-        if (err instanceof DenylistError) {
-          this.client
-            .incr(`denylist_prevented:${session.arrivalDateFormatted}`)
-            .then()
-            .catch((err) => logger.fatal(err));
-
-          // name the alias instead of a destination that was denylisted
-          // (as `helpers/get-recipients` does)
-          if (isDestinationValue(err.denylistValue, recipient))
-            err.message = `The address ${
-              recipient.recipient
-            } is denylisted by ${
-              config.urls.web
-            } ; To request removal, you must visit ${
-              config.urls.web
-            }/denylist?q=${encrypt(err.denylistValue)} ;`;
-        }
-
-        throw err;
-      }
-    })()
-  ]).catch(async (err) => {
-    // (nothing was sent, so a retry is not skipped)
-    if (await claim.catch(() => false))
-      await this.client.del(key).catch((err) => logger.fatal(err));
-    throw err;
-  });
-
-  if (!acquired) {
-    const accepted = [];
-    const bounces = [];
-    // (an earlier attempt still sending it, or one that failed since)
-    const claimed = await this.client.get(key);
-    if (claimed !== '1' && claimed !== pending) {
-      bounces.push({
-        address: recipient.recipient,
-        destination: recipient.webhook || recipient.to[0],
-        host: recipient.host,
-        err: new SMTPError(
-          'Message delivery is already in progress, please try again later.',
-          { responseCode: 421, ignore_hook: true }
-        ),
-        recipient
-      });
-      return { accepted, bounces, vacationResponder: false };
-    }
-
-    // NOTE: we group together recipients based off endpoint
-    for (const replacement of Object.keys(recipient.replacements)) {
-      if (!accepted.includes(replacement)) accepted.push(replacement);
-    }
-
-    return {
-      accepted,
-      bounces,
-      vacationResponder:
-        accepted.length > 0 ? recipient.vacationResponder : false
-    };
-  }
-
   try {
-    return await send.call(this, recipient, headers, session, body);
+    await isDenylisted(
+      [recipient.webhook || recipient.to[0], ...session.attributes],
+      this.client,
+      this.resolver
+    );
   } catch (err) {
-    // (an error before anything was sent, so a retry is not skipped)
-    if ((await this.client.get(key).catch(() => null)) === pending)
-      await this.client.del(key).catch((err) => logger.fatal(err));
+    // store a counter
+    if (err instanceof DenylistError) {
+      this.client
+        .incr(`denylist_prevented:${session.arrivalDateFormatted}`)
+        .then()
+        .catch((err) => logger.fatal(err));
+
+      // name the alias instead of a destination that was denylisted
+      // (as `helpers/get-recipients` does)
+      if (isDestinationValue(err.denylistValue, recipient))
+        err.message = `The address ${recipient.recipient} is denylisted by ${
+          config.urls.web
+        } ; To request removal, you must visit ${
+          config.urls.web
+        }/denylist?q=${encrypt(err.denylistValue)} ;`;
+    }
+
     throw err;
   }
-}
-
-async function send(recipient, headers, session, body) {
-  const key = getFingerprintKey(session, recipient.webhook || recipient.to[0]);
-  const accepted = [];
-  const bounces = [];
 
   // add "Received" and "X-Original-To" headers to the message
   if (!headers.hasHeader('x-original-to')) {
@@ -1433,6 +1473,83 @@ async function send(recipient, headers, session, body) {
       time: new Date(session.arrivalDate)
     })
   );
+
+  // (see `claim`)
+  const claimed = await claim.call(this, key);
+  const accepted = [];
+  const bounces = [];
+  if (claimed === 'delivered') {
+    // NOTE: we group together recipients based off endpoint
+    for (const replacement of Object.keys(recipient.replacements)) {
+      if (!accepted.includes(replacement)) accepted.push(replacement);
+    }
+
+    return {
+      accepted,
+      bounces,
+      vacationResponder:
+        accepted.length > 0 ? recipient.vacationResponder : false
+    };
+  }
+
+  //
+  // it rejected the message for good on an earlier attempt (e.g. while
+  // another destination was deferred, or for another alias that forwards to
+  // it): it is not sent it again, nor held against the sender again (see
+  // `checkBounceForSpam`), and is reported as it was then
+  //
+  if (claimed.startsWith('rejected:')) {
+    let rejection;
+    try {
+      rejection = JSON.parse(claimed.slice('rejected:'.length));
+    } catch (err) {
+      // (it is sent again on the next retry)
+      logger.fatal(err, { session, resolver: this.resolver });
+      this.client.del(key).catch((err) => logger.fatal(err));
+    }
+
+    if (rejection) {
+      const addresses = recipient.webhook
+        ? Object.keys(recipient.replacements)
+        : [recipient.recipient];
+      for (const address of addresses) {
+        const err = new SMTPError(
+          String(rejection.message).split(rejection.address).join(address),
+          { responseCode: rejection.responseCode }
+        );
+        if (rejection._message) err._message = rejection._message;
+        if (rejection.response) err.response = rejection.response;
+        bounces.push({
+          address,
+          destination: recipient.webhook || recipient.to[0],
+          host: recipient.host,
+          err,
+          recipient
+        });
+      }
+
+      return { accepted, bounces, vacationResponder: false };
+    }
+  }
+
+  if (claimed !== 'acquired') {
+    // (an earlier attempt is still delivering to it, for each alias it serves)
+    const addresses = recipient.webhook
+      ? Object.keys(recipient.replacements)
+      : [recipient.recipient];
+    for (const address of addresses) {
+      bounces.push({
+        address,
+        destination: recipient.webhook || recipient.to[0],
+        host: recipient.host,
+        err: createPendingError(address),
+        recipient,
+        isInternal: true
+      });
+    }
+
+    return { accepted, bounces, vacationResponder: false };
+  }
 
   // NOTE: we don't add to mail_accepted nor mail_rejected counters for webhooks
   if (recipient.webhook) {
@@ -1539,7 +1656,7 @@ async function send(recipient, headers, session, body) {
             ...(recipient.webhookKey
               ? {
                   'X-Webhook-Signature': crypto
-                    .createHmac('sha256', decrypt(recipient.webhookKey))
+                    .createHmac('sha256', getWebhookSecret(recipient))
                     .update(webhookBody)
                     .digest('hex')
                 }
@@ -1603,7 +1720,7 @@ async function send(recipient, headers, session, body) {
         session
       });
 
-      // the webhook has the message: a retry of it now skips this webhook
+      // (a retry of the message skips this webhook from now on)
       await this.client
         .set(key, '1', 'PX', config.fingerprintTTL)
         .catch((err) => logger.fatal(err));
@@ -1620,6 +1737,10 @@ async function send(recipient, headers, session, body) {
           accepted.length > 0 ? recipient.vacationResponder : false
       };
     } catch (err_) {
+      // nothing was delivered, so release the claim (otherwise a retry would
+      // skip this webhook as if it had already received the message)
+      this.client.del(key).catch((err) => logger.fatal(err));
+
       // delete undici's `body` prop in err object
       // in order to prevent huge payloads in-memory
       delete err_.body;
@@ -1644,6 +1765,9 @@ async function send(recipient, headers, session, body) {
       };
       logger.error(err_, { session, resolver: this.resolver });
 
+      // (decided before it is given a response code, see `isInternalError`)
+      const isInternal = isInternalError(err_);
+
       // determine if code or status is retryable here and set it as `err._responseCode`
       // TODO: rewrite `err.response` and `err.message` if either/both start with diagnostic code
       err_.responseCode = getErrorCode(err_);
@@ -1667,10 +1791,6 @@ async function send(recipient, headers, session, body) {
         err.isCodeBug = true;
         logger.fatal(err);
       }
-
-      // nothing was delivered, so release the claim (otherwise a retry would
-      // skip this webhook as if it had already received the message)
-      this.client.del(key).catch((err) => logger.fatal(err));
 
       // in case the response had sensitive email user information hide it too
       try {
@@ -1804,9 +1924,12 @@ async function send(recipient, headers, session, body) {
           address,
           destination: recipient.webhook,
           err,
-          recipient
+          recipient,
+          isInternal
         });
       }
+
+      storeRejection.call(this, key, accepted, bounces);
     }
 
     return {
@@ -1829,94 +1952,97 @@ async function send(recipient, headers, session, body) {
   //
   // <https://datatracker.ietf.org/doc/html/rfc3464#:~:text=The%20DSN%20MUST%20be,the%20MAIL%20FROM%20command.)>
   //
-  let from;
-  let isSrsFrom = false;
-  if (isSANB(session.envelope.mailFrom.address)) {
-    if (
-      session.envelope.mailFrom.address
-        .toLowerCase()
-        .endsWith(`@${env.WEB_HOST}`)
-    ) {
-      from = session.envelope.mailFrom.address;
-    } else {
-      from = srs.forward(
-        checkSRS(session.envelope.mailFrom.address).replace(
-          REGEX_SRS1_HASH,
-          'SRS1=0000='
-        ),
-        env.WEB_HOST
-      );
-      isSrsFrom = true;
-    }
-  }
-
-  // NOTE: only webhooks use array for `to`, send email uses a string (we convert it)
-  if (!_.isArray(recipient.to) || recipient.to.length > 1)
-    throw new TypeError('Invalid array of recipients');
-
-  //
-  // RFC 6531/6532 downgrade (RFC 5504): convert internationalized domain
-  // names in address headers to ACE/Punycode so that receiving MTAs which
-  // do not advertise SMTPUTF8 can process the message.  A-labels are
-  // always valid per RFC 5321, so this is safe for all servers.
-  //
-  // The raw line is rewritten, not its decoded value: decoding turned an
-  // encoded-word display name into header syntax, so a From of
-  // "=?utf-8?B?...?= <attacker@évil.example>" whose display name decodes to
-  // "CEO <ceo@bank.example>" became "CEO <ceo@bank.example> <attacker@...>"
-  // after we had checked its DMARC (and it was sealed as checked). An
-  // encoded word is ASCII already and holds no address to convert.
-  //
-  for (const line of headers.getList()) {
-    if (!IDN_DOWNGRADE_HEADERS.has(line.key)) continue;
-    // (the line holds the raw bytes, a non-ASCII domain is raw UTF-8)
-    const raw = Buffer.from(line.line, 'binary').toString('utf8');
-    // only rewrite if the header contains non-ASCII characters
-    if (!/[\u0080-\uFFFF]/.test(raw)) continue;
-    // replace domain parts of email addresses with their ACE equivalents
-    // (only characters a domain can have: punycode keeps the ASCII ones of
-    // what it converts, so a match that ran into a quote, backslash or
-    // parenthesis could move where a quoted name or comment ends, and with
-    // it which address the header holds)
-    const downgraded = raw.replace(
-      /(@)([^\s"\\()<>[\],;:@]+)/g,
-      (match, at, domain) => {
-        try {
-          return `${at}${punycode.toASCII(domain)}`;
-        } catch {
-          return match;
-        }
-      }
-    );
-    if (downgraded !== raw) {
-      line.line = Buffer.from(downgraded, 'utf8').toString('binary');
-      headers.changed = true;
-    }
-  }
-
-  //
-  // Gmail rejects a message that fails DMARC on its From header, so rewrite it
-  // up front instead of sending one that we know will be rejected
-  // (other destinations get the rewrite if they reject it for DMARC below)
-  //
-  let hasFriendlyFrom = false;
-  if (
-    isTrustedArcDmarcFailure(session) &&
-    session.dmarc.policy === 'reject' &&
-    (await isGoogleMX(this.resolver, recipient.host))
-  ) {
-    rewriteFriendlyFrom(headers, session);
-    hasFriendlyFrom = true;
-  }
-
-  const unsealed = Buffer.concat([headers.build(), body]);
-  const sealHeaders = await sealMessage(unsealed, {
-    ...config.signatureData,
-    authResults: session.arc.authResults,
-    cv: session.arc.status.result
-  });
-
+  // (from here on, a failure deletes the claim unless it was delivered, see
+  // the catch below)
+  let isDelivered = false;
   try {
+    let from;
+    let isSrsFrom = false;
+    if (isSANB(session.envelope.mailFrom.address)) {
+      if (
+        session.envelope.mailFrom.address
+          .toLowerCase()
+          .endsWith(`@${env.WEB_HOST}`)
+      ) {
+        from = session.envelope.mailFrom.address;
+      } else {
+        from = srs.forward(
+          checkSRS(session.envelope.mailFrom.address).replace(
+            REGEX_SRS1_HASH,
+            'SRS1=0000='
+          ),
+          env.WEB_HOST
+        );
+        isSrsFrom = true;
+      }
+    }
+
+    // NOTE: only webhooks use array for `to`, send email uses a string (we convert it)
+    if (!_.isArray(recipient.to) || recipient.to.length > 1)
+      throw new TypeError('Invalid array of recipients');
+
+    //
+    // RFC 6531/6532 downgrade (RFC 5504): convert internationalized domain
+    // names in address headers to ACE/Punycode so that receiving MTAs which
+    // do not advertise SMTPUTF8 can process the message.  A-labels are
+    // always valid per RFC 5321, so this is safe for all servers.
+    //
+    // The raw line is rewritten, not its decoded value: decoding turned an
+    // encoded-word display name into header syntax, so a From of
+    // "=?utf-8?B?...?= <attacker@évil.example>" whose display name decodes to
+    // "CEO <ceo@bank.example>" became "CEO <ceo@bank.example> <attacker@...>"
+    // after we had checked its DMARC (and it was sealed as checked). An
+    // encoded word is ASCII already and holds no address to convert.
+    //
+    for (const line of headers.getList()) {
+      if (!IDN_DOWNGRADE_HEADERS.has(line.key)) continue;
+      // (the line holds the raw bytes, a non-ASCII domain is raw UTF-8)
+      const raw = Buffer.from(line.line, 'binary').toString('utf8');
+      // only rewrite if the header contains non-ASCII characters
+      if (!/[\u0080-\uFFFF]/.test(raw)) continue;
+      // replace domain parts of email addresses with their ACE equivalents
+      // (only characters a domain can have: punycode keeps the ASCII ones of
+      // what it converts, so a match that ran into a quote, backslash or
+      // parenthesis could move where a quoted name or comment ends, and with
+      // it which address the header holds)
+      const downgraded = raw.replace(
+        /(@)([^\s"\\()<>[\],;:@]+)/g,
+        (match, at, domain) => {
+          try {
+            return `${at}${punycode.toASCII(domain)}`;
+          } catch {
+            return match;
+          }
+        }
+      );
+      if (downgraded !== raw) {
+        line.line = Buffer.from(downgraded, 'utf8').toString('binary');
+        headers.changed = true;
+      }
+    }
+
+    //
+    // Gmail rejects a message that fails DMARC on its From header, so rewrite it
+    // up front instead of sending one that we know will be rejected
+    // (other destinations get the rewrite if they reject it for DMARC below)
+    //
+    let hasFriendlyFrom = false;
+    if (
+      isTrustedArcDmarcFailure(session) &&
+      session.dmarc.policy === 'reject' &&
+      (await isGoogleMX(this.resolver, recipient.host))
+    ) {
+      rewriteFriendlyFrom(headers, session);
+      hasFriendlyFrom = true;
+    }
+
+    const unsealed = Buffer.concat([headers.build(), body]);
+    const sealHeaders = await sealMessage(unsealed, {
+      ...config.signatureData,
+      authResults: session.arc.authResults,
+      cv: session.arc.status.result
+    });
+
     //
     // a reply to an SRS address is only relayed with the reverse delivery it
     // used (e.g. not a retry resolved as already relayed, see `wasRelayed` in
@@ -2114,7 +2240,8 @@ async function send(recipient, headers, session, body) {
     });
 
     if (info.accepted && info.accepted.length > 0) {
-      // the destination has the message: a retry of it now skips it
+      // (a retry of the message skips this destination from now on)
+      isDelivered = true;
       await this.client
         .set(key, '1', 'PX', config.fingerprintTTL)
         .catch((err) => logger.fatal(err));
@@ -2245,7 +2372,26 @@ async function send(recipient, headers, session, body) {
     // Release the fingerprint claim so the sender can retry delivery.
     // Without this, a transient failure would permanently block
     // re-delivery for the duration of fingerprintTTL.
-    this.client.del(key).catch((err) => logger.fatal(err));
+    if (!isDelivered) this.client.del(key).catch((err) => logger.fatal(err));
+
+    //
+    // an error on our side (e.g. signing the message) is temporary (see
+    // `getErrorCode`), retried for as long as the sender retries (see
+    // `isInternalError`), and its details are for us and not the sender (as
+    // in `refineAndLogError`)
+    //
+    const isInternal = isInternalError(err);
+    if (isInternal) {
+      // (and it is not held against the sender, see `checkBounceForSpam`)
+      err.isCodeBug = true;
+      logger.fatal(err, { session, resolver: this.resolver });
+    }
+
+    if (isInternal && !err._message) {
+      err._message = err.message;
+      err.message =
+        'An internal server error has occurred, please try again later.';
+    }
 
     // mask the destination in the message sent to the sender
     maskForwardingError(err, recipient);
@@ -2257,7 +2403,8 @@ async function send(recipient, headers, session, body) {
       destination: recipient.webhook || recipient.to[0],
       host: recipient.host,
       err,
-      recipient
+      recipient,
+      isInternal
     });
 
     // rejected counter
@@ -2266,6 +2413,8 @@ async function send(recipient, headers, session, body) {
       .then()
       .catch((err) => logger.fatal(err));
   }
+
+  if (!isDelivered) storeRejection.call(this, key, accepted, bounces);
 
   //
   // NOTE: here is where we denylist and greylist in real-time
@@ -2828,24 +2977,70 @@ async function onDataMX(session, headers, body) {
     return;
   }
 
+  //
+  // a mailbox that more than one recipient reaches (e.g. an address and its
+  // plus-addressed form, or an alias forwarding into it) is stored to by one
+  // of them at a time, so the next one finds it delivered (see `claim`)
+  // instead of in progress (and once storing it failed, the others are
+  // retried with it rather than stored to again now, which could outlast
+  // the sender's timeout)
+  //
+  const mailboxes = new Map();
+  for (const alias of data.imap) {
+    const key = String(alias.id);
+    if (mailboxes.has(key)) mailboxes.get(key).push(alias);
+    else mailboxes.set(key, [alias]);
+  }
+
   // deliver to IMAP and forward messages in parallel
   const [imapResults, forwardResults] = await Promise.all([
     // imap
     data.imap.length === 0
       ? Promise.resolve()
       : pMap(
-          data.imap,
-          (alias) =>
-            imap.call(
-              this,
-              alias,
-              // clone headers to prevent mutations
-              new Headers(headers.build(), { Iconv }),
-              session,
-              body
-            ),
+          [...mailboxes.values()],
+          async (aliases) => {
+            const results = [];
+            for (const alias of aliases) {
+              // (a Sieve script can reject one address of a mailbox only)
+              const failed = results.find((r) =>
+                r.bounces.some((bounce) => bounce.err.mailboxIssue !== 'sieve')
+              );
+              if (failed) {
+                results.push({
+                  accepted: [],
+                  bounces: failed.bounces.map((bounce) => ({
+                    ...bounce,
+                    address: alias.address,
+                    destination: alias.address,
+                    // (the same error, naming this address)
+                    err: Object.assign(Object.create(bounce.err), {
+                      message: String(bounce.err.message)
+                        .split(bounce.address)
+                        .join(alias.address)
+                    })
+                  })),
+                  vacationResponders: []
+                });
+                continue;
+              }
+
+              results.push(
+                await imap.call(
+                  this,
+                  alias,
+                  // clone headers to prevent mutations
+                  new Headers(headers.build(), { Iconv }),
+                  session,
+                  body
+                )
+              );
+            }
+
+            return results;
+          },
           { concurrency: config.concurrency }
-        ),
+        ).then((results) => results.flat()),
     // forwarding
     data.normalized.length === 0
       ? Promise.resolve()
@@ -2862,7 +3057,11 @@ async function onDataMX(session, headers, body) {
   ]);
 
   const accepted = [];
-  const bounces = [...data.bounces];
+  // (a lookup that failed on our side is not given up on either)
+  const bounces = data.bounces.map((bounce) => ({
+    ...bounce,
+    isInternal: isInternalError(bounce.err)
+  }));
   const vacationResponders = [];
 
   // NOTE: we don't add to mail_accepted nor mail_rejected counters for IMAP
@@ -2970,7 +3169,8 @@ async function onDataMX(session, headers, body) {
   //   - partially delivered, and a destination failed temporarily (4xx):
   //     defer so the sender retries (destinations that already have the
   //     message are skipped on retry, see `getFingerprintKey`), for at most
-  //     `config.partialDeliveryRetryWindow` since the first attempt
+  //     `config.partialDeliveryRetryWindow` since the first attempt (or for
+  //     as long as the sender retries, see `isInternalError`)
   //   - partially delivered, and every failure was permanent (5xx), or the
   //     retry window closed: accept, and email the alias owner and domain
   //     admins about broken forwarding destinations
@@ -3040,7 +3240,9 @@ function getDeliveryOutcome(session, accepted, bounces) {
   const deferred = [];
   for (const bounce of bounces) {
     if (getErrorCode(bounce.err) >= 500) continue;
-    if (isRetryWindowExceeded) bounce.isRetryWindowExceeded = true;
+    // (a failure on our side is never given up on, see `isInternalError`)
+    if (isRetryWindowExceeded && !bounce.isInternal)
+      bounce.isRetryWindowExceeded = true;
     else deferred.push(bounce);
   }
 
