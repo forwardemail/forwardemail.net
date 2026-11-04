@@ -8,7 +8,7 @@
       "kill_timeout": 30000,
       "exec_mode": "cluster",
       "wait_ready": true,
-      "instances": "max",
+      "instances": 5,
       "pmx": false,
       "error_file": "/var/log/pm2/api-error.log",
       "out_file": "/var/log/pm2/api-out.log",

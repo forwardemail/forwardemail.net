@@ -8,6 +8,7 @@ const MailComposer = require('nodemailer/lib/mail-composer');
 const ObjectID = require('bson-objectid');
 const bytes = require('@forwardemail/bytes');
 const getStream = require('get-stream');
+const pMap = require('p-map');
 const isSANB = require('is-string-and-not-blank');
 const pify = require('pify');
 const { Iconv } = require('iconv');
@@ -46,6 +47,26 @@ const builder = new Builder({ bufferAsNative: true });
 // to be narrowed by the caller instead of failing with an internal error.
 //
 const MAX_SEARCH_ID_VARIABLES = 30000;
+
+//
+// A full (non-lightweight) message list rebuilds and parses every message of
+// the page, and holds all of them (parsed text and HTML, and the raw source
+// as a string) until the response is written, which takes about three times
+// the size of the messages.  A page of 100 large messages ran API workers out
+// of their heap.  Once the messages of a page add up to this size, the rest of
+// the page is listed as with `?lightweight=true` (the first message is always
+// listed in full); their contents are fetched with GET /v1/messages/:id.
+// The number of messages listed this way is sent in the
+// X-Lightweight-Fallback-Count header.  The size is
+// API_MESSAGES_FULL_LIST_MAX_SIZE (read for each request).
+//
+const DEFAULT_FULL_LIST_MAX_SIZE = '32MB';
+
+// Messages rebuilt and parsed at once for a full list
+const FULL_LIST_CONCURRENCY = 4;
+
+// Stored fields a list response never returns (see `json` below)
+const UNLISTED_FIELDS = ['attachments', 'bodystructure', 'envelope'];
 
 //
 // Header lookups match a literal, case-insensitively, with LIKE.
@@ -1214,22 +1235,55 @@ async function list(ctx) {
 
   // Decode compressed fields from raw SQL results before passing to json()
   // Raw SQL queries bypass mongoose getters, so we need to manually decode
+  // (fields the response never returns are dropped instead, decoding them
+  // could take hundreds of MB for large messages)
   for (const message of messages) {
+    for (const field of UNLISTED_FIELDS) delete message[field];
     decodeRawMessage(message);
   }
 
-  ctx.body = await (Array.isArray(messages)
-    ? Promise.all(
-        messages.map((message) =>
-          json(ctx, message, {
-            // Opt-in lightweight mode: skip indexer.getContents/simpleParser to avoid
-            // N attachment hash lookups and MIME rebuilds per message. Returns metadata
-            // only (no nodemailer/raw fields). Use ?lightweight=true for fast listing.
-            lightweight: ctx.query.lightweight === 'true'
-          })
-        )
-      )
-    : Promise.resolve([]));
+  // Opt-in lightweight mode: skip indexer.getContents/simpleParser to avoid
+  // N attachment hash lookups and MIME rebuilds per message. Returns metadata
+  // only (no nodemailer/raw fields). Use ?lightweight=true for fast listing.
+  const lightweight = ctx.query.lightweight === 'true';
+
+  // Past API_MESSAGES_FULL_LIST_MAX_SIZE the rest of the page is listed lightweight
+  const maxFullBytes = bytes(
+    env.API_MESSAGES_FULL_LIST_MAX_SIZE || DEFAULT_FULL_LIST_MAX_SIZE
+  );
+  let fullBytes = 0;
+  let fallbackCount = 0;
+  const lightweightByIndex = messages.map((message, index) => {
+    if (lightweight) return true;
+    const messageBytes = Number(message.size) || 0;
+    if (index > 0 && fullBytes + messageBytes > maxFullBytes) {
+      fallbackCount++;
+      return true;
+    }
+
+    fullBytes += messageBytes;
+    return false;
+  });
+
+  if (fallbackCount > 0) {
+    ctx.set('X-Lightweight-Fallback-Count', String(fallbackCount));
+    ctx.logger.warn('message list exceeded full listing size', {
+      fallback_count: fallbackCount,
+      full_bytes: fullBytes,
+      limit: ctx.query.limit
+    });
+  }
+
+  ctx.body = await pMap(
+    messages,
+    (message, index) =>
+      json(ctx, message, { lightweight: lightweightByIndex[index] }),
+    {
+      concurrency: lightweight
+        ? Number.POSITIVE_INFINITY
+        : FULL_LIST_CONCURRENCY
+    }
+  );
 }
 
 async function create(ctx) {

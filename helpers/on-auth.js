@@ -176,6 +176,14 @@ async function clearAuthCache(client, aliasId) {
 // Decrement a counter without letting it go below zero or recreating it
 // (without a TTL) once it has expired.
 //
+const ACQUIRE_INFLIGHT_SCRIPT = `
+local value = redis.call('INCR', KEYS[1])
+if value == 1 or redis.call('PTTL', KEYS[1]) < 0 then
+  redis.call('PEXPIRE', KEYS[1], ARGV[1])
+end
+return value
+`;
+
 const RELEASE_INFLIGHT_SCRIPT = `
 local value = tonumber(redis.call('GET', KEYS[1]) or '0')
 if value > 0 then return redis.call('DECR', KEYS[1]) end
@@ -598,15 +606,20 @@ async function onAuth(auth, session, fn) {
     // Only verifications count as in progress: a cached login above answers
     // at once, so parallel clients (DAV sync, users behind one NAT) with
     // valid credentials are never limited here.
-    // (the TTL only guards against a process dying mid-attempt)
+    //
+    // The TTL guards against a process dying mid-attempt (its slots are never
+    // released).  It is only set when the key is created: refreshing it on
+    // every attempt kept a busy client's key alive forever, so slots leaked
+    // by crashed workers added up until every login from it was refused.
     //
     if (isRateLimited) {
       const key = `auth_inflight_${config.env}:${ipBucket}`;
-      const [[, inflight]] = await this.client
-        .pipeline()
-        .incr(key)
-        .pexpire(key, ms('2m'))
-        .exec();
+      const inflight = await this.client.eval(
+        ACQUIRE_INFLIGHT_SCRIPT,
+        1,
+        key,
+        ms('2m')
+      );
       inflightKey = key;
       if (inflight > config.smtpLimitAuth) {
         const err = new SMTPError(

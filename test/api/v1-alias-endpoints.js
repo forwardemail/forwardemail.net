@@ -15,6 +15,7 @@ const test = require('ava');
 
 const utils = require('../utils');
 const config = require('#config');
+const env = require('#config/env');
 const createPassword = require('#helpers/create-password');
 const { Aliases, Emails, Users } = require('#models');
 
@@ -2123,6 +2124,58 @@ test('lightweight message lists retain identity fields without raw MIME', async 
   t.falsy(listRes.body[0].raw);
   t.falsy(listRes.body[0].nodemailer);
 });
+
+// serial: it changes the size limit for every request while it runs
+test.serial(
+  'full message lists fall back to lightweight past the size limit',
+  async (t) => {
+    const { api } = t.context;
+    const { alias, domain, pass } = await createTestAlias(t);
+    const authorization = createAliasAuth(`${alias.name}@${domain.name}`, pass);
+
+    for (let i = 0; i < 3; i++) {
+      const res = await api
+        .post('/v1/messages')
+        .set('Authorization', authorization)
+        .send({
+          to: [{ address: 'test@example.com' }],
+          subject: `Size Limit ${i}`,
+          text: `Size limit body ${i}`
+        });
+      t.is(res.status, 200);
+    }
+
+    const original = env.API_MESSAGES_FULL_LIST_MAX_SIZE;
+    // smaller than any one message: only the first is listed in full
+    env.API_MESSAGES_FULL_LIST_MAX_SIZE = '1B';
+    let res;
+    try {
+      res = await api.get('/v1/messages').set('Authorization', authorization);
+    } finally {
+      env.API_MESSAGES_FULL_LIST_MAX_SIZE = original;
+    }
+
+    t.is(res.status, 200);
+    t.is(res.body.length, 3);
+    t.is(res.headers['x-lightweight-fallback-count'], '2');
+    t.truthy(res.body[0].nodemailer);
+    t.truthy(res.body[0].raw);
+    for (const message of res.body.slice(1)) {
+      t.falsy(message.nodemailer);
+      t.falsy(message.raw);
+      t.truthy(message.subject);
+      t.true(Array.isArray(message.to));
+    }
+
+    // within the limit every message is listed in full
+    const full = await api
+      .get('/v1/messages')
+      .set('Authorization', authorization);
+    t.is(full.status, 200);
+    t.is(full.headers['x-lightweight-fallback-count'], undefined);
+    t.true(full.body.every((message) => message.nodemailer && message.raw));
+  }
+);
 
 //
 // Folders Tests
