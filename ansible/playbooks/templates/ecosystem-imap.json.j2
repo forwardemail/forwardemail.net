@@ -7,6 +7,8 @@
       "wait_ready": true,
       "instances": "max",
       "pmx": false,
+      "max_memory_restart": "3G",
+      "node_args": "--max-old-space-size=3072 --report-on-fatalerror --report-directory=/var/tmp/node-reports",
       "kill_timeout": 30000,
       "env_production": {
         "NODE_ENV": "production",
@@ -20,6 +22,8 @@
       "wait_ready": true,
       "instances": "1",
       "pmx": false,
+      "max_memory_restart": "3G",
+      "node_args": "--max-old-space-size=3072 --report-on-fatalerror --report-directory=/var/tmp/node-reports",
       "kill_timeout": 30000,
       "env_production": {
         "NODE_ENV": "production",
@@ -33,8 +37,9 @@
       "wait_ready": true,
       "instances": "1",
       "pmx": false,
+      "max_memory_restart": "3G",
+      "node_args": "--max-old-space-size=3072 --report-on-fatalerror --report-directory=/var/tmp/node-reports --tls-min-v1.0 --tls-cipher-list=DEFAULT@SECLEVEL=0",
       "kill_timeout": 30000,
-      "node_args": "--tls-min-v1.0 --tls-cipher-list=DEFAULT@SECLEVEL=0",
       "env_production": {
         "NODE_ENV": "production",
         "IMAP_PORT": 2143,

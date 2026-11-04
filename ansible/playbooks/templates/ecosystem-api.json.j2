@@ -5,8 +5,10 @@
       "script": "api.js",
       "exec_mode": "cluster",
       "wait_ready": true,
-      "instances": "max",
+      "instances": 5,
       "pmx": false,
+      "max_memory_restart": "2G",
+      "node_args": "--max-old-space-size=2048 --report-on-fatalerror --report-directory=/var/tmp/node-reports",
       "kill_timeout": 30000,
       "env_production": {
         "NODE_ENV": "production",

@@ -955,8 +955,12 @@
 
           # Return unused tcmalloc pages to Linux more aggressively.
           # This controls allocator retention; it does not shrink live allocations.
+          # tcmallocReleaseRate alone let a mongod with 6GB allocated hold 31GB
+          # (22GB of it free pages, most in swap), so freed memory is also
+          # decommitted at once (MongoDB 6.0; a little more CPU on frees).
           setParameter:
             tcmallocReleaseRate: 5
+            tcmallocAggressiveMemoryDecommit: true
 
           # Where and how to store data
           storage:
@@ -1174,8 +1178,12 @@
 
           # Return unused tcmalloc pages to Linux more aggressively.
           # This controls allocator retention; it does not shrink live allocations.
+          # tcmallocReleaseRate alone let a mongod with 6GB allocated hold 31GB
+          # (22GB of it free pages, most in swap), so freed memory is also
+          # decommitted at once (MongoDB 6.0; a little more CPU on frees).
           setParameter:
             tcmallocReleaseRate: 5
+            tcmallocAggressiveMemoryDecommit: true
 
           # Where and how to store data
           storage:

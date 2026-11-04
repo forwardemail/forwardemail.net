@@ -231,6 +231,28 @@
         name: forwardemail-pm2-reload.timer
         enabled: yes
         state: started
+
+    # Processes started with --report-on-fatalerror (see the ecosystem files)
+    # write a JSON report here when they die, e.g. of a full heap, with the heap
+    # usage and JavaScript stack the plain crash output leaves out.  Node does
+    # not create the directory, and systemd-tmpfiles removes reports after 14d.
+    - name: Configure Node.js diagnostic report directory
+      copy:
+        dest: /etc/tmpfiles.d/forwardemail-node-reports.conf
+        content: |
+          # WARNING: This file is managed by Ansible
+          d /var/tmp/node-reports 0750 deploy deploy 14d
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: Create Node.js diagnostic report directory
+      file:
+        path: /var/tmp/node-reports
+        state: directory
+        owner: deploy
+        group: deploy
+        mode: '0750'
     - name: Install or upgrade pnpm
       become: true
       become_user: deploy
