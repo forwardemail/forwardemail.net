@@ -51,10 +51,39 @@ import('@forwardemail/whois-rdap').then((obj) => {
 // This helps diagnose "TypeError: fetch failed" errors
 // <https://github.com/nodejs/undici/issues/1248>
 //
-async function wrappedFetch(url, options) {
+// `past`, when given, gets the latest date of each RDAP event in the answers
+// read that shows someone held the domain before (`@forwardemail/whois-rdap`
+// does not keep those events), by its `ts` key
+//
+const PAST_EVENTS = new Map([
+  ['transfer', 'transferred'],
+  ['reregistration', 'reregistered'],
+  ['reinstantiation', 'reregistered']
+]);
+
+async function wrappedFetch(url, options, past) {
   try {
     // (redirects and every target are checked to be public)
-    return await rdapFetch(url, options);
+    const res = await rdapFetch(url, options);
+    // (not a WHOIS web page, which the package reads for some extensions)
+    if (past && res.ok && !/html/i.test(res.headers.get('content-type'))) {
+      try {
+        const { events } = await res.clone().json();
+        for (const ev of Array.isArray(events)
+          ? events
+          : Object.values(events || {})) {
+          const key = PAST_EVENTS.get(String(ev?.eventAction).toLowerCase());
+          if (!key) continue;
+          const date = new Date(String(ev.eventDate).replace(/\+0{4}Z$/, 'Z'));
+          if (!Number.isNaN(date.getTime()) && !(past[key] >= date))
+            past[key] = date;
+        }
+      } catch {
+        // (not JSON: the package handles it)
+      }
+    }
+
+    return res;
   } catch (err) {
     // Enhanced error logging for fetch failures
     if (err.cause) {
@@ -100,26 +129,36 @@ function getResolvers(client) {
 const REGISTRARS_BLOCKED_US =
   'Due to major registrars such as GoDaddy, Namecheap, and Hostgator previously blocking us due to abuse &mdash; we unfortunately have to enforce strict abuse prevention controls to block suspicious activity. Without this abuse prevention, our service would be blocked entirely from these registrars.';
 
+// (the FAQ sections each message links to)
+const NEW_DOMAINS_FAQ = `${config.urls.web}/faq#why-do-newly-registered-or-recently-expired-domains-require-a-paid-plan`;
+const FREE_EXTENSIONS_FAQ = `${config.urls.web}/faq#what-domain-name-extensions-can-be-used-for-free`;
+
+// (why a domain someone had before is not let through)
+const TAKEOVER =
+  "whoever has a domain receives the mail sent to its earlier owner's addresses (such as password resets)";
+
+// (every message is a 421: the sender keeps the message and tries again)
+function getError(message, faq = NEW_DOMAINS_FAQ) {
+  return new SMTPError(`${message} Learn why: ${faq}`, { responseCode: 421 });
+}
+
 function getNewlyCreatedError(domain) {
-  return new SMTPError(
-    `The domain ${domain} was detected as a newly created or transferred domain via WHOIS/RDAP lookup. ${REGISTRARS_BLOCKED_US} We require that you please upgrade to a paid plan at ${config.urls.web} to use our service with this domain.`,
-    { responseCode: 421 }
+  return getError(
+    `The domain ${domain} was detected as a newly created or transferred domain via WHOIS/RDAP lookup. ${REGISTRARS_BLOCKED_US} Please upgrade to a paid plan at ${config.urls.web} to use our service with this domain.`
   );
 }
 
 // (why a domain registered within the past 90 days is not let through)
 function getNewDomainError(domain, reason) {
-  return new SMTPError(
-    `The domain ${domain} was registered within the past 90 days, and ${reason}. ${REGISTRARS_BLOCKED_US} Please upgrade to a paid plan at ${config.urls.web} to use our service with this domain.`,
-    { responseCode: 421 }
+  return getError(
+    `The domain ${domain} was registered within the past 90 days, and ${reason}. ${REGISTRARS_BLOCKED_US} Please upgrade to a paid plan at ${config.urls.web} to use our service with this domain, or use the free plan once it is 90 days old.`
   );
 }
 
 // (when that cannot be told: it is not let through, and asked again later)
 function getUnavailableError(domain) {
-  const err = new SMTPError(
-    `The domain ${domain} was registered within the past 90 days, and it could not be checked right now. Please try again later, or upgrade to a paid plan at ${config.urls.web} to use our service with this domain.`,
-    { responseCode: 421 }
+  const err = getError(
+    `The domain ${domain} was registered within the past 90 days, and its history could not be checked right now. This is a temporary error, so the message will be retried, and accepted once the check passes. You can also upgrade to a paid plan at ${config.urls.web} to use our service with this domain.`
   );
   err.isCheckUnavailable = true;
   return err;
@@ -132,9 +171,11 @@ const WAIT_MS = 1500;
 
 /**
  * Why a domain registered within the past 90 days cannot use the free plan,
- * or undefined when it can: a new name, not one in use before (see
- * `get-previous-domain-use`), on an extension that is not often abused,
- * that Cloudflare's filter does not block.
+ * or undefined when it can: a new name on an extension the free plan takes
+ * for new domains (not .cc or .xyz), not transferred from another registrar
+ * or registered again (its RDAP record), not in use before (see
+ * `get-previous-domain-use`), that
+ * Cloudflare's filter does not block.
  *
  * @param   {string}  domain    Its root domain
  * @param   {object}  response  Its WHOIS/RDAP lookup
@@ -144,14 +185,39 @@ const WAIT_MS = 1500;
  */
 async function checkNewDomain(domain, response, client, resolvers) {
   if (!config.newDomainGoodDomains.some((tld) => domain.endsWith(`.${tld}`))) {
+    // (.cc and .xyz, see `config.newDomainGoodDomains`)
     const tld = config.goodDomains.find((tld) => domain.endsWith(`.${tld}`));
-    return tld
-      ? getNewDomainError(
-          domain,
-          `new domains ending in .${tld} need a paid plan`
-        )
-      : getNewlyCreatedError(domain);
+    if (tld)
+      return getNewDomainError(
+        domain,
+        `new domains ending in .${tld} need a paid plan: of the extensions the free plan takes, spam operations register new domains on .${tld} the most after .com and .net`
+      );
+    // (.gov, .edu, brands and the like: new ones need a paid plan)
+    if (
+      config.restrictedDomains.some(
+        (tld) => domain === tld || domain.endsWith(`.${tld}`)
+      )
+    )
+      return getNewlyCreatedError(domain);
+    // (no domain on its extension can use the free plan, new or not)
+    const ext = punycode.toUnicode(domain.split('.').pop());
+    return getError(
+      `The domain ${domain} ends in .${ext}, a domain name extension that is frequently used for spam operations, so it needs a paid plan however old it is. ${REGISTRARS_BLOCKED_US} Please upgrade to a paid plan at ${config.urls.web}, or use a domain on an extension that can be used for free.`,
+      FREE_EXTENSIONS_FAQ
+    );
   }
+
+  // (someone had it before: its RDAP record says so, see `wrappedFetch`)
+  if (_.isDate(response?.ts?.transferred))
+    return getNewDomainError(
+      domain,
+      `it was transferred from another registrar; ${TAKEOVER}`
+    );
+  if (_.isDate(response?.ts?.reregistered))
+    return getNewDomainError(
+      domain,
+      `its registry record shows it was registered before then; ${TAKEOVER}`
+    );
 
   //
   // (its past and Cloudflare are asked at once, and waited for 1.5 seconds
@@ -201,12 +267,12 @@ async function checkNewDomain(domain, response, client, resolvers) {
   if (previous?.reason === 'drop_catch_registrar')
     return getNewDomainError(
       domain,
-      'a drop-catch registrar (one that registers names the moment they expire) holds it'
+      `a drop-catch registrar (one that registers names the moment they expire) holds it; ${TAKEOVER}`
     );
   if (previous)
     return getNewDomainError(
       domain,
-      'it was in use before then (the Internet Archive has it from earlier)'
+      `it was in use before then (the Internet Archive has it from earlier); ${TAKEOVER}`
     );
 
   if (dns.dnsCategory === 'blocked_by_cloudflare_family')
@@ -281,9 +347,12 @@ async function isExpiredOrNewlyCreated(input, client, options = {}) {
 
   // if no cache then perform a WHOIS lookup
   if (!response) {
-    response = await whois(domain, {
-      fetch: wrappedFetch
+    const past = {};
+    response = await isExpiredOrNewlyCreated.whois(domain, {
+      fetch: (url, options) => wrappedFetch(url, options, past)
     });
+    // (cached with the rest of `ts`)
+    if (response.ts) Object.assign(response.ts, past);
     // store to cache the WHOIS lookup for 24 hours
     await client.set(
       `whois:${domain}`,
@@ -304,9 +373,8 @@ async function isExpiredOrNewlyCreated(input, client, options = {}) {
       ['pending delete', 'pending update', 'pending transfer'].includes(s)
     )
   )
-    err = new SMTPError(
-      `The domain ${domain} was detected as a pending state domain via WHOIS/RDAP lookup. ${REGISTRARS_BLOCKED_US} We require that you please upgrade to a paid plan at ${config.urls.web} to use our service with this domain.`,
-      { responseCode: 421 }
+    err = getError(
+      `The domain ${domain} was detected as a pending state domain via WHOIS/RDAP lookup: its registrar shows it pending deletion, an update, or a transfer, so who will have it next is not known. ${REGISTRARS_BLOCKED_US} Please upgrade to a paid plan at ${config.urls.web} to use our service with this domain.`
     );
   // if the domain expiration date is within the past 90d
   // (safeguard for users in case they have a domain that expired they should renew it first)
@@ -317,9 +385,8 @@ async function isExpiredOrNewlyCreated(input, client, options = {}) {
     new Date(response.ts.expires).getTime() + ms('2d') <= Date.now() &&
     new Date(response.ts.expires).getTime() + ms('2d') >= Date.now() - ms('90d')
   )
-    err = new SMTPError(
-      `The domain ${domain} was detected as a recently expired domain via WHOIS/RDAP lookup. ${REGISTRARS_BLOCKED_US} We require that you please upgrade to a paid plan at ${config.urls.web} to use our service with this domain.`,
-      { responseCode: 421 }
+    err = getError(
+      `The domain ${domain} was detected as a recently expired domain via WHOIS/RDAP lookup; please renew it with its registrar. An expired domain can be registered again by someone else, and ${TAKEOVER}. ${REGISTRARS_BLOCKED_US} Please upgrade to a paid plan at ${config.urls.web} to use our service with this domain.`
     );
   //
   // if the domain was created within the past 90d
@@ -352,6 +419,9 @@ async function isExpiredOrNewlyCreated(input, client, options = {}) {
 
   return { err, response };
 }
+
+// (the WHOIS/RDAP lookup; tests, which have no network, put a stand-in here)
+isExpiredOrNewlyCreated.whois = (domain, options) => whois(domain, options);
 
 module.exports = isExpiredOrNewlyCreated;
 module.exports.normalizeRdapUrl = normalizeRdapUrl;

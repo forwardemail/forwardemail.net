@@ -109,6 +109,9 @@ test.serial(
           resolver: answer(options.own || ['192.0.2.1'])
         }
       });
+      // (every reason links the FAQ section explaining it)
+      if (result.err)
+        t.regex(result.err.message, / Learn why: https?:\/\/\S+\/faq#[\w-]+$/);
       return result.err;
     }
 
@@ -122,12 +125,48 @@ test.serial(
       let err = await errorOf('com', { allow: false });
       t.regex(err.message, /newly created or transferred/);
 
-      // (not on an extension spam domains use most, without asking)
+      // (not on an extension spam domains use most, without asking: its
+      //  message says why)
       asked.length = 0;
       for (const tld of ['xyz', 'cc']) {
         err = await errorOf(tld);
         t.true(err.message.includes(`new domains ending in .${tld} need`));
+        t.regex(err.message, /spam operations register new domains on/);
       }
+
+      // (nor on one no domain can use for free: its message says so, and
+      //  links the list of free extensions)
+      err = await errorOf('online');
+      t.is(err.responseCode, 421);
+      t.regex(err.message, /ends in \.online, .* however old it is/);
+      t.notRegex(err.message, /newly created/);
+      t.regex(
+        err.message,
+        /#what-domain-name-extensions-can-be-used-for-free$/
+      );
+      // (an internationalized one is named as it is written)
+      err = await errorOf('xn--80asehdb');
+      t.regex(err.message, /ends in \.онлайн, /);
+      // (a new .gov or .edu domain needs a paid plan, as before)
+      err = await errorOf('gov');
+      t.regex(err.message, /newly created or transferred/);
+
+      // (nor one its RDAP record shows someone had before, without asking)
+      err = await errorOf('com', {
+        ts: {
+          created: new Date(Date.now() - 30 * day),
+          transferred: new Date(Date.now() - 5 * day)
+        }
+      });
+      t.is(err.responseCode, 421);
+      t.regex(err.message, /it was transferred from another registrar/);
+      err = await errorOf('com', {
+        ts: {
+          created: new Date(Date.now() - 30 * day),
+          reregistered: new Date(Date.now() - 30 * day)
+        }
+      });
+      t.regex(err.message, /shows it was registered before then/);
 
       t.is(asked.length, 0);
 
@@ -135,6 +174,8 @@ test.serial(
       err = await errorOf('com', { capture: '20190101000000' });
       t.is(err.responseCode, 421);
       t.regex(err.message, /it was in use before then/);
+      // (and why that matters)
+      t.regex(err.message, /receives the mail sent to its earlier owner's/);
       err = await errorOf('com', { registrar: 'Gname 471 Inc' });
       t.regex(err.message, /a drop-catch registrar .* holds it/);
 
@@ -204,3 +245,134 @@ test.serial(
     }
   }
 );
+
+//
+// `@forwardemail/whois-rdap` keeps no RDAP events but a domain's
+// registration, update and expiry, so the ones showing someone had it before
+// (a transfer, or a registration again) are read from the answers as the
+// lookup fetches them, and kept with the rest of its WHOIS/RDAP answer. The
+// RDAP servers are a local stand-in, as is the lookup (tests have no network).
+//
+test.serial('an RDAP transfer or registration again is kept', async (t) => {
+  const http = require('node:http');
+  const { randomUUID } = require('node:crypto');
+  const Redis = require('ioredis-mock');
+  const ms = require('ms');
+  const sinon = require('sinon');
+  const rdapFetch = require('#helpers/rdap-fetch');
+  const isExpiredOrNewlyCreated = require('#helpers/is-expired-or-newly-created');
+
+  // (to the second, as RDAP dates are)
+  const created = new Date(Math.floor((Date.now() - ms('30d')) / 1000) * 1000);
+  const later = (days) => new Date(created.getTime() + ms(`${days}d`));
+  // (as some registries write dates)
+  const event = (eventAction, date) => ({
+    eventAction,
+    eventDate: date.toISOString().replace(/\.\d+Z$/, '+0000Z')
+  });
+
+  // (the registry's and the registrar's answers, by path)
+  const answers = new Map();
+  const server = http.createServer((req, res) => {
+    const { type, body } = answers.get(req.url) || {};
+    res.writeHead(200, { 'content-type': type || 'application/rdap+json' });
+    res.end(typeof body === 'string' ? body : JSON.stringify(body || {}));
+  });
+  await new Promise((resolve) => {
+    server.listen(0, '127.0.0.1', resolve);
+  });
+  const base = `http://127.0.0.1:${server.address().port}`;
+  sinon.stub(rdapFetch, 'isPrivateTarget').resolves(false);
+  sinon.stub(rdapFetch, 'dispatcher').value(undefined);
+
+  // (fetches both answers and reads them whole, as the package does)
+  const { whois } = isExpiredOrNewlyCreated;
+  async function lookUp(domain, options) {
+    for (const path of [`/registry/${domain}`, `/registrar/${domain}`]) {
+      const res = await options.fetch(`${base}${path}`);
+      await res.text();
+    }
+
+    return {
+      found: true,
+      status: [],
+      registrar: { id: 1, name: 'Example Registrar, Inc.' },
+      ts: { created, updated: null, expires: later(365) }
+    };
+  }
+
+  isExpiredOrNewlyCreated.whois = lookUp;
+
+  const client = new Redis();
+  async function check(domain, allowNewDomain = true) {
+    const { err } = await isExpiredOrNewlyCreated(domain, client, {
+      allowNewDomain
+    });
+    const { ts } = JSON.parse(await client.get(`whois:${domain}`));
+    return { err, ts };
+  }
+
+  const name = () => `${randomUUID().slice(0, 8)}.com`;
+
+  try {
+    // (a transfer, also in events kept as an object: the latest is kept)
+    const moved = name();
+    answers.set(`/registry/${moved}`, {
+      body: {
+        events: [event('registration', created), event('Transfer', later(5))]
+      }
+    });
+    answers.set(`/registrar/${moved}`, {
+      body: {
+        events: {
+          0: event('transfer', later(20)),
+          1: { eventAction: 'transfer', eventDate: 'not a date' }
+        }
+      }
+    });
+    let { err, ts } = await check(moved);
+    t.regex(err.message, /it was transferred from another registrar/);
+    t.is(ts.transferred, later(20).toISOString());
+    t.is(ts.reregistered, undefined);
+
+    // (and from what was kept, without looking it up again)
+    isExpiredOrNewlyCreated.whois = () => {
+      throw new Error('looked up again');
+    };
+
+    ({ err } = await check(moved));
+    t.regex(err.message, /it was transferred from another registrar/);
+    isExpiredOrNewlyCreated.whois = lookUp;
+
+    // (a registration again)
+    const again = name();
+    answers.set(`/registry/${again}`, {
+      body: { events: [event('reregistration', created)] }
+    });
+    ({ err, ts } = await check(again));
+    t.regex(err.message, /shows it was registered before then/);
+    t.is(ts.reregistered, created.toISOString());
+
+    // (not a new name's events, a web page, or an answer that is not JSON;
+    //  on the paid plan's path, so nothing else is asked)
+    const fresh = name();
+    answers.set(`/registry/${fresh}`, {
+      body: { events: [event('registration', created)] }
+    });
+    answers.set(`/registrar/${fresh}`, {
+      type: 'text/html',
+      body: JSON.stringify({ events: [event('transfer', later(1))] })
+    });
+    ({ ts } = await check(fresh, false));
+    t.is(ts.transferred, undefined);
+    const odd = name();
+    answers.set(`/registry/${odd}`, { body: 'not json' });
+    ({ ts } = await check(odd, false));
+    t.is(ts.transferred, undefined);
+  } finally {
+    isExpiredOrNewlyCreated.whois = whois;
+    sinon.restore();
+    server.closeAllConnections();
+    server.close();
+  }
+});

@@ -258,7 +258,13 @@ async function createDomain(ctx, next) {
       logger.warn(err);
     }
 
-    if (obj?.err && isFreePlan) {
+    //
+    // (not when it could not be checked yet, e.g. the Internet Archive was
+    //  slow: the lookup goes on and is kept, and the MX server checks the
+    //  domain again on each message, so mail to a name in use before is
+    //  still refused there with a 421, which the sender retries)
+    //
+    if (obj?.err && isFreePlan && !obj.err.isCheckUnavailable) {
       if (ctx.api) throw Boom.badRequest(obj.err.message);
       const redirectTo = ctx.state.l(
         `/my-account/billing/upgrade?plan=enhanced_protection&domain=${ctx.request.body.domain}`

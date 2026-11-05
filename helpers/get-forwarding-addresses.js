@@ -857,10 +857,15 @@ async function getForwardingAddresses(
           logger.fatal(err, { rootDomain, obj, isFreePlanDomain });
         }
       }
-
-      // by keeping this inside, we allow custom port forwarding to work
-      if (isFreePlanDomain) throw obj.err;
     }
+
+    //
+    // (whatever its record forwards to: "name:address", a webhook or another
+    //  domain, as much as a plain address; otherwise a name taken over after
+    //  it expired gets mail for its old addresses with a record such as
+    //  "password-reset:someone@example.com")
+    //
+    if (isFreePlanDomain) throw obj.err;
   }
 
   // store if address is ignored or not
