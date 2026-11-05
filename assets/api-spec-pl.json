@@ -4898,6 +4898,16 @@
               "default": "false"
             },
             "description": "Gdy ustawione na \"true\", zwraca odpowiedzi zawierające tylko metadane bez pól nodemailer lub raw. Znacząco poprawia wydajność, pomijając pełną rekonstrukcję drzewa MIME i pobieranie zawartości załączników."
+          },
+          {
+            "name": "since_modseq",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "description": "Wyświetla tylko wiadomości folderu, które zmieniły się lub przyszły po tej wartości MODSEQ, jak CHANGEDSINCE w IMAP (RFC 7162): zmiany flag i etykiet wprowadzone przez IMAP, POP3 lub to API oraz wiadomości dodane, skopiowane lub przeniesione do folderu. Wymaga `folder`. Wyniki są posortowane według `modseq`, od najstarszej zmiany, więc zapisz najwyższą otrzymaną wartość `modseq` i wyślij ją następnym razem. Wiadomości, które opuściły folder, nie są wyświetlane."
           }
         ],
         "responses": {

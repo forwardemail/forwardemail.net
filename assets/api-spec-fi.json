@@ -4898,6 +4898,16 @@
               "default": "false"
             },
             "description": "Kun asetettu arvoon \"true\", palauttaa vain metatietovastaukset ilman nodemailer- tai raw-kenttiä. Parantaa suorituskykyä merkittävästi ohittamalla täydellisen MIME-puun uudelleenrakennuksen ja liitetiedostojen sisällön noutamisen."
+          },
+          {
+            "name": "since_modseq",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "description": "Listaa vain kansion viestit, jotka ovat muuttuneet tai saapuneet tämän MODSEQ-arvon jälkeen, kuten CHANGEDSINCE IMAPissa (RFC 7162): IMAPin, POP3:n tai tämän API:n kautta tehdyt lippu- ja tunnistemuutokset sekä kansioon lisätyt, kopioidut tai siirretyt viestit. Vaatii parametrin `folder`. Tulokset lajitellaan `modseq`-arvon mukaan vanhin muutos ensin, joten tallenna suurin näkemäsi `modseq` ja lähetä se seuraavalla kerralla. Kansiosta poistuneita viestejä ei listata."
           }
         ],
         "responses": {

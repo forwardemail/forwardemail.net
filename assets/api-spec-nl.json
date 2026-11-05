@@ -4898,6 +4898,16 @@
               "default": "false"
             },
             "description": "Wanneer ingesteld op \"true\", worden alleen metadata-antwoorden geretourneerd zonder nodemailer- of raw-velden. Verbetert de prestaties aanzienlijk door de volledige MIME-boomreconstructie en het ophalen van bijlage-inhoud over te slaan."
+          },
+          {
+            "name": "since_modseq",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "description": "Toont alleen de berichten van de map die na deze MODSEQ zijn gewijzigd of binnengekomen, zoals CHANGEDSINCE via IMAP (RFC 7162): wijzigingen van vlaggen en labels via IMAP, POP3 of deze API, en berichten die zijn toegevoegd, gekopieerd of verplaatst naar de map. Vereist `folder`. Resultaten zijn gesorteerd op `modseq`, oudste wijziging eerst, dus bewaar de hoogste `modseq` die u hebt gezien en stuur die de volgende keer mee. Berichten die de map hebben verlaten, worden niet getoond."
           }
         ],
         "responses": {

@@ -4898,6 +4898,16 @@
               "default": "false"
             },
             "description": "Khi đặt thành \"true\", trả về phản hồi chỉ chứa metadata mà không có trường nodemailer hoặc raw. Cải thiện đáng kể hiệu suất bằng cách bỏ qua việc tái tạo cây MIME đầy đủ và tải nội dung tệp đính kèm."
+          },
+          {
+            "name": "since_modseq",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "description": "Chỉ liệt kê các thư trong thư mục đã thay đổi hoặc đến sau MODSEQ này, giống CHANGEDSINCE qua IMAP (RFC 7162): các thay đổi cờ và nhãn thực hiện qua IMAP, POP3 hoặc API này, cùng các thư được thêm, sao chép hoặc di chuyển vào. Yêu cầu `folder`. Kết quả được sắp xếp theo `modseq`, thay đổi cũ nhất trước, vì vậy hãy lưu giá trị `modseq` cao nhất bạn đã thấy và gửi nó ở lần sau. Các thư đã rời khỏi thư mục không được liệt kê."
           }
         ],
         "responses": {

@@ -4898,6 +4898,16 @@
               "default": "false"
             },
             "description": "Bei Einstellung auf \"true\" werden nur Metadaten-Antworten ohne nodemailer- oder raw-Felder zurückgegeben. Verbessert die Leistung erheblich, indem die vollständige MIME-Baumrekonstruktion und das Abrufen von Anhangsinhalten übersprungen werden."
+          },
+          {
+            "name": "since_modseq",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "description": "Listet nur die Nachrichten des Ordners auf, die sich nach diesem MODSEQ geändert haben oder eingegangen sind, wie CHANGEDSINCE über IMAP (RFC 7162): Änderungen an Flags und Labels über IMAP, POP3 oder diese API sowie hinzugefügte, kopierte oder hineinverschobene Nachrichten. Erfordert `folder`. Die Ergebnisse sind nach `modseq` sortiert, älteste Änderung zuerst. Speichern Sie also den höchsten gesehenen `modseq` und senden Sie ihn beim nächsten Mal. Nachrichten, die den Ordner verlassen haben, werden nicht aufgeführt."
           }
         ],
         "responses": {

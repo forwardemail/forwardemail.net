@@ -4898,6 +4898,16 @@
               "default": "false"
             },
             "description": "Når satt til \"true\", returneres kun metadata-svar uten nodemailer- eller raw-felt. Forbedrer ytelsen betydelig ved å hoppe over full MIME-trerekonstruksjon og henting av vedleggsinnhold."
+          },
+          {
+            "name": "since_modseq",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "description": "Viser bare meldingene i mappen som er endret eller har kommet etter denne MODSEQ, som CHANGEDSINCE over IMAP (RFC 7162): endringer av flagg og etiketter gjort over IMAP, POP3 eller dette API-et, og meldinger lagt til, kopiert eller flyttet inn. Krever `folder`. Resultatene sorteres etter `modseq`, eldste endring først, så ta vare på den høyeste `modseq` du har sett og send den neste gang. Meldinger som har forlatt mappen, vises ikke."
           }
         ],
         "responses": {

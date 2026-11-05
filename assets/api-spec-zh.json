@@ -4898,6 +4898,16 @@
               "default": "false"
             },
             "description": "设置为 \"true\" 时，仅返回元数据响应，不包含 nodemailer 或 raw 字段。通过跳过完整 MIME 树重建和附件正文获取，显著提高性能。"
+          },
+          {
+            "name": "since_modseq",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "description": "仅列出该文件夹中在此 MODSEQ 之后发生更改或新到达的邮件，相当于 IMAP 的 CHANGEDSINCE（RFC 7162）：包括通过 IMAP、POP3 或此 API 所做的标志和标签更改，以及追加、复制或移入该文件夹的邮件。需要提供 `folder`。结果按 `modseq` 排序，最早的更改在前，因此请保存您见到的最大 `modseq`，并在下次请求时发送。已离开该文件夹的邮件不会列出。"
           }
         ],
         "responses": {

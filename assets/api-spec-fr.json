@@ -4898,6 +4898,16 @@
               "default": "false"
             },
             "description": "Lorsque défini sur \"true\", renvoie des réponses contenant uniquement les métadonnées sans les champs nodemailer ou raw. Améliore considérablement les performances en évitant la reconstruction complète de l'arbre MIME et la récupération du contenu des pièces jointes."
+          },
+          {
+            "name": "since_modseq",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "description": "Liste uniquement les messages du dossier modifiés ou arrivés après ce MODSEQ, comme CHANGEDSINCE en IMAP (RFC 7162) : modifications d’indicateurs et de libellés faites via IMAP, POP3 ou cette API, et messages ajoutés, copiés ou déplacés dans le dossier. Nécessite `folder`. Les résultats sont triés par `modseq`, la modification la plus ancienne en premier : conservez le `modseq` le plus élevé reçu et envoyez-le la fois suivante. Les messages qui ont quitté le dossier ne sont pas listés."
           }
         ],
         "responses": {

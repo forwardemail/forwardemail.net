@@ -4898,6 +4898,16 @@
               "default": "false"
             },
             "description": "Ha \"true\" értékre van állítva, csak metaadat-válaszokat ad vissza nodemailer vagy raw mezők nélkül. Jelentősen javítja a teljesítményt a teljes MIME-fa újraépítésének és a melléklet-tartalmak lekérésének kihagyásával."
+          },
+          {
+            "name": "since_modseq",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "description": "Csak a mappa azon üzeneteit listázza, amelyek ezen MODSEQ után változtak vagy érkeztek, mint a CHANGEDSINCE IMAP-on (RFC 7162): az IMAP-on, POP3-on vagy ezen az API-n végzett jelölő- és címkeváltozások, valamint a mappába felvett, másolt vagy áthelyezett üzenetek. A `folder` megadása kötelező. Az eredmények `modseq` szerint rendezettek, a legrégebbi változással kezdve, ezért őrizze meg a legnagyobb látott `modseq` értéket, és legközelebb azt küldje el. A mappából távozott üzenetek nem szerepelnek."
           }
         ],
         "responses": {

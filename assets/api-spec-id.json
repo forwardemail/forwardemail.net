@@ -4898,6 +4898,16 @@
               "default": "false"
             },
             "description": "Ketika diatur ke \"true\", mengembalikan respons metadata saja tanpa bidang nodemailer atau raw. Meningkatkan kinerja secara signifikan dengan melewati rekonstruksi pohon MIME lengkap dan pengambilan isi lampiran."
+          },
+          {
+            "name": "since_modseq",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "description": "Hanya menampilkan pesan di folder yang berubah atau tiba setelah MODSEQ ini, seperti CHANGEDSINCE melalui IMAP (RFC 7162): perubahan tanda dan label yang dibuat melalui IMAP, POP3, atau API ini, serta pesan yang ditambahkan, disalin, atau dipindahkan ke dalamnya. Memerlukan `folder`. Hasil diurutkan menurut `modseq`, perubahan terlama lebih dulu, jadi simpan `modseq` tertinggi yang telah Anda lihat dan kirimkan pada permintaan berikutnya. Pesan yang telah keluar dari folder tidak ditampilkan."
           }
         ],
         "responses": {

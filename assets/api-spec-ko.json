@@ -4898,6 +4898,16 @@
               "default": "false"
             },
             "description": "\"true\"로 설정하면 nodemailer 또는 raw 필드 없이 메타데이터만 포함된 응답을 반환합니다. 전체 MIME 트리 재구성 및 첨부 파일 본문 가져오기를 건너뛰어 성능이 크게 향상됩니다."
+          },
+          {
+            "name": "since_modseq",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "description": "이 MODSEQ 이후에 변경되었거나 도착한 폴더의 메시지만 나열합니다. IMAP의 CHANGEDSINCE(RFC 7162)와 같으며, IMAP, POP3 또는 이 API로 변경된 플래그와 레이블, 그리고 폴더에 추가, 복사 또는 이동된 메시지가 포함됩니다. `folder`가 필요합니다. 결과는 가장 오래된 변경부터 `modseq` 순으로 정렬되므로, 확인한 가장 높은 `modseq`를 저장했다가 다음 요청에 보내세요. 폴더에서 나간 메시지는 나열되지 않습니다."
           }
         ],
         "responses": {

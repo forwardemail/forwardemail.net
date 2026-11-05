@@ -4898,6 +4898,16 @@
               "default": "false"
             },
             "description": "\"true\"に設定すると、nodemailerやrawフィールドなしのメタデータのみのレスポンスを返します。完全なMIMEツリーの再構築と添付ファイル本文の取得をスキップすることで、パフォーマンスが大幅に向上します。"
+          },
+          {
+            "name": "since_modseq",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "description": "この MODSEQ 以降に変更または追加されたフォルダ内のメッセージのみを一覧表示します。IMAP の CHANGEDSINCE（RFC 7162）と同様で、IMAP・POP3・この API によるフラグとラベルの変更、およびフォルダに追加・コピー・移動されたメッセージが対象です。`folder` が必要です。結果は `modseq` 順（古い変更から）に並ぶため、受け取った最大の `modseq` を保存し、次回はその値を送信してください。フォルダから移動・削除されたメッセージは表示されません。"
           }
         ],
         "responses": {

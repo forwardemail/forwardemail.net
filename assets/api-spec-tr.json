@@ -4898,6 +4898,16 @@
               "default": "false"
             },
             "description": "\"true\" olarak ayarlandığında, nodemailer veya raw alanları olmadan yalnızca meta veri yanıtları döndürür. Tam MIME ağacı yeniden yapılandırmasını ve ek içeriği getirmeyi atlayarak performansı önemli ölçüde artırır."
+          },
+          {
+            "name": "since_modseq",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "description": "Klasörün yalnızca bu MODSEQ değerinden sonra değişen veya gelen iletilerini listeler; IMAP üzerindeki CHANGEDSINCE gibi (RFC 7162): IMAP, POP3 veya bu API üzerinden yapılan bayrak ve etiket değişiklikleri ile klasöre eklenen, kopyalanan veya taşınan iletiler. `folder` gerektirir. Sonuçlar en eski değişiklik önce olmak üzere `modseq` değerine göre sıralanır; bu yüzden gördüğünüz en yüksek `modseq` değerini saklayın ve bir sonraki istekte gönderin. Klasörden ayrılan iletiler listelenmez."
           }
         ],
         "responses": {

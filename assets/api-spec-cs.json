@@ -4898,6 +4898,16 @@
               "default": "false"
             },
             "description": "Při nastavení na \"true\" vrací pouze metadata bez polí nodemailer nebo raw. Výrazně zlepšuje výkon přeskočením úplné rekonstrukce MIME stromu a načítání těl příloh."
+          },
+          {
+            "name": "since_modseq",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "description": "Vypíše jen zprávy složky, které se změnily nebo přibyly po této hodnotě MODSEQ, jako CHANGEDSINCE přes IMAP (RFC 7162): změny příznaků a štítků provedené přes IMAP, POP3 nebo toto API a zprávy do složky přidané, zkopírované nebo přesunuté. Vyžaduje `folder`. Výsledky jsou seřazeny podle `modseq`, od nejstarší změny, takže si uložte nejvyšší viděnou hodnotu `modseq` a příště ji pošlete. Zprávy, které ze složky odešly, se nevypisují."
           }
         ],
         "responses": {
