@@ -12,11 +12,13 @@
 const { Buffer } = require('node:buffer');
 const net = require('node:net');
 const { setTimeout: delay } = require('node:timers/promises');
+const zlib = require('node:zlib');
 
 const dayjs = require('dayjs-with-plugins');
 const ip = require('ip');
 const ms = require('ms');
 const pWaitFor = require('p-wait-for');
+const sinon = require('sinon');
 const test = require('ava');
 
 const utils = require('../utils');
@@ -35,10 +37,19 @@ function connect(port) {
   const socket = net.connect(port, IP_ADDRESS);
   let buffer = '';
   let waiter = null;
-  socket.on('data', (data) => {
+  // (a deflate stream once COMPRESS is active, see `compress` below)
+  let output = socket;
+  function onData(data) {
     buffer += data.toString();
     if (waiter) waiter();
-  });
+  }
+
+  socket.on('data', onData);
+
+  function write(data) {
+    output.write(data);
+    if (output !== socket) output.flush(zlib.constants.Z_SYNC_FLUSH);
+  }
 
   function read(regex) {
     return new Promise((resolve, reject) => {
@@ -64,7 +75,7 @@ function connect(port) {
   let tag = 0;
   async function command(line) {
     const id = `A${++tag}`;
-    socket.write(`${id} ${line}\r\n`);
+    write(`${id} ${line}\r\n`);
     const output = await read(new RegExp(`${id} (OK|NO|BAD)[^\\r\\n]*\\r\\n`));
     if (!new RegExp(`${id} OK`).test(output))
       throw new Error(`${line}: ${output}`);
@@ -73,16 +84,29 @@ function connect(port) {
 
   async function append(path, raw) {
     const id = `A${++tag}`;
-    socket.write(`${id} APPEND ${path} {${Buffer.byteLength(raw)}}\r\n`);
+    write(`${id} APPEND ${path} {${Buffer.byteLength(raw)}}\r\n`);
     await read(/\+[^\r\n]*\r\n/);
-    socket.write(`${raw}\r\n`);
+    write(`${raw}\r\n`);
     return read(new RegExp(`${id} (OK|NO|BAD)[^\\r\\n]*\\r\\n`));
   }
 
   // start IDLE and resolve once the server is idling
   async function idle() {
-    socket.write(`A${++tag} IDLE\r\n`);
+    write(`A${++tag} IDLE\r\n`);
     await read(/\+ idling\r\n/);
+  }
+
+  // COMPRESS=DEFLATE (RFC 4978), which Thunderbird turns on by default
+  async function compress() {
+    await command('COMPRESS DEFLATE');
+    socket.off('data', onData);
+    const inflate = zlib.createInflateRaw();
+    inflate.on('data', onData);
+    inflate.on('error', () => {});
+    socket.pipe(inflate);
+    const deflate = zlib.createDeflateRaw();
+    deflate.pipe(socket);
+    output = deflate;
   }
 
   return {
@@ -90,6 +114,7 @@ function connect(port) {
     command,
     append,
     idle,
+    compress,
     read,
     close: () => socket.destroy()
   };
@@ -553,4 +578,47 @@ test('a message copied into a mailbox reaches a client in IDLE on it', async (t)
   await imap.command('UID COPY 1 Archive');
 
   t.regex(await watcher.read(/\* 1 EXISTS\r\n/), /\* 1 EXISTS/);
+});
+
+//
+// Thunderbird starts IDLE once and keeps it: it never ends it to start it
+// again (RFC 2177 asks clients to, every 29 minutes) and does not reconnect
+// when the server closes the connection, so new mail it is not told about
+// shows only once a folder is clicked
+// <https://bugzilla.mozilla.org/show_bug.cgi?id=468490>
+//
+test('a client in IDLE for hours still gets new mail', async (t) => {
+  const imap = await t.context.connect();
+  // (as Thunderbird does)
+  await imap.compress();
+  await imap.command('SELECT INBOX');
+
+  // two hours pass on the server's timers while the client is in IDLE
+  const clock = sinon.useFakeTimers({
+    toFake: ['setTimeout', 'clearTimeout']
+  });
+  try {
+    await imap.idle();
+  } finally {
+    clock.uninstall();
+  }
+
+  clock.tick(ms('2h'));
+  await delay(500);
+
+  // delivered as the MX server does
+  const result = await t.context.wsp.request(
+    {
+      action: 'tmp',
+      aliases: [{ address: t.context.username, id: t.context.alias.id }],
+      remoteAddress: IP_ADDRESS,
+      date: new Date().toISOString(),
+      raw: Buffer.from(rfc822('later'))
+    },
+    0
+  );
+  t.deepEqual(result, {});
+  const output = await imap.read(/\* (1 EXISTS|BYE[^\r\n]*)\r\n/);
+  t.notRegex(output, /BYE/);
+  t.regex(output, /\* 1 EXISTS/);
 });

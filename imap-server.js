@@ -28,6 +28,7 @@ const pify = require('pify');
 const ms = require('ms');
 // const safeStringify = require('fast-safe-stringify');
 const { IMAPServer } = require('@zone-eu/wildduck/imap-core');
+const idleCommand = require('@zone-eu/wildduck/imap-core/lib/commands/idle');
 
 const Aliases = require('#models/aliases');
 const AttachmentStorage = require('#helpers/attachment-storage');
@@ -49,6 +50,41 @@ const getBackupSweepDelay = require('#helpers/backup-sweep-delay');
 if (env.IMAP_TLS_MIN_VERSION === 'TLSv1') {
   tls.DEFAULT_MIN_VERSION = 'TLSv1';
 }
+
+//
+// IDLE lasts until the client ends it or the connection closes.
+//
+// imap-core ends IDLE after 30 minutes and closes the connection.
+// Thunderbird never ends IDLE to start it again (RFC 2177 asks clients to,
+// every 29 minutes) and does not reconnect when the server closes it, so new
+// mail only showed after clicking a folder
+// <https://bugzilla.mozilla.org/show_bug.cgi?id=468490>
+//
+// A connection that died is still found: while idling, each `socketTimeout`
+// of silence sends "* OK Still here" (see `_onTimeout` in imap-connection.js).
+// (no timer, as one left running would keep a closed connection in memory)
+//
+idleCommand.handler = function (command, callback, next) {
+  this._nextHandler = (token, next) => {
+    this._nextHandler = false;
+    this.idling = false;
+    next(); // keep the parser flowing
+
+    if (token.toUpperCase().trim() !== 'DONE')
+      return callback(
+        new Error(`Invalid Idle continuation (${JSON.stringify(token)})`)
+      );
+
+    callback(null, { response: 'OK', message: 'IDLE terminated' });
+  };
+
+  this.idling = true;
+  this.send('+ idling');
+  this.emitNotifications(); // emit any pending notifications
+
+  // resume the input parser now, as the response comes after DONE
+  return next();
+};
 
 const isRetryableError = require('#helpers/is-retryable-error');
 const logger = require('#helpers/logger');
