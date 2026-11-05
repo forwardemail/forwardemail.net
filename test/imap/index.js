@@ -369,13 +369,59 @@ test('prevents domain-wide passwords cached by a prior SMTP login', async (t) =>
   t.true(await smtpLogin());
 });
 
-test('an alias without IMAP cannot sign in with a login cached by SMTP', async (t) => {
-  const { domain, alias, pass } = t.context;
-  const username = `${alias.name}@${domain.name}`;
+//
+// An alias without IMAP only sends mail, but mail apps such as Apple Mail
+// need an incoming server to send mail: they sign in to an empty INBOX that
+// is never stored (a refused sign in was an error on every check for mail).
+//
+async function createSendOnlyAlias(t, state = {}) {
+  const { user, domain } = t.context;
+  const alias = await t.context.aliasFactory
+    .withState({
+      user: user._id,
+      domain: domain._id,
+      recipients: [user.email],
+      has_imap: false,
+      ...state
+    })
+    .create();
+  const pass = await alias.createToken();
+  await alias.save();
+  return { alias, pass, username: `${alias.name}@${domain.name}` };
+}
 
-  // the alias forwards only (IMAP disabled), and its password sends mail
-  await Aliases.findByIdAndUpdate(alias._id, { $set: { has_imap: false } });
-  await t.context.client.del(getAuthCacheKey(username, pass));
+async function assertEmptyInbox(t, imapFlow, alias) {
+  const list = await imapFlow.list();
+  t.deepEqual(
+    list.map((mailbox) => mailbox.path),
+    ['INBOX']
+  );
+  const status = await imapFlow.status('INBOX', {
+    messages: true,
+    unseen: true
+  });
+  t.is(status.messages, 0);
+  t.is(status.unseen, 0);
+  const mailbox = await imapFlow.mailboxOpen('INBOX');
+  t.is(mailbox.exists, 0);
+  t.deepEqual(await imapFlow.search({ all: true }), []);
+  await imapFlow.noop();
+
+  // nothing can be stored
+  let err = await t.throwsAsync(
+    imapFlow.append('INBOX', 'Subject: test\r\n\r\ntest')
+  );
+  t.is(err.serverResponseCode, 'CANNOT');
+  err = await t.throwsAsync(imapFlow.mailboxCreate('Sent'));
+  t.is(err.serverResponseCode, 'CANNOT');
+  await t.throwsAsync(imapFlow.mailboxOpen('Sent'));
+
+  // and no mailbox was opened or created
+  t.false(fs.existsSync(getPathToDatabase(alias)));
+}
+
+test('an alias without IMAP signs in with a login cached by SMTP to an empty INBOX', async (t) => {
+  const { alias, pass, username } = await createSendOnlyAlias(t);
 
   const smtp = new SMTP({ client: t.context.client }, true);
   const smtpPort = await getPort();
@@ -401,7 +447,7 @@ test('an alias without IMAP cannot sign in with a login cached by SMTP', async (
   );
 
   // a client checking for new mail right after sending (as a phone does)
-  // must not open the mailbox
+  // gets no error and opens no mailbox
   const imapFlow = new ImapFlow({
     host: IP_ADDRESS,
     port: t.context.port,
@@ -410,28 +456,55 @@ test('an alias without IMAP cannot sign in with a login cached by SMTP', async (
     tls,
     auth: { user: username, pass }
   });
-  const err = await t.throwsAsync(imapFlow.connect());
-  t.true(err.authenticationFailed);
+  await imapFlow.connect();
+  await assertEmptyInbox(t, imapFlow, alias);
+  await imapFlow.logout();
 
   // (SMTP keeps working)
   t.true(await smtpLogin());
 });
 
-//
-// The first refused login sends a one-time "IMAP is not enabled" email and
-// records that it was sent; the refusal used to be part of sending it, so
-// every login after the first one opened the mailbox.
-//
-test('an alias without IMAP stays refused after the first refused login', async (t) => {
-  const { domain, alias, pass } = t.context;
-  const username = `${alias.name}@${domain.name}`;
+test('an alias stored without has_imap signs in to an empty INBOX', async (t) => {
+  const { alias, pass, username } = await createSendOnlyAlias(t);
+  // (written before the field had a default: sign in reads it without one)
+  await Aliases.collection.updateOne(
+    { _id: alias._id },
+    { $unset: { has_imap: '' } }
+  );
 
-  await Aliases.findByIdAndUpdate(alias._id, {
-    $set: { has_imap: false, imap_not_enabled_sent_at: new Date() }
+  const imapFlow = new ImapFlow({
+    host: IP_ADDRESS,
+    port: t.context.port,
+    secure: t.context.secure,
+    logger,
+    tls,
+    auth: { user: username, pass }
   });
-  await t.context.client.del(getAuthCacheKey(username, pass));
+  await imapFlow.connect();
+  await assertEmptyInbox(t, imapFlow, alias);
+  await imapFlow.logout();
+});
 
+//
+// The first sign in sends a one-time "IMAP is not enabled" email and records
+// that it was sent; every sign in, before and after it, gets the empty INBOX.
+//
+test('an alias without IMAP signs in to an empty INBOX every time and is emailed once', async (t) => {
+  const { alias, pass, username } = await createSendOnlyAlias(t);
+  t.falsy(alias.imap_not_enabled_sent_at);
+  const getSentAt = async () => {
+    const { imap_not_enabled_sent_at: sentAt } = await Aliases.findById(
+      alias._id
+    )
+      .lean()
+      .exec();
+    return sentAt;
+  };
+
+  const sent = [];
   for (let i = 0; i < 2; i++) {
+    // (a full sign in each time, not one from the cache)
+    await t.context.client.del(getAuthCacheKey(username, pass));
     const imapFlow = new ImapFlow({
       host: IP_ADDRESS,
       port: t.context.port,
@@ -440,14 +513,20 @@ test('an alias without IMAP stays refused after the first refused login', async 
       tls,
       auth: { user: username, pass }
     });
+    await imapFlow.connect();
+    await assertEmptyInbox(t, imapFlow, alias);
+    await imapFlow.logout();
 
-    const err = await t.throwsAsync(imapFlow.connect());
-    t.true(err.authenticationFailed);
-    t.regex(err.response, /does not have IMAP enabled/);
-    // (it will not change until IMAP is enabled: not a temporary failure,
-    // which clients keep retrying, nor a wrong password, which they ask for)
-    t.is(err.serverResponseCode, 'CONTACTADMIN');
+    await pWaitFor(async () => _.isDate(await getSentAt()), {
+      timeout: ms('5s')
+    });
+    // (the email is sent in the background after the sign in)
+    await setTimeout(ms('2s'));
+    sent.push(await getSentAt());
   }
+
+  // (the email is sent once)
+  t.is(sent[0].getTime(), sent[1].getTime());
 });
 
 test('does not reveal alias existence or state on failed login', async (t) => {

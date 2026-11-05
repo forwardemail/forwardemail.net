@@ -9,6 +9,8 @@
 // away. PGP and S/MIME changes reach open sessions of that alias only.
 //
 
+const fs = require('node:fs');
+
 const Axe = require('axe');
 const dayjs = require('dayjs-with-plugins');
 const ip = require('ip');
@@ -25,6 +27,7 @@ const Aliases = require('#models/aliases');
 const Users = require('#models/users');
 const config = require('#config');
 const createWebSocketAsPromised = require('#helpers/create-websocket-as-promised');
+const getPathToDatabase = require('#helpers/get-path-to-database');
 const { useRevocationClient } = require('#helpers/credential-revocation');
 
 // dynamically import get-port
@@ -63,6 +66,7 @@ test.beforeEach(async (t) => {
   );
   t.context.server = await imap.listen(port);
   t.context.imap = imap;
+  t.context.port = port;
 
   const user = await t.context.userFactory
     .withState({
@@ -106,6 +110,7 @@ test.beforeEach(async (t) => {
     )
   );
   await imap.resolver.options.cache.mset(map);
+  t.context.domainName = domain.name;
 
   // the alias whose sessions are tested, and another one that is left alone
   const login = async () => {
@@ -176,6 +181,79 @@ test('disabling the alias closes its open sessions', async (t) => {
   alias.is_enabled = false;
   await alias.save();
   await assertClosed(t);
+});
+
+test('turning IMAP off closes its open sessions', async (t) => {
+  const alias = await Aliases.findById(t.context.target.alias._id);
+  alias.has_imap = false;
+  await alias.save();
+  await assertClosed(t);
+});
+
+//
+// An alias without IMAP signs in to an empty INBOX that is never stored (see
+// helpers/imap/index.js); once IMAP is turned on, its sessions are closed and
+// the next sign in opens the mailbox and creates its default folders.
+//
+test('turning IMAP on closes the empty INBOX and the next sign in creates the mailbox', async (t) => {
+  const { user, domain } = t.context.target.alias;
+  const alias = await t.context.aliasFactory
+    .withState({
+      user,
+      domain,
+      recipients: [t.context.user.email],
+      has_imap: false
+    })
+    .create();
+  const pass = await alias.createToken();
+  await alias.save();
+  const username = `${alias.name}@${t.context.domainName}`;
+  const connect = async () => {
+    const imapFlow = new ImapFlow({
+      host: IP_ADDRESS,
+      port: t.context.port,
+      secure: false,
+      logger,
+      tls,
+      auth: { user: username, pass }
+    });
+    imapFlow.on('error', () => {});
+    await imapFlow.connect();
+    return imapFlow;
+  };
+
+  const paths = async (imapFlow) => {
+    const list = await imapFlow.list();
+    return list.map((mailbox) => mailbox.path).sort();
+  };
+
+  let imapFlow = await connect();
+  t.teardown(() => imapFlow.close());
+  t.deepEqual(await paths(imapFlow), ['INBOX']);
+  t.false(fs.existsSync(getPathToDatabase(alias)));
+  const closed = new Promise((resolve) => {
+    imapFlow.once('close', resolve);
+  });
+
+  alias.has_imap = true;
+  await alias.save();
+  await Promise.race([
+    closed,
+    new Promise((resolve, reject) => {
+      setTimeout(() => reject(new Error('session was not closed')), ms('10s'));
+    })
+  ]);
+
+  imapFlow = await connect();
+  t.deepEqual(await paths(imapFlow), [
+    'Archive',
+    'Drafts',
+    'INBOX',
+    'Sent Mail',
+    'Spam',
+    'Trash'
+  ]);
+  t.true(fs.existsSync(getPathToDatabase(alias)));
 });
 
 test('deleting the alias closes its open sessions', async (t) => {

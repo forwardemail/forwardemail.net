@@ -482,6 +482,8 @@ class IMAP {
 
       for (const connection of this.server.connections) {
         if (!connection?.session?.user?.alias_id) continue;
+        // (an alias without IMAP has no mailbox, see helpers/imap/index.js)
+        if (connection.session.user.alias_has_imap === false) continue;
         if (ids.has(connection.session.user.alias_id)) continue;
         ids.add(connection.session.user.alias_id);
 

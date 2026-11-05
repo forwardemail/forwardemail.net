@@ -1464,12 +1464,18 @@ Aliases.post('save', updateDomainCatchallRegexBooleans);
 // cached logins) when they change, it changes hands, or it is
 // disabled (see helpers/credential-revocation.js).
 //
+// So too when IMAP is turned on or off: mail apps signed in to the empty
+// INBOX of an alias without IMAP (see helpers/imap/index.js) sign in again
+// and open the mailbox (which creates its default folders), and those
+// signed in to the mailbox stop using it.
+//
 Aliases.pre('save', function (next) {
   this.$locals.revokeAccess =
     !this.isNew &&
     (this.isModified('tokens') ||
       this.isModified('user') ||
       this.isModified('domain') ||
+      this.isModified('has_imap') ||
       (this.isModified('is_enabled') && !this.is_enabled));
   next();
 });
@@ -1486,6 +1492,7 @@ addRevocationQueryHooks(Aliases, (paths) =>
   paths.has('tokens') ||
   paths.has('user') ||
   paths.has('domain') ||
+  paths.has('has_imap') ||
   (paths.has('is_enabled') && paths.get('is_enabled').value !== true)
     ? { aliasIds: true }
     : null

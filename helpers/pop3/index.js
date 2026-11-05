@@ -16,9 +16,17 @@
 const onListMessages = require('./on-list-messages');
 const onFetchMessage = require('./on-fetch-message');
 const onUpdate = require('./on-update');
+const { isSendOnly } = require('#helpers/imap');
 
+// (an alias without IMAP lists an empty INBOX, see helpers/imap/index.js)
 module.exports = {
-  onListMessages,
+  onListMessages(session, fn) {
+    if (!isSendOnly(session)) return onListMessages.call(this, session, fn);
+    fn(null, { messages: [], count: 0, size: 0 });
+  },
   onFetchMessage,
-  onUpdate
+  onUpdate(update, session, fn) {
+    if (!isSendOnly(session)) return onUpdate.call(this, update, session, fn);
+    fn();
+  }
 };

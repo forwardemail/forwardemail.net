@@ -13,6 +13,8 @@
  *   https://github.com/nodemailer/wildduck
  */
 
+const fs = require('node:fs');
+
 const Pop3Command = require('node-pop3');
 const dayjs = require('dayjs-with-plugins');
 const ip = require('ip');
@@ -31,6 +33,7 @@ const Messages = require('#models/messages');
 const config = require('#config');
 const createWebSocketAsPromised = require('#helpers/create-websocket-as-promised');
 const { DAILY_LIMIT } = require('#helpers/bandwidth-limiter');
+const getPathToDatabase = require('#helpers/get-path-to-database');
 const onAppend = require('#helpers/imap/on-append');
 const { encrypt } = require('#helpers/encrypt-decrypt');
 
@@ -661,4 +664,41 @@ test('POP3 RETR stops at the bandwidth limit', async (t) => {
     tlsOptions
   });
   await t.context.pop3Command.connect();
+});
+
+//
+// An alias without IMAP only sends mail, but mail apps need an incoming
+// server to send mail: it signs in to an empty maildrop that is never stored
+// (see helpers/imap/index.js).
+//
+test('an alias without IMAP signs in to an empty maildrop', async (t) => {
+  const alias = await t.context.aliasFactory
+    .withState({
+      user: t.context.user._id,
+      domain: t.context.domain._id,
+      recipients: [t.context.user.email],
+      has_imap: false
+    })
+    .create();
+  const pass = await alias.createToken();
+  await alias.save();
+
+  const pop3Command = new Pop3Command({
+    user: `${alias.name}@${t.context.domain.name}`,
+    password: pass,
+    host: 'localhost',
+    port: t.context.port,
+    tlsOptions
+  });
+  await pop3Command.connect();
+  await pop3Command.command('USER', `${alias.name}@${t.context.domain.name}`);
+  await pop3Command.command('PASS', pass);
+  // eslint-disable-next-line new-cap
+  t.is(await pop3Command.STAT(), '0 0');
+  // eslint-disable-next-line new-cap
+  t.deepEqual(await pop3Command.LIST(), []);
+  await pop3Command.command('QUIT');
+
+  // no mailbox was opened or created
+  t.false(fs.existsSync(getPathToDatabase(alias)));
 });

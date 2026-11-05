@@ -587,12 +587,14 @@ async function onAuth(auth, session, fn) {
             : isSMTP ||
               (user.alias_id && user.auth_via === AUTH_VIA_ALIAS_TOKEN)) &&
           // An alias without IMAP may only send mail (SMTP).  Its SMTP login
-          // is cached like any other, so every other server treats it as a
-          // miss and refuses it below: a phone that sent mail and then
-          // checked for new mail opened the mailbox, and a new one after
-          // each hourly cleanup (jobs/cleanup-sqlite.js).
+          // is cached like any other: IMAP and POP3 sign it in to an empty
+          // INBOX that is never stored (see helpers/imap/index.js), and
+          // every other server treats it as a miss and refuses it below (a
+          // phone that sent mail and then checked for new mail opened the
+          // mailbox, and a new one after each hourly cleanup, see
+          // jobs/cleanup-sqlite.js).
           // (as the API routes that need no IMAP storage do, see below)
-          (isSMTP || isOutboundAPI || user.alias_has_imap) &&
+          (isSMTP || isOutboundAPI || isIMAPorPOP3 || user.alias_has_imap) &&
           !isRekeying
         ) {
           // when the credentials were really checked (a revocation check
@@ -1236,9 +1238,13 @@ async function onAuth(auth, session, fn) {
     // alert them by email to inform them they need to enable IMAP
     // (otherwise they're not going to have any mail received)
     //
-    // (the email is sent once; the login is refused every time, the same as
-    // on a cache hit above) (sending mail with the API, as with SMTP, needs
-    // no IMAP)
+    // (the email is sent once) (sending mail with the API, as with SMTP,
+    // needs no IMAP)
+    //
+    // Mail apps such as Apple Mail need an incoming server to send mail, and
+    // a refused login is an error on every check for new mail, so IMAP and
+    // POP3 sign in to an empty INBOX that is never stored (see
+    // helpers/imap/index.js); CalDAV, CardDAV and the API refuse every time.
     //
     if (
       alias &&
@@ -1315,24 +1321,22 @@ async function onAuth(auth, session, fn) {
             this.logger.fatal(err, { session, resolver: this.resolver })
           );
 
-      // throw an error
-      throw new SMTPError(
-        `Alias does not have IMAP enabled, go to ${
-          config.urls.web
-        }/my-account/domains/${punycode.toASCII(
-          domain.name
-        )}/aliases and click "Edit" to enable IMAP storage`,
-        {
-          responseCode: 535,
-          ignoreHook: true,
-          // (the password was right, and this will not change until IMAP is
-          // enabled: IMAP clients answered with a temporary failure kept
-          // retrying, and a failed attempt locked out others on the same
-          // address, see api-websocket-handler.js)
-          imapResponse: 'CONTACTADMIN',
-          isForbidden: true
-        }
-      );
+      if (!isIMAPorPOP3)
+        throw new SMTPError(
+          `Alias does not have IMAP enabled, go to ${
+            config.urls.web
+          }/my-account/domains/${punycode.toASCII(
+            domain.name
+          )}/aliases and click "Edit" to enable IMAP storage`,
+          {
+            responseCode: 535,
+            ignoreHook: true,
+            // (the password was right, and this will not change until IMAP
+            // is enabled: a failed attempt locked out others on the same
+            // address, see api-websocket-handler.js)
+            isForbidden: true
+          }
+        );
     }
 
     // if any of the domain admins are admins then don't rate limit concurrent connections
@@ -1445,7 +1449,9 @@ async function onAuth(auth, session, fn) {
         ? {
             alias_id: alias.id,
             alias_name: alias.name,
-            alias_has_imap: alias.has_imap,
+            // (an alias stored without the field has no IMAP: the
+            // aggregation above applies no schema defaults)
+            alias_has_imap: alias.has_imap === true,
             storage_location: alias.storage_location,
             alias_user_id: alias.user.id
           }

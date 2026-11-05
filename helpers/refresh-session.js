@@ -178,6 +178,15 @@ async function refreshSession(session, command) {
   // TODO: notifications via web/sms/desktop/mobile electron + react native app
   //       (e.g. if there are any issues such as IMAP access being locked due to r/w issues)
 
+  // an alias without IMAP has no mailbox to open on IMAP and POP3 (it only
+  // registers for Apple push, see helpers/imap/index.js)
+  // (the API's email and account routes, which need no IMAP, open it as
+  // before, see helpers/setup-auth-session.js)
+  if (session.user.alias_has_imap === false && command !== 'API') {
+    if (command === 'XAPPLEPUSHSERVICE') return;
+    throw new IMAPError('Alias does not have IMAP enabled');
+  }
+
   // connect to the database (sets `session.db` for us automatically)
 
   await getDatabase(
