@@ -485,6 +485,11 @@ class ApiWebSocketHandler {
       // on-auth leaves `response` unset for transient failures (database,
       // Redis, shutdown) so clients retry instead of prompting
       if (err.response !== 'NO') throw httpError('Service unavailable', 503);
+      // the password was right, but the alias may not sign in here (it has
+      // no IMAP): not a failed attempt, so clients behind the same address
+      // are not locked out by it
+      if (err.isForbidden)
+        throw Object.assign(httpError(err.message, 403), { isForbidden: true });
       throw httpError('Invalid credentials', 401);
     }
 
@@ -562,7 +567,7 @@ class ApiWebSocketHandler {
       result = await this._checkCredentials(creds, ws.remoteAddress);
     } catch (err) {
       const statusCode = err.statusCode || 401;
-      if ([401, 403, 404].includes(statusCode))
+      if ([401, 403, 404].includes(statusCode) && !err.isForbidden)
         await this._recordAuthFailure(ws.ip);
       logger.debug('WebSocket auth failed', { ip: ws.ip, error: err.message });
       this._closeSocket(
@@ -881,7 +886,10 @@ class ApiWebSocketHandler {
             })
           ]);
         } catch (err) {
-          if ([401, 403, 404].includes(err.statusCode || 401))
+          if (
+            [401, 403, 404].includes(err.statusCode || 401) &&
+            !err.isForbidden
+          )
             await this._recordAuthFailure(ip);
           throw err;
         } finally {

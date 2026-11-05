@@ -2893,7 +2893,7 @@ Pełna, oparta na implementacji lista możliwości oraz uwagi RFC są dostępne 
 | --- | --- |
 | Podstawowy język | `keep`, `discard`, `stop`, bloki warunkowe oraz podstawowe testy `address`, `header`, `exists`, `size` i testy logiczne. |
 | Dostarczanie | `fileinto`, `copy`, `redirect`, `mailbox` dla `fileinto :create` i `mailboxexists` oraz `special-use` dla `fileinto :specialuse` i `specialuse_exists`. |
-| Testy i porównania | `envelope`, `body`, `date`, `index`, `regex`, `subaddress`, `relational`, `i;ascii-casemap`, `i;octet` i `i;ascii-numeric`. |
+| Testy i porównania | `envelope`, `body`, `date`, `index`, `regex`, `subaddress`, `relational`, `i;ascii-casemap`, `i;unicode-casemap`, `i;octet` i `i;ascii-numeric`. |
 | Stan i zmienne | `variables`, `encoded-character`, `imap4flags`, `duplicate` i `ihave`. |
 | Akcje i odpowiedzi | `reject`, `ereject`, `vacation`, `vacation-seconds` oraz `enotify` używające `mailto:`. Przestarzała deklaracja `require "notify"` jest akceptowana jako alias wejściowy dla `enotify`, jednak `enotify` jest reklamowaną możliwością. |
 | Przetwarzanie wiadomości | `editheader`, `environment`, `foreverypart` (z `break`), `extracttext`, `replace` oraz `mime`, który również włącza te trzy polecenia. |

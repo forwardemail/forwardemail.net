@@ -3216,6 +3216,14 @@
               "$ref": "#/components/schemas/Error"
             }
           }
+        },
+        "headers": {
+          "Retry-After": {
+            "description": "Seconds to wait before trying again (sent when a sign-in is refused for too many attempts)",
+            "schema": {
+              "type": "integer"
+            }
+          }
         }
       },
       "InternalServerError": {
@@ -4916,6 +4924,12 @@
               },
               "X-Item-Count": {
                 "description": "Total number of items",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Lightweight-Fallback-Count": {
+                "description": "Number of messages of this page listed without the nodemailer and raw fields (as with lightweight=true), because the messages of the page exceeded the size a full list may return; get them with GET /v1/messages/{id}. Only sent when messages were listed this way.",
                 "schema": {
                   "type": "integer"
                 }
@@ -9138,6 +9152,9 @@
           "401": {
             "description": "Unauthorized - Invalid API token or alias credentials. Note: authentication is optional; this error only occurs when credentials are provided but are invalid."
           },
+          "403": {
+            "description": "Forbidden - The credentials are correct but may not connect (e.g. the alias does not have IMAP enabled, or the account is banned); a `?auth=message` connection is closed with `4403`"
+          },
           "404": {
             "description": "Not Found - Alias not found for the provided credentials"
           },
@@ -9585,7 +9602,7 @@
     },
     {
       "name": "Sieve szkriptek",
-      "description": "Sieve szkriptkezelő végpontok\n\n>[!NOTE]\n> A Sieve egy hatékony e-mail szűrőnyelv, amelyet az RFC 5228 definiál. A bejövő leveleken szkriptek futnak, amelyek automatikusan rendszerezik, szűrik és megválaszolják az üzeneteket.\n\n>[!TIP]\n> A támogatott kiterjesztések a következők: fileinto, reject, ereject, vacation, vacation-seconds, imap4flags, envelope, body, relational, comparator-i;ascii-numeric, copy, date, index, editheader, enotify, regex, subaddress, ihave, duplicate, special-use, mailbox, environment és variables. A szkripteket a mentés előtt ellenőrzi a rendszer, hogy biztosítsa szintaktikai helyességüket.\n\n>[!NOTE]\n> **Két hitelesítési módszer támogatott:**\n> - **API Token Auth** (`/v1/domains/{domain_id}/aliases/{alias_id}/sieve`): Használja API-kulcsát felhasználónévként az alap hitelesítéshez. Az URL-útvonalban meg kell adni a domain_id és az alias_id paramétereket.\n\n> - **Alias Auth** (`/v1/sieve-scripts`): Használja az alias e-mail címet és a létrehozott jelszót alap hitelesítési hitelesítő adatokként. Az URL-ben nem kell megadni a domain_id vagy az alias_id paramétereket.\n\n>[!TIP]\n> A szkriptazonosító paraméterek elfogadják a MongoDB ObjectId-t vagy a szkript nevét, lehetővé téve a rugalmas szkriptazonosítást."
+      "description": "Sieve szkriptkezelő végpontok\n\n>[!NOTE]\n> A Sieve egy hatékony e-mail szűrőnyelv, amelyet az RFC 5228 definiál. A bejövő leveleken szkriptek futnak, amelyek automatikusan rendszerezik, szűrik és megválaszolják az üzeneteket.\n\n>[!TIP]\n> A támogatott kiterjesztések a következők: fileinto, reject, ereject, vacation, vacation-seconds, imap4flags, envelope, body, relational, comparator-i;ascii-numeric, comparator-i;unicode-casemap, copy, date, index, editheader, enotify, regex, subaddress, ihave, duplicate, special-use, mailbox, environment és variables. A szkripteket a mentés előtt ellenőrzi a rendszer, hogy biztosítsa szintaktikai helyességüket.\n\n>[!NOTE]\n> **Két hitelesítési módszer támogatott:**\n> - **API Token Auth** (`/v1/domains/{domain_id}/aliases/{alias_id}/sieve`): Használja API-kulcsát felhasználónévként az alap hitelesítéshez. Az URL-útvonalban meg kell adni a domain_id és az alias_id paramétereket.\n\n> - **Alias Auth** (`/v1/sieve-scripts`): Használja az alias e-mail címet és a létrehozott jelszót alap hitelesítési hitelesítő adatokként. Az URL-ben nem kell megadni a domain_id vagy az alias_id paramétereket.\n\n>[!TIP]\n> A szkriptazonosító paraméterek elfogadják a MongoDB ObjectId-t vagy a szkript nevét, lehetővé téve a rugalmas szkriptazonosítást."
     },
     {
       "name": "WebSockets",

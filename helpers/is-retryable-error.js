@@ -132,6 +132,19 @@ function isClosedBeforeResponse(err) {
   );
 }
 
+//
+// A request that timed out may still be running on the SQLite server (it
+// cannot be cancelled there), so sending it again only adds the same work to
+// a server that is already behind
+//
+function isRequestTimeout(err) {
+  return [err?.message, err?._message].some(
+    (message) =>
+      typeof message === 'string' &&
+      message.includes('WebSocket request was rejected by timeout')
+  );
+}
+
 function isRetryableError(err) {
   //
   // RFC 7672 Section 2.2: DANE verification failures are permanent errors.
@@ -268,3 +281,4 @@ function isRetryableError(err) {
 
 module.exports = isRetryableError;
 module.exports.isClosedBeforeResponse = isClosedBeforeResponse;
+module.exports.isRequestTimeout = isRequestTimeout;

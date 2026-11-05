@@ -1117,7 +1117,7 @@ Tabela rozróżnia pełną implementację wymienionych zachowań od zachowań ce
 | [RFC 5173](https://datatracker.ietf.org/doc/html/rfc5173) | `body` | Dopasowywanie zawartości treści wiadomości. |
 | [RFC 5229](https://datatracker.ietf.org/doc/html/rfc5229) | `variables` | Rozwijanie zmiennych i obsługiwane modyfikatory. |
 | [RFC 5231](https://datatracker.ietf.org/doc/html/rfc5231) | `relational` | Porównania `:count` i `:value`. |
-| [RFC 4790](https://datatracker.ietf.org/doc/html/rfc4790) | Comparators | `i;ascii-casemap`, `i;octet` i `i;ascii-numeric`. |
+| [RFC 4790](https://datatracker.ietf.org/doc/html/rfc4790) | Comparators | `i;ascii-casemap`, `i;unicode-casemap`, `i;octet` i `i;ascii-numeric`. |
 | [RFC 3894](https://datatracker.ietf.org/doc/html/rfc3894) | `copy` | `:copy` w `fileinto` i `redirect`. |
 | [RFC 5293](https://datatracker.ietf.org/doc/html/rfc5293) | `editheader` | Zmiany nagłówków przed zapisem, widoczne dla kolejnych testów, z wyjątkiem chronionych pól uwierzytelniania i trasowania dostawy, `Received` oraz `Auto-Submitted`. |
 | [RFC 5260](https://datatracker.ietf.org/doc/html/rfc5260) | `date`, `index` | Testy `currentdate` i dat nagłówków, plus `:index` i `:last`. |
@@ -1141,7 +1141,7 @@ Tabela rozróżnia pełną implementację wymienionych zachowań od zachowań ce
 | `reject` / `ereject` | Odrzuca wiadomość z błędem SMTP. | Zwracane przez ścieżkę dostawy MX. |
 | `vacation` / `vacation-seconds` | Wysyła automatyczną odpowiedź. | Kolejkowane z limitami częstotliwości dla odbiorców i interwałów. |
 | `imap4flags` | Ustawia lub testuje flagi IMAP. | Stosowane podczas zapisu wiadomości. |
-| `envelope`, `body`, `date`, `index`, `regex`, `subaddress`, `relational`, `comparator-i;ascii-numeric` | Testuje dane wiadomości i koperty. | Oceniane przez silnik Sieve. |
+| `envelope`, `body`, `date`, `index`, `regex`, `subaddress`, `relational`, `comparator-i;ascii-numeric`, `comparator-i;unicode-casemap` | Testuje dane wiadomości i koperty. | Oceniane przez silnik Sieve. |
 | `variables`, `duplicate`, `ihave` | Przechowuje wartości, wykrywa duplikaty i sprawdza możliwości. | Zmienne są lokalne dla skryptu; stan duplikatów używa Redis. |
 | `editheader` | Dodaje lub usuwa nagłówki niechronione. | Nagłówków uwierzytelniania i trasowania dostawy, `Received` oraz `Auto-Submitted` nie można modyfikować. |
 | `enotify` | Wysyła powiadomienie przy użyciu `mailto:`. | Kolejkowane z limitami częstotliwości powiadomień. |

@@ -1117,7 +1117,7 @@ A táblázat megkülönbözteti a felsorolt viselkedés teljes megvalósításá
 | [RFC 5173](https://datatracker.ietf.org/doc/html/rfc5173) | `body` | Message-body content matching. |
 | [RFC 5229](https://datatracker.ietf.org/doc/html/rfc5229) | `variables` | Variable expansion and supported modifiers. |
 | [RFC 5231](https://datatracker.ietf.org/doc/html/rfc5231) | `relational` | `:count` and `:value` comparisons. |
-| [RFC 4790](https://datatracker.ietf.org/doc/html/rfc4790) | Comparators | `i;ascii-casemap`, `i;octet` és `i;ascii-numeric`. |
+| [RFC 4790](https://datatracker.ietf.org/doc/html/rfc4790) | Comparators | `i;ascii-casemap`, `i;unicode-casemap`, `i;octet` és `i;ascii-numeric`. |
 | [RFC 3894](https://datatracker.ietf.org/doc/html/rfc3894) | `copy` | `:copy` on `fileinto` and `redirect`. |
 | [RFC 5293](https://datatracker.ietf.org/doc/html/rfc5293) | `editheader` | Fejlécmódosítások tárolás előtt, amelyeket a későbbi tesztek is látnak, kivéve a védett hitelesítési és kézbesítési útvonal mezőket, a `Received` és az `Auto-Submitted` fejlécet. |
 | [RFC 5260](https://datatracker.ietf.org/doc/html/rfc5260) | `date`, `index` | `currentdate` and header-date tests, plus `:index` and `:last`. |
@@ -1141,7 +1141,7 @@ A táblázat megkülönbözteti a felsorolt viselkedés teljes megvalósításá
 | `reject` / `ereject` | Rejects a message with an SMTP error. | Returned through the MX delivery path. |
 | `vacation` / `vacation-seconds` | Sends an automatic reply. | Queued with recipient and interval rate limits. |
 | `imap4flags` | Sets or tests IMAP flags. | Applied when the message is stored. |
-| `envelope`, `body`, `date`, `index`, `regex`, `subaddress`, `relational`, `comparator-i;ascii-numeric` | Az üzenet és a boríték adatait vizsgálja. | A Sieve-motor értékeli ki. |
+| `envelope`, `body`, `date`, `index`, `regex`, `subaddress`, `relational`, `comparator-i;ascii-numeric`, `comparator-i;unicode-casemap` | Az üzenet és a boríték adatait vizsgálja. | A Sieve-motor értékeli ki. |
 | `variables`, `duplicate`, `ihave` | Stores values, detects duplicates, and checks capabilities. | Variables are script-local; duplicate state uses Redis. |
 | `editheader` | Nem védett fejléceket ad hozzá vagy töröl. | A hitelesítési és kézbesítési útvonal fejlécek, a `Received` és az `Auto-Submitted` nem módosíthatók. |
 | `enotify` | Sends a notification using `mailto:`. | Queued with notification rate limits. |

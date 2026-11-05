@@ -12,6 +12,7 @@ const { performance } = require('node:perf_hooks');
 
 const RE2 = require('re2');
 const {
+  COMPARATORS,
   CORE_CAPABILITIES,
   SUPPORTED_CAPABILITIES,
   getCapability,
@@ -55,15 +56,53 @@ function toAsciiNumber(value) {
   return value.slice(start, end);
 }
 
-// how a comparator sees a value: i;ascii-casemap (the default) ignores case,
-// i;ascii-numeric reads the number it starts with, and a value that is not
-// a string is compared as one ('' for none)
+//
+// RFC 5051 i;unicode-casemap: case folded, so that e.g. "ÉTÉ" and "été", or
+// "Σ" and "ς", are equal (upper case folds both Greek sigmas into one, which
+// lower case does not), with accents written either way made one (NFC).
+// Unlike RFC 5051 this does not apply NFKD: that turns fullwidth "＊", "？"
+// and "＼" into glob wildcards and escapes, splits "é" so "?" no longer
+// matches it, and can make a value many times larger. (Upper case also maps
+// "ß" to "SS", so it is a little more lenient than RFC 5051.)
+//
+function toUnicodeCasemap(value) {
+  // (ASCII needs no normalization)
+  return /^\p{ASCII}*$/u.test(value)
+    ? value.toUpperCase()
+    : value.normalize('NFC').toUpperCase();
+}
+
+// (comparator names are case-insensitive, RFC 4790 section 3.1; one that is
+// not known is i;ascii-casemap, so a script saved with it still runs)
+function getComparatorName(comparator) {
+  if (typeof comparator !== 'string') return comparator;
+  const name = comparator.toLowerCase();
+  return COMPARATORS.has(name) ? name : 'i;ascii-casemap';
+}
+
+//
+// The number a value starts with, as Number.parseFloat reads it, or NaN: a
+// date or time (e.g. "2026-11-04" or "10:30") is not a number, while a
+// score such as "7.50 / 15.00" is 7.5
+//
+function toNumber(value) {
+  const match = /^\s*([+-]?(?:\d+\.?\d*|\.\d+))(?![\d.:-])/.exec(
+    toHeaderString(value)
+  );
+  return match ? Number(match[1]) : Number.NaN;
+}
+
+// how a comparator sees a value: i;ascii-casemap (the default) and
+// i;unicode-casemap ignore case, i;ascii-numeric reads the number it starts
+// with, and a value that is not a string is compared as one ('' for none)
 function getNormalizer(comparator) {
   const isCaseInsensitive = comparator === 'i;ascii-casemap' || !comparator;
+  const isUnicode = comparator === 'i;unicode-casemap';
   const isNumeric = comparator === 'i;ascii-numeric';
   return (value) => {
     const string_ = value === null || value === undefined ? '' : String(value);
     if (isNumeric) return toAsciiNumber(string_);
+    if (isUnicode) return toUnicodeCasemap(string_);
     return isCaseInsensitive ? string_.toLowerCase() : string_;
   };
 }
@@ -75,7 +114,7 @@ function toAsciiUpperCase(value) {
 
 //
 // The order of two values for a comparator (RFC 4790, used by RFC 5231
-// :value and :count): -1, 0 or 1. i;octet and i;ascii-casemap compare the
+// :value and :count): -1, 0 or 1. i;octet and the casemaps compare the
 // UTF-8 octets, i;ascii-numeric the numbers the values start with.
 //
 function compareValues(a, b, comparator) {
@@ -92,6 +131,9 @@ function compareValues(a, b, comparator) {
   if (comparator === 'i;ascii-casemap' || !comparator) {
     a = toAsciiUpperCase(a);
     b = toAsciiUpperCase(b);
+  } else if (comparator === 'i;unicode-casemap') {
+    a = toUnicodeCasemap(a);
+    b = toUnicodeCasemap(b);
   }
 
   return Buffer.compare(Buffer.from(a), Buffer.from(b));
@@ -286,10 +328,18 @@ function getMatchWeight(pattern) {
   return weight;
 }
 
-// (see SieveEngine.MAX_MATCH_COST)
+// whether a test of a key may run (see SieveEngine.MAX_MATCH_COST)
 function checkMatchCost(weight, value) {
-  if (weight * value.length > SieveEngine.MAX_MATCH_COST)
-    throw new Error('Sieve script exceeded the time it may run');
+  return weight * value.length <= SieveEngine.MAX_MATCH_COST;
+}
+
+// the literal of a :matches key "*literal*" (null for any other key), which
+// is found as :contains finds it, at no cost
+function getContainedLiteral(pattern) {
+  if (pattern.length < 2 || pattern[0] !== '*' || pattern.at(-1) !== '*')
+    return null;
+  const literal = pattern.slice(1, -1);
+  return /[*?\\]/.test(literal) ? null : literal;
 }
 
 //
@@ -579,6 +629,8 @@ class SieveEngine {
       expandedLength: 0,
       // (see SieveEngine.MAX_MATCH_TIME)
       matchTime: 0,
+      // (whether timed work is running, see runTimed)
+      timed: false,
       // (see MAX_STORED_LENGTH)
       storedLength: 0,
       // (every currentdate test of a run is at the same time, RFC 5260)
@@ -586,7 +638,17 @@ class SieveEngine {
       // the IDs of duplicate tests to store once the script has run
       duplicateWrites: new Map(),
       // the strings the last :matches or :regex that matched captured
-      matchVariables: []
+      matchVariables: [],
+      // the response to the sender so far, 'reject' or 'vacation' (see
+      // checkReject), and the warnings logged once a run (see warnOnce)
+      response: null,
+      warned: new Set(),
+      // the arrays of header values editHeader made (see Addheader)
+      editedHeaders: new WeakSet(),
+      // (see getNormalized)
+      normalized: [],
+      // (see getCompiled)
+      compiled: new Map()
     };
 
     // Process require statements first
@@ -749,22 +811,30 @@ class SieveEngine {
 
         // Runtime enforcement of redirect domain restrictions
         // (prevents bypass via variable substitution)
-        const addrDomain = resolvedAddress.match(/@([^@>]+)>?$/);
+        // (the time counts against MAX_MATCH_TIME: an address can be 64KB,
+        // and in foreverypart loops is matched thousands of times)
+        const addrDomain = this.runTimed(state, () =>
+          resolvedAddress.match(/@([^@>]+)>?$/)
+        );
         if (addrDomain) {
           const domain = addrDomain[1].toLowerCase();
           if (
             this.allowedRedirectDomains.length > 0 &&
             !this.allowedRedirectDomains.includes(domain)
           ) {
-            this.logger.warn(
-              `Blocked redirect to non-whitelisted domain: ${domain}`
+            this.warnOnce(
+              state,
+              `Blocked redirect to non-whitelisted domain: ${domain}`,
+              'redirect'
             );
             break;
           }
 
           if (this.redirectDomainBlacklist.includes(domain)) {
-            this.logger.warn(
-              `Blocked redirect to blacklisted domain: ${domain}`
+            this.warnOnce(
+              state,
+              `Blocked redirect to blacklisted domain: ${domain}`,
+              'redirect'
             );
             break;
           }
@@ -788,20 +858,11 @@ class SieveEngine {
         break;
       }
 
-      case 'Reject': {
-        this.checkReject(state);
-        state.actions.push({
-          type: 'reject',
-          message: this.interpolateVariables(command.message, state)
-        });
-        state.implicitKeep = false;
-        break;
-      }
-
+      case 'Reject':
       case 'Ereject': {
-        this.checkReject(state);
+        if (!this.checkReject(state)) break;
         state.actions.push({
-          type: 'ereject',
+          type: command.type.toLowerCase(),
           message: this.interpolateVariables(command.message, state)
         });
         state.implicitKeep = false;
@@ -839,8 +900,10 @@ class SieveEngine {
         // Runtime enforcement of protected headers
         // (prevents bypass via variable substitution)
         if (this.protectedHeaders.includes(addHeaderName.toLowerCase())) {
-          this.logger.warn(
-            `Blocked addheader for protected header: ${addHeaderName}`
+          this.warnOnce(
+            state,
+            `Blocked addheader for protected header: ${addHeaderName}`,
+            'addheader'
           );
           break;
         }
@@ -852,12 +915,23 @@ class SieveEngine {
           value: addHeaderValue,
           last: command.last || false
         });
-        // (later tests see the change, RFC 5293 section 7)
-        this.editHeader(state, addHeaderName, (values) =>
-          command.last
-            ? [...values, addHeaderValue]
-            : [addHeaderValue, ...values]
-        );
+        // (later tests see the change, RFC 5293 section 7; the values an
+        // earlier change made are added to in place, as copying them for each
+        // addheader took seconds in foreverypart loops)
+        this.runTimed(state, () => {
+          const values = state.message.headers[addHeaderName.toLowerCase()];
+          if (state.editedHeaders.has(values)) {
+            if (command.last) values.push(addHeaderValue);
+            else values.unshift(addHeaderValue);
+            return;
+          }
+
+          this.editHeader(state, addHeaderName, (values) =>
+            command.last
+              ? [...values, addHeaderValue]
+              : [addHeaderValue, ...values]
+          );
+        });
         break;
       }
 
@@ -867,8 +941,10 @@ class SieveEngine {
         // Runtime enforcement of protected headers
         // (prevents bypass via variable substitution)
         if (this.protectedHeaders.includes(delHeaderName.toLowerCase())) {
-          this.logger.warn(
-            `Blocked deleteheader for protected header: ${delHeaderName}`
+          this.warnOnce(
+            state,
+            `Blocked deleteheader for protected header: ${delHeaderName}`,
+            'deleteheader'
           );
           break;
         }
@@ -891,7 +967,8 @@ class SieveEngine {
             this.createMatcher(
               pattern,
               command.matchType || 'is',
-              command.comparator || 'i;ascii-casemap'
+              command.comparator || 'i;ascii-casemap',
+              state
             )
           );
           this.editHeader(state, delHeaderName, (values) => {
@@ -909,11 +986,28 @@ class SieveEngine {
       }
 
       case 'Notify': {
-        const method = this.interpolateVariables(command.method || '', state);
-        // (a method that is not supported or not valid is a runtime error,
-        // RFC 5435 section 3.2; mailto is the one there is)
-        if (!this.isValidNotifyMethod(method))
-          throw new Error(`Sieve notify method is not supported: ${method}`);
+        let method = this.interpolateVariables(command.method || '', state);
+        // (the draft form, `:method "mailto" :options "address"`)
+        if (method.toLowerCase() === 'mailto' && command.options?.length > 0)
+          method = `mailto:${this.interpolateVariables(
+            command.options[0],
+            state
+          )}`;
+        //
+        // (mailto is the method there is; one that is not valid, or none, is
+        // an error in RFC 5435 section 3.2, but is skipped: failing the
+        // script lost every other action of scripts saved before notify was
+        // checked, and the notification is checked again when it is sent)
+        //
+        if (!this.isValidNotifyMethod(method, state)) {
+          this.warnOnce(
+            state,
+            `Sieve notify skipped, method is not valid: ${method}`,
+            'notify'
+          );
+          break;
+        }
+
         state.actions.push({
           type: 'notify',
           method,
@@ -976,7 +1070,7 @@ class SieveEngine {
       }
 
       default: {
-        this.logger.warn(`Unknown command type: ${command.type}`);
+        this.warnOnce(state, `Unknown command type: ${command.type}`);
       }
     }
   }
@@ -998,16 +1092,37 @@ class SieveEngine {
         : [current].flat().map((v) => toHeaderString(v))
     );
     if (values.length === 0) delete headers[key];
-    else headers[key] = values.length === 1 ? values[0] : values;
+    else if (values.length === 1) headers[key] = values[0];
+    else {
+      headers[key] = values;
+      state.editedHeaders.add(values);
+    }
   }
 
   /**
    * Whether a notification method is a mailto URI with an address
-   * (RFC 5436)
+   * (RFC 5436). Given the state, each method is checked once a run (up to
+   * 100 of them) and the time counts against MAX_MATCH_TIME: a method can
+   * list thousands of addresses, and in foreverypart loops is checked
+   * thousands of times.
    * @param {string} uri - The method
+   * @param {Object} [state] - Execution state
    * @returns {boolean} Whether it can be used
    */
-  isValidNotifyMethod(uri) {
+  isValidNotifyMethod(uri, state) {
+    if (state)
+      return this.runTimed(state, () => {
+        state.notifyMethods ||= new Map();
+        let valid = state.notifyMethods.get(uri);
+        if (valid === undefined) {
+          valid = this.isValidNotifyMethod(uri);
+          if (state.notifyMethods.size < 100)
+            state.notifyMethods.set(uri, valid);
+        }
+
+        return valid;
+      });
+
     const match = /^mailto:([^?]*)(?:\?(.*))?$/is.exec(uri);
     if (!match) return false;
     try {
@@ -1034,30 +1149,51 @@ class SieveEngine {
    * @returns {string[]} The flags
    */
   getActionFlags(command, state) {
-    const flags =
+    // (the time counts against MAX_MATCH_TIME: a :flags of thousands of
+    // flags, in foreverypart loops, took seconds)
+    const flags = this.runTimed(state, () =>
       command.flags?.length > 0
         ? this.getFlags(command.flags, state)
-        : [...state.flags];
+        : [...state.flags]
+    );
     this.checkFlagLimit(state, flags.length);
     return flags;
   }
 
   /**
    * A reject or ereject may be used once, and not with vacation (RFC 5429,
-   * section 2.4); a script that does is stopped as for any error
+   * section 2.4): the sender gets one response, the first reject, and a
+   * later reject or a vacation is dropped (scripts such as those Roundcube
+   * makes hold both, and failing them lost every other action)
    * @param {Object} state - Execution state
-   * @throws {Error} If the script already rejects or replies
+   * @returns {boolean} Whether this reject is taken
    */
   checkReject(state) {
-    if (
-      state.actions.some(
-        (a) =>
-          a.type === 'reject' || a.type === 'ereject' || a.type === 'vacation'
-      )
-    )
-      throw new Error(
-        'A Sieve script may reject a message once, and not with vacation'
-      );
+    if (state.response === 'reject') {
+      this.warnOnce(state, 'Sieve reject dropped: the script already rejects');
+      return false;
+    }
+
+    if (state.response === 'vacation') {
+      this.warnOnce(state, 'Sieve vacation dropped: the script rejects');
+      state.actions = state.actions.filter((a) => a.type !== 'vacation');
+    }
+
+    state.response = 'reject';
+    return true;
+  }
+
+  /**
+   * Log a warning once a run (a script can repeat a command thousands of
+   * times, e.g. in foreverypart)
+   * @param {Object} state - Execution state
+   * @param {string} message - The warning
+   * @param {string} [key] - What makes it the same warning (the message)
+   */
+  warnOnce(state, message, key = message) {
+    if (state.warned.has(key)) return;
+    state.warned.add(key);
+    this.logger.warn(message);
   }
 
   /**
@@ -1241,7 +1377,7 @@ class SieveEngine {
       // (RFC 5435 section 4: mailto is the method there is)
       case 'ValidNotifyMethodTest': {
         return test.uris.every((uri) =>
-          this.isValidNotifyMethod(this.interpolateVariables(uri, state))
+          this.isValidNotifyMethod(this.interpolateVariables(uri, state), state)
         );
       }
 
@@ -1250,7 +1386,8 @@ class SieveEngine {
         const uri = this.interpolateVariables(test.uri, state);
         const capability = this.interpolateVariables(test.capability, state);
         return this.matchValues(
-          this.isValidNotifyMethod(uri) && capability.toLowerCase() === 'online'
+          this.isValidNotifyMethod(uri, state) &&
+            capability.toLowerCase() === 'online'
             ? ['maybe']
             : [],
           test,
@@ -1269,7 +1406,7 @@ class SieveEngine {
       }
 
       default: {
-        this.logger.warn(`Unknown test type: ${test.type}`);
+        this.warnOnce(state, `Unknown test type: ${test.type}`);
         return false;
       }
     }
@@ -1294,11 +1431,13 @@ class SieveEngine {
       return this.evaluateMimeHeaderTest(test, state);
     }
 
-    return this.matchValues(
-      this.getFieldValues(state.message.headers, headers, test),
-      test,
-      state
-    );
+    // (the time it takes to read the values counts against MAX_MATCH_TIME:
+    // addheader in a loop can give a header thousands of them)
+    let values;
+    this.runTimed(state, () => {
+      values = this.getFieldValues(state.message.headers, headers, test);
+    });
+    return this.matchValues(values, test, state);
   }
 
   /**
@@ -1360,6 +1499,9 @@ class SieveEngine {
    */
   evaluateMimeHeaderTest(test, state) {
     const { headers } = test;
+    // (the time it takes, finding the parts too, counts against
+    // MAX_MATCH_TIME, see evaluateHeaderTest)
+    const start = performance.now();
 
     // (outside foreverypart the message itself, RFC 5703 section 4.2)
     const partsToCheck = test.anychild
@@ -1409,6 +1551,7 @@ class SieveEngine {
       }
     }
 
+    this.addWorkTime(state, start);
     return this.matchValues(values, test, state);
   }
 
@@ -1530,16 +1673,15 @@ class SieveEngine {
 
     //
     // The current part and its descendants (RFC 5703 :anychild): the parts
-    // right after it, in tree order, whose chain of parents reaches it. All
-    // the parts after it also held its siblings, and in a foreverypart loop
-    // made every part test every part after it.
+    // right after it, in tree order, that are in it or in one found before
+    // them. All the parts after it also held its siblings, and in a
+    // foreverypart loop made every part test every part after it. (Going up
+    // the chain of parents of each part took the square of the parts.)
     //
     const descendants = [parts[idx]];
     for (let i = idx + 1; i < parts.length; i++) {
-      let parent = parts[i].parentIndex;
-      while (Number.isInteger(parent) && parent > idx)
-        parent = parts[parent].parentIndex;
-      if (parent !== idx) break;
+      const parent = parts[i].parentIndex;
+      if (!Number.isInteger(parent) || parent < idx || parent >= i) break;
       descendants.push(parts[i]);
     }
 
@@ -1723,11 +1865,17 @@ class SieveEngine {
    */
   evaluateExistsTest(test, state) {
     // (with :mime the headers of the current part, and with :anychild of
-    // the parts in it too, RFC 5703 section 4.3)
-    const sources = this.getHeaderSources(test, state);
-    return test.headers.every((name) =>
-      sources.some((headers) => getHeader(headers, name) !== undefined)
-    );
+    // the parts in it too, RFC 5703 section 4.3; the time counts against
+    // MAX_MATCH_TIME, as in nested foreverypart loops it runs thousands of
+    // times)
+    let exists;
+    this.runTimed(state, () => {
+      const sources = this.getHeaderSources(test, state);
+      exists = test.headers.every((name) =>
+        sources.some((headers) => getHeader(headers, name) !== undefined)
+      );
+    });
+    return exists;
   }
 
   /**
@@ -1841,8 +1989,12 @@ class SieveEngine {
     const { header, datePart } = test;
 
     // (only the first field of the name, or the one :index names, RFC 5260
-    // sections 4 and 6; the test fails without a valid date in it)
-    const [field] = this.getFieldValues(state.message.headers, [header], test);
+    // sections 4 and 6; the test fails without a valid date in it, and the
+    // time it takes counts as in evaluateHeaderTest)
+    let field;
+    this.runTimed(state, () => {
+      [field] = this.getFieldValues(state.message.headers, [header], test);
+    });
     const parsed = field === undefined ? null : parseDateTime(field);
     const values = parsed
       ? [
@@ -1989,14 +2141,24 @@ class SieveEngine {
    * @returns {boolean} Test result
    */
   evaluateHasflagTest(test, state) {
-    const names =
-      test.variables || (test.variableName ? [test.variableName] : null);
+    // (without "variables" a first string list is flags too, as for addflag)
+    const hasVariables = state.enabledCapabilities.has('variables');
+    const names = hasVariables
+      ? test.variables || (test.variableName ? [test.variableName] : null)
+      : null;
+    const keys = hasVariables
+      ? test.flags || []
+      : [...(test.variables || []), ...(test.flags || [])];
 
     // (the flags of the variables named, or of the internal variable; :count
-    // counts the flags of each, RFC 5232 section 4)
-    const values = names
-      ? names.flatMap((name) => this.getFlagVariable(state, name))
-      : [...state.flags];
+    // counts the flags of each, RFC 5232 section 4; a variable can hold
+    // megabytes, so the time counts against MAX_MATCH_TIME)
+    let values;
+    this.runTimed(state, () => {
+      values = names
+        ? names.flatMap((name) => this.getFlagVariable(state, name))
+        : [...state.flags];
+    });
 
     //
     // (the keys are match keys, not flags: they are split at spaces, but kept
@@ -2007,7 +2169,7 @@ class SieveEngine {
       values,
       {
         ...test,
-        keys: (test.flags || []).flatMap((key) =>
+        keys: keys.flatMap((key) =>
           toHeaderString(key).split(/\s+/).filter(Boolean)
         )
       },
@@ -2138,23 +2300,59 @@ class SieveEngine {
    * @param {string} pattern - The pattern to match against
    * @param {string|Object} matchType - The match type
    * @param {string} comparator - The comparator to use
+   * @param {Object} [state] - Execution state (see warnMatchCost)
    * @returns {Function} (value) => true if matched
    */
-  createMatcher(pattern, matchType, comparator) {
+  createMatcher(pattern, matchType, comparator, state) {
+    comparator = getComparatorName(comparator);
     const normalize = getNormalizer(comparator);
     const normalizedPattern = normalize(pattern);
-    const isCaseInsensitive = comparator === 'i;ascii-casemap' || !comparator;
+    const isCaseInsensitive =
+      comparator === 'i;ascii-casemap' ||
+      comparator === 'i;unicode-casemap' ||
+      !comparator;
 
     // (each matcher takes the value, and may be given it normalized already)
 
+    //
     // Relational match types compare in the order of the comparator (RFC
-    // 5231); for :count the value is the number of values
+    // 5231); for :count the value is the number of values. Without a
+    // comparator written, or with i;ascii-numeric, two numbers compare as
+    // numbers, as they always have here (e.g. :value "ge" "10" for a spam
+    // score of "7.5", or "-1.2", which i;ascii-numeric alone puts after
+    // every number). With i;ascii-numeric, two numbers past what a double
+    // holds exactly compare by their digits, as RFC 4790 section 9.1 says
+    // (without the space or "+" toNumber reads before them).
+    //
     if (typeof matchType === 'object' && matchType.type) {
-      return (value) =>
-        this.compareRelational(
-          compareValues(toHeaderString(value), String(pattern), comparator),
-          matchType.operator
-        );
+      const number =
+        !comparator || comparator === 'i;ascii-numeric'
+          ? toNumber(pattern)
+          : Number.NaN;
+      const digits = (value) => toHeaderString(value).replace(/^\s*[+-]?/, '');
+      return (value) => {
+        const valueNumber = toNumber(value);
+        let order;
+        if (Number.isNaN(number) || Number.isNaN(valueNumber))
+          order = compareValues(
+            toHeaderString(value),
+            String(pattern),
+            comparator
+          );
+        else if (
+          comparator === 'i;ascii-numeric' &&
+          Math.min(number, valueNumber) > Number.MAX_SAFE_INTEGER
+        )
+          order = compareValues(digits(value), digits(pattern), comparator);
+        // (two numbers of 309 digits or more are both Infinity, or both
+        // -Infinity, so they compare by their digits too)
+        else if (Number.isNaN(valueNumber - number))
+          order =
+            Math.sign(number) *
+            compareValues(digits(value), digits(pattern), 'i;ascii-numeric');
+        else order = Math.sign(valueNumber - number);
+        return this.compareRelational(order, matchType.operator);
+      };
     }
 
     // (i;ascii-numeric has equality and order only, RFC 4790 section 9.1)
@@ -2173,37 +2371,78 @@ class SieveEngine {
       }
 
       case 'matches': {
-        const regex = this.compileGlob(normalizedPattern);
+        const literal = getContainedLiteral(normalizedPattern);
+        const regex =
+          literal === null
+            ? this.getCompiled(state, 'glob', normalizedPattern, () =>
+                this.compileGlob(normalizedPattern)
+              )
+            : null;
         const weight = getMatchWeight(normalizedPattern);
         const matcher = (value, normalized = normalize(value)) => {
+          if (literal !== null) return normalized.includes(literal);
           if (regex === null) return false;
-          checkMatchCost(weight, normalized);
+          if (!checkMatchCost(weight, normalized)) {
+            this.warnMatchCost(matcher, pattern, state);
+            return false;
+          }
+
           return regex.test(normalized);
         };
 
         // (the value with its own case: the pattern ignores it as the
-        // comparator does)
-        matcher.capture = (value) =>
-          this.compileGlob(normalizedPattern, true, isCaseInsensitive)?.exec(
-            toHeaderString(value)
+        // comparator does; a value it matched only once case folded, e.g.
+        // "ß" for "SS", or "İ", which is two characters in lower case,
+        // gives the folded value; none for a value too long for the key,
+        // which "*literal*" matched at no cost)
+        matcher.capture = (value) => {
+          const string = toHeaderString(value);
+          if (!checkMatchCost(weight, string)) return null;
+          const capture = this.getCompiled(
+            state,
+            `capture ${isCaseInsensitive}`,
+            normalizedPattern,
+            () => this.compileGlob(normalizedPattern, true, isCaseInsensitive)
           );
+          return (
+            capture?.exec(
+              comparator === 'i;unicode-casemap'
+                ? string.normalize('NFC')
+                : string
+            ) ?? (isCaseInsensitive ? capture?.exec(normalize(string)) : null)
+          );
+        };
+
         return matcher;
       }
 
       case 'regex': {
-        let regex = null;
-        try {
-          // use RE2 to prevent ReDoS from user-supplied patterns (with the
-          // case of the comparator, and "." matching any character as in
-          // POSIX regular expressions)
-          regex = new RE2(pattern, isCaseInsensitive ? 'is' : 's');
-        } catch {}
+        // use RE2 to prevent ReDoS from user-supplied patterns (with the
+        // case of the comparator, and "." matching any character as in
+        // POSIX regular expressions)
+        const flags = isCaseInsensitive ? 'is' : 's';
+        const regex = this.getCompiled(
+          state,
+          `regex ${flags}`,
+          String(pattern),
+          () => {
+            try {
+              return new RE2(pattern, flags);
+            } catch {
+              return null;
+            }
+          }
+        );
 
         const weight = getMatchWeight(pattern);
         const matcher = (value) => {
           if (regex === null) return false;
           const string = toHeaderString(value);
-          checkMatchCost(weight, string);
+          if (!checkMatchCost(weight, string)) {
+            this.warnMatchCost(matcher, pattern, state);
+            return false;
+          }
+
           try {
             return regex.test(string);
           } catch {
@@ -2239,9 +2478,12 @@ class SieveEngine {
    * @returns {Function} (index) => matcher for keys[index]
    */
   getKeyMatchers(keys, matchType, comparator, state) {
+    comparator = getComparatorName(comparator);
     const matchers = [];
     const normalize =
-      matchType === 'regex' ? () => undefined : getNormalizer(comparator);
+      matchType === 'regex'
+        ? () => undefined
+        : (value) => this.getNormalized(state, comparator, value);
     const captures = state.enabledCapabilities.has('variables');
     let last = performance.now();
     let calls = 0;
@@ -2263,7 +2505,8 @@ class SieveEngine {
         const matcher = this.createMatcher(
           this.interpolateVariables(keys[index], state),
           matchType,
-          comparator
+          comparator,
+          state
         );
         countTime();
         matchers[index] = (value) => {
@@ -2277,7 +2520,13 @@ class SieveEngine {
           if (calls % 1024 === 0) countTime();
           const matched = matcher(value, lastNormalized);
           if (matched && captures && matcher.capture) {
-            this.setMatchVariables(state, matcher.capture(value));
+            // (a key that matched with nothing to capture, e.g. "*literal*"
+            // against a long body, sets ${0} to the value and the rest to
+            // "", RFC 5229 section 3.2, not leaving those of an earlier test)
+            this.setMatchVariables(
+              state,
+              matcher.capture(value) ?? [toHeaderString(value)]
+            );
             countTime();
           }
 
@@ -2287,6 +2536,69 @@ class SieveEngine {
 
       return matchers[index];
     };
+  }
+
+  /**
+   * A value as a comparator sees it (see getNormalizer), kept for a long
+   * value so that the next test of the run does not make it again (for a
+   * large body and i;unicode-casemap that took about a tenth of
+   * MAX_MATCH_TIME for each test). The last two are kept (a script can
+   * test the raw and the text body, or a long header and the body, in turn),
+   * and the older is let go before the next is made: i;unicode-casemap can
+   * make a value three times as long.
+   * @param {Object} state - Execution state
+   * @param {string} comparator - The comparator
+   * @param {*} value - The value
+   * @returns {string} The value normalized
+   */
+  getNormalized(state, comparator, value) {
+    const normalize = getNormalizer(comparator);
+    // (i;octet leaves a string as it is)
+    if (
+      typeof value !== 'string' ||
+      value.length < 1024 ||
+      comparator === 'i;octet'
+    )
+      return normalize(value);
+    const entry = state.normalized.find(
+      (entry) => entry.comparator === comparator && entry.value === value
+    );
+    if (entry) return entry.normalized;
+    state.normalized.length = Math.min(state.normalized.length, 1);
+    const normalized = normalize(value);
+    // (a value the comparator does not change is kept as itself, not as a
+    // copy)
+    state.normalized.unshift({
+      comparator,
+      value,
+      normalized: normalized === value ? value : normalized
+    });
+    return state.normalized[0].normalized;
+  }
+
+  /**
+   * Log (once for a matcher, or once a run when given the state: a test in
+   * foreverypart loops makes its matchers again for each part) a key of
+   * :matches or :regex that is not tested against a value, as it would take
+   * too long (see MAX_MATCH_COST): the key does not match it, and the rest of
+   * the script runs
+   * @param {Function} matcher - The matcher of the key
+   * @param {string} pattern - The key
+   * @param {Object} [state] - Execution state
+   */
+  warnMatchCost(matcher, pattern, state) {
+    if (matcher.warned) return;
+    matcher.warned = true;
+    const message = `Sieve key not matched, the value is too long for it: ${String(
+      pattern
+    ).slice(0, 100)}`;
+    if (state) {
+      this.warnOnce(state, message, 'match-cost');
+      return;
+    }
+
+    // (also called as SieveEngine.prototype.createMatcher, without a logger)
+    this.logger?.warn(message);
   }
 
   /**
@@ -2321,12 +2633,19 @@ class SieveEngine {
    * foreverypart loops they run thousands of times)
    * @param {Object} state - Execution state
    * @param {Function} fn - The work
+   * @returns {*} What the work returns
    */
   runTimed(state, fn) {
+    // (work inside other timed work, e.g. expanding the value of a set, or
+    // after the matchers of a test are made, see getKeyMatchers, is counted
+    // there, not twice)
+    if (state.timed || state.countMatchTime) return fn();
     const start = performance.now();
+    state.timed = true;
     try {
-      fn();
+      return fn();
     } finally {
+      state.timed = false;
       this.addWorkTime(state, start);
     }
   }
@@ -2371,6 +2690,26 @@ class SieveEngine {
   }
 
   /**
+   * A :matches or :regex key compiled once a run: the matchers of a test are
+   * made again each time it runs, thousands of times in a loop. Keys of up to
+   * 1024 characters are kept, up to 100 of them (100 RE2 objects for keys of
+   * 64KB took 774MB).
+   * @param {Object} [state] - Execution state (none compiles every time)
+   * @param {string} how - How it is compiled
+   * @param {string} pattern - The key
+   * @param {Function} compile - () => the compiled key
+   * @returns {RE2|null} The compiled key
+   */
+  getCompiled(state, how, pattern, compile) {
+    if (!state || pattern.length > 1024) return compile();
+    const key = `${how} ${pattern}`;
+    if (state.compiled.has(key)) return state.compiled.get(key);
+    const compiled = compile();
+    if (state.compiled.size < 100) state.compiled.set(key, compiled);
+    return compiled;
+  }
+
+  /**
    * Compile a Sieve glob pattern
    * @param {string} pattern - The glob pattern
    * @param {boolean} [capture] - Whether each wildcard is a group
@@ -2404,11 +2743,28 @@ class SieveEngine {
     // Ensure string_ is actually a string to prevent TypeError on .replaceAll()
     const str = typeof string_ === 'string' ? string_ : String(string_);
 
-    // (a name of digits is a match variable, RFC 5229 section 3.2)
-    const result = interpolate(str, (varName) =>
-      /^\d+$/.test(varName)
-        ? state.matchVariables?.[Number(varName)]
-        : state.variables.get(varName.toLowerCase())
+    //
+    // (a name of digits is a match variable, RFC 5229 section 3.2, unless
+    // the script set it; a name that is not an identifier, e.g.
+    // "${my-folder}", is a reference once a set of a script saved before
+    // names were checked made it a variable)
+    //
+    // (the time counts against MAX_MATCH_TIME: thousands of references
+    // that expand to nothing, or "${!}", make no string to count, and in
+    // nested foreverypart loops took seconds)
+    //
+    const { variables } = state;
+    const result = this.runTimed(state, () =>
+      interpolate(
+        str,
+        (varName) => {
+          const name = varName.toLowerCase();
+          return /^\d+$/.test(name) && !variables.has(name)
+            ? state.matchVariables?.[Number(name)]
+            : variables.get(name);
+        },
+        (varName) => variables.has(varName.toLowerCase())
+      )
     );
 
     //
@@ -2567,12 +2923,15 @@ class SieveEngine {
    * @param {Function} change - (current flags, flags of the command) => flags
    */
   changeFlags(command, state, change) {
+    // (without "variables" the first string list is flags too, as in
+    // `addflag "\\Seen" "\\Flagged"`, RFC 5232 section 3)
+    if (command.variableName && !state.enabledCapabilities.has('variables'))
+      command = {
+        flags: [command.variableName, ...command.flags],
+        variableName: null
+      };
     const flags = this.getFlags(command.flags, state);
     if (command.variableName) {
-      if (!state.enabledCapabilities.has('variables'))
-        throw new Error(
-          'A flag variable requires "variables" to be declared with require'
-        );
       const name = String(command.variableName).toLowerCase();
       const value = change(this.getFlagVariable(state, name), flags);
       this.checkFlagLimit(state, value.length);
@@ -2633,16 +2992,15 @@ class SieveEngine {
    * @param {Object} state - Execution state
    */
   async executeVacation(command, state) {
-    // (a second vacation fails the script, RFC 5230 section 4.7, as one
-    // with reject does, RFC 5429 section 2.4)
-    if (
-      state.actions.some((a) =>
-        ['vacation', 'reject', 'ereject'].includes(a.type)
-      )
-    )
-      throw new Error(
-        'A Sieve script may reply once with vacation, and not with reject'
+    // (one response to the sender: a second vacation, or one with reject, is
+    // dropped, RFC 5230 section 4.7 and RFC 5429 section 2.4)
+    if (state.response) {
+      this.warnOnce(
+        state,
+        'Sieve vacation dropped: the script already replies or rejects'
       );
+      return;
+    }
 
     // (no default here: without :days or :seconds the delivery uses the
     // default period, and 0 means as often as allowed, RFC 6131)
@@ -2668,6 +3026,7 @@ class SieveEngine {
       // when there is no :handle, RFC 5230 section 4.2)
       tracking: [command.subject, command.from, command.mime, command.message]
     });
+    state.response = 'vacation';
   }
 
   /**
@@ -2701,9 +3060,12 @@ class SieveEngine {
       : 'default';
     let key = `${handle}:${uniqueId}`;
     // (a long ID, such as a Message-ID the sender made 1MB long, is stored as
-    // its hash; a shorter one as it was)
+    // its hash, and the time to hash it counts against MAX_MATCH_TIME; a
+    // shorter one as it was)
     if (key.length > 256)
-      key = `sha256:${crypto.createHash('sha256').update(key).digest('hex')}`;
+      this.runTimed(state, () => {
+        key = `sha256:${crypto.createHash('sha256').update(key).digest('hex')}`;
+      });
 
     // (an ID tracked for no time is never a duplicate, RFC 7352 section 3.3)
     if (
@@ -2770,9 +3132,14 @@ class SieveEngine {
     // way to look them up, none does)
     const exists = state.context?.mailboxExists;
     if (typeof exists !== 'function') return false;
+    // (each name is looked up once a run: the time waiting on a lookup is not
+    // counted, and nested foreverypart loops can run thousands of them)
+    state.mailboxesFound ||= new Map();
     for (const mailbox of test.mailboxes) {
-      if (!(await exists(this.interpolateVariables(mailbox, state))))
-        return false;
+      const name = this.interpolateVariables(mailbox, state);
+      if (!state.mailboxesFound.has(name))
+        state.mailboxesFound.set(name, Boolean(await exists(name)));
+      if (!state.mailboxesFound.get(name)) return false;
     }
 
     return true;
@@ -2792,10 +3159,21 @@ class SieveEngine {
       ? this.interpolateVariables(test.mailbox, state)
       : null;
 
-    // (looked up in the mailboxes when the delivery can, RFC 8579 section 3)
+    // (looked up in the mailboxes when the delivery can, RFC 8579 section 3,
+    // each once a run, see evaluateMailboxexistsTest)
     const exists = state.context?.specialUseExists;
-    if (typeof exists === 'function')
-      return Boolean(await exists(attributes, mailbox));
+    if (typeof exists === 'function') {
+      const key = this.runTimed(state, () =>
+        JSON.stringify([attributes, mailbox])
+      );
+      state.specialUseFound ||= new Map();
+      if (!state.specialUseFound.has(key))
+        state.specialUseFound.set(
+          key,
+          Boolean(await exists(attributes, mailbox))
+        );
+      return state.specialUseFound.get(key);
+    }
 
     // (otherwise the special-use mailboxes every account has)
     return (
@@ -2908,7 +3286,8 @@ class SieveEngine {
     if (
       state.partIterStack.length >= SieveEngine.MIME_LIMITS.maxForeverypartDepth
     ) {
-      this.logger.warn(
+      this.warnOnce(
+        state,
         'foreverypart nesting depth exceeded, skipping inner loop'
       );
       return;
@@ -2932,11 +3311,13 @@ class SieveEngine {
       indexes.length < SieveEngine.MIME_LIMITS.maxPartsIteration;
       i++
     ) {
+      // (in tree order the parts inside it come right after it, each in it
+      // or in one before it, as in getDescendantParts; going up the chain of
+      // parents of each part took the square of the parts)
       if (outer !== -1 && Number.isInteger(parts[i].parentIndex)) {
-        let parent = parts[i].parentIndex;
-        while (Number.isInteger(parent) && parent > outer)
-          parent = parts[parent].parentIndex;
-        if (i <= outer || parent !== outer) continue;
+        if (i <= outer) continue;
+        const parent = parts[i].parentIndex;
+        if (parent < outer || parent >= i) break;
       }
 
       indexes.push(i);
@@ -3001,7 +3382,7 @@ class SieveEngine {
   executeExtracttext(command, state) {
     // extracttext requires variables extension
     if (!state.enabledCapabilities.has('variables')) {
-      this.logger.warn('extracttext requires variables extension');
+      this.warnOnce(state, 'extracttext requires variables extension');
       return;
     }
 

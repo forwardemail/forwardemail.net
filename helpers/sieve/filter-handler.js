@@ -26,14 +26,17 @@ const {
 //
 // Whether a script can run: scripts are checked strictly when saved, but one
 // saved before a missing "require" was refused (e.g. :detail without
-// "subaddress", or the i;ascii-numeric comparator without its capability)
-// still runs, since everything it uses is supported
+// "subaddress") still runs, since everything it uses is supported, and so
+// does one refused only for what runs as before (an unknown comparator or
+// variable namespace, see capabilities.js)
 //
 function canRun(capabilityResult) {
   return (
     capabilityResult.valid ||
     capabilityResult.unsupported.every(
-      (entry) => entry.undeclared && isSupportedCapability(entry.feature)
+      (entry) =>
+        entry.saveOnly ||
+        (entry.undeclared && isSupportedCapability(entry.feature))
     )
   );
 }

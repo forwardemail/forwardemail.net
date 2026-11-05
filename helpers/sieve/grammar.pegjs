@@ -40,17 +40,22 @@
     'true', 'valid_ext_list', 'valid_notify_method'
   ]);
 
+  // the importance words of draft versions of notify, as their numbers
+  const IMPORTANCE = new Map([['high', '1'], ['normal', '2'], ['low', '3']]);
+
   //
   // Tagged arguments may be given in any order (RFC 5228 section 2.6.2), but
   // none more than once and no conflicting ones together (section 2.6).
   // Each tag rule returns [group, props]: two tags of one group conflict.
   // `list` is the result of `(Tag _)*`.
+  // These checks (`options.strict`) are only made when a script is saved:
+  // one saved before they were made runs as it did, the last tag winning.
   //
   function tags(list, defaults) {
     const result = { ...defaults };
     const seen = new Set();
     for (const [[group, props]] of list) {
-      if (seen.has(group))
+      if (seen.has(group) && options.strict)
         error(`Duplicate or conflicting tagged argument: ${group}`);
       seen.add(group);
       if (props.modifier) result.modifiers.push(props.modifier);
@@ -62,12 +67,18 @@
         (a, b) => MODIFIER_PRECEDENCE[b] - MODIFIER_PRECEDENCE[a]
       );
 
-    // RFC 5260 section 6
-    if ('index' in defaults && result.last && result.index === null)
+    // RFC 5260 section 6 (:last without :index is ignored)
+    if (
+      options.strict &&
+      'index' in defaults &&
+      result.last &&
+      result.index === null
+    )
       error(':last requires :index');
 
-    // RFC 5703 section 4.1
-    if (result.anychild && !result.mime) error(':anychild requires :mime');
+    // RFC 5703 section 4.1 (:anychild without :mime is ignored)
+    if (options.strict && result.anychild && !result.mime)
+      error(':anychild requires :mime');
 
     return result;
   }
@@ -374,7 +385,8 @@ EncloseTag
   / ":headers"i W _ s:StringList { return [':headers', { headers: s }]; }
 
 // Notify Extension (RFC 5435); the method is positional, the ":method" tag
-// of draft versions is still accepted in its place
+// of draft versions is still accepted in its place (a notify without a
+// method is skipped when it runs, see engine.js)
 NotifyCommand
   = "notify"i W _ t:(NotifyTag _)* method:String? _ ";" {
       const result = tags(t, {
@@ -385,12 +397,13 @@ NotifyCommand
         message: null
       });
       if (method !== null) {
-        if (result.method !== null)
+        if (result.method !== null && options.strict)
           error('Duplicate or conflicting tagged argument: :method');
         result.method = method;
       }
 
-      if (result.method === null) error('notify requires a method');
+      if (result.method === null && options.strict)
+        error('notify requires a method');
       return node('Notify', result);
     }
 
@@ -398,9 +411,10 @@ NotifyTag
   = ":method"i W _ s:String { return [':method', { method: s }]; }
   / ":from"i W _ s:String { return [':from', { from: s }]; }
   / ":importance"i W _ s:String {
-      if (!['1', '2', '3'].includes(s))
+      const importance = IMPORTANCE.get(s.toLowerCase()) || s;
+      if (!['1', '2', '3'].includes(importance) && options.strict)
         error(':importance must be "1", "2" or "3"');
-      return [':importance', { importance: s }];
+      return [':importance', { importance }];
     }
   / ":options"i W _ a:StringList { return [':options', { options: a }]; }
   / ":message"i W _ s:String { return [':message', { message: s }]; }
@@ -425,7 +439,7 @@ LastTag
 // Index Extension (RFC 5260 section 6): fields are counted from 1
 IndexTag
   = ":index"i W _ n:Number {
-      if (n < 1) error(':index must be 1 or more');
+      if (n < 1 && options.strict) error(':index must be 1 or more');
       return [':index', { index: n }];
     }
 
@@ -505,7 +519,7 @@ AddressTest
         ...tags(t, {
           addressPart: 'all',
           matchType: 'is',
-          comparator: 'i;ascii-casemap',
+          comparator: null,
           index: null,
           last: false,
           mime: false,
@@ -530,7 +544,7 @@ HeaderTest
       return node('HeaderTest', {
         ...tags(t, {
           matchType: 'is',
-          comparator: 'i;ascii-casemap',
+          comparator: null,
           index: null,
           last: false,
           mime: false,
@@ -565,7 +579,7 @@ EnvelopeTest
         ...tags(t, {
           addressPart: 'all',
           matchType: 'is',
-          comparator: 'i;ascii-casemap'
+          comparator: null
         }),
         parts,
         keys
@@ -604,7 +618,7 @@ BodyTest
         ...tags(t, {
           bodyTransform: 'text',
           matchType: 'is',
-          comparator: 'i;ascii-casemap'
+          comparator: null
         }),
         keys
       });
@@ -630,7 +644,7 @@ DateTest
           zone: null,
           originalZone: false,
           matchType: 'is',
-          comparator: 'i;ascii-casemap',
+          comparator: null,
           index: null,
           last: false
         }),
@@ -654,7 +668,7 @@ CurrentdateTest
         ...tags(t, {
           zone: null,
           matchType: 'is',
-          comparator: 'i;ascii-casemap'
+          comparator: null
         }),
         datePart,
         keys
@@ -674,7 +688,7 @@ ZoneTag
 HasflagTest
   = "hasflag"i W _ t:(HasflagTag _)* variables:HasflagVariables? flags:StringList {
       return node('HasflagTest', {
-        ...tags(t, { matchType: 'is', comparator: 'i;ascii-casemap' }),
+        ...tags(t, { matchType: 'is', comparator: null }),
         variableName: variables ? variables[0] : null,
         variables,
         flags
@@ -692,7 +706,7 @@ HasflagVariables
 StringTest
   = "string"i W _ t:(MatchComparatorTag _)* source:StringList _ keys:StringList {
       return node('StringTest', {
-        ...tags(t, { matchType: 'is', comparator: 'i;ascii-casemap' }),
+        ...tags(t, { matchType: 'is', comparator: null }),
         source,
         keys
       });
@@ -706,7 +720,7 @@ MatchComparatorTag
 EnvironmentTest
   = "environment"i W _ t:(MatchComparatorTag _)* name:String _ keys:StringList {
       return node('EnvironmentTest', {
-        ...tags(t, { matchType: 'is', comparator: 'i;ascii-casemap' }),
+        ...tags(t, { matchType: 'is', comparator: null }),
         name,
         keys
       });
@@ -747,7 +761,7 @@ MailboxexistsTest
 MetadataTest
   = "metadata"i W _ t:(MatchComparatorTag _)* mailbox:String _ annotation:String _ keys:StringList {
       return node('MetadataTest', {
-        ...tags(t, { matchType: 'is', comparator: 'i;ascii-casemap' }),
+        ...tags(t, { matchType: 'is', comparator: null }),
         mailbox,
         annotation,
         keys
@@ -785,7 +799,7 @@ NotifyMethodCapabilityTest
       return node('NotifyMethodCapabilityTest', {
         uri,
         capability,
-        ...tags(t, { matchType: 'is', comparator: 'i;ascii-casemap' }),
+        ...tags(t, { matchType: 'is', comparator: null }),
         keys
       });
     }

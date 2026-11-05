@@ -1117,7 +1117,7 @@ Tabel membedakan implementasi lengkap dari perilaku yang tercantum dengan perila
 | [RFC 5173](https://datatracker.ietf.org/doc/html/rfc5173) | `body` | Pencocokan isi badan pesan. |
 | [RFC 5229](https://datatracker.ietf.org/doc/html/rfc5229) | `variables` | Perluasan variabel dan modifier yang didukung. |
 | [RFC 5231](https://datatracker.ietf.org/doc/html/rfc5231) | `relational` | Perbandingan `:count` dan `:value`. |
-| [RFC 4790](https://datatracker.ietf.org/doc/html/rfc4790) | Comparators | `i;ascii-casemap`, `i;octet`, dan `i;ascii-numeric`. |
+| [RFC 4790](https://datatracker.ietf.org/doc/html/rfc4790) | Comparators | `i;ascii-casemap`, `i;unicode-casemap`, `i;octet`, dan `i;ascii-numeric`. |
 | [RFC 3894](https://datatracker.ietf.org/doc/html/rfc3894) | `copy` | `:copy` pada `fileinto` dan `redirect`. |
 | [RFC 5293](https://datatracker.ietf.org/doc/html/rfc5293) | `editheader` | Perubahan header sebelum penyimpanan, terlihat oleh tes berikutnya, kecuali field autentikasi dan routing pengiriman yang dilindungi, `Received`, dan `Auto-Submitted`. |
 | [RFC 5260](https://datatracker.ietf.org/doc/html/rfc5260) | `date`, `index` | Tes `currentdate` dan tanggal header, serta `:index` dan `:last`. |
@@ -1141,7 +1141,7 @@ Tabel membedakan implementasi lengkap dari perilaku yang tercantum dengan perila
 | `reject` / `ereject` | Menolak pesan dengan error SMTP. | Dikembalikan melalui jalur pengiriman MX. |
 | `vacation` / `vacation-seconds` | Mengirim balasan otomatis. | Dimasukkan ke antrian dengan pembatasan tingkat berdasarkan penerima dan interval. |
 | `imap4flags` | Mengatur atau menguji flag IMAP. | Diterapkan saat pesan disimpan. |
-| `envelope`, `body`, `date`, `index`, `regex`, `subaddress`, `relational`, `comparator-i;ascii-numeric` | Menguji data pesan dan envelope. | Dievaluasi oleh mesin Sieve. |
+| `envelope`, `body`, `date`, `index`, `regex`, `subaddress`, `relational`, `comparator-i;ascii-numeric`, `comparator-i;unicode-casemap` | Menguji data pesan dan envelope. | Dievaluasi oleh mesin Sieve. |
 | `variables`, `duplicate`, `ihave` | Menyimpan nilai, mendeteksi duplikat, dan memeriksa kemampuan. | Variabel bersifat lokal terhadap skrip; status duplikat menggunakan Redis. |
 | `editheader` | Menambah atau menghapus header yang tidak dilindungi. | Header autentikasi dan routing pengiriman, `Received`, dan `Auto-Submitted` tidak dapat diubah. |
 | `enotify` | Mengirim notifikasi menggunakan `mailto:`. | Dimasukkan ke antrian dengan pembatasan tingkat notifikasi. |

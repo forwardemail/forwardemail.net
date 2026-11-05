@@ -3216,6 +3216,14 @@
               "$ref": "#/components/schemas/Error"
             }
           }
+        },
+        "headers": {
+          "Retry-After": {
+            "description": "Seconds to wait before trying again (sent when a sign-in is refused for too many attempts)",
+            "schema": {
+              "type": "integer"
+            }
+          }
         }
       },
       "InternalServerError": {
@@ -4916,6 +4924,12 @@
               },
               "X-Item-Count": {
                 "description": "Total number of items",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Lightweight-Fallback-Count": {
+                "description": "Number of messages of this page listed without the nodemailer and raw fields (as with lightweight=true), because the messages of the page exceeded the size a full list may return; get them with GET /v1/messages/{id}. Only sent when messages were listed this way.",
                 "schema": {
                   "type": "integer"
                 }
@@ -9138,6 +9152,9 @@
           "401": {
             "description": "Unauthorized - Invalid API token or alias credentials. Note: authentication is optional; this error only occurs when credentials are provided but are invalid."
           },
+          "403": {
+            "description": "Forbidden - The credentials are correct but may not connect (e.g. the alias does not have IMAP enabled, or the account is banned); a `?auth=message` connection is closed with `4403`"
+          },
           "404": {
             "description": "Not Found - Alias not found for the provided credentials"
           },
@@ -9585,7 +9602,7 @@
     },
     {
       "name": "筛分脚本",
-      "description": "Sieve 脚本管理端点\n\n>[!NOTE]\n\n> Sieve 是一种功能强大的电子邮件过滤语言，定义于 RFC 5228。脚本会在收到邮件时执行，以自动组织、过滤和回复邮件。\n\n>[!TIP]\n\n> 支持的扩展名包括：fileinto、reject、ereject、vacation、vacation-seconds、imap4flags、envelope、body、relational、comparator-i;ascii-numeric、copy、date、index、editheader、enotify、regex、subaddress、ihave、duplicate、special-use、mailbox、environment 和 variables。脚本在保存前会进行验证，以确保其语法正确。\n\n>[!NOTE]\n\n> **支持两种身份验证方法：**\n\n> - **API 令牌身份验证** (`/v1/domains/{domain_id}/aliases/{alias_id}/sieve`): 使用您的 API 密钥作为用户名，进行基本身份验证。URL 路径中需要包含 domain_id 和 alias_id。\n\n> - **别名身份验证** (`/v1/sieve-scripts`): 使用别名邮箱和生成的密码作为基本身份验证凭据。URL 中不需要 domain_id 或 alias_id。\n\n>[!TIP]\n\n> 脚本 ID 参数接受 MongoDB ObjectId 或脚本名称，从而实现灵活的脚本标识。"
+      "description": "Sieve 脚本管理端点\n\n>[!NOTE]\n\n> Sieve 是一种功能强大的电子邮件过滤语言，定义于 RFC 5228。脚本会在收到邮件时执行，以自动组织、过滤和回复邮件。\n\n>[!TIP]\n\n> 支持的扩展名包括：fileinto、reject、ereject、vacation、vacation-seconds、imap4flags、envelope、body、relational、comparator-i;ascii-numeric、comparator-i;unicode-casemap、copy、date、index、editheader、enotify、regex、subaddress、ihave、duplicate、special-use、mailbox、environment 和 variables。脚本在保存前会进行验证，以确保其语法正确。\n\n>[!NOTE]\n\n> **支持两种身份验证方法：**\n\n> - **API 令牌身份验证** (`/v1/domains/{domain_id}/aliases/{alias_id}/sieve`): 使用您的 API 密钥作为用户名，进行基本身份验证。URL 路径中需要包含 domain_id 和 alias_id。\n\n> - **别名身份验证** (`/v1/sieve-scripts`): 使用别名邮箱和生成的密码作为基本身份验证凭据。URL 中不需要 domain_id 或 alias_id。\n\n>[!TIP]\n\n> 脚本 ID 参数接受 MongoDB ObjectId 或脚本名称，从而实现灵活的脚本标识。"
     },
     {
       "name": "WebSocket",

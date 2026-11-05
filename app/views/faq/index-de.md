@@ -2894,7 +2894,7 @@ Die vollständige, implementierungsgestützte Capability-Liste und RFC-Anmerkung
 | --- | --- |
 | Kernsprache | `keep`, `discard`, `stop`, bedingte Blöcke, und die Basis-Tests `address`, `header`, `exists`, `size` und boolesche Tests. |
 | Zustellung | `fileinto`, `copy`, `redirect`, `mailbox` für `fileinto :create` und `mailboxexists`, und `special-use` für `fileinto :specialuse` und `specialuse_exists`. |
-| Tests und Vergleiche | `envelope`, `body`, `date`, `index`, `regex`, `subaddress`, `relational`, `i;ascii-casemap`, `i;octet`, und `i;ascii-numeric`. |
+| Tests und Vergleiche | `envelope`, `body`, `date`, `index`, `regex`, `subaddress`, `relational`, `i;ascii-casemap`, `i;unicode-casemap`, `i;octet`, und `i;ascii-numeric`. |
 | Status und Variablen | `variables`, `encoded-character`, `imap4flags`, `duplicate`, und `ihave`. |
 | Aktionen und Antworten | `reject`, `ereject`, `vacation`, `vacation-seconds`, und `enotify` unter Verwendung von `mailto:`. Die veraltete Deklaration `require "notify"` wird als Eingabe-Alias für `enotify` akzeptiert, aber `enotify` ist die beworbene Capability. |
 | Nachrichtenverarbeitung | `editheader`, `environment`, `foreverypart` (mit `break`), `extracttext`, `replace`, und `mime`, das diese drei Befehle ebenfalls aktiviert. |

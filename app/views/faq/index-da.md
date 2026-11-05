@@ -2895,7 +2895,7 @@ Den komplette, implementations-understøttede kapabilitetsliste og RFC-noter fin
 | --- | --- |
 | Kernesprog | `keep`, `discard`, `stop`, betingede blokke, og de grundlæggende tests `address`, `header`, `exists`, `size`, og boolske tests. |
 | Levering | `fileinto`, `copy`, `redirect`, `mailbox` for `fileinto :create` og `mailboxexists`, og `special-use` til `fileinto :specialuse` samt `specialuse_exists`. |
-| Tests og sammenligninger | `envelope`, `body`, `date`, `index`, `regex`, `subaddress`, `relational`, `i;ascii-casemap`, `i;octet`, og `i;ascii-numeric`. |
+| Tests og sammenligninger | `envelope`, `body`, `date`, `index`, `regex`, `subaddress`, `relational`, `i;ascii-casemap`, `i;unicode-casemap`, `i;octet`, og `i;ascii-numeric`. |
 | Tilstand og variabler | `variables`, `encoded-character`, `imap4flags`, `duplicate`, og `ihave`. |
 | Handlinger og svar | `reject`, `ereject`, `vacation`, `vacation-seconds`, og `enotify` ved brug af `mailto:`. Den ældre deklaration `require "notify"` accepteres som et input-alias for `enotify`, men `enotify` er den annoncerede kapabilitet. |
 | Beskedbehandling | `editheader`, `environment`, `foreverypart` (med `break`), `extracttext`, `replace`, og `mime`, som også aktiverer de tre kommandoer. |

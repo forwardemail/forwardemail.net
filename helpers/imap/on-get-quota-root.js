@@ -14,6 +14,7 @@
  */
 
 const bytes = require('@forwardemail/bytes');
+const ms = require('ms');
 
 const Aliases = require('#models/aliases');
 const Mailboxes = require('#models/mailboxes');
@@ -38,32 +39,28 @@ async function onGetQuotaRoot(path, session, fn) {
     await this.refreshSession(session, 'GETQUOTAROOT');
 
     //
-    // sync with tmp db every time user attempts to fetch mail
+    // sync with the temporary mailbox, at most once every 30 seconds per
+    // alias, shared with the sync on sign-in (see helpers/on-auth.js), as
+    // some clients send GETQUOTAROOT often (new mail is synced as it is
+    // delivered, see `sqlite_sync_request` in imap-server.js)
     //
-    // NOTE: this has caching mechanism to prevent more than 1 call every 10s
-    //
-    if (this.wsp) {
-      this.wsp
-        .request({
-          action: 'sync',
-          session: { user: session.user }
-        })
-        .then((deleted) => {
-          this.logger.debug('synced messages', { deleted });
-        })
-        .catch((err) =>
-          this.logger.fatal(err, { session, resolver: this.resolver })
-        );
-    } else {
-      syncTemporaryMailbox
-        .call(this, session)
-        .then((deleted) => {
-          this.logger.debug('synced messages', { deleted });
-        })
-        .catch((err) =>
-          this.logger.fatal(err, { session, resolver: this.resolver })
-        );
-    }
+    this.client
+      .set(`sync_dedup:${session.user.alias_id}`, '1', 'PX', ms('30s'), 'NX')
+      .then((locked) => {
+        if (!locked) return;
+        return this.wsp
+          ? this.wsp.request(
+              { action: 'sync', session: { user: session.user } },
+              0
+            )
+          : syncTemporaryMailbox.call(this, session);
+      })
+      .then((deleted) => {
+        this.logger.debug('synced messages', { deleted });
+      })
+      .catch((err) =>
+        this.logger.fatal(err, { session, resolver: this.resolver })
+      );
 
     const mailbox = await Mailboxes.findOne(this, session, {
       path

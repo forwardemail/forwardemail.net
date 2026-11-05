@@ -1117,7 +1117,7 @@ La tabella distingue l'implementazione completa del comportamento elencato da co
 | [RFC 5173](https://datatracker.ietf.org/doc/html/rfc5173) | `body` | Corrispondenza del contenuto del corpo del messaggio. |
 | [RFC 5229](https://datatracker.ietf.org/doc/html/rfc5229) | `variables` | Espansione delle variabili e modificatori supportati. |
 | [RFC 5231](https://datatracker.ietf.org/doc/html/rfc5231) | `relational` | Confronti `:count` e `:value`. |
-| [RFC 4790](https://datatracker.ietf.org/doc/html/rfc4790) | Comparators | `i;ascii-casemap`, `i;octet` e `i;ascii-numeric`. |
+| [RFC 4790](https://datatracker.ietf.org/doc/html/rfc4790) | Comparators | `i;ascii-casemap`, `i;unicode-casemap`, `i;octet` e `i;ascii-numeric`. |
 | [RFC 3894](https://datatracker.ietf.org/doc/html/rfc3894) | `copy` | `:copy` su `fileinto` e `redirect`. |
 | [RFC 5293](https://datatracker.ietf.org/doc/html/rfc5293) | `editheader` | Modifiche agli header prima dell'archiviazione, visibili ai test successivi, eccetto i campi protetti relativi all'autenticazione e all'instradamento della consegna, `Received` e `Auto-Submitted`. |
 | [RFC 5260](https://datatracker.ietf.org/doc/html/rfc5260) | `date`, `index` | `currentdate` e test sulle date degli header, più `:index` e `:last`. |
@@ -1141,7 +1141,7 @@ La tabella distingue l'implementazione completa del comportamento elencato da co
 | `reject` / `ereject` | Rifiuta un messaggio con un errore SMTP. | Restituito attraverso il percorso di consegna MX. |
 | `vacation` / `vacation-seconds` | Invia una risposta automatica. | Messo in coda con limiti di frequenza per destinatario e per intervallo. |
 | `imap4flags` | Imposta o testa i flag IMAP. | Applicato quando il messaggio viene memorizzato. |
-| `envelope`, `body`, `date`, `index`, `regex`, `subaddress`, `relational`, `comparator-i;ascii-numeric` | Testa dati del messaggio e dell'involucro. | Valutati dal motore Sieve. |
+| `envelope`, `body`, `date`, `index`, `regex`, `subaddress`, `relational`, `comparator-i;ascii-numeric`, `comparator-i;unicode-casemap` | Testa dati del messaggio e dell'involucro. | Valutati dal motore Sieve. |
 | `variables`, `duplicate`, `ihave` | Memorizza valori, rileva duplicati e verifica capability. | Le variabili sono locali allo script; lo stato dei duplicati usa Redis. |
 | `editheader` | Aggiunge o elimina header non protetti. | Gli header di autenticazione e instradamento della consegna, `Received` e `Auto-Submitted` non possono essere modificati. |
 | `enotify` | Invia una notifica usando `mailto:`. | Messo in coda con limiti di frequenza per le notifiche. |

@@ -340,6 +340,10 @@ class IMAP {
         // of an alias run one at a time, see helpers/sync-temporary-mailbox)
         //
         if (channel === 'sqlite_sync_request') {
+          // (each signed-in connection listens for its alias, see
+          //  `setupNotificationListener` in imap-connection.js, so most
+          //  deliveries cluster-wide are for an alias with none here)
+          if (this.server.notifier._listeners.listenerCount(id) === 0) return;
           for (const connection of this.server.connections) {
             if (connection?.session?.user?.alias_id !== id) continue;
             await this.wsp.request(

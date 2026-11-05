@@ -8,6 +8,7 @@ const { describe, it } = require('node:test');
 
 const { parse } = require('../../helpers/sieve/parser');
 const {
+  ADVERTISED_CAPABILITIES,
   SUPPORTED_CAPABILITIES,
   validateSieveCapabilities
 } = require('../../helpers/sieve/capabilities');
@@ -23,6 +24,7 @@ describe('Sieve capability contract', () => {
       'comparator-i;ascii-casemap',
       'comparator-i;ascii-numeric',
       'comparator-i;octet',
+      'comparator-i;unicode-casemap',
       'copy',
       'date',
       'duplicate',
@@ -52,13 +54,18 @@ describe('Sieve capability contract', () => {
       'variables'
     ]);
 
+    // (all of them but "redirect", which is not an extension, RFC 5804
+    // section 1.7)
+    assert.deepStrictEqual(
+      ADVERTISED_CAPABILITIES,
+      SUPPORTED_CAPABILITIES.filter((capability) => capability !== 'redirect')
+    );
     const server = new ManageSieveServer();
-    const capabilities = server.getCapabilities().join('\n');
-    assert.match(capabilities, /"SIEVE"/);
-    assert.match(capabilities, /redirect/);
-    assert.match(capabilities, /mailbox/);
-    assert.doesNotMatch(capabilities, /enclose/);
-    assert.match(capabilities, /encoded-character/);
+    assert.ok(
+      server
+        .getCapabilities()
+        .includes(`"SIEVE" "${ADVERTISED_CAPABILITIES.join(' ')}"`)
+    );
   });
 
   it('requires each used capability to be declared explicitly', () => {
@@ -217,19 +224,28 @@ describe('Sieve capability checks (RFC conformance)', () => {
     );
   });
 
-  it('needs require only for comparators other than i;octet and i;ascii-casemap (RFC 5228 section 2.7.3)', () => {
-    assert.strictEqual(
-      check(
-        'if header :comparator "i;octet" :contains "Subject" "MAKE MONEY FAST" { discard; }'
-      ).valid,
-      true
-    );
+  //
+  // (RFC 5228 section 2.7.3 asks for a require for comparators other than
+  // i;octet and i;ascii-casemap; as for redirect none is needed here, since
+  // scripts have used them without one)
+  //
+  it('needs no require for the comparators there are, and refuses others', () => {
+    for (const comparator of [
+      'i;octet',
+      'i;ascii-casemap',
+      'i;ascii-numeric',
+      'i;unicode-casemap'
+    ]) {
+      assert.strictEqual(
+        check(
+          `if header :comparator "${comparator}" :contains "Subject" "MAKE MONEY FAST" { discard; }`
+        ).valid,
+        true,
+        comparator
+      );
+    }
 
-    let result = check(
-      'if header :comparator "i;ascii-numeric" "X-N" "1" { discard; }'
-    );
-    assert.strictEqual(result.valid, false);
-    assert.match(result.errors.join('\n'), /comparator-i;ascii-numeric/);
+    let result;
 
     assert.strictEqual(
       check(
@@ -240,6 +256,7 @@ describe('Sieve capability checks (RFC conformance)', () => {
 
     result = check('if header :comparator "i;bogus" "X-N" "1" { discard; }');
     assert.strictEqual(result.valid, false);
+    assert.match(result.errors.join('\n'), /comparator-i;bogus/);
 
     result = check(
       'require "editheader"; deleteheader :comparator "i;bogus" "X-A" "v";'

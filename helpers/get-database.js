@@ -6,7 +6,10 @@
 const process = require('node:process');
 const fs = require('node:fs');
 const os = require('node:os');
+const { randomUUID } = require('node:crypto');
+const path = require('node:path');
 const { setTimeout: delay } = require('node:timers/promises');
+const { Worker } = require('node:worker_threads');
 
 const Database = require('better-sqlite3-multiple-ciphers');
 const dayjs = require('dayjs-with-plugins');
@@ -38,6 +41,7 @@ const ensureDefaultMailboxes = require('#helpers/ensure-default-mailboxes');
 const getAttachments = require('#helpers/get-attachments');
 const env = require('#config/env');
 const getPathToDatabase = require('#helpers/get-path-to-database');
+const { getRekeyLockKey } = require('#helpers/rekey-lock');
 const isRetryableError = require('#helpers/is-retryable-error');
 const isValidPassword = require('#helpers/is-valid-password');
 const logger = require('#helpers/logger');
@@ -77,6 +81,122 @@ const RELEASE_LOCK_SCRIPT =
 // `_runDeferredMaintenance`); each row's mimeTree is decoded to release its
 // attachments, so batches are kept small enough to yield often.
 const TRASH_PURGE_BATCH_SIZE = 200;
+
+//
+// Indexes for the sort of the API message list (GET /v1/messages, with and
+// without a folder), which without them reads and sorts every message of the
+// folder or mailbox on each request.  `created_at` is stored after the
+// message bodies, so building one reads and decrypts the whole mailbox
+// (3.5-5s per GB each on a 2 CPU host).  A mailbox under
+// LIST_INDEX_INLINE_MAX_BYTES builds them when it is opened (a few hundred
+// ms at most).  They are built once: afterwards this only checks that they
+// exist.
+//
+// A larger mailbox is indexed by the sqlite-worker (`listIndexes` in
+// helpers/worker.js), only once the API lists it (see `list` in
+// app/controllers/api/v1/messages.js), as only that list needs them: there
+// each list sorted the whole mailbox on this event loop (4-6s at 1 GB,
+// 15-22s at 3 GB).  The build holds the write lock of the mailbox, and a
+// write on this process's connection to it waits for it in SQLite's busy
+// handler, which blocks this event loop (for every alias here) as it does
+// for a VACUUM (see helpers/worker.js).
+//
+const LIST_INDEXES = {
+  Messages_mailbox_created_at:
+    'CREATE INDEX IF NOT EXISTS "Messages_mailbox_created_at" ON "Messages" ("mailbox", "created_at")',
+  Messages_created_at:
+    'CREATE INDEX IF NOT EXISTS "Messages_created_at" ON "Messages" ("created_at")'
+};
+const LIST_INDEX_INLINE_MAX_BYTES = 32 * 1024 * 1024;
+// (not renewed: long enough for a build of tens of GB)
+const LIST_INDEX_LOCK_TTL = ms('30m');
+
+let listIndexQueue = Promise.resolve();
+
+//
+// Builds them in a worker thread on a connection of its own, one mailbox at
+// a time per process, under the mailbox's VACUUM lock so that the two never
+// run at once.  Resolves with whether the indexes were built.
+//
+function createIndexesInThread(dbFilePath, session, statements, client) {
+  const run = listIndexQueue.then(async () => {
+    const aliasId = session.user.alias_id;
+    const lockKey = `vacuum_lock:${aliasId}`;
+    // (an owner of its own, as compactDatabase uses)
+    const owner = randomUUID();
+    const acquired = await client.set(
+      lockKey,
+      owner,
+      'PX',
+      LIST_INDEX_LOCK_TTL,
+      'NX'
+    );
+    if (!acquired) return false;
+
+    try {
+      // never alongside a password rotation or a file swap of the mailbox
+      // (checked under the lock, as a VACUUM does)
+      const [rekeyLock, swapLock] = await client.mget(
+        getRekeyLockKey(aliasId),
+        `db_swap_lock:${aliasId}`
+      );
+      if (rekeyLock || swapLock) return false;
+
+      await new Promise((resolve, reject) => {
+        const worker = new Worker(
+          path.join(__dirname, 'compact-database-thread.js'),
+          { workerData: { dbFilePath, session, statements } }
+        );
+        worker.once('message', (message) => {
+          if (!message?.error) return resolve();
+          reject(
+            Object.assign(new Error(message.error.message), message.error)
+          );
+        });
+        worker.once('error', reject);
+        // (after an answer this does nothing)
+        worker.once('exit', (code) =>
+          reject(new Error(`Index thread exited with code ${code}`))
+        );
+      });
+      return true;
+    } finally {
+      await client
+        .eval(RELEASE_LOCK_SCRIPT, 1, lockKey, owner)
+        .catch((err) => logger.fatal(err));
+    }
+  });
+  listIndexQueue = run.catch(() => {});
+  return run;
+}
+
+// the statements of the list indexes a mailbox does not have yet
+function getMissingListIndexes(db) {
+  const statements = [];
+  for (const [name, sql] of Object.entries(LIST_INDEXES)) {
+    const exists = db
+      .prepare("SELECT 1 FROM sqlite_master WHERE type = 'index' AND name = ?")
+      .pluck()
+      .get(name);
+    if (!exists) statements.push(sql);
+  }
+
+  return statements;
+}
+
+// (a larger mailbox is left to the sqlite-worker, see above)
+function createListIndexes(db) {
+  const statements = getMissingListIndexes(db);
+  if (statements.length === 0) return;
+
+  const liveBytes =
+    (db.pragma('page_count', { simple: true }) -
+      db.pragma('freelist_count', { simple: true })) *
+    db.pragma('page_size', { simple: true });
+
+  if (liveBytes < LIST_INDEX_INLINE_MAX_BYTES)
+    for (const sql of statements) db.prepare(sql).run();
+}
 
 //
 // Release the attachment references of messages the purge just deleted
@@ -953,6 +1073,7 @@ async function getDatabase(
                   'CREATE INDEX IF NOT EXISTS "Messages_mailbox_undeleted_uid" ON "Messages" ("mailbox", "undeleted", "uid")'
                 )
                 .run();
+              createListIndexes(_dbForIdx);
             } catch (err) {
               if (!err.message.includes('no such table')) {
                 logger.fatal(err, {
@@ -2669,3 +2790,5 @@ function retryGetDatabase(...args) {
 }
 
 module.exports = retryGetDatabase;
+module.exports.createIndexesInThread = createIndexesInThread;
+module.exports.getMissingListIndexes = getMissingListIndexes;

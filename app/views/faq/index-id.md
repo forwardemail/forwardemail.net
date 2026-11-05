@@ -2894,7 +2894,7 @@ Daftar kemampuan lengkap yang didukung implementasi dan catatan RFC tersedia dal
 | --- | --- |
 | Bahasa inti | `keep`, `discard`, `stop`, blok kondisional, dan tes dasar `address`, `header`, `exists`, `size`, dan tes boolean. |
 | Pengiriman | `fileinto`, `copy`, `redirect`, `mailbox` untuk `fileinto :create` dan `mailboxexists`, dan `special-use` untuk `fileinto :specialuse` serta `specialuse_exists`. |
-| Tes dan perbandingan | `envelope`, `body`, `date`, `index`, `regex`, `subaddress`, `relational`, `i;ascii-casemap`, `i;octet`, dan `i;ascii-numeric`. |
+| Tes dan perbandingan | `envelope`, `body`, `date`, `index`, `regex`, `subaddress`, `relational`, `i;ascii-casemap`, `i;unicode-casemap`, `i;octet`, dan `i;ascii-numeric`. |
 | Status dan variabel | `variables`, `encoded-character`, `imap4flags`, `duplicate`, dan `ihave`. |
 | Aksi dan respons | `reject`, `ereject`, `vacation`, `vacation-seconds`, dan `enotify` menggunakan `mailto:`. Deklarasi warisan `require "notify"` diterima sebagai alias input untuk `enotify`, tetapi `enotify` adalah kemampuan yang diiklankan. |
 | Pemrosesan pesan | `editheader`, `environment`, `foreverypart` (dengan `break`), `extracttext`, `replace`, dan `mime`, yang juga mengaktifkan ketiga perintah tersebut. |

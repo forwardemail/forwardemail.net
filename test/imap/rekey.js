@@ -373,6 +373,9 @@ test('IMAP login is refused while the alias is being rekeyed', async (t) => {
 
   const err = await t.throwsAsync(login());
   t.true(err.authenticationFailed);
+  // (temporary: clients retry instead of asking for the password again)
+  t.is(err.serverResponseCode, 'UNAVAILABLE');
+  t.regex(err.response, /rekey/);
 
   // the announcement closes the session that was open before the rotation
   t.true(imapFlow.usable);

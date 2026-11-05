@@ -3216,6 +3216,14 @@
               "$ref": "#/components/schemas/Error"
             }
           }
+        },
+        "headers": {
+          "Retry-After": {
+            "description": "Seconds to wait before trying again (sent when a sign-in is refused for too many attempts)",
+            "schema": {
+              "type": "integer"
+            }
+          }
         }
       },
       "InternalServerError": {
@@ -4916,6 +4924,12 @@
               },
               "X-Item-Count": {
                 "description": "Total number of items",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Lightweight-Fallback-Count": {
+                "description": "Number of messages of this page listed without the nodemailer and raw fields (as with lightweight=true), because the messages of the page exceeded the size a full list may return; get them with GET /v1/messages/{id}. Only sent when messages were listed this way.",
                 "schema": {
                   "type": "integer"
                 }
@@ -9138,6 +9152,9 @@
           "401": {
             "description": "Unauthorized - Invalid API token or alias credentials. Note: authentication is optional; this error only occurs when credentials are provided but are invalid."
           },
+          "403": {
+            "description": "Forbidden - The credentials are correct but may not connect (e.g. the alias does not have IMAP enabled, or the account is banned); a `?auth=message` connection is closed with `4403`"
+          },
           "404": {
             "description": "Not Found - Alias not found for the provided credentials"
           },
@@ -9585,7 +9602,7 @@
     },
     {
       "name": "สคริปต์ Sieve",
-      "description": "จุดเชื่อมต่อสำหรับการจัดการสคริปต์ของ Sieve\n\n>__หมายเหตุไม่ต้องแปล__\n> Sieve เป็นภาษาการกรองอีเมลที่มีประสิทธิภาพ ซึ่งกำหนดไว้ใน RFC 5228 สคริปต์จะถูกเรียกใช้กับอีเมลขาเข้าเพื่อจัดระเบียบ กรอง และตอบกลับข้อความโดยอัตโนมัติ\n\n>เคล็ดลับไม่ต้องแปล__\n> ส่วนขยายที่รองรับ ได้แก่: fileinto, reject, ereject, vacation, vacation-seconds, imap4flags, envelope, body, relational, comparator-i;ascii-numeric, copy, date, index, editheader, enotify, regex, subaddress, ihave, duplicate, special-use, mailbox, environment และ variables สคริปต์จะได้รับการตรวจสอบก่อนบันทึกเพื่อให้แน่ใจว่าถูกต้องตามหลักไวยากรณ์\n\n>__หมายเหตุไม่ต้องแปล__\n> **รองรับวิธีการยืนยันตัวตนสองวิธี:**\n> - **การยืนยันตัวตนด้วยโทเค็น API** (`/v1/domains/{domain_id}/aliases/{alias_id}/sieve`): ใช้คีย์ API ของคุณเป็นชื่อผู้ใช้ด้วย Basic Auth ต้องมี domain_id และ alias_id ในเส้นทาง URL\n\n> - **การยืนยันตัวตนด้วยนามแฝง** (`/v1/sieve-scripts`): ใช้ที่อยู่อีเมลนามแฝงและรหัสผ่านที่สร้างขึ้นเป็นข้อมูลรับรอง Basic Auth ไม่จำเป็นต้องมี domain_id หรือ alias_id ใน URL\n\n>__เคล็ดลับไม่ต้องแปล__\n> พารามิเตอร์ Script ID ยอมรับได้ทั้ง MongoDB ObjectId หรือชื่อสคริปต์ ทำให้สามารถระบุสคริปต์ได้อย่างยืดหยุ่น"
+      "description": "จุดเชื่อมต่อสำหรับการจัดการสคริปต์ของ Sieve\n\n>__หมายเหตุไม่ต้องแปล__\n> Sieve เป็นภาษาการกรองอีเมลที่มีประสิทธิภาพ ซึ่งกำหนดไว้ใน RFC 5228 สคริปต์จะถูกเรียกใช้กับอีเมลขาเข้าเพื่อจัดระเบียบ กรอง และตอบกลับข้อความโดยอัตโนมัติ\n\n>เคล็ดลับไม่ต้องแปล__\n> ส่วนขยายที่รองรับ ได้แก่: fileinto, reject, ereject, vacation, vacation-seconds, imap4flags, envelope, body, relational, comparator-i;ascii-numeric, comparator-i;unicode-casemap, copy, date, index, editheader, enotify, regex, subaddress, ihave, duplicate, special-use, mailbox, environment และ variables สคริปต์จะได้รับการตรวจสอบก่อนบันทึกเพื่อให้แน่ใจว่าถูกต้องตามหลักไวยากรณ์\n\n>__หมายเหตุไม่ต้องแปล__\n> **รองรับวิธีการยืนยันตัวตนสองวิธี:**\n> - **การยืนยันตัวตนด้วยโทเค็น API** (`/v1/domains/{domain_id}/aliases/{alias_id}/sieve`): ใช้คีย์ API ของคุณเป็นชื่อผู้ใช้ด้วย Basic Auth ต้องมี domain_id และ alias_id ในเส้นทาง URL\n\n> - **การยืนยันตัวตนด้วยนามแฝง** (`/v1/sieve-scripts`): ใช้ที่อยู่อีเมลนามแฝงและรหัสผ่านที่สร้างขึ้นเป็นข้อมูลรับรอง Basic Auth ไม่จำเป็นต้องมี domain_id หรือ alias_id ใน URL\n\n>__เคล็ดลับไม่ต้องแปล__\n> พารามิเตอร์ Script ID ยอมรับได้ทั้ง MongoDB ObjectId หรือชื่อสคริปต์ ทำให้สามารถระบุสคริปต์ได้อย่างยืดหยุ่น"
     },
     {
       "name": "เว็บซ็อกเก็ต",

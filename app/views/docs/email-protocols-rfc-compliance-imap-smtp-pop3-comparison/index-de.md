@@ -1117,7 +1117,7 @@ Die Tabelle unterscheidet zwischen der vollständigen Implementierung des aufgef
 | [RFC 5173](https://datatracker.ietf.org/doc/html/rfc5173) | `body` | Abgleich des Nachrichtenkörpers. |
 | [RFC 5229](https://datatracker.ietf.org/doc/html/rfc5229) | `variables` | Variablen-Erweiterung und unterstützte Modifizierer. |
 | [RFC 5231](https://datatracker.ietf.org/doc/html/rfc5231) | `relational` | Vergleiche mit `:count` und `:value`. |
-| [RFC 4790](https://datatracker.ietf.org/doc/html/rfc4790) | Comparators | `i;ascii-casemap`, `i;octet` und `i;ascii-numeric`. |
+| [RFC 4790](https://datatracker.ietf.org/doc/html/rfc4790) | Comparators | `i;ascii-casemap`, `i;unicode-casemap`, `i;octet` und `i;ascii-numeric`. |
 | [RFC 3894](https://datatracker.ietf.org/doc/html/rfc3894) | `copy` | `:copy` bei `fileinto` und `redirect`. |
 | [RFC 5293](https://datatracker.ietf.org/doc/html/rfc5293) | `editheader` | Änderungen an Headern vor der Speicherung, die für spätere Tests sichtbar sind, mit Ausnahme geschützter Authentifizierungs- und Zustell-Routing-Felder, `Received` und `Auto-Submitted`. |
 | [RFC 5260](https://datatracker.ietf.org/doc/html/rfc5260) | `date`, `index` | Tests für `currentdate` und Header-Daten sowie `:index` und `:last`. |
@@ -1141,7 +1141,7 @@ Die Tabelle unterscheidet zwischen der vollständigen Implementierung des aufgef
 | `reject` / `ereject` | Lehnt eine Nachricht mit einem SMTP-Fehler ab. | Über den MX-Zustellweg zurückgegeben. |
 | `vacation` / `vacation-seconds` | Sendet eine automatische Antwort. | In die Warteschlange mit Empfänger- und Intervall-Ratenbegrenzungen gestellt. |
 | `imap4flags` | Setzt oder prüft IMAP-Flags. | Wird beim Speichern der Nachricht angewendet. |
-| `envelope`, `body`, `date`, `index`, `regex`, `subaddress`, `relational`, `comparator-i;ascii-numeric` | Prüft Nachrichten- und Envelope-Daten. | Von der Sieve-Engine ausgewertet. |
+| `envelope`, `body`, `date`, `index`, `regex`, `subaddress`, `relational`, `comparator-i;ascii-numeric`, `comparator-i;unicode-casemap` | Prüft Nachrichten- und Envelope-Daten. | Von der Sieve-Engine ausgewertet. |
 | `variables`, `duplicate`, `ihave` | Speichert Werte, erkennt Duplikate und prüft Capabilities. | Variablen sind skriptlokal; der Duplikatszustand verwendet Redis. |
 | `editheader` | Fügt nicht geschützte Header hinzu oder löscht sie. | Authentifizierungs- und Zustell-Routing-Header, `Received` und `Auto-Submitted` können nicht geändert werden. |
 | `enotify` | Versendet eine Benachrichtigung per `mailto:`. | In die Warteschlange mit Ratenbegrenzungen für Benachrichtigungen gestellt. |

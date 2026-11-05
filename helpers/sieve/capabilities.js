@@ -28,6 +28,7 @@ const SUPPORTED_CAPABILITIES = Object.freeze([
   'comparator-i;ascii-casemap',
   'comparator-i;ascii-numeric',
   'comparator-i;octet',
+  'comparator-i;unicode-casemap',
   'copy',
   'date',
   'duplicate',
@@ -57,6 +58,12 @@ const SUPPORTED_CAPABILITIES = Object.freeze([
   'variables'
 ]);
 
+// The SIEVE capability of ManageSieve (RFC 5804 section 1.7) lists the
+// extensions a script can require: "redirect" is not one, so it is left out
+const ADVERTISED_CAPABILITIES = Object.freeze(
+  SUPPORTED_CAPABILITIES.filter((capability) => capability !== 'redirect')
+);
+
 const SUPPORTED_CAPABILITY_SET = new Set(SUPPORTED_CAPABILITIES);
 const CORE_CAPABILITY_SET = new Set(CORE_CAPABILITIES);
 
@@ -68,8 +75,16 @@ const IMPLIED_CAPABILITIES = {
   'vacation-seconds': ['vacation']
 };
 
-// Comparators that need no require (RFC 5228 section 2.7.3)
-const BASE_COMPARATORS = new Set(['i;ascii-casemap', 'i;octet']);
+//
+// The comparators there are. RFC 5228 (section 2.7.3) asks for a require
+// for those other than i;ascii-casemap and i;octet, but as for redirect none
+// is needed here: scripts have used them without one.
+//
+const COMPARATORS = new Set(
+  SUPPORTED_CAPABILITIES.filter((capability) =>
+    capability.startsWith('comparator-')
+  ).map((capability) => capability.slice('comparator-'.length))
+);
 
 // Extensions that "ihave" cannot enable (RFC 5463 section 4)
 const NOT_IHAVE_CAPABILITIES = new Set(['encoded-character', 'variables']);
@@ -88,7 +103,9 @@ function isSupportedCapability(capability) {
 }
 
 function addUnsupported(context, location, feature, reason) {
-  context.unsupported.push({ location, feature, reason });
+  const entry = { location, feature, reason };
+  context.unsupported.push(entry);
+  return entry;
 }
 
 //
@@ -118,17 +135,19 @@ function addRequirement(context, capability, location, reason) {
   }
 }
 
-// comparators other than the base ones are extensions (RFC 5228 2.7.3)
+// (an unknown comparator is i;ascii-casemap when the script runs)
 function inspectComparator(node, context) {
   const comparator =
     typeof node.comparator === 'string' ? node.comparator.toLowerCase() : '';
-  if (comparator && !BASE_COMPARATORS.has(comparator)) {
-    addRequirement(
+  if (comparator && !COMPARATORS.has(comparator)) {
+    // (marked: refused when saved, but a script saved before still runs,
+    // see helpers/sieve/filter-handler.js)
+    addUnsupported(
       context,
-      `comparator-${comparator}`,
       node.location,
-      `uses the ${comparator} comparator`
-    );
+      `comparator-${comparator}`,
+      'comparator is not available'
+    ).saveOnly = true;
   }
 }
 
@@ -146,7 +165,8 @@ function inspectStringCapabilities(value, context, seen) {
       addRequirement(context, 'variables', null, 'uses variable interpolation');
     }
 
-    // no supported extension defines a namespace (RFC 5229 section 3)
+    // no supported extension defines a namespace (RFC 5229 section 3; such
+    // a reference is "" when the script runs)
     for (const name of names) {
       if (name.includes('.')) {
         addUnsupported(
@@ -154,7 +174,7 @@ function inspectStringCapabilities(value, context, seen) {
           null,
           'variables',
           `"\${${name}}" references an unknown namespace`
-        );
+        ).saveOnly = true;
       }
     }
 
@@ -611,6 +631,8 @@ function validateSieveCapabilities(ast) {
 }
 
 module.exports = {
+  ADVERTISED_CAPABILITIES,
+  COMPARATORS,
   CORE_CAPABILITIES,
   SUPPORTED_CAPABILITIES,
   getCapability,

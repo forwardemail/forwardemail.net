@@ -1117,7 +1117,7 @@ De tabel onderscheidt volledige implementatie van het genoemde gedrag van opzett
 | [RFC 5173](https://datatracker.ietf.org/doc/html/rfc5173) | `body` | Matching van berichtinhoud (body). |
 | [RFC 5229](https://datatracker.ietf.org/doc/html/rfc5229) | `variables` | Variabele-expansie en ondersteunde modificatoren. |
 | [RFC 5231](https://datatracker.ietf.org/doc/html/rfc5231) | `relational` | Vergelijkingen op `:count` en `:value`. |
-| [RFC 4790](https://datatracker.ietf.org/doc/html/rfc4790) | Comparators | `i;ascii-casemap`, `i;octet` en `i;ascii-numeric`. |
+| [RFC 4790](https://datatracker.ietf.org/doc/html/rfc4790) | Comparators | `i;ascii-casemap`, `i;unicode-casemap`, `i;octet` en `i;ascii-numeric`. |
 | [RFC 3894](https://datatracker.ietf.org/doc/html/rfc3894) | `copy` | `:copy` op `fileinto` en `redirect`. |
 | [RFC 5293](https://datatracker.ietf.org/doc/html/rfc5293) | `editheader` | Aanpassingen aan headers vóór opslag, zichtbaar voor latere tests, met uitzondering van beschermde authenticatie- en bezorgrouteringsvelden, `Received` en `Auto-Submitted`. |
 | [RFC 5260](https://datatracker.ietf.org/doc/html/rfc5260) | `date`, `index` | `currentdate`- en header-datumtests, plus `:index` en `:last`. |
@@ -1141,7 +1141,7 @@ De tabel onderscheidt volledige implementatie van het genoemde gedrag van opzett
 | `reject` / `ereject` | Weigert een bericht met een SMTP-fout. | Teruggestuurd via de MX-bezorgingsroute. |
 | `vacation` / `vacation-seconds` | Verstuurt een automatische reactie. | In de wachtrij geplaatst met ontvanger- en interval-snelheidslimieten. |
 | `imap4flags` | Stelt IMAP-flags in of test deze. | Toegepast wanneer het bericht wordt opgeslagen. |
-| `envelope`, `body`, `date`, `index`, `regex`, `subaddress`, `relational`, `comparator-i;ascii-numeric` | Test bericht- en envelopegegevens. | Geëvalueerd door de Sieve-engine. |
+| `envelope`, `body`, `date`, `index`, `regex`, `subaddress`, `relational`, `comparator-i;ascii-numeric`, `comparator-i;unicode-casemap` | Test bericht- en envelopegegevens. | Geëvalueerd door de Sieve-engine. |
 | `variables`, `duplicate`, `ihave` | Slaat waarden op, detecteert duplicaten en controleert capabilities. | Variabelen zijn script-lokaal; duplicaatstatus gebruikt Redis. |
 | `editheader` | Voegt niet-beschermde headers toe of verwijdert ze. | Authenticatie- en bezorgrouteringsheaders, `Received` en `Auto-Submitted` kunnen niet worden aangepast. |
 | `enotify` | Verstuurt een notificatie via `mailto:`. | In de wachtrij geplaatst met notificatie-snelheidslimieten. |

@@ -1324,11 +1324,12 @@ describe('Sieve Security - variable size', () => {
           () => 'set "a" "${a}${a}${a}${a}${a}${a}${a}${a}${a}${a}";'
         ),
         ...sources.map((name, i) => `set "${name}" "${i}\${a}";`),
+        // ("*k?*" and not "*k*", which is found as :contains finds it)
         `if string :matches [${sources
           .map((name) => `"\${${name}}"`)
           .join(', ')}] [${Array.from(
           { length: 2000 },
-          (_, i) => `"*k${i}*"`
+          (_, i) => `"*k${i}?*"`
         ).join(', ')}] { discard; }`,
         'keep;'
       ].join('\n');
@@ -1452,15 +1453,16 @@ describe('Sieve Security - work a script makes for each message', () => {
 
   it('counts the time of tests with one key and a long value', async () => {
     // (the time after the last count in a test was not counted, so
-    // hundreds of one-key tests on a long body were never stopped)
+    // hundreds of one-key tests on a long body were never stopped; :regex,
+    // as a value made lower case once a run costs little for :contains)
     const { MAX_MATCH_TIME } = SieveEngine;
     SieveEngine.MAX_MATCH_TIME = 200;
     try {
       const script = [
-        'require ["body"];',
+        'require ["body", "regex"];',
         ...Array.from(
           { length: 2000 },
-          (_, i) => `if body :contains "k${i}" { stop; }`
+          (_, i) => `if body :regex "k${i}" { stop; }`
         )
       ].join('\n');
       assert.strictEqual(validateScript(script).valid, true);
@@ -1475,7 +1477,8 @@ describe('Sieve Security - work a script makes for each message', () => {
 
   //
   // One test is not interrupted, so the time limit came after it: these took
-  // 7s and 6s (and grow with the key and the value)
+  // 7s and 6s (and grow with the key and the value). The key does not match
+  // such a value, and the rest of the script runs.
   //
   for (const [name, script, value] of [
     [
@@ -1493,18 +1496,19 @@ describe('Sieve Security - work a script makes for each message', () => {
       ).join('')
     ]
   ]) {
-    it(`stops ${name} before it holds the process`, async () => {
+    it(`does not run ${name} where it would hold the process`, async () => {
       assert.strictEqual(validateScript(script).valid, true);
       const start = Date.now();
-      await assert.rejects(
-        executeScript(
-          script,
-          message({ headers: { subject: 'hi', 'x-big': value } })
-        ),
-        { message: 'Sieve script exceeded the time it may run' }
+      const result = await executeScript(
+        script,
+        message({ headers: { subject: 'hi', 'x-big': value } })
+      );
+      assert.deepStrictEqual(
+        result.actions.map((action) => action.type),
+        ['keep']
       );
       const elapsed = Date.now() - start;
-      assert.ok(elapsed < 1000, `took ${elapsed}ms`);
+      assert.ok(elapsed < SieveEngine.MAX_MATCH_TIME, `took ${elapsed}ms`);
     });
   }
 
@@ -1539,6 +1543,452 @@ describe('Sieve Security - work a script makes for each message', () => {
     // (0.4s on its own; node:test makes each await slower)
     const elapsed = Date.now() - start;
     assert.ok(elapsed < 10_000, `took ${elapsed}ms`);
+  });
+
+  //
+  // Reading the values of a header (or the flags of a variable) was not
+  // counted against MAX_MATCH_TIME: a header addheader grew in a loop, read
+  // with :index, held a 1.4KB script for 35s a message
+  //
+  it('stops loops that read a header addheader grew at the time limit', async () => {
+    const script = [
+      'require ["editheader", "mime", "foreverypart", "index"];',
+      `foreverypart { foreverypart { addheader "X-A" "v"; ${'if header :index 1 "X-A" "z" {} '.repeat(
+        40
+      )}} }`
+    ].join('\n');
+    assert.strictEqual(validateScript(script).valid, true);
+    const mimeParts = Array.from({ length: 60 }, () => ({
+      contentType: 'text/plain',
+      headers: { 'content-type': 'text/plain' },
+      body: 'x'
+    }));
+    const start = Date.now();
+    await assert.rejects(executeScript(script, message({ mimeParts })), {
+      message: 'Sieve script exceeded the time it may run'
+    });
+    const elapsed = Date.now() - start;
+    assert.ok(elapsed < SieveEngine.MAX_MATCH_TIME * 2, `took ${elapsed}ms`);
+  });
+
+  const many = Array.from({ length: 20_000 }, () => 'v');
+  for (const [name, test, setup = []] of [
+    ['a header of many values with :index', 'if header :index 1 "X-A" "z" {}'],
+    [
+      'the date of a header of many values',
+      'if date :index 1 "X-A" "year" "2000" {}'
+    ],
+    ['a header of many values that matches first', 'if header "X-A" "v" {}'],
+    ['a header of a part with many values', 'if header :mime "X-A" "v" {}'],
+    [
+      'the flags of a long variable',
+      'if hasflag "x" "zz" {}',
+      [
+        'set "x" "a b c d e f g h i j";',
+        // eslint-disable-next-line no-template-curly-in-string
+        ...Array.from({ length: 8 }, () => 'set "x" "${x} ${x} ${x} ${x}";')
+      ]
+    ]
+  ]) {
+    it(`stops loops that read ${name} at the time limit`, async () => {
+      const { MAX_MATCH_TIME } = SieveEngine;
+      SieveEngine.MAX_MATCH_TIME = 200;
+      try {
+        const script = [
+          'require ["mime", "foreverypart", "index", "date", "variables", "imap4flags"];',
+          ...setup,
+          `foreverypart { foreverypart { ${test} } }`
+        ].join('\n');
+        assert.strictEqual(validateScript(script).valid, true);
+        const mimeParts = Array.from({ length: 60 }, () => ({
+          contentType: 'text/plain',
+          headers: { 'content-type': 'text/plain', 'x-a': many },
+          body: 'x'
+        }));
+        const start = Date.now();
+        await assert.rejects(
+          executeScript(
+            script,
+            message({
+              headers: { from: 'sender@example.com', 'x-a': many },
+              mimeParts
+            })
+          ),
+          { message: 'Sieve script exceeded the time it may run' }
+        );
+        const elapsed = Date.now() - start;
+        assert.ok(elapsed < 2000, `took ${elapsed}ms`);
+      } finally {
+        SieveEngine.MAX_MATCH_TIME = MAX_MATCH_TIME;
+      }
+    });
+  }
+
+  //
+  // The parts of a part (:anychild) were found outside the time counted
+  // against MAX_MATCH_TIME, and exists did not count at all: 100 tests in
+  // nested loops over a tree of 100 parts were never stopped
+  //
+  for (const test of [
+    'if exists :mime :anychild "x-none" {}',
+    'if header :mime :anychild "x-none" "a" {}'
+  ]) {
+    it(`stops loops that run "${test}" at the time limit`, async () => {
+      const { MAX_MATCH_TIME } = SieveEngine;
+      SieveEngine.MAX_MATCH_TIME = 100;
+      try {
+        const script = [
+          'require ["mime", "foreverypart"];',
+          `foreverypart { foreverypart { ${`${test} `.repeat(50)}} }`
+        ].join('\n');
+        assert.strictEqual(validateScript(script).valid, true);
+        // (each part in the one before it)
+        const mimeParts = Array.from({ length: 100 }, (_, i) => ({
+          contentType: 'multipart/mixed',
+          headers: { 'content-type': 'multipart/mixed' },
+          body: '',
+          parentIndex: i - 1
+        }));
+        await assert.rejects(executeScript(script, message({ mimeParts })), {
+          message: 'Sieve script exceeded the time it may run'
+        });
+      } finally {
+        SieveEngine.MAX_MATCH_TIME = MAX_MATCH_TIME;
+      }
+    });
+  }
+
+  it('finds the parts of a part in a deep tree in linear time', async () => {
+    // (each part's chain of parents was followed up to the part: 3,000
+    // parts, each in the one before it, took 5s for a loop of two tests)
+    const script = [
+      'require ["mime", "foreverypart", "imap4flags"];',
+      'foreverypart { if exists :mime :anychild "x-last" { addflag "exists"; } if header :mime :anychild "x-last" "y" { addflag "header"; } }'
+    ].join('\n');
+    const mimeParts = Array.from({ length: 3000 }, (_, i) => ({
+      contentType: 'multipart/mixed',
+      headers: i === 2999 ? { 'x-last': 'y' } : {},
+      body: '',
+      parentIndex: i - 1
+    }));
+    const start = Date.now();
+    const result = await executeScript(script, message({ mimeParts }));
+    const elapsed = Date.now() - start;
+    assert.deepStrictEqual(result.flags, ['exists', 'header']);
+    assert.ok(elapsed < SieveEngine.MAX_MATCH_TIME, `took ${elapsed}ms`);
+  });
+
+  it('finds the parts of a nested foreverypart loop in linear time', async () => {
+    // (each part's chain of parents was followed for every inner loop: 490
+    // empty loops in each of 30 parts took seconds with a deep tree after
+    // them)
+    const script = [
+      'require ["mime", "foreverypart", "imap4flags"];',
+      `foreverypart { if header :mime "x-t" "y" { ${'foreverypart {} '.repeat(
+        490
+      )}addflag "seen"; } }`
+    ].join('\n');
+    const mimeParts = [
+      {
+        contentType: 'multipart/mixed',
+        multipart: true,
+        headers: {},
+        parentIndex: -1
+      },
+      ...Array.from({ length: 30 }, () => ({
+        contentType: 'text/plain',
+        headers: { 'x-t': 'y' },
+        body: 'x',
+        parentIndex: 0
+      })),
+      ...Array.from({ length: 600 }, (_, i) => ({
+        contentType: 'multipart/mixed',
+        multipart: true,
+        headers: {},
+        parentIndex: i === 0 ? 0 : 30 + i
+      }))
+    ];
+    const start = Date.now();
+    const result = await executeScript(script, message({ mimeParts }));
+    const elapsed = Date.now() - start;
+    assert.deepStrictEqual(result.flags, ['seen']);
+    assert.ok(elapsed < SieveEngine.MAX_MATCH_TIME * 2, `took ${elapsed}ms`);
+  });
+
+  it('visits the parts inside the outer part in nested foreverypart loops', async () => {
+    // (random trees of parts, each part with its number in tree order in
+    // X-I; each loop visits the parts inside the part of the loop around it)
+    let seed = 7;
+    const random = (n) => {
+      seed = (seed * 1_103_515_245 + 12_345) % 2_147_483_648;
+      return seed % n;
+    };
+
+    const tree = (depth) => {
+      const node = { children: [] };
+      if (depth < 4 && random(3) > 0) {
+        const count = 1 + random(3);
+        for (let i = 0; i < count; i++) node.children.push(tree(depth + 1));
+      }
+
+      return node;
+    };
+
+    /* eslint-disable no-template-curly-in-string */
+    const script = [
+      'require ["mime", "foreverypart", "variables"];',
+      'foreverypart {',
+      '  if header :mime :matches "x-i" "*" { set "v" "${v} 1:${1}"; }',
+      '  foreverypart {',
+      '    if header :mime :matches "x-i" "*" { set "v" "${v} 2:${1}"; }',
+      '    foreverypart {',
+      '      if header :mime :matches "x-i" "*" { set "v" "${v} 3:${1}"; }',
+      '    }',
+      '  }',
+      '}'
+      /* eslint-enable no-template-curly-in-string */
+    ].join('\n');
+    const sieve = new SieveIntegration({});
+    for (let n = 0; n < 50; n++) {
+      const root = tree(0);
+      // (the MIME of a node, numbering it and the nodes inside it in order)
+      const nodes = [];
+      const mime = (node, boundary) => {
+        node.index = nodes.length;
+        nodes.push(node);
+        const header = `X-I: ${node.index}\r\n`;
+        if (node.children.length === 0)
+          return `${header}Content-Type: text/plain\r\n\r\nleaf ${node.index}`;
+        const b = `${boundary}x${node.index}`;
+        return `${header}Content-Type: multipart/mixed; boundary="${b}"\r\n\r\n${node.children
+          .map((child) => `--${b}\r\n${mime(child, b)}\r\n`)
+          .join('')}--${b}--`;
+      };
+
+      const raw = `From: a@example.com\r\nSubject: s\r\n${mime(root, 'b')}`;
+      const inside = (node) =>
+        node.children.flatMap((child) => [child, ...inside(child)]);
+      let expected = '';
+      for (const a of nodes) {
+        expected += ` 1:${a.index}`;
+        for (const b of inside(a)) {
+          expected += ` 2:${b.index}`;
+          for (const c of inside(b)) expected += ` 3:${c.index}`;
+        }
+      }
+
+      const mimeParts = await sieve.parseMimeTree(Buffer.from(raw));
+      assert.strictEqual(mimeParts.length, nodes.length);
+
+      const result = await executeScript(script, message({ mimeParts }));
+      assert.strictEqual(result.variables.v, expected);
+    }
+  });
+
+  //
+  // Checking a notify method parses every address in it, and was not
+  // counted against MAX_MATCH_TIME: a 10KB method in nested foreverypart
+  // loops over 100 parts held the process for 4s, and 50KB for 25s
+  //
+  const addresses = `${'a@b.example,'.repeat(2000)}x@y.example`;
+  // (each part in the one before it)
+  const chain = Array.from({ length: 80 }, (_, i) => ({
+    contentType: 'multipart/mixed',
+    multipart: true,
+    headers: {},
+    parentIndex: i - 1
+  }));
+  for (const [name, command] of [
+    ['notify', `notify "mailto:${addresses}";`],
+    [
+      'valid_notify_method',
+      `if valid_notify_method "mailto:${addresses}" { addflag "valid"; }`
+    ],
+    [
+      'notify_method_capability',
+      `if notify_method_capability "mailto:${addresses}" "online" "maybe" { addflag "valid"; }`
+    ]
+  ]) {
+    it(`checks the method of ${name} once in nested loops`, async () => {
+      const script = [
+        'require ["enotify", "mime", "foreverypart", "imap4flags"];',
+        `foreverypart { foreverypart { ${command} if valid_notify_method "mailto:" { addflag "invalid"; } } }`
+      ].join('\n');
+      assert.strictEqual(validateScript(script).valid, true);
+      // (the methods the run parses, not those it finds already checked)
+      const { isValidNotifyMethod } = SieveEngine.prototype;
+      const checked = [];
+      SieveEngine.prototype.isValidNotifyMethod = function (uri, state) {
+        if (!state) checked.push(uri);
+        return isValidNotifyMethod.call(this, uri, state);
+      };
+
+      let result;
+      try {
+        result = await executeScript(script, message({ mimeParts: chain }));
+      } finally {
+        SieveEngine.prototype.isValidNotifyMethod = isValidNotifyMethod;
+      }
+
+      if (name === 'notify') {
+        const notify = result.actions.filter(
+          (action) => action.type === 'notify'
+        );
+        // (80 parts, and in each the parts after it)
+        assert.strictEqual(notify.length, 3160);
+        assert.strictEqual(notify[0].method, `mailto:${addresses}`);
+        assert.deepStrictEqual(result.flags, []);
+      } else {
+        assert.deepStrictEqual(result.flags, ['valid']);
+      }
+
+      assert.deepStrictEqual(checked, [`mailto:${addresses}`, 'mailto:']);
+    });
+  }
+
+  it('counts the time of checking a notify method', async () => {
+    const { MAX_MATCH_TIME } = SieveEngine;
+    SieveEngine.MAX_MATCH_TIME = 5;
+    try {
+      const script = [
+        'require ["enotify", "imap4flags"];',
+        `if valid_notify_method "mailto:${'a@b.example,'.repeat(
+          100_000
+        )}x@y.example" { addflag "valid"; }`
+      ].join('\n');
+      await assert.rejects(executeScript(script, message()), {
+        message: 'Sieve script exceeded the time it may run'
+      });
+    } finally {
+      SieveEngine.MAX_MATCH_TIME = MAX_MATCH_TIME;
+    }
+  });
+
+  //
+  // Expanding a string of references that expand to nothing makes no string
+  // to count against MAX_EXPANDED_LENGTH, and it, the flags of a keep, and
+  // the domain of a redirect were not counted against MAX_MATCH_TIME: 64KB
+  // of "${a}" in nested foreverypart loops held the process for 20s or more
+  //
+  // eslint-disable-next-line no-template-curly-in-string
+  const references = '${a}'.repeat(15_000);
+  for (const [name, command] of [
+    [
+      'valid_notify_method',
+      `if valid_notify_method "${references}" { addflag "y"; }`
+    ],
+    [
+      'notify_method_capability',
+      `if notify_method_capability "${references}" "online" "maybe" { addflag "y"; }`
+    ],
+    ['deleteheader', `deleteheader "x-none" "${references}";`],
+    ['addheader', `addheader "X-None" "${references}";`],
+    ['notify', `notify :message "${references}" "mailto:x@y.example";`],
+    ['fileinto', `fileinto "${references}INBOX";`],
+    ['keep with :flags', `keep :flags "${'a '.repeat(30_000)}";`],
+    ['redirect', `redirect :copy "${'@a'.repeat(30_000)}";`]
+  ]) {
+    it(`stops loops that run a long ${name} at the time limit`, async () => {
+      const { MAX_MATCH_TIME } = SieveEngine;
+      SieveEngine.MAX_MATCH_TIME = 50;
+      try {
+        const script = [
+          'require ["enotify", "mime", "foreverypart", "variables", "imap4flags", "editheader", "fileinto", "copy"];',
+          `foreverypart { foreverypart { ${command} } }`
+        ].join('\n');
+        assert.strictEqual(validateScript(script).valid, true);
+        await assert.rejects(
+          executeScript(script, message({ mimeParts: chain })),
+          {
+            message: 'Sieve script exceeded the time it may run'
+          }
+        );
+      } finally {
+        SieveEngine.MAX_MATCH_TIME = MAX_MATCH_TIME;
+      }
+    });
+  }
+
+  it('stops loops that hash a long duplicate ID at the time limit', async () => {
+    // (hashing a 1MB Message-ID was not counted against MAX_MATCH_TIME)
+    const { MAX_MATCH_TIME } = SieveEngine;
+    SieveEngine.MAX_MATCH_TIME = 100;
+    try {
+      const script = [
+        'require ["duplicate", "mime", "foreverypart"];',
+        `foreverypart { ${'if duplicate {} '.repeat(50)}}`
+      ].join('\n');
+      const mimeParts = Array.from({ length: 10 }, () => ({
+        contentType: 'text/plain',
+        headers: { 'content-type': 'text/plain' },
+        body: 'x'
+      }));
+      await assert.rejects(
+        executeScript(
+          script,
+          message({
+            headers: {
+              from: 'sender@example.com',
+              'message-id': `<${'a'.repeat(1_000_000)}@example.com>`
+            },
+            mimeParts
+          }),
+          {
+            context: {
+              duplicateCache: {
+                async has() {
+                  return false;
+                }
+              }
+            }
+          }
+        ),
+        { message: 'Sieve script exceeded the time it may run' }
+      );
+    } finally {
+      SieveEngine.MAX_MATCH_TIME = MAX_MATCH_TIME;
+    }
+  });
+
+  it('looks up each mailbox once a run, however many loops ask', async () => {
+    // (the time waiting on a lookup is not counted, and each one could go
+    // through every mailbox: 200 names in nested loops, against 1,000
+    // mailboxes, took 20s a message)
+    const asked = [];
+    const context = {
+      async mailboxExists(name) {
+        asked.push(name);
+        return name === 'Here';
+      },
+      async specialUseExists(attributes, mailbox) {
+        asked.push([attributes, mailbox]);
+        return mailbox === null;
+      }
+    };
+    const script = [
+      'require ["mailbox", "special-use", "mime", "foreverypart", "imap4flags"];',
+      'foreverypart { foreverypart {',
+      'if mailboxexists ["Here", "There"] { addflag "both"; }',
+      'if mailboxexists "Here" { addflag "here"; }',
+      'if specialuse_exists "\\\\Junk" { addflag "junk"; }',
+      'if specialuse_exists "Here" "\\\\Junk" { addflag "here-junk"; }',
+      '} }'
+    ].join('\n');
+    const mimeParts = Array.from({ length: 20 }, () => ({
+      contentType: 'text/plain',
+      headers: { 'content-type': 'text/plain' },
+      body: 'x'
+    }));
+    const result = await executeScript(script, message({ mimeParts }), {
+      context
+    });
+    assert.deepStrictEqual(result.flags, ['here', 'junk']);
+    assert.deepStrictEqual(asked, [
+      'Here',
+      'There',
+      [['\\Junk'], null],
+      [['\\Junk'], 'Here']
+    ]);
   });
 
   it('extracts the text of a part once, however many loops reach it', async () => {

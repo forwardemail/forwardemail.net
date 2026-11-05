@@ -110,6 +110,7 @@ process.send('ready');
 test('the jobs module exposes its jobs and its cancellation to the worker process', (t) => {
   t.deepEqual(Object.keys(require('#helpers/worker')).sort(), [
     'backup',
+    'listIndexes',
     'rekey',
     'setWorkerCancelled',
     'vacuum'

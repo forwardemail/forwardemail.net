@@ -2894,7 +2894,7 @@ Den fullständiga, implementationsstödda listan över funktioner och RFC-noteri
 | --- | --- |
 | Kärnspråk | `keep`, `discard`, `stop`, villkorsblock, och grundläggande tester `address`, `header`, `exists`, `size` och booleska tester. |
 | Leverans | `fileinto`, `copy`, `redirect`, `mailbox` för `fileinto :create` och `mailboxexists`, och `special-use` för `fileinto :specialuse` och `specialuse_exists`. |
-| Tester och jämförelser | `envelope`, `body`, `date`, `index`, `regex`, `subaddress`, `relational`, `i;ascii-casemap`, `i;octet`, och `i;ascii-numeric`. |
+| Tester och jämförelser | `envelope`, `body`, `date`, `index`, `regex`, `subaddress`, `relational`, `i;ascii-casemap`, `i;unicode-casemap`, `i;octet`, och `i;ascii-numeric`. |
 | Tillstånd och variabler | `variables`, `encoded-character`, `imap4flags`, `duplicate`, och `ihave`. |
 | Åtgärder och svar | `reject`, `ereject`, `vacation`, `vacation-seconds`, och `enotify` med `mailto:`. Den äldre deklarationen `require "notify"` accepteras som en indataalias för `enotify`, men `enotify` är den annonserade funktionen. |
 | Meddelandehantering | `editheader`, `environment`, `foreverypart` (med `break`), `extracttext`, `replace`, och `mime`, som också aktiverar de tre kommandona. |

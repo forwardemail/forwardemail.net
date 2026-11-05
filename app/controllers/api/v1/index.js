@@ -14,7 +14,6 @@ const emails = require('./emails');
 const enforcePaidPlan = require('./enforce-paid-plan');
 const folders = require('./folders');
 const inquiries = require('./inquiries');
-const log = require('./log');
 const lookup = require('./lookup');
 const maxForwardedAddresses = require('./max-forwarded-addresses');
 const messages = require('./messages');
@@ -45,7 +44,6 @@ module.exports = {
   enforcePaidPlan,
   folders,
   inquiries,
-  log,
   lookup,
   maxForwardedAddresses,
   messages,

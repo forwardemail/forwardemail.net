@@ -2895,7 +2895,7 @@ La liste complète des capacités, étayée par l'implémentation, et les notes 
 | --- | --- |
 | Langage de base | `keep`, `discard`, `stop`, blocs conditionnels, et les tests de base `address`, `header`, `exists`, `size`, et booléens. |
 | Livraison | `fileinto`, `copy`, `redirect`, `mailbox` pour `fileinto :create` et `mailboxexists`, et `special-use` pour `fileinto :specialuse` et `specialuse_exists`. |
-| Tests et comparaisons | `envelope`, `body`, `date`, `index`, `regex`, `subaddress`, `relational`, `i;ascii-casemap`, `i;octet`, et `i;ascii-numeric`. |
+| Tests et comparaisons | `envelope`, `body`, `date`, `index`, `regex`, `subaddress`, `relational`, `i;ascii-casemap`, `i;unicode-casemap`, `i;octet`, et `i;ascii-numeric`. |
 | État et variables | `variables`, `encoded-character`, `imap4flags`, `duplicate`, et `ihave`. |
 | Actions et réponses | `reject`, `ereject`, `vacation`, `vacation-seconds`, et `enotify` utilisant `mailto:`. La déclaration héritée `require "notify"` est acceptée comme alias d'entrée pour `enotify`, mais `enotify` est la capacité annoncée. |
 | Traitement des messages | `editheader`, `environment`, `foreverypart` (avec `break`), `extracttext`, `replace`, et `mime`, qui active aussi ces trois commandes. |

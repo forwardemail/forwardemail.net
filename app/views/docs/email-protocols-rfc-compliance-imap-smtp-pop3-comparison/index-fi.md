@@ -1117,7 +1117,7 @@ Taulukko erottaa listatun toiminnallisuuden täydellisen toteutuksen tahallisest
 | [RFC 5173](https://datatracker.ietf.org/doc/html/rfc5173) | `body` | Viestin rungon sisällön tarkistus. |
 | [RFC 5229](https://datatracker.ietf.org/doc/html/rfc5229) | `variables` | Muuttujien laajennus ja tuetut modifikaattorit. |
 | [RFC 5231](https://datatracker.ietf.org/doc/html/rfc5231) | `relational` | `:count` ja `:value` vertailut. |
-| [RFC 4790](https://datatracker.ietf.org/doc/html/rfc4790) | Comparators | `i;ascii-casemap`, `i;octet` ja `i;ascii-numeric`. |
+| [RFC 4790](https://datatracker.ietf.org/doc/html/rfc4790) | Comparators | `i;ascii-casemap`, `i;unicode-casemap`, `i;octet` ja `i;ascii-numeric`. |
 | [RFC 3894](https://datatracker.ietf.org/doc/html/rfc3894) | `copy` | `:copy` `fileinto`- ja `redirect`-komentoihin. |
 | [RFC 5293](https://datatracker.ietf.org/doc/html/rfc5293) | `editheader` | Otsakkeiden muokkaus ennen tallennusta, näkyy myöhemmille testeille, lukuun ottamatta suojattuja todentamis- ja toimitusreitityskenttiä sekä `Received`- ja `Auto-Submitted`-kenttiä. |
 | [RFC 5260](https://datatracker.ietf.org/doc/html/rfc5260) | `date`, `index` | `currentdate`- ja otsikkopäivämäärätestit, sekä `:index` ja `:last`. |
@@ -1141,7 +1141,7 @@ Taulukko erottaa listatun toiminnallisuuden täydellisen toteutuksen tahallisest
 | `reject` / `ereject` | Hylkää viestin SMTP-virheellä. | Palautetaan MX-toimituspolun kautta. |
 | `vacation` / `vacation-seconds` | Lähettää automaattisen vastauksen. | Jonotetaan vastaanottaja- ja aikavälirajoitusten mukaisesti. |
 | `imap4flags` | Asettaa tai testaa IMAP-lippuja. | Sovelletaan viestin tallennuksen yhteydessä. |
-| `envelope`, `body`, `date`, `index`, `regex`, `subaddress`, `relational`, `comparator-i;ascii-numeric` | Testaa viestin ja kehystiedon arvoja. | Arvioidaan Sieve-moottorissa. |
+| `envelope`, `body`, `date`, `index`, `regex`, `subaddress`, `relational`, `comparator-i;ascii-numeric`, `comparator-i;unicode-casemap` | Testaa viestin ja kehystiedon arvoja. | Arvioidaan Sieve-moottorissa. |
 | `variables`, `duplicate`, `ihave` | Tallentaa arvoja, tunnistaa duplikaatteja ja tarkistaa kyvykkyyksiä. | Muuttujat ovat skriptiin sidottuja; duplikaattitila käyttää Redis:iä. |
 | `editheader` | Lisää tai poistaa ei-suojattuja otsakkeita. | Todentamis- ja toimitusreititysotsakkeita sekä `Received`- ja `Auto-Submitted`-kenttiä ei voi muuttaa. |
 | `enotify` | Lähettää ilmoituksen käyttäen `mailto:`-osoitetta. | Jonotetaan ilmoitusnopeusrajoituksin. |

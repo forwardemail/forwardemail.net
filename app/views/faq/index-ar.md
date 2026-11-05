@@ -2894,7 +2894,7 @@ Tasks.org هو مدير مهام مفتوح المصدر شهير يعمل بش�
 | --- | --- |
 | اللغة الأساسية | `keep`, `discard`, `stop`, الكتل الشرطية، والاختبارات الأساسية `address`, `header`, `exists`, `size`, واختبارات القيم البوليانية. |
 | التسليم | `fileinto`, `copy`, `redirect`, `mailbox` لاستخدام `fileinto :create` و`mailboxexists`، و`special-use` لاستخدام `fileinto :specialuse` و`specialuse_exists`. |
-| الاختبارات والمقارنات | `envelope`, `body`, `date`, `index`, `regex`, `subaddress`, `relational`, `i;ascii-casemap`, `i;octet`, و`i;ascii-numeric`. |
+| الاختبارات والمقارنات | `envelope`, `body`, `date`, `index`, `regex`, `subaddress`, `relational`, `i;ascii-casemap`, `i;unicode-casemap`, `i;octet`, و`i;ascii-numeric`. |
 | الحالة والمتغيرات | `variables`, `encoded-character`, `imap4flags`, `duplicate`, و`ihave`. |
 | الإجراءات والاستجابات | `reject`, `ereject`, `vacation`, `vacation-seconds`, و`enotify` باستخدام `mailto:`. يتم قبول التصريح القديم `require "notify"` كاسم مرادف إدخالي لـ `enotify`، لكن `enotify` هي القدرة المعلنة. |
 | معالجة الرسائل | `editheader`, `environment`, `foreverypart` (مع `break`)، `extracttext`, `replace`, و`mime` الذي يفعّل هذه الأوامر الثلاثة أيضًا. |

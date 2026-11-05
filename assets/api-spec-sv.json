@@ -3216,6 +3216,14 @@
               "$ref": "#/components/schemas/Error"
             }
           }
+        },
+        "headers": {
+          "Retry-After": {
+            "description": "Seconds to wait before trying again (sent when a sign-in is refused for too many attempts)",
+            "schema": {
+              "type": "integer"
+            }
+          }
         }
       },
       "InternalServerError": {
@@ -4916,6 +4924,12 @@
               },
               "X-Item-Count": {
                 "description": "Total number of items",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Lightweight-Fallback-Count": {
+                "description": "Number of messages of this page listed without the nodemailer and raw fields (as with lightweight=true), because the messages of the page exceeded the size a full list may return; get them with GET /v1/messages/{id}. Only sent when messages were listed this way.",
                 "schema": {
                   "type": "integer"
                 }
@@ -9138,6 +9152,9 @@
           "401": {
             "description": "Unauthorized - Invalid API token or alias credentials. Note: authentication is optional; this error only occurs when credentials are provided but are invalid."
           },
+          "403": {
+            "description": "Forbidden - The credentials are correct but may not connect (e.g. the alias does not have IMAP enabled, or the account is banned); a `?auth=message` connection is closed with `4403`"
+          },
           "404": {
             "description": "Not Found - Alias not found for the provided credentials"
           },
@@ -9585,7 +9602,7 @@
     },
     {
       "name": "Siktskript",
-      "description": "Slutpunkter för Sieve-skripthantering\n\n>[!NOTE]\n> Sieve är ett kraftfullt e-postfiltreringsspråk som definieras i RFC 5228. Skript körs på inkommande e-post för att automatiskt organisera, filtrera och svara på meddelanden.\n\n>[!TIP]\n> Tillägg som stöds inkluderar: fileinto, reject, ereject, vacation, vacation-seconds, imap4flags, envelope, body, relational, comparator-i;ascii-numeric, copy, date, index, editheader, enotify, regex, subaddress, ihave, duplicate, special-use, mailbox, environment och variables. Skript valideras innan de sparas för att säkerställa att de är syntaktiskt korrekta.\n\n>[!NOTE]\n> **Två autentiseringsmetoder stöds:**\n> - **API Token Auth** (`/v1/domains/{domain_id}/aliases/{alias_id}/sieve`): Använd din API-nyckel som användarnamn med Basic Auth. Kräver domain_id och alias_id i URL-sökvägen.\n\n> - **Alias Auth** (`/v1/sieve-scripts`): Använd alias-e-postadressen och det genererade lösenordet som Basic Auth-uppgifter. Inget domain_id eller alias_id behövs i URL:en.\n\n>[!TIP]\n> Skript-ID-parametrar accepterar antingen MongoDB ObjectId eller skriptnamnet, vilket möjliggör flexibel skriptidentifiering."
+      "description": "Slutpunkter för Sieve-skripthantering\n\n>[!NOTE]\n> Sieve är ett kraftfullt e-postfiltreringsspråk som definieras i RFC 5228. Skript körs på inkommande e-post för att automatiskt organisera, filtrera och svara på meddelanden.\n\n>[!TIP]\n> Tillägg som stöds inkluderar: fileinto, reject, ereject, vacation, vacation-seconds, imap4flags, envelope, body, relational, comparator-i;ascii-numeric, comparator-i;unicode-casemap, copy, date, index, editheader, enotify, regex, subaddress, ihave, duplicate, special-use, mailbox, environment och variables. Skript valideras innan de sparas för att säkerställa att de är syntaktiskt korrekta.\n\n>[!NOTE]\n> **Två autentiseringsmetoder stöds:**\n> - **API Token Auth** (`/v1/domains/{domain_id}/aliases/{alias_id}/sieve`): Använd din API-nyckel som användarnamn med Basic Auth. Kräver domain_id och alias_id i URL-sökvägen.\n\n> - **Alias Auth** (`/v1/sieve-scripts`): Använd alias-e-postadressen och det genererade lösenordet som Basic Auth-uppgifter. Inget domain_id eller alias_id behövs i URL:en.\n\n>[!TIP]\n> Skript-ID-parametrar accepterar antingen MongoDB ObjectId eller skriptnamnet, vilket möjliggör flexibel skriptidentifiering."
     },
     {
       "name": "WebSockets",

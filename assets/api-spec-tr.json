@@ -3216,6 +3216,14 @@
               "$ref": "#/components/schemas/Error"
             }
           }
+        },
+        "headers": {
+          "Retry-After": {
+            "description": "Seconds to wait before trying again (sent when a sign-in is refused for too many attempts)",
+            "schema": {
+              "type": "integer"
+            }
+          }
         }
       },
       "InternalServerError": {
@@ -4916,6 +4924,12 @@
               },
               "X-Item-Count": {
                 "description": "Total number of items",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Lightweight-Fallback-Count": {
+                "description": "Number of messages of this page listed without the nodemailer and raw fields (as with lightweight=true), because the messages of the page exceeded the size a full list may return; get them with GET /v1/messages/{id}. Only sent when messages were listed this way.",
                 "schema": {
                   "type": "integer"
                 }
@@ -9138,6 +9152,9 @@
           "401": {
             "description": "Unauthorized - Invalid API token or alias credentials. Note: authentication is optional; this error only occurs when credentials are provided but are invalid."
           },
+          "403": {
+            "description": "Forbidden - The credentials are correct but may not connect (e.g. the alias does not have IMAP enabled, or the account is banned); a `?auth=message` connection is closed with `4403`"
+          },
           "404": {
             "description": "Not Found - Alias not found for the provided credentials"
           },
@@ -9585,7 +9602,7 @@
     },
     {
       "name": "Elek Senaryoları",
-      "description": "Sieve Komut Dosyası Yönetim Uç Noktaları\n\n>__ÇEVİRİ_NOT__\n> Sieve, RFC 5228'de tanımlanmış güçlü bir e-posta filtreleme dilidir. Komut dosyaları, gelen e-postaları otomatik olarak düzenlemek, filtrelemek ve yanıtlamak için yürütülür.\n\n>__ÇEVİRİ_İPUCU__\n> Desteklenen uzantılar şunlardır: fileinto, reject, ereject, vacation, vacation-seconds, imap4flags, envelope, body, relational, comparator-i;ascii-numeric, copy, date, index, editheader, enotify, regex, subaddress, ihave, duplicate, special-use, mailbox, environment ve variables. Komut dosyaları, sözdizimsel olarak doğru olduklarından emin olmak için kaydedilmeden önce doğrulanır.\n\n>__ÇEVİRİ_NOT__\n> **İki kimlik doğrulama yöntemi desteklenmektedir:**\n> - **API Token Kimlik Doğrulaması** (`/v1/domains/{domain_id}/aliases/{alias_id}/sieve`): Temel Kimlik Doğrulama ile kullanıcı adı olarak API anahtarınızı kullanın. URL yolunda domain_id ve alias_id gereklidir.\n\n> - **Takma Ad Kimlik Doğrulaması** (`/v1/sieve-scripts`): Temel Kimlik Doğrulama kimlik bilgileri olarak takma ad e-postasını ve oluşturulan şifreyi kullanın. URL'de domain_id veya alias_id gerekmez.\n\n>__ÇEVİRİ_İPUCU__\n> Komut dosyası kimliği parametreleri, esnek komut dosyası tanımlamasına olanak tanıyan MongoDB ObjectId veya komut dosyası adını kabul eder."
+      "description": "Sieve Komut Dosyası Yönetim Uç Noktaları\n\n>__ÇEVİRİ_NOT__\n> Sieve, RFC 5228'de tanımlanmış güçlü bir e-posta filtreleme dilidir. Komut dosyaları, gelen e-postaları otomatik olarak düzenlemek, filtrelemek ve yanıtlamak için yürütülür.\n\n>__ÇEVİRİ_İPUCU__\n> Desteklenen uzantılar şunlardır: fileinto, reject, ereject, vacation, vacation-seconds, imap4flags, envelope, body, relational, comparator-i;ascii-numeric, comparator-i;unicode-casemap, copy, date, index, editheader, enotify, regex, subaddress, ihave, duplicate, special-use, mailbox, environment ve variables. Komut dosyaları, sözdizimsel olarak doğru olduklarından emin olmak için kaydedilmeden önce doğrulanır.\n\n>__ÇEVİRİ_NOT__\n> **İki kimlik doğrulama yöntemi desteklenmektedir:**\n> - **API Token Kimlik Doğrulaması** (`/v1/domains/{domain_id}/aliases/{alias_id}/sieve`): Temel Kimlik Doğrulama ile kullanıcı adı olarak API anahtarınızı kullanın. URL yolunda domain_id ve alias_id gereklidir.\n\n> - **Takma Ad Kimlik Doğrulaması** (`/v1/sieve-scripts`): Temel Kimlik Doğrulama kimlik bilgileri olarak takma ad e-postasını ve oluşturulan şifreyi kullanın. URL'de domain_id veya alias_id gerekmez.\n\n>__ÇEVİRİ_İPUCU__\n> Komut dosyası kimliği parametreleri, esnek komut dosyası tanımlamasına olanak tanıyan MongoDB ObjectId veya komut dosyası adını kabul eder."
     },
     {
       "name": "WebSocket'ler",

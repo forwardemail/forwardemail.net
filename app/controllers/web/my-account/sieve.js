@@ -267,7 +267,18 @@ async function updateSieveScript(ctx) {
     updates.description = description;
   }
 
-  if (isSANB(content)) {
+  // (the form sends the content with every change: content as it was saved
+  // is not checked again, so a script saved before a check was added can
+  // still be renamed or activated, see the model; the form sends line ends
+  // as CRLF, and the textarea drops one line end at the start of the
+  // content, as HTML parsing does)
+  const toLines = (value) => String(value).replace(/\r\n?/g, '\n');
+  const saved = toLines(ctx.state.sieveScript.content);
+  if (
+    isSANB(content) &&
+    toLines(content) !== saved &&
+    toLines(content) !== saved.replace(/^\n/, '')
+  ) {
     // Check script size
     const maxScriptSize = config.sieve?.maxScriptSize || 1024 * 1024;
     if (Buffer.byteLength(content, 'utf8') > maxScriptSize) {
@@ -516,7 +527,7 @@ async function validateSieveScript(ctx) {
  */
 async function getSieveCapabilities(ctx) {
   ctx.body = {
-    capabilities: config.sieve?.enabledExtensions || SUPPORTED_CAPABILITIES,
+    capabilities: SUPPORTED_CAPABILITIES,
     limits: {
       max_script_size: config.sieve?.maxScriptSize || 1024 * 1024,
       max_script_count: config.sieve?.maxScriptCount || 15,

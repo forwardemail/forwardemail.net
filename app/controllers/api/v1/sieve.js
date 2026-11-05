@@ -356,31 +356,36 @@ async function updateScript(ctx) {
     throw Boom.badRequest(ctx.translateError('SIEVE_SCRIPT_CONTENT_REQUIRED'));
   }
 
-  // Validate script syntax
-  const validation = sieve.validateScript(content);
-  if (!validation.valid) {
-    throw Boom.badRequest(
-      ctx.translateError('SIEVE_INVALID_SCRIPT', validation.errors[0].message)
-    );
-  }
+  // (content as it was saved is not checked again, so a script saved
+  // before a check was added can still be changed in other ways, see the
+  // model)
+  if (content !== existingScript.content) {
+    // Validate script syntax
+    const validation = sieve.validateScript(content);
+    if (!validation.valid) {
+      throw Boom.badRequest(
+        ctx.translateError('SIEVE_INVALID_SCRIPT', validation.errors[0].message)
+      );
+    }
 
-  // Security validation
-  const securityValidator = new sieve.SieveSecurityValidator({
-    maxScriptSize: config.sieve.maxScriptSize,
-    maxNestedDepth: config.sieve.maxNestedDepth,
-    maxRedirects: config.sieve.maxRedirects,
-    // Allow redirects to the user's own domains
-    allowedRedirectDomains: await getUserDomains(user._id)
-  });
+    // Security validation
+    const securityValidator = new sieve.SieveSecurityValidator({
+      maxScriptSize: config.sieve.maxScriptSize,
+      maxNestedDepth: config.sieve.maxNestedDepth,
+      maxRedirects: config.sieve.maxRedirects,
+      // Allow redirects to the user's own domains
+      allowedRedirectDomains: await getUserDomains(user._id)
+    });
 
-  const securityResult = securityValidator.validate(content);
-  if (!securityResult.valid) {
-    throw Boom.badRequest(
-      ctx.translateError(
-        'SIEVE_SCRIPT_SECURITY_ERROR',
-        securityResult.errors[0].message
-      )
-    );
+    const securityResult = securityValidator.validate(content);
+    if (!securityResult.valid) {
+      throw Boom.badRequest(
+        ctx.translateError(
+          'SIEVE_SCRIPT_SECURITY_ERROR',
+          securityResult.errors[0].message
+        )
+      );
+    }
   }
 
   // Update existing script

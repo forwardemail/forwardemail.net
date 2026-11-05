@@ -3216,6 +3216,14 @@
               "$ref": "#/components/schemas/Error"
             }
           }
+        },
+        "headers": {
+          "Retry-After": {
+            "description": "Seconds to wait before trying again (sent when a sign-in is refused for too many attempts)",
+            "schema": {
+              "type": "integer"
+            }
+          }
         }
       },
       "InternalServerError": {
@@ -4916,6 +4924,12 @@
               },
               "X-Item-Count": {
                 "description": "Total number of items",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Lightweight-Fallback-Count": {
+                "description": "Number of messages of this page listed without the nodemailer and raw fields (as with lightweight=true), because the messages of the page exceeded the size a full list may return; get them with GET /v1/messages/{id}. Only sent when messages were listed this way.",
                 "schema": {
                   "type": "integer"
                 }
@@ -9138,6 +9152,9 @@
           "401": {
             "description": "Unauthorized - Invalid API token or alias credentials. Note: authentication is optional; this error only occurs when credentials are provided but are invalid."
           },
+          "403": {
+            "description": "Forbidden - The credentials are correct but may not connect (e.g. the alias does not have IMAP enabled, or the account is banned); a `?auth=message` connection is closed with `4403`"
+          },
           "404": {
             "description": "Not Found - Alias not found for the provided credentials"
           },
@@ -9585,7 +9602,7 @@
     },
     {
       "name": "Scripts de tamis",
-      "description": "Points de terminaison de gestion des scripts Sieve\n\n>[!NOTE]\n\nSieve est un puissant langage de filtrage de courriels défini dans la RFC 5228. Les scripts sont exécutés sur les courriels entrants afin d'organiser, de filtrer et de répondre automatiquement aux messages.\n\n>[!TIP]\n\nLes extensions prises en charge incluent : fileinto, reject, ereject, vacation, vacation-seconds, imap4flags, envelope, body, relational, comparator-i;ascii-numeric, copy, date, index, editheader, enotify, regex, subaddress, ihave, duplicate, special-use, mailbox, environment et variables. Les scripts sont validés avant leur enregistrement afin de garantir leur syntaxe correcte.\n\n>[!NOTE]\n\n**Deux méthodes d'authentification sont prises en charge :**\n\n- **Authentification par jeton API** (`/v1/domains/{domain_id}/aliases/{alias_id}/sieve`) : Utilisez votre clé API comme nom d'utilisateur avec l'authentification de base. L'URL requiert domain_id et alias_id.\n\n- **Authentification par alias** (`/v1/sieve-scripts`) : Utilisez l'adresse e-mail de l'alias et le mot de passe généré comme identifiants d'authentification de base. L'URL ne requiert ni domain_id ni alias_id.\n\n>[!TIP]\n\nLes paramètres d'ID de script acceptent l'ObjectId MongoDB ou le nom du script, permettant une identification flexible."
+      "description": "Points de terminaison de gestion des scripts Sieve\n\n>[!NOTE]\n\nSieve est un puissant langage de filtrage de courriels défini dans la RFC 5228. Les scripts sont exécutés sur les courriels entrants afin d'organiser, de filtrer et de répondre automatiquement aux messages.\n\n>[!TIP]\n\nLes extensions prises en charge incluent : fileinto, reject, ereject, vacation, vacation-seconds, imap4flags, envelope, body, relational, comparator-i;ascii-numeric, comparator-i;unicode-casemap, copy, date, index, editheader, enotify, regex, subaddress, ihave, duplicate, special-use, mailbox, environment et variables. Les scripts sont validés avant leur enregistrement afin de garantir leur syntaxe correcte.\n\n>[!NOTE]\n\n**Deux méthodes d'authentification sont prises en charge :**\n\n- **Authentification par jeton API** (`/v1/domains/{domain_id}/aliases/{alias_id}/sieve`) : Utilisez votre clé API comme nom d'utilisateur avec l'authentification de base. L'URL requiert domain_id et alias_id.\n\n- **Authentification par alias** (`/v1/sieve-scripts`) : Utilisez l'adresse e-mail de l'alias et le mot de passe généré comme identifiants d'authentification de base. L'URL ne requiert ni domain_id ni alias_id.\n\n>[!TIP]\n\nLes paramètres d'ID de script acceptent l'ObjectId MongoDB ou le nom du script, permettant une identification flexible."
     },
     {
       "name": "WebSockets",

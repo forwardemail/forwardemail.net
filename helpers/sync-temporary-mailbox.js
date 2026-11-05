@@ -4,7 +4,6 @@
  */
 
 const { randomUUID } = require('node:crypto');
-const { setTimeout } = require('node:timers/promises');
 
 const bytes = require('@forwardemail/bytes');
 const ms = require('ms');
@@ -14,6 +13,12 @@ const revHash = require('rev-hash');
 const checkDiskSpace = require('./check-disk-space');
 const getPathToDatabase = require('./get-path-to-database');
 const getTemporaryDatabase = require('./get-temporary-database');
+const IMAPError = require('./imap-error');
+const isErrorConstructorName = require('./is-error-constructor-name');
+const isLockingError = require('./is-locking-error');
+const isMongoError = require('./is-mongo-error');
+const isRedisError = require('./is-redis-error');
+const isSocketError = require('./is-socket-error');
 const logger = require('./logger');
 const onAppend = require('./imap/on-append');
 const updateStorageUsed = require('./update-storage-used');
@@ -120,49 +125,124 @@ async function storeSieveCopies(session, message) {
 //
 // One sync per alias at a time, across processes: two at once read the same
 // rows and could both append a message before either deletes it from the
-// temporary mailbox.  A sync asked for meanwhile (e.g. one per delivery, see
-// `sqlite_sync_request` in imap-server.js) waits for it and then runs; after
-// 30 seconds it gives up, as the one running also syncs what arrived since it
-// started (the messages stay in the temporary mailbox until a sync runs).
+// temporary mailbox.  A sync is asked for on each delivery by every IMAP
+// process with a session for the alias (see `sqlite_sync_request` in
+// imap-server.js), and on sign-ins.  One asked for while another runs does
+// not wait for it (each used to poll the lock for up to 30 seconds, which on
+// a busy mailbox kept many requests polling at once): it asks the one running
+// to go round once more, which then syncs what arrived meanwhile, and
+// returns.  The request is set before the lock is tried and checked after it
+// is released, so one made at any moment is either seen by the sync running
+// or finds the lock free.
 //
 async function syncTemporaryMailbox(session) {
   if (!this.client) return sync.call(this, session);
 
   const key = `sync_temporary_mailbox:${session.user.alias_id}`;
-  const owner = randomUUID();
-  const deadline = Date.now() + ms('30s');
-  while ((await this.client.set(key, owner, 'PX', LOCK_TTL, 'NX')) !== 'OK') {
-    if (Date.now() > deadline) {
-      logger.warn('temporary mailbox sync skipped while another one runs', {
-        session
-      });
-      return 0;
+  const againKey = `${key}:again`;
+  let deleted = 0;
+  let error;
+
+  await this.client.set(againKey, '1', 'PX', LOCK_TTL);
+  while (await this.client.get(againKey)) {
+    const owner = randomUUID();
+    // (another sync runs and will go round again)
+    if ((await this.client.set(key, owner, 'PX', LOCK_TTL, 'NX')) !== 'OK')
+      break;
+
+    // (renewed on a timer, as one append can take longer than the lock lasts,
+    //  for at most 30 minutes, so a sync that never ends frees it too)
+    const start = Date.now();
+    const timer = setInterval(() => {
+      if (Date.now() - start > ms('30m')) return clearInterval(timer);
+      this.client
+        .eval(EXTEND_LOCK_SCRIPT, 1, key, owner, LOCK_TTL)
+        .catch((err) => logger.fatal(err, { session }));
+    }, LOCK_TTL / 3);
+
+    try {
+      await this.client.del(againKey);
+      deleted += await sync.call(this, session, owner);
+    } catch (err) {
+      // (a sync asked for meanwhile found the lock taken and returned, so it
+      //  is still run unless the mailbox or a service failed; the first error
+      //  is thrown, and any later one logged)
+      if (error) logger.error(err, { session });
+      else error = err;
+      if (isServiceError(err)) break;
+    } finally {
+      clearInterval(timer);
+      await this.client
+        .eval(RELEASE_LOCK_SCRIPT, 1, key, owner)
+        .catch((err) => logger.fatal(err, { session }));
     }
-
-    await setTimeout(100);
   }
 
-  // (renewed on a timer, as one append can take longer than the lock lasts,
-  //  for at most 30 minutes, so a sync that never ends frees it too)
-  const start = Date.now();
-  const timer = setInterval(() => {
-    if (Date.now() - start > ms('30m')) return clearInterval(timer);
-    this.client
-      .eval(EXTEND_LOCK_SCRIPT, 1, key, owner, LOCK_TTL)
-      .catch((err) => logger.fatal(err, { session }));
-  }, LOCK_TTL / 3);
+  if (error) throw error;
 
-  try {
-    return await sync.call(this, session);
-  } finally {
-    clearInterval(timer);
-    await this.client
-      .eval(RELEASE_LOCK_SCRIPT, 1, key, owner)
-      .catch((err) => logger.fatal(err, { session }));
-  }
+  return deleted;
 }
 
-async function sync(session) {
+//
+// Whether an error is of the mailbox or of a service (busy, locked, out of
+// space, unreadable, a closed connection, Redis or MongoDB) rather than of
+// the message.  An IMAPError (e.g. over quota) or a document that does not
+// validate is about the message whatever it says (the timeout helpers match
+// words such as an alias or a folder named "timeout").  The rest is checked
+// as it was thrown: refineAndLogError replaces the message (kept in
+// `_message`) and sets a 421 code and an IMAP response on every SQLite,
+// Redis and MongoDB error and every TypeError.  (A plain object, as some
+// errors such as a DOMException cannot be the prototype of another.)
+//
+const REGEX_SQLITE_SERVICE_CODE =
+  /^SQLITE_(BUSY|LOCKED|IOERR|PROTOCOL|FULL|CANTOPEN|READONLY|NOMEM|CORRUPT|NOTADB)/;
+
+function isServiceError(err) {
+  if (
+    typeof err?.code === 'string' &&
+    (REGEX_SQLITE_SERVICE_CODE.test(err.code) ||
+      err.code === 'ENOSPC' ||
+      err.code === 'ENOMEM')
+  )
+    return true;
+  if (
+    err instanceof IMAPError ||
+    isErrorConstructorName(err, 'ValidationError') ||
+    isErrorConstructorName(err, 'CastError')
+  )
+    return false;
+  const thrown = {
+    name: err?.name,
+    constructor: err?.constructor,
+    code: err?.code,
+    message: err?._message || err?.message
+  };
+  return (
+    isRedisError(thrown) ||
+    isMongoError(thrown) ||
+    isLockingError(thrown) ||
+    isSocketError(thrown) ||
+    // (the server shutting down, and a handle closed under getDatabase)
+    isErrorConstructorName(err, 'ServerShutdownError') ||
+    thrown.message === 'database connection is not open'
+  );
+}
+
+//
+// Messages are stored oldest first.  One that cannot be stored (e.g. it
+// cannot be parsed, or does not fit in the quota) is kept in the temporary
+// mailbox and passed over for the rest of the run, so the ones after it are
+// stored, and it is not tried again for 10 minutes (each sync used to stop
+// at it, so it kept the mail after it out and was parsed again on every
+// delivery).  An error of the mailbox or a service stops the run without
+// marking the message, as the next ones would fail too and it is not the
+// message's fault.  Pages are read after the last message seen (by date and
+// id), as a list of the ones passed over grew past the number of variables a
+// query can have.
+//
+async function sync(session, owner) {
+  const key = `sync_temporary_mailbox:${session.user.alias_id}`;
+  let last;
   let deleted = 0;
 
   let err;
@@ -200,15 +280,24 @@ async function sync(session) {
       const sql = builder.build({
         type: 'select',
         table: 'TemporaryMessages',
+        //
+        // (the range on `date` lets its index serve the page, which an `$or`
+        //  of the two cases alone did not: every page sorted all the rows
+        //  left, so a sync of many messages took quadratic time)
+        //
+        condition: last
+          ? {
+              date: { $gte: last.date },
+              $or: [{ date: { $gt: last.date } }, { _id: { $gt: last._id } }]
+            }
+          : {},
+        sort: { date: 1, _id: 1 },
         limit: 25 // 250mb max (50mb per message)
       });
 
       const messages = tmpDb.prepare(sql.query).all(sql.values);
 
-      if (messages.length === 0) {
-        hasMore = false;
-        break;
-      }
+      if (messages.length === 0) break;
 
       // check that we have available space
       const storagePath = getPathToDatabase({
@@ -229,7 +318,21 @@ async function sync(session) {
       const appendedIds = [];
 
       for (const m of messages) {
+        const failedKey = `${key}:failed:${m._id}`;
         try {
+          if (owner) {
+            // (the lock can expire while the event loop is blocked, and another
+            //  sync that took it would append the same messages)
+            const [lock, failed] = await this.client.mget(key, failedKey);
+            if (lock !== owner) {
+              logger.warn('sync stopped as its lock was lost', { session });
+              hasMore = false;
+              break;
+            }
+
+            if (failed) continue;
+          }
+
           const message = syncConvertResult(TemporaryMessages, m);
           //
           // if one message fails then not all of them should
@@ -286,9 +389,19 @@ async function sync(session) {
           // yield event loop between messages so other requests aren't starved
           await new Promise(setImmediate);
         } catch (_err) {
-          err = Array.isArray(_err) ? _err[0] : _err;
-          hasMore = false;
-          break;
+          const error = Array.isArray(_err) ? _err[0] : _err;
+          if (err) logger.error(error, { session });
+          else err = error;
+          // (the messages already stored are still deleted below)
+          if (isServiceError(error)) {
+            hasMore = false;
+            break;
+          }
+
+          if (this.client)
+            await this.client
+              .set(failedKey, '1', 'PX', ms('10m'))
+              .catch((err) => logger.fatal(err, { session }));
         }
       }
 
@@ -304,14 +417,18 @@ async function sync(session) {
         });
         tmpDb.prepare(deleteSql.query).run(deleteSql.values);
       }
+
+      last = messages.at(-1);
     }
   }
 
-  // update storage
-  try {
-    await updateStorageUsed(session.user.alias_id, this.client);
-  } catch (err) {
-    logger.fatal(err, { session, resolver: this.resolver });
+  // update storage (only when messages were moved, as most syncs find none)
+  if (deleted > 0) {
+    try {
+      await updateStorageUsed(session.user.alias_id, this.client);
+    } catch (err) {
+      logger.fatal(err, { session, resolver: this.resolver });
+    }
   }
 
   // NOTE: tmpDb lifecycle is managed by temporaryDatabaseMap LRU cache.
@@ -325,3 +442,4 @@ async function sync(session) {
 
 module.exports = syncTemporaryMailbox;
 module.exports.storeSieveCopies = storeSieveCopies;
+module.exports.isServiceError = isServiceError;

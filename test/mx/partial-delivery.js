@@ -41,6 +41,7 @@ const ms = require('ms');
 const mxConnect = require('@forwardemail/mx-connect');
 const nodemailer = require('nodemailer');
 const Mail = require('nodemailer/lib/mailer');
+const SMTPConnection = require('nodemailer/lib/smtp-connection');
 const pWaitFor = require('p-wait-for');
 const pify = require('pify');
 const test = require('ava');
@@ -263,11 +264,12 @@ async function setup(t, { rcptTo = () => {} } = {}) {
       .create();
   }
 
-  // a retry resends the exact same message (same headers)
-  async function send(names, id = randomUUID()) {
-    const to = names.map((name) =>
-      name.includes('@') ? name : `${name}@${domain.name}`
-    );
+  // a retry resends the exact same message (same headers), and its To
+  // header can list more recipients than it is sent to
+  async function send(names, id = randomUUID(), headerNames = names) {
+    const address = (name) =>
+      name.includes('@') ? name : `${name}@${domain.name}`;
+    const to = names.map((name) => address(name));
     const conn = await asyncMxConnect({
       target: IP_ADDRESS,
       port: mx.server.address().port,
@@ -287,7 +289,7 @@ async function setup(t, { rcptTo = () => {} } = {}) {
     return transporter.sendMail({
       envelope: { from: 'test@test.com', to },
       raw: [
-        `To: ${to.join(', ')}`,
+        `To: ${headerNames.map((name) => address(name)).join(', ')}`,
         'From: test@test.com',
         `Subject: Test ${id}`,
         `Message-ID: <${id}@test.com>`,
@@ -1175,6 +1177,50 @@ function storageTimeout() {
   return err;
 }
 
+//
+// Whether a transaction found a destination claimed by another one that is
+// still delivering to it (see `claim` in `helpers/on-data-mx`)
+//
+function watchPendingClaims(t) {
+  const { client } = t.context;
+  const { get } = client;
+  let isPending = false;
+  client.get = async function (...args) {
+    const value = await get.apply(this, args);
+    if (value === 'pending') isPending = true;
+    return value;
+  };
+
+  t.teardown(() => {
+    client.get = get;
+  });
+  return () => isPending;
+}
+
+// (the keys that record when each message was first seen, see
+// `hasFingerprintExpired`)
+async function getFingerprints(t) {
+  const { keyPrefix } = t.context.client.options;
+  const keys = await t.context.client.keys(`${keyPrefix}f:*`);
+  return new Set(
+    keys
+      .map((key) => key.slice(keyPrefix.length))
+      .filter((key) => /^f:[\da-f]+$/.test(key))
+  );
+}
+
+// (as if the message sent since `before` was first seen `age` ago)
+async function firstSeenBefore(t, before, age) {
+  const after = await getFingerprints(t);
+  const keys = [...after].filter((key) => !before.has(key));
+  t.is(keys.length, 1);
+  await t.context.client.set(
+    keys[0],
+    new Date(Date.now() - age).toISOString(),
+    'KEEPTTL'
+  );
+}
+
 async function waitForInbox(countInbox, expected) {
   await pWaitFor(async () => (await countInbox()) === expected, {
     timeout: ms('30s'),
@@ -1474,6 +1520,115 @@ test.serial(
 );
 
 test.serial(
+  'a failure on our side that never goes away is accepted before the message expires, not bounced for every recipient',
+  async (t) => {
+    let hits = 0;
+    const server = http.createServer((req, res) => {
+      req.resume();
+      req.on('end', () => {
+        hits++;
+        res.end('OK');
+      });
+    });
+    await new Promise((resolve) => {
+      server.listen(0, '127.0.0.1', resolve);
+    });
+    t.teardown(() => {
+      server.close();
+    });
+
+    const ctx = await setup(t);
+    await t.context.aliasFactory
+      .withState({
+        name: 'stuck',
+        user: ctx.admin._id,
+        domain: ctx.domain._id,
+        recipients: [
+          `http://127.0.0.1:${server.address().port}/hook`,
+          ctx.addr('stuck-fwd')
+        ]
+      })
+      .create();
+
+    // our key for signing webhook requests cannot be read, on every attempt
+    await Domains.findByIdAndUpdate(ctx.domain._id, {
+      $set: { webhook_key: 'not-encrypted' }
+    });
+
+    const before = await getFingerprints(t);
+
+    const id = randomUUID();
+    const err = await t.throwsAsync(ctx.send(['stuck'], id));
+    t.is(err.responseCode, 421);
+    t.is(ctx.received.get(ctx.addr('stuck-fwd')), 1);
+
+    // the sender has retried it for the internal retry window (a day before
+    // a retry is refused with a 550 for every recipient)
+    await firstSeenBefore(t, before, config.internalRetryWindow + ms('1h'));
+
+    // so it is accepted, for the recipient that already has it too
+    await ctx.clearGreylist();
+    const info = await ctx.send(['stuck'], id);
+    t.deepEqual(info.rejected, []);
+    t.is(hits, 0);
+    t.is(ctx.received.get(ctx.addr('stuck-fwd')), 1);
+  }
+);
+
+test.serial(
+  'a mailbox that fails on our side until the internal retry window ends is emailed about with that window',
+  async (t) => {
+    const ctx = await setup(t);
+    const box = await setupMailbox(t, ctx, 'lapsing', ['lapsing-fwd']);
+    interceptMailboxStorage(t, async () => {
+      throw storageTimeout();
+    });
+
+    const before = await getFingerprints(t);
+    const id = randomUUID();
+    const err = await t.throwsAsync(ctx.send(['lapsing'], id));
+    t.is(err.responseCode, 421);
+
+    await firstSeenBefore(t, before, config.internalRetryWindow + ms('1h'));
+    await ctx.clearGreylist();
+    const info = await ctx.send(['lapsing'], id);
+    t.deepEqual(info.rejected, []);
+    t.is(ctx.received.get(ctx.addr('lapsing-fwd')), 1);
+
+    const [message] = await getForwardingIssueEmails(box.address, 1);
+    t.true(
+      message.html.includes(
+        `retried for ${ms(config.internalRetryWindow, { long: true })}`
+      )
+    );
+  }
+);
+
+test.serial(
+  'a failure on our side is given up on before a sender that retries for 2 days stops',
+  async (t) => {
+    // (e.g. Exchange, which then bounces every recipient)
+    const ctx = await setup(t);
+    await setupMailbox(t, ctx, 'brief', ['brief-fwd']);
+    interceptMailboxStorage(t, async () => {
+      throw storageTimeout();
+    });
+
+    const before = await getFingerprints(t);
+    const id = randomUUID();
+    const err = await t.throwsAsync(ctx.send(['brief'], id));
+    t.is(err.responseCode, 421);
+
+    // its last retry, an hour before it gives up
+    await firstSeenBefore(t, before, ms('2d') - ms('1h'));
+    await ctx.clearGreylist();
+    const info = await ctx.send(['brief'], id);
+    t.deepEqual(info.rejected, []);
+    t.is(ctx.received.get(ctx.addr('brief-fwd')), 1);
+  }
+);
+
+test.serial(
   'a forward that fails on our side while it is sent is retried past the partial delivery window',
   async (t) => {
     const { partialDeliveryRetryWindow } = config;
@@ -1575,16 +1730,17 @@ test.serial(
 );
 
 test.serial(
-  'a webhook that rejects the message for good is not sent it again while the message is retried',
+  'a webhook that answers 500 is sent the message again on a retry, and once only after it accepted it',
   async (t) => {
+    // (an HTTP status is not an SMTP reply: it fails for now)
+    const statuses = [500];
     let hits = 0;
     const server = http.createServer((req, res) => {
       req.resume();
       req.on('end', () => {
         hits++;
-        // (a status the existing classification treats as permanent)
-        res.statusCode = 500;
-        res.end('Rejected');
+        res.statusCode = statuses.shift() || 200;
+        res.end(res.statusCode === 200 ? 'OK' : 'Internal Server Error');
       });
     });
     await new Promise((resolve) => {
@@ -1617,17 +1773,62 @@ test.serial(
     t.is(err.responseCode, 421);
     t.is(hits, 1);
 
+    // the retry is sent to the webhook again, which accepts it now
     await ctx.clearGreylist();
     const retry = await t.throwsAsync(ctx.send(['hooked'], id));
     t.is(retry.responseCode, 421);
-    t.is(hits, 1);
+    t.is(hits, 2);
 
     isDown = false;
     await ctx.clearGreylist();
     const info = await ctx.send(['hooked'], id);
     t.deepEqual(info.rejected, []);
     await waitForInbox(box.countInbox, 1);
+    t.is(hits, 2);
+  }
+);
+
+test.serial(
+  'a webhook that is unavailable for now is retried until it accepts the message',
+  async (t) => {
+    // the webhook is down for the first attempt (e.g. behind a proxy)
+    const statuses = [503];
+    let hits = 0;
+    const server = http.createServer((req, res) => {
+      req.resume();
+      req.on('end', () => {
+        hits++;
+        res.statusCode = statuses.shift() || 200;
+        res.end(res.statusCode === 200 ? 'OK' : 'Service Unavailable');
+      });
+    });
+    await new Promise((resolve) => {
+      server.listen(0, '127.0.0.1', resolve);
+    });
+    t.teardown(() => {
+      server.close();
+    });
+
+    const ctx = await setup(t);
+    await t.context.aliasFactory
+      .withState({
+        name: 'flaky',
+        user: ctx.admin._id,
+        domain: ctx.domain._id,
+        recipients: [`http://127.0.0.1:${server.address().port}/hook`]
+      })
+      .create();
+
+    const id = randomUUID();
+    const err = await t.throwsAsync(ctx.send(['flaky'], id));
+    t.is(err.responseCode, 421);
     t.is(hits, 1);
+
+    // the retry is sent to the webhook again, and it accepts it
+    await ctx.clearGreylist();
+    const info = await ctx.send(['flaky'], id);
+    t.deepEqual(info.rejected, []);
+    t.is(hits, 2);
   }
 );
 
@@ -1877,6 +2078,13 @@ test.serial(
 test.serial(
   'a retry that arrives while a webhook is still being delivered is deferred for each alias it serves',
   async (t) => {
+    // (it waits for the first attempt for a second only)
+    const { fingerprintPendingWait } = config;
+    config.fingerprintPendingWait = ms('1s');
+    t.teardown(() => {
+      config.fingerprintPendingWait = fingerprintPendingWait;
+    });
+
     // the webhook is slow to answer the first attempt
     let isWaiting = false;
     let answer;
@@ -2081,6 +2289,13 @@ test.serial(
 test.serial(
   'a retry while an earlier attempt is still storing the message is deferred',
   async (t) => {
+    // (it waits for the first attempt for a second only)
+    const { fingerprintPendingWait } = config;
+    config.fingerprintPendingWait = ms('1s');
+    t.teardown(() => {
+      config.fingerprintPendingWait = fingerprintPendingWait;
+    });
+
     const ctx = await setup(t);
 
     const imap = new IMAP(
@@ -2181,7 +2396,7 @@ test.serial(
 );
 
 test.serial(
-  'a retry while an earlier attempt is still forwarding the message is deferred',
+  'a retry that waits for an earlier attempt that fails for now delivers the message itself',
   async (t) => {
     // the first attempt is slow at the destination and then fails for now
     let release;
@@ -2204,22 +2419,259 @@ test.serial(
     const first = ctx.send(['slow'], id);
     await pWaitFor(() => holding, { timeout: ms('30s') });
 
-    // meanwhile the sender retries: the retry is deferred, not accepted,
-    // since the first attempt can still fail
-    const retry = await t.throwsAsync(ctx.send(['slow'], id));
-    t.is(retry.responseCode, 421);
-
+    // meanwhile the sender retries, and the retry waits for the first
+    // attempt, which then fails and releases the destination: the retry
+    // forwards the message instead of being deferred
+    const isWaiting = watchPendingClaims(t);
+    const retry = ctx.send(['slow'], id);
+    await pWaitFor(isWaiting, { timeout: ms('30s'), interval: 50 });
     release();
     const err = await t.throwsAsync(first);
     t.is(err.responseCode, 451);
-    t.is(ctx.received.get(ctx.addr('slow')), undefined);
-
-    // the next retry forwards the message, and one after that skips it
-    await ctx.clearGreylist();
-    const info = await ctx.send(['slow'], id);
+    const info = await retry;
     t.deepEqual(info.rejected, []);
     t.is(ctx.received.get(ctx.addr('slow')), 1);
+
+    // the next retry skips it
+    await ctx.clearGreylist();
     await ctx.send(['slow'], id);
     t.is(ctx.received.get(ctx.addr('slow')), 1);
+  }
+);
+
+test.serial(
+  'a transaction that finds several destinations in progress waits for them once',
+  async (t) => {
+    const { fingerprintPendingWait } = config;
+    config.fingerprintPendingWait = ms('3s');
+    t.teardown(() => {
+      config.fingerprintPendingWait = fingerprintPendingWait;
+    });
+
+    // each destination is slow for the first attempt at it
+    const names = ['pa', 'pb', 'pc'];
+    let release;
+    const held = new Promise((resolve) => {
+      release = resolve;
+    });
+    t.teardown(() => release());
+    const holding = new Set();
+    const ctx = await setup(t, {
+      async rcptTo(address, count) {
+        const name = names.find((name) => address === ctx.addr(name));
+        if (!name || count !== 1) return;
+        holding.add(name);
+        await held;
+      }
+    });
+    for (const name of names) await ctx.createAlias(name, [name]);
+
+    // the message is being delivered to each of them by another transaction
+    const id = randomUUID();
+    const firsts = names.map((name) =>
+      ctx.send([name], id, names).then(
+        (info) => ({ info }),
+        (err) => ({ err })
+      )
+    );
+    await pWaitFor(() => holding.size === names.length, {
+      timeout: ms('30s'),
+      interval: 50
+    });
+
+    // (the destinations are claimed one after another)
+    await ctx.clearGreylist();
+    const start = Date.now();
+    const err = await t.throwsAsync(ctx.send(names, id));
+    const elapsed = Date.now() - start;
+    t.is(err.responseCode, 421);
+    t.true(elapsed < 2 * config.fingerprintPendingWait, `waited ${elapsed}ms`);
+
+    release();
+    for (const { info } of await Promise.all(firsts)) {
+      t.deepEqual(info?.rejected, []);
+    }
+  }
+);
+
+test.serial(
+  'each transaction on a connection waits for a destination in progress',
+  async (t) => {
+    const { fingerprintPendingWait } = config;
+    config.fingerprintPendingWait = ms('2s');
+    t.teardown(() => {
+      config.fingerprintPendingWait = fingerprintPendingWait;
+    });
+
+    // each destination is slow for the first attempt at it
+    const names = ['conn-a', 'conn-b'];
+    const releases = {};
+    const held = {};
+    for (const name of names) {
+      held[name] = new Promise((resolve) => {
+        releases[name] = resolve;
+      });
+    }
+
+    t.teardown(() => {
+      for (const name of names) releases[name]();
+    });
+    const holding = new Set();
+    const ctx = await setup(t, {
+      async rcptTo(address, count) {
+        const name = names.find((name) => address === ctx.addr(name));
+        if (!name || count !== 1) return;
+        holding.add(name);
+        await held[name];
+      }
+    });
+    for (const name of names) await ctx.createAlias(name, [name]);
+
+    // each message is being delivered by another transaction
+    const ids = names.map(() => randomUUID());
+    const firsts = names.map((name, i) => ctx.send([name], ids[i]));
+    await pWaitFor(() => holding.size === names.length, {
+      timeout: ms('30s'),
+      interval: 50
+    });
+    await ctx.clearGreylist();
+
+    // the sender sends both messages again on one connection
+    const connection = new SMTPConnection({
+      host: IP_ADDRESS,
+      port: t.context.mx.server.address().port,
+      ignoreTLS: true,
+      secure: false,
+      tls
+    });
+    t.teardown(() => connection.close());
+    await pify(connection.connect.bind(connection))();
+    const sendOnConnection = (name, id) =>
+      pify(connection.send.bind(connection))(
+        { from: 'test@test.com', to: [`${name}@${ctx.domain.name}`] },
+        [
+          `To: ${name}@${ctx.domain.name}`,
+          'From: test@test.com',
+          `Subject: Test ${id}`,
+          `Message-ID: <${id}@test.com>`,
+          'Content-Type: text/plain; charset=us-ascii',
+          '',
+          'Test'
+        ].join('\r\n')
+      );
+
+    // (the number of times a claim was found pending)
+    const { client } = t.context;
+    const { get } = client;
+    let pending = 0;
+    client.get = async function (...args) {
+      const value = await get.apply(this, args);
+      if (value === 'pending') pending++;
+      return value;
+    };
+
+    t.teardown(() => {
+      client.get = get;
+    });
+
+    // each one waits for the other transaction, which then delivers it
+    for (const [i, name] of names.entries()) {
+      const before = pending;
+      const sent = sendOnConnection(name, ids[i]);
+      await pWaitFor(() => pending > before, {
+        timeout: ms('30s'),
+        interval: 50
+      });
+      releases[name]();
+      const info = await sent;
+      t.deepEqual(info.rejected, []);
+      const first = await firsts[i];
+      t.deepEqual(first.rejected, []);
+      t.is(ctx.received.get(ctx.addr(name)), 1);
+
+      // (the next message comes after this one would have stopped waiting)
+      await delay(config.fingerprintPendingWait);
+    }
+  }
+);
+
+test.serial(
+  'a transaction waiting for a destination in progress stops waiting on shutdown',
+  async (t) => {
+    const { fingerprintPendingWait } = config;
+    config.fingerprintPendingWait = ms('20s');
+    t.teardown(() => {
+      config.fingerprintPendingWait = fingerprintPendingWait;
+    });
+
+    let release;
+    const held = new Promise((resolve) => {
+      release = resolve;
+    });
+    t.teardown(() => release());
+    let holding = false;
+    const ctx = await setup(t, {
+      async rcptTo(address, count) {
+        if (address !== ctx.addr('halt') || count !== 1) return;
+        holding = true;
+        await held;
+      }
+    });
+    await ctx.createAlias('halt', ['halt']);
+
+    const id = randomUUID();
+    const first = ctx.send(['halt'], id).catch(() => {});
+    await pWaitFor(() => holding, { timeout: ms('30s') });
+
+    const isWaiting = watchPendingClaims(t);
+    const second = t.throwsAsync(ctx.send(['halt'], id));
+    await pWaitFor(isWaiting, { timeout: ms('30s'), interval: 50 });
+
+    const start = Date.now();
+    t.context.mx.isClosing = true;
+    const err = await second;
+    t.is(err.responseCode, 421);
+    t.true(Date.now() - start < ms('5s'));
+
+    release();
+    await first;
+  }
+);
+
+test.serial(
+  'two transactions of a message at once are both accepted and deliver it once',
+  async (t) => {
+    // the first transaction is slow at the destination, and then delivers it
+    let release;
+    const held = new Promise((resolve) => {
+      release = resolve;
+    });
+    t.teardown(() => release());
+    let holding = false;
+    const ctx = await setup(t, {
+      async rcptTo(address, count) {
+        if (address !== ctx.addr('twin') || count !== 1) return;
+        holding = true;
+        await held;
+      }
+    });
+    await ctx.createAlias('twin', ['twin']);
+
+    const id = randomUUID();
+    const first = ctx.send(['twin'], id);
+    await pWaitFor(() => holding, { timeout: ms('30s') });
+
+    // the second waits for the first instead of being deferred
+    const isWaiting = watchPendingClaims(t);
+    const second = ctx.send(['twin'], id);
+    await pWaitFor(isWaiting, { timeout: ms('30s'), interval: 50 });
+    release();
+    const infos = await Promise.all([first, second]);
+    for (const info of infos) {
+      t.deepEqual(info.rejected, []);
+      t.deepEqual(info.accepted, [`twin@${ctx.domain.name}`]);
+    }
+
+    t.is(ctx.received.get(ctx.addr('twin')), 1);
   }
 );

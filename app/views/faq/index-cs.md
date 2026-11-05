@@ -2894,7 +2894,7 @@ Ano. Forward Email podporuje server-side filtrování pomocí [Sieve](https://en
 | --- | --- |
 | Core language | `keep`, `discard`, `stop`, podmíněné bloky a základní testy `address`, `header`, `exists`, `size` a logické testy. |
 | Delivery | `fileinto`, `copy`, `redirect`, `mailbox` pro `fileinto :create` a `mailboxexists`, a `special-use` pro `fileinto :specialuse` a `specialuse_exists`. |
-| Tests and comparisons | `envelope`, `body`, `date`, `index`, `regex`, `subaddress`, `relational`, `i;ascii-casemap`, `i;octet`, a `i;ascii-numeric`. |
+| Tests and comparisons | `envelope`, `body`, `date`, `index`, `regex`, `subaddress`, `relational`, `i;ascii-casemap`, `i;unicode-casemap`, `i;octet`, a `i;ascii-numeric`. |
 | State and variables | `variables`, `encoded-character`, `imap4flags`, `duplicate`, a `ihave`. |
 | Actions and responses | `reject`, `ereject`, `vacation`, `vacation-seconds`, a `enotify` používající `mailto:`. Zastaralé prohlášení `require "notify"` je přijímáno jako vstupní alias pro `enotify`, ale `enotify` je inzerovaná schopnost. |
 | Message processing | `editheader`, `environment`, `foreverypart` (s `break`), `extracttext`, `replace`, a `mime`, který tyto tři příkazy také povoluje. |

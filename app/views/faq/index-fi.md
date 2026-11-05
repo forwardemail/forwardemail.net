@@ -2893,7 +2893,7 @@ Täydellinen, toteutukseen perustuva ominaisuuslista ja RFC-muistiinpanot ovat s
 | --- | --- |
 | Core language | `keep`, `discard`, `stop`, ehdolliset lohkot sekä perus `address`, `header`, `exists`, `size` ja boolean-testit. |
 | Delivery | `fileinto`, `copy`, `redirect`, `mailbox` komentoja `fileinto :create` ja `mailboxexists` varten, ja `special-use` komentoja `fileinto :specialuse` ja `specialuse_exists` varten. |
-| Tests and comparisons | `envelope`, `body`, `date`, `index`, `regex`, `subaddress`, `relational`, `i;ascii-casemap`, `i;octet`, ja `i;ascii-numeric`. |
+| Tests and comparisons | `envelope`, `body`, `date`, `index`, `regex`, `subaddress`, `relational`, `i;ascii-casemap`, `i;unicode-casemap`, `i;octet`, ja `i;ascii-numeric`. |
 | State and variables | `variables`, `encoded-character`, `imap4flags`, `duplicate`, ja `ihave`. |
 | Actions and responses | `reject`, `ereject`, `vacation`, `vacation-seconds`, ja `enotify` `mailto:`-osoitteita käyttäen. Vanha `require "notify"` -ilmoitus hyväksytään syöttöaliasena `enotify`-toiminnolle, mutta `enotify` on ilmoitettu ominaisuus. |
 | Message processing | `editheader`, `environment`, `foreverypart` (ja `break`), `extracttext`, `replace`, ja `mime`, joka ottaa myös nämä kolme komentoa käyttöön. |

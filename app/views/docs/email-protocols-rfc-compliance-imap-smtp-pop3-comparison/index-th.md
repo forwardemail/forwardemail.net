@@ -1117,7 +1117,7 @@ sequenceDiagram
 | [RFC 5173](https://datatracker.ietf.org/doc/html/rfc5173) | `body` | การจับคู่เนื้อหาของส่วนเนื้อข้อความ (message-body). |
 | [RFC 5229](https://datatracker.ietf.org/doc/html/rfc5229) | `variables` | การขยายตัวแปรและตัวดัดแปลงที่รองรับ. |
 | [RFC 5231](https://datatracker.ietf.org/doc/html/rfc5231) | `relational` | การเปรียบเทียบ `:count` และ `:value`. |
-| [RFC 4790](https://datatracker.ietf.org/doc/html/rfc4790) | Comparators | รองรับ `i;ascii-casemap`, `i;octet` และ `i;ascii-numeric`. |
+| [RFC 4790](https://datatracker.ietf.org/doc/html/rfc4790) | Comparators | รองรับ `i;ascii-casemap`, `i;unicode-casemap`, `i;octet` และ `i;ascii-numeric`. |
 | [RFC 3894](https://datatracker.ietf.org/doc/html/rfc3894) | `copy` | รองรับ `:copy` บน `fileinto` และ `redirect`. |
 | [RFC 5293](https://datatracker.ietf.org/doc/html/rfc5293) | `editheader` | การเปลี่ยนแปลงเฮดเดอร์ก่อนการเก็บ ซึ่งการทดสอบถัดไปจะเห็นผล โดยยกเว้นฟิลด์การพิสูจน์ตัวตนและการกำหนดเส้นทางการส่งที่ได้รับการป้องกัน `Received` และ `Auto-Submitted`. |
 | [RFC 5260](https://datatracker.ietf.org/doc/html/rfc5260) | `date`, `index` | การทดสอบ `currentdate` และวันที่ในเฮดเดอร์ รวมถึง `:index` และ `:last`. |
@@ -1141,7 +1141,7 @@ sequenceDiagram
 | `reject` / `ereject` | ปฏิเสธข้อความด้วยข้อผิดพลาด SMTP. | ส่งกลับผ่านเส้นทางการจัดส่ง MX. |
 | `vacation` / `vacation-seconds` | ส่งการตอบกลับอัตโนมัติ. | จัดคิวพร้อมจำกัดอัตราตามผู้รับและช่วงเวลา. |
 | `imap4flags` | ตั้งค่าหรือทดสอบแฟลก IMAP. | นำไปใช้เมื่อตัวข้อความถูกเก็บ. |
-| `envelope`, `body`, `date`, `index`, `regex`, `subaddress`, `relational`, `comparator-i;ascii-numeric` | ทดสอบข้อมูลข้อความและซองจดหมาย. | ประเมินโดยเอนจิน Sieve. |
+| `envelope`, `body`, `date`, `index`, `regex`, `subaddress`, `relational`, `comparator-i;ascii-numeric`, `comparator-i;unicode-casemap` | ทดสอบข้อมูลข้อความและซองจดหมาย. | ประเมินโดยเอนจิน Sieve. |
 | `variables`, `duplicate`, `ihave` | จัดเก็บค่า ตรวจจับการซ้ำ และตรวจสอบความสามารถ. | ตัวแปรเป็นระดับสคริปต์; สถานะการซ้ำใช้ Redis. |
 | `editheader` | เพิ่มหรือลบเฮดเดอร์ที่ไม่ได้รับการปกป้อง. | เฮดเดอร์การพิสูจน์ตัวตนและการกำหนดเส้นทางการส่ง `Received` และ `Auto-Submitted` ไม่สามารถแก้ไขได้. |
 | `enotify` | ส่งการแจ้งเตือนโดยใช้ `mailto:`. | จัดคิวพร้อมจำกัดอัตราการแจ้งเตือน. |

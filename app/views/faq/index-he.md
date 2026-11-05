@@ -2894,7 +2894,7 @@ Tasks.org הוא מנהל משימות קוד פתוח פופולרי שעובד
 | --- | --- |
 | שפת הליבה | `keep`, `discard`, `stop`, בלוקים מותנים, ובדיקות הבסיס `address`, `header`, `exists`, `size`, ובדיקות בוליאניות. |
 | מסירה | `fileinto`, `copy`, `redirect`, `mailbox` עבור `fileinto :create` ו-`mailboxexists`, ו-`special-use` עבור `fileinto :specialuse` ו-`specialuse_exists`. |
-| בדיקות והשוואות | `envelope`, `body`, `date`, `index`, `regex`, `subaddress`, `relational`, `i;ascii-casemap`, `i;octet`, ו-`i;ascii-numeric`. |
+| בדיקות והשוואות | `envelope`, `body`, `date`, `index`, `regex`, `subaddress`, `relational`, `i;ascii-casemap`, `i;unicode-casemap`, `i;octet`, ו-`i;ascii-numeric`. |
 | מצב ומשתנים | `variables`, `encoded-character`, `imap4flags`, `duplicate`, ו-`ihave`. |
 | פעולות ותשובות | `reject`, `ereject`, `vacation`, `vacation-seconds`, ו-`enotify` המשתמש ב-`mailto:`. ההצהרה הישנה `require "notify"` מתקבלת כ_ALIAS_ קלט עבור `enotify`, אך `enotify` היא היכולת המפורסמת. |
 | עיבוד הודעות | `editheader`, `environment`, `foreverypart` (עם `break`), `extracttext`, `replace`, ו-`mime`, שמפעיל גם את שלוש הפקודות האלה. |

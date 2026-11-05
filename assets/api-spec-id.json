@@ -3216,6 +3216,14 @@
               "$ref": "#/components/schemas/Error"
             }
           }
+        },
+        "headers": {
+          "Retry-After": {
+            "description": "Seconds to wait before trying again (sent when a sign-in is refused for too many attempts)",
+            "schema": {
+              "type": "integer"
+            }
+          }
         }
       },
       "InternalServerError": {
@@ -4916,6 +4924,12 @@
               },
               "X-Item-Count": {
                 "description": "Total number of items",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Lightweight-Fallback-Count": {
+                "description": "Number of messages of this page listed without the nodemailer and raw fields (as with lightweight=true), because the messages of the page exceeded the size a full list may return; get them with GET /v1/messages/{id}. Only sent when messages were listed this way.",
                 "schema": {
                   "type": "integer"
                 }
@@ -9138,6 +9152,9 @@
           "401": {
             "description": "Unauthorized - Invalid API token or alias credentials. Note: authentication is optional; this error only occurs when credentials are provided but are invalid."
           },
+          "403": {
+            "description": "Forbidden - The credentials are correct but may not connect (e.g. the alias does not have IMAP enabled, or the account is banned); a `?auth=message` connection is closed with `4403`"
+          },
           "404": {
             "description": "Not Found - Alias not found for the provided credentials"
           },
@@ -9585,7 +9602,7 @@
     },
     {
       "name": "Skrip Saringan",
-      "description": "Endpoint manajemen skrip Sieve\n\n>[!NOTE]\n> Sieve adalah bahasa penyaringan email yang ampuh yang didefinisikan dalam RFC 5228. Skrip dieksekusi pada email masuk untuk secara otomatis mengatur, menyaring, dan menanggapi pesan.\n\n>[!TIP]\n> Ekstensi yang didukung meliputi: fileinto, reject, ereject, vacation, vacation-seconds, imap4flags, envelope, body, relational, comparator-i;ascii-numeric, copy, date, index, editheader, enotify, regex, subaddress, ihave, duplicate, special-use, mailbox, environment, dan variables. Skrip divalidasi sebelum disimpan untuk memastikan sintaksnya benar.\n\n>[!NOTE]\n> **Dua metode autentikasi didukung:**\n> - **Authentication Token API** (`/v1/domains/{domain_id}/aliases/{alias_id}/sieve`): Gunakan kunci API Anda sebagai nama pengguna dengan Basic Auth. Membutuhkan domain_id dan alias_id di jalur URL.\n> - **Authentication Alias** (`/v1/sieve-scripts`): Gunakan email alias dan kata sandi yang dihasilkan sebagai kredensial Basic Auth. Tidak perlu domain_id atau alias_id di URL.\n\n>[!TIP]\n> Parameter ID skrip menerima ObjectId MongoDB atau nama skrip, memungkinkan identifikasi skrip yang fleksibel."
+      "description": "Endpoint manajemen skrip Sieve\n\n>[!NOTE]\n> Sieve adalah bahasa penyaringan email yang ampuh yang didefinisikan dalam RFC 5228. Skrip dieksekusi pada email masuk untuk secara otomatis mengatur, menyaring, dan menanggapi pesan.\n\n>[!TIP]\n> Ekstensi yang didukung meliputi: fileinto, reject, ereject, vacation, vacation-seconds, imap4flags, envelope, body, relational, comparator-i;ascii-numeric, comparator-i;unicode-casemap, copy, date, index, editheader, enotify, regex, subaddress, ihave, duplicate, special-use, mailbox, environment, dan variables. Skrip divalidasi sebelum disimpan untuk memastikan sintaksnya benar.\n\n>[!NOTE]\n> **Dua metode autentikasi didukung:**\n> - **Authentication Token API** (`/v1/domains/{domain_id}/aliases/{alias_id}/sieve`): Gunakan kunci API Anda sebagai nama pengguna dengan Basic Auth. Membutuhkan domain_id dan alias_id di jalur URL.\n> - **Authentication Alias** (`/v1/sieve-scripts`): Gunakan email alias dan kata sandi yang dihasilkan sebagai kredensial Basic Auth. Tidak perlu domain_id atau alias_id di URL.\n\n>[!TIP]\n> Parameter ID skrip menerima ObjectId MongoDB atau nama skrip, memungkinkan identifikasi skrip yang fleksibel."
     },
     {
       "name": "WebSocket",

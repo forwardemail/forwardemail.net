@@ -2893,7 +2893,7 @@ Danh sách capability đầy đủ, được hỗ trợ bởi triển khai, và 
 | --- | --- |
 | Ngôn ngữ cốt lõi | `keep`, `discard`, `stop`, khối điều kiện, và các test cơ bản `address`, `header`, `exists`, `size`, và boolean. |
 | Phân phối | `fileinto`, `copy`, `redirect`, `mailbox` cho `fileinto :create` và `mailboxexists`, và `special-use` cho `fileinto :specialuse` và `specialuse_exists`. |
-| Kiểm tra và so sánh | `envelope`, `body`, `date`, `index`, `regex`, `subaddress`, `relational`, `i;ascii-casemap`, `i;octet`, và `i;ascii-numeric`. |
+| Kiểm tra và so sánh | `envelope`, `body`, `date`, `index`, `regex`, `subaddress`, `relational`, `i;ascii-casemap`, `i;unicode-casemap`, `i;octet`, và `i;ascii-numeric`. |
 | Trạng thái và biến | `variables`, `encoded-character`, `imap4flags`, `duplicate`, và `ihave`. |
 | Hành động và phản hồi | `reject`, `ereject`, `vacation`, `vacation-seconds`, và `enotify` sử dụng `mailto:`. Khai báo cũ `require "notify"` được chấp nhận như một bí danh đầu vào cho `enotify`, nhưng `enotify` là capability được quảng bá. |
 | Xử lý thông điệp | `editheader`, `environment`, `foreverypart` (cùng với `break`), `extracttext`, `replace`, và `mime`, vốn cũng bật ba lệnh đó. |

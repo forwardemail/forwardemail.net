@@ -97,3 +97,49 @@ test('a write whose connection dropped is not run again', async (t) => {
   );
   t.is(requests, 1);
 });
+
+//
+// A failed query keeps the query and the alias on the error, but not the
+// instance: it holds the logger, which keeps the last error it logged, so
+// each error carried all the ones before it (and grew until the process ran
+// out of memory).
+//
+test('a failed query keeps the query and the alias, not the instance, on the error', async (t) => {
+  const TemporaryMessages = require('#models/temporary-messages');
+  const logger = require('#helpers/logger');
+  const instance = {
+    logger,
+    wsp: {
+      async request() {
+        throw new Error('Query failed');
+      }
+    }
+  };
+  const session = {
+    db: { wsp: true, open: true },
+    user: {
+      alias_id: new mongoose.Types.ObjectId().toString(),
+      password: 'test-password'
+    }
+  };
+
+  const jsons = [];
+  for (let i = 0; i < 4; i++) {
+    const err = await t.throwsAsync(
+      TemporaryMessages.updateMany(
+        instance,
+        session,
+        { mailbox: 'INBOX' },
+        { $set: { mailbox: 'Archive' } }
+      )
+    );
+    jsons.push(JSON.stringify(err.args));
+    t.is(err.alias_id, session.user.alias_id);
+  }
+
+  const sizes = jsons.map((json) => json.length);
+  t.deepEqual(sizes, [sizes[0], sizes[0], sizes[0], sizes[0]]);
+  t.true(sizes[0] < 1024);
+  t.true(jsons[0].includes('Archive'));
+  t.false(jsons[0].includes('test-password'));
+});

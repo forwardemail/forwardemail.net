@@ -10,13 +10,11 @@ const isSANB = require('is-string-and-not-blank');
 const pify = require('pify');
 const { boolean } = require('boolean');
 
-const pMap = require('p-map');
-
 const Aliases = require('#models/aliases');
 const Mailboxes = require('#models/mailboxes');
-const Messages = require('#models/messages');
 const i18n = require('#helpers/i18n');
 const setPaginationHeaders = require('#helpers/set-pagination-headers');
+const { Builder } = require('#helpers/json-sql');
 
 const onDelete = require('#helpers/imap/on-delete');
 const onCreate = require('#helpers/imap/on-create');
@@ -25,6 +23,8 @@ const onRename = require('#helpers/imap/on-rename');
 const onDeletePromise = pify(onDelete, { multiArgs: true });
 const onCreatePromise = pify(onCreate, { multiArgs: true });
 const onRenamePromise = pify(onRename, { multiArgs: true });
+
+const builder = new Builder({ bufferAsNative: true });
 
 //
 // Paths follow IMAP: INBOX is matched in any case and slashes around a path
@@ -161,30 +161,48 @@ async function list(ctx) {
     itemCount
   );
 
-  // Fetch message counts for each folder in parallel
-  const counts = await pMap(
-    mailboxes,
-    async (mailbox) => {
-      try {
-        const [messages, unseen] = await Promise.all([
-          Messages.countDocuments(ctx.instance, ctx.state.session, {
-            mailbox: mailbox._id
-          }),
-          Messages.countDocuments(ctx.instance, ctx.state.session, {
-            mailbox: mailbox._id,
-            unseen: true
-          })
-        ]);
-        return { messages, unseen };
-      } catch {
-        return { messages: undefined, unseen: undefined };
-      }
-    },
-    { concurrency: 5 }
-  );
+  //
+  // Message counts of every folder of the page in one query (two queries per
+  // folder took as many SQLite requests); it only reads the (mailbox, unseen)
+  // index
+  //
+  const counts = {};
+  if (Array.isArray(mailboxes) && mailboxes.length > 0) {
+    const sql = builder.build({
+      type: 'select',
+      table: 'Messages',
+      condition: {
+        mailbox: { $in: mailboxes.map((mailbox) => mailbox._id.toString()) }
+      },
+      fields: [
+        'mailbox',
+        { messages: { expression: 'COUNT(*)' } },
+        { unseen: { expression: 'SUM("unseen")' } }
+      ],
+      group: 'mailbox'
+    });
+    try {
+      const rows = await ctx.instance.wsp.request({
+        action: 'stmt',
+        session: { user: ctx.state.session.user },
+        stmt: [
+          ['prepare', sql.query],
+          ['all', sql.values]
+        ]
+      });
+      for (const mailbox of mailboxes)
+        counts[mailbox._id.toString()] = { messages: 0, unseen: 0 };
+      for (const row of rows)
+        counts[row.mailbox] = { messages: row.messages, unseen: row.unseen };
+    } catch (err) {
+      ctx.logger.warn(err);
+    }
+  }
 
   ctx.body = Array.isArray(mailboxes)
-    ? mailboxes.map((mailbox, i) => json(mailbox, counts[i] || {}))
+    ? mailboxes.map((mailbox) =>
+        json(mailbox, counts[mailbox._id.toString()] || {})
+      )
     : [];
 }
 

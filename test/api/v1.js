@@ -188,7 +188,7 @@ test('rate limits account signups', async (t) => {
   t.is(res.status, 429);
 });
 
-test('creates log', async (t) => {
+test('does not accept logs from clients', async (t) => {
   const { api } = t.context;
   const log = {
     message: new ObjectID().toString(),
@@ -197,13 +197,8 @@ test('creates log', async (t) => {
     }
   };
   const res = await api.post('/v1/log').send(log);
-  t.is(res.status, 200);
-
-  // since Logs.create in the API controller uses .then()
-  await setTimeout(100);
-
-  const match = await Logs.findOne({ message: log.message });
-  t.true(match !== null);
+  t.is(res.status, 404);
+  t.is(await Logs.countDocuments({ message: log.message }), 0);
 });
 
 test('creates domain', async (t) => {

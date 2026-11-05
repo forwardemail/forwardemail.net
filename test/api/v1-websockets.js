@@ -1085,6 +1085,45 @@ test('a banned account cannot connect with its API token', async (t) => {
   t.is(await waitForClose(ws), 4403);
 });
 
+//
+// The password of an alias without IMAP is right, but it may not sign in
+// here. Answered 401, it was counted as a failed login, so one such client
+// locked out every client behind the same address.
+//
+test('an alias without IMAP is refused with 403 and not counted as a failed login', async (t) => {
+  const { alias, domain, pass } = await createTestAlias(t);
+  await alias.constructor.updateOne(
+    { _id: alias._id },
+    { $set: { has_imap: false, imap_not_enabled_sent_at: new Date() } }
+  );
+  const username = `${alias.name}@${domain.name}`;
+
+  for (let i = 0; i < 12; i++) {
+    await t.throwsAsync(
+      () =>
+        connectWebSocket(t.context.apiURL.replace(/^http/, 'ws') + '/v1/ws', {
+          Authorization: createAliasAuth(username, pass)
+        }),
+      { message: /Unexpected server response: 403/ }
+    );
+    const ws = await connectMessageAuth(t, {
+      event: 'auth',
+      username,
+      password: pass
+    });
+    t.is(await waitForClose(ws), 4403);
+  }
+
+  t.is(
+    await t.context.client.get(`ws_auth_fail:${config.env}:127.0.0.1`),
+    null
+  );
+  // (nor by the shared login)
+  t.falsy(
+    Number(await t.context.client.get(`auth_limit_${config.env}:127.0.0.1`))
+  );
+});
+
 test('alias credentials go through the shared login (a disabled alias is refused)', async (t) => {
   const { apiURL } = t.context;
   const { alias, domain, pass } = await createTestAlias(t);

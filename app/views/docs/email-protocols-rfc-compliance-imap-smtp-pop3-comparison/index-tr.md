@@ -1117,7 +1117,7 @@ Tablo, listelenen davranışın tam uygulanmasını kasıtlı olarak sınırlı 
 | [RFC 5173](https://datatracker.ietf.org/doc/html/rfc5173) | `body` | Mesaj-gövde içeriği eşleştirme. |
 | [RFC 5229](https://datatracker.ietf.org/doc/html/rfc5229) | `variables` | Değişken genişletme ve desteklenen değiştiriciler. |
 | [RFC 5231](https://datatracker.ietf.org/doc/html/rfc5231) | `relational` | `:count` ve `:value` karşılaştırmaları. |
-| [RFC 4790](https://datatracker.ietf.org/doc/html/rfc4790) | Comparators | `i;ascii-casemap`, `i;octet` ve `i;ascii-numeric`. |
+| [RFC 4790](https://datatracker.ietf.org/doc/html/rfc4790) | Comparators | `i;ascii-casemap`, `i;unicode-casemap`, `i;octet` ve `i;ascii-numeric`. |
 | [RFC 3894](https://datatracker.ietf.org/doc/html/rfc3894) | `copy` | `fileinto` ve `redirect` üzerinde `:copy`. |
 | [RFC 5293](https://datatracker.ietf.org/doc/html/rfc5293) | `editheader` | Depolamadan önce başlık değişiklikleri, sonraki testler tarafından görülür; korunan kimlik doğrulama ve teslimat-rota alanları, `Received` ve `Auto-Submitted` hariç. |
 | [RFC 5260](https://datatracker.ietf.org/doc/html/rfc5260) | `date`, `index` | `currentdate` ve başlık-tarihi testleri, ayrıca `:index` ve `:last`. |
@@ -1141,7 +1141,7 @@ Tablo, listelenen davranışın tam uygulanmasını kasıtlı olarak sınırlı 
 | `reject` / `ereject` | Bir mesajı SMTP hatası ile reddeder. | MX teslimat yolu üzerinden döndürülür. |
 | `vacation` / `vacation-seconds` | Otomatik bir yanıt gönderir. | Alıcı ve aralık oran sınırlamalarıyla kuyruğa alınır. |
 | `imap4flags` | IMAP bayraklarını ayarlar veya test eder. | Mesaj depolandığında uygulanır. |
-| `envelope`, `body`, `date`, `index`, `regex`, `subaddress`, `relational`, `comparator-i;ascii-numeric` | Mesaj ve zarf verilerini test eder. | Sieve motoru tarafından değerlendirilir. |
+| `envelope`, `body`, `date`, `index`, `regex`, `subaddress`, `relational`, `comparator-i;ascii-numeric`, `comparator-i;unicode-casemap` | Mesaj ve zarf verilerini test eder. | Sieve motoru tarafından değerlendirilir. |
 | `variables`, `duplicate`, `ihave` | Değerleri saklar, çiftleri tespit eder ve yetenekleri kontrol eder. | Değişkenler betik-yerelidir; çift durumu Redis kullanır. |
 | `editheader` | Korunmayan başlıkları ekler veya siler. | Kimlik doğrulama ve teslimat-rota başlıkları, `Received` ve `Auto-Submitted` değiştirilemez. |
 | `enotify` | `mailto:` kullanarak bir bildirim gönderir. | Bildirim oran sınırlamaları ile kuyruğa alınır. |

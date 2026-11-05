@@ -8,10 +8,10 @@ const timers = require('node:timers/promises');
 const test = require('ava');
 
 // Replace the email helper with a spy BEFORE anything pulls in the Logs model
-// (which captures the helper by reference at load). A log written through
-// `POST /v1/log` is `is_restricted: false`, and its `err.isCodeBug` /
-// `err.output.statusCode` come straight from the request body, so without the
-// restriction check any anonymous caller could page admins once per request.
+// (which captures the helper by reference at load). A log built from outside
+// input is `is_restricted: false`, and its `err.isCodeBug` /
+// `err.output.statusCode` cannot be trusted, so without the restriction check
+// outside input could page admins.
 const emailPath = require.resolve('#helpers/email');
 const sent = [];
 require(emailPath);

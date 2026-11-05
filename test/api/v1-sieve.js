@@ -13,6 +13,7 @@ const test = require('ava');
 const utils = require('../utils');
 
 const config = require('#config');
+const SieveScripts = require('#models/sieve-scripts');
 
 test.before(utils.setupMongoose);
 test.after.always(utils.teardownMongoose);
@@ -352,6 +353,45 @@ if header :contains "subject" "updated" {
 
   t.is(res.status, 200);
   t.is(res.body.description, 'Updated description');
+});
+
+// (a script saved before a check was added can still be changed in other
+// ways; its content is checked again only when it changes)
+test('PUT /v1/sieve-scripts/:script_id - updates a script saved before stricter checks', async (t) => {
+  const { api } = t.context;
+  const { user, alias, domain, pass } = await createTestAlias(t);
+  const auth = createAliasAuth(`${alias.name}@${domain.name}`, pass);
+  // (a name of a variable that is not an identifier is refused when saved)
+  const content = 'require "variables"; set "my-folder" "x";';
+  const now = new Date();
+  const { insertedId } = await SieveScripts.collection.insertOne({
+    alias: alias._id,
+    user: user._id,
+    domain: domain._id,
+    name: 'saved-before',
+    content,
+    is_active: false,
+    is_valid: true,
+    required_capabilities: ['variables'],
+    created_at: now,
+    updated_at: now
+  });
+
+  const res = await api
+    .put(`/v1/sieve-scripts/${insertedId}`)
+    .set('Authorization', auth)
+    .send({ content, description: 'Kept', activate: true });
+  t.is(res.status, 200);
+  t.is(res.body.description, 'Kept');
+  t.true(res.body.is_active);
+
+  const changed = await api
+    .put(`/v1/sieve-scripts/${insertedId}`)
+    .set('Authorization', auth)
+    .send({ content: 'require "variables"; set "other-folder" "y";' });
+  t.is(changed.status, 400);
+  const unchanged = await SieveScripts.findById(insertedId).lean();
+  t.is(unchanged.content, content);
 });
 
 test('PUT /v1/sieve-scripts/:script_id - returns 404 for non-existent script', async (t) => {

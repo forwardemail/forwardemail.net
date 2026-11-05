@@ -1117,7 +1117,7 @@ sequenceDiagram
 | [RFC 5173](https://datatracker.ietf.org/doc/html/rfc5173) | `body` | 메시지 본문 내용 매칭. |
 | [RFC 5229](https://datatracker.ietf.org/doc/html/rfc5229) | `variables` | 변수 확장 및 지원되는 수정자. |
 | [RFC 5231](https://datatracker.ietf.org/doc/html/rfc5231) | `relational` | `:count` 및 `:value` 비교. |
-| [RFC 4790](https://datatracker.ietf.org/doc/html/rfc4790) | Comparators | `i;ascii-casemap`, `i;octet` 및 `i;ascii-numeric`. |
+| [RFC 4790](https://datatracker.ietf.org/doc/html/rfc4790) | Comparators | `i;ascii-casemap`, `i;unicode-casemap`, `i;octet` 및 `i;ascii-numeric`. |
 | [RFC 3894](https://datatracker.ietf.org/doc/html/rfc3894) | `copy` | `fileinto`와 `redirect`의 `:copy`. |
 | [RFC 5293](https://datatracker.ietf.org/doc/html/rfc5293) | `editheader` | 저장 전에 헤더 변경(이후 테스트에 반영되며, 인증 및 전달 라우팅 보호 필드, `Received`, `Auto-Submitted` 제외). |
 | [RFC 5260](https://datatracker.ietf.org/doc/html/rfc5260) | `date`, `index` | `currentdate`와 헤더-날짜 테스트, 그리고 `:index` 및 `:last`. |
@@ -1141,7 +1141,7 @@ sequenceDiagram
 | `reject` / `ereject` | SMTP 오류로 메시지를 거부합니다. | MX 전달 경로를 통해 반환됩니다. |
 | `vacation` / `vacation-seconds` | 자동 회신을 보냅니다. | 수신자 및 간격에 따른 속도 제한과 함께 큐에 저장됩니다. |
 | `imap4flags` | IMAP 플래그를 설정하거나 검사합니다. | 메시지가 저장될 때 적용됩니다. |
-| `envelope`, `body`, `date`, `index`, `regex`, `subaddress`, `relational`, `comparator-i;ascii-numeric` | 메시지 및 봉투 데이터를 검사합니다. | Sieve 엔진에 의해 평가됩니다. |
+| `envelope`, `body`, `date`, `index`, `regex`, `subaddress`, `relational`, `comparator-i;ascii-numeric`, `comparator-i;unicode-casemap` | 메시지 및 봉투 데이터를 검사합니다. | Sieve 엔진에 의해 평가됩니다. |
 | `variables`, `duplicate`, `ihave` | 값을 저장하고 중복을 감지하며 기능을 확인합니다. | 변수는 스크립트 로컬입니다; 중복 상태는 Redis를 사용합니다. |
 | `editheader` | 보호되지 않은 헤더를 추가하거나 삭제합니다. | 인증 및 전달 라우팅 헤더, `Received`, `Auto-Submitted`는 수정할 수 없습니다. |
 | `enotify` | `mailto:`를 사용하여 알림을 전송합니다. | 알림 속도 제한과 함께 큐에 저장됩니다. |

@@ -34,7 +34,9 @@ const splitLines = require('split-lines');
 const pify = require('pify');
 const test = require('ava');
 const { ImapFlow } = require('imapflow');
+const { ReplyError } = require('ioredis');
 const { Semaphore } = require('@shopify/semaphore');
+const { SqliteError } = require('better-sqlite3-multiple-ciphers');
 
 const utils = require('../utils');
 const SQLite = require('../../sqlite-server');
@@ -59,7 +61,9 @@ const openDatabaseHandle = require('#helpers/open-database-handle');
 const { vacuum } = require('#helpers/worker');
 const { encrypt } = require('#helpers/encrypt-decrypt');
 const createPassword = require('#helpers/create-password');
+const IMAPError = require('#helpers/imap-error');
 const getTemporaryDatabase = require('#helpers/get-temporary-database');
+const syncTemporaryMailbox = require('#helpers/sync-temporary-mailbox');
 const { getAuthCacheKey } = require('#helpers/on-auth');
 // dynamically import get-port
 let getPort;
@@ -440,6 +444,9 @@ test('an alias without IMAP stays refused after the first refused login', async 
     const err = await t.throwsAsync(imapFlow.connect());
     t.true(err.authenticationFailed);
     t.regex(err.response, /does not have IMAP enabled/);
+    // (it will not change until IMAP is enabled: not a temporary failure,
+    // which clients keep retrying, nor a wrong password, which they ask for)
+    t.is(err.serverResponseCode, 'CONTACTADMIN');
   }
 });
 
@@ -2119,67 +2126,98 @@ test
 // Syncs of the temporary mailbox run one at a time per alias, across
 // processes: one is asked for on each delivery by every IMAP process with a
 // session for the alias, and two at once could both append a message before
-// either removed it.
+// either removed it.  One asked for while another runs answers at once
+// (each used to wait for the lock, polling Redis, for up to 30 seconds) and
+// the one running goes round again for it.
 //
-test('a sync of the temporary mailbox waits for the one running', async (t) => {
+test('a sync asked for while another runs answers at once', async (t) => {
+  t.timeout(ms('2m'));
+  const { client, alias, domain } = t.context;
   // (no open handle for the mailbox, so delivery uses the temporary mailbox)
-  await pWaitFor(
-    () => t.context.sqlite.databaseMap.evictAndClose(t.context.alias.id),
-    { timeout: ms('10s') }
-  );
+  await pWaitFor(() => t.context.sqlite.databaseMap.evictAndClose(alias.id), {
+    timeout: ms('10s')
+  });
 
-  // another process is syncing the alias
-  const key = `sync_temporary_mailbox:${t.context.alias.id}`;
-  await t.context.client.set(key, 'another-process', 'PX', ms('1m'));
+  const deliver = async (subject) => {
+    const result = await t.context.wsp.request(
+      {
+        action: 'tmp',
+        aliases: [{ address: `${alias.name}@${domain.name}`, id: alias.id }],
+        remoteAddress: IP_ADDRESS,
+        date: new Date().toISOString(),
+        raw: Buffer.from(
+          `Date: ${new Date().toUTCString()}\r\nFrom: a@example.com\r\nSubject: ${subject}\r\n\r\ntest`
+        )
+      },
+      0
+    );
+    t.deepEqual(result, {});
+  };
 
-  const subject = randomUUID();
-  const result = await t.context.wsp.request(
-    {
-      action: 'tmp',
-      aliases: [
-        {
-          address: `${t.context.alias.name}@${t.context.domain.name}`,
-          id: t.context.alias.id
-        }
-      ],
-      remoteAddress: IP_ADDRESS,
-      date: new Date().toISOString(),
-      raw: Buffer.from(
-        [
-          `Date: ${new Date().toISOString()}`,
-          'To: foo@foo.com',
-          'From: beep@beep.com',
-          `Subject: ${subject}`,
-          '',
-          'test'
-        ].join('\r\n')
-      )
-    },
-    0
-  );
-  t.deepEqual(result, {});
+  const first = randomUUID();
+  await deliver(first);
 
-  const count = () =>
-    Messages.countDocuments(t.context.imap, t.context.session, { subject });
-  const sync = t.context.wsp.request(
+  // (the append of the first message waits 10 seconds)
+  const { get } = client;
+  let slowed = false;
+  client.get = async function (...args) {
+    if (!slowed && args[0] === `alias_quota_v2:${alias.id}`) {
+      slowed = true;
+      await setTimeout(ms('10s'));
+    }
+
+    return get.apply(this, args);
+  };
+
+  t.teardown(() => {
+    client.get = get;
+  });
+
+  const running = t.context.wsp.request(
     { action: 'sync', session: t.context.session },
     0
   );
-  await setTimeout(ms('2s'));
-  t.is(await count(), 0);
+  await pWaitFor(() => slowed, { timeout: ms('10s') });
 
-  // the other sync ends, and this one runs
-  await t.context.client.del(key);
-  await sync;
-  t.is(await count(), 1);
+  const second = randomUUID();
+  await deliver(second);
+  const start = Date.now();
+  t.is(
+    await t.context.wsp.request(
+      { action: 'sync', session: t.context.session },
+      0
+    ),
+    0
+  );
+  t.true(Date.now() - start < ms('2s'));
+
+  // the sync running (this one, or one the delivery asked for) stored the
+  // first message once it could, the second was stored too, each once, and
+  // the lock was freed once done
+  await running;
+  const count = (subject) =>
+    Messages.countDocuments(t.context.imap, t.context.session, { subject });
+  await pWaitFor(
+    async () => (await count(first)) === 1 && (await count(second)) === 1,
+    { timeout: ms('30s') }
+  );
+  await setTimeout(ms('1s'));
+  t.is(await count(first), 1);
+  t.is(await count(second), 1);
+  await pWaitFor(
+    async () =>
+      (await client.get(`sync_temporary_mailbox:${alias.id}`)) === null,
+    { timeout: ms('10s') }
+  );
+  t.is(await client.get(`sync_temporary_mailbox:${alias.id}:again`), null);
 });
 
 //
-// A sync that gives up waiting leaves nothing behind that could take the
+// A sync that finds the lock taken leaves nothing behind that could take the
 // lock later (and then hold it with no sync running, so every sync of the
 // alias waited for it to expire).
 //
-test('a sync that gives up waiting does not take the lock later', async (t) => {
+test('a sync that finds the lock taken does not take it later', async (t) => {
   t.timeout(ms('2m'));
   const { client } = t.context;
   const key = `sync_temporary_mailbox:${t.context.alias.id}`;
@@ -2265,6 +2303,537 @@ test('a sync keeps its lock while one append takes long', async (t) => {
     { timeout: ms('30s') }
   );
   t.pass();
+});
+
+//
+// Adds a message to the temporary mailbox as a delivery does (without asking
+// for a sync, so each test asks for one itself)
+//
+async function addTemporaryMessage(
+  t,
+  subject,
+  date = new Date(),
+  body = 'test'
+) {
+  const { imap, session } = t.context;
+  const tmpDb = await getTemporaryDatabase.call(imap, session);
+  const message = await TemporaryMessages.create({
+    instance: imap,
+    session: { user: session.user, db: tmpDb },
+    date,
+    raw: Buffer.from(
+      `Date: ${date.toUTCString()}\r\nFrom: a@example.com\r\nSubject: ${subject}\r\n\r\n${body}`
+    ),
+    remoteAddress: session.remoteAddress,
+    mailbox: 'INBOX',
+    flags: []
+  });
+  return { tmpDb, id: message._id.toString() };
+}
+
+function countTemporaryMessages(tmpDb) {
+  return tmpDb.prepare('SELECT count(*) FROM TemporaryMessages').pluck().get();
+}
+
+//
+// A message in the temporary mailbox that cannot be stored is kept there, and
+// the ones after it are still stored (a sync used to stop at it, so no mail
+// reached the mailbox until it was removed), and it is not tried again on the
+// next sync.  The error names the alias, and one named "timeout" was taken
+// for a timeout of the mailbox, which stopped every sync at that message.
+//
+for (const [title, username] of [
+  ['a temporary message that cannot be stored does not hold back the others'],
+  [
+    'a message over quota for an alias that says timeout does not hold back the others',
+    'news@timeout.com'
+  ]
+])
+  test(title, async (t) => {
+    const { client, alias } = t.context;
+    const session = username
+      ? {
+          ...t.context.session,
+          user: { ...t.context.session.user, username }
+        }
+      : t.context.session;
+    // (100 KB of quota left, and the storage used is not computed again)
+    await client.set(`storage_debounce:${alias.id}`, '1', 'PX', ms('2m'));
+    await Aliases.findByIdAndUpdate(alias._id, { $set: { storage_used: 0 } });
+    await client.set(
+      `alias_quota_v2:${alias.id}`,
+      JSON.stringify({ maxQuotaPerAlias: bytes('100KB') }),
+      'PX',
+      ms('2m')
+    );
+
+    // (the oldest one does not fit in the quota)
+    const { tmpDb, id } = await addTemporaryMessage(
+      t,
+      randomUUID(),
+      new Date(Date.now() - 1000),
+      'a'.repeat(bytes('200KB'))
+    );
+    const first = randomUUID();
+    const second = randomUUID();
+    await addTemporaryMessage(t, first);
+    await addTemporaryMessage(t, second);
+
+    const err = await t.throwsAsync(
+      t.context.wsp.request({ action: 'sync', session }, 0)
+    );
+    t.truthy(err);
+
+    for (const subject of [first, second])
+      t.is(
+        await Messages.countDocuments(t.context.imap, session, { subject }),
+        1
+      );
+
+    t.is(countTemporaryMessages(tmpDb), 1);
+    t.is(tmpDb.prepare('SELECT _id FROM TemporaryMessages').pluck().get(), id);
+
+    // the next sync leaves it for now
+    t.is(await t.context.wsp.request({ action: 'sync', session }, 0), 0);
+    t.is(countTemporaryMessages(tmpDb), 1);
+  });
+
+//
+// Other errors of one message (here the second of three) are passed over the
+// same way.  A folder whose name says timeout was taken for a timeout, and a
+// DOMException could not be checked at all: the check threw, so the sync
+// stopped before removing the messages it had stored.
+//
+// serial: it replaces `Mailboxes.findOne` for every test while it runs
+for (const [name, createError] of [
+  [
+    'an error about a folder named "Timeouts"',
+    () =>
+      new IMAPError('Mailbox "Timeouts" could not be created', {
+        imapResponse: 'CANNOT'
+      })
+  ],
+  ['a document that does not validate', () => new Messages({}).validateSync()],
+  [
+    'a DOMException',
+    () => {
+      try {
+        structuredClone(() => {});
+      } catch (err) {
+        return err;
+      }
+    }
+  ]
+]) {
+  test.serial(`${name} passes over that message only`, async (t) => {
+    const { client, alias, session, sqlite } = t.context;
+    const key = `sync_temporary_mailbox:${alias.id}`;
+    const subjects = [randomUUID(), randomUUID(), randomUUID()];
+    const ids = [];
+    let tmpDb;
+    for (const [i, subject] of subjects.entries()) {
+      let id;
+      ({ tmpDb, id } = await addTemporaryMessage(
+        t,
+        subject,
+        new Date(Date.now() - 1000 * (3 - i))
+      ));
+      ids.push(id);
+    }
+
+    // (the second one is told apart by the address it came from)
+    tmpDb
+      .prepare('UPDATE TemporaryMessages SET remoteAddress = ? WHERE _id = ?')
+      .run('192.0.2.99', ids[1]);
+    const { findOne } = Mailboxes;
+    Mailboxes.findOne = async function (instance, s, ...args) {
+      if (instance === sqlite && s?.remoteAddress === '192.0.2.99')
+        throw createError();
+      return findOne.call(this, instance, s, ...args);
+    };
+
+    t.teardown(() => {
+      Mailboxes.findOne = findOne;
+    });
+
+    await t.throwsAsync(t.context.wsp.request({ action: 'sync', session }, 0));
+    const counts = await Promise.all(
+      subjects.map((subject) =>
+        Messages.countDocuments(t.context.imap, session, { subject })
+      )
+    );
+    t.deepEqual(counts, [1, 0, 1]);
+    t.deepEqual(
+      tmpDb.prepare('SELECT _id FROM TemporaryMessages').pluck().all(),
+      [ids[1]]
+    );
+    t.is(await client.exists(`${key}:failed:${ids[1]}`), 1);
+  });
+}
+
+//
+// A sync whose lock was taken by another (it expired while this one was
+// blocked) stops before the next append, as the other one reads the same
+// messages and would store them too.
+//
+test('a sync that lost its lock stops before the next message', async (t) => {
+  t.timeout(ms('2m'));
+  const { client, alias, session } = t.context;
+  const key = `sync_temporary_mailbox:${alias.id}`;
+  const first = randomUUID();
+  const second = randomUUID();
+  const { tmpDb } = await addTemporaryMessage(
+    t,
+    first,
+    new Date(Date.now() - 1000)
+  );
+  await addTemporaryMessage(t, second);
+
+  // (another sync takes the lock while the first message is appended)
+  const { get } = client;
+  let taken = false;
+  client.get = async function (...args) {
+    if (!taken && args[0] === `alias_quota_v2:${alias.id}`) {
+      taken = true;
+      await client.set(key, 'another-process', 'PX', ms('5m'));
+    }
+
+    return get.apply(this, args);
+  };
+
+  t.teardown(() => {
+    client.get = get;
+  });
+
+  await t.context.wsp.request({ action: 'sync', session }, 0);
+  t.true(taken);
+  const count = (subject) =>
+    Messages.countDocuments(t.context.imap, session, { subject });
+  t.is(await count(first), 1);
+  t.is(await count(second), 0);
+  t.is(countTemporaryMessages(tmpDb), 1);
+  t.is(await client.get(key), 'another-process');
+});
+
+//
+// An error of the mailbox or of a service (here on the first message) stops
+// the sync without marking the message as failed: every SQLite, Redis and
+// MongoDB error is refined as a code bug, so each message of a busy mailbox
+// was marked failed and kept out of the mailbox for 10 minutes.
+//
+// serial: it replaces `Mailboxes.findOne` for every test while it runs
+for (const [name, createError] of [
+  [
+    'a busy mailbox',
+    () => new SqliteError('database is locked', 'SQLITE_BUSY')
+  ],
+  ['a Redis error', () => new ReplyError('LOADING Redis is loading')]
+]) {
+  test.serial(
+    `${name} stops the sync without marking the message as failed`,
+    async (t) => {
+      const { client, alias, session, sqlite } = t.context;
+      const key = `sync_temporary_mailbox:${alias.id}`;
+      const subjects = [randomUUID(), randomUUID(), randomUUID()];
+      const ids = [];
+      let tmpDb;
+      for (const [i, subject] of subjects.entries()) {
+        let id;
+        ({ tmpDb, id } = await addTemporaryMessage(
+          t,
+          subject,
+          new Date(Date.now() - 1000 * (3 - i))
+        ));
+        ids.push(id);
+      }
+
+      const { findOne } = Mailboxes;
+      let thrown = 0;
+      Mailboxes.findOne = async function (instance, s, ...args) {
+        if (instance === sqlite && s?.user?.alias_id === alias.id && !thrown) {
+          thrown++;
+          throw createError();
+        }
+
+        return findOne.call(this, instance, s, ...args);
+      };
+
+      t.teardown(() => {
+        Mailboxes.findOne = findOne;
+      });
+
+      await t.throwsAsync(
+        t.context.wsp.request({ action: 'sync', session }, 0)
+      );
+      t.is(thrown, 1);
+      for (const id of ids) t.is(await client.exists(`${key}:failed:${id}`), 0);
+      t.is(countTemporaryMessages(tmpDb), 3);
+
+      // the next sync stores all of them
+      t.is(await t.context.wsp.request({ action: 'sync', session }, 0), 3);
+      for (const subject of subjects)
+        t.is(
+          await Messages.countDocuments(t.context.imap, session, { subject }),
+          1
+        );
+      t.is(countTemporaryMessages(tmpDb), 0);
+    }
+  );
+}
+
+//
+// A Redis error while checking the lock between two messages stops the sync,
+// and the messages stored before it are still removed from the temporary
+// mailbox (they were left there and read again by the next sync).
+//
+test('a Redis error between messages still removes the ones stored', async (t) => {
+  const { client, alias, session } = t.context;
+  const key = `sync_temporary_mailbox:${alias.id}`;
+  const first = randomUUID();
+  const second = randomUUID();
+  const { tmpDb } = await addTemporaryMessage(
+    t,
+    first,
+    new Date(Date.now() - 1000)
+  );
+  await addTemporaryMessage(t, second);
+
+  const { mget } = client;
+  let calls = 0;
+  client.mget = async function (...args) {
+    if (args[0] === key && ++calls === 2)
+      throw new ReplyError('LOADING Redis is loading');
+    return mget.apply(this, args);
+  };
+
+  t.teardown(() => {
+    client.mget = mget;
+  });
+
+  await t.throwsAsync(t.context.wsp.request({ action: 'sync', session }, 0));
+  t.is(calls, 2);
+  const count = (subject) =>
+    Messages.countDocuments(t.context.imap, session, { subject });
+  t.is(await count(first), 1);
+  t.is(countTemporaryMessages(tmpDb), 1);
+
+  t.is(await t.context.wsp.request({ action: 'sync', session }, 0), 1);
+  t.is(await count(first), 1);
+  t.is(await count(second), 1);
+  t.is(countTemporaryMessages(tmpDb), 0);
+});
+
+//
+// A sync that ends with an error (here a message over quota) still goes
+// round again when another sync was asked for while it ran, since that one
+// found the lock taken and returned.  (Nothing else asks for a sync here,
+// as the message is not delivered through the MX server.)
+//
+test('a sync that fails still syncs what was asked for while it ran', async (t) => {
+  const { client, alias, session, sqlite } = t.context;
+  const key = `sync_temporary_mailbox:${alias.id}`;
+  // (100 KB of quota left, and the storage used is not computed again)
+  await client.set(`storage_debounce:${alias.id}`, '1', 'PX', ms('2m'));
+  await Aliases.findByIdAndUpdate(alias._id, { $set: { storage_used: 0 } });
+  await client.set(
+    `alias_quota_v2:${alias.id}`,
+    JSON.stringify({ maxQuotaPerAlias: bytes('100KB') }),
+    'PX',
+    ms('2m')
+  );
+  const { tmpDb, id } = await addTemporaryMessage(
+    t,
+    randomUUID(),
+    new Date(Date.now() - 1000),
+    'a'.repeat(bytes('200KB'))
+  );
+
+  // a message arrives after the sync read its last page and before it
+  // releases its lock, and a sync is asked for
+  const subject = randomUUID();
+  const copy = () => ({ ...session, user: { ...session.user } });
+  const { eval: evalScript } = client;
+  let isAsked = false;
+  client.eval = async function (script, count, name, ...args) {
+    if (name === key && script.includes("'del'") && !isAsked) {
+      isAsked = true;
+      await addTemporaryMessage(t, subject);
+      t.is(await syncTemporaryMailbox.call(sqlite, copy()), 0);
+    }
+
+    return evalScript.call(this, script, count, name, ...args);
+  };
+
+  t.teardown(() => {
+    client.eval = evalScript;
+  });
+
+  await t.throwsAsync(syncTemporaryMailbox.call(sqlite, copy()));
+  t.true(isAsked);
+  t.is(await Messages.countDocuments(t.context.imap, session, { subject }), 1);
+  t.is(countTemporaryMessages(tmpDb), 1);
+  t.is(tmpDb.prepare('SELECT _id FROM TemporaryMessages').pluck().get(), id);
+});
+
+//
+// A sync reads the temporary mailbox a page at a time, after the last message
+// of the page before by date and then id.  Here more than two pages of failed
+// messages (passed over) have the same date as the one after them and ids
+// that sort before it, so a page read after the date alone would end the
+// sync before it.  (The list of the ones passed over that was sent with each
+// query instead failed past 32766 of them, which a test would need far more
+// messages to show.)  Each page is read from the index on `date`, rather
+// than by sorting every message left.
+//
+test('a sync pages by date and id past failed messages of the same date', async (t) => {
+  const { client, alias, session, sqlite } = t.context;
+  const key = `sync_temporary_mailbox:${alias.id}`;
+  const date = new Date(Date.now() - 1000);
+  const { tmpDb, id } = await addTemporaryMessage(t, randomUUID(), date);
+
+  // (copies of it, with ids that sort before the others)
+  const columns = tmpDb
+    .prepare('SELECT "name" FROM pragma_table_info(?) WHERE "name" != ?')
+    .pluck()
+    .all('TemporaryMessages', '_id')
+    .map((name) => `"${name}"`)
+    .join(', ');
+  const insert = tmpDb.prepare(
+    `INSERT INTO "TemporaryMessages" ("_id", ${columns}) SELECT ?, ${columns} FROM "TemporaryMessages" WHERE "_id" = ?`
+  );
+  const ids = [id];
+  for (let i = 0; i < 60; i++)
+    ids.push(`0${randomUUID().replace(/-/g, '').slice(0, 23)}`);
+  for (const copy of ids.slice(1)) insert.run(copy, id);
+  for (const failed of ids)
+    await client.set(`${key}:failed:${failed}`, '1', 'PX', ms('5m'));
+
+  const subject = randomUUID();
+  await addTemporaryMessage(t, subject, date);
+
+  // (the pages as the sync reads them)
+  const syncDb = await getTemporaryDatabase.call(sqlite, session);
+  const pages = [];
+  const { prepare } = syncDb;
+  syncDb.prepare = function (sql, ...args) {
+    const stmt = prepare.call(this, sql, ...args);
+    if (!sql.startsWith('select * from "TemporaryMessages"')) return stmt;
+    const { all } = stmt;
+    stmt.all = function (values) {
+      pages.push({ sql, values });
+      return all.call(this, values);
+    };
+
+    return stmt;
+  };
+
+  t.teardown(() => {
+    delete syncDb.prepare;
+  });
+
+  const stored = await syncTemporaryMailbox.call(sqlite, {
+    ...session,
+    user: { ...session.user }
+  });
+  t.is(stored, 1);
+  t.is(await Messages.countDocuments(t.context.imap, session, { subject }), 1);
+  t.is(countTemporaryMessages(tmpDb), ids.length);
+
+  // three pages of 25, 25 and 12, then an empty one
+  t.is(pages.length, 4);
+  for (const { sql, values } of pages.slice(1)) {
+    const plan = syncDb
+      .prepare(`EXPLAIN QUERY PLAN ${sql}`)
+      .all(values)
+      .map((row) => row.detail)
+      .join(' | ');
+    t.regex(plan, /USING INDEX TemporaryMessages_date \(date>\?\)/);
+    t.notRegex(plan, /MULTI-INDEX OR|TEMP B-TREE FOR ORDER BY/);
+  }
+});
+
+//
+// A sync that stores nothing does not compute the storage used again (it
+// asked for it on every sync, and most find nothing to store).
+//
+test('a sync with no temporary messages leaves the storage used as is', async (t) => {
+  const { client, alias, session } = t.context;
+  const debounceKey = `storage_debounce:${alias.id}`;
+  await client.del(debounceKey);
+  t.is(await t.context.wsp.request({ action: 'sync', session }, 0), 0);
+  t.is(await client.get(debounceKey), null);
+});
+
+//
+// GETQUOTAROOT asks for a sync at most once every 30 seconds per alias, as a
+// sign-in does and with the same key (some clients send it often, and each
+// one asked for a sync); new mail is synced as it is delivered.
+//
+test('GETQUOTAROOT asks for a sync at most once in 30 seconds', async (t) => {
+  t.timeout(ms('2m'));
+  const { client, alias, imapFlow, wsp, session } = t.context;
+  await client.del(`sync_dedup:${alias.id}`);
+
+  const { request } = wsp;
+  let syncs = 0;
+  wsp.request = function (data, ...args) {
+    if (data?.action === 'sync') syncs++;
+    return request.call(this, data, ...args);
+  };
+
+  t.teardown(() => {
+    wsp.request = request;
+  });
+
+  await imapFlow.getQuota();
+  await imapFlow.getQuota();
+  await pWaitFor(() => syncs > 0, { timeout: ms('10s') });
+  await setTimeout(ms('1s'));
+  t.is(syncs, 1);
+  t.true((await client.pttl(`sync_dedup:${alias.id}`)) > 0);
+
+  // a message delivered meanwhile is synced as it is delivered
+  const subject = randomUUID();
+  const { tmpDb } = await addTemporaryMessage(t, subject);
+  await client.publish('sqlite_sync_request', alias.id);
+  await pWaitFor(() => countTemporaryMessages(tmpDb) === 0, {
+    timeout: ms('30s')
+  });
+  t.is(await Messages.countDocuments(t.context.imap, session, { subject }), 1);
+
+  // and GETQUOTAROOT asks again once the 30 seconds are over
+  await client.del(`sync_dedup:${alias.id}`);
+  const before = syncs;
+  await imapFlow.getQuota();
+  await pWaitFor(() => syncs > before, { timeout: ms('10s') });
+  t.pass();
+});
+
+//
+// A delivery to an alias with no session in this process does not look at
+// each of its connections (every delivery to a temporary mailbox in the
+// cluster is sent to every IMAP process).
+//
+test('a sync request for an alias with no session here skips the connections', async (t) => {
+  const { client, imap } = t.context;
+  const { connections } = imap.server;
+  t.true(connections.size > 0);
+  let looked = 0;
+  connections[Symbol.iterator] = function () {
+    looked++;
+    return Set.prototype.values.call(this);
+  };
+
+  t.teardown(() => {
+    delete connections[Symbol.iterator];
+  });
+
+  await client.publish(
+    'sqlite_sync_request',
+    randomUUID().replace(/-/g, '').slice(0, 24)
+  );
+  await setTimeout(ms('1s'));
+  t.is(looked, 0);
 });
 
 //
@@ -2513,6 +3082,15 @@ test('sieve copies of a message in the temporary mailbox are stored on sync', as
     { action: 'sync', session: t.context.session },
     0
   );
+  // (the sync the delivery asked for may be the one storing it, as a sync
+  //  asked for while another runs answers at once)
+  await pWaitFor(
+    async () => {
+      const counts = await countByMailbox(t, subject);
+      return counts.Archive === 1;
+    },
+    { timeout: ms('30s') }
+  ).catch(() => {});
   t.deepEqual(await countByMailbox(t, subject), { INBOX: 1, Archive: 1 });
 });
 
@@ -2912,8 +3490,9 @@ test('bounds authentication attempts in progress from one client', async (t) => 
     });
   }
 
+  // (different passwords: the same one is verified by one attempt at a time)
   const responses = await Promise.all(
-    Array.from({ length: 8 }, () => login('wrong-password'))
+    Array.from({ length: 8 }, (_, i) => login(`wrong-password-${i}`))
   );
   t.true(responses.every((line) => line.startsWith('a NO')));
   t.true(
@@ -2923,17 +3502,34 @@ test('bounds authentication attempts in progress from one client', async (t) => 
 
   // every slot was given back
   const { keyPrefix } = client.options;
+  const getKeys = async (pattern) => {
+    const keys = await client.keys(`${keyPrefix}${pattern}`);
+    return keys.map((key) => key.slice(keyPrefix.length));
+  };
+
   await pWaitFor(
     async () => {
-      const keys = await client.keys(
-        `${keyPrefix}auth_inflight_${config.env}:*`
-      );
-      const values = await Promise.all(
-        keys.map((key) => client.get(key.slice(keyPrefix.length)))
-      );
+      const keys = await getKeys(`auth_inflight_${config.env}:*`);
+      const values = await Promise.all(keys.map((key) => client.get(key)));
       return values.every((value) => Number(value) === 0);
     },
     { timeout: ms('10s') }
+  );
+
+  // (the failed attempts counted above are forgotten)
+  for (const key of [
+    ...(await getKeys(`auth_limit_${config.env}:*`)),
+    ...(await getKeys(`auth_attempts_${config.env}:*`))
+  ])
+    await client.del(key);
+
+  // the same wrong password sent at once is refused as wrong every time
+  const repeated = await Promise.all(
+    Array.from({ length: 8 }, () => login('wrong-password'))
+  );
+  t.true(
+    repeated.every((line) => line.startsWith('a NO [AUTHENTICATIONFAILED]')),
+    `${repeated.join('\n')}`
   );
 
   // one distinct wrong password was counted, so the right one still works
@@ -2944,6 +3540,17 @@ test('bounds authentication attempts in progress from one client', async (t) => 
   t.true(
     valid.every((line) => line.startsWith('a OK')),
     `${valid.join('\n')}`
+  );
+
+  // nor are the same valid logins sent at once before one is cached (as a
+  // mail client opening several connections does): only one is verified
+  await client.del(getAuthCacheKey(`${alias.name}@${domain.name}`, pass));
+  const uncached = await Promise.all(
+    Array.from({ length: 8 }, () => login(pass))
+  );
+  t.true(
+    uncached.every((line) => line.startsWith('a OK')),
+    `${uncached.join('\n')}`
   );
 });
 
@@ -2981,7 +3588,8 @@ ${encoded}
     flags: []
   });
 
-  await imapFlow.getQuota();
+  // (as a delivery asks for it, see `sqlite_sync_request` in imap-server.js)
+  await t.context.client.publish('sqlite_sync_request', session.user.alias_id);
   await pWaitFor(
     () =>
       tmpDb

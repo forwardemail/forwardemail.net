@@ -1117,7 +1117,7 @@ Tabellen skiller fullstendig implementering av oppført oppførsel fra bevisst b
 | [RFC 5173](https://datatracker.ietf.org/doc/html/rfc5173) | `body` | Matching av meldingsinnhold. |
 | [RFC 5229](https://datatracker.ietf.org/doc/html/rfc5229) | `variables` | Variabelekspansjon og støttede modifikatorer. |
 | [RFC 5231](https://datatracker.ietf.org/doc/html/rfc5231) | `relational` | `:count` og `:value`-sammenligninger. |
-| [RFC 4790](https://datatracker.ietf.org/doc/html/rfc4790) | Comparators | `i;ascii-casemap`, `i;octet` og `i;ascii-numeric`. |
+| [RFC 4790](https://datatracker.ietf.org/doc/html/rfc4790) | Comparators | `i;ascii-casemap`, `i;unicode-casemap`, `i;octet` og `i;ascii-numeric`. |
 | [RFC 3894](https://datatracker.ietf.org/doc/html/rfc3894) | `copy` | `:copy` på `fileinto` og `redirect`. |
 | [RFC 5293](https://datatracker.ietf.org/doc/html/rfc5293) | `editheader` | Endringer i headers før lagring, synlige for senere tester, unntatt beskyttede autentiserings- og leveringsrute-felt, `Received` og `Auto-Submitted`. |
 | [RFC 5260](https://datatracker.ietf.org/doc/html/rfc5260) | `date`, `index` | `currentdate`- og header-datotester, pluss `:index` og `:last`. |
@@ -1141,7 +1141,7 @@ Tabellen skiller fullstendig implementering av oppført oppførsel fra bevisst b
 | `reject` / `ereject` | Avviser en melding med en SMTP-feil. | Returneres gjennom MX-leveringsveien. |
 | `vacation` / `vacation-seconds` | Sender et automatisk svar. | Køes med mottaker- og interval-ratebegrensninger. |
 | `imap4flags` | Setter eller tester IMAP-flagg. | Påføres når meldingen lagres. |
-| `envelope`, `body`, `date`, `index`, `regex`, `subaddress`, `relational`, `comparator-i;ascii-numeric` | Tester meldings- og envelope-data. | Evaluert av Sieve-motoren. |
+| `envelope`, `body`, `date`, `index`, `regex`, `subaddress`, `relational`, `comparator-i;ascii-numeric`, `comparator-i;unicode-casemap` | Tester meldings- og envelope-data. | Evaluert av Sieve-motoren. |
 | `variables`, `duplicate`, `ihave` | Lagrer verdier, oppdager duplikater og sjekker kapabiliteter. | Variabler er skript-lokale; duplikat-tilstand bruker Redis. |
 | `editheader` | Legger til eller sletter ikke-beskyttede headers. | Autentiserings- og leveringsrute-headers, `Received` og `Auto-Submitted` kan ikke endres. |
 | `enotify` | Sender et varsel ved bruk av `mailto:`. | Køes med varslings-ratebegrensninger. |

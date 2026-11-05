@@ -1117,7 +1117,7 @@ sequenceDiagram
 | [RFC 5173](https://datatracker.ietf.org/doc/html/rfc5173) | `body` | مطابقة محتوى جسم الرسالة. |
 | [RFC 5229](https://datatracker.ietf.org/doc/html/rfc5229) | `variables` | توسعة المتغيرات والمعدلات المدعومة. |
 | [RFC 5231](https://datatracker.ietf.org/doc/html/rfc5231) | `relational` | مقارنات `:count` و `:value`. |
-| [RFC 4790](https://datatracker.ietf.org/doc/html/rfc4790) | Comparators | `i;ascii-casemap` و `i;octet` و `i;ascii-numeric`. |
+| [RFC 4790](https://datatracker.ietf.org/doc/html/rfc4790) | Comparators | `i;ascii-casemap` و `i;unicode-casemap` و `i;octet` و `i;ascii-numeric`. |
 | [RFC 3894](https://datatracker.ietf.org/doc/html/rfc3894) | `copy` | دعم `:copy` على `fileinto` و `redirect`. |
 | [RFC 5293](https://datatracker.ietf.org/doc/html/rfc5293) | `editheader` | تغييرات الرؤوس قبل التخزين، وتراها الاختبارات اللاحقة، باستثناء حقول المصادقة وحقول توجيه التسليم المحمية و`Received` و`Auto-Submitted`. |
 | [RFC 5260](https://datatracker.ietf.org/doc/html/rfc5260) | `date`, `index` | اختبارات `currentdate` وتواريخ الرؤوس، بالإضافة إلى `:index` و `:last`. |
@@ -1141,7 +1141,7 @@ sequenceDiagram
 | `reject` / `ereject` | يرفض رسالة بخطأ SMTP. | يُعاد عبر مسار توصيل MX. |
 | `vacation` / `vacation-seconds` | يرسل ردًا تلقائيًا. | يوضع في قائمة الانتظار مع حدود معدل للمستلم والفاصل الزمني. |
 | `imap4flags` | يضبط أو يختبر علامات IMAP. | يُطبّق عند تخزين الرسالة. |
-| `envelope`, `body`, `date`, `index`, `regex`, `subaddress`, `relational`, `comparator-i;ascii-numeric` | يختبر بيانات الرسالة والظرف. | يقيمها محرك Sieve. |
+| `envelope`, `body`, `date`, `index`, `regex`, `subaddress`, `relational`, `comparator-i;ascii-numeric`, `comparator-i;unicode-casemap` | يختبر بيانات الرسالة والظرف. | يقيمها محرك Sieve. |
 | `variables`, `duplicate`, `ihave` | يخزن القيم، يكتشف التكرارات، ويتحقق من القدرات. | المتغيرات محلية للسكربت؛ حالة التكرار تستخدم Redis. |
 | `editheader` | يضيف أو يحذف رؤوسًا غير محمية. | لا يمكن تعديل رؤوس المصادقة أو توجيه التسليم، ولا `Received` و`Auto-Submitted`. |
 | `enotify` | يرسل إشعارًا باستخدام `mailto:`. | يوضع في قائمة الانتظار مع حدود معدل الإشعارات. |

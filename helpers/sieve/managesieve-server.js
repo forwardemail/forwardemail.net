@@ -32,7 +32,7 @@ const net = require('node:net');
 const tls = require('node:tls');
 const { parse, validate } = require('./parser');
 const {
-  SUPPORTED_CAPABILITIES,
+  ADVERTISED_CAPABILITIES,
   validateSieveCapabilities
 } = require('./capabilities');
 
@@ -176,7 +176,7 @@ class ManageSieveServer extends EventEmitter {
       `"IMPLEMENTATION" "${this.config.implementation}"`,
       `"VERSION" "${this.config.version}"`,
       '"SASL" "PLAIN LOGIN"',
-      `"SIEVE" "${SUPPORTED_CAPABILITIES.join(' ')}"`,
+      `"SIEVE" "${ADVERTISED_CAPABILITIES.join(' ')}"`,
       '"NOTIFY" "mailto"',
       '"LANGUAGE" "en"'
     ];

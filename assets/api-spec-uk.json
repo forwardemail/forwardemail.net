@@ -3216,6 +3216,14 @@
               "$ref": "#/components/schemas/Error"
             }
           }
+        },
+        "headers": {
+          "Retry-After": {
+            "description": "Seconds to wait before trying again (sent when a sign-in is refused for too many attempts)",
+            "schema": {
+              "type": "integer"
+            }
+          }
         }
       },
       "InternalServerError": {
@@ -4916,6 +4924,12 @@
               },
               "X-Item-Count": {
                 "description": "Total number of items",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Lightweight-Fallback-Count": {
+                "description": "Number of messages of this page listed without the nodemailer and raw fields (as with lightweight=true), because the messages of the page exceeded the size a full list may return; get them with GET /v1/messages/{id}. Only sent when messages were listed this way.",
                 "schema": {
                   "type": "integer"
                 }
@@ -9138,6 +9152,9 @@
           "401": {
             "description": "Unauthorized - Invalid API token or alias credentials. Note: authentication is optional; this error only occurs when credentials are provided but are invalid."
           },
+          "403": {
+            "description": "Forbidden - The credentials are correct but may not connect (e.g. the alias does not have IMAP enabled, or the account is banned); a `?auth=message` connection is closed with `4403`"
+          },
           "404": {
             "description": "Not Found - Alias not found for the provided credentials"
           },
@@ -9585,7 +9602,7 @@
     },
     {
       "name": "Решетові скрипти",
-      "description": "Кінцеві точки керування скриптами Sieve\n\n>[!NOTE]\n> Sieve — це потужна мова фільтрації електронної пошти, визначена в RFC 5228. Скрипти виконуються для вхідної пошти, щоб автоматично впорядковувати, фільтрувати та відповідати на повідомлення.\n\n>[!TIP]\n> Підтримувані розширення включають: fileinto, reject, ereject, vacation, vacation-seconds, imap4flags, envelope, body, relational, comparator-i;ascii-numeric, copy, date, index, editheader, enotify, regex, subaddress, ihave, duplicate, special-use, mailbox, environment та variables. Скрипти перевіряються перед збереженням, щоб забезпечити їхню синтаксичну правильність.\n\n>[!NOTE]\n> **Підтримуються два методи автентифікації:**\n> - **API Token Auth** (`/v1/domains/{domain_id}/aliases/{alias_id}/sieve`): Використовуйте свій ключ API як ім'я користувача з базовою автентифікацією. Потрібні domain_id та alias_id у URL-шляху.\n> - **Alias Auth** (`/v1/sieve-scripts`): Використовуйте псевдонім електронної пошти та згенерований пароль як облікові дані базової автентифікації. domain_id або alias_id не потрібні в URL-адресі.\n\n>[!TIP]\n> Параметри ідентифікатора скрипта приймають або MongoDB ObjectId, або назву скрипта, що дозволяє гнучку ідентифікацію скрипта."
+      "description": "Кінцеві точки керування скриптами Sieve\n\n>[!NOTE]\n> Sieve — це потужна мова фільтрації електронної пошти, визначена в RFC 5228. Скрипти виконуються для вхідної пошти, щоб автоматично впорядковувати, фільтрувати та відповідати на повідомлення.\n\n>[!TIP]\n> Підтримувані розширення включають: fileinto, reject, ereject, vacation, vacation-seconds, imap4flags, envelope, body, relational, comparator-i;ascii-numeric, comparator-i;unicode-casemap, copy, date, index, editheader, enotify, regex, subaddress, ihave, duplicate, special-use, mailbox, environment та variables. Скрипти перевіряються перед збереженням, щоб забезпечити їхню синтаксичну правильність.\n\n>[!NOTE]\n> **Підтримуються два методи автентифікації:**\n> - **API Token Auth** (`/v1/domains/{domain_id}/aliases/{alias_id}/sieve`): Використовуйте свій ключ API як ім'я користувача з базовою автентифікацією. Потрібні domain_id та alias_id у URL-шляху.\n> - **Alias Auth** (`/v1/sieve-scripts`): Використовуйте псевдонім електронної пошти та згенерований пароль як облікові дані базової автентифікації. domain_id або alias_id не потрібні в URL-адресі.\n\n>[!TIP]\n> Параметри ідентифікатора скрипта приймають або MongoDB ObjectId, або назву скрипта, що дозволяє гнучку ідентифікацію скрипта."
     },
     {
       "name": "Вебсокети",

@@ -53,6 +53,23 @@ rateLimit.ignoredPathGlobs.push('/v1/emails');
 module.exports = {
   ...sharedAPIConfig,
   ...config,
+  // (scripts in a browser can only read response headers that are exposed)
+  cors: {
+    ...sharedAPIConfig.cors,
+    exposeHeaders: [
+      'X-Page-Count',
+      'X-Page-Current',
+      'X-Page-Size',
+      'X-Item-Count',
+      'Link',
+      'X-Lightweight-Fallback-Count',
+      'X-RateLimit-Limit',
+      'X-RateLimit-Remaining',
+      'X-RateLimit-Reset',
+      'Retry-After',
+      'ETag'
+    ]
+  },
   auth: false,
   rateLimit,
   routes: routes.api,
@@ -87,6 +104,7 @@ module.exports = {
     app.use(analyticsMiddleware({ service: 'api', trackAPICalls: true }));
   },
   bodyParserIgnoredPathGlobs: [
+    // (removed, but still sent to: answer 404 without reading the body)
     '/v1/log',
     '/v1/emails',
     '/v1/messages',

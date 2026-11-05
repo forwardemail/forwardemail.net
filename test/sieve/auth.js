@@ -29,6 +29,8 @@ const env = require('#config/env');
 const createWebSocketAsPromised = require('#helpers/create-websocket-as-promised');
 const createPassword = require('#helpers/create-password');
 const { encrypt } = require('#helpers/encrypt-decrypt');
+const SieveScripts = require('#models/sieve-scripts');
+const { ADVERTISED_CAPABILITIES } = require('#helpers/sieve/capabilities');
 
 // Dynamically import get-port
 let getPort;
@@ -442,6 +444,18 @@ test('should allow CAPABILITY without authentication', async (t) => {
 
   t.true(response.some((line) => line.startsWith('OK')));
   t.true(response.some((line) => line.includes('IMPLEMENTATION')));
+  // (the extensions a script can require, as Settings lists them; a list
+  // kept here had left out mime, foreverypart, extracttext and replace)
+  t.true(response.includes(`"SIEVE" "${ADVERTISED_CAPABILITIES.join(' ')}"`));
+  t.true(
+    [
+      'mime',
+      'foreverypart',
+      'extracttext',
+      'replace',
+      'encoded-character'
+    ].every((capability) => ADVERTISED_CAPABILITIES.includes(capability))
+  );
 
   client.end();
 });
@@ -678,6 +692,57 @@ test('should rename script after authentication', async (t) => {
   t.true(newResponse.some((line) => line.startsWith('OK')));
 
   client.end();
+});
+
+// (a script saved before a check was added still runs, and can be renamed
+// and deactivated; its content is checked again only when it changes)
+test('should rename a script saved before stricter checks', async (t) => {
+  const now = new Date();
+  await SieveScripts.collection.insertOne({
+    alias: t.context.alias._id,
+    user: t.context.user._id,
+    domain: t.context.domain._id,
+    name: 'saved-before',
+    // (a name of a variable that is not an identifier is refused when saved)
+    content: 'require "variables"; set "my-folder" "x";',
+    is_active: true,
+    is_valid: true,
+    required_capabilities: ['variables'],
+    created_at: now,
+    updated_at: now
+  });
+
+  const client = await createClient(t.context.port);
+  await client.waitForGreeting();
+  const credentials = Buffer.from(
+    `\0${t.context.alias.name}@${t.context.domain.name}\0${t.context.pass}`
+  ).toString('base64');
+  await client.sendCommand(`AUTHENTICATE "PLAIN" "${credentials}"`);
+
+  const response = await client.sendCommand(
+    'RENAMESCRIPT "saved-before" "renamed"'
+  );
+  t.true(response.some((line) => line.startsWith('OK')));
+  client.end();
+
+  const script = await SieveScripts.findOne({
+    alias: t.context.alias._id,
+    name: 'renamed'
+  });
+  t.truthy(script);
+  t.true(script.is_active);
+
+  // (deactivated through the model, as the web and API updates do)
+  script.is_active = false;
+  await script.save();
+  const deactivated = await SieveScripts.findById(script._id).lean();
+  t.false(deactivated.is_active);
+
+  // (new content that is refused is still refused)
+  script.content = 'require "variables"; set "other-folder" "y";';
+  await t.throwsAsync(script.save(), { message: /Invalid variable name/ });
+  const unchanged = await SieveScripts.findById(script._id).lean();
+  t.is(unchanged.content, 'require "variables"; set "my-folder" "x";');
 });
 
 test('should check quota with HAVESPACE', async (t) => {

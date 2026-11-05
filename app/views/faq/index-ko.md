@@ -2894,7 +2894,7 @@ IPv4와 IPv6 모두를 지원하며 포트 `443`(HTTPS)에서 이용 가능합�
 | --- | --- |
 | 코어 언어 | `keep`, `discard`, `stop`, 조건 블록 및 기본 `address`, `header`, `exists`, `size` 및 불리언 테스트. |
 | 배달 | `fileinto`, `copy`, `redirect`, `mailbox`(`fileinto :create` 및 `mailboxexists` 용), 및 `special-use`(`fileinto :specialuse` 및 `specialuse_exists` 용). |
-| 테스트 및 비교 | `envelope`, `body`, `date`, `index`, `regex`, `subaddress`, `relational`, `i;ascii-casemap`, `i;octet`, 및 `i;ascii-numeric`. |
+| 테스트 및 비교 | `envelope`, `body`, `date`, `index`, `regex`, `subaddress`, `relational`, `i;ascii-casemap`, `i;unicode-casemap`, `i;octet`, 및 `i;ascii-numeric`. |
 | 상태 및 변수 | `variables`, `encoded-character`, `imap4flags`, `duplicate`, 및 `ihave`. |
 | 동작 및 응답 | `reject`, `ereject`, `vacation`, `vacation-seconds`, 및 `enotify` (mailto: 사용). 레거시 선언인 `require "notify"`는 `enotify`의 입력 별칭으로 허용되지만, 광고된 capability는 `enotify`입니다. |
 | 메시지 처리 | `editheader`, `environment`, `foreverypart`(`break` 포함), `extracttext`, `replace`, 및 `mime`(이 세 명령도 활성화). |

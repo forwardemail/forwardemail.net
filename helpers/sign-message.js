@@ -12,6 +12,23 @@ const { decrypt } = require('./encrypt-decrypt');
 
 const config = require('#config');
 
+//
+// A dot between a bare CR and a line end (or the end of the message) is
+// doubled when the message is sent, so that a receiver that ends a line at a
+// bare CR does not take it for the end of the data (see
+// `patches/nodemailer@10.1.7.patch`). A message sent over SMTP has it doubled
+// before it is signed or sealed, so the bytes signed are the bytes sent; a
+// message that is not sent over SMTP (e.g. to a webhook) is left as it is.
+//
+const BARE_CR_DOT = Buffer.from('\r.');
+function stuffBareCrDots(raw) {
+  if (!raw.includes(BARE_CR_DOT)) return raw;
+  return Buffer.from(
+    raw.toString('binary').replace(/\r\.(?=[\r\n]|$)/g, '\r..'),
+    'binary'
+  );
+}
+
 async function signMessage(raw, domain) {
   const signResult = await dkimSign(raw, {
     canonicalization: 'relaxed/relaxed',
@@ -46,3 +63,4 @@ async function signMessage(raw, domain) {
 }
 
 module.exports = signMessage;
+module.exports.stuffBareCrDots = stuffBareCrDots;

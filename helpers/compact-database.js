@@ -460,5 +460,6 @@ function compactDatabase(options) {
 module.exports = compactDatabase;
 module.exports.getPageStats = getPageStats;
 module.exports.isCompactionNeeded = isCompactionNeeded;
+module.exports.getMaxBytes = getMaxBytes;
 module.exports.AUTO_VACUUM_NONE = AUTO_VACUUM_NONE;
 module.exports.AUTO_VACUUM_FULL = AUTO_VACUUM_FULL;

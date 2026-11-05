@@ -2701,6 +2701,48 @@ if header :comparator "i;ascii-casemap" :is "Subject" "HELLO WORLD" {
   }
 );
 
+//
+// Scripts using i;unicode-casemap (RFC 5051) were refused when saved after
+// comparators other than i;octet and i;ascii-casemap had to be supported
+//
+test.serial(
+  'comparator i;unicode-casemap - case-insensitive matching, accents too',
+  async (t) => {
+    t.timeout(TEST_TIMEOUT);
+
+    const sieveScript = `
+require ["fileinto", "comparator-i;unicode-casemap"];
+if allof (
+  header :comparator "i;unicode-casemap" :contains "Subject" "ÉTÉ",
+  header :comparator "i;unicode-casemap" :matches "Subject" "REPORT *"
+) {
+  fileinto "Matched";
+}
+`;
+
+    const { alias, domain, password } = await createTestSetup(t, sieveScript);
+    const email = `${alias.name}@${domain.name}`;
+
+    await sendMessage(t, {
+      from: 'sender@example.com',
+      to: email,
+      subject: 'report for été',
+      text: 'Testing Unicode case-insensitive matching'
+    });
+
+    await delay(2000);
+
+    const matched = await checkMailbox(t, {
+      email,
+      password,
+      mailbox: 'Matched',
+      expectedCount: 1
+    });
+
+    t.is(matched.exists, 1);
+  }
+);
+
 test.serial('address :localpart - matches local part only', async (t) => {
   t.timeout(TEST_TIMEOUT);
 

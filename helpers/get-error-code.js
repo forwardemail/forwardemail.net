@@ -107,14 +107,17 @@ function getErrorCode(err) {
   // undici v7 uses statusCode instead of status for ResponseError
   // (must be between 4xx and 5xx in order to be an error)
   //
+  // An HTTP status is not an SMTP reply code: a webhook that is down or
+  // failing (e.g. 500, 502, 503 or 504) is retried until it answers 200, as
+  // the FAQ says, and only 403 and 404 are permanent.
+  //
   if (
     typeof err.statusCode === 'number' &&
     err.statusCode >= 400 &&
     err.statusCode < 600
   ) {
     if ([403, 404].includes(err.statusCode)) return 550;
-    if (err.statusCode >= 400 && err.statusCode < 500) return 421;
-    return err.statusCode;
+    return 421;
   }
 
   return 550;

@@ -793,7 +793,7 @@ describe('Sieve Parser - RFC conformance', () => {
       assert.strictEqual(withVariables.variableName, 'a');
     });
 
-    it('rejects repeated and conflicting tagged arguments', () => {
+    it('rejects repeated and conflicting tagged arguments when saved', () => {
       for (const script of [
         'if header :is :contains "subject" "x" { keep; }',
         'if header :comparator "i;octet" :comparator "i;octet" "subject" "x" { keep; }',
@@ -807,26 +807,45 @@ describe('Sieve Parser - RFC conformance', () => {
         'require "duplicate"; if duplicate :header "message-id" :uniqueid "x" { discard; }'
       ]) {
         assert.throws(
-          () => parse(script),
+          () => parse(script, { strict: true }),
           /Duplicate or conflicting tagged argument/,
           script
         );
+        // (a script saved before runs, the last tag winning)
+        assert.doesNotThrow(() => parse(script), script);
       }
+
+      assert.strictEqual(
+        validate('require "vacation"; vacation :days 1 :days 2 "x";').valid,
+        false
+      );
+      const vacation = last(
+        'require "vacation-seconds"; vacation :days 1 :seconds 3600 "x";'
+      );
+      assert.strictEqual(vacation.seconds, 3600);
     });
   });
 
+  // (a require after other commands, or in a block, is refused when saved;
+  // a script saved before this was checked still runs, the require a no-op
+  // where it is, as every top-level one is read first)
   describe('require (RFC 5228 section 3.2)', () => {
-    it('rejects require after another command', () => {
-      assert.throws(
-        () => parse('keep;\nrequire "fileinto";\nfileinto "x";'),
-        /require must come before any other command/
-      );
-    });
+    it('refuses require after another command or inside a block when saved', () => {
+      for (const script of [
+        'keep;\nrequire "fileinto";\nfileinto "x";',
+        'if true { require "fileinto"; }',
+        'keep; require "fileinto"; fileinto "A";',
+        'if true { require "vnd.dovecot.pipe"; } keep;',
+        'if true { require ["include"]; keep; }'
+      ]) {
+        assert.strictEqual(validate(script).valid, false, script);
+        assert.throws(() => parse(script, { strict: true }), /require/, script);
+        assert.ok(parse(script), script);
+      }
 
-    it('rejects require inside a block', () => {
-      assert.throws(
-        () => parse('if true { require "fileinto"; }'),
-        /require must come before any other command/
+      assert.strictEqual(
+        validate('require "fileinto";\nrequire ["variables"];\nkeep;').valid,
+        true
       );
     });
   });
@@ -848,15 +867,28 @@ describe('Sieve Parser - RFC conformance', () => {
       assert.deepStrictEqual(date.matchType, { type: 'value', operator: 'gt' });
     });
 
-    it('rejects :last without :index and an :index of 0', () => {
+    it('rejects :last without :index and an :index of 0 when saved', () => {
       assert.throws(
         () =>
-          parse('require "index"; if header :last "received" "x" { keep; }'),
+          parse('require "index"; if header :last "received" "x" { keep; }', {
+            strict: true
+          }),
         /:last requires :index/
+      );
+      // (ignored in a script saved before)
+      assert.strictEqual(
+        testOf('require "index"; if header :last "received" "x" { keep; }')
+          .last,
+        true
       );
       assert.throws(
         () =>
-          parse('require "index"; if header :index 0 "received" "x" { keep; }'),
+          parse(
+            'require "index"; if header :index 0 "received" "x" { keep; }',
+            {
+              strict: true
+            }
+          ),
         /:index must be 1 or more/
       );
     });
@@ -873,9 +905,12 @@ describe('Sieve Parser - RFC conformance', () => {
       assert.deepStrictEqual(cmd.values, []);
     });
 
-    it('rejects deleteheader :last without :index', () => {
+    it('rejects deleteheader :last without :index when saved', () => {
       assert.throws(
-        () => parse('require "editheader"; deleteheader :last "X-A";'),
+        () =>
+          parse('require "editheader"; deleteheader :last "X-A";', {
+            strict: true
+          }),
         /:last requires :index/
       );
     });
@@ -907,18 +942,36 @@ describe('Sieve Parser - RFC conformance', () => {
       );
     });
 
-    it('rejects two modifiers of the same precedence', () => {
+    it('rejects two modifiers of the same precedence when saved', () => {
       assert.throws(
-        () => parse('require "variables"; set :lower :upper "b" "x";'),
+        () =>
+          parse('require "variables"; set :lower :upper "b" "x";', {
+            strict: true
+          }),
         /Duplicate or conflicting tagged argument/
+      );
+      assert.deepStrictEqual(
+        last('require "variables"; set :lower :upper "b" "x";').modifiers,
+        ['lower', 'upper']
       );
     });
 
-    it('rejects names that are not identifiers', () => {
+    it('rejects names that are not identifiers when saved', () => {
       for (const name of ['1', 'a-b', 'ns.x', '${a}', '']) {
         assert.throws(
-          () => parse(`require "variables"; set "${name}" "x";`),
+          () =>
+            parse(`require "variables"; set "${name}" "x";`, { strict: true }),
           /Invalid variable name/,
+          name
+        );
+        assert.strictEqual(
+          validate(`require "variables"; set "${name}" "x";`).valid,
+          false,
+          name
+        );
+        // (a script saved before names were checked still runs)
+        assert.doesNotThrow(
+          () => parse(`require "variables"; set "${name}" "x";`),
           name
         );
       }
@@ -967,7 +1020,8 @@ describe('Sieve Parser - RFC conformance', () => {
       assert.throws(
         () =>
           parse(
-            'require ["encoded-character", "variables"]; set "${hex:2d}" "x";'
+            'require ["encoded-character", "variables"]; set "${hex:2d}" "x";',
+            { strict: true }
           ),
         /Invalid variable name: "-"/
       );
@@ -1015,12 +1069,17 @@ describe('Sieve Parser - RFC conformance', () => {
       );
     });
 
-    it('rejects :anychild without :mime', () => {
+    it('rejects :anychild without :mime when saved', () => {
       for (const script of [
         'require "mime"; if header :anychild "content-type" "x" { keep; }',
         'require "mime"; if exists :anychild "x" { keep; }'
       ]) {
-        assert.throws(() => parse(script), /:anychild requires :mime/, script);
+        assert.throws(
+          () => parse(script, { strict: true }),
+          /:anychild requires :mime/,
+          script
+        );
+        assert.doesNotThrow(() => parse(script), script);
       }
     });
 
@@ -1063,16 +1122,45 @@ describe('Sieve Parser - RFC conformance', () => {
       assert.strictEqual(cmd.message, 'hi');
     });
 
-    it('rejects a missing method and an invalid importance', () => {
+    it('rejects a missing method and an invalid importance when saved', () => {
       assert.throws(
-        () => parse('require "enotify"; notify :message "x";'),
+        () =>
+          parse('require "enotify"; notify :message "x";', { strict: true }),
         /notify requires a method/
       );
       assert.throws(
         () =>
-          parse('require "enotify"; notify :importance "9" "mailto:a@b.c";'),
+          parse('require "enotify"; notify :importance "9" "mailto:a@b.c";', {
+            strict: true
+          }),
         /:importance must be/
       );
+      // (a script saved before runs, see engine.js)
+      assert.strictEqual(
+        last('require "enotify"; notify :message "x";').method,
+        null
+      );
+    });
+
+    it('reads the importance words of draft versions', () => {
+      for (const [word, number] of [
+        ['high', '1'],
+        ['Normal', '2'],
+        ['low', '3']
+      ]) {
+        assert.strictEqual(
+          last(
+            `require "enotify"; notify :importance "${word}" "mailto:a@b.c";`
+          ).importance,
+          number
+        );
+        assert.strictEqual(
+          validate(
+            `require "enotify"; notify :importance "${word}" "mailto:a@b.c";`
+          ).valid,
+          true
+        );
+      }
     });
 
     it('parses valid_notify_method and notify_method_capability', () => {

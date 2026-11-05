@@ -1544,17 +1544,26 @@ async function parsePayload(data, ws) {
               // The mailboxes of the alias, for the mailboxexists and
               // specialuse_exists tests and fileinto :specialuse (RFC 5490 and
               // RFC 8579), only while its database is open here (null
-              // otherwise); special-use attributes are case-insensitive
+              // otherwise); special-use attributes are case-insensitive, and
+              // the mailboxes are also kept by path, as a script can look up
+              // thousands of names
               //
               let sieveMailboxes;
+              let sieveMailboxesByPath;
               const getSieveMailboxes = async () => {
                 if (!session.db) return null;
-                // (no retries, so the message is stored without delay)
-                sieveMailboxes ||= await Mailboxes.find(
-                  this,
-                  { ...session, retries: 0 },
-                  {}
-                );
+                if (!sieveMailboxes) {
+                  // (no retries, so the message is stored without delay)
+                  sieveMailboxes = await Mailboxes.find(
+                    this,
+                    { ...session, retries: 0 },
+                    {}
+                  );
+                  sieveMailboxesByPath = new Map(
+                    sieveMailboxes.map((m) => [m.path, m])
+                  );
+                }
+
                 return sieveMailboxes;
               };
 
@@ -1594,19 +1603,19 @@ async function parsePayload(data, ws) {
                   ...(session.db
                     ? {
                         async mailboxExists(name) {
-                          const mailboxes = await getSieveMailboxes();
+                          await getSieveMailboxes();
                           const path =
                             String(name).toUpperCase() === 'INBOX'
                               ? 'INBOX'
                               : name;
-                          return mailboxes.some((m) => m.path === path);
+                          return sieveMailboxesByPath.has(path);
                         },
                         async specialUseExists(attributes, mailbox) {
                           let mailboxes = await getSieveMailboxes();
                           if (mailbox !== null && mailbox !== undefined)
-                            mailboxes = mailboxes.filter(
-                              (m) => m.path === mailbox
-                            );
+                            mailboxes = sieveMailboxesByPath.has(mailbox)
+                              ? [sieveMailboxesByPath.get(mailbox)]
+                              : [];
                           return (
                             mailboxes.length > 0 &&
                             attributes.every(

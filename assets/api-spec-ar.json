@@ -3216,6 +3216,14 @@
               "$ref": "#/components/schemas/Error"
             }
           }
+        },
+        "headers": {
+          "Retry-After": {
+            "description": "Seconds to wait before trying again (sent when a sign-in is refused for too many attempts)",
+            "schema": {
+              "type": "integer"
+            }
+          }
         }
       },
       "InternalServerError": {
@@ -4916,6 +4924,12 @@
               },
               "X-Item-Count": {
                 "description": "Total number of items",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Lightweight-Fallback-Count": {
+                "description": "Number of messages of this page listed without the nodemailer and raw fields (as with lightweight=true), because the messages of the page exceeded the size a full list may return; get them with GET /v1/messages/{id}. Only sent when messages were listed this way.",
                 "schema": {
                   "type": "integer"
                 }
@@ -9138,6 +9152,9 @@
           "401": {
             "description": "Unauthorized - Invalid API token or alias credentials. Note: authentication is optional; this error only occurs when credentials are provided but are invalid."
           },
+          "403": {
+            "description": "Forbidden - The credentials are correct but may not connect (e.g. the alias does not have IMAP enabled, or the account is banned); a `?auth=message` connection is closed with `4403`"
+          },
           "404": {
             "description": "Not Found - Alias not found for the provided credentials"
           },
@@ -9585,7 +9602,7 @@
     },
     {
       "name": "نصوص المنخل",
-      "description": "نقاط نهاية إدارة نصوص Sieve\n\n>[!NOTE]\n> Sieve هي لغة قوية لتصفية البريد الإلكتروني، مُعرّفة في RFC 5228. تُنفّذ النصوص البرمجية على البريد الوارد لتنظيم الرسائل وتصفيتها والرد عليها تلقائيًا.\n\n>[!TIP]\n> تشمل الامتدادات المدعومة: fileinto، reject، ereject، vacation، vacation-seconds، imap4flags، envelope، body، relational، comparator-i;ascii-numeric، copy، date، index، editheader، enotify، regex، subaddress، ihave، duplicate، special-use، mailbox، environment، والمتغيرات. يتم التحقق من صحة النصوص البرمجية قبل حفظها لضمان صحتها النحوية.\n\n\nملاحظة: لا توجد ترجمة\n\nيدعم النظام طريقتين للمصادقة:\n\n- **مصادقة رمز API** (`/v1/domains/{domain_id}/aliases/{alias_id}/sieve`): استخدم مفتاح API الخاص بك كاسم مستخدم مع المصادقة الأساسية. يتطلب ذلك وجود domain_id وalias_id في مسار عنوان URL.\n\n- **مصادقة الاسم المستعار** (`/v1/sieve-scripts`): استخدم البريد الإلكتروني للاسم المستعار وكلمة المرور المُنشأة كبيانات اعتماد للمصادقة الأساسية. لا حاجة إلى domain_id أو alias_id في عنوان URL.\n\nنصيحة: لا توجد ترجمة\n\nتقبل معلمات مُعرّف البرنامج النصي إما مُعرّف كائن MongoDB أو اسم البرنامج النصي، مما يسمح بتحديد البرنامج النصي بمرونة."
+      "description": "نقاط نهاية إدارة نصوص Sieve\n\n>[!NOTE]\n> Sieve هي لغة قوية لتصفية البريد الإلكتروني، مُعرّفة في RFC 5228. تُنفّذ النصوص البرمجية على البريد الوارد لتنظيم الرسائل وتصفيتها والرد عليها تلقائيًا.\n\n>[!TIP]\n> تشمل الامتدادات المدعومة: fileinto، reject، ereject، vacation، vacation-seconds، imap4flags، envelope، body، relational، comparator-i;ascii-numeric، comparator-i;unicode-casemap، copy، date، index، editheader، enotify، regex، subaddress، ihave، duplicate، special-use، mailbox، environment، والمتغيرات. يتم التحقق من صحة النصوص البرمجية قبل حفظها لضمان صحتها النحوية.\n\n\nملاحظة: لا توجد ترجمة\n\nيدعم النظام طريقتين للمصادقة:\n\n- **مصادقة رمز API** (`/v1/domains/{domain_id}/aliases/{alias_id}/sieve`): استخدم مفتاح API الخاص بك كاسم مستخدم مع المصادقة الأساسية. يتطلب ذلك وجود domain_id وalias_id في مسار عنوان URL.\n\n- **مصادقة الاسم المستعار** (`/v1/sieve-scripts`): استخدم البريد الإلكتروني للاسم المستعار وكلمة المرور المُنشأة كبيانات اعتماد للمصادقة الأساسية. لا حاجة إلى domain_id أو alias_id في عنوان URL.\n\nنصيحة: لا توجد ترجمة\n\nتقبل معلمات مُعرّف البرنامج النصي إما مُعرّف كائن MongoDB أو اسم البرنامج النصي، مما يسمح بتحديد البرنامج النصي بمرونة."
     },
     {
       "name": "WebSockets",

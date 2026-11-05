@@ -1167,6 +1167,10 @@ const config = {
   // to, see `claim` in `helpers/on-data-mx.js`; longer than a delivery to
   // every MX host of the destination can take)
   fingerprintPendingTTL: ms('30m'),
+  // (how long a transaction waits for another one of the same message that
+  // is delivering to a destination, see `claim`; well within the time a
+  // sender waits for the reply to DATA)
+  fingerprintPendingWait: ms('30s'),
 
   //
   // Once part of a message has been delivered, a destination that keeps
@@ -1176,11 +1180,15 @@ const config = {
   // that already have the message. It must stay well below `fingerprintTTL`,
   // which is how long delivered destinations are skipped on retry (renewed
   // on each retry that skips them). A failure on our side (e.g. a code bug,
-  // Redis, MongoDB, or our mailbox storage timing out) is not given up on: it
-  // is deferred for as long as the sender retries (see `isInternalError` in
+  // Redis, MongoDB, or our mailbox storage timing out) is retried for
+  // `internalRetryWindow` instead (see `isInternalError` in
   // `helpers/on-data-mx.js`).
   //
   partialDeliveryRetryWindow: ms('4h'),
+  // (shorter than many senders keep retrying, e.g. Exchange gives up after 2
+  // days and Exim by default after 4, since a sender that gives up first
+  // bounces every recipient, including those that already have the message)
+  internalRetryWindow: ms('1d'),
 
   // how often a forwarding issue email is sent for the same alias domain and destination
   forwardingIssueEmailInterval: ms('7d'),
@@ -2470,28 +2478,11 @@ config.sieve = {
     'mime-version',
     'content-type',
     'content-transfer-encoding'
-  ],
-
-  // Enabled Sieve extensions
-  enabledExtensions: [
-    'fileinto',
-    'reject',
-    'ereject',
-    'vacation',
-    'vacation-seconds',
-    'variables',
-    'imap4flags',
-    'body',
-    'copy',
-    'relational',
-    'editheader',
-    'envelope',
-    'date',
-    'index',
-    'regex',
-    'enotify',
-    'environment'
   ]
+
+  // (the enabled Sieve extensions are SUPPORTED_CAPABILITIES in
+  // helpers/sieve/capabilities.js; a separate list here had fallen behind it,
+  // so Settings showed fewer extensions than scripts can use)
 };
 
 module.exports = config;

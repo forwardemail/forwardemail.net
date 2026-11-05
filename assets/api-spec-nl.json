@@ -3216,6 +3216,14 @@
               "$ref": "#/components/schemas/Error"
             }
           }
+        },
+        "headers": {
+          "Retry-After": {
+            "description": "Seconds to wait before trying again (sent when a sign-in is refused for too many attempts)",
+            "schema": {
+              "type": "integer"
+            }
+          }
         }
       },
       "InternalServerError": {
@@ -4916,6 +4924,12 @@
               },
               "X-Item-Count": {
                 "description": "Total number of items",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Lightweight-Fallback-Count": {
+                "description": "Number of messages of this page listed without the nodemailer and raw fields (as with lightweight=true), because the messages of the page exceeded the size a full list may return; get them with GET /v1/messages/{id}. Only sent when messages were listed this way.",
                 "schema": {
                   "type": "integer"
                 }
@@ -9138,6 +9152,9 @@
           "401": {
             "description": "Unauthorized - Invalid API token or alias credentials. Note: authentication is optional; this error only occurs when credentials are provided but are invalid."
           },
+          "403": {
+            "description": "Forbidden - The credentials are correct but may not connect (e.g. the alias does not have IMAP enabled, or the account is banned); a `?auth=message` connection is closed with `4403`"
+          },
           "404": {
             "description": "Not Found - Alias not found for the provided credentials"
           },
@@ -9585,7 +9602,7 @@
     },
     {
       "name": "Zeefscripts",
-      "description": "Sieve-scriptbeheer-eindpunten\n\n>[!NOTE]\n> Sieve is een krachtige e-mailfiltertaal, gedefinieerd in RFC 5228. Scripts worden uitgevoerd op inkomende e-mail om berichten automatisch te organiseren, filteren en beantwoorden.\n\n>[!TIP]\n> Ondersteunde extensies zijn onder andere: fileinto, reject, ereject, vacation, vacation-seconds, imap4flags, envelope, body, relational, comparator-i;ascii-numeric, copy, date, index, editheader, enotify, regex, subaddress, ihave, duplicate, special-use, mailbox, environment en variables. Scripts worden gevalideerd voordat ze worden opgeslagen om te garanderen dat ze syntactisch correct zijn.\n\n>[!NOTE]\n> **Er worden twee authenticatiemethoden ondersteund:**\n> - **API-tokenauthenticatie** (`/v1/domains/{domain_id}/aliases/{alias_id}/sieve`): Gebruik uw API-sleutel als gebruikersnaam met Basic Auth. Vereist domain_id en alias_id in het URL-pad.\n\n> - **Aliasauthenticatie** (`/v1/sieve-scripts`): Gebruik het alias-e-mailadres en het gegenereerde wachtwoord als Basic Auth-gegevens. Geen domain_id of alias_id nodig in de URL.\n\n>[!TIP]\n> Script-ID-parameters accepteren ofwel de MongoDB ObjectId of de scriptnaam, waardoor flexibele scriptidentificatie mogelijk is."
+      "description": "Sieve-scriptbeheer-eindpunten\n\n>[!NOTE]\n> Sieve is een krachtige e-mailfiltertaal, gedefinieerd in RFC 5228. Scripts worden uitgevoerd op inkomende e-mail om berichten automatisch te organiseren, filteren en beantwoorden.\n\n>[!TIP]\n> Ondersteunde extensies zijn onder andere: fileinto, reject, ereject, vacation, vacation-seconds, imap4flags, envelope, body, relational, comparator-i;ascii-numeric, comparator-i;unicode-casemap, copy, date, index, editheader, enotify, regex, subaddress, ihave, duplicate, special-use, mailbox, environment en variables. Scripts worden gevalideerd voordat ze worden opgeslagen om te garanderen dat ze syntactisch correct zijn.\n\n>[!NOTE]\n> **Er worden twee authenticatiemethoden ondersteund:**\n> - **API-tokenauthenticatie** (`/v1/domains/{domain_id}/aliases/{alias_id}/sieve`): Gebruik uw API-sleutel als gebruikersnaam met Basic Auth. Vereist domain_id en alias_id in het URL-pad.\n\n> - **Aliasauthenticatie** (`/v1/sieve-scripts`): Gebruik het alias-e-mailadres en het gegenereerde wachtwoord als Basic Auth-gegevens. Geen domain_id of alias_id nodig in de URL.\n\n>[!TIP]\n> Script-ID-parameters accepteren ofwel de MongoDB ObjectId of de scriptnaam, waardoor flexibele scriptidentificatie mogelijk is."
     },
     {
       "name": "WebSockets",

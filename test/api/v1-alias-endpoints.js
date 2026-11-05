@@ -4,6 +4,7 @@
  */
 
 const { Buffer } = require('node:buffer');
+const { setTimeout: delay } = require('node:timers/promises');
 
 const ObjectID = require('bson-objectid');
 const bytes = require('@forwardemail/bytes');
@@ -19,6 +20,8 @@ const config = require('#config');
 const env = require('#config/env');
 const AttachmentStorage = require('#helpers/attachment-storage');
 const createPassword = require('#helpers/create-password');
+const logger = require('#helpers/logger');
+const { listIndexes } = require('#helpers/worker');
 const { Aliases, Emails, Users } = require('#models');
 
 const { emoji } = config.views.locals;
@@ -2372,9 +2375,455 @@ test.serial('the full listing size counts only what is rebuilt', async (t) => {
   );
 });
 
+// the message list queries the API sends, with the session they run with
+function captureListQueries(wsp) {
+  const queries = [];
+  const { request } = wsp;
+  wsp.request = async function (payload, ...args) {
+    const [operation, query] = (payload?.action === 'stmt' &&
+      payload.stmt?.[0]) || [undefined, ''];
+    if (operation === 'prepare' && query.includes('order by "created_at" desc'))
+      queries.push({
+        session: payload.session,
+        query,
+        values: payload.stmt[1][1]
+      });
+    return request.call(this, payload, ...args);
+  };
+
+  return {
+    queries,
+    restore() {
+      wsp.request = request;
+    }
+  };
+}
+
+async function getListIndexes(wsp, session) {
+  return wsp.request({
+    action: 'stmt',
+    session,
+    stmt: [
+      [
+        'prepare',
+        `SELECT name FROM sqlite_master WHERE type = 'index' AND name IN ('Messages_mailbox_created_at', 'Messages_created_at') ORDER BY name`
+      ],
+      ['pluck'],
+      ['all', {}]
+    ]
+  });
+}
+
+async function waitForListIndexes(wsp, session) {
+  for (let i = 0; i < 300; i++) {
+    const names = await getListIndexes(wsp, session);
+    if (names.length === 2) return names;
+    await delay(100);
+  }
+
+  return getListIndexes(wsp, session);
+}
+
+test('message lists are sorted with an index and keep their order, pages and counts', async (t) => {
+  const { api, wsp } = t.context;
+  const { alias, domain, pass } = await createTestAlias(t);
+  const auth = createAliasAuth(`${alias.name}@${domain.name}`, pass);
+
+  // newest first, as listed
+  const all = [];
+  const inbox = [];
+  const unreadInbox = [];
+  for (let i = 0; i < 6; i++) {
+    const folder = i % 3 === 2 ? 'Archive' : 'INBOX';
+    const seen = i % 2 === 1;
+    const res = await api
+      .post('/v1/messages')
+      .set('Authorization', auth)
+      .send({
+        folder,
+        flags: seen ? ['\\Seen'] : [],
+        to: [{ address: 'test@example.com' }],
+        subject: `Sorted ${i}`,
+        text: `Sorted ${i}`
+      });
+    t.is(res.status, 200);
+    all.unshift(res.body.id);
+    if (folder === 'INBOX') {
+      inbox.unshift(res.body.id);
+      if (!seen) unreadInbox.unshift(res.body.id);
+    }
+
+    // (a distinct created_at for each)
+    await delay(5);
+  }
+
+  const capture = captureListQueries(wsp);
+  try {
+    const list = async (query) => {
+      const res = await api
+        .get(`/v1/messages?lightweight=true&${query}`)
+        .set('Authorization', auth);
+      t.is(res.status, 200);
+      const { session, query: sql, values } = capture.queries.at(-1);
+      const plan = await wsp.request({
+        action: 'stmt',
+        session,
+        stmt: [
+          ['prepare', `EXPLAIN QUERY PLAN ${sql}`],
+          ['all', values]
+        ]
+      });
+      return {
+        res,
+        ids: res.body.map((message) => message.id),
+        plan: plan.map((row) => row.detail).join(' | '),
+        session
+      };
+    };
+
+    // (the indexes are built when the mailbox is opened, after the request)
+    const first = await list('limit=4');
+    t.deepEqual(await waitForListIndexes(wsp, first.session), [
+      'Messages_created_at',
+      'Messages_mailbox_created_at'
+    ]);
+
+    const page1 = await list('limit=4');
+    t.deepEqual(page1.ids, all.slice(0, 4));
+    t.is(page1.res.headers['x-item-count'], '6');
+    t.is(page1.res.headers['x-page-count'], '2');
+    t.regex(page1.plan, /USING INDEX Messages_created_at\b/);
+    t.false(page1.plan.includes('TEMP B-TREE'), `plan: ${page1.plan}`);
+
+    const page2 = await list('limit=4&page=2');
+    t.deepEqual(page2.ids, all.slice(4));
+    t.is(page2.res.headers['x-item-count'], '6');
+    t.false(page2.plan.includes('TEMP B-TREE'), `plan: ${page2.plan}`);
+
+    const folder = await list('folder=INBOX');
+    t.deepEqual(folder.ids, inbox);
+    t.is(folder.res.headers['x-item-count'], String(inbox.length));
+    t.regex(folder.plan, /USING INDEX Messages_mailbox_created_at\b/);
+    t.false(folder.plan.includes('TEMP B-TREE'), `plan: ${folder.plan}`);
+
+    const unread = await list('folder=INBOX&is_unread=true');
+    t.deepEqual(unread.ids, unreadInbox);
+    t.is(unread.res.headers['x-item-count'], String(unreadInbox.length));
+
+    // past the last page
+    const empty = await list('limit=4&page=3');
+    t.deepEqual(empty.ids, []);
+    t.is(empty.res.headers['x-item-count'], '6');
+  } finally {
+    capture.restore();
+  }
+});
+
+const DROP_LIST_INDEXES = [
+  'DROP INDEX "Messages_mailbox_created_at"',
+  'DROP INDEX "Messages_created_at"'
+];
+
+async function runStatements(wsp, session, statements) {
+  for (const sql of statements)
+    await wsp.request({
+      action: 'stmt',
+      session,
+      stmt: [
+        ['prepare', sql],
+        ['run', {}]
+      ]
+    });
+}
+
+//
+// A mailbox without the message list indexes (built when it is first
+// opened, then dropped), with `padBytes` of other data in it
+//
+async function createMailboxWithoutListIndexes(t, padBytes) {
+  const { api, wsp } = t.context;
+  const { alias, domain, pass } = await createTestAlias(t);
+  const auth = createAliasAuth(`${alias.name}@${domain.name}`, pass);
+
+  const created = await api
+    .post('/v1/messages')
+    .set('Authorization', auth)
+    .send({
+      to: [{ address: 'test@example.com' }],
+      subject: 'Large mailbox',
+      text: 'Large mailbox'
+    });
+  t.is(created.status, 200);
+
+  const capture = captureListQueries(wsp);
+  let session;
+  try {
+    const res = await api
+      .get('/v1/messages?lightweight=true')
+      .set('Authorization', auth);
+    t.is(res.status, 200);
+    ({ session } = capture.queries.at(-1));
+  } finally {
+    capture.restore();
+  }
+
+  const indexes = await waitForListIndexes(wsp, session);
+  t.is(indexes.length, 2);
+
+  await runStatements(wsp, session, [
+    ...DROP_LIST_INDEXES,
+    'CREATE TABLE "PadTest" ("x" BLOB)',
+    `INSERT INTO "PadTest" VALUES (randomblob(${padBytes}))`
+  ]);
+  const dropped = await getListIndexes(wsp, session);
+  t.is(dropped.length, 0);
+
+  return { alias, auth, session };
+}
+
+// the next open checks the schema again (and builds missing indexes)
+async function checkSchemaAgain(t, alias, auth) {
+  await t.context.client.del(`migrate_check:${alias.id}`);
+  const res = await t.context.api
+    .get('/v1/messages?lightweight=true')
+    .set('Authorization', auth);
+  t.is(res.status, 200);
+}
+
+//
+// Building them holds the write lock of the mailbox, and every write of the
+// SQLite server waits for it, so a mailbox above the size they are built in
+// when it is opened is indexed by the sqlite-worker instead, once the API
+// lists it: other requests (here a folder list, which also checks the
+// schema) leave it as is, and it is queued once a day at most.
+//
+// serial: it watches the jobs published by every request
+test.serial(
+  'a mailbox too large for an index build on open is indexed by the sqlite-worker once it is listed',
+  async (t) => {
+    const { client, wsp, api } = t.context;
+    const { alias, auth, session } = await createMailboxWithoutListIndexes(
+      t,
+      bytes('40MB')
+    );
+    // (as on a later day)
+    await client.del(`list_index_queued:${alias.id}`);
+
+    const jobs = [];
+    const { publish } = client;
+    client.publish = function (channel, message, ...args) {
+      if (channel === `sqlite_vacuum_queue:${config.env}`) {
+        const job = JSON.parse(message);
+        if (job.session?.user?.alias_id === alias.id) jobs.push(job);
+      }
+
+      return publish.call(this, channel, message, ...args);
+    };
+
+    try {
+      await client.del(`migrate_check:${alias.id}`);
+      const folders = await api.get('/v1/folders').set('Authorization', auth);
+      t.is(folders.status, 200);
+      await delay(ms('1s'));
+      t.is(jobs.filter((job) => job.action === 'list_indexes').length, 0);
+      t.deepEqual(await getListIndexes(wsp, session), []);
+
+      for (let i = 0; i < 2; i++) await checkSchemaAgain(t, alias, auth);
+      await delay(ms('1s'));
+    } finally {
+      client.publish = publish;
+    }
+
+    const queued = jobs.filter((job) => job.action === 'list_indexes');
+    t.is(queued.length, 1);
+    t.deepEqual(await getListIndexes(wsp, session), []);
+
+    // (run as the sqlite-worker runs it)
+    await listIndexes(queued[0]);
+    t.deepEqual(await getListIndexes(wsp, session), [
+      'Messages_created_at',
+      'Messages_mailbox_created_at'
+    ]);
+    t.is(await client.get(`vacuum_lock:${alias.id}`), null);
+  }
+);
+
+// serial: it changes the size limit for every request while it runs
+test.serial(
+  'full message lists rebuild many messages at once within the size limit',
+  async (t) => {
+    const { api, wsp } = t.context;
+    const { alias, domain, pass } = await createTestAlias(t);
+    const auth = createAliasAuth(`${alias.name}@${domain.name}`, pass);
+
+    for (let i = 0; i < 20; i++) {
+      const res = await api
+        .post('/v1/messages')
+        .set('Authorization', auth)
+        .send({
+          to: [{ address: 'test@example.com' }],
+          subject: `Concurrency ${i}`,
+          text: `Concurrency ${i}`,
+          attachments: [
+            {
+              filename: `file-${i}.txt`,
+              content: `attachment ${i} `.repeat(200)
+            }
+          ]
+        });
+      t.is(res.status, 200);
+    }
+
+    // attachment reads in flight, each held for a moment
+    let inFlight = 0;
+    let maxInFlight = 0;
+    let reads = 0;
+    const { request } = wsp;
+    wsp.request = async function (payload, ...args) {
+      const query = payload?.action === 'stmt' ? payload.stmt?.[0]?.[1] : '';
+      if (typeof query !== 'string' || !query.includes('from "Attachments"'))
+        return request.call(this, payload, ...args);
+      reads++;
+      inFlight++;
+      maxInFlight = Math.max(maxInFlight, inFlight);
+      try {
+        await delay(50);
+        return await request.call(this, payload, ...args);
+      } finally {
+        inFlight--;
+      }
+    };
+
+    const original = env.API_MESSAGES_FULL_LIST_MAX_SIZE;
+    try {
+      const full = await api
+        .get('/v1/messages?limit=20')
+        .set('Authorization', auth);
+      t.is(full.status, 200);
+      t.is(full.body.length, 20);
+      t.is(full.headers['x-lightweight-fallback-count'], undefined);
+      t.true(
+        full.body.every(
+          (message) => message.nodemailer.attachments.length === 1
+        )
+      );
+      t.is(reads, 20);
+      t.true(maxInFlight > 4, `${maxInFlight} attachment reads at once`);
+      t.true(maxInFlight <= 16, `${maxInFlight} attachment reads at once`);
+
+      // the size limit still decides how many are rebuilt
+      const sizes = full.body.map((message) => message.size);
+      env.API_MESSAGES_FULL_LIST_MAX_SIZE = `${
+        sizes[0] + sizes[1] + sizes[2]
+      }B`;
+      reads = 0;
+      const limited = await api
+        .get('/v1/messages?limit=20')
+        .set('Authorization', auth);
+      t.is(limited.status, 200);
+      t.is(limited.headers['x-lightweight-fallback-count'], '17');
+      t.is(reads, 3);
+      t.is(limited.body.filter((message) => message.raw).length, 3);
+    } finally {
+      env.API_MESSAGES_FULL_LIST_MAX_SIZE = original;
+      wsp.request = request;
+    }
+  }
+);
+
+test('browsers can read the pagination and fallback headers of the API', async (t) => {
+  const { api } = t.context;
+  const { alias, domain, pass } = await createTestAlias(t);
+
+  const res = await api
+    .get('/v1/messages')
+    .set('Origin', 'https://example.com')
+    .set(
+      'Authorization',
+      createAliasAuth(`${alias.name}@${domain.name}`, pass)
+    );
+  t.is(res.status, 200);
+  t.is(res.headers['access-control-allow-origin'], 'https://example.com');
+  const exposed = new Set(
+    (res.headers['access-control-expose-headers'] || '')
+      .split(',')
+      .map((header) => header.trim().toLowerCase())
+  );
+  for (const header of [
+    'x-page-count',
+    'x-page-current',
+    'x-page-size',
+    'x-item-count',
+    'link',
+    'x-lightweight-fallback-count'
+  ])
+    t.true(exposed.has(header), `${header} is exposed`);
+});
+
 //
 // Folders Tests
 //
+
+test('folder message counts are read with one query for the whole page', async (t) => {
+  const { api, wsp } = t.context;
+  const { alias, domain, pass } = await createTestAlias(t);
+  const auth = createAliasAuth(`${alias.name}@${domain.name}`, pass);
+
+  for (const [folder, flags] of [
+    ['INBOX', ['\\Seen']],
+    ['INBOX', []],
+    ['INBOX', []],
+    ['Archive', []],
+    ['Archive', ['\\Seen']]
+  ]) {
+    const res = await api
+      .post('/v1/messages')
+      .set('Authorization', auth)
+      .send({
+        folder,
+        flags,
+        to: [{ address: 'test@example.com' }],
+        subject: 'Counted',
+        text: 'Counted'
+      });
+    t.is(res.status, 200);
+  }
+
+  const empty = await api
+    .post('/v1/folders')
+    .set('Authorization', auth)
+    .send({ path: 'Empty' });
+  t.is(empty.status, 200);
+
+  let messageQueries = 0;
+  const { request } = wsp;
+  wsp.request = async function (payload, ...args) {
+    const query = payload?.action === 'stmt' ? payload.stmt?.[0]?.[1] : '';
+    if (typeof query === 'string' && query.includes('from "Messages"'))
+      messageQueries++;
+    return request.call(this, payload, ...args);
+  };
+
+  let res;
+  try {
+    res = await api.get('/v1/folders').set('Authorization', auth);
+  } finally {
+    wsp.request = request;
+  }
+
+  t.is(res.status, 200);
+  const byPath = Object.fromEntries(
+    res.body.map((folder) => [folder.path, folder])
+  );
+  t.true(res.body.length > 3);
+  t.is(byPath.INBOX.total, 3);
+  t.is(byPath.INBOX.unseen_count, 2);
+  t.is(byPath.Archive.total, 2);
+  t.is(byPath.Archive.unseen_count, 1);
+  t.is(byPath.Empty.total, 0);
+  t.is(byPath.Empty.unseen_count, 0);
+  t.is(messageQueries, 1);
+});
 
 test('fails folders list without auth', async (t) => {
   const { api } = t.context;
@@ -4063,3 +4512,298 @@ test('calendar and calendar event ids sent as null are generated', async (t) => 
   t.is(res.status, 200, `${res.text}`);
   t.truthy(res.body.id);
 });
+
+//
+// A client sending many requests at once is refused with 429 once too many
+// of its sign-ins are being verified. Each refusal used to be logged three
+// times as an error (and stored), so flooding us cost far more than it cost
+// the client. (Different passwords: the same one is only verified once.)
+//
+test.serial(
+  'sign-ins refused while others are in progress are not logged as errors',
+  async (t) => {
+    const { api } = t.context;
+    const { alias, domain, pass } = await createTestAlias(t);
+
+    // (pre hooks run when the error is logged, before the response is sent)
+    const errors = [];
+    let capturing = true;
+    for (const level of ['error', 'fatal'])
+      logger.pre(level, (err, message, meta) => {
+        const text = `${err?.message || ''} ${message || ''}`;
+        if (capturing && /authentication attempts/.test(text))
+          errors.push(text);
+        return [err, message, meta];
+      });
+
+    const { smtpLimitAuth } = config;
+    config.smtpLimitAuth = 1;
+    t.teardown(() => {
+      capturing = false;
+      config.smtpLimitAuth = smtpLimitAuth;
+    });
+
+    const responses = await Promise.all(
+      Array.from({ length: 8 }, (_, i) =>
+        api
+          .get('/v1/contacts')
+          .set(
+            'Authorization',
+            createAliasAuth(`${alias.name}@${domain.name}`, `${pass}-${i}`)
+          )
+      )
+    );
+    const refused = responses.filter((res) => res.status === 429);
+    t.true(
+      refused.length > 0,
+      `${responses.map((res) => res.status).join(',')}`
+    );
+    // (and each says when to try again)
+    for (const res of refused) t.true(Number(res.headers['retry-after']) > 0);
+    t.deepEqual(errors, []);
+  }
+);
+
+//
+// Mail clients open several connections at once, and DAV and API clients
+// send their credentials with every request, so the same login arrives many
+// times before the first one is cached. Each one used to be verified, and
+// once the limit of attempts in progress was taken the rest were refused.
+//
+test.serial(
+  'parallel sign-ins with the same password are verified once and all succeed',
+  async (t) => {
+    const { api } = t.context;
+    const { alias, domain, pass } = await createTestAlias(t);
+    const username = `${alias.name}@${domain.name}`;
+
+    const { smtpLimitAuth } = config;
+    config.smtpLimitAuth = 1;
+    t.teardown(() => {
+      config.smtpLimitAuth = smtpLimitAuth;
+    });
+
+    const get = (password) =>
+      api
+        .get('/v1/contacts')
+        .set('Authorization', createAliasAuth(username, password));
+
+    let responses;
+    const count = await countVerifications(async () => {
+      responses = await Promise.all(Array.from({ length: 8 }, () => get(pass)));
+    });
+    t.deepEqual(
+      responses.map((res) => res.status),
+      Array.from({ length: 8 }, () => 200)
+    );
+    t.is(count, 1);
+
+    // a wrong password is never cached, so it is never accepted
+    responses = await Promise.all(
+      Array.from({ length: 8 }, () => get(`${pass}-wrong`))
+    );
+    t.true(
+      responses.every((res) => [401, 429].includes(res.status)),
+      `${responses.map((res) => res.status).join(',')}`
+    );
+
+    // and different wrong passwords are still limited
+    responses = await Promise.all(
+      Array.from({ length: 8 }, (_, i) => get(`${pass}-${i}`))
+    );
+    t.true(
+      responses.every((res) => [401, 429].includes(res.status)),
+      `${responses.map((res) => res.status).join(',')}`
+    );
+    t.true(responses.some((res) => res.status === 429));
+  }
+);
+
+// (slows down the DNS lookup of the sign-ins verified from now on; the API
+// server has a resolver of its own)
+function slowDownVerification(t, duration) {
+  const { resolver } = t.context._api;
+  const { resolveTxt } = resolver;
+  resolver.resolveTxt = async function (...args) {
+    await delay(duration);
+    return Reflect.apply(resolveTxt, this, args);
+  };
+
+  t.teardown(() => {
+    resolver.resolveTxt = resolveTxt;
+  });
+}
+
+//
+// The others used to wait for 5 seconds only, as long as the first one was
+// marked as in progress: a slower first check (DNS, MongoDB, a busy argon2
+// queue) left them to verify again one after another, past the 10 second
+// WebSocket sign-in timeout.
+//
+test.serial(
+  'parallel sign-ins wait for a first check that takes more than 5 seconds',
+  async (t) => {
+    t.timeout(ms('1m'));
+    const { api } = t.context;
+    const { alias, domain, pass } = await createTestAlias(t);
+    const auth = createAliasAuth(`${alias.name}@${domain.name}`, pass);
+    slowDownVerification(t, ms('6s'));
+
+    const start = Date.now();
+    let durations;
+    const count = await countVerifications(async () => {
+      durations = await Promise.all(
+        Array.from({ length: 8 }, async () => {
+          const res = await api.get('/v1/contacts').set('Authorization', auth);
+          t.is(res.status, 200);
+          return Date.now() - start;
+        })
+      );
+    });
+    t.is(count, 1);
+    t.true(
+      durations.every((duration) => duration < ms('8s')),
+      `${durations.join(',')}`
+    );
+  }
+);
+
+test('a sign-in waiting for another one checks for its result less and less often', async (t) => {
+  t.timeout(ms('1m'));
+  const { api, client } = t.context;
+  const { alias, domain, pass } = await createTestAlias(t);
+  const auth = createAliasAuth(`${alias.name}@${domain.name}`, pass);
+  slowDownVerification(t, ms('4s'));
+
+  // (each check asks whether the first one is still in progress)
+  let checks = 0;
+  const { pipeline } = client;
+  client.pipeline = function (...args) {
+    const p = Reflect.apply(pipeline, this, args);
+    const { exists } = p;
+    p.exists = function (key, ...rest) {
+      if (String(key).startsWith('auth_verifying_')) checks++;
+      return Reflect.apply(exists, this, [key, ...rest]);
+    };
+
+    return p;
+  };
+
+  t.teardown(() => {
+    client.pipeline = pipeline;
+  });
+
+  const responses = await Promise.all([
+    api.get('/v1/contacts').set('Authorization', auth),
+    delay(200).then(() => api.get('/v1/contacts').set('Authorization', auth))
+  ]);
+  t.deepEqual(
+    responses.map((res) => res.status),
+    [200, 200]
+  );
+  // (every 100ms it would be 40)
+  t.true(checks > 0 && checks <= 15, `${checks}`);
+});
+
+test('a sign-in while the alias is being rekeyed is answered 503', async (t) => {
+  const { api } = t.context;
+  const { alias, domain, pass } = await createTestAlias(t);
+  await Aliases.updateOne({ _id: alias._id }, { $set: { is_rekey: true } });
+
+  const res = await api
+    .get('/v1/contacts')
+    .set(
+      'Authorization',
+      createAliasAuth(`${alias.name}@${domain.name}`, pass)
+    );
+  // (temporary: not wrong credentials, which clients ask for again)
+  t.is(res.status, 503);
+});
+
+test.serial(
+  'a sign-in leaves no failed-attempt count without an expiry',
+  async (t) => {
+    const { api, client } = t.context;
+    const { alias, domain, pass } = await createTestAlias(t);
+    const key = `auth_limit_${config.env}:127.0.0.1`;
+    const get = () =>
+      api
+        .get('/v1/contacts')
+        .set(
+          'Authorization',
+          createAliasAuth(`${alias.name}@${domain.name}`, pass)
+        );
+
+    // (the second sign-in is answered from the cache)
+    let res = await get();
+    t.is(res.status, 200);
+    await client.del(key);
+    res = await get();
+    t.is(res.status, 200);
+    t.not(await client.pttl(key), -1);
+
+    // and one left without an expiry by an earlier version gets one
+    await client.set(key, '0');
+    res = await get();
+    t.is(res.status, 200);
+    t.true((await client.pttl(key)) > 0);
+  }
+);
+
+test('a sign-in refused by the failed-attempt limit says when to retry', async (t) => {
+  const { api, client } = t.context;
+  const { alias, domain, pass } = await createTestAlias(t);
+  await client.set(
+    `auth_limit_${config.env}:127.0.0.1`,
+    config.smtpLimitAuth,
+    'PX',
+    ms('1m')
+  );
+
+  const res = await api
+    .get('/v1/contacts')
+    .set(
+      'Authorization',
+      createAliasAuth(`${alias.name}@${domain.name}`, pass)
+    );
+  t.is(res.status, 429);
+  const retryAfter = Number(res.headers['retry-after']);
+  t.true(retryAfter > 0 && retryAfter <= 60, `${res.headers['retry-after']}`);
+});
+
+test.serial(
+  'a catch-all send reuses the login cached by the previous one',
+  async (t) => {
+    const { api } = t.context;
+    const { user, domain } = await createTestAlias(t);
+    let password;
+    for (let i = 0; i < 10; i++)
+      password = await addCatchallPassword(user, domain);
+
+    const send = () =>
+      sendWithCatchall(
+        api,
+        `sales@${domain.name}`,
+        password,
+        `sales@${domain.name}`
+      );
+
+    let res;
+    t.is(
+      await countVerifications(async () => {
+        res = await send();
+      }),
+      11
+    );
+    t.is(res.status, 200);
+
+    // only the send itself checks the password again
+    t.is(
+      await countVerifications(async () => {
+        res = await send();
+      }),
+      1
+    );
+    t.is(res.status, 200);
+  }
+);

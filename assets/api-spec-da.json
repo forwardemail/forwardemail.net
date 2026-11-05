@@ -3216,6 +3216,14 @@
               "$ref": "#/components/schemas/Error"
             }
           }
+        },
+        "headers": {
+          "Retry-After": {
+            "description": "Seconds to wait before trying again (sent when a sign-in is refused for too many attempts)",
+            "schema": {
+              "type": "integer"
+            }
+          }
         }
       },
       "InternalServerError": {
@@ -4916,6 +4924,12 @@
               },
               "X-Item-Count": {
                 "description": "Total number of items",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Lightweight-Fallback-Count": {
+                "description": "Number of messages of this page listed without the nodemailer and raw fields (as with lightweight=true), because the messages of the page exceeded the size a full list may return; get them with GET /v1/messages/{id}. Only sent when messages were listed this way.",
                 "schema": {
                   "type": "integer"
                 }
@@ -9138,6 +9152,9 @@
           "401": {
             "description": "Unauthorized - Invalid API token or alias credentials. Note: authentication is optional; this error only occurs when credentials are provided but are invalid."
           },
+          "403": {
+            "description": "Forbidden - The credentials are correct but may not connect (e.g. the alias does not have IMAP enabled, or the account is banned); a `?auth=message` connection is closed with `4403`"
+          },
           "404": {
             "description": "Not Found - Alias not found for the provided credentials"
           },
@@ -9585,7 +9602,7 @@
     },
     {
       "name": "Sieve-scripts",
-      "description": "Sieve-scripthåndteringsslutpunkter\n\n>[!NOTE]\n> Sieve er et kraftfuldt e-mailfiltreringssprog defineret i RFC 5228. Scripts udføres på indgående mails for automatisk at organisere, filtrere og besvare meddelelser.\n\n>[!TIP]\n> Understøttede filtypenavne inkluderer: fileinto, reject, ereject, vacation, vacation-seconds, imap4flags, envelope, body, relational, comparator-i;ascii-numeric, copy, date, index, editheader, enotify, regex, subaddress, ihave, duplicate, special-use, mailbox, environment og variables. Scripts valideres før lagring for at sikre, at de er syntaktisk korrekte.\n\n>[!NOTE]\n> **To godkendelsesmetoder understøttes:**\n> - **API Token Auth** (`/v1/domains/{domain_id}/aliases/{alias_id}/sieve`): Brug din API-nøgle som brugernavn med Basic Auth. Kræver domain_id og alias_id i URL-stien.\n\n> - **Alias Auth** (`/v1/sieve-scripts`): Brug alias-e-mailadressen og den genererede adgangskode som Basic Auth-legitimationsoplysninger. Intet domain_id eller alias_id er nødvendigt i URL'en.\n\n>[!TIP]\n> Script-ID-parametre accepterer enten MongoDB ObjectId eller scriptnavnet, hvilket muliggør fleksibel scriptidentifikation."
+      "description": "Sieve-scripthåndteringsslutpunkter\n\n>[!NOTE]\n> Sieve er et kraftfuldt e-mailfiltreringssprog defineret i RFC 5228. Scripts udføres på indgående mails for automatisk at organisere, filtrere og besvare meddelelser.\n\n>[!TIP]\n> Understøttede filtypenavne inkluderer: fileinto, reject, ereject, vacation, vacation-seconds, imap4flags, envelope, body, relational, comparator-i;ascii-numeric, comparator-i;unicode-casemap, copy, date, index, editheader, enotify, regex, subaddress, ihave, duplicate, special-use, mailbox, environment og variables. Scripts valideres før lagring for at sikre, at de er syntaktisk korrekte.\n\n>[!NOTE]\n> **To godkendelsesmetoder understøttes:**\n> - **API Token Auth** (`/v1/domains/{domain_id}/aliases/{alias_id}/sieve`): Brug din API-nøgle som brugernavn med Basic Auth. Kræver domain_id og alias_id i URL-stien.\n\n> - **Alias Auth** (`/v1/sieve-scripts`): Brug alias-e-mailadressen og den genererede adgangskode som Basic Auth-legitimationsoplysninger. Intet domain_id eller alias_id er nødvendigt i URL'en.\n\n>[!TIP]\n> Script-ID-parametre accepterer enten MongoDB ObjectId eller scriptnavnet, hvilket muliggør fleksibel scriptidentifikation."
     },
     {
       "name": "WebSockets",

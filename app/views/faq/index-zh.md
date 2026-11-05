@@ -2891,7 +2891,7 @@ Tasks.org 是一个流行的开源任务管理器，与 Forward Email 的 CalDAV
 | --- | --- |
 | 核心语言 | `keep`, `discard`, `stop`, 条件块，以及基本的 `address`, `header`, `exists`, `size` 和布尔测试。 |
 | 投递 | `fileinto`, `copy`, `redirect`, 用于 `fileinto :create` 和 `mailboxexists` 的 `mailbox`，以及用于 `fileinto :specialuse` 和 `specialuse_exists` 的 `special-use`。 |
-| 测试和比较 | `envelope`, `body`, `date`, `index`, `regex`, `subaddress`, `relational`, `i;ascii-casemap`, `i;octet`, 和 `i;ascii-numeric`。 |
+| 测试和比较 | `envelope`, `body`, `date`, `index`, `regex`, `subaddress`, `relational`, `i;ascii-casemap`, `i;unicode-casemap`, `i;octet`, 和 `i;ascii-numeric`。 |
 | 状态与变量 | `variables`, `encoded-character`, `imap4flags`, `duplicate`, 和 `ihave`。 |
 | 操作与响应 | `reject`, `ereject`, `vacation`, `vacation-seconds`, 以及使用 `mailto:` 的 `enotify`。遗留声明 `require "notify"` 被接受作为 `enotify` 的输入别名，但 `enotify` 是对外声明的功能。 |
 | 消息处理 | `editheader`, `environment`, `foreverypart`（含 `break`）, `extracttext`, `replace`, 和 `mime`，后者也会启用这三个命令。 |

@@ -1117,7 +1117,7 @@ Tabulka rozlišuje úplnou implementaci uvedeného chování od úmyslně omezen
 | [RFC 5173](https://datatracker.ietf.org/doc/html/rfc5173) | `body` | Porovnávání obsahu těla zprávy. |
 | [RFC 5229](https://datatracker.ietf.org/doc/html/rfc5229) | `variables` | Rozbalování proměnných a podporované modifikátory. |
 | [RFC 5231](https://datatracker.ietf.org/doc/html/rfc5231) | `relational` | Porovnávání pomocí `:count` a `:value`. |
-| [RFC 4790](https://datatracker.ietf.org/doc/html/rfc4790) | Comparators | `i;ascii-casemap`, `i;octet` a `i;ascii-numeric`. |
+| [RFC 4790](https://datatracker.ietf.org/doc/html/rfc4790) | Comparators | `i;ascii-casemap`, `i;unicode-casemap`, `i;octet` a `i;ascii-numeric`. |
 | [RFC 3894](https://datatracker.ietf.org/doc/html/rfc3894) | `copy` | `:copy` u `fileinto` a `redirect`. |
 | [RFC 5293](https://datatracker.ietf.org/doc/html/rfc5293) | `editheader` | Změny hlaviček před uložením, viditelné pro pozdější testy, s výjimkou chráněných polí pro autentizaci a směrování doručení, `Received` a `Auto-Submitted`. |
 | [RFC 5260](https://datatracker.ietf.org/doc/html/rfc5260) | `date`, `index` | Testy `currentdate` a data v hlavičkách, plus `:index` a `:last`. |
@@ -1141,7 +1141,7 @@ Tabulka rozlišuje úplnou implementaci uvedeného chování od úmyslně omezen
 | `reject` / `ereject` | Odmítne zprávu s chybou SMTP. | Vráceno přes MX doručovací cestu. |
 | `vacation` / `vacation-seconds` | Odesílá automatickou odpověď. | Zařazeno do fronty s omezením počtu odpovědí podle příjemce a intervalu. |
 | `imap4flags` | Nastavuje nebo testuje IMAP příznaky. | Aplikováno při uložení zprávy. |
-| `envelope`, `body`, `date`, `index`, `regex`, `subaddress`, `relational`, `comparator-i;ascii-numeric` | Testuje data zprávy a obálky. | Vyhodnoceno Sieve motorem. |
+| `envelope`, `body`, `date`, `index`, `regex`, `subaddress`, `relational`, `comparator-i;ascii-numeric`, `comparator-i;unicode-casemap` | Testuje data zprávy a obálky. | Vyhodnoceno Sieve motorem. |
 | `variables`, `duplicate`, `ihave` | Ukládá hodnoty, detekuje duplicity a kontroluje schopnosti. | Proměnné jsou lokální ke skriptu; stav duplicit používá Redis. |
 | `editheader` | Přidává nebo maže nechráněné hlavičky. | Hlavičky pro autentizaci a směrování doručení, `Received` a `Auto-Submitted` nelze upravovat. |
 | `enotify` | Odesílá notifikaci pomocí `mailto:`. | Zařazeno do fronty s omezením rychlosti notifikací. |

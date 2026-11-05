@@ -15,11 +15,21 @@
 const crypto = require('node:crypto');
 const { Buffer } = require('node:buffer');
 
+const ip = require('ip');
+const ms = require('ms');
 const nodemailer = require('nodemailer');
 const test = require('ava');
+const { generateKey, readKey } = require('openpgp');
 const { SMTPServer } = require('smtp-server');
 const { dkimSign } = require('mailauth/lib/dkim/sign');
 const { dkimVerify } = require('mailauth/lib/dkim/verify');
+
+const utils = require('../utils');
+
+const config = require('#config');
+const createTangerine = require('#helpers/create-tangerine');
+const logger = require('#helpers/logger');
+const sendEmail = require('#helpers/send-email');
 
 const { privateKey, publicKey } = crypto.generateKeyPairSync('rsa', {
   modulusLength: 2048
@@ -28,7 +38,8 @@ const DNS_KEY = publicKey
   .export({ type: 'spki', format: 'der' })
   .toString('base64');
 
-async function sendAndReceive(raw) {
+// (sent with nodemailer, or with `send`, to a local SMTP server)
+async function sendAndReceive(raw, send) {
   let received;
   const server = new SMTPServer({
     authOptional: true,
@@ -43,9 +54,14 @@ async function sendAndReceive(raw) {
     }
   });
   await new Promise((resolve) => {
-    server.listen(0, '127.0.0.1', resolve);
+    server.listen(0, resolve);
   });
   try {
+    if (send) {
+      await send(server.server.address().port);
+      return received;
+    }
+
     const transporter = nodemailer.createTransport({
       host: '127.0.0.1',
       port: server.server.address().port,
@@ -82,11 +98,23 @@ async function sign(raw) {
   return Buffer.concat([Buffer.from(signatures), raw]);
 }
 
+// (our own key, which a message without a domain is signed with)
+const OUR_DNS_KEY = crypto
+  .createPublicKey(config.signatureData.privateKey)
+  .export({ type: 'spki', format: 'der' })
+  .toString('base64');
+
 async function verify(raw) {
   const { results } = await dkimVerify(raw, {
     async resolver(name, type) {
       if (name === 'test._domainkey.example.com' && type === 'TXT')
         return [[`v=DKIM1; k=rsa; p=${DNS_KEY}`]];
+      if (
+        name ===
+          `${config.signatureData.selector}._domainkey.${config.signatureData.signingDomain}` &&
+        type === 'TXT'
+      )
+        return [[`v=DKIM1; k=rsa; p=${OUR_DNS_KEY}`]];
       const err = new Error('not found');
       err.code = 'ENOTFOUND';
       throw err;
@@ -126,4 +154,105 @@ test('a dot after a bare CR does not end the data', async (t) => {
   // (the whole message arrived, with its dot stuffed after the bare CR)
   t.true(received.includes(Buffer.from('after')));
   t.true(received.includes(Buffer.from('MAIL FROM:<x@example.org>')));
+});
+
+test('a message with a dot after a bare CR passes DKIM when we send it', async (t) => {
+  await utils.setupRedisClient(t);
+  t.teardown(() => {
+    t.context.client.disconnect();
+    t.context.subscriber.disconnect();
+  });
+  const resolver = createTangerine(t.context.client, logger);
+  const domain = `bare-cr-${crypto.randomUUID()}.example.com`;
+  await resolver.options.cache.mset(
+    new Map([
+      [
+        `mx:${domain}`,
+        resolver.spoofPacket(
+          domain,
+          'MX',
+          [{ exchange: ip.address(), priority: 5 }],
+          true,
+          ms('5m')
+        )
+      ]
+    ])
+  );
+
+  const received = await sendAndReceive(null, (port) =>
+    sendEmail({
+      session: {
+        envelope: {
+          mailFrom: { address: 'a@example.com' },
+          rcptTo: [{ address: `b@${domain}` }]
+        },
+        arrivalDateFormatted: new Date().toISOString().split('T')[0]
+      },
+      target: domain,
+      port,
+      envelope: { from: 'a@example.com', to: `b@${domain}` },
+      raw: Buffer.from(
+        `From: a@example.com\r\nTo: b@${domain}\r\nSubject: cr\r\n\r\nline1\r.\r\nend\r\n`
+      ),
+      resolver,
+      client: t.context.client,
+      hasWkdDisabled: true
+    })
+  );
+  // (stuffed as it was sent, and signed that way)
+  t.true(received.includes(Buffer.from('line1\r..\r\nend')));
+  t.is(await verify(received), 'pass');
+});
+
+test('an encrypted message with a dot after a bare CR in a header passes DKIM when we send it', async (t) => {
+  await utils.setupRedisClient(t);
+  t.teardown(() => {
+    t.context.client.disconnect();
+    t.context.subscriber.disconnect();
+  });
+  const resolver = createTangerine(t.context.client, logger);
+  const domain = `bare-cr-${crypto.randomUUID()}.example.com`;
+  await resolver.options.cache.mset(
+    new Map([
+      [
+        `mx:${domain}`,
+        resolver.spoofPacket(
+          domain,
+          'MX',
+          [{ exchange: ip.address(), priority: 5 }],
+          true,
+          ms('5m')
+        )
+      ]
+    ])
+  );
+  const { publicKey: armoredKey } = await generateKey({
+    type: 'ecc',
+    curve: 'curve25519',
+    userIDs: [{ email: `b@${domain}` }]
+  });
+
+  const received = await sendAndReceive(null, async (port) =>
+    sendEmail({
+      session: {
+        envelope: {
+          mailFrom: { address: 'a@example.com' },
+          rcptTo: [{ address: `b@${domain}` }]
+        },
+        arrivalDateFormatted: new Date().toISOString().split('T')[0]
+      },
+      target: domain,
+      port,
+      envelope: { from: 'a@example.com', to: `b@${domain}` },
+      raw: Buffer.from(
+        `From: a@example.com\r\nTo: b@${domain}\r\nSubject: total\r.\r\n\r\nencrypted\r\n`
+      ),
+      resolver,
+      client: t.context.client,
+      publicKey: await readKey({ armoredKey })
+    })
+  );
+  t.true(received.includes(Buffer.from('-----BEGIN PGP MESSAGE-----')));
+  t.true(received.includes(Buffer.from('total\r..\r\n')));
+  t.is(await verify(received), 'pass');
 });

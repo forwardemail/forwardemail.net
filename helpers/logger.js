@@ -4,10 +4,8 @@
  */
 
 const Axe = require('axe');
-const cuid = require('cuid');
 const parseErr = require('parse-err');
 const safeStringify = require('fast-safe-stringify');
-const superagent = require('superagent');
 
 //
 // NOTE: we can't use `rfdc` because it's really not much faster than what we're doing
@@ -276,17 +274,30 @@ async function hook(err, message, meta) {
 
       // Check if this is an analytics event
       if (message === 'analytics:event' && meta.analytics) {
-        // Handle analytics events separately
-        if (conn.models && conn.models.AnalyticsEvents) {
-          return conn.models.AnalyticsEvents.create(meta.analytics)
-            .then()
-            .catch((analyticsErr) => {
-              // Don't let analytics errors affect the main application
-              console.error('Analytics save error:', analyticsErr.message);
-            });
-        }
+        //
+        // Analytics events are written on every API request, so they share
+        // the log save throttle (without the pending allowance, so error logs
+        // keep priority) and are dropped while the logs database is not
+        // connected. Otherwise a slow or unreachable logs database queues
+        // one write per request until the process runs out of memory.
+        //
+        if (
+          !conn.models.AnalyticsEvents ||
+          conn.readyState !== mongoose.ConnectionStates.connected ||
+          logHookActive >= LOG_HOOK_MAX_CONCURRENT
+        )
+          return;
 
-        return;
+        logHookActive++;
+        return conn.models.AnalyticsEvents.create(meta.analytics)
+          .then()
+          .catch((analyticsErr) => {
+            // Don't let analytics errors affect the main application
+            console.error('Analytics save error:', analyticsErr.message);
+          })
+          .finally(() => {
+            logHookActive--;
+          });
       }
 
       //
@@ -459,38 +470,6 @@ async function hook(err, message, meta) {
     } catch (err) {
       logger.error(err, { ignore_hook: true });
     }
-
-    return;
-  }
-
-  try {
-    // eslint-disable-next-line no-undef
-    if (typeof window !== 'object' || typeof window.API_URL !== 'string')
-      throw new Error('API URL was not in the window global');
-
-    const request = superagent
-      // eslint-disable-next-line no-undef
-      .post(`${window.API_URL}/v1/log`)
-      // if the meta object already contained a request ID then re-use it
-      // otherwise generate one that gets re-used in the API log request
-      // (which normalizes server/browser request id formatting)
-      .set(
-        'X-Request-Id',
-        meta && meta.request && meta.request.id ? meta.request.id : cuid()
-      )
-      .set('X-Axe-Version', logger.config.version)
-      .timeout(5000);
-
-    return request
-      .type('application/json')
-      .retry(3)
-      .send(safeStringify({ err, message, meta }))
-      .then((response) =>
-        logger.info('log sent over HTTP', { response, ignore_hook: true })
-      )
-      .catch((err) => logger.error(err, { ignore_hook: true }));
-  } catch (err) {
-    logger.error(err, { ignore_hook: true });
   }
 }
 

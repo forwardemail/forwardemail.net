@@ -776,7 +776,8 @@ test('alias authentication follows the rotation: refused while it runs, cached o
   );
   await acquireRekeyLock(t.context.client, aliasId, rekeyId);
   t.truthy(await t.context.client.get(cacheKey));
-  t.is(await statusAs(t, ctx, password), 401);
+  // (refused for now, as the rotation is temporary)
+  t.is(await statusAs(t, ctx, password), 503);
 
   // the rotation is over
   await Aliases.updateOne(

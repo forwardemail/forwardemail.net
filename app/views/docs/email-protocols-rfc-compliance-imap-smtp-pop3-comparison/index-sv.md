@@ -1117,7 +1117,7 @@ Tabellen skiljer mellan fullständig implementering av listat beteende och avsik
 | [RFC 5173](https://datatracker.ietf.org/doc/html/rfc5173) | `body` | Matchning mot meddelandekroppens innehåll. |
 | [RFC 5229](https://datatracker.ietf.org/doc/html/rfc5229) | `variables` | Variabelexpansion och stödda modifikatorer. |
 | [RFC 5231](https://datatracker.ietf.org/doc/html/rfc5231) | `relational` | `:count`- och `:value`-jämförelser. |
-| [RFC 4790](https://datatracker.ietf.org/doc/html/rfc4790) | Comparators | `i;ascii-casemap`, `i;octet` och `i;ascii-numeric`. |
+| [RFC 4790](https://datatracker.ietf.org/doc/html/rfc4790) | Comparators | `i;ascii-casemap`, `i;unicode-casemap`, `i;octet` och `i;ascii-numeric`. |
 | [RFC 3894](https://datatracker.ietf.org/doc/html/rfc3894) | `copy` | `:copy` för `fileinto` och `redirect`. |
 | [RFC 5293](https://datatracker.ietf.org/doc/html/rfc5293) | `editheader` | Headerändringar innan lagring, synliga för senare tester, förutom skyddade autentiserings- och leveransrutningsfält, `Received` och `Auto-Submitted`. |
 | [RFC 5260](https://datatracker.ietf.org/doc/html/rfc5260) | `date`, `index` | `currentdate`- och header-datumtester, samt `:index` och `:last`. |
@@ -1141,7 +1141,7 @@ Tabellen skiljer mellan fullständig implementering av listat beteende och avsik
 | `reject` / `ereject` | Avvisar ett meddelande med ett SMTP-fel. | Returneras via MX-leveransvägen. |
 | `vacation` / `vacation-seconds` | Skickar ett automatiskt svar. | Köas med mottagar- och intervallbegränsningar. |
 | `imap4flags` | Sätter eller testar IMAP-flaggor. | Tillämpas när meddelandet lagras. |
-| `envelope`, `body`, `date`, `index`, `regex`, `subaddress`, `relational`, `comparator-i;ascii-numeric` | Tester för meddelande- och omslagsdata. | Utvärderas av Sieve-motorn. |
+| `envelope`, `body`, `date`, `index`, `regex`, `subaddress`, `relational`, `comparator-i;ascii-numeric`, `comparator-i;unicode-casemap` | Tester för meddelande- och omslagsdata. | Utvärderas av Sieve-motorn. |
 | `variables`, `duplicate`, `ihave` | Sparar värden, upptäcker dubbletter och kontrollerar kapabiliteter. | Variabler är skriptlokala; dubbletttillstånd lagras i Redis. |
 | `editheader` | Lägger till eller tar bort icke-skyddade headers. | Autentiserings- och leveransrutningsheaders, `Received` och `Auto-Submitted` kan inte ändras. |
 | `enotify` | Skickar en notifiering via `mailto:`. | Köas med begränsningar för notifieringsfrekvens. |

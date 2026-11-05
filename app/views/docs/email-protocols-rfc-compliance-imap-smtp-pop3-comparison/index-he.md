@@ -1117,7 +1117,7 @@ sequenceDiagram
 | [RFC 5173](https://datatracker.ietf.org/doc/html/rfc5173) | `body` | התאמת תוכן גוף ההודעה. |
 | [RFC 5229](https://datatracker.ietf.org/doc/html/rfc5229) | `variables` | הרחבת משתנים ומודיפיירים נתמכים. |
 | [RFC 5231](https://datatracker.ietf.org/doc/html/rfc5231) | `relational` | השוואות `:count` ו-`:value`. |
-| [RFC 4790](https://datatracker.ietf.org/doc/html/rfc4790) | Comparators | `i;ascii-casemap`, `i;octet` ו-`i;ascii-numeric`. |
+| [RFC 4790](https://datatracker.ietf.org/doc/html/rfc4790) | Comparators | `i;ascii-casemap`, `i;unicode-casemap`, `i;octet` ו-`i;ascii-numeric`. |
 | [RFC 3894](https://datatracker.ietf.org/doc/html/rfc3894) | `copy` | `:copy` על `fileinto` ו-`redirect`. |
 | [RFC 5293](https://datatracker.ietf.org/doc/html/rfc5293) | `editheader` | שינויים בכותרות לפני האחסון, הנראים לבדיקות מאוחרות יותר, למעט שדות אימות והפניית מסירה המוגנים, `Received` ו-`Auto-Submitted`. |
 | [RFC 5260](https://datatracker.ietf.org/doc/html/rfc5260) | `date`, `index` | בדיקות `currentdate` ותאריכי כותרות, בנוסף `:index` ו-`:last`. |
@@ -1141,7 +1141,7 @@ sequenceDiagram
 | `reject` / `ereject` | דוחה הודעה עם שגיאת SMTP. | מוחזרת דרך נתיב מסירת ה-MX. |
 | `vacation` / `vacation-seconds` | שולח תגובה אוטומטית. | מועלית בתור עם מגבלות קצב לנמען ולמרווחי זמן. |
 | `imap4flags` | קובע או בודק דגלים של IMAP. | מוחל כאשר ההודעה מאוחסנת. |
-| `envelope`, `body`, `date`, `index`, `regex`, `subaddress`, `relational`, `comparator-i;ascii-numeric` | בודק נתוני הודעה ועטיפה. | מוערך על ידי מנוע Sieve. |
+| `envelope`, `body`, `date`, `index`, `regex`, `subaddress`, `relational`, `comparator-i;ascii-numeric`, `comparator-i;unicode-casemap` | בודק נתוני הודעה ועטיפה. | מוערך על ידי מנוע Sieve. |
 | `variables`, `duplicate`, `ihave` | שומר ערכים, מזהה כפילויות, ובודק יכולות. | משתנים הם מקומיים לסקריפט; מצב כפילויות מנוהל באמצעות Redis. |
 | `editheader` | מוסיף או מוחק כותרות שאינן מוגנות. | כותרות אימות והפניית מסירה, `Received` ו-`Auto-Submitted` אינן ניתנות לשינוי. |
 | `enotify` | שולח התראה באמצעות `mailto:`. | מועלית בתור עם מגבלות קצב להתראות. |

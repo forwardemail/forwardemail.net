@@ -3216,6 +3216,14 @@
               "$ref": "#/components/schemas/Error"
             }
           }
+        },
+        "headers": {
+          "Retry-After": {
+            "description": "Seconds to wait before trying again (sent when a sign-in is refused for too many attempts)",
+            "schema": {
+              "type": "integer"
+            }
+          }
         }
       },
       "InternalServerError": {
@@ -4916,6 +4924,12 @@
               },
               "X-Item-Count": {
                 "description": "Total number of items",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Lightweight-Fallback-Count": {
+                "description": "Number of messages of this page listed without the nodemailer and raw fields (as with lightweight=true), because the messages of the page exceeded the size a full list may return; get them with GET /v1/messages/{id}. Only sent when messages were listed this way.",
                 "schema": {
                   "type": "integer"
                 }
@@ -9138,6 +9152,9 @@
           "401": {
             "description": "Unauthorized - Invalid API token or alias credentials. Note: authentication is optional; this error only occurs when credentials are provided but are invalid."
           },
+          "403": {
+            "description": "Forbidden - The credentials are correct but may not connect (e.g. the alias does not have IMAP enabled, or the account is banned); a `?auth=message` connection is closed with `4403`"
+          },
           "404": {
             "description": "Not Found - Alias not found for the provided credentials"
           },
@@ -9585,7 +9602,7 @@
     },
     {
       "name": "Sieve Scripts",
-      "description": "Sieve script management endpoints\n\n>[!NOTE]\n> Sieve is a powerful email filtering language defined in RFC 5228. Scripts are executed on incoming mail to automatically organize, filter, and respond to messages.\n\n>[!TIP]\n> Supported extensions include: fileinto, reject, ereject, vacation, vacation-seconds, imap4flags, envelope, body, relational, comparator-i;ascii-numeric, copy, date, index, editheader, enotify, regex, subaddress, ihave, duplicate, special-use, mailbox, environment, and variables. Scripts are validated before saving to ensure they are syntactically correct.\n\n>[!NOTE]\n> **Two authentication methods are supported:**\n> - **API Token Auth** (`/v1/domains/{domain_id}/aliases/{alias_id}/sieve`): Use your API key as the username with Basic Auth. Requires domain_id and alias_id in the URL path.\n> - **Alias Auth** (`/v1/sieve-scripts`): Use the alias email and generated password as Basic Auth credentials. No domain_id or alias_id needed in the URL.\n\n>[!TIP]\n> Script ID parameters accept either the MongoDB ObjectId or the script name, allowing flexible script identification."
+      "description": "Sieve script management endpoints\n\n>[!NOTE]\n> Sieve is a powerful email filtering language defined in RFC 5228. Scripts are executed on incoming mail to automatically organize, filter, and respond to messages.\n\n>[!TIP]\n> Supported extensions include: fileinto, reject, ereject, vacation, vacation-seconds, imap4flags, envelope, body, relational, comparator-i;ascii-numeric, comparator-i;unicode-casemap, copy, date, index, editheader, enotify, regex, subaddress, ihave, duplicate, special-use, mailbox, environment, and variables. Scripts are validated before saving to ensure they are syntactically correct.\n\n>[!NOTE]\n> **Two authentication methods are supported:**\n> - **API Token Auth** (`/v1/domains/{domain_id}/aliases/{alias_id}/sieve`): Use your API key as the username with Basic Auth. Requires domain_id and alias_id in the URL path.\n> - **Alias Auth** (`/v1/sieve-scripts`): Use the alias email and generated password as Basic Auth credentials. No domain_id or alias_id needed in the URL.\n\n>[!TIP]\n> Script ID parameters accept either the MongoDB ObjectId or the script name, allowing flexible script identification."
     },
     {
       "name": "WebSockets",

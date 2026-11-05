@@ -175,36 +175,45 @@ SieveScripts.index({ user: 1, domain: 1 });
 // Pre-save hook to validate and analyze the script
 SieveScripts.pre('save', async function (next) {
   try {
-    // Validate syntax
-    const validationResult = sieveValidate(this.content);
-    this.is_valid = validationResult.valid;
-    this.validation_errors = validationResult.errors || [];
+    //
+    // The content is checked when it is new or changed: a script saved
+    // before a check was added still runs, and can still be renamed,
+    // activated or deactivated
+    //
+    const isContentChanged = this.isNew || this.isModified('content');
 
-    if (!validationResult.valid) {
-      throw Boom.badRequest(
-        i18n.translateError(
-          'SIEVE_SCRIPT_INVALID',
-          this.locale,
-          this.validation_errors.map((e) => e.message).join(', ')
-        )
-      );
-    }
+    if (isContentChanged) {
+      // Validate syntax
+      const validationResult = sieveValidate(this.content);
+      this.is_valid = validationResult.valid;
+      this.validation_errors = validationResult.errors || [];
 
-    // Parse and verify the capabilities needed by every command and test.
-    const ast = sieveParse(this.content);
-    const capabilityResult = validateSieveCapabilities(ast);
-    this.required_capabilities = capabilityResult.required;
-    if (!capabilityResult.valid) {
-      this.validation_errors = capabilityResult.errors.map((message) => ({
-        message
-      }));
-      throw Boom.badRequest(
-        i18n.translateError(
-          'SIEVE_SCRIPT_INVALID',
-          this.locale,
-          capabilityResult.errors.join(', ')
-        )
-      );
+      if (!validationResult.valid) {
+        throw Boom.badRequest(
+          i18n.translateError(
+            'SIEVE_SCRIPT_INVALID',
+            this.locale,
+            this.validation_errors.map((e) => e.message).join(', ')
+          )
+        );
+      }
+
+      // Parse and verify the capabilities needed by every command and test.
+      const ast = sieveParse(this.content);
+      const capabilityResult = validateSieveCapabilities(ast);
+      this.required_capabilities = capabilityResult.required;
+      if (!capabilityResult.valid) {
+        this.validation_errors = capabilityResult.errors.map((message) => ({
+          message
+        }));
+        throw Boom.badRequest(
+          i18n.translateError(
+            'SIEVE_SCRIPT_INVALID',
+            this.locale,
+            capabilityResult.errors.join(', ')
+          )
+        );
+      }
     }
 
     // Check if script uses vacation extension
@@ -224,41 +233,43 @@ SieveScripts.pre('save', async function (next) {
       }
     }
 
-    // Security validation
-    const securityValidator = new SieveSecurityValidator();
-    const securityResult = securityValidator.validate(this.content);
+    if (isContentChanged) {
+      // Security validation
+      const securityValidator = new SieveSecurityValidator();
+      const securityResult = securityValidator.validate(this.content);
 
-    this.security_warnings = [];
-    if (securityResult.warnings) {
-      for (const warning of securityResult.warnings) {
-        this.security_warnings.push({
-          type: warning.type || 'resource',
-          severity: warning.severity || 'warning',
-          message: warning.message
-        });
+      this.security_warnings = [];
+      if (securityResult.warnings) {
+        for (const warning of securityResult.warnings) {
+          this.security_warnings.push({
+            type: warning.type || 'resource',
+            severity: warning.severity || 'warning',
+            message: warning.message
+          });
+        }
       }
-    }
 
-    // If security validation fails, reject the script
-    if (!securityResult.valid) {
-      throw Boom.badRequest(
-        i18n.translateError('SIEVE_SCRIPT_SECURITY_ERROR', this.locale, {
-          errors: securityResult.errors.map((e) => e.message).join(', ')
-        })
-      );
-    }
-
-    // Also reject if there are high-severity security issues
-    if (securityResult.securityIssues) {
-      const criticalIssues = securityResult.securityIssues.filter(
-        (issue) => issue.severity === 'critical' || issue.severity === 'high'
-      );
-      if (criticalIssues.length > 0) {
+      // If security validation fails, reject the script
+      if (!securityResult.valid) {
         throw Boom.badRequest(
           i18n.translateError('SIEVE_SCRIPT_SECURITY_ERROR', this.locale, {
-            errors: criticalIssues.map((e) => e.message).join(', ')
+            errors: securityResult.errors.map((e) => e.message).join(', ')
           })
         );
+      }
+
+      // Also reject if there are high-severity security issues
+      if (securityResult.securityIssues) {
+        const criticalIssues = securityResult.securityIssues.filter(
+          (issue) => issue.severity === 'critical' || issue.severity === 'high'
+        );
+        if (criticalIssues.length > 0) {
+          throw Boom.badRequest(
+            i18n.translateError('SIEVE_SCRIPT_SECURITY_ERROR', this.locale, {
+              errors: criticalIssues.map((e) => e.message).join(', ')
+            })
+          );
+        }
       }
     }
 

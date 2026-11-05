@@ -1117,7 +1117,7 @@ sequenceDiagram
 | [RFC 5173](https://datatracker.ietf.org/doc/html/rfc5173) | `body` | メッセージ本文の内容マッチング。 |
 | [RFC 5229](https://datatracker.ietf.org/doc/html/rfc5229) | `variables` | 変数展開とサポートされる修飾子。 |
 | [RFC 5231](https://datatracker.ietf.org/doc/html/rfc5231) | `relational` | `:count` と `:value` の比較。 |
-| [RFC 4790](https://datatracker.ietf.org/doc/html/rfc4790) | Comparators | `i;ascii-casemap`、`i;octet`、`i;ascii-numeric`。 |
+| [RFC 4790](https://datatracker.ietf.org/doc/html/rfc4790) | Comparators | `i;ascii-casemap`、`i;unicode-casemap`、`i;octet`、`i;ascii-numeric`。 |
 | [RFC 3894](https://datatracker.ietf.org/doc/html/rfc3894) | `copy` | `fileinto` と `redirect` の `:copy`。 |
 | [RFC 5293](https://datatracker.ietf.org/doc/html/rfc5293) | `editheader` | 保存前のヘッダー変更（後続のテストに反映。認証および配信ルーティングの保護されたフィールド、`Received`、`Auto-Submitted` を除く）。 |
 | [RFC 5260](https://datatracker.ietf.org/doc/html/rfc5260) | `date`, `index` | `currentdate` とヘッダ日付テスト、さらに `:index` と `:last`。 |
@@ -1141,7 +1141,7 @@ sequenceDiagram
 | `reject` / `ereject` | SMTP エラーでメッセージを拒否します。 | MX 配信経路を通じて返されます。 |
 | `vacation` / `vacation-seconds` | 自動返信を送信します。 | 受信者および間隔のレート制限付きでキューに入れられます。 |
 | `imap4flags` | IMAP フラグを設定またはテストします。 | メッセージが保存されるときに適用されます。 |
-| `envelope`, `body`, `date`, `index`, `regex`, `subaddress`, `relational`, `comparator-i;ascii-numeric` | メッセージおよびエンベロープのデータをテストします。 | Sieve エンジンによって評価されます。 |
+| `envelope`, `body`, `date`, `index`, `regex`, `subaddress`, `relational`, `comparator-i;ascii-numeric`, `comparator-i;unicode-casemap` | メッセージおよびエンベロープのデータをテストします。 | Sieve エンジンによって評価されます。 |
 | `variables`, `duplicate`, `ihave` | 値を保存し、重複を検出し、機能をチェックします。 | 変数はスクリプトローカル；重複状態は Redis を使用します。 |
 | `editheader` | 保護されていないヘッダーを追加または削除します。 | 認証および配信ルーティングヘッダー、`Received`、`Auto-Submitted` は変更できません。 |
 | `enotify` | `mailto:` を使って通知を送信します。 | 通知のレート制限付きでキューに入れられます。 |

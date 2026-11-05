@@ -2895,7 +2895,7 @@ RSA証明書とECC（楕円曲線暗号）証明書の両方をサポートし�
 | --- | --- |
 | コア言語 | `keep`, `discard`, `stop`, 条件ブロック、および基本的な `address`, `header`, `exists`, `size`、およびブールテスト。 |
 | 配信 | `fileinto`, `copy`, `redirect`, `mailbox`（`fileinto :create` と `mailboxexists` 用）、および `special-use`（`fileinto :specialuse` と `specialuse_exists` 用）。 |
-| テストと比較 | `envelope`, `body`, `date`, `index`, `regex`, `subaddress`, `relational`, `i;ascii-casemap`, `i;octet`, および `i;ascii-numeric`。 |
+| テストと比較 | `envelope`, `body`, `date`, `index`, `regex`, `subaddress`, `relational`, `i;ascii-casemap`, `i;unicode-casemap`, `i;octet`, および `i;ascii-numeric`。 |
 | 状態と変数 | `variables`, `encoded-character`, `imap4flags`, `duplicate`, および `ihave`。 |
 | アクションと応答 | `reject`, `ereject`, `vacation`, `vacation-seconds`, および `enotify`（`mailto:` を使用）。レガシーな宣言 `require "notify"` は `enotify` の入力エイリアスとして受け入れられますが、公開されている capability は `enotify` です。 |
 | メッセージ処理 | `editheader`, `environment`, `foreverypart`（`break` を含む）, `extracttext`, `replace`, および `mime`（これら 3 つのコマンドも有効にします）。 |

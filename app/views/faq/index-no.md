@@ -2895,7 +2895,7 @@ Den komplette, implementasjonsstøttede kapasitetslisten og RFC-notater er tilgj
 | --- | --- |
 | Kjernespåk | `keep`, `discard`, `stop`, betingede blokker, og de grunnleggende `address`, `header`, `exists`, `size`, og boolske tester. |
 | Levering | `fileinto`, `copy`, `redirect`, `mailbox` for `fileinto :create` og `mailboxexists`, og `special-use` for `fileinto :specialuse` og `specialuse_exists`. |
-| Tester og sammenligninger | Inkluderer `envelope`, `body`, `date`, `index`, `regex`, `subaddress`, `relational`, `i;ascii-casemap`, `i;octet`, og `i;ascii-numeric`. |
+| Tester og sammenligninger | Inkluderer `envelope`, `body`, `date`, `index`, `regex`, `subaddress`, `relational`, `i;ascii-casemap`, `i;unicode-casemap`, `i;octet`, og `i;ascii-numeric`. |
 | Tilstand og variabler | `variables`, `encoded-character`, `imap4flags`, `duplicate`, og `ihave`. |
 | Handlinger og svar | `reject`, `ereject`, `vacation`, `vacation-seconds`, og `enotify` ved bruk av `mailto:`. Den eldre deklarasjonen `require "notify"` aksepteres som et inndatalias for `enotify`, men `enotify` er den annonserte kapasiteten. |
 | Meldingsbehandling | `editheader`, `environment`, `foreverypart` (med `break`), `extracttext`, `replace`, og `mime`, som også aktiverer disse tre kommandoene. |

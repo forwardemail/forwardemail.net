@@ -3216,6 +3216,14 @@
               "$ref": "#/components/schemas/Error"
             }
           }
+        },
+        "headers": {
+          "Retry-After": {
+            "description": "Seconds to wait before trying again (sent when a sign-in is refused for too many attempts)",
+            "schema": {
+              "type": "integer"
+            }
+          }
         }
       },
       "InternalServerError": {
@@ -4916,6 +4924,12 @@
               },
               "X-Item-Count": {
                 "description": "Total number of items",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Lightweight-Fallback-Count": {
+                "description": "Number of messages of this page listed without the nodemailer and raw fields (as with lightweight=true), because the messages of the page exceeded the size a full list may return; get them with GET /v1/messages/{id}. Only sent when messages were listed this way.",
                 "schema": {
                   "type": "integer"
                 }
@@ -9138,6 +9152,9 @@
           "401": {
             "description": "Unauthorized - Invalid API token or alias credentials. Note: authentication is optional; this error only occurs when credentials are provided but are invalid."
           },
+          "403": {
+            "description": "Forbidden - The credentials are correct but may not connect (e.g. the alias does not have IMAP enabled, or the account is banned); a `?auth=message` connection is closed with `4403`"
+          },
           "404": {
             "description": "Not Found - Alias not found for the provided credentials"
           },
@@ -9585,7 +9602,7 @@
     },
     {
       "name": "סקריפטים של Sieve",
-      "description": "נקודות קצה לניהול סקריפטים של Sieve\n\n>[!NOTE]\n> Sieve היא שפת סינון דוא\"ל חזקה שהוגדרה ב-RFC 5228. סקריפטים מבוצעים על דואר נכנס כדי לארגן, לסנן ולהגיב להודעות באופן אוטומטי.\n\n>[!TIP]\n> הסיומות הנתמכות כוללות: fileinto, reject, ereject, vacation, vacation-seconds, imap4flags, envelope, body, relational, comparator-i;ascii-numeric, copy, date, index, editheader, enotify, regex, subaddress, ihave, duplicate, special-use, mailbox, environment, ו-variables. סקריפטים מאומתים לפני השמירה כדי לוודא שהם נכונים מבחינה תחבירית.\n\n>[!NOTE]\n> **שתי שיטות אימות נתמכות:**\n> - **API Token Auth** (`/v1/domains/{domain_id}/aliases/{alias_id}/sieve`): השתמש במפתח ה-API שלך כשם משתמש עם Basic Auth. דורש domain_id ו-alias_id בנתיב ה-URL.\n> - **Alias Auth** (`/v1/sieve-scripts`): השתמש בכתובת הדוא\"ל הכינוי ובסיסמה שנוצרה כפרטי Basic Auth. אין צורך ב-domain_id או alias_id ב-URL.\n\n>[!TIP]\n> פרמטרי מזהה הסקריפט מקבלים את MongoDB ObjectId או את שם הסקריפט, מה שמאפשר זיהוי גמיש של הסקריפט."
+      "description": "נקודות קצה לניהול סקריפטים של Sieve\n\n>[!NOTE]\n> Sieve היא שפת סינון דוא\"ל חזקה שהוגדרה ב-RFC 5228. סקריפטים מבוצעים על דואר נכנס כדי לארגן, לסנן ולהגיב להודעות באופן אוטומטי.\n\n>[!TIP]\n> הסיומות הנתמכות כוללות: fileinto, reject, ereject, vacation, vacation-seconds, imap4flags, envelope, body, relational, comparator-i;ascii-numeric, comparator-i;unicode-casemap, copy, date, index, editheader, enotify, regex, subaddress, ihave, duplicate, special-use, mailbox, environment, ו-variables. סקריפטים מאומתים לפני השמירה כדי לוודא שהם נכונים מבחינה תחבירית.\n\n>[!NOTE]\n> **שתי שיטות אימות נתמכות:**\n> - **API Token Auth** (`/v1/domains/{domain_id}/aliases/{alias_id}/sieve`): השתמש במפתח ה-API שלך כשם משתמש עם Basic Auth. דורש domain_id ו-alias_id בנתיב ה-URL.\n> - **Alias Auth** (`/v1/sieve-scripts`): השתמש בכתובת הדוא\"ל הכינוי ובסיסמה שנוצרה כפרטי Basic Auth. אין צורך ב-domain_id או alias_id ב-URL.\n\n>[!TIP]\n> פרמטרי מזהה הסקריפט מקבלים את MongoDB ObjectId או את שם הסקריפט, מה שמאפשר זיהוי גמיש של הסקריפט."
     },
     {
       "name": "שקעי אינטרנט",

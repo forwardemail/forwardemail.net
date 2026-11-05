@@ -1117,7 +1117,7 @@ A tabela diferencia a implementação completa do comportamento listado de um co
 | [RFC 5173](https://datatracker.ietf.org/doc/html/rfc5173) | `body` | Correspondência de conteúdo do corpo da mensagem. |
 | [RFC 5229](https://datatracker.ietf.org/doc/html/rfc5229) | `variables` | Expansão de variáveis e modificadores suportados. |
 | [RFC 5231](https://datatracker.ietf.org/doc/html/rfc5231) | `relational` | Comparações `:count` e `:value`. |
-| [RFC 4790](https://datatracker.ietf.org/doc/html/rfc4790) | Comparadores | `i;ascii-casemap`, `i;octet` e `i;ascii-numeric`. |
+| [RFC 4790](https://datatracker.ietf.org/doc/html/rfc4790) | Comparadores | `i;ascii-casemap`, `i;unicode-casemap`, `i;octet` e `i;ascii-numeric`. |
 | [RFC 3894](https://datatracker.ietf.org/doc/html/rfc3894) | `copy` | `:copy` em `fileinto` e `redirect`. |
 | [RFC 5293](https://datatracker.ietf.org/doc/html/rfc5293) | `editheader` | Alterações de cabeçalho antes do armazenamento, visíveis para testes posteriores, exceto campos protegidos de autenticação e roteamento de entrega, `Received` e `Auto-Submitted`. |
 | [RFC 5260](https://datatracker.ietf.org/doc/html/rfc5260) | `date`, `index` | Testes `currentdate` e de datas em cabeçalhos, além de `:index` e `:last`. |
@@ -1141,7 +1141,7 @@ A tabela diferencia a implementação completa do comportamento listado de um co
 | `reject` / `ereject` | Rejeita uma mensagem com um erro SMTP. | Retornado através do caminho de entrega MX. |
 | `vacation` / `vacation-seconds` | Envia uma resposta automática. | Enfileirado com limites de taxa por destinatário e intervalo. |
 | `imap4flags` | Define ou testa flags IMAP. | Aplicado quando a mensagem é armazenada. |
-| `envelope`, `body`, `date`, `index`, `regex`, `subaddress`, `relational`, `comparator-i;ascii-numeric` | Testa dados da mensagem e do envelope. | Avaliado pelo mecanismo Sieve. |
+| `envelope`, `body`, `date`, `index`, `regex`, `subaddress`, `relational`, `comparator-i;ascii-numeric`, `comparator-i;unicode-casemap` | Testa dados da mensagem e do envelope. | Avaliado pelo mecanismo Sieve. |
 | `variables`, `duplicate`, `ihave` | Armazena valores, detecta duplicatas e verifica capabilities. | Variáveis são locais ao script; o estado de duplicatas usa Redis. |
 | `editheader` | Adiciona ou exclui cabeçalhos não protegidos. | Cabeçalhos de autenticação e roteamento de entrega, `Received` e `Auto-Submitted` não podem ser modificados. |
 | `enotify` | Envia uma notificação usando `mailto:`. | Enfileirado com limites de taxa de notificação. |

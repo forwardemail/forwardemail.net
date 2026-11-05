@@ -1117,7 +1117,7 @@ Bảng phân biệt việc triển khai đầy đủ của các hành vi đượ
 | [RFC 5173](https://datatracker.ietf.org/doc/html/rfc5173) | `body` | So khớp nội dung thân thư. |
 | [RFC 5229](https://datatracker.ietf.org/doc/html/rfc5229) | `variables` | Mở rộng biến và các modifier được hỗ trợ. |
 | [RFC 5231](https://datatracker.ietf.org/doc/html/rfc5231) | `relational` | So sánh `:count` và `:value`. |
-| [RFC 4790](https://datatracker.ietf.org/doc/html/rfc4790) | Comparators | `i;ascii-casemap`, `i;octet`, và `i;ascii-numeric`. |
+| [RFC 4790](https://datatracker.ietf.org/doc/html/rfc4790) | Comparators | `i;ascii-casemap`, `i;unicode-casemap`, `i;octet`, và `i;ascii-numeric`. |
 | [RFC 3894](https://datatracker.ietf.org/doc/html/rfc3894) | `copy` | `:copy` trên `fileinto` và `redirect`. |
 | [RFC 5293](https://datatracker.ietf.org/doc/html/rfc5293) | `editheader` | Thay đổi header trước khi lưu, các kiểm tra sau đó sẽ thấy, ngoại trừ các trường xác thực và điều hướng giao hàng được bảo vệ, `Received` và `Auto-Submitted`. |
 | [RFC 5260](https://datatracker.ietf.org/doc/html/rfc5260) | `date`, `index` | Kiểm tra `currentdate` và header-date, cùng với `:index` và `:last`. |
@@ -1141,7 +1141,7 @@ Bảng phân biệt việc triển khai đầy đủ của các hành vi đượ
 | `reject` / `ereject` | Từ chối một tin nhắn với lỗi SMTP. | Trả lại qua đường dẫn giao hàng MX. |
 | `vacation` / `vacation-seconds` | Gửi phản hồi tự động. | Được đưa vào hàng đợi với giới hạn tần suất theo người nhận và theo khoảng thời gian. |
 | `imap4flags` | Đặt hoặc kiểm tra cờ IMAP. | Áp dụng khi tin nhắn được lưu. |
-| `envelope`, `body`, `date`, `index`, `regex`, `subaddress`, `relational`, `comparator-i;ascii-numeric` | Kiểm tra dữ liệu tin nhắn và phong bì. | Được đánh giá bởi engine Sieve. |
+| `envelope`, `body`, `date`, `index`, `regex`, `subaddress`, `relational`, `comparator-i;ascii-numeric`, `comparator-i;unicode-casemap` | Kiểm tra dữ liệu tin nhắn và phong bì. | Được đánh giá bởi engine Sieve. |
 | `variables`, `duplicate`, `ihave` | Lưu giá trị, phát hiện trùng lặp, và kiểm tra capability. | Các biến là cục bộ trong script; trạng thái trùng lặp sử dụng Redis. |
 | `editheader` | Thêm hoặc xóa các header không được bảo vệ. | Các header xác thực và điều hướng giao hàng, `Received` và `Auto-Submitted` không thể bị sửa đổi. |
 | `enotify` | Gửi thông báo sử dụng `mailto:`. | Được xếp vào hàng với giới hạn tần suất thông báo. |

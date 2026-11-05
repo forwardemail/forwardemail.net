@@ -54,19 +54,20 @@ function truncate(value, limit = MAX_VARIABLE_LENGTH) {
 // or "${doh!}", is not a reference and is left as it is.
 //
 // (the match cannot run past the next "$", so finding all of them is linear)
-const REFERENCE = /\${([\w.]+)}/g;
+const REFERENCE = /\${([^${}]+)}/g;
 const VARIABLE_NAME =
   /^(?:[a-z_]\w*\.(?:(?:[a-z_]\w*|\d+)\.)*)?(?:[a-z_]\w*|\d+)$/i;
 
 //
 // Call `onReference(start, end, name)` for each "${name}" in order (end is the
-// index of the "}"); a truthy return stops the walk.
+// index of the "}"); a truthy return stops the walk. `isKnown(name)` makes
+// a name that is not valid a reference too (see interpolate).
 //
-function walkReferences(str, onReference) {
+function walkReferences(str, onReference, isKnown) {
   if (!str.includes('${')) return;
   for (const match of str.matchAll(REFERENCE)) {
     if (
-      VARIABLE_NAME.test(match[1]) &&
+      (VARIABLE_NAME.test(match[1]) || isKnown?.(match[1])) &&
       onReference(match.index, match.index + match[0].length - 1, match[1])
     )
       return;
@@ -74,22 +75,28 @@ function walkReferences(str, onReference) {
 }
 
 //
-// Replace each reference with `lookup(name)` ('' when undefined). The result
+// Replace each reference with `lookup(name)` ('' when undefined), and each
+// "${name}" whose name is not valid but `isKnown(name)` (a variable that a
+// script saved before names were checked set, e.g. "my-folder"). The result
 // is cut at MAX_VARIABLE_LENGTH (or the length of the string itself, for a
 // longer literal).
 //
-function interpolate(str, lookup) {
+function interpolate(str, lookup, isKnown) {
   const limit = Math.max(MAX_VARIABLE_LENGTH, str.length);
   let out = '';
   let copied = 0;
   let full = false;
-  walkReferences(str, (start, end, name) => {
-    const value = lookup(name);
-    out += str.slice(copied, start) + (value === undefined ? '' : value);
-    copied = end + 1;
-    full = out.length > limit;
-    return full;
-  });
+  walkReferences(
+    str,
+    (start, end, name) => {
+      const value = lookup(name);
+      out += str.slice(copied, start) + (value === undefined ? '' : value);
+      copied = end + 1;
+      full = out.length > limit;
+      return full;
+    },
+    isKnown
+  );
   if (copied === 0) return str;
   if (!full) out += str.slice(copied);
   return truncate(out, limit);

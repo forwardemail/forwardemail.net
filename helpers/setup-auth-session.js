@@ -51,7 +51,13 @@ async function setupAuthSession(ctx, username, password) {
       ));
     } catch (err) {
       // failed-attempt limits are not wrong credentials
-      if (err.isRateLimited) throw Boom.tooManyRequests(err.message);
+      // (and clients told when to try again do not retry at once)
+      if (err.isRateLimited) {
+        ctx.set('Retry-After', String(err.retryAfter || 60));
+        throw Object.assign(Boom.tooManyRequests(err.message), {
+          isRateLimited: true
+        });
+      }
 
       // on-auth leaves `response` unset for transient failures (database,
       // Redis, the server shutting down): answer 503 so clients retry
@@ -101,7 +107,9 @@ async function setupAuthSession(ctx, username, password) {
         this.constructor.name.toUpperCase()
       );
   } catch (err) {
-    ctx.logger.error(err);
+    // (a refused attempt is answered with 429 and is not an error of ours;
+    // logging each one let a client flooding us cost far more than it did)
+    if (!err.isRateLimited) ctx.logger.error(err);
     // if the error is already a Boom error, re-throw it directly
     // to preserve the original status code (e.g. 401 Unauthorized)
     if (err.isBoom) throw err;

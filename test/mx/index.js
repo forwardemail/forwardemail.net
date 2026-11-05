@@ -4581,6 +4581,213 @@ This is a test email using header :contains matching.
   await mx.close();
 });
 
+test('sieve mailboxexists and specialuse_exists look up the mailboxes of the alias', async (t) => {
+  const sqlitePort = await getPort();
+  const sqlite = new SQLite({
+    client: t.context.client,
+    subscriber: t.context.subscriber
+  });
+  await sqlite.listen(sqlitePort);
+  const wsp = createWebSocketAsPromised({ port: sqlitePort });
+  await wsp.open();
+  const imapPort = await getPort();
+  const imap = new IMAP(
+    { client: t.context.client, subscriber: t.context.subscriber, wsp },
+    false
+  );
+  await imap.listen(imapPort);
+  const mxPort = await getPort();
+  const mx = new MX({ client: t.context.client, wsp });
+  mx.databaseMap = sqlite.databaseMap;
+  await mx.listen(mxPort);
+  const { resolver } = mx;
+  t.teardown(async () => {
+    await wsp.close();
+    await sqlite.close();
+    await imap.close();
+    await mx.close();
+  });
+
+  const user = await t.context.userFactory
+    .withState({
+      plan: 'enhanced_protection',
+      [config.userFields.planSetAt]: dayjs().startOf('day').toDate()
+    })
+    .create();
+  await t.context.paymentFactory
+    .withState({
+      user: user._id,
+      amount: 300,
+      invoice_at: dayjs().startOf('day').toDate(),
+      method: 'free_beta_program',
+      duration: ms('30d'),
+      plan: user.plan,
+      kind: 'one-time'
+    })
+    .create();
+  const domain = await t.context.domainFactory
+    .withState({
+      members: [{ user: user._id, group: 'admin' }],
+      plan: user.plan,
+      has_mx_record: true,
+      has_txt_record: true
+    })
+    .create();
+  const alias = await t.context.aliasFactory
+    .withState({
+      user: user._id,
+      domain: domain._id,
+      recipients: [],
+      has_imap: true,
+      imap_backup_at: null
+    })
+    .create();
+  const password = await alias.createToken();
+  await alias.save();
+
+  // (Spam is the \Junk mailbox Forward Email creates for each alias)
+  await SieveScripts.create({
+    user: user._id,
+    domain: domain._id,
+    alias: alias._id,
+    name: 'Mailboxes',
+    content: `require ["fileinto", "mailbox", "special-use"];
+if allof (
+  mailboxexists ["inbox", "Spam", "Trash"],
+  not mailboxexists "Missing",
+  specialuse_exists ["\\\\Junk", "\\\\trash"],
+  specialuse_exists "Spam" "\\\\junk",
+  not specialuse_exists "Spam" "\\\\Trash",
+  not specialuse_exists "Missing" "\\\\Junk"
+) {
+  fileinto :create "Found";
+} else {
+  fileinto :create "NotFound";
+}`,
+    is_active: true
+  });
+
+  const map = new Map();
+  map.set(
+    `a:${domain.name}`,
+    resolver.spoofPacket(domain.name, 'A', [IP_ADDRESS], true, ms('5m'))
+  );
+  map.set(
+    `mx:${domain.name}`,
+    resolver.spoofPacket(
+      domain.name,
+      'MX',
+      [{ exchange: IP_ADDRESS, priority: 0 }],
+      true,
+      ms('5m')
+    )
+  );
+  map.set(
+    `txt:${domain.name}`,
+    resolver.spoofPacket(
+      domain.name,
+      'TXT',
+      [`${config.paidPrefix}${domain.verification_record}`],
+      true,
+      ms('5m')
+    )
+  );
+  map.set(
+    'txt:gmail.com',
+    resolver.spoofPacket(
+      'gmail.com',
+      'TXT',
+      [`v=spf1 ip4:${IP_ADDRESS} -all`],
+      true,
+      ms('5m')
+    )
+  );
+  await resolver.options.cache.mset(map);
+  await t.context.client.set(`allowlist:${IP_ADDRESS}`, true);
+
+  const imapOptions = {
+    host: IP_ADDRESS,
+    port: imapPort,
+    secure: false,
+    auth: { user: `${alias.name}@${domain.name}`, pass: password },
+    tls: { rejectUnauthorized: false },
+    logger: false
+  };
+
+  // (the database of the alias is opened, with its mailboxes, by IMAP)
+  const initImapClient = new ImapFlow(imapOptions);
+  await initImapClient.connect();
+  await initImapClient.getMailboxLock('INBOX');
+  await initImapClient.logout();
+
+  const mxConnection = await asyncMxConnect({
+    target: IP_ADDRESS,
+    port: mx.server.address().port,
+    dnsOptions: {
+      resolve: util.callbackify(resolver.resolve.bind(resolver))
+    }
+  });
+  const transporter = nodemailer.createTransport({
+    logger,
+    debug: true,
+    host: mxConnection.host,
+    port: mxConnection.port,
+    connection: mxConnection.socket,
+    ignoreTLS: true,
+    secure: false,
+    tls
+  });
+  const testSubject = `Sieve mailboxes ${Date.now()}`;
+  await t.notThrowsAsync(
+    transporter.sendMail({
+      envelope: {
+        from: 'sender@gmail.com',
+        to: [`${alias.name}@${domain.name}`]
+      },
+      raw: `
+To: ${alias.name}@${domain.name}
+From: Test User <sender@gmail.com>
+Subject: ${testSubject}
+Content-Type: text/plain; charset=us-ascii
+
+Looking up mailboxes.
+`.trim()
+    })
+  );
+
+  const count = async (client, path) => {
+    try {
+      const lock = await client.getMailboxLock(path);
+      try {
+        return client.mailbox.exists;
+      } finally {
+        lock.release();
+      }
+    } catch {
+      return 0;
+    }
+  };
+
+  let found = 0;
+  let notFound = 0;
+  await pWaitFor(
+    async () => {
+      const client = new ImapFlow(imapOptions);
+      try {
+        await client.connect();
+        found = await count(client, 'Found');
+        notFound = await count(client, 'NotFound');
+        await client.logout();
+      } catch {}
+
+      return found + notFound > 0;
+    },
+    { timeout: ms('30s'), interval: ms('1s') }
+  );
+  t.is(found, 1);
+  t.is(notFound, 0);
+});
+
 //
 // =============================================================================
 // Vacation Responder Tests (RFC 5230)

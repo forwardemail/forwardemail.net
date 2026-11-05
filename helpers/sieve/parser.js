@@ -122,13 +122,16 @@ function checkTest(test, context) {
 // require only first (RFC 5228 section 3.2), break and extracttext only in
 // foreverypart (RFC 5703 sections 3 and 7), names of variables to set that
 // are identifiers (RFC 5229 section 4), and unknown commands and tests only
-// when "ihave" may enable them (RFC 5463).
+// when "ihave" may enable them (RFC 5463). Where a require is and the names
+// of variables are only checked when a script is saved: scripts saved before
+// these checks ran with them (a require after other commands is a no-op
+// where it is, as every top-level one is read first).
 //
 function checkCommands(commands, context) {
   for (const command of commands) {
     switch (command.type) {
       case 'Require': {
-        if (!context.topLevel || context.afterRequire)
+        if (context.strict && (!context.topLevel || context.afterRequire))
           throw syntaxError(
             'require must come before any other command',
             command.location
@@ -164,7 +167,7 @@ function checkCommands(commands, context) {
             'extracttext outside of foreverypart',
             command.location
           );
-        if (!/^[a-z_]\w*$/i.test(command.name))
+        if (context.strict && !/^[a-z_]\w*$/i.test(command.name))
           throw syntaxError(
             `Invalid variable name: "${command.name}"`,
             command.location
@@ -202,17 +205,23 @@ function checkCommands(commands, context) {
 /**
  * Parse a Sieve script into an AST
  * @param {string} script - The Sieve script to parse
+ * @param {Object} [options] - Options
+ * @param {boolean} [options.strict] - Also refuse what only RFCs forbid
+ * (conflicting tags, names of variables that are not identifiers, notify
+ * without a method, require after other commands): a script is checked so when it is saved, while one
+ * saved before these checks still runs as it did
  * @returns {Object} The Abstract Syntax Tree
  * @throws {Error} If the script has syntax errors
  */
-function parse(script) {
+function parse(script, options = {}) {
   if (typeof script !== 'string') {
     throw new TypeError('Script must be a string');
   }
 
+  const strict = Boolean(options.strict);
   let ast;
   try {
-    ast = parser.parse(script);
+    ast = parser.parse(script, { strict });
   } catch (err) {
     // Enhance error message with location info
     const error = syntaxError(err.message, err.location);
@@ -230,6 +239,7 @@ function parse(script) {
     mapStrings(ast, decodeEncodedCharacters, ast.location);
 
   checkCommands(ast.commands, {
+    strict,
     topLevel: true,
     afterRequire: false,
     loops: [],
@@ -240,13 +250,14 @@ function parse(script) {
 }
 
 /**
- * Validate a Sieve script without returning the AST
+ * Validate a Sieve script without returning the AST (strictly, as when it
+ * is saved)
  * @param {string} script - The Sieve script to validate
  * @returns {Object} Validation result with success flag and any errors
  */
 function validate(script) {
   try {
-    parse(script);
+    parse(script, { strict: true });
     return {
       valid: true,
       errors: []

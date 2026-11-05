@@ -333,6 +333,14 @@ const EXTENSIONS = {
     description: 'Numeric string comparison',
     commands: [],
     tests: []
+  },
+
+  // Comparator extension (RFC 5051)
+  'comparator-i;unicode-casemap': {
+    rfc: 'RFC 5051',
+    description: 'Unicode case-insensitive string comparison',
+    commands: [],
+    tests: []
   }
 };
 

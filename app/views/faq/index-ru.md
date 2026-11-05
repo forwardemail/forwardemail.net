@@ -2894,7 +2894,7 @@ Tasks.org — популярный менеджер задач с открыты
 | --- | --- |
 | Основной язык | `keep`, `discard`, `stop`, условные блоки и базовые тесты `address`, `header`, `exists`, `size` и логические тесты. |
 | Доставка | `fileinto`, `copy`, `redirect`, `mailbox` для `fileinto :create` и `mailboxexists`, и `special-use` для `fileinto :specialuse` и `specialuse_exists`. |
-| Тесты и сравнения | `envelope`, `body`, `date`, `index`, `regex`, `subaddress`, `relational`, `i;ascii-casemap`, `i;octet`, и `i;ascii-numeric`. |
+| Тесты и сравнения | `envelope`, `body`, `date`, `index`, `regex`, `subaddress`, `relational`, `i;ascii-casemap`, `i;unicode-casemap`, `i;octet`, и `i;ascii-numeric`. |
 | Состояние и переменные | `variables`, `encoded-character`, `imap4flags`, `duplicate`, и `ihave`. |
 | Действия и ответы | `reject`, `ereject`, `vacation`, `vacation-seconds`, и `enotify` с использованием `mailto:`. Устаревшее объявление `require "notify"` принимается как входной алиас для `enotify`, но рекламируемой возможностью является `enotify`. |
 | Обработка сообщений | `editheader`, `environment`, `foreverypart` (с `break`), `extracttext`, `replace`, и `mime`, который также включает эти три команды. |

@@ -519,6 +519,64 @@ describe('Sieve Engine', () => {
     });
   });
 
+  // RFC 5051 (see `toUnicodeCasemap` in helpers/sieve/engine.js)
+  describe('i;unicode-casemap comparator', () => {
+    const engine = new SieveEngine({ capabilities: SUPPORTED_CAPABILITIES });
+    const match = (
+      value,
+      key,
+      matchType = 'is',
+      comparator = 'i;unicode-casemap'
+    ) => engine.matchString(value, key, matchType, comparator);
+
+    it('ignores case, of accented and Greek letters too', () => {
+      assert.ok(match('été', 'ÉTÉ'));
+      assert.ok(match('Straße', 'STRASSE'));
+      assert.ok(match('ΟΔΟΣ', 'οδος'));
+      assert.ok(match('οδος', 'οδοσ'));
+      assert.ok(match('Rapport été 2026', 'ÉTÉ', 'contains'));
+      assert.ok(!match('été', 'ete'));
+    });
+
+    it('matches an accent written as one character or two', () => {
+      assert.ok(match('café', 'CAFÉ'));
+      assert.ok(match('café', 'caf?', 'matches'));
+      assert.ok(match('café', 'caf?', 'matches'));
+      assert.ok(match('가', '?', 'matches'));
+    });
+
+    it('keeps fullwidth "？", "＊" and "＼" in a :matches key literal', () => {
+      assert.ok(match('ですか？', '*ですか？', 'matches'));
+      assert.ok(!match('ですかX', '*ですか？', 'matches'));
+      assert.ok(!match('aXb', 'a＊b', 'matches'));
+      assert.ok(match('a＊b', 'a＊b', 'matches'));
+    });
+
+    it('reads the comparator name in any case (RFC 4790 section 3.1)', () => {
+      assert.ok(match('Hello', 'HELLO', 'is', 'I;Unicode-Casemap'));
+      assert.ok(match('Hello', 'HELLO', 'is', 'I;ASCII-CASEMAP'));
+      assert.ok(!match('Hello', 'HELLO', 'is', 'I;OCTET'));
+    });
+
+    it('orders values case folded for relational tests', () => {
+      assert.ok(match('apple', 'BANANA', { type: 'value', operator: 'lt' }));
+      assert.ok(match('ÉTÉ', 'été', { type: 'value', operator: 'eq' }));
+    });
+
+    it('sets match variables when a value matches only once folded', async () => {
+      const result = await executeScript(
+        `require ["variables", "fileinto", "comparator-i;unicode-casemap"];
+         if header :comparator "i;unicode-casemap" :matches "subject" "*STRASSE*" {
+           fileinto "\${1}";
+         }`,
+        createMessage({ headers: { subject: 'An der Straße 1' } })
+      );
+      const fileinto = result.actions.find((a) => a.type === 'fileinto');
+      assert.ok(fileinto);
+      assert.strictEqual(fileinto.mailbox, 'AN DER ');
+    });
+  });
+
   describe('Variables extension', () => {
     it('should set and use variable', async () => {
       const script = `
@@ -2132,13 +2190,108 @@ describe('Sieve Engine - RFC conformance of tests and actions', () => {
     const result = await executeScript(
       `require ["relational", "comparator-i;ascii-numeric", "fileinto"];
       if header :value "gt" :comparator "i;ascii-numeric" "x-n" "9" { fileinto "Numeric"; }
-      if header :value "gt" "x-n" "9" { fileinto "Text"; }
+      if header :value "gt" :comparator "i;ascii-casemap" "x-n" "9" { fileinto "Text"; }
+      if header :value "gt" "x-n" "9" { fileinto "NoComparator"; }
       if header :is :comparator "i;ascii-numeric" "x-n" "010" { fileinto "Equal"; }
       if header :value "lt" :comparator "i;ascii-numeric" "x-n" "none" { fileinto "Infinity"; }`,
       message
     );
-    // ("10" sorts before "9" as text)
-    assert.deepStrictEqual(filed(result), ['Numeric', 'Equal', 'Infinity']);
+    // ("10" sorts before "9" as text; without a comparator written two
+    // numbers compare as numbers, as they always have here)
+    assert.deepStrictEqual(filed(result), [
+      'Numeric',
+      'NoComparator',
+      'Equal',
+      'Infinity'
+    ]);
+  });
+
+  it('compares numbers past what a double holds by their digits with i;ascii-numeric (RFC 4790)', async () => {
+    const result = await executeScript(
+      `require ["relational", "comparator-i;ascii-numeric", "fileinto"];
+      if header :value "gt" :comparator "i;ascii-numeric" "x-n" "99999999999999999998" { fileinto "Greater"; }
+      if header :value "eq" :comparator "i;ascii-numeric" "x-n" "100000000000000000000" { fileinto "Equal"; }
+      if header :value "gt" :comparator "i;ascii-numeric" "x-m" "9007199254740992" { fileinto "PastSafe"; }
+      if header :value "lt" :comparator "i;ascii-numeric" "x-m" "99999999999999999999" { fileinto "Less"; }`,
+      createMessage({
+        headers: { 'x-n': '99999999999999999999', 'x-m': '9007199254740993' }
+      })
+    );
+    assert.deepStrictEqual(filed(result), ['Greater', 'PastSafe', 'Less']);
+  });
+
+  //
+  // Only two numbers both past what a double holds compare by their digits:
+  // a value with a space, sign or dot before it compares as a number (it
+  // has no digits first, and was put after every number)
+  //
+  it('compares a large number with a small or signed one as numbers', async () => {
+    const cases = [
+      [' 5', 'lt', '99999999999999999999', true],
+      ['+5', 'lt', '99999999999999999999', true],
+      ['-0', 'lt', '99999999999999999999', true],
+      ['-5', 'lt', '99999999999999999999', true],
+      ['.5', 'lt', '99999999999999999999', true],
+      ['-99999999999999999999', 'lt', '5', true],
+      ['99999999999999999999', 'gt', '-5', true],
+      [' 100000000000000000000', 'eq', '100000000000000000000', true],
+      ['100000000000000000000', 'eq', '+100000000000000000000', true],
+      [' 99999999999999999999', 'eq', '99999999999999999999', true],
+      ['+99999999999999999999', 'gt', '99999999999999999998', true],
+      ['12345678901234567890.9', 'eq', '12345678901234567890', true],
+      ['9007199254740993', 'gt', '9007199254740991.5', true],
+      ['9007199254740993', 'gt', '5', true],
+      ['abc', 'gt', '99999999999999999999', true],
+      ['5', 'gt', '99999999999999999999', false],
+      ['7.5', 'ge', '10', false]
+    ];
+    const result = await executeScript(
+      [
+        'require ["relational", "comparator-i;ascii-numeric", "variables", "fileinto"];',
+        ...cases.map(
+          ([value, operator, key], i) =>
+            `set "v${i}" "${value}"; if string :value "${operator}" :comparator "i;ascii-numeric" "\${v${i}}" "${key}" { fileinto "${i}"; }`
+        )
+      ].join('\n'),
+      createMessage()
+    );
+    assert.deepStrictEqual(
+      filed(result),
+      cases.flatMap((test, i) => (test[3] ? [String(i)] : []))
+    );
+  });
+
+  //
+  // Without a comparator written, two numbers of 309 digits or more are both
+  // Infinity as doubles: they were neither equal nor in any order
+  //
+  it('compares two numbers too large for a double without a comparator', async () => {
+    const nines = '9'.repeat(400);
+    const cases = [
+      [nines, 'eq', nines, true],
+      [nines, 'ne', nines, false],
+      [nines, 'gt', '9'.repeat(399), true],
+      [`0${nines}`, 'eq', nines, true],
+      [`1${nines}`, 'le', nines, false],
+      [nines, 'gt', '5', true],
+      [`-${nines}`, 'lt', `-${'9'.repeat(399)}`, true],
+      [`-${nines}`, 'eq', `-${nines}`, true],
+      [`-${nines}`, 'lt', nines, true]
+    ];
+    const result = await executeScript(
+      [
+        'require ["relational", "variables", "fileinto"];',
+        ...cases.map(
+          ([value, operator, key], i) =>
+            `set "v${i}" "${value}"; if string :value "${operator}" "\${v${i}}" "${key}" { fileinto "${i}"; }`
+        )
+      ].join('\n'),
+      createMessage()
+    );
+    assert.deepStrictEqual(
+      filed(result),
+      cases.flatMap((test, i) => (test[3] ? [String(i)] : []))
+    );
   });
 
   it('sets match variables from :matches and :regex (RFC 5229)', async () => {
@@ -2362,13 +2515,39 @@ describe('Sieve Engine - RFC conformance of tests and actions', () => {
     assert.deepStrictEqual(result.flags, ['\\Flagged']);
   });
 
-  it('fails a script that rejects twice or rejects and replies (RFC 5429, RFC 5230)', async () => {
-    for (const script of [
-      'require "reject"; reject "a"; reject "b";',
-      'require ["reject", "vacation"]; vacation "away"; reject "no";',
-      'require "vacation"; vacation :subject "A" "a"; vacation :subject "B" "b";'
+  //
+  // (RFC 5429 section 2.4 and RFC 5230 section 4.7 make these errors, but
+  // failing them lost every other action of scripts that ran before: the
+  // sender gets one response, the first reject or else the first vacation)
+  //
+  it('responds once to a script that rejects twice or rejects and replies (RFC 5429, RFC 5230)', async () => {
+    for (const [script, expected] of [
+      [
+        'require "reject"; reject "a"; reject "b";',
+        [{ type: 'reject', message: 'a' }]
+      ],
+      [
+        'require ["reject", "vacation"]; vacation "away"; reject "no";',
+        [{ type: 'reject', message: 'no' }]
+      ],
+      [
+        'require ["reject", "vacation"]; reject "no"; vacation "away";',
+        [{ type: 'reject', message: 'no' }]
+      ],
+      [
+        'require "vacation"; vacation :subject "A" "a"; vacation :subject "B" "b";',
+        [
+          { type: 'vacation', message: 'a' },
+          { type: 'keep', message: undefined }
+        ]
+      ]
     ]) {
-      await assert.rejects(executeScript(script, createMessage()), script);
+      const result = await executeScript(script, createMessage());
+      assert.deepStrictEqual(
+        result.actions.map(({ type, message }) => ({ type, message })),
+        expected,
+        script
+      );
     }
   });
 
@@ -2414,13 +2593,14 @@ describe('Sieve Engine - RFC conformance of tests and actions', () => {
     assert.ok(Date.now() - start < 2000, `took ${Date.now() - start}ms`);
   });
 
-  it('fails a notify to a method that is not supported (RFC 5435)', async () => {
-    await assert.rejects(
-      executeScript(
-        'require "enotify"; notify :method "xmpp:a@example.com" :message "m";',
-        createMessage()
-      ),
-      /notify method/
+  it('skips a notify to a method that is not supported (RFC 5435)', async () => {
+    const result = await executeScript(
+      'require ["enotify", "fileinto"]; notify :method "xmpp:a@example.com" :message "m"; fileinto "A";',
+      createMessage()
+    );
+    assert.deepStrictEqual(
+      result.actions.map((a) => a.type),
+      ['fileinto']
     );
   });
 
@@ -2481,7 +2661,7 @@ describe('Sieve Engine - RFC conformance of tests and actions', () => {
     stored.clear();
     await assert.rejects(
       executeScript(
-        'require ["duplicate", "reject"]; if duplicate { keep; } reject "a"; reject "b";',
+        'require ["duplicate", "ihave"]; if duplicate { keep; } error "a";',
         message,
         { context: { duplicateCache } }
       )
@@ -2558,6 +2738,174 @@ describe('Sieve Engine - RFC conformance of tests and actions', () => {
 });
 
 describe('Match keys and the work a run does once', () => {
+  // ("İ" is two characters once lower case, so the key matches the value only
+  // as the comparator sees it, and the match variables are of that value)
+  it('sets the match variables of a value that lower case makes longer', async () => {
+    const result = await executeScript(
+      // eslint-disable-next-line no-template-curly-in-string
+      'require ["variables", "fileinto"];\nif header :matches "subject" "*" { set "a" "1"; }\nif header :matches "subject" "i\u0307*" { fileinto "[${0}][${1}]"; }',
+      createMessage({ headers: { subject: 'İstanbul' } })
+    );
+    assert.deepStrictEqual(
+      result.actions.filter((a) => a.type === 'fileinto').map((a) => a.mailbox),
+      ['[i\u0307stanbul][stanbul]']
+    );
+  });
+
+  //
+  // A large body made i;unicode-casemap for each test used up
+  // MAX_MATCH_TIME within 20 tests, and the script failed
+  //
+  it('makes a large body i;unicode-casemap once for many tests', async () => {
+    const tests = Array.from(
+      { length: 20 },
+      (_, i) =>
+        `if body :text :comparator "i;unicode-casemap" :contains "nééedle${i}" { fileinto "B${i}"; }`
+    ).join('\n');
+    const result = await executeScript(
+      `require ["fileinto", "body"];\n${tests}\nfileinto "Reached";`,
+      createMessage({
+        body: 'Ünïcödé text with some words and accents été café straße\r\n'.repeat(
+          150_000
+        )
+      })
+    );
+    assert.deepStrictEqual(
+      result.actions.filter((a) => a.type === 'fileinto').map((a) => a.mailbox),
+      ['Reached']
+    );
+  });
+
+  //
+  // i;unicode-casemap can make a value three times as long: a run keeps two
+  // large values normalized, and none for i;octet, which does not change it
+  //
+  it('keeps at most two large values normalized at a time', async () => {
+    const engine = new SieveEngine({ capabilities: SUPPORTED_CAPABILITIES });
+    const kept = [];
+    const getNormalized = engine.getNormalized.bind(engine);
+    engine.getNormalized = (state, comparator, value) => {
+      const normalized = getNormalized(state, comparator, value);
+      kept.push(
+        [state.normalized]
+          .flat()
+          .filter(Boolean)
+          .map((entry) => `${entry.comparator} ${entry.normalized.length}`)
+      );
+      return normalized;
+    };
+
+    await engine.execute(
+      parse(`require ["body", "comparator-i;unicode-casemap"];
+      if body :text :comparator "i;unicode-casemap" :contains "x" { keep; }
+      if header :comparator "i;unicode-casemap" :contains "subject" "x" { keep; }
+      if body :text :comparator "i;octet" :contains "x" { keep; }
+      if header :comparator "i;unicode-casemap" :contains "subject" "y" { keep; }
+      if header :comparator "i;unicode-casemap" :contains "x-long" "x" { keep; }
+      if body :text :comparator "i;unicode-casemap" :contains "y" { keep; }`),
+      createMessage({
+        headers: { subject: 'Ü'.repeat(2000), 'x-long': 'ü'.repeat(1500) },
+        body: '\u0390'.repeat(2000)
+      })
+    );
+    assert.deepStrictEqual(kept, [
+      ['i;unicode-casemap 6000'],
+      ['i;unicode-casemap 2000', 'i;unicode-casemap 6000'],
+      ['i;unicode-casemap 2000', 'i;unicode-casemap 6000'],
+      ['i;unicode-casemap 2000', 'i;unicode-casemap 6000'],
+      ['i;unicode-casemap 1500', 'i;unicode-casemap 2000'],
+      ['i;unicode-casemap 6000', 'i;unicode-casemap 1500']
+    ]);
+  });
+
+  //
+  // With one value kept, tests that read the raw and the text body in turn
+  // made each again: 100 of them on an 8MB message used up MAX_MATCH_TIME
+  //
+  it('keeps the raw and the text body normalized for tests that read both', async () => {
+    const tests = Array.from(
+      { length: 400 },
+      (_, i) =>
+        `if allof (body :raw :contains "fox", body :text :contains "fox") { fileinto "F${i}"; }`
+    ).join('\n');
+    const body =
+      'The quick brown fox jumps over the lazy dog 0123456789\r\n'.repeat(
+        75_000
+      );
+    const result = await executeScript(
+      `require ["fileinto", "body"];\n${tests}\nfileinto "Reached";`,
+      {
+        ...createMessage({ body: body.replaceAll('\r\n', '\n') }),
+        raw: `Subject: Test\r\n\r\n${body}`
+      }
+    );
+    const filed = result.actions
+      .filter((a) => a.type === 'fileinto')
+      .map((a) => a.mailbox);
+    assert.strictEqual(filed.length, 401);
+    assert.strictEqual(filed.at(-1), 'Reached');
+  });
+
+  //
+  // The matchers of a test are made again each time it runs: a key of 100
+  // wildcards in loops of 9,900 iterations was compiled for each one, and
+  // used up MAX_MATCH_TIME
+  //
+  it('compiles a :matches or :regex key once a run', async () => {
+    const tests = [
+      `if header :matches "subject" "${'*a?'.repeat(100)}" { keep; }`,
+      `if header :regex "subject" "${'(a|b)c'.repeat(50)}" { keep; }`
+    ].join(' ');
+    const mimeParts = Array.from({ length: 99 }, () => ({
+      contentType: 'text/plain',
+      headers: { 'content-type': 'text/plain' },
+      body: 'x'
+    }));
+    const engine = new SieveEngine({ capabilities: SUPPORTED_CAPABILITIES });
+    const compiled = [];
+    const compileGlob = engine.compileGlob.bind(engine);
+    engine.compileGlob = (pattern, ...arguments_) => {
+      compiled.push(pattern);
+      return compileGlob(pattern, ...arguments_);
+    };
+
+    const result = await engine.execute(
+      parse(
+        `require ["mime", "foreverypart", "regex"];\nforeverypart { foreverypart { ${tests} } }`
+      ),
+      { ...createMessage(), mimeParts }
+    );
+    assert.deepStrictEqual(
+      result.actions.map((a) => a.type),
+      ['keep']
+    );
+    // (the :regex key is kept as the :matches key is, see the next test)
+    assert.strictEqual(compiled.length, 1);
+  });
+
+  // (100 RE2 objects for keys of 64KB took 774MB)
+  it('keeps at most 100 compiled keys of up to 1024 characters', async () => {
+    const engine = new SieveEngine({ capabilities: SUPPORTED_CAPABILITIES });
+    let compiled;
+    const getCompiled = engine.getCompiled.bind(engine);
+    engine.getCompiled = (state, ...arguments_) => {
+      compiled = state.compiled;
+      return getCompiled(state, ...arguments_);
+    };
+
+    const keys = Array.from({ length: 150 }, (_, i) => `"*k${i}?"`);
+    await engine.execute(
+      parse(`require ["regex", "variables"];
+      set "long" "${'?'.repeat(1025)}";
+      if header :matches "subject" "\${long}" { keep; }
+      if header :matches "subject" [${keys.join(', ')}] { keep; }
+      if header :regex "subject" [${keys.join(', ')}] { keep; }`),
+      createMessage()
+    );
+    assert.strictEqual(compiled.size, 100);
+    assert.ok([...compiled.keys()].every((key) => key.length < 1024));
+  });
+
   // (the keys of hasflag are match keys, RFC 5232 section 4)
   it('hasflag matches :matches patterns and variables in its keys', async () => {
     const result = await executeScript(

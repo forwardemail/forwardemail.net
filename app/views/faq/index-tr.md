@@ -2894,7 +2894,7 @@ Tam, uygulama tarafından desteklenen yetenek listesi ve RFC notları [Sieve pro
 | --- | --- |
 | Temel dil | `keep`, `discard`, `stop`, koşullu bloklar ve temel `address`, `header`, `exists`, `size` ve boolean testleri. |
 | Teslimat | `fileinto`, `copy`, `redirect`, `mailbox` (`fileinto :create` ve `mailboxexists` için) ve `special-use` (`fileinto :specialuse` ve `specialuse_exists` için). |
-| Testler ve karşılaştırmalar | `envelope`, `body`, `date`, `index`, `regex`, `subaddress`, `relational`, `i;ascii-casemap`, `i;octet` ve `i;ascii-numeric`. |
+| Testler ve karşılaştırmalar | `envelope`, `body`, `date`, `index`, `regex`, `subaddress`, `relational`, `i;ascii-casemap`, `i;unicode-casemap`, `i;octet` ve `i;ascii-numeric`. |
 | Durum ve değişkenler | `variables`, `encoded-character`, `imap4flags`, `duplicate` ve `ihave`. |
 | Eylemler ve yanıtlar | `reject`, `ereject`, `vacation`, `vacation-seconds` ve `enotify` ( `mailto:` kullanılarak). Kalıcı bildirim bildirimi olan `require "notify"` girdi takma adı olarak `enotify` kabul edilir, ancak duyurulan yetenek `enotify`'dir. |
 | Mesaj işleme | `editheader`, `environment`, `foreverypart` (`break` ile), `extracttext`, `replace` ve bu üç komutu da etkinleştiren `mime`. |

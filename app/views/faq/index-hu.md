@@ -2894,7 +2894,7 @@ A teljes, implementációval alátámasztott képességlista és RFC megjegyzés
 | --- | --- |
 | Alapnyelv | `keep`, `discard`, `stop`, feltételes blokkok, és az alapvető `address`, `header`, `exists`, `size`, és logikai tesztek. |
 | Kézbesítés | `fileinto`, `copy`, `redirect`, `mailbox` a `fileinto :create` és a `mailboxexists` számára, és `special-use` a `fileinto :specialuse` és a `specialuse_exists` számára. |
-| Tesztek és összehasonlítások | `envelope`, `body`, `date`, `index`, `regex`, `subaddress`, `relational`, `i;ascii-casemap`, `i;octet`, és `i;ascii-numeric`. |
+| Tesztek és összehasonlítások | `envelope`, `body`, `date`, `index`, `regex`, `subaddress`, `relational`, `i;ascii-casemap`, `i;unicode-casemap`, `i;octet`, és `i;ascii-numeric`. |
 | Állapot és változók | `variables`, `encoded-character`, `imap4flags`, `duplicate`, és `ihave`. |
 | Műveletek és válaszok | `reject`, `ereject`, `vacation`, `vacation-seconds`, és `enotify` `mailto:` használatával. A régebbi deklaráció, a `require "notify"` elfogadott bemeneti aliaszként az `enotify` számára, de az ajánlott képesség az `enotify`. |
 | Üzenetfeldolgozás | `editheader`, `environment`, `foreverypart` (a `break` paranccsal), `extracttext`, `replace`, és `mime`, amely ezt a három parancsot is engedélyezi. |

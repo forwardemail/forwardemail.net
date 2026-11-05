@@ -3216,6 +3216,14 @@
               "$ref": "#/components/schemas/Error"
             }
           }
+        },
+        "headers": {
+          "Retry-After": {
+            "description": "Seconds to wait before trying again (sent when a sign-in is refused for too many attempts)",
+            "schema": {
+              "type": "integer"
+            }
+          }
         }
       },
       "InternalServerError": {
@@ -4916,6 +4924,12 @@
               },
               "X-Item-Count": {
                 "description": "Total number of items",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Lightweight-Fallback-Count": {
+                "description": "Number of messages of this page listed without the nodemailer and raw fields (as with lightweight=true), because the messages of the page exceeded the size a full list may return; get them with GET /v1/messages/{id}. Only sent when messages were listed this way.",
                 "schema": {
                   "type": "integer"
                 }
@@ -9138,6 +9152,9 @@
           "401": {
             "description": "Unauthorized - Invalid API token or alias credentials. Note: authentication is optional; this error only occurs when credentials are provided but are invalid."
           },
+          "403": {
+            "description": "Forbidden - The credentials are correct but may not connect (e.g. the alias does not have IMAP enabled, or the account is banned); a `?auth=message` connection is closed with `4403`"
+          },
           "404": {
             "description": "Not Found - Alias not found for the provided credentials"
           },
@@ -9585,7 +9602,7 @@
     },
     {
       "name": "Siktskript",
-      "description": "Endepunkter for administrasjon av Sieve-skript\n\n>[!NOTE]\n> Sieve er et kraftig e-postfiltreringsspråk definert i RFC 5228. Skript kjøres på innkommende e-post for å organisere, filtrere og svare på meldinger automatisk.\n\n>[!TIP]\n> Støttede utvidelser inkluderer: fileinto, reject, ereject, vacation, vacation-seconds, imap4flags, envelope, body, relational, comparator-i;ascii-numeric, copy, date, index, editheader, enotify, regex, subaddress, ihave, duplicate, special-use, mailbox, environment og variables. Skript valideres før lagring for å sikre at de er syntaktisk korrekte.\n\n>[!NOTE]\n> **To autentiseringsmetoder støttes:**\n> - **API-token-autentisering** (`/v1/domains/{domain_id}/aliases/{alias_id}/sieve`): Bruk API-nøkkelen din som brukernavn med grunnleggende autentisering. Krever domain_id og alias_id i URL-banen.\n\n> - **Alias-autentisering** (`/v1/sieve-scripts`): Bruk alias-e-postadressen og det genererte passordet som grunnleggende autentiseringslegitimasjon. Ingen domain_id eller alias_id nødvendig i URL-en.\n\n>[!TIP]\n> Skript-ID-parametere godtar enten MongoDB-objekt-ID eller skriptnavnet, noe som gir fleksibel skriptidentifikasjon."
+      "description": "Endepunkter for administrasjon av Sieve-skript\n\n>[!NOTE]\n> Sieve er et kraftig e-postfiltreringsspråk definert i RFC 5228. Skript kjøres på innkommende e-post for å organisere, filtrere og svare på meldinger automatisk.\n\n>[!TIP]\n> Støttede utvidelser inkluderer: fileinto, reject, ereject, vacation, vacation-seconds, imap4flags, envelope, body, relational, comparator-i;ascii-numeric, comparator-i;unicode-casemap, copy, date, index, editheader, enotify, regex, subaddress, ihave, duplicate, special-use, mailbox, environment og variables. Skript valideres før lagring for å sikre at de er syntaktisk korrekte.\n\n>[!NOTE]\n> **To autentiseringsmetoder støttes:**\n> - **API-token-autentisering** (`/v1/domains/{domain_id}/aliases/{alias_id}/sieve`): Bruk API-nøkkelen din som brukernavn med grunnleggende autentisering. Krever domain_id og alias_id i URL-banen.\n\n> - **Alias-autentisering** (`/v1/sieve-scripts`): Bruk alias-e-postadressen og det genererte passordet som grunnleggende autentiseringslegitimasjon. Ingen domain_id eller alias_id nødvendig i URL-en.\n\n>[!TIP]\n> Skript-ID-parametere godtar enten MongoDB-objekt-ID eller skriptnavnet, noe som gir fleksibel skriptidentifikasjon."
     },
     {
       "name": "WebSockets",

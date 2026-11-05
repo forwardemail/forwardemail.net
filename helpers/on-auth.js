@@ -5,6 +5,7 @@
 
 const crypto = require('node:crypto');
 const punycode = require('node:punycode');
+const { setTimeout: delay } = require('node:timers/promises');
 
 const POP3Server = require('@zone-eu/wildduck/lib/pop3/server');
 const argon2 = require('@node-rs/argon2');
@@ -131,6 +132,15 @@ const AUTH_CACHE_PREFIX = 'auth_cache:';
 const AUTH_CACHE_ALIAS_PREFIX = 'auth_cache_alias:';
 const AUTH_CACHE_TTL = ms('1m');
 
+// How long attempts with the same login wait for the one verifying it (see
+// onAuth), and how many may wait (the others are verified as usual).  The
+// wait ends before the 10s WebSocket sign-in timeout, and the key outlives
+// a slow verification (it is removed once verified, the TTL only matters if
+// the process dies first).
+const AUTH_VERIFY_TTL = ms('30s');
+const AUTH_VERIFY_WAIT = ms('8s');
+const AUTH_VERIFY_MAX_WAITING = 20;
+
 // How a cached login was verified (`auth_via` in the cached value)
 const AUTH_VIA_ALIAS_TOKEN = 'alias_token';
 const AUTH_VIA_DOMAIN_TOKEN = 'domain_token';
@@ -191,6 +201,12 @@ if value > 0 then return redis.call('DECR', KEYS[1]) end
 return 0
 `;
 
+// Seconds until a limit (a key's remaining TTL in ms) is lifted, for the
+// `Retry-After` of a refused HTTP sign-in
+function getRetryAfter(pttl, duration) {
+  return Math.ceil((pttl > 0 ? pttl : duration) / 1000);
+}
+
 async function onAuth(auth, session, fn) {
   this.logger.debug('AUTH', { auth, session });
 
@@ -202,6 +218,8 @@ async function onAuth(auth, session, fn) {
   // The slot is released when onAuth answers, whatever the answer.
   //
   let inflightKey = null;
+  // (the same login being verified by this attempt, see below)
+  let verifyingKey = null;
   const callback = fn;
   fn = (...args) => {
     if (inflightKey) {
@@ -210,6 +228,13 @@ async function onAuth(auth, session, fn) {
       this.client
         .eval(RELEASE_INFLIGHT_SCRIPT, 1, key)
         .catch((err) => this.logger.debug(err));
+    }
+
+    // (a successful login removes it as it is cached instead)
+    if (verifyingKey) {
+      const key = verifyingKey;
+      verifyingKey = null;
+      this.client.del(key).catch((err) => this.logger.debug(err));
     }
 
     return callback(...args);
@@ -373,15 +398,24 @@ async function onAuth(auth, session, fn) {
       // Batch both Redis reads in one pipeline
       const results = await this.client
         .pipeline()
-        .incrby(authLimitKey, 0)
+        // (a read: `incrby` by 0 created a key with no expiry for every
+        // address that ever signed in)
+        .get(authLimitKey)
         .get(attemptsKey)
+        .pttl(authLimitKey)
         .exec();
 
       // Extract results from pipeline
       // Pipeline returns [[err, result], [err, result], ...]
-      count = results[0][1];
+      count = Number(results[0][1]) || 0;
       previousPasswordHashesRaw = results[1][1];
       isRateLimited = true;
+
+      // (keys created that way are still around: give them an expiry)
+      if (results[2][1] === -1)
+        this.client
+          .pexpire(authLimitKey, config.smtpLimitAuthDuration)
+          .catch((err) => this.logger.debug(err));
 
       if (count >= config.smtpLimitAuth) {
         const err = new SMTPError(
@@ -393,6 +427,10 @@ async function onAuth(auth, session, fn) {
         );
         // (a limit, not wrong credentials: HTTP callers answer 429)
         err.isRateLimited = true;
+        err.retryAfter = getRetryAfter(
+          results[2][1],
+          config.smtpLimitAuthDuration
+        );
         throw err;
       }
     }
@@ -412,13 +450,22 @@ async function onAuth(auth, session, fn) {
         )}`
       : null;
     if (catchallRepeatKey) {
-      const repeats = Number(await this.client.get(catchallRepeatKey)) || 0;
+      const [[, value], [, pttl]] = await this.client
+        .pipeline()
+        .get(catchallRepeatKey)
+        .pttl(catchallRepeatKey)
+        .exec();
+      const repeats = Number(value) || 0;
       if (repeats >= config.apiCatchallAuthRepeatLimit) {
         const err = new SMTPError(
           `You have exceeded the maximum number of failed authentication attempts. Please try again later or contact us at ${config.supportEmail}`,
           { ignoreHook: true }
         );
         err.isRateLimited = true;
+        err.retryAfter = getRetryAfter(
+          pttl,
+          config.apiCatchallAuthRepeatDuration
+        );
         throw err;
       }
     }
@@ -435,6 +482,53 @@ async function onAuth(auth, session, fn) {
         cachedJson = await this.client.get(authCacheKey);
       } catch (err) {
         this.logger.debug('auth cache read error', { err });
+      }
+
+      //
+      // Mail clients open several connections at once, and DAV and API
+      // clients send their credentials with every request, so the same login
+      // often arrives many times before the first one is cached.  Only one of
+      // them (per client) is verified: the others wait for its result in the
+      // cache instead of each taking a slot below and running argon2.  A
+      // wrong password is never cached, so those then go on as usual (each
+      // one checked and counted).
+      //
+      if (!cachedJson) {
+        const digest = getPasswordDigest(
+          `${auth.username.trim().toLowerCase()}\0${auth.password}`
+        );
+        const key = `auth_verifying_${config.env}:${ipBucket}:${digest}`;
+        try {
+          const acquire = () =>
+            this.client.eval(ACQUIRE_INFLIGHT_SCRIPT, 1, key, AUTH_VERIFY_TTL);
+          const waiting = await acquire();
+          if (waiting === 1) {
+            verifyingKey = key;
+          } else if (waiting <= AUTH_VERIFY_MAX_WAITING) {
+            const until = Date.now() + AUTH_VERIFY_WAIT;
+            // (checked less often the longer it takes, as each waiting
+            // attempt costs Redis calls)
+            let interval = 100;
+            while (!cachedJson && Date.now() < until) {
+              await delay(interval);
+              interval = Math.min(interval * 2, 500);
+              // (the result is cached before the key is removed)
+              const [[, verifying], [, cached]] = await this.client
+                .pipeline()
+                .exists(key)
+                .get(authCacheKey)
+                .exec();
+              cachedJson = cached;
+              if (!verifying) break;
+            }
+
+            // not verified in time (or it failed): verified here, and as the
+            // only one if no other attempt took over in the meantime
+            if (!cachedJson && (await acquire()) === 1) verifyingKey = key;
+          }
+        } catch (err) {
+          this.logger.debug('auth verifying error', { err });
+        }
       }
 
       if (cachedJson) {
@@ -486,8 +580,12 @@ async function onAuth(auth, session, fn) {
           // valid for SMTP only; every other server must check the alias
           // password itself, so it treats anything but a verified alias
           // password (including entries written without this field) as a miss.
-          (isSMTP ||
-            (user.alias_id && user.auth_via === AUTH_VIA_ALIAS_TOKEN)) &&
+          // A send-only login cached by `POST /v1/emails` is only for it
+          // (the send checks again that the password is still valid).
+          (user.catchall_send_only === true
+            ? isCatchallSend
+            : isSMTP ||
+              (user.alias_id && user.auth_via === AUTH_VIA_ALIAS_TOKEN)) &&
           // An alias without IMAP may only send mail (SMTP).  Its SMTP login
           // is cached like any other, so every other server treats it as a
           // miss and refuses it below: a phone that sent mail and then
@@ -674,6 +772,8 @@ async function onAuth(auth, session, fn) {
           { responseCode: 421, imapResponse: 'UNAVAILABLE' }
         );
         err.isRateLimited = true;
+        // (an attempt in progress takes a second or so)
+        err.retryAfter = 5;
         throw err;
       }
     }
@@ -959,7 +1059,9 @@ async function onAuth(auth, session, fn) {
         {
           responseCode: 535,
           ignoreHook: true,
-          imapResponse: 'AUTHENTICATIONFAILED'
+          // (temporary, not wrong credentials: clients retry instead of
+          // asking for the password, and HTTP callers answer 503)
+          imapResponse: 'UNAVAILABLE'
         }
       );
 
@@ -1222,7 +1324,13 @@ async function onAuth(auth, session, fn) {
         )}/aliases and click "Edit" to enable IMAP storage`,
         {
           responseCode: 535,
-          ignoreHook: true
+          ignoreHook: true,
+          // (the password was right, and this will not change until IMAP is
+          // enabled: IMAP clients answered with a temporary failure kept
+          // retrying, and a failed attempt locked out others on the same
+          // address, see api-websocket-handler.js)
+          imapResponse: 'CONTACTADMIN',
+          isForbidden: true
         }
       );
     }
@@ -1395,35 +1503,39 @@ async function onAuth(auth, session, fn) {
     // the alias index (for efficient invalidation on password change).
     //
     //
-    // (a send-only API login is never cached, so a cache hit can never turn
-    // into one, or one into a mailbox session; each send checks the password)
+    // (a send-only login from `POST /v1/emails` is cached too, but a cache
+    // hit only gives it to that route again, see above)
     //
-    if (!isCatchallSendLogin) {
-      try {
-        // Strip the encrypted password before storing in Redis —
-        // we re-encrypt from the request on cache hit instead.
-        const { password: _pw, ...userWithoutPassword } = user;
-        if (!authStartedAt) throw new Error('Authentication time missing');
-        const cacheValue = safeStringify({
-          ...userWithoutPassword,
-          auth_at: authStartedAt,
-          // which password verified this login (see the cache hit above)
-          auth_via: authVia
-        });
-        const pipeline = this.client.pipeline();
-        pipeline.set(authCacheKey, cacheValue, 'PX', AUTH_CACHE_TTL);
-        if (user.alias_id) {
-          const indexKey = `${AUTH_CACHE_ALIAS_PREFIX}${user.alias_id}`;
-          pipeline.sadd(indexKey, authCacheKey);
-          pipeline.pexpire(indexKey, AUTH_CACHE_TTL + ms('10s'));
-        }
-
-        pipeline.exec().catch((err) => {
-          this.logger.debug('auth cache write error', { err });
-        });
-      } catch (err) {
-        this.logger.debug('auth cache serialize error', { err });
+    try {
+      // Strip the encrypted password before storing in Redis —
+      // we re-encrypt from the request on cache hit instead.
+      const { password: _pw, ...userWithoutPassword } = user;
+      if (!authStartedAt) throw new Error('Authentication time missing');
+      const cacheValue = safeStringify({
+        ...userWithoutPassword,
+        auth_at: authStartedAt,
+        // which password verified this login (see the cache hit above)
+        auth_via: authVia
+      });
+      const pipeline = this.client.pipeline();
+      pipeline.set(authCacheKey, cacheValue, 'PX', AUTH_CACHE_TTL);
+      // (only once it is cached, for attempts waiting on this one)
+      if (verifyingKey) {
+        pipeline.del(verifyingKey);
+        verifyingKey = null;
       }
+
+      if (user.alias_id) {
+        const indexKey = `${AUTH_CACHE_ALIAS_PREFIX}${user.alias_id}`;
+        pipeline.sadd(indexKey, authCacheKey);
+        pipeline.pexpire(indexKey, AUTH_CACHE_TTL + ms('10s'));
+      }
+
+      pipeline.exec().catch((err) => {
+        this.logger.debug('auth cache write error', { err });
+      });
+    } catch (err) {
+      this.logger.debug('auth cache serialize error', { err });
     }
 
     // this response object sets `session.user` to have `domain` and `alias`
@@ -1559,6 +1671,8 @@ async function onAuth(auth, session, fn) {
     //
     // <https://github.com/nodemailer/smtp-server/blob/a570d0164e4b4ef463eeedd80cadb37d5280e9da/lib/sasl.js#L189-L222>
     // <https://github.com/nodemailer/wildduck/issues/726>
+    // (the code set here, not one refineAndLogError picks for any 5xx)
+    const { imapResponse } = err;
     const error = refineAndLogError(
       err,
       session,
@@ -1592,6 +1706,11 @@ async function onAuth(auth, session, fn) {
       // connection closes and the client retries automatically
     } else {
       error.response = 'NO';
+      // WildDuck sends the message as is (it ignores `imapResponse`), and
+      // clients take a refusal without a response code for a wrong password
+      // and ask for it again (RFC 5530)
+      if (this.server instanceof IMAPServer && imapResponse)
+        error.message = `[${imapResponse}] ${error.message}`;
     }
 
     fn(error);

@@ -1117,7 +1117,7 @@ sequenceDiagram
 | [RFC 5173](https://datatracker.ietf.org/doc/html/rfc5173) | `body` | Сопоставление содержимого тела сообщения. |
 | [RFC 5229](https://datatracker.ietf.org/doc/html/rfc5229) | `variables` | Расширение переменных и поддерживаемые модификаторы. |
 | [RFC 5231](https://datatracker.ietf.org/doc/html/rfc5231) | `relational` | Сравнения `:count` и `:value`. |
-| [RFC 4790](https://datatracker.ietf.org/doc/html/rfc4790) | Comparators | `i;ascii-casemap`, `i;octet` и `i;ascii-numeric`. |
+| [RFC 4790](https://datatracker.ietf.org/doc/html/rfc4790) | Comparators | `i;ascii-casemap`, `i;unicode-casemap`, `i;octet` и `i;ascii-numeric`. |
 | [RFC 3894](https://datatracker.ietf.org/doc/html/rfc3894) | `copy` | `:copy` в командах `fileinto` и `redirect`. |
 | [RFC 5293](https://datatracker.ietf.org/doc/html/rfc5293) | `editheader` | Изменения заголовков перед сохранением, видимые последующим тестам, за исключением защищённых полей аутентификации и маршрутизации доставки, `Received` и `Auto-Submitted`. |
 | [RFC 5260](https://datatracker.ietf.org/doc/html/rfc5260) | `date`, `index` | Тесты `currentdate` и тесты дат в заголовках, а также параметры `:index` и `:last`. |
@@ -1141,7 +1141,7 @@ sequenceDiagram
 | `reject` / `ereject` | Отклоняет сообщение с ошибкой SMTP. | Возвращается через путь доставки MX. |
 | `vacation` / `vacation-seconds` | Отправляет автоматический ответ. | Ставится в очередь с ограничениями по получателю и по интервалу. |
 | `imap4flags` | Устанавливает или проверяет флаги IMAP. | Применяется при сохранении сообщения. |
-| `envelope`, `body`, `date`, `index`, `regex`, `subaddress`, `relational`, `comparator-i;ascii-numeric` | Тестирует данные сообщения и конверта. | Выполняется движком Sieve. |
+| `envelope`, `body`, `date`, `index`, `regex`, `subaddress`, `relational`, `comparator-i;ascii-numeric`, `comparator-i;unicode-casemap` | Тестирует данные сообщения и конверта. | Выполняется движком Sieve. |
 | `variables`, `duplicate`, `ihave` | Сохраняет значения, обнаруживает дубликаты и проверяет возможности. | Переменные локальны для скрипта; состояние дубликатов хранится в Redis. |
 | `editheader` | Добавляет или удаляет незашищённые заголовки. | Заголовки аутентификации и маршрутизации доставки, `Received` и `Auto-Submitted` не могут быть изменены. |
 | `enotify` | Отправляет уведомление через `mailto:`. | Ставится в очередь с ограничениями по частоте уведомлений. |

@@ -3216,6 +3216,14 @@
               "$ref": "#/components/schemas/Error"
             }
           }
+        },
+        "headers": {
+          "Retry-After": {
+            "description": "Seconds to wait before trying again (sent when a sign-in is refused for too many attempts)",
+            "schema": {
+              "type": "integer"
+            }
+          }
         }
       },
       "InternalServerError": {
@@ -4916,6 +4924,12 @@
               },
               "X-Item-Count": {
                 "description": "Total number of items",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Lightweight-Fallback-Count": {
+                "description": "Number of messages of this page listed without the nodemailer and raw fields (as with lightweight=true), because the messages of the page exceeded the size a full list may return; get them with GET /v1/messages/{id}. Only sent when messages were listed this way.",
                 "schema": {
                   "type": "integer"
                 }
@@ -9138,6 +9152,9 @@
           "401": {
             "description": "Unauthorized - Invalid API token or alias credentials. Note: authentication is optional; this error only occurs when credentials are provided but are invalid."
           },
+          "403": {
+            "description": "Forbidden - The credentials are correct but may not connect (e.g. the alias does not have IMAP enabled, or the account is banned); a `?auth=message` connection is closed with `4403`"
+          },
           "404": {
             "description": "Not Found - Alias not found for the provided credentials"
           },
@@ -9585,7 +9602,7 @@
     },
     {
       "name": "Sítové skripty",
-      "description": "Koncové body správy skriptů Sieve\n\n>[!NOTE]\n> Sieve je výkonný jazyk pro filtrování e-mailů definovaný v RFC 5228. Skripty se spouštějí u příchozí pošty, aby automaticky organizovaly, filtrovaly a odpovídaly na zprávy.\n\n>[!TIP]\n> Podporovaná rozšíření zahrnují: fileinto, reject, ereject, vacation, vacation-seconds, imap4flags, envelope, body, relational, comparator-i;ascii-numeric, copy, date, index, editheader, enotify, regex, subaddress, ihave, duplicate, special-use, mailbox, environment a variables. Skripty jsou před uložením ověřeny, aby se zajistila jejich syntaktická správnost.\n\n>[!NOTE]\n> **Jsou podporovány dvě metody ověřování:**\n> - **API Token Auth** (`/v1/domains/{domain_id}/aliases/{alias_id}/sieve`): Použijte svůj API klíč jako uživatelské jméno se základním ověřováním. V URL cestě je vyžadováno domain_id a alias_id.\n> - **Alias Auth** (`/v1/sieve-scripts`): Použijte alias email a vygenerované heslo jako přihlašovací údaje pro základní ověřování. V URL není potřeba domain_id ani alias_id.\n\n>[!TIP]\n> Parametry ID skriptu akceptují buď MongoDB ObjectId, nebo název skriptu, což umožňuje flexibilní identifikaci skriptu."
+      "description": "Koncové body správy skriptů Sieve\n\n>[!NOTE]\n> Sieve je výkonný jazyk pro filtrování e-mailů definovaný v RFC 5228. Skripty se spouštějí u příchozí pošty, aby automaticky organizovaly, filtrovaly a odpovídaly na zprávy.\n\n>[!TIP]\n> Podporovaná rozšíření zahrnují: fileinto, reject, ereject, vacation, vacation-seconds, imap4flags, envelope, body, relational, comparator-i;ascii-numeric, comparator-i;unicode-casemap, copy, date, index, editheader, enotify, regex, subaddress, ihave, duplicate, special-use, mailbox, environment a variables. Skripty jsou před uložením ověřeny, aby se zajistila jejich syntaktická správnost.\n\n>[!NOTE]\n> **Jsou podporovány dvě metody ověřování:**\n> - **API Token Auth** (`/v1/domains/{domain_id}/aliases/{alias_id}/sieve`): Použijte svůj API klíč jako uživatelské jméno se základním ověřováním. V URL cestě je vyžadováno domain_id a alias_id.\n> - **Alias Auth** (`/v1/sieve-scripts`): Použijte alias email a vygenerované heslo jako přihlašovací údaje pro základní ověřování. V URL není potřeba domain_id ani alias_id.\n\n>[!TIP]\n> Parametry ID skriptu akceptují buď MongoDB ObjectId, nebo název skriptu, což umožňuje flexibilní identifikaci skriptu."
     },
     {
       "name": "WebSockets",

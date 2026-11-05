@@ -2893,7 +2893,7 @@ It supports both IPv4 and IPv6 and is available over port `443` (HTTPS).
 | --- | --- |
 | ภาษาหลัก | `keep`, `discard`, `stop`, บล็อกตามเงื่อนไข และการทดสอบพื้นฐาน `address`, `header`, `exists`, `size` และการทดสอบบูลีน |
 | การจัดส่ง | `fileinto`, `copy`, `redirect`, `mailbox` สำหรับ `fileinto :create` และ `mailboxexists` และ `special-use` สำหรับ `fileinto :specialuse` และ `specialuse_exists` |
-| การทดสอบและการเปรียบเทียบ | `envelope`, `body`, `date`, `index`, `regex`, `subaddress`, `relational`, `i;ascii-casemap`, `i;octet`, และ `i;ascii-numeric` |
+| การทดสอบและการเปรียบเทียบ | `envelope`, `body`, `date`, `index`, `regex`, `subaddress`, `relational`, `i;ascii-casemap`, `i;unicode-casemap`, `i;octet`, และ `i;ascii-numeric` |
 | สถานะและตัวแปร | `variables`, `encoded-character`, `imap4flags`, `duplicate`, และ `ihave` |
 | การกระทำและการตอบกลับ | `reject`, `ereject`, `vacation`, `vacation-seconds`, และ `enotify` โดยใช้ `mailto:` ประกาศเก่า `require "notify"` ถูกยอมรับเป็นนามแฝงของอินพุตสำหรับ `enotify` แต่ `enotify` คือตัวความสามารถที่ประกาศจริง |
 | การประมวลผลข้อความ | `editheader`, `environment`, `foreverypart` (พร้อม `break`), `extracttext`, `replace`, และ `mime` ซึ่งเปิดใช้สามคำสั่งดังกล่าวด้วย |

@@ -3216,6 +3216,14 @@
               "$ref": "#/components/schemas/Error"
             }
           }
+        },
+        "headers": {
+          "Retry-After": {
+            "description": "Seconds to wait before trying again (sent when a sign-in is refused for too many attempts)",
+            "schema": {
+              "type": "integer"
+            }
+          }
         }
       },
       "InternalServerError": {
@@ -4916,6 +4924,12 @@
               },
               "X-Item-Count": {
                 "description": "Total number of items",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Lightweight-Fallback-Count": {
+                "description": "Number of messages of this page listed without the nodemailer and raw fields (as with lightweight=true), because the messages of the page exceeded the size a full list may return; get them with GET /v1/messages/{id}. Only sent when messages were listed this way.",
                 "schema": {
                   "type": "integer"
                 }
@@ -9138,6 +9152,9 @@
           "401": {
             "description": "Unauthorized - Invalid API token or alias credentials. Note: authentication is optional; this error only occurs when credentials are provided but are invalid."
           },
+          "403": {
+            "description": "Forbidden - The credentials are correct but may not connect (e.g. the alias does not have IMAP enabled, or the account is banned); a `?auth=message` connection is closed with `4403`"
+          },
           "404": {
             "description": "Not Found - Alias not found for the provided credentials"
           },
@@ -9585,7 +9602,7 @@
     },
     {
       "name": "ふるいスクリプト",
-      "description": "Sieveスクリプト管理エンドポイント\n\n>[!NOTE]\n> Sieveは、RFC 5228で定義されている強力なメールフィルタリング言語です。スクリプトは受信メールに対して実行され、メッセージの整理、フィルタリング、および応答を自動的に行います。\n\n>[!TIP]\n> サポートされている拡張機能には、fileinto、reject、ereject、vacation、vacation-seconds、imap4flags、envelope、body、relational、comparator-i;ascii-numeric、copy、date、index、editheader、enotify、regex、subaddress、ihave、duplicate、special-use、mailbox、environment、および変数が含まれます。スクリプトは保存前に構文が正しいことを確認するために検証されます。\n\n\n>[!NOTE]\n> **2つの認証方法がサポートされています。**\n> - **APIトークン認証**（`/v1/domains/{domain_id}/aliases/{alias_id}/sieve`）：APIキーをユーザー名として使用し、基本認証を行います。URLパスにdomain_idとalias_idが必要です。\n\n> - **エイリアス認証**（`/v1/sieve-scripts`）：エイリアスのメールアドレスと生成されたパスワードを基本認証の認証情報として使用します。URLにdomain_idとalias_idは不要です。\n\n>[!TIP]\n> スクリプトIDパラメータには、MongoDBオブジェクトIDまたはスクリプト名のいずれかを指定できます。これにより、柔軟なスクリプト識別が可能になります。"
+      "description": "Sieveスクリプト管理エンドポイント\n\n>[!NOTE]\n> Sieveは、RFC 5228で定義されている強力なメールフィルタリング言語です。スクリプトは受信メールに対して実行され、メッセージの整理、フィルタリング、および応答を自動的に行います。\n\n>[!TIP]\n> サポートされている拡張機能には、fileinto、reject、ereject、vacation、vacation-seconds、imap4flags、envelope、body、relational、comparator-i;ascii-numeric、comparator-i;unicode-casemap、copy、date、index、editheader、enotify、regex、subaddress、ihave、duplicate、special-use、mailbox、environment、および変数が含まれます。スクリプトは保存前に構文が正しいことを確認するために検証されます。\n\n\n>[!NOTE]\n> **2つの認証方法がサポートされています。**\n> - **APIトークン認証**（`/v1/domains/{domain_id}/aliases/{alias_id}/sieve`）：APIキーをユーザー名として使用し、基本認証を行います。URLパスにdomain_idとalias_idが必要です。\n\n> - **エイリアス認証**（`/v1/sieve-scripts`）：エイリアスのメールアドレスと生成されたパスワードを基本認証の認証情報として使用します。URLにdomain_idとalias_idは不要です。\n\n>[!TIP]\n> スクリプトIDパラメータには、MongoDBオブジェクトIDまたはスクリプト名のいずれかを指定できます。これにより、柔軟なスクリプト識別が可能になります。"
     },
     {
       "name": "WebSockets",

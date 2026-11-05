@@ -1117,7 +1117,7 @@ sequenceDiagram
 | [RFC 5173](https://datatracker.ietf.org/doc/html/rfc5173) | `body` | 消息正文内容匹配。 |
 | [RFC 5229](https://datatracker.ietf.org/doc/html/rfc5229) | `variables` | 变量展开及支持的修饰符。 |
 | [RFC 5231](https://datatracker.ietf.org/doc/html/rfc5231) | `relational` | 支持 `:count` 和 `:value` 比较。 |
-| [RFC 4790](https://datatracker.ietf.org/doc/html/rfc4790) | Comparators | 支持 `i;ascii-casemap`、`i;octet` 和 `i;ascii-numeric`。 |
+| [RFC 4790](https://datatracker.ietf.org/doc/html/rfc4790) | Comparators | 支持 `i;ascii-casemap`、`i;unicode-casemap`、`i;octet` 和 `i;ascii-numeric`。 |
 | [RFC 3894](https://datatracker.ietf.org/doc/html/rfc3894) | `copy` | 在 `fileinto` 和 `redirect` 上支持 `:copy`。 |
 | [RFC 5293](https://datatracker.ietf.org/doc/html/rfc5293) | `editheader` | 在存储之前更改头部，后续测试可见所做更改，但受保护的身份验证和投递路由字段、`Received` 和 `Auto-Submitted` 除外。 |
 | [RFC 5260](https://datatracker.ietf.org/doc/html/rfc5260) | `date`, `index` | 支持 `currentdate` 和头部日期测试，以及 `:index` 和 `:last`。 |
@@ -1141,7 +1141,7 @@ sequenceDiagram
 | `reject` / `ereject` | 使用 SMTP 错误拒绝邮件。 | 通过 MX 投递路径返回。 |
 | `vacation` / `vacation-seconds` | 发送自动回复。 | 带有收件人和时间间隔的速率限制后入队。 |
 | `imap4flags` | 设置或测试 IMAP 标志。 | 在消息存储时应用。 |
-| `envelope`, `body`, `date`, `index`, `regex`, `subaddress`, `relational`, `comparator-i;ascii-numeric` | 测试消息和信封数据。 | 由 Sieve 引擎评估。 |
+| `envelope`, `body`, `date`, `index`, `regex`, `subaddress`, `relational`, `comparator-i;ascii-numeric`, `comparator-i;unicode-casemap` | 测试消息和信封数据。 | 由 Sieve 引擎评估。 |
 | `variables`, `duplicate`, `ihave` | 存储值、检测重复并检查能力。 | 变量为脚本本地；重复状态使用 Redis。 |
 | `editheader` | 添加或删除非受保护的头部。 | 不能修改身份验证和投递路由头部、`Received` 和 `Auto-Submitted`。 |
 | `enotify` | 使用 `mailto:` 发送通知。 | 带有通知速率限制后入队。 |

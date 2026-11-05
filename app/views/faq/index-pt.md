@@ -2894,7 +2894,7 @@ A lista completa de capacidades suportadas pela implementação e as notas do RF
 | --- | --- |
 | Linguagem principal | `keep`, `discard`, `stop`, blocos condicionais, e os testes básicos `address`, `header`, `exists`, `size`, e testes booleanos. |
 | Entrega | `fileinto`, `copy`, `redirect`, `mailbox` para `fileinto :create` e `mailboxexists`, e `special-use` para `fileinto :specialuse` e `specialuse_exists`. |
-| Testes e comparações | `envelope`, `body`, `date`, `index`, `regex`, `subaddress`, `relational`, `i;ascii-casemap`, `i;octet`, e `i;ascii-numeric`. |
+| Testes e comparações | `envelope`, `body`, `date`, `index`, `regex`, `subaddress`, `relational`, `i;ascii-casemap`, `i;unicode-casemap`, `i;octet`, e `i;ascii-numeric`. |
 | Estado e variáveis | `variables`, `encoded-character`, `imap4flags`, `duplicate`, e `ihave`. |
 | Ações e respostas | `reject`, `ereject`, `vacation`, `vacation-seconds`, e `enotify` usando `mailto:`. A declaração legada `require "notify"` é aceita como um alias de entrada para `enotify`, mas `enotify` é a capacidade anunciada. |
 | Processamento de mensagens | `editheader`, `environment`, `foreverypart` (com `break`), `extracttext`, `replace`, e `mime`, que também habilita esses três comandos. |

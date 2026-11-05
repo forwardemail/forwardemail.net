@@ -27,7 +27,8 @@ async function aliasAuth(ctx, next) {
 
     return next();
   } catch (err) {
-    ctx.logger.error(err);
+    // (refused attempts are answered with 429, see `setupAuthSession`)
+    if (!err.isRateLimited) ctx.logger.error(err);
     if (!err.isBoom) {
       ctx.response.set('WWW-Authenticate', 'Basic realm="forwardemail/api"');
       throw Boom.unauthorized('Authentication failed');

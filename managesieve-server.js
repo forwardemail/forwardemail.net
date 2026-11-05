@@ -19,6 +19,7 @@ const onConnect = require('#helpers/on-connect');
 const refineAndLogError = require('#helpers/refine-and-log-error');
 // (with the capabilities, as saving the script checks them)
 const { validateScript: validateSieve } = require('#helpers/sieve');
+const { ADVERTISED_CAPABILITIES } = require('#helpers/sieve/capabilities');
 const createTangerine = require('#helpers/create-tangerine');
 
 const onConnectPromise = pify(onConnect);
@@ -42,40 +43,6 @@ const onConnectPromise = pify(onConnect);
 // - HAVESPACE - Check if space available for script
 // - NOOP - Keep connection alive
 //
-
-// Sieve capabilities that are FULLY INTEGRATED and tested
-// Only advertise capabilities that actually work end-to-end
-const SIEVE_CAPABILITIES = [
-  'fileinto',
-  'reject',
-  'ereject',
-  'envelope',
-  'body',
-  'vacation',
-  'vacation-seconds',
-  'variables',
-  'relational',
-  'comparator-i;ascii-numeric',
-  'imap4flags',
-  'copy',
-  'date',
-  'index',
-  'editheader',
-  'enotify',
-  'regex',
-  'subaddress',
-  'ihave',
-  'duplicate',
-  'special-use',
-  'mailbox',
-  'environment'
-  // NOT ADVERTISED (not fully integrated):
-  // - encoded-character (RFC 5228): requires parser changes for ${hex:} and ${unicode:} syntax
-  // - fcc (RFC 8580): requires Sent folder integration
-  // - include (RFC 6609): security risk, requires global script storage
-  // - mboxmetadata (RFC 5490): requires IMAP METADATA extension
-  // - servermetadata (RFC 5490): requires IMAP METADATA extension
-];
 
 // SASL mechanisms supported
 const SASL_MECHANISMS = ['PLAIN'];
@@ -626,7 +593,7 @@ class ManageSieveServer {
       `"SASL" "${
         this.isAuthAllowed(session) ? SASL_MECHANISMS.join(' ') : ''
       }"`,
-      `"SIEVE" "${SIEVE_CAPABILITIES.join(' ')}"`,
+      `"SIEVE" "${ADVERTISED_CAPABILITIES.join(' ')}"`,
       `"MAXREDIRECTS" "${config.sieve.maxRedirects}"`,
       '"NOTIFY" "mailto"',
       '"VERSION" "1.0"'

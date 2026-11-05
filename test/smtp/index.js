@@ -718,7 +718,8 @@ test('alias authentication follows a password rotation', async (t) => {
   );
   await acquireRekeyLock(t.context.client, alias.id, rekeyId);
   let err = await t.throwsAsync(login(pass));
-  t.is(err.responseCode, 535);
+  // (temporary, not a wrong password)
+  t.is(err.responseCode, 421);
   t.regex(err.message, /rekey/);
 
   // the rotation is over: the password was replaced

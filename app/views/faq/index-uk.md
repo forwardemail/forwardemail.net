@@ -2894,7 +2894,7 @@ Tasks.org — популярний відкритий менеджер завд�
 | --- | --- |
 | Базова мова | `keep`, `discard`, `stop`, умовні блоки, а також базові тести `address`, `header`, `exists`, `size` та булеві тести. |
 | Доставка | `fileinto`, `copy`, `redirect`, `mailbox` для `fileinto :create` і `mailboxexists`, та `special-use` для `fileinto :specialuse` і `specialuse_exists`. |
-| Тести та порівняння | `envelope`, `body`, `date`, `index`, `regex`, `subaddress`, `relational`, `i;ascii-casemap`, `i;octet`, та `i;ascii-numeric`. |
+| Тести та порівняння | `envelope`, `body`, `date`, `index`, `regex`, `subaddress`, `relational`, `i;ascii-casemap`, `i;unicode-casemap`, `i;octet`, та `i;ascii-numeric`. |
 | Стан і змінні | `variables`, `encoded-character`, `imap4flags`, `duplicate`, та `ihave`. |
 | Дії та відповіді | `reject`, `ereject`, `vacation`, `vacation-seconds`, та `enotify` з використанням `mailto:`. Успадкована декларація `require "notify"` приймається як вхідний псевдонім для `enotify`, але рекламована можливість — `enotify`. |
 | Обробка повідомлень | `editheader`, `environment`, `foreverypart` (з `break`), `extracttext`, `replace`, та `mime`, який також вмикає ці три команди. |

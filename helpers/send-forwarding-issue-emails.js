@@ -52,9 +52,10 @@ const MAX_HEADER_LENGTH = 200;
 //
 // Anything else is "unavailable" (e.g. the plan of the domain's admins ended),
 // shown with its error. A failure on our side (e.g. the mailbox store timing
-// out) is retried instead and never emailed about (see `isInternalError` in
-// `helpers/on-data-mx.js`), so a new `SMTPError` from the mailbox store
-// needs a `mailboxIssue` too, or it is retried as one of those.
+// out) is retried instead, and only emailed about once it was given up on
+// (see `isInternalError` in `helpers/on-data-mx.js`), so a new `SMTPError`
+// from the mailbox store needs a `mailboxIssue` too, or it is retried as one
+// of those.
 //
 const MAILBOX_ISSUES = new Set([
   'quota',
@@ -455,7 +456,12 @@ async function sendForwardingIssueEmails({
             isWebhook: !bounce.isMailbox && !bounce.destination.includes('@'),
             status,
             isRetryWindowExceeded: Boolean(bounce.isRetryWindowExceeded),
-            retryWindow: ms(config.partialDeliveryRetryWindow, { long: true }),
+            retryWindow: ms(
+              bounce.isInternal
+                ? config.internalRetryWindow
+                : config.partialDeliveryRetryWindow,
+              { long: true }
+            ),
             interval: ms(config.forwardingIssueEmailInterval, { long: true }),
             error: truncate(error, MAX_ERROR_LENGTH),
             from: truncate(message.from, MAX_HEADER_LENGTH),

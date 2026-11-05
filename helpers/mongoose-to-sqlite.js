@@ -15,7 +15,10 @@ const _ = require('#helpers/lodash');
 const config = require('#config');
 const env = require('#config/env');
 const isRetryableError = require('#helpers/is-retryable-error');
-const { isClosedBeforeResponse } = require('#helpers/is-retryable-error');
+const {
+  isClosedBeforeResponse,
+  isRequestTimeout
+} = require('#helpers/is-retryable-error');
 const logger = require('#helpers/logger');
 const recursivelyParse = require('#helpers/recursively-parse');
 const {
@@ -1140,12 +1143,23 @@ function wrapWithRetry(fn, model, isWrite = false) {
       factor: 1,
       async onFailedAttempt(error) {
         error.isCodeBug = true;
-        error.args = JSON.parse(safeStringify(args));
+        //
+        // (the query only: the instance holds the logger, which keeps the
+        //  last error it logged with its `args`, so each error carried all
+        //  the ones before it and grew until the process ran out of memory;
+        //  the session of an IMAP connection holds its socket, and every
+        //  session the encrypted password)
+        //
+        error.args = JSON.parse(safeStringify(args.slice(2)));
+        // (and the mailbox it was for, as the session is left out)
+        error.alias_id = args[1]?.user?.alias_id;
         logger.error(error);
 
-        // (a write over a connection that dropped may have run already)
+        // (a write over a connection that dropped may have run already, and
+        // a request that timed out may still be running)
         if (
           isRetryableError(error) &&
+          !isRequestTimeout(error) &&
           !(isWrite && isClosedBeforeResponse(error))
         ) {
           //

@@ -7,6 +7,7 @@ const crypto = require('node:crypto');
 const os = require('node:os');
 const punycode = require('node:punycode');
 const { isIP } = require('node:net');
+const { setTimeout: delay } = require('node:timers/promises');
 const { Buffer } = require('node:buffer');
 
 // TODO: SMTP needs resolver option
@@ -113,6 +114,7 @@ const retryRequest = require('#helpers/retry-request');
 const sendEmail = require('#helpers/send-email');
 const sendForwardingIssueEmails = require('#helpers/send-forwarding-issue-emails');
 const signMessage = require('#helpers/sign-message');
+const { stuffBareCrDots } = require('#helpers/sign-message');
 const updateHeaders = require('#helpers/update-headers');
 const { Emails, Users, SelfTests } = require('#models');
 const { encrypt, decrypt } = require('#helpers/encrypt-decrypt');
@@ -667,9 +669,11 @@ function maskForwardingError(err, recipient) {
 // Each destination of a message (a mailbox, a forwarding address or a
 // webhook) is claimed before it is delivered to (see `getFingerprintKey`),
 // so that a retry of the message never delivers it twice: the claim is
-// "pending" while it is delivered to, and "1" once it was. A retry that
-// arrives while it is still pending (e.g. the sender stopped waiting for our
-// reply) is deferred, since that delivery can still fail.
+// "pending" while it is delivered to, and "1" once it was. A transaction
+// that finds it pending (e.g. the sender sent the message twice at once, or
+// stopped waiting for our reply and retried) waits for it for up to
+// `config.fingerprintPendingWait`, and is deferred unless it was delivered by
+// then, since that delivery can still fail.
 //
 // Resolves to "acquired" (deliver it now, then mark it as delivered or
 // delete the claim), "delivered", "pending", or the rejection a forwarding
@@ -679,13 +683,33 @@ function maskForwardingError(err, recipient) {
 // lost message.) The pending claim outlasts the longest delivery attempt,
 // `ttl`.
 //
-async function claim(key, ttl = config.fingerprintPendingTTL) {
-  if (await this.client.set(key, 'pending', 'PX', ttl, 'NX')) return 'acquired';
+async function claim(key, session, ttl = config.fingerprintPendingTTL) {
+  const acquire = () => this.client.set(key, 'pending', 'PX', ttl, 'NX');
+  if (await acquire()) return 'acquired';
 
-  const value = await this.client.get(key);
+  // (one wait for the whole transaction, however many destinations it finds
+  // pending, so that it is still answered in time; none once shutting down;
+  // `session` is the copy onData makes for each message, so the next
+  // message on the connection waits again)
+  session.pendingWaitEnd ??= Date.now() + config.fingerprintPendingWait;
+  let value = await this.client.get(key);
+  while (
+    value === 'pending' &&
+    !this.isClosing &&
+    Date.now() < session.pendingWaitEnd
+  ) {
+    await delay(500);
+    value = await this.client.get(key);
+  }
+
+  // (the other attempt released it, e.g. it failed for now, so it is ours)
+  if (value === null) {
+    if (await acquire()) return 'acquired';
+    value = await this.client.get(key);
+  }
+
   const isRejected = typeof value === 'string' && value.startsWith('rejected:');
-  // (a claim deleted meanwhile, or held by another attempt, is retried by the
-  // sender too)
+  // (a claim still held by another attempt is retried by the sender too)
   if (value !== '1' && !isRejected) return 'pending';
 
   // (it is skipped for as long as the message keeps being retried)
@@ -748,7 +772,7 @@ function createPendingError(address) {
 
 //
 // Whether a destination failed because of us and not the destination, so it
-// is retried for as long as the sender retries, and not given up on after
+// is retried for `config.internalRetryWindow` instead of
 // `config.partialDeliveryRetryWindow` (see `getDeliveryOutcome`).
 //
 // For a mailbox, that is anything but a reason from our mailbox storage (e.g.
@@ -800,7 +824,7 @@ async function imap(alias, headers, session, body) {
   // ]
   // (see `claim`; storing it takes a few minutes at most, see below)
   const fpKey = getFingerprintKey(session, alias.id);
-  const claimed = await claim.call(this, fpKey, ms('10m'));
+  const claimed = await claim.call(this, fpKey, session, ms('10m'));
   if (claimed === 'delivered') {
     accepted.push(alias.address);
     if (alias.vacationResponder)
@@ -877,9 +901,10 @@ async function imap(alias, headers, session, body) {
     // <https://github.com/websockets/ws/issues/1959>
     const startTime = Date.now();
     //
-    // (one retry: with the default three, four one-minute timeouts outlast
-    // the sender's socket timeout and resend the whole message to a SQLite
-    // server that is already busy with it)
+    // (one retry, when the connection dropped before the response, as a
+    // delivery skips a message stored already; one that timed out is not sent
+    // again, as the SQLite server may still be storing it, and the sender is
+    // asked to retry later)
     //
     const response = await this.wsp.request(
       {
@@ -1475,7 +1500,7 @@ async function forward(recipient, headers, session, body) {
   );
 
   // (see `claim`)
-  const claimed = await claim.call(this, key);
+  const claimed = await claim.call(this, key, session);
   const accepted = [];
   const bounces = [];
   if (claimed === 'delivered') {
@@ -2036,7 +2061,8 @@ async function forward(recipient, headers, session, body) {
       hasFriendlyFrom = true;
     }
 
-    const unsealed = Buffer.concat([headers.build(), body]);
+    // (as it is sent, see `stuffBareCrDots`)
+    const unsealed = stuffBareCrDots(Buffer.concat([headers.build(), body]));
     const sealHeaders = await sealMessage(unsealed, {
       ...config.signatureData,
       authResults: session.arc.authResults,
@@ -2181,7 +2207,9 @@ async function forward(recipient, headers, session, body) {
 
         rewriteFriendlyFrom(headers, session);
 
-        const unsealed = Buffer.concat([headers.build(), body]);
+        const unsealed = stuffBareCrDots(
+          Buffer.concat([headers.build(), body])
+        );
         const sealHeaders = await sealMessage(unsealed, {
           ...config.signatureData,
           authResults: session.arc.authResults,
@@ -2376,7 +2404,7 @@ async function forward(recipient, headers, session, body) {
 
     //
     // an error on our side (e.g. signing the message) is temporary (see
-    // `getErrorCode`), retried for as long as the sender retries (see
+    // `getErrorCode`), retried for longer than other failures (see
     // `isInternalError`), and its details are for us and not the sender (as
     // in `refineAndLogError`)
     //
@@ -3169,8 +3197,8 @@ async function onDataMX(session, headers, body) {
   //   - partially delivered, and a destination failed temporarily (4xx):
   //     defer so the sender retries (destinations that already have the
   //     message are skipped on retry, see `getFingerprintKey`), for at most
-  //     `config.partialDeliveryRetryWindow` since the first attempt (or for
-  //     as long as the sender retries, see `isInternalError`)
+  //     `config.partialDeliveryRetryWindow` since the first attempt (or
+  //     `config.internalRetryWindow`, see `isInternalError`)
   //   - partially delivered, and every failure was permanent (5xx), or the
   //     retry window closed: accept, and email the alias owner and domain
   //     admins about broken forwarding destinations
@@ -3233,17 +3261,27 @@ function getDeliveryOutcome(session, accepted, bounces) {
   const firstArrivalTime = Number.isFinite(session.fingerprintFirstArrivalTime)
     ? session.fingerprintFirstArrivalTime
     : session.arrivalTime;
+  const age = session.arrivalTime - firstArrivalTime;
   const isRetryWindowExceeded =
-    session.arrivalTime - firstArrivalTime >=
+    age >=
     Math.min(config.partialDeliveryRetryWindow, config.fingerprintTTL / 2);
+  //
+  // A failure on our side is retried past that window (see
+  // `isInternalError`), but given up on before most senders stop retrying
+  // (see `config.internalRetryWindow`), so the recipients that have the
+  // message are not reported to the sender as bounced
+  //
+  const isInternalRetryWindowExceeded = age >= config.internalRetryWindow;
 
   const deferred = [];
   for (const bounce of bounces) {
     if (getErrorCode(bounce.err) >= 500) continue;
-    // (a failure on our side is never given up on, see `isInternalError`)
-    if (isRetryWindowExceeded && !bounce.isInternal)
+    if (
+      bounce.isInternal ? isInternalRetryWindowExceeded : isRetryWindowExceeded
+    ) {
       bounce.isRetryWindowExceeded = true;
-    else deferred.push(bounce);
+      if (bounce.isInternal) logger.fatal(bounce.err, { session });
+    } else deferred.push(bounce);
   }
 
   if (deferred.length === 0) return { action: 'accept' };

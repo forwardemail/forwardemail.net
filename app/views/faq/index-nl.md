@@ -2894,7 +2894,7 @@ De volledige, door de implementatie ondersteunde lijst met mogelijkheden en RFC-
 | --- | --- |
 | Kern | `keep`, `discard`, `stop`, voorwaardelijke blokken, en de basis `address`, `header`, `exists`, `size` en booleaanse tests. |
 | Aflevering | `fileinto`, `copy`, `redirect`, `mailbox` voor `fileinto :create` en `mailboxexists`, en `special-use` voor `fileinto :specialuse` en `specialuse_exists`. |
-| Tests en vergelijkingen | `envelope`, `body`, `date`, `index`, `regex`, `subaddress`, `relational`, `i;ascii-casemap`, `i;octet` en `i;ascii-numeric`. |
+| Tests en vergelijkingen | `envelope`, `body`, `date`, `index`, `regex`, `subaddress`, `relational`, `i;ascii-casemap`, `i;unicode-casemap`, `i;octet` en `i;ascii-numeric`. |
 | Status en variabelen | `variables`, `encoded-character`, `imap4flags`, `duplicate` en `ihave`. |
 | Acties en reacties | `reject`, `ereject`, `vacation`, `vacation-seconds` en `enotify` die `mailto:` gebruikt. De verouderde declaratie `require "notify"` wordt geaccepteerd als een invoeralias voor `enotify`, maar `enotify` is de geadverteerde mogelijkheid. |
 | Berichtverwerking | `editheader`, `environment`, `foreverypart` (met `break`), `extracttext`, `replace` en `mime`, dat deze drie commando's ook inschakelt. |

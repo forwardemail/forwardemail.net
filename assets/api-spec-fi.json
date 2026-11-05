@@ -3216,6 +3216,14 @@
               "$ref": "#/components/schemas/Error"
             }
           }
+        },
+        "headers": {
+          "Retry-After": {
+            "description": "Seconds to wait before trying again (sent when a sign-in is refused for too many attempts)",
+            "schema": {
+              "type": "integer"
+            }
+          }
         }
       },
       "InternalServerError": {
@@ -4916,6 +4924,12 @@
               },
               "X-Item-Count": {
                 "description": "Total number of items",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Lightweight-Fallback-Count": {
+                "description": "Number of messages of this page listed without the nodemailer and raw fields (as with lightweight=true), because the messages of the page exceeded the size a full list may return; get them with GET /v1/messages/{id}. Only sent when messages were listed this way.",
                 "schema": {
                   "type": "integer"
                 }
@@ -9138,6 +9152,9 @@
           "401": {
             "description": "Unauthorized - Invalid API token or alias credentials. Note: authentication is optional; this error only occurs when credentials are provided but are invalid."
           },
+          "403": {
+            "description": "Forbidden - The credentials are correct but may not connect (e.g. the alias does not have IMAP enabled, or the account is banned); a `?auth=message` connection is closed with `4403`"
+          },
           "404": {
             "description": "Not Found - Alias not found for the provided credentials"
           },
@@ -9585,7 +9602,7 @@
     },
     {
       "name": "Sieve-skriptit",
-      "description": "Sieve-komentosarjojen hallinnan päätepisteet\n\n>[!NOTE]\n> Sieve on tehokas sähköpostin suodatuskieli, joka on määritelty RFC 5228:ssa. Skriptejä suoritetaan saapuvalle sähköpostille viestien automaattista järjestämistä, suodattamista ja niihin vastaamista varten.\n\n>[!TIP]\n> Tuettuja laajennuksia ovat: fileinto, reject, ereject, vacation, vacation-seconds, imap4flags, envelope, body, relational, comparator-i;ascii-numeric, copy, date, index, editheader, enotify, regex, subaddress, ihave, duplicate, special-use, mailbox, environment ja variables. Skriptit validoidaan ennen tallentamista niiden syntaktisen oikeellisuuden varmistamiseksi.\n\n>[!NOTE]\n> **Tuettuja todennusmenetelmiä on kaksi:**\n> - **API Token Auth** (`/v1/domains/{domain_id}/aliases/{alias_id}/sieve`): Käytä API-avaintasi käyttäjätunnuksena perustodennuksessa. Vaatii domain_id:n ja alias_id:n URL-polussa.\n> - **Alias Auth** (`/v1/sieve-scripts`): Käytä aliaksen sähköpostiosoitetta ja luotua salasanaa perustodennuksen tunnistetietoina. domain_id:tä tai alias_id:tä ei tarvita URL-osoitteessa.\n\n>[!TIP]\n> Skriptin ID-parametrit hyväksyvät joko MongoDB ObjectId:n tai skriptin nimen, mikä mahdollistaa skriptin joustavan tunnistuksen."
+      "description": "Sieve-komentosarjojen hallinnan päätepisteet\n\n>[!NOTE]\n> Sieve on tehokas sähköpostin suodatuskieli, joka on määritelty RFC 5228:ssa. Skriptejä suoritetaan saapuvalle sähköpostille viestien automaattista järjestämistä, suodattamista ja niihin vastaamista varten.\n\n>[!TIP]\n> Tuettuja laajennuksia ovat: fileinto, reject, ereject, vacation, vacation-seconds, imap4flags, envelope, body, relational, comparator-i;ascii-numeric, comparator-i;unicode-casemap, copy, date, index, editheader, enotify, regex, subaddress, ihave, duplicate, special-use, mailbox, environment ja variables. Skriptit validoidaan ennen tallentamista niiden syntaktisen oikeellisuuden varmistamiseksi.\n\n>[!NOTE]\n> **Tuettuja todennusmenetelmiä on kaksi:**\n> - **API Token Auth** (`/v1/domains/{domain_id}/aliases/{alias_id}/sieve`): Käytä API-avaintasi käyttäjätunnuksena perustodennuksessa. Vaatii domain_id:n ja alias_id:n URL-polussa.\n> - **Alias Auth** (`/v1/sieve-scripts`): Käytä aliaksen sähköpostiosoitetta ja luotua salasanaa perustodennuksen tunnistetietoina. domain_id:tä tai alias_id:tä ei tarvita URL-osoitteessa.\n\n>[!TIP]\n> Skriptin ID-parametrit hyväksyvät joko MongoDB ObjectId:n tai skriptin nimen, mikä mahdollistaa skriptin joustavan tunnistuksen."
     },
     {
       "name": "WebSockets",

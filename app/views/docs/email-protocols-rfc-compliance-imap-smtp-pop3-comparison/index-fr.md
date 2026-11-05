@@ -1117,7 +1117,7 @@ Le tableau distingue l'implémentation complète du comportement énuméré d'un
 | [RFC 5173](https://datatracker.ietf.org/doc/html/rfc5173) | `body` | Correspondance du contenu du corps du message. |
 | [RFC 5229](https://datatracker.ietf.org/doc/html/rfc5229) | `variables` | Expansion de variables et modificateurs pris en charge. |
 | [RFC 5231](https://datatracker.ietf.org/doc/html/rfc5231) | `relational` | Comparaisons `:count` et `:value`. |
-| [RFC 4790](https://datatracker.ietf.org/doc/html/rfc4790) | Comparators | `i;ascii-casemap`, `i;octet` et `i;ascii-numeric`. |
+| [RFC 4790](https://datatracker.ietf.org/doc/html/rfc4790) | Comparators | `i;ascii-casemap`, `i;unicode-casemap`, `i;octet` et `i;ascii-numeric`. |
 | [RFC 3894](https://datatracker.ietf.org/doc/html/rfc3894) | `copy` | `:copy` sur `fileinto` et `redirect`. |
 | [RFC 5293](https://datatracker.ietf.org/doc/html/rfc5293) | `editheader` | Modifications d'en-têtes avant le stockage, visibles par les tests suivants, à l'exception des champs d'authentification et de routage de livraison protégés, de `Received` et de `Auto-Submitted`. |
 | [RFC 5260](https://datatracker.ietf.org/doc/html/rfc5260) | `date`, `index` | Tests `currentdate` et de date d'en-tête, plus `:index` et `:last`. |
@@ -1141,7 +1141,7 @@ Le tableau distingue l'implémentation complète du comportement énuméré d'un
 | `reject` / `ereject` | Rejette un message avec une erreur SMTP. | Renvoyé via le chemin de livraison MX. |
 | `vacation` / `vacation-seconds` | Envoie une réponse automatique. | Mis en file avec limites de fréquence par destinataire et intervalle. |
 | `imap4flags` | Définit ou teste des flags IMAP. | Appliqué lorsque le message est stocké. |
-| `envelope`, `body`, `date`, `index`, `regex`, `subaddress`, `relational`, `comparator-i;ascii-numeric` | Teste les données du message et de l'enveloppe. | Évalué par le moteur Sieve. |
+| `envelope`, `body`, `date`, `index`, `regex`, `subaddress`, `relational`, `comparator-i;ascii-numeric`, `comparator-i;unicode-casemap` | Teste les données du message et de l'enveloppe. | Évalué par le moteur Sieve. |
 | `variables`, `duplicate`, `ihave` | Stocke des valeurs, détecte les doublons et vérifie les capacités. | Les variables sont locales au script ; l'état des doublons utilise Redis. |
 | `editheader` | Ajoute ou supprime des en-têtes non protégés. | Les en-têtes d'authentification et de routage de livraison, `Received` et `Auto-Submitted` ne peuvent pas être modifiés. |
 | `enotify` | Envoie une notification via `mailto:`. | Mis en file avec limites de fréquence des notifications. |

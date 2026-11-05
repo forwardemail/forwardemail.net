@@ -184,6 +184,10 @@ function refineAndLogError(err, session, isIMAP = false, instance) {
   ) {
     // Transient network errors — downgrade to debug to reduce log noise
     logger.debug(err, { session, resolver: instance?.resolver });
+  } else if (err.isRateLimited) {
+    // Refused authentication attempts (one per request a client floods us
+    // with) are expected, so they are not stored or alerted on
+    logger.debug(err, { session, resolver: instance?.resolver });
   } else {
     logger.error(err, { session, resolver: instance?.resolver });
   }

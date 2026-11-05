@@ -10,6 +10,9 @@
 // the mailbox's vacuum lock are renewed meanwhile) however long a large
 // mailbox takes.
 //
+// Given `statements` it runs only those instead (the indexes that
+// helpers/get-database.js builds for a large mailbox).
+//
 
 const { parentPort, workerData } = require('node:worker_threads');
 
@@ -40,8 +43,14 @@ function rebuildFtsTables(db, tables) {
 (async () => {
   let db;
   try {
-    const { dbFilePath, session, ftsTables = [] } = workerData;
+    const { dbFilePath, session, ftsTables = [], statements } = workerData;
     db = await openDatabaseHandle(dbFilePath, session);
+    if (statements) {
+      for (const sql of statements) db.exec(sql);
+      parentPort.postMessage({ ok: true });
+      return;
+    }
+
     db.pragma('auto_vacuum=FULL');
     db.exec('VACUUM');
     parentPort.postMessage({ vacuumed: true });

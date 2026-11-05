@@ -15,6 +15,8 @@ const process = require('node:process');
 // (read by config/env when the servers below are loaded)
 process.env.SMTP_MESSAGE_MAX_SIZE = '1MB';
 
+const crypto = require('node:crypto');
+const http = require('node:http');
 const net = require('node:net');
 const util = require('node:util');
 const { Buffer } = require('node:buffer');
@@ -22,6 +24,7 @@ const { Writable } = require('node:stream');
 
 const dayjs = require('dayjs-with-plugins');
 const ip = require('ip');
+const { authenticate } = require('mailauth');
 const ms = require('ms');
 const mxConnect = require('@forwardemail/mx-connect');
 const nodemailer = require('nodemailer');
@@ -205,7 +208,7 @@ async function setupForwarding(t) {
     });
   }
 
-  return { domain, received, send };
+  return { domain, received, send, port: smtp.server.address().port };
 }
 
 function dkimSignature(i) {
@@ -458,4 +461,151 @@ test('accepts a message with a long list of recipients', async (t) => {
   await send(message(domain, { headers: [cc] }));
   await pWaitFor(() => received.length === 1, { timeout: ms('10s') });
   t.pass();
+});
+
+//
+// Sends a message to the MX server byte for byte, without the dot stuffing
+// and line end changes of an SMTP client, and resolves with the last reply
+//
+function sendAsWritten(port, envelope, data) {
+  const commands = [
+    'EHLO client.example.com',
+    `MAIL FROM:<${envelope.from}>`,
+    `RCPT TO:<${envelope.to}>`,
+    'DATA',
+    Buffer.concat([Buffer.from(data, 'binary'), Buffer.from('\r\n.\r\n')]),
+    'QUIT'
+  ];
+  return new Promise((resolve, reject) => {
+    const socket = net.connect(port, IP_ADDRESS);
+    let buffer = '';
+    let last;
+    socket.setEncoding('utf8');
+    socket.on('data', (chunk) => {
+      buffer += chunk;
+      // (a reply ends with a line of its code and a space)
+      const lines = buffer.split('\r\n');
+      buffer = lines.pop();
+      for (const line of lines) {
+        if (!/^\d{3} /.test(line)) continue;
+        if (!line.startsWith('2') && !line.startsWith('3')) {
+          socket.destroy();
+          reject(new Error(line));
+          return;
+        }
+
+        last = line;
+        const command = commands.shift();
+        if (command === undefined) continue;
+        socket.write(
+          Buffer.isBuffer(command) ? command : Buffer.from(`${command}\r\n`)
+        );
+      }
+    });
+    socket.on('close', () => resolve(last));
+    socket.on('error', reject);
+  });
+}
+
+// (the results of our DKIM signature and ARC seal on a message we sent)
+async function checkOurSignatures(raw) {
+  const publicKey = crypto
+    .createPublicKey(config.signatureData.privateKey)
+    .export({ type: 'spki', format: 'der' })
+    .toString('base64');
+  const name = `${config.signatureData.selector}._domainkey.${config.signatureData.signingDomain}`;
+  const result = await authenticate(Buffer.from(raw), {
+    ip: IP_ADDRESS,
+    helo: 'mx.example.com',
+    sender: 'sender@acme-mail.net',
+    async resolver(domain, type) {
+      if (domain === name && type === 'TXT')
+        return [[`v=DKIM1; k=rsa; p=${publicKey}`]];
+      const err = new Error('not found');
+      err.code = 'ENOTFOUND';
+      throw err;
+    }
+  });
+  const signature = result.dkim.results.find(
+    (r) => r.signingDomain === config.signatureData.signingDomain
+  );
+  return { dkim: signature?.status?.result, arc: result.arc.status.result };
+}
+
+test('a dot after a bare CR is forwarded with the bytes that were signed', async (t) => {
+  const { domain, received, port } = await setupForwarding(t);
+
+  // (a dot between a bare CR and a line end is doubled as it is sent, see
+  // patches/nodemailer@10.1.7.patch, and must be doubled where it is signed)
+  const raw = [
+    `To: test@${domain.name}`,
+    'From: sender@acme-mail.net',
+    'Subject: bare CR',
+    'Content-Type: text/plain; charset=us-ascii',
+    '',
+    'one\r.\r\ntwo\r.\nthree\r.'
+  ].join('\r\n');
+  const reply = await sendAsWritten(
+    port,
+    { from: 'sender@acme-mail.net', to: `test@${domain.name}` },
+    raw
+  );
+  t.regex(reply, /^2/);
+  await pWaitFor(() => received.length === 1, { timeout: ms('10s') });
+  t.true(received[0].includes('one\r..\r\ntwo'));
+
+  // our ARC seal and DKIM signature verify against the bytes received
+  t.deepEqual(await checkOurSignatures(received[0]), {
+    dkim: 'pass',
+    arc: 'pass'
+  });
+});
+
+test('a webhook is sent a message with a dot after a bare CR as it was received', async (t) => {
+  const { domain, port } = await setupForwarding(t);
+
+  const bodies = [];
+  const server = http.createServer((req, res) => {
+    const chunks = [];
+    req.on('data', (chunk) => chunks.push(chunk));
+    req.on('end', () => {
+      bodies.push(JSON.parse(Buffer.concat(chunks).toString()));
+      res.end('OK');
+    });
+  });
+  await new Promise((resolve) => {
+    server.listen(0, '127.0.0.1', resolve);
+  });
+  t.teardown(() => server.close());
+  await t.context.aliasFactory
+    .withState({
+      user: domain.members[0].user,
+      domain: domain._id,
+      name: 'hook',
+      recipients: [`http://127.0.0.1:${server.address().port}/hook`]
+    })
+    .create();
+
+  // (a webhook is not SMTP, so nothing is stuffed)
+  const raw = [
+    `To: hook@${domain.name}`,
+    'From: sender@acme-mail.net',
+    'Subject: bare CR',
+    'Content-Type: text/plain; charset=us-ascii',
+    '',
+    'line1\r.\r\nend'
+  ].join('\r\n');
+  const reply = await sendAsWritten(
+    port,
+    { from: 'sender@acme-mail.net', to: `hook@${domain.name}` },
+    raw
+  );
+  t.regex(reply, /^2/);
+  await pWaitFor(() => bodies.length === 1, { timeout: ms('10s') });
+  t.true(bodies[0].raw.includes('\r\n\r\nline1\r.\r\nend'));
+  t.false(bodies[0].raw.includes('\r..'));
+  t.deepEqual(await checkOurSignatures(bodies[0].raw), {
+    dkim: 'pass',
+    arc: 'pass'
+  });
 });

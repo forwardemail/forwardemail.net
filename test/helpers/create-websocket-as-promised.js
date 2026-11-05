@@ -275,9 +275,9 @@ async function holdFirstRequest(t) {
 }
 
 //
-// A request that timed out may still be running on the SQLite server, so a
-// write is not sent again then either (it would be applied twice), and a
-// read is
+// A request that timed out may still be running on the SQLite server, so it
+// is not sent again then: a write would be applied twice, and a read would
+// only add the same work to a server that is already behind
 //
 test('an APPEND is not sent again when it times out', async (t) => {
   const server = await holdFirstRequest(t);
@@ -288,13 +288,11 @@ test('an APPEND is not sent again when it times out', async (t) => {
   t.is(server.requests, 1);
 });
 
-test('a read is sent again when it times out', async (t) => {
+test('a read is not sent again when it times out', async (t) => {
   const server = await holdFirstRequest(t);
-  const result = await server.wsp.request({
-    action: 'size',
-    session,
-    timeout: 1000
-  });
-  t.deepEqual(result, { ok: true });
-  t.is(server.requests, 2);
+  const err = await t.throwsAsync(
+    server.wsp.request({ action: 'size', session, timeout: 1000 })
+  );
+  t.regex(err._message || err.message, /rejected by timeout/);
+  t.is(server.requests, 1);
 });

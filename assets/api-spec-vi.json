@@ -3216,6 +3216,14 @@
               "$ref": "#/components/schemas/Error"
             }
           }
+        },
+        "headers": {
+          "Retry-After": {
+            "description": "Seconds to wait before trying again (sent when a sign-in is refused for too many attempts)",
+            "schema": {
+              "type": "integer"
+            }
+          }
         }
       },
       "InternalServerError": {
@@ -4916,6 +4924,12 @@
               },
               "X-Item-Count": {
                 "description": "Total number of items",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Lightweight-Fallback-Count": {
+                "description": "Number of messages of this page listed without the nodemailer and raw fields (as with lightweight=true), because the messages of the page exceeded the size a full list may return; get them with GET /v1/messages/{id}. Only sent when messages were listed this way.",
                 "schema": {
                   "type": "integer"
                 }
@@ -9138,6 +9152,9 @@
           "401": {
             "description": "Unauthorized - Invalid API token or alias credentials. Note: authentication is optional; this error only occurs when credentials are provided but are invalid."
           },
+          "403": {
+            "description": "Forbidden - The credentials are correct but may not connect (e.g. the alias does not have IMAP enabled, or the account is banned); a `?auth=message` connection is closed with `4403`"
+          },
           "404": {
             "description": "Not Found - Alias not found for the provided credentials"
           },
@@ -9585,7 +9602,7 @@
     },
     {
       "name": "Kịch bản sàng lọc",
-      "description": "Các điểm cuối quản lý tập lệnh Sieve\n\n>[!NOTE]\n> Sieve là một ngôn ngữ lọc email mạnh mẽ được định nghĩa trong RFC 5228. Các tập lệnh được thực thi trên thư đến để tự động sắp xếp, lọc và phản hồi các tin nhắn.\n\n>[!TIP]\n> Các phần mở rộng được hỗ trợ bao gồm: fileinto, reject, ereject, vacation, vacation-seconds, imap4flags, envelope, body, relational, comparator-i;ascii-numeric, copy, date, index, editheader, enotify, regex, subaddress, ihave, duplicate, special-use, mailbox, environment và variables. Các tập lệnh được xác thực trước khi lưu để đảm bảo chúng đúng cú pháp.\n\n> >[!NOTE]\n> **Hỗ trợ hai phương thức xác thực:**\n> - **Xác thực bằng mã thông báo API** (`/v1/domains/{domain_id}/aliases/{alias_id}/sieve`): Sử dụng khóa API của bạn làm tên người dùng với Xác thực cơ bản. Yêu cầu domain_id và alias_id trong đường dẫn URL.\n\n> - **Xác thực bằng bí danh** (`/v1/sieve-scripts`): Sử dụng email bí danh và mật khẩu được tạo làm thông tin xác thực Cơ bản. Không cần domain_id hoặc alias_id trong URL.\n\n>[!TIP]\n> Tham số ID tập lệnh chấp nhận ObjectId của MongoDB hoặc tên tập lệnh, cho phép nhận dạng tập lệnh linh hoạt."
+      "description": "Các điểm cuối quản lý tập lệnh Sieve\n\n>[!NOTE]\n> Sieve là một ngôn ngữ lọc email mạnh mẽ được định nghĩa trong RFC 5228. Các tập lệnh được thực thi trên thư đến để tự động sắp xếp, lọc và phản hồi các tin nhắn.\n\n>[!TIP]\n> Các phần mở rộng được hỗ trợ bao gồm: fileinto, reject, ereject, vacation, vacation-seconds, imap4flags, envelope, body, relational, comparator-i;ascii-numeric, comparator-i;unicode-casemap, copy, date, index, editheader, enotify, regex, subaddress, ihave, duplicate, special-use, mailbox, environment và variables. Các tập lệnh được xác thực trước khi lưu để đảm bảo chúng đúng cú pháp.\n\n> >[!NOTE]\n> **Hỗ trợ hai phương thức xác thực:**\n> - **Xác thực bằng mã thông báo API** (`/v1/domains/{domain_id}/aliases/{alias_id}/sieve`): Sử dụng khóa API của bạn làm tên người dùng với Xác thực cơ bản. Yêu cầu domain_id và alias_id trong đường dẫn URL.\n\n> - **Xác thực bằng bí danh** (`/v1/sieve-scripts`): Sử dụng email bí danh và mật khẩu được tạo làm thông tin xác thực Cơ bản. Không cần domain_id hoặc alias_id trong URL.\n\n>[!TIP]\n> Tham số ID tập lệnh chấp nhận ObjectId của MongoDB hoặc tên tập lệnh, cho phép nhận dạng tập lệnh linh hoạt."
     },
     {
       "name": "WebSockets",

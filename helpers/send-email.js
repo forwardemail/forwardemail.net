@@ -31,6 +31,7 @@ const logger = require('./logger');
 const shouldSendDSN = require('./should-send-dsn');
 const shouldThrow = require('./should-throw');
 const signMessage = require('./sign-message');
+const { stuffBareCrDots } = require('./sign-message');
 const {
   acquireSmtpSession,
   backOffSmtpSessions,
@@ -102,7 +103,10 @@ async function getPGPResults({
           raw
         );
 
-        finalRaw = await signMessage(encryptedUnsignedMessage, domain);
+        finalRaw = await signMessage(
+          stuffBareCrDots(encryptedUnsignedMessage),
+          domain
+        );
         smime = true;
       } catch (err) {
         logger.fatal(
@@ -162,7 +166,10 @@ async function getPGPResults({
               false
             );
 
-            finalRaw = await signMessage(encryptedUnsignedMessage, domain);
+            finalRaw = await signMessage(
+              stuffBareCrDots(encryptedUnsignedMessage),
+              domain
+            );
             pgp = true;
           } catch (err) {
             logger.fatal(
@@ -195,7 +202,9 @@ async function getPGPResults({
   }
 
   // if no encryption then we need to still sign with DKIM
-  if (!pgp && !smime) finalRaw = await signMessage(raw, domain);
+  // (as it is sent, see `stuffBareCrDots`)
+  if (!pgp && !smime)
+    finalRaw = await signMessage(stuffBareCrDots(raw), domain);
 
   return { finalRaw, pgp, smime };
 }
@@ -458,7 +467,7 @@ async function deliver(
   // - + supports custom domains since we use truthSource (resolved MX server)
   //
   if (pgpResults.pgp && truthSource === 'protonmail.ch') {
-    pgpResults.finalRaw = await signMessage(raw, domain);
+    pgpResults.finalRaw = await signMessage(stuffBareCrDots(raw), domain);
     pgpResults.pgp = false;
     // TODO: email users one-time per month regarding this issue
   }

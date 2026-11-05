@@ -20,7 +20,10 @@ const config = require('#config');
 const env = require('#config/env');
 const { getPrimaryApiSecret } = require('#helpers/api-secrets');
 const isRetryableError = require('#helpers/is-retryable-error');
-const { isClosedBeforeResponse } = require('#helpers/is-retryable-error');
+const {
+  isClosedBeforeResponse,
+  isRequestTimeout
+} = require('#helpers/is-retryable-error');
 const isTimeoutError = require('#helpers/is-timeout-error');
 const logger = require('#helpers/logger');
 const parseError = require('#helpers/parse-error');
@@ -478,7 +481,10 @@ function createWebSocketAsPromised(options = {}) {
               maxTimeout: config.busyTimeout,
               factor: 1,
               onFailedAttempt(error) {
-                if (isClosedBeforeResponse(error) && !isRepeatable(data))
+                if (
+                  isRequestTimeout(error) ||
+                  (isClosedBeforeResponse(error) && !isRepeatable(data))
+                )
                   throw error;
                 if (isRetryableError(error)) return;
 

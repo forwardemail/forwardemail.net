@@ -1586,9 +1586,7 @@ function createSieveIntegration(options = {}) {
       config.sieve?.allowedRedirectDomains ||
       DEFAULT_CONFIG.allowedRedirectDomains,
     protectedHeaders:
-      config.sieve?.protectedHeaders || DEFAULT_CONFIG.protectedHeaders,
-    enabledExtensions:
-      config.sieve?.enabledExtensions || DEFAULT_CONFIG.enabledExtensions
+      config.sieve?.protectedHeaders || DEFAULT_CONFIG.protectedHeaders
   };
 
   const store = options.store || getDefaultSieveStore();
