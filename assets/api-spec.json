@@ -4898,6 +4898,16 @@
               "default": "false"
             },
             "description": "When set to \"true\", returns metadata-only responses without nodemailer or raw fields. This significantly improves performance by skipping full MIME tree reconstruction and attachment body fetching. Useful for building message lists where only metadata (subject, flags, dates, folder, size) is needed."
+          },
+          {
+            "name": "since_modseq",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "description": "List only the messages of the folder that changed or arrived after this MODSEQ, as CHANGEDSINCE over IMAP (RFC 7162): flag and label changes made over IMAP, POP3 or this API, and messages appended, copied or moved in. Requires `folder`. Results are sorted by `modseq`, oldest change first, so keep the highest `modseq` you have seen and send it next time. Messages that left the folder are not listed."
           }
         ],
         "responses": {

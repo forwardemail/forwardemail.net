@@ -1131,3 +1131,115 @@ test('moving to "Junk" uses an existing Junk folder', async (t) => {
   t.is(res.status, 200);
   t.is(res.body.folder_path, 'Junk');
 });
+
+// the messages of a folder changed since a MODSEQ, as webmail asks for them
+async function listSince(t, path, modseq) {
+  const res = await t.context.api
+    .get(
+      `/v1/messages?folder=${encodeURIComponent(
+        path
+      )}&since_modseq=${modseq}&lightweight=true`
+    )
+    .set('Authorization', t.context.auth);
+  t.is(res.status, 200);
+  return res.body;
+}
+
+async function highestListedModseq(t, path) {
+  const res = await t.context.api
+    .get(`/v1/messages?folder=${encodeURIComponent(path)}&lightweight=true`)
+    .set('Authorization', t.context.auth);
+  t.is(res.status, 200);
+  return Math.max(0, ...res.body.map((m) => m.modseq));
+}
+
+test('since_modseq lists only what changed or arrived since then, oldest change first', async (t) => {
+  const first = await appendMessage(t, 'INBOX', 'untouched');
+  const read = await appendMessage(t, 'INBOX', 'read in webmail');
+  const flagged = await appendMessage(t, 'INBOX', 'flagged in Thunderbird');
+  const since = await highestListedModseq(t, 'INBOX');
+
+  // read through the API (the journal entry raises the MODSEQ right after
+  // the response)
+  const res = await t.context.api
+    .put(`/v1/messages/${read.id}`)
+    .set('Authorization', t.context.auth)
+    .send({ flags: ['\\Seen'], folder: 'INBOX' });
+  t.is(res.status, 200);
+  await pWaitFor(
+    async () => {
+      const list = await listSince(t, 'INBOX', since);
+      return list.some((m) => m.id === read.id);
+    },
+    { interval: 100, timeout: ms('10s') }
+  );
+
+  // flagged over IMAP, and a new message arrives
+  const lock = await t.context.imapFlow.getMailboxLock('INBOX');
+  try {
+    await t.context.imapFlow.messageFlagsAdd(
+      String(flagged.uid),
+      ['\\Flagged'],
+      {
+        uid: true
+      }
+    );
+  } finally {
+    lock.release();
+  }
+
+  const arrived = await appendMessage(t, 'INBOX', 'new mail');
+
+  const changed = await listSince(t, 'INBOX', since);
+  t.deepEqual(
+    changed.map((m) => m.id),
+    [read.id, flagged.id, arrived.id]
+  );
+  t.false(changed.some((m) => m.id === first.id));
+  t.true(changed.every((m) => m.modseq > since));
+  t.false(changed[0].is_unread);
+  t.true(changed[1].is_flagged);
+
+  // nothing changed since the highest of those
+  t.deepEqual(await listSince(t, 'INBOX', changed.at(-1).modseq), []);
+});
+
+test('since_modseq lists a message moved into the folder', async (t) => {
+  const moved = await appendMessage(t, 'INBOX', 'archive me');
+  // Archive (created for every alias) has a MODSEQ before the move
+  await appendMessage(t, 'Archive', 'already archived');
+  const since = await highestListedModseq(t, 'Archive');
+
+  const res = await t.context.api
+    .put(`/v1/messages/${moved.id}`)
+    .set('Authorization', t.context.auth)
+    .send({ folder: 'Archive' });
+  t.is(res.status, 200);
+
+  const changed = await listSince(t, 'Archive', since);
+  t.deepEqual(
+    changed.map((m) => m.subject),
+    ['archive me']
+  );
+});
+
+test('since_modseq must be a whole number and needs a folder', async (t) => {
+  for (const value of ['abc', '-1', '1.5', '1e3', '99999999999999999999']) {
+    const res = await t.context.api
+      .get(
+        `/v1/messages?folder=INBOX&since_modseq=${encodeURIComponent(value)}`
+      )
+      .set('Authorization', t.context.auth);
+    t.is(res.status, 400, `since_modseq=${value}`);
+  }
+
+  const res = await t.context.api
+    .get('/v1/messages?since_modseq=1')
+    .set('Authorization', t.context.auth);
+  t.is(res.status, 400);
+
+  // zero lists the whole folder
+  await appendMessage(t, 'INBOX', 'everything since zero');
+  const all = await listSince(t, 'INBOX', 0);
+  t.true(all.some((m) => m.subject === 'everything since zero'));
+});

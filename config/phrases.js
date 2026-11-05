@@ -1042,6 +1042,10 @@ module.exports = {
   MESSAGE_DOES_NOT_EXIST: 'Message does not exist.',
   MESSAGE_FLAGS_INVALID: 'Message flags invalid.',
   MESSAGE_LABELS_INVALID: 'Message labels invalid.',
+  MESSAGE_SINCE_MODSEQ_INVALID:
+    'The since_modseq parameter must be a whole number of zero or more.',
+  MESSAGE_SINCE_MODSEQ_FOLDER_REQUIRED:
+    'The since_modseq parameter requires a folder, as MODSEQ values are kept per folder.',
   SEARCH_TOO_MANY_RESULTS:
     'Search matched too many messages. Please use a more specific search term or add another filter.',
 

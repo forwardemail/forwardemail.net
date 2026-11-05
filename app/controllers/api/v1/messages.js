@@ -899,6 +899,36 @@ async function list(ctx) {
   const searchConditions = [];
 
   //
+  // Only the messages of the folder that changed or arrived after the given
+  // MODSEQ, as CHANGEDSINCE over IMAP (RFC 7162).  Every change raises the
+  // message's MODSEQ to the folder's next one: a flag or label set over IMAP,
+  // POP3 or this API (the journal entry does it, see journalFlagChange), and
+  // a message appended, copied or moved in.  So a client that kept the
+  // highest MODSEQ it saw fetches only what changed since, instead of
+  // listing the folder again.  Messages that left the folder are not listed:
+  // a client still learns about those from the realtime events or a listing.
+  //
+  // MODSEQ values are per folder, so a folder is required.  The oldest change
+  // comes first: changes made while a client pages through arrive with a
+  // higher MODSEQ, at the end, and the pages already read do not shift.
+  //
+  let sinceModseq;
+  if (ctx.query.since_modseq !== undefined && ctx.query.since_modseq !== '') {
+    sinceModseq =
+      typeof ctx.query.since_modseq === 'string' &&
+      /^\d+$/.test(ctx.query.since_modseq)
+        ? Number(ctx.query.since_modseq)
+        : Number.NaN;
+    if (!Number.isSafeInteger(sinceModseq))
+      throw Boom.badRequest(ctx.translateError('MESSAGE_SINCE_MODSEQ_INVALID'));
+    if (!isSANB(ctx.query.folder))
+      throw Boom.badRequest(
+        ctx.translateError('MESSAGE_SINCE_MODSEQ_FOLDER_REQUIRED')
+      );
+    searchConditions.push({ modseq: { $gt: sinceModseq } });
+  }
+
+  //
   // Restrict the listing to the given message IDs (see
   // MAX_SEARCH_ID_VARIABLES above).  An empty list yields `_id IN ()`,
   // which SQLite accepts and which matches nothing, so a lookup without
@@ -1260,7 +1290,7 @@ async function list(ctx) {
     fields: ['*', { total_count: { expression: `(${countSql.query})` } }],
     limit: ctx.query.limit,
     offset: ctx.paginate.skip,
-    sort: { created_at: -1 }
+    sort: sinceModseq === undefined ? { created_at: -1 } : { modseq: 1, _id: 1 }
   };
 
   const sql = builder.build(opts);
