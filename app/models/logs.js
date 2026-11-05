@@ -168,6 +168,15 @@ const Logs = new mongoose.Schema({
     type: mongoose.Schema.ObjectId,
     ref: Emails
   },
+  //
+  // recipient hosts that inherited their root domain's forwarding (wildcard
+  // subdomain forwarding) and linked this log to that root domain in `domains`
+  // (so only the root domain's admins see those recipients, see `parseLog`)
+  //
+  inherited_hosts: {
+    type: [String],
+    default: undefined
+  },
   domains_checked_at: Date,
   err: mongoose.Schema.Types.Mixed,
   // parsed "Date" header
@@ -967,6 +976,46 @@ Logs.pre('validate', function (next) {
 //       we strip the other sensitive data (since RCPT TO could be to multiple separate users on our system)
 //       (e.g. RCPT TO: a@a.com and b@b.com, whereas a.com and b.com are two completely separate and private users)
 //
+// TXT record strings of a host (none when it has none or does not exist)
+async function resolveTxt(resolver, name) {
+  try {
+    const records = await resolver.resolveTxt(name);
+    return records.map((record) => record.join('').trim());
+  } catch (err) {
+    if (err.code === 'ENODATA' || err.code === 'ENOTFOUND') return [];
+    throw err;
+  }
+}
+
+//
+// The paid domain whose forwarding the subdomains of `root` inherit, if any:
+// it opted in to `allow_subdomain_forwarding` and is verified by the one
+// `forward-email-site-verification=` value published at `root` (a same-named
+// domain of another account can never match, as in `get-forwarding-addresses`)
+//
+async function getInheritedDomain(resolver, root) {
+  const domains = await Domains.find({
+    name: root,
+    plan: { $in: ['enhanced_protection', 'team'] },
+    allow_subdomain_forwarding: true
+  })
+    .select('_id verification_record has_delivery_logs')
+    .lean()
+    .exec();
+
+  // (no DNS lookup for root domains that did not opt in)
+  if (domains.length === 0) return;
+
+  const verifications = [];
+  for (const str of await resolveTxt(resolver, root)) {
+    if (str.startsWith(PREFIX)) verifications.push(str.replace(PREFIX, ''));
+  }
+
+  if (verifications.length !== 1) return;
+
+  return domains.find((d) => d.verification_record === verifications[0]);
+}
+
 async function parseLog(log) {
   if (!log.resolver) return log;
   if (!log.is_restricted) return log;
@@ -986,13 +1035,17 @@ async function parseLog(log) {
     }
 
     // meta.session.rcptTo
+    // (recipient hosts can also inherit their root domain's forwarding)
+    const rcptHosts = new Set();
     if (
       Array.isArray(log?.meta?.session?.envelope?.rcptTo) &&
       log.meta.session.envelope.rcptTo.length > 0
     ) {
       for (const rcpt of log.meta.session.envelope.rcptTo) {
         if (_.isObject(rcpt) && isSANB(rcpt.address) && isEmail(rcpt.address)) {
-          set.add(rcpt.address.split('@')[1].toLowerCase());
+          const host = rcpt.address.split('@')[1].toLowerCase();
+          set.add(host);
+          rcptHosts.add(host);
         }
       }
     }
@@ -1008,16 +1061,60 @@ async function parseLog(log) {
     // if no domains were found then return early
     if (set.size === 0) return log;
 
+    // root domains looked up for recipient hosts (shared by their subdomains)
+    const roots = new Map();
+    const inheritedHosts = [];
+    let rootError;
+
     log.domains = await pMap(
       [...set],
       async (name) => {
         try {
-          const records = await log.resolver.resolveTxt(name);
+          const records = await resolveTxt(log.resolver, name);
           const verifications = [];
-          for (const record of records) {
-            const str = record.join('').trim();
+          for (const str of records) {
             if (str.startsWith(PREFIX))
               verifications.push(str.replace(PREFIX, ''));
+          }
+
+          //
+          // wildcard subdomain forwarding (see `allow_subdomain_forwarding`):
+          // mail to a subdomain with no forwarding records of its own uses the
+          // root domain's (as in `get-forwarding-addresses`), so its log is
+          // the root domain's too
+          //
+          if (
+            verifications.length === 0 &&
+            rcptHosts.has(name) &&
+            !records.some((str) => str.startsWith(`${config.recordPrefix}=`))
+          ) {
+            const root = parseRootDomain(name);
+            if (
+              root === name ||
+              !name.endsWith(`.${root}`) ||
+              config.truthSources.has(root)
+            )
+              return;
+            //
+            // (a failed root lookup only leaves this recipient unlinked, so
+            // the log is still linked to the other recipients' domains; it is
+            // rethrown below when it is the only one, to be parsed again)
+            //
+            if (!roots.has(root))
+              roots.set(
+                root,
+                getInheritedDomain(log.resolver, root).catch((err) => {
+                  if (DNS_ERROR_CODES.has(err.code)) rootError = err;
+                  else logger.debug(err);
+                })
+              );
+            const domain = await roots.get(root);
+            if (!domain) return;
+            // opt-in check for delivered message
+            if (log.message === 'delivered' && !domain.has_delivery_logs)
+              return;
+            inheritedHosts.push(name);
+            return domain._id;
           }
 
           if (verifications.length === 0) return;
@@ -1049,8 +1146,12 @@ async function parseLog(log) {
       { concurrency }
     );
 
-    // filter out null values
-    log.domains = log.domains.filter(Boolean);
+    // filter out null values (and a root domain linked more than once)
+    log.domains = _.uniqBy(log.domains.filter(Boolean), (id) => id.toString());
+
+    if (rootError && log.domains.length === 0) throw rootError;
+
+    if (inheritedHosts.length > 0) log.inherited_hosts = inheritedHosts;
 
     log.domains_checked_at = new Date();
   } catch (err) {

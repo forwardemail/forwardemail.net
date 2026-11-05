@@ -23,8 +23,8 @@ const Logs = require('#models/logs');
 const CREATED_AT_INDEX_HINT = { created_at: 1 };
 
 // large fields the CSV does not use (every other field is kept)
-const UNUSED_FIELDS =
-  '-keywords -text_message -domains -hash -domains_checked_at';
+// (`domains` is kept for recipients of inherited subdomains)
+const UNUSED_FIELDS = '-keywords -text_message -hash -domains_checked_at';
 
 function makeDelimitedString(arr) {
   // <https://stackoverflow.com/a/17808731>
@@ -154,7 +154,8 @@ async function getLogsCsv(
           log,
           filterLogForViewer.createIsVisible({
             domains: userDomains,
-            nonAdminDomainsToAliases
+            nonAdminDomainsToAliases,
+            log
           })
         )
       )
@@ -187,7 +188,12 @@ async function getLogsCsv(
               (d) => d.name === domain.toLowerCase()
             );
 
-            if (!matchingDomain) return false;
+            if (!matchingDomain)
+              return filterLogForViewer.isInheritedRecipient(
+                userDomains,
+                log,
+                rcpt.address
+              );
 
             if (matchingDomain.group === 'admin') {
               isAdminOfDomain = true;
@@ -245,7 +251,12 @@ async function getLogsCsv(
             (d) => d.name.toLowerCase() === domain
           );
 
-          if (!matchingDomain) return false;
+          if (!matchingDomain)
+            return filterLogForViewer.isInheritedRecipient(
+              userDomains,
+              log,
+              email
+            );
 
           if (matchingDomain.group === 'admin') {
             isAdminOfDomain = true;

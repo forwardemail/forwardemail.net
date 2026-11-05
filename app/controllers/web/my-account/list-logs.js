@@ -692,7 +692,8 @@ async function listLogs(ctx) {
           filterLogForViewer.createIsVisible({
             domains: ctx.state.domains,
             nonAdminDomainsToAliases,
-            logDomains: log.domains
+            logDomains: log.domains,
+            log
           })
         );
         if (!log) return null;
@@ -732,7 +733,12 @@ async function listLogs(ctx) {
                 return true;
               });
 
-              if (!match) return false;
+              if (!match)
+                return filterLogForViewer.isInheritedRecipient(
+                  ctx.state.domains,
+                  log,
+                  rcpt.address
+                );
 
               // if the user is not an admin of the domain then filter for individual rcpts
               if (isAdmin) return true;
@@ -800,7 +806,12 @@ async function listLogs(ctx) {
               return true;
             });
 
-            if (!match) return false;
+            if (!match)
+              return filterLogForViewer.isInheritedRecipient(
+                ctx.state.domains,
+                log,
+                emailLower
+              );
 
             // If admin, show all BCC recipients for this domain
             if (isAdmin) return true;

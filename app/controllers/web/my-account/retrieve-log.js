@@ -171,7 +171,12 @@ async function retrieveLog(ctx, next) {
         return true;
       });
 
-      if (!match) return false;
+      if (!match)
+        return filterLogForViewer.isInheritedRecipient(
+          ctx.state.domains,
+          log,
+          rcpt.address
+        );
 
       // if the user is an admin of the domain, grant access
       if (isAdmin) return true;
@@ -209,7 +214,8 @@ async function retrieveLog(ctx, next) {
       filterLogForViewer.createIsVisible({
         domains: ctx.state.domains,
         nonAdminDomainsToAliases,
-        logDomains: log.domains
+        logDomains: log.domains,
+        log
       })
     )
   )
@@ -239,7 +245,12 @@ async function retrieveLog(ctx, next) {
           return true;
         });
 
-        if (!match) return false;
+        if (!match)
+          return filterLogForViewer.isInheritedRecipient(
+            ctx.state.domains,
+            log,
+            rcpt.address
+          );
 
         // if the user is not an admin of the domain then filter for individual rcpts
         if (isAdmin) return true;
@@ -304,7 +315,12 @@ async function retrieveLog(ctx, next) {
         return true;
       });
 
-      if (!match) return false;
+      if (!match)
+        return filterLogForViewer.isInheritedRecipient(
+          ctx.state.domains,
+          log,
+          emailLower
+        );
 
       // If admin, show all BCC recipients for this domain
       if (isAdmin) return true;

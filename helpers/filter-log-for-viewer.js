@@ -5,6 +5,7 @@
 
 const _ = require('#helpers/lodash');
 const checkSRS = require('#helpers/check-srs');
+const parseRootDomain = require('#helpers/parse-root-domain');
 
 //
 // A log of a message sent to several recipients is shown to everyone who may
@@ -119,9 +120,16 @@ function filterLogForViewer(log, isVisible) {
 // Whether a viewer may see an alias: they are an admin of its domain, or it is
 // one of their aliases (`nonAdminDomainsToAliases` maps the id of each domain
 // they are a member of to their aliases on it). When `logDomains` is given,
-// the domain must also be one of the log's domains.
+// the domain must also be one of the log's domains. When `log` is given, a
+// recipient on a subdomain that inherited its root domain's forwarding is also
+// visible to admins of that root domain (see `isInheritedRecipient`).
 //
-function createIsVisible({ domains, nonAdminDomainsToAliases, logDomains }) {
+function createIsVisible({
+  domains,
+  nonAdminDomainsToAliases,
+  logDomains,
+  log
+}) {
   return (address) => {
     if (typeof address !== 'string') return false;
     const at = address.lastIndexOf('@');
@@ -136,7 +144,7 @@ function createIsVisible({ domains, nonAdminDomainsToAliases, logDomains }) {
         (!Array.isArray(logDomains) ||
           logDomains.some((id) => id.toString() === d.id))
     );
-    if (!domain) return false;
+    if (!domain) return isInheritedRecipient(domains, log, address);
     if (domain.group === 'admin') return true;
     const aliases = nonAdminDomainsToAliases?.[domain.id];
     if (!Array.isArray(aliases)) return false;
@@ -146,5 +154,34 @@ function createIsVisible({ domains, nonAdminDomainsToAliases, logDomains }) {
   };
 }
 
+//
+// Whether an address on a subdomain (e.g. `hello@anything.example.com`) is the
+// viewer's through wildcard subdomain forwarding: the subdomain inherited the
+// forwarding of its root domain (`example.com`), which linked the log to it
+// (`log.inherited_hosts`, see `parseLog`), and the viewer is an admin of that
+// root domain. (Only admins, since members are only shown the addresses of
+// their own aliases.)
+//
+function isInheritedRecipient(domains, log, address) {
+  if (
+    typeof address !== 'string' ||
+    !Array.isArray(log?.inherited_hosts) ||
+    !Array.isArray(log?.domains)
+  )
+    return false;
+  const at = address.lastIndexOf('@');
+  if (at <= 0) return false;
+  const name = address.slice(at + 1).toLowerCase();
+  if (!log.inherited_hosts.includes(name)) return false;
+  const root = parseRootDomain(name);
+  return (domains || []).some(
+    (d) =>
+      d.group === 'admin' &&
+      d.name === root &&
+      log.domains.some((id) => id.toString() === d.id)
+  );
+}
+
 module.exports = filterLogForViewer;
 module.exports.createIsVisible = createIsVisible;
+module.exports.isInheritedRecipient = isInheritedRecipient;

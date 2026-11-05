@@ -196,3 +196,63 @@ test.serial(
     t.true(projection.includes('"text_message":0'));
   }
 );
+
+test.serial(
+  'shows an admin of a root domain the recipients of its inherited subdomains only',
+  async (t) => {
+    const root = `wild-${randomUUID()}.com`;
+    const domain = { id: new mongoose.Types.ObjectId().toString(), name: root };
+    const _id = new mongoose.Types.ObjectId();
+    const at = new Date(now.getTime() - 20 * 60_000);
+    await Logs.collection.insertOne({
+      _id,
+      id: _id.toString(),
+      hash: randomUUID(),
+      message: 'delivered',
+      bounce_category: 'none',
+      domains: [new mongoose.Types.ObjectId(domain.id)],
+      inherited_hosts: [`anything.${root}`],
+      meta: {
+        session: {
+          id: 'session-inherited',
+          envelope: {
+            mailFrom: { address: 'sender@sender.example.net' },
+            rcptTo: [
+              { address: `hello@anything.${root}` },
+              { address: `private@separate.${root}` },
+              { address: 'bob@other.example.com' }
+            ]
+          }
+        }
+      },
+      created_at: at,
+      updated_at: at
+    });
+
+    const csv = async (group, viewerDomain = domain) => {
+      const { gzip } = await getLogsCsv(
+        now,
+        { created_at: { $gte: at, $lte: at } },
+        false,
+        [{ ...viewerDomain, group }],
+        {}
+      );
+      return zlib.gunzipSync(gzip).toString();
+    };
+
+    const admin = await csv('admin');
+    t.true(admin.includes(`hello@anything.${root}`));
+    t.false(admin.includes(`private@separate.${root}`));
+    t.false(admin.includes('bob@other.example.com'));
+
+    const member = await csv('user');
+    t.false(member.includes(`hello@anything.${root}`));
+
+    // (an admin of another account's domain of the same name)
+    const sameNamed = await csv('admin', {
+      id: new mongoose.Types.ObjectId().toString(),
+      name: root
+    });
+    t.false(sameNamed.includes(`hello@anything.${root}`));
+  }
+);
