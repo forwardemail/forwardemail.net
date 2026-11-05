@@ -70,6 +70,7 @@ const reserveAutoReply = require('#helpers/reserve-auto-reply');
 const { isAddressedTo, reserveAutoReplyFor } = reserveAutoReply;
 const parseRootDomain = require('#helpers/parse-root-domain');
 const recursivelyParse = require('#helpers/recursively-parse');
+const stmtTimers = require('#helpers/stmt-timers');
 const sendApn = require('#helpers/send-apn');
 const sendNotification = require('#helpers/send-notification');
 const ServerShutdownError = require('#helpers/server-shutdown-error');
@@ -2919,6 +2920,7 @@ async function parsePayload(data, ws) {
         //
         const aliasId = payload.session.user.alias_id;
         let stmt;
+        let stmtSql;
         let data;
 
         {
@@ -2948,6 +2950,7 @@ async function parsePayload(data, ws) {
           switch (op[0]) {
             case 'prepare': {
               stmt = db.prepare(op[1]);
+              stmtSql = op[1];
               break;
             }
 
@@ -2992,7 +2995,16 @@ async function parsePayload(data, ws) {
                 }
               }
 
+              // no-op unless SQLITE_STMT_TIMERS=true (start() returns 0)
+              const stmtStarted = stmtTimers.start();
               data = stmt[op[0]](values);
+              stmtTimers.record({
+                started: stmtStarted,
+                sql: stmtSql,
+                op: op[0],
+                data,
+                aliasId
+              });
 
               break;
             }
