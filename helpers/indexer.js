@@ -32,6 +32,37 @@ function formatHeaders(headers) {
   return headers;
 }
 
+//
+// Whether a node is text of the message, not an attachment: WildDuck's
+// `getMaildata` stores such a body apart only when larger than 300KB, and the
+// text and HTML of the message are still read from it.  mailparser also shows
+// an inline attached message as text, and reads a root without a Content-Type
+// as text/plain (WildDuck stores both apart).
+//
+const INLINE_TEXT_TYPES = new Set([
+  'text/plain',
+  'text/html',
+  'text/rfc822-headers',
+  'message/delivery-status'
+]);
+
+function isMessageText(node, isRoot = false) {
+  const contentType = (
+    node?.parsedHeader?.['content-type']?.value ||
+    (node?.rootNode || isRoot ? 'text/plain' : 'application/octet-stream')
+  )
+    .toLowerCase()
+    .trim();
+  const disposition = (node?.parsedHeader?.['content-disposition']?.value || '')
+    .toLowerCase()
+    .trim();
+  return (
+    (INLINE_TEXT_TYPES.has(contentType) &&
+      (!disposition || disposition === 'inline')) ||
+    (contentType === 'message/rfc822' && disposition === 'inline')
+  );
+}
+
 class Indexer extends WildDuckIndexer {
   constructor(options) {
     super(options);
@@ -345,7 +376,12 @@ class Indexer extends WildDuckIndexer {
 
         if (node.boundary) {
           await emit(`--${node.boundary}`);
-        } else if (node.attachmentId && !options.skipExternal) {
+        } else if (
+          node.attachmentId &&
+          !options.skipExternal &&
+          // (`skipAttachments` leaves out attachment bodies, never the text)
+          !(options.skipAttachments && !isMessageText(node, node === mimeTree))
+        ) {
           await emit(false, true); // force newline between header and contents
 
           let { attachmentId } = node;
@@ -531,3 +567,4 @@ class Indexer extends WildDuckIndexer {
 }
 
 module.exports = Indexer;
+module.exports.isMessageText = isMessageText;

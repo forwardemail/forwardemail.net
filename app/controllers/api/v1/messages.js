@@ -616,11 +616,47 @@ function lastHeaderValue(value) {
   return unfolded || undefined;
 }
 
+//
+// What a response needs of the contents of a message: the message is rebuilt
+// only for `raw` or `nodemailer` (e.g. `?raw=false&nodemailer=false` checks a
+// message exists), and without `raw` and `attachments` its attachments are
+// left out of the rebuild (each one is read from the SQLite server, and the
+// apps list and sync every folder this way)
+//
+function getContentsOptions(ctx, lightweight = false) {
+  const raw = ctx.query.raw !== 'false';
+  return {
+    contents: !lightweight && (raw || ctx.query.nodemailer !== 'false'),
+    skipAttachments: !raw && ctx.query.attachments === 'false'
+  };
+}
+
+// The bytes of a message its rebuild reads (see `getContentsOptions`)
+function getRebuildSize(message, { contents, skipAttachments }) {
+  if (!contents) return 0;
+  const size = Number(message.size) || 0;
+  if (!skipAttachments || typeof message.mimeTree !== 'object') return size;
+  let skipped = 0;
+  const walk = (node) => {
+    if (!node || typeof node !== 'object') return;
+    if (
+      node.attachmentId &&
+      !Indexer.isMessageText(node, node === message.mimeTree)
+    )
+      skipped += Number(node.size) || 0;
+    if (Array.isArray(node.childNodes)) {
+      for (const child of node.childNodes) walk(child);
+    }
+  };
+
+  walk(message.mimeTree);
+  return Math.max(size - skipped, 0);
+}
+
 async function json(ctx, message, { lightweight = false } = {}) {
-  // In lightweight mode (used by list endpoint), skip the expensive
-  // indexer.getContents + simpleParser call that rebuilds the full MIME tree
-  // and fetches all attachment bodies from SQLite. This eliminates N attachment
-  // hash lookups per message and avoids CPU-heavy MIME parsing.
+  // (the message is rebuilt and parsed only as far as the response needs, see
+  // `getContentsOptions`; lightweight mode returns metadata only)
+  const { contents, skipAttachments } = getContentsOptions(ctx, lightweight);
   const [mailbox, data] = await Promise.all([
     typeof message.mailbox.path === 'string'
       ? Promise.resolve(message.mailbox)
@@ -634,9 +670,8 @@ async function json(ctx, message, { lightweight = false } = {}) {
             path: true
           }
         ),
-    lightweight
-      ? Promise.resolve(null)
-      : (async () => {
+    contents
+      ? (async () => {
           // similar to 'rfc822' case in `helpers/get-query-response.js`
           // (value is a stream)
           const { value } = indexer.getContents(
@@ -644,22 +679,26 @@ async function json(ctx, message, { lightweight = false } = {}) {
               ? message.mimeTree
               : JSON.parse(message.mimeTree),
             false,
-            {},
+            { skipAttachments },
             ctx.instance,
             ctx.state.session
           );
 
           const raw = await getStream.buffer(value);
-          const nodemailer = await simpleParser(raw, {
-            Iconv,
-            skipHtmlToText: true,
-            skipTextLinks: true,
-            skipTextToHtml: true,
-            skipImageLinks: true,
-            maxHtmlLengthToParse: bytes(env.SMTP_MESSAGE_MAX_SIZE)
-          });
+          const nodemailer =
+            ctx.query.nodemailer === 'false'
+              ? null
+              : await simpleParser(raw, {
+                  Iconv,
+                  skipHtmlToText: true,
+                  skipTextLinks: true,
+                  skipTextToHtml: true,
+                  skipImageLinks: true,
+                  maxHtmlLengthToParse: bytes(env.SMTP_MESSAGE_MAX_SIZE)
+                });
           return { raw, nodemailer };
         })()
+      : Promise.resolve(null)
   ]);
 
   // Transform message data for API response
@@ -1248,14 +1287,16 @@ async function list(ctx) {
   const lightweight = ctx.query.lightweight === 'true';
 
   // Past API_MESSAGES_FULL_LIST_MAX_SIZE the rest of the page is listed lightweight
+  // (counting only what is rebuilt, e.g. not the attachments left out of it)
   const maxFullBytes = bytes(
     env.API_MESSAGES_FULL_LIST_MAX_SIZE || DEFAULT_FULL_LIST_MAX_SIZE
   );
+  const contentsOptions = getContentsOptions(ctx, lightweight);
   let fullBytes = 0;
   let fallbackCount = 0;
   const lightweightByIndex = messages.map((message, index) => {
     if (lightweight) return true;
-    const messageBytes = Number(message.size) || 0;
+    const messageBytes = getRebuildSize(message, contentsOptions);
     if (index > 0 && fullBytes + messageBytes > maxFullBytes) {
       fallbackCount++;
       return true;
@@ -1279,9 +1320,9 @@ async function list(ctx) {
     (message, index) =>
       json(ctx, message, { lightweight: lightweightByIndex[index] }),
     {
-      concurrency: lightweight
-        ? Number.POSITIVE_INFINITY
-        : FULL_LIST_CONCURRENCY
+      concurrency: contentsOptions.contents
+        ? FULL_LIST_CONCURRENCY
+        : Number.POSITIVE_INFINITY
     }
   );
 }

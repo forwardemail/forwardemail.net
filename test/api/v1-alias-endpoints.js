@@ -11,11 +11,13 @@ const dayjs = require('dayjs-with-plugins');
 const falso = require('@ngneat/falso');
 const libmime = require('libmime');
 const ms = require('ms');
+const sinon = require('sinon');
 const test = require('ava');
 
 const utils = require('../utils');
 const config = require('#config');
 const env = require('#config/env');
+const AttachmentStorage = require('#helpers/attachment-storage');
 const createPassword = require('#helpers/create-password');
 const { Aliases, Emails, Users } = require('#models');
 
@@ -2176,6 +2178,199 @@ test.serial(
     t.true(full.body.every((message) => message.nodemailer && message.raw));
   }
 );
+
+// (a message with a text body and one attachment, created through the API)
+async function createMessageWithAttachment(t, authorization, options = {}) {
+  const res = await t.context.api
+    .post('/v1/messages')
+    .set('Authorization', authorization)
+    .send({
+      to: [{ address: 'test@example.com' }],
+      subject: options.subject || 'With Attachment',
+      text: options.text || 'Body with attachment',
+      attachments: [
+        {
+          filename: 'report.pdf',
+          contentType: 'application/pdf',
+          content: Buffer.alloc(bytes('200KB'), 'a').toString('base64'),
+          encoding: 'base64'
+        }
+      ]
+    });
+  t.is(res.status, 200);
+  return res.body;
+}
+
+//
+// Attachments are read from the SQLite server one by one, so a message is
+// rebuilt without them when the response returns neither the raw message nor
+// the attachments (as the apps list and sync every folder), and not at all
+// when it returns neither the raw message nor the parsed one
+//
+// serial: the spy counts the attachment reads of every request
+test.serial(
+  'messages are rebuilt without their attachments when the response leaves them out',
+  async (t) => {
+    const { api } = t.context;
+    const { alias, domain, pass } = await createTestAlias(t);
+    const authorization = createAliasAuth(`${alias.name}@${domain.name}`, pass);
+    const message = await createMessageWithAttachment(t, authorization);
+
+    const get = sinon.spy(AttachmentStorage.prototype, 'get');
+    t.teardown(() => get.restore());
+
+    const list = await api
+      .get('/v1/messages?raw=false&attachments=false')
+      .set('Authorization', authorization);
+    t.is(list.status, 200);
+    t.is(list.body.length, 1);
+    t.is(list.body[0].nodemailer.text.trim(), 'Body with attachment');
+    t.is(list.body[0].nodemailer.attachments, undefined);
+    t.is(list.body[0].raw, undefined);
+
+    const retrieved = await api
+      .get(`/v1/messages/${message.id}?raw=false&attachments=false`)
+      .set('Authorization', authorization);
+    t.is(retrieved.status, 200);
+    t.is(retrieved.body.nodemailer.text.trim(), 'Body with attachment');
+    t.is(retrieved.body.nodemailer.subject, 'With Attachment');
+    t.is(retrieved.body.nodemailer.attachments, undefined);
+
+    // (e.g. a client checking the message still exists)
+    const exists = await api
+      .get(
+        `/v1/messages/${message.id}?raw=false&nodemailer=false&attachments=false`
+      )
+      .set('Authorization', authorization);
+    t.is(exists.status, 200);
+    t.is(exists.body.id, message.id);
+    t.is(exists.body.nodemailer, undefined);
+    t.is(exists.body.raw, undefined);
+
+    t.is(get.callCount, 0);
+
+    // the raw message or the attachments still read them
+    const full = await api
+      .get(`/v1/messages/${message.id}`)
+      .set('Authorization', authorization);
+    t.is(full.status, 200);
+    t.is(full.body.nodemailer.attachments.length, 1);
+    t.is(full.body.nodemailer.attachments[0].size, bytes('200KB'));
+    t.is(get.callCount, 1);
+
+    const raw = await api
+      .get(`/v1/messages/${message.id}?attachments=false`)
+      .set('Authorization', authorization);
+    t.is(raw.status, 200);
+    t.true(raw.body.raw.length > bytes('200KB'));
+    t.is(get.callCount, 2);
+  }
+);
+
+// (text over 300KB is stored apart from the message, like an attachment)
+// serial: the spy counts the attachment reads of every request
+test.serial(
+  'a large text body is kept when attachments are left out',
+  async (t) => {
+    const { alias, domain, pass } = await createTestAlias(t);
+    const authorization = createAliasAuth(`${alias.name}@${domain.name}`, pass);
+    const text = 'A line of a long message body.\n'.repeat(15_000);
+    await createMessageWithAttachment(t, authorization, { text });
+
+    const get = sinon.spy(AttachmentStorage.prototype, 'get');
+    t.teardown(() => get.restore());
+
+    const res = await t.context.api
+      .get('/v1/messages?raw=false&attachments=false')
+      .set('Authorization', authorization);
+    t.is(res.status, 200);
+    t.is(res.body.length, 1);
+    t.is(res.body[0].nodemailer.text.trim(), text.trim());
+    t.is(res.body[0].nodemailer.attachments, undefined);
+    // the text is read, the attachment is not
+    t.is(get.callCount, 1);
+  }
+);
+
+// (an inline attached message is stored apart, and shown as text)
+test('an inline forwarded message is kept when attachments are left out', async (t) => {
+  const { alias, domain, pass } = await createTestAlias(t);
+  const authorization = createAliasAuth(`${alias.name}@${domain.name}`, pass);
+  const res = await t.context.api
+    .post('/v1/messages')
+    .set('Authorization', authorization)
+    .send({
+      to: [{ address: 'test@example.com' }],
+      subject: 'Forwarded Inline',
+      text: 'Outer text',
+      attachments: [
+        {
+          contentType: 'message/rfc822',
+          contentDisposition: 'inline',
+          content: [
+            'From: sender@example.com',
+            'Subject: Inner',
+            '',
+            'Inner body text'
+          ].join('\r\n')
+        }
+      ]
+    });
+  t.is(res.status, 200);
+
+  const urls = [
+    `/v1/messages/${res.body.id}`,
+    `/v1/messages/${res.body.id}?raw=false&attachments=false`
+  ];
+  const [full, withoutAttachments] = await Promise.all(
+    urls.map((url) =>
+      t.context.api.get(url).set('Authorization', authorization)
+    )
+  );
+  t.is(full.status, 200);
+  t.is(withoutAttachments.status, 200);
+  t.regex(withoutAttachments.body.nodemailer.text, /Inner body text/);
+  t.is(withoutAttachments.body.nodemailer.text, full.body.nodemailer.text);
+  t.is(withoutAttachments.body.nodemailer.html, full.body.nodemailer.html);
+});
+
+// serial: it changes the size limit for every request while it runs
+test.serial('the full listing size counts only what is rebuilt', async (t) => {
+  const { api } = t.context;
+  const { alias, domain, pass } = await createTestAlias(t);
+  const authorization = createAliasAuth(`${alias.name}@${domain.name}`, pass);
+  for (let i = 0; i < 2; i++) {
+    await createMessageWithAttachment(t, authorization, {
+      subject: `Listing Size ${i}`
+    });
+  }
+
+  const original = env.API_MESSAGES_FULL_LIST_MAX_SIZE;
+  // larger than the text of both messages, smaller than one attachment
+  env.API_MESSAGES_FULL_LIST_MAX_SIZE = '100KB';
+  let full;
+  let withoutAttachments;
+  try {
+    full = await api.get('/v1/messages').set('Authorization', authorization);
+    withoutAttachments = await api
+      .get('/v1/messages?raw=false&attachments=false')
+      .set('Authorization', authorization);
+  } finally {
+    env.API_MESSAGES_FULL_LIST_MAX_SIZE = original;
+  }
+
+  t.is(full.status, 200);
+  t.is(full.headers['x-lightweight-fallback-count'], '1');
+
+  t.is(withoutAttachments.status, 200);
+  t.is(withoutAttachments.body.length, 2);
+  t.is(withoutAttachments.headers['x-lightweight-fallback-count'], undefined);
+  t.true(
+    withoutAttachments.body.every(
+      (message) => message.nodemailer.text.trim() === 'Body with attachment'
+    )
+  );
+});
 
 //
 // Folders Tests
