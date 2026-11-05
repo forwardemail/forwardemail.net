@@ -21,7 +21,6 @@ const env = require('#config/env');
 const AttachmentStorage = require('#helpers/attachment-storage');
 const createPassword = require('#helpers/create-password');
 const logger = require('#helpers/logger');
-const { listIndexes } = require('#helpers/worker');
 const { Aliases, Emails, Users } = require('#models');
 
 const { emoji } = config.views.locals;
@@ -2375,14 +2374,13 @@ test.serial('the full listing size counts only what is rebuilt', async (t) => {
   );
 });
 
-// the message list queries the API sends, with the session they run with
 function captureListQueries(wsp) {
   const queries = [];
   const { request } = wsp;
   wsp.request = async function (payload, ...args) {
     const [operation, query] = (payload?.action === 'stmt' &&
       payload.stmt?.[0]) || [undefined, ''];
-    if (operation === 'prepare' && query.includes('order by "created_at" desc'))
+    if (operation === 'prepare' && /order by "(uid|_id)" desc/.test(query))
       queries.push({
         session: payload.session,
         query,
@@ -2399,14 +2397,14 @@ function captureListQueries(wsp) {
   };
 }
 
-async function getListIndexes(wsp, session) {
+async function getIndexes(wsp, session) {
   return wsp.request({
     action: 'stmt',
     session,
     stmt: [
       [
         'prepare',
-        `SELECT name FROM sqlite_master WHERE type = 'index' AND name IN ('Messages_mailbox_created_at', 'Messages_created_at') ORDER BY name`
+        `SELECT name FROM sqlite_master WHERE type = 'index' AND tbl_name = 'Messages' ORDER BY name`
       ],
       ['pluck'],
       ['all', {}]
@@ -2414,17 +2412,30 @@ async function getListIndexes(wsp, session) {
   });
 }
 
-async function waitForListIndexes(wsp, session) {
+// (the indexes of a mailbox are checked after it is opened)
+async function waitForIndexes(wsp, session, check) {
   for (let i = 0; i < 300; i++) {
-    const names = await getListIndexes(wsp, session);
-    if (names.length === 2) return names;
+    const names = await getIndexes(wsp, session);
+    if (check(names)) return names;
     await delay(100);
   }
 
-  return getListIndexes(wsp, session);
+  return getIndexes(wsp, session);
 }
 
-test('message lists are sorted with an index and keep their order, pages and counts', async (t) => {
+const LIST_CREATED_AT_INDEXES = [
+  'Messages_created_at',
+  'Messages_mailbox_created_at'
+];
+
+//
+// Lists are sorted by indexes every mailbox has, (mailbox, uid, modseq) for
+// a folder and the primary key for all folders, so a list never reads every
+// message of a large mailbox on the SQLite server and no index has to be
+// built for it (a build holds the mailbox write lock, and each write of the
+// SQLite server to it meanwhile blocks that server for every mailbox).
+//
+test('message lists are sorted with indexes every mailbox has and keep their order, pages and counts', async (t) => {
   const { api, wsp } = t.context;
   const { alias, domain, pass } = await createTestAlias(t);
   const auth = createAliasAuth(`${alias.name}@${domain.name}`, pass);
@@ -2452,9 +2463,6 @@ test('message lists are sorted with an index and keep their order, pages and cou
       inbox.unshift(res.body.id);
       if (!seen) unreadInbox.unshift(res.body.id);
     }
-
-    // (a distinct created_at for each)
-    await delay(5);
   }
 
   const capture = captureListQueries(wsp);
@@ -2481,18 +2489,17 @@ test('message lists are sorted with an index and keep their order, pages and cou
       };
     };
 
-    // (the indexes are built when the mailbox is opened, after the request)
     const first = await list('limit=4');
-    t.deepEqual(await waitForListIndexes(wsp, first.session), [
-      'Messages_created_at',
-      'Messages_mailbox_created_at'
-    ]);
+    const indexes = await waitForIndexes(wsp, first.session, (names) =>
+      names.includes('Messages_mailbox_uid_modseq')
+    );
+    for (const name of LIST_CREATED_AT_INDEXES)
+      t.false(indexes.includes(name), `indexes: ${indexes}`);
 
     const page1 = await list('limit=4');
     t.deepEqual(page1.ids, all.slice(0, 4));
     t.is(page1.res.headers['x-item-count'], '6');
     t.is(page1.res.headers['x-page-count'], '2');
-    t.regex(page1.plan, /USING INDEX Messages_created_at\b/);
     t.false(page1.plan.includes('TEMP B-TREE'), `plan: ${page1.plan}`);
 
     const page2 = await list('limit=4&page=2');
@@ -2503,7 +2510,7 @@ test('message lists are sorted with an index and keep their order, pages and cou
     const folder = await list('folder=INBOX');
     t.deepEqual(folder.ids, inbox);
     t.is(folder.res.headers['x-item-count'], String(inbox.length));
-    t.regex(folder.plan, /USING INDEX Messages_mailbox_created_at\b/);
+    t.regex(folder.plan, /USING INDEX Messages_mailbox_uid_modseq\b/);
     t.false(folder.plan.includes('TEMP B-TREE'), `plan: ${folder.plan}`);
 
     const unread = await list('folder=INBOX&is_unread=true');
@@ -2514,34 +2521,21 @@ test('message lists are sorted with an index and keep their order, pages and cou
     const empty = await list('limit=4&page=3');
     t.deepEqual(empty.ids, []);
     t.is(empty.res.headers['x-item-count'], '6');
+
+    // a folder that does not exist lists nothing
+    const missing = await list('folder=Missing');
+    t.deepEqual(missing.ids, []);
   } finally {
     capture.restore();
   }
 });
 
-const DROP_LIST_INDEXES = [
-  'DROP INDEX "Messages_mailbox_created_at"',
-  'DROP INDEX "Messages_created_at"'
-];
-
-async function runStatements(wsp, session, statements) {
-  for (const sql of statements)
-    await wsp.request({
-      action: 'stmt',
-      session,
-      stmt: [
-        ['prepare', sql],
-        ['run', {}]
-      ]
-    });
-}
-
 //
-// A mailbox without the message list indexes (built when it is first
-// opened, then dropped), with `padBytes` of other data in it
+// The (created_at) indexes earlier lists were sorted by are dropped when the
+// mailbox schema is next checked.
 //
-async function createMailboxWithoutListIndexes(t, padBytes) {
-  const { api, wsp } = t.context;
+test('a mailbox drops the old message list indexes', async (t) => {
+  const { api, client, wsp } = t.context;
   const { alias, domain, pass } = await createTestAlias(t);
   const auth = createAliasAuth(`${alias.name}@${domain.name}`, pass);
 
@@ -2550,8 +2544,8 @@ async function createMailboxWithoutListIndexes(t, padBytes) {
     .set('Authorization', auth)
     .send({
       to: [{ address: 'test@example.com' }],
-      subject: 'Large mailbox',
-      text: 'Large mailbox'
+      subject: 'Old indexes',
+      text: 'Old indexes'
     });
   t.is(created.status, 200);
 
@@ -2567,86 +2561,36 @@ async function createMailboxWithoutListIndexes(t, padBytes) {
     capture.restore();
   }
 
-  const indexes = await waitForListIndexes(wsp, session);
-  t.is(indexes.length, 2);
+  await waitForIndexes(wsp, session, (names) =>
+    names.includes('Messages_mailbox_uid_modseq')
+  );
+  for (const sql of [
+    'CREATE INDEX "Messages_mailbox_created_at" ON "Messages" ("mailbox", "created_at")',
+    'CREATE INDEX "Messages_created_at" ON "Messages" ("created_at")'
+  ])
+    await wsp.request({
+      action: 'stmt',
+      session,
+      stmt: [
+        ['prepare', sql],
+        ['run', {}]
+      ]
+    });
 
-  await runStatements(wsp, session, [
-    ...DROP_LIST_INDEXES,
-    'CREATE TABLE "PadTest" ("x" BLOB)',
-    `INSERT INTO "PadTest" VALUES (randomblob(${padBytes}))`
-  ]);
-  const dropped = await getListIndexes(wsp, session);
-  t.is(dropped.length, 0);
-
-  return { alias, auth, session };
-}
-
-// the next open checks the schema again (and builds missing indexes)
-async function checkSchemaAgain(t, alias, auth) {
-  await t.context.client.del(`migrate_check:${alias.id}`);
-  const res = await t.context.api
+  // (the next open checks the schema again)
+  await client.del(`migrate_check:${alias.id}`);
+  const res = await api
     .get('/v1/messages?lightweight=true')
     .set('Authorization', auth);
   t.is(res.status, 200);
-}
-
-//
-// Building them holds the write lock of the mailbox, and every write of the
-// SQLite server waits for it, so a mailbox above the size they are built in
-// when it is opened is indexed by the sqlite-worker instead, once the API
-// lists it: other requests (here a folder list, which also checks the
-// schema) leave it as is, and it is queued once a day at most.
-//
-// serial: it watches the jobs published by every request
-test.serial(
-  'a mailbox too large for an index build on open is indexed by the sqlite-worker once it is listed',
-  async (t) => {
-    const { client, wsp, api } = t.context;
-    const { alias, auth, session } = await createMailboxWithoutListIndexes(
-      t,
-      bytes('40MB')
-    );
-    // (as on a later day)
-    await client.del(`list_index_queued:${alias.id}`);
-
-    const jobs = [];
-    const { publish } = client;
-    client.publish = function (channel, message, ...args) {
-      if (channel === `sqlite_vacuum_queue:${config.env}`) {
-        const job = JSON.parse(message);
-        if (job.session?.user?.alias_id === alias.id) jobs.push(job);
-      }
-
-      return publish.call(this, channel, message, ...args);
-    };
-
-    try {
-      await client.del(`migrate_check:${alias.id}`);
-      const folders = await api.get('/v1/folders').set('Authorization', auth);
-      t.is(folders.status, 200);
-      await delay(ms('1s'));
-      t.is(jobs.filter((job) => job.action === 'list_indexes').length, 0);
-      t.deepEqual(await getListIndexes(wsp, session), []);
-
-      for (let i = 0; i < 2; i++) await checkSchemaAgain(t, alias, auth);
-      await delay(ms('1s'));
-    } finally {
-      client.publish = publish;
-    }
-
-    const queued = jobs.filter((job) => job.action === 'list_indexes');
-    t.is(queued.length, 1);
-    t.deepEqual(await getListIndexes(wsp, session), []);
-
-    // (run as the sqlite-worker runs it)
-    await listIndexes(queued[0]);
-    t.deepEqual(await getListIndexes(wsp, session), [
-      'Messages_created_at',
-      'Messages_mailbox_created_at'
-    ]);
-    t.is(await client.get(`vacuum_lock:${alias.id}`), null);
-  }
-);
+  const indexes = await waitForIndexes(
+    wsp,
+    session,
+    (names) => !names.some((name) => LIST_CREATED_AT_INDEXES.includes(name))
+  );
+  for (const name of LIST_CREATED_AT_INDEXES)
+    t.false(indexes.includes(name), `indexes: ${indexes}`);
+});
 
 // serial: it changes the size limit for every request while it runs
 test.serial(

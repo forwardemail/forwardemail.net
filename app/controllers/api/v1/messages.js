@@ -10,7 +10,6 @@ const bytes = require('@forwardemail/bytes');
 const getStream = require('get-stream');
 const pMap = require('p-map');
 const isSANB = require('is-string-and-not-blank');
-const ms = require('ms');
 const pify = require('pify');
 const { Iconv } = require('iconv');
 const { boolean } = require('boolean');
@@ -26,7 +25,6 @@ const Mailboxes = require('#models/mailboxes');
 const getJunkMailbox = require('#helpers/get-junk-mailbox');
 const Messages = require('#models/messages');
 const _ = require('#helpers/lodash');
-const config = require('#config');
 const env = require('#config/env');
 const deriveLabelsFromFlags = require('#helpers/derive-labels-from-flags');
 const escapeSqliteLike = require('#helpers/escape-sqlite-like');
@@ -94,55 +92,6 @@ const HEADER_LIKE_VALUE_SQL = `select _id from Messages, json_each(Messages.head
 const SUBJECT_LIKE_SQL = `select _id from Messages where subject LIKE $p1 ESCAPE '\\';`;
 const TEXT_LIKE_SQL = `select _id from Messages where text LIKE $p1 ESCAPE '\\';`;
 const MESSAGE_ID_LIKE_SQL = `select _id from Messages where msgid LIKE $p1 ESCAPE '\\';`;
-
-//
-// The SQLite server builds the indexes of the list sort in a small mailbox
-// when it opens it (see helpers/get-database.js), and the sqlite-worker
-// builds them in a larger one once it is listed.  Checked at most once a
-// day per alias (the claim also keeps a job that failed from being queued
-// again that day).
-//
-async function queueListIndexes(ctx) {
-  const { user } = ctx.state.session;
-  const claimed = await ctx.client.set(
-    `list_index_queued:${user.alias_id}`,
-    'true',
-    'PX',
-    ms('1d'),
-    'NX'
-  );
-  if (!claimed) return;
-
-  const count = await ctx.instance.wsp.request({
-    action: 'stmt',
-    session: { user },
-    stmt: [
-      [
-        'prepare',
-        `SELECT count(*) FROM sqlite_master WHERE type = 'index' AND name IN ('Messages_mailbox_created_at', 'Messages_created_at')`
-      ],
-      ['pluck'],
-      ['get', {}]
-    ]
-  });
-  if (count === 2) return;
-
-  await ctx.client.publish(
-    `sqlite_vacuum_queue:${config.env}`,
-    JSON.stringify({
-      action: 'list_indexes',
-      session: {
-        user: {
-          alias_id: user.alias_id,
-          alias_name: user.alias_name,
-          domain_name: user.domain_name,
-          password: user.password,
-          storage_location: user.storage_location
-        }
-      }
-    })
-  );
-}
 
 function headerLikePattern(value) {
   return `%${escapeSqliteLike(value.toLowerCase())}%`;
@@ -1280,8 +1229,12 @@ async function list(ctx) {
   // it is named with the object form; otherwise every list reported an
   // X-Item-Count of 0 and a single page.)
   //
-  // The sort is served by the (mailbox, created_at) and (created_at)
-  // indexes (see helpers/get-database.js).
+  // Newest first, in an order an index every mailbox has already serves: a
+  // folder by uid (its order of arrival, from the (mailbox, uid, modseq)
+  // index) and all folders by _id (whose ObjectId starts with the time it
+  // was stored).  Sorting by `created_at`, stored after the message bodies,
+  // read every message of the folder on the SQLite server's event loop, and
+  // an index on it held the mailbox's write lock while built.
   //
   const opts = {
     type: 'select',
@@ -1290,7 +1243,12 @@ async function list(ctx) {
     fields: ['*', { total_count: { expression: `(${countSql.query})` } }],
     limit: ctx.query.limit,
     offset: ctx.paginate.skip,
-    sort: sinceModseq === undefined ? { created_at: -1 } : { modseq: 1, _id: 1 }
+    sort:
+      sinceModseq === undefined
+        ? 'mailbox' in query
+          ? { uid: -1 }
+          : { _id: -1 }
+        : { modseq: 1, _id: 1 }
   };
 
   const sql = builder.build(opts);
@@ -1305,12 +1263,6 @@ async function list(ctx) {
     ]
   });
   if (!Array.isArray(messages)) messages = [];
-
-  try {
-    await queueListIndexes(ctx);
-  } catch (err) {
-    ctx.logger.error(err, { alias_id: ctx.state.session.user.alias_id });
-  }
 
   // Extract count - if no results, run count query separately
   let itemCount = 0;

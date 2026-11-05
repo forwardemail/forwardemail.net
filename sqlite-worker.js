@@ -26,7 +26,6 @@ const logger = require('#helpers/logger');
 const setupMongoose = require('#helpers/setup-mongoose');
 const {
   backup,
-  listIndexes,
   rekey,
   setWorkerCancelled,
   vacuum
@@ -124,11 +123,6 @@ async function processJob(payload, payloadStr) {
 
       case 'vacuum': {
         await vacuum(payload);
-        break;
-      }
-
-      case 'list_indexes': {
-        await listIndexes(payload);
         break;
       }
 
@@ -232,30 +226,22 @@ function onMessage(channel, message) {
   }
 
   //
-  // Vacuum and list index jobs: same concurrency/memory gates as backup.
+  // Vacuum jobs: same concurrency/memory gates as backup.
   //
-  if (payload.action === 'vacuum' || payload.action === 'list_indexes') {
+  if (payload.action === 'vacuum') {
     if (os.freemem() < MIN_FREE_MEM) {
-      logger.debug(
-        `sqlite-worker skipping ${payload.action} due to low memory`,
-        {
-          action: payload.action,
-          freemem: os.freemem(),
-          alias_id: payload?.session?.user?.alias_id
-        }
-      );
+      logger.debug('sqlite-worker skipping vacuum due to low memory', {
+        freemem: os.freemem(),
+        alias_id: payload?.session?.user?.alias_id
+      });
       return;
     }
 
     if (activeJobs >= MAX_CONCURRENCY) {
-      logger.debug(
-        `sqlite-worker skipping ${payload.action} due to concurrency limit`,
-        {
-          action: payload.action,
-          activeJobs,
-          alias_id: payload?.session?.user?.alias_id
-        }
-      );
+      logger.debug('sqlite-worker skipping vacuum due to concurrency limit', {
+        activeJobs,
+        alias_id: payload?.session?.user?.alias_id
+      });
       return;
     }
 

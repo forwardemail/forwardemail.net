@@ -11,8 +11,6 @@
 //
 
 const fs = require('node:fs');
-const os = require('node:os');
-const process = require('node:process');
 const path = require('node:path');
 const { Buffer } = require('node:buffer');
 
@@ -29,13 +27,11 @@ const utils = require('../utils');
 const Aliases = require('#models/aliases');
 const config = require('#config');
 const createTangerine = require('#helpers/create-tangerine');
-const getDatabase = require('#helpers/get-database');
 const getPathToDatabase = require('#helpers/get-path-to-database');
 const logger = require('#helpers/logger');
 const openDatabaseHandle = require('#helpers/open-database-handle');
 const { encrypt } = require('#helpers/encrypt-decrypt');
-const { getRekeyLockKey } = require('#helpers/rekey-lock');
-const { listIndexes, vacuum } = require('#helpers/worker');
+const { vacuum } = require('#helpers/worker');
 
 const imapSharedConfig = sharedConfig('IMAP');
 
@@ -211,143 +207,4 @@ test('a job queued before a password change is dropped quietly', async (t) => {
     })
   );
   t.is(fatal.length, 0);
-});
-
-//
-// The `listIndexes` job builds the message list indexes of a mailbox too
-// large for the SQLite server to build them (see helpers/get-database.js),
-// under the mailbox's VACUUM lock, and never alongside a VACUUM, a rotation
-// or with a password changed since it was queued.
-//
-const LIST_INDEXES_SQL = `SELECT "name" FROM "sqlite_master" WHERE "type" = 'index' AND "name" IN ('Messages_mailbox_created_at', 'Messages_created_at') ORDER BY "name"`;
-
-async function createMailboxWithoutListIndexes(t) {
-  const { alias, session } = await createAlias(t);
-  const dbFilePath = getPathToDatabase(alias);
-  fs.mkdirSync(path.dirname(dbFilePath), { recursive: true });
-  t.teardown(() => {
-    for (const suffix of ['', '-wal', '-shm'])
-      fs.rmSync(`${dbFilePath}${suffix}`, { force: true });
-  });
-
-  const db = await openDatabaseHandle(dbFilePath, session);
-  db.exec(
-    'CREATE TABLE "Messages" ("_id" TEXT PRIMARY KEY, "mailbox" TEXT, "created_at" TEXT)'
-  );
-  const insert = db.prepare('INSERT INTO "Messages" VALUES (?, ?, ?)');
-  for (let i = 0; i < 100; i++)
-    insert.run(`m${i}`, `box${i % 3}`, new Date(i * 1000).toISOString());
-  db.close();
-  return { alias, session, dbFilePath };
-}
-
-async function getListIndexes(dbFilePath, session) {
-  const db = await openDatabaseHandle(dbFilePath, session);
-  try {
-    return db.prepare(LIST_INDEXES_SQL).pluck().all();
-  } finally {
-    db.close();
-  }
-}
-
-test('the list index job builds the message list indexes and frees the lock', async (t) => {
-  const { client } = t.context;
-  const { alias, session, dbFilePath } = await createMailboxWithoutListIndexes(
-    t
-  );
-
-  await listIndexes({ action: 'list_indexes', session });
-  t.deepEqual(await getListIndexes(dbFilePath, session), [
-    'Messages_created_at',
-    'Messages_mailbox_created_at'
-  ]);
-  t.is(await client.get(`vacuum_lock:${alias.id}`), null);
-});
-
-for (const [name, getKey] of [
-  ['the VACUUM lock', (alias) => `vacuum_lock:${alias.id}`],
-  ['a rotation', (alias) => getRekeyLockKey(alias.id)],
-  ['a file swap', (alias) => `db_swap_lock:${alias.id}`]
-]) {
-  test(`the list index job leaves a mailbox alone while ${name} holds it`, async (t) => {
-    const { client } = t.context;
-    const { alias, session, dbFilePath } =
-      await createMailboxWithoutListIndexes(t);
-    const key = getKey(alias);
-    await client.set(key, 'another-process', 'PX', ms('1m'));
-    t.teardown(() => client.del(key));
-
-    await listIndexes({ action: 'list_indexes', session });
-    t.deepEqual(await getListIndexes(dbFilePath, session), []);
-    t.is(await client.get(key), 'another-process');
-    if (name !== 'the VACUUM lock')
-      t.is(await client.get(`vacuum_lock:${alias.id}`), null);
-  });
-}
-
-//
-// A build that outlasts its lock does not free the lock another holder took
-// meanwhile (it was released by an owner shared by the whole process, so one
-// taken again in this process looked like its own).
-//
-test('a list index build does not free a lock another holder took meanwhile', async (t) => {
-  const { client } = t.context;
-  const { alias, session, dbFilePath } = await createMailboxWithoutListIndexes(
-    t
-  );
-  const lockKey = `vacuum_lock:${alias.id}`;
-  const other = `${os.hostname()}:${process.pid}`;
-  t.teardown(() => client.del(lockKey));
-
-  // (the lock is taken by another holder in this process while it builds)
-  const { mget } = client;
-  client.mget = async function (...args) {
-    await client.set(lockKey, other, 'PX', ms('1m'));
-    return mget.apply(this, args);
-  };
-
-  t.teardown(() => {
-    client.mget = mget;
-  });
-
-  const db = await openDatabaseHandle(dbFilePath, session);
-  const statements = getDatabase.getMissingListIndexes(db);
-  db.close();
-  t.true(
-    await getDatabase.createIndexesInThread(
-      dbFilePath,
-      session,
-      statements,
-      client
-    )
-  );
-  t.deepEqual(await getListIndexes(dbFilePath, session), [
-    'Messages_created_at',
-    'Messages_mailbox_created_at'
-  ]);
-  t.is(await client.get(lockKey), other);
-});
-
-test('a list index job queued before a password change is dropped quietly', async (t) => {
-  const { session, dbFilePath } = await createMailboxWithoutListIndexes(t);
-  const fatal = [];
-  const { fatal: original } = logger;
-  logger.fatal = (...args) => {
-    fatal.push(args);
-  };
-
-  t.teardown(() => {
-    logger.fatal = original;
-  });
-
-  await t.notThrowsAsync(
-    listIndexes({
-      action: 'list_indexes',
-      session: {
-        user: { ...session.user, password: encrypt('not-the-password') }
-      }
-    })
-  );
-  t.is(fatal.length, 0);
-  t.deepEqual(await getListIndexes(dbFilePath, session), []);
 });
