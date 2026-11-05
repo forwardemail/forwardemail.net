@@ -21,6 +21,7 @@
   * [Perubahan Akun](#account-changes)
   * [Perubahan Pengaturan Domain](#domain-settings-changes)
 * [Cookie dan Sesi](#cookies-and-sessions)
+* [Analitik](#analytics)
 * [Aplikasi dan Webmail](#apps-and-webmail)
   * [Data di Perangkat Anda](#data-on-your-device)
   * [Data yang Dikirim Aplikasi kepada Kami](#data-the-apps-send-us)
@@ -39,7 +40,7 @@ Silakan merujuk pada [Ketentuan](/terms) kami karena berlaku di seluruh situs.
 
 ## Informasi yang Tidak Dikumpulkan {#information-not-collected}
 
-**Kecuali untuk informasi yang secara tegas dijelaskan dalam kebijakan ini (termasuk [log kesalahan](#error-logs), [log server](#server-logs), [email SMTP keluar](#outbound-smtp-emails), [informasi akun](#account-information), [pemrosesan data sementara](#temporary-data-processing), [log audit](#audit-logs), [kuki dan sesi](#cookies-and-sessions), dan [aplikasi dan webmail](#apps-and-webmail)):**
+**Kecuali untuk informasi yang secara tegas dijelaskan dalam kebijakan ini (termasuk [log kesalahan](#error-logs), [log server](#server-logs), [email SMTP keluar](#outbound-smtp-emails), [informasi akun](#account-information), [pemrosesan data sementara](#temporary-data-processing), [log audit](#audit-logs), [kuki dan sesi](#cookies-and-sessions), [analitik](#analytics), dan [aplikasi dan webmail](#apps-and-webmail)):**
 
 * Kami tidak menyimpan email yang diteruskan ke penyimpanan disk maupun basis data.
 * Kami tidak menyimpan metadata apa pun tentang email yang diteruskan ke penyimpanan disk maupun basis data.
@@ -59,6 +60,15 @@ Untuk transparansi, kapan saja Anda dapat <a href="https://github.com/forwardema
 * Kami menyimpan nama domain, alias, dan konfigurasi yang Anda berikan kepada kami.
 * Kami menyimpan metadata keamanan akun terbatas yang diperlukan untuk melindungi akun Anda dan mengelola akses, termasuk pengidentifikasi sesi situs web aktif, penghitung upaya masuk yang gagal, dan stempel waktu dari upaya masuk terakhir.
 * Informasi tambahan apa pun yang Anda berikan secara sukarela kepada kami, seperti komentar atau pertanyaan yang dikirimkan kepada kami melalui email atau di halaman <a href="/help">bantuan</a> kami.
+
+
+**Atribusi pendaftaran** (disimpan secara permanen pada akun Anda):
+
+Saat Anda membuat akun, kami menyimpan informasi berikut untuk memahami bagaimana pengguna menemukan layanan kami:
+
+* Domain situs web perujuk (bukan URL lengkap)
+* Halaman pertama yang Anda kunjungi di situs kami, dengan nilai di jalurnya seperti nama domain, ID, dan token diganti dengan placeholder
+* Parameter kampanye UTM jika ada di URL
 
 ### Penyimpanan Email {#email-storage}
 
@@ -167,6 +177,36 @@ Untuk domain dengan beberapa administrator, kami menyediakan pencatatan audit te
   * Autentikasi dan status masuk
   * Fungsionalitas "ingat saya" pada autentikasi dua faktor
   * Pesan kilat dan pemberitahuan
+  * [Analitik](#analytics): halaman pertama kunjungan Anda, domain perujuk, parameter kampanye (UTM), dan jumlah halaman
+
+
+## Analytics {#analytics}
+
+Kami menggunakan sistem analitik yang berfokus pada privasi untuk memahami bagaimana layanan kami digunakan. Sistem ini dirancang dengan privasi sebagai prinsip inti:
+
+**Apa yang TIDAK kami kumpulkan:**
+
+* Kami tidak menyimpan alamat IP
+* Kami tidak memasang cookie terpisah untuk analitik
+* Kami tidak menggunakan layanan analitik pihak ketiga
+* Kami tidak melacak pengunjung antar hari atau sesi saat mereka belum masuk
+
+**Apa yang KAMI kumpulkan:**
+
+* Tampilan halaman dan penggunaan layanan yang digabungkan (SMTP, IMAP, POP3, API, dll.)
+* Jenis dan versi browser serta sistem operasi (diurai dari user agent, data mentah dibuang)
+* Jenis perangkat (desktop, mobile, tablet)
+* Domain perujuk (bukan URL lengkap) dan parameter kampanye (UTM)
+* Jenis klien email untuk protokol mail (misalnya Thunderbird, Outlook)
+* Halaman atau jalur API yang diminta, dengan nilai di dalamnya seperti nama domain, ID, dan token diganti dengan placeholder, dan apakah permintaan tersebut berhasil
+* Untuk kunjungan situs web, halaman pertama kunjungan dan jumlah halaman, yang disimpan di sesi Anda (lihat [Cookie dan Sesi](#cookies-and-sessions))
+* Saat Anda sudah masuk, ID akun, alias, atau domain Anda, agar kami dapat melihat bagaimana setiap layanan digunakan dan memecahkan masalah
+
+**Retensi data:**
+
+* Peristiwa analitik secara otomatis dihapus setelah 30 hari
+* Total per jam, yang tidak dikaitkan dengan akun mana pun, disimpan selama 90 hari
+* Identifier sesi berganti setiap hari dan tidak dapat digunakan untuk melacak pengunjung antar hari
 
 
 ## Aplikasi dan Webmail {#apps-and-webmail}

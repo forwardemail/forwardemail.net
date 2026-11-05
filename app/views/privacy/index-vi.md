@@ -21,6 +21,7 @@
   * [Thay đổi tài khoản](#account-changes)
   * [Thay đổi cài đặt tên miền](#domain-settings-changes)
 * [Cookie và phiên làm việc](#cookies-and-sessions)
+* [Phân tích](#analytics)
 * [Ứng dụng và webmail](#apps-and-webmail)
   * [Dữ liệu trên thiết bị của bạn](#data-on-your-device)
   * [Dữ liệu ứng dụng gửi cho chúng tôi](#data-the-apps-send-us)
@@ -39,7 +40,7 @@ Vui lòng tham khảo [Điều khoản](/terms) của chúng tôi vì nó áp d�
 
 ## Thông tin không được thu thập {#information-not-collected}
 
-**Ngoại trừ các thông tin được mô tả rõ ràng trong chính sách này (bao gồm [nhật ký lỗi](#error-logs), [nhật ký máy chủ](#server-logs), [email SMTP gửi đi](#outbound-smtp-emails), [thông tin tài khoản](#account-information), [xử lý dữ liệu tạm thời](#temporary-data-processing), [nhật ký kiểm toán](#audit-logs), [cookie và phiên](#cookies-and-sessions), và [ứng dụng và webmail](#apps-and-webmail)):**
+**Ngoại trừ các thông tin được mô tả rõ ràng trong chính sách này (bao gồm [nhật ký lỗi](#error-logs), [nhật ký máy chủ](#server-logs), [email SMTP gửi đi](#outbound-smtp-emails), [thông tin tài khoản](#account-information), [xử lý dữ liệu tạm thời](#temporary-data-processing), [nhật ký kiểm toán](#audit-logs), [cookie và phiên](#cookies-and-sessions), [phân tích](#analytics), và [ứng dụng và webmail](#apps-and-webmail)):**
 
 * Chúng tôi không lưu trữ bất kỳ email được chuyển tiếp nào vào bộ nhớ đĩa hoặc cơ sở dữ liệu.
 * Chúng tôi không lưu trữ bất kỳ siêu dữ liệu nào về các email được chuyển tiếp vào bộ nhớ đĩa hoặc cơ sở dữ liệu.
@@ -59,6 +60,15 @@ Vui lòng tham khảo [Điều khoản](/terms) của chúng tôi vì nó áp d�
 * Chúng tôi lưu trữ tên miền, bí danh và cấu hình mà bạn cung cấp cho chúng tôi.
 * Chúng tôi lưu trữ siêu dữ liệu bảo mật tài khoản hạn chế cần thiết để bảo vệ tài khoản của bạn và quản lý quyền truy cập, bao gồm các định danh phiên trang web đang hoạt động, bộ đếm số lần đăng nhập không thành công và dấu thời gian của lần thử đăng nhập cuối cùng.
 * Bất kỳ thông tin bổ sung nào bạn tự nguyện cung cấp cho chúng tôi, chẳng hạn như nhận xét hoặc câu hỏi được gửi cho chúng tôi qua email hoặc trên trang <a href="/help">trợ giúp</a> của chúng tôi.
+
+
+**Gán nguồn đăng ký** (lưu trữ vĩnh viễn trên tài khoản của bạn):
+
+Khi bạn tạo tài khoản, chúng tôi lưu trữ các thông tin sau để hiểu cách người dùng tìm thấy dịch vụ của chúng tôi:
+
+* Tên miền trang web giới thiệu (không phải URL đầy đủ)
+* Trang đầu tiên bạn truy cập trên trang của chúng tôi, trong đó các giá trị trong đường dẫn như tên miền, ID và token được thay thế bằng giá trị giữ chỗ
+* Tham số chiến dịch UTM nếu có trong URL
 
 ### Lưu trữ email {#email-storage}
 
@@ -167,6 +177,36 @@ Các dữ liệu sau được xử lý tạm thời trong bộ nhớ hoặc Redi
   * Trạng thái xác thực và đăng nhập
   * Chức năng "ghi nhớ tôi" của xác thực hai yếu tố
   * Tin nhắn flash và thông báo
+  * [Phân tích](#analytics): trang đầu tiên trong lượt truy cập của bạn, tên miền giới thiệu, các tham số chiến dịch (UTM) và số lượng trang
+
+
+## Phân tích {#analytics}
+
+Chúng tôi sử dụng hệ thống phân tích tập trung vào quyền riêng tư của riêng mình để hiểu cách dịch vụ của chúng tôi được sử dụng. Hệ thống này được thiết kế với quyền riêng tư là nguyên tắc cốt lõi:
+
+**Những gì chúng tôi KHÔNG thu thập:**
+
+* Chúng tôi không lưu trữ địa chỉ IP
+* Chúng tôi không đặt cookie riêng cho phân tích
+* Chúng tôi không sử dụng bất kỳ dịch vụ phân tích bên thứ ba nào
+* Chúng tôi không theo dõi khách truy cập qua các ngày hoặc phiên làm việc khi họ chưa đăng nhập
+
+**Những gì chúng tôi CÓ thu thập:**
+
+* Lượt xem trang tổng hợp và sử dụng dịch vụ (SMTP, IMAP, POP3, API, v.v.)
+* Loại và phiên bản của trình duyệt và hệ điều hành (phân tích từ user agent, dữ liệu thô bị loại bỏ)
+* Loại thiết bị (máy tính để bàn, di động, máy tính bảng)
+* Tên miền giới thiệu (không phải URL đầy đủ) và các tham số chiến dịch (UTM)
+* Loại ứng dụng email cho các giao thức thư (ví dụ Thunderbird, Outlook)
+* Trang hoặc đường dẫn API được yêu cầu, trong đó các giá trị như tên miền, ID và token được thay thế bằng giá trị giữ chỗ, và yêu cầu có thành công hay không
+* Đối với lượt truy cập trang web, trang đầu tiên của lượt truy cập và số lượng trang, được lưu trong phiên của bạn (xem [Cookie và phiên làm việc](#cookies-and-sessions))
+* Khi bạn đã đăng nhập, ID tài khoản, bí danh hoặc tên miền của bạn, để chúng tôi có thể biết từng dịch vụ được sử dụng như thế nào và khắc phục sự cố
+
+**Lưu giữ dữ liệu:**
+
+* Các sự kiện phân tích tự động bị xóa sau 30 ngày
+* Số liệu tổng theo giờ, không liên kết với bất kỳ tài khoản nào, được lưu giữ trong 90 ngày
+* Định danh phiên làm việc được thay đổi hàng ngày và không thể dùng để theo dõi khách truy cập qua các ngày
 
 
 ## Ứng dụng và webmail {#apps-and-webmail}

@@ -21,6 +21,7 @@
   * [Modifications du compte](#account-changes)
   * [Modifications des paramètres de domaine](#domain-settings-changes)
 * [Cookies et sessions](#cookies-and-sessions)
+* [Analyses](#analytics)
 * [Applications et webmail](#apps-and-webmail)
   * [Données sur votre appareil](#data-on-your-device)
   * [Données que les applications nous envoient](#data-the-apps-send-us)
@@ -39,7 +40,7 @@ Veuillez vous référer à nos [Conditions](/terms) qui s'appliquent à l'ensemb
 
 ## Informations non collectées {#information-not-collected}
 
-**À l'exception des informations expressément décrites dans cette politique (y compris les [journaux d'erreurs](#error-logs), les [journaux des serveurs](#server-logs), les [e-mails SMTP sortants](#outbound-smtp-emails), les [informations de compte](#account-information), le [traitement temporaire des données](#temporary-data-processing), les [journaux d'audit](#audit-logs), les [cookies et sessions](#cookies-and-sessions), et les [applications et le webmail](#apps-and-webmail) ):**
+**À l'exception des informations expressément décrites dans cette politique (y compris les [journaux d'erreurs](#error-logs), les [journaux des serveurs](#server-logs), les [e-mails SMTP sortants](#outbound-smtp-emails), les [informations de compte](#account-information), le [traitement temporaire des données](#temporary-data-processing), les [journaux d'audit](#audit-logs), les [cookies et sessions](#cookies-and-sessions), les [analyses](#analytics), et les [applications et le webmail](#apps-and-webmail) ):**
 
 * Nous ne stockons aucun e-mail transféré sur un stockage disque ni dans des bases de données.
 * Nous ne stockons aucune métadonnée concernant les e-mails transférés sur un stockage disque ni dans des bases de données.
@@ -59,6 +60,15 @@ Pour plus de transparence, vous pouvez à tout moment <a href="https://github.co
 * Nous stockons vos noms de domaine, alias et configurations que vous nous fournissez.
 * Nous stockons des métadonnées de sécurité de compte limitées nécessaires pour protéger votre compte et gérer l'accès, y compris les identifiants de session de site web actifs, les compteurs de tentatives de connexion échouées et l'horodatage de la dernière tentative de connexion.
 * Toute information supplémentaire que vous nous fournissez volontairement, telle que des commentaires ou des questions qui nous sont soumis par e-mail ou sur notre page d'<a href="/help">aide</a>.
+
+
+**Attribution d'inscription** (stockée de manière permanente sur votre compte) :
+
+Lorsque vous créez un compte, nous stockons les informations suivantes pour comprendre comment les utilisateurs découvrent notre service :
+
+* Le domaine du site référent (pas l'URL complète)
+* La première page que vous avez visitée sur notre site, avec les valeurs de son chemin, telles que les noms de domaine, les identifiants et les jetons, remplacées par des espaces réservés
+* Les paramètres de campagne UTM s'ils sont présents dans l'URL
 
 ### Stockage des emails {#email-storage}
 
@@ -167,6 +177,36 @@ Pour les domaines avec plusieurs administrateurs, nous fournissons une journalis
   * L'authentification et l'état de connexion
   * La fonctionnalité "se souvenir de moi" de l'authentification à deux facteurs
   * Les messages flash et les notifications
+  * [Analyse](#analytics) : la première page de votre visite, le domaine référent, les paramètres de campagne UTM et un compteur de pages
+
+
+## Analyse {#analytics}
+
+Nous utilisons notre propre système d’analyse axé sur la confidentialité pour comprendre comment nos services sont utilisés. Ce système est conçu avec la confidentialité comme principe fondamental :
+
+**Ce que nous ne collectons PAS :**
+
+* Nous ne stockons pas les adresses IP
+* Nous ne déposons pas de cookie distinct pour l’analyse
+* Nous n’utilisons aucun service d’analyse tiers
+* Nous ne suivons pas les visiteurs sur plusieurs jours ou sessions lorsqu’ils ne sont pas connectés
+
+**Ce que nous collectons :**
+
+* Vues de pages agrégées et utilisation des services (SMTP, IMAP, POP3, API, etc.)
+* Type et version du navigateur et du système d’exploitation (analysés à partir de l’agent utilisateur, données brutes supprimées)
+* Type d’appareil (ordinateur de bureau, mobile, tablette)
+* Domaine référent (pas l’URL complète) et paramètres de campagne UTM
+* Type de client mail pour les protocoles de messagerie (ex. Thunderbird, Outlook)
+* La page ou le chemin d’API demandé, dans lequel les valeurs telles que les noms de domaine, les identifiants et les jetons sont remplacées par des espaces réservés, et si la requête a réussi
+* Pour les visites du site web, la première page de la visite et un compteur de pages, conservés dans votre session (voir [Cookies et sessions](#cookies-and-sessions))
+* Lorsque vous êtes connecté, l’identifiant de votre compte, de votre alias ou de votre domaine, afin que nous puissions voir comment chaque service est utilisé et résoudre les problèmes
+
+**Conservation des données :**
+
+* Les événements analytiques sont automatiquement supprimés après 30 jours
+* Les totaux horaires, qui ne sont liés à aucun compte, sont conservés pendant 90 jours
+* Les identifiants de session tournent quotidiennement et ne peuvent pas être utilisés pour suivre les visiteurs sur plusieurs jours
 
 
 ## Applications et webmail {#apps-and-webmail}

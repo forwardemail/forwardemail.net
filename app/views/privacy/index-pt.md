@@ -21,6 +21,7 @@
   * [Alterações na Conta](#account-changes)
   * [Alterações nas Configurações de Domínio](#domain-settings-changes)
 * [Cookies e Sessões](#cookies-and-sessions)
+* [Análises](#analytics)
 * [Aplicativos e Webmail](#apps-and-webmail)
   * [Dados no seu Dispositivo](#data-on-your-device)
   * [Dados que os Aplicativos nos Enviam](#data-the-apps-send-us)
@@ -39,7 +40,7 @@ Por favor, consulte nossos [Termos](/terms) conforme aplicável em todo o site.
 
 ## Informações Não Coletadas {#information-not-collected}
 
-**Com exceção das informações expressamente descritas nesta política (incluindo [logs de erro](#error-logs), [logs do servidor](#server-logs), [e-mails SMTP de saída](#outbound-smtp-emails), [informações da conta](#account-information), [processamento temporário de dados](#temporary-data-processing), [logs de auditoria](#audit-logs), [cookies e sessões](#cookies-and-sessions) e [aplicativos e webmail](#apps-and-webmail)):**
+**Com exceção das informações expressamente descritas nesta política (incluindo [logs de erro](#error-logs), [logs do servidor](#server-logs), [e-mails SMTP de saída](#outbound-smtp-emails), [informações da conta](#account-information), [processamento temporário de dados](#temporary-data-processing), [logs de auditoria](#audit-logs), [cookies e sessões](#cookies-and-sessions), [análises](#analytics) e [aplicativos e webmail](#apps-and-webmail)):**
 
 * Não armazenamos nenhum e-mail encaminhado em armazenamento em disco nem em bancos de dados.
 * Não armazenamos nenhum metadado sobre e-mails encaminhados em armazenamento em disco nem em bancos de dados.
@@ -59,6 +60,15 @@ Para transparência, a qualquer momento você pode <a href="https://github.com/f
 * Armazenamos os seus nomes de domínio, aliases e configurações que você nos fornece.
 * Armazenamos metadados limitados de segurança da conta necessários para proteger sua conta e gerenciar o acesso, incluindo identificadores de sessão de site ativos, contadores de tentativas de login falhas e o carimbo de data/hora da última tentativa de login.
 * Quaisquer informações adicionais que você nos forneça voluntariamente, como comentários ou perguntas enviadas a nós por e-mail ou em nossa página de <a href="/help">ajuda</a>.
+
+
+**Atribuição de cadastro** (armazenada permanentemente em sua conta):
+
+Quando você cria uma conta, armazenamos as seguintes informações para entender como os usuários encontram nosso serviço:
+
+* O domínio do site de referência (não a URL completa)
+* A primeira página que você visitou em nosso site, com valores no caminho, como nomes de domínio, IDs e tokens, substituídos por espaços reservados
+* Parâmetros de campanha UTM se presentes na URL
 
 ### Armazenamento de Email {#email-storage}
 
@@ -167,6 +177,36 @@ Para domínios com múltiplos administradores, fornecemos registro detalhado de 
   * Autenticação e estado de login
   * Funcionalidade "lembrar de mim" da autenticação de dois fatores
   * Mensagens flash e notificações
+  * [Análises](#analytics): a primeira página da sua visita, o domínio de referência, os parâmetros de campanha (UTM) e uma contagem de páginas
+
+
+## Analytics {#analytics}
+
+Usamos nosso próprio sistema de análise focado em privacidade para entender como nossos serviços são utilizados. Este sistema foi projetado com a privacidade como princípio central:
+
+**O que NÃO coletamos:**
+
+* Não armazenamos endereços IP
+* Não definimos um cookie separado para análise
+* Não utilizamos serviços de análise de terceiros
+* Não rastreamos visitantes ao longo dos dias ou sessões quando não estão conectados
+
+**O que COLETAMOS:**
+
+* Visualizações agregadas de páginas e uso do serviço (SMTP, IMAP, POP3, API, etc.)
+* Tipo e versão de navegador e sistema operacional (analisados a partir do user agent, dados brutos descartados)
+* Tipo de dispositivo (desktop, móvel, tablet)
+* Domínio de referência (não a URL completa) e parâmetros de campanha (UTM)
+* Tipo de cliente de email para protocolos de correio (ex.: Thunderbird, Outlook)
+* A página ou o caminho da API solicitado, em que valores como nomes de domínio, IDs e tokens são substituídos por espaços reservados, e se a solicitação foi bem-sucedida
+* Em visitas ao site, a primeira página da visita e uma contagem de páginas, mantidas na sua sessão (veja [Cookies e Sessões](#cookies-and-sessions))
+* Quando você está conectado, o ID da sua conta, alias ou domínio, para que possamos ver como cada serviço é usado e solucionar problemas
+
+**Retenção de dados:**
+
+* Eventos de análise são automaticamente excluídos após 30 dias
+* Totais por hora, que não estão vinculados a nenhuma conta, são mantidos por 90 dias
+* Identificadores de sessão rotacionam diariamente e não podem ser usados para rastrear visitantes ao longo dos dias
 
 
 ## Aplicativos e Webmail {#apps-and-webmail}

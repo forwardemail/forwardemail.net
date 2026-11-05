@@ -21,6 +21,7 @@
   * [Fiókváltozások](#account-changes)
   * [Domain beállítások változásai](#domain-settings-changes)
 * [Sütik és munkamenetek](#cookies-and-sessions)
+* [Elemzés](#analytics)
 * [Alkalmazások és webmail](#apps-and-webmail)
   * [Adatok az Ön eszközén](#data-on-your-device)
   * [Az alkalmazások által nekünk küldött adatok](#data-the-apps-send-us)
@@ -39,7 +40,7 @@ Kérjük, tekintse meg a [Felhasználási feltételeinket](/terms), mivel azok a
 
 ## Nem gyűjtött információk {#information-not-collected}
 
-**A jelen szabályzatban kifejezetten leírt információk kivételével (beleértve a [hibanaplókat](#error-logs), a [szervernaplókat](#server-logs), a [kimenő SMTP e-maileket](#outbound-smtp-emails), a [fiókinformációkat](#account-information), az [ideiglenes adatfeldolgozást](#temporary-data-processing), az [ellenőrzési naplókat](#audit-logs), a [sütiket és munkameneteket](#cookies-and-sessions), valamint az [alkalmazásokat és a webmailt](#apps-and-webmail)):**
+**A jelen szabályzatban kifejezetten leírt információk kivételével (beleértve a [hibanaplókat](#error-logs), a [szervernaplókat](#server-logs), a [kimenő SMTP e-maileket](#outbound-smtp-emails), a [fiókinformációkat](#account-information), az [ideiglenes adatfeldolgozást](#temporary-data-processing), az [ellenőrzési naplókat](#audit-logs), a [sütiket és munkameneteket](#cookies-and-sessions), az [elemzést](#analytics), valamint az [alkalmazásokat és a webmailt](#apps-and-webmail)):**
 
 * Nem tárolunk semmilyen továbbított e-mailt sem lemezes tárolókon, sem adatbázisokban.
 * Nem tárolunk semmilyen metaadatot a továbbított e-mailekről sem lemezes tárolókon, sem adatbázisokban.
@@ -59,6 +60,15 @@ Kérjük, tekintse meg a [Felhasználási feltételeinket](/terms), mivel azok a
 * Tároljuk az Ön által megadott domain neveket, aliasokat és konfigurációkat.
 * Korlátozott fiókbiztonsági metaadatokat tárolunk, amelyek a fiókja védelméhez és a hozzáférés kezeléséhez szükségesek, beleértve az aktív weboldal-munkamenet azonosítókat, a sikertelen bejelentkezési kísérletek számlálóit és az utolsó bejelentkezési kísérlet időbélyegét.
 * Minden további információt, amelyet önkéntesen ad meg nekünk, például az e-mailben vagy a <a href="/help">súgó</a> oldalunkon beküldött megjegyzéseket vagy kérdéseket.
+
+
+**Regisztrációs attribúció** (állandóan tárolva a fiókjában):
+
+Fiók létrehozásakor az alábbi információkat tároljuk, hogy megértsük, hogyan találják meg felhasználóink a szolgáltatásunkat:
+
+* A hivatkozó weboldal domainje (nem a teljes URL)
+* Az első oldal, amelyet meglátogatott az oldalunkon, és amelynek útvonalában az olyan értékeket, mint a domainnevek, az azonosítók és a tokenek, helyőrzőkre cseréljük
+* UTM kampányparaméterek, ha jelen vannak az URL-ben
 
 ### E-mailek tárolása {#email-storage}
 
@@ -167,6 +177,36 @@ Több adminisztrátorral rendelkező domainek esetén részletes audit naplózá
   * Hitelesítés és bejelentkezési állapot
   * Kétfaktoros hitelesítés "remember me" funkciója
   * Flash üzenetek és értesítések
+  * [Elemzés](#analytics): az Ön látogatásának első oldala, a hivatkozó domain, a kampányparaméterek (UTM) és a megtekintett oldalak száma
+
+
+## Analytics {#analytics}
+
+Saját, adatvédelmet előtérbe helyező elemző rendszerünket használjuk annak megértésére, hogyan használják szolgáltatásainkat. Ez a rendszer az adatvédelem alapelvével készült:
+
+**Mit NEM gyűjtünk:**
+
+* Nem tárolunk IP-címeket
+* Nem állítunk be külön sütit elemzéshez
+* Nem használunk harmadik fél elemző szolgáltatásokat
+* Nem követjük a látogatókat napokon vagy munkameneteken át, amikor nincsenek bejelentkezve
+
+**Mit GYŰJTÜNK:**
+
+* Összesített oldalmegtekintések és szolgáltatáshasználat (SMTP, IMAP, POP3, API stb.)
+* Böngésző és operációs rendszer típusa és verziója (a user agentből kinyert, nyers adat eldobva)
+* Eszköz típusa (asztali, mobil, tablet)
+* Hivatkozó domain (nem teljes URL) és kampányparaméterek (UTM)
+* E-mail kliens típusa a levelezési protokollokhoz (pl. Thunderbird, Outlook)
+* A lekért oldal vagy API útvonala, amelyben az olyan értékeket, mint a domainnevek, az azonosítók és a tokenek, helyőrzőkre cseréljük, valamint az, hogy a kérés sikeres volt-e
+* Weboldal-látogatások esetén a látogatás első oldala és a megtekintett oldalak száma, amelyeket a munkamenetében tárolunk (lásd a [Sütik és munkamenetek](#cookies-and-sessions) részt)
+* Ha be van jelentkezve, a fiókja, aliasa vagy domainje azonosítója, hogy lássuk, hogyan használják az egyes szolgáltatásokat, és elháríthassuk a problémákat
+
+**Adatmegőrzés:**
+
+* Az elemzési eseményeket automatikusan töröljük 30 nap után
+* Az óránkénti összesítéseket, amelyek egyetlen fiókhoz sem kapcsolódnak, 90 napig őrizzük meg
+* A munkamenet-azonosítók naponta cserélődnek, és nem használhatók fel a látogatók napokon át történő követésére
 
 
 ## Alkalmazások és webmail {#apps-and-webmail}

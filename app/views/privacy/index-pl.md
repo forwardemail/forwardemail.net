@@ -21,6 +21,7 @@
   * [Zmiany konta](#account-changes)
   * [Zmiany ustawień domeny](#domain-settings-changes)
 * [Pliki cookie i sesje](#cookies-and-sessions)
+* [Analizy](#analytics)
 * [Aplikacje i webmail](#apps-and-webmail)
   * [Dane na Twoim urządzeniu](#data-on-your-device)
   * [Dane, które aplikacje do nas wysyłają](#data-the-apps-send-us)
@@ -39,7 +40,7 @@ Prosimy o zapoznanie się z naszymi [Warunkami](/terms), które mają zastosowan
 
 ## Informacje, których nie zbieramy {#information-not-collected}
 
-**Z wyjątkiem informacji wyraźnie opisanych w niniejszej polityce (w tym [dzienników błędów](#error-logs), [dzienników serwera](#server-logs), [wychodzących wiadomości e-mail SMTP](#outbound-smtp-emails), [informacji o koncie](#account-information), [tymczasowego przetwarzania danych](#temporary-data-processing), [dzienników audytu](#audit-logs), [plików cookie i sesji](#cookies-and-sessions) oraz [aplikacji i webmaila](#apps-and-webmail)):**
+**Z wyjątkiem informacji wyraźnie opisanych w niniejszej polityce (w tym [dzienników błędów](#error-logs), [dzienników serwera](#server-logs), [wychodzących wiadomości e-mail SMTP](#outbound-smtp-emails), [informacji o koncie](#account-information), [tymczasowego przetwarzania danych](#temporary-data-processing), [dzienników audytu](#audit-logs), [plików cookie i sesji](#cookies-and-sessions), [analityki](#analytics) oraz [aplikacji i webmaila](#apps-and-webmail)):**
 
 * Nie przechowujemy żadnych przekazywanych wiadomości e-mail w pamięci dyskowej ani w bazach danych.
 * Nie przechowujemy żadnych metadanych dotyczących przekazywanych wiadomości e-mail w pamięci dyskowej ani w bazach danych.
@@ -59,6 +60,15 @@ Dla przejrzystości, w każdej chwili możesz <a href="https://github.com/forwar
 * Przechowujemy Twoje nazwy domen, aliasy i konfiguracje, które nam udostępniasz.
 * Przechowujemy ograniczone metadane dotyczące bezpieczeństwa konta, niezbędne do ochrony Twojego konta i zarządzania dostępem, w tym identyfikatory aktywnych sesji w witrynie, liczniki nieudanych prób logowania oraz znacznik czasu ostatniej próby logowania.
 * Wszelkie dodatkowe informacje, które dobrowolnie nam przekazujesz, takie jak komentarze lub pytania przesłane do nas pocztą e-mail lub na naszej stronie <a href="/help">pomocy</a>.
+
+
+**Atrybucja rejestracji** (przechowywana na stałe na Twoim koncie):
+
+Gdy tworzysz konto, przechowujemy następujące informacje, aby zrozumieć, jak użytkownicy znajdują naszą usługę:
+
+* Domenę strony odsyłającej (nie pełny URL)
+* Pierwszą stronę, którą odwiedziłeś na naszej stronie, z wartościami w jej ścieżce, takimi jak nazwy domen, identyfikatory i tokeny, zamienionymi na symbole zastępcze
+* Parametry kampanii UTM, jeśli są obecne w URL
 
 ### Przechowywanie e-maili {#email-storage}
 
@@ -167,6 +177,36 @@ Dla domen z wieloma administratorami zapewniamy szczegółowe logowanie audytu, 
   * Uwierzytelniania i stanu logowania
   * Funkcji "zapamiętaj mnie" przy uwierzytelnianiu dwuskładnikowym
   * Komunikatów flash i powiadomień
+  * [Analityki](#analytics): pierwsza strona Twojej wizyty, domena odsyłająca, parametry kampanii (UTM) i liczba odsłon
+
+
+## Analytics {#analytics}
+
+Używamy własnego systemu analitycznego skoncentrowanego na prywatności, aby zrozumieć, jak korzystane są nasze usługi. System ten został zaprojektowany z prywatnością jako podstawową zasadą:
+
+**Czego NIE zbieramy:**
+
+* Nie przechowujemy adresów IP
+* Nie ustawiamy osobnego pliku cookie do analityki
+* Nie korzystamy z żadnych zewnętrznych usług analitycznych
+* Nie śledzimy odwiedzających na przestrzeni wielu dni ani sesji, gdy nie są zalogowani
+
+**Co ZBIERAMY:**
+
+* Zagregowane odsłony stron i użycie usług (SMTP, IMAP, POP3, API itp.)
+* Typ i wersję przeglądarki oraz systemu operacyjnego (parsowane z user agenta, surowe dane są usuwane)
+* Typ urządzenia (desktop, mobile, tablet)
+* Domenę odsyłającą (nie pełny URL) i parametry kampanii (UTM)
+* Typ klienta poczty dla protokołów mailowych (np. Thunderbird, Outlook)
+* Ścieżkę żądanej strony lub API, w której wartości takie jak nazwy domen, identyfikatory i tokeny są zamienione na symbole zastępcze, oraz informację, czy żądanie się powiodło
+* W przypadku wizyt w witrynie pierwszą stronę wizyty i liczbę odsłon, przechowywane w Twojej sesji (zobacz [Pliki cookie i sesje](#cookies-and-sessions))
+* Gdy jesteś zalogowany, identyfikator Twojego konta, aliasu lub domeny, abyśmy mogli zobaczyć, jak używane są poszczególne usługi, i rozwiązywać problemy
+
+**Przechowywanie danych:**
+
+* Zdarzenia analityczne są automatycznie usuwane po 30 dniach
+* Sumy godzinowe, które nie są powiązane z żadnym kontem, są przechowywane przez 90 dni
+* Identyfikatory sesji rotują codziennie i nie mogą być używane do śledzenia odwiedzających na przestrzeni wielu dni
 
 
 ## Aplikacje i webmail {#apps-and-webmail}

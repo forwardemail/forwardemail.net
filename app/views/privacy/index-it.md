@@ -21,6 +21,7 @@
   * [Modifiche all'Account](#account-changes)
   * [Modifiche alle Impostazioni del Dominio](#domain-settings-changes)
 * [Cookie e Sessioni](#cookies-and-sessions)
+* [Analisi](#analytics)
 * [App e Webmail](#apps-and-webmail)
   * [Dati sul Tuo Dispositivo](#data-on-your-device)
   * [Dati che le App ci Inviano](#data-the-apps-send-us)
@@ -39,7 +40,7 @@ Si prega di fare riferimento ai nostri [Termini](/terms) come applicabili a tutt
 
 ## Informazioni Non Raccoglite {#information-not-collected}
 
-**Ad eccezione delle informazioni espressamente descritte in questa policy (inclusi [log degli errori](#error-logs), [log dei server](#server-logs), [email SMTP in uscita](#outbound-smtp-emails), [informazioni sull'account](#account-information), [elaborazione temporanea dei dati](#temporary-data-processing), [log di audit](#audit-logs), [cookie e sessioni](#cookies-and-sessions), e [app e webmail](#apps-and-webmail)):**
+**Ad eccezione delle informazioni espressamente descritte in questa policy (inclusi [log degli errori](#error-logs), [log dei server](#server-logs), [email SMTP in uscita](#outbound-smtp-emails), [informazioni sull'account](#account-information), [elaborazione temporanea dei dati](#temporary-data-processing), [log di audit](#audit-logs), [cookie e sessioni](#cookies-and-sessions), [analisi](#analytics), e [app e webmail](#apps-and-webmail)):**
 
 * Non memorizziamo alcuna email inoltrata su disco o database.
 * Non memorizziamo alcun metadato relativo alle email inoltrate su disco o database.
@@ -59,6 +60,15 @@ Per trasparenza, in qualsiasi momento puoi <a href="https://github.com/forwardem
 * Memorizziamo i nomi di dominio, gli alias e le configurazioni che ci fornisci.
 * Memorizziamo metadati di sicurezza dell'account limitati, necessari per proteggere il tuo account e gestire gli accessi, inclusi gli identificatori delle sessioni attive sul sito web, i contatori dei tentativi di accesso falliti e la marca temporale dell'ultimo tentativo di accesso.
 * Qualsiasi informazione aggiuntiva che ci fornisci volontariamente, come commenti o domande inviati via email o sulla nostra pagina di <a href="/help">aiuto</a>.
+
+
+**Attribuzione della registrazione** (conservata permanentemente sul tuo account):
+
+Quando crei un account, conserviamo le seguenti informazioni per capire come gli utenti trovano il nostro servizio:
+
+* Il dominio del sito web di riferimento (non l'URL completo)
+* La prima pagina che hai visitato sul nostro sito, nel cui percorso valori come nomi di dominio, ID e token vengono sostituiti da segnaposto
+* I parametri della campagna UTM se presenti nell'URL
 
 ### Archiviazione Email {#email-storage}
 
@@ -167,6 +177,36 @@ Per i domini con più amministratori, forniamo un logging dettagliato per aiutar
   * Autenticazione e stato di accesso
   * Funzionalità "ricordami" per l'autenticazione a due fattori
   * Messaggi flash e notifiche
+  * [Analisi](#analytics): la prima pagina della tua visita, il dominio di riferimento, i parametri della campagna UTM e un conteggio delle pagine
+
+
+## Analytics {#analytics}
+
+Utilizziamo un sistema di analisi incentrato sulla privacy per capire come vengono utilizzati i nostri servizi. Questo sistema è progettato con la privacy come principio fondamentale:
+
+**Cosa NON raccogliamo:**
+
+* Non memorizziamo indirizzi IP
+* Non impostiamo un cookie separato per l'analisi
+* Non utilizziamo servizi di analisi di terze parti
+* Non tracciamo i visitatori attraverso giorni o sessioni quando non hanno effettuato l'accesso
+
+**Cosa raccogliamo:**
+
+* Visualizzazioni di pagina aggregate e utilizzo del servizio (SMTP, IMAP, POP3, API, ecc.)
+* Tipo e versione di browser e sistema operativo (analizzati dall'user agent, dati grezzi scartati)
+* Tipo di dispositivo (desktop, mobile, tablet)
+* Dominio di riferimento (non URL completo) e parametri della campagna UTM
+* Tipo di client email per i protocolli di posta (es. Thunderbird, Outlook)
+* La pagina o il percorso API richiesto, in cui valori come nomi di dominio, ID e token vengono sostituiti da segnaposto, e se la richiesta è andata a buon fine
+* Per le visite al sito web, la prima pagina della visita e un conteggio delle pagine, conservati nella tua sessione (vedi [Cookie e sessioni](#cookies-and-sessions))
+* Quando hai effettuato l'accesso, l'ID del tuo account, alias o dominio, per poter vedere come viene utilizzato ciascun servizio e risolvere i problemi
+
+**Conservazione dei dati:**
+
+* Gli eventi di analisi vengono eliminati automaticamente dopo 30 giorni
+* I totali orari, che non sono collegati ad alcun account, vengono conservati per 90 giorni
+* Gli identificatori di sessione ruotano quotidianamente e non possono essere usati per tracciare i visitatori attraverso i giorni
 
 
 ## App e Webmail {#apps-and-webmail}

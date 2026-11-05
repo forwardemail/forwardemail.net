@@ -235,7 +235,7 @@ async function hook(err, message, meta) {
   // unique hash (already exists)
   //
   // NOTE: `err` may be undefined here (e.g. a plain `logger.error(message)`
-  // or an HTTP-level log with no error object). Every other check
+  // or an HTTP/analytics-level log with no error object). Every other check
   // in this hook is null-safe via `err && ...`; this line was missing that
   // guard, so a logless error would throw a TypeError INSIDE the hook and
   // abort it before the log was ever persisted — silently dropping the log
@@ -272,6 +272,21 @@ async function hook(err, message, meta) {
       ) {
         resolver = meta.resolver;
         delete meta.resolver;
+      }
+
+      // Check if this is an analytics event
+      if (message === 'analytics:event' && meta.analytics) {
+        // Handle analytics events separately
+        if (conn.models && conn.models.AnalyticsEvents) {
+          return conn.models.AnalyticsEvents.create(meta.analytics)
+            .then()
+            .catch((analyticsErr) => {
+              // Don't let analytics errors affect the main application
+              console.error('Analytics save error:', analyticsErr.message);
+            });
+        }
+
+        return;
       }
 
       //
