@@ -821,8 +821,10 @@ async function getForwardingAddresses(
                 to: addr
               },
               locals: {
-                // (why, as the MX server answers it)
-                message: `${obj.err.message}  Paid plans start at only $3/mo for unlimited domains, aliases, and more.`,
+                // (why, as the MX server answers it, with links to click)
+                message: `${
+                  obj.err.html || _.escape(obj.err.message)
+                }  Paid plans start at only $3/mo for unlimited domains, aliases, and more.`,
                 locale: 'en'
               }
             });
@@ -866,6 +868,47 @@ async function getForwardingAddresses(
     //  "password-reset:someone@example.com")
     //
     if (isFreePlanDomain) throw obj.err;
+  } else if (obj?.notice && isFreePlanDomain) {
+    //
+    // A new domain that needs a paid plan only from a later date (see
+    // `config.newDomainNoticeEndsAt`) is let through until then, and the
+    // catch-all addresses it forwards to are told once, so there is time to
+    // upgrade or move (if no email can be sent, a message an hour or more
+    // later tries again)
+    //
+    const emails = addresses.filter((addr) => isEmail(addr));
+    const key = `new_domain_notice:${rootDomain}`;
+    if (emails.length > 0)
+      this.client
+        .set(key, true, 'PX', ms('120d'), 'NX')
+        .then(async (claimed) => {
+          if (claimed !== 'OK') return;
+          let sent = 0;
+          try {
+            await pMapSeries(emails, async (addr) => {
+              await emailHelper({
+                template: 'alert',
+                message: {
+                  subject: `Upgrade or move ${rootDomain} before ${obj.notice.date}`,
+                  to: addr
+                },
+                locals: {
+                  message: `${obj.notice.html}  Paid plans start at only $3/mo for unlimited domains, aliases, and more.`,
+                  locale: 'en'
+                }
+              });
+              sent++;
+            });
+          } catch (err) {
+            // (none was sent: tried again on a message an hour or more later)
+            if (sent === 0)
+              await this.client.set(key, true, 'PX', ms('1h'), 'XX');
+            throw err;
+          }
+        })
+        .catch((err) =>
+          logger.fatal(err, { rootDomain, obj, isFreePlanDomain })
+        );
   }
 
   // store if address is ignored or not

@@ -3851,7 +3851,9 @@ Bu bildirimlerden birini alırsanız lütfen <support@forwardemail.net> adresind
 
 Bir alan adı eklediğinizde (ve ücretsiz plandaki alan adları için sürekli olarak) alan adı için bir WHOIS/RDAP sorgusu yaparız. Alan adının **son 90 gün içinde süresi dolmuşsa** veya alan adı şu anda kayıt şirketinde **bekleyen bir transfer, güncelleme ya da silme** durumundaysa, onunla e-posta gönderebilmeniz veya alabilmeniz için ücretli bir planda olmasını şart koşarız.
 
-**Son 90 gün içinde oluşturulmuş** bir alan adı, yeni bir adsa ücretsiz planı kullanabilir. Daha önce kullanılmışsa (örneğin başka biri süresinin dolmasına izin verdiyse ve alan adı yeniden kaydedildiyse), bir drop-catch kayıt şirketinin elindeyse, başka bir kayıt şirketinden transfer edildiyse, `.cc` veya `.xyz` ile bitiyorsa (ücretsiz planın kabul ettiği uzantılar arasında spam gönderenler `.com` ve `.net`ten sonra en çok yeni alan adını bunlarda kaydeder) ya da Cloudflare'in kötü amaçlı yazılım, kimlik avı ve yetişkin içerik filtresi tarafından engelleniyorsa, 90 günlük olana kadar ücretli bir plan gerekir. Önceki kullanımı [Internet Archive](https://web.archive.org/) üzerinden kontrol ederiz: alan adının kaydedilmeden önceki bir tarihe ait arşiv görüntüsü, kullanımda olduğu anlamına gelir. Bu kontrol kullanılamıyorsa alan adını yine de ekleyebilirsiniz; kontrol tamamlanana kadar ona gelen e-postalar geçici bir hatayla (421) reddedilir, bu nedenle gönderen sunucu iletiyi saklar ve daha sonra yeniden dener. Biz iletiyi hiçbir zaman saklamayız.
+**Son 90 gün içinde oluşturulmuş** bir alan adı, yeni bir adsa ücretsiz planı kullanabilir. Daha önce kullanılmışsa (örneğin başka biri süresinin dolmasına izin verdiyse ve alan adı yeniden kaydedildiyse), bir drop-catch kayıt şirketinin elindeyse, başka bir kayıt şirketinden transfer edildiyse, `.cc`, `.id`, `.jp`, `.online`, `.ws` veya `.xyz` ile bitiyorsa (spam ve kimlik avı raporları bu uzantılarda `.com`'dan daha fazla kötüye kullanım gösteriyor) ya da Cloudflare'in kötü amaçlı yazılım, kimlik avı ve yetişkin içerik filtresi tarafından engelleniyorsa, 90 günlük olana kadar ücretli bir plan gerekir. Önceki kullanımı [Internet Archive](https://web.archive.org/) üzerinden kontrol ederiz: alan adının kaydedilmeden önceki bir tarihe ait arşiv görüntüsü, kullanımda olduğu anlamına gelir. Bu kontrol kullanılamıyorsa alan adını yine de ekleyebilirsiniz; kontrol tamamlanana kadar ona gelen e-postalar geçici bir hatayla (421) reddedilir, bu nedenle gönderen sunucu iletiyi saklar ve daha sonra yeniden dener. Biz iletiyi hiçbir zaman saklamayız.
+
+`.id`, `.jp` veya `.ws` ile biten yeni alan adları 1 Aralık 2026'dan itibaren ücretli bir plan gerektirir. O zamana kadar çalışmaya devam ederler ve yükseltme yapmak ya da başka bir alan adına geçmek için zaman olması amacıyla alan adının postaları yönlendirdiği catch-all adresine bir e-posta göndeririz.
 
 Bu, kişisel olarak sizinle ilgili bir değerlendirme değil, bir kötüye kullanım önleme tedbiridir — GoDaddy, Namecheap ve Hostgator dahil büyük kayıt şirketleri, yakın zamanda süresi dolan alan adlarının ele geçirilmesi ve sahte şekilde kaydedilen yeni alan adlarıyla ilgili kötüye kullanım örüntüleri nedeniyle daha önce altyapımızı tamamen engellemiştir. Bu alan adları için ücretli plan şart koşmak, kayıt şirketlerinin güvenini kaybetmeden ücretsiz plan sunmaya devam edebilmemizi sağlar.
 
@@ -5337,6 +5339,7 @@ Bu yeni kural, ücretsiz planımızda yalnızca aşağıdaki alan adı uzantıla
   <li class="list-inline-item"><code class="notranslate">ck</code></li>
   <li class="list-inline-item"><code class="notranslate">co</code></li>
   <li class="list-inline-item"><code class="notranslate">com</code></li>
+  <li class="list-inline-item"><code class="notranslate">cz</code></li>
   <li class="list-inline-item"><code class="notranslate">de</code></li>
   <li class="list-inline-item"><code class="notranslate">dev</code></li>
   <li class="list-inline-item"><code class="notranslate">dj</code></li>
@@ -5393,6 +5396,7 @@ Bu yeni kural, ücretsiz planımızda yalnızca aşağıdaki alan adı uzantıla
   <li class="list-inline-item"><code class="notranslate">no</code></li>
   <li class="list-inline-item"><code class="notranslate">nu</code></li>
   <li class="list-inline-item"><code class="notranslate">nz</code></li>
+  <li class="list-inline-item"><code class="notranslate">online</code></li>
   <li class="list-inline-item"><code class="notranslate">org</code></li>
   <li class="list-inline-item"><code class="notranslate">pf</code></li>
   <li class="list-inline-item"><code class="notranslate">pl</code></li>

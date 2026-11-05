@@ -3851,7 +3851,9 @@ Ha ilyen értesítést kap, kérjük, lépjen kapcsolatba velünk a <support@for
 
 Amikor hozzáad egy domaint (a díjmentes csomagban lévő domainek esetén pedig folyamatosan), WHOIS/RDAP lekérdezést futtatunk rá. Ha a domain **az elmúlt 90 napon belül járt le**, vagy jelenleg **függőben lévő átruházás, frissítés vagy törlés** állapotban van a regisztrátoránál, fizetős csomagot írunk elő, mielőtt levelet küldhetne vagy fogadhatna vele.
 
-Az **elmúlt 90 napon belül létrehozott** domain használhatja a díjmentes csomagot, ha új névről van szó. Fizetős csomagra van szüksége, amíg 90 napos nem lesz, ha korábban már használatban volt (például valaki más hagyta lejárni, és újra regisztrálták), ha egy drop-catch regisztrátornál van, ha egy másik regisztrátortól helyezték át, ha `.cc` vagy `.xyz` végződésű (a díjmentes csomag által elfogadott végződések közül a spammerek a `.com` és a `.net` után ezeken regisztrálják a legtöbb új domaint), vagy ha a Cloudflare kártevők, adathalászat és felnőtt tartalmak elleni szűrője blokkolja. A korábbi használatot az [Internet Archive](https://web.archive.org/) segítségével ellenőrizzük: ha a domainről van a regisztrációja előtti mentés, akkor használatban volt. Ha ez az ellenőrzés nem érhető el, a domaint ettől még hozzáadhatja; az ellenőrzés befejezéséig a neki szóló leveleket ideiglenes hibával (421) elutasítjuk, így a küldő szerver megtartja az üzenetet, és később újra próbálkozik. Mi soha nem tároljuk.
+Az **elmúlt 90 napon belül létrehozott** domain használhatja a díjmentes csomagot, ha új névről van szó. Fizetős csomagra van szüksége, amíg 90 napos nem lesz, ha korábban már használatban volt (például valaki más hagyta lejárni, és újra regisztrálták), ha egy drop-catch regisztrátornál van, ha egy másik regisztrátortól helyezték át, ha `.cc`, `.id`, `.jp`, `.online`, `.ws` vagy `.xyz` végződésű (a spam- és adathalász-jelentések szerint ezekkel több visszaélés történik, mint a `.com`-mal), vagy ha a Cloudflare kártevők, adathalászat és felnőtt tartalmak elleni szűrője blokkolja. A korábbi használatot az [Internet Archive](https://web.archive.org/) segítségével ellenőrizzük: ha a domainről van a regisztrációja előtti mentés, akkor használatban volt. Ha ez az ellenőrzés nem érhető el, a domaint ettől még hozzáadhatja; az ellenőrzés befejezéséig a neki szóló leveleket ideiglenes hibával (421) elutasítjuk, így a küldő szerver megtartja az üzenetet, és később újra próbálkozik. Mi soha nem tároljuk.
+
+Az `.id`, `.jp` vagy `.ws` végződésű új domainekhez 2026. december 1-jétől fizetős csomag szükséges. Addig továbbra is működnek, és egy e-mailt küldünk arra a catch-all címre, amelyre a domain továbbítja a leveleket, hogy legyen idő csomagot váltani vagy másik domainre költözni.
 
 Ez visszaélés-megelőzési intézkedés, nem önről alkotott vélemény — nagy regisztrátorok, köztük a GoDaddy, a Namecheap és a Hostgator, korábban teljesen letiltották az infrastruktúránkat a nemrég lejárt domainek átvételével és a csalárd módon regisztrált új domainekkel kapcsolatos visszaélések miatt. Az, hogy ezekhez a domainekhez fizetős csomagot írunk elő, teszi lehetővé, hogy egyáltalán díjmentes csomagot kínálhassunk a regisztrátorok bizalmának elvesztése nélkül.
 
@@ -5337,6 +5339,7 @@ Ez az új szabály csak az alábbi domain névkiterjesztések használatát enge
   <li class="list-inline-item"><code class="notranslate">ck</code></li>
   <li class="list-inline-item"><code class="notranslate">co</code></li>
   <li class="list-inline-item"><code class="notranslate">com</code></li>
+  <li class="list-inline-item"><code class="notranslate">cz</code></li>
   <li class="list-inline-item"><code class="notranslate">de</code></li>
   <li class="list-inline-item"><code class="notranslate">dev</code></li>
   <li class="list-inline-item"><code class="notranslate">dj</code></li>
@@ -5393,6 +5396,7 @@ Ez az új szabály csak az alábbi domain névkiterjesztések használatát enge
   <li class="list-inline-item"><code class="notranslate">no</code></li>
   <li class="list-inline-item"><code class="notranslate">nu</code></li>
   <li class="list-inline-item"><code class="notranslate">nz</code></li>
+  <li class="list-inline-item"><code class="notranslate">online</code></li>
   <li class="list-inline-item"><code class="notranslate">org</code></li>
   <li class="list-inline-item"><code class="notranslate">pf</code></li>
   <li class="list-inline-item"><code class="notranslate">pl</code></li>

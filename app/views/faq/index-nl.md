@@ -3851,7 +3851,9 @@ Als je een van deze meldingen ontvangt, neem dan contact met ons op via <support
 
 Wanneer je een domein toevoegt (en doorlopend voor domeinen met het gratis abonnement), voeren we er een WHOIS/RDAP-lookup op uit. Als het domein **in de afgelopen 90 dagen is verlopen**, of momenteel bij de registrar de status **transfer, update of verwijdering in behandeling** heeft, moet het een betaald abonnement hebben voordat je er e-mail mee kunt verzenden of ontvangen.
 
-Een domein dat **in de afgelopen 90 dagen is aangemaakt**, kan het gratis abonnement gebruiken als het een nieuwe naam is. Het heeft een betaald abonnement nodig totdat het 90 dagen oud is als het eerder in gebruik was (bijvoorbeeld als iemand anders het heeft laten verlopen en het opnieuw is geregistreerd), als een drop-catch-registrar het in handen heeft, als het is overgezet van een andere registrar, als het eindigt op `.cc` of `.xyz` (van de extensies die het gratis abonnement accepteert, registreren spammers daar na `.com` en `.net` de meeste nieuwe domeinen op), of als het filter van Cloudflare voor malware, phishing en content voor volwassenen het blokkeert. We controleren eerder gebruik in het [Internet Archive](https://web.archive.org/): een opname van het domein van vóór de registratie betekent dat het in gebruik was. Als die controle niet beschikbaar is, kun je het domein toch toevoegen; totdat de controle is voltooid, wordt e-mail aan het domein geweigerd met een tijdelijke fout (421), zodat de verzendende server het bericht bewaart en het later opnieuw probeert. Wij slaan het nooit op.
+Een domein dat **in de afgelopen 90 dagen is aangemaakt**, kan het gratis abonnement gebruiken als het een nieuwe naam is. Het heeft een betaald abonnement nodig totdat het 90 dagen oud is als het eerder in gebruik was (bijvoorbeeld als iemand anders het heeft laten verlopen en het opnieuw is geregistreerd), als een drop-catch-registrar het in handen heeft, als het is overgezet van een andere registrar, als het eindigt op `.cc`, `.id`, `.jp`, `.online`, `.ws` of `.xyz` (meldingen van spam en phishing laten bij deze meer misbruik zien dan bij `.com`), of als het filter van Cloudflare voor malware, phishing en content voor volwassenen het blokkeert. We controleren eerder gebruik in het [Internet Archive](https://web.archive.org/): een opname van het domein van vóór de registratie betekent dat het in gebruik was. Als die controle niet beschikbaar is, kun je het domein toch toevoegen; totdat de controle is voltooid, wordt e-mail aan het domein geweigerd met een tijdelijke fout (421), zodat de verzendende server het bericht bewaart en het later opnieuw probeert. Wij slaan het nooit op.
+
+Nieuwe domeinen die eindigen op `.id`, `.jp` of `.ws` hebben vanaf 1 december 2026 een betaald abonnement nodig. Tot die tijd blijven ze werken, en we sturen één e-mail naar het catch-all-adres waarnaar het domein doorstuurt, zodat er tijd is om te upgraden of naar een ander domein over te stappen.
 
 Dit is een maatregel tegen misbruik en zegt niets over jou persoonlijk — grote registrars, waaronder GoDaddy, Namecheap en Hostgator, hebben onze infrastructuur eerder volledig geblokkeerd vanwege misbruikpatronen met overnames van recent verlopen domeinen en frauduleus geregistreerde nieuwe domeinen. Doordat we voor deze domeinen een betaald abonnement vereisen, kunnen we überhaupt een gratis abonnement blijven aanbieden zonder het vertrouwen van registrars te verliezen.
 
@@ -5337,6 +5339,7 @@ Deze nieuwe regel staat alleen de volgende domeinnaamextensies toe op ons gratis
   <li class="list-inline-item"><code class="notranslate">ck</code></li>
   <li class="list-inline-item"><code class="notranslate">co</code></li>
   <li class="list-inline-item"><code class="notranslate">com</code></li>
+  <li class="list-inline-item"><code class="notranslate">cz</code></li>
   <li class="list-inline-item"><code class="notranslate">de</code></li>
   <li class="list-inline-item"><code class="notranslate">dev</code></li>
   <li class="list-inline-item"><code class="notranslate">dj</code></li>
@@ -5393,6 +5396,7 @@ Deze nieuwe regel staat alleen de volgende domeinnaamextensies toe op ons gratis
   <li class="list-inline-item"><code class="notranslate">no</code></li>
   <li class="list-inline-item"><code class="notranslate">nu</code></li>
   <li class="list-inline-item"><code class="notranslate">nz</code></li>
+  <li class="list-inline-item"><code class="notranslate">online</code></li>
   <li class="list-inline-item"><code class="notranslate">org</code></li>
   <li class="list-inline-item"><code class="notranslate">pf</code></li>
   <li class="list-inline-item"><code class="notranslate">pl</code></li>

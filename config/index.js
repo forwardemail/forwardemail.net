@@ -2200,6 +2200,7 @@ const config = {
     'no',
     'nu',
     'nz',
+    'online',
     'org',
     'pl',
     'pr',
@@ -2288,12 +2289,23 @@ const config = {
 
 //
 // A domain registered within the past 90 days can use the free plan on these
-// (when it is a new name: see `helpers/is-expired-or-newly-created`), but
-// not .cc or .xyz: of these, spam domains use them most after .com and .net.
+// (when it is a new name: see `helpers/is-expired-or-newly-created`), but not
+// on the ones spam and phishing reports show the most abuse on: a phishing
+// score (phishing domains per 10,000 registered) of 100 or more in
+// Interisle's 2025-26 data (.cc, .jp, .online, .xyz; .com is about 54), or
+// half or more of their email spam or malicious in Cloudflare's (.id, .ws)
 //
 config.newDomainGoodDomains = config.goodDomains.filter(
-  (tld) => tld !== 'cc' && tld !== 'xyz'
+  (tld) => !['cc', 'id', 'jp', 'online', 'ws', 'xyz'].includes(tld)
 );
+
+//
+// New domains on .id, .jp and .ws (which used to be let through) need a paid
+// plan from this date; until then they are, and the catch-all addresses they
+// forward to are told once, so there is time to upgrade or move
+//
+config.newDomainNoticeDomains = ['id', 'jp', 'ws'];
+config.newDomainNoticeEndsAt = new Date('2026-12-01T00:00:00.000Z');
 
 // arbitrarily add domains to the denylist
 for (const tld of tlds) {

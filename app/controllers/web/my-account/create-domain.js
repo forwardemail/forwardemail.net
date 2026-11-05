@@ -269,7 +269,8 @@ async function createDomain(ctx, next) {
       const redirectTo = ctx.state.l(
         `/my-account/billing/upgrade?plan=enhanced_protection&domain=${ctx.request.body.domain}`
       );
-      ctx.flash('warning', obj.err.message);
+      // (shown as HTML: its links can be clicked)
+      ctx.flash('warning', obj.err.html || _.escape(obj.err.message));
       if (ctx.accepts('html')) ctx.redirect(redirectTo);
       else ctx.body = { redirectTo };
       return;
@@ -330,6 +331,9 @@ async function createDomain(ctx, next) {
     }
 
     if (ctx.api) return next();
+
+    // (it will need a paid plan from a later date: why, with links to click)
+    if (obj?.notice && isFreePlan) ctx.flash('warning', obj.notice.html);
 
     ctx.flash('custom', {
       title: ctx.request.t('Success'),

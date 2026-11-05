@@ -3851,7 +3851,9 @@ Wenn Sie einen dieser Hinweise erhalten, kontaktieren Sie uns bitte unter <suppo
 
 Wenn Sie eine Domain hinzufügen (und fortlaufend bei Domains im kostenlosen Plan), führen wir dafür eine WHOIS/RDAP-Abfrage durch. Wenn die Domain **innerhalb der letzten 90 Tage abgelaufen** ist oder sich bei ihrem Registrar derzeit im Status **ausstehende Übertragung, Aktualisierung oder Löschung** befindet, muss sie einen kostenpflichtigen Plan haben, bevor Sie damit E-Mails senden oder empfangen können.
 
-Eine Domain, die **innerhalb der letzten 90 Tage erstellt** wurde, kann den kostenlosen Plan nutzen, wenn es sich um einen neuen Namen handelt. Sie benötigt einen kostenpflichtigen Plan, bis sie 90 Tage alt ist, wenn sie bereits zuvor genutzt wurde (zum Beispiel, weil jemand anderes sie auslaufen ließ und sie erneut registriert wurde), wenn ein Drop-Catch-Registrar sie hält, wenn sie von einem anderen Registrar übertragen wurde, wenn sie auf `.cc` oder `.xyz` endet (von den Endungen, die der kostenlose Plan annimmt, registrieren Spammer nach `.com` und `.net` auf diesen die meisten neuen Domains) oder wenn der Cloudflare-Filter für Malware, Phishing und Inhalte für Erwachsene sie blockiert. Eine frühere Nutzung prüfen wir im [Internet Archive](https://web.archive.org/): Eine Aufnahme der Domain aus der Zeit vor ihrer Registrierung bedeutet, dass sie genutzt wurde. Wenn diese Prüfung nicht verfügbar ist, können Sie die Domain trotzdem hinzufügen; bis die Prüfung abgeschlossen ist, werden E-Mails an sie mit einem vorübergehenden Fehler (421) abgelehnt, sodass der sendende Server die Nachricht behält und es später erneut versucht. Wir speichern sie nie.
+Eine Domain, die **innerhalb der letzten 90 Tage erstellt** wurde, kann den kostenlosen Plan nutzen, wenn es sich um einen neuen Namen handelt. Sie benötigt einen kostenpflichtigen Plan, bis sie 90 Tage alt ist, wenn sie bereits zuvor genutzt wurde (zum Beispiel, weil jemand anderes sie auslaufen ließ und sie erneut registriert wurde), wenn ein Drop-Catch-Registrar sie hält, wenn sie von einem anderen Registrar übertragen wurde, wenn sie auf `.cc`, `.id`, `.jp`, `.online`, `.ws` oder `.xyz` endet (Spam- und Phishing-Berichte zeigen bei diesen mehr Missbrauch als bei `.com`) oder wenn der Cloudflare-Filter für Malware, Phishing und Inhalte für Erwachsene sie blockiert. Eine frühere Nutzung prüfen wir im [Internet Archive](https://web.archive.org/): Eine Aufnahme der Domain aus der Zeit vor ihrer Registrierung bedeutet, dass sie genutzt wurde. Wenn diese Prüfung nicht verfügbar ist, können Sie die Domain trotzdem hinzufügen; bis die Prüfung abgeschlossen ist, werden E-Mails an sie mit einem vorübergehenden Fehler (421) abgelehnt, sodass der sendende Server die Nachricht behält und es später erneut versucht. Wir speichern sie nie.
+
+Neue Domains, die auf `.id`, `.jp` oder `.ws` enden, benötigen ab dem 1. Dezember 2026 einen kostenpflichtigen Plan. Bis dahin funktionieren sie weiter, und wir senden eine E-Mail an die Catch-all-Adresse, an die die Domain weiterleitet, damit Zeit bleibt, ein Upgrade durchzuführen oder zu einer anderen Domain zu wechseln.
 
 Dies ist eine Maßnahme gegen Missbrauch und keine Bewertung Ihrer Person — große Registrare wie GoDaddy, Namecheap und Hostgator haben unsere Infrastruktur in der Vergangenheit vollständig blockiert, und zwar wegen Missbrauchsmustern mit der Übernahme kürzlich abgelaufener Domains und betrügerisch registrierten neuen Domains. Dass wir für diese Domains einen kostenpflichtigen Plan verlangen, ermöglicht es uns überhaupt erst, weiterhin einen kostenlosen Plan anzubieten, ohne das Vertrauen der Registrare zu verlieren.
 
@@ -5337,6 +5339,7 @@ Diese neue Regel erlaubt nur die folgenden Domain-Endungen in unserem kostenlose
   <li class="list-inline-item"><code class="notranslate">ck</code></li>
   <li class="list-inline-item"><code class="notranslate">co</code></li>
   <li class="list-inline-item"><code class="notranslate">com</code></li>
+  <li class="list-inline-item"><code class="notranslate">cz</code></li>
   <li class="list-inline-item"><code class="notranslate">de</code></li>
   <li class="list-inline-item"><code class="notranslate">dev</code></li>
   <li class="list-inline-item"><code class="notranslate">dj</code></li>
@@ -5393,6 +5396,7 @@ Diese neue Regel erlaubt nur die folgenden Domain-Endungen in unserem kostenlose
   <li class="list-inline-item"><code class="notranslate">no</code></li>
   <li class="list-inline-item"><code class="notranslate">nu</code></li>
   <li class="list-inline-item"><code class="notranslate">nz</code></li>
+  <li class="list-inline-item"><code class="notranslate">online</code></li>
   <li class="list-inline-item"><code class="notranslate">org</code></li>
   <li class="list-inline-item"><code class="notranslate">pf</code></li>
   <li class="list-inline-item"><code class="notranslate">pl</code></li>

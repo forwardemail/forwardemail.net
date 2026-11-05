@@ -3852,7 +3852,9 @@ Si recibe uno de estos avisos, contáctenos en <support@forwardemail.net> o abra
 
 Cuando añade un dominio (y de forma continua para los dominios del plan gratuito), realizamos una consulta WHOIS/RDAP sobre él. Si el dominio **caducó en los últimos 90 días** o se encuentra actualmente en estado de **transferencia, actualización o eliminación pendiente** con su registrador, exigimos que esté en un plan de pago antes de que pueda enviar o recibir correo con él.
 
-Un dominio **creado en los últimos 90 días** puede usar el plan gratuito si es un nombre nuevo. Necesita un plan de pago hasta que tenga 90 días si ya se usó antes (por ejemplo, otra persona lo dejó caducar y se volvió a registrar), si lo tiene un registrador de tipo drop-catch, si se transfirió desde otro registrador, si termina en `.cc` o `.xyz` (de las extensiones que admite el plan gratuito, son en las que más dominios nuevos registran los spammers después de `.com` y `.net`), o si el filtro de Cloudflare contra malware, phishing y contenido para adultos lo bloquea. Comprobamos si hubo un uso anterior en [Internet Archive](https://web.archive.org/): una captura del dominio anterior a su registro significa que estaba en uso. Si esa comprobación no está disponible, puede añadir el dominio de todos modos; hasta que la comprobación termine, el correo dirigido a ese dominio se rechaza con un error temporal (421), por lo que el servidor de envío conserva el mensaje y lo reintenta más tarde. Nosotros nunca lo almacenamos.
+Un dominio **creado en los últimos 90 días** puede usar el plan gratuito si es un nombre nuevo. Necesita un plan de pago hasta que tenga 90 días si ya se usó antes (por ejemplo, otra persona lo dejó caducar y se volvió a registrar), si lo tiene un registrador de tipo drop-catch, si se transfirió desde otro registrador, si termina en `.cc`, `.id`, `.jp`, `.online`, `.ws` o `.xyz` (los informes de spam y phishing muestran más abuso en estas que en `.com`), o si el filtro de Cloudflare contra malware, phishing y contenido para adultos lo bloquea. Comprobamos si hubo un uso anterior en [Internet Archive](https://web.archive.org/): una captura del dominio anterior a su registro significa que estaba en uso. Si esa comprobación no está disponible, puede añadir el dominio de todos modos; hasta que la comprobación termine, el correo dirigido a ese dominio se rechaza con un error temporal (421), por lo que el servidor de envío conserva el mensaje y lo reintenta más tarde. Nosotros nunca lo almacenamos.
+
+Los dominios nuevos que terminan en `.id`, `.jp` o `.ws` necesitan un plan de pago a partir del 1 de diciembre de 2026. Hasta entonces siguen funcionando, y enviamos un correo a la dirección catch-all a la que reenvía el dominio, para que haya tiempo de mejorar el plan o cambiar a otro dominio.
 
 Es una medida de prevención de abusos, no una valoración sobre usted — grandes registradores como GoDaddy, Namecheap y Hostgator han bloqueado anteriormente toda nuestra infraestructura por patrones de abuso relacionados con la apropiación de dominios caducados recientemente y con nuevos dominios registrados de forma fraudulenta. Exigir un plan de pago para estos dominios es lo que nos permite seguir ofreciendo un plan gratuito sin perder la confianza de los registradores.
 
@@ -5338,6 +5340,7 @@ Esta nueva regla permite usar solo las siguientes extensiones de nombres de domi
   <li class="list-inline-item"><code class="notranslate">ck</code></li>
   <li class="list-inline-item"><code class="notranslate">co</code></li>
   <li class="list-inline-item"><code class="notranslate">com</code></li>
+  <li class="list-inline-item"><code class="notranslate">cz</code></li>
   <li class="list-inline-item"><code class="notranslate">de</code></li>
   <li class="list-inline-item"><code class="notranslate">dev</code></li>
   <li class="list-inline-item"><code class="notranslate">dj</code></li>
@@ -5394,6 +5397,7 @@ Esta nueva regla permite usar solo las siguientes extensiones de nombres de domi
   <li class="list-inline-item"><code class="notranslate">no</code></li>
   <li class="list-inline-item"><code class="notranslate">nu</code></li>
   <li class="list-inline-item"><code class="notranslate">nz</code></li>
+  <li class="list-inline-item"><code class="notranslate">online</code></li>
   <li class="list-inline-item"><code class="notranslate">org</code></li>
   <li class="list-inline-item"><code class="notranslate">pf</code></li>
   <li class="list-inline-item"><code class="notranslate">pl</code></li>

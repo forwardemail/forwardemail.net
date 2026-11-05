@@ -3850,7 +3850,9 @@ Jos saat jonkin näistä ilmoituksista, ota meihin yhteyttä osoitteessa <suppor
 
 Kun lisäät verkkotunnuksen (ja jatkuvasti ilmaisen paketin verkkotunnuksille), teemme sille WHOIS/RDAP-haun. Jos verkkotunnus on **vanhentunut viimeisten 90 päivän aikana** tai on rekisteröijällään parhaillaan tilassa **odottava siirto, päivitys tai poisto**, edellytämme, että se on maksullisessa paketissa, ennen kuin voit lähettää tai vastaanottaa sillä postia.
 
-**Viimeisten 90 päivän aikana luotu** verkkotunnus voi käyttää ilmaista pakettia, jos se on uusi nimi. Se tarvitsee maksullisen paketin, kunnes se on 90 päivää vanha, jos se on ollut aiemmin käytössä (esimerkiksi joku muu antoi sen vanhentua ja se rekisteröitiin uudelleen), jos sitä hallitsee drop-catch-rekisteröijä, jos se on siirretty toiselta rekisteröijältä, jos sen pääte on `.cc` tai `.xyz` (ilmaisen paketin hyväksymistä päätteistä roskapostittajat rekisteröivät niille eniten uusia verkkotunnuksia `.com`- ja `.net`-päätteiden jälkeen) tai jos Cloudflaren haittaohjelmia, tietojenkalastelua ja aikuisille suunnattua sisältöä torjuva suodatin estää sen. Tarkistamme aiemman käytön [Internet Archive](https://web.archive.org/) -palvelusta: jos verkkotunnuksesta on tallenne ajalta ennen sen rekisteröintiä, se on ollut käytössä. Jos tarkistus ei ole käytettävissä, voit silti lisätä verkkotunnuksen; kunnes tarkistus on valmis, sille tuleva posti hylätään tilapäisellä virheellä (421), joten lähettävä palvelin säilyttää viestin ja yrittää myöhemmin uudelleen. Me emme koskaan tallenna sitä.
+**Viimeisten 90 päivän aikana luotu** verkkotunnus voi käyttää ilmaista pakettia, jos se on uusi nimi. Se tarvitsee maksullisen paketin, kunnes se on 90 päivää vanha, jos se on ollut aiemmin käytössä (esimerkiksi joku muu antoi sen vanhentua ja se rekisteröitiin uudelleen), jos sitä hallitsee drop-catch-rekisteröijä, jos se on siirretty toiselta rekisteröijältä, jos sen pääte on `.cc`, `.id`, `.jp`, `.online`, `.ws` tai `.xyz` (roskaposti- ja tietojenkalasteluraporttien mukaan niitä väärinkäytetään enemmän kuin `.com`-päätettä) tai jos Cloudflaren haittaohjelmia, tietojenkalastelua ja aikuisille suunnattua sisältöä torjuva suodatin estää sen. Tarkistamme aiemman käytön [Internet Archive](https://web.archive.org/) -palvelusta: jos verkkotunnuksesta on tallenne ajalta ennen sen rekisteröintiä, se on ollut käytössä. Jos tarkistus ei ole käytettävissä, voit silti lisätä verkkotunnuksen; kunnes tarkistus on valmis, sille tuleva posti hylätään tilapäisellä virheellä (421), joten lähettävä palvelin säilyttää viestin ja yrittää myöhemmin uudelleen. Me emme koskaan tallenna sitä.
+
+Uudet verkkotunnukset, joiden pääte on `.id`, `.jp` tai `.ws`, tarvitsevat maksullisen paketin 1. joulukuuta 2026 alkaen. Siihen asti ne toimivat edelleen, ja lähetämme yhden sähköpostin catch-all-osoitteeseen, johon verkkotunnus välittää postin, jotta paketin päivittämiseen tai toiseen verkkotunnukseen siirtymiseen jää aikaa.
 
 Tämä on väärinkäytön estotoimi eikä kerro mitään sinusta henkilökohtaisesti — suuret rekisteröijät, kuten GoDaddy, Namecheap ja Hostgator, ovat aiemmin estäneet koko infrastruktuurimme väärinkäyttökuvioiden vuoksi, joihin liittyi hiljattain vanhentuneiden verkkotunnusten kaappauksia ja vilpillisesti rekisteröityjä uusia verkkotunnuksia. Maksullisen paketin vaatiminen näille verkkotunnuksille on se, minkä ansiosta voimme ylipäätään tarjota ilmaista pakettia menettämättä rekisteröijien luottamusta.
 
@@ -5336,6 +5338,7 @@ Tämä uusi sääntö sallii seuraavien verkkotunnuksen päätteiden käytön va
   <li class="list-inline-item"><code class="notranslate">ck</code></li>
   <li class="list-inline-item"><code class="notranslate">co</code></li>
   <li class="list-inline-item"><code class="notranslate">com</code></li>
+  <li class="list-inline-item"><code class="notranslate">cz</code></li>
   <li class="list-inline-item"><code class="notranslate">de</code></li>
   <li class="list-inline-item"><code class="notranslate">dev</code></li>
   <li class="list-inline-item"><code class="notranslate">dj</code></li>
@@ -5392,6 +5395,7 @@ Tämä uusi sääntö sallii seuraavien verkkotunnuksen päätteiden käytön va
   <li class="list-inline-item"><code class="notranslate">no</code></li>
   <li class="list-inline-item"><code class="notranslate">nu</code></li>
   <li class="list-inline-item"><code class="notranslate">nz</code></li>
+  <li class="list-inline-item"><code class="notranslate">online</code></li>
   <li class="list-inline-item"><code class="notranslate">org</code></li>
   <li class="list-inline-item"><code class="notranslate">pf</code></li>
   <li class="list-inline-item"><code class="notranslate">pl</code></li>

@@ -5,6 +5,7 @@
 
 const punycode = require('node:punycode');
 
+const dayjs = require('dayjs-with-plugins');
 const isFQDN = require('is-fqdn');
 const ms = require('ms');
 const pWaitFor = require('p-wait-for');
@@ -127,7 +128,7 @@ function getResolvers(client) {
 }
 
 const REGISTRARS_BLOCKED_US =
-  'Due to major registrars such as GoDaddy, Namecheap, and Hostgator previously blocking us due to abuse &mdash; we unfortunately have to enforce strict abuse prevention controls to block suspicious activity. Without this abuse prevention, our service would be blocked entirely from these registrars.';
+  'Due to major registrars such as GoDaddy, Namecheap, and Hostgator previously blocking us due to abuse, we unfortunately have to enforce strict abuse prevention controls to block suspicious activity. Without this abuse prevention, our service would be blocked entirely from these registrars.';
 
 // (the FAQ sections each message links to)
 const NEW_DOMAINS_FAQ = `${config.urls.web}/faq#why-do-newly-registered-or-recently-expired-domains-require-a-paid-plan`;
@@ -137,9 +138,21 @@ const FREE_EXTENSIONS_FAQ = `${config.urls.web}/faq#what-domain-name-extensions-
 const TAKEOVER =
   "whoever has a domain receives the mail sent to its earlier owner's addresses (such as password resets)";
 
-// (every message is a 421: the sender keeps the message and tries again)
+//
+// Every message is a 421 (the sender keeps the message and tries again).
+// `message` is plain text, as SMTP replies, logs and the API show it, and
+// `html` is the same text with links to click, for a web page or an email.
+//
 function getError(message, faq = NEW_DOMAINS_FAQ) {
-  return new SMTPError(`${message} Learn why: ${faq}`, { responseCode: 421 });
+  const text = `${message} Learn why: ${faq}`;
+  return new SMTPError(text, {
+    responseCode: 421,
+    html: _.escape(text).replace(
+      /https?:\/\/[^\s,]*[^\s,.]/g,
+      (url) =>
+        `<a href="${url}" target="_blank" rel="noopener noreferrer">${url}</a>`
+    )
+  });
 }
 
 function getNewlyCreatedError(domain) {
@@ -164,6 +177,28 @@ function getUnavailableError(domain) {
   return err;
 }
 
+//
+// A new domain that needs a paid plan only from `config.newDomainNoticeEndsAt`
+// is let through until then, and told why once (see `get-forwarding-addresses`),
+// unless it is 90 days old by then
+//
+function getNoticeError(domain, response, reason) {
+  const endsAt = dayjs.utc(config.newDomainNoticeEndsAt);
+  const oldAt = dayjs.utc(response.ts.created).add(90, 'day');
+  if (!oldAt.isAfter(endsAt)) return;
+  const date = `${endsAt.format('MMMM D, YYYY')} (UTC)`;
+  const err = getError(
+    `Starting ${date}, mail to ${domain} will be refused until ${oldAt.format(
+      'MMMM D, YYYY'
+    )}, when the domain is 90 days old, unless it is on a paid plan: it was registered within the past 90 days, and ${reason}. Until then, its mail is forwarded as before. ${REGISTRARS_BLOCKED_US} To keep receiving mail, please upgrade to a paid plan at ${
+      config.urls.web
+    }, or move to another domain, before ${date}.`
+  );
+  err.isNotice = true;
+  err.date = date;
+  return err;
+}
+
 // (how long a failed Cloudflare lookup is not asked again)
 const DNS_ERROR_TTL_MS = ms('5m');
 // (how long mail waits for the archive and Cloudflare)
@@ -172,10 +207,9 @@ const WAIT_MS = 1500;
 /**
  * Why a domain registered within the past 90 days cannot use the free plan,
  * or undefined when it can: a new name on an extension the free plan takes
- * for new domains (not .cc or .xyz), not transferred from another registrar
- * or registered again (its RDAP record), not in use before (see
- * `get-previous-domain-use`), that
- * Cloudflare's filter does not block.
+ * for new domains (not .cc, .xyz and the like), not transferred from another
+ * registrar or registered again (its RDAP record), not in use before (see
+ * `get-previous-domain-use`), that Cloudflare's filter does not block.
  *
  * @param   {string}  domain    Its root domain
  * @param   {object}  response  Its WHOIS/RDAP lookup
@@ -184,27 +218,38 @@ const WAIT_MS = 1500;
  * @returns {Promise<SMTPError|undefined>}
  */
 async function checkNewDomain(domain, response, client, resolvers) {
+  // (why it will need a paid plan, see `config.newDomainNoticeEndsAt`)
+  let notice;
   if (!config.newDomainGoodDomains.some((tld) => domain.endsWith(`.${tld}`))) {
-    // (.cc and .xyz, see `config.newDomainGoodDomains`)
+    // (.cc, .xyz and the like, see `config.newDomainGoodDomains`)
     const tld = config.goodDomains.find((tld) => domain.endsWith(`.${tld}`));
-    if (tld)
-      return getNewDomainError(
-        domain,
-        `new domains ending in .${tld} need a paid plan: of the extensions the free plan takes, spam operations register new domains on .${tld} the most after .com and .net`
-      );
-    // (.gov, .edu, brands and the like: new ones need a paid plan)
+    const reason =
+      tld &&
+      `new domains ending in .${tld} need a paid plan, as spam and phishing reports show more abuse on .${tld} than on .com`;
     if (
+      tld &&
+      config.newDomainNoticeDomains.includes(tld) &&
+      dayjs().isBefore(config.newDomainNoticeEndsAt)
+    )
+      notice = reason;
+    else if (tld) return getNewDomainError(domain, reason);
+    // (.gov, .edu, brands and the like: new ones need a paid plan)
+    else if (
       config.restrictedDomains.some(
         (tld) => domain === tld || domain.endsWith(`.${tld}`)
       )
     )
       return getNewlyCreatedError(domain);
     // (no domain on its extension can use the free plan, new or not)
-    const ext = punycode.toUnicode(domain.split('.').pop());
-    return getError(
-      `The domain ${domain} ends in .${ext}, a domain name extension that is frequently used for spam operations, so it needs a paid plan however old it is. ${REGISTRARS_BLOCKED_US} Please upgrade to a paid plan at ${config.urls.web}, or use a domain on an extension that can be used for free.`,
-      FREE_EXTENSIONS_FAQ
-    );
+    else
+      return getError(
+        `The domain ${domain} ends in .${punycode.toUnicode(
+          domain.split('.').pop()
+        )}, a domain name extension that is frequently used for spam operations, so it needs a paid plan however old it is. ${REGISTRARS_BLOCKED_US} Please upgrade to a paid plan at ${
+          config.urls.web
+        }, or use a domain on an extension that can be used for free.`,
+        FREE_EXTENSIONS_FAQ
+      );
   }
 
   // (someone had it before: its RDAP record says so, see `wrappedFetch`)
@@ -295,6 +340,8 @@ async function checkNewDomain(domain, response, client, resolvers) {
         .catch(() => null);
     return getUnavailableError(domain);
   }
+
+  if (notice) return getNoticeError(domain, response, notice);
 }
 
 //
@@ -303,7 +350,9 @@ async function checkNewDomain(domain, response, client, resolvers) {
 //
 // `options.allowNewDomain`: whether a domain registered within the past 90
 // days can be let through (on the free plan: see `checkNewDomain`);
-// `options.resolvers`: Cloudflare's, see `createDomainCheckResolvers`
+// `options.resolvers`: Cloudflare's, see `createDomainCheckResolvers`;
+// returns `err` (why it is not let through), `notice` (why it will not be,
+// see `getNoticeError`) and its WHOIS/RDAP lookup `response`
 //
 async function isExpiredOrNewlyCreated(input, client, options = {}) {
   if (typeof input !== 'string') throw new TypeError('Domain is not string');
@@ -417,7 +466,15 @@ async function isExpiredOrNewlyCreated(input, client, options = {}) {
         )
       : getNewlyCreatedError(domain);
 
-  return { err, response };
+  // (a domain that needs a paid plan only from a later date is let through,
+  //  and `notice` says why, see `getNoticeError`)
+  let notice;
+  if (err?.isNotice) {
+    notice = err;
+    err = undefined;
+  }
+
+  return { err, notice, response };
 }
 
 // (the WHOIS/RDAP lookup; tests, which have no network, put a stand-in here)
