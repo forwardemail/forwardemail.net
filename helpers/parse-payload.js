@@ -524,7 +524,13 @@ async function decrementRateLimiting(client, date, sender, root, byteLength) {
   ]);
 }
 
-async function parsePayload(data, ws) {
+// runs the handler inside a per-request timing store when
+// SQLITE_STMT_TIMERS=true (a plain call otherwise)
+function parsePayload(data, ws) {
+  return stmtTimers.runRequest(() => handlePayload.call(this, data, ws));
+}
+
+async function handlePayload(data, ws) {
   const now = Date.now();
   const debugTimers = boolean(env.SQLITE_DEBUG_TIMERS);
 
@@ -3347,12 +3353,14 @@ async function parsePayload(data, ws) {
     const elapsed = Date.now() - now;
     if (elapsed > 1000) {
       console.warn(
-        '[SLOW_REQUEST] pid=%d action=%s alias=%s domain=%s duration=%dms',
+        '[SLOW_REQUEST] pid=%d action=%s alias=%s domain=%s duration=%dms%s',
         process.pid,
         payload?.action,
         payload?.session?.user?.alias_name,
         payload?.session?.user?.domain_name,
-        elapsed
+        elapsed,
+        // " db_ms=… stmt_ms=… other_ms=…" with SQLITE_STMT_TIMERS=true
+        stmtTimers.summarize(elapsed)
       );
     }
 

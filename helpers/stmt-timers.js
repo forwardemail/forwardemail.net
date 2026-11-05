@@ -4,6 +4,8 @@
  */
 
 const process = require('node:process');
+const util = require('node:util');
+const { AsyncLocalStorage } = require('node:async_hooks');
 
 const { boolean } = require('boolean');
 const ms = require('ms');
@@ -26,6 +28,14 @@ const env = require('#config/env');
 //   alias id and the SQL text.
 // - `[STMT_TALLY]` once per interval: the top query shapes by total time, so a
 //   cheap query that runs thousands of times shows up as well as a slow one.
+//
+// Per-request split: `runRequest` opens a store for one request, `getDatabase`
+// and `getTemporaryDatabase` add the time they take (open, key derivation,
+// retries) and the `stmt` action adds its statement time.  `summarize` turns
+// that into the tail of the `[SLOW_REQUEST]` line, so a slow `fetch`, `sync`
+// or `search` shows how much of it was opening the database and how much was
+// everything else (queries inside the IMAP helpers, event-loop queueing).
+// Calls that overlap inside one request (Promise.all) are counted twice.
 //
 // SECURITY: only the SQL text is ever logged.  Bind values hold mail content
 // and are never read here.  The SQL is parameterized (`$p1`), and it is cut to
@@ -79,10 +89,13 @@ class StmtTimers {
       options.intervalMs ?? env.SQLITE_STMT_TALLY_INTERVAL,
       ms('1m')
     );
-    this.log = options.log || console.warn;
+    // stdout (pm2 out_file), like the other SQLITE_DEBUG_TIMERS output;
+    // console.warn would go to stderr and land in pm2's error_file
+    this.log = options.log || console.log;
     this.now = options.now || (() => performance.now());
     this.tally = new Map(); // sql -> { count, totalMs, maxMs, rows }
     this.interval = null;
+    this.als = new AsyncLocalStorage();
 
     if (this.enabled && options.autoFlush !== false) {
       this.interval = setInterval(() => this.flush(), this.intervalMs);
@@ -120,6 +133,12 @@ class StmtTimers {
       }
     }
 
+    const store = this.als.getStore();
+    if (store) {
+      store.stmt_ms += duration;
+      store.stmts++;
+    }
+
     entry.count++;
     entry.totalMs += duration;
     entry.rows += rows;
@@ -136,6 +155,45 @@ class StmtTimers {
         key
       );
     }
+  }
+
+  //
+  // run `fn` with a fresh per-request store (plain `fn()` when disabled)
+  //
+  runRequest(fn) {
+    if (!this.enabled) return fn();
+    return this.als.run({ db_ms: 0, db_calls: 0, stmt_ms: 0, stmts: 0 }, fn);
+  }
+
+  //
+  // time `fn` (a database open) into the current request's store
+  //
+  async timeDb(fn) {
+    const store = this.enabled ? this.als.getStore() : undefined;
+    if (!store) return fn();
+    const started = this.now();
+    try {
+      return await fn();
+    } finally {
+      store.db_ms += this.now() - started;
+      store.db_calls++;
+    }
+  }
+
+  //
+  // the tail of a [SLOW_REQUEST] line ('' when disabled or outside a request)
+  //
+  summarize(elapsed) {
+    const store = this.enabled ? this.als.getStore() : undefined;
+    if (!store) return '';
+    return util.format(
+      ' db_ms=%d db_calls=%d stmt_ms=%d stmts=%d other_ms=%d',
+      Math.round(store.db_ms),
+      store.db_calls,
+      Math.round(store.stmt_ms),
+      store.stmts,
+      Math.max(0, Math.round(elapsed - store.db_ms - store.stmt_ms))
+    );
   }
 
   //

@@ -124,3 +124,73 @@ test('auto flush interval is unref-ed and closable', (t) => {
   timers.close();
   t.is(timers.interval, null);
 });
+
+// --- per-request split (db_ms / stmt_ms / other_ms) ---
+
+test('summarize is empty when disabled or outside a request', (t) => {
+  const off = new StmtTimers({ enabled: false });
+  t.is(
+    off.runRequest(() => off.summarize(100)),
+    ''
+  );
+  const { timers } = make();
+  t.is(timers.summarize(100), '');
+});
+
+test('runRequest returns the handler result and splits db, stmt and other', async (t) => {
+  let clock = 0;
+  const { timers } = make({ now: () => clock });
+  const result = await timers.runRequest(async () => {
+    await timers.timeDb(async () => {
+      clock += 300; // opening the database
+    });
+    const started = timers.start();
+    clock += 40;
+    timers.record({ started, sql: 's', op: 'all', data: [] });
+    clock += 160; // everything else
+    return timers.summarize(500);
+  });
+  t.is(result, ' db_ms=300 db_calls=1 stmt_ms=40 stmts=1 other_ms=160');
+});
+
+test('requests do not share a store when they run concurrently', async (t) => {
+  let clock = 0;
+  const { timers } = make({ now: () => clock });
+  const a = timers.runRequest(async () => {
+    await timers.timeDb(async () => {
+      clock += 100;
+      await new Promise((resolve) => {
+        setImmediate(resolve);
+      });
+    });
+    return timers.summarize(0);
+  });
+  const b = timers.runRequest(async () => {
+    await new Promise((resolve) => {
+      setImmediate(resolve);
+    });
+    return timers.summarize(0);
+  });
+  const [ra, rb] = await Promise.all([a, b]);
+  t.true(ra.includes('db_calls=1'));
+  t.true(rb.includes('db_calls=0'));
+});
+
+test('timeDb still counts the call when the open throws', async (t) => {
+  const { timers } = make();
+  const out = await timers.runRequest(async () => {
+    await t.throwsAsync(
+      timers.timeDb(async () => {
+        throw new Error('boom');
+      }),
+      { message: 'boom' }
+    );
+    return timers.summarize(0);
+  });
+  t.true(out.includes('db_calls=1'));
+});
+
+test('timeDb outside a request just runs the function', async (t) => {
+  const { timers } = make();
+  t.is(await timers.timeDb(async () => 'ok'), 'ok');
+});

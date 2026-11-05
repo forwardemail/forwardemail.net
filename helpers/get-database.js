@@ -38,6 +38,7 @@ const ensureDefaultMailboxes = require('#helpers/ensure-default-mailboxes');
 const getAttachments = require('#helpers/get-attachments');
 const env = require('#config/env');
 const getPathToDatabase = require('#helpers/get-path-to-database');
+const stmtTimers = require('#helpers/stmt-timers');
 const isRetryableError = require('#helpers/is-retryable-error');
 const isValidPassword = require('#helpers/is-valid-password');
 const logger = require('#helpers/logger');
@@ -2679,4 +2680,10 @@ function retryGetDatabase(...args) {
   });
 }
 
-module.exports = retryGetDatabase;
+// with SQLITE_STMT_TIMERS=true the time spent here (open, key derivation and
+// retries) is added to the current request, see `helpers/stmt-timers.js`
+function timedGetDatabase(...args) {
+  return stmtTimers.timeDb(() => retryGetDatabase(...args));
+}
+
+module.exports = stmtTimers.enabled ? timedGetDatabase : retryGetDatabase;

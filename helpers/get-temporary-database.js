@@ -22,6 +22,7 @@ const env = require('#config/env');
 const { getPrimaryApiSecret } = require('#helpers/api-secrets');
 
 const ServerShutdownError = require('#helpers/server-shutdown-error');
+const stmtTimers = require('#helpers/stmt-timers');
 const TemporaryMessages = require('#models/temporary-messages');
 
 // Unique lock owner identifier for Redis distributed locks (hostname + PID)
@@ -222,4 +223,12 @@ async function openTemporaryDatabase(filePath, session) {
   return tmpDb;
 }
 
-module.exports = getTemporaryDatabase;
+// with SQLITE_STMT_TIMERS=true the time spent here is added to the current
+// request, see `helpers/stmt-timers.js`
+function timedGetTemporaryDatabase(...args) {
+  return stmtTimers.timeDb(() => getTemporaryDatabase.apply(this, args));
+}
+
+module.exports = stmtTimers.enabled
+  ? timedGetTemporaryDatabase
+  : getTemporaryDatabase;
