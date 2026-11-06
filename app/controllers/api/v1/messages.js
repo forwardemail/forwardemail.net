@@ -1253,6 +1253,83 @@ async function list(ctx) {
 
   const sql = builder.build(opts);
 
+  //
+  // `modseq` is stored after the message bodies, and SQLite looked the rows
+  // up by folder (the index on "mailbox") and read every message of it to
+  // compare its MODSEQ: 1-2s on a large folder, twice with the count, on the
+  // SQLite server's event loop, for each page a client syncs.  So first, from
+  // indexes alone: which indexes on MODSEQ the mailbox has, how many
+  // messages the folder has, and (with one) how many of the whole mailbox
+  // have a higher MODSEQ (counted up to the first, all the choice needs).
+  //
+  // - None has a higher MODSEQ: the page is empty, and nothing is read.
+  // - With the index on (mailbox, uid, modseq) (see helpers/get-database.js),
+  //   SQLite compares the MODSEQ of each message of the folder there, and
+  //   reads only those that changed.
+  // - Otherwise, when fewer than the folder has: they are looked up by the
+  //   index on "modseq", and only those are read.
+  // - Otherwise (e.g. since_modseq=0 without the first) the folder is read
+  //   as before.
+  //
+  // Only for a list by MODSEQ alone, as clients sync: another filter (e.g.
+  // unread, flagged, or IDs a search found) may have an index of its own
+  // that finds fewer rows, which SQLite chooses as before.
+  //
+  // (Only how SQLite finds the rows changes, never which rows match.  The
+  // statement starts with SELECT, so that the client retries it, as it does
+  // the list, when the connection to the SQLite server drops.)
+  //
+  if (sinceModseq !== undefined && query.mailbox) {
+    let counts;
+    try {
+      counts = await ctx.instance.wsp.request({
+        action: 'stmt',
+        session: { user: ctx.state.session.user },
+        stmt: [
+          [
+            'prepare',
+            `SELECT * FROM (WITH f AS MATERIALIZED (SELECT count(*) n FROM Messages WHERE mailbox = $p2), i AS MATERIALIZED (SELECT group_concat(name) names FROM pragma_index_list('Messages') WHERE name IN ('Messages_mailbox_uid_modseq', 'Messages_modseq') AND NOT partial) SELECT (SELECT CASE WHEN names IS NOT NULL THEN (SELECT count(*) FROM (SELECT 1 FROM Messages WHERE modseq > $p1 LIMIT (SELECT n FROM f))) END FROM i) "changed", (SELECT n FROM f) "folder", (SELECT names FROM i) "indexes")`
+          ],
+          ['get', { p1: sinceModseq, p2: query.mailbox }]
+        ]
+      });
+    } catch (err) {
+      // a statement SQLite cannot run: the list runs as before; anything
+      // else (e.g. a locked mailbox) the list would only run into again
+      if (err.code !== 'SQLITE_ERROR') throw err;
+      ctx.logger.warn(err);
+    }
+
+    if (counts?.changed === 0) {
+      setPaginationHeaders(ctx, 0, ctx.query.page, 0, 0);
+      ctx.body = [];
+      return;
+    }
+
+    // (by MODSEQ alone, see above)
+    let index;
+    if (searchConditions.length === 1) {
+      const indexes =
+        typeof counts?.indexes === 'string' ? counts.indexes.split(',') : [];
+      if (indexes.includes('Messages_mailbox_uid_modseq'))
+        index = 'Messages_mailbox_uid_modseq';
+      else if (
+        indexes.includes('Messages_modseq') &&
+        Number.isSafeInteger(counts.changed) &&
+        counts.changed < counts.folder
+      )
+        index = 'Messages_modseq';
+    }
+
+    if (index) {
+      for (const built of [sql, countSql])
+        built.query = built.query.replaceAll(
+          'from "Messages" where',
+          `from "Messages" indexed by "${index}" where`
+        );
+    }
+  }
+
   // Get messages with pagination using single query with subquery
   let messages = await ctx.instance.wsp.request({
     action: 'stmt',

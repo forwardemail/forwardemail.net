@@ -3,16 +3,20 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
+const crypto = require('node:crypto');
 const path = require('node:path');
 const process = require('node:process');
 const punycode = require('node:punycode');
+const { promisify } = require('node:util');
 const { Buffer } = require('node:buffer');
 
 const ms = require('ms');
 const pWaitFor = require('p-wait-for');
 const { mkdirp } = require('mkdirp');
+const PQueue = require('p-queue').default;
 
 const config = require('#config');
+const BoundedMap = require('#helpers/bounded-map');
 const logger = require('#helpers/logger');
 const IMAPError = require('#helpers/imap-error');
 const { decrypt } = require('#helpers/encrypt-decrypt');
@@ -31,23 +35,153 @@ import('sqlite-regex')
     sqliteRegexError = err;
   });
 
+const pbkdf2 = promisify(crypto.pbkdf2);
+
+//
+// The key of a mailbox is derived from its password with PBKDF2-SHA256
+// (`kdf_iter` rounds, 64007 by default, salted with the first 16 bytes of the
+// file), and `db.key()` derives it on the event loop: about 50ms per open,
+// during which no request of any alias on the process runs.  A SQLite
+// server opens mailboxes all the time (each delivery opens a temporary
+// mailbox, each sync and each request for a mailbox not in its cache opens
+// one, in whichever process the request reached), so the derivations alone
+// kept it busy and every request waited behind them ([SLOW_REQUEST]).
+//
+// So the key is derived on the thread pool instead and given to SQLite as
+// is ("raw:" key and salt), which then opens the file in a few ms.  SQLite
+// keeps the salt, so the password still opens it, after writes and VACUUM
+// as well, and a new file gets that salt.  A file that is not encrypted, or
+// one the key does not open (e.g. made with other KDF settings) is keyed
+// with the password as before.
+//
+// - The salt is read by SQLite, through its own file handle (keyed first
+//   with a raw key, which it does not derive).  Never open and close the
+//   file here: closing any descriptor of a file drops every lock the process
+//   holds on it, SQLite's included, after which another process can delete
+//   the WAL of a connection still open and its writes are lost.
+//   <https://www.sqlite.org/howtocorrupt.html#_posix_advisory_locks_canceled_by_a_separate_thread_doing_close_>
+// - Opens of one file share one derivation, and at most two run at once, so
+//   the thread pool (4 threads, shared with file and DNS work) keeps room.
+// - A key is kept for DERIVED_KEY_TTL after it is derived, for the opens
+//   that follow (a delivery, then the client that syncs it), and at most
+//   DERIVED_KEYS_MAX at a time.  It is the same for the same file, password,
+//   salt and rounds, so a kept one is never out of date: a rekeyed or
+//   replaced file has another password or salt, and so another entry.  That
+//   a key does not open its file is kept the same way, so the password is
+//   not derived twice per open.
+// - It is given through `db.key()`, never in SQL text, which SQLITE_VERBOSE
+//   would log.
+//
+const SQLITE_HEADER = Buffer.from('SQLite format 3\0');
+const NO_KEY = Buffer.from(`raw:${'0'.repeat(64)}`);
+const DERIVED_KEY_TTL = ms('1m');
+const DERIVED_KEYS_MAX = 1000;
+const CACHE_KEY_SECRET = crypto.randomBytes(32);
+const derivedKeys = new BoundedMap(DERIVED_KEYS_MAX);
+const derivations = new PQueue({ concurrency: 2 });
+
+// keep a derivation (or `false`, a key the file does not take) until
+// DERIVED_KEY_TTL after it settles (one that fails is not kept)
+function keepDerivedKey(cacheKey, derivation) {
+  const entry = { derivation, expires: Number.POSITIVE_INFINITY };
+  derivedKeys.set(cacheKey, entry);
+  derivation.then(
+    () => {
+      entry.expires = Date.now() + DERIVED_KEY_TTL;
+    },
+    () => {
+      if (derivedKeys.get(cacheKey) === entry) derivedKeys.delete(cacheKey);
+    }
+  );
+}
+
+setInterval(() => {
+  const now = Date.now();
+  for (const [cacheKey, entry] of derivedKeys) {
+    if (entry.expires <= now) derivedKeys.delete(cacheKey);
+  }
+}, DERIVED_KEY_TTL).unref();
+
+// resolves with the key ("raw:" key and salt) and its entry, or nothing to
+// key with the password
+async function getDerivedKey(db, password) {
+  let iterations;
+  let salt;
+  try {
+    iterations = Number(db.pragma('kdf_iter', { simple: true }));
+    db.key(NO_KEY);
+    salt = Buffer.from(
+      db.prepare("SELECT sqlite3mc_codec_data('cipher_salt')").pluck().get(),
+      'hex'
+    );
+  } catch {
+    return;
+  }
+
+  if (
+    !Number.isSafeInteger(iterations) ||
+    iterations <= 0 ||
+    salt.length !== 16 ||
+    salt.equals(SQLITE_HEADER) ||
+    salt.every((byte) => byte === 0)
+  )
+    return;
+
+  // (keyed per process, so the entry gives nothing to guess passwords by)
+  const cacheKey = crypto
+    .createHmac('sha256', CACHE_KEY_SECRET)
+    .update(`${db.name}\0${iterations}\0`)
+    .update(salt)
+    .update(password)
+    .digest('hex');
+  let derivation = derivedKeys.get(cacheKey)?.derivation;
+  if (!derivation) {
+    derivation = derivations.add(() =>
+      pbkdf2(password, salt, iterations, 32, 'sha256')
+    );
+    keepDerivedKey(cacheKey, derivation);
+  }
+
+  try {
+    const key = await derivation;
+    if (key)
+      return {
+        key: Buffer.from(`raw:${key.toString('hex')}${salt.toString('hex')}`),
+        cacheKey
+      };
+  } catch {}
+}
+
 //
 // NOTE: on all invocations of db.close() we run the pragma command "optimize"
 // <https://phiresky.github.io/blog/2020/sqlite-performance-tuning/#more-things-that-must-be-run-manually>
 // <https://www.sqlite.org/pragma.html#pragma_optimize>
 //
-async function setupPragma(db, session, cipher = 'chacha20') {
+async function setupPragma(
+  db,
+  session,
+  cipher = 'chacha20',
+  useDerivedKey = true
+) {
   // safeguards
   if (!db.open) throw new TypeError('Database is not open');
   if (db.memory) throw new TypeError('Memory database');
 
   // NOTE: if you change anything in here change backup in sqlite-server
   db.pragma(`cipher='${cipher}'`);
-  if (typeof db.key === 'function')
-    db.key(Buffer.from(decrypt(session.user.password)));
+  const password = decrypt(session.user.password);
+  const derived =
+    cipher === 'chacha20' && useDerivedKey && typeof db.key === 'function'
+      ? await getDerivedKey(db, password)
+      : undefined;
+  // (the handle can be closed while the key was derived)
+  if (!db.open) throw new TypeError('Database is not open');
+  // (checked below, as the password is, by the first read of the file)
+  if (derived) db.key(derived.key);
+  else if (typeof db.key === 'function') db.key(Buffer.from(password));
   // <https://github.com/m4heshd/better-sqlite3-multiple-ciphers/issues/78>
   // <https://www.zetetic.net/sqlcipher/sqlcipher-api/#example-2-raw-key-data-without-key-derivation>
-  else db.pragma(`key="${decrypt(session.user.password)}"`);
+  else db.pragma(`key="${password}"`);
   try {
     //
     // A read-only handle cannot rewrite the database header, so switching a
@@ -73,6 +207,17 @@ async function setupPragma(db, session, cipher = 'chacha20') {
       db.pragma('journal_mode=WAL');
     }
   } catch (err) {
+    // a key the file does not take: the password decides, as before
+    // (the errors a wrong key gives, as for the legacy cipher below; others,
+    //  e.g. SQLITE_BUSY, are the same with either key and are thrown)
+    if (
+      derived &&
+      (err.code === 'SQLITE_NOTADB' || err.code === 'SQLITE_ERROR')
+    ) {
+      keepDerivedKey(derived.cacheKey, Promise.resolve(false));
+      return setupPragma(db, session, cipher, false);
+    }
+
     // legacy fallback
     if (
       cipher === 'chacha20' &&

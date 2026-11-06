@@ -13,6 +13,7 @@ const { Buffer } = require('node:buffer');
 const { setTimeout } = require('node:timers/promises');
 
 const Axe = require('axe');
+const Database = require('better-sqlite3-multiple-ciphers');
 const dayjs = require('dayjs-with-plugins');
 const ip = require('ip');
 const ms = require('ms');
@@ -1221,6 +1222,205 @@ test('since_modseq lists a message moved into the folder', async (t) => {
     changed.map((m) => m.subject),
     ['archive me']
   );
+});
+
+// the statements on MODSEQ the SQLite server prepares while `fn` runs, with
+// how SQLite runs each
+async function recordStatements(t, fn) {
+  const { prepare } = Database.prototype;
+  const statements = [];
+  Database.prototype.prepare = function (sql, ...args) {
+    if (/\bmodseq"? >/.test(sql)) statements.push(sql);
+    return prepare.call(this, sql, ...args);
+  };
+
+  try {
+    await fn();
+  } finally {
+    Database.prototype.prepare = prepare;
+  }
+
+  const { sqlite, alias, session } = t.context;
+  const db = await getDatabase(sqlite, alias, session);
+  return statements.map((sql) => ({
+    sql,
+    plan: db
+      .prepare(`EXPLAIN QUERY PLAN ${sql}`)
+      .all({ p1: 'x', p2: 'x' })
+      .map((row) => row.detail)
+      .join(' | ')
+  }));
+}
+
+//
+// `modseq` is stored after the message bodies.  The list looked the folder
+// up by its index on "mailbox" and read every message of it to compare the
+// MODSEQ: 1-2s on a large folder, on the event loop of the SQLite server,
+// for each page webmail synced.
+//
+const BY_FOLDER = /USING INDEX Messages_mailbox_uid_modseq\b/;
+const READS_FOLDER = /INDEX Messages_mailbox\b/;
+
+// the probe that decides, then the list statements
+function splitProbe(t, statements) {
+  const [probe, ...lists] = statements;
+  // (a read the client retries if the connection drops, as it does the list)
+  t.regex(probe.sql, /^\s*select\s.*\bwith f as materialized\b/is);
+  // (from indexes alone)
+  t.notRegex(probe.plan, /USING INDEX|SCAN Messages\b/);
+  return lists;
+}
+
+test('since_modseq reads the changed messages of the folder, not the whole folder', async (t) => {
+  const archived = [];
+  for (let i = 0; i < 3; i++)
+    archived.push(await appendMessage(t, 'Archive', `archived ${i}`));
+  const archiveSince = await highestListedModseq(t, 'Archive');
+  const archivedLater = await appendMessage(t, 'Archive', 'archived later');
+  const messages = [];
+  for (let i = 0; i < 6; i++)
+    messages.push(await appendMessage(t, 'INBOX', `message ${i}`));
+  const since = await highestListedModseq(t, 'INBOX');
+  const arrived = await appendMessage(t, 'INBOX', 'new mail');
+
+  // a folder with changes, and one whose changes are older than another's
+  for (const [path, from, expected] of [
+    ['INBOX', since, [arrived.id]],
+    ['Archive', archiveSince, [archivedLater.id]]
+  ]) {
+    let changed;
+    const statements = await recordStatements(t, async () => {
+      changed = await listSince(t, path, from);
+    });
+    t.deepEqual(
+      changed.map((m) => m.id),
+      expected
+    );
+    const lists = splitProbe(t, statements);
+    t.true(lists.length > 0);
+    for (const { plan } of lists) {
+      t.regex(plan, BY_FOLDER);
+      t.notRegex(plan, READS_FOLDER);
+    }
+  }
+
+  // filtered by more than MODSEQ (e.g. IDs a search found, or unread), by
+  // the indexes SQLite chooses for them, as before
+  for (const filter of ['subject=new%20mail', 'is_unread=true']) {
+    let res;
+    const filtered = await recordStatements(t, async () => {
+      res = await t.context.api
+        .get(`/v1/messages?folder=INBOX&since_modseq=${since}&${filter}`)
+        .set('Authorization', t.context.auth);
+    });
+    t.is(res.status, 200);
+    t.deepEqual(
+      res.body.map((m) => m.id),
+      [arrived.id]
+    );
+    const lists = splitProbe(t, filtered);
+    t.true(lists.length > 0);
+    for (const { sql } of lists) t.notRegex(sql, /indexed by/i);
+  }
+
+  // all of the folder changed since: still never more than the folder read
+  let changed;
+  const all = await recordStatements(t, async () => {
+    changed = await listSince(t, 'INBOX', 0);
+  });
+  t.is(changed.length, messages.length + 1);
+  for (const { plan } of splitProbe(t, all)) t.notRegex(plan, READS_FOLDER);
+});
+
+// a mailbox that still has the index on (mailbox, uid) and so not the one on
+// (mailbox, uid, modseq) (see helpers/get-database.js)
+async function withoutFolderIndex(t) {
+  const { sqlite, alias, session } = t.context;
+  const db = await getDatabase(sqlite, alias, session);
+  db.exec(
+    'CREATE INDEX IF NOT EXISTS "Messages_mailbox_uid" ON "Messages" ("mailbox", "uid"); DROP INDEX "Messages_mailbox_uid_modseq"'
+  );
+  return db;
+}
+
+test('since_modseq on a mailbox without the index on (mailbox, uid, modseq) reads by MODSEQ while few changed', async (t) => {
+  const messages = [];
+  for (let i = 0; i < 6; i++)
+    messages.push(await appendMessage(t, 'INBOX', `message ${i}`));
+  const since = await highestListedModseq(t, 'INBOX');
+  const arrived = await appendMessage(t, 'INBOX', 'new mail');
+  await withoutFolderIndex(t);
+
+  let changed;
+  const statements = await recordStatements(t, async () => {
+    changed = await listSince(t, 'INBOX', since);
+  });
+  t.deepEqual(
+    changed.map((m) => m.id),
+    [arrived.id]
+  );
+  const lists = splitProbe(t, statements);
+  t.true(lists.length > 0);
+  for (const { plan } of lists) {
+    t.regex(plan, /USING INDEX Messages_modseq\b/);
+    t.notRegex(plan, READS_FOLDER);
+  }
+
+  // most of the mailbox changed since: then by folder, as before
+  const all = await recordStatements(t, async () => {
+    changed = await listSince(t, 'INBOX', 0);
+  });
+  t.is(changed.length, messages.length + 1);
+  for (const { sql } of splitProbe(t, all)) t.notRegex(sql, /indexed by/i);
+});
+
+test('since_modseq of a folder that has not changed reads no messages', async (t) => {
+  await appendMessage(t, 'INBOX', 'nothing new after this');
+  const since = await highestListedModseq(t, 'INBOX');
+
+  let res;
+  const statements = await recordStatements(t, async () => {
+    res = await t.context.api
+      .get(`/v1/messages?folder=INBOX&since_modseq=${since}`)
+      .set('Authorization', t.context.auth);
+  });
+  t.is(res.status, 200);
+  t.deepEqual(res.body, []);
+  t.is(res.headers['x-item-count'], '0');
+  // only the two counts, from indexes alone
+  const [probe, ...rest] = statements;
+  // (a read the client retries if the connection drops, as it does the list)
+  t.regex(probe.sql, /^\s*select\s.*\bwith f as materialized\b/is);
+  t.notRegex(probe.plan, /USING INDEX|SCAN Messages\b/);
+  t.deepEqual(rest, []);
+
+  // and the next change is listed
+  const arrived = await appendMessage(t, 'INBOX', 'something new');
+  const changed = await listSince(t, 'INBOX', since);
+  t.deepEqual(
+    changed.map((m) => m.id),
+    [arrived.id]
+  );
+});
+
+test('since_modseq lists as before when no index on MODSEQ can be used', async (t) => {
+  for (let i = 0; i < 3; i++) await appendMessage(t, 'INBOX', `message ${i}`);
+  const since = await highestListedModseq(t, 'INBOX');
+  const arrived = await appendMessage(t, 'INBOX', 'new mail');
+
+  const db = await withoutFolderIndex(t);
+  for (const schema of [
+    // ones SQLite cannot look these rows up by
+    'CREATE INDEX "Messages_mailbox_uid_modseq" ON "Messages" ("mailbox", "uid", "modseq") WHERE "modseq" > 0; DROP INDEX "Messages_modseq"; CREATE INDEX "Messages_modseq" ON "Messages" ("modseq") WHERE "modseq" > 0',
+    'DROP INDEX "Messages_mailbox_uid_modseq"; DROP INDEX "Messages_modseq"'
+  ]) {
+    db.exec(schema);
+    const changed = await listSince(t, 'INBOX', since);
+    t.deepEqual(
+      changed.map((m) => m.id),
+      [arrived.id]
+    );
+  }
 });
 
 test('since_modseq must be a whole number and needs a folder', async (t) => {
