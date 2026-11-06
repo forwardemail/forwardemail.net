@@ -3851,9 +3851,7 @@ Sieve 스크립트는 여러 방법으로 관리할 수 있습니다:
 
 도메인을 추가할 때(무료 플랜 도메인은 지속적으로) 해당 도메인에 대해 WHOIS/RDAP 조회를 실행합니다. 도메인이 **최근 90일 이내에 만료**되었거나, 현재 등록기관에서 **이전, 업데이트 또는 삭제 보류** 상태인 경우, 해당 도메인으로 메일을 보내거나 받으려면 유료 플랜이 필요합니다.
 
-**최근 90일 이내에 생성**된 도메인은 새 이름인 경우 무료 플랜을 사용할 수 있습니다. 다만 이전에 사용된 적이 있는 경우(예: 다른 사람이 만료되도록 두었다가 다시 등록된 경우), 드롭캐치 등록기관이 보유한 경우, 다른 등록기관에서 이전된 경우, `.cc`, `.id`, `.jp`, `.online`, `.ws` 또는 `.xyz`로 끝나는 경우(스팸 및 피싱 신고에서 이 확장자들은 `.com`보다 악용이 많음), 또는 Cloudflare의 악성코드, 피싱, 성인 콘텐츠 필터에 의해 차단되는 경우에는 생성 후 90일이 될 때까지 유료 플랜이 필요합니다. 이전 사용 여부는 [Internet Archive](https://web.archive.org/)에서 확인합니다. 등록 이전 시점의 도메인 캡처가 있으면 사용된 적이 있다는 뜻입니다. 이 확인을 사용할 수 없는 경우에도 도메인을 추가할 수 있습니다. 확인이 완료될 때까지 해당 도메인으로 오는 메일은 임시 오류(421)로 거부되므로, 발신 서버가 메시지를 보관했다가 나중에 다시 보냅니다. 저희는 메일을 저장하지 않습니다.
-
-`.id`, `.jp` 또는 `.ws`로 끝나는 새 도메인은 2026년 12월 1일부터 유료 플랜이 필요합니다. 그때까지는 계속 작동하며, 업그레이드하거나 다른 도메인으로 옮길 시간이 있도록 도메인이 메일을 전달하는 캐치올 주소로 이메일을 한 번 보내 드립니다.
+**최근 90일 이내에 생성**된 도메인은 새 이름인 경우 무료 플랜을 사용할 수 있습니다. 다만 이전에 사용된 적이 있는 경우(예: 다른 사람이 만료되도록 두었다가 다시 등록된 경우), 드롭캐치 등록기관이 보유한 경우, 다른 등록기관에서 이전된 경우, `.cc` 또는 `.xyz`로 끝나는 경우(무료 플랜에서 사용할 수 있는 확장자 중 `.com`과 `.net` 다음으로 스팸 발송자가 새 도메인을 가장 많이 등록하는 확장자), 또는 Cloudflare의 악성코드, 피싱, 성인 콘텐츠 필터에 의해 차단되는 경우에는 생성 후 90일이 될 때까지 유료 플랜이 필요합니다. 이전 사용 여부는 [Internet Archive](https://web.archive.org/)에서 확인합니다. 등록 이전 시점의 도메인 캡처가 있으면 사용된 적이 있다는 뜻입니다. 이 확인을 사용할 수 없는 경우에도 도메인을 추가할 수 있습니다. 확인이 완료될 때까지 해당 도메인으로 오는 메일은 임시 오류(421)로 거부되므로, 발신 서버가 메시지를 보관했다가 나중에 다시 보냅니다. 저희는 메일을 저장하지 않습니다.
 
 이는 악용 방지 조치이며 개인에 대한 판단이 아닙니다 — GoDaddy, Namecheap, Hostgator를 비롯한 주요 등록기관이 최근 만료된 도메인 탈취 및 사기성으로 등록된 새 도메인과 관련된 악용 패턴 때문에 과거에 저희 인프라를 완전히 차단한 적이 있습니다. 이러한 도메인에 유료 플랜을 요구하기 때문에 등록기관의 신뢰를 잃지 않고 무료 플랜을 계속 제공할 수 있습니다.
 
@@ -5339,7 +5337,6 @@ DNS 또는 연결 오류가 발생하면 `DATA` 명령에 SMTP 응답 코드 421
   <li class="list-inline-item"><code class="notranslate">ck</code></li>
   <li class="list-inline-item"><code class="notranslate">co</code></li>
   <li class="list-inline-item"><code class="notranslate">com</code></li>
-  <li class="list-inline-item"><code class="notranslate">cz</code></li>
   <li class="list-inline-item"><code class="notranslate">de</code></li>
   <li class="list-inline-item"><code class="notranslate">dev</code></li>
   <li class="list-inline-item"><code class="notranslate">dj</code></li>
@@ -5396,7 +5393,6 @@ DNS 또는 연결 오류가 발생하면 `DATA` 명령에 SMTP 응답 코드 421
   <li class="list-inline-item"><code class="notranslate">no</code></li>
   <li class="list-inline-item"><code class="notranslate">nu</code></li>
   <li class="list-inline-item"><code class="notranslate">nz</code></li>
-  <li class="list-inline-item"><code class="notranslate">online</code></li>
   <li class="list-inline-item"><code class="notranslate">org</code></li>
   <li class="list-inline-item"><code class="notranslate">pf</code></li>
   <li class="list-inline-item"><code class="notranslate">pl</code></li>

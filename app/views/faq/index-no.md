@@ -3852,9 +3852,7 @@ Hvis du mottar et av disse varslene, kan du kontakte oss på <support@forwardema
 
 Når du legger til et domene (og fortløpende for domener på gratisplanen), kjører vi et WHOIS/RDAP-oppslag på det. Hvis domenet **utløp i løpet av de siste 90 dagene**, eller for øyeblikket har status som **ventende overføring, oppdatering eller sletting** hos registraren, krever vi at det er på en betalt plan før du kan sende eller motta e-post med det.
 
-Et domene som ble **opprettet i løpet av de siste 90 dagene**, kan bruke gratisplanen hvis det er et nytt navn. Det trenger en betalt plan til det er 90 dager gammelt hvis det har vært i bruk før (for eksempel hvis noen andre lot det utløpe og det ble registrert på nytt), hvis en drop-catch-registrar har det, hvis det er overført fra en annen registrar, hvis det slutter på `.cc`, `.id`, `.jp`, `.online`, `.ws` eller `.xyz` (rapporter om spam og phishing viser mer misbruk på disse enn på `.com`), eller hvis Cloudflares filter for skadevare, phishing og voksent innhold blokkerer det. Vi sjekker tidligere bruk i [Internet Archive](https://web.archive.org/): et arkivert øyeblikksbilde av domenet fra før det ble registrert betyr at det var i bruk. Hvis denne sjekken ikke er tilgjengelig, kan du likevel legge til domenet; til sjekken er fullført, avvises e-post til det med en midlertidig feil (421), slik at den sendende serveren beholder meldingen og prøver igjen senere. Vi lagrer den aldri.
-
-Nye domener som slutter på `.id`, `.jp` eller `.ws`, trenger en betalt plan fra 1. desember 2026. Frem til da fungerer de som før, og vi sender én e-post til catch-all-adressen domenet videresender til, slik at det er tid til å oppgradere eller bytte til et annet domene.
+Et domene som ble **opprettet i løpet av de siste 90 dagene**, kan bruke gratisplanen hvis det er et nytt navn. Det trenger en betalt plan til det er 90 dager gammelt hvis det har vært i bruk før (for eksempel hvis noen andre lot det utløpe og det ble registrert på nytt), hvis en drop-catch-registrar har det, hvis det er overført fra en annen registrar, hvis det slutter på `.cc` eller `.xyz` (av endelsene gratisplanen godtar, er det disse spammere registrerer flest nye domener på etter `.com` og `.net`), eller hvis Cloudflares filter for skadevare, phishing og voksent innhold blokkerer det. Vi sjekker tidligere bruk i [Internet Archive](https://web.archive.org/): et arkivert øyeblikksbilde av domenet fra før det ble registrert betyr at det var i bruk. Hvis denne sjekken ikke er tilgjengelig, kan du likevel legge til domenet; til sjekken er fullført, avvises e-post til det med en midlertidig feil (421), slik at den sendende serveren beholder meldingen og prøver igjen senere. Vi lagrer den aldri.
 
 Dette er et tiltak mot misbruk, ikke en vurdering av deg personlig — store registrarer, inkludert GoDaddy, Namecheap og Hostgator, har tidligere blokkert infrastrukturen vår fullstendig på grunn av misbruksmønstre med overtakelse av nylig utløpte domener og svindelregistrerte nye domener. Ved å kreve en betalt plan for disse domenene kan vi i det hele tatt fortsette å tilby en gratisplan uten å miste tilliten hos registrarene.
 
@@ -5340,7 +5338,6 @@ Denne nye regelen tillater kun følgende domenenavnutvidelser å brukes på vår
   <li class="list-inline-item"><code class="notranslate">ck</code></li>
   <li class="list-inline-item"><code class="notranslate">co</code></li>
   <li class="list-inline-item"><code class="notranslate">com</code></li>
-  <li class="list-inline-item"><code class="notranslate">cz</code></li>
   <li class="list-inline-item"><code class="notranslate">de</code></li>
   <li class="list-inline-item"><code class="notranslate">dev</code></li>
   <li class="list-inline-item"><code class="notranslate">dj</code></li>
@@ -5397,7 +5394,6 @@ Denne nye regelen tillater kun følgende domenenavnutvidelser å brukes på vår
   <li class="list-inline-item"><code class="notranslate">no</code></li>
   <li class="list-inline-item"><code class="notranslate">nu</code></li>
   <li class="list-inline-item"><code class="notranslate">nz</code></li>
-  <li class="list-inline-item"><code class="notranslate">online</code></li>
   <li class="list-inline-item"><code class="notranslate">org</code></li>
   <li class="list-inline-item"><code class="notranslate">pf</code></li>
   <li class="list-inline-item"><code class="notranslate">pl</code></li>

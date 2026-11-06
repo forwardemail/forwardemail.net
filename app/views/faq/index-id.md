@@ -3851,9 +3851,7 @@ Jika Anda menerima salah satu pemberitahuan ini, silakan hubungi kami di <suppor
 
 Saat Anda menambahkan domain (dan secara berkala untuk domain pada paket gratis), kami menjalankan pencarian WHOIS/RDAP terhadap domain tersebut. Jika domain **kedaluwarsa dalam 90 hari terakhir**, atau saat ini berada dalam status **transfer, pembaruan, atau penghapusan tertunda** di registrarnya, kami mewajibkan domain tersebut menggunakan paket berbayar sebelum Anda dapat mengirim atau menerima email dengannya.
 
-Domain yang **dibuat dalam 90 hari terakhir** dapat menggunakan paket gratis jika namanya baru. Domain tersebut memerlukan paket berbayar hingga berusia 90 hari jika pernah digunakan sebelumnya (misalnya, orang lain membiarkannya kedaluwarsa lalu domain itu didaftarkan kembali), jika dipegang oleh registrar drop-catch, jika ditransfer dari registrar lain, jika berakhiran `.cc`, `.id`, `.jp`, `.online`, `.ws`, atau `.xyz` (laporan spam dan phishing menunjukkan penyalahgunaan yang lebih banyak pada ekstensi ini dibanding `.com`), atau jika diblokir oleh filter Cloudflare untuk malware, phishing, dan konten dewasa. Kami memeriksa penggunaan sebelumnya di [Internet Archive](https://web.archive.org/): tangkapan domain dari sebelum didaftarkan berarti domain tersebut pernah digunakan. Jika pemeriksaan tersebut tidak tersedia, Anda tetap dapat menambahkan domain tersebut; hingga pemeriksaan selesai, email ke domain itu ditolak dengan kesalahan sementara (421), sehingga server pengirim menyimpan pesannya dan mencoba lagi nanti. Kami tidak pernah menyimpannya.
-
-Domain baru yang berakhiran `.id`, `.jp`, atau `.ws` memerlukan paket berbayar mulai 1 Desember 2026. Hingga saat itu, domain tersebut tetap berfungsi, dan kami mengirim satu email ke alamat catch-all tujuan penerusan domain, agar ada waktu untuk meningkatkan paket atau pindah ke domain lain.
+Domain yang **dibuat dalam 90 hari terakhir** dapat menggunakan paket gratis jika namanya baru. Domain tersebut memerlukan paket berbayar hingga berusia 90 hari jika pernah digunakan sebelumnya (misalnya, orang lain membiarkannya kedaluwarsa lalu domain itu didaftarkan kembali), jika dipegang oleh registrar drop-catch, jika ditransfer dari registrar lain, jika berakhiran `.cc` atau `.xyz` (dari ekstensi yang diterima paket gratis, pelaku spam paling banyak mendaftarkan domain baru di ekstensi ini setelah `.com` dan `.net`), atau jika diblokir oleh filter Cloudflare untuk malware, phishing, dan konten dewasa. Kami memeriksa penggunaan sebelumnya di [Internet Archive](https://web.archive.org/): tangkapan domain dari sebelum didaftarkan berarti domain tersebut pernah digunakan. Jika pemeriksaan tersebut tidak tersedia, Anda tetap dapat menambahkan domain tersebut; hingga pemeriksaan selesai, email ke domain itu ditolak dengan kesalahan sementara (421), sehingga server pengirim menyimpan pesannya dan mencoba lagi nanti. Kami tidak pernah menyimpannya.
 
 Ini adalah langkah pencegahan penyalahgunaan, bukan penilaian terhadap Anda secara pribadi — registrar besar termasuk GoDaddy, Namecheap, dan Hostgator sebelumnya pernah memblokir infrastruktur kami sepenuhnya karena pola penyalahgunaan yang melibatkan pengambilalihan domain yang baru kedaluwarsa dan domain baru yang didaftarkan secara curang. Mewajibkan paket berbayar untuk domain-domain ini memungkinkan kami tetap menawarkan paket gratis tanpa kehilangan kepercayaan registrar.
 
@@ -5339,7 +5337,6 @@ Aturan baru ini hanya mengizinkan ekstensi nama domain berikut untuk digunakan p
   <li class="list-inline-item"><code class="notranslate">ck</code></li>
   <li class="list-inline-item"><code class="notranslate">co</code></li>
   <li class="list-inline-item"><code class="notranslate">com</code></li>
-  <li class="list-inline-item"><code class="notranslate">cz</code></li>
   <li class="list-inline-item"><code class="notranslate">de</code></li>
   <li class="list-inline-item"><code class="notranslate">dev</code></li>
   <li class="list-inline-item"><code class="notranslate">dj</code></li>
@@ -5396,7 +5393,6 @@ Aturan baru ini hanya mengizinkan ekstensi nama domain berikut untuk digunakan p
   <li class="list-inline-item"><code class="notranslate">no</code></li>
   <li class="list-inline-item"><code class="notranslate">nu</code></li>
   <li class="list-inline-item"><code class="notranslate">nz</code></li>
-  <li class="list-inline-item"><code class="notranslate">online</code></li>
   <li class="list-inline-item"><code class="notranslate">org</code></li>
   <li class="list-inline-item"><code class="notranslate">pf</code></li>
   <li class="list-inline-item"><code class="notranslate">pl</code></li>

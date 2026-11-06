@@ -816,7 +816,7 @@ test('isExpiredOrNewlyCreated', async (t) => {
     const obj = await isExpiredOrNewlyCreated(rootDomain, t.context.client);
     t.is(
       obj.err.message,
-      `The domain ${rootDomain} was detected as a pending state domain via WHOIS/RDAP lookup: its registrar shows it pending deletion, an update, or a transfer, so who will have it next is not known. Due to major registrars such as GoDaddy, Namecheap, and Hostgator previously blocking us due to abuse, we unfortunately have to enforce strict abuse prevention controls to block suspicious activity. Without this abuse prevention, our service would be blocked entirely from these registrars. Please upgrade to a paid plan at ${config.urls.web} to use our service with this domain. Learn why: ${config.urls.web}/faq#why-do-newly-registered-or-recently-expired-domains-require-a-paid-plan`
+      `The domain ${rootDomain} was detected as a pending state domain via WHOIS/RDAP lookup: its registrar shows it pending deletion, an update, or a transfer, so who will have it next is not known. Due to major registrars such as GoDaddy, Namecheap, and Hostgator previously blocking us due to abuse &mdash; we unfortunately have to enforce strict abuse prevention controls to block suspicious activity. Without this abuse prevention, our service would be blocked entirely from these registrars. Please upgrade to a paid plan at ${config.urls.web} to use our service with this domain. Learn why: ${config.urls.web}/faq#why-do-newly-registered-or-recently-expired-domains-require-a-paid-plan`
     );
     t.is(obj.err.responseCode, 421);
     t.is(obj.response.found, true);
@@ -843,7 +843,7 @@ test('isExpiredOrNewlyCreated', async (t) => {
     const obj = await isExpiredOrNewlyCreated(rootDomain, t.context.client);
     t.is(
       obj.err.message,
-      `The domain ${rootDomain} was detected as a recently expired domain via WHOIS/RDAP lookup; please renew it with its registrar. An expired domain can be registered again by someone else, and whoever has a domain receives the mail sent to its earlier owner's addresses (such as password resets). Due to major registrars such as GoDaddy, Namecheap, and Hostgator previously blocking us due to abuse, we unfortunately have to enforce strict abuse prevention controls to block suspicious activity. Without this abuse prevention, our service would be blocked entirely from these registrars. Please upgrade to a paid plan at ${config.urls.web} to use our service with this domain. Learn why: ${config.urls.web}/faq#why-do-newly-registered-or-recently-expired-domains-require-a-paid-plan`
+      `The domain ${rootDomain} was detected as a recently expired domain via WHOIS/RDAP lookup; please renew it with its registrar. An expired domain can be registered again by someone else, and whoever has a domain receives the mail sent to its earlier owner's addresses (such as password resets). Due to major registrars such as GoDaddy, Namecheap, and Hostgator previously blocking us due to abuse &mdash; we unfortunately have to enforce strict abuse prevention controls to block suspicious activity. Without this abuse prevention, our service would be blocked entirely from these registrars. Please upgrade to a paid plan at ${config.urls.web} to use our service with this domain. Learn why: ${config.urls.web}/faq#why-do-newly-registered-or-recently-expired-domains-require-a-paid-plan`
     );
     t.is(obj.err.responseCode, 421);
     t.is(obj.response.found, true);
@@ -871,7 +871,7 @@ test('isExpiredOrNewlyCreated', async (t) => {
     const obj = await isExpiredOrNewlyCreated(rootDomain, t.context.client);
     t.is(
       obj.err.message,
-      `The domain ${rootDomain} was detected as a newly created or transferred domain via WHOIS/RDAP lookup. Due to major registrars such as GoDaddy, Namecheap, and Hostgator previously blocking us due to abuse, we unfortunately have to enforce strict abuse prevention controls to block suspicious activity. Without this abuse prevention, our service would be blocked entirely from these registrars. Please upgrade to a paid plan at ${config.urls.web} to use our service with this domain. Learn why: ${config.urls.web}/faq#why-do-newly-registered-or-recently-expired-domains-require-a-paid-plan`
+      `The domain ${rootDomain} was detected as a newly created or transferred domain via WHOIS/RDAP lookup. Due to major registrars such as GoDaddy, Namecheap, and Hostgator previously blocking us due to abuse &mdash; we unfortunately have to enforce strict abuse prevention controls to block suspicious activity. Without this abuse prevention, our service would be blocked entirely from these registrars. Please upgrade to a paid plan at ${config.urls.web} to use our service with this domain. Learn why: ${config.urls.web}/faq#why-do-newly-registered-or-recently-expired-domains-require-a-paid-plan`
     );
     t.is(obj.err.responseCode, 421);
     t.is(obj.response.found, true);
@@ -934,13 +934,11 @@ test('a free-plan domain registered within 90 days can receive mail when it is a
   getPreviousDomainUse.CDX_URL = `http://127.0.0.1:${cdx.address().port}/cdx`;
 
   const cloudflare = createDomainCheckResolvers(t.context.client, logger);
-  const { newDomainNoticeEndsAt } = config;
   const created = dayjs().subtract(30, 'day').toDate();
 
   // (a domain registered 30 days ago, forwarding to our test server, that
   //  Cloudflare does not block; `options.transferred` is a registrar
-  //  transfer, `options.record` what it forwards to, `options.created` when
-  //  it was registered instead)
+  //  transfer, `options.record` what it forwards to)
   async function addDomain(name, options = {}) {
     const map = new Map();
     map.set(
@@ -991,9 +989,9 @@ test('a free-plan domain registered within 90 days can receive mail when it is a
         status: ['client transfer prohibited'],
         registrar: { id: 1, name: 'Example Registrar, Inc.' },
         ts: {
-          created: options.created || created,
-          updated: options.created || created,
-          expires: dayjs().add(1, 'year').toDate(),
+          created,
+          updated: created,
+          expires: dayjs(created).add(1, 'year').toDate(),
           ...(options.transferred ? { transferred: options.transferred } : {})
         }
       }),
@@ -1036,12 +1034,6 @@ Hello.
   }
 
   try {
-    //
-    // (as on December 1, 2026: new domains on .id, .jp and .ws need a paid
-    //  plan, see `config.newDomainNoticeEndsAt`)
-    //
-    config.newDomainNoticeEndsAt = dayjs().subtract(1, 'day').toDate();
-
     // (a new name: no capture before it was registered)
     const fresh = `new-${randomUUID().slice(0, 8)}.com`;
     await addDomain(fresh);
@@ -1049,32 +1041,6 @@ Hello.
     await pWaitFor(() => received.length === 1, { timeout: ms('10s') });
     t.deepEqual(received[0], [`test@${IP_ADDRESS}`]);
     t.true(asked.includes(fresh));
-
-    // (.online is an extension the free plan takes: a domain on it that was
-    //  registered more than 90 days ago gets mail, as on any other)
-    const older = `older-${randomUUID().slice(0, 8)}.online`;
-    await addDomain(older, { created: dayjs().subtract(1, 'year').toDate() });
-    await send(older);
-    await pWaitFor(() => received.length === 2, { timeout: ms('10s') });
-    t.deepEqual(received[1], [`test@${IP_ADDRESS}`]);
-    t.false(asked.includes(older));
-
-    //
-    // (before then, a new domain on .id, .jp or .ws gets mail, and the
-    //  catch-all addresses it forwards to are told once why it will not)
-    //
-    config.newDomainNoticeEndsAt = dayjs().add(30, 'day').toDate();
-    const soon = `soon-${randomUUID().slice(0, 8)}.id`;
-    await addDomain(soon);
-    await send(soon);
-    await pWaitFor(() => received.length === 3, { timeout: ms('10s') });
-    t.deepEqual(received[2], [`test@${IP_ADDRESS}`]);
-    await pWaitFor(
-      async () =>
-        Boolean(await t.context.client.get(`new_domain_notice:${soon}`)),
-      { timeout: ms('10s') }
-    );
-    config.newDomainNoticeEndsAt = dayjs().subtract(1, 'day').toDate();
 
     // (a name transferred from another registrar: someone had it before)
     const moved = `moved-${randomUUID().slice(0, 8)}.com`;
@@ -1125,9 +1091,8 @@ Hello.
     const namedErr = await t.throwsAsync(send(named));
     t.is(namedErr.responseCode, 421);
     t.regex(namedErr.message, /it was in use before then/);
-    t.is(received.length, 3);
+    t.is(received.length, 1);
   } finally {
-    config.newDomainNoticeEndsAt = newDomainNoticeEndsAt;
     getPreviousDomainUse.CDX_URL = CDX_URL;
     await new Promise((resolve) => {
       cdx.close(resolve);
