@@ -1374,6 +1374,36 @@ test('since_modseq on a mailbox without the index on (mailbox, uid, modseq) read
   for (const { sql } of splitProbe(t, all)) t.notRegex(sql, /indexed by/i);
 });
 
+// An empty first page means nothing matched: the list used to read the
+// folder a second time to count it, for each sync that found nothing.
+test('since_modseq of an unchanged folder, while others changed, reads it once', async (t) => {
+  await appendMessage(t, 'Archive', 'archived');
+  const since = await highestListedModseq(t, 'Archive');
+  const messages = [];
+  for (let i = 0; i < 6; i++)
+    messages.push(await appendMessage(t, 'INBOX', `message ${i}`));
+  await withoutFolderIndex(t);
+
+  let res;
+  const statements = await recordStatements(t, async () => {
+    res = await t.context.api
+      .get(`/v1/messages?folder=Archive&since_modseq=${since}`)
+      .set('Authorization', t.context.auth);
+  });
+  t.is(res.status, 200);
+  t.deepEqual(res.body, []);
+  t.is(res.headers['x-item-count'], '0');
+  t.is(splitProbe(t, statements).length, 1);
+
+  // a page past the end is still counted
+  res = await t.context.api
+    .get('/v1/messages?folder=INBOX&page=99&limit=1')
+    .set('Authorization', t.context.auth);
+  t.is(res.status, 200);
+  t.deepEqual(res.body, []);
+  t.is(res.headers['x-item-count'], String(messages.length));
+});
+
 test('since_modseq of a folder that has not changed reads no messages', async (t) => {
   await appendMessage(t, 'INBOX', 'nothing new after this');
   const since = await highestListedModseq(t, 'INBOX');

@@ -1349,8 +1349,10 @@ async function list(ctx) {
     for (const message of messages) {
       delete message.total_count;
     }
-  } else {
-    // No results from main query, but we still need the count
+  } else if (ctx.paginate.skip > 0 || !(ctx.query.limit > 0)) {
+    // No results past the first page, but the count may not be 0 (an empty
+    // first page means nothing matched: syncs that find nothing changed
+    // must not read the folder a second time to count it)
     const countResult = await ctx.instance.wsp.request({
       action: 'stmt',
       session: { user: ctx.state.session.user },

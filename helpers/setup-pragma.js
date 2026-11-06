@@ -75,6 +75,8 @@ const pbkdf2 = promisify(crypto.pbkdf2);
 const SQLITE_HEADER = Buffer.from('SQLite format 3\0');
 const NO_KEY = Buffer.from(`raw:${'0'.repeat(64)}`);
 const DERIVED_KEY_TTL = ms('1m');
+// (that a key does not open a file, which holds no secret, for longer)
+const FAILED_KEY_TTL = ms('1h');
 const DERIVED_KEYS_MAX = 1000;
 const CACHE_KEY_SECRET = crypto.randomBytes(32);
 const derivedKeys = new BoundedMap(DERIVED_KEYS_MAX);
@@ -86,8 +88,8 @@ function keepDerivedKey(cacheKey, derivation) {
   const entry = { derivation, expires: Number.POSITIVE_INFINITY };
   derivedKeys.set(cacheKey, entry);
   derivation.then(
-    () => {
-      entry.expires = Date.now() + DERIVED_KEY_TTL;
+    (key) => {
+      entry.expires = Date.now() + (key ? DERIVED_KEY_TTL : FAILED_KEY_TTL);
     },
     () => {
       if (derivedKeys.get(cacheKey) === entry) derivedKeys.delete(cacheKey);
