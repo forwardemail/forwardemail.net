@@ -1060,16 +1060,17 @@ Hello.
       { timeout: ms('10s') }
     );
 
-    // (when the archive cannot be asked, it is not let through, and the
-    //  recipient is not told yet)
+    // (when the archive cannot be asked, its mail is not held, and the
+    //  recipient is not told)
     const noticeKey = `abuse_prevention:test@${IP_ADDRESS}`;
     await t.context.client.del(noticeKey);
     const unknown = `unknown-${randomUUID().slice(0, 8)}.com`;
     archive.set(unknown, 'error');
     await addDomain(unknown);
-    const unavailable = await t.throwsAsync(send(unknown));
-    t.is(unavailable.responseCode, 421);
-    t.regex(unavailable.message, /could not be checked right now/);
+    await send(unknown);
+    await pWaitFor(() => received.length === 2, { timeout: ms('10s') });
+    t.deepEqual(received[1], [`test@${IP_ADDRESS}`]);
+    t.true(asked.includes(unknown));
     t.is(await t.context.client.get(noticeKey), null);
 
     // (a name in use before: the recipient is told why)
@@ -1091,7 +1092,7 @@ Hello.
     const namedErr = await t.throwsAsync(send(named));
     t.is(namedErr.responseCode, 421);
     t.regex(namedErr.message, /it was in use before then/);
-    t.is(received.length, 1);
+    t.is(received.length, 2);
   } finally {
     getPreviousDomainUse.CDX_URL = CDX_URL;
     await new Promise((resolve) => {

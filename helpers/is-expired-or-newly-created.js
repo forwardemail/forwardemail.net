@@ -222,7 +222,7 @@ async function checkNewDomain(domain, response, client, resolvers) {
   //
   // (its past and Cloudflare are asked at once, and waited for 1.5 seconds
   //  at most: mail waits for them; a lookup that takes longer goes on and
-  //  is kept, so the sender's next try has its answer)
+  //  is kept, so later mail has its answer)
   //
   const dnsErrorKey = `new_domain_dns_error:${domain}`;
   const [history, dns] = await Promise.all([
@@ -248,19 +248,21 @@ async function checkNewDomain(domain, response, client, resolvers) {
     })()
   ]);
 
+  //
+  // (when the archive cannot answer, its mail is let through rather than
+  //  refused for as long as the archive is down)
+  //
   if (history.err) {
     if (history.err.code === 'ESTILLLOOKING') {
       logger.debug(history.err.message, { domain });
     } else {
-      // (once an hour as an error: new domains wait while the archive fails)
+      // (once an hour as an error: the archive is failing)
       const claimed = await client
         .set('domain_history_error_alert', '1', 'PX', ms('1h'), 'NX')
         .catch(() => null);
       if (claimed === 'OK') logger.error(history.err, { domain });
       else logger.warn(history.err, { domain });
     }
-
-    return getUnavailableError(domain);
   }
 
   const { previous } = history;

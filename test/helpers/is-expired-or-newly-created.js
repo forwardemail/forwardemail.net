@@ -42,7 +42,8 @@ test.serial(
     const isExpiredOrNewlyCreated = require('#helpers/is-expired-or-newly-created');
     const getPreviousDomainUse = require('#helpers/get-previous-domain-use');
 
-    // (the capture index: a capture's time, "error", or none)
+    // (the capture index: a capture's time, "error", "late:" and a capture's
+    //  time given after 2 seconds, or none)
     const answers = new Map();
     const asked = [];
     const server = http.createServer((req, res) => {
@@ -50,17 +51,23 @@ test.serial(
         'url'
       );
       asked.push(domain);
-      if (answers.get(domain) === 'error') {
+      const answer = answers.get(domain);
+      if (answer === 'error') {
         res.writeHead(503);
         res.end();
         return;
       }
 
-      res.writeHead(200);
-      res.end(
-        JSON.stringify(
-          answers.has(domain) ? [['timestamp'], [answers.get(domain)]] : []
-        )
+      setTimeout(
+        () => {
+          res.writeHead(200);
+          res.end(
+            JSON.stringify(
+              answer ? [['timestamp'], [answer.replace(/^late:/, '')]] : []
+            )
+          );
+        },
+        answer?.startsWith('late:') ? 2000 : 0
       );
     });
     await new Promise((resolve) => {
@@ -81,7 +88,7 @@ test.serial(
 
     // (the reason a domain is not let through, if any)
     async function errorOf(tld, options = {}) {
-      const domain = `${randomUUID().slice(0, 8)}.${tld}`;
+      const domain = options.domain || `${randomUUID().slice(0, 8)}.${tld}`;
       if (options.capture) answers.set(domain, options.capture);
       await client.set(
         `whois:${domain}`,
@@ -213,15 +220,30 @@ test.serial(
       });
       t.regex(err.message, /it points to 0\.0\.0\.0/);
 
-      // (when it cannot be told: not let through, and asked again later)
-      for (const options of [
-        { capture: 'error' },
-        { family: dnsError('ESERVFAIL') }
-      ]) {
-        err = await errorOf('com', options);
-        t.true(err.isCheckUnavailable);
-        t.is(err.responseCode, 421);
+      // (when the archive cannot answer: let through, not refused for as long
+      //  as it is down)
+      t.is(await errorOf('com', { capture: 'error' }), undefined);
+
+      // (an archive answering later than mail waits: let through, and the
+      //  lookup goes on, so a name in use before is refused from then on)
+      {
+        const late = {
+          domain: `${randomUUID().slice(0, 8)}.com`,
+          capture: 'late:20190101000000',
+          ts: {
+            created: new Date(Date.now() - 30 * day),
+            expires: new Date(Date.now() + 335 * day)
+          }
+        };
+        t.is(await errorOf('com', late), undefined);
+        err = await errorOf('com', late);
+        t.regex(err.message, /it was in use before then/);
       }
+
+      // (when Cloudflare cannot answer: not let through, and asked again later)
+      err = await errorOf('com', { family: dnsError('ESERVFAIL') });
+      t.true(err.isCheckUnavailable);
+      t.is(err.responseCode, 421);
 
       // (nor waited for longer than 1.5 seconds)
       const startedAt = Date.now();
