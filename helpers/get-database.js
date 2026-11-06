@@ -69,6 +69,11 @@ const HOSTNAME = os.hostname();
 // so that different PM2 workers on the same host don't collide.
 const LOCK_OWNER = `${HOSTNAME}:${process.pid}`;
 
+// how long, and how often, an open retries while another worker holds the
+// open lock (see `getDatabaseWhenOpened`)
+const OPEN_LOCK_WAIT_MS = ms('3s');
+const OPEN_LOCK_POLL_MS = 50;
+
 // Lua script to atomically release a Redis lock only if we still own it.
 // Prevents releasing a lock that expired and was re-acquired by another worker.
 const RELEASE_LOCK_SCRIPT =
@@ -587,6 +592,7 @@ async function getDatabase(
             `Database open in progress by another worker for alias ${alias.id}`
           );
           err.code = 'SQLITE_BUSY';
+          err.isOpenInProgress = true;
           throw err;
         }
 
@@ -2180,8 +2186,29 @@ function sendWelcomeMessage(instance, session) {
   });
 }
 
+//
+// Another worker opening the same database (a new one, or a small one: one
+// under INITIAL_DB_SIZE takes the open lock on every open) holds it for
+// milliseconds, so an open that finds it held tries again every few ms
+// for a while, from the start (the handle is then usually cached), instead of
+// only after the full second of the retry below.
+//
+async function getDatabaseWhenOpened(deadline, ...args) {
+  for (;;) {
+    try {
+      return await getDatabase(...args);
+    } catch (err) {
+      if (!err.isOpenInProgress || Date.now() >= deadline) throw err;
+      await delay(OPEN_LOCK_POLL_MS);
+    }
+  }
+}
+
 function retryGetDatabase(...args) {
-  return pRetry(() => getDatabase(...args), {
+  // (the first few seconds of the attempts poll so, then the retries are as
+  // before)
+  const deadline = Date.now() + OPEN_LOCK_WAIT_MS;
+  return pRetry(() => getDatabaseWhenOpened(deadline, ...args), {
     retries: 10,
     minTimeout: ms('1s'),
     maxTimeout: ms('1s'),

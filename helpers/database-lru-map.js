@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
+const { setImmediate: nextTurn } = require('node:timers/promises');
+
 const ms = require('ms');
 
 const closeDatabase = require('#helpers/close-database');
@@ -52,7 +54,9 @@ class DatabaseLRUMap {
 
     // Periodic sweep to close idle databases
     this._sweepInterval = setInterval(() => {
-      this._sweepIdle();
+      this._sweepIdle().catch((err) => {
+        logger.error(err);
+      });
       this._closePending();
     }, ms('1m'));
     this._sweepInterval.unref();
@@ -374,42 +378,65 @@ class DatabaseLRUMap {
     }
   }
 
-  // Sweep idle databases that haven't been accessed within TTL
+  // Whether a cached handle can be closed for being idle
+  _isIdle(key, entry, now) {
+    return (
+      now - entry.lastAccess > this.idleTTL &&
+      !(entry.db && entry.db.inTransaction) &&
+      // (being closed, or used by a request or the deferred maintenance)
+      !this._closing.has(key) &&
+      !(entry.refcount > 0) &&
+      !entry.maintenanceActive
+    );
+  }
+
+  //
+  // Close the handles idle past the TTL, one per turn of the event loop.
+  // Closing one runs `optimize` and checkpoints its WAL (see
+  // close-database.js): milliseconds each, but a sweep that closed the few
+  // hundred a burst of opens left idle in one go blocked every request of
+  // this process for seconds.  Each handle stays cached until its turn, and
+  // is removed and closed in that turn only if it is still idle, so a
+  // handle is never out of the map while still open (see `evictAndClose`).
+  //
   _sweepIdle() {
+    if (this._sweeping) return this._sweeping;
+
     const now = Date.now();
-    const toEvict = [];
+    const idle = [];
     for (const [key, entry] of this._map) {
-      if (now - entry.lastAccess > this.idleTTL) {
-        // Skip entries in transaction
-        if (entry.db && entry.db.inTransaction) continue;
-        // Skip entries currently being closed
-        if (this._closing.has(key)) continue;
-        // Skip entries with active references (in-flight requests)
-        if (entry.refcount > 0) continue;
-        // Skip entries with active deferred maintenance (trash cleanup, etc.)
-        if (entry.maintenanceActive) continue;
-        toEvict.push(key);
-      }
+      if (this._isIdle(key, entry, now)) idle.push(key);
     }
 
-    for (const key of toEvict) {
-      const entry = this._map.get(key);
-      this._map.delete(key);
-      if (entry && entry.db && entry.db.open) {
-        this._closing.add(key);
-        closeDatabase(entry.db)
-          .catch((err) => {
-            logger.error(err);
-          })
-          .finally(() => {
-            this._closing.delete(key);
-          });
-      }
-    }
+    if (idle.length === 0) return Promise.resolve();
 
-    if (toEvict.length > 0) {
-      logger.debug(`DatabaseLRUMap: swept ${toEvict.length} idle databases`);
-    }
+    this._sweeping = (async () => {
+      let swept = 0;
+      for (const [index, key] of idle.entries()) {
+        if (index > 0) await nextTurn();
+        const entry = this._map.get(key);
+        if (!entry || !this._isIdle(key, entry, Date.now())) continue;
+        this._map.delete(key);
+        swept++;
+        if (entry.db && entry.db.open) {
+          this._closing.add(key);
+          closeDatabase(entry.db)
+            .catch((err) => {
+              logger.error(err);
+            })
+            .finally(() => {
+              this._closing.delete(key);
+            });
+        }
+      }
+
+      if (swept > 0)
+        logger.debug(`DatabaseLRUMap: swept ${swept} idle databases`);
+    })().finally(() => {
+      this._sweeping = undefined;
+    });
+
+    return this._sweeping;
   }
 
   // Graceful shutdown - close all databases

@@ -157,7 +157,7 @@ test('_sweepIdle > evicts idle entries past TTL', async (t) => {
   await new Promise((resolve) => {
     setTimeout(resolve, 60);
   });
-  map._sweepIdle();
+  await map._sweepIdle();
   t.is(map.size, 0);
 });
 
@@ -172,12 +172,12 @@ test('_sweepIdle > does not evict entries in transaction', async (t) => {
   await new Promise((resolve) => {
     setTimeout(resolve, 60);
   });
-  map._sweepIdle();
+  await map._sweepIdle();
   t.true(map.has('active'));
   t.false(map.has('idle'));
 });
 
-test('_sweepIdle > does not evict recently accessed entries', (t) => {
+test('_sweepIdle > does not evict recently accessed entries', async (t) => {
   const map = new DatabaseLRUMap({
     maxSize: 10,
     idleTTL: 100
@@ -187,9 +187,47 @@ test('_sweepIdle > does not evict recently accessed entries', (t) => {
   map.set('stale', makeDb());
   // Make stale old, keep fresh recent
   map._map.get('stale').lastAccess = Date.now() - 200;
-  map._sweepIdle();
+  await map._sweepIdle();
   t.true(map.has('fresh'));
   t.false(map.has('stale'));
+});
+
+//
+// Closing a handle runs optimize and checkpoints its WAL: a sweep closing a
+// few hundred in one go blocked every request of the process for seconds.
+//
+test('_sweepIdle > closes one idle handle per turn, and keeps one used again meanwhile', async (t) => {
+  const map = new DatabaseLRUMap({ maxSize: 10, idleTTL: 50 });
+  t.context.map = map;
+  const closed = [];
+  for (const key of ['a', 'b', 'c', 'd']) {
+    map.set(
+      key,
+      makeDb({
+        close() {
+          closed.push(key);
+          this.open = false;
+        }
+      })
+    );
+    map._map.get(key).lastAccess = Date.now() - 100;
+  }
+
+  const sweep = map._sweepIdle();
+  // the first now, each next one in a later turn of the event loop
+  t.deepEqual(closed, ['a']);
+  t.false(map.has('a'));
+  t.true(map.has('b'));
+
+  // a request uses c before its turn: it stays open and cached
+  t.truthy(map.get('c'));
+  // and a second sweep meanwhile joins the running one
+  t.is(map._sweepIdle(), sweep);
+
+  await sweep;
+  t.deepEqual(closed, ['a', 'b', 'd']);
+  t.true(map.has('c'));
+  t.is(map.size, 1);
 });
 
 // --- closeAll ---

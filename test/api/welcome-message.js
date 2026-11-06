@@ -496,3 +496,55 @@ test.serial(
     t.is(t.context.sqlite.databaseMap.activeReferences, 0);
   }
 );
+
+//
+// A mailbox another worker is opening (a new one, or a small one: one under
+// INITIAL_DB_SIZE takes the open lock on every open) was opened a whole
+// second later by every other worker, the delay of the getDatabase retry.
+//
+test.serial(
+  'an open waits for the open lock of another worker, not a whole second',
+  async (t) => {
+    const ctx = await createUserDomainAlias(t);
+    const password = await generatePassword(t, ctx);
+    await waitForInbox(ctx, password);
+    deleteMailbox(t, ctx);
+
+    const { client } = t.context.sqlite;
+    const lockKey = `db_open_lock:${ctx.aliasId}`;
+    t.is(
+      await client.set(lockKey, 'another-worker', 'PX', ms('30s'), 'NX'),
+      'OK'
+    );
+    const released = delay(150).then(() => client.del(lockKey));
+
+    const started = Date.now();
+    const { db } = await openMailbox(t, ctx, password);
+    const took = Date.now() - started;
+    await released;
+
+    t.true(db.open);
+    t.is(
+      db
+        .prepare('SELECT count(*) FROM Mailboxes WHERE path = ?')
+        .pluck()
+        .get('INBOX'),
+      1
+    );
+    // (it waited for the lock)
+    t.true(took >= 150, `opened after ${took}ms`);
+    t.true(took < 900, `opened after ${took}ms`);
+
+    // two opens of a new mailbox at once here: one handle, both quickly
+    deleteMailbox(t, ctx);
+    const pairStarted = Date.now();
+    const [first, second] = await Promise.all([
+      openMailbox(t, ctx, password),
+      openMailbox(t, ctx, password)
+    ]);
+    const pairTook = Date.now() - pairStarted;
+    t.is(first.db, second.db);
+    t.is(t.context.sqlite.databaseMap.getRaw(ctx.aliasId), first.db);
+    t.true(pairTook < 900, `opened after ${pairTook}ms`);
+  }
+);
