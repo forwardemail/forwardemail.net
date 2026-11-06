@@ -40,7 +40,9 @@ async function importAliases(ctx) {
     if (err.code === 'ENOTFOUND')
       throw Boom.badRequest(ctx.translateError('ENOTFOUND'));
     if (err.code === 'ENODATA')
-      throw Boom.badRequest(ctx.translateError('MISSING_DNS_TXT'));
+      throw Boom.badRequest(
+        ctx.translateError('MISSING_DNS_TXT', ctx.state.domain.name)
+      );
     throw err;
   }
 

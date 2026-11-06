@@ -312,7 +312,15 @@ async function processEmail({ email, port = 25, resolver, client }) {
 
     // domain must be on paid plan
     if (domain.plan === 'free')
-      throw Boom.paymentRequired(i18n.translateError('PLAN_UPGRADE_REQUIRED'));
+      throw Boom.paymentRequired(
+        i18n.translateError(
+          'PLAN_UPGRADE_REQUIRED',
+          user[config.lastLocaleField],
+          `${config.urls.web}/my-account/domains/${punycode.toASCII(
+            domain.name
+          )}/billing?plan=enhanced_protection`
+        )
+      );
 
     // domain cannot be in suspended domains list
     if (_.isDate(domain.smtp_suspended_sent_at))

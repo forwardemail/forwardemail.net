@@ -431,6 +431,33 @@ if header :contains "Subject" "Test" {
 });
 
 test.serial(
+  'Sieve script rejected by the security check shows the reason',
+  async (t) => {
+    const { alias, user, domain } = await createTestSetup(t, null);
+
+    // more redirects than one script may have
+    const content = Array.from(
+      { length: 11 },
+      (_, i) => `redirect :copy "user${i}@example.com";`
+    ).join('\n');
+
+    const err = await t.throwsAsync(
+      SieveScripts.create({
+        alias: alias._id,
+        user: user._id,
+        domain: domain._id,
+        name: 'too-many-redirects',
+        content: `require ["copy"];\n${content}`,
+        is_active: true
+      })
+    );
+    t.is(err.output.statusCode, 400);
+    t.regex(err.message, /^Sieve script security error: .*redirects/);
+    t.false(err.message.includes('%s'));
+  }
+);
+
+test.serial(
   'Sieve script with vacation extension validates correctly',
   async (t) => {
     const { alias, user, domain } = await createTestSetup(t, null);

@@ -166,6 +166,10 @@ module.exports = {
     'Multiple PGP key conflict detected for <span class="notranslate">%s</span>',
   MULTIPLE_PGP_MESSAGE:
     'An email that was attempted to be forwarded under <span class="notranslate">%s</span> for <span class="notranslate">%s</span> matched multiple aliases that had PGP keys uploaded and enabled. Due to this conflict, PGP encryption was not enabled for the forwarded message as no primary public key could be determined. Please ensure only one PGP key matches this address match.',
+  MULTIPLE_SMIME_SUBJECT:
+    'Multiple S/MIME certificate conflict detected for <span class="notranslate">%s</span>',
+  MULTIPLE_SMIME_MESSAGE:
+    'An email that was attempted to be forwarded under <span class="notranslate">%s</span> for <span class="notranslate">%s</span> matched multiple aliases that had S/MIME certificates uploaded and enabled. Due to this conflict, S/MIME encryption was not enabled for the forwarded message as no primary certificate could be determined. Please ensure only one S/MIME certificate matches this address match.',
   INVALID_BYTES:
     'Bytes were invalid, must be a string such as "1 GB" or "100 MB".',
   ALIAS_QUOTA_EXCEEDS_DOMAIN:

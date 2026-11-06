@@ -5,6 +5,16 @@
 
 const crypto = require('node:crypto');
 
+// Replace the email helper BEFORE anything loads it (it is captured by
+// reference), to see the notifications a transfer sends.
+const emailPath = require.resolve('#helpers/email');
+const sent = [];
+require(emailPath);
+require.cache[emailPath].exports = async (data) => {
+  sent.push(data);
+  return {};
+};
+
 const test = require('ava');
 const falso = require('@ngneat/falso');
 const request = require('supertest');
@@ -26,8 +36,12 @@ const {
 
 test.before(utils.setupMongoose);
 test.after.always(utils.teardownMongoose);
+test.after.always(() => {
+  delete require.cache[emailPath];
+});
 test.beforeEach(utils.setupFactories);
 test.beforeEach(async (t) => {
+  sent.length = 0;
   const password = falso.randPassword();
   let admin = await t.context.userFactory.make();
   admin = await Users.register(admin, password);
@@ -217,6 +231,19 @@ test.serial(
       });
     t.is(response.status, 200);
     t.deepEqual(response.body, { reloadPage: true });
+
+    // each notification fills its own phrase: the new admin gets a link to the
+    // domain and the previous admin the address it went to
+    const url = `${config.urls.web}/${
+      target[config.lastLocaleField] || 'en'
+    }/my-account/domains/${domain.name}`;
+    const toTarget = sent.find((data) => data.message.to === target.email);
+    t.truthy(toTarget);
+    t.true(toTarget.locals.message.includes(`<a href="${url}">${url}</a>`));
+    t.false(toTarget.locals.message.includes(`href="${target.email}"`));
+    const toAdmin = sent.find((data) => data.message.to === admin.email);
+    t.truthy(toAdmin);
+    t.true(toAdmin.locals.message.includes(target.email));
 
     const transferredDomain = await Domains.findById(domain._id)
       .select('+tokens.salt +tokens.hash')

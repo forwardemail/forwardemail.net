@@ -515,14 +515,10 @@ async function transfer(ctx) {
       const url = `${
         config.urls.web
       }/${locale}/my-account/domains/${punycode.toASCII(domain.name)}`;
-      const message = i18n.translate(
-        phrase,
-        locale,
-        domain.name,
-        user.email,
-        url,
-        url
-      );
+      const message =
+        phrase === 'DOMAIN_TRANSFERRED_NEW_ADMIN_MESSAGE'
+          ? i18n.translate(phrase, locale, domain.name, url, url)
+          : i18n.translate(phrase, locale, domain.name, user.email);
 
       return emailHelper({
         template: 'alert',

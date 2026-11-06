@@ -98,3 +98,36 @@ test('the encrypted value of a rejection link is accepted', async (t) => {
   );
   t.pass();
 });
+
+//
+// A paid account removing an encrypted value is told the value as it entered
+// it, never the decrypted value (only admins see that), and not the output
+// box of the encrypt tool with its four placeholders left as "%s".
+//
+test('a removal by encrypted value names the encrypted value', async (t) => {
+  const { web } = t.context;
+  const { encrypt } = require('#helpers/encrypt-decrypt');
+  await Users.findByIdAndUpdate(t.context.user._id, {
+    $set: {
+      plan: 'enhanced_protection',
+      [config.userFields.planExpiresAt]: new Date(Date.now() + 86_400_000)
+    }
+  });
+  const listed = 'listed-by-paid-link.example.com';
+  await t.context._web.app.context.client.set(`denylist:${listed}`, true);
+  const encrypted = encrypt(listed);
+
+  const res = await web
+    .post('/en/denylist')
+    .set('Accept', 'application/json')
+    .send({ q: encrypted });
+  t.is(res.status, 200);
+
+  const page = await web.get('/en/denylist');
+  const match = page.text.match(/window\._messages = (.*);/);
+  t.truthy(match);
+  const messages = JSON.stringify(JSON.parse(match[1]));
+  t.true(messages.includes(encrypted));
+  t.false(messages.includes(listed));
+  t.false(messages.includes('%s'));
+});

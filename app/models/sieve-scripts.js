@@ -252,9 +252,11 @@ SieveScripts.pre('save', async function (next) {
       // If security validation fails, reject the script
       if (!securityResult.valid) {
         throw Boom.badRequest(
-          i18n.translateError('SIEVE_SCRIPT_SECURITY_ERROR', this.locale, {
-            errors: securityResult.errors.map((e) => e.message).join(', ')
-          })
+          i18n.translateError(
+            'SIEVE_SCRIPT_SECURITY_ERROR',
+            this.locale,
+            securityResult.errors.map((e) => e.message).join(', ')
+          )
         );
       }
 
@@ -265,9 +267,11 @@ SieveScripts.pre('save', async function (next) {
         );
         if (criticalIssues.length > 0) {
           throw Boom.badRequest(
-            i18n.translateError('SIEVE_SCRIPT_SECURITY_ERROR', this.locale, {
-              errors: criticalIssues.map((e) => e.message).join(', ')
-            })
+            i18n.translateError(
+              'SIEVE_SCRIPT_SECURITY_ERROR',
+              this.locale,
+              criticalIssues.map((e) => e.message).join(', ')
+            )
           );
         }
       }

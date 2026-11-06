@@ -52,6 +52,8 @@ async function validate(ctx, next) {
     try {
       q = decrypt(raw).toLowerCase().trim();
       ctx.state.isEncrypted = true;
+      // (shown instead of the decrypted value to anyone but an admin)
+      ctx.state.encryptedValue = _.escape(raw);
     } catch (err) {
       ctx.logger.warn(err);
       throw Boom.badRequest(ctx.translateError('INVALID_DENYLIST_VALUE'));
@@ -325,7 +327,7 @@ async function remove(ctx) {
     const message = ctx.translate(
       'DENYLIST_HARD_CODED',
       ctx.state.isEncrypted && ctx.state.user.group !== 'admin'
-        ? ctx.translate('ENCRYPTED_VALUE')
+        ? ctx.state.encryptedValue
         : ctx.state.q
     );
     ctx.flash('warning', message);
@@ -397,7 +399,7 @@ async function remove(ctx) {
   const message = ctx.translate(
     'DENYLIST_REMOVAL_SUCCESS',
     ctx.state.isEncrypted && ctx.state.user.group !== 'admin'
-      ? ctx.translate('ENCRYPTED_VALUE')
+      ? ctx.state.encryptedValue
       : ctx.state.q
   );
 
