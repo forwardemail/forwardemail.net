@@ -16,7 +16,8 @@ const getMongoQuery = require('#helpers/get-mongo-query');
 const getAllowedSort = require('#helpers/get-allowed-sort');
 const { Logs } = require('#models');
 
-const MAX_TIME_MS = ms('30s');
+// (under the gateway's timeout, with the page still to render)
+const MAX_TIME_MS = ms('20s');
 const MAX_COUNT_LIMIT = 10_000;
 
 // the top lists are drawn from the most recent spam logs in the range
@@ -41,6 +42,17 @@ const MAX_RANGE = ms('366d');
 
 const DATE_REGEX = /^\d{4}-\d{2}-\d{2}$/;
 
+// the keys of the built indexes (a build in progress is not listed)
+async function getIndexes() {
+  const indexes = await Logs.collection.listIndexes().toArray();
+  return new Set(indexes.map((index) => JSON.stringify(index.key)));
+}
+
+// a query stopped by `maxTimeMS`
+function isTimeout(err) {
+  return err && (err.code === 50 || err.codeName === 'MaxTimeMSExpired');
+}
+
 function parseDate(value, name) {
   if (value === undefined || value === '') return;
   if (typeof value !== 'string' || !DATE_REGEX.test(value))
@@ -55,7 +67,7 @@ function parseDate(value, name) {
 // client IP and hostname, the date range (UTC days, the last 7 days by
 // default) and the MongoDB query from the search form.
 //
-function getFilters(ctx) {
+async function getFilters(ctx) {
   const { ip, hostname } = ctx.query;
   const filters = {};
 
@@ -89,16 +101,19 @@ function getFilters(ctx) {
 
   //
   // Hint the index for the filters (the planner may otherwise choose one
-  // without `created_at`, and sort or scan every spam log); a MongoDB query
-  // is left to the planner.
+  // without `created_at`, and sort or scan every spam log), or the date
+  // index if that one is not built yet: a hint for an index that does not
+  // exist, or is still building, fails the query. A MongoDB query is left
+  // to the planner.
   //
   const mongoQuery = getMongoQuery(ctx);
+  const indexes = await getIndexes();
   const hint = _.isEmpty(mongoQuery)
-    ? filters.ip
-      ? IP_INDEX
-      : filters.hostname
-      ? HOSTNAME_INDEX
-      : SPAM_INDEX
+    ? [
+        filters.ip && IP_INDEX,
+        filters.hostname && HOSTNAME_INDEX,
+        SPAM_INDEX
+      ].find((index) => index && indexes.has(JSON.stringify(index)))
     : undefined;
   const withQuery = (match) =>
     _.isEmpty(mongoQuery) ? match : { $and: [match, mongoQuery] };
@@ -135,7 +150,7 @@ function getSearch(ctx, changes) {
 }
 
 async function list(ctx) {
-  const { query, hint, startDate, endDate, filters } = getFilters(ctx);
+  const { query, hint, startDate, endDate, filters } = await getFilters(ctx);
 
   // (no deep pagination past the capped count)
   const skip = Math.max(
@@ -155,13 +170,31 @@ async function list(ctx) {
     .maxTimeMS(MAX_TIME_MS);
   if (hint) findQuery = findQuery.hint(hint);
 
-  const [logs, itemCount] = await Promise.all([
-    findQuery.exec(),
+  const [logs, total] = await Promise.all([
+    findQuery.exec().catch((err) => {
+      if (!isTimeout(err)) throw err;
+      throw Boom.gatewayTimeout(
+        'This search took too long, try a shorter date range or fewer filters'
+      );
+    }),
+    // (a count that times out does not fail the page)
     Logs.aggregate(
       [{ $match: query }, { $limit: MAX_COUNT_LIMIT }, { $count: 'total' }],
       { maxTimeMS: MAX_TIME_MS, ...(hint ? { hint } : {}) }
-    ).then((result) => result[0]?.total || 0)
+    )
+      .then((result) => result[0]?.total || 0)
+      .catch((err) => {
+        if (!isTimeout(err)) throw err;
+        ctx.logger.warn(err);
+        return null;
+      })
   ]);
+
+  // (without a count, there is a next page while this one is full)
+  const itemCount =
+    total === null
+      ? skip + logs.length + (logs.length === ctx.query.limit ? 1 : 0)
+      : total;
 
   const pageCount = Math.ceil(itemCount / ctx.query.limit);
   const path = ctx.state.l('/admin/spam');
@@ -274,7 +307,9 @@ async function getTop(query, hint) {
 }
 
 async function stats(ctx) {
-  const { query, base, withQuery, hint, startDate, endDate } = getFilters(ctx);
+  const { query, base, withQuery, hint, startDate, endDate } = await getFilters(
+    ctx
+  );
   const now = Date.now();
   const since = (duration) =>
     withQuery({ ...base, created_at: { $gte: new Date(now - duration) } });

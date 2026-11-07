@@ -244,3 +244,59 @@ test.serial('invalid filters are refused', async (t) => {
     }
   }
 });
+
+//
+// An index the page hints may not be built yet (Mongoose builds them one at
+// a time at startup, and on millions of logs that takes a while): a hint
+// for an index that does not exist fails the query.
+//
+test.serial(
+  'a filter whose index is not built yet uses the date index',
+  async (t) => {
+    const name =
+      'bounce_category_1_meta.session.resolvedClientHostname_1_created_at_1';
+    await Logs.collection.dropIndex(name);
+    t.teardown(() =>
+      Logs.collection.createIndex(
+        {
+          bounce_category: 1,
+          'meta.session.resolvedClientHostname': 1,
+          created_at: 1
+        },
+        { name }
+      )
+    );
+
+    await createLog({
+      remoteAddress: '198.51.100.7',
+      hostname: 'a.example.net'
+    });
+    await createLog({
+      remoteAddress: '198.51.100.9',
+      hostname: 'b.example.net'
+    });
+
+    const table = await getJSON(t, '/en/admin/spam', {
+      hostname: 'a.example.net'
+    });
+    t.is(table.status, 200);
+    const rows = new JSDOM(table.body.table).window.document.querySelectorAll(
+      'tbody tr'
+    );
+    t.is(rows.length, 1);
+    t.true(rows[0].textContent.includes('198.51.100.7'));
+
+    const stats = await getJSON(t, '/en/admin/spam/stats', {
+      hostname: 'a.example.net'
+    });
+    t.is(stats.status, 200);
+    t.deepEqual(
+      [
+        ...new JSDOM(stats.body.html).window.document.querySelectorAll(
+          '.display-4'
+        )
+      ].map((el) => el.textContent.trim()),
+      ['1', '1', '1']
+    );
+  }
+);
