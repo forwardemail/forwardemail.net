@@ -39,6 +39,8 @@ test.serial(
     const { randomUUID } = require('node:crypto');
     const Redis = require('ioredis-mock');
     const ms = require('ms');
+    const _ = require('#helpers/lodash');
+    const config = require('#config');
     const isExpiredOrNewlyCreated = require('#helpers/is-expired-or-newly-created');
     const getPreviousDomainUse = require('#helpers/get-previous-domain-use');
 
@@ -86,8 +88,8 @@ test.serial(
     });
     const dnsError = (code) => Object.assign(new Error(code), { code });
 
-    // (the reason a domain is not let through, if any)
-    async function errorOf(tld, options = {}) {
+    // (whether a domain is let through: `err` and `notice`)
+    async function check(tld, options = {}) {
       const domain = options.domain || `${randomUUID().slice(0, 8)}.${tld}`;
       if (options.capture) answers.set(domain, options.capture);
       await client.set(
@@ -116,11 +118,43 @@ test.serial(
           resolver: answer(options.own || ['192.0.2.1'])
         }
       });
-      // (every reason links the FAQ section explaining it)
-      if (result.err)
-        t.regex(result.err.message, / Learn why: https?:\/\/\S+\/faq#[\w-]+$/);
-      return result.err;
+      //
+      // (every reason links the FAQ section explaining it: as plain text for
+      //  SMTP replies, logs and the API, and as links to click for a web
+      //  page or an email)
+      //
+      for (const { message, html } of [result.err, result.notice].filter(
+        Boolean
+      )) {
+        t.regex(message, / Learn why: https?:\/\/\S+\/faq#[\w-]+$/);
+        t.notRegex(message, /[<>]|&\w+;/);
+        const links = [
+          ...html.matchAll(/<a href="([^"]+)"[^>]*>([^<]+)<\/a>/g)
+        ];
+        t.true(links.length >= 2);
+        for (const [, href, text] of links) {
+          t.is(href, text);
+          t.notRegex(href, /[.,]$/);
+        }
+
+        t.is(html.replace(/<a [^>]+>([^<]+)<\/a>/g, '$1'), _.escape(message));
+      }
+
+      return result;
     }
+
+    // (the reason a domain is not let through, if any)
+    async function errorOf(tld, options) {
+      const { err } = await check(tld, options);
+      return err;
+    }
+
+    //
+    // (as on December 1, 2026: new domains on .id, .jp and .ws need a paid
+    //  plan, see `config.newDomainNoticeEndsAt`)
+    //
+    const { newDomainNoticeEndsAt } = config;
+    config.newDomainNoticeEndsAt = new Date(Date.now() - day);
 
     try {
       // (a new name, also one with no address yet)
@@ -132,20 +166,37 @@ test.serial(
       let err = await errorOf('com', { allow: false });
       t.regex(err.message, /newly created or transferred/);
 
-      // (not on an extension spam domains use most, without asking: its
-      //  message says why)
+      // (not on an extension spam and phishing reports show the most abuse
+      //  on, without asking: its message says why)
       asked.length = 0;
-      for (const tld of ['xyz', 'cc']) {
+      for (const tld of ['cc', 'id', 'jp', 'online', 'ws', 'xyz']) {
         err = await errorOf(tld);
         t.true(err.message.includes(`new domains ending in .${tld} need`));
-        t.regex(err.message, /spam operations register new domains on/);
+        t.true(
+          err.message.includes(
+            `spam and phishing reports show more abuse on .${tld} than on .com`
+          )
+        );
+      }
+
+      // (on those, a domain 90 days old or more can use the free plan)
+      for (const tld of ['id', 'jp', 'online', 'ws']) {
+        t.is(
+          await errorOf(tld, {
+            ts: {
+              created: new Date(Date.now() - 400 * day),
+              expires: new Date(Date.now() + 330 * day)
+            }
+          }),
+          undefined
+        );
       }
 
       // (nor on one no domain can use for free: its message says so, and
       //  links the list of free extensions)
-      err = await errorOf('online');
+      err = await errorOf('top');
       t.is(err.responseCode, 421);
-      t.regex(err.message, /ends in \.online, .* however old it is/);
+      t.regex(err.message, /ends in \.top, .* however old it is/);
       t.notRegex(err.message, /newly created/);
       t.regex(
         err.message,
@@ -261,7 +312,52 @@ test.serial(
       t.regex(err.message, /recently expired/);
       err = await errorOf('com', { status: ['pending delete'] });
       t.regex(err.message, /pending state/);
+
+      //
+      // (before then, a new domain on .id, .jp or .ws is let through on the
+      //  rest of these rules, and `notice` says why it will not be)
+      //
+      config.newDomainNoticeEndsAt = new Date(Date.now() + 30 * day);
+      for (const tld of ['id', 'jp', 'ws']) {
+        const { err, notice } = await check(tld);
+        t.is(err, undefined);
+        t.true(notice.isNotice);
+        t.regex(
+          notice.message,
+          new RegExp(
+            `^Starting \\w+ \\d+, \\d{4} \\(UTC\\), mail to \\S+\\.${tld} will be refused until \\w+ \\d+, \\d{4}, when the domain is 90 days old`
+          )
+        );
+        t.true(
+          notice.message.includes(`new domains ending in .${tld} need a paid`)
+        );
+      }
+
+      // (not one the rest of these rules do not let through, or on .xyz)
+      err = await errorOf('id', { capture: '20190101000000' });
+      t.regex(err.message, /it was in use before then/);
+      err = await errorOf('jp', {
+        ts: {
+          created: new Date(Date.now() - 30 * day),
+          expires: new Date(Date.now() + 335 * day),
+          transferred: new Date(Date.now() - 5 * day)
+        }
+      });
+      t.regex(err.message, /it was transferred from another registrar/);
+      err = await errorOf('xyz');
+      t.regex(err.message, /new domains ending in \.xyz need a paid plan/);
+
+      // (nor told when it is 90 days old by then)
+      const result = await check('ws', {
+        ts: {
+          created: new Date(Date.now() - 85 * day),
+          expires: new Date(Date.now() + 280 * day)
+        }
+      });
+      t.is(result.err, undefined);
+      t.is(result.notice, undefined);
     } finally {
+      config.newDomainNoticeEndsAt = newDomainNoticeEndsAt;
       getPreviousDomainUse.CDX_URL = CDX_URL;
       server.close();
     }

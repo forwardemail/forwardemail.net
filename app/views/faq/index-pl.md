@@ -3850,7 +3850,9 @@ Jeśli otrzymasz jedno z tych powiadomień, skontaktuj się z nami pod adresem <
 
 Gdy dodajesz domenę (a w przypadku domen w darmowym planie również na bieżąco), sprawdzamy ją w WHOIS/RDAP. Jeśli domena **wygasła w ciągu ostatnich 90 dni** lub ma obecnie u rejestratora status **oczekującego transferu, aktualizacji lub usunięcia**, przed wysyłaniem lub odbieraniem z niej poczty musi mieć płatny plan.
 
-Domena **utworzona w ciągu ostatnich 90 dni** może korzystać z darmowego planu, jeśli jest nową nazwą. Wymaga płatnego planu, dopóki nie skończy 90 dni, jeśli była wcześniej używana (na przykład ktoś inny pozwolił jej wygasnąć, a potem została zarejestrowana ponownie), jeśli należy do rejestratora typu drop-catch, jeśli została przeniesiona z innego rejestratora, jeśli kończy się na `.cc` lub `.xyz` (spośród rozszerzeń akceptowanych w darmowym planie spamerzy rejestrują w nich najwięcej nowych domen zaraz po `.com` i `.net`) albo jeśli blokuje ją filtr Cloudflare dotyczący złośliwego oprogramowania, phishingu i treści dla dorosłych. Wcześniejsze użycie sprawdzamy w [Internet Archive](https://web.archive.org/): kopia domeny sprzed jej rejestracji oznacza, że była używana.
+Domena **utworzona w ciągu ostatnich 90 dni** może korzystać z darmowego planu, jeśli jest nową nazwą. Wymaga płatnego planu, dopóki nie skończy 90 dni, jeśli była wcześniej używana (na przykład ktoś inny pozwolił jej wygasnąć, a potem została zarejestrowana ponownie), jeśli należy do rejestratora typu drop-catch, jeśli została przeniesiona z innego rejestratora, jeśli kończy się na `.cc`, `.id`, `.jp`, `.online`, `.ws` lub `.xyz` (zgłoszenia spamu i phishingu wskazują na więcej nadużyć w tych rozszerzeniach niż w `.com`) albo jeśli blokuje ją filtr Cloudflare dotyczący złośliwego oprogramowania, phishingu i treści dla dorosłych. Wcześniejsze użycie sprawdzamy w [Internet Archive](https://web.archive.org/): kopia domeny sprzed jej rejestracji oznacza, że była używana.
+
+Nowe domeny kończące się na `.id`, `.jp` lub `.ws` wymagają płatnego planu od 1 grudnia 2026 r. Do tego czasu działają nadal, a na każdy adres, na który domena przekazuje pocztę, wysyłamy jeden e-mail, aby był czas na przejście na płatny plan lub na inną domenę.
 
 To środek zapobiegający nadużyciom, a nie ocena Ciebie osobiście — główni rejestratorzy, w tym GoDaddy, Namecheap i Hostgator, w przeszłości całkowicie blokowali naszą infrastrukturę z powodu nadużyć związanych z przejmowaniem niedawno wygasłych domen i nieuczciwie rejestrowanymi nowymi domenami. Wymaganie płatnego planu dla takich domen pozwala nam w ogóle nadal oferować darmowy plan bez utraty zaufania rejestratorów.
 
@@ -5336,6 +5338,7 @@ Ta nowa zasada pozwala na używanie tylko następujących rozszerzeń nazw domen
   <li class="list-inline-item"><code class="notranslate">ck</code></li>
   <li class="list-inline-item"><code class="notranslate">co</code></li>
   <li class="list-inline-item"><code class="notranslate">com</code></li>
+  <li class="list-inline-item"><code class="notranslate">cz</code></li>
   <li class="list-inline-item"><code class="notranslate">de</code></li>
   <li class="list-inline-item"><code class="notranslate">dev</code></li>
   <li class="list-inline-item"><code class="notranslate">dj</code></li>
@@ -5392,6 +5395,7 @@ Ta nowa zasada pozwala na używanie tylko następujących rozszerzeń nazw domen
   <li class="list-inline-item"><code class="notranslate">no</code></li>
   <li class="list-inline-item"><code class="notranslate">nu</code></li>
   <li class="list-inline-item"><code class="notranslate">nz</code></li>
+  <li class="list-inline-item"><code class="notranslate">online</code></li>
   <li class="list-inline-item"><code class="notranslate">org</code></li>
   <li class="list-inline-item"><code class="notranslate">pf</code></li>
   <li class="list-inline-item"><code class="notranslate">pl</code></li>

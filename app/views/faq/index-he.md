@@ -3851,7 +3851,9 @@ SMTP יוצא שכבר אושר עדיין יכול להיות מושהה אם �
 
 כאשר אתם מוסיפים דומיין (ובאופן שוטף עבור דומיינים בתוכנית החינמית), אנו מבצעים עבורו בדיקת WHOIS/RDAP. אם הדומיין **פג תוקפו ב-90 הימים האחרונים**, או נמצא כעת במצב של **העברה, עדכון או מחיקה ממתינים** אצל רשם הדומיינים שלו, אנו דורשים שיהיה בתוכנית בתשלום לפני שתוכלו לשלוח או לקבל איתו דואר.
 
-דומיין **שנוצר ב-90 הימים האחרונים** יכול להשתמש בתוכנית החינמית אם מדובר בשם חדש. הוא זקוק לתוכנית בתשלום עד שימלאו לו 90 יום אם היה בשימוש בעבר (למשל, מישהו אחר הניח לתוקפו לפוג והוא נרשם מחדש), אם הוא מוחזק בידי רשם מסוג drop-catch, אם הוא הועבר מרשם אחר, אם הוא מסתיים ב-`.cc` או ב-`.xyz` (מבין הסיומות שהתוכנית החינמית מקבלת, ספאמרים רושמים בהן הכי הרבה דומיינים חדשים אחרי `.com` ו-`.net`), או אם המסנן של Cloudflare לתוכנות זדוניות, פישינג ותוכן למבוגרים חוסם אותו. אנו בודקים שימוש קודם ב-[Internet Archive](https://web.archive.org/): צילום של הדומיין מלפני רישומו פירושו שהיה בשימוש.
+דומיין **שנוצר ב-90 הימים האחרונים** יכול להשתמש בתוכנית החינמית אם מדובר בשם חדש. הוא זקוק לתוכנית בתשלום עד שימלאו לו 90 יום אם היה בשימוש בעבר (למשל, מישהו אחר הניח לתוקפו לפוג והוא נרשם מחדש), אם הוא מוחזק בידי רשם מסוג drop-catch, אם הוא הועבר מרשם אחר, אם הוא מסתיים ב-`.cc`, ב-`.id`, ב-`.jp`, ב-`.online`, ב-`.ws` או ב-`.xyz` (דיווחי ספאם ופישינג מראים בהן יותר ניצול לרעה מאשר ב-`.com`), או אם המסנן של Cloudflare לתוכנות זדוניות, פישינג ותוכן למבוגרים חוסם אותו. אנו בודקים שימוש קודם ב-[Internet Archive](https://web.archive.org/): צילום של הדומיין מלפני רישומו פירושו שהיה בשימוש.
+
+דומיינים חדשים המסתיימים ב-`.id`, ב-`.jp` או ב-`.ws` יזדקקו לתוכנית בתשלום החל מ-1 בדצמבר 2026. עד אז הם ממשיכים לעבוד, ואנו שולחים הודעת דוא״ל אחת לכל כתובת שאליה הדומיין מעביר דואר, כדי שיהיה זמן לשדרג או לעבור לדומיין אחר.
 
 זהו אמצעי למניעת שימוש לרעה, ולא שיפוט שלכם באופן אישי — רשמי דומיינים גדולים, כולל GoDaddy, Namecheap ו-Hostgator, חסמו בעבר את התשתית שלנו לחלוטין בגלל דפוסי שימוש לרעה שכללו השתלטות על דומיינים שפג תוקפם לאחרונה ודומיינים חדשים שנרשמו במרמה. הדרישה לתוכנית בתשלום עבור דומיינים אלה היא מה שמאפשר לנו להמשיך להציע תוכנית חינמית בכלל מבלי לאבד את אמון רשמי הדומיינים.
 
@@ -5337,6 +5339,7 @@ Forward Email מסתמכת בלעדית על שני ספקי תשתית מרכז
   <li class="list-inline-item"><code class="notranslate">ck</code></li>
   <li class="list-inline-item"><code class="notranslate">co</code></li>
   <li class="list-inline-item"><code class="notranslate">com</code></li>
+  <li class="list-inline-item"><code class="notranslate">cz</code></li>
   <li class="list-inline-item"><code class="notranslate">de</code></li>
   <li class="list-inline-item"><code class="notranslate">dev</code></li>
   <li class="list-inline-item"><code class="notranslate">dj</code></li>
@@ -5393,6 +5396,7 @@ Forward Email מסתמכת בלעדית על שני ספקי תשתית מרכז
   <li class="list-inline-item"><code class="notranslate">no</code></li>
   <li class="list-inline-item"><code class="notranslate">nu</code></li>
   <li class="list-inline-item"><code class="notranslate">nz</code></li>
+  <li class="list-inline-item"><code class="notranslate">online</code></li>
   <li class="list-inline-item"><code class="notranslate">org</code></li>
   <li class="list-inline-item"><code class="notranslate">pf</code></li>
   <li class="list-inline-item"><code class="notranslate">pl</code></li>

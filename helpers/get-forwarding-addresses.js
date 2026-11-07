@@ -40,6 +40,94 @@ const parseRootDomain = require('#helpers/parse-root-domain');
 const parseUsername = require('#helpers/parse-username');
 const { decrypt } = require('#helpers/encrypt-decrypt');
 
+//
+// The email addresses a free-plan domain's records forward to, to tell why
+// its mail is refused: "address", "name:address" and "/regex/:address" (not
+// ignored names, webhooks, including "https://user:pass@host", domains, "$1"
+// or "%" routing, or the domain itself), at most as many as one address can
+// forward to
+//
+function getRecordEmails(addresses, rootDomain) {
+  return _.uniq(
+    addresses
+      .filter((element) => !element.startsWith('!') && !element.includes('://'))
+      .map((element) =>
+        element.slice(element.lastIndexOf(':') + 1).toLowerCase()
+      )
+      .filter((addr) => {
+        if (/[$%]/.test(addr) || addr.indexOf('@') !== addr.lastIndexOf('@'))
+          return false;
+        // (an odd record cannot keep its mail from being answered)
+        try {
+          if (!isEmail(addr)) return false;
+          const host = punycode.toASCII(addr.slice(addr.indexOf('@') + 1));
+          return host !== rootDomain && !host.endsWith(`.${rootDomain}`);
+        } catch {
+          return false;
+        }
+      })
+  ).slice(0, config.maxForwardedAddresses);
+}
+
+//
+// Tells those addresses why a free-plan domain's mail is refused (`err`, as
+// the MX server answers it, with links to click), or will be (`err.isNotice`),
+// so it does not go unnoticed: once a month each address, and once a month
+// each domain an email was sent for, so that changing its records does not
+// reach other addresses (a check that could not finish, and a notice, are
+// told apart, so they do not keep a refusal found later from being told; if
+// an email cannot be sent, a message an hour or more later tries again)
+//
+function tellWhyRefused(client, addresses, rootDomain, err) {
+  const emails = getRecordEmails(addresses, rootDomain);
+  if (emails.length === 0) return;
+  const prefix = err.isNotice
+    ? 'new_domain_notice'
+    : err.isCheckUnavailable
+    ? 'abuse_prevention_unavailable'
+    : 'abuse_prevention';
+  const domainKey = `${prefix}_domain:${rootDomain}`;
+  client
+    .set(domainKey, true, 'PX', ms('30d'), 'NX')
+    .then(async (claimed) => {
+      if (claimed !== 'OK') return;
+      let sent = 0;
+      let failed = false;
+      await pMapSeries(emails, async (addr) => {
+        const key = `${prefix}:${addr}`;
+        try {
+          if ((await client.set(key, true, 'PX', ms('30d'), 'NX')) !== 'OK')
+            return;
+          await emailHelper({
+            template: 'alert',
+            message: {
+              subject: err.isNotice
+                ? `Upgrade or move ${rootDomain} before ${err.date}`
+                : `Emails blocked via abuse prevention: ${rootDomain}`,
+              to: addr
+            },
+            locals: {
+              message: `${
+                err.html || _.escape(err.message)
+              }  Paid plans start at only $3/mo for unlimited domains, aliases, and more.`,
+              locale: 'en'
+            }
+          });
+          sent++;
+        } catch (_err) {
+          failed = true;
+          await client.set(key, true, 'PX', ms('1h'), 'XX').catch(() => {});
+          logger.fatal(_err, { addr, rootDomain });
+        }
+      });
+      // (none sent, e.g. each address was told of another domain: it is not
+      //  kept from being told once one can be)
+      if (failed) await client.set(domainKey, true, 'PX', ms('1h'), 'XX');
+      else if (sent === 0) await client.del(domainKey);
+    })
+    .catch((_err) => logger.fatal(_err, { rootDomain }));
+}
+
 function parseFilter(address) {
   address = parseAddresses(address)[0];
   return address.includes('+') ? address.split('+')[1].split('@')[0] : '';
@@ -804,58 +892,31 @@ async function getForwardingAddresses(
   // detect if abuse prevention is required
   if (obj?.err) {
     const emails = addresses.filter((addr) => isEmail(addr));
-    if (emails.length > 0) {
-      if (isFreePlanDomain) {
-        // (not when it could not be checked: it is asked again)
-        pMapSeries(obj.err.isCheckUnavailable ? [] : emails, async (addr) => {
-          try {
-            // cache on a per email basis for 30d
-            const key = `abuse_prevention:${addr.toLowerCase()}`;
-            const cache = await this.client.get(key);
-            if (cache) return;
-            await this.client.set(key, true, 'PX', ms('30d'));
-            await emailHelper({
-              template: 'alert',
-              message: {
-                subject: `Emails blocked via abuse prevention: ${rootDomain}`,
-                to: addr
-              },
-              locals: {
-                // (why, as the MX server answers it)
-                message: `${obj.err.message}  Paid plans start at only $3/mo for unlimited domains, aliases, and more.`,
-                locale: 'en'
-              }
-            });
-          } catch (err) {
-            logger.fatal(err, { addr, rootDomain, obj, isFreePlanDomain });
-          }
-        })
-          .then()
-          .catch((err) =>
-            logger.fatal(err, { rootDomain, obj, isFreePlanDomain })
-          );
-      } else {
-        try {
-          // cache on a per domain basis for 30d
-          const key = `abuse_prevention:${rootDomain}`;
-          const cache = await this.client.get(key);
-          if (!cache) {
-            await this.client.set(key, true, 'PX', ms('30d'));
-            await emailHelper({
-              template: 'alert',
-              message: {
-                subject: `Possible paid plan abuse: ${rootDomain}`,
-                to: config.alertsEmail
-              },
-              locals: {
-                message: `<pre><code>${emails.join('<br />')}</code></pre>`,
-                locale: 'en'
-              }
-            });
-          }
-        } catch (err) {
-          logger.fatal(err, { rootDomain, obj, isFreePlanDomain });
+    // (the addresses its records forward to are told why: also while it
+    //  could not be checked, and for "name:address" records)
+    if (isFreePlanDomain) {
+      tellWhyRefused(this.client, addresses, rootDomain, obj.err);
+    } else if (emails.length > 0) {
+      try {
+        // cache on a per domain basis for 30d
+        const key = `abuse_prevention:${rootDomain}`;
+        const cache = await this.client.get(key);
+        if (!cache) {
+          await this.client.set(key, true, 'PX', ms('30d'));
+          await emailHelper({
+            template: 'alert',
+            message: {
+              subject: `Possible paid plan abuse: ${rootDomain}`,
+              to: config.alertsEmail
+            },
+            locals: {
+              message: `<pre><code>${emails.join('<br />')}</code></pre>`,
+              locale: 'en'
+            }
+          });
         }
+      } catch (err) {
+        logger.fatal(err, { rootDomain, obj, isFreePlanDomain });
       }
     }
 
@@ -866,6 +927,14 @@ async function getForwardingAddresses(
     //  "password-reset:someone@example.com")
     //
     if (isFreePlanDomain) throw obj.err;
+  } else if (obj?.notice && isFreePlanDomain) {
+    //
+    // A new domain that needs a paid plan only from a later date (see
+    // `config.newDomainNoticeEndsAt`) is let through until then, and the
+    // addresses its records forward to are told, so there is time to upgrade
+    // or move
+    //
+    tellWhyRefused(this.client, addresses, rootDomain, obj.notice);
   }
 
   // store if address is ignored or not
@@ -1290,13 +1359,19 @@ async function getForwardingAddresses(
   // if the domain does not have any verifications
   // and if the domain ended with a bad domain
   // then we can reject the message and inform
-  // the recipient with a one-time courtesy email
+  // the addresses it forwards to once a month
   //
-  if (badDomainExtension && forwardingAddresses.length > 0)
-    throw new SMTPError(
-      `${address} requires an upgrade to Enhanced Protection at ${config.urls.web} ;  Please read ${config.urls.web}/faq#what-domain-name-extensions-can-be-used-for-free for more information`,
-      { ignore_hook: true }
-    );
+  if (badDomainExtension && forwardingAddresses.length > 0) {
+    const why = (name) =>
+      `${name} requires an upgrade to Enhanced Protection at ${config.urls.web} ;  Please read ${config.urls.web}/faq#what-domain-name-extensions-can-be-used-for-free for more information`;
+    // (the addresses are told of the domain, not of the address any sender
+    //  picks)
+    if (isFreePlanDomain)
+      tellWhyRefused(this.client, addresses, rootDomain, {
+        message: why(rootDomain)
+      });
+    throw new SMTPError(why(address), { ignore_hook: true });
+  }
 
   // if we don't have a forwarding address then throw an error
   if (forwardingAddresses.length === 0 && !hasIMAP) {

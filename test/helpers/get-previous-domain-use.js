@@ -243,3 +243,39 @@ test.serial(
     }
   }
 );
+
+test.serial(
+  'an archive answering after more than 10 seconds is still kept',
+  async (t) => {
+    const client = new Redis();
+    const domain = newDomain();
+    const { CDX_URL } = getPreviousDomainUse;
+    const server = http.createServer((req, res) => {
+      setTimeout(() => {
+        res.writeHead(200);
+        res.end(JSON.stringify([['timestamp'], ['20200101000000']]));
+      }, 11_000);
+    });
+    await new Promise((resolve) => {
+      server.listen(0, '127.0.0.1', resolve);
+    });
+    getPreviousDomainUse.CDX_URL = `http://127.0.0.1:${server.address().port}/`;
+    try {
+      await t.throwsAsync(
+        getPreviousDomainUse(domain, lookup(), client, { wait: 100 }),
+        { code: 'ESTILLLOOKING' }
+      );
+      await new Promise((resolve) => {
+        setTimeout(resolve, 11_500);
+      });
+      t.deepEqual(await getPreviousDomainUse(domain, lookup(), client), {
+        reason: 'web_archive',
+        capturedAt: '20200101000000'
+      });
+    } finally {
+      getPreviousDomainUse.CDX_URL = CDX_URL;
+      server.closeAllConnections?.();
+      server.close();
+    }
+  }
+);

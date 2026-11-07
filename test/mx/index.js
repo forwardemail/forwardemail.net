@@ -3,6 +3,17 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
+// the emails sent are captured once sent (the module is wrapped before
+// anything binds to it)
+const sentEmails = [];
+const emailModulePath = require.resolve('#helpers/email');
+const emailHelper = require(emailModulePath);
+require.cache[emailModulePath].exports = async (data) => {
+  const result = await emailHelper(data);
+  sentEmails.push(data);
+  return result;
+};
+
 const crypto = require('node:crypto');
 
 const { randomUUID } = crypto;
@@ -816,7 +827,7 @@ test('isExpiredOrNewlyCreated', async (t) => {
     const obj = await isExpiredOrNewlyCreated(rootDomain, t.context.client);
     t.is(
       obj.err.message,
-      `The domain ${rootDomain} was detected as a pending state domain via WHOIS/RDAP lookup: its registrar shows it pending deletion, an update, or a transfer, so who will have it next is not known. Due to major registrars such as GoDaddy, Namecheap, and Hostgator previously blocking us due to abuse &mdash; we unfortunately have to enforce strict abuse prevention controls to block suspicious activity. Without this abuse prevention, our service would be blocked entirely from these registrars. Please upgrade to a paid plan at ${config.urls.web} to use our service with this domain. Learn why: ${config.urls.web}/faq#why-do-newly-registered-or-recently-expired-domains-require-a-paid-plan`
+      `The domain ${rootDomain} was detected as a pending state domain via WHOIS/RDAP lookup: its registrar shows it pending deletion, an update, or a transfer, so who will have it next is not known. Due to major registrars such as GoDaddy, Namecheap, and Hostgator previously blocking us due to abuse, we unfortunately have to enforce strict abuse prevention controls to block suspicious activity. Without this abuse prevention, our service would be blocked entirely from these registrars. Please upgrade to a paid plan at ${config.urls.web} to use our service with this domain. Learn why: ${config.urls.web}/faq#why-do-newly-registered-or-recently-expired-domains-require-a-paid-plan`
     );
     t.is(obj.err.responseCode, 421);
     t.is(obj.response.found, true);
@@ -843,7 +854,7 @@ test('isExpiredOrNewlyCreated', async (t) => {
     const obj = await isExpiredOrNewlyCreated(rootDomain, t.context.client);
     t.is(
       obj.err.message,
-      `The domain ${rootDomain} was detected as a recently expired domain via WHOIS/RDAP lookup; please renew it with its registrar. An expired domain can be registered again by someone else, and whoever has a domain receives the mail sent to its earlier owner's addresses (such as password resets). Due to major registrars such as GoDaddy, Namecheap, and Hostgator previously blocking us due to abuse &mdash; we unfortunately have to enforce strict abuse prevention controls to block suspicious activity. Without this abuse prevention, our service would be blocked entirely from these registrars. Please upgrade to a paid plan at ${config.urls.web} to use our service with this domain. Learn why: ${config.urls.web}/faq#why-do-newly-registered-or-recently-expired-domains-require-a-paid-plan`
+      `The domain ${rootDomain} was detected as a recently expired domain via WHOIS/RDAP lookup; please renew it with its registrar. An expired domain can be registered again by someone else, and whoever has a domain receives the mail sent to its earlier owner's addresses (such as password resets). Due to major registrars such as GoDaddy, Namecheap, and Hostgator previously blocking us due to abuse, we unfortunately have to enforce strict abuse prevention controls to block suspicious activity. Without this abuse prevention, our service would be blocked entirely from these registrars. Please upgrade to a paid plan at ${config.urls.web} to use our service with this domain. Learn why: ${config.urls.web}/faq#why-do-newly-registered-or-recently-expired-domains-require-a-paid-plan`
     );
     t.is(obj.err.responseCode, 421);
     t.is(obj.response.found, true);
@@ -871,7 +882,7 @@ test('isExpiredOrNewlyCreated', async (t) => {
     const obj = await isExpiredOrNewlyCreated(rootDomain, t.context.client);
     t.is(
       obj.err.message,
-      `The domain ${rootDomain} was detected as a newly created or transferred domain via WHOIS/RDAP lookup. Due to major registrars such as GoDaddy, Namecheap, and Hostgator previously blocking us due to abuse &mdash; we unfortunately have to enforce strict abuse prevention controls to block suspicious activity. Without this abuse prevention, our service would be blocked entirely from these registrars. Please upgrade to a paid plan at ${config.urls.web} to use our service with this domain. Learn why: ${config.urls.web}/faq#why-do-newly-registered-or-recently-expired-domains-require-a-paid-plan`
+      `The domain ${rootDomain} was detected as a newly created or transferred domain via WHOIS/RDAP lookup. Due to major registrars such as GoDaddy, Namecheap, and Hostgator previously blocking us due to abuse, we unfortunately have to enforce strict abuse prevention controls to block suspicious activity. Without this abuse prevention, our service would be blocked entirely from these registrars. Please upgrade to a paid plan at ${config.urls.web} to use our service with this domain. Learn why: ${config.urls.web}/faq#why-do-newly-registered-or-recently-expired-domains-require-a-paid-plan`
     );
     t.is(obj.err.responseCode, 421);
     t.is(obj.response.found, true);
@@ -934,11 +945,13 @@ test('a free-plan domain registered within 90 days can receive mail when it is a
   getPreviousDomainUse.CDX_URL = `http://127.0.0.1:${cdx.address().port}/cdx`;
 
   const cloudflare = createDomainCheckResolvers(t.context.client, logger);
+  const { newDomainNoticeEndsAt } = config;
   const created = dayjs().subtract(30, 'day').toDate();
 
   // (a domain registered 30 days ago, forwarding to our test server, that
   //  Cloudflare does not block; `options.transferred` is a registrar
-  //  transfer, `options.record` what it forwards to)
+  //  transfer, `options.record` what it forwards to, `options.created` when
+  //  it was registered instead)
   async function addDomain(name, options = {}) {
     const map = new Map();
     map.set(
@@ -989,9 +1002,9 @@ test('a free-plan domain registered within 90 days can receive mail when it is a
         status: ['client transfer prohibited'],
         registrar: { id: 1, name: 'Example Registrar, Inc.' },
         ts: {
-          created,
-          updated: created,
-          expires: dayjs(created).add(1, 'year').toDate(),
+          created: options.created || created,
+          updated: options.created || created,
+          expires: dayjs().add(1, 'year').toDate(),
           ...(options.transferred ? { transferred: options.transferred } : {})
         }
       }),
@@ -1034,6 +1047,12 @@ Hello.
   }
 
   try {
+    //
+    // (as on December 1, 2026: new domains on .id, .jp and .ws need a paid
+    //  plan, see `config.newDomainNoticeEndsAt`)
+    //
+    config.newDomainNoticeEndsAt = dayjs().subtract(1, 'day').toDate();
+
     // (a new name: no capture before it was registered)
     const fresh = `new-${randomUUID().slice(0, 8)}.com`;
     await addDomain(fresh);
@@ -1041,6 +1060,42 @@ Hello.
     await pWaitFor(() => received.length === 1, { timeout: ms('10s') });
     t.deepEqual(received[0], [`test@${IP_ADDRESS}`]);
     t.true(asked.includes(fresh));
+
+    // (.online is an extension the free plan takes: a domain on it that was
+    //  registered more than 90 days ago gets mail, as on any other)
+    const older = `older-${randomUUID().slice(0, 8)}.online`;
+    await addDomain(older, { created: dayjs().subtract(1, 'year').toDate() });
+    await send(older);
+    await pWaitFor(() => received.length === 2, { timeout: ms('10s') });
+    t.deepEqual(received[1], [`test@${IP_ADDRESS}`]);
+    t.false(asked.includes(older));
+
+    //
+    // (the emails sent to the address its records forward to about a domain,
+    //  once sent: why its mail is refused, or will be)
+    //
+    const toldAbout = (name) =>
+      sentEmails.filter(
+        (data) =>
+          data.message.to === `test@${IP_ADDRESS}` &&
+          data.message.subject.includes(name)
+      );
+    const isTold = (name) => toldAbout(name).length > 0;
+
+    //
+    // (before then, a new domain on .id, .jp or .ws gets mail, and the
+    //  addresses it forwards to, here by "hello:address", are told once why
+    //  it will not)
+    //
+    config.newDomainNoticeEndsAt = dayjs().add(30, 'day').toDate();
+    const soon = `soon-${randomUUID().slice(0, 8)}.id`;
+    await addDomain(soon, { record: `hello:test@${IP_ADDRESS}` });
+    await send(soon);
+    await pWaitFor(() => received.length === 3, { timeout: ms('10s') });
+    t.deepEqual(received[2], [`test@${IP_ADDRESS}`]);
+    await pWaitFor(() => isTold(soon), { timeout: ms('10s') });
+    t.regex(toldAbout(soon)[0].locals.message, /will be refused/);
+    config.newDomainNoticeEndsAt = dayjs().subtract(1, 'day').toDate();
 
     // (a name transferred from another registrar: someone had it before)
     const moved = `moved-${randomUUID().slice(0, 8)}.com`;
@@ -1051,49 +1106,122 @@ Hello.
     t.is(transferErr.responseCode, 421);
     t.regex(transferErr.message, /it was transferred from another registrar/);
     t.false(asked.includes(moved));
-    // (the recipient is told why, before the next case clears that)
-    await pWaitFor(
-      async () =>
-        Boolean(
-          await t.context.client.get(`abuse_prevention:test@${IP_ADDRESS}`)
-        ),
-      { timeout: ms('10s') }
+    // (the recipient is told why, once a month: the next case clears that)
+    await pWaitFor(() => isTold(moved), { timeout: ms('10s') });
+    t.regex(
+      toldAbout(moved)[0].locals.message,
+      /it was transferred from another registrar/
     );
+    const noticeKey = `abuse_prevention:test@${IP_ADDRESS}`;
+    await t.context.client.del(noticeKey);
 
     // (when the archive cannot be asked, its mail is not held, and the
     //  recipient is not told)
-    const noticeKey = `abuse_prevention:test@${IP_ADDRESS}`;
-    await t.context.client.del(noticeKey);
     const unknown = `unknown-${randomUUID().slice(0, 8)}.com`;
     archive.set(unknown, 'error');
     await addDomain(unknown);
     await send(unknown);
-    await pWaitFor(() => received.length === 2, { timeout: ms('10s') });
-    t.deepEqual(received[1], [`test@${IP_ADDRESS}`]);
+    await pWaitFor(() => received.length === 4, { timeout: ms('10s') });
+    t.deepEqual(received[3], [`test@${IP_ADDRESS}`]);
     t.true(asked.includes(unknown));
-    t.is(await t.context.client.get(noticeKey), null);
+    t.false(isTold(unknown));
 
-    // (a name in use before: the recipient is told why)
+    // (when Cloudflare cannot be asked: its mail is held for now, and the
+    //  recipient is told why)
+    const unchecked = `unchecked-${randomUUID().slice(0, 8)}.com`;
+    await addDomain(unchecked);
+    await t.context.client.set(
+      `new_domain_dns_error:${unchecked}`,
+      '1',
+      'PX',
+      ms('5m')
+    );
+    const uncheckedErr = await t.throwsAsync(send(unchecked));
+    t.is(uncheckedErr.responseCode, 421);
+    t.regex(uncheckedErr.message, /could not be checked for it right now/);
+    await pWaitFor(() => isTold(unchecked), { timeout: ms('10s') });
+    t.regex(
+      toldAbout(unchecked)[0].locals.message,
+      /This is a temporary error/
+    );
+
+    // (a name in use before: the recipient is told why, also right after
+    //  being told of a check that could not finish)
     const reused = `old-${randomUUID().slice(0, 8)}.com`;
     archive.set(reused, '20190314000000');
     await addDomain(reused);
     const err = await t.throwsAsync(send(reused));
     t.is(err.responseCode, 421);
     t.regex(err.message, /it was in use before then/);
-    await pWaitFor(async () => Boolean(await t.context.client.get(noticeKey)), {
-      timeout: ms('10s')
-    });
+    await pWaitFor(() => isTold(reused), { timeout: ms('10s') });
+    t.regex(toldAbout(reused)[0].locals.message, /it was in use before then/);
 
-    // (also when its record forwards a name, "hello:address": it has no
-    //  plain address to tell, and its mail is not let through either)
+    //
+    // (also when its record forwards a name, "hello:address": its mail is
+    //  not let through either, and the address is told why, but not one on
+    //  the domain itself, nor an odd entry or a webhook with a password)
+    //
+    await t.context.client.del(noticeKey);
     const named = `named-${randomUUID().slice(0, 8)}.com`;
     archive.set(named, '20190314000000');
-    await addDomain(named, { record: `hello:test@${IP_ADDRESS}` });
+    await addDomain(named, {
+      record: [
+        `admin:admin@${named}`,
+        'odd:x@example.net@example.org',
+        'hook:https://user:pass@hook.example.com',
+        `hello:test@${IP_ADDRESS}`
+      ].join(',')
+    });
     const namedErr = await t.throwsAsync(send(named));
     t.is(namedErr.responseCode, 421);
     t.regex(namedErr.message, /it was in use before then/);
-    t.is(received.length, 2);
+    await pWaitFor(() => isTold(named), { timeout: ms('10s') });
+    t.deepEqual(
+      sentEmails
+        .filter((data) => data.message.subject.includes(named))
+        .map((data) => data.message.to),
+      [`test@${IP_ADDRESS}`]
+    );
+
+    // (a domain's addresses are told once a month: its records cannot be
+    //  changed to have other addresses told)
+    await t.context.client.del(noticeKey);
+    const againErr = await t.throwsAsync(send(named));
+    t.regex(againErr.message, /it was in use before then/);
+    await delay(1000);
+    t.is(await t.context.client.get(noticeKey), null);
+    t.is(toldAbout(named).length, 1);
+
+    // (an extension the free plan never takes, however old the domain: its
+    //  mail is refused, and the address it forwards to is told why)
+    await t.context.client.del(noticeKey);
+    const top = `top-${randomUUID().slice(0, 8)}.top`;
+    await addDomain(top, { created: dayjs().subtract(1, 'year').toDate() });
+    const topErr = await t.throwsAsync(send(top));
+    t.is(topErr.responseCode, 550);
+    t.regex(topErr.message, /requires an upgrade to Enhanced Protection/);
+    await pWaitFor(() => isTold(top), { timeout: ms('10s') });
+    // (of the domain, not of the address the sender picked)
+    t.true(
+      toldAbout(top)[0].locals.message.startsWith(
+        `${top} requires an upgrade to Enhanced Protection`
+      )
+    );
+
+    // (a domain whose address was told of another domain this month is told
+    //  once it can be)
+    const later = `later-${randomUUID().slice(0, 8)}.com`;
+    archive.set(later, '20190314000000');
+    await addDomain(later);
+    await t.throwsAsync(send(later));
+    await delay(1000);
+    t.false(isTold(later));
+    await t.context.client.del(noticeKey);
+    await t.throwsAsync(send(later));
+    await pWaitFor(() => isTold(later), { timeout: ms('10s') });
+    t.is(received.length, 4);
   } finally {
+    config.newDomainNoticeEndsAt = newDomainNoticeEndsAt;
     getPreviousDomainUse.CDX_URL = CDX_URL;
     await new Promise((resolve) => {
       cdx.close(resolve);

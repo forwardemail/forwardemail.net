@@ -3851,7 +3851,9 @@ Pokud obdržíte jedno z těchto oznámení, kontaktujte nás na <support@forwar
 
 Když přidáte doménu (a průběžně u domén v bezplatném plánu), provedeme pro ni dotaz WHOIS/RDAP. Pokud doména **expirovala v posledních 90 dnech** nebo je u svého registrátora aktuálně ve stavu **čekajícího převodu, aktualizace nebo smazání**, vyžadujeme, aby byla v placeném plánu, než s ní budete moci odesílat nebo přijímat poštu.
 
-Doména **vytvořená v posledních 90 dnech** může používat bezplatný plán, pokud jde o nový název. Placený plán potřebuje, dokud nebude stará 90 dní, pokud se dříve používala (například ji někdo jiný nechal expirovat a byla znovu zaregistrována), pokud ji drží registrátor zaměřený na drop-catching, pokud byla převedena od jiného registrátora, pokud končí na `.cc` nebo `.xyz` (z koncovek, které bezplatný plán přijímá, na nich spammeři registrují nové domény nejčastěji hned po `.com` a `.net`), nebo pokud ji blokuje filtr Cloudflare pro malware, phishing a obsah pro dospělé. Dřívější používání ověřujeme v [Internet Archive](https://web.archive.org/): záznam domény z doby před její registrací znamená, že se používala.
+Doména **vytvořená v posledních 90 dnech** může používat bezplatný plán, pokud jde o nový název. Placený plán potřebuje, dokud nebude stará 90 dní, pokud se dříve používala (například ji někdo jiný nechal expirovat a byla znovu zaregistrována), pokud ji drží registrátor zaměřený na drop-catching, pokud byla převedena od jiného registrátora, pokud končí na `.cc`, `.id`, `.jp`, `.online`, `.ws` nebo `.xyz` (hlášení o spamu a phishingu u nich ukazují více zneužití než u `.com`), nebo pokud ji blokuje filtr Cloudflare pro malware, phishing a obsah pro dospělé. Dřívější používání ověřujeme v [Internet Archive](https://web.archive.org/): záznam domény z doby před její registrací znamená, že se používala.
+
+Nové domény končící na `.id`, `.jp` nebo `.ws` potřebují placený plán od 1. prosince 2026. Do té doby fungují dál a na každou adresu, na kterou doména přeposílá poštu, pošleme jeden e-mail, aby byl čas na upgrade nebo přechod na jinou doménu.
 
 Jde o opatření proti zneužití, nikoli o hodnocení vás osobně — velcí registrátoři včetně GoDaddy, Namecheap a Hostgator v minulosti zcela zablokovali naši infrastrukturu kvůli vzorcům zneužívání spojeným s převzetím nedávno expirovaných domén a podvodně registrovanými novými doménami. Právě požadavek placeného plánu pro tyto domény nám vůbec umožňuje dál nabízet bezplatný plán, aniž bychom ztratili důvěru registrátorů.
 
@@ -5337,6 +5339,7 @@ Toto nové pravidlo umožňuje používat na našem bezplatném plánu pouze ná
   <li class="list-inline-item"><code class="notranslate">ck</code></li>
   <li class="list-inline-item"><code class="notranslate">co</code></li>
   <li class="list-inline-item"><code class="notranslate">com</code></li>
+  <li class="list-inline-item"><code class="notranslate">cz</code></li>
   <li class="list-inline-item"><code class="notranslate">de</code></li>
   <li class="list-inline-item"><code class="notranslate">dev</code></li>
   <li class="list-inline-item"><code class="notranslate">dj</code></li>
@@ -5393,6 +5396,7 @@ Toto nové pravidlo umožňuje používat na našem bezplatném plánu pouze ná
   <li class="list-inline-item"><code class="notranslate">no</code></li>
   <li class="list-inline-item"><code class="notranslate">nu</code></li>
   <li class="list-inline-item"><code class="notranslate">nz</code></li>
+  <li class="list-inline-item"><code class="notranslate">online</code></li>
   <li class="list-inline-item"><code class="notranslate">org</code></li>
   <li class="list-inline-item"><code class="notranslate">pf</code></li>
   <li class="list-inline-item"><code class="notranslate">pl</code></li>

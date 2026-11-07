@@ -39,8 +39,10 @@ const withDeadline = require('#helpers/with-deadline');
 const DROP_CATCH_REGISTRAR =
   /^(?:dropcatch\.com \d+ llc|snapnames \d+,? llc|gname \d+ inc\.?|namepal\.com #\d+(?:,? llc)?|sav\.com,? llc - \d+|dynadot\d+ llc|unstoppableus\d+ llc)$/;
 
-// (how long the archive is asked, and how long a caller waits for it)
-const TIMEOUT_MS = ms('10s');
+// (how long the archive is asked: it can take over 10 seconds when busy, and
+//  mail does not wait for it)
+const TIMEOUT_MS = ms('30s');
+// (how long a caller waits for it)
 const DEFAULT_WAIT_MS = 1500;
 const STILL_LOOKING = Symbol('still looking');
 // (the answer is a line or two)
@@ -153,7 +155,7 @@ async function lookUp(domain, created, client, key) {
  * How a domain registered within the past 90 days was in use before, or
  * null when nothing says it was. Throws when that cannot be told, also when
  * the archive takes longer than `options.wait`: the lookup then goes on
- * (for up to 10 seconds), and its answer is kept for the next time.
+ * (for up to 30 seconds), and its answer is kept for the next time.
  *
  * @param   {string}  domain    Its root domain, in ASCII
  * @param   {object}  response  Its WHOIS/RDAP lookup (`@forwardemail/whois-rdap`)

@@ -3848,7 +3848,9 @@ if header :contains "Subject" "invoice" {
 
 当您添加域名时（对于免费计划上的域名还会持续进行），我们会对其进行 WHOIS/RDAP 查询。如果该域名**在过去 90 天内过期**，或目前在其注册商处处于**待转移、待更新或待删除**状态，我们会要求其使用付费计划，然后您才能使用它收发邮件。
 
-**在过去 90 天内创建**的域名如果是新名称，可以使用免费计划。如果该域名以前使用过（例如，他人任其过期后又被重新注册）、由抢注（drop-catch）注册商持有、从其他注册商转移而来、以 `.cc` 或 `.xyz` 结尾（在免费计划接受的后缀中，垃圾邮件发送者注册新域名最多的后缀仅次于 `.com` 和 `.net`），或被 Cloudflare 的恶意软件、网络钓鱼和成人内容过滤器拦截，则在满 90 天之前需要使用付费计划。我们通过 [Internet Archive](https://web.archive.org/) 检查以前的使用情况：如果存在该域名在注册之前的存档快照，则说明它曾被使用过。
+**在过去 90 天内创建**的域名如果是新名称，可以使用免费计划。如果该域名以前使用过（例如，他人任其过期后又被重新注册）、由抢注（drop-catch）注册商持有、从其他注册商转移而来、以 `.cc`、`.id`、`.jp`、`.online`、`.ws` 或 `.xyz` 结尾（垃圾邮件和网络钓鱼报告显示，这些后缀的滥用情况多于 `.com`），或被 Cloudflare 的恶意软件、网络钓鱼和成人内容过滤器拦截，则在满 90 天之前需要使用付费计划。我们通过 [Internet Archive](https://web.archive.org/) 检查以前的使用情况：如果存在该域名在注册之前的存档快照，则说明它曾被使用过。
+
+以 `.id`、`.jp` 或 `.ws` 结尾的新域名自 2026 年 12 月 1 日起需要使用付费计划。在此之前，这些域名可以继续正常使用，我们会向该域名转发邮件的每个地址发送一封邮件，以便您有时间升级或改用其他域名。
 
 这是一项防滥用措施，并非针对您个人——包括 GoDaddy、Namecheap 和 Hostgator 在内的主要注册商此前曾因涉及抢注最近过期域名和欺诈注册新域名的滥用模式而完全封锁我们的基础设施。要求这些域名使用付费计划，正是我们能够继续提供免费计划而不失去注册商信任的原因。
 
@@ -5334,6 +5336,7 @@ Forward Email 完全依赖两个关键基础设施提供商，且均未使用第
   <li class="list-inline-item"><code class="notranslate">ck</code></li>
   <li class="list-inline-item"><code class="notranslate">co</code></li>
   <li class="list-inline-item"><code class="notranslate">com</code></li>
+  <li class="list-inline-item"><code class="notranslate">cz</code></li>
   <li class="list-inline-item"><code class="notranslate">de</code></li>
   <li class="list-inline-item"><code class="notranslate">dev</code></li>
   <li class="list-inline-item"><code class="notranslate">dj</code></li>
@@ -5390,6 +5393,7 @@ Forward Email 完全依赖两个关键基础设施提供商，且均未使用第
   <li class="list-inline-item"><code class="notranslate">no</code></li>
   <li class="list-inline-item"><code class="notranslate">nu</code></li>
   <li class="list-inline-item"><code class="notranslate">nz</code></li>
+  <li class="list-inline-item"><code class="notranslate">online</code></li>
   <li class="list-inline-item"><code class="notranslate">org</code></li>
   <li class="list-inline-item"><code class="notranslate">pf</code></li>
   <li class="list-inline-item"><code class="notranslate">pl</code></li>

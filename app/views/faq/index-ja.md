@@ -3852,7 +3852,9 @@ if header :contains "Subject" "invoice" {
 
 ドメインを追加する際（無料プランのドメインについては継続的に）、そのドメインに対してWHOIS/RDAPの照会を行います。ドメインが**過去90日以内に期限切れになった**場合、またはレジストラで現在**移管、更新、削除が保留中**の状態にある場合は、そのドメインでメールを送受信する前に有料プランへの加入が必要です。
 
-**過去90日以内に作成された**ドメインは、新しい名前であれば無料プランを利用できます。ただし、以前に使用されていた場合（たとえば、他の人が期限切れにした後に再登録された場合）、ドロップキャッチ型のレジストラが保有している場合、別のレジストラから移管された場合、末尾が`.cc`または`.xyz`の場合（無料プランで使える拡張子のうち、`.com`と`.net`に次いでスパム業者が新しいドメインを最も多く登録している拡張子です）、またはマルウェア、フィッシング、アダルトコンテンツを対象とするCloudflareのフィルターでブロックされる場合は、作成から90日が経過するまで有料プランが必要です。以前の使用状況は[Internet Archive](https://web.archive.org/)で確認します。登録日より前のドメインのキャプチャがあれば、使用されていたことを意味します。
+**過去90日以内に作成された**ドメインは、新しい名前であれば無料プランを利用できます。ただし、以前に使用されていた場合（たとえば、他の人が期限切れにした後に再登録された場合）、ドロップキャッチ型のレジストラが保有している場合、別のレジストラから移管された場合、末尾が`.cc`、`.id`、`.jp`、`.online`、`.ws`、`.xyz`のいずれかの場合（スパムやフィッシングの報告では、これらの拡張子は`.com`より悪用が多くなっています）、またはマルウェア、フィッシング、アダルトコンテンツを対象とするCloudflareのフィルターでブロックされる場合は、作成から90日が経過するまで有料プランが必要です。以前の使用状況は[Internet Archive](https://web.archive.org/)で確認します。登録日より前のドメインのキャプチャがあれば、使用されていたことを意味します。
+
+末尾が`.id`、`.jp`、`.ws`のいずれかの新しいドメインは、2026年12月1日から有料プランが必要になります。それまでは引き続き利用でき、ドメインの転送先の各アドレスにメールを1通お送りしますので、その間にアップグレードするか別のドメインに移行してください。
 
 これは不正利用防止のための措置であり、お客様個人を評価するものではありません — GoDaddy、Namecheap、Hostgatorを含む大手レジストラは、最近期限切れになったドメインの乗っ取りや不正に登録された新規ドメインが関わる不正利用のパターンを理由に、過去に当社のインフラを完全にブロックしたことがあります。これらのドメインに有料プランを必須とすることで、レジストラの信頼を失うことなく無料プランを提供し続けることができます。
 
@@ -5338,6 +5340,7 @@ DNSまたは接続エラーが発生した場合は、`DATA`コマンドにSMTP�
   <li class="list-inline-item"><code class="notranslate">ck</code></li>
   <li class="list-inline-item"><code class="notranslate">co</code></li>
   <li class="list-inline-item"><code class="notranslate">com</code></li>
+  <li class="list-inline-item"><code class="notranslate">cz</code></li>
   <li class="list-inline-item"><code class="notranslate">de</code></li>
   <li class="list-inline-item"><code class="notranslate">dev</code></li>
   <li class="list-inline-item"><code class="notranslate">dj</code></li>
@@ -5394,6 +5397,7 @@ DNSまたは接続エラーが発生した場合は、`DATA`コマンドにSMTP�
   <li class="list-inline-item"><code class="notranslate">no</code></li>
   <li class="list-inline-item"><code class="notranslate">nu</code></li>
   <li class="list-inline-item"><code class="notranslate">nz</code></li>
+  <li class="list-inline-item"><code class="notranslate">online</code></li>
   <li class="list-inline-item"><code class="notranslate">org</code></li>
   <li class="list-inline-item"><code class="notranslate">pf</code></li>
   <li class="list-inline-item"><code class="notranslate">pl</code></li>

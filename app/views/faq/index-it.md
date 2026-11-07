@@ -3852,7 +3852,9 @@ Se ricevi uno di questi avvisi, contattaci all'indirizzo <support@forwardemail.n
 
 Quando aggiungi un dominio (e in modo continuativo per i domini del piano gratuito), eseguiamo una ricerca WHOIS/RDAP su di esso. Se il dominio è **scaduto negli ultimi 90 giorni** o si trova attualmente in uno stato di **trasferimento, aggiornamento o eliminazione in sospeso** presso il suo registrar, richiediamo che sia su un piano a pagamento prima che tu possa inviare o ricevere posta con esso.
 
-Un dominio **creato negli ultimi 90 giorni** può usare il piano gratuito se è un nome nuovo. Richiede un piano a pagamento finché non compie 90 giorni se era già stato usato in precedenza (ad esempio, qualcun altro lo ha lasciato scadere ed è stato registrato di nuovo), se è detenuto da un registrar di tipo drop-catch, se è stato trasferito da un altro registrar, se termina con `.cc` o `.xyz` (tra le estensioni accettate dal piano gratuito, sono quelle su cui gli spammer registrano più domini nuovi dopo `.com` e `.net`), o se il filtro di Cloudflare per malware, phishing e contenuti per adulti lo blocca. Verifichiamo l'uso precedente su [Internet Archive](https://web.archive.org/): un'acquisizione del dominio precedente alla sua registrazione significa che era in uso.
+Un dominio **creato negli ultimi 90 giorni** può usare il piano gratuito se è un nome nuovo. Richiede un piano a pagamento finché non compie 90 giorni se era già stato usato in precedenza (ad esempio, qualcun altro lo ha lasciato scadere ed è stato registrato di nuovo), se è detenuto da un registrar di tipo drop-catch, se è stato trasferito da un altro registrar, se termina con `.cc`, `.id`, `.jp`, `.online`, `.ws` o `.xyz` (le segnalazioni di spam e phishing mostrano più abusi su queste che su `.com`), o se il filtro di Cloudflare per malware, phishing e contenuti per adulti lo blocca. Verifichiamo l'uso precedente su [Internet Archive](https://web.archive.org/): un'acquisizione del dominio precedente alla sua registrazione significa che era in uso.
+
+I nuovi domini che terminano con `.id`, `.jp` o `.ws` richiedono un piano a pagamento dal 1° dicembre 2026. Fino ad allora continuano a funzionare e inviamo un'email a ogni indirizzo a cui il dominio inoltra la posta, così c'è tempo per passare a un piano a pagamento o a un altro dominio.
 
 Si tratta di una misura di prevenzione degli abusi, non di un giudizio su di te personalmente — importanti registrar tra cui GoDaddy, Namecheap e Hostgator in passato hanno bloccato completamente la nostra infrastruttura a causa di schemi di abuso legati all'acquisizione di domini scaduti di recente e a nuovi domini registrati in modo fraudolento. Richiedere un piano a pagamento per questi domini è ciò che ci permette di continuare a offrire un piano gratuito senza perdere la fiducia dei registrar.
 
@@ -5338,6 +5340,7 @@ Questa nuova regola consente di usare solo le seguenti estensioni di nomi di dom
   <li class="list-inline-item"><code class="notranslate">ck</code></li>
   <li class="list-inline-item"><code class="notranslate">co</code></li>
   <li class="list-inline-item"><code class="notranslate">com</code></li>
+  <li class="list-inline-item"><code class="notranslate">cz</code></li>
   <li class="list-inline-item"><code class="notranslate">de</code></li>
   <li class="list-inline-item"><code class="notranslate">dev</code></li>
   <li class="list-inline-item"><code class="notranslate">dj</code></li>
@@ -5394,6 +5397,7 @@ Questa nuova regola consente di usare solo le seguenti estensioni di nomi di dom
   <li class="list-inline-item"><code class="notranslate">no</code></li>
   <li class="list-inline-item"><code class="notranslate">nu</code></li>
   <li class="list-inline-item"><code class="notranslate">nz</code></li>
+  <li class="list-inline-item"><code class="notranslate">online</code></li>
   <li class="list-inline-item"><code class="notranslate">org</code></li>
   <li class="list-inline-item"><code class="notranslate">pf</code></li>
   <li class="list-inline-item"><code class="notranslate">pl</code></li>

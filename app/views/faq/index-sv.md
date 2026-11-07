@@ -3851,7 +3851,9 @@ Om du får någon av dessa aviseringar, kontakta oss på <support@forwardemail.n
 
 När du lägger till en domän (och löpande för domäner på gratisplanen) gör vi en WHOIS/RDAP-uppslagning för den. Om domänen **gick ut under de senaste 90 dagarna** eller för närvarande har statusen **väntande överföring, uppdatering eller radering** hos sin registrar, kräver vi att den har en betald plan innan du kan skicka eller ta emot e-post med den.
 
-En domän som **skapades under de senaste 90 dagarna** kan använda gratisplanen om det är ett nytt namn. Den behöver en betald plan tills den är 90 dagar gammal om den har använts tidigare (till exempel om någon annan lät den gå ut och den registrerades igen), om en drop-catch-registrar innehar den, om den har flyttats från en annan registrar, om den slutar på `.cc` eller `.xyz` (av de ändelser som gratisplanen tar emot är det på dessa som spammare registrerar flest nya domäner efter `.com` och `.net`), eller om Cloudflares filter för skadlig kod, nätfiske och vuxeninnehåll blockerar den. Vi kontrollerar tidigare användning i [Internet Archive](https://web.archive.org/): en arkiverad ögonblicksbild av domänen från före registreringen betyder att den har använts.
+En domän som **skapades under de senaste 90 dagarna** kan använda gratisplanen om det är ett nytt namn. Den behöver en betald plan tills den är 90 dagar gammal om den har använts tidigare (till exempel om någon annan lät den gå ut och den registrerades igen), om en drop-catch-registrar innehar den, om den har flyttats från en annan registrar, om den slutar på `.cc`, `.id`, `.jp`, `.online`, `.ws` eller `.xyz` (rapporter om skräppost och nätfiske visar mer missbruk på dessa än på `.com`), eller om Cloudflares filter för skadlig kod, nätfiske och vuxeninnehåll blockerar den. Vi kontrollerar tidigare användning i [Internet Archive](https://web.archive.org/): en arkiverad ögonblicksbild av domänen från före registreringen betyder att den har använts.
+
+Nya domäner som slutar på `.id`, `.jp` eller `.ws` behöver en betald plan från den 1 december 2026. Fram till dess fungerar de som vanligt, och vi skickar ett e-postmeddelande till varje adress som domänen vidarebefordrar till, så att det finns tid att uppgradera eller byta till en annan domän.
 
 Detta är en åtgärd för att förhindra missbruk, inte ett omdöme om dig personligen — stora registrarer som GoDaddy, Namecheap och Hostgator har tidigare blockerat hela vår infrastruktur på grund av missbruksmönster med övertagande av nyligen utgångna domäner och bedrägligt registrerade nya domäner. Att kräva en betald plan för dessa domäner är det som gör att vi alls kan fortsätta erbjuda en gratisplan utan att förlora registrarernas förtroende.
 
@@ -5337,6 +5339,7 @@ Denna nya regel tillåter endast följande domännamnstillägg att användas på
   <li class="list-inline-item"><code class="notranslate">ck</code></li>
   <li class="list-inline-item"><code class="notranslate">co</code></li>
   <li class="list-inline-item"><code class="notranslate">com</code></li>
+  <li class="list-inline-item"><code class="notranslate">cz</code></li>
   <li class="list-inline-item"><code class="notranslate">de</code></li>
   <li class="list-inline-item"><code class="notranslate">dev</code></li>
   <li class="list-inline-item"><code class="notranslate">dj</code></li>
@@ -5393,6 +5396,7 @@ Denna nya regel tillåter endast följande domännamnstillägg att användas på
   <li class="list-inline-item"><code class="notranslate">no</code></li>
   <li class="list-inline-item"><code class="notranslate">nu</code></li>
   <li class="list-inline-item"><code class="notranslate">nz</code></li>
+  <li class="list-inline-item"><code class="notranslate">online</code></li>
   <li class="list-inline-item"><code class="notranslate">org</code></li>
   <li class="list-inline-item"><code class="notranslate">pf</code></li>
   <li class="list-inline-item"><code class="notranslate">pl</code></li>

@@ -3851,7 +3851,9 @@ Se você receber um desses avisos, entre em contato conosco em <support@forwarde
 
 Quando você adiciona um domínio (e continuamente para domínios no plano gratuito), fazemos uma consulta WHOIS/RDAP nele. Se o domínio **expirou nos últimos 90 dias** ou está atualmente em estado de **transferência, atualização ou exclusão pendente** no registrador, exigimos que ele esteja em um plano pago antes que você possa enviar ou receber e-mails com ele.
 
-Um domínio **criado nos últimos 90 dias** pode usar o plano gratuito quando é um nome novo. Ele precisa de um plano pago até completar 90 dias se já foi usado antes (por exemplo, outra pessoa o deixou expirar e ele foi registrado novamente), se um registrador de drop-catch o detém, se foi transferido de outro registrador, se termina em `.cc` ou `.xyz` (das extensões que o plano gratuito aceita, são as que os spammers mais usam para registrar domínios novos depois de `.com` e `.net`), ou se o filtro da Cloudflare contra malware, phishing e conteúdo adulto o bloqueia. Verificamos o uso anterior no [Internet Archive](https://web.archive.org/): uma captura do domínio anterior ao seu registro significa que ele estava em uso.
+Um domínio **criado nos últimos 90 dias** pode usar o plano gratuito quando é um nome novo. Ele precisa de um plano pago até completar 90 dias se já foi usado antes (por exemplo, outra pessoa o deixou expirar e ele foi registrado novamente), se um registrador de drop-catch o detém, se foi transferido de outro registrador, se termina em `.cc`, `.id`, `.jp`, `.online`, `.ws` ou `.xyz` (os relatórios de spam e phishing mostram mais abuso nessas extensões do que em `.com`), ou se o filtro da Cloudflare contra malware, phishing e conteúdo adulto o bloqueia. Verificamos o uso anterior no [Internet Archive](https://web.archive.org/): uma captura do domínio anterior ao seu registro significa que ele estava em uso.
+
+Domínios novos que terminam em `.id`, `.jp` ou `.ws` precisam de um plano pago a partir de 1º de dezembro de 2026. Até lá, eles continuam funcionando, e enviamos um e-mail para cada endereço para o qual o domínio encaminha as mensagens, para que haja tempo de fazer upgrade ou mudar para outro domínio.
 
 Esta é uma medida de prevenção contra abuso, não um julgamento sobre você pessoalmente — grandes registradores, incluindo GoDaddy, Namecheap e Hostgator, já bloquearam totalmente nossa infraestrutura devido a padrões de abuso envolvendo a tomada de domínios expirados recentemente e novos domínios registrados de forma fraudulenta. Exigir um plano pago para esses domínios é o que nos permite continuar oferecendo um plano gratuito sem perder a confiança dos registradores.
 
@@ -5337,6 +5339,7 @@ Esta nova regra permite apenas as seguintes extensões de nome de domínio para 
   <li class="list-inline-item"><code class="notranslate">ck</code></li>
   <li class="list-inline-item"><code class="notranslate">co</code></li>
   <li class="list-inline-item"><code class="notranslate">com</code></li>
+  <li class="list-inline-item"><code class="notranslate">cz</code></li>
   <li class="list-inline-item"><code class="notranslate">de</code></li>
   <li class="list-inline-item"><code class="notranslate">dev</code></li>
   <li class="list-inline-item"><code class="notranslate">dj</code></li>
@@ -5393,6 +5396,7 @@ Esta nova regra permite apenas as seguintes extensões de nome de domínio para 
   <li class="list-inline-item"><code class="notranslate">no</code></li>
   <li class="list-inline-item"><code class="notranslate">nu</code></li>
   <li class="list-inline-item"><code class="notranslate">nz</code></li>
+  <li class="list-inline-item"><code class="notranslate">online</code></li>
   <li class="list-inline-item"><code class="notranslate">org</code></li>
   <li class="list-inline-item"><code class="notranslate">pf</code></li>
   <li class="list-inline-item"><code class="notranslate">pl</code></li>

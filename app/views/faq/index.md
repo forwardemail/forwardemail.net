@@ -3896,7 +3896,9 @@ If you receive one of these notices, please contact us at <support@forwardemail.
 
 When you add a domain (and on an ongoing basis for domains on the free plan), we run a WHOIS/RDAP lookup against it. If the domain **expired within the past 90 days**, or is currently in a **pending transfer, update, or delete** state with its registrar, we require it to be on a paid plan before you can send or receive mail with it.
 
-A domain **created within the past 90 days** can use the free plan when it is a new name. It needs a paid plan until it is 90 days old if it was in use before (for example, someone else let it expire and it was registered again), if a drop-catch registrar holds it, if it was transferred from another registrar, if it ends in `.cc` or `.xyz` (of the extensions the free plan takes, spam operations register new domains on these the most after `.com` and `.net`), or if Cloudflare's filter for malware, phishing, and adult content blocks it. We check for earlier use in the [Internet Archive](https://web.archive.org/): a capture of the domain from before it was registered means it was in use.
+A domain **created within the past 90 days** can use the free plan when it is a new name. It needs a paid plan until it is 90 days old if it was in use before (for example, someone else let it expire and it was registered again), if a drop-catch registrar holds it, if it was transferred from another registrar, if it ends in `.cc`, `.id`, `.jp`, `.online`, `.ws`, or `.xyz` (spam and phishing reports show more abuse on these than on `.com`), or if Cloudflare's filter for malware, phishing, and adult content blocks it. We check for earlier use in the [Internet Archive](https://web.archive.org/): a capture of the domain from before it was registered means it was in use.
+
+New domains ending in `.id`, `.jp`, or `.ws` need a paid plan from December 1, 2026. Until then, they keep working, and we send one email to each address the domain forwards to, so there is time to upgrade or move to another domain.
 
 This is an abuse-prevention measure.  Major registrars including GoDaddy, Namecheap, and Hostgator have previously blocked our infrastructure entirely because of abuse patterns involving recently expired domain takeovers and fraudulently registered new domains. Requiring a paid plan for these domains is what lets us keep offering a free plan at all without losing registrar trust.
 
@@ -5411,6 +5413,7 @@ This new rule allows only the following domain name extensions to be used on our
   <li class="list-inline-item"><code class="notranslate">ck</code></li>
   <li class="list-inline-item"><code class="notranslate">co</code></li>
   <li class="list-inline-item"><code class="notranslate">com</code></li>
+  <li class="list-inline-item"><code class="notranslate">cz</code></li>
   <li class="list-inline-item"><code class="notranslate">de</code></li>
   <li class="list-inline-item"><code class="notranslate">dev</code></li>
   <li class="list-inline-item"><code class="notranslate">dj</code></li>
@@ -5467,6 +5470,7 @@ This new rule allows only the following domain name extensions to be used on our
   <li class="list-inline-item"><code class="notranslate">no</code></li>
   <li class="list-inline-item"><code class="notranslate">nu</code></li>
   <li class="list-inline-item"><code class="notranslate">nz</code></li>
+  <li class="list-inline-item"><code class="notranslate">online</code></li>
   <li class="list-inline-item"><code class="notranslate">org</code></li>
   <li class="list-inline-item"><code class="notranslate">pf</code></li>
   <li class="list-inline-item"><code class="notranslate">pl</code></li>

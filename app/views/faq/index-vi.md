@@ -3850,7 +3850,9 @@ Nếu bạn nhận được một trong các thông báo này, vui lòng liên h
 
 Khi bạn thêm một tên miền (và định kỳ đối với các tên miền dùng gói miễn phí), chúng tôi thực hiện tra cứu WHOIS/RDAP cho tên miền đó. Nếu tên miền **hết hạn trong vòng 90 ngày qua**, hoặc đang ở trạng thái **chờ chuyển nhượng, cập nhật hoặc xóa** tại nhà đăng ký, chúng tôi yêu cầu tên miền đó phải dùng gói trả phí trước khi bạn có thể gửi hoặc nhận thư với nó.
 
-Tên miền **được tạo trong vòng 90 ngày qua** có thể dùng gói miễn phí nếu đó là tên mới. Tên miền cần gói trả phí cho đến khi được 90 ngày tuổi nếu trước đây đã được sử dụng (ví dụ: người khác để nó hết hạn và nó được đăng ký lại), nếu một nhà đăng ký drop-catch đang nắm giữ nó, nếu nó được chuyển từ một nhà đăng ký khác, nếu nó có đuôi `.cc` hoặc `.xyz` (trong các đuôi mà gói miễn phí chấp nhận, đây là những đuôi mà kẻ gửi thư rác đăng ký tên miền mới nhiều nhất, chỉ sau `.com` và `.net`), hoặc nếu bộ lọc phần mềm độc hại, lừa đảo (phishing) và nội dung người lớn của Cloudflare chặn nó. Chúng tôi kiểm tra việc sử dụng trước đây trên [Internet Archive](https://web.archive.org/): nếu có bản lưu của tên miền từ trước khi nó được đăng ký thì tên miền đó đã từng được sử dụng.
+Tên miền **được tạo trong vòng 90 ngày qua** có thể dùng gói miễn phí nếu đó là tên mới. Tên miền cần gói trả phí cho đến khi được 90 ngày tuổi nếu trước đây đã được sử dụng (ví dụ: người khác để nó hết hạn và nó được đăng ký lại), nếu một nhà đăng ký drop-catch đang nắm giữ nó, nếu nó được chuyển từ một nhà đăng ký khác, nếu nó có đuôi `.cc`, `.id`, `.jp`, `.online`, `.ws` hoặc `.xyz` (các báo cáo thư rác và lừa đảo cho thấy những đuôi này bị lạm dụng nhiều hơn `.com`), hoặc nếu bộ lọc phần mềm độc hại, lừa đảo (phishing) và nội dung người lớn của Cloudflare chặn nó. Chúng tôi kiểm tra việc sử dụng trước đây trên [Internet Archive](https://web.archive.org/): nếu có bản lưu của tên miền từ trước khi nó được đăng ký thì tên miền đó đã từng được sử dụng.
+
+Tên miền mới có đuôi `.id`, `.jp` hoặc `.ws` sẽ cần gói trả phí từ ngày 1 tháng 12 năm 2026. Trước thời điểm đó, chúng vẫn hoạt động bình thường, và chúng tôi gửi một email đến từng địa chỉ mà tên miền chuyển tiếp thư đến, để bạn có thời gian nâng cấp hoặc chuyển sang tên miền khác.
 
 Đây là biện pháp phòng chống lạm dụng, không phải đánh giá về cá nhân bạn — các nhà đăng ký lớn như GoDaddy, Namecheap và Hostgator trước đây đã chặn hoàn toàn hạ tầng của chúng tôi do các hành vi lạm dụng liên quan đến việc chiếm đoạt tên miền vừa hết hạn và đăng ký gian lận tên miền mới. Việc yêu cầu gói trả phí cho các tên miền này là điều giúp chúng tôi có thể tiếp tục cung cấp gói miễn phí mà không đánh mất sự tin tưởng của các nhà đăng ký.
 
@@ -5336,6 +5338,7 @@ Quy tắc mới này chỉ cho phép các phần mở rộng tên miền sau đ�
   <li class="list-inline-item"><code class="notranslate">ck</code></li>
   <li class="list-inline-item"><code class="notranslate">co</code></li>
   <li class="list-inline-item"><code class="notranslate">com</code></li>
+  <li class="list-inline-item"><code class="notranslate">cz</code></li>
   <li class="list-inline-item"><code class="notranslate">de</code></li>
   <li class="list-inline-item"><code class="notranslate">dev</code></li>
   <li class="list-inline-item"><code class="notranslate">dj</code></li>
@@ -5392,6 +5395,7 @@ Quy tắc mới này chỉ cho phép các phần mở rộng tên miền sau đ�
   <li class="list-inline-item"><code class="notranslate">no</code></li>
   <li class="list-inline-item"><code class="notranslate">nu</code></li>
   <li class="list-inline-item"><code class="notranslate">nz</code></li>
+  <li class="list-inline-item"><code class="notranslate">online</code></li>
   <li class="list-inline-item"><code class="notranslate">org</code></li>
   <li class="list-inline-item"><code class="notranslate">pf</code></li>
   <li class="list-inline-item"><code class="notranslate">pl</code></li>
