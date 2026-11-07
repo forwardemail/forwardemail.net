@@ -511,8 +511,7 @@
       until: initramfs_result.rc == 0
       changed_when: initramfs_result.rc == 0
 
-    # TODO: Disable Accepting ICMP Redirects for All IPv4 Interfaces
-    #       https://docs.datadoghq.com/security/default_rules/xccdf-org-ssgproject-content-rule-sysctl-net-ipv4-conf-all-accept-redirects/#ansible-playbook
+    # (ICMP redirects are neither accepted nor sent, see `sysctl_settings`)
 
     # Disable Apport Service
     # https://docs.datadoghq.com/security/default_rules/xccdf-org-ssgproject-content-rule-service-apport-disabled/#ansible-playbook
@@ -2023,6 +2022,26 @@
         - { limit_type: "-", limit_item: nproc, value: 65536 }
         - { limit_type: soft, limit_item: memlock, value: unlimited }
         - { limit_type: hard, limit_item: memlock, value: unlimited }
+    #
+    # IPv6 reads only an interface's own accept_redirects, and `all` and
+    # `default` (see `sysctl_settings`) do not change interfaces that exist,
+    # so this glob sets it on every interface: at boot and as each interface
+    # appears (systemd-sysctl, run by udev), and now (procps before 4.0, as
+    # on Ubuntu 22.04, skips globs, hence systemd-sysctl here too)
+    #
+    - name: Do not accept IPv6 ICMP redirects on any interface
+      ansible.builtin.copy:
+        dest: /etc/sysctl.d/60-ipv6-accept-redirects.conf
+        content: |
+          # WARNING: This file is managed by Ansible
+          net.ipv6.conf.*.accept_redirects = 0
+        owner: root
+        group: root
+        mode: '0644'
+    - name: Apply the IPv6 redirect setting to the interfaces that exist
+      command: /lib/systemd/systemd-sysctl /etc/sysctl.d/60-ipv6-accept-redirects.conf
+      changed_when: false
+
     - name: Reload settings from all system configuration files
       shell: sysctl --system
 
@@ -2183,6 +2202,33 @@
       - name: net.ipv6.conf.default.forwarding
         value: 0
       - name: net.ipv6.conf.all.forwarding
+        value: 0
+
+      #
+      # these hosts are not routers: do not accept ICMP redirects (a host on
+      # the same network could otherwise change our routes), nor send them
+      # <https://docs.datadoghq.com/security/default_rules/xccdf-org-ssgproject-content-rule-sysctl-net-ipv4-conf-all-accept-redirects/>
+      #
+      # (rp_filter is left at the Ubuntu default, loose: strict reverse path
+      # filtering drops the asymmetric traffic of reserved and anchor IPs;
+      # IPv4 copies `default` to the interfaces that exist, IPv6 does not,
+      # see "Do not accept IPv6 ICMP redirects on any interface")
+      #
+      - name: net.ipv4.conf.all.accept_redirects
+        value: 0
+      - name: net.ipv4.conf.default.accept_redirects
+        value: 0
+      - name: net.ipv4.conf.all.secure_redirects
+        value: 0
+      - name: net.ipv4.conf.default.secure_redirects
+        value: 0
+      - name: net.ipv4.conf.all.send_redirects
+        value: 0
+      - name: net.ipv4.conf.default.send_redirects
+        value: 0
+      - name: net.ipv6.conf.all.accept_redirects
+        value: 0
+      - name: net.ipv6.conf.default.accept_redirects
         value: 0
 
       # handle swapping idle processes to disk

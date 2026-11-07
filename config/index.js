@@ -1787,11 +1787,19 @@ const config = {
     encoding: 'hex',
     saltlen: 32,
     //
-    // TODO: this should be bumped from 25000 to 100000
-    //       (but we may need to do a migration of sorts if so)
-    //       <https://github.com/nodemailer/wildduck/pull/648>
+    // PBKDF2 iterations of a password hashed before its salt recorded them
+    // (the plugin's single setting; such passwords are rehashed with
+    // `pbkdf2Iterations` at their next login, see app/models/users.js)
     //
     iterations: 25000,
+    // (OWASP's figure for PBKDF2-HMAC-SHA256)
+    pbkdf2Iterations: 600000,
+    //
+    // a hash with `pbkdf2Iterations` is one SHA-256 block: a longer key costs
+    // us a block per 32 bytes, while a guess is checked against the first
+    // one (`keylen` below is the 512 bytes, 16 blocks, of the older hashes)
+    //
+    pbkdf2Keylen: 32,
     keylen: 512,
     passwordValidator(password, fn) {
       if (typeof password !== 'string') {

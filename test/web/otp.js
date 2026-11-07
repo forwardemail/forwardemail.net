@@ -684,6 +684,43 @@ test.serial(
   }
 );
 
+test.serial(
+  'OTP remember-me cookie keeps working when an older password hash is rehashed',
+  async (t) => {
+    enableOtpPolicy(t);
+    const { user, password } = t.context;
+
+    // a hash made before the salt recorded its iterations
+    const { iterations, keylen, digestAlgorithm, encoding } =
+      config.passportLocalMongoose;
+    const salt = crypto.randomBytes(32).toString(encoding);
+    await Users.collection.updateOne(
+      { _id: user._id },
+      {
+        $set: {
+          salt,
+          hash: crypto
+            .pbkdf2Sync(password, salt, iterations, keylen, digestAlgorithm)
+            .toString(encoding)
+        }
+      }
+    );
+    const rememberMe = await getRememberMeCookies(t);
+
+    // this sign in rehashes it, and the cookie still skips OTP
+    let res = await passwordLoginWithRememberMe(t, rememberMe, password);
+    t.is(res.status, 200);
+    const stored = await Users.collection.findOne({ _id: user._id });
+    t.is(
+      stored.salt,
+      `${config.passportLocalMongoose.pbkdf2Iterations}$${salt}`
+    );
+
+    res = await passwordLoginWithRememberMe(t, rememberMe, password);
+    t.is(res.status, 200);
+  }
+);
+
 test('a session that has not passed two-factor cannot add a domain', async (t) => {
   // (signed in with the password only, see beforeEach)
   const { web, user } = t.context;

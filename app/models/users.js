@@ -3,7 +3,9 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
+const crypto = require('node:crypto');
 const { isIP } = require('node:net');
+const { promisify } = require('node:util');
 
 const Boom = require('@hapi/boom');
 const Redis = require('@ladjs/redis');
@@ -18,6 +20,8 @@ const mongooseCommonPlugin = require('mongoose-common-plugin');
 const mongooseOmitCommonFields = require('mongoose-omit-common-fields');
 const ms = require('ms');
 const passportLocalMongoose = require('passport-local-mongoose');
+const authenticatePassword = require('passport-local-mongoose/lib/authenticate');
+const passportLocalMongooseErrors = require('passport-local-mongoose/lib/errors');
 const safeStringify = require('fast-safe-stringify');
 const sanitizeHtml = require('sanitize-html');
 const sharedConfig = require('@ladjs/shared-config');
@@ -1469,6 +1473,136 @@ Users.plugin(mongooseCommonPlugin, {
 });
 
 Users.plugin(passportLocalMongoose, config.passportLocalMongoose);
+
+//
+// Account passwords are PBKDF2 hashes (passport-local-mongoose), and the
+// plugin has one iteration count for every hash, stored nowhere.  A new hash
+// records its own in its salt, "<iterations>$<random hex>" (the salt is only
+// ever the PBKDF2 salt string, so this needs no other field), and a salt
+// without "$" is from before, hashed with the plugin's `iterations`.  Such a
+// password is rehashed with `pbkdf2Iterations` (and the one-block
+// `pbkdf2Keylen`) at its next successful authentication, so existing logins
+// keep working throughout.
+//
+const pbkdf2 = promisify(crypto.pbkdf2);
+const randomBytes = promisify(crypto.randomBytes);
+const REGEX_SALT_ITERATIONS = /^(\d{1,8})\$/;
+
+// the iterations and key length a salt was hashed with
+function getSaltOptions(salt) {
+  const options = config.passportLocalMongoose;
+  const match =
+    typeof salt === 'string' ? REGEX_SALT_ITERATIONS.exec(salt) : null;
+  return match
+    ? {
+        iterations: Number.parseInt(match[1], 10),
+        keylen: options.pbkdf2Keylen
+      }
+    : { iterations: options.iterations, keylen: options.keylen };
+}
+
+//
+// (a rehash keeps the random part of the salt, which OTP remember-me cookies
+// are bound to, so only a new password revokes them, see otp-remember-me.js)
+//
+async function hashPassword(password, random) {
+  const options = config.passportLocalMongoose;
+  if (!random) {
+    const bytes = await randomBytes(options.saltlen);
+    random = bytes.toString(options.encoding);
+  }
+
+  const salt = `${options.pbkdf2Iterations}$${random}`;
+  const hash = await pbkdf2(
+    password,
+    salt,
+    options.pbkdf2Iterations,
+    options.pbkdf2Keylen,
+    options.digestAlgorithm
+  );
+  return { salt, hash: hash.toString(options.encoding) };
+}
+
+// (the plugin's setPassword, with the hash above; both fields are set only
+// once the hash is computed, so a failure leaves the document as it was)
+Users.methods.setPassword = function (password, cb) {
+  const options = config.passportLocalMongoose;
+  const promise = (async () => {
+    if (!password)
+      throw new passportLocalMongooseErrors.MissingPasswordError(
+        options.errorMessages.MissingPasswordError
+      );
+    await options.passwordValidatorAsync(password);
+    const { salt, hash } = await hashPassword(password);
+    this.set(options.saltField, salt);
+    this.set(options.hashField, hash);
+    return this;
+  })();
+
+  if (!cb) return promise;
+  promise.then((result) => cb(null, result)).catch((err) => cb(err));
+};
+
+// (the plugin's authenticate, with the iterations its salt records)
+Users.methods.authenticate = function (password, cb) {
+  const options = config.passportLocalMongoose;
+  const promise = (async () => {
+    let user = this;
+    if (!user.get(options.saltField)) {
+      user = await this.constructor.findByUsername(
+        this.get(options.usernameField),
+        true
+      );
+      if (!user)
+        return {
+          user: false,
+          error: new passportLocalMongooseErrors.IncorrectUsernameError(
+            options.errorMessages.IncorrectUsernameError
+          )
+        };
+    }
+
+    const salt = user.get(options.saltField);
+    const { iterations, keylen } = getSaltOptions(salt);
+    const result = await authenticatePassword(user, password, {
+      ...options,
+      iterations,
+      keylen
+    });
+
+    //
+    // rehash an older hash now that the password is known to be right;
+    // only if the salt is still the one checked (a password changed in
+    // between is left alone), and a failure here never fails the login
+    //
+    if (result.user && iterations < options.pbkdf2Iterations) {
+      try {
+        const next = await hashPassword(
+          password,
+          salt.replace(REGEX_SALT_ITERATIONS, '')
+        );
+        await user.constructor.updateOne(
+          { _id: user._id, [options.saltField]: salt },
+          {
+            $set: {
+              [options.saltField]: next.salt,
+              [options.hashField]: next.hash
+            }
+          }
+        );
+      } catch (err) {
+        logger.error(err);
+      }
+    }
+
+    return result;
+  })();
+
+  if (!cb) return promise;
+  promise
+    .then(({ user, error }) => cb(null, user, error))
+    .catch((err) => cb(err));
+};
 
 Users.post('init', (doc) => {
   for (const field of config.accountUpdateFields) {

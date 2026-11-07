@@ -21,7 +21,9 @@ function getOtpRememberMeEpochKey(userId) {
 // the cookie is bound to the account state it was issued for, so changing the
 // password (new salt), the OTP secret, or logging out other sessions (new
 // epoch) invalidates every remember-me cookie issued before that change;
-// only a digest is stored so no secret is ever placed in the cookie
+// only a digest is stored so no secret is ever placed in the cookie (and
+// only the random part of the salt: its "<iterations>$" prefix changes when
+// the same password is rehashed, see app/models/users.js)
 //
 function getAccountDigest(state) {
   return crypto
@@ -31,7 +33,7 @@ function getAccountDigest(state) {
         'otp_remember_me',
         String(state.userId),
         state.otpToken || '',
-        state.salt || '',
+        String(state.salt || '').replace(/^\d{1,8}\$/, ''),
         state.epoch || ''
       ])
     )
