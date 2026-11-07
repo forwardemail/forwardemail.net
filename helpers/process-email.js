@@ -1258,7 +1258,10 @@ async function processEmail({ email, port = 25, resolver, client }) {
               localAddress: IP_ADDRESS,
               localHostname: HOSTNAME,
               resolver,
-              client
+              client,
+              // (an alias with WKD lookup disabled does not encrypt the
+              // messages it sends to a key found with WKD either, see #621)
+              hasWkdDisabled: alias?.has_wkd_disabled === true
             };
 
             // NOTE: sendEmail will PGP/DKIM sign the message

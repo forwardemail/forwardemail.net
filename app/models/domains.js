@@ -2287,10 +2287,29 @@ async function verifySMTP(domain, resolver, purgeCache = true) {
     //
     (async function () {
       try {
-        const records = await resolver.resolveTxt(
-          `${domain.dkim_key_selector}._domainkey.${domain.name}`,
-          { purgeCache: true }
-        );
+        const name = `${domain.dkim_key_selector}._domainkey.${domain.name}`;
+        const records = await resolver.resolveTxt(name, { purgeCache: true });
+
+        //
+        // a selector must have only one record, since receivers may use any
+        // one of them (RFC 6376 section 3.6.2.2), and an old or partial key
+        // left next to ours fails signatures for those that pick it
+        // <https://github.com/forwardemail/forwardemail.net/issues/316>
+        // <https://github.com/forwardemail/forwardemail.net/issues/394>
+        //
+        if (Array.isArray(records) && records.length > 1) {
+          errors.push(
+            Boom.badRequest(
+              i18n.translateError(
+                'MULTIPLE_DKIM_RECORDS',
+                domain.locale,
+                _.escape(name)
+              )
+            )
+          );
+          return;
+        }
+
         const string_ = `v=DKIM1; k=rsa; p=${domain.dkim_public_key.toString(
           'base64'
         )};`.trim();

@@ -996,5 +996,8 @@ curl -X DELETE BASE_URI/v1/domains/:domain_name/aliases/:alias_id \
 
 ```sh
 curl -X POST BASE_URI/v1/encrypt \
-  -d "input=user@gmail.com"
+  -d 'input=user@gmail.com'
+
+curl -X POST BASE_URI/v1/encrypt \
+  --data-urlencode 'input=/^(support|info)$/:user+$1@gmail.com'
 ```

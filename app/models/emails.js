@@ -2064,9 +2064,23 @@ Emails.statics.queue = async function (
 
     const scan = await scanner.scan(message);
 
+    //
+    // a link that Cloudflare's Family DNS blocks only for adult-related
+    // content is allowed when the domain turned off its adult-related
+    // content protection, as for inbound mail (see `helpers/get-recipients`);
+    // phishing and malware (Cloudflare's Security DNS) are still blocked
+    // <https://github.com/forwardemail/forwardemail.net/issues/586>
+    //
+    const phishing =
+      domain.has_adult_content_protection === false
+        ? scan.results.phishing.filter(
+            (text) => !text.includes('adult-related content')
+          )
+        : scan.results.phishing;
+
     const messages = [
       ...new Set([
-        ...scan.results.phishing,
+        ...phishing,
         ...scan.results.executables,
         ...scan.results.arbitrary,
         ...scan.results.viruses

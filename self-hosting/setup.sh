@@ -265,7 +265,9 @@ prompt_command() {
     LATEST_SQLITE_BACKUP=$(aws s3api list-objects-v2 --bucket production-sqlite-storage \
       --query 'Contents | sort_by(@, &LastModified) | [-1].Key' --output text)
     aws s3 cp s3://production-sqlite-storage/"$LATEST_SQLITE_BACKUP" /tmp/
-    mv /tmp/*sqlite* "$HOME"/forwardemail.net/sqlite-data/
+    mkdir -p "$SELF_HOST_DIR/$SQLITE_DB_DIR"
+    mv /tmp/*sqlite* "$SELF_HOST_DIR/$SQLITE_DB_DIR/"
+    fix_permissions
 
     docker-compose -f "$DOCKER_COMPOSE_FILE" up -d
     docker exec -i mongodb mongorestore --drop --dir /backups/"$LATEST_MONGO_BACKUP_PATH"
@@ -561,6 +563,7 @@ renew_certificates() {
   certbot certonly --manual --agree-tos --preferred-challenges dns -d "*.$DOMAIN" -d "$DOMAIN" </dev/tty >/dev/tty 2>&1
 
   cp /etc/letsencrypt/live/"$DOMAIN"*/* "$SELF_HOST_DIR/ssl"
+  fix_permissions
 }
 
 # Generate various encryption keys
@@ -626,6 +629,17 @@ create_db_directories() {
   mkdir -p "$SELF_HOST_DIR/$SQLITE_DB_DIR"
   mkdir -p "$SELF_HOST_DIR/$MONGODB_DB_BACKUPS_DIR"
   mkdir -p "$SELF_HOST_DIR/$REDIS_DB_BACKUPS_DIR"
+}
+
+# The app containers run as the forwardemail user (uid and gid 999, see
+# Dockerfile-selfhosted), which must read the certificates and keys and
+# write the mailboxes
+APP_UID=999
+fix_permissions() {
+  mkdir -p "$SELF_HOST_DIR/ssl" "$SELF_HOST_DIR/$SQLITE_DB_DIR"
+  chown -R "$APP_UID:$APP_UID" "$SELF_HOST_DIR/ssl" "$SELF_HOST_DIR/$SQLITE_DB_DIR"
+  chmod 700 "$SELF_HOST_DIR/ssl"
+  find "$SELF_HOST_DIR/ssl" -type f -exec chmod 600 {} +
 }
 
 input_custom_domain() {
@@ -728,6 +742,7 @@ Double-check that your DNS settings contain BOTH records before proceeding!
   export SQLITE_STORAGE_PATH="sqlite_storage" # TODO: needs to be dynamic or come from env?
 
   run_silent create_db_directories
+  run_silent fix_permissions
 
   # take down any previous setup
   docker-compose -f "$DOCKER_COMPOSE_FILE" down

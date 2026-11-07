@@ -996,5 +996,8 @@ Chúng tôi cho phép bạn mã hóa các bản ghi ngay cả trên gói miễn 
 
 ```sh
 curl -X POST BASE_URI/v1/encrypt \
-  -d "input=user@gmail.com"
+  -d 'input=user@gmail.com'
+
+curl -X POST BASE_URI/v1/encrypt \
+  --data-urlencode 'input=/^(support|info)$/:user+$1@gmail.com'
 ```

@@ -996,5 +996,8 @@ Nous vous permettons de chiffrer des enregistrements même avec le plan gratuit 
 
 ```sh
 curl -X POST BASE_URI/v1/encrypt \
-  -d "input=user@gmail.com"
+  -d 'input=user@gmail.com'
+
+curl -X POST BASE_URI/v1/encrypt \
+  --data-urlencode 'input=/^(support|info)$/:user+$1@gmail.com'
 ```

@@ -432,6 +432,8 @@ module.exports = {
   INVALID_SPF_RESULT:
     'Invalid SPF result (must start with <span class="notranslate">"v=spf1"</span> and include <span class="notranslate">"include:spf.forwardemail.net"</span>).',
   INVALID_DKIM_SIGNATURE: 'Invalid DKIM signature.',
+  MULTIPLE_DKIM_RECORDS:
+    'Domain has more than one DNS <span class="notranslate">TXT</span> record for <span class="notranslate">%s</span>.  Please ensure there is only one <span class="notranslate">DKIM</span> record for this name.',
   INVALID_FROM_HEADER:
     'From header must be equal to <span class="notranslate">%s</span> (or) you can use a domain-wide catch-all password at <a href="%s" target="_blank" rel="noopener noreferrer">%s</a>',
   INVALID_CATCHALL_FROM_HEADER:

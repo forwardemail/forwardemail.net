@@ -345,6 +345,65 @@ describe('Sieve Engine', () => {
       const result = await executeScript(script, createMessage());
       assert.ok(result.actions.some((a) => a.type === 'discard'));
     });
+
+    // <https://github.com/forwardemail/forwardemail.net/issues/623>
+    it('should file into a folder named from the envelope recipient', async () => {
+      const script = `
+        require ["envelope", "variables", "fileinto", "copy"];
+        if envelope :matches "to" "*@example.com" {
+          fileinto :copy "\${1}";
+        }
+      `;
+      // (the MX server passes the envelope recipients as a list)
+      const result = await executeScript(
+        script,
+        createMessage({ envelope: { to: ['xy@example.com'] } })
+      );
+      assert.deepStrictEqual(
+        result.actions
+          .filter((a) => a.type === 'fileinto')
+          .map((a) => a.mailbox),
+        ['xy']
+      );
+    });
+
+    it('should set the match variables from :regex on envelope to', async () => {
+      const script = `
+        require ["envelope", "variables", "fileinto", "regex"];
+        if envelope :regex "to" "^([a-z]+)\\\\+([a-z]+)@example\\\\.com$" {
+          fileinto "\${1}/\${2}";
+        }
+      `;
+      const result = await executeScript(
+        script,
+        createMessage({ envelope: { to: ['user+lists@example.com'] } })
+      );
+      assert.deepStrictEqual(
+        result.actions
+          .filter((a) => a.type === 'fileinto')
+          .map((a) => a.mailbox),
+        ['user/lists']
+      );
+    });
+
+    it('should match :regex case-sensitively with i;octet', async () => {
+      const script = `
+        require ["envelope", "fileinto", "regex"];
+        if envelope :regex :comparator "i;octet" "to" "^xy@" {
+          fileinto "Lower";
+        }
+      `;
+      const upper = await executeScript(
+        script,
+        createMessage({ envelope: { to: ['XY@example.com'] } })
+      );
+      assert.ok(!upper.actions.some((a) => a.type === 'fileinto'));
+      const lower = await executeScript(
+        script,
+        createMessage({ envelope: { to: ['xy@example.com'] } })
+      );
+      assert.ok(lower.actions.some((a) => a.mailbox === 'Lower'));
+    });
   });
 
   describe('Size tests', () => {

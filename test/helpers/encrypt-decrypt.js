@@ -68,9 +68,17 @@ test.serial('legacy AES-256-CBC decryption is disabled by default', (t) => {
 
   withLegacyAesCbc(false, () => {
     t.throws(() => decrypt(legacyCiphertext, encryptionKey), {
-      message: 'Decryption failed for all supported formats'
+      message: 'Decryption failed for all supported formats',
+      // (told apart in the logs, see #584)
+      code: 'LEGACY_AES_CBC_DISABLED'
     });
   });
+
+  // (a value in another format that cannot be read has no such code)
+  const err = t.throws(() => decrypt('not-legacy_ciphertext'), {
+    message: 'Decryption failed for all supported formats'
+  });
+  t.is(err.code, undefined);
 });
 
 test.serial(

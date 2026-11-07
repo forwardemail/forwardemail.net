@@ -332,6 +332,8 @@ if !domain || !domain.is_global && (!isUbuntuAlias || domain.group === 'admin')
       span.text-muted= t("(optional)")
     .small.text-muted.mt-1
       != t("Check this to prevent automatic Web Key Directory (WKD) public key lookups for this alias. When checked, inbound emails will not be encrypted via WKD even if a public key is published.")
+      = " "
+      != t("Emails sent from this alias with our outbound SMTP service will not be encrypted via WKD either.")
 
 //-
 //- vacation responder support

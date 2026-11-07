@@ -3242,6 +3242,24 @@ async function onDataMX(session, headers, body) {
       failed: _.uniq(bounces.map((bounce) => bounce.address)),
       codes: bounces.map((bounce) => getErrorCode(bounce.err))
     });
+
+    //
+    // log the recipients that did not receive it, as for a message that
+    // nobody received (errors on our side are logged for us, and their
+    // details are not for the domain's logs)
+    // <https://github.com/forwardemail/forwardemail.net/issues/620>
+    //
+    const failed = bounces.filter(
+      (bounce) => !bounce.isInternal && !isCodeBug(bounce.err)
+    );
+    if (failed.length > 0)
+      logger.error(combineBounceErrors(failed), {
+        // (one log for each message, as for one delivered)
+        ignore_hook: false,
+        session,
+        resolver: this.resolver
+      });
+
     return;
   }
 

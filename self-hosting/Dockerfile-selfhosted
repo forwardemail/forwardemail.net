@@ -40,7 +40,7 @@ ENV SELF_HOSTED=true
 ENV NODE_ENV=production
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    dnsutils netcat-traditional curl openssl ca-certificates && \
+    dnsutils netcat-traditional curl openssl ca-certificates libcap2-bin && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # TODO: this needs to come from or sync with env file (e.g. SQLITE_TMPDIR)
@@ -49,7 +49,14 @@ RUN mkdir -p /mnt/sqlite_storage
 COPY --from=builder /app /app
 
 # Create a non-root user and set ownership
-RUN groupadd -r forwardemail && useradd -r -g forwardemail -d /app forwardemail && \
+# (with a fixed uid and gid, which `setup.sh` gives the mounted certificates,
+# keys and mailboxes to)
+RUN groupadd -r -g 999 forwardemail && \
+    useradd -r -u 999 -g forwardemail -d /app forwardemail && \
     chown -R forwardemail:forwardemail /app /mnt/sqlite_storage
+
+# The servers listen on ports below 1024 (e.g. 25, 465 and 993)
+# on the host network as this user, which needs this capability for it
+RUN setcap cap_net_bind_service=+ep "$(readlink -f "$(command -v node)")"
 
 USER forwardemail

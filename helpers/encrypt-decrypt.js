@@ -425,7 +425,15 @@ function decrypt(
       return decrypt(text, env.HELPER_ENCRYPTION_KEY_LEGACY, algorithm, true);
     }
 
-    throw new Error('Decryption failed for all supported formats');
+    const err = new Error('Decryption failed for all supported formats');
+    //
+    // (the same message for every failure, but a value stored in the legacy
+    // format while its decryption is off is told apart in the logs, since
+    // it needs a migration and not a fix of the value, see #584)
+    //
+    if (looksLikeLegacy && !isLegacyAesCbcEnabled())
+      err.code = 'LEGACY_AES_CBC_DISABLED';
+    throw err;
   }
 }
 

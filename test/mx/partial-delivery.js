@@ -54,6 +54,7 @@ const MX = require('../../mx-server');
 const SQLite = require('../../sqlite-server');
 
 const Aliases = require('#models/aliases');
+const Logs = require('#models/logs');
 const Domains = require('#models/domains');
 const SieveScripts = require('#models/sieve-scripts');
 const Users = require('#models/users');
@@ -2673,5 +2674,39 @@ test.serial(
     }
 
     t.is(ctx.received.get(ctx.addr('twin')), 1);
+  }
+);
+
+// <https://github.com/forwardemail/forwardemail.net/issues/620>
+test.serial(
+  'recipients that did not receive a partially delivered message are logged',
+  async (t) => {
+    const ctx = await setup(t, {
+      rcptTo: (address) =>
+        address === ctx.addr('dead') ? userUnknown(address) : undefined
+    });
+
+    await ctx.createAlias('alive', ['alive']);
+    await ctx.createAlias('broken', ['dead']);
+    const id = randomUUID();
+    const info = await ctx.send(['alive', 'broken', 'missing'], id);
+    t.deepEqual(info.rejected, []);
+    t.is(ctx.received.get(ctx.addr('alive')), 1);
+
+    // (the log is saved in the background, and is linked to the domain's
+    // admins by its recipients, see `parseLog` in `app/models/logs.js`)
+    let log;
+    await pWaitFor(
+      async () => {
+        const logs = await Logs.find({}).lean();
+        log = logs.find((log) =>
+          log?.err?.message?.includes(`missing@${ctx.domain.name}`)
+        );
+        return Boolean(log);
+      },
+      { timeout: ms('30s'), interval: 250 }
+    );
+    t.true(log.err.message.includes(`missing@${ctx.domain.name}`));
+    t.true(log.err.message.includes('User unknown in relay recipient table'));
   }
 );
