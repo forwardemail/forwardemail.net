@@ -20,6 +20,7 @@ const _ = require('#helpers/lodash');
 
 const config = require('#config');
 const email = require('#helpers/email');
+const { decryptIfEncrypted, hashToken } = require('#helpers/encrypt-decrypt');
 const invalidateOtherSessions = require('#helpers/invalidate-other-sessions');
 const clearUnverifiedSignIns = require('#helpers/clear-unverified-sign-ins');
 
@@ -342,10 +343,18 @@ async function recoveryKey(ctx) {
   // is there, so a key is strictly single-use (checked first and removed on
   // save, two requests sent at once could both sign in with the same key)
   //
-  const { modifiedCount } = isSANB(key)
+  // (the keys are encrypted at rest, so the stored value of the key is found
+  // first, and that exact value is what is removed)
+  const stored = isSANB(key)
+    ? await Users.findById(ctx.state.user._id).select(field).lean().exec()
+    : null;
+  const value = Array.isArray(stored?.[field])
+    ? stored[field].find((v) => decryptIfEncrypted(v) === key)
+    : undefined;
+  const { modifiedCount } = isSANB(value)
     ? await Users.updateOne(
-        { _id: ctx.state.user._id, [field]: key },
-        { $pull: { [field]: key } }
+        { _id: ctx.state.user._id, [field]: value },
+        { $pull: { [field]: value } }
       )
     : { modifiedCount: 0 };
   if (modifiedCount !== 1)
@@ -531,7 +540,7 @@ function respondPasswordResetSent(ctx) {
   }
 }
 
-async function sendPasswordResetEmail(ctx, user) {
+async function sendPasswordResetEmail(ctx, user, token) {
   try {
     await email({
       template: 'reset-password',
@@ -540,9 +549,7 @@ async function sendPasswordResetEmail(ctx, user) {
       },
       locals: {
         user: user.toObject(),
-        link: `${config.urls.web}/reset-password/${
-          user[config.userFields.resetToken]
-        }`
+        link: `${config.urls.web}/reset-password/${token}`
       }
     });
   } catch (err) {
@@ -594,18 +601,31 @@ async function forgotPassword(ctx) {
   user[config.userFields.resetTokenExpiresAt] = new Date(
     Date.now() + config.resetTokenTimeoutMs
   );
-  user[config.userFields.resetToken] = await cryptoRandomString.async({
+  // (only a digest of the token is stored, see getResetTokenQuery)
+  const token = await cryptoRandomString.async({
     length: 32
   });
+  user[config.userFields.resetToken] = hashToken(token);
 
   user = await user.save();
 
   // queue password reset email
-  sendPasswordResetEmail(ctx, user)
+  sendPasswordResetEmail(ctx, user, token)
     .then()
     .catch((err) => ctx.logger.fatal(err));
 
   respondPasswordResetSent(ctx);
+}
+
+//
+// The reset token is stored as a digest (a link sent before that was done
+// still works until it expires: the token itself is matched too, unless it
+// has the form of a digest, which would let a copy of the database be used to
+// reset the password).
+//
+function getResetTokenQuery(token) {
+  const hash = hashToken(token);
+  return /^[\da-f]{64}$/i.test(token) ? hash : { $in: [hash, token] };
 }
 
 async function resetPassword(ctx) {
@@ -623,7 +643,7 @@ async function resetPassword(ctx) {
   // lookup the user that has this token and if it matches the email passed
   const query = {
     email: body.email.trim().toLowerCase(),
-    [config.userFields.resetToken]: ctx.params.token,
+    [config.userFields.resetToken]: getResetTokenQuery(ctx.params.token),
     [config.userFields.isBanned]: false
   };
 
@@ -661,6 +681,7 @@ async function resetPassword(ctx) {
   clearUnverifiedSignIns(user);
 
   // (the document as it was found: its token is cleared in the database)
+  const resetToken = user[config.userFields.resetToken];
   const resetTokenExpiresAt = user[config.userFields.resetTokenExpiresAt];
   user[config.userFields.resetToken] = undefined;
   user[config.userFields.resetTokenExpiresAt] = undefined;
@@ -683,7 +704,7 @@ async function resetPassword(ctx) {
       },
       {
         $set: {
-          [config.userFields.resetToken]: ctx.params.token,
+          [config.userFields.resetToken]: resetToken,
           [config.userFields.resetTokenExpiresAt]: resetTokenExpiresAt
         }
       }
@@ -718,15 +739,16 @@ async function getChangeEmailUser(ctx) {
   if (!isSANB(ctx.params.token))
     throw Boom.badRequest(ctx.translateError('LINK_EXPIRED_OR_INVALID'));
 
+  // (the token is encrypted at rest, so it is compared once decrypted)
   const user = await Users.findOne({
     _id: ctx.state.user._id,
-    [config.userFields.changeEmailToken]: ctx.params.token,
     [config.userFields.changeEmailTokenExpiresAt]: { $gte: new Date() },
     [config.userFields.isBanned]: false
   });
 
   if (
     !user ||
+    user[config.userFields.changeEmailToken] !== ctx.params.token ||
     !validator.isEmail(user[config.userFields.changeEmailNewAddress] || '')
   )
     throw Boom.badRequest(ctx.translateError('LINK_EXPIRED_OR_INVALID'));

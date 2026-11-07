@@ -30,9 +30,7 @@ const policies = new Policies(
     turnstileSecretKey
   },
   async (apiToken, ctx) => {
-    const user = await Users.findOne({
-      [userFields.apiToken]: apiToken
-    });
+    const user = await Users.findByApiToken(apiToken);
 
     return ensureApiTokenEnabled(user, ctx);
   }

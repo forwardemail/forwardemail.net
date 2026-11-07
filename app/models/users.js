@@ -43,6 +43,12 @@ const createTangerine = require('#helpers/create-tangerine');
 const email = require('#helpers/email');
 const getGmailVariantsQuery = require('#helpers/get-gmail-variants-query');
 const { isSameAuditValue } = require('#helpers/audit-changes');
+const env = require('#config/env');
+const {
+  encrypt,
+  decryptIfEncrypted,
+  hashToken
+} = require('#helpers/encrypt-decrypt');
 const getUbuntuMembersMap = require('#helpers/get-ubuntu-members-map');
 const i18n = require('#helpers/i18n');
 const isDenylisted = require('#helpers/is-denylisted');
@@ -79,6 +85,7 @@ const omitExtraFields = [
   // TODO: change to allowlist
   config.userFields.isRateLimitWhitelisted,
   config.userFields.apiToken,
+  config.userFields.apiTokenHash,
   config.userFields.apiTokenDisabled,
   config.userFields.resetTokenExpiresAt,
   config.userFields.resetToken,
@@ -640,13 +647,29 @@ object[config.userFields.approvedDomains] = [
   }
 ];
 
+//
+// Secrets that are shown or used again (the API token, the two-factor secret
+// and recovery keys, the email change link and the verification code) are
+// encrypted at rest and decrypted when read (see the last `pre('save')` hook).
+// Reading a field of a document gives the plaintext as before; a lean query
+// gives what is stored (decrypt it with `decryptIfEncrypted`).
+//
+
 // Api token for basic auth
+// (no `lowercase`: it would change the stored ciphertext; tokens are
+// lowercase hex and are matched case-insensitively, see `findByApiToken`)
 object[config.userFields.apiToken] = {
   type: String,
   required: true,
-  lowercase: true,
   trim: true,
   unique: true,
+  index: true,
+  get: decryptIfEncrypted
+};
+
+// (the digest the API token is found by, see `findByApiToken`)
+object[config.userFields.apiTokenHash] = {
+  type: String,
   index: true
 };
 
@@ -656,9 +679,14 @@ object[config.userFields.apiTokenDisabled] = {
   index: true
 };
 
-object[config.userFields.otpRecoveryKeys] = Array;
+object[config.userFields.otpRecoveryKeys] = {
+  type: Array,
+  get: (keys) =>
+    Array.isArray(keys) ? keys.map((key) => decryptIfEncrypted(key)) : keys
+};
 
 // Password reset
+// (only a digest of the token is stored, see `forgotPassword` in auth.js)
 object[config.userFields.resetTokenExpiresAt] = Date;
 object[config.userFields.resetToken] = {
   type: String,
@@ -672,7 +700,8 @@ object[config.userFields.changeEmailTokenExpiresAt] = {
 };
 object[config.userFields.changeEmailToken] = {
   type: String,
-  index: true
+  index: true,
+  get: decryptIfEncrypted
 };
 object[config.userFields.changeEmailNewAddress] = {
   type: String,
@@ -717,7 +746,12 @@ object[config.userFields.verificationPinSentAt] = Date;
 object[config.userFields.verificationPin] = {
   type: String,
   trim: true,
-  validate: (value) => isSANB(value) && value.replace(/\D/g, '').length === 6
+  get: decryptIfEncrypted,
+  // (the stored value is validated, which is encrypted once saved)
+  validate(value) {
+    value = decryptIfEncrypted(value);
+    return isSANB(value) && value.replace(/\D/g, '').length === 6;
+  }
 };
 
 object[config.userFields.pendingRecovery] = {
@@ -797,7 +831,10 @@ object[fields.otpEnabled] = {
   type: Boolean,
   default: false
 };
-object[fields.otpToken] = String;
+object[fields.otpToken] = {
+  type: String,
+  get: decryptIfEncrypted
+};
 
 // Shared field names with @ladjs/i18n and email-templates
 object[config.lastLocaleField] = {
@@ -1604,6 +1641,10 @@ Users.methods.authenticate = function (password, cb) {
     .catch((err) => cb(err));
 };
 
+const redactedAccountUpdateFields = new Set(
+  config.accountUpdateRedactedFields.map((field) => _.get(config, field))
+);
+
 Users.post('init', (doc) => {
   for (const field of config.accountUpdateFields) {
     const fieldName = _.get(config, field);
@@ -1635,10 +1676,19 @@ Users.pre('save', function (next) {
     const previous = this[`__${fieldName}`];
     if (previous === null || previous === undefined) continue;
     if (isSameAuditValue(previous, this[fieldName])) continue;
+    //
+    // (a redacted value, e.g. the API token, is only ever shown as redacted,
+    // so a digest is queued instead of the value itself: it still tells a
+    // change from a change back, see collapseAuditChanges)
+    //
+    const isRedacted = redactedAccountUpdateFields.has(fieldName);
     this[config.userFields.accountUpdates].push({
       fieldName,
-      current: this[fieldName],
-      previous
+      current:
+        isRedacted && isSANB(this[fieldName])
+          ? hashToken(this[fieldName])
+          : this[fieldName],
+      previous: isRedacted && isSANB(previous) ? hashToken(previous) : previous
     });
     this[config.userFields.hasPendingAccountUpdates] = true;
     // Revert so we don't get into infinite loop
@@ -1699,6 +1749,92 @@ Users.pre('save', function (next) {
   this.$locals.revokeAccess = account || token ? { account, token } : null;
   next();
 });
+
+// (API tokens are lowercase hex, and were always matched case-insensitively)
+function getApiTokenHash(token) {
+  return hashToken(String(token).trim().toLowerCase());
+}
+
+function encryptIfPlaintext(value) {
+  return isSANB(value) && decryptIfEncrypted(value) === value
+    ? encrypt(value)
+    : value;
+}
+
+//
+// Encrypt the secrets listed with the API token above when they are set (a
+// value stored before this is encrypted by scripts/encrypt-user-secrets.js).
+//
+// NOTE: only a field this save changes is written, as before, so a document
+//       loaded before another request changed a secret (e.g. reset the API
+//       token, or used a recovery key) does not put the old one back
+//
+// NOTE: this is the last `pre('save')` hook, so that the hooks above only see
+//       a change of the value itself (e.g. the revocation of what the API
+//       token granted, or an account update email), not of its ciphertext
+//
+Users.pre('save', function (next) {
+  try {
+    if (env.HELPER_ENCRYPTION_KEY) {
+      for (const field of [
+        config.userFields.apiToken,
+        config.userFields.changeEmailToken,
+        config.userFields.verificationPin,
+        fields.otpToken
+      ]) {
+        if (!this.isNew && !this.isModified(field)) continue;
+        const value = this.get(field, null, { getters: false });
+        const encrypted = encryptIfPlaintext(value);
+        if (encrypted !== value) this.set(field, encrypted);
+      }
+
+      const keys = this.get(config.userFields.otpRecoveryKeys, null, {
+        getters: false
+      });
+      if (
+        Array.isArray(keys) &&
+        (this.isNew || this.isModified(config.userFields.otpRecoveryKeys))
+      ) {
+        const encrypted = keys.map((key) => encryptIfPlaintext(key));
+        if (encrypted.some((key, i) => key !== keys[i]))
+          this.set(config.userFields.otpRecoveryKeys, encrypted);
+      }
+    }
+
+    if (this.isNew || this.isModified(config.userFields.apiToken)) {
+      const token = this[config.userFields.apiToken];
+      const hash = isSANB(token) ? getApiTokenHash(token) : undefined;
+      if (this[config.userFields.apiTokenHash] !== hash)
+        this[config.userFields.apiTokenHash] = hash;
+    }
+
+    next();
+  } catch (err) {
+    next(err);
+  }
+});
+
+//
+// The user with an API token (it is found by its digest, or by the token
+// itself while it is stored as it was before it was encrypted at rest).
+//
+Users.statics.findByApiToken = function (token) {
+  const value = String(token).trim().toLowerCase();
+  return this.findOne({
+    $or: [
+      { [config.userFields.apiTokenHash]: getApiTokenHash(value) },
+      {
+        [config.userFields.apiToken]: value,
+        [config.userFields.apiTokenHash]: { $exists: false }
+      }
+    ]
+  });
+};
+
+// NOTE: assigning a field the value it already has (e.g.
+//       `user.api_token = user.api_token`) counts as a change of an encrypted
+//       field (the stored value is the ciphertext), and a change of the API
+//       token revokes what it granted, so only assign a new value
 
 addRevocationQueryHooks(Users, (paths) => {
   const { apiToken, apiTokenDisabled, isBanned, isRemoved } = config.userFields;

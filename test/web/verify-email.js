@@ -142,7 +142,7 @@ test.serial(
         sendError = null;
       }
 
-      const user = await Users.findOne({ email }).lean().exec();
+      const user = await Users.findOne({ email });
       t.false(user[config.userFields.hasVerifiedEmail], `${err.message}`);
       t.falsy(user[config.userFields.verificationPin], `${err.message}`);
     }
@@ -152,7 +152,7 @@ test.serial(
       .get('/en/verify')
       .set('Accept', 'text/html');
     t.is(res.status, 200);
-    const user = await Users.findOne({ email }).lean().exec();
+    const user = await Users.findOne({ email });
     t.false(user[config.userFields.hasVerifiedEmail]);
     t.truthy(user[config.userFields.verificationPin]);
   }
@@ -265,7 +265,7 @@ test.serial(
 
     // the code is sent
     await t.context.web.get('/en/verify').set('Accept', 'text/html');
-    const user = await Users.findOne({ email }).lean().exec();
+    const user = await Users.findOne({ email });
     const pin = user[config.userFields.verificationPin];
     t.truthy(pin);
 

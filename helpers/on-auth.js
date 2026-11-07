@@ -962,6 +962,8 @@ async function onAuth(auth, session, fn) {
           memberUsers: 0,
           'members.user.password': 0,
           'members.user.api_token': 0,
+          'members.user.api_token_hash': 0,
+          'members.user.otp_token': 0,
           'members.user.otp_recovery_keys': 0,
           'members.user.otp_enabled': 0,
           'members.user.reset_token_expires_at': 0,

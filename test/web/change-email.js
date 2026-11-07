@@ -257,3 +257,34 @@ test('can change to a variant of your own Gmail address, and existing accounts c
   self.email = `${name.slice(0, 3)}.${name.slice(3)}x+tag@gmail.com`;
   await t.notThrowsAsync(self.save());
 });
+
+test('the change link token is encrypted at rest, and one stored before still works', async (t) => {
+  const { newEmail, password, token, user, web } = t.context;
+
+  // (what a copy of the database holds)
+  let stored = await Users.collection.findOne({ _id: user._id });
+  t.not(stored[config.userFields.changeEmailToken], token);
+  t.false(JSON.stringify(stored).includes(token));
+  let response = await web
+    .get(
+      `/en/my-account/change-email/${
+        stored[config.userFields.changeEmailToken]
+      }`
+    )
+    .set('Accept', 'application/json');
+  t.is(response.status, 400);
+
+  // (as it was stored before)
+  await Users.collection.updateOne(
+    { _id: user._id },
+    { $set: { [config.userFields.changeEmailToken]: token } }
+  );
+  response = await web
+    .post(`/en/my-account/change-email/${token}`)
+    .set('Accept', 'application/json')
+    .send({ password });
+  t.is(response.status, 200);
+  stored = await Users.collection.findOne({ _id: user._id });
+  t.is(stored.email, newEmail);
+  t.falsy(stored[config.userFields.changeEmailToken]);
+});

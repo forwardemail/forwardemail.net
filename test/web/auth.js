@@ -18,6 +18,7 @@ const utils = require('../utils');
 const config = require('#config');
 const phrases = require('#config/phrases');
 const getGmailVariantsQuery = require('#helpers/get-gmail-variants-query');
+const { hashToken } = require('#helpers/encrypt-decrypt');
 const { Users } = require('#models');
 
 test.before(utils.setupMongoose);
@@ -239,6 +240,39 @@ test('resets password with valid email and token (HTML)', async (t) => {
 
   t.is(res.status, 302);
   t.is(res.header.location, '/en');
+});
+
+test('a reset token is stored only as a digest', async (t) => {
+  const { web } = t.context;
+  const user = await t.context.userFactory.create();
+  const { email } = user;
+
+  await web.post('/en/forgot-password').send({ email });
+  const stored = await Users.collection.findOne({ _id: user._id });
+  const digest = stored[config.userFields.resetToken];
+  t.regex(digest, /^[\da-f]{64}$/);
+
+  // what is stored does not reset the password
+  let res = await web
+    .post(`/en/reset-password/${digest}`)
+    .set('Accept', 'application/json')
+    .send({ email, password: falso.randPassword() });
+  t.is(res.status, 400);
+  t.is(res.body.message, phrases.INVALID_RESET_PASSWORD);
+
+  // the token it is the digest of does
+  const token = cryptoRandomString({ length: 32 });
+  await Users.collection.updateOne(
+    { _id: user._id },
+    { $set: { [config.userFields.resetToken]: hashToken(token) } }
+  );
+  res = await web
+    .post(`/en/reset-password/${token}`)
+    .set('Accept', 'application/json')
+    .send({ email, password: falso.randPassword() });
+  t.is(res.status, 200);
+  const fresh = await Users.collection.findOne({ _id: user._id });
+  t.falsy(fresh[config.userFields.resetToken]);
 });
 
 test('resets password with valid email and token (JSON)', async (t) => {
@@ -804,7 +838,7 @@ test('a password reset of a verified account keeps its passkeys and API token', 
     .send({ email: user.email, password });
   t.is(res.status, 302);
 
-  const fresh = await Users.findById(user._id).lean().exec();
+  const fresh = await Users.findById(user._id);
   t.is(fresh.passkeys.length, 1);
   t.is(fresh[config.userFields.apiToken], 'the-owners-token');
 });

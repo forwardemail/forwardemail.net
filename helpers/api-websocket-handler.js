@@ -423,11 +423,7 @@ class ApiWebSocketHandler {
     // Mode 1: API token auth (password is empty)
     //
     if (!pass) {
-      const user = await Users.findOne({
-        [config.userFields.apiToken]: name
-      })
-        .lean()
-        .exec();
+      const user = await Users.findByApiToken(name).lean().exec();
 
       if (!user) throw httpError('Invalid API token', 401);
       ensureApiTokenEnabled(user);

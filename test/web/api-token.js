@@ -11,6 +11,8 @@
 // /my-account/security/api-token.
 //
 
+const crypto = require('node:crypto');
+
 const dayjs = require('dayjs-with-plugins');
 const falso = require('@ngneat/falso');
 const ms = require('ms');
@@ -22,6 +24,7 @@ const utils = require('../utils');
 const config = require('#config');
 const phrases = require('#config/phrases');
 const { Users } = require('#models');
+const { hashToken } = require('#helpers/encrypt-decrypt');
 
 test.before(utils.setupMongoose);
 test.after.always(utils.teardownMongoose);
@@ -73,6 +76,11 @@ function account(t, token) {
   return t.context.api.get('/v1/account').auth(token);
 }
 
+async function accountStatus(t, token) {
+  const res = await account(t, token);
+  return res.status;
+}
+
 test('disabling the API token refuses it at the API until it is reset', async (t) => {
   const { user, web } = t.context;
   const token = user[config.userFields.apiToken];
@@ -106,7 +114,7 @@ test('disabling the API token refuses it at the API until it is reset', async (t
   t.is(res.status, 200);
   t.deepEqual(res.body, { [config.userFields.apiTokenDisabled]: true });
 
-  const disabled = await Users.findById(user._id).lean().exec();
+  const disabled = await Users.findById(user._id);
   t.true(disabled[config.userFields.apiTokenDisabled]);
   t.is(disabled[config.userFields.apiToken], token);
 
@@ -135,7 +143,7 @@ test('disabling the API token refuses it at the API until it is reset', async (t
   t.is(res.status, 200);
   t.deepEqual(res.body, { reloadPage: true });
 
-  const reset = await Users.findById(user._id).lean().exec();
+  const reset = await Users.findById(user._id);
   t.false(reset[config.userFields.apiTokenDisabled]);
   const fresh = reset[config.userFields.apiToken];
   t.truthy(fresh);
@@ -219,7 +227,7 @@ test('resetting an enabled token replaces it without disabling anything', async 
     .set('Accept', 'application/json');
   t.is(res.status, 200);
 
-  const reset = await Users.findById(user._id).lean().exec();
+  const reset = await Users.findById(user._id);
   t.false(reset[config.userFields.apiTokenDisabled]);
   t.not(reset[config.userFields.apiToken], token);
   const fresh = await account(t, reset[config.userFields.apiToken]);
@@ -250,7 +258,74 @@ test('the controls are not reachable without a session', async (t) => {
   t.false(JSON.stringify(res.body).includes(token));
   t.false((res.text || '').includes(token));
 
-  const same = await Users.findById(user._id).lean().exec();
+  const same = await Users.findById(user._id);
   t.false(same[config.userFields.apiTokenDisabled]);
   t.is(same[config.userFields.apiToken], token);
+});
+
+test('the token is encrypted at rest and is found by its digest', async (t) => {
+  const { user } = t.context;
+  const token = user[config.userFields.apiToken];
+
+  // (what a copy of the database holds)
+  const stored = await Users.collection.findOne({ _id: user._id });
+  t.not(stored[config.userFields.apiToken], token);
+  t.false(JSON.stringify(stored).includes(token));
+  t.is(stored[config.userFields.apiTokenHash], hashToken(token));
+
+  // the token works (as before, in any case), what is stored does not
+  t.is(await accountStatus(t, token), 200);
+  t.is(await accountStatus(t, token.toUpperCase()), 200);
+  t.is(await accountStatus(t, stored[config.userFields.apiToken]), 401);
+  t.is(await accountStatus(t, stored[config.userFields.apiTokenHash]), 401);
+
+  // and it is still shown to its user
+  const res = await fetchToken(t);
+  t.deepEqual(res.body, { api_token: token });
+});
+
+test('a token stored before it was encrypted keeps working', async (t) => {
+  const { user } = t.context;
+  const token = crypto.randomBytes(12).toString('hex');
+  await Users.collection.updateOne(
+    { _id: user._id },
+    {
+      $set: { [config.userFields.apiToken]: token },
+      $unset: { [config.userFields.apiTokenHash]: 1 }
+    }
+  );
+
+  t.is(await accountStatus(t, token), 200);
+  const res = await fetchToken(t);
+  t.deepEqual(res.body, { api_token: token });
+
+  // a save that does not change it leaves it as it is (it is encrypted by
+  // scripts/encrypt-user-secrets.js), and nothing is queued about it
+  const doc = await Users.findById(user._id);
+  doc[config.passport.fields.givenName] = 'Saved';
+  await doc.save();
+  let stored = await Users.collection.findOne({ _id: user._id });
+  t.is(stored[config.userFields.apiToken], token);
+  t.is(stored[config.userFields.apiTokenHash], undefined);
+  t.false(
+    (stored[config.userFields.accountUpdates] || []).some(
+      (update) => update.fieldName === config.userFields.apiToken
+    )
+  );
+  t.is(await accountStatus(t, token), 200);
+
+  // a copy loaded before the token was reset does not bring it back
+  const stale = await Users.findById(user._id);
+  const res2 = await t.context.web
+    .delete('/en/my-account/security')
+    .set('Accept', 'application/json');
+  t.is(res2.status, 200);
+  stale[config.passport.fields.givenName] = 'Stale';
+  await stale.save();
+  stored = await Users.collection.findOne({ _id: user._id });
+  t.not(stored[config.userFields.apiToken], token);
+  t.truthy(stored[config.userFields.apiTokenHash]);
+  t.is(await accountStatus(t, token), 401);
+  const fresh = await Users.findById(user._id);
+  t.is(await accountStatus(t, fresh[config.userFields.apiToken]), 200);
 });

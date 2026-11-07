@@ -454,6 +454,90 @@ test('POST otp/keys > recovery keys reset', async (t) => {
   t.true(query[config.userFields.otpRecoveryKeys] !== null);
 });
 
+test('two-factor secrets are encrypted at rest and still work', async (t) => {
+  const { web, user } = t.context;
+  user[config.userFields.otpRecoveryKeys] = ['1', '2'];
+  await user.save();
+  const secret = user[config.passport.fields.otpToken];
+  t.truthy(secret);
+
+  // (what a copy of the database holds)
+  const stored = await Users.collection.findOne({ _id: user._id });
+  t.not(stored[config.passport.fields.otpToken], secret);
+  t.false(JSON.stringify(stored).includes(secret));
+  t.is(stored[config.userFields.otpRecoveryKeys].length, 2);
+  t.false(stored[config.userFields.otpRecoveryKeys].includes('1'));
+  t.false(stored[config.userFields.otpRecoveryKeys].includes('2'));
+
+  // what is stored is not a recovery key
+  let res = await web
+    .post(`/en${config.otpRoutePrefix}/keys`)
+    .send({ recovery_key: stored[config.userFields.otpRecoveryKeys][0] });
+  t.is(res.status, 400);
+
+  // a recovery key works once
+  res = await web
+    .post(`/en${config.otpRoutePrefix}/keys`)
+    .send({ recovery_key: '1' });
+  t.is(res.status, 302);
+  const query = await Users.findById(user._id);
+  t.deepEqual([...query[config.userFields.otpRecoveryKeys]], ['2']);
+
+  // and so does a passcode
+  res = await web
+    .post(`/en${config.loginOtpRoute}`)
+    .send({ passcode: authenticator.generate(secret) });
+  t.is(res.status, 200);
+});
+
+test('two-factor secrets stored before they were encrypted keep working', async (t) => {
+  const { web, user } = t.context;
+  const secret = authenticator.generateSecret();
+  await Users.collection.updateOne(
+    { _id: user._id },
+    {
+      $set: {
+        [config.passport.fields.otpToken]: secret,
+        [config.userFields.otpRecoveryKeys]: ['1', '2', '3']
+      }
+    }
+  );
+
+  let res = await web
+    .post(`/en${config.otpRoutePrefix}/keys`)
+    .send({ recovery_key: '1' });
+  t.is(res.status, 302);
+
+  res = await web
+    .post(`/en${config.loginOtpRoute}`)
+    .send({ passcode: authenticator.generate(secret) });
+  t.is(res.status, 200);
+
+  // a copy loaded before a key was used does not bring it back on save
+  // (and a save that does not change them leaves them as they are)
+  const stale = await Users.findById(user._id);
+  t.is(stale[config.passport.fields.otpToken], secret);
+  res = await web
+    .post(`/en${config.otpRoutePrefix}/keys`)
+    .send({ recovery_key: '2' });
+  t.is(res.status, 302);
+  stale[config.passport.fields.givenName] = 'Stale';
+  await stale.save();
+  const stored = await Users.collection.findOne({ _id: user._id });
+  t.is(stored[config.passport.fields.otpToken], secret);
+  t.deepEqual(stored[config.userFields.otpRecoveryKeys], ['3']);
+
+  // a new value is encrypted
+  const doc = await Users.findById(user._id);
+  doc[config.userFields.otpRecoveryKeys] = ['4', '5'];
+  await doc.save();
+  const encrypted = await Users.collection.findOne({ _id: user._id });
+  t.false(encrypted[config.userFields.otpRecoveryKeys].includes('4'));
+  const fresh = await Users.findById(user._id);
+  t.is(fresh[config.passport.fields.otpToken], secret);
+  t.deepEqual([...fresh[config.userFields.otpRecoveryKeys]], ['4', '5']);
+});
+
 //
 // helpers for requests outside of the supertest agent (so that cookies such as
 // a remember-me cookie can be carried between separate log ins explicitly)

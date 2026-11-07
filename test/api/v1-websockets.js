@@ -4,7 +4,7 @@
  */
 
 const { Buffer } = require('node:buffer');
-const { randomUUID } = require('node:crypto');
+const { randomBytes, randomUUID } = require('node:crypto');
 
 const WebSocket = require('ws');
 const dayjs = require('dayjs-with-plugins');
@@ -14,6 +14,8 @@ const test = require('ava');
 const utils = require('../utils');
 const config = require('#config');
 const { encoder, decoder } = require('#helpers/encoder-decoder');
+const { hashToken } = require('#helpers/encrypt-decrypt');
+const { Users } = require('#models');
 const sendNotification = require('#helpers/send-notification');
 const {
   CLOSE_CODE_REVOKED,
@@ -2552,4 +2554,153 @@ test('VALID_EVENTS contains all expected event types', (t) => {
   }
 
   t.is(VALID_EVENTS.size, expectedEvents.length);
+});
+
+// ─── API token at rest ──────────────────────────────────────────────────────
+
+async function accountStatus(api, token) {
+  const res = await api.get('/v1/account').auth(token);
+  return res.status;
+}
+
+async function connectedAliasId(wsURL, token) {
+  const ws = await connectWebSocket(wsURL, {
+    Authorization: createApiTokenAuth(token)
+  });
+  const message = await waitForMessage(ws);
+  ws.close();
+  return message.aliasId;
+}
+
+// (as stored before the token was encrypted at rest)
+async function storeLegacyToken(user) {
+  const token = randomBytes(12).toString('hex');
+  await Users.collection.updateOne(
+    { _id: user._id },
+    {
+      $set: { [config.userFields.apiToken]: token },
+      $unset: { [config.userFields.apiTokenHash]: 1 }
+    }
+  );
+  return token;
+}
+
+test('API token: encrypted at rest, and one stored before still works (WebSocket)', async (t) => {
+  const { apiURL } = t.context;
+  const { user, alias } = await createTestAlias(t);
+  const wsURL = apiURL.replace(/^http/, 'ws') + `/v1/ws?alias_id=${alias.id}`;
+  const token = user[config.userFields.apiToken];
+  const raw = await Users.collection.findOne({ _id: user._id });
+  t.not(raw[config.userFields.apiToken], token);
+  t.is(raw[config.userFields.apiTokenHash], hashToken(token));
+
+  for (const value of [token, token.toUpperCase()]) {
+    t.is(await connectedAliasId(wsURL, value), alias.id);
+  }
+
+  // what is stored is not a token
+  for (const value of [
+    raw[config.userFields.apiToken],
+    raw[config.userFields.apiTokenHash]
+  ])
+    await t.throwsAsync(
+      () =>
+        connectWebSocket(wsURL, { Authorization: createApiTokenAuth(value) }),
+      { message: /Unexpected server response: 401/ }
+    );
+
+  const legacy = await storeLegacyToken(user);
+  t.is(await connectedAliasId(wsURL, legacy), alias.id);
+});
+
+test('API token: encrypted at rest, and one stored before still works (REST)', async (t) => {
+  const { api } = t.context;
+  const { user, domain } = await createTestAlias(t);
+  const token = user[config.userFields.apiToken];
+  const raw = await Users.collection.findOne({ _id: user._id });
+
+  let res = await api.get('/v1/account').auth(token);
+  t.is(res.status, 200);
+  t.is(res.body.email, user.email);
+  for (const field of [
+    config.userFields.apiToken,
+    config.userFields.apiTokenHash,
+    config.passport.fields.otpToken,
+    config.userFields.otpRecoveryKeys,
+    config.userFields.resetToken,
+    config.userFields.changeEmailToken,
+    config.userFields.verificationPin
+  ])
+    t.false(field in res.body, `${field}`);
+  res = await api.get('/v1/domains').auth(token);
+  t.is(res.status, 200);
+  t.true(res.body.some((d) => d.name === domain.name));
+  res = await api.get(`/v1/domains/${domain.name}/aliases`).auth(token);
+  t.is(res.status, 200);
+
+  // what is stored is not a token
+  for (const value of [
+    raw[config.userFields.apiToken],
+    raw[config.userFields.apiTokenHash]
+  ])
+    t.is(await accountStatus(api, value), 401);
+
+  // an update keeps the token, and leaves it as it is stored
+  res = await api.put('/v1/account').auth(token).send({ given_name: 'Saved' });
+  t.is(res.status, 200);
+  t.is(await accountStatus(api, token), 200);
+  const updated = await Users.collection.findOne({ _id: user._id });
+  t.is(updated[config.userFields.apiToken], raw[config.userFields.apiToken]);
+  t.is(
+    updated[config.userFields.apiTokenHash],
+    raw[config.userFields.apiTokenHash]
+  );
+
+  // a token stored before
+  const legacy = await storeLegacyToken(user);
+  t.is(await accountStatus(api, legacy), 200);
+  t.is(await accountStatus(api, legacy.toUpperCase()), 200);
+  res = await api.put('/v1/account').auth(legacy).send({ given_name: 'Again' });
+  t.is(res.status, 200);
+  res = await api.get('/v1/domains').auth(legacy);
+  t.is(res.status, 200);
+
+  // and it can be disabled
+  res = await api.delete('/v1/account/api-token').auth(legacy);
+  t.is(res.status, 200);
+  t.is(await accountStatus(api, legacy), 401);
+});
+
+test('API token: the token returned at sign up works', async (t) => {
+  const { api } = t.context;
+  const email = `signup-${randomUUID()}@example.com`;
+  let res = await api
+    .post('/v1/account')
+    .send({ email, password: `${randomUUID()}-Aa1!` });
+  t.is(res.status, 200);
+  const token = res.body[config.userFields.apiToken];
+  t.regex(token, /^[\da-f]{24}$/);
+  const raw = await Users.collection.findOne({ email });
+  t.not(raw[config.userFields.apiToken], token);
+  t.is(raw[config.userFields.apiTokenHash], hashToken(token));
+
+  // (it is the account of the token that is asked to verify its email)
+  res = await api.get('/v1/account').auth(token);
+  t.is(res.status, 401);
+  t.regex(res.body.message, /verify your email/);
+
+  await Users.collection.updateOne(
+    { email },
+    {
+      $set: {
+        [config.userFields.hasVerifiedEmail]: true,
+        plan: 'enhanced_protection',
+        [config.userFields.planSetAt]: new Date(),
+        [config.userFields.planExpiresAt]: dayjs().add(30, 'day').toDate()
+      }
+    }
+  );
+  res = await api.get('/v1/account').auth(token);
+  t.is(res.status, 200);
+  t.is(res.body.email, email);
 });

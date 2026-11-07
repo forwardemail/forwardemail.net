@@ -9,7 +9,11 @@ const crypto = require('node:crypto');
 const ms = require('ms');
 
 const config = require('#config');
-const { decrypt, encrypt } = require('#helpers/encrypt-decrypt');
+const {
+  decrypt,
+  decryptIfEncrypted,
+  encrypt
+} = require('#helpers/encrypt-decrypt');
 
 const MAX_AGE = ms('30d');
 
@@ -54,7 +58,9 @@ async function getOtpRememberMeState(ctx, Users) {
   if (!user) return null;
   return {
     userId,
-    otpToken: user[config.passport.fields.otpToken],
+    // (encrypted at rest; decrypted so the cookies issued before it was
+    // encrypted stay valid)
+    otpToken: decryptIfEncrypted(user[config.passport.fields.otpToken]),
     salt: user.salt,
     epoch
   };

@@ -532,7 +532,7 @@ for (const plan of ['free', 'enhanced_protection']) {
       await user.save();
       const { [config.userFields.apiToken]: apiToken } = await Users.findById(
         user._id
-      ).lean();
+      );
 
       const attacker = request.agent(t.context._web.server);
       await attacker.post('/en/login').send({
@@ -582,7 +582,7 @@ test.serial(
     });
     const { [config.userFields.apiToken]: apiToken } = await Users.findById(
       user._id
-    ).lean();
+    );
 
     const other = request.agent(t.context._web.server);
     await other.post('/en/login').send({

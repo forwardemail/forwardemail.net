@@ -465,4 +465,31 @@ function decryptStrict(text, encryptionKey) {
   return decryptV2(data.slice(1), encryptionKey);
 }
 
-module.exports = { encrypt, decrypt, decryptStrict };
+//
+// The plaintext of a value made by `encrypt()`, or the value itself when it
+// is not one (e.g. a secret stored before it was encrypted at rest).
+//
+function decryptIfEncrypted(value) {
+  if (typeof value !== 'string' || !value) return value;
+  try {
+    return decrypt(value);
+  } catch {
+    return value;
+  }
+}
+
+//
+// A digest of a random token, stored in place of the token so that a copy of
+// the database holds no usable token (it is looked up by its digest).
+//
+function hashToken(token) {
+  return crypto.createHash('sha256').update(String(token)).digest('hex');
+}
+
+module.exports = {
+  encrypt,
+  decrypt,
+  decryptStrict,
+  decryptIfEncrypted,
+  hashToken
+};

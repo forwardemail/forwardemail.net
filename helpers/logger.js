@@ -117,6 +117,8 @@ const REDACTED_FIELDS = new Set([
   'api_token',
   'otp_token',
   'verification_pin',
+  'reset_token',
+  'change_email_token',
 
   // redis object specific
   'auth',

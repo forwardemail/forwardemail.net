@@ -1615,6 +1615,7 @@ const config = {
     hasPendingAccountUpdates: 'has_pending_account_updates',
     fullEmail: 'full_email',
     apiToken: 'api_token',
+    apiTokenHash: 'api_token_hash',
     apiTokenDisabled: 'api_token_disabled',
     otpRecoveryKeys: 'otp_recovery_keys',
     resetTokenExpiresAt: 'reset_token_expires_at',

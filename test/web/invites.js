@@ -193,7 +193,7 @@ test('a signed-out invite link explains the account it needs and comes back afte
 
   // the verify page sends the code, and entering it comes back to the invite
   await visitor.get(verifyPath).set('Accept', 'text/html');
-  invitee = await Users.findOne({ email }).lean().exec();
+  invitee = await Users.findOne({ email });
   t.truthy(invitee[config.userFields.verificationPin]);
   const verified = await visitor
     .post(verifyPath)
