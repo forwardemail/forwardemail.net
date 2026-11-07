@@ -84,6 +84,23 @@ test('rejects a malformed Host header', async (t) => {
 });
 
 //
+// Browsers treat "forwardemail.net." as another origin, where Cloudflare
+// Turnstile fails (error 110200) and logging in is impossible.
+//
+test('www and the hostname with a trailing dot redirect to the site', async (t) => {
+  for (const [host, location] of [
+    [`${config.webHost}.`, `http://${config.webHost}/en/login?x=1`],
+    [`www.${config.webHost}.`, `http://${config.webHost}/en/login?x=1`],
+    [`www.${config.webHost}`, `http://${config.webHost}/en/login?x=1`],
+    [`${config.webHost}.:3000`, `http://${config.webHost}:3000/en/login?x=1`]
+  ]) {
+    const res = await t.context.web.get('/en/login?x=1').set('Host', host);
+    t.is(res.status, 301, `${host}`);
+    t.is(res.headers.location, location, `${host}`);
+  }
+});
+
+//
 // The polyfill on its own (the API app has no koa-redirect-loop).
 //
 test('the redirect back polyfill only follows referrers on allowed origins', async (t) => {

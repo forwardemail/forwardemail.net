@@ -1,0 +1,14 @@
+diff --git a/lib/authenticate.js b/lib/authenticate.js
+index 214e51fd381f0305600db4a2aea0bb2607eb0a67..fcc831342be6f04a3bff864e9a380755a8a0e85a 100644
+--- a/lib/authenticate.js
++++ b/lib/authenticate.js
+@@ -34,7 +34,8 @@ function authenticate(user, password, options, cb) {
+       if (options.unlockInterval && Date.now() - user.get(options.lastLoginField) > options.unlockInterval) {
+         user.set(options.lastLoginField, Date.now());
+         user.set(options.attemptsField, 0);
+-        user.save();
++        // (saved with the outcome of the password check below: a second save
++        //  running at the same time failed with a ParallelSaveError)
+       } else {
+         return cb(null, false, new errors.TooManyAttemptsError(options.errorMessages.TooManyAttemptsError));
+       }

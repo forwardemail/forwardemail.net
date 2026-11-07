@@ -592,7 +592,8 @@
       "@zone-eu/mailsplit@5.4.9": "patches/@zone-eu__mailsplit@5.4.9.patch",
       "@zone-eu/mailsplit@5.4.15": "patches/@zone-eu__mailsplit@5.4.15.patch",
       "@zone-eu/wildduck@1.48.0": "patches/@zone-eu__wildduck@1.48.0.patch",
-      "nodemailer@10.1.7": "patches/nodemailer@10.1.7.patch"
+      "nodemailer@10.1.7": "patches/nodemailer@10.1.7.patch",
+      "passport-local-mongoose@7.1.2": "patches/passport-local-mongoose@7.1.2.patch"
     }
   },
   "private": true,

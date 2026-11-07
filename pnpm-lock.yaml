@@ -122,6 +122,9 @@ patchedDependencies:
   nodemailer@10.1.7:
     hash: 6q7mhcx4x2ma6gzq5nfio7ecoe
     path: patches/nodemailer@10.1.7.patch
+  passport-local-mongoose@7.1.2:
+    hash: 4u6un2gdtpdcneospbyj7t7oti
+    path: patches/passport-local-mongoose@7.1.2.patch
   sanitize-html@2.17.5:
     hash: esgcwgaulicpbnxwtwi2zemkxe
     path: patches/sanitize-html@2.17.5.patch
@@ -783,7 +786,7 @@ importers:
         version: 3.0.2
       passport-local-mongoose:
         specifier: 7.1.2
-        version: 7.1.2
+        version: 7.1.2(patch_hash=4u6un2gdtpdcneospbyj7t7oti)
       paypal-rest-sdk:
         specifier: 1.8.1
         version: 1.8.1
@@ -33870,7 +33873,7 @@ snapshots:
     dependencies:
       passport-oauth2: 1.8.0
 
-  passport-local-mongoose@7.1.2:
+  passport-local-mongoose@7.1.2(patch_hash=4u6un2gdtpdcneospbyj7t7oti):
     dependencies:
       generaterr: 1.5.0
       passport-local: 1.0.0

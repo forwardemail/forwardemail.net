@@ -1779,6 +1779,10 @@ const config = {
     maxAttempts: env.NODE_ENV === 'development' ? Number.POSITIVE_INFINITY : 10,
     interval: 100, // initial lockout interval in ms
     maxInterval: 300000, // max lockout interval: 5 minutes
+    // an account locked after maxAttempts unlocks an hour after its last
+    // attempt (a password reset also unlocks it, see `resetPassword` in
+    // app/controllers/web/auth.js)
+    unlockInterval: ms('1h'),
     digestAlgorithm: 'sha256',
     encoding: 'hex',
     saltlen: 32,

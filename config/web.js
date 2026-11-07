@@ -704,9 +704,19 @@ module.exports = (redis) => ({
       })
     );
 
-    // Redirect www to non-www
+    //
+    // Redirect www, and the hostname with a trailing dot ("forwardemail.net."),
+    // to the site: browsers treat the dotted name as another origin, where
+    // Cloudflare Turnstile fails (error 110200) and nobody can log in
+    //
     app.use((ctx, next) => {
-      if (ctx.hostname === `www.${config.webHost}`) {
+      if (
+        [
+          `www.${config.webHost}`,
+          `${config.webHost}.`,
+          `www.${config.webHost}.`
+        ].includes(ctx.hostname)
+      ) {
         ctx.status = 301;
         let port = '';
         if (ctx.host.split(':').length === 2)

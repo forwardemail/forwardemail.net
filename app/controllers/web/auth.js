@@ -664,6 +664,8 @@ async function resetPassword(ctx) {
   const resetTokenExpiresAt = user[config.userFields.resetTokenExpiresAt];
   user[config.userFields.resetToken] = undefined;
   user[config.userFields.resetTokenExpiresAt] = undefined;
+  // the reset also ends a lockout from failed login attempts
+  user[config.passportLocalMongoose.attemptsField] = 0;
 
   try {
     await user.setPassword(body.password);

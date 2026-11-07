@@ -8,6 +8,7 @@ const crypto = require('node:crypto');
 
 const cryptoRandomString = require('crypto-random-string');
 const falso = require('@ngneat/falso');
+const ms = require('ms');
 const request = require('supertest');
 const test = require('ava');
 // const { request, errors } = require('undici');
@@ -582,6 +583,78 @@ test('logging in issues a new session id and the previous one does not authentic
     .set('Cookie', toCookieHeader(beforeSession));
   t.is(previous.status, 302);
   t.true(previous.header.location.startsWith('/en/login'));
+});
+
+test('a lockout from failed login attempts ends after the lockout window', async (t) => {
+  const { _web } = t.context;
+  const { attemptsField, lastLoginField, maxAttempts } =
+    config.passportLocalMongoose;
+  const password = falso.randPassword();
+  let user = await t.context.userFactory.make();
+  user = await Users.register(user, password);
+  user[config.userFields.hasSetPassword] = true;
+  user[config.userFields.hasVerifiedEmail] = true;
+  await user.save();
+
+  function login() {
+    return request(_web.server)
+      .post('/en/login')
+      .set('Accept', 'application/json')
+      .send({ email: user.email, password });
+  }
+
+  // locked ten minutes ago: past the wait between attempts, still locked
+  await Users.updateOne(
+    { _id: user._id },
+    {
+      $set: {
+        [attemptsField]: maxAttempts,
+        [lastLoginField]: new Date(Date.now() - ms('10m'))
+      }
+    }
+  );
+  let res = await login();
+  t.is(res.status, 429);
+  t.is(res.body.message, phrases.PASSPORT_TOO_MANY_ATTEMPTS_ERROR);
+
+  // locked a day ago: the correct password logs in again
+  await Users.updateOne(
+    { _id: user._id },
+    { $set: { [lastLoginField]: new Date(Date.now() - ms('1d')) } }
+  );
+  res = await login();
+  t.is(res.status, 200);
+  user = await Users.findById(user._id).lean().exec();
+  t.is(user[attemptsField], 0);
+});
+
+test('a password reset ends a lockout from failed login attempts', async (t) => {
+  const { web, _web } = t.context;
+  const { attemptsField, lastLoginField, maxAttempts } =
+    config.passportLocalMongoose;
+  const password = falso.randPassword();
+  const user = await t.context.userFactory
+    .withState({
+      [config.userFields.hasSetPassword]: true,
+      [config.userFields.hasVerifiedEmail]: true,
+      [config.userFields.resetToken]: 'token',
+      [config.userFields.resetTokenExpiresAt]: new Date(Date.now() + 10000),
+      [attemptsField]: maxAttempts,
+      [lastLoginField]: new Date(Date.now() - ms('10m'))
+    })
+    .create();
+
+  const reset = await web
+    .post('/en/reset-password/token')
+    .send({ email: user.email, password });
+  t.is(reset.status, 302);
+
+  // (a client without the session the reset signed in to)
+  const res = await request(_web.server)
+    .post('/en/login')
+    .set('Accept', 'application/json')
+    .send({ email: user.email, password });
+  t.is(res.status, 200);
 });
 
 test('a password reset of a never-verified account removes sign-ins someone else added', async (t) => {
