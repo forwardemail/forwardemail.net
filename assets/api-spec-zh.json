@@ -1587,6 +1587,10 @@
           "remote_address": {
             "type": "string",
             "description": "通过 SMTP 或 API 发送该邮件的客户端的 IP 地址。"
+          },
+          "delivery_time": {
+            "type": "integer",
+            "description": "从邮件进入队列（或计划发送时间，如更晚）到最近一次成功投递所用的时间（毫秒）。"
           }
         },
         "example": {
@@ -1611,6 +1615,7 @@
           "subject": "testing",
           "size": 1024,
           "remote_address": "203.0.113.5",
+          "delivery_time": 1234,
           "accepted": [
             "test@test1.com"
           ],
@@ -5367,6 +5372,40 @@
             "description": "筛选已安排发送的电子邮件（发送日期在未来的邮件）。设置为“true”则仅显示已安排在未来发送的电子邮件。",
             "schema": {
               "type": "boolean"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "description": "按状态筛选：pending、queued、sent、partially_sent、deferred、bounced 或 rejected（多个值用逗号分隔）。",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "response_codes",
+            "in": "query",
+            "description": "按 SMTP 响应代码筛选，例如 421 或 550（多个代码用逗号分隔）。250 会列出至少已投递给一位收件人的邮件。",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "start_date",
+            "in": "query",
+            "description": "仅列出在此日期（YYYY-MM-DD）或之后创建的邮件，按您账户的时区计算（未设置时为 UTC）。",
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "end_date",
+            "in": "query",
+            "description": "仅列出在此日期（YYYY-MM-DD）或之前创建的邮件，按您账户的时区计算（未设置时为 UTC）。",
+            "schema": {
+              "type": "string",
+              "format": "date"
             }
           },
           {

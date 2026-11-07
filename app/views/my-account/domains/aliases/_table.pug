@@ -818,17 +818,6 @@ p.text-center.d-lg-none
                           i.fa.fa-database
                           = " "
                           = t("Download Backup")
-                    //- Clone
-                    if canClone && (!isUbuntuRelatedAlias || domain.group === 'admin')
-                      li.list-inline-item
-                        button.btn.btn-sm.btn-link.text-themed.btn-block(
-                          type="button",
-                          data-toggle="modal",
-                          data-target=`#modal-clone-alias-${alias.id}`
-                        )
-                          i.fa.fa-clone
-                          = " "
-                          = t("Clone")
                     //- Sieve Scripts button - requires IMAP to be enabled
                     li.list-inline-item
                       if alias.has_imap
@@ -852,6 +841,17 @@ p.text-center.d-lg-none
                             i.fa.fa-filter
                             = " "
                             = t("Sieve Scripts")
+                  //- Clone (also in the desktop list below)
+                  if canClone && (!isUbuntuRelatedAlias || domain.group === 'admin')
+                    li.list-inline-item
+                      button.btn.btn-sm.btn-link.text-themed.btn-block(
+                        type="button",
+                        data-toggle="modal",
+                        data-target=`#modal-clone-alias-${alias.id}`
+                      )
+                        i.fa.fa-clone
+                        = " "
+                        = t("Clone")
 
             td.align-middle.d-none.d-lg-table-cell
               if isSANB(alias.description)
@@ -1114,5 +1114,16 @@ p.text-center.d-lg-none
                           i.fa.fa-filter
                           = " "
                           = t("Sieve Scripts")
+                //- Clone (also in the mobile list above)
+                if canClone && (!isUbuntuRelatedAlias || domain.group === 'admin')
+                  li.list-inline-item
+                    button.btn.btn-sm.btn-link.text-themed.btn-block(
+                      type="button",
+                      data-toggle="modal",
+                      data-target=`#modal-clone-alias-${alias.id}`
+                    )
+                      i.fa.fa-clone
+                      = " "
+                      = t("Clone")
 
 +paginate('#table-aliases')

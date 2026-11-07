@@ -12,31 +12,51 @@ block body
             != t('You have sent <strong class="notranslate">%d</strong> of the <strong class="notranslate">%d</strong> outbound SMTP messages allowed today.', dailySMTPMessages, dailySMTPLimit)
             = " "
             != t('Counter resets <span class="dayjs notranslate" data-time="%d" data-date-style="short" data-time-style="short">%s</span>.', dailySMTPResetAt.getTime(), dayjs(dailySMTPResetAt).format("M/D/YY h:mm A"))
+        //- (opened by the button by the header, see _breadcrumbs.pug)
         if smtpReputation
-          .row.mb-3
-            .col-lg-6
-              +smtpReputationCard(smtpReputation)
+          +smtpReputationModal(smtpReputation)
         .alert.alert-warning!= t('Outbound SMTP emails are shown below &ndash; <a href="%s" class="alert-link">click here</a> to setup your email client to receive email.', l("/faq#do-you-support-receiving-email-with-imap"))
         if isSANB(ctx.query.domain)
           h4
             = t("Filtered for:")
             = " "
             = ctx.query.domain
-        //- TODO: search by date
         form.ajax-form.table-ajax-form(
           action=ctx.path,
           method="GET",
           data-table="#table-emails",
-          data-search-params="q"
+          data-search-params="q,start_date,end_date"
         )
-          .input-group.mb-3
-            input#input-keyword-search.form-control(
-              type="text",
-              value=ctx.query.q ? ctx.query.q : "",
-              name="q",
-              placeholder=t("Search")
-            )
-            .input-group-append
-              button.btn.btn-success(type="submit")= t("Search")
+          .row.mb-3
+            .col-md-6.mb-3.mb-md-0
+              input#input-keyword-search.form-control(
+                type="text",
+                value=ctx.query.q ? ctx.query.q : "",
+                name="q",
+                placeholder=t("Search")
+              )
+            //- (when it was sent to us, as in the Date column)
+            .col-md-6
+              .input-group
+                .input-group-prepend
+                  span.input-group-text
+                    i.fa.fa-calendar-alt(aria-hidden="true")
+                    span.sr-only= t("Date")
+                input#input-start-date.form-control(
+                  type="date",
+                  name="start_date",
+                  value=ctx.query.start_date ? ctx.query.start_date : "",
+                  aria-label=`${t("Date")} (${t("From")})`
+                )
+                .input-group-append
+                  span.input-group-text= "–"
+                input#input-end-date.form-control(
+                  type="date",
+                  name="end_date",
+                  value=ctx.query.end_date ? ctx.query.end_date : "",
+                  aria-label=`${t("Date")} (${t("To")})`
+                )
+                .input-group-append
+                  button.btn.btn-success(type="submit")= t("Search")
         #table-emails
           include ./_table

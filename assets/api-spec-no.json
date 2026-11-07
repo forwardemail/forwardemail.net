@@ -1587,6 +1587,10 @@
           "remote_address": {
             "type": "string",
             "description": "IP-adressen til klienten som sendte e-posten via SMTP eller API-et."
+          },
+          "delivery_time": {
+            "type": "integer",
+            "description": "Tid i millisekunder fra e-posten ble satt i kø (eller det planlagte sendetidspunktet, hvis det er senere) til den siste vellykkede leveringen."
           }
         },
         "example": {
@@ -1611,6 +1615,7 @@
           "subject": "testing",
           "size": 1024,
           "remote_address": "203.0.113.5",
+          "delivery_time": 1234,
           "accepted": [
             "test@test1.com"
           ],
@@ -5367,6 +5372,40 @@
             "description": "Filtrer etter planlagte e-poster (e-poster med fremtidig sendedato). Sett til «true» for å bare vise e-poster som er planlagt sendt i fremtiden.",
             "schema": {
               "type": "boolean"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "description": "Filtrer etter status: pending, queued, sent, partially_sent, deferred, bounced eller rejected (flere atskilt med komma).",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "response_codes",
+            "in": "query",
+            "description": "Filtrer etter SMTP-svarkode, f.eks. 421 eller 550 (flere atskilt med komma). 250 viser e-poster som er levert til minst én mottaker.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "start_date",
+            "in": "query",
+            "description": "Vis bare e-poster opprettet på eller etter denne datoen (YYYY-MM-DD), i kontoens tidssone (UTC hvis ingen er angitt).",
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "end_date",
+            "in": "query",
+            "description": "Vis bare e-poster opprettet på eller før denne datoen (YYYY-MM-DD), i kontoens tidssone (UTC hvis ingen er angitt).",
+            "schema": {
+              "type": "string",
+              "format": "date"
             }
           },
           {

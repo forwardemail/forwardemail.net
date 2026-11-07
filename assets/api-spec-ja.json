@@ -1587,6 +1587,10 @@
           "remote_address": {
             "type": "string",
             "description": "SMTP または API でメールを送信したクライアントの IP アドレス。"
+          },
+          "delivery_time": {
+            "type": "integer",
+            "description": "メールがキューに追加された時刻（予約送信時刻のほうが遅い場合はその時刻）から、最後に配信が成功するまでの時間（ミリ秒）。"
           }
         },
         "example": {
@@ -1611,6 +1615,7 @@
           "subject": "testing",
           "size": 1024,
           "remote_address": "203.0.113.5",
+          "delivery_time": 1234,
           "accepted": [
             "test@test1.com"
           ],
@@ -5367,6 +5372,40 @@
             "description": "スケジュールされたメール（送信日が将来のメール）をフィルターします。「true」に設定すると、将来送信が予定されているメールのみが表示されます。",
             "schema": {
               "type": "boolean"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "description": "ステータスで絞り込みます：pending、queued、sent、partially_sent、deferred、bounced、rejected（複数指定する場合はカンマ区切り）。",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "response_codes",
+            "in": "query",
+            "description": "SMTP 応答コードで絞り込みます（例：421、550。複数指定する場合はカンマ区切り）。250 を指定すると、少なくとも 1 人の受信者に配信されたメールが表示されます。",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "start_date",
+            "in": "query",
+            "description": "この日付（YYYY-MM-DD）以降に作成されたメールのみを表示します。日付はアカウントのタイムゾーン（未設定の場合は UTC）で判断されます。",
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "end_date",
+            "in": "query",
+            "description": "この日付（YYYY-MM-DD）以前に作成されたメールのみを表示します。日付はアカウントのタイムゾーン（未設定の場合は UTC）で判断されます。",
+            "schema": {
+              "type": "string",
+              "format": "date"
             }
           },
           {

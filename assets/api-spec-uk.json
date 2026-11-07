@@ -1587,6 +1587,10 @@
           "remote_address": {
             "type": "string",
             "description": "IP-адреса клієнта, який надіслав лист через SMTP або API."
+          },
+          "delivery_time": {
+            "type": "integer",
+            "description": "Час у мілісекундах від постановки листа в чергу (або запланованого часу надсилання, якщо він пізніший) до його останньої успішної доставки."
           }
         },
         "example": {
@@ -1611,6 +1615,7 @@
           "subject": "testing",
           "size": 1024,
           "remote_address": "203.0.113.5",
+          "delivery_time": 1234,
           "accepted": [
             "test@test1.com"
           ],
@@ -5367,6 +5372,40 @@
             "description": "Фільтрувати заплановані електронні листи (листи з майбутньою датою надсилання). Встановіть значення «true», щоб відображати лише електронні листи, надсилання яких заплановано на майбутнє.",
             "schema": {
               "type": "boolean"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "description": "Фільтр за статусом: pending, queued, sent, partially_sent, deferred, bounced або rejected (кілька значень через кому).",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "response_codes",
+            "in": "query",
+            "description": "Фільтр за кодом відповіді SMTP, наприклад 421 або 550 (кілька кодів через кому). Код 250 показує листи, доставлені принаймні одному одержувачу.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "start_date",
+            "in": "query",
+            "description": "Показувати лише листи, створені цієї дати або пізніше (YYYY-MM-DD), у часовому поясі вашого облікового запису (UTC, якщо його не задано).",
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "end_date",
+            "in": "query",
+            "description": "Показувати лише листи, створені цієї дати або раніше (YYYY-MM-DD), у часовому поясі вашого облікового запису (UTC, якщо його не задано).",
+            "schema": {
+              "type": "string",
+              "format": "date"
             }
           },
           {

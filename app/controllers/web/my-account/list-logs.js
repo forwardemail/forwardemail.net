@@ -22,13 +22,20 @@ const getLogsCsv = require('#helpers/get-logs-csv');
 const parseRootDomain = require('#helpers/parse-root-domain');
 const getAllowedSort = require('#helpers/get-allowed-sort');
 const getOneClickUnsubscribeUrl = require('#helpers/get-one-click-unsubscribe-url');
+const {
+  getFilterUrl,
+  isResponseCode,
+  parseDateRange,
+  parseResponseCodes
+} = require('#helpers/list-filters');
 const { Aliases, Logs } = require('#models');
 
 const SIXTY_SECONDS = ms('60s');
 const LOG_SORT_FIELDS = new Set([
   'created_at',
   'meta.info.messageSize',
-  'meta.info.deliveryTime'
+  'meta.info.deliveryTime',
+  'err.responseCode'
 ]);
 
 async function listLogs(ctx) {
@@ -272,29 +279,16 @@ async function listLogs(ctx) {
   // Date range filtering via start_date and end_date query parameters
   // Supports ISO 8601 format (e.g., 2024-01-15) or common date formats
   //
-  let startDate;
-  let endDate;
-
-  if (isSANB(ctx.query.start_date)) {
-    const parsed = dayjs(ctx.query.start_date);
-    if (parsed.isValid()) {
-      startDate = parsed.startOf('day').toDate();
-    }
-  }
-
-  if (isSANB(ctx.query.end_date)) {
-    const parsed = dayjs(ctx.query.end_date);
-    if (parsed.isValid()) {
-      endDate = parsed.endOf('day').toDate();
-    }
-  }
+  // (in the time zone the Date column is shown in)
+  //
+  const dateRangeFilter = parseDateRange(
+    ctx.query.start_date,
+    ctx.query.end_date,
+    ctx.state.user.timezone
+  );
 
   // Apply date range filter if either start_date or end_date is provided
-  if (startDate || endDate) {
-    const dateRangeFilter = {};
-    if (startDate) dateRangeFilter.$gte = startDate;
-    if (endDate) dateRangeFilter.$lte = endDate;
-
+  if (dateRangeFilter) {
     if (query.$or) {
       query = {
         $and: [{ $or: query.$or }, { created_at: dateRangeFilter }]
@@ -347,37 +341,22 @@ async function listLogs(ctx) {
 
   // response_code -> 'err.responseCode'
   // Supports multiple codes via comma-separated string or array (e.g., ?response_codes=421,450,550)
-  const responseCodesToFilter = [];
-
-  // Handle response_codes parameter (comma-separated or array)
   // NOTE: response_code (singular) is already normalized to response_codes above
-  if (ctx.query.response_codes) {
-    let codes = ctx.query.response_codes;
-    // If it's a string, split by comma
-    if (typeof codes === 'string') {
-      codes = codes.split(',');
-    }
-
-    // If it's an array (from multiple query params with same name)
-    if (Array.isArray(codes)) {
-      for (const c of codes) {
-        const parsed = Number.parseInt(c, 10);
-        if (
-          parsed >= 200 &&
-          parsed < 600 &&
-          !responseCodesToFilter.includes(parsed)
-        ) {
-          responseCodesToFilter.push(parsed);
-        }
-      }
-    }
-  }
+  const responseCodesToFilter = parseResponseCodes(ctx.query);
+  ctx.state.selectedResponseCodes = responseCodesToFilter;
 
   if (responseCodesToFilter.length > 0) {
-    const codeFilter =
-      responseCodesToFilter.length === 1
-        ? { 'err.responseCode': responseCodesToFilter[0] }
-        : { 'err.responseCode': { $in: responseCodesToFilter } };
+    const $or = [
+      { 'err.responseCode': { $in: responseCodesToFilter } },
+      // (a member sees the code of their own bounce, see filter-log-for-viewer)
+      { 'err.bounces.err.responseCode': { $in: responseCodesToFilter } }
+    ];
+    // (delivered logs are shown with a 250 response, and webhooks with 200)
+    if (responseCodesToFilter.includes(250))
+      $or.push({ message: 'delivered', 'meta.is_webhook': { $ne: true } });
+    if (responseCodesToFilter.includes(200))
+      $or.push({ message: 'delivered', 'meta.is_webhook': true });
+    const codeFilter = { $or };
 
     if (query.$or) {
       query = {
@@ -488,6 +467,10 @@ async function listLogs(ctx) {
       { message: 'delivered' }
     ]
   };
+
+  // (DMARC reports stay out, as set above, also when a filter above rebuilt
+  // the query from its `$or` alone)
+  query = { $and: [query, { is_dmarc_report: { $ne: true } }] };
 
   if (query.$and) {
     query.$and.push(codebugFilter);
@@ -612,11 +595,14 @@ async function listLogs(ctx) {
     MAX_COUNT_LIMIT - ctx.query.limit
   );
 
-  const sort = getAllowedSort(
+  let sort = getAllowedSort(
     ctx.query.sort,
     LOG_SORT_FIELDS,
     ctx.api ? 'created_at' : '-created_at'
   );
+  // (logs with the same size, code, etc. stay in the same order across
+  // pages, newest first)
+  if (sort.replace(/^-/, '') !== 'created_at') sort = `${sort} -created_at`;
 
   const [logs, itemCount, responseCodes, bounceCategories] = await Promise.all([
     // eslint-disable-next-line unicorn/no-array-callback-reference
@@ -625,11 +611,9 @@ async function listLogs(ctx) {
       .skip(Math.max(0, cappedSkip))
       .sort(sort)
       // KEEP: Field selection optimization to reduce data transfer
-      .select(
-        ctx.api
-          ? '-meta.os -meta.cpus -meta.networkInterfaces -meta.worker'
-          : '-message -meta.os -meta.cpus -meta.networkInterfaces -meta.worker'
-      )
+      // (the table needs `message`, e.g. a "delivered" log is shown as a 250
+      // with its Delivered To, and the IMAP copy of a delivery is hidden below)
+      .select('-meta.os -meta.cpus -meta.networkInterfaces -meta.worker')
       .lean()
       .maxTimeMS(SIXTY_SECONDS)
       .exec(),
@@ -941,36 +925,41 @@ async function listLogs(ctx) {
   // two "delivered" logs are created for the same inbound email
   // (one for the IMAP append, one for the SMTP forward).
   // Prefer the SMTP/webhook log since it has the actual delivery response.
+  // (only for the same alias: one message to two aliases, one stored and one
+  // forwarded, keeps both of its logs)
   //
   {
-    const smtpFingerprints = new Set();
+    const isImapLog = (log) =>
+      typeof log?.meta?.info?.response === 'string' &&
+      log.meta.info.response.startsWith('Appended to INBOX');
+    const getKey = (log, alias) =>
+      typeof alias === 'string'
+        ? `${log.meta.session.fingerprint}|${alias.toLowerCase()}`
+        : undefined;
 
-    // first pass: find fingerprints that have non-IMAP delivery logs
+    // first pass: the aliases each message was forwarded (or sent to a
+    // webhook) for
+    const forwarded = new Set();
     for (const log of ctx.state.logs) {
-      if (log.message !== 'delivered') continue;
-      const fp = log?.meta?.session?.fingerprint;
-      if (!fp) continue;
-      const response = log?.meta?.info?.response;
-      if (
-        typeof response !== 'string' ||
-        !response.startsWith('Appended to INBOX')
-      ) {
-        smtpFingerprints.add(fp);
+      if (log.message !== 'delivered' || isImapLog(log)) continue;
+      if (!log?.meta?.session?.fingerprint) continue;
+      for (const alias of [log.meta.info?.forwardedFor].flat()) {
+        const key = getKey(log, alias);
+        if (key) forwarded.add(key);
       }
     }
 
-    // second pass: remove IMAP logs when a non-IMAP log exists for same fingerprint
-    if (smtpFingerprints.size > 0) {
+    // second pass: remove IMAP logs of an alias whose message was forwarded
+    if (forwarded.size > 0) {
       ctx.state.logs = ctx.state.logs.filter((log) => {
-        if (log.message !== 'delivered') return true;
-        const fp = log?.meta?.session?.fingerprint;
-        if (!fp) return true;
-        const response = log?.meta?.info?.response;
-        return !(
-          typeof response === 'string' &&
-          response.startsWith('Appended to INBOX') &&
-          smtpFingerprints.has(fp)
+        if (log.message !== 'delivered' || !isImapLog(log)) return true;
+        if (!log?.meta?.session?.fingerprint) return true;
+        const { accepted } = log.meta.info;
+        const key = getKey(
+          log,
+          Array.isArray(accepted) ? accepted[0] : undefined
         );
+        return !key || !forwarded.has(key);
       });
     }
   }
@@ -980,8 +969,8 @@ async function listLogs(ctx) {
   //
   ctx.state.activeFilters = {
     hasSearch: isSANB(ctx.query.q),
-    hasResponseCodes:
-      isSANB(ctx.query.response_codes) || isSANB(ctx.query.response_code),
+    // (several codes are an array, e.g. from the dropdown by the header)
+    hasResponseCodes: responseCodesToFilter.length > 0,
     hasBounceCategory: isSANB(ctx.query.bounce_category),
     hasDateRange: isSANB(ctx.query.start_date) || isSANB(ctx.query.end_date),
     hasShowErrors: ctx.query.show_errors === 'true',
@@ -991,6 +980,9 @@ async function listLogs(ctx) {
 
   // (for the Unsubscribe button)
   ctx.state.getOneClickUnsubscribeUrl = getOneClickUnsubscribeUrl;
+  // (for the filters in the table, see app/views/my-account/logs/_table.pug)
+  ctx.state.getFilterUrl = (changes) => getFilterUrl(ctx, changes);
+  ctx.state.isResponseCode = isResponseCode;
 
   if (ctx.accepts('html')) return ctx.render('my-account/logs');
 

@@ -1587,6 +1587,10 @@
           "remote_address": {
             "type": "string",
             "description": "IP-Adresse des Clients, der die E-Mail über SMTP oder die API gesendet hat."
+          },
+          "delivery_time": {
+            "type": "integer",
+            "description": "Zeit in Millisekunden vom Einreihen der E-Mail in die Warteschlange (oder dem geplanten Sendezeitpunkt, falls später) bis zur letzten erfolgreichen Zustellung."
           }
         },
         "example": {
@@ -1611,6 +1615,7 @@
           "subject": "testing",
           "size": 1024,
           "remote_address": "203.0.113.5",
+          "delivery_time": 1234,
           "accepted": [
             "test@test1.com"
           ],
@@ -5367,6 +5372,40 @@
             "description": "Filter für geplante E-Mails (E-Mails mit zukünftigem Sendedatum). Auf „true“ setzen, um nur E-Mails anzuzeigen, deren Versand in der Zukunft geplant ist.",
             "schema": {
               "type": "boolean"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "description": "Nach Status filtern: pending, queued, sent, partially_sent, deferred, bounced oder rejected (mehrere durch Kommas getrennt).",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "response_codes",
+            "in": "query",
+            "description": "Nach SMTP-Antwortcode filtern, z. B. 421 oder 550 (mehrere durch Kommas getrennt). 250 listet E-Mails auf, die an mindestens einen Empfänger zugestellt wurden.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "start_date",
+            "in": "query",
+            "description": "Nur E-Mails auflisten, die an oder nach diesem Datum (YYYY-MM-DD) erstellt wurden, in der Zeitzone Ihres Kontos (UTC, falls keine festgelegt ist).",
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "end_date",
+            "in": "query",
+            "description": "Nur E-Mails auflisten, die an oder vor diesem Datum (YYYY-MM-DD) erstellt wurden, in der Zeitzone Ihres Kontos (UTC, falls keine festgelegt ist).",
+            "schema": {
+              "type": "string",
+              "format": "date"
             }
           },
           {

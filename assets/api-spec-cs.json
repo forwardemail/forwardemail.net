@@ -1587,6 +1587,10 @@
           "remote_address": {
             "type": "string",
             "description": "IP adresa klienta, který e-mail odeslal přes SMTP nebo API."
+          },
+          "delivery_time": {
+            "type": "integer",
+            "description": "Doba v milisekundách od zařazení e-mailu do fronty (nebo od plánovaného času odeslání, je-li pozdější) do jeho posledního úspěšného doručení."
           }
         },
         "example": {
@@ -1611,6 +1615,7 @@
           "subject": "testing",
           "size": 1024,
           "remote_address": "203.0.113.5",
+          "delivery_time": 1234,
           "accepted": [
             "test@test1.com"
           ],
@@ -5367,6 +5372,40 @@
             "description": "Filtr pro naplánované e-maily (e-maily s datem odeslání v budoucnu). Nastavením na hodnotu „true“ zobrazíte pouze e-maily, jejichž odeslání je naplánováno v budoucnu.",
             "schema": {
               "type": "boolean"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "description": "Filtrovat podle stavu: pending, queued, sent, partially_sent, deferred, bounced nebo rejected (více hodnot oddělte čárkami).",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "response_codes",
+            "in": "query",
+            "description": "Filtrovat podle kódu odpovědi SMTP, např. 421 nebo 550 (více kódů oddělte čárkami). Kód 250 zobrazí e-maily doručené alespoň jednomu příjemci.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "start_date",
+            "in": "query",
+            "description": "Zobrazit pouze e-maily vytvořené v tento den nebo později (YYYY-MM-DD), v časovém pásmu vašeho účtu (UTC, pokud není nastaveno).",
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "end_date",
+            "in": "query",
+            "description": "Zobrazit pouze e-maily vytvořené v tento den nebo dříve (YYYY-MM-DD), v časovém pásmu vašeho účtu (UTC, pokud není nastaveno).",
+            "schema": {
+              "type": "string",
+              "format": "date"
             }
           },
           {

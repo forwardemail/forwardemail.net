@@ -1,4 +1,5 @@
 include my-account/domains/_change-plan-option
+include my-account/_list-filters
 
 - const isObjectIdLike = (value) => typeof value === "string" && /^[a-f\d]{24}$/i.test(value);
 - const breadcrumbValue = (value) => (_.isObject(value) ? value.name : value);
@@ -152,81 +153,9 @@ if breadcrumbs.length > 1
                       i.fa.fa-filter
                       = " "
                       = t("Clear filters")
-                if responseCodes && responseCodes.length > 0
-                  - const selectedCodes = ctx.query.response_codes ? (typeof ctx.query.response_codes === "string" ? ctx.query.response_codes.split(",") : ctx.query.response_codes) : [];
-                  - const selectedCodesSet = new Set(selectedCodes.map((c) => String(c)));
+                if Array.isArray(responseCodes) && (responseCodes.length > 0 || selectedResponseCodes.length > 0)
                   li.list-inline-item.mb-1
-                    .btn-group
-                      button.btn.btn-dark.dropdown-toggle(
-                        type="button",
-                        data-toggle="dropdown",
-                        data-boundary="window",
-                        aria-haspopup="true",
-                        aria-expanded="false"
-                      )
-                        if selectedCodes.length > 0
-                          = t("Codes:")
-                          = " "
-                          = selectedCodes.join(", ")
-                        else
-                          = t("Filter by code")
-                      .dropdown-menu.p-3(style="min-width: 200px")
-                        h6.dropdown-header.px-0= t("Select response codes:")
-                        form#response-codes-filter-form(
-                          method="GET",
-                          action=l("/my-account/logs")
-                        )
-                          if ctx.query.domains
-                            input(
-                              type="hidden",
-                              name="domains",
-                              value=ctx.query.domains
-                            )
-                          if ctx.query.bounce_category
-                            input(
-                              type="hidden",
-                              name="bounce_category",
-                              value=ctx.query.bounce_category
-                            )
-                          if ctx.query.show_errors
-                            input(
-                              type="hidden",
-                              name="show_errors",
-                              value=ctx.query.show_errors
-                            )
-                          if ctx.query.q
-                            input(type="hidden", name="q", value=ctx.query.q)
-                          if ctx.query.start_date
-                            input(
-                              type="hidden",
-                              name="start_date",
-                              value=ctx.query.start_date
-                            )
-                          if ctx.query.end_date
-                            input(
-                              type="hidden",
-                              name="end_date",
-                              value=ctx.query.end_date
-                            )
-                          each code in responseCodes
-                            .form-check
-                              input.form-check-input(
-                                type="checkbox",
-                                name="response_codes",
-                                value=code,
-                                id=`code-${code}`,
-                                checked=selectedCodesSet.has(String(code))
-                              )
-                              label.form-check-label(for=`code-${code}`)= code
-                          .mt-2
-                            button.btn.btn-primary.btn-sm.mr-1(type="submit")
-                              = t("Apply")
-                            if selectedCodes.length > 0
-                              - const clearCodesParams = Object.keys(ctx.query).filter((k) => k !== 'response_codes' && k !== 'response_code' && k !== 'page' && k !== 'limit').map((k) => `${k}=${encodeURIComponent(ctx.query[k])}`).join('&');
-                              a.btn.btn-secondary.btn-sm(
-                                href=l(`/my-account/logs${clearCodesParams ? `?${clearCodesParams}` : ""}`)
-                              )
-                                = t("Clear")
+                    +responseCodesFilter(responseCodes, selectedResponseCodes)
                 if bounceCategories && bounceCategories.length > 0
                   - const catBaseParams = Object.keys(ctx.query).filter((k) => k !== 'bounce_category' && k !== 'page' && k !== 'limit').map((k) => `${k}=${encodeURIComponent(ctx.query[k])}`).join('&');
                   li.list-inline-item.mb-1
@@ -303,6 +232,64 @@ if breadcrumbs.length > 1
                         i.fa.fa-file-csv
                         = " "
                         = t("Download Log Report")
+            when '/my-account/emails'
+              //- (see app/controllers/web/my-account/list-emails.js)
+              ul.list-inline.mb-0
+                if hasFilters
+                  li.list-inline-item.mb-1
+                    a.btn.btn-dark(href=l("/my-account/emails"))
+                      i.fa.fa-filter
+                      = " "
+                      = t("Clear filters")
+                if Array.isArray(statuses)
+                  li.list-inline-item.mb-1
+                    .btn-group
+                      button.btn.btn-dark.dropdown-toggle(
+                        type="button",
+                        data-toggle="dropdown",
+                        data-boundary="window",
+                        aria-haspopup="true",
+                        aria-expanded="false"
+                      )
+                        = t("Status")
+                        if statuses.length > 0
+                          = ": "
+                          = statuses.map((status) => titleize(humanize(status))).join(", ")
+                      .dropdown-menu
+                        each status in emailStatuses
+                          a.dropdown-item(
+                            class=statuses.includes(status) ? "active" : "",
+                            href=getFilterUrl({ status })
+                          )= titleize(humanize(status))
+                        if statuses.length > 0
+                          .dropdown-divider
+                          a.dropdown-item.text-danger(
+                            href=getFilterUrl({ status: undefined })
+                          )= t("Clear")
+                //- (the codes filtered by, from a code in a row: the codes of
+                //- all the emails are not looked up, as they are not indexed)
+                if Array.isArray(selectedResponseCodes) && selectedResponseCodes.length > 0
+                  li.list-inline-item.mb-1
+                    +responseCodesFilter([], selectedResponseCodes)
+                //- (opens the modal in my-account/emails/index.pug)
+                if smtpReputation
+                  li.list-inline-item.mb-1
+                    button.btn.btn-dark(
+                      type="button",
+                      data-toggle="modal",
+                      data-target="#modal-smtp-reputation"
+                    )
+                      i.fa.fa-fw.fa-chart-line
+                      = " "
+                      = t("Outbound SMTP Reputation")
+                li.list-inline-item.mb-1
+                  a.btn.btn-dark(
+                    href=l("/email-api#tag/emails"),
+                    target="_blank"
+                  )
+                    i.fa.fa-fw.fa-code.text-themed
+                    = " "
+                    = t("Retrieve via API")
             when '/my-account/analytics'
               ul.list-inline.mb-0
                 li.list-inline-item.mb-1

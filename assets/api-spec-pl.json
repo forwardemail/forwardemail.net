@@ -1587,6 +1587,10 @@
           "remote_address": {
             "type": "string",
             "description": "Adres IP klienta, który wysłał wiadomość e-mail przez SMTP lub API."
+          },
+          "delivery_time": {
+            "type": "integer",
+            "description": "Czas w milisekundach od umieszczenia wiadomości e-mail w kolejce (lub zaplanowanego czasu wysyłki, jeśli jest późniejszy) do jej ostatniego udanego doręczenia."
           }
         },
         "example": {
@@ -1611,6 +1615,7 @@
           "subject": "testing",
           "size": 1024,
           "remote_address": "203.0.113.5",
+          "delivery_time": 1234,
           "accepted": [
             "test@test1.com"
           ],
@@ -5367,6 +5372,40 @@
             "description": "Filtruj zaplanowane wiadomości e-mail (wiadomości z przyszłą datą wysłania). Ustaw na „prawda”, aby wyświetlić tylko wiadomości e-mail zaplanowane do wysłania w przyszłości.",
             "schema": {
               "type": "boolean"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "description": "Filtruj według stanu: pending, queued, sent, partially_sent, deferred, bounced lub rejected (kilka wartości rozdzielonych przecinkami).",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "response_codes",
+            "in": "query",
+            "description": "Filtruj według kodu odpowiedzi SMTP, np. 421 lub 550 (kilka kodów rozdzielonych przecinkami). 250 wyświetla wiadomości e-mail doręczone co najmniej jednemu odbiorcy.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "start_date",
+            "in": "query",
+            "description": "Wyświetl tylko wiadomości e-mail utworzone w tym dniu lub później (YYYY-MM-DD), w strefie czasowej Twojego konta (UTC, jeśli nie ustawiono).",
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "end_date",
+            "in": "query",
+            "description": "Wyświetl tylko wiadomości e-mail utworzone w tym dniu lub wcześniej (YYYY-MM-DD), w strefie czasowej Twojego konta (UTC, jeśli nie ustawiono).",
+            "schema": {
+              "type": "string",
+              "format": "date"
             }
           },
           {

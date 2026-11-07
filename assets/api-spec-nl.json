@@ -1587,6 +1587,10 @@
           "remote_address": {
             "type": "string",
             "description": "IP-adres van de client die de e-mail via SMTP of de API heeft verzonden."
+          },
+          "delivery_time": {
+            "type": "integer",
+            "description": "Tijd in milliseconden vanaf het moment dat de e-mail in de wachtrij werd geplaatst (of het geplande verzendtijdstip, indien later) tot de laatste geslaagde aflevering."
           }
         },
         "example": {
@@ -1611,6 +1615,7 @@
           "subject": "testing",
           "size": 1024,
           "remote_address": "203.0.113.5",
+          "delivery_time": 1234,
           "accepted": [
             "test@test1.com"
           ],
@@ -5367,6 +5372,40 @@
             "description": "Filter voor geplande e-mails (e-mails met een verzenddatum in de toekomst). Stel in op 'true' om alleen e-mails weer te geven die gepland staan om in de toekomst te worden verzonden.",
             "schema": {
               "type": "boolean"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "description": "Filteren op status: pending, queued, sent, partially_sent, deferred, bounced of rejected (meerdere gescheiden door komma's).",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "response_codes",
+            "in": "query",
+            "description": "Filteren op SMTP-antwoordcode, bijv. 421 of 550 (meerdere gescheiden door komma's). 250 toont e-mails die bij minstens één ontvanger zijn afgeleverd.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "start_date",
+            "in": "query",
+            "description": "Alleen e-mails tonen die op of na deze datum (YYYY-MM-DD) zijn aangemaakt, in de tijdzone van je account (UTC als er geen is ingesteld).",
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "end_date",
+            "in": "query",
+            "description": "Alleen e-mails tonen die op of vóór deze datum (YYYY-MM-DD) zijn aangemaakt, in de tijdzone van je account (UTC als er geen is ingesteld).",
+            "schema": {
+              "type": "string",
+              "format": "date"
             }
           },
           {

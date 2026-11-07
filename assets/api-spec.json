@@ -1587,6 +1587,10 @@
           "remote_address": {
             "type": "string",
             "description": "IP address of the client that sent the email over SMTP or the API."
+          },
+          "delivery_time": {
+            "type": "integer",
+            "description": "Milliseconds from when the email was queued (or the time it was scheduled for, if later) to its latest successful delivery."
           }
         },
         "example": {
@@ -1611,6 +1615,7 @@
           "subject": "testing",
           "size": 1024,
           "remote_address": "203.0.113.5",
+          "delivery_time": 1234,
           "accepted": [
             "test@test1.com"
           ],
@@ -5367,6 +5372,40 @@
             "description": "Filter for scheduled emails (emails with future send date). Set to 'true' to show only emails scheduled to be sent in the future.",
             "schema": {
               "type": "boolean"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "description": "Filter by status: pending, queued, sent, partially_sent, deferred, bounced or rejected (several separated by commas).",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "response_codes",
+            "in": "query",
+            "description": "Filter by SMTP response code, e.g. 421 or 550 (several separated by commas). 250 lists emails delivered to at least one recipient.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "start_date",
+            "in": "query",
+            "description": "List only emails created on or after this date (YYYY-MM-DD), in your account's time zone (UTC if none is set).",
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "end_date",
+            "in": "query",
+            "description": "List only emails created on or before this date (YYYY-MM-DD), in your account's time zone (UTC if none is set).",
+            "schema": {
+              "type": "string",
+              "format": "date"
             }
           },
           {

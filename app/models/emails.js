@@ -51,6 +51,7 @@ const createTangerine = require('#helpers/create-tangerine');
 const emailHelper = require('#helpers/email');
 const env = require('#config/env');
 const getBlockedHashes = require('#helpers/get-blocked-hashes');
+const getEmailDeliveryTime = require('#helpers/get-email-delivery-time');
 const getErrorCode = require('#helpers/get-error-code');
 const getHeaders = require('#helpers/get-headers');
 const getUnsafeAddressHeader = require('#helpers/get-unsafe-address-header');
@@ -336,6 +337,11 @@ const Emails = new mongoose.Schema(
     // size of the message in bytes when it was submitted
     // (kept after the message is redacted, see the pre-save hook below)
     size: Number,
+
+    // how long it took to deliver in milliseconds, from when it was queued
+    // (or the time it was scheduled for) to its latest successful delivery
+    // (see `helpers/get-email-delivery-time.js` and the pre-save hook below)
+    delivery_time: Number,
 
     // IP address of the client that submitted the message over SMTP or the API
     // (not set for messages we generate, e.g. bounces and auto-replies)
@@ -1252,6 +1258,10 @@ Emails.pre('save', function (next) {
             d.response.slice(0, MAX_DELIVERY_RESPONSE_LENGTH) +
             '...[truncated]';
       }
+
+      // (so My Account > Emails can be sorted by it)
+      const deliveryTime = getEmailDeliveryTime(this);
+      if (deliveryTime !== undefined) this.delivery_time = deliveryTime;
     }
 
     next();

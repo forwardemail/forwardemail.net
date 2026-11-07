@@ -147,8 +147,11 @@ test.beforeEach(async (t) => {
   t.context.imap = imap;
   t.context.imapPort = imap.server.address().port;
 
-  // (the web server shares the sqlite server's Redis, as in production)
-  t.context.webRedis = client;
+  // (the web server shares the sqlite server's Redis, as in production, with
+  // a connection of its own: the sqlite server's is closed after each test,
+  // and the web server's session store fails requests 10s after its
+  // connection closes, which would be an unhandled rejection in a later test)
+  t.context.webRedis = client.duplicate();
   await utils.setupWebServer(t);
   await utils.loginUser(t);
 });
@@ -298,14 +301,19 @@ test('the current password is required', async (t) => {
   t.is(await t.context.countQueued(), 0);
 });
 
-// the Clone modal of the alias: its fields by name
-async function getCloneForm(t) {
-  const { web, domain, alias } = t.context;
+// the Clone modal of an alias: its fields by name
+async function getCloneForm(t, alias = t.context.alias) {
+  const { web, domain } = t.context;
   const res = await web.get(`/en/my-account/domains/${domain.name}/aliases`);
   t.is(res.status, 200);
   const { document } = new JSDOM(res.text).window;
+  // (its Clone button is in the actions for small screens and in the ones
+  // for large screens)
+  const button = `[data-target="#modal-clone-alias-${alias.id}"]`;
+  t.truthy(document.querySelector(`.d-lg-none ${button}`), 'small screens');
   t.truthy(
-    document.querySelector(`[data-target="#modal-clone-alias-${alias.id}"]`)
+    document.querySelector(`td.d-lg-table-cell ${button}`),
+    'large screens'
   );
   const form = document.querySelector(`#modal-clone-alias-${alias.id} form`);
   t.truthy(form);
@@ -368,6 +376,37 @@ test('an alias without a password is cloned with its settings', async (t) => {
 
   const page = await web.get(`/en/my-account/domains/${domain.name}/aliases`);
   t.true(page.text.includes('was cloned to'));
+});
+
+test('a catch-all alias is cloned under the name entered', async (t) => {
+  const { web, domain, user } = t.context;
+  const catchAll = await t.context.aliasFactory
+    .withState({
+      user: user._id,
+      domain: domain._id,
+      name: '*',
+      recipients: [user.email],
+      description: 'Catch-all'
+    })
+    .create();
+
+  const fields = await getCloneForm(t, catchAll);
+  t.true(fields.includes('name'));
+  t.false(fields.includes('password'));
+
+  const res = await web
+    .post(`/en/my-account/domains/${domain.name}/aliases/${catchAll.id}/clone`)
+    .set('Accept', 'application/json')
+    .send({ name: 'catch-all-copy' });
+  t.is(res.status, 200);
+  const copy = await Aliases.findOne({
+    domain: domain._id,
+    name: 'catch-all-copy'
+  })
+    .lean()
+    .exec();
+  t.is(copy.description, 'Catch-all');
+  t.deepEqual(copy.recipients, [user.email]);
 });
 
 test('a name that is taken or not allowed is refused', async (t) => {

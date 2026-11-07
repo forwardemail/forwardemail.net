@@ -1587,6 +1587,10 @@
           "remote_address": {
             "type": "string",
             "description": "Alamat IP klien yang mengirim email melalui SMTP atau API."
+          },
+          "delivery_time": {
+            "type": "integer",
+            "description": "Waktu dalam milidetik sejak email dimasukkan ke antrean (atau waktu pengiriman terjadwal, jika lebih lambat) hingga pengiriman terakhirnya yang berhasil."
           }
         },
         "example": {
@@ -1611,6 +1615,7 @@
           "subject": "testing",
           "size": 1024,
           "remote_address": "203.0.113.5",
+          "delivery_time": 1234,
           "accepted": [
             "test@test1.com"
           ],
@@ -5367,6 +5372,40 @@
             "description": "Filter untuk email terjadwal (email dengan tanggal pengiriman di masa mendatang). Atur ke 'true' untuk hanya menampilkan email yang dijadwalkan untuk dikirim di masa mendatang.",
             "schema": {
               "type": "boolean"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "description": "Filter berdasarkan status: pending, queued, sent, partially_sent, deferred, bounced, atau rejected (beberapa dipisahkan dengan koma).",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "response_codes",
+            "in": "query",
+            "description": "Filter berdasarkan kode respons SMTP, misalnya 421 atau 550 (beberapa dipisahkan dengan koma). 250 menampilkan email yang terkirim ke setidaknya satu penerima.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "start_date",
+            "in": "query",
+            "description": "Hanya tampilkan email yang dibuat pada atau setelah tanggal ini (YYYY-MM-DD), dalam zona waktu akun Anda (UTC jika tidak diatur).",
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "end_date",
+            "in": "query",
+            "description": "Hanya tampilkan email yang dibuat pada atau sebelum tanggal ini (YYYY-MM-DD), dalam zona waktu akun Anda (UTC jika tidak diatur).",
+            "schema": {
+              "type": "string",
+              "format": "date"
             }
           },
           {

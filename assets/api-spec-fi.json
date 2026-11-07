@@ -1587,6 +1587,10 @@
           "remote_address": {
             "type": "string",
             "description": "Sen asiakkaan IP-osoite, joka lähetti sähköpostin SMTP:n tai API:n kautta."
+          },
+          "delivery_time": {
+            "type": "integer",
+            "description": "Aika millisekunteina siitä, kun sähköposti lisättiin jonoon (tai ajoitetusta lähetysajasta, jos se on myöhemmin), sen viimeisimpään onnistuneeseen toimitukseen."
           }
         },
         "example": {
@@ -1611,6 +1615,7 @@
           "subject": "testing",
           "size": 1024,
           "remote_address": "203.0.113.5",
+          "delivery_time": 1234,
           "accepted": [
             "test@test1.com"
           ],
@@ -5367,6 +5372,40 @@
             "description": "Suodata ajoitettujen sähköpostien (sähköpostit, joiden lähetyspäivä on tulevaisuudessa) mukaan. Aseta arvoksi 'true' näyttääksesi vain tulevaisuudessa lähetettäväksi ajoitetut sähköpostit.",
             "schema": {
               "type": "boolean"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "description": "Suodata tilan mukaan: pending, queued, sent, partially_sent, deferred, bounced tai rejected (useita pilkuilla erotettuna).",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "response_codes",
+            "in": "query",
+            "description": "Suodata SMTP-vastauskoodin mukaan, esim. 421 tai 550 (useita pilkuilla erotettuna). 250 näyttää sähköpostit, jotka on toimitettu vähintään yhdelle vastaanottajalle.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "start_date",
+            "in": "query",
+            "description": "Näytä vain sähköpostit, jotka on luotu tänä päivänä tai sen jälkeen (YYYY-MM-DD), tilisi aikavyöhykkeellä (UTC, jos sitä ei ole asetettu).",
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "end_date",
+            "in": "query",
+            "description": "Näytä vain sähköpostit, jotka on luotu tänä päivänä tai sitä ennen (YYYY-MM-DD), tilisi aikavyöhykkeellä (UTC, jos sitä ei ole asetettu).",
+            "schema": {
+              "type": "string",
+              "format": "date"
             }
           },
           {

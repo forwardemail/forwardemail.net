@@ -1,5 +1,7 @@
 extends ../../layout
 
+include ../_list-filters
+
 block body
   .container-fluid.pt-3
     .row
@@ -74,6 +76,12 @@ block body
             tr
               th= "SIZE"
               td= bytes(email.size)
+          //- (from when it was sent, or scheduled for, to its last delivery)
+          - const deliveryMs = Number.isFinite(email.delivery_time) ? email.delivery_time : getEmailDeliveryTime(email);
+          if Number.isFinite(deliveryMs) && deliveryMs > 0
+            tr
+              th= "DELIVERY TIME"
+              td: +deliveryTime(deliveryMs)
           tr
             th= "MAIL FROM"
             td= email.envelope.from

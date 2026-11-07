@@ -1587,6 +1587,10 @@
           "remote_address": {
             "type": "string",
             "description": "E-postayı SMTP veya API üzerinden gönderen istemcinin IP adresi."
+          },
+          "delivery_time": {
+            "type": "integer",
+            "description": "E-postanın kuyruğa alınmasından (veya daha sonraysa planlanan gönderim zamanından) son başarılı teslimatına kadar geçen süre (milisaniye)."
           }
         },
         "example": {
@@ -1611,6 +1615,7 @@
           "subject": "testing",
           "size": 1024,
           "remote_address": "203.0.113.5",
+          "delivery_time": 1234,
           "accepted": [
             "test@test1.com"
           ],
@@ -5367,6 +5372,40 @@
             "description": "Planlanmış e-postaları (gönderim tarihi ileride olan e-postalar) filtrele. Yalnızca gelecekte gönderilmesi planlanan e-postaları göstermek için 'true' olarak ayarlayın.",
             "schema": {
               "type": "boolean"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "description": "Duruma göre filtreleyin: pending, queued, sent, partially_sent, deferred, bounced veya rejected (birden fazlası virgülle ayrılır).",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "response_codes",
+            "in": "query",
+            "description": "SMTP yanıt koduna göre filtreleyin, ör. 421 veya 550 (birden fazlası virgülle ayrılır). 250, en az bir alıcıya teslim edilen e-postaları listeler.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "start_date",
+            "in": "query",
+            "description": "Yalnızca bu tarihte veya sonrasında (YYYY-MM-DD) oluşturulan e-postaları, hesabınızın saat diliminde (ayarlanmamışsa UTC) listeleyin.",
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "end_date",
+            "in": "query",
+            "description": "Yalnızca bu tarihte veya öncesinde (YYYY-MM-DD) oluşturulan e-postaları, hesabınızın saat diliminde (ayarlanmamışsa UTC) listeleyin.",
+            "schema": {
+              "type": "string",
+              "format": "date"
             }
           },
           {

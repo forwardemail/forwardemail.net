@@ -1587,6 +1587,10 @@
           "remote_address": {
             "type": "string",
             "description": "Adresse IP du client qui a envoyé l'e-mail via SMTP ou l'API."
+          },
+          "delivery_time": {
+            "type": "integer",
+            "description": "Durée en millisecondes entre la mise en file d'attente de l'e-mail (ou l'heure d'envoi programmée, si elle est postérieure) et sa dernière remise réussie."
           }
         },
         "example": {
@@ -1611,6 +1615,7 @@
           "subject": "testing",
           "size": 1024,
           "remote_address": "203.0.113.5",
+          "delivery_time": 1234,
           "accepted": [
             "test@test1.com"
           ],
@@ -5367,6 +5372,40 @@
             "description": "Filtrer les e-mails programmés (e-mails dont la date d'envoi est ultérieure). Activer cette option pour n'afficher que les e-mails dont l'envoi est programmé.",
             "schema": {
               "type": "boolean"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "description": "Filtrer par statut : pending, queued, sent, partially_sent, deferred, bounced ou rejected (plusieurs séparés par des virgules).",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "response_codes",
+            "in": "query",
+            "description": "Filtrer par code de réponse SMTP, par exemple 421 ou 550 (plusieurs séparés par des virgules). 250 liste les e-mails remis à au moins un destinataire.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "start_date",
+            "in": "query",
+            "description": "Lister uniquement les e-mails créés à cette date ou après (YYYY-MM-DD), dans le fuseau horaire de votre compte (UTC s'il n'est pas défini).",
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "end_date",
+            "in": "query",
+            "description": "Lister uniquement les e-mails créés à cette date ou avant (YYYY-MM-DD), dans le fuseau horaire de votre compte (UTC s'il n'est pas défini).",
+            "schema": {
+              "type": "string",
+              "format": "date"
             }
           },
           {

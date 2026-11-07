@@ -1587,6 +1587,10 @@
           "remote_address": {
             "type": "string",
             "description": "Dirección IP del cliente que envió el correo electrónico mediante SMTP o la API."
+          },
+          "delivery_time": {
+            "type": "integer",
+            "description": "Tiempo en milisegundos desde que el correo electrónico se puso en cola (o la hora programada para su envío, si es posterior) hasta su última entrega correcta."
           }
         },
         "example": {
@@ -1611,6 +1615,7 @@
           "subject": "testing",
           "size": 1024,
           "remote_address": "203.0.113.5",
+          "delivery_time": 1234,
           "accepted": [
             "test@test1.com"
           ],
@@ -5367,6 +5372,40 @@
             "description": "Filtrar por correos programados (con fecha de envío futura). Configurar como \"verdadero\" para mostrar solo los correos programados para enviarse en el futuro.",
             "schema": {
               "type": "boolean"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "description": "Filtrar por estado: pending, queued, sent, partially_sent, deferred, bounced o rejected (varios separados por comas).",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "response_codes",
+            "in": "query",
+            "description": "Filtrar por código de respuesta SMTP, p. ej., 421 o 550 (varios separados por comas). 250 muestra los correos electrónicos entregados a al menos un destinatario.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "start_date",
+            "in": "query",
+            "description": "Mostrar solo los correos electrónicos creados en esta fecha o después (YYYY-MM-DD), en la zona horaria de su cuenta (UTC si no está configurada).",
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "end_date",
+            "in": "query",
+            "description": "Mostrar solo los correos electrónicos creados en esta fecha o antes (YYYY-MM-DD), en la zona horaria de su cuenta (UTC si no está configurada).",
+            "schema": {
+              "type": "string",
+              "format": "date"
             }
           },
           {

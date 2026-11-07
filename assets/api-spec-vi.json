@@ -1587,6 +1587,10 @@
           "remote_address": {
             "type": "string",
             "description": "Địa chỉ IP của ứng dụng khách đã gửi email qua SMTP hoặc API."
+          },
+          "delivery_time": {
+            "type": "integer",
+            "description": "Thời gian tính bằng mili giây từ khi email được đưa vào hàng đợi (hoặc thời điểm đã lên lịch gửi, nếu muộn hơn) đến lần gửi thành công gần nhất."
           }
         },
         "example": {
@@ -1611,6 +1615,7 @@
           "subject": "testing",
           "size": 1024,
           "remote_address": "203.0.113.5",
+          "delivery_time": 1234,
           "accepted": [
             "test@test1.com"
           ],
@@ -5367,6 +5372,40 @@
             "description": "Lọc theo email đã lên lịch (email có ngày gửi trong tương lai). Đặt thành 'true' để chỉ hiển thị các email đã lên lịch gửi trong tương lai.",
             "schema": {
               "type": "boolean"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "description": "Lọc theo trạng thái: pending, queued, sent, partially_sent, deferred, bounced hoặc rejected (nhiều giá trị phân tách bằng dấu phẩy).",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "response_codes",
+            "in": "query",
+            "description": "Lọc theo mã phản hồi SMTP, ví dụ 421 hoặc 550 (nhiều mã phân tách bằng dấu phẩy). Mã 250 liệt kê các email đã được gửi đến ít nhất một người nhận.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "start_date",
+            "in": "query",
+            "description": "Chỉ liệt kê các email được tạo vào hoặc sau ngày này (YYYY-MM-DD), theo múi giờ của tài khoản của bạn (UTC nếu chưa đặt).",
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "end_date",
+            "in": "query",
+            "description": "Chỉ liệt kê các email được tạo vào hoặc trước ngày này (YYYY-MM-DD), theo múi giờ của tài khoản của bạn (UTC nếu chưa đặt).",
+            "schema": {
+              "type": "string",
+              "format": "date"
             }
           },
           {

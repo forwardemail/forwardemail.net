@@ -1587,6 +1587,10 @@
           "remote_address": {
             "type": "string",
             "description": "SMTP 또는 API로 이메일을 보낸 클라이언트의 IP 주소입니다."
+          },
+          "delivery_time": {
+            "type": "integer",
+            "description": "이메일이 대기열에 추가된 시점(예약된 발송 시각이 더 늦으면 그 시각)부터 마지막으로 성공적으로 전달될 때까지의 시간(밀리초)입니다."
           }
         },
         "example": {
@@ -1611,6 +1615,7 @@
           "subject": "testing",
           "size": 1024,
           "remote_address": "203.0.113.5",
+          "delivery_time": 1234,
           "accepted": [
             "test@test1.com"
           ],
@@ -5367,6 +5372,40 @@
             "description": "예약된 이메일(발송 예정일이 미래인 이메일)만 필터링합니다. 'true'로 설정하면 향후 발송 예정인 이메일만 표시됩니다.",
             "schema": {
               "type": "boolean"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "description": "상태로 필터링합니다: pending, queued, sent, partially_sent, deferred, bounced 또는 rejected (여러 개는 쉼표로 구분).",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "response_codes",
+            "in": "query",
+            "description": "SMTP 응답 코드로 필터링합니다(예: 421 또는 550, 여러 개는 쉼표로 구분). 250은 한 명 이상의 수신자에게 전달된 이메일을 표시합니다.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "start_date",
+            "in": "query",
+            "description": "이 날짜(YYYY-MM-DD) 또는 그 이후에 생성된 이메일만 표시합니다. 계정의 시간대(설정되지 않은 경우 UTC)를 기준으로 합니다.",
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "end_date",
+            "in": "query",
+            "description": "이 날짜(YYYY-MM-DD) 또는 그 이전에 생성된 이메일만 표시합니다. 계정의 시간대(설정되지 않은 경우 UTC)를 기준으로 합니다.",
+            "schema": {
+              "type": "string",
+              "format": "date"
             }
           },
           {

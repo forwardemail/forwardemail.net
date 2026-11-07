@@ -1587,6 +1587,10 @@
           "remote_address": {
             "type": "string",
             "description": "IP-adressen på den klient, der sendte e-mailen via SMTP eller API."
+          },
+          "delivery_time": {
+            "type": "integer",
+            "description": "Tid i millisekunder fra e-mailen blev sat i kø (eller det planlagte tidspunkt, hvis det er senere) til den seneste vellykkede levering."
           }
         },
         "example": {
@@ -1611,6 +1615,7 @@
           "subject": "testing",
           "size": 1024,
           "remote_address": "203.0.113.5",
+          "delivery_time": 1234,
           "accepted": [
             "test@test1.com"
           ],
@@ -5367,6 +5372,40 @@
             "description": "Filtrer efter planlagte e-mails (e-mails med fremtidig afsendelsesdato). Indstil til 'sand' for kun at vise e-mails, der er planlagt til at blive sendt i fremtiden.",
             "schema": {
               "type": "boolean"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "description": "Filtrer efter status: pending, queued, sent, partially_sent, deferred, bounced eller rejected (flere adskilt med kommaer).",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "response_codes",
+            "in": "query",
+            "description": "Filtrer efter SMTP-svarkode, f.eks. 421 eller 550 (flere adskilt med kommaer). 250 viser e-mails, der er leveret til mindst én modtager.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "start_date",
+            "in": "query",
+            "description": "Vis kun e-mails oprettet på eller efter denne dato (YYYY-MM-DD) i din kontos tidszone (UTC, hvis den ikke er angivet).",
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "end_date",
+            "in": "query",
+            "description": "Vis kun e-mails oprettet på eller før denne dato (YYYY-MM-DD) i din kontos tidszone (UTC, hvis den ikke er angivet).",
+            "schema": {
+              "type": "string",
+              "format": "date"
             }
           },
           {

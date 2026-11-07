@@ -9,6 +9,7 @@ const previewEmail = require('preview-email');
 
 const { isResendable } = require('./resend-email');
 const config = require('#config');
+const getEmailDeliveryTime = require('#helpers/get-email-delivery-time');
 const { Domains, Emails, Aliases } = require('#models');
 
 async function retrieveEmail(ctx, next) {
@@ -88,6 +89,8 @@ async function retrieveEmail(ctx, next) {
 
   // (for the Resend button)
   ctx.state.isResendable = isResendable;
+  // (for its delivery time, see app/views/my-account/emails/retrieve.pug)
+  ctx.state.getEmailDeliveryTime = getEmailDeliveryTime;
 
   // (the message is only read to be shown or downloaded, not to be removed
   // or resent)

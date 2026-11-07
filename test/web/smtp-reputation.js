@@ -67,6 +67,22 @@ function getCard(document) {
   );
 }
 
+// (on My Account > Emails it is in a modal, which a button by the header opens)
+function getModal(document) {
+  const button = document.querySelector(
+    'button[data-target="#modal-smtp-reputation"]'
+  );
+  if (!button || button.textContent.trim() !== 'Outbound SMTP Reputation')
+    return;
+  const modal = document.querySelector('#modal-smtp-reputation');
+  if (
+    modal?.querySelector('.modal-title, h4')?.textContent.trim() !==
+    'Outbound SMTP Reputation'
+  )
+    return;
+  return modal.querySelector('.modal-body');
+}
+
 function getRows(card) {
   const rows = {};
   for (const dt of card.querySelectorAll('dt'))
@@ -140,7 +156,7 @@ test('a pause after spam or virus reports is shown', async (t) => {
   const res = await web.get('/en/my-account/emails');
   t.is(res.status, 200);
   const { document } = new JSDOM(res.text).window;
-  const card = getCard(document);
+  const card = getModal(document);
   const text = card.textContent.replace(/\s+/g, ' ');
   t.regex(text, /We paused moving up to a higher tier until/);
   t.regex(text, new RegExp(dayjs(holdUntil).format('YYYY')));
@@ -171,7 +187,7 @@ test('a pause after spam or virus reports is shown', async (t) => {
     }
   );
   const res2 = await web.get('/en/my-account/emails');
-  const card2 = getCard(new JSDOM(res2.text).window.document);
+  const card2 = getModal(new JSDOM(res2.text).window.document);
   t.notRegex(card2.textContent, /paused moving up to a higher tier until/);
 });
 
@@ -228,8 +244,10 @@ test('emails page shows reputation and slowdowns', async (t) => {
   t.is(res.status, 200);
   const { document } = new JSDOM(res.text).window;
 
-  const card = getCard(document);
+  const card = getModal(document);
   t.truthy(card);
+  // (and not in a card at the top of the page)
+  t.falsy(getCard(document));
   const rows = getRows(card);
   t.is(
     rows['Daily threshold'],
@@ -283,7 +301,7 @@ test('restricted users see the restriction without next tier steps', async (t) =
   const res = await web.get('/en/my-account/emails');
   t.is(res.status, 200);
   const { document } = new JSDOM(res.text).window;
-  const card = getCard(document);
+  const card = getModal(document);
   t.regex(card.textContent, /Our team limited your outbound SMTP/);
   t.notRegex(card.textContent, /Next tier/);
   t.notRegex(card.textContent, /highest automatic tier/);
@@ -395,7 +413,7 @@ test('members of team domains see the domain threshold', async (t) => {
     .create();
 
   let res = await web.get('/en/my-account/emails');
-  let rows = getRows(getCard(new JSDOM(res.text).window.document));
+  let rows = getRows(getModal(new JSDOM(res.text).window.document));
   t.is(
     rows['Team domain threshold (highest admin)'],
     `${TIERS[3].limit.toLocaleString('en')} per day`
@@ -413,7 +431,7 @@ test('members of team domains see the domain threshold', async (t) => {
     }
   );
   res = await web.get('/en/my-account/emails');
-  rows = getRows(getCard(new JSDOM(res.text).window.document));
+  rows = getRows(getModal(new JSDOM(res.text).window.document));
   t.falsy(rows['Team domain threshold (highest admin)']);
 });
 
@@ -504,7 +522,7 @@ test('the reason for a pause and a paused lending are shown', async (t) => {
 
   const res = await web.get('/en/my-account/emails');
   t.is(res.status, 200);
-  const card = getCard(new JSDOM(res.text).window.document);
+  const card = getModal(new JSDOM(res.text).window.document);
   const text = card.textContent.replace(/\s+/g, ' ');
   t.regex(
     text,

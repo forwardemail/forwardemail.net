@@ -1,5 +1,6 @@
 include ../../_sort-header
 include ../../_pagination
+include ../_list-filters
 
 .table-responsive
   table#table-logs.table.table-hover.table-bordered.table-sm
@@ -12,11 +13,13 @@ include ../../_pagination
           +sortHeader("meta.info.messageSize", "Size", "#table-logs")
         th.text-center.align-middle.d-none.d-lg-table-cell(scope="col")
           +sortHeader("meta.info.deliveryTime", "Delivery Time", "#table-logs")
+        th.text-center.align-middle(scope="col")
+          +sortHeader("err.responseCode", "Status", "#table-logs")
         th.text-center.align-middle(scope="col")= t("Actions")
     tbody
       if logs.length === 0
         tr
-          td.alert.alert-info(colspan="5")
+          td.alert.alert-info(colspan="6")
             //- FIX: Context-aware empty state messages
             //- Show specific messages based on which filters are active
             if activeFilters && activeFilters.hasSearch
@@ -73,7 +76,9 @@ include ../../_pagination
                   li
                     span.badge.badge-pill.badge-dark= t("MAIL FROM")
                     = " "
-                    span.small: code= log.meta.session.envelope.mailFrom.address
+                    a.small(
+                      href=getFilterUrl({ q: log.meta.session.envelope.mailFrom.address })
+                    ): code= log.meta.session.envelope.mailFrom.address
                 //- RCPT TO
                 if log.meta && log.meta.session && log.meta.session.envelope && log.meta.session.envelope.rcptTo && _.isArray(log.meta.session.envelope.rcptTo) && !_.isEmpty(log.meta.session.envelope.rcptTo)
                   li
@@ -82,7 +87,7 @@ include ../../_pagination
                     ul.list-inline.d-inline-block.mb-0
                       each rcpt in log.meta.session.envelope.rcptTo
                         li.list-inline-item
-                          small: code= rcpt.address
+                          a.small(href=getFilterUrl({ q: rcpt.address })): code= rcpt.address
                 //- Delivered To / Forwarded To (destination)
                 if destAddrs.length > 0
                   li
@@ -97,7 +102,9 @@ include ../../_pagination
                   li
                     span.badge.badge-pill.badge-primary= t("From")
                     = " "
-                    span.small: code= log.meta.session.originalFromAddress
+                    a.small(
+                      href=getFilterUrl({ q: log.meta.session.originalFromAddress })
+                    ): code= log.meta.session.originalFromAddress
                 else if log.meta && log.meta.session && log.meta.session.headers && log.meta.session.headers.From
                   li
                     span.badge.badge-pill.badge-primary= t("From")
@@ -109,9 +116,10 @@ include ../../_pagination
                     span.badge.badge-pill.badge-primary= t("Subject")
                     = " "
                     span.small: code= log.meta.session.headers.Subject
-                //- Delivery Time and Message Size (visible on mobile as inline badges)
-                li.d-md-none
-                  if msgSize > 0
+                //- Message Size and Delivery Time (on small screens, as their
+                //- columns are not shown)
+                if msgSize > 0
+                  li.d-md-none
                     span.badge.badge-pill.badge-secondary
                       i.fa.fa-file.mr-1
                       if msgSize >= 1048576
@@ -120,152 +128,10 @@ include ../../_pagination
                         | #{ (msgSize / 1024).toFixed(0) } KB
                       else
                         | #{ msgSize } B
-                    = " "
-                  if deliveryMs > 0
-                    span.badge.badge-pill.badge-info
-                      i.fa.fa-clock.mr-1
-                      if deliveryMs >= 1000
-                        | #{ (deliveryMs / 1000).toFixed(1) }s
-                      else
-                        | #{ deliveryMs }ms
-                //- Response
-                li
-                  ul.list-inline.mb-0
-                    if log.meta
-                      - let badgeClass = "badge-success";
-                      - let statusCode;
-                      if log.err && log.err.responseCode
-                        - statusCode = log.err.responseCode;
-                      else if log.err && log.err.statusCode
-                        - statusCode = log.err.statusCode;
-                      else if log.err && log.err.status
-                        - statusCode = log.err.status;
-                      else if log.message === 'delivered'
-                        - statusCode = 250;
-                      //- webhooks have `200` status code
-                      if log.meta && log.meta.is_webhook && log.meta.is_webhook === true
-                        - statusCode = 200;
-
-                      if statusCode >= 500
-                        - badgeClass = "badge-danger";
-                      else if statusCode >= 400
-                        - badgeClass = "badge-warning";
-                      else if statusCode >= 300
-                        - badgeClass = "badge-primary";
-                      if statusCode
-                        li.list-inline-item.d-inline
-                          span.badge.badge-pill(class=badgeClass)= statusCode
-                    li.list-inline-item.small.d-inline
-                      small.text-monospace
-                        if log.err && log.err.envelope && log.err.envelope.to && typeof log.err.envelope.to === 'string'
-                          = "("
-                          = log.err.envelope.to
-                          = ")"
-                          = " "
-                        if log.err && log.err.isCodeBug === true
-                          = t("An unexpected internal server error has occurred")
-                        else if log.message === "delivered"
-                          if log.meta && log.meta.info && log.meta.info.pgp === true
-                            = "("
-                            = t("PGP Encrypted")
-                            = ")"
-                            = " "
-                          if log.meta && log.meta.is_webhook && log.meta.is_webhook === true
-                            = "("
-                            = t("Webhook")
-                            = ")"
-                            = " "
-                            //- Show webhook response details if available
-                            if log.meta.webhook_log
-                              br
-                              small.text-muted
-                                i.fa.fa-check-circle.mr-1
-                                = t("Status:")
-                                = " "
-                                span.badge.badge-success= log.meta.webhook_log.status_code
-                          //- TODO: log more details from `log.info`, e.g. EHLO etc
-                          if log.meta && log.meta.info && log.meta.info.response
-                            != safeAnsiHTML(log.meta.info.response)
-                          else
-                            != safeAnsiHTML(log.message)
-                        else
-                          != log.err && log.err.message ? safeAnsiHTML(log.err.message) : safeAnsiHTML(log.message)
-                      //- Show error source attribution with fallback logic
-                      if log.err
-                        br
-                        small.text-muted
-                          i.fa.fa-server.mr-1
-                          = t("Error from:")
-                          = " "
-                          if log.err.truthSource
-                            span.badge.badge-info= log.err.truthSource
-                          else if log.err.target
-                            span.badge.badge-info= log.err.target
-                          else if log.err.name === 'DenylistError'
-                            span.badge.badge-secondary= "Forward Email"
-                          else if log.err.code
-                            span.badge.badge-secondary= "Forward Email"
-                          else
-                            span.badge.badge-secondary= "Forward Email"
-                        //- Show webhook error details if available
-                        if log.err.webhook_log
-                          br
-                          small.text-muted
-                            i.fa.fa-globe.mr-1
-                            = t("Webhook:")
-                            = " "
-                            if log.err.webhook_log.status_code
-                              span.badge.badge-warning= log.err.webhook_log.status_code
-                              = " "
-                            if log.err.webhook_log.error_code
-                              span.badge.badge-danger= log.err.webhook_log.error_code
-                        //- Show bounce reason if available
-                        if log.err && log.err.bounceInfo && log.err.bounceInfo.message && log.err.bounceInfo.message !== 'Unknown'
-                          br
-                          small.text-muted
-                            i.fa.fa-info-circle.mr-1
-                            = t("Reason:")
-                            = " "
-                            span= log.err.bounceInfo.message
-                      if log.err && !log.err.isCodeBug && log.err.bounces && log.err.bounces.length > 0
-                        ul
-                          each bounce in log.err.bounces
-                            li
-                              span.badge.badge-dark.mr-1= bounce.address
-                              i.fa.fa-angle-right.mr-1
-                              if bounce.recipient && bounce.recipient.to
-                                if Array.isArray(bounce.recipient.to)
-                                  each to in bounce.recipient.to
-                                    span.badge.badge-danger.mr-1= to
-                                else
-                                  span.badge.badge-danger.mr-1= bounce.recipient.to
-                              if bounce.err && bounce.err.message
-                                span.text-monospace!= safeAnsiHTML(bounce.err.message)
-
-                              br
-
-                              //- status code
-                              - let specificStatusCode;
-                              - let specificBadgeClass = "badge-success";
-                              if bounce.err && bounce.err.statusCode
-                                - specificStatusCode = bounce.err.statusCode;
-                              else if bounce.err && bounce.err.status
-                                - specificStatusCode = bounce.err.status;
-                              else if bounce.err && bounce.err.responseCode
-                                - specificStatusCode = bounce.err.responseCode;
-
-                              if specificStatusCode
-                                if specificStatusCode >= 500
-                                  - specificBadgeClass = "badge-danger";
-                                else if specificStatusCode >= 400
-                                  - specificBadgeClass = "badge-warning";
-                                else if specificStatusCode >= 300
-                                  - specificBadgeClass = "badge-primary";
-                                span.badge.badge-pill.mr-1(class=specificBadgeClass)= specificStatusCode
-
-                              //- message
-                              if bounce.err && bounce.err.original_message
-                                span.text-monospace.mr-1= bounce.err.original_message
+                if deliveryMs > 0
+                  li.d-lg-none
+                    i.fa.fa-clock.mr-1
+                    +deliveryTime(deliveryMs)
             //- Message Size column (hidden on small screens)
             td.align-middle.text-center.text-nowrap.d-none.d-md-table-cell
               if msgSize > 0
@@ -280,18 +146,138 @@ include ../../_pagination
                 small.text-muted= "—"
             //- Delivery Time column (hidden on small/medium screens)
             td.align-middle.text-center.text-nowrap.d-none.d-lg-table-cell
-              if deliveryMs > 0
+              +deliveryTime(deliveryMs)
+            //- Status column
+            td.align-middle.small
+              -
+                const isWebhook = Boolean(log.meta && log.meta.is_webhook === true);
+                let statusCode;
+                if (log.err && log.err.responseCode) statusCode = log.err.responseCode;
+                else if (log.err && log.err.statusCode) statusCode = log.err.statusCode;
+                else if (log.err && log.err.status) statusCode = log.err.status;
+                else if (log.message === "delivered") statusCode = 250;
+                // (webhooks have a `200` status code)
+                if (isWebhook) statusCode = 200;
+                // (a code the list can be filtered by, see list-logs.js)
+                const isFilterable = isResponseCode(statusCode) && (log.message === "delivered" ? statusCode === (isWebhook ? 200 : 250) : !isWebhook && Boolean(log.err) && statusCode === log.err.responseCode);
+              if log.meta && statusCode
+                +responseCodeBadge(statusCode, isFilterable ? getFilterUrl({ response_codes: statusCode, response_code: undefined }) : undefined)
+                = " "
+              if isSANB(log.bounce_category) && log.bounce_category !== "none"
+                a.badge.badge-pill.badge-dark(
+                  href=getFilterUrl({ bounce_category: log.bounce_category })
+                )= log.bounce_category === "dmarc" ? "DMARC" : titleize(humanize(log.bounce_category))
+              .mt-1
                 small.text-monospace
-                  if deliveryMs >= 60000
-                    span.text-danger #{ (deliveryMs / 1000).toFixed(1) }s
-                  else if deliveryMs >= 10000
-                    span.text-warning #{ (deliveryMs / 1000).toFixed(1) }s
-                  else if deliveryMs >= 1000
-                    span.text-info #{ (deliveryMs / 1000).toFixed(1) }s
+                  if log.err && log.err.envelope && log.err.envelope.to && typeof log.err.envelope.to === 'string'
+                    = "("
+                    = log.err.envelope.to
+                    = ")"
+                    = " "
+                  if log.err && log.err.isCodeBug === true
+                    = t("An unexpected internal server error has occurred")
+                  else if log.message === "delivered"
+                    if log.meta && log.meta.info && log.meta.info.pgp === true
+                      = "("
+                      = t("PGP Encrypted")
+                      = ")"
+                      = " "
+                    if log.meta && log.meta.is_webhook && log.meta.is_webhook === true
+                      = "("
+                      = t("Webhook")
+                      = ")"
+                      = " "
+                      //- Show webhook response details if available
+                      if log.meta.webhook_log
+                        br
+                        small.text-muted
+                          i.fa.fa-check-circle.mr-1
+                          = t("Status:")
+                          = " "
+                          span.badge.badge-success= log.meta.webhook_log.status_code
+                    //- TODO: log more details from `log.info`, e.g. EHLO etc
+                    if log.meta && log.meta.info && log.meta.info.response
+                      != safeAnsiHTML(log.meta.info.response)
+                    else
+                      != safeAnsiHTML(log.message)
                   else
-                    span.text-success #{ deliveryMs }ms
-              else
-                small.text-muted= "—"
+                    != log.err && log.err.message ? safeAnsiHTML(log.err.message) : safeAnsiHTML(log.message)
+                //- Show error source attribution with fallback logic
+                if log.err
+                  br
+                  small.text-muted
+                    i.fa.fa-server.mr-1
+                    = t("Error from:")
+                    = " "
+                    if log.err.truthSource
+                      span.badge.badge-info= log.err.truthSource
+                    else if log.err.target
+                      span.badge.badge-info= log.err.target
+                    else if log.err.name === 'DenylistError'
+                      span.badge.badge-secondary= "Forward Email"
+                    else if log.err.code
+                      span.badge.badge-secondary= "Forward Email"
+                    else
+                      span.badge.badge-secondary= "Forward Email"
+                  //- Show webhook error details if available
+                  if log.err.webhook_log
+                    br
+                    small.text-muted
+                      i.fa.fa-globe.mr-1
+                      = t("Webhook:")
+                      = " "
+                      if log.err.webhook_log.status_code
+                        span.badge.badge-warning= log.err.webhook_log.status_code
+                        = " "
+                      if log.err.webhook_log.error_code
+                        span.badge.badge-danger= log.err.webhook_log.error_code
+                  //- Show bounce reason if available
+                  if log.err && log.err.bounceInfo && log.err.bounceInfo.message && log.err.bounceInfo.message !== 'Unknown'
+                    br
+                    small.text-muted
+                      i.fa.fa-info-circle.mr-1
+                      = t("Reason:")
+                      = " "
+                      span= log.err.bounceInfo.message
+                if log.err && !log.err.isCodeBug && log.err.bounces && log.err.bounces.length > 0
+                  ul
+                    each bounce in log.err.bounces
+                      li
+                        span.badge.badge-dark.mr-1= bounce.address
+                        i.fa.fa-angle-right.mr-1
+                        if bounce.recipient && bounce.recipient.to
+                          if Array.isArray(bounce.recipient.to)
+                            each to in bounce.recipient.to
+                              span.badge.badge-danger.mr-1= to
+                          else
+                            span.badge.badge-danger.mr-1= bounce.recipient.to
+                        if bounce.err && bounce.err.message
+                          span.text-monospace!= safeAnsiHTML(bounce.err.message)
+
+                        br
+
+                        //- status code
+                        - let specificStatusCode;
+                        - let specificBadgeClass = "badge-success";
+                        if bounce.err && bounce.err.statusCode
+                          - specificStatusCode = bounce.err.statusCode;
+                        else if bounce.err && bounce.err.status
+                          - specificStatusCode = bounce.err.status;
+                        else if bounce.err && bounce.err.responseCode
+                          - specificStatusCode = bounce.err.responseCode;
+
+                        if specificStatusCode
+                          if specificStatusCode >= 500
+                            - specificBadgeClass = "badge-danger";
+                          else if specificStatusCode >= 400
+                            - specificBadgeClass = "badge-warning";
+                          else if specificStatusCode >= 300
+                            - specificBadgeClass = "badge-primary";
+                          span.badge.badge-pill.mr-1(class=specificBadgeClass)= specificStatusCode
+
+                        //- message
+                        if bounce.err && bounce.err.original_message
+                          span.text-monospace.mr-1= bounce.err.original_message
             //- Actions column
             td.align-middle.text-center
               ul.list-inline.mb-0

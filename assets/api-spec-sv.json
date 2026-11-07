@@ -1587,6 +1587,10 @@
           "remote_address": {
             "type": "string",
             "description": "IP-adressen för klienten som skickade e-postmeddelandet via SMTP eller API:et."
+          },
+          "delivery_time": {
+            "type": "integer",
+            "description": "Tid i millisekunder från att e-postmeddelandet köades (eller den schemalagda tiden, om den är senare) till dess senaste lyckade leverans."
           }
         },
         "example": {
@@ -1611,6 +1615,7 @@
           "subject": "testing",
           "size": 1024,
           "remote_address": "203.0.113.5",
+          "delivery_time": 1234,
           "accepted": [
             "test@test1.com"
           ],
@@ -5367,6 +5372,40 @@
             "description": "Filtrera för schemalagda e-postmeddelanden (e-postmeddelanden med framtida sändningsdatum). Ställ in på \"sant\" för att endast visa e-postmeddelanden som är schemalagda att skickas i framtiden.",
             "schema": {
               "type": "boolean"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "description": "Filtrera efter status: pending, queued, sent, partially_sent, deferred, bounced eller rejected (flera separerade med kommatecken).",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "response_codes",
+            "in": "query",
+            "description": "Filtrera efter SMTP-svarskod, t.ex. 421 eller 550 (flera separerade med kommatecken). 250 visar e-postmeddelanden som har levererats till minst en mottagare.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "start_date",
+            "in": "query",
+            "description": "Visa bara e-postmeddelanden som skapades på eller efter detta datum (YYYY-MM-DD), i ditt kontos tidszon (UTC om ingen har angetts).",
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "end_date",
+            "in": "query",
+            "description": "Visa bara e-postmeddelanden som skapades på eller före detta datum (YYYY-MM-DD), i ditt kontos tidszon (UTC om ingen har angetts).",
+            "schema": {
+              "type": "string",
+              "format": "date"
             }
           },
           {

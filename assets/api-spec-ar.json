@@ -1587,6 +1587,10 @@
           "remote_address": {
             "type": "string",
             "description": "عنوان IP للعميل الذي أرسل البريد الإلكتروني عبر SMTP أو API."
+          },
+          "delivery_time": {
+            "type": "integer",
+            "description": "المدة بالمللي ثانية من إدراج البريد الإلكتروني في قائمة الانتظار (أو الوقت المجدول لإرساله، إن كان لاحقًا) حتى آخر تسليم ناجح له."
           }
         },
         "example": {
@@ -1611,6 +1615,7 @@
           "subject": "testing",
           "size": 1024,
           "remote_address": "203.0.113.5",
+          "delivery_time": 1234,
           "accepted": [
             "test@test1.com"
           ],
@@ -5367,6 +5372,40 @@
             "description": "قم بتصفية الرسائل الإلكترونية المجدولة (الرسائل التي لها تاريخ إرسال مستقبلي). اضبط الخيار على \"صحيح\" لعرض الرسائل الإلكترونية المجدولة للإرسال في المستقبل فقط.",
             "schema": {
               "type": "boolean"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "description": "التصفية حسب الحالة: pending أو queued أو sent أو partially_sent أو deferred أو bounced أو rejected (يمكن تحديد عدة حالات مفصولة بفواصل).",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "response_codes",
+            "in": "query",
+            "description": "التصفية حسب رمز استجابة SMTP، مثل 421 أو 550 (يمكن تحديد عدة رموز مفصولة بفواصل). يعرض الرمز 250 الرسائل التي سُلّمت إلى مستلم واحد على الأقل.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "start_date",
+            "in": "query",
+            "description": "عرض الرسائل التي أُنشئت في هذا التاريخ أو بعده فقط (YYYY-MM-DD)، حسب المنطقة الزمنية لحسابك (UTC إن لم تُحدَّد).",
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "end_date",
+            "in": "query",
+            "description": "عرض الرسائل التي أُنشئت في هذا التاريخ أو قبله فقط (YYYY-MM-DD)، حسب المنطقة الزمنية لحسابك (UTC إن لم تُحدَّد).",
+            "schema": {
+              "type": "string",
+              "format": "date"
             }
           },
           {

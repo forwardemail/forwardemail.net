@@ -1587,6 +1587,10 @@
           "remote_address": {
             "type": "string",
             "description": "ที่อยู่ IP ของไคลเอนต์ที่ส่งอีเมลผ่าน SMTP หรือ API"
+          },
+          "delivery_time": {
+            "type": "integer",
+            "description": "ระยะเวลาเป็นมิลลิวินาทีนับจากที่อีเมลเข้าคิว (หรือเวลาที่กำหนดให้ส่ง หากช้ากว่า) จนถึงการส่งสำเร็จครั้งล่าสุด"
           }
         },
         "example": {
@@ -1611,6 +1615,7 @@
           "subject": "testing",
           "size": 1024,
           "remote_address": "203.0.113.5",
+          "delivery_time": 1234,
           "accepted": [
             "test@test1.com"
           ],
@@ -5367,6 +5372,40 @@
             "description": "กรองอีเมลที่กำหนดเวลาส่ง (อีเมลที่มีกำหนดส่งในอนาคต) ตั้งค่าเป็น 'true' เพื่อแสดงเฉพาะอีเมลที่กำหนดเวลาส่งในอนาคตเท่านั้น",
             "schema": {
               "type": "boolean"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "description": "กรองตามสถานะ: pending, queued, sent, partially_sent, deferred, bounced หรือ rejected (หลายค่าให้คั่นด้วยเครื่องหมายจุลภาค)",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "response_codes",
+            "in": "query",
+            "description": "กรองตามรหัสตอบกลับ SMTP เช่น 421 หรือ 550 (หลายรหัสให้คั่นด้วยเครื่องหมายจุลภาค) รหัส 250 จะแสดงอีเมลที่ส่งถึงผู้รับอย่างน้อยหนึ่งราย",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "start_date",
+            "in": "query",
+            "description": "แสดงเฉพาะอีเมลที่สร้างในวันที่นี้หรือหลังจากนั้น (YYYY-MM-DD) ตามเขตเวลาของบัญชีของคุณ (UTC หากไม่ได้ตั้งค่า)",
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "end_date",
+            "in": "query",
+            "description": "แสดงเฉพาะอีเมลที่สร้างในวันที่นี้หรือก่อนหน้านั้น (YYYY-MM-DD) ตามเขตเวลาของบัญชีของคุณ (UTC หากไม่ได้ตั้งค่า)",
+            "schema": {
+              "type": "string",
+              "format": "date"
             }
           },
           {

@@ -1,0 +1,77 @@
+//- Shared by My Account → Emails and My Account → Logs
+//- (see `helpers/list-filters.js`)
+
+//- An SMTP response code colored by its class (2xx, 3xx, 4xx or 5xx), as a
+//- link that filters the list for it when `href` is given
+mixin responseCodeBadge(code, href)
+  - const badgeClass = code >= 500 ? "badge-danger" : code >= 400 ? "badge-warning" : code >= 300 ? "badge-primary" : "badge-success";
+  if href
+    a.badge.badge-pill(
+      class=badgeClass,
+      href=href,
+      data-toggle="tooltip",
+      data-placement="bottom",
+      title=t("Filter by code")
+    )= code
+  else
+    span.badge.badge-pill(class=badgeClass)= code
+
+//- How long a message took to deliver (in milliseconds), colored by how long
+mixin deliveryTime(milliseconds)
+  if Number.isFinite(milliseconds) && milliseconds > 0
+    - const className = milliseconds >= 60000 ? "text-danger" : milliseconds >= 10000 ? "text-warning" : milliseconds >= 1000 ? "text-info" : "text-success";
+    small.text-monospace(class=className)
+      if milliseconds >= 60000
+        = prettyMilliseconds(milliseconds, { unitCount: 2 })
+      else if milliseconds >= 1000
+        = `${(milliseconds / 1000).toFixed(1)}s`
+      else
+        = `${Math.round(milliseconds)}ms`
+  else
+    small.text-muted= "—"
+
+//- A dropdown by the page header to filter the list by response codes
+//- (the other filters of the list are kept)
+mixin responseCodesFilter(codes, selectedCodes)
+  - const selected = new Set(selectedCodes.map((code) => String(code)));
+  //- (a code filtered by from a row is listed even if it is no longer found)
+  - const options = _.uniq([...codes, ...selectedCodes]).sort((a, b) => a - b);
+  //- (the `ctx` of a view has no `querystring`)
+  - const search = ctx.url.includes("?") ? ctx.url.slice(ctx.url.indexOf("?") + 1) : "";
+  //- (and a repeated parameter can be written as `response_codes[0]=421`)
+  - const params = [...new URLSearchParams(search)].filter(([key]) => !["response_codes", "response_code", "page"].some((name) => key === name || key.startsWith(`${name}[`)));
+  .btn-group
+    button.btn.btn-dark.dropdown-toggle(
+      type="button",
+      data-toggle="dropdown",
+      data-boundary="window",
+      aria-haspopup="true",
+      aria-expanded="false"
+    )
+      if selectedCodes.length > 0
+        = t("Codes:")
+        = " "
+        = selectedCodes.join(", ")
+      else
+        = t("Filter by code")
+    .dropdown-menu.p-3(style="min-width: 200px")
+      h6.dropdown-header.px-0= t("Select response codes:")
+      form(method="GET", action=ctx.path)
+        each param in params
+          input(type="hidden", name=param[0], value=param[1])
+        each code in options
+          .form-check
+            input.form-check-input(
+              type="checkbox",
+              name="response_codes",
+              value=code,
+              id=`response-code-${code}`,
+              checked=selected.has(String(code))
+            )
+            label.form-check-label(for=`response-code-${code}`)= code
+        .mt-2
+          button.btn.btn-primary.btn-sm.mr-1(type="submit")= t("Apply")
+          if selectedCodes.length > 0
+            a.btn.btn-secondary.btn-sm(
+              href=getFilterUrl({ response_codes: undefined, response_code: undefined })
+            )= t("Clear")

@@ -8,6 +8,9 @@
 // the client that sent it, and a delivered or bounced message can be resent
 // (a copy is queued for all of its recipients, see #545 and #536).
 //
+// Its columns (date, sender, recipients, email, size, delivery time and
+// status) sort the list, and a status or response code in a row filters it.
+//
 
 const { Buffer } = require('node:buffer');
 const { Writable } = require('node:stream');
@@ -199,23 +202,25 @@ async function setup(t, retentionDays = 1) {
   await pify(server.listen.bind(server))(port);
   t.teardown(() => server.close());
 
-  const email = await Emails.queue({
-    message: {
-      from: `${alias.name}@${domain.name}`,
-      to: RECIPIENT,
-      subject: 'resend test',
-      text: 'resend test body'
-    },
-    user: t.context.user._id,
-    remoteAddress: CLIENT_IP
-  });
+  const queue = (subject = 'resend test') =>
+    Emails.queue({
+      message: {
+        from: `${alias.name}@${domain.name}`,
+        to: RECIPIENT,
+        subject,
+        text: 'resend test body'
+      },
+      user: t.context.user._id,
+      remoteAddress: CLIENT_IP
+    });
+  const email = await queue();
 
   const send = (id) =>
     Emails.findById(id).then((email) =>
       processEmail({ email, port, resolver, client })
     );
 
-  return { domain, alias, email, received, send };
+  return { domain, alias, email, received, send, queue };
 }
 
 function getRow(html, id) {
@@ -517,4 +522,260 @@ test("another user's message cannot be resent", async (t) => {
     .send();
   t.is(res.status, 404);
   t.falsy(await findCopy(email));
+});
+
+// a cell of a row of the list by the name of its column
+function getCell(document, tr, name) {
+  const names = [...document.querySelectorAll('thead th')].map((th) =>
+    th.textContent.trim()
+  );
+  return tr.children[names.indexOf(name)];
+}
+
+async function getList(t, query = '') {
+  const res = await t.context.web.get(`/en/my-account/emails${query}`);
+  t.is(res.status, 200);
+  const { document } = new JSDOM(res.text).window;
+  const ids = [...document.querySelectorAll('tbody tr')]
+    .map((tr) => tr.querySelector('a[href$=".eml"]'))
+    .filter(Boolean)
+    .map((a) => a.getAttribute('href').split('/').pop().replace('.eml', ''));
+  return { document, ids, text: res.text };
+}
+
+test('each email has its date, sender, recipients, size, delivery time and status', async (t) => {
+  const { alias, domain, email, send } = await setup(t);
+  await send(email._id);
+
+  // (how long it took to deliver is stored, to sort the list by it)
+  const sent = await Emails.findById(email._id).lean().exec();
+  t.is(sent.status, 'sent');
+  t.true(sent.delivery_time >= 0);
+  t.true(
+    sent.delivery_time <= Date.now() - new Date(sent.created_at).getTime()
+  );
+
+  const { document, text } = await getList(t);
+  t.deepEqual(
+    [...document.querySelectorAll('thead th')].map((th) =>
+      th.textContent.trim()
+    ),
+    [
+      'Date',
+      'From',
+      'To',
+      'Email',
+      'Size',
+      'Delivery Time',
+      'Status',
+      'Actions'
+    ]
+  );
+  const row = getRow(text, email.id);
+  const cell = (name) => getCell(row.ownerDocument, row, name);
+
+  // the sender and recipient filter the list for them
+  const from = `${alias.name}@${domain.name}`;
+  t.is(cell('From').textContent.trim(), from);
+  t.is(
+    cell('From').querySelector('a').getAttribute('href'),
+    `/en/my-account/emails?q=${encodeURIComponent(from)}`
+  );
+  t.is(cell('To').textContent.trim(), RECIPIENT);
+  t.is(
+    cell('To').querySelector('a').getAttribute('href'),
+    `/en/my-account/emails?q=${encodeURIComponent(RECIPIENT)}`
+  );
+
+  // the email is its subject (to its page) and Message-ID
+  const subject = cell('Email').querySelector(
+    `a[href="/en/my-account/emails/${email.id}"]`
+  );
+  t.is(subject.textContent, 'resend test');
+  t.true(cell('Email').textContent.includes(email.messageId));
+  t.true(cell('Email').textContent.includes(CLIENT_IP));
+  t.is(cell('Size').textContent.trim(), bytes(email.size));
+
+  // its status and the response, each filtering the list for it
+  const status = cell('Status').querySelector('a.badge-success');
+  t.is(status.textContent, 'Sent');
+  t.is(status.getAttribute('href'), '/en/my-account/emails?status=sent');
+  const code = cell('Status').querySelector('a.badge-pill');
+  t.is(code.textContent, '250');
+  t.is(code.getAttribute('href'), '/en/my-account/emails?response_codes=250');
+
+  // its delivery time is colored by how long it took
+  await Emails.findByIdAndUpdate(email._id, {
+    $set: { delivery_time: 75_000 }
+  });
+  const list = await getList(t);
+  const time = getCell(
+    list.document,
+    getRow(list.text, email.id),
+    'Delivery Time'
+  );
+  t.is(time.textContent.trim(), '1m 15s');
+  t.truthy(time.querySelector('.text-danger'));
+
+  // (as on the page of the email)
+  const res = await t.context.web.get(`/en/my-account/emails/${email.id}`);
+  t.is(res.status, 200);
+  const page = new JSDOM(res.text).window.document;
+  const th = [...page.querySelectorAll('th')].find(
+    (th) => th.textContent === 'DELIVERY TIME'
+  );
+  t.is(th.nextElementSibling.textContent.trim(), '1m 15s');
+});
+
+test('the list is filtered by status, response code and date and sorted by its columns', async (t) => {
+  const { email, queue, send } = await setup(t);
+  await send(email._id);
+  const bounced = await queue('bounce test');
+  await Emails.findByIdAndUpdate(bounced._id, {
+    $set: {
+      status: 'bounced',
+      hard_bounces: [RECIPIENT],
+      rejectedErrors: [
+        {
+          recipient: RECIPIENT,
+          responseCode: 550,
+          response: '550 5.1.1 Mailbox unavailable'
+        }
+      ]
+    }
+  });
+  await Emails.findByIdAndUpdate(email._id, {
+    $set: { size: 100, delivery_time: 5000 }
+  });
+  await Emails.findByIdAndUpdate(bounced._id, { $set: { size: 200 } });
+
+  // by status
+  let list = await getList(t, '?status=bounced');
+  t.deepEqual(list.ids, [bounced.id]);
+  list = await getList(t, '?status=sent');
+  t.deepEqual(list.ids, [email.id]);
+  // (one that does not exist is ignored)
+  list = await getList(t, '?status=nonsense');
+  t.is(list.ids.length, 2);
+
+  // by response code (250 for each recipient it was delivered to)
+  list = await getList(t, '?response_codes=550');
+  t.deepEqual(list.ids, [bounced.id]);
+  list = await getList(t, '?response_codes=250');
+  t.deepEqual(list.ids, [email.id]);
+  list = await getList(t, '?response_codes=250,550');
+  t.is(list.ids.length, 2);
+  // (the code in the row of the bounced email filters for it)
+  const row = getRow(list.text, bounced.id);
+  const code = getCell(list.document, row, 'Status').querySelector(
+    'a.badge-danger.badge-pill'
+  );
+  t.is(code.textContent, '550');
+  t.is(code.getAttribute('href'), '/en/my-account/emails?response_codes=550');
+  t.true(row.textContent.includes('550 5.1.1 Mailbox unavailable'));
+
+  // (several, as the table forms write them, or with spaces)
+  list = await getList(
+    t,
+    '?response_codes%5B0%5D=250&response_codes%5B1%5D=550'
+  );
+  t.is(list.ids.length, 2);
+  list = await getList(t, '?status=sent,%20bounced');
+  t.is(list.ids.length, 2);
+
+  // (and when the table is refreshed by itself)
+  const res = await t.context.web
+    .get('/en/my-account/emails?status=bounced')
+    .set('Accept', 'application/json');
+  t.is(res.status, 200);
+  t.true(res.body.table.includes(bounced.id));
+  t.false(res.body.table.includes(email.id));
+
+  // by the date it was sent (a day in the time zone of the user, UTC)
+  const day = (days) =>
+    dayjs.utc(email.created_at).add(days, 'day').format('YYYY-MM-DD');
+  const today = day(0);
+  const tomorrow = day(1);
+  const yesterday = day(-1);
+  list = await getList(t, `?start_date=${today}&end_date=${today}`);
+  t.is(list.ids.length, 2);
+  list = await getList(t, `?start_date=${tomorrow}`);
+  t.deepEqual(list.ids, []);
+  t.true(list.text.includes('No emails exist for that search.'));
+  list = await getList(t, `?end_date=${yesterday}`);
+  t.deepEqual(list.ids, []);
+
+  // sorted by each column
+  list = await getList(t, '?sort=size');
+  t.deepEqual(list.ids, [email.id, bounced.id]);
+  list = await getList(t, '?sort=-size');
+  t.deepEqual(list.ids, [bounced.id, email.id]);
+  list = await getList(t, '?sort=-delivery_time');
+  t.deepEqual(list.ids, [email.id, bounced.id]);
+  list = await getList(t, '?sort=status');
+  t.deepEqual(list.ids, [bounced.id, email.id]);
+  list = await getList(t, '?sort=-subject');
+  t.deepEqual(list.ids, [email.id, bounced.id]);
+  list = await getList(t, '?sort=envelope.from');
+  t.is(list.ids.length, 2);
+
+  // the header has the filters, and clears them
+  list = await getList(t, '?status=bounced&sort=-size');
+  const getButtons = (document) =>
+    new Set(
+      [...document.querySelectorAll('.dropdown-toggle')].map((button) =>
+        button.textContent.trim()
+      )
+    );
+  t.true(getButtons(list.document).has('Status: Bounced'));
+  const statuses = [
+    ...list.document.querySelectorAll('.dropdown-menu a.dropdown-item')
+  ].find((a) => a.textContent === 'Sent');
+  t.is(
+    statuses.getAttribute('href'),
+    '/en/my-account/emails?sort=-size&status=sent'
+  );
+  // (the codes filtered by from a row, to change or clear)
+  t.is(list.document.querySelector('input[name="response_codes"]'), null);
+  const codes = await getList(t, '?response_codes=550&sort=-size');
+  t.true(getButtons(codes.document).has('Codes: 550'));
+  const box = codes.document.querySelector('input[name="response_codes"]');
+  t.is(box.value, '550');
+  t.true(box.checked);
+  t.is(box.form.querySelector('input[name="sort"]').value, '-size');
+  const clear = [...list.document.querySelectorAll('a.btn')].find(
+    (a) => a.textContent.trim() === 'Clear filters'
+  );
+  t.is(clear.getAttribute('href'), '/en/my-account/emails');
+  list = await getList(t);
+  t.false(list.text.includes('Clear filters'));
+});
+
+test('the dates of the list are days in the time zone of the user', async (t) => {
+  const { email } = await setup(t);
+  await Users.updateOne(
+    { _id: t.context.user._id },
+    { $set: { timezone: 'America/Los_Angeles' } }
+  );
+  // yesterday at 3 AM UTC, the evening before in Los Angeles
+  const createdAt = dayjs.utc().subtract(1, 'day').startOf('day').add(3, 'h');
+  await Emails.collection.updateOne(
+    { _id: email._id },
+    { $set: { created_at: createdAt.toDate(), date: createdAt.toDate() } }
+  );
+  const local = createdAt.tz('America/Los_Angeles').format('YYYY-MM-DD');
+  const utc = createdAt.format('YYYY-MM-DD');
+  t.not(local, utc);
+
+  let list = await getList(t, `?start_date=${local}&end_date=${local}`);
+  t.deepEqual(list.ids, [email.id]);
+  list = await getList(t, `?start_date=${utc}&end_date=${utc}`);
+  t.deepEqual(list.ids, []);
+});
+
+test('the list of a user without domains has nothing to filter', async (t) => {
+  for (const query of ['', '?status=sent&response_codes=550&sort=size']) {
+    const { text } = await getList(t, query);
+    t.true(text.includes('No emails have been stored yet.'), `${query}`);
+  }
 });

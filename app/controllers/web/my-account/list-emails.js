@@ -28,6 +28,14 @@ const getSmtpReputationSummary = require('#helpers/get-smtp-reputation-summary')
 
 const { canSendSmtp } = getSmtpReputationSummary;
 const getAllowedSort = require('#helpers/get-allowed-sort');
+const getEmailDeliveryTime = require('#helpers/get-email-delivery-time');
+const {
+  getFilterUrl,
+  getQueryValues,
+  isResponseCode,
+  parseDateRange,
+  parseResponseCodes
+} = require('#helpers/list-filters');
 const { Domains, Emails, Aliases, Users } = require('#models');
 
 // Cap count at 10,000 like list-logs to improve performance
@@ -37,14 +45,26 @@ const EMAIL_SORT_FIELDS = new Set([
   'created_at',
   'date',
   'status',
-  'subject'
+  'subject',
+  'envelope.from',
+  'size',
+  'delivery_time'
 ]);
+const EMAIL_STATUSES = Emails.schema.path('status').enumValues;
+
+// (each recipient an email was delivered to is shown with a 250 response)
+const ACCEPTED_CODE = 250;
 
 async function listEmails(ctx, next) {
   const isAliasAuth = Boolean(ctx.state?.session?.db);
 
   // (for the Resend button)
   ctx.state.isResendable = isResendable;
+  // (for the table, see app/views/my-account/emails/_table.pug)
+  ctx.state.getEmailDeliveryTime = getEmailDeliveryTime;
+  ctx.state.getFilterUrl = (changes) => getFilterUrl(ctx, changes);
+  ctx.state.isResponseCode = isResponseCode;
+  ctx.state.emailStatuses = EMAIL_STATUSES;
   let domains = [];
   let aliases = [];
   let count = 0;
@@ -166,8 +186,6 @@ async function listEmails(ctx, next) {
       ctx.state.smtpReputation = await getSmtpReputationSummary(ctx.state.user);
   }
 
-  // TODO: status filter
-
   // Ensure user has at least one alias or domain to prevent empty queries
   if (aliases.length === 0 && domains.length === 0) {
     ctx.state.emails = [];
@@ -274,12 +292,63 @@ async function listEmails(ctx, next) {
     }
   }
 
+  //
+  // filters (the status, a response code or a date in the table filters it
+  // by that, see app/views/my-account/emails/_table.pug)
+  //
+  const filters = [];
+
+  // ?status=bounced (or several, e.g. ?status=deferred,bounced)
+  const statuses = _.uniq(
+    getQueryValues(ctx.query, 'status').filter((status) =>
+      EMAIL_STATUSES.includes(status)
+    )
+  );
+  if (statuses.length > 0) filters.push({ status: { $in: statuses } });
+  ctx.state.statuses = statuses;
+
+  // ?response_codes=421,550 (as on My Account > Logs)
+  const responseCodes = parseResponseCodes(ctx.query);
+  if (responseCodes.length > 0) {
+    const $or = [];
+    const errorCodes = responseCodes.filter((code) => code !== ACCEPTED_CODE);
+    if (errorCodes.length > 0)
+      $or.push({ 'rejectedErrors.responseCode': { $in: errorCodes } });
+    if (responseCodes.includes(ACCEPTED_CODE))
+      $or.push({ 'accepted.0': { $exists: true } });
+    filters.push({ $or });
+  }
+
+  ctx.state.selectedResponseCodes = responseCodes;
+
+  // ?start_date=2026-01-01&end_date=2026-01-31 (when it was sent to us, in
+  // the time zone the Date column is shown in)
+  const createdAt = parseDateRange(
+    ctx.query.start_date,
+    ctx.query.end_date,
+    ctx.state.user?.timezone
+  );
+  if (createdAt) filters.push({ created_at: createdAt });
+
+  if (filters.length > 0) query = { $and: [query, ...filters] };
+
+  // (for "Clear filters" and the message when nothing matches)
+  ctx.state.hasFilters =
+    filters.length > 0 ||
+    isSANB(ctx.query.q) ||
+    isSANB(ctx.query.domain) ||
+    isSANB(ctx.query.is_scheduled);
+
   // Only pass documented account-email fields to the database sort option.
-  const sortField = getAllowedSort(
+  let sortField = getAllowedSort(
     ctx.query.sort,
     EMAIL_SORT_FIELDS,
     ctx.api ? 'created_at' : '-created_at'
   );
+  // (emails with the same size, status, etc. stay in the same order across
+  // pages, newest first)
+  if (sortField.replace(/^-/, '') !== 'created_at')
+    sortField = `${sortField} -created_at`;
 
   // For search queries: fetch emails and do comprehensive search in memory
   if (isSANB(ctx.query.q)) {

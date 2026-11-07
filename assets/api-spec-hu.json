@@ -1587,6 +1587,10 @@
           "remote_address": {
             "type": "string",
             "description": "Az e-mailt SMTP-n vagy az API-n keresztül elküldő kliens IP-címe."
+          },
+          "delivery_time": {
+            "type": "integer",
+            "description": "Az e-mail sorba állításától (vagy a későbbi ütemezett küldési időponttól) a legutóbbi sikeres kézbesítéséig eltelt idő ezredmásodpercben."
           }
         },
         "example": {
@@ -1611,6 +1615,7 @@
           "subject": "testing",
           "size": 1024,
           "remote_address": "203.0.113.5",
+          "delivery_time": 1234,
           "accepted": [
             "test@test1.com"
           ],
@@ -5367,6 +5372,40 @@
             "description": "Szűrés ütemezett e-mailekre (jövőbeli küldési dátummal rendelkező e-mailek). Állítsa „true” értékre, ha csak a jövőben küldendő e-maileket szeretné megjeleníteni.",
             "schema": {
               "type": "boolean"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "description": "Szűrés állapot szerint: pending, queued, sent, partially_sent, deferred, bounced vagy rejected (több érték vesszővel elválasztva).",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "response_codes",
+            "in": "query",
+            "description": "Szűrés SMTP-válaszkód szerint, pl. 421 vagy 550 (több kód vesszővel elválasztva). A 250 azokat az e-maileket listázza, amelyeket legalább egy címzettnek kézbesítettek.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "start_date",
+            "in": "query",
+            "description": "Csak az ezen a napon vagy ezt követően létrehozott e-mailek listázása (YYYY-MM-DD), a fiókod időzónájában (UTC, ha nincs beállítva).",
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "end_date",
+            "in": "query",
+            "description": "Csak az ezen a napon vagy ezt megelőzően létrehozott e-mailek listázása (YYYY-MM-DD), a fiókod időzónájában (UTC, ha nincs beállítva).",
+            "schema": {
+              "type": "string",
+              "format": "date"
             }
           },
           {

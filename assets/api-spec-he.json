@@ -1587,6 +1587,10 @@
           "remote_address": {
             "type": "string",
             "description": "כתובת ה-IP של הלקוח ששלח את הדוא\"ל דרך SMTP או ה-API."
+          },
+          "delivery_time": {
+            "type": "integer",
+            "description": "הזמן באלפיות שנייה מרגע הכנסת הדוא״ל לתור (או מהמועד שתוזמן לשליחה, אם הוא מאוחר יותר) ועד המסירה המוצלחת האחרונה שלו."
           }
         },
         "example": {
@@ -1611,6 +1615,7 @@
           "subject": "testing",
           "size": 1024,
           "remote_address": "203.0.113.5",
+          "delivery_time": 1234,
           "accepted": [
             "test@test1.com"
           ],
@@ -5367,6 +5372,40 @@
             "description": "סנן עבור אימיילים מתוזמנים (אימיילים עם תאריך שליחה עתידי). הגדר ל-'true' כדי להציג רק אימיילים המתוזמנים לשליחה בעתיד.",
             "schema": {
               "type": "boolean"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "description": "סינון לפי סטטוס: pending, queued, sent, partially_sent, deferred, bounced או rejected (כמה ערכים מופרדים בפסיקים).",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "response_codes",
+            "in": "query",
+            "description": "סינון לפי קוד תגובת SMTP, למשל 421 או 550 (כמה קודים מופרדים בפסיקים). הקוד 250 מציג הודעות דוא״ל שנמסרו לנמען אחד לפחות.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "start_date",
+            "in": "query",
+            "description": "הצגת הודעות דוא״ל שנוצרו בתאריך זה או אחריו בלבד (YYYY-MM-DD), לפי אזור הזמן של החשבון שלך (UTC אם לא הוגדר).",
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "end_date",
+            "in": "query",
+            "description": "הצגת הודעות דוא״ל שנוצרו בתאריך זה או לפניו בלבד (YYYY-MM-DD), לפי אזור הזמן של החשבון שלך (UTC אם לא הוגדר).",
+            "schema": {
+              "type": "string",
+              "format": "date"
             }
           },
           {

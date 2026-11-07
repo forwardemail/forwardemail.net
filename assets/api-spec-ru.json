@@ -1587,6 +1587,10 @@
           "remote_address": {
             "type": "string",
             "description": "IP-адрес клиента, отправившего письмо через SMTP или API."
+          },
+          "delivery_time": {
+            "type": "integer",
+            "description": "Время в миллисекундах с момента постановки письма в очередь (или запланированного времени отправки, если оно позже) до его последней успешной доставки."
           }
         },
         "example": {
@@ -1611,6 +1615,7 @@
           "subject": "testing",
           "size": 1024,
           "remote_address": "203.0.113.5",
+          "delivery_time": 1234,
           "accepted": [
             "test@test1.com"
           ],
@@ -5367,6 +5372,40 @@
             "description": "Фильтр для запланированных писем (письм с будущей датой отправки). Установите значение «true», чтобы отображались только письма, запланированные к отправке в будущем.",
             "schema": {
               "type": "boolean"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "description": "Фильтр по статусу: pending, queued, sent, partially_sent, deferred, bounced или rejected (несколько значений через запятую).",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "response_codes",
+            "in": "query",
+            "description": "Фильтр по коду ответа SMTP, например 421 или 550 (несколько кодов через запятую). Код 250 показывает письма, доставленные хотя бы одному получателю.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "start_date",
+            "in": "query",
+            "description": "Показывать только письма, созданные в эту дату или позже (YYYY-MM-DD), в часовом поясе вашей учётной записи (UTC, если он не задан).",
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "end_date",
+            "in": "query",
+            "description": "Показывать только письма, созданные в эту дату или раньше (YYYY-MM-DD), в часовом поясе вашей учётной записи (UTC, если он не задан).",
+            "schema": {
+              "type": "string",
+              "format": "date"
             }
           },
           {
