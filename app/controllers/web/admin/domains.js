@@ -99,6 +99,21 @@ async function list(ctx) {
     }
   }
 
+  // hide domains whose admins are all banned
+  const bannedIds = await Users.distinct('_id', {
+    [config.userFields.isBanned]: true
+  });
+  query = {
+    $and: [
+      query,
+      {
+        members: {
+          $elemMatch: { group: 'admin', user: { $nin: bannedIds } }
+        }
+      }
+    ]
+  };
+
   const [domains, itemCount] = await Promise.all([
     // eslint-disable-next-line unicorn/no-array-callback-reference
     Domains.find(query)

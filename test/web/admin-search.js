@@ -163,3 +163,58 @@ test.serial('an email downloaded as .eml is an attachment', async (t) => {
     new RegExp(`^attachment; filename="${insertedId}\\.eml"`)
   );
 });
+
+test.serial(
+  'admin domains hides domains whose admins are all banned',
+  async (t) => {
+    const { web, user, other, tag } = t.context;
+
+    // team plan so a domain can have more than one admin
+    for (const u of [user, other]) {
+      u.plan = 'team';
+      u[config.userFields.planSetAt] = new Date();
+      u[config.userFields.planExpiresAt] = new Date(Date.now() + 86_400_000);
+    }
+
+    await user.save();
+    other[config.userFields.isBanned] = true;
+    await other.save();
+
+    const banned = await t.context.domainFactory
+      .withState({
+        name: `banned-${tag}.example.com`,
+        plan: 'free',
+        members: [{ user: other._id, group: 'admin' }]
+      })
+      .create();
+
+    const shared = await t.context.domainFactory
+      .withState({
+        name: `shared-${tag}.example.com`,
+        plan: 'team',
+        skip_verification: true,
+        members: [
+          { user: other._id, group: 'admin' },
+          { user: user._id, group: 'admin' }
+        ]
+      })
+      .create();
+
+    for (const query of [
+      { name: tag },
+      {
+        mongodb_query: JSON.stringify({
+          name: { $in: [banned.name, shared.name] }
+        })
+      }
+    ]) {
+      const res = await web
+        .get('/en/admin/domains')
+        .query(query)
+        .set('Accept', 'application/json');
+      t.is(res.status, 200);
+      t.false(res.body.table.includes(banned.name));
+      t.true(res.body.table.includes(shared.name));
+    }
+  }
+);
