@@ -120,6 +120,7 @@ router
 
   // spam
   .get('/spam', paginate.middleware(10, 50), web.admin.spam.list)
+  .get('/spam/stats', web.admin.spam.stats)
 
   // jobs
   .get('/jobs', paginate.middleware(10, 50), web.admin.jobs.list)

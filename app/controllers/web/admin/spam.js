@@ -3,183 +3,314 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
-const paginate = require('koa-ctx-paginate');
+const { isIP } = require('node:net');
+
+const Boom = require('@hapi/boom');
 const dayjs = require('dayjs-with-plugins');
+const isSANB = require('is-string-and-not-blank');
+const ms = require('ms');
+const paginate = require('koa-ctx-paginate');
+const _ = require('#helpers/lodash');
 
 const getMongoQuery = require('#helpers/get-mongo-query');
+const getAllowedSort = require('#helpers/get-allowed-sort');
 const { Logs } = require('#models');
 
-const MAX_TIME_MS = 10000;
-
-// Cap count at 10,000 to improve performance on large collections
+const MAX_TIME_MS = ms('30s');
 const MAX_COUNT_LIMIT = 10_000;
 
-async function list(ctx) {
-  const userQuery = getMongoQuery(ctx);
+// the top lists are drawn from the most recent spam logs in the range
+const SAMPLE_SIZE = 10_000;
 
-  // Build base query: always filter to spam bounce category
-  const query = { ...userQuery, bounce_category: 'spam' };
+const SORT_FIELDS = new Set(['created_at']);
 
-  // Parse filter params
-  const { ip, hostname, start_date, end_date } = ctx.query;
+// the connecting client, not our own server (`meta.app`)
+const IP_FIELD = 'meta.session.remoteAddress';
+const HOSTNAME_FIELD = 'meta.session.resolvedClientHostname';
 
-  if (ip) query['meta.app.ip'] = ip;
-  if (hostname) query['meta.app.hostname'] = hostname;
+// (see the Logs model; one for each filter, with the range and its sort)
+const SPAM_INDEX = { bounce_category: 1, created_at: 1 };
+const IP_INDEX = { bounce_category: 1, [IP_FIELD]: 1, created_at: 1 };
+const HOSTNAME_INDEX = {
+  bounce_category: 1,
+  [HOSTNAME_FIELD]: 1,
+  created_at: 1
+};
 
-  // Date range filter (defaults to last 7 days)
-  const endDate = end_date ? dayjs(end_date).endOf('day').toDate() : new Date();
-  const startDate = start_date
-    ? dayjs(start_date).startOf('day').toDate()
+const MAX_RANGE = ms('366d');
+
+const DATE_REGEX = /^\d{4}-\d{2}-\d{2}$/;
+
+function parseDate(value, name) {
+  if (value === undefined || value === '') return;
+  if (typeof value !== 'string' || !DATE_REGEX.test(value))
+    throw Boom.badRequest(`Invalid ${name}`);
+  const date = dayjs.utc(value, 'YYYY-MM-DD', true);
+  if (!date.isValid()) throw Boom.badRequest(`Invalid ${name}`);
+  return date;
+}
+
+//
+// Filters shared by the table and the statistics: the spam category, the
+// client IP and hostname, the date range (UTC days, the last 7 days by
+// default) and the MongoDB query from the search form.
+//
+function getFilters(ctx) {
+  const { ip, hostname } = ctx.query;
+  const filters = {};
+
+  if (ip !== undefined && ip !== '') {
+    if (typeof ip !== 'string' || !isIP(ip))
+      throw Boom.badRequest('Invalid IP address');
+    filters.ip = ip;
+  }
+
+  if (hostname !== undefined && hostname !== '') {
+    if (typeof hostname !== 'string' || hostname.length > 253)
+      throw Boom.badRequest('Invalid hostname');
+    filters.hostname = hostname;
+  }
+
+  const end = parseDate(ctx.query.end_date, 'end date');
+  const start = parseDate(ctx.query.start_date, 'start date');
+  const endDate = end ? end.endOf('day').toDate() : new Date();
+  const startDate = start
+    ? start.startOf('day').toDate()
     : dayjs(endDate).subtract(7, 'day').toDate();
+  if (startDate > endDate)
+    throw Boom.badRequest('Start date must be before end date');
+  if (endDate - startDate > MAX_RANGE)
+    throw Boom.badRequest('Date range must be at most a year');
 
-  query.created_at = { $gte: startDate, $lte: endDate };
+  // everything except the date range (for the summary counts)
+  const base = { bounce_category: 'spam' };
+  if (filters.ip) base[IP_FIELD] = filters.ip;
+  if (filters.hostname) base[HOSTNAME_FIELD] = filters.hostname;
 
-  // Determine time bucket format based on range span
-  const rangeDays = dayjs(endDate).diff(dayjs(startDate), 'day');
-  const dateFormat = rangeDays <= 3 ? '%Y-%m-%dT%H:00' : '%Y-%m-%d';
+  //
+  // Hint the index for the filters (the planner may otherwise choose one
+  // without `created_at`, and sort or scan every spam log); a MongoDB query
+  // is left to the planner.
+  //
+  const mongoQuery = getMongoQuery(ctx);
+  const hint = _.isEmpty(mongoQuery)
+    ? filters.ip
+      ? IP_INDEX
+      : filters.hostname
+      ? HOSTNAME_INDEX
+      : SPAM_INDEX
+    : undefined;
+  const withQuery = (match) =>
+    _.isEmpty(mongoQuery) ? match : { $and: [match, mongoQuery] };
 
-  // Queries for 24h/7d/30d summary counts
-  const now = new Date();
-  const baseMatch = { bounce_category: 'spam' };
-  if (ip) baseMatch['meta.app.ip'] = ip;
-  if (hostname) baseMatch['meta.app.hostname'] = hostname;
+  return {
+    filters,
+    startDate,
+    endDate,
+    hint,
+    withQuery,
+    query: withQuery({
+      ...base,
+      created_at: { $gte: startDate, $lte: endDate }
+    }),
+    base
+  };
+}
 
-  const [
-    logs,
-    itemCount,
-    timeline,
-    topIPs,
-    topErrors,
-    topHostnames,
-    count24h,
-    count7d,
-    count30d
-  ] = await Promise.all([
-    // Paginated logs
-    // eslint-disable-next-line unicorn/no-array-callback-reference
-    Logs.find(query)
-      .hint({ bounce_category: 1, domains: 1, created_at: 1 })
-      .limit(ctx.query.limit)
-      .skip(ctx.paginate.skip)
-      .sort(ctx.query.sort || '-created_at')
-      .select(
-        'created_at meta.app.ip meta.app.hostname err.message err.responseCode err.statusCode err.status message domains'
-      )
-      .lean()
-      .maxTimeMS(MAX_TIME_MS)
-      .exec(),
-    // Item count
-    Logs.countDocuments(query, {
-      hint: { bounce_category: 1, domains: 1, created_at: 1 },
-      maxTimeMS: MAX_TIME_MS
-    }),
-    // Spam over time
-    Logs.aggregate([
-      { $match: query },
-      {
-        $group: {
-          _id: { $dateToString: { format: dateFormat, date: '$created_at' } },
-          count: { $sum: 1 }
-        }
-      },
-      { $sort: { _id: 1 } }
-    ]).option({
-      hint: { bounce_category: 1, domains: 1, created_at: 1 },
-      maxTimeMS: MAX_TIME_MS
-    }),
-    // Top IPs
-    Logs.aggregate([
-      { $match: query },
-      { $group: { _id: '$meta.app.ip', count: { $sum: 1 } } },
-      { $sort: { count: -1 } },
-      { $limit: 10 }
-    ]).option({
-      hint: { bounce_category: 1, domains: 1, created_at: 1 },
-      maxTimeMS: MAX_TIME_MS
-    }),
-    // Top error messages
-    Logs.aggregate([
-      { $match: query },
-      { $group: { _id: '$err.message', count: { $sum: 1 } } },
-      { $sort: { count: -1 } },
-      { $limit: 10 }
-    ]).option({
-      hint: { bounce_category: 1, domains: 1, created_at: 1 },
-      maxTimeMS: MAX_TIME_MS
-    }),
-    // Top hostnames
-    Logs.aggregate([
-      { $match: query },
-      { $group: { _id: '$meta.app.hostname', count: { $sum: 1 } } },
-      { $sort: { count: -1 } },
-      { $limit: 10 }
-    ]).option({
-      hint: { bounce_category: 1, domains: 1, created_at: 1 },
-      maxTimeMS: MAX_TIME_MS
-    }),
-    // 24h count
-    Logs.countDocuments(
-      {
-        ...baseMatch,
-        created_at: { $gte: dayjs(now).subtract(24, 'hour').toDate() }
-      },
-      {
-        hint: { bounce_category: 1, domains: 1, created_at: 1 },
-        maxTimeMS: MAX_TIME_MS
-      }
-    ),
-    // 7d count
-    Logs.countDocuments(
-      {
-        ...baseMatch,
-        created_at: { $gte: dayjs(now).subtract(7, 'day').toDate() }
-      },
-      {
-        hint: { bounce_category: 1, domains: 1, created_at: 1 },
-        maxTimeMS: MAX_TIME_MS
-      }
-    ),
-    // 30d count
-    Logs.countDocuments(
-      {
-        ...baseMatch,
-        created_at: { $gte: dayjs(now).subtract(30, 'day').toDate() }
-      },
-      {
-        hint: { bounce_category: 1, domains: 1, created_at: 1 },
-        maxTimeMS: MAX_TIME_MS
-      }
+// query string for the filter links (keeps the range and other filters)
+function getSearch(ctx, changes) {
+  const params = new URLSearchParams();
+  for (const key of [
+    'ip',
+    'hostname',
+    'start_date',
+    'end_date',
+    'mongodb_query'
+  ]) {
+    const value = key in changes ? changes[key] : ctx.query[key];
+    if (isSANB(value)) params.set(key, value);
+  }
+
+  return params.toString();
+}
+
+async function list(ctx) {
+  const { query, hint, startDate, endDate, filters } = getFilters(ctx);
+
+  // (no deep pagination past the capped count)
+  const skip = Math.max(
+    0,
+    Math.min(ctx.paginate.skip, MAX_COUNT_LIMIT - ctx.query.limit)
+  );
+
+  // eslint-disable-next-line unicorn/no-array-callback-reference
+  let findQuery = Logs.find(query)
+    .select(
+      `id created_at message err meta.level ${IP_FIELD} ${HOSTNAME_FIELD}`
     )
+    .sort(getAllowedSort(ctx.query.sort, SORT_FIELDS, '-created_at'))
+    .skip(skip)
+    .limit(ctx.query.limit)
+    .lean()
+    .maxTimeMS(MAX_TIME_MS);
+  if (hint) findQuery = findQuery.hint(hint);
+
+  const [logs, itemCount] = await Promise.all([
+    findQuery.exec(),
+    Logs.aggregate(
+      [{ $match: query }, { $limit: MAX_COUNT_LIMIT }, { $count: 'total' }],
+      { maxTimeMS: MAX_TIME_MS, ...(hint ? { hint } : {}) }
+    ).then((result) => result[0]?.total || 0)
   ]);
 
-  // Cap the item count to prevent UI issues with very large result sets
-  const cappedItemCount = Math.min(itemCount, MAX_COUNT_LIMIT);
-  const pageCount = Math.ceil(cappedItemCount / ctx.query.limit);
-
-  const renderData = {
+  const pageCount = Math.ceil(itemCount / ctx.query.limit);
+  const path = ctx.state.l('/admin/spam');
+  const data = {
     logs,
     pageCount,
-    itemCount: cappedItemCount,
-    timeline,
-    topIPs,
-    topErrors,
-    topHostnames,
-    count24h,
-    count7d,
-    count30d,
-    startDate: dayjs(startDate).format('YYYY-MM-DD'),
-    endDate: dayjs(endDate).format('YYYY-MM-DD'),
-    filterIP: ip || '',
-    filterHostname: hostname || '',
+    itemCount,
+    // (a client's link keeps the range and the other filters)
+    filterHref: (key, value) => `${path}?${getSearch(ctx, { [key]: value })}`,
     pages: paginate.getArrayPages(ctx)(6, pageCount, ctx.query.page)
   };
 
-  if (ctx.accepts('html')) return ctx.render('admin/spam', renderData);
+  if (ctx.accepts('html'))
+    return ctx.render('admin/spam', {
+      ...data,
+      startDate: dayjs.utc(startDate).format('YYYY-MM-DD'),
+      endDate: dayjs.utc(endDate).format('YYYY-MM-DD'),
+      filterIP: filters.ip || '',
+      filterHostname: filters.hostname || ''
+    });
 
-  const table = await ctx.render('admin/spam/_table', renderData);
-  ctx.body = { table };
+  ctx.body = { table: await ctx.render('admin/spam/_table', data) };
+}
+
+//
+// A statistic that times out (or fails) is shown as unavailable instead of
+// failing the others.
+//
+async function settle(ctx, promise) {
+  try {
+    return await promise;
+  } catch (err) {
+    ctx.logger.warn(err);
+    return null;
+  }
+}
+
+function count(match, hint) {
+  return Logs.countDocuments(match, {
+    maxTimeMS: MAX_TIME_MS,
+    ...(hint ? { hint } : {})
+  });
+}
+
+//
+// Spam over time, hourly for ranges up to three days, otherwise daily, with
+// a bucket (zero or not) for every hour or day of the range in UTC.
+//
+async function getTimeline(query, hint, startDate, endDate) {
+  const unit = endDate - startDate <= ms('3d') ? 'hour' : 'day';
+  const [format, mongoFormat] =
+    unit === 'hour'
+      ? ['YYYY-MM-DD HH:00', '%Y-%m-%d %H:00']
+      : ['YYYY-MM-DD', '%Y-%m-%d'];
+
+  const results = await Logs.aggregate(
+    [
+      { $match: query },
+      {
+        $group: {
+          _id: { $dateToString: { format: mongoFormat, date: '$created_at' } },
+          count: { $sum: 1 }
+        }
+      }
+    ],
+    { maxTimeMS: MAX_TIME_MS, ...(hint ? { hint } : {}) }
+  );
+  const counts = new Map(results.map((r) => [r._id, r.count]));
+
+  const categories = [];
+  const end = dayjs.utc(endDate);
+  for (
+    let date = dayjs.utc(startDate).startOf(unit);
+    !date.isAfter(end);
+    date = date.add(1, unit)
+  ) {
+    categories.push(date.format(format));
+  }
+
+  return {
+    unit,
+    categories,
+    counts: categories.map((key) => counts.get(key) || 0)
+  };
+}
+
+// top client IPs, hostnames and errors of the most recent spam logs
+async function getTop(query, hint) {
+  const top = (field) => [
+    { $group: { _id: `$${field}`, count: { $sum: 1 } } },
+    { $sort: { count: -1, _id: 1 } },
+    { $limit: 10 }
+  ];
+  const [result] = await Logs.aggregate(
+    [
+      { $match: query },
+      { $sort: { created_at: -1 } },
+      { $limit: SAMPLE_SIZE },
+      {
+        $facet: {
+          ips: top(IP_FIELD),
+          hostnames: top(HOSTNAME_FIELD),
+          errors: top('err.message')
+        }
+      }
+    ],
+    { maxTimeMS: MAX_TIME_MS, ...(hint ? { hint } : {}) }
+  );
+  return result;
+}
+
+async function stats(ctx) {
+  const { query, base, withQuery, hint, startDate, endDate } = getFilters(ctx);
+  const now = Date.now();
+  const since = (duration) =>
+    withQuery({ ...base, created_at: { $gte: new Date(now - duration) } });
+
+  const [lastHour, lastDay, timeline, top] = await Promise.all([
+    settle(ctx, count(since(ms('1h')), hint)),
+    settle(ctx, count(since(ms('1d')), hint)),
+    settle(ctx, getTimeline(query, hint, startDate, endDate)),
+    settle(ctx, getTop(query, hint))
+  ]);
+
+  // (the range's count is the sum of its timeline, not a second scan)
+  const inRange = timeline && timeline.counts.reduce((a, b) => a + b, 0);
+
+  const path = ctx.state.l('/admin/spam');
+  const withLinks = (items, key) =>
+    (items || []).map((item) => ({
+      ...item,
+      href: item._id ? `${path}?${getSearch(ctx, { [key]: item._id })}` : null
+    }));
+
+  ctx.body = {
+    html: await ctx.render('admin/spam/_stats', {
+      lastHour,
+      lastDay,
+      inRange,
+      timeline,
+      sampleSize: SAMPLE_SIZE,
+      topIPs: top && withLinks(top.ips, 'ip'),
+      topHostnames: top && withLinks(top.hostnames, 'hostname'),
+      topErrors: top && top.errors
+    })
+  };
 }
 
 module.exports = {
-  list
+  list,
+  stats
 };

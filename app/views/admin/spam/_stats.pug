@@ -1,0 +1,62 @@
+mixin statCard(title, value)
+  .col-md-4.mb-3
+    .card.text-center.h-100
+      .card-body
+        .h5.card-title= title
+        p.display-4.mb-0
+          if typeof value === "number"
+            = value.toLocaleString()
+          else
+            span.text-muted(title=t("Unavailable")) &mdash;
+
+mixin topTable(title, heading, items)
+  .card.h-100
+    .card-body
+      .h5.card-title= title
+      if !items
+        p.text-muted.mb-0= t("Unavailable.")
+      else if items.length === 0
+        p.text-muted.mb-0= t("No spam logs found for that search.")
+      else
+        .table-responsive
+          table.table.table-sm.table-bordered.mb-0
+            thead.thead-dark
+              tr
+                th= heading
+                th.text-right= t("Count")
+            tbody
+              each item in items
+                tr
+                  td.text-break
+                    if item.href
+                      a(href=item.href): code= item._id
+                    else if item._id
+                      code= item._id
+                    else
+                      span.text-muted= t("Unknown")
+                  td.text-right= item.count.toLocaleString()
+
+.row
+  +statCard(t("Last hour"), lastHour)
+  +statCard(t("Last 24 hours"), lastDay)
+  +statCard(t("Selected range"), inRange)
+
+.card.mb-3
+  .card-body
+    .h5.card-title
+      = t("Spam over time")
+      if timeline
+        small.text-muted.ml-2= timeline.unit === "hour" ? t("(hourly, UTC)") : t("(daily, UTC)")
+    if !timeline
+      p.text-muted.mb-0= t("Unavailable.")
+    else
+      #spam-timeline-chart(data-chart=JSON.stringify(timeline))
+
+p.small.text-muted= t("Top lists are of the most recent %s spam logs in the range.", sampleSize.toLocaleString())
+.row
+  .col-lg-6.mb-3
+    +topTable(t("Top client IP addresses"), t("IP address"), topIPs)
+  .col-lg-6.mb-3
+    +topTable(t("Top client hostnames"), t("Hostname"), topHostnames)
+.mb-3
+  +topTable(t("Top error messages"), t("Error message"), topErrors)

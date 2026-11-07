@@ -315,6 +315,18 @@ Logs.index({ bounce_category: 1, domains: 1, 'meta.app.hostname': 1 });
 Logs.index({ bounce_category: 1, domains: 1, 'meta.app.hostname': 1 });
 Logs.index({ bounce_category: 1, domains: 1, 'meta.app.ip': 1 });
 Logs.index({ bounce_category: 1, domains: 1, created_at: 1 }); // admin
+// admin > spam (all spam, or that of a connecting client, in a date range)
+Logs.index({ bounce_category: 1, created_at: 1 });
+Logs.index({
+  bounce_category: 1,
+  'meta.session.remoteAddress': 1,
+  created_at: 1
+});
+Logs.index({
+  bounce_category: 1,
+  'meta.session.resolvedClientHostname': 1,
+  created_at: 1
+});
 Logs.index({ bounce_category: 1, domains: 1, created_at: 1, user: 1 }); // non-admin
 Logs.index({
   domains: 1,
