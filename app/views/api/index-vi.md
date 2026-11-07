@@ -488,8 +488,8 @@ Lưu ý rằng endpoint này không trả về giá trị thuộc tính cho `mes
 
 | Tham số Querystring | Bắt buộc | Loại                      | Mô tả                                                                                                                                               |
 | ------------------- | -------- | ------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `q`                 | Không    | Chuỗi (hỗ trợ RegExp)     | Tìm kiếm email theo metadata                                                                                                                       |
-| `domain`            | Không    | Chuỗi (hỗ trợ RegExp)     | Tìm kiếm email theo tên miền                                                                                                                       |
+| `q`                 | Không    | Chuỗi                     | Tìm kiếm email theo metadata                                                                                                                       |
+| `domain`            | Không    | Chuỗi                     | Tìm kiếm email theo tên miền                                                                                                                       |
 | `sort`              | Không    | Chuỗi                     | Sắp xếp theo một trường cụ thể (thêm dấu gạch ngang `-` ở đầu để sắp xếp theo chiều ngược lại của trường đó). Mặc định là `created_at` nếu không đặt. |
 | `page`              | Không    | Số                        | Xem [Phân trang](#pagination) để biết thêm chi tiết                                                                                                |
 | `limit`             | Không    | Số                        | Xem [Phân trang](#pagination) để biết thêm chi tiết                                                                                                |
@@ -611,8 +611,8 @@ curl -X DELETE BASE_URI/v1/emails/:id \
 
 | Tham số truy vấn       | Bắt buộc | Loại                      | Mô tả                                                                                                                                               |
 | --------------------- | -------- | ------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `q`                   | Không    | Chuỗi (hỗ trợ RegExp)     | Tìm kiếm tên miền theo tên                                                                                                                         |
-| `name`                | Không    | Chuỗi (hỗ trợ RegExp)     | Tìm kiếm tên miền theo tên                                                                                                                         |
+| `q`                   | Không    | Chuỗi                     | Tìm kiếm tên miền theo tên                                                                                                                         |
+| `name`                | Không    | Chuỗi                     | Tìm kiếm tên miền theo tên                                                                                                                         |
 | `sort`                | Không    | Chuỗi                    | Sắp xếp theo trường cụ thể (thêm dấu gạch ngang `-` ở đầu để sắp xếp theo chiều ngược lại). Mặc định là `created_at` nếu không đặt.               |
 | `page`                | Không    | Số                       | Xem [Phân trang](#pagination) để hiểu rõ hơn                                                                                                      |
 | `limit`               | Không    | Số                       | Xem [Phân trang](#pagination) để hiểu rõ hơn                                                                                                      |
@@ -874,9 +874,9 @@ curl -X POST BASE_URI/v1/domains/DOMAIN_NAME/aliases/ALIAS_ID/generate-password 
 
 | Tham số Chuỗi truy vấn | Bắt buộc | Loại                      | Mô tả                                                                                                                                               |
 | --------------------- | -------- | ------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `q`                   | Không    | Chuỗi (hỗ trợ RegExp)     | Tìm kiếm bí danh trong một miền theo tên, nhãn hoặc người nhận                                                                                     |
-| `name`                | Không    | Chuỗi (hỗ trợ RegExp)     | Tìm kiếm bí danh trong một miền theo tên                                                                                                          |
-| `recipient`           | Không    | Chuỗi (hỗ trợ RegExp)     | Tìm kiếm bí danh trong một miền theo người nhận                                                                                                   |
+| `q`                   | Không    | Chuỗi                     | Tìm kiếm bí danh trong một miền theo tên, nhãn hoặc người nhận                                                                                     |
+| `name`                | Không    | Chuỗi                     | Tìm kiếm bí danh trong một miền theo tên                                                                                                          |
+| `recipient`           | Không    | Chuỗi                     | Tìm kiếm bí danh trong một miền theo người nhận                                                                                                   |
 | `sort`                | Không    | Chuỗi                    | Sắp xếp theo một trường cụ thể (thêm dấu gạch ngang đơn `-` để sắp xếp theo hướng ngược lại của trường đó). Mặc định là `created_at` nếu không đặt. |
 | `page`                | Không    | Số                       | Xem [Phân trang](#pagination) để biết thêm chi tiết                                                                                                |
 | `limit`               | Không    | Số                       | Xem [Phân trang](#pagination) để biết thêm chi tiết                                                                                                |

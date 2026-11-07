@@ -6563,7 +6563,7 @@
           {
             "name": "q",
             "in": "query",
-            "description": "Pesquise aliases em um domínio por nome, rótulo ou destinatário (compatível com expressões regulares).",
+            "description": "Pesquise aliases em um domínio por nome, rótulo ou destinatário.",
             "required": false,
             "schema": {
               "type": "string"
@@ -6572,7 +6572,7 @@
           {
             "name": "name",
             "in": "query",
-            "description": "Pesquise aliases em um domínio pelo nome (com suporte a expressões regulares).",
+            "description": "Pesquise aliases em um domínio pelo nome.",
             "required": false,
             "schema": {
               "type": "string"
@@ -6581,7 +6581,7 @@
           {
             "name": "recipient",
             "in": "query",
-            "description": "Pesquisa por aliases em um domínio por destinatário (compatível com expressões regulares)",
+            "description": "Pesquisa por aliases em um domínio por destinatário",
             "required": false,
             "schema": {
               "type": "string"

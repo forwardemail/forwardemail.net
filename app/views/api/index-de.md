@@ -488,8 +488,8 @@ Um diese Eigenschaften und ihre Werte zurückzugeben, verwenden Sie bitte den [E
 
 | Querystring-Parameter | Erforderlich | Typ                      | Beschreibung                                                                                                                                      |
 | --------------------- | ----------- | ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `q`                   | Nein        | String (RegExp unterstützt) | Suche nach E-Mails anhand von Metadaten                                                                                                          |
-| `domain`              | Nein        | String (RegExp unterstützt) | Suche nach E-Mails anhand des Domainnamens                                                                                                       |
+| `q`                   | Nein        | String                      | Suche nach E-Mails anhand von Metadaten                                                                                                          |
+| `domain`              | Nein        | String                      | Suche nach E-Mails anhand des Domainnamens                                                                                                       |
 | `sort`                | Nein        | String                   | Sortieren nach einem bestimmten Feld (mit einem einzelnen Bindestrich `-` vorangestellt, um in umgekehrter Reihenfolge zu sortieren). Standardmäßig `created_at`, falls nicht gesetzt. |
 | `page`                | Nein        | Zahl                     | Siehe [Pagination](#pagination) für weitere Informationen                                                                                        |
 | `limit`               | Nein        | Zahl                     | Siehe [Pagination](#pagination) für weitere Informationen                                                                                        |
@@ -611,8 +611,8 @@ curl -X DELETE BASE_URI/v1/emails/:id \
 
 | Querystring-Parameter | Erforderlich | Typ                      | Beschreibung                                                                                                                                      |
 | --------------------- | ----------- | ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `q`                   | Nein        | String (RegExp unterstützt) | Suche nach Domains anhand des Namens                                                                                                             |
-| `name`                | Nein        | String (RegExp unterstützt) | Suche nach Domains anhand des Namens                                                                                                             |
+| `q`                   | Nein        | String                      | Suche nach Domains anhand des Namens                                                                                                             |
+| `name`                | Nein        | String                      | Suche nach Domains anhand des Namens                                                                                                             |
 | `sort`                | Nein        | String                   | Sortierung nach einem bestimmten Feld (mit einem vorangestellten Bindestrich `-` wird in umgekehrter Reihenfolge sortiert). Standard ist `created_at`, falls nicht gesetzt. |
 | `page`                | Nein        | Zahl                     | Siehe [Pagination](#pagination) für weitere Informationen                                                                                        |
 | `limit`               | Nein        | Zahl                     | Siehe [Pagination](#pagination) für weitere Informationen                                                                                        |
@@ -874,9 +874,9 @@ curl -X POST BASE_URI/v1/domains/DOMAIN_NAME/aliases/ALIAS_ID/generate-password 
 
 | Querystring-Parameter | Erforderlich | Typ                       | Beschreibung                                                                                                                                    |
 | --------------------- | ----------- | ------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
-| `q`                   | Nein        | String (RegExp unterstützt) | Suche nach Aliassen in einer Domain nach Name, Label oder Empfänger                                                                             |
-| `name`                | Nein        | String (RegExp unterstützt) | Suche nach Aliassen in einer Domain nach Name                                                                                                  |
-| `recipient`           | Nein        | String (RegExp unterstützt) | Suche nach Aliassen in einer Domain nach Empfänger                                                                                             |
+| `q`                   | Nein        | String                      | Suche nach Aliassen in einer Domain nach Name, Label oder Empfänger                                                                             |
+| `name`                | Nein        | String                      | Suche nach Aliassen in einer Domain nach Name                                                                                                  |
+| `recipient`           | Nein        | String                      | Suche nach Aliassen in einer Domain nach Empfänger                                                                                             |
 | `sort`                | Nein        | String                    | Sortierung nach einem bestimmten Feld (mit einem einzelnen Bindestrich `-` vorangestellt, um in umgekehrter Reihenfolge zu sortieren). Standardmäßig `created_at`, falls nicht gesetzt. |
 | `page`                | Nein        | Zahl                      | Siehe [Pagination](#pagination) für weitere Informationen                                                                                      |
 | `limit`               | Nein        | Zahl                      | Siehe [Pagination](#pagination) für weitere Informationen                                                                                      |

@@ -6563,7 +6563,7 @@
           {
             "name": "q",
             "in": "query",
-            "description": "חיפוש כינויים בדומיין לפי שם, תווית או נמען (נתמך על ידי RegExp)",
+            "description": "חיפוש כינויים בדומיין לפי שם, תווית או נמען",
             "required": false,
             "schema": {
               "type": "string"
@@ -6572,7 +6572,7 @@
           {
             "name": "name",
             "in": "query",
-            "description": "חיפוש כינויים בדומיין לפי שם (נתמך RegExp)",
+            "description": "חיפוש כינויים בדומיין לפי שם",
             "required": false,
             "schema": {
               "type": "string"
@@ -6581,7 +6581,7 @@
           {
             "name": "recipient",
             "in": "query",
-            "description": "חיפוש כינויים בדומיין לפי נמען (נתמך RegExp)",
+            "description": "חיפוש כינויים בדומיין לפי נמען",
             "required": false,
             "schema": {
               "type": "string"

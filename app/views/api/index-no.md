@@ -488,8 +488,8 @@ For å returnere disse egenskapene og deres verdier, vennligst bruk [Hent e-post
 
 | Querystring Parameter | Påkrevd | Type                      | Beskrivelse                                                                                                                                      |
 | --------------------- | ------- | ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `q`                   | Nei     | String (RegExp støttes)   | Søk etter e-poster basert på metadata                                                                                                           |
-| `domain`              | Nei     | String (RegExp støttes)   | Søk etter e-poster basert på domenenavn                                                                                                         |
+| `q`                   | Nei     | String                    | Søk etter e-poster basert på metadata                                                                                                           |
+| `domain`              | Nei     | String                    | Søk etter e-poster basert på domenenavn                                                                                                         |
 | `sort`                | Nei     | String                    | Sorter etter et spesifikt felt (prefiks med et enkelt bindestrek `-` for å sortere i motsatt retning av det feltet). Standard er `created_at` hvis ikke satt. |
 | `page`                | Nei     | Number                    | Se [Paginering](#pagination) for mer informasjon                                                                                               |
 | `limit`               | Nei     | Number                    | Se [Paginering](#pagination) for mer informasjon                                                                                               |
@@ -611,8 +611,8 @@ curl -X DELETE BASE_URI/v1/emails/:id \
 
 | Spørringsparameter     | Obligatorisk | Type                      | Beskrivelse                                                                                                                                      |
 | --------------------- | ----------- | ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `q`                   | Nei         | String (RegExp støttes)   | Søk etter domener etter navn                                                                                                                    |
-| `name`                | Nei         | String (RegExp støttes)   | Søk etter domener etter navn                                                                                                                    |
+| `q`                   | Nei         | String                    | Søk etter domener etter navn                                                                                                                    |
+| `name`                | Nei         | String                    | Søk etter domener etter navn                                                                                                                    |
 | `sort`                | Nei         | String                    | Sorter etter et spesifikt felt (prefiks med et enkelt bindestrek `-` for å sortere i motsatt retning av det feltet). Standard er `created_at` hvis ikke satt. |
 | `page`                | Nei         | Number                    | Se [Paginering](#pagination) for mer informasjon                                                                                               |
 | `limit`               | Nei         | Number                    | Se [Paginering](#pagination) for mer informasjon                                                                                               |
@@ -874,9 +874,9 @@ curl -X POST BASE_URI/v1/domains/DOMAIN_NAME/aliases/ALIAS_ID/generate-password 
 
 | Spørringsparameter | Obligatorisk | Type                      | Beskrivelse                                                                                                                                      |
 | ------------------ | ------------ | ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `q`                | Nei          | String (RegExp støttes)   | Søk etter aliaser i et domene etter navn, etikett eller mottaker                                                                                 |
-| `name`             | Nei          | String (RegExp støttes)   | Søk etter aliaser i et domene etter navn                                                                                                        |
-| `recipient`        | Nei          | String (RegExp støttes)   | Søk etter aliaser i et domene etter mottaker                                                                                                   |
+| `q`                | Nei          | String                    | Søk etter aliaser i et domene etter navn, etikett eller mottaker                                                                                 |
+| `name`             | Nei          | String                    | Søk etter aliaser i et domene etter navn                                                                                                        |
+| `recipient`        | Nei          | String                    | Søk etter aliaser i et domene etter mottaker                                                                                                   |
 | `sort`             | Nei          | String                    | Sorter etter et spesifikt felt (prefiks med et enkelt bindestrek `-` for å sortere i motsatt retning av det feltet). Standard er `created_at` hvis ikke satt. |
 | `page`             | Nei          | Nummer                    | Se [Paginering](#pagination) for mer informasjon                                                                                               |
 | `limit`            | Nei          | Nummer                    | Se [Paginering](#pagination) for mer informasjon                                                                                               |

@@ -6563,7 +6563,7 @@
           {
             "name": "q",
             "in": "query",
-            "description": "Søg efter aliasser i et domæne efter navn, etiket eller modtager (RegExp understøttes)",
+            "description": "Søg efter aliasser i et domæne efter navn, etiket eller modtager",
             "required": false,
             "schema": {
               "type": "string"
@@ -6572,7 +6572,7 @@
           {
             "name": "name",
             "in": "query",
-            "description": "Søg efter aliasser i et domæne efter navn (RegExp understøttes)",
+            "description": "Søg efter aliasser i et domæne efter navn",
             "required": false,
             "schema": {
               "type": "string"
@@ -6581,7 +6581,7 @@
           {
             "name": "recipient",
             "in": "query",
-            "description": "Søg efter aliasser i et domæne efter modtager (RegExp understøttes)",
+            "description": "Søg efter aliasser i et domæne efter modtager",
             "required": false,
             "schema": {
               "type": "string"

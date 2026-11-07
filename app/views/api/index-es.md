@@ -488,8 +488,8 @@ Para devolver esas propiedades y sus valores, utilice el endpoint [Recuperar cor
 
 | Parámetro de consulta | Obligatorio | Tipo                      | Descripción                                                                                                                                      |
 | --------------------- | ----------- | ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `q`                   | No          | String (RegExp soportado) | Buscar correos por metadatos                                                                                                                    |
-| `domain`              | No          | String (RegExp soportado) | Buscar correos por nombre de dominio                                                                                                           |
+| `q`                   | No          | String                    | Buscar correos por metadatos                                                                                                                    |
+| `domain`              | No          | String                    | Buscar correos por nombre de dominio                                                                                                           |
 | `sort`                | No          | String                    | Ordenar por un campo específico (prefijar con un guion simple `-` para ordenar en dirección inversa a ese campo). Por defecto es `created_at` si no se establece. |
 | `page`                | No          | Number                    | Ver [Paginación](#pagination) para más detalles                                                                                                 |
 | `limit`               | No          | Number                    | Ver [Paginación](#pagination) para más detalles                                                                                                 |
@@ -611,8 +611,8 @@ curl -X DELETE BASE_URI/v1/emails/:id \
 
 | Parámetro de consulta | Obligatorio | Tipo                      | Descripción                                                                                                                                      |
 | --------------------- | ----------- | ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `q`                   | No          | Cadena (RegExp soportado) | Buscar dominios por nombre                                                                                                                       |
-| `name`                | No          | Cadena (RegExp soportado) | Buscar dominios por nombre                                                                                                                       |
+| `q`                   | No          | Cadena                    | Buscar dominios por nombre                                                                                                                       |
+| `name`                | No          | Cadena                    | Buscar dominios por nombre                                                                                                                       |
 | `sort`                | No          | Cadena                    | Ordenar por un campo específico (prefijar con un guion simple `-` para ordenar en dirección inversa de ese campo). Por defecto es `created_at` si no se establece. |
 | `page`                | No          | Número                    | Ver [Paginación](#pagination) para más detalles                                                                                                 |
 | `limit`               | No          | Número                    | Ver [Paginación](#pagination) para más detalles                                                                                                 |
@@ -874,9 +874,9 @@ curl -X POST BASE_URI/v1/domains/DOMAIN_NAME/aliases/ALIAS_ID/generate-password 
 
 | Parámetro de consulta | Obligatorio | Tipo                      | Descripción                                                                                                                                      |
 | --------------------- | ----------- | ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `q`                   | No          | String (RegExp soportado) | Buscar alias en un dominio por nombre, etiqueta o destinatario                                                                                   |
-| `name`                | No          | String (RegExp soportado) | Buscar alias en un dominio por nombre                                                                                                           |
-| `recipient`           | No          | String (RegExp soportado) | Buscar alias en un dominio por destinatario                                                                                                     |
+| `q`                   | No          | String                    | Buscar alias en un dominio por nombre, etiqueta o destinatario                                                                                   |
+| `name`                | No          | String                    | Buscar alias en un dominio por nombre                                                                                                           |
+| `recipient`           | No          | String                    | Buscar alias en un dominio por destinatario                                                                                                     |
 | `sort`                | No          | String                    | Ordenar por un campo específico (prefijar con un guion simple `-` para ordenar en dirección inversa a ese campo). Por defecto es `created_at` si no se establece. |
 | `page`                | No          | Número                    | Ver [Paginación](#pagination) para más detalles                                                                                                |
 | `limit`               | No          | Número                    | Ver [Paginación](#pagination) para más detalles                                                                                                |

@@ -6563,7 +6563,7 @@
           {
             "name": "q",
             "in": "query",
-            "description": "Bir etki alanındaki takma adları ad, etiket veya alıcıya göre arayın (RegExp desteklenir)",
+            "description": "Bir etki alanındaki takma adları ad, etiket veya alıcıya göre arayın",
             "required": false,
             "schema": {
               "type": "string"
@@ -6572,7 +6572,7 @@
           {
             "name": "name",
             "in": "query",
-            "description": "Bir etki alanındaki takma adları adına göre arayın (RegExp desteklenir)",
+            "description": "Bir etki alanındaki takma adları adına göre arayın",
             "required": false,
             "schema": {
               "type": "string"
@@ -6581,7 +6581,7 @@
           {
             "name": "recipient",
             "in": "query",
-            "description": "Alıcıya göre bir etki alanındaki takma adları arayın (RegExp desteklenir)",
+            "description": "Alıcıya göre bir etki alanındaki takma adları arayın",
             "required": false,
             "schema": {
               "type": "string"

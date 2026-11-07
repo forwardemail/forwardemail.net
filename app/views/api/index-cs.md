@@ -488,8 +488,8 @@ Pro vrácení těchto vlastností a jejich hodnot použijte prosím endpoint [Z�
 
 | Parametr dotazu       | Povinný | Typ                       | Popis                                                                                                                                               |
 | --------------------- | ------- | ------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `q`                   | Ne      | String (podpora RegExp)   | Vyhledávání emailů podle metadat                                                                                                                  |
-| `domain`              | Ne      | String (podpora RegExp)   | Vyhledávání emailů podle domény                                                                                                                   |
+| `q`                   | Ne      | String                    | Vyhledávání emailů podle metadat                                                                                                                  |
+| `domain`              | Ne      | String                    | Vyhledávání emailů podle domény                                                                                                                   |
 | `sort`                | Ne      | String                    | Řazení podle konkrétního pole (předpona s jedním pomlčkou `-` znamená řazení v opačném směru). Výchozí je `created_at`, pokud není nastaveno.     |
 | `page`                | Ne      | Číslo                     | Viz [Stránkování](#pagination) pro více informací                                                                                                |
 | `limit`               | Ne      | Číslo                     | Viz [Stránkování](#pagination) pro více informací                                                                                                |
@@ -611,8 +611,8 @@ curl -X DELETE BASE_URI/v1/emails/:id \
 
 | Parametr dotazu        | Povinný | Typ                       | Popis                                                                                                                                            |
 | ---------------------- | ------- | ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `q`                    | Ne      | Řetězec (podporuje RegExp) | Vyhledávání domén podle názvu                                                                                                                    |
-| `name`                 | Ne      | Řetězec (podporuje RegExp) | Vyhledávání domén podle názvu                                                                                                                    |
+| `q`                    | Ne      | Řetězec                    | Vyhledávání domén podle názvu                                                                                                                    |
+| `name`                 | Ne      | Řetězec                    | Vyhledávání domén podle názvu                                                                                                                    |
 | `sort`                 | Ne      | Řetězec                   | Řazení podle konkrétního pole (přidejte předponu s jedním pomlčkou `-` pro řazení v opačném směru). Výchozí je `created_at`, pokud není nastaveno. |
 | `page`                 | Ne      | Číslo                     | Viz [Stránkování](#pagination) pro více informací                                                                                               |
 | `limit`                | Ne      | Číslo                     | Viz [Stránkování](#pagination) pro více informací                                                                                               |
@@ -874,9 +874,9 @@ curl -X POST BASE_URI/v1/domains/DOMAIN_NAME/aliases/ALIAS_ID/generate-password 
 
 | Parametr dotazu       | Povinný | Typ                       | Popis                                                                                                                                               |
 | --------------------- | ------- | ------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `q`                   | Ne      | Řetězec (podpora RegExp)  | Vyhledávání aliasů v doméně podle jména, štítku nebo příjemce                                                                                      |
-| `name`                | Ne      | Řetězec (podpora RegExp)  | Vyhledávání aliasů v doméně podle jména                                                                                                           |
-| `recipient`           | Ne      | Řetězec (podpora RegExp)  | Vyhledávání aliasů v doméně podle příjemce                                                                                                        |
+| `q`                   | Ne      | Řetězec                   | Vyhledávání aliasů v doméně podle jména, štítku nebo příjemce                                                                                      |
+| `name`                | Ne      | Řetězec                   | Vyhledávání aliasů v doméně podle jména                                                                                                           |
+| `recipient`           | Ne      | Řetězec                   | Vyhledávání aliasů v doméně podle příjemce                                                                                                        |
 | `sort`                | Ne      | Řetězec                   | Řazení podle konkrétního pole (přidejte předponu s jedním pomlčkou `-` pro řazení v opačném směru). Výchozí je `created_at`, pokud není nastaveno. |
 | `page`                | Ne      | Číslo                     | Viz [Stránkování](#pagination) pro více informací                                                                                                |
 | `limit`               | Ne      | Číslo                     | Viz [Stránkování](#pagination) pro více informací                                                                                                |

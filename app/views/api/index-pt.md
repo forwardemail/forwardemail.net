@@ -488,8 +488,8 @@ Para retornar essas propriedades e seus valores, use o endpoint [Recuperar email
 
 | Parâmetro Querystring | Obrigatório | Tipo                      | Descrição                                                                                                                                      |
 | --------------------- | ----------- | ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `q`                   | Não         | String (RegExp suportado) | Pesquisa emails por metadados                                                                                                                    |
-| `domain`              | Não         | String (RegExp suportado) | Pesquisa emails por nome de domínio                                                                                                             |
+| `q`                   | Não         | String                    | Pesquisa emails por metadados                                                                                                                    |
+| `domain`              | Não         | String                    | Pesquisa emails por nome de domínio                                                                                                             |
 | `sort`                | Não         | String                    | Ordena por um campo específico (prefixe com um hífen único `-` para ordenar na direção inversa desse campo). Padrão é `created_at` se não definido. |
 | `page`                | Não         | Número                    | Veja [Paginação](#pagination) para mais detalhes                                                                                               |
 | `limit`               | Não         | Número                    | Veja [Paginação](#pagination) para mais detalhes                                                                                               |
@@ -611,8 +611,8 @@ curl -X DELETE BASE_URI/v1/emails/:id \
 
 | Parâmetro da Querystring | Obrigatório | Tipo                      | Descrição                                                                                                                                      |
 | ------------------------ | ----------- | ------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
-| `q`                      | Não         | String (RegExp suportado) | Buscar domínios pelo nome                                                                                                                     |
-| `name`                   | Não         | String (RegExp suportado) | Buscar domínios pelo nome                                                                                                                     |
+| `q`                      | Não         | String                    | Buscar domínios pelo nome                                                                                                                     |
+| `name`                   | Não         | String                    | Buscar domínios pelo nome                                                                                                                     |
 | `sort`                   | Não         | String                    | Ordenar por um campo específico (prefixe com um hífen `-` para ordenar na direção inversa desse campo). Padrão é `created_at` se não definido. |
 | `page`                   | Não         | Número                    | Veja [Paginação](#pagination) para mais detalhes                                                                                              |
 | `limit`                  | Não         | Número                    | Veja [Paginação](#pagination) para mais detalhes                                                                                              |
@@ -874,9 +874,9 @@ curl -X POST BASE_URI/v1/domains/DOMAIN_NAME/aliases/ALIAS_ID/generate-password 
 
 | Parâmetro da Querystring | Obrigatório | Tipo                      | Descrição                                                                                                                                      |
 | ------------------------ | ----------- | ------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
-| `q`                      | Não         | String (RegExp suportado) | Buscar aliases em um domínio por nome, etiqueta ou destinatário                                                                               |
-| `name`                   | Não         | String (RegExp suportado) | Buscar aliases em um domínio por nome                                                                                                         |
-| `recipient`              | Não         | String (RegExp suportado) | Buscar aliases em um domínio por destinatário                                                                                                |
+| `q`                      | Não         | String                    | Buscar aliases em um domínio por nome, etiqueta ou destinatário                                                                               |
+| `name`                   | Não         | String                    | Buscar aliases em um domínio por nome                                                                                                         |
+| `recipient`              | Não         | String                    | Buscar aliases em um domínio por destinatário                                                                                                |
 | `sort`                   | Não         | String                    | Ordenar por um campo específico (prefixar com um hífen único `-` para ordenar na direção inversa desse campo). Padrão é `created_at` se não definido. |
 | `page`                   | Não         | Número                    | Veja [Paginação](#pagination) para mais detalhes                                                                                              |
 | `limit`                  | Não         | Número                    | Veja [Paginação](#pagination) para mais detalhes                                                                                              |

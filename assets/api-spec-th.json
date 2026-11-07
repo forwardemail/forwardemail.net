@@ -6563,7 +6563,7 @@
           {
             "name": "q",
             "in": "query",
-            "description": "ค้นหาชื่อแทนในโดเมนตามชื่อ ป้ายกำกับ หรือผู้รับ (รองรับ RegExp)",
+            "description": "ค้นหาชื่อแทนในโดเมนตามชื่อ ป้ายกำกับ หรือผู้รับ",
             "required": false,
             "schema": {
               "type": "string"
@@ -6572,7 +6572,7 @@
           {
             "name": "name",
             "in": "query",
-            "description": "ค้นหาชื่อแทนในโดเมนตามชื่อ (รองรับ RegExp)",
+            "description": "ค้นหาชื่อแทนในโดเมนตามชื่อ",
             "required": false,
             "schema": {
               "type": "string"
@@ -6581,7 +6581,7 @@
           {
             "name": "recipient",
             "in": "query",
-            "description": "ค้นหาชื่อแทนในโดเมนตามผู้รับ (รองรับ RegExp)",
+            "description": "ค้นหาชื่อแทนในโดเมนตามผู้รับ",
             "required": false,
             "schema": {
               "type": "string"

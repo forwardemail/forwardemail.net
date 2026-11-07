@@ -6563,7 +6563,7 @@
           {
             "name": "q",
             "in": "query",
-            "description": "Suche nach Aliasen in einer Domäne anhand von Name, Bezeichnung oder Empfänger (Reguläre Ausdrücke werden unterstützt)",
+            "description": "Suche nach Aliasen in einer Domäne anhand von Name, Bezeichnung oder Empfänger",
             "required": false,
             "schema": {
               "type": "string"
@@ -6572,7 +6572,7 @@
           {
             "name": "name",
             "in": "query",
-            "description": "Suche nach Aliasen in einer Domäne anhand des Namens (Reguläre Ausdrücke werden unterstützt)",
+            "description": "Suche nach Aliasen in einer Domäne anhand des Namens",
             "required": false,
             "schema": {
               "type": "string"
@@ -6581,7 +6581,7 @@
           {
             "name": "recipient",
             "in": "query",
-            "description": "Suche nach Aliasen in einer Domäne anhand des Empfängers (Reguläre Ausdrücke werden unterstützt)",
+            "description": "Suche nach Aliasen in einer Domäne anhand des Empfängers",
             "required": false,
             "schema": {
               "type": "string"

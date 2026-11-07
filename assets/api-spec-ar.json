@@ -6563,7 +6563,7 @@
           {
             "name": "q",
             "in": "query",
-            "description": "البحث عن الأسماء المستعارة في المجال حسب الاسم أو التسمية أو المستلم (يدعم RegExp)",
+            "description": "البحث عن الأسماء المستعارة في المجال حسب الاسم أو التسمية أو المستلم",
             "required": false,
             "schema": {
               "type": "string"
@@ -6572,7 +6572,7 @@
           {
             "name": "name",
             "in": "query",
-            "description": "البحث عن الأسماء المستعارة في المجال حسب الاسم (يدعم RegExp)",
+            "description": "البحث عن الأسماء المستعارة في المجال حسب الاسم",
             "required": false,
             "schema": {
               "type": "string"
@@ -6581,7 +6581,7 @@
           {
             "name": "recipient",
             "in": "query",
-            "description": "البحث عن الأسماء المستعارة في المجال حسب المستلم (يدعم RegExp)",
+            "description": "البحث عن الأسماء المستعارة في المجال حسب المستلم",
             "required": false,
             "schema": {
               "type": "string"

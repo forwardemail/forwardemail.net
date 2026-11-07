@@ -6563,7 +6563,7 @@
           {
             "name": "q",
             "in": "query",
-            "description": "Aliasok keresése egy domainben név, címke vagy címzett alapján (RegExp támogatott)",
+            "description": "Aliasok keresése egy domainben név, címke vagy címzett alapján",
             "required": false,
             "schema": {
               "type": "string"
@@ -6572,7 +6572,7 @@
           {
             "name": "name",
             "in": "query",
-            "description": "Aliasok keresése egy domainben név alapján (RegExp támogatott)",
+            "description": "Aliasok keresése egy domainben név alapján",
             "required": false,
             "schema": {
               "type": "string"
@@ -6581,7 +6581,7 @@
           {
             "name": "recipient",
             "in": "query",
-            "description": "Aliasok keresése egy domainben címzett szerint (regexp támogatott)",
+            "description": "Aliasok keresése egy domainben címzett szerint",
             "required": false,
             "schema": {
               "type": "string"

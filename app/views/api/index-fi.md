@@ -488,8 +488,8 @@ Palautaaksesi nämä ominaisuudet ja niiden arvot, käytä [Hae sähköposti](#r
 
 | Kyselymerkkijonon parametri | Pakollinen | Tyyppi                    | Kuvaus                                                                                                                                              |
 | --------------------------- | ---------- | ------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `q`                         | Ei         | Merkkijono (RegExp tuettu) | Hae sähköposteja metatietojen perusteella                                                                                                          |
-| `domain`                    | Ei         | Merkkijono (RegExp tuettu) | Hae sähköposteja verkkotunnuksen perusteella                                                                                                      |
+| `q`                         | Ei         | Merkkijono                 | Hae sähköposteja metatietojen perusteella                                                                                                          |
+| `domain`                    | Ei         | Merkkijono                 | Hae sähköposteja verkkotunnuksen perusteella                                                                                                      |
 | `sort`                      | Ei         | Merkkijono                | Lajittele tietyn kentän mukaan (etuliitä `-` käänteiseen lajitteluun kyseisen kentän osalta). Oletuksena `created_at`, jos ei asetettu.              |
 | `page`                      | Ei         | Numero                    | Katso [Sivutus](#pagination) lisätietoja                                                                                                          |
 | `limit`                     | Ei         | Numero                    | Katso [Sivutus](#pagination) lisätietoja                                                                                                          |
@@ -611,8 +611,8 @@ curl -X DELETE BASE_URI/v1/emails/:id \
 
 | Kyselyparametri       | Pakollinen | Tyyppi                    | Kuvaus                                                                                                                                               |
 | --------------------- | ---------- | ------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `q`                   | Ei         | Merkkijono (RegExp tuettu) | Etsi verkkotunnuksia nimen perusteella                                                                                                              |
-| `name`                | Ei         | Merkkijono (RegExp tuettu) | Etsi verkkotunnuksia nimen perusteella                                                                                                              |
+| `q`                   | Ei         | Merkkijono                 | Etsi verkkotunnuksia nimen perusteella                                                                                                              |
+| `name`                | Ei         | Merkkijono                 | Etsi verkkotunnuksia nimen perusteella                                                                                                              |
 | `sort`                | Ei         | Merkkijono                | Lajittele tietyn kentän mukaan (etuliite yhdellä miinusmerkillä `-` kääntää lajittelun päinvastaiseksi). Oletuksena `created_at`, jos ei asetettu.    |
 | `page`                | Ei         | Numero                    | Katso lisätietoja [Sivutus](#pagination)-kohdasta                                                                                                  |
 | `limit`               | Ei         | Numero                    | Katso lisätietoja [Sivutus](#pagination)-kohdasta                                                                                                  |
@@ -874,9 +874,9 @@ curl -X POST BASE_URI/v1/domains/DOMAIN_NAME/aliases/ALIAS_ID/generate-password 
 
 | Kyselyparametri        | Pakollinen | Tyyppi                      | Kuvaus                                                                                                                                          |
 | ---------------------- | ---------- | --------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
-| `q`                    | Ei         | Merkkijono (RegExp tuettu)  | Etsi aliaksia domainissa nimen, tunnisteen tai vastaanottajan perusteella                                                                         |
-| `name`                 | Ei         | Merkkijono (RegExp tuettu)  | Etsi aliaksia domainissa nimen perusteella                                                                                                      |
-| `recipient`            | Ei         | Merkkijono (RegExp tuettu)  | Etsi aliaksia domainissa vastaanottajan perusteella                                                                                            |
+| `q`                    | Ei         | Merkkijono                  | Etsi aliaksia domainissa nimen, tunnisteen tai vastaanottajan perusteella                                                                         |
+| `name`                 | Ei         | Merkkijono                  | Etsi aliaksia domainissa nimen perusteella                                                                                                      |
+| `recipient`            | Ei         | Merkkijono                  | Etsi aliaksia domainissa vastaanottajan perusteella                                                                                            |
 | `sort`                 | Ei         | Merkkijono                  | Lajittele tietyn kentän mukaan (etuliite yhdellä miinusmerkillä `-` kääntää lajittelujärjestyksen). Oletuksena `created_at`, jos ei asetettu.     |
 | `page`                 | Ei         | Numero                      | Katso lisätietoja kohdasta [Sivutus](#pagination)                                                                                              |
 | `limit`                | Ei         | Numero                      | Katso lisätietoja kohdasta [Sivutus](#pagination)                                                                                              |

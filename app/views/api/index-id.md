@@ -488,8 +488,8 @@ Untuk mengembalikan properti dan nilainya tersebut, silakan gunakan endpoint [Re
 
 | Parameter Querystring | Wajib | Tipe                      | Deskripsi                                                                                                                                      |
 | --------------------- | ------ | ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `q`                   | Tidak  | String (RegExp didukung)  | Cari email berdasarkan metadata                                                                                                                 |
-| `domain`              | Tidak  | String (RegExp didukung)  | Cari email berdasarkan nama domain                                                                                                              |
+| `q`                   | Tidak  | String                    | Cari email berdasarkan metadata                                                                                                                 |
+| `domain`              | Tidak  | String                    | Cari email berdasarkan nama domain                                                                                                              |
 | `sort`                | Tidak  | String                    | Urutkan berdasarkan bidang tertentu (awali dengan tanda minus `-` untuk mengurutkan dalam arah terbalik dari bidang tersebut). Default ke `created_at` jika tidak diatur. |
 | `page`                | Tidak  | Number                    | Lihat [Pagination](#pagination) untuk penjelasan lebih lanjut                                                                                   |
 | `limit`               | Tidak  | Number                    | Lihat [Pagination](#pagination) untuk penjelasan lebih lanjut                                                                                   |
@@ -611,8 +611,8 @@ curl -X DELETE BASE_URI/v1/emails/:id \
 
 | Parameter Querystring | Wajib | Tipe                      | Deskripsi                                                                                                                                      |
 | --------------------- | ------ | ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `q`                   | Tidak  | String (RegExp didukung)  | Cari domain berdasarkan nama                                                                                                                   |
-| `name`                | Tidak  | String (RegExp didukung)  | Cari domain berdasarkan nama                                                                                                                   |
+| `q`                   | Tidak  | String                    | Cari domain berdasarkan nama                                                                                                                   |
+| `name`                | Tidak  | String                    | Cari domain berdasarkan nama                                                                                                                   |
 | `sort`                | Tidak  | String                    | Urutkan berdasarkan bidang tertentu (awali dengan tanda minus `-` untuk mengurutkan dalam arah terbalik dari bidang tersebut). Default ke `created_at` jika tidak diatur. |
 | `page`                | Tidak  | Number                    | Lihat [Pagination](#pagination) untuk informasi lebih lanjut                                                                                   |
 | `limit`               | Tidak  | Number                    | Lihat [Pagination](#pagination) untuk informasi lebih lanjut                                                                                   |
@@ -874,9 +874,9 @@ curl -X POST BASE_URI/v1/domains/NAMA_DOMAIN/aliases/ID_ALIAS/generate-password 
 
 | Parameter Querystring | Wajib | Tipe                      | Deskripsi                                                                                                                                      |
 | --------------------- | ------ | ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `q`                   | Tidak  | String (RegExp didukung)  | Cari alias dalam domain berdasarkan nama, label, atau penerima                                                                                   |
-| `name`                | Tidak  | String (RegExp didukung)  | Cari alias dalam domain berdasarkan nama                                                                                                        |
-| `recipient`           | Tidak  | String (RegExp didukung)  | Cari alias dalam domain berdasarkan penerima                                                                                                   |
+| `q`                   | Tidak  | String                    | Cari alias dalam domain berdasarkan nama, label, atau penerima                                                                                   |
+| `name`                | Tidak  | String                    | Cari alias dalam domain berdasarkan nama                                                                                                        |
+| `recipient`           | Tidak  | String                    | Cari alias dalam domain berdasarkan penerima                                                                                                   |
 | `sort`                | Tidak  | String                   | Urutkan berdasarkan field tertentu (awali dengan tanda minus `-` untuk mengurutkan secara terbalik). Default ke `created_at` jika tidak diatur. |
 | `page`                | Tidak  | Number                   | Lihat [Pagination](#pagination) untuk informasi lebih lanjut                                                                                   |
 | `limit`               | Tidak  | Number                   | Lihat [Pagination](#pagination) untuk informasi lebih lanjut                                                                                   |

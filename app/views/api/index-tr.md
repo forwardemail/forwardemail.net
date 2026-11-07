@@ -488,8 +488,8 @@ Bu özellikleri ve değerlerini döndürmek için lütfen bir e-posta ID'si ile 
 
 | Sorgu Parametresi    | Zorunlu | Tür                       | Açıklama                                                                                                                                          |
 | -------------------- | ------- | ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `q`                  | Hayır   | String (RegExp destekli)  | Meta veriye göre e-postaları arar                                                                                                               |
-| `domain`             | Hayır   | String (RegExp destekli)  | Alan adına göre e-postaları arar                                                                                                                |
+| `q`                  | Hayır   | String                    | Meta veriye göre e-postaları arar                                                                                                               |
+| `domain`             | Hayır   | String                    | Alan adına göre e-postaları arar                                                                                                                |
 | `sort`               | Hayır   | String                    | Belirli bir alana göre sıralar (ters yönde sıralamak için alanın başına tek tire `-` ekleyin). Ayarlanmazsa varsayılan `created_at`'dir.         |
 | `page`               | Hayır   | Number                    | Daha fazla bilgi için [Sayfalama](#pagination) bölümüne bakınız                                                                                   |
 | `limit`              | Hayır   | Number                    | Daha fazla bilgi için [Sayfalama](#pagination) bölümüne bakınız                                                                                   |
@@ -611,8 +611,8 @@ curl -X DELETE BASE_URI/v1/emails/:id \
 
 | Sorgu Parametresi      | Zorunlu | Tür                       | Açıklama                                                                                                                                          |
 | --------------------- | ------- | ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `q`                   | Hayır   | String (RegExp destekli)  | Alan adlarını ada göre arayın                                                                                                                    |
-| `name`                | Hayır   | String (RegExp destekli)  | Alan adlarını ada göre arayın                                                                                                                    |
+| `q`                   | Hayır   | String                    | Alan adlarını ada göre arayın                                                                                                                    |
+| `name`                | Hayır   | String                    | Alan adlarını ada göre arayın                                                                                                                    |
 | `sort`                | Hayır   | String                    | Belirli bir alana göre sıralayın (ters yönde sıralamak için alanın önüne tek tire `-` koyun). Ayarlanmazsa varsayılan `created_at`'dır.           |
 | `page`                | Hayır   | Number                    | Daha fazla bilgi için [Sayfalandırma](#pagination) bölümüne bakınız                                                                              |
 | `limit`               | Hayır   | Number                    | Daha fazla bilgi için [Sayfalandırma](#pagination) bölümüne bakınız                                                                              |
@@ -874,9 +874,9 @@ curl -X POST BASE_URI/v1/domains/DOMAIN_NAME/aliases/ALIAS_ID/generate-password 
 
 | Sorgu Parametresi      | Zorunlu | Tür                        | Açıklama                                                                                                                                          |
 | --------------------- | ------- | -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `q`                   | Hayır   | String (RegExp destekli)   | Bir alan adındaki takma adları isim, etiket veya alıcıya göre arayın                                                                                 |
-| `name`                | Hayır   | String (RegExp destekli)   | Bir alan adındaki takma adları isme göre arayın                                                                                                   |
-| `recipient`           | Hayır   | String (RegExp destekli)   | Bir alan adındaki takma adları alıcıya göre arayın                                                                                                |
+| `q`                   | Hayır   | String                     | Bir alan adındaki takma adları isim, etiket veya alıcıya göre arayın                                                                                 |
+| `name`                | Hayır   | String                     | Bir alan adındaki takma adları isme göre arayın                                                                                                   |
+| `recipient`           | Hayır   | String                     | Bir alan adındaki takma adları alıcıya göre arayın                                                                                                |
 | `sort`                | Hayır   | String                     | Belirli bir alana göre sıralayın (ters sıralama için alanın önüne tek tire `-` koyun). Ayarlanmazsa varsayılan `created_at` olur.                  |
 | `page`                | Hayır   | Number                     | Daha fazla bilgi için [Sayfalandırma](#pagination) bölümüne bakınız                                                                                |
 | `limit`               | Hayır   | Number                     | Daha fazla bilgi için [Sayfalandırma](#pagination) bölümüne bakınız                                                                                |

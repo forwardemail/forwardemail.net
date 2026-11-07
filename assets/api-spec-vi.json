@@ -6563,7 +6563,7 @@
           {
             "name": "q",
             "in": "query",
-            "description": "Tìm kiếm bí danh trong miền theo tên, nhãn hoặc người nhận (hỗ trợ RegExp)",
+            "description": "Tìm kiếm bí danh trong miền theo tên, nhãn hoặc người nhận",
             "required": false,
             "schema": {
               "type": "string"
@@ -6572,7 +6572,7 @@
           {
             "name": "name",
             "in": "query",
-            "description": "Tìm kiếm bí danh trong một miền theo tên (hỗ trợ RegExp)",
+            "description": "Tìm kiếm bí danh trong một miền theo tên",
             "required": false,
             "schema": {
               "type": "string"
@@ -6581,7 +6581,7 @@
           {
             "name": "recipient",
             "in": "query",
-            "description": "Tìm kiếm bí danh trong một miền theo người nhận (hỗ trợ RegExp)",
+            "description": "Tìm kiếm bí danh trong một miền theo người nhận",
             "required": false,
             "schema": {
               "type": "string"

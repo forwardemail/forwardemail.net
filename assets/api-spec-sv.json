@@ -6563,7 +6563,7 @@
           {
             "name": "q",
             "in": "query",
-            "description": "Sök efter alias i en domän efter namn, etikett eller mottagare (RegExp stöds)",
+            "description": "Sök efter alias i en domän efter namn, etikett eller mottagare",
             "required": false,
             "schema": {
               "type": "string"
@@ -6572,7 +6572,7 @@
           {
             "name": "name",
             "in": "query",
-            "description": "Sök efter alias i en domän med namn (RegExp stöds)",
+            "description": "Sök efter alias i en domän med namn",
             "required": false,
             "schema": {
               "type": "string"
@@ -6581,7 +6581,7 @@
           {
             "name": "recipient",
             "in": "query",
-            "description": "Sök efter alias i en domän efter mottagare (RegExp stöds)",
+            "description": "Sök efter alias i en domän efter mottagare",
             "required": false,
             "schema": {
               "type": "string"

@@ -488,8 +488,8 @@ For at returnere disse egenskaber og deres værdier, brug venligst [Hent email](
 
 | Querystring Parameter | Påkrævet | Type                      | Beskrivelse                                                                                                                                      |
 | --------------------- | -------- | ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `q`                   | Nej      | String (RegExp understøttet) | Søg efter emails via metadata                                                                                                                    |
-| `domain`              | Nej      | String (RegExp understøttet) | Søg efter emails via domænenavn                                                                                                                 |
+| `q`                   | Nej      | String                       | Søg efter emails via metadata                                                                                                                    |
+| `domain`              | Nej      | String                       | Søg efter emails via domænenavn                                                                                                                 |
 | `sort`                | Nej      | String                    | Sorter efter et specifikt felt (prefix med et enkelt bindestreg `-` for at sortere i omvendt retning af det felt). Standard er `created_at` hvis ikke sat. |
 | `page`                | Nej      | Number                    | Se [Pagination](#pagination) for mere information                                                                                               |
 | `limit`               | Nej      | Number                    | Se [Pagination](#pagination) for mere information                                                                                               |
@@ -611,8 +611,8 @@ curl -X DELETE BASE_URI/v1/emails/:id \
 
 | Querystring Parameter | Påkrævet | Type                      | Beskrivelse                                                                                                                                      |
 | --------------------- | -------- | ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `q`                   | Nej      | String (RegExp understøttet) | Søg efter domæner efter navn                                                                                                                       |
-| `name`                | Nej      | String (RegExp understøttet) | Søg efter domæner efter navn                                                                                                                       |
+| `q`                   | Nej      | String                       | Søg efter domæner efter navn                                                                                                                       |
+| `name`                | Nej      | String                       | Søg efter domæner efter navn                                                                                                                       |
 | `sort`                | Nej      | String                    | Sorter efter et specifikt felt (prefix med et enkelt bindestreg `-` for at sortere i omvendt retning af det felt). Standard er `created_at`, hvis ikke sat. |
 | `page`                | Nej      | Number                    | Se [Pagination](#pagination) for mere indsigt                                                                                                   |
 | `limit`               | Nej      | Number                    | Se [Pagination](#pagination) for mere indsigt                                                                                                   |
@@ -874,9 +874,9 @@ curl -X POST BASE_URI/v1/domains/DOMAIN_NAME/aliases/ALIAS_ID/generate-password 
 
 | Querystring Parameter | Påkrævet | Type                      | Beskrivelse                                                                                                                                      |
 | --------------------- | -------- | ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `q`                   | Nej      | String (RegExp understøttet) | Søg efter aliaser i et domæne efter navn, label eller modtager                                                                                   |
-| `name`                | Nej      | String (RegExp understøttet) | Søg efter aliaser i et domæne efter navn                                                                                                        |
-| `recipient`           | Nej      | String (RegExp understøttet) | Søg efter aliaser i et domæne efter modtager                                                                                                    |
+| `q`                   | Nej      | String                       | Søg efter aliaser i et domæne efter navn, label eller modtager                                                                                   |
+| `name`                | Nej      | String                       | Søg efter aliaser i et domæne efter navn                                                                                                        |
+| `recipient`           | Nej      | String                       | Søg efter aliaser i et domæne efter modtager                                                                                                    |
 | `sort`                | Nej      | String                    | Sorter efter et specifikt felt (prefix med et enkelt bindestreg `-` for at sortere i omvendt retning af det felt). Standard er `created_at`, hvis ikke sat. |
 | `page`                | Nej      | Number                    | Se [Pagination](#pagination) for mere indsigt                                                                                                   |
 | `limit`               | Nej      | Number                    | Se [Pagination](#pagination) for mere indsigt                                                                                                   |

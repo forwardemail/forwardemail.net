@@ -488,8 +488,8 @@ Aby zwrócić te właściwości i ich wartości, użyj proszę endpointu [Pobier
 
 | Parametr w zapytaniu | Wymagany | Typ                       | Opis                                                                                                                                               |
 | -------------------- | -------- | ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `q`                  | Nie      | String (obsługuje RegExp) | Wyszukiwanie wiadomości po metadanych                                                                                                            |
-| `domain`             | Nie      | String (obsługuje RegExp) | Wyszukiwanie wiadomości po nazwie domeny                                                                                                         |
+| `q`                  | Nie      | String                    | Wyszukiwanie wiadomości po metadanych                                                                                                            |
+| `domain`             | Nie      | String                    | Wyszukiwanie wiadomości po nazwie domeny                                                                                                         |
 | `sort`               | Nie      | String                    | Sortowanie po określonym polu (poprzedź pojedynczym myślnikiem `-`, aby sortować w odwrotnym kierunku). Domyślnie `created_at`, jeśli nie ustawiono. |
 | `page`               | Nie      | Number                    | Zobacz [Paginacja](#pagination) dla więcej informacji                                                                                            |
 | `limit`              | Nie      | Number                    | Zobacz [Paginacja](#pagination) dla więcej informacji                                                                                            |
@@ -611,8 +611,8 @@ curl -X DELETE BASE_URI/v1/emails/:id \
 
 | Parametr zapytania     | Wymagany | Typ                       | Opis                                                                                                                                               |
 | --------------------- | -------- | ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `q`                   | Nie      | String (obsługuje RegExp) | Wyszukaj domeny po nazwie                                                                                                                         |
-| `name`                | Nie      | String (obsługuje RegExp) | Wyszukaj domeny po nazwie                                                                                                                         |
+| `q`                   | Nie      | String                    | Wyszukaj domeny po nazwie                                                                                                                         |
+| `name`                | Nie      | String                    | Wyszukaj domeny po nazwie                                                                                                                         |
 | `sort`                | Nie      | String                    | Sortuj według konkretnego pola (poprzedź pojedynczym myślnikiem `-`, aby sortować w odwrotnym kierunku). Domyślnie `created_at`, jeśli nie ustawiono. |
 | `page`                | Nie      | Number                    | Zobacz [Pagination](#pagination) po więcej informacji                                                                                            |
 | `limit`               | Nie      | Number                    | Zobacz [Pagination](#pagination) po więcej informacji                                                                                            |
@@ -874,9 +874,9 @@ curl -X POST BASE_URI/v1/domains/DOMAIN_NAME/aliases/ALIAS_ID/generate-password 
 
 | Parametr zapytania      | Wymagany | Typ                       | Opis                                                                                                                                               |
 | ---------------------- | -------- | ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `q`                    | Nie      | String (obsługa RegExp)   | Wyszukaj aliasy w domenie po nazwie, etykiecie lub odbiorcy                                                                                       |
-| `name`                 | Nie      | String (obsługa RegExp)   | Wyszukaj aliasy w domenie po nazwie                                                                                                              |
-| `recipient`            | Nie      | String (obsługa RegExp)   | Wyszukaj aliasy w domenie po odbiorcy                                                                                                            |
+| `q`                    | Nie      | String                    | Wyszukaj aliasy w domenie po nazwie, etykiecie lub odbiorcy                                                                                       |
+| `name`                 | Nie      | String                    | Wyszukaj aliasy w domenie po nazwie                                                                                                              |
+| `recipient`            | Nie      | String                    | Wyszukaj aliasy w domenie po odbiorcy                                                                                                            |
 | `sort`                 | Nie      | String                   | Sortuj według konkretnego pola (poprzedź pojedynczym myślnikiem `-`, aby sortować w odwrotnym kierunku). Domyślnie `created_at`, jeśli nie ustawiono. |
 | `page`                 | Nie      | Number                   | Zobacz [Pagination](#pagination) po więcej informacji                                                                                             |
 | `limit`                | Nie      | Number                   | Zobacz [Pagination](#pagination) po więcej informacji                                                                                             |

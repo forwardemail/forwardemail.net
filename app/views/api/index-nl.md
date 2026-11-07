@@ -488,8 +488,8 @@ Om die eigenschappen en hun waarden te verkrijgen, gebruik je de [E-mail ophalen
 
 | Querystring Parameter | Vereist | Type                      | Beschrijving                                                                                                                                      |
 | --------------------- | ------- | ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `q`                   | Nee     | String (RegExp ondersteund) | Zoek naar e-mails op metadata                                                                                                                    |
-| `domain`              | Nee     | String (RegExp ondersteund) | Zoek naar e-mails op domeinnaam                                                                                                                  |
+| `q`                   | Nee     | String                      | Zoek naar e-mails op metadata                                                                                                                    |
+| `domain`              | Nee     | String                      | Zoek naar e-mails op domeinnaam                                                                                                                  |
 | `sort`                | Nee     | String                    | Sorteer op een specifiek veld (voor een omgekeerde volgorde prefix met een enkele streep `-`). Standaard `created_at` als niet ingesteld.         |
 | `page`                | Nee     | Number                    | Zie [Paginering](#pagination) voor meer informatie                                                                                               |
 | `limit`               | Nee     | Number                    | Zie [Paginering](#pagination) voor meer informatie                                                                                               |
@@ -611,8 +611,8 @@ curl -X DELETE BASE_URI/v1/emails/:id \
 
 | Querystring Parameter | Verplicht | Type                      | Beschrijving                                                                                                                                      |
 | --------------------- | -------- | ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `q`                   | Nee       | String (RegExp ondersteund) | Zoeken naar domeinen op naam                                                                                                                       |
-| `name`                | Nee       | String (RegExp ondersteund) | Zoeken naar domeinen op naam                                                                                                                       |
+| `q`                   | Nee       | String                      | Zoeken naar domeinen op naam                                                                                                                       |
+| `name`                | Nee       | String                      | Zoeken naar domeinen op naam                                                                                                                       |
 | `sort`                | Nee       | String                    | Sorteren op een specifiek veld (voorvoegsel met een enkele streep `-` om in omgekeerde volgorde te sorteren).  Standaard `created_at` als niet ingesteld. |
 | `page`                | Nee       | Number                    | Zie [Pagination](#pagination) voor meer informatie                                                                                                   |
 | `limit`               | Nee       | Number                    | Zie [Pagination](#pagination) voor meer informatie                                                                                                   |
@@ -874,9 +874,9 @@ curl -X POST BASE_URI/v1/domains/DOMAIN_NAME/aliases/ALIAS_ID/generate-password 
 
 | Querystring Parameter | Vereist | Type                      | Beschrijving                                                                                                                                      |
 | --------------------- | ------- | ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `q`                   | Nee     | String (RegExp ondersteund) | Zoek naar aliasen in een domein op naam, label of ontvanger                                                                                      |
-| `name`                | Nee     | String (RegExp ondersteund) | Zoek naar aliasen in een domein op naam                                                                                                           |
-| `recipient`           | Nee     | String (RegExp ondersteund) | Zoek naar aliasen in een domein op ontvanger                                                                                                      |
+| `q`                   | Nee     | String                      | Zoek naar aliasen in een domein op naam, label of ontvanger                                                                                      |
+| `name`                | Nee     | String                      | Zoek naar aliasen in een domein op naam                                                                                                           |
+| `recipient`           | Nee     | String                      | Zoek naar aliasen in een domein op ontvanger                                                                                                      |
 | `sort`                | Nee     | String                    | Sorteer op een specifiek veld (voorvoegsel met een enkele streep `-` om in omgekeerde richting te sorteren). Standaard `created_at` als niet ingesteld. |
 | `page`                | Nee     | Number                    | Zie [Paginering](#pagination) voor meer informatie                                                                                                |
 | `limit`               | Nee     | Number                    | Zie [Paginering](#pagination) voor meer informatie                                                                                                |

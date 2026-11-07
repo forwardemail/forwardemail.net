@@ -6563,7 +6563,7 @@
           {
             "name": "q",
             "in": "query",
-            "description": "Wyszukiwanie aliasów w domenie według nazwy, etykiety lub odbiorcy (obsługa wyrażeń regularnych)",
+            "description": "Wyszukiwanie aliasów w domenie według nazwy, etykiety lub odbiorcy",
             "required": false,
             "schema": {
               "type": "string"
@@ -6572,7 +6572,7 @@
           {
             "name": "name",
             "in": "query",
-            "description": "Wyszukiwanie aliasów w domenie według nazwy (obsługa wyrażeń regularnych)",
+            "description": "Wyszukiwanie aliasów w domenie według nazwy",
             "required": false,
             "schema": {
               "type": "string"
@@ -6581,7 +6581,7 @@
           {
             "name": "recipient",
             "in": "query",
-            "description": "Wyszukiwanie aliasów w domenie według odbiorcy (obsługa wyrażeń regularnych)",
+            "description": "Wyszukiwanie aliasów w domenie według odbiorcy",
             "required": false,
             "schema": {
               "type": "string"

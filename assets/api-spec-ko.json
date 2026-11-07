@@ -6563,7 +6563,7 @@
           {
             "name": "q",
             "in": "query",
-            "description": "이름, 레이블 또는 수신자를 기준으로 도메인의 별칭 검색(RegExp 지원)",
+            "description": "이름, 레이블 또는 수신자를 기준으로 도메인의 별칭 검색",
             "required": false,
             "schema": {
               "type": "string"
@@ -6572,7 +6572,7 @@
           {
             "name": "name",
             "in": "query",
-            "description": "이름으로 도메인의 별칭 검색(RegExp 지원)",
+            "description": "이름으로 도메인의 별칭 검색",
             "required": false,
             "schema": {
               "type": "string"
@@ -6581,7 +6581,7 @@
           {
             "name": "recipient",
             "in": "query",
-            "description": "수신자별로 도메인의 별칭 검색(RegExp 지원)",
+            "description": "수신자별로 도메인의 별칭 검색",
             "required": false,
             "schema": {
               "type": "string"

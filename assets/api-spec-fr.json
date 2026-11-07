@@ -6563,7 +6563,7 @@
           {
             "name": "q",
             "in": "query",
-            "description": "Recherche d'alias dans un domaine par nom, libellé ou destinataire (RegExp pris en charge)",
+            "description": "Recherche d'alias dans un domaine par nom, libellé ou destinataire",
             "required": false,
             "schema": {
               "type": "string"
@@ -6572,7 +6572,7 @@
           {
             "name": "name",
             "in": "query",
-            "description": "Recherche d'alias dans un domaine par nom (RegExp pris en charge)",
+            "description": "Recherche d'alias dans un domaine par nom",
             "required": false,
             "schema": {
               "type": "string"
@@ -6581,7 +6581,7 @@
           {
             "name": "recipient",
             "in": "query",
-            "description": "Recherche d'alias dans un domaine par destinataire (RegExp pris en charge)",
+            "description": "Recherche d'alias dans un domaine par destinataire",
             "required": false,
             "schema": {
               "type": "string"

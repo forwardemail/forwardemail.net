@@ -6563,7 +6563,7 @@
           {
             "name": "q",
             "in": "query",
-            "description": "Busque alias en un dominio por nombre, etiqueta o destinatario (RegExp compatible)",
+            "description": "Busque alias en un dominio por nombre, etiqueta o destinatario",
             "required": false,
             "schema": {
               "type": "string"
@@ -6572,7 +6572,7 @@
           {
             "name": "name",
             "in": "query",
-            "description": "Buscar alias en un dominio por nombre (RegExp compatible)",
+            "description": "Buscar alias en un dominio por nombre",
             "required": false,
             "schema": {
               "type": "string"
@@ -6581,7 +6581,7 @@
           {
             "name": "recipient",
             "in": "query",
-            "description": "Búsqueda de alias en un dominio por destinatario (RegExp compatible)",
+            "description": "Búsqueda de alias en un dominio por destinatario",
             "required": false,
             "schema": {
               "type": "string"

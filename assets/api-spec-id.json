@@ -6563,7 +6563,7 @@
           {
             "name": "q",
             "in": "query",
-            "description": "Mencari alias di domain berdasarkan nama, label, atau penerima (RegExp didukung)",
+            "description": "Mencari alias di domain berdasarkan nama, label, atau penerima",
             "required": false,
             "schema": {
               "type": "string"
@@ -6572,7 +6572,7 @@
           {
             "name": "name",
             "in": "query",
-            "description": "Mencari alias di domain berdasarkan nama (RegExp didukung)",
+            "description": "Mencari alias di domain berdasarkan nama",
             "required": false,
             "schema": {
               "type": "string"
@@ -6581,7 +6581,7 @@
           {
             "name": "recipient",
             "in": "query",
-            "description": "Mencari alias di domain berdasarkan penerima (RegExp didukung)",
+            "description": "Mencari alias di domain berdasarkan penerima",
             "required": false,
             "schema": {
               "type": "string"

@@ -493,8 +493,8 @@ To return those properties and their values, please use the [Retrieve email](#re
 
 | Querystring Parameter | Required | Type                      | Description                                                                                                                                      |
 | --------------------- | -------- | ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `q`                   | No       | String (RegExp supported) | Search for emails by metadata                                                                                                                    |
-| `domain`              | No       | String (RegExp supported) | Search for emails by domain name                                                                                                                 |
+| `q`                   | No       | String                    | Search for emails by metadata                                                                                                                    |
+| `domain`              | No       | String                    | Search for emails by domain name                                                                                                                 |
 | `sort`                | No       | String                    | Sort by a specific field (prefix with a single hyphen `-` to sort in the reverse direction of that field).  Defaults to `created_at` if not set. |
 | `page`                | No       | Number                    | See [Pagination](#pagination) for more insight                                                                                                   |
 | `limit`               | No       | Number                    | See [Pagination](#pagination) for more insight                                                                                                   |
@@ -617,8 +617,8 @@ curl -X DELETE BASE_URI/v1/emails/:id \
 
 | Querystring Parameter | Required | Type                      | Description                                                                                                                                      |
 | --------------------- | -------- | ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `q`                   | No       | String (RegExp supported) | Search for domains by name                                                                                                                       |
-| `name`                | No       | String (RegExp supported) | Search for domains by name                                                                                                                       |
+| `q`                   | No       | String                    | Search for domains by name                                                                                                                       |
+| `name`                | No       | String                    | Search for domains by name                                                                                                                       |
 | `sort`                | No       | String                    | Sort by a specific field (prefix with a single hyphen `-` to sort in the reverse direction of that field).  Defaults to `created_at` if not set. |
 | `page`                | No       | Number                    | See [Pagination](#pagination) for more insight                                                                                                   |
 | `limit`               | No       | Number                    | See [Pagination](#pagination) for more insight                                                                                                   |
@@ -883,9 +883,9 @@ curl -X POST BASE_URI/v1/domains/DOMAIN_NAME/aliases/ALIAS_ID/generate-password 
 
 | Querystring Parameter | Required | Type                      | Description                                                                                                                                      |
 | --------------------- | -------- | ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `q`                   | No       | String (RegExp supported) | Search for aliases in a domain by name, label, or recipient                                                                                      |
-| `name`                | No       | String (RegExp supported) | Search for aliases in a domain by name                                                                                                           |
-| `recipient`           | No       | String (RegExp supported) | Search for aliases in a domain by recipient                                                                                                      |
+| `q`                   | No       | String                    | Search for aliases in a domain by name, label, or recipient                                                                                      |
+| `name`                | No       | String                    | Search for aliases in a domain by name                                                                                                           |
+| `recipient`           | No       | String                    | Search for aliases in a domain by recipient                                                                                                      |
 | `sort`                | No       | String                    | Sort by a specific field (prefix with a single hyphen `-` to sort in the reverse direction of that field).  Defaults to `created_at` if not set. |
 | `page`                | No       | Number                    | See [Pagination](#pagination) for more insight                                                                                                   |
 | `limit`               | No       | Number                    | See [Pagination](#pagination) for more insight                                                                                                   |

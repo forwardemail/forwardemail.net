@@ -6563,7 +6563,7 @@
           {
             "name": "q",
             "in": "query",
-            "description": "名前、ラベル、受信者でドメイン内のエイリアスを検索します（正規表現をサポート）",
+            "description": "名前、ラベル、受信者でドメイン内のエイリアスを検索します",
             "required": false,
             "schema": {
               "type": "string"
@@ -6572,7 +6572,7 @@
           {
             "name": "name",
             "in": "query",
-            "description": "ドメイン内のエイリアスを名前で検索（正規表現をサポート）",
+            "description": "ドメイン内のエイリアスを名前で検索",
             "required": false,
             "schema": {
               "type": "string"
@@ -6581,7 +6581,7 @@
           {
             "name": "recipient",
             "in": "query",
-            "description": "受信者によるドメイン内のエイリアスの検索（正規表現をサポート）",
+            "description": "受信者によるドメイン内のエイリアスの検索",
             "required": false,
             "schema": {
               "type": "string"

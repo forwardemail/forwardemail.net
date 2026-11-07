@@ -488,8 +488,8 @@ Ezeknek a tulajdonságoknak és értékeiknek a visszaadásához kérjük, haszn
 
 | Lekérdezési paraméter | Kötelező | Típus                     | Leírás                                                                                                                                             |
 | --------------------- | -------- | ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `q`                   | Nem      | String (RegExp támogatott) | E-mailek keresése metaadat alapján                                                                                                               |
-| `domain`              | Nem      | String (RegExp támogatott) | E-mailek keresése domain név alapján                                                                                                              |
+| `q`                   | Nem      | String                     | E-mailek keresése metaadat alapján                                                                                                               |
+| `domain`              | Nem      | String                     | E-mailek keresése domain név alapján                                                                                                              |
 | `sort`                | Nem      | String                    | Rendezés egy adott mező szerint (prefixként egy kötőjel `-` használatával fordított irányban rendez). Alapértelmezett: `created_at`, ha nincs megadva. |
 | `page`                | Nem      | Szám                      | Lásd a [Lapozás](#pagination) szakaszt további információkért                                                                                     |
 | `limit`               | Nem      | Szám                      | Lásd a [Lapozás](#pagination) szakaszt további információkért                                                                                     |
@@ -611,8 +611,8 @@ curl -X DELETE BASE_URI/v1/emails/:id \
 
 | Lekérdezési paraméter | Kötelező | Típus                     | Leírás                                                                                                                                           |
 | --------------------- | -------- | ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `q`                   | Nem      | String (RegExp támogatott) | Tartományok keresése név alapján                                                                                                                 |
-| `name`                | Nem      | String (RegExp támogatott) | Tartományok keresése név alapján                                                                                                                 |
+| `q`                   | Nem      | String                     | Tartományok keresése név alapján                                                                                                                 |
+| `name`                | Nem      | String                     | Tartományok keresése név alapján                                                                                                                 |
 | `sort`                | Nem      | String                    | Rendezés egy adott mező szerint (prefixként egy kötőjel `-` használható a fordított irányú rendezéshez). Alapértelmezett: `created_at`, ha nincs megadva. |
 | `page`                | Nem      | Szám                      | Lásd a [Lapozás](#pagination) részt                                                                                                             |
 | `limit`               | Nem      | Szám                      | Lásd a [Lapozás](#pagination) részt                                                                                                             |
@@ -874,9 +874,9 @@ curl -X POST BASE_URI/v1/domains/DOMAIN_NAME/aliases/ALIAS_ID/generate-password 
 
 | Lekérdezési paraméter | Kötelező | Típus                      | Leírás                                                                                                                                           |
 | --------------------- | -------- | ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `q`                   | Nem      | String (RegExp támogatott) | Aliasok keresése egy tartományban név, címke vagy címzett alapján                                                                                 |
-| `name`                | Nem      | String (RegExp támogatott) | Aliasok keresése egy tartományban név alapján                                                                                                    |
-| `recipient`           | Nem      | String (RegExp támogatott) | Aliasok keresése egy tartományban címzett alapján                                                                                                |
+| `q`                   | Nem      | String                     | Aliasok keresése egy tartományban név, címke vagy címzett alapján                                                                                 |
+| `name`                | Nem      | String                     | Aliasok keresése egy tartományban név alapján                                                                                                    |
+| `recipient`           | Nem      | String                     | Aliasok keresése egy tartományban címzett alapján                                                                                                |
 | `sort`                | Nem      | String                    | Rendezés egy adott mező szerint (egy kötőjellel `-` prefixelve fordított irányban rendez). Ha nincs megadva, alapértelmezett a `created_at`.         |
 | `page`                | Nem      | Number                    | Lásd a [Lapozás](#pagination) részt további információért                                                                                        |
 | `limit`               | Nem      | Number                    | Lásd a [Lapozás](#pagination) részt további információért                                                                                        |

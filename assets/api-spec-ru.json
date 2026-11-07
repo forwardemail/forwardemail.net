@@ -6563,7 +6563,7 @@
           {
             "name": "q",
             "in": "query",
-            "description": "Поиск псевдонимов в домене по имени, метке или получателю (поддерживается RegExp)",
+            "description": "Поиск псевдонимов в домене по имени, метке или получателю",
             "required": false,
             "schema": {
               "type": "string"
@@ -6572,7 +6572,7 @@
           {
             "name": "name",
             "in": "query",
-            "description": "Поиск псевдонимов в домене по имени (поддерживается RegExp)",
+            "description": "Поиск псевдонимов в домене по имени",
             "required": false,
             "schema": {
               "type": "string"
@@ -6581,7 +6581,7 @@
           {
             "name": "recipient",
             "in": "query",
-            "description": "Поиск псевдонимов в домене по получателю (поддерживается RegExp)",
+            "description": "Поиск псевдонимов в домене по получателю",
             "required": false,
             "schema": {
               "type": "string"

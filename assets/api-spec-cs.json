@@ -6563,7 +6563,7 @@
           {
             "name": "q",
             "in": "query",
-            "description": "Vyhledávání aliasů v doméně podle jména, štítku nebo příjemce (podporováno s RegExp)",
+            "description": "Vyhledávání aliasů v doméně podle jména, štítku nebo příjemce",
             "required": false,
             "schema": {
               "type": "string"
@@ -6572,7 +6572,7 @@
           {
             "name": "name",
             "in": "query",
-            "description": "Hledání aliasů v doméně podle názvu (podporováno s RegExp)",
+            "description": "Hledání aliasů v doméně podle názvu",
             "required": false,
             "schema": {
               "type": "string"
@@ -6581,7 +6581,7 @@
           {
             "name": "recipient",
             "in": "query",
-            "description": "Hledání aliasů v doméně podle příjemce (podporováno s RegExp)",
+            "description": "Hledání aliasů v doméně podle příjemce",
             "required": false,
             "schema": {
               "type": "string"

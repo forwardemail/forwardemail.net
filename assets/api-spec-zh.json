@@ -6563,7 +6563,7 @@
           {
             "name": "q",
             "in": "query",
-            "description": "按名称、标签或收件人搜索域中的别名（支持正则表达式）",
+            "description": "按名称、标签或收件人搜索域中的别名",
             "required": false,
             "schema": {
               "type": "string"
@@ -6572,7 +6572,7 @@
           {
             "name": "name",
             "in": "query",
-            "description": "按名称搜索域中的别名（支持正则表达式）",
+            "description": "按名称搜索域中的别名",
             "required": false,
             "schema": {
               "type": "string"
@@ -6581,7 +6581,7 @@
           {
             "name": "recipient",
             "in": "query",
-            "description": "按收件人搜索域中的别名（支持正则表达式）",
+            "description": "按收件人搜索域中的别名",
             "required": false,
             "schema": {
               "type": "string"

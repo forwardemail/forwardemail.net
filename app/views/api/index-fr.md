@@ -488,8 +488,8 @@ Pour retourner ces propriétés et leurs valeurs, veuillez utiliser le point de 
 
 | Paramètre de la chaîne de requête | Obligatoire | Type                      | Description                                                                                                                                      |
 | --------------------------------- | ----------- | ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `q`                               | Non         | Chaîne (RegExp supporté)  | Recherche d'emails par métadonnées                                                                                                              |
-| `domain`                          | Non         | Chaîne (RegExp supporté)  | Recherche d'emails par nom de domaine                                                                                                           |
+| `q`                               | Non         | Chaîne                    | Recherche d'emails par métadonnées                                                                                                              |
+| `domain`                          | Non         | Chaîne                    | Recherche d'emails par nom de domaine                                                                                                           |
 | `sort`                            | Non         | Chaîne                    | Trier par un champ spécifique (préfixer d'un tiret simple `-` pour trier dans la direction inverse de ce champ). Par défaut `created_at` si non défini. |
 | `page`                            | Non         | Nombre                    | Voir [Pagination](#pagination) pour plus de détails                                                                                             |
 | `limit`                           | Non         | Nombre                    | Voir [Pagination](#pagination) pour plus de détails                                                                                             |
@@ -611,8 +611,8 @@ curl -X DELETE BASE_URI/v1/emails/:id \
 
 | Paramètre de requête | Obligatoire | Type                      | Description                                                                                                                                      |
 | --------------------- | -------- | ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `q`                   | Non       | Chaîne (RegExp supporté)  | Recherche de domaines par nom                                                                                                                   |
-| `name`                | Non       | Chaîne (RegExp supporté)  | Recherche de domaines par nom                                                                                                                   |
+| `q`                   | Non       | Chaîne                    | Recherche de domaines par nom                                                                                                                   |
+| `name`                | Non       | Chaîne                    | Recherche de domaines par nom                                                                                                                   |
 | `sort`                | Non       | Chaîne                    | Trier par un champ spécifique (précéder d’un tiret simple `-` pour trier dans le sens inverse de ce champ). Par défaut `created_at` si non défini. |
 | `page`                | Non       | Nombre                    | Voir [Pagination](#pagination) pour plus de détails                                                                                             |
 | `limit`               | Non       | Nombre                    | Voir [Pagination](#pagination) pour plus de détails                                                                                             |
@@ -874,9 +874,9 @@ curl -X POST BASE_URI/v1/domains/DOMAIN_NAME/aliases/ALIAS_ID/generate-password 
 
 | Paramètre de la chaîne de requête | Obligatoire | Type                      | Description                                                                                                                                      |
 | --------------------------------- | ----------- | ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `q`                               | Non         | Chaîne (RegExp supporté)  | Recherche d’alias dans un domaine par nom, étiquette ou destinataire                                                                             |
-| `name`                            | Non         | Chaîne (RegExp supporté)  | Recherche d’alias dans un domaine par nom                                                                                                       |
-| `recipient`                       | Non         | Chaîne (RegExp supporté)  | Recherche d’alias dans un domaine par destinataire                                                                                              |
+| `q`                               | Non         | Chaîne                    | Recherche d’alias dans un domaine par nom, étiquette ou destinataire                                                                             |
+| `name`                            | Non         | Chaîne                    | Recherche d’alias dans un domaine par nom                                                                                                       |
+| `recipient`                       | Non         | Chaîne                    | Recherche d’alias dans un domaine par destinataire                                                                                              |
 | `sort`                            | Non         | Chaîne                    | Trier par un champ spécifique (précéder d’un tiret simple `-` pour trier dans le sens inverse). Par défaut `created_at` si non défini.            |
 | `page`                            | Non         | Nombre                    | Voir [Pagination](#pagination) pour plus de détails                                                                                            |
 | `limit`                           | Non         | Nombre                    | Voir [Pagination](#pagination) pour plus de détails                                                                                            |

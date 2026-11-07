@@ -488,8 +488,8 @@ Per restituire quelle proprietà e i loro valori, usa l'endpoint [Recupera email
 
 | Parametro Querystring | Obbligatorio | Tipo                      | Descrizione                                                                                                                                      |
 | --------------------- | ------------ | ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `q`                   | No           | Stringa (RegExp supportata) | Cerca email tramite metadati                                                                                                                    |
-| `domain`              | No           | Stringa (RegExp supportata) | Cerca email tramite nome dominio                                                                                                                |
+| `q`                   | No           | Stringa                     | Cerca email tramite metadati                                                                                                                    |
+| `domain`              | No           | Stringa                     | Cerca email tramite nome dominio                                                                                                                |
 | `sort`                | No           | Stringa                    | Ordina per un campo specifico (prefissa con un singolo trattino `-` per ordinare in direzione inversa rispetto a quel campo).  Di default è `created_at` se non impostato. |
 | `page`                | No           | Numero                     | Vedi [Paginazione](#pagination) per maggiori dettagli                                                                                           |
 | `limit`               | No           | Numero                     | Vedi [Paginazione](#pagination) per maggiori dettagli                                                                                           |
@@ -611,8 +611,8 @@ curl -X DELETE BASE_URI/v1/emails/:id \
 
 | Parametro Querystring | Obbligatorio | Tipo                      | Descrizione                                                                                                                                      |
 | --------------------- | ------------ | ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `q`                   | No           | Stringa (RegExp supportata) | Cerca domini per nome                                                                                                                           |
-| `name`                | No           | Stringa (RegExp supportata) | Cerca domini per nome                                                                                                                           |
+| `q`                   | No           | Stringa                     | Cerca domini per nome                                                                                                                           |
+| `name`                | No           | Stringa                     | Cerca domini per nome                                                                                                                           |
 | `sort`                | No           | Stringa                    | Ordina per un campo specifico (prefissa con un singolo trattino `-` per ordinare in direzione inversa rispetto a quel campo).  Default a `created_at` se non impostato. |
 | `page`                | No           | Numero                     | Vedi [Pagination](#pagination) per maggiori dettagli                                                                                           |
 | `limit`               | No           | Numero                     | Vedi [Pagination](#pagination) per maggiori dettagli                                                                                           |
@@ -874,9 +874,9 @@ curl -X POST BASE_URI/v1/domains/DOMAIN_NAME/aliases/ALIAS_ID/generate-password 
 
 | Parametro Querystring | Obbligatorio | Tipo                      | Descrizione                                                                                                                                      |
 | --------------------- | ------------ | ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `q`                   | No           | Stringa (supporta RegExp) | Cerca alias in un dominio per nome, etichetta o destinatario                                                                                     |
-| `name`                | No           | Stringa (supporta RegExp) | Cerca alias in un dominio per nome                                                                                                              |
-| `recipient`           | No           | Stringa (supporta RegExp) | Cerca alias in un dominio per destinatario                                                                                                      |
+| `q`                   | No           | Stringa                   | Cerca alias in un dominio per nome, etichetta o destinatario                                                                                     |
+| `name`                | No           | Stringa                   | Cerca alias in un dominio per nome                                                                                                              |
+| `recipient`           | No           | Stringa                   | Cerca alias in un dominio per destinatario                                                                                                      |
 | `sort`                | No           | Stringa                   | Ordina per un campo specifico (prefissa con un singolo trattino `-` per ordinare in direzione inversa rispetto a quel campo).  Predefinito `created_at` se non impostato. |
 | `page`                | No           | Numero                    | Consulta [Paginazione](#pagination) per maggiori dettagli                                                                                       |
 | `limit`               | No           | Numero                    | Consulta [Paginazione](#pagination) per maggiori dettagli                                                                                       |

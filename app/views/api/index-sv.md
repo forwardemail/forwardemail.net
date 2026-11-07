@@ -488,8 +488,8 @@ För att returnera dessa egenskaper och deras värden, använd [Hämta e-post](#
 
 | Querystring Parameter | Obligatorisk | Typ                       | Beskrivning                                                                                                                                       |
 | --------------------- | ------------ | ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `q`                   | Nej          | Sträng (RegExp stöds)     | Sök efter e-postmeddelanden via metadata                                                                                                         |
-| `domain`              | Nej          | Sträng (RegExp stöds)     | Sök efter e-postmeddelanden via domännamn                                                                                                        |
+| `q`                   | Nej          | Sträng                    | Sök efter e-postmeddelanden via metadata                                                                                                         |
+| `domain`              | Nej          | Sträng                    | Sök efter e-postmeddelanden via domännamn                                                                                                        |
 | `sort`                | Nej          | Sträng                    | Sortera efter ett specifikt fält (prefixa med ett enda bindestreck `-` för att sortera i omvänd riktning). Standard är `created_at` om ej satt.  |
 | `page`                | Nej          | Nummer                    | Se [Pagination](#pagination) för mer information                                                                                                |
 | `limit`               | Nej          | Nummer                    | Se [Pagination](#pagination) för mer information                                                                                                |
@@ -611,8 +611,8 @@ curl -X DELETE BASE_URI/v1/emails/:id \
 
 | Querystring Parameter | Obligatorisk | Typ                      | Beskrivning                                                                                                                                      |
 | --------------------- | ------------ | ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `q`                   | Nej          | Sträng (RegExp stöds)     | Sök efter domäner efter namn                                                                                                                     |
-| `name`                | Nej          | Sträng (RegExp stöds)     | Sök efter domäner efter namn                                                                                                                     |
+| `q`                   | Nej          | Sträng                    | Sök efter domäner efter namn                                                                                                                     |
+| `name`                | Nej          | Sträng                    | Sök efter domäner efter namn                                                                                                                     |
 | `sort`                | Nej          | Sträng                   | Sortera efter ett specifikt fält (prefixa med ett enda bindestreck `-` för att sortera i omvänd riktning av det fältet). Standard är `created_at` om inte satt. |
 | `page`                | Nej          | Nummer                   | Se [Pagination](#pagination) för mer information                                                                                                |
 | `limit`               | Nej          | Nummer                   | Se [Pagination](#pagination) för mer information                                                                                                |
@@ -874,9 +874,9 @@ curl -X POST BASE_URI/v1/domains/DOMAIN_NAME/aliases/ALIAS_ID/generate-password 
 
 | Querystring Parameter | Obligatorisk | Typ                       | Beskrivning                                                                                                                                      |
 | --------------------- | ------------ | ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `q`                   | Nej          | Sträng (RegExp stöds)     | Sök efter alias i en domän efter namn, etikett eller mottagare                                                                                   |
-| `name`                | Nej          | Sträng (RegExp stöds)     | Sök efter alias i en domän efter namn                                                                                                           |
-| `recipient`           | Nej          | Sträng (RegExp stöds)     | Sök efter alias i en domän efter mottagare                                                                                                      |
+| `q`                   | Nej          | Sträng                    | Sök efter alias i en domän efter namn, etikett eller mottagare                                                                                   |
+| `name`                | Nej          | Sträng                    | Sök efter alias i en domän efter namn                                                                                                           |
+| `recipient`           | Nej          | Sträng                    | Sök efter alias i en domän efter mottagare                                                                                                      |
 | `sort`                | Nej          | Sträng                    | Sortera efter ett specifikt fält (prefixa med ett bindestreck `-` för att sortera i omvänd riktning). Standard är `created_at` om inte satt.      |
 | `page`                | Nej          | Nummer                    | Se [Pagination](#pagination) för mer information                                                                                               |
 | `limit`               | Nej          | Nummer                    | Se [Pagination](#pagination) för mer information                                                                                               |
