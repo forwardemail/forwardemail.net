@@ -2565,9 +2565,12 @@ async function onDataMX(session, headers, body) {
         }
 
         const authservId = m[1].toLowerCase();
-        // Match exact HOSTNAME or any subdomain of WEB_HOST
+        // Match exact HOSTNAME, WEB_HOST itself, or any subdomain of WEB_HOST
+        // (clients such as the webmail trust "forwardemail.net" as ours, so a
+        // sender must not be able to write one either)
         if (
           authservId === HOSTNAME.toLowerCase() ||
+          authservId === env.WEB_HOST.toLowerCase() ||
           authservId.endsWith(dominated)
         ) {
           // Forged header — strip it

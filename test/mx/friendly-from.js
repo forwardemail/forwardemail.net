@@ -442,3 +442,52 @@ test.serial(
     t.is(headers.Sender, 'Sender: Ann <ann@xn--exmple-cua.com>');
   }
 );
+
+//
+// RFC 8601 section 5: a verdict that names us, written by the sender, is
+// removed before the message is stored or forwarded, so a client that reads
+// our verdicts (the webmail trusts the domain itself and its subdomains) can
+// never read a forged one. Verdicts of other servers are kept.
+//
+test.serial(
+  'removes sender-written Authentication-Results that name our domain',
+  async (t) => {
+    const { alias, domain, attempts, send } = await setup(t, IP_ADDRESS);
+
+    const info = await send([
+      `Authentication-Results: ${env.WEB_HOST}; dmarc=pass header.from=bank.example`,
+      `ARC-Authentication-Results: i=9; ${env.WEB_HOST}; dkim=pass`,
+      `Authentication-Results: mx9.${env.WEB_HOST}; spf=pass`,
+      'Authentication-Results: mx.other.example; spf=pass'
+    ]);
+    t.deepEqual(info.accepted, [`${alias.name}@${domain.name}`]);
+
+    // (header names are rebuilt lowercase, so match case-insensitively)
+    const arLines = attempts
+      .at(-1)
+      .split('\r\n\r\n')[0]
+      .split('\r\n')
+      .filter((line) => /^(?:arc-)?authentication-results:/i.test(line));
+
+    // none of the sender's three forwardemail.net verdicts survived
+    t.false(
+      arLines.some((line) =>
+        new RegExp(`[;:\\s]${env.WEB_HOST}[;\\s]`).test(line)
+      )
+    );
+    t.false(
+      arLines.some((line) =>
+        /dmarc=pass header\.from=bank\.example/i.test(line)
+      )
+    );
+    t.false(
+      arLines.some((line) => new RegExp(`mx9\\.${env.WEB_HOST}`).test(line))
+    );
+    // the unrelated server's verdict is kept verbatim (apart from name case)
+    t.true(
+      arLines.some((line) =>
+        /^authentication-results: mx\.other\.example; spf=pass$/i.test(line)
+      )
+    );
+  }
+);
