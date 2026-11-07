@@ -61,13 +61,16 @@ const verifyRecords = require('./verify-records');
 const setConversionAndRefundStateHelpers = require('./set-conversion-and-refund-state-helpers');
 const listLogs = require('./list-logs');
 const retrieveLog = require('./retrieve-log');
+const retrieveLogUnsubscribe = require('./retrieve-log-unsubscribe');
 const listEmails = require('./list-emails');
 const retrieveEmail = require('./retrieve-email');
 const removeEmail = require('./remove-email');
+const resendEmail = require('./resend-email');
 const ensureSMTPAccess = require('./ensure-smtp-access');
 const verifySMTP = require('./verify-smtp');
 const generateAliasPassword = require('./generate-alias-password');
 const downloadAliasBackup = require('./download-alias-backup');
+const cloneAlias = require('./clone-alias');
 const createCatchAllPassword = require('./create-catch-all-password');
 const removeCatchAllPassword = require('./remove-catch-all-password');
 const changeModulusLength = require('./change-modulus-length');
@@ -139,13 +142,16 @@ module.exports = {
   setConversionAndRefundStateHelpers,
   listLogs,
   retrieveLog,
+  retrieveLogUnsubscribe,
   listEmails,
   retrieveEmail,
   removeEmail,
+  resendEmail,
   ensureSMTPAccess,
   verifySMTP,
   generateAliasPassword,
   downloadAliasBackup,
+  cloneAlias,
   createCatchAllPassword,
   removeCatchAllPassword,
   changeModulusLength,

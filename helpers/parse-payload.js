@@ -4,6 +4,7 @@
  */
 
 const process = require('node:process');
+const fs = require('node:fs');
 const os = require('node:os');
 const punycode = require('node:punycode');
 const { Buffer } = require('node:buffer');
@@ -54,6 +55,7 @@ const closeDatabase = require('#helpers/close-database');
 const getDatabase = require('#helpers/get-database');
 const resetMailbox = require('#helpers/reset-mailbox');
 const { assertRekeyDiskSpace } = require('#helpers/rekey-disk-space');
+const getCloneQuota = require('#helpers/get-clone-quota');
 const getFingerprint = require('#helpers/get-fingerprint');
 const getHeaders = require('#helpers/get-headers');
 const getPathToDatabase = require('#helpers/get-path-to-database');
@@ -77,6 +79,7 @@ const ServerShutdownError = require('#helpers/server-shutdown-error');
 const syncTemporaryMailbox = require('#helpers/sync-temporary-mailbox');
 const updateStorageUsed = require('#helpers/update-storage-used');
 const { encoder, decoder } = require('#helpers/encoder-decoder');
+const { enqueueCloneJob } = require('#helpers/clone-queue');
 const { encrypt } = require('#helpers/encrypt-decrypt');
 const { finalizeRekey } = require('#helpers/rekey-recovery');
 const { getRekeyLockKey, releaseRekeyLock } = require('#helpers/rekey-lock');
@@ -177,6 +180,7 @@ const PAYLOAD_ACTIONS = new Set([
   'size', // no db
   'stmt', // db required
   'backup', // no db
+  'clone', // no db
   'rekey', // no db
   'reset', // no db
 
@@ -3336,6 +3340,121 @@ async function handlePayload(data, ws) {
           throw err;
         }
 
+        break;
+      }
+
+      //
+      // copy the mailbox of an alias to its clone, which the sqlite-worker
+      // does (see `clone` in helpers/worker.js and
+      // app/controllers/web/my-account/clone-alias.js)
+      //
+      case 'clone': {
+        if (
+          !mongoose.isObjectIdOrHexString(payload.clone_alias_id) ||
+          String(payload.clone_alias_id) ===
+            String(payload.session.user.alias_id)
+        )
+          throw new TypeError('Payload clone alias ID invalid');
+
+        if (!isSANB(payload.clone_username))
+          throw new TypeError('Payload clone username missing');
+
+        if (!mongoose.isObjectIdOrHexString(payload.session.user.domain_id))
+          throw new TypeError('Payload domain ID invalid');
+
+        const storagePath = getPathToDatabase({
+          id: payload.session.user.alias_id,
+          storage_location: payload.session.user.storage_location
+        });
+
+        // an alias that was never signed in to has no mailbox to copy yet
+        let stats;
+        try {
+          stats = await fs.promises.stat(storagePath);
+        } catch (err) {
+          if (err.code !== 'ENOENT') throw err;
+        }
+
+        if (!stats || !stats.isFile() || stats.size === 0) {
+          response = {
+            id: payload.id,
+            data: false
+          };
+          break;
+        }
+
+        // (the volume must hold the copy, see helpers/rekey-disk-space.js)
+        await assertRekeyDiskSpace(storagePath);
+
+        //
+        // one clone at a time on a domain, so the storage left for the copy
+        // is checked below while no other clone of the domain is waiting to
+        // take it (released by the worker once the copy counts toward the
+        // domain's storage, and the worker checks again before copying, see
+        // `clone` in helpers/worker.js)
+        //
+        const key = `clone_check:${payload.session.user.domain_id}`;
+        const claimed = await this.client.set(
+          key,
+          payload.clone_alias_id,
+          'PX',
+          ms('1h'),
+          'NX'
+        );
+
+        if (!claimed) {
+          const err = Boom.clientTimeout(
+            i18n.translateError(
+              'ALIAS_CLONE_IN_PROGRESS',
+              payload.session.user.locale
+            )
+          );
+          err.ignoreHook = true;
+          throw err;
+        }
+
+        try {
+          // (the domain must have room for the copy, see helpers/get-clone-quota.js)
+          const { size, left, hasRoom } = await getCloneQuota(
+            payload.session.user.alias_id,
+            payload.session.user.domain_id,
+            payload.session.user.locale
+          );
+          if (!hasRoom) {
+            const err = Boom.badRequest(
+              i18n.translateError(
+                'ALIAS_CLONE_QUOTA_EXCEEDED',
+                payload.session.user.locale,
+                bytes(size),
+                bytes(left)
+              )
+            );
+            err.ignoreHook = true;
+            throw err;
+          }
+
+          //
+          // messages that arrived while the mailbox was busy are moved into
+          // it first, so the copy has them too (a failure only leaves them
+          // for the original, as always)
+          //
+          try {
+            await syncTemporaryMailbox.call(this, payload.session);
+          } catch (err) {
+            logger.warn(err, { payload: _.omit(payload, 'session') });
+          }
+
+          // (it waits there for the worker, see helpers/clone-queue.js)
+          await enqueueCloneJob(this.client, safeStringify(payload));
+        } catch (err) {
+          await this.client.del(key);
+          throw err;
+        }
+
+        response = {
+          id: payload.id,
+          data: true
+        };
         break;
       }
 

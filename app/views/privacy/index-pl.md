@@ -101,6 +101,7 @@ Gdy tworzysz konto, przechowujemy następujące informacje, aby zrozumieć, jak 
   * Jeśli chcesz skonfigurować przechowywanie treści wychodzących wiadomości SMTP na dłużej niż domyślne 0 dni (po pomyślnym dostarczeniu lub trwałym błędzie), przejdź do Zaawansowanych ustawień dla swojej domeny i wpisz wartość między `0` a `30`.
   * Niektórzy użytkownicy lubią korzystać z funkcji podglądu [Moje konto > E-maile](/my-account/emails), aby zobaczyć, jak ich e-maile są renderowane, dlatego wspieramy konfigurowalny okres przechowywania.
   * Zauważ, że wspieramy również [OpenPGP/E2EE](/faq#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd).
+  * Przechowujemy również rozmiar każdej wychodzącej wiadomości SMTP oraz adres IP klienta, który ją wysłał (przez SMTP lub API), tak długo, jak wiadomość jest przechowywana, i pokazujemy je w [Moje konto > E-maile](/my-account/emails).
 
 
 ## Temporary Data Processing {#temporary-data-processing}
@@ -125,6 +126,7 @@ Następujące dane są przetwarzane tymczasowo w pamięci lub Redis i **nie** s�
 * Przechowujemy również ograniczone metadane uwierzytelniania na poziomie konta, w tym liczniki nieudanych prób logowania oraz znacznik czasu ostatniej próby logowania.
 * Dane o próbach uwierzytelnienia oparte na Redis wygasają automatycznie (zazwyczaj w ciągu 24 godzin).
 * Służy do zapobiegania atakom typu brute-force na konta użytkowników.
+* Udane logowania do aliasu są przechowywane w Redis przez 7 dni (usługa i adres IP każdego z nich, wraz z godziną ostatniego logowania z tego adresu, maksymalnie 50), abyś mógł je przejrzeć na stronie aliasu w Moje konto.
 
 
 ## Audit Logs {#audit-logs}

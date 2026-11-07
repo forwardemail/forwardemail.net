@@ -101,6 +101,7 @@ Cuando creas una cuenta, almacenamos la siguiente información para entender có
   * Si desea configurar que el cuerpo del mensaje de correo SMTP saliente se conserve por más tiempo que el valor predeterminado de 0 días (después de la entrega exitosa o error permanente), vaya a Configuración Avanzada para su dominio e ingrese un valor entre `0` y `30`.
   * Algunos usuarios disfrutan usar la función de vista previa en [Mi Cuenta > Correos](/my-account/emails) para ver cómo se renderizan sus correos, por lo tanto, soportamos un período de retención configurable.
   * Tenga en cuenta que también soportamos [OpenPGP/E2EE](/faq#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd).
+  * También almacenamos el tamaño de cada correo SMTP saliente y la dirección IP del cliente que lo envió (mediante SMTP o la API) mientras el correo esté almacenado, y los mostramos en [Mi Cuenta > Correos](/my-account/emails).
 
 
 ## Procesamiento Temporal de Datos {#temporary-data-processing}
@@ -125,6 +126,7 @@ Los siguientes datos se procesan temporalmente en memoria o Redis y **no** se al
 * También almacenamos metadatos de autenticación limitados a nivel de cuenta, incluyendo contadores de intentos de inicio de sesión fallidos y la marca de tiempo del último intento de inicio de sesión.
 * Los datos de intentos de autenticación basados en Redis caducan automáticamente (normalmente en 24 horas).
 * Se utiliza para prevenir ataques de fuerza bruta en las cuentas de los usuarios.
+* Los inicios de sesión correctos en un alias se conservan en Redis durante 7 días (el servicio y la dirección IP de cada uno, con la hora del último inicio de sesión desde esa dirección, hasta 50), para que pueda revisarlos en la página del alias en Mi cuenta.
 
 
 ## Registros de Auditoría {#audit-logs}

@@ -17,6 +17,16 @@ block body
               )
                 = " "
                 = t("View Email")
+        //- One-click unsubscribe (RFC 8058), see retrieve-log-unsubscribe.js
+        else if getOneClickUnsubscribeUrl(log)
+          ul.list-inline.text-center
+            li.list-inline-item
+              a.btn.btn-danger(
+                href=l(`/my-account/logs/${log.id}/unsubscribe`)
+              )
+                i.fa.fa-fw.fa-ban
+                = " "
+                = t("Unsubscribe")
         h3.h5= t("SMTP Envelope")
         table.table.table-hover.table-bordered.table-striped
           if log.meta && log.meta.session && log.meta.session.remoteAddress

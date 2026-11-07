@@ -20,6 +20,19 @@ block body
               i.fa.fa-file-download
               = " "
               = t("Download")
+          //- Resend (see app/controllers/web/my-account/resend-email.js)
+          if isResendable(email)
+            li.list-inline-item
+              form.ajax-form.confirm-prompt(
+                action=l(`/my-account/emails/${email.id}/resend`),
+                method="POST",
+                autocomplete=config.env === "test" ? "off" : randomstring(),
+                data-confirm-prompt-html=t("A copy of this email will be queued and sent again to all of its recipients.")
+              )
+                button.btn.btn-success(type="submit")
+                  i.fa.fa-fw.fa-redo
+                  = " "
+                  = t("Resend email")
           //- Only allow remove if
           //- - pending
           //- - queued
@@ -53,6 +66,14 @@ block body
           tr
             th= "DATE"
             td: span.dayjs(data-time=email.date.getTime())= dayjs(email.date).tz(user.timezone === 'Etc/Unknown' ? 'UTC' : user.timezone).format("M/D/YY h:mm A z")
+          if email.remote_address
+            tr
+              th= "CLIENT IP"
+              td: code= email.remote_address
+          if Number.isFinite(email.size)
+            tr
+              th= "SIZE"
+              td= bytes(email.size)
           tr
             th= "MAIL FROM"
             td= email.envelope.from

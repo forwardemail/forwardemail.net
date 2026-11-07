@@ -1,0 +1,60 @@
+extends ../../layout
+
+block body
+  .container-fluid.pt-3
+    .row
+      .col
+        include ../../_breadcrumbs
+  .container.pb-3
+    .row
+      .col-md-10.offset-md-1.col-lg-8.offset-lg-2
+        //- The request is sent by the browser (see assets/js/core.js)
+        .card(data-one-click-unsubscribe-container)
+          .card-body.text-center
+            h1.h4.card-title= t("One-Click Unsubscribe")
+            if isSANB(unsubscribeFrom) || isSANB(unsubscribeSubject) || unsubscribeRecipients.length > 0
+              ul.list-unstyled.small.mb-3
+                if isSANB(unsubscribeFrom)
+                  li
+                    span.badge.badge-pill.badge-primary= t("From")
+                    = " "
+                    code= unsubscribeFrom
+                if isSANB(unsubscribeSubject)
+                  li
+                    span.badge.badge-pill.badge-primary= t("Subject")
+                    = " "
+                    code= unsubscribeSubject
+                if unsubscribeRecipients.length > 0
+                  li
+                    span.badge.badge-pill.badge-primary= t("To")
+                    = " "
+                    code.notranslate= unsubscribeRecipients.join(", ")
+            p.lead= t("Unsubscribe from the mailing list that sent this message?")
+            p
+              = t("Your browser sends the request directly to this address, without your cookies:")
+              br
+              code.notranslate= unsubscribeHost
+            button.btn.btn-danger.btn-lg(
+              type="button",
+              data-one-click-unsubscribe=unsubscribeUrl
+            )
+              i.fa.fa-fw.fa-ban
+              = " "
+              = t("Unsubscribe")
+            .alert.alert-success.mt-3.mb-0.d-none(
+              role="alert",
+              data-one-click-unsubscribe-success
+            )= t("Your unsubscribe request was sent.  It may take a few days for the sender to stop sending you messages.")
+            .alert.alert-danger.mt-3.mb-0.d-none(
+              role="alert",
+              data-one-click-unsubscribe-error
+            )
+              = t("Your browser could not confirm that the unsubscribe request was received.")
+              = " "
+              a.alert-link(
+                href=unsubscribeUrl,
+                target="_blank",
+                rel="noopener noreferrer"
+              )= t("Open the unsubscribe page instead")
+          .card-footer.text-center
+            a.btn.btn-link(href=l(`/my-account/logs/${log.id}`))= t("View Details")

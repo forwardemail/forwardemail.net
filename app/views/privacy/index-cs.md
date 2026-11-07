@@ -101,6 +101,7 @@ Když si vytvoříte účet, ukládáme následující informace, abychom pochop
   * Pokud chcete nastavit, aby tělo odchozího SMTP e-mailu bylo uchováváno déle než výchozích 0 dní (po úspěšném doručení nebo trvalé chybě), přejděte do Pokročilých nastavení pro vaši doménu a zadejte hodnotu mezi `0` a `30`.
   * Někteří uživatelé rádi používají náhledovou funkci [Můj účet > E-maily](/my-account/emails), aby viděli, jak jsou jejich e-maily zobrazeny, proto podporujeme konfigurovatelnou dobu uchování.
   * Poznámka: Také podporujeme [OpenPGP/E2EE](/faq#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd).
+  * Ukládáme také velikost každého odchozího e-mailu SMTP a IP adresu klienta, který jej odeslal (přes SMTP nebo API), po dobu uložení e-mailu, a zobrazujeme je v [Můj účet > E-maily](/my-account/emails).
 
 
 ## Dočasné zpracování dat {#temporary-data-processing}
@@ -125,6 +126,7 @@ Následující data jsou zpracovávána dočasně v paměti nebo v Redis a **nej
 * Ukládáme také omezená metadata o ověřování na úrovni účtu, včetně počítadel neúspěšných pokusů o přihlášení a časového razítka posledního pokusu o přihlášení.
 * Data o pokusech o ověření založená na Redis automaticky vyprší (obvykle do 24 hodin).
 * Používá se k prevenci útoků hrubou silou na uživatelské účty.
+* Úspěšná přihlášení k aliasu se uchovávají v Redis po dobu 7 dní (služba a IP adresa každého z nich, s časem posledního přihlášení z dané adresy, nejvýše 50), abyste je mohli zkontrolovat na stránce aliasu v Můj účet.
 
 
 ## Auditní záznamy {#audit-logs}

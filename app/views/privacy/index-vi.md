@@ -101,6 +101,7 @@ Khi bạn tạo tài khoản, chúng tôi lưu trữ các thông tin sau để h
   * Nếu bạn muốn cấu hình để nội dung email SMTP gửi đi được giữ lâu hơn mặc định 0 ngày (sau khi gửi thành công hoặc lỗi vĩnh viễn), hãy vào Cài đặt nâng cao cho tên miền của bạn và nhập giá trị từ `0` đến `30`.
   * Một số người dùng thích sử dụng tính năng xem trước [Tài khoản của tôi > Email](/my-account/emails) để xem email của họ được hiển thị như thế nào, do đó chúng tôi hỗ trợ khoảng thời gian lưu trữ có thể cấu hình.
   * Lưu ý rằng chúng tôi cũng hỗ trợ [OpenPGP/E2EE](/faq#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd).
+  * Chúng tôi cũng lưu trữ kích thước của mỗi email SMTP gửi đi và địa chỉ IP của ứng dụng khách đã gửi nó (qua SMTP hoặc API) trong suốt thời gian email được lưu trữ, đồng thời hiển thị chúng trong [Tài khoản của tôi > Email](/my-account/emails).
 
 
 ## Xử lý dữ liệu tạm thời {#temporary-data-processing}
@@ -125,6 +126,7 @@ Các dữ liệu sau được xử lý tạm thời trong bộ nhớ hoặc Redi
 * Chúng tôi cũng lưu trữ siêu dữ liệu xác thực cấp tài khoản hạn chế, bao gồm bộ đếm số lần đăng nhập không thành công và dấu thời gian của lần thử đăng nhập cuối cùng.
 * Dữ liệu thử xác thực dựa trên Redis sẽ tự động hết hạn (thường trong vòng 24 giờ).
 * Được sử dụng để ngăn chặn các cuộc tấn công brute-force vào tài khoản người dùng.
+* Các lần đăng nhập thành công vào bí danh được lưu trong Redis trong 7 ngày (dịch vụ và địa chỉ IP của từng lần, cùng thời điểm đăng nhập gần nhất từ địa chỉ đó, tối đa 50), để bạn có thể xem lại trên trang của bí danh trong Tài khoản của tôi.
 
 
 ## Nhật ký kiểm tra {#audit-logs}

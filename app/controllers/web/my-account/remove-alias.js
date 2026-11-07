@@ -10,6 +10,7 @@ const Boom = require('@hapi/boom');
 const abusePreventionByUserId = require('#helpers/abuse-prevention-by-user-id');
 // const { removeAliasBackup } = require('#helpers/remove-alias-backup');
 const config = require('#config');
+const { getPendingClone } = require('#helpers/clone-queue');
 const { Aliases } = require('#models');
 
 async function removeAlias(ctx, next) {
@@ -38,6 +39,14 @@ async function removeAlias(ctx, next) {
   // pass alias so deletion is permitted if alias has < 20 recipients
   //
   await abusePreventionByUserId(ctx, ctx.state.alias);
+
+  //
+  // nor the original of a clone that copies its mailbox (the clone itself
+  // may be deleted: nothing is copied into it then, see helpers/worker.js)
+  //
+  const pendingClone = await getPendingClone(ctx.client, ctx.state.alias._id);
+  if (pendingClone && pendingClone.alias_id === String(ctx.state.alias._id))
+    throw Boom.conflict(ctx.translateError('ALIAS_CLONE_PENDING'));
 
   // NOTE: currently commented out until we're certain this works well
   // Clean up R2 backup files for this alias before deletion

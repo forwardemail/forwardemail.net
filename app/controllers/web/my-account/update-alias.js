@@ -10,11 +10,24 @@ const _ = require('#helpers/lodash');
 
 const Aliases = require('#models/aliases');
 const clearAliasQuotaCache = require('#helpers/clear-alias-quota-cache');
+const { getPendingClone } = require('#helpers/clone-queue');
 
 async function updateAlias(ctx, next) {
   ctx.state.alias = await Aliases.findById(ctx.state.alias._id);
   if (!ctx.state.alias)
     throw Boom.badRequest(ctx.translateError('ALIAS_DOES_NOT_EXIST'));
+
+  //
+  // IMAP stays as it is while a clone copies the mailbox of this alias, or
+  // into it: the original must keep its mailbox, and the clone gets IMAP
+  // once its copy is in place (see helpers/clone-queue.js)
+  //
+  if (
+    typeof ctx.state.body.has_imap === 'boolean' &&
+    ctx.state.body.has_imap !== ctx.state.alias.has_imap &&
+    (await getPendingClone(ctx.client, ctx.state.alias.id))
+  )
+    throw Boom.conflict(ctx.translateError('ALIAS_CLONE_PENDING'));
   ctx.state.alias = _.extend(ctx.state.alias, ctx.state.body);
   try {
     ctx.state.alias.locale = ctx.locale;

@@ -28,16 +28,17 @@ function isUnknownCommandError(err) {
 }
 
 //
-// Wait up to `timeoutSeconds` for the next job and move it atomically from
-// the queue to the processing list.  Resolves with the job (a string) or
-// `null` on timeout.
+// Wait up to `timeoutSeconds` for the next job of `queue` and move it
+// atomically to `processingList`.  Resolves with the job (a string) or
+// `null` on timeout.  (Clones are queued the same way, see
+// helpers/clone-queue.js.)
 //
-async function takeRekeyJob(blockingClient, timeoutSeconds = 5) {
+async function takeJob(blockingClient, queue, processingList, timeoutSeconds) {
   if (blmoveSupported) {
     try {
       return await blockingClient.blmove(
-        REKEY_QUEUE,
-        REKEY_PROCESSING_LIST,
+        queue,
+        processingList,
         'LEFT',
         'RIGHT',
         timeoutSeconds
@@ -46,16 +47,25 @@ async function takeRekeyJob(blockingClient, timeoutSeconds = 5) {
       if (!isUnknownCommandError(err)) throw err;
       blmoveSupported = false;
       logger.warn(
-        'Redis does not support BLMOVE (requires 6.2+), rekey jobs are taken with BLPOP instead'
+        'Redis does not support BLMOVE (requires 6.2+), rekey and clone jobs are taken with BLPOP instead'
       );
     }
   }
 
-  const result = await blockingClient.blpop(REKEY_QUEUE, timeoutSeconds);
+  const result = await blockingClient.blpop(queue, timeoutSeconds);
   if (!result) return null;
   const [, payloadStr] = result;
-  await blockingClient.rpush(REKEY_PROCESSING_LIST, payloadStr);
+  await blockingClient.rpush(processingList, payloadStr);
   return payloadStr;
+}
+
+function takeRekeyJob(blockingClient, timeoutSeconds = 5) {
+  return takeJob(
+    blockingClient,
+    REKEY_QUEUE,
+    REKEY_PROCESSING_LIST,
+    timeoutSeconds
+  );
 }
 
 // The job's outcome was recorded: it may leave the processing list.
@@ -77,5 +87,6 @@ module.exports = {
   enqueueRekeyJob,
   finishRekeyJob,
   requeueRekeyJob,
+  takeJob,
   takeRekeyJob
 };

@@ -8,6 +8,7 @@ const punycode = require('node:punycode');
 const Boom = require('@hapi/boom');
 const isSANB = require('is-string-and-not-blank');
 const Aliases = require('#models/aliases');
+const { getSignIns } = require('#helpers/alias-sign-ins');
 
 const config = require('#config');
 
@@ -91,6 +92,15 @@ async function retrieveAlias(ctx, next) {
         name: `${ctx.state.alias.name}@${ctx.state.domain.name}`
       }
     );
+
+    // recent sign-ins (see helpers/alias-sign-ins.js)
+    if (ctx.method === 'GET') {
+      try {
+        ctx.state.signIns = await getSignIns(ctx.client, ctx.state.alias.id);
+      } catch (err) {
+        ctx.logger.warn(err);
+      }
+    }
   }
 
   return next();

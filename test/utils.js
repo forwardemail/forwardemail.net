@@ -88,7 +88,8 @@ exports.setupMongoose = async () => {
 };
 
 exports.setupWebServer = async (t) => {
-  const client = new Redis({ keyPrefix: randomUUID() });
+  // (or the Redis of the test's other servers, as in production)
+  const client = t.context.webRedis || new Redis({ keyPrefix: randomUUID() });
   client.setMaxListeners(0);
   const web = new Web(
     {

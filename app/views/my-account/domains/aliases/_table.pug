@@ -246,6 +246,11 @@ p.text-center.d-lg-none
                       = t("Instantly create alias")
       if domain && domain.aliases && domain.aliases.length > 0
         each alias in domain.aliases
+          //- (as app/controllers/web/my-account/clone-alias.js: its password is
+          //- asked for if it has one, and its mailbox copied if IMAP is on too)
+          - const canClone = !domain.is_global && domain.plan !== "free";
+          - const cloneHasPassword = Array.isArray(alias.tokens) && alias.tokens.length > 0;
+          - const cloneHasMailbox = cloneHasPassword && alias.has_imap;
           tr
             td.align-middle
               //- Download Backup
@@ -385,6 +390,79 @@ p.text-center.d-lg-none
                           button.btn.btn-success.btn-block.btn-lg(
                             type="submit"
                           )= t("Continue")
+
+              //- Clone (see app/controllers/web/my-account/clone-alias.js)
+              if canClone && (!isUbuntuRelatedAlias || domain.group === 'admin')
+                .modal.fade(
+                  id=`modal-clone-alias-${alias.id}`,
+                  tabindex="-1",
+                  role="dialog",
+                  aria-labelledby=`modal-clone-alias-${alias.id}-title`,
+                  aria-hidden="true"
+                )
+                  .modal-dialog(role="document")
+                    .modal-content
+                      .modal-header.text-center.d-block
+                        h4.d-inline-block.ml-4(
+                          id=`modal-clone-alias-${alias.id}-title`
+                        )= t("Clone Alias")
+                        button.close(
+                          type="button",
+                          data-dismiss="modal",
+                          aria-label="Close"
+                        )
+                          span(aria-hidden="true") &times;
+                      .modal-body.text-center
+                        form.ajax-form.d-block.confirm-prompt(
+                          action=l(`/my-account/domains/${punycode.toASCII(domain.name)}/aliases/${alias.id}/clone`),
+                          method="POST"
+                        )
+                          p.alert.alert-primary.small
+                            if cloneHasMailbox
+                              = t("Create a new alias with a copy of this alias' mailbox (its folders, messages, calendars and contacts), settings and Sieve scripts.  The new alias signs in with the same password.")
+                            else
+                              = t("Create a new alias with this alias' settings and Sieve scripts.")
+                              if cloneHasPassword
+                                = " "
+                                = t("The new alias signs in with the same password.")
+                          .form-group.text-left
+                            label(for=`input-clone-name-${alias.id}`)
+                              = t("Name")
+                              = " "
+                              span.text-danger= t("(required)")
+                            .input-group
+                              input.form-control(
+                                id=`input-clone-name-${alias.id}`,
+                                name="name",
+                                required,
+                                type="text",
+                                autocomplete="off",
+                                autocorrect="off",
+                                autocapitalize="off",
+                                spellcheck="false"
+                              )
+                              .input-group-append
+                                .input-group-text.bg-dark.text-white
+                                  small.notranslate= `@${domain.name}`
+                          if cloneHasPassword
+                            p.font-weight-bold.lead= t("Enter current password")
+                            .form-group.floating-label
+                              input.form-control.form-control-lg(
+                                id=`input-clone-password-${alias.id}`,
+                                name="password",
+                                required,
+                                type="password",
+                                placeholder=" ",
+                                autocomplete=config.env === "test" ? "off" : randomstring()
+                              )
+                              label(for=`input-clone-password-${alias.id}`)= t("Password")
+                          if config.turnstileEnabled
+                            noscript
+                              .alert.alert-danger.font-weight-bold.text-center.border-top-0.border-left-0.border-right-0.rounded-0.small!= t("Please enable JavaScript to use our website.")
+                            .cf-explicit-turnstile
+                          button.btn.btn-success.btn-block.btn-lg(
+                            type="submit"
+                          )= t("Clone Alias")
 
               //- Generate Password
               if !domain.is_global && alias.name !== '*' && !alias.name.startsWith('/') && domain.plan !== 'free'
@@ -740,6 +818,17 @@ p.text-center.d-lg-none
                           i.fa.fa-database
                           = " "
                           = t("Download Backup")
+                    //- Clone
+                    if canClone && (!isUbuntuRelatedAlias || domain.group === 'admin')
+                      li.list-inline-item
+                        button.btn.btn-sm.btn-link.text-themed.btn-block(
+                          type="button",
+                          data-toggle="modal",
+                          data-target=`#modal-clone-alias-${alias.id}`
+                        )
+                          i.fa.fa-clone
+                          = " "
+                          = t("Clone")
                     //- Sieve Scripts button - requires IMAP to be enabled
                     li.list-inline-item
                       if alias.has_imap

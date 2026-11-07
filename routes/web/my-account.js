@@ -463,6 +463,17 @@ router
     rateLimit(100, 'download backup'),
     web.myAccount.downloadAliasBackup
   )
+  .post(
+    '/domains/:domain_id/aliases/:alias_id/clone',
+    web.myAccount.retrieveDomain,
+    web.myAccount.ensureUpgradedPlan,
+    web.myAccount.ensureSMTPAccess,
+    web.myAccount.retrieveAlias,
+    web.myAccount.ensureAliasAdmin,
+    policies.ensureTurnstile,
+    rateLimit(20, 'clone alias'),
+    web.myAccount.cloneAlias
+  )
   .get(
     '/domains/:domain_id/billing',
     web.myAccount.retrieveDomain,
@@ -502,6 +513,12 @@ router
     web.myAccount.retrieveEmail,
     web.myAccount.removeEmail
   )
+  .post(
+    '/emails/:id/resend',
+    rateLimit(100, 'resend emails'),
+    web.myAccount.retrieveEmail,
+    web.myAccount.resendEmail
+  )
   .get(
     '/logs',
     paginate.middleware(25, 100),
@@ -528,6 +545,12 @@ router
     rateLimit(1000, 'retrieve logs'),
     web.myAccount.retrieveLog,
     render('my-account/logs/retrieve')
+  )
+  .get(
+    '/logs/:id/unsubscribe',
+    rateLimit(100, 'unsubscribe logs'),
+    web.myAccount.retrieveLog,
+    web.myAccount.retrieveLogUnsubscribe
   )
   .delete(
     '/domains/:domain_id',

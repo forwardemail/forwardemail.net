@@ -10,6 +10,7 @@ const { boolean } = require('boolean');
 const isFQDN = require('is-fqdn');
 const isSANB = require('is-string-and-not-blank');
 const paginate = require('koa-ctx-paginate');
+const { isResendable } = require('./resend-email');
 const _ = require('#helpers/lodash');
 
 const config = require('#config');
@@ -41,6 +42,9 @@ const EMAIL_SORT_FIELDS = new Set([
 
 async function listEmails(ctx, next) {
   const isAliasAuth = Boolean(ctx.state?.session?.db);
+
+  // (for the Resend button)
+  ctx.state.isResendable = isResendable;
   let domains = [];
   let aliases = [];
   let count = 0;
@@ -334,6 +338,10 @@ async function listEmails(ctx, next) {
 
       // Check subject
       if (email.subject && searchRegex.test(email.subject)) return true;
+
+      // Check IP address of the client that sent it
+      if (email.remote_address && searchRegex.test(email.remote_address))
+        return true;
 
       // Check rejectedErrors
       if (email.rejectedErrors && Array.isArray(email.rejectedErrors)) {

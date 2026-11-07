@@ -7,6 +7,7 @@ const Boom = require('@hapi/boom');
 const isSANB = require('is-string-and-not-blank');
 const previewEmail = require('preview-email');
 
+const { isResendable } = require('./resend-email');
 const config = require('#config');
 const { Domains, Emails, Aliases } = require('#models');
 
@@ -85,7 +86,12 @@ async function retrieveEmail(ctx, next) {
   if (!ctx.state.email)
     throw Boom.notFound(ctx.translateError('EMAIL_DOES_NOT_EXIST'));
 
-  if (!ctx.api) {
+  // (for the Resend button)
+  ctx.state.isResendable = isResendable;
+
+  // (the message is only read to be shown or downloaded, not to be removed
+  // or resent)
+  if (!ctx.api && ['GET', 'HEAD'].includes(ctx.method)) {
     // eml download
     if (ctx.params.id.endsWith('.eml')) {
       // (a download, never shown in the browser on our own origin)

@@ -101,6 +101,7 @@ Lorsque vous créez un compte, nous stockons les informations suivantes pour com
   * Si vous souhaitez configurer la conservation du corps du message de vos emails SMTP sortants plus longtemps que la valeur par défaut de 0 jour (après livraison réussie ou erreur permanente), allez dans les Paramètres avancés de votre domaine et saisissez une valeur entre `0` et `30`.
   * Certains utilisateurs apprécient d'utiliser la fonctionnalité de prévisualisation [Mon compte > Emails](/my-account/emails) pour voir comment leurs emails sont rendus, c'est pourquoi nous supportons une période de conservation configurable.
   * Notez que nous supportons également [OpenPGP/E2EE](/faq#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd).
+  * Nous stockons également la taille de chaque e-mail SMTP sortant et l'adresse IP du client qui l'a envoyé (via SMTP ou l'API) tant que l'e-mail est conservé, et nous les affichons dans [Mon compte > Emails](/my-account/emails).
 
 
 ## Traitement temporaire des données {#temporary-data-processing}
@@ -125,6 +126,7 @@ Les données suivantes sont traitées temporairement en mémoire ou dans Redis e
 * Nous stockons également des métadonnées d'authentification limitées au niveau du compte, y compris les compteurs de tentatives de connexion échouées et l'horodatage de la dernière tentative de connexion.
 * Les données de tentative d'authentification basées sur Redis expirent automatiquement (généralement dans les 24 heures).
 * Utilisé pour prévenir les attaques par force brute sur les comptes utilisateurs.
+* Les connexions réussies à un alias sont conservées dans Redis pendant 7 jours (le service et l'adresse IP de chacune, avec l'heure de la dernière connexion depuis cette adresse, jusqu'à 50), afin que vous puissiez les consulter sur la page de l'alias dans Mon compte.
 
 
 ## Journaux d'audit {#audit-logs}

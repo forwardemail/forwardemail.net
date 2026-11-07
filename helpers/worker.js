@@ -63,8 +63,10 @@ const getDatabase = require('#helpers/get-database');
 const getPathToDatabase = require('#helpers/get-path-to-database');
 const getRekeyTmpPath = require('#helpers/get-rekey-tmp-path');
 const openDatabaseHandle = require('#helpers/open-database-handle');
+const getCloneQuota = require('#helpers/get-clone-quota');
 const i18n = require('#helpers/i18n');
 const isRetryableError = require('#helpers/is-retryable-error');
+const isValidPassword = require('#helpers/is-valid-password');
 const isStorageAvailable = require('#helpers/is-storage-available');
 const logger = require('#helpers/logger');
 const refineAndLogError = require('#helpers/refine-and-log-error');
@@ -78,6 +80,7 @@ const { assertRekeyDiskSpace } = require('#helpers/rekey-disk-space');
 const { finalizeRekey, rollbackRekey } = require('#helpers/rekey-recovery');
 const { withDbFileLock } = require('#helpers/db-file-lock');
 const {
+  COMPANION_SUFFIXES,
   companionFileExists,
   fsyncDirectory,
   removeCompanionFiles
@@ -2333,4 +2336,314 @@ async function vacuum(payload) {
   }
 }
 
-module.exports = { rekey, backup, setWorkerCancelled, vacuum };
+//
+// Copy the mailbox of an alias to its clone (see #575 and
+// app/controllers/web/my-account/clone-alias.js).
+//
+// The clone was created with IMAP turned off, so nothing opens (or creates)
+// a mailbox for it meanwhile.  The copy is made with VACUUM INTO, which keeps
+// the encryption as-is (the clone signs in with the same password), next to
+// the original's mailbox under the original's ID (so the hourly cleanup of
+// mailboxes without IMAP leaves it alone), checked, and then moved into place
+// under the clone's file mutex as IMAP is turned on for it.
+//
+const CLONE_TMP_SUFFIXES = ['', ...COMPANION_SUFFIXES];
+
+// (extends a claim only while it is still this job's)
+const EXTEND_LOCK_SCRIPT =
+  "if redis.call('get', KEYS[1]) == ARGV[1] then return redis.call('pexpire', KEYS[1], ARGV[2]) else return 0 end";
+
+// (the copy has no -wal/-shm files, see below)
+async function setCloneStorageUsed(cloneId, targetPath) {
+  const { size } = await fs.promises.stat(targetPath);
+  await Aliases.updateOne({ _id: cloneId }, { $set: { storage_used: size } });
+}
+
+//
+// One clone runs at a time, taken from a Redis list (see
+// helpers/clone-queue.js and sqlite-worker.js), so a job interrupted by a
+// shutdown (ServerShutdownError, thrown to the caller) or by a worker that
+// died is run again by the next worker: each step below can be run again.
+//
+// (`redis` is the client the sqlite server claimed the clone with, see
+// helpers/parse-payload.js: the same Redis, unless a test gives its own)
+//
+async function clone(payload, redis = client) {
+  const { user } = payload.session;
+  const cloneId = payload.clone_alias_id;
+  if (
+    !mongoose.isObjectIdOrHexString(user.alias_id) ||
+    !mongoose.isObjectIdOrHexString(user.domain_id) ||
+    !mongoose.isObjectIdOrHexString(cloneId) ||
+    String(user.alias_id) === String(cloneId)
+  )
+    throw new TypeError('Clone payload is invalid');
+
+  await setupMongoose(logger);
+
+  const sourcePath = getPathToDatabase({
+    id: user.alias_id,
+    storage_location: user.storage_location
+  });
+  const targetPath = getPathToDatabase({
+    id: cloneId,
+    storage_location: user.storage_location
+  });
+  const tmp = path.join(
+    path.dirname(sourcePath),
+    `${user.alias_id}-clone-${cloneId}-backup.sqlite`
+  );
+  // (the domain's claim, see helpers/parse-payload.js)
+  const checkKey = `clone_check:${user.domain_id}`;
+
+  let db;
+  let err;
+  try {
+    // (the job may have waited in the queue)
+    await redis.eval(
+      EXTEND_LOCK_SCRIPT,
+      1,
+      checkKey,
+      String(cloneId),
+      ms('1h')
+    );
+
+    if (isCancelled) throw new ServerShutdownError();
+
+    const cloneAlias = await Aliases.findOne({
+      _id: cloneId,
+      domain: user.domain_id
+    })
+      .select('has_imap storage_location')
+      .lean()
+      .exec();
+
+    // the clone was deleted (or the request failed and it was removed)
+    if (!cloneAlias) return;
+
+    if (cloneAlias.storage_location !== user.storage_location)
+      throw new TypeError('The storage location of the clone was changed');
+
+    //
+    // IMAP turned on with a mailbox in place: the copy was put there by
+    // this job before it was interrupted (or the owner signed in to the
+    // clone before it was done, which is theirs to keep)
+    //
+    if (cloneAlias.has_imap && fs.existsSync(targetPath)) {
+      logger.warn('Clone already has a mailbox', {
+        alias_id: user.alias_id,
+        clone_alias_id: cloneId
+      });
+      await setCloneStorageUsed(cloneId, targetPath);
+      return;
+    }
+
+    //
+    // the domain must still have room for the copy: the clones before it
+    // (one at a time) count toward its storage now, see
+    // helpers/get-clone-quota.js
+    //
+    const { hasRoom } = await getCloneQuota(
+      user.alias_id,
+      user.domain_id,
+      user.locale
+    );
+    if (!hasRoom)
+      throw new TypeError('The domain has no room left for the copy');
+
+    // the volume must hold the copy (and its VACUUM, as for a rekey)
+    await assertRekeyDiskSpace(sourcePath);
+
+    await pWaitFor(() => os.freemem() > workerConfig.MIN_FREE_MEM, {
+      interval: workerConfig.MEMORY_WAIT_INTERVAL,
+      timeout: workerConfig.MEMORY_WAIT_TIMEOUT
+    });
+
+    if (isCancelled) throw new ServerShutdownError();
+
+    await removeCompanionFiles(tmp, CLONE_TMP_SUFFIXES);
+
+    // (opened without maintenance, under the original's file mutex, and
+    // never created: e.g. the original was deleted meanwhile)
+    db = await openDatabaseHandle(sourcePath, payload.session, {
+      fileMustExist: true
+    });
+    db.pragma('wal_checkpoint(PASSIVE)');
+    db.exec(`VACUUM INTO '${tmp.replace(/'/g, "''")}';`);
+    db.close();
+    db = null;
+
+    if (isCancelled) throw new ServerShutdownError();
+
+    // the copy must open with the password and be intact
+    const copy = new Database(tmp, {
+      readonly: true,
+      fileMustExist: true,
+      timeout: config.busyTimeout
+    });
+    try {
+      await setupPragma(copy, payload.session);
+      const result = copy.pragma('quick_check', { simple: true });
+      if (result !== 'ok')
+        throw new TypeError(`Copy of the mailbox is not intact: ${result}`);
+    } finally {
+      copy.close();
+    }
+
+    // (a read-only open in WAL mode may leave empty companion files)
+    await removeCompanionFiles(tmp, ['-wal', '-shm']);
+
+    await withDbFileLock(targetPath, { purpose: 'clone' }, async (lock) => {
+      // (never over a mailbox of the clone's own, nor one being opened)
+      if (
+        fs.existsSync(targetPath) ||
+        COMPANION_SUFFIXES.some((suffix) =>
+          fs.existsSync(`${targetPath}${suffix}`)
+        )
+      )
+        throw new TypeError('The clone already has a mailbox');
+
+      //
+      // the copy is encrypted with the password it was cloned with, so the
+      // clone must still sign in with exactly that password (a new password
+      // generated for it meanwhile would not open the copy)
+      //
+      const current = await Aliases.findById(cloneId)
+        .select('+tokens.hash +tokens.salt +tokens.has_pbkdf2_migration')
+        .lean()
+        .exec();
+      // (as stored, before the check below may migrate one in memory)
+      const hashes = Array.isArray(current?.tokens)
+        ? current.tokens.map((token) => token.hash)
+        : [];
+      if (
+        !current ||
+        current.is_rekey ||
+        hashes.length === 0 ||
+        !(await isValidPassword(current.tokens, decrypt(user.password)))
+      )
+        throw new TypeError('The clone was changed or deleted meanwhile');
+
+      //
+      // (opens of the clone wait for the mutex, so IMAP is on only once the
+      // mailbox is in place, and only if its passwords are still the ones
+      // checked above)
+      //
+      const updated = await Aliases.findOneAndUpdate(
+        {
+          _id: cloneId,
+          is_rekey: { $ne: true },
+          tokens: { $size: hashes.length },
+          'tokens.hash': { $all: hashes }
+        },
+        { $set: { has_imap: true } }
+      )
+        .select('_id')
+        .lean()
+        .exec();
+      if (!updated)
+        throw new TypeError('The clone was changed or deleted meanwhile');
+
+      try {
+        // (as for a rekey: the mutex must still be ours, see db-file-lock.js)
+        if (!lock.isOwned())
+          throw new TypeError('Database file lock of the clone was lost');
+        await fs.promises.rename(tmp, targetPath);
+        fsyncDirectory(path.dirname(targetPath));
+      } catch (renameErr) {
+        await Aliases.updateOne(
+          { _id: cloneId },
+          { $set: { has_imap: false } }
+        ).catch((err) =>
+          logger.fatal(err, { payload: { clone_alias_id: cloneId } })
+        );
+        throw renameErr;
+      }
+    });
+
+    // (counted toward the domain's storage before the domain's claim is
+    // released below, see helpers/parse-payload.js)
+    await setCloneStorageUsed(cloneId, targetPath);
+
+    // (the clone is done, whether or not its owner could be told)
+    if (payload.email)
+      email({
+        template: 'alert',
+        message: {
+          to: payload.email,
+          subject: i18n.translate(
+            'ALIAS_CLONE_READY_SUBJECT',
+            user.locale,
+            user.username,
+            payload.clone_username
+          )
+        },
+        locals: {
+          message: i18n.translate(
+            'ALIAS_CLONE_READY',
+            user.locale,
+            user.username,
+            payload.clone_username
+          ),
+          locale: user.locale
+        }
+      }).catch((err) => logger.fatal(err));
+  } catch (_err) {
+    err = _err;
+  } finally {
+    if (db && db.open) {
+      try {
+        db.close();
+      } catch {}
+    }
+
+    try {
+      await removeCompanionFiles(tmp, CLONE_TMP_SUFFIXES);
+    } catch (err) {
+      logger.warn(err, { tmp });
+    }
+  }
+
+  // (run again by the next worker, see sqlite-worker.js)
+  if (err instanceof ServerShutdownError) throw err;
+
+  // (another alias of the domain may be cloned now)
+  try {
+    await redis.eval(RELEASE_LOCK_SCRIPT, 1, checkKey, String(cloneId));
+  } catch (err) {
+    logger.warn(err);
+  }
+
+  if (!err) return;
+
+  logger.fatal(err, {
+    payload: { clone_alias_id: cloneId, alias_id: user.alias_id }
+  });
+
+  // (the reason is in our logs: e.g. the server's disk space is not theirs
+  // to know, and what to do about it is the same)
+  if (payload.email)
+    await email({
+      template: 'alert',
+      message: {
+        to: payload.email,
+        subject: i18n.translate(
+          'ALIAS_CLONE_FAILED_SUBJECT',
+          user.locale,
+          user.username
+        )
+      },
+      locals: {
+        message: i18n.translate(
+          'ALIAS_CLONE_FAILED',
+          user.locale,
+          user.username,
+          payload.clone_username,
+          payload.clone_username
+        ),
+        locale: user.locale
+      }
+    }).catch((err) => logger.fatal(err));
+}
+
+module.exports = { rekey, backup, clone, setWorkerCancelled, vacuum };

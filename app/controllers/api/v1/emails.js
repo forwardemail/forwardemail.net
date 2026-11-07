@@ -262,7 +262,8 @@ async function queueCatchallEmail(ctx, message) {
       domain: domain._id,
       user,
       catchall: true,
-      dsn: message?.dsn
+      dsn: message?.dsn,
+      remoteAddress: ctx.ip
     },
     sessionUser.locale
   );
@@ -332,13 +333,19 @@ async function create(ctx) {
               ? { _id: ctx.state.user.alias_id }
               : undefined,
             domain: ctx.state.user.domain_id,
-            user: ctx.state.user.alias_user_id
+            user: ctx.state.user.alias_user_id,
+            remoteAddress: ctx.ip
           },
           ctx.state.user.locale
         );
       } else {
         email = await Emails.queue(
-          { message, user: ctx.state.user, dsn: message?.dsn },
+          {
+            message,
+            user: ctx.state.user,
+            dsn: message?.dsn,
+            remoteAddress: ctx.ip
+          },
           ctx.locale
         );
       }

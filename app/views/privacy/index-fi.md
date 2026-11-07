@@ -101,6 +101,7 @@ Kun luot tilin, tallennamme seuraavat tiedot ymmärtääksemme, miten käyttäj�
   * Jos haluat määrittää lähtevän SMTP-sähköpostiviestin sisällön säilytettäväksi pidempään kuin oletusarvoinen 0 päivää (onnistuneen toimituksen tai pysyvän virheen jälkeen), siirry verkkotunnuksesi Lisäasetuksiin ja anna arvo väliltä `0`–`30`.
   * Jotkut käyttäjät käyttävät mielellään [Oma tili > Sähköpostit](/my-account/emails) -esikatselutoimintoa nähdäksesi, miten heidän sähköpostinsa renderöityvät, joten tuemme konfiguroitavaa säilytysaikaa.
   * Huomaa myös, että tuemme [OpenPGP/E2EE](/faq#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd).
+  * Tallennamme myös jokaisen lähtevän SMTP-sähköpostin koon ja sen lähettäneen asiakkaan IP-osoitteen (SMTP:n tai API:n kautta) niin kauan kuin sähköposti on tallennettuna, ja näytämme ne kohdassa [Oma tili > Sähköpostit](/my-account/emails).
 
 
 ## Väliaikainen tietojenkäsittely {#temporary-data-processing}
@@ -125,6 +126,7 @@ Seuraavia tietoja käsitellään väliaikaisesti muistissa tai Redisissä, eikä
 * Tallennamme myös rajoitetusti tilitason todennusmetatietoja, mukaan lukien epäonnistuneiden kirjautumisyritysten laskurit ja viimeisimmän kirjautumisyrityksen aikaleiman.
 * Redis-pohjaiset todennusyritysten tiedot vanhenevat automaattisesti (yleensä 24 tunnin kuluessa).
 * Käytetään estämään käyttäjätileihin kohdistuvia väsytyshyökkäyksiä.
+* Onnistuneet kirjautumiset aliakseen säilytetään Redisissä 7 päivän ajan (kunkin palvelu ja IP-osoite sekä viimeisimmän kirjautumisen aika kyseisestä osoitteesta, enintään 50), jotta voit tarkistaa ne aliaksen sivulla kohdassa Oma tili.
 
 
 ## Tarkastuslokit {#audit-logs}

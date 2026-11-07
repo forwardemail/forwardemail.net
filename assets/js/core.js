@@ -536,6 +536,43 @@ window.addEventListener(
       }
     });
 
+    //
+    // One-click unsubscribe (RFC 8058) from My Account > Logs: the browser
+    // sends the request itself (we never do), without cookies or a referrer
+    // as RFC 8058 requires, and the page may only connect to the
+    // list's origin (see app/controllers/web/my-account/retrieve-log-unsubscribe.js)
+    //
+    $body.on('click', 'button[data-one-click-unsubscribe]', async function () {
+      const $btn = $(this);
+      const url = $btn.attr('data-one-click-unsubscribe');
+      const $container = $btn.closest('[data-one-click-unsubscribe-container]');
+      const $success = $container.find('[data-one-click-unsubscribe-success]');
+      const $error = $container.find('[data-one-click-unsubscribe-error]');
+      if (typeof url !== 'string' || !url.startsWith('https://')) return;
+      $btn.prop('disabled', true).addClass('disabled');
+      $error.addClass('d-none');
+      try {
+        // (an opaque response: a request that was sent resolves, and one
+        // that could not be sent rejects, as does one the list redirected
+        // to another origin, which it did receive)
+        await window.fetch(url, {
+          method: 'POST',
+          mode: 'no-cors',
+          credentials: 'omit',
+          referrerPolicy: 'no-referrer',
+          cache: 'no-store',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: 'List-Unsubscribe=One-Click'
+        });
+        $btn.addClass('d-none');
+        $success.removeClass('d-none');
+      } catch (err) {
+        logger.error(err);
+        $error.removeClass('d-none');
+        $btn.prop('disabled', false).removeClass('disabled');
+      }
+    });
+
     window.addEventListener('tableAjaxFormReloaded', renderDayjs);
     window.addEventListener('tableAjaxFormReloaded', function () {
       // remove any elements that have `remove-on-table-ajax-form-reloaded`

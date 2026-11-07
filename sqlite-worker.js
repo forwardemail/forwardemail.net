@@ -26,6 +26,7 @@ const logger = require('#helpers/logger');
 const setupMongoose = require('#helpers/setup-mongoose');
 const {
   backup,
+  clone,
   rekey,
   setWorkerCancelled,
   vacuum
@@ -38,6 +39,12 @@ const {
   requeueRekeyJob,
   takeRekeyJob
 } = require('#helpers/rekey-queue');
+const {
+  finishCloneJob,
+  recoverCloneJobs,
+  requeueCloneJob,
+  takeCloneJob
+} = require('#helpers/clone-queue');
 const {
   acquireWorkerLease,
   releaseWorkerLease,
@@ -61,10 +68,13 @@ const subscriber = new Redis(imapSharedConfig.redis, logger);
 // same connection (busy counter, job re-queues, recovery) would wait for it.
 //
 const blockingClient = new Redis(imapSharedConfig.redis, logger);
+// (and for the clone queue's, see `pollCloneQueue`)
+const cloneBlockingClient = new Redis(imapSharedConfig.redis, logger);
 
 client.setMaxListeners(0);
 subscriber.setMaxListeners(0);
 blockingClient.setMaxListeners(0);
+cloneBlockingClient.setMaxListeners(0);
 
 //
 // Configuration
@@ -103,7 +113,7 @@ async function updateBusyCounter(delta) {
 }
 
 //
-// Process a single backup, vacuum or rekey job
+// Process a single backup, clone, vacuum or rekey job
 //
 async function processJob(payload, payloadStr) {
   activeJobs++;
@@ -123,6 +133,12 @@ async function processJob(payload, payloadStr) {
 
       case 'vacuum': {
         await vacuum(payload);
+        break;
+      }
+
+      // (from the clone queue, see `pollCloneQueue`)
+      case 'clone': {
+        await clone(payload);
         break;
       }
 
@@ -188,6 +204,25 @@ async function processJob(payload, payloadStr) {
           err: requeueErr,
           alias_id: payload?.session?.user?.alias_id
         });
+      }
+    } else if (
+      payload.action === 'clone' &&
+      err instanceof ServerShutdownError
+    ) {
+      // (like a rekey, it is the first thing the next worker runs)
+      if (payloadStr) {
+        try {
+          await requeueCloneJob(client, payloadStr);
+          logger.info('Re-queued clone job interrupted by shutdown', {
+            alias_id: payload?.session?.user?.alias_id
+          });
+        } catch (requeueErr) {
+          // (still in the processing list for the next worker)
+          logger.fatal('Failed to re-queue clone job during shutdown', {
+            err: requeueErr,
+            alias_id: payload?.session?.user?.alias_id
+          });
+        }
       }
     } else if (payload.action === 'rekey' && err.isRekeySuperseded) {
       logger.warn(err.message, { alias_id: payload?.session?.user?.alias_id });
@@ -388,6 +423,71 @@ async function pollRekeyQueue() {
 }
 
 //
+// Poll the Redis List for clone jobs (see helpers/clone-queue.js), one at a
+// time and through the same concurrency gate as every other job: each job
+// checks the volume has room for its copy before making it.
+//
+async function pollCloneQueue() {
+  // eslint-disable-next-line no-unmodified-loop-condition
+  while (!isShuttingDown) {
+    try {
+      // eslint-disable-next-line no-unmodified-loop-condition
+      while (activeJobs >= MAX_CONCURRENCY && !isShuttingDown) {
+        await setTimeout(500);
+      }
+
+      if (isShuttingDown) break;
+
+      // resolves with the job or null on timeout
+      const payloadStr = await takeCloneJob(cloneBlockingClient, 5);
+      if (!payloadStr) continue;
+
+      try {
+        let payload;
+        try {
+          payload = JSON.parse(payloadStr);
+        } catch (err) {
+          logger.warn('sqlite-worker failed to parse clone queue item', {
+            err,
+            payloadStr
+          });
+          continue;
+        }
+
+        // (another job may have started while the pop was blocking)
+        // eslint-disable-next-line no-unmodified-loop-condition
+        while (activeJobs >= MAX_CONCURRENCY && !isShuttingDown) {
+          await setTimeout(500);
+        }
+
+        if (isShuttingDown) {
+          await requeueCloneJob(client, payloadStr);
+          continue;
+        }
+
+        // (one interrupted by a shutdown is put back in the queue)
+        await processJob(payload, payloadStr);
+      } finally {
+        // the job is done (or back in the queue): it leaves the processing list
+        try {
+          await finishCloneJob(client, payloadStr);
+        } catch (err) {
+          logger.error('Failed to remove clone job from processing list', {
+            err
+          });
+        }
+      }
+    } catch (err) {
+      // If Redis disconnects, wait briefly and retry
+      if (!isShuttingDown) {
+        logger.error('Clone queue poll error', { err });
+        await setTimeout(2000);
+      }
+    }
+  }
+}
+
+//
 // Recovery of interrupted rekeys (see helpers/recover-rekeys.js): once at
 // startup, before any job is taken, and then periodically in case a pass
 // failed (e.g. MongoDB was unavailable) or a job could not settle its alias.
@@ -433,7 +533,7 @@ function onWorkerLeaseLost(reason) {
 //
 const graceful = new Graceful({
   mongooses: [mongoose],
-  redisClients: [client, subscriber, blockingClient],
+  redisClients: [client, subscriber, blockingClient, cloneBlockingClient],
   logger,
   timeoutMs: ms('2m'),
   customHandlers: [
@@ -543,6 +643,16 @@ graceful.listen();
 
     // Start polling the rekey queue (Redis List — persistent, survives restarts)
     pollRekeyQueue();
+
+    //
+    // Clones left in the processing list by the previous worker (stopped
+    // or dead while they waited or ran) go back to the queue first, then
+    // the clone queue is polled (Redis List, as for rekeys)
+    //
+    const recovered = await recoverCloneJobs(client);
+    if (recovered > 0)
+      logger.warn('Re-queued interrupted clone jobs', { count: recovered });
+    pollCloneQueue();
 
     if (process.send) process.send('ready');
     logger.info('SQLite backup worker started', {

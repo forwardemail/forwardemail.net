@@ -101,6 +101,7 @@ Wanneer u een account aanmaakt, slaan wij de volgende informatie op om te begrij
   * Als u wilt dat de inhoud van uw uitgaande SMTP-e-mailberichten langer wordt bewaard dan de standaard 0 dagen (na succesvolle aflevering of permanente fout), ga dan naar Geavanceerde instellingen voor uw domein en voer een waarde in tussen `0` en `30`.
   * Sommige gebruikers vinden het prettig om de [Mijn Account > E-mails](/my-account/emails) preview-functie te gebruiken om te zien hoe hun e-mails worden weergegeven, daarom ondersteunen we een configureerbare bewaartermijn.
   * Let op dat we ook [OpenPGP/E2EE](/faq#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd) ondersteunen.
+  * We slaan ook de grootte van elke uitgaande SMTP-e-mail op en het IP-adres van de client die deze heeft verzonden (via SMTP of de API), zolang de e-mail is opgeslagen, en tonen deze in [Mijn Account > E-mails](/my-account/emails).
 
 
 ## Tijdelijke gegevensverwerking {#temporary-data-processing}
@@ -125,6 +126,7 @@ De volgende gegevens worden tijdelijk in het geheugen of Redis verwerkt en worde
 * Wij slaan ook beperkte authenticatie-metagegevens op accountniveau op, waaronder tellers van mislukte inlogpogingen en de tijdstempel van de laatste inlogpoging.
 * Op Redis gebaseerde gegevens van authenticatiepogingen verlopen automatisch (doorgaans binnen 24 uur).
 * Wordt gebruikt om brute-force-aanvallen op gebruikersaccounts te voorkomen.
+* Geslaagde aanmeldingen bij een alias worden 7 dagen in Redis bewaard (de dienst en het IP-adres van elke aanmelding, met het tijdstip van de laatste aanmelding vanaf dat adres, maximaal 50), zodat u ze kunt bekijken op de pagina van de alias onder Mijn account.
 
 
 ## Auditlogs {#audit-logs}

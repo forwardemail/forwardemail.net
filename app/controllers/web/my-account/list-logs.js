@@ -21,6 +21,7 @@ const emailHelper = require('#helpers/email');
 const getLogsCsv = require('#helpers/get-logs-csv');
 const parseRootDomain = require('#helpers/parse-root-domain');
 const getAllowedSort = require('#helpers/get-allowed-sort');
+const getOneClickUnsubscribeUrl = require('#helpers/get-one-click-unsubscribe-url');
 const { Aliases, Logs } = require('#models');
 
 const SIXTY_SECONDS = ms('60s');
@@ -987,6 +988,9 @@ async function listLogs(ctx) {
     hasDomainFilter: domains.size > 0
   };
   ctx.state.hasAnyFilter = Object.values(ctx.state.activeFilters).some(Boolean);
+
+  // (for the Unsubscribe button)
+  ctx.state.getOneClickUnsubscribeUrl = getOneClickUnsubscribeUrl;
 
   if (ctx.accepts('html')) return ctx.render('my-account/logs');
 

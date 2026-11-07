@@ -101,6 +101,7 @@ Når du oppretter en konto, lagrer vi følgende informasjon for å forstå hvord
   * Hvis du ønsker å konfigurere at innholdet i utgående SMTP-e-post skal beholdes lenger enn standard 0 dager (etter vellykket levering eller permanent feil), gå til Avanserte innstillinger for domenet ditt og angi en verdi mellom `0` og `30`.
   * Noen brukere liker å bruke [Min konto > E-poster](/my-account/emails) forhåndsvisningsfunksjonen for å se hvordan e-postene deres vises, derfor støtter vi en konfigurerbar lagringsperiode.
   * Merk at vi også støtter [OpenPGP/E2EE](/faq#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd).
+  * Vi lagrer også størrelsen på hver utgående SMTP-e-post og IP-adressen til klienten som sendte den (via SMTP eller API-et) så lenge e-posten er lagret, og viser dem i [Min konto > E-poster](/my-account/emails).
 
 
 ## Midlertidig databehandling {#temporary-data-processing}
@@ -125,6 +126,7 @@ Følgende data behandles midlertidig i minnet eller Redis og lagres **ikke** per
 * Vi lagrer også begrensede autentiseringsmetadata på kontonivå, inkludert tellere for mislykkede påloggingsforsøk og tidsstempelet for det siste påloggingsforsøket.
 * Redis-baserte data om autentiseringsforsøk utløper automatisk (vanligvis innen 24 timer).
 * Brukes for å forhindre brute-force-angrep på brukerkontoer.
+* Vellykkede pålogginger til et alias oppbevares i Redis i 7 dager (tjenesten og IP-adressen for hver, med tidspunktet for den siste påloggingen fra den adressen, opptil 50), slik at du kan se dem på aliasets side under Min konto.
 
 
 ## Revisjonslogger {#audit-logs}

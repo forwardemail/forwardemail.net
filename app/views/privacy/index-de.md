@@ -101,6 +101,7 @@ Wenn Sie ein Konto erstellen, speichern wir die folgenden Informationen, um zu v
   * Wenn Sie möchten, dass der Nachrichteninhalt Ihrer ausgehenden SMTP-E-Mail länger als der Standard von 0 Tagen (nach erfolgreicher Zustellung oder dauerhaftem Fehler) aufbewahrt wird, gehen Sie zu den Erweiterten Einstellungen für Ihre Domain und geben Sie einen Wert zwischen `0` und `30` ein.
   * Einige Nutzer verwenden gerne die Vorschaufunktion [Mein Konto > E-Mails](/my-account/emails), um zu sehen, wie ihre E-Mails dargestellt werden, daher unterstützen wir eine konfigurierbare Aufbewahrungsdauer.
   * Beachten Sie, dass wir auch [OpenPGP/E2EE](/faq#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd) unterstützen.
+  * Wir speichern außerdem die Größe jeder ausgehenden SMTP-E-Mail und die IP-Adresse des Clients, der sie gesendet hat (über SMTP oder die API), solange die E-Mail gespeichert ist, und zeigen beides unter [Mein Konto > E-Mails](/my-account/emails) an.
 
 
 ## Temporäre Datenverarbeitung {#temporary-data-processing}
@@ -125,6 +126,7 @@ Die folgenden Daten werden temporär im Arbeitsspeicher oder Redis verarbeitet u
 * Wir speichern auch begrenzte Authentifizierungsmetadaten auf Kontoebene, einschließlich Zähler für fehlgeschlagene Anmeldeversuche und des Zeitstempels des letzten Anmeldeversuchs.
 * Redis-basierte Daten zu Authentifizierungsversuchen laufen automatisch ab (normalerweise innerhalb von 24 Stunden).
 * Wird verwendet, um Brute-Force-Angriffe auf Benutzerkonten zu verhindern.
+* Erfolgreiche Anmeldungen bei einem Alias werden 7 Tage lang in Redis aufbewahrt (jeweils der Dienst und die IP-Adresse, mit der Zeit der letzten Anmeldung von dieser Adresse, höchstens 50), damit Sie sie auf der Seite des Alias unter Mein Konto überprüfen können.
 
 
 ## Prüfprotokolle {#audit-logs}

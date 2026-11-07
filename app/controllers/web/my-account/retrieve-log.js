@@ -9,6 +9,7 @@ const mongoose = require('mongoose');
 const isEmail = require('#helpers/is-email');
 const env = require('#config/env');
 const filterLogForViewer = require('#helpers/filter-log-for-viewer');
+const getOneClickUnsubscribeUrl = require('#helpers/get-one-click-unsubscribe-url');
 
 const { Logs, Aliases } = require('#models');
 
@@ -351,6 +352,9 @@ async function retrieveLog(ctx, next) {
   }
 
   ctx.state.log = log;
+
+  // (for the Unsubscribe button)
+  ctx.state.getOneClickUnsubscribeUrl = getOneClickUnsubscribeUrl;
 
   return next();
 }

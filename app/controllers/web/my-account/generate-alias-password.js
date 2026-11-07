@@ -18,6 +18,7 @@ const config = require('#config');
 const createWebSocketAsPromised = require('#helpers/create-websocket-as-promised');
 const email = require('#helpers/email');
 const getAliasPasswordSwal = require('#helpers/get-alias-password-swal');
+const { getPendingClone } = require('#helpers/clone-queue');
 const i18n = require('#helpers/i18n');
 const isEmail = require('#helpers/is-email');
 const isErrorConstructorName = require('#helpers/is-error-constructor-name');
@@ -206,6 +207,15 @@ async function generateAliasPassword(ctx) {
       if (ctx.instance?.isClosing || ctx.isClosing) {
         throw new ServerShutdownError();
       }
+
+      //
+      // Nor while a clone copies the mailbox of this alias, or into it: the
+      // copy is encrypted with the password both had (see
+      // helpers/clone-queue.js).  Checked right before the rotation is
+      // marked below, which a clone that starts later checks for.
+      //
+      if (await getPendingClone(ctx.client, alias.id))
+        throw Boom.conflict(ctx.translateError('ALIAS_CLONE_PENDING'));
 
       //
       // Every rotation of the mailbox password -- a rekey of the existing

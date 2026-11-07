@@ -32,6 +32,7 @@ const isEmail = require('#helpers/is-email');
 
 const Aliases = require('#models/aliases');
 const analytics = require('#helpers/analytics');
+const { recordSignIn } = require('#helpers/alias-sign-ins');
 const Domains = require('#models/domains');
 const config = require('#config');
 const env = require('#config/env');
@@ -258,6 +259,23 @@ async function onAuth(auth, session, fn) {
     // the SMTP submission server (outbound mail), the only server that
     // accepts a domain-wide catch-all password (see `domain.tokens` below)
     const isSMTP = this?.constructor?.name === 'SMTP';
+    // (the service a sign-in is recorded for, see helpers/alias-sign-ins.js)
+    const getSignInService = () =>
+      isIMAP
+        ? 'imap'
+        : isPOP3
+        ? 'pop3'
+        : isCalDAV
+        ? 'caldav'
+        : isCardDAV
+        ? 'carddav'
+        : isAPI
+        ? 'api'
+        : isManageSieve
+        ? 'managesieve'
+        : isSMTP
+        ? 'smtp'
+        : undefined;
     // `POST /v1/emails` also accepts one, but only to send: the login it
     // returns has no alias, so it cannot open a mailbox (see
     // `helpers/setup-auth-session.js` and `routes/api/v1/index.js`)
@@ -600,6 +618,8 @@ async function onAuth(auth, session, fn) {
           // when the credentials were really checked (a revocation check
           // by the caller must start from there, not from this cache hit)
           const authAt = user.auth_at;
+          // (which password verified it, for the sign-in history below)
+          const authVia = user.auth_via;
           delete user.auth_at;
           delete user.auth_via;
 
@@ -638,6 +658,16 @@ async function onAuth(auth, session, fn) {
           }
 
           fn(null, { user, authAt });
+
+          // (shown to the alias's owner, see helpers/alias-sign-ins.js, but
+          // not a sign-in with a domain-wide catch-all password)
+          if (user.alias_id && authVia === AUTH_VIA_ALIAS_TOKEN)
+            recordSignIn(
+              this.client,
+              user.alias_id,
+              getSignInService(),
+              session.remoteAddress
+            );
 
           //
           // Still run side effects (analytics, sync) on cache hit
@@ -1564,6 +1594,16 @@ async function onAuth(auth, session, fn) {
     }
 
     fn(null, { user, authAt: authStartedAt });
+
+    // (shown to the alias's owner, see helpers/alias-sign-ins.js, but not a
+    // sign-in with a domain-wide catch-all password)
+    if (user.alias_id && authVia === AUTH_VIA_ALIAS_TOKEN)
+      recordSignIn(
+        this.client,
+        user.alias_id,
+        getSignInService(),
+        session.remoteAddress
+      );
 
     // Track successful authentication for analytics (with deduplication)
     // Privacy-focused: IP used for session hash only, not stored

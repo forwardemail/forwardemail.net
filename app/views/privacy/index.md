@@ -100,6 +100,7 @@ When you create an account, we store the following information to understand how
   * If you would like to configure your outbound SMTP email message body to be retained longer than the default of 0 days (after successfully delivery or permanent error), then go to Advanced Settings for your domain and enter a value between `0` and `30`.
   * Some users enjoy using the [My Account > Emails](/my-account/emails) preview feature to see how their emails are rendered, therefore we support a configurable retention period.
   * Note that we also support [OpenPGP/E2EE](/faq#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd).
+  * We also store the size of each outbound SMTP email and the IP address of the client that sent it (over SMTP or the API) for as long as the email is stored, and show them in [My Account > Emails](/my-account/emails).
 
 
 ## Temporary Data Processing
@@ -124,6 +125,7 @@ The following data is processed temporarily in-memory or Redis and is **not** pe
 * We also store limited account-level authentication metadata, including failed login attempt counters and the timestamp of the last login attempt.
 * Redis-based authentication attempt data expires automatically (typically within 24 hours).
 * Used to prevent brute-force attacks on user accounts.
+* Successful sign-ins to an alias are kept in Redis for 7 days (the service and IP address of each, with the time of the latest sign-in from that address, up to 50 of them), so that you can review them on the alias's page in My Account.
 
 
 ## Audit Logs

@@ -6,11 +6,12 @@ table.table.table-hover.table-bordered.table-sm
     tr
       th.text-center.align-middle(scope="col")= t("Email")
       th.text-center.align-middle(scope="col")= t("Status")
+      th.text-center.align-middle(scope="col")= t("Size")
       th.text-center.align-middle(scope="col")= t("Actions")
     tbody
       if emails.length === 0
         tr
-          td.alert.alert-info(colspan="3")
+          td.alert.alert-info(colspan="4")
             if isSANB(ctx.query.q)
               = t("No emails exist for that search.")
             else
@@ -34,6 +35,12 @@ table.table.table-hover.table-bordered.table-sm
                   = " "
                   span.small.text-monospace
                     span.dayjs(data-time=email.date.getTime())= dayjs(email.date).tz(user.timezone === 'Etc/Unknown' ? 'UTC' : user.timezone).format("M/D/YY h:mm A z")
+                //- IP address of the client that sent it (SMTP or API)
+                if email.remote_address
+                  li
+                    span.badge.badge-pill.badge-dark= "CLIENT IP"
+                    = " "
+                    span.small: code= email.remote_address
                 //- MAIL FROM
                 li
                   span.badge.badge-pill.badge-dark= "MAIL FROM"
@@ -106,6 +113,12 @@ table.table.table-hover.table-bordered.table-sm
                 when 'rejected'
                   - className = "badge-danger";
               span.badge.text-uppercase(class=className)= titleize(humanize(email.status))
+            //- Size of the message when it was sent
+            td.align-middle.text-center.text-nowrap
+              if Number.isFinite(email.size)
+                small.text-monospace= bytes(email.size)
+              else
+                small.text-muted= "—"
             td.align-middle.text-center
               ul.list-inline.mb-0
                 li.list-inline-item
@@ -122,6 +135,35 @@ table.table.table-hover.table-bordered.table-sm
                     data-placement="bottom",
                     title=t("Download")
                   ): i.fa.fa-fw.fa-file-download
+                //- Resend (see app/controllers/web/my-account/resend-email.js)
+                if isResendable(email)
+                  li.list-inline-item
+                    form.ajax-form.confirm-prompt(
+                      action=l(`/my-account/emails/${email.id}/resend`),
+                      method="POST",
+                      autocomplete=config.env === "test" ? "off" : randomstring(),
+                      data-confirm-prompt-html=t("A copy of this email will be queued and sent again to all of its recipients.")
+                    )
+                      button.btn.btn-success.btn-sm(
+                        type="submit",
+                        data-toggle="tooltip",
+                        data-title=t("Resend email"),
+                        data-placement="bottom"
+                      ): i.fa.fa-fw.fa-redo
+                else if email.is_redacted && isResendable(email, true)
+                  //- (a disabled button shows no tooltip, so it is on a wrapper)
+                  li.list-inline-item
+                    span.d-inline-block(
+                      tabindex="0",
+                      data-toggle="tooltip",
+                      data-placement="bottom",
+                      title=t("This email cannot be resent because its content was redacted after it was sent.  To keep the content of sent emails so they can be resent, set a retention period in the Advanced Settings of your domain.")
+                    )
+                      button.btn.btn-secondary.btn-sm(
+                        type="button",
+                        disabled,
+                        style="pointer-events: none"
+                      ): i.fa.fa-fw.fa-redo
                 //- Only allow remove if
                 //- - pending
                 //- - queued

@@ -101,6 +101,7 @@ Fiók létrehozásakor az alábbi információkat tároljuk, hogy megértsük, h
   * Ha szeretnéd, hogy a kimenő SMTP e-mail üzenet törzse hosszabb ideig megmaradjon az alapértelmezett 0 napnál (sikeres kézbesítés vagy végleges hiba után), akkor menj a domained Speciális beállításaihoz, és adj meg egy értéket `0` és `30` között.
   * Néhány felhasználó szereti használni a [Fiókom > E-mailek](/my-account/emails) előnézeti funkciót, hogy lássa, hogyan jelennek meg az e-mailjeik, ezért támogatjuk a konfigurálható megőrzési időt.
   * Megjegyzendő, hogy támogatjuk az [OpenPGP/E2EE](/faq#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd) használatát is.
+  * Tároljuk továbbá minden kimenő SMTP e-mail méretét és az azt elküldő kliens IP-címét (SMTP-n vagy az API-n keresztül), amíg az e-mailt tároljuk, és megjelenítjük őket itt: [Fiókom > E-mailek](/my-account/emails).
 
 
 ## Ideiglenes Adatfeldolgozás {#temporary-data-processing}
@@ -125,6 +126,7 @@ Az alábbi adatokat ideiglenesen memóriában vagy Redis-ben dolgozzuk fel, és 
 * Korlátozott, fiókszintű hitelesítési metaadatokat is tárolunk, beleértve a sikertelen bejelentkezési kísérletek számlálóit és az utolsó bejelentkezési kísérlet időbélyegét.
 * A Redis-alapú hitelesítési kísérletek adatai automatikusan lejárnak (általában 24 órán belül).
 * A felhasználói fiókok elleni brute-force támadások megelőzésére szolgál.
+* Az aliasba történt sikeres bejelentkezéseket 7 napig tároljuk a Redisben (mindegyik szolgáltatását és IP-címét, az arról a címről történt legutóbbi bejelentkezés idejével, legfeljebb 50-et), hogy áttekinthesse őket az alias oldalán a Saját fiók menüben.
 
 
 ## Audit Naplók {#audit-logs}

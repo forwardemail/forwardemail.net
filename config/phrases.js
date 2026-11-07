@@ -331,6 +331,35 @@ module.exports = {
     'Alias backup for <span class="notranslate">%s</span> has failed due to an error',
   ALIAS_BACKUP_FAILED_MESSAGE:
     '<p>The alias backup download for <span class="notranslate text-monospace font-weight-bold">%s</span> has failed and we have been alerted.</p><p>You may proceed to retry if necessary, and we may email you soon to provide help if necessary.</p><p>The error received during the backup process was:</p><pre><code>%s</code></pre>',
+  ALIAS_CLONE_SUSPENDED:
+    'An alias that is suspended from outbound SMTP cannot be cloned.',
+  ALIAS_CLONE_NAME_REQUIRED: 'Please enter a name for the new alias.',
+  ALIAS_CLONE_NAME_INVALID:
+    'The new alias cannot be a catch-all or regular expression alias.',
+  ALIAS_CLONE_PASSWORD_REQUIRED:
+    'Please enter the current password of the alias you are cloning.',
+  ALIAS_CLONE_QUOTA_EXCEEDED:
+    'There is not enough storage left on this domain to clone this alias (its mailbox uses <span class="notranslate">%s</span> and <span class="notranslate">%s</span> is left).',
+  ALIAS_CLONE_IN_PROGRESS:
+    'An alias on this domain is already being cloned.  Please wait for the email letting you know it is done before cloning another one.',
+  ALIAS_CLONE_PENDING:
+    'This alias is being cloned.  Please wait for the email letting you know it is done, then try again.',
+  ALIAS_CLONE_STARTED:
+    'Cloning <span class="notranslate text-monospace font-weight-bold">%s</span> to <span class="notranslate text-monospace font-weight-bold">%s</span> has started.  IMAP stays turned off for the new alias until its mailbox is copied, and you will be emailed once it is ready.',
+  ALIAS_CLONE_UNCONFIRMED:
+    'We could not confirm that cloning <span class="notranslate text-monospace font-weight-bold">%s</span> to <span class="notranslate text-monospace font-weight-bold">%s</span> has started.  If you are not emailed within an hour that it is ready, delete <span class="notranslate text-monospace font-weight-bold">%s</span> and clone the alias again.',
+  ALIAS_CLONED:
+    '<span class="notranslate text-monospace font-weight-bold">%s</span> was cloned to <span class="notranslate text-monospace font-weight-bold">%s</span>, which signs in with the same password.',
+  ALIAS_CLONED_WITHOUT_PASSWORD:
+    '<span class="notranslate text-monospace font-weight-bold">%s</span> was cloned to <span class="notranslate text-monospace font-weight-bold">%s</span>.',
+  ALIAS_CLONE_READY_SUBJECT:
+    'Alias <span class="notranslate">%s</span> was cloned to <span class="notranslate">%s</span>',
+  ALIAS_CLONE_READY:
+    '<p>The mailbox of <span class="notranslate text-monospace font-weight-bold">%s</span> was copied to <span class="notranslate text-monospace font-weight-bold">%s</span> and IMAP is now turned on for it.</p><p>The new alias signs in with the same password as the original.  You can generate a new password for it at any time.</p>',
+  ALIAS_CLONE_FAILED_SUBJECT:
+    'Cloning alias <span class="notranslate">%s</span> has failed',
+  ALIAS_CLONE_FAILED:
+    '<p>The mailbox of <span class="notranslate text-monospace font-weight-bold">%s</span> could not be copied to <span class="notranslate text-monospace font-weight-bold">%s</span>, and we have been alerted.</p><p>You can delete <span class="notranslate text-monospace font-weight-bold">%s</span> and clone the alias again.</p>',
   ALIAS_BACKUP_DOWNLOAD_SUBJECT: `New alias backup download for <span class="notranslate">%s</span>`,
   ALIAS_BACKUP_DOWNLOAD:
     'Alias mailbox backup was downloaded by <span class="font-weight-bold text-monospace notranslate">%s</span>.  It was for <span class="font-weight-bold text-monospace notranslate">%s</span>.',
@@ -421,6 +450,10 @@ module.exports = {
   LOG_DOWNLOAD_IN_PROGRESS: 'Your report will be emailed to you shortly.',
   EMAIL_REMOVED: 'Email was removed from the queue by an admin.',
   INVALID_EMAIL_STATUS: 'Email status must be pending, queued, or deferred.',
+  EMAIL_RESEND_NOT_ALLOWED:
+    'Only sent, partially sent, or bounced emails can be resent, and only while their content is kept (it is redacted after sending unless your domain has a retention period).  Emails rejected as spam or a virus cannot be resent.',
+  EMAIL_RESENT:
+    'A copy of the email was queued and will be sent shortly.  <a href="%s" class="font-weight-bold">Track its delivery status</a>',
   EMAIL_ALREADY_EXISTS:
     'Email already exists with the same Message-ID, Date, and Envelope.',
   NO_REPLY_USERNAME_NO_SMTP:
@@ -672,6 +705,8 @@ module.exports = {
   DOMAIN_IS_VERIFIED: "Domain's DNS records have been verified.",
   DOMAIN_DOES_NOT_EXIST: 'Domain does not exist on your account.',
   LOG_DOES_NOT_EXIST: 'Log does not exist on your account.',
+  LOG_UNSUBSCRIBE_UNAVAILABLE:
+    'One-click unsubscribe is not available for this message.',
   RESERVED_WORD_ADMIN_REQUIRED:
     'User must be a domain admin to create an alias with a reserved word (see the page on <a target="_blank" rel="noopener noreferrer" class="font-weight-bold" href="%s/reserved-email-addresses">Reserved Email Addresses</a>).',
   REACHED_MAX_ALIAS_COUNT:

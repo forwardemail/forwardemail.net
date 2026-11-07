@@ -101,6 +101,7 @@ Saat Anda membuat akun, kami menyimpan informasi berikut untuk memahami bagaiman
   * Jika Anda ingin mengonfigurasi agar isi pesan email SMTP keluar Anda disimpan lebih lama dari default 0 hari (setelah pengiriman berhasil atau kesalahan permanen), maka masuk ke Pengaturan Lanjutan untuk domain Anda dan masukkan nilai antara `0` dan `30`.
   * Beberapa pengguna suka menggunakan fitur pratinjau [Akun Saya > Email](/my-account/emails) untuk melihat bagaimana email mereka dirender, oleh karena itu kami mendukung periode retensi yang dapat dikonfigurasi.
   * Perlu dicatat juga bahwa kami mendukung [OpenPGP/E2EE](/faq#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd).
+  * Kami juga menyimpan ukuran setiap email SMTP keluar dan alamat IP klien yang mengirimnya (melalui SMTP atau API) selama email tersebut disimpan, serta menampilkannya di [Akun Saya > Email](/my-account/emails).
 
 
 ## Pemrosesan Data Sementara {#temporary-data-processing}
@@ -125,6 +126,7 @@ Data berikut diproses sementara di memori atau Redis dan **tidak** disimpan seca
 * Kami juga menyimpan metadata autentikasi tingkat akun yang terbatas, termasuk penghitung upaya masuk yang gagal dan stempel waktu dari upaya masuk terakhir.
 * Data upaya autentikasi berbasis Redis kedaluwarsa secara otomatis (biasanya dalam 24 jam).
 * Digunakan untuk mencegah serangan brute-force pada akun pengguna.
+* Proses masuk yang berhasil ke alias disimpan di Redis selama 7 hari (layanan dan alamat IP masing-masing, dengan waktu proses masuk terbaru dari alamat tersebut, hingga 50), sehingga Anda dapat meninjaunya di halaman alias di Akun Saya.
 
 
 ## Log Audit {#audit-logs}

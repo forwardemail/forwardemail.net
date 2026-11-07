@@ -1579,6 +1579,14 @@
           "requireTLS": {
             "type": "boolean",
             "description": "ระบุว่าจำเป็นต้องใช้ TLS สำหรับห่วงโซ่การส่งมอบทั้งหมดหรือไม่ (RFC 8689)"
+          },
+          "size": {
+            "type": "integer",
+            "description": "ขนาดของข้อความเป็นไบต์ในขณะที่ส่ง"
+          },
+          "remote_address": {
+            "type": "string",
+            "description": "ที่อยู่ IP ของไคลเอนต์ที่ส่งอีเมลผ่าน SMTP หรือ API"
           }
         },
         "example": {
@@ -1601,6 +1609,8 @@
           "messageId": "1a04fee3-5230-4a85-9111-a2c376835885@forwardemail.net",
           "date": "2025-06-04T03:32:19.000Z",
           "subject": "testing",
+          "size": 1024,
+          "remote_address": "203.0.113.5",
           "accepted": [
             "test@test1.com"
           ],

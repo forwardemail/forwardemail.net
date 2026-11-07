@@ -507,7 +507,8 @@ async function onDataSMTP(session, date, headers, body) {
       rcptTo: session.envelope.rcptTo,
       dsn,
       requireTLS: session.envelope.requireTLS,
-      tlsOptional
+      tlsOptional,
+      remoteAddress: session.remoteAddress
     });
 
     // (the message exists now, so it counts even if queueing it fails below)

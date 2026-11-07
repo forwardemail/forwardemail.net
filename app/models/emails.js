@@ -19,6 +19,7 @@ const dayjs = require('dayjs-with-plugins');
 const getStream = require('get-stream');
 const intoStream = require('into-stream');
 const ip = require('ip');
+const ipaddr = require('ipaddr.js');
 const isSANB = require('is-string-and-not-blank');
 const libmime = require('libmime');
 const mongoose = require('mongoose');
@@ -115,6 +116,20 @@ const transporter = nodemailer.createTransport({
 
 let SpamScanner;
 let scanner;
+
+//
+// The IP address of the client that sent a message, as stored (e.g. an
+// IPv4-mapped IPv6 address such as "::ffff:192.0.2.1" from a socket is the
+// IPv4 address), or `undefined` if it is not an IP address
+//
+function normalizeRemoteAddress(address) {
+  if (!isSANB(address) || isIP(address) === 0) return;
+  try {
+    return ipaddr.process(address).toString();
+  } catch {
+    return address;
+  }
+}
 
 const webSharedConfig = sharedConfig('WEB');
 
@@ -316,6 +331,18 @@ const Emails = new mongoose.Schema(
     requireTLS: {
       type: Boolean,
       default: false
+    },
+
+    // size of the message in bytes when it was submitted
+    // (kept after the message is redacted, see the pre-save hook below)
+    size: Number,
+
+    // IP address of the client that submitted the message over SMTP or the API
+    // (not set for messages we generate, e.g. bounces and auto-replies)
+    remote_address: {
+      type: String,
+      trim: true,
+      validate: (v) => !v || isIP(v) !== 0
     },
 
     // email to be sent (with date, message-id, etc headers already set)
@@ -1015,6 +1042,9 @@ Emails.pre('save', async function (next) {
         `Email size of ${env.SMTP_MESSAGE_MAX_SIZE} exceeded.`
       );
 
+    // (the size it was submitted with, not the size once redacted)
+    if (this.isNew) this.size = messageBytes;
+
     // if the doc was was <= 15 MB then return early
     if (messageBytes <= BYTES_15MB) return next();
 
@@ -1462,6 +1492,7 @@ Emails.statics.getMessage = async function (obj, returnString = false) {
 // options.catchall (boolean, true, if using domain-wide generated catch-all password)
 // options.dsn (for DSN from API)
 // options.rcptTo (for DSN from SMTP)
+// options.remoteAddress (IP address of the SMTP or API client that sent it)
 
 //
 // The alias an address on the domain is for, when no alias is named exactly
@@ -2153,7 +2184,8 @@ Emails.statics.queue = async function (
     is_dsn: isBounce && boolean(options?.is_dsn),
     dsn: options?.dsn,
     rcptTo: options?.rcptTo,
-    requireTLS: boolean(options?.requireTLS)
+    requireTLS: boolean(options?.requireTLS),
+    remote_address: normalizeRemoteAddress(options?.remoteAddress)
   });
 
   // the SMTP path already enforced sending limits before queueing

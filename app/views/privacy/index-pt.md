@@ -101,6 +101,7 @@ Quando você cria uma conta, armazenamos as seguintes informações para entende
   * Se você deseja configurar o corpo da mensagem do seu email SMTP de saída para ser retido por mais tempo que o padrão de 0 dias (após entrega bem-sucedida ou erro permanente), vá para Configurações Avançadas do seu domínio e insira um valor entre `0` e `30`.
   * Alguns usuários gostam de usar o recurso de visualização em [Minha Conta > Emails](/my-account/emails) para ver como seus emails são renderizados, portanto suportamos um período de retenção configurável.
   * Note que também suportamos [OpenPGP/E2EE](/faq#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd).
+  * Também armazenamos o tamanho de cada e-mail SMTP de saída e o endereço IP do cliente que o enviou (por SMTP ou pela API) enquanto o e-mail estiver armazenado, e os mostramos em [Minha Conta > Emails](/my-account/emails).
 
 
 ## Processamento Temporário de Dados {#temporary-data-processing}
@@ -125,6 +126,7 @@ Os seguintes dados são processados temporariamente na memória ou Redis e **nã
 * Também armazenamos metadados limitados de autenticação no nível da conta, incluindo contadores de tentativas de login falhas e o carimbo de data/hora da última tentativa de login.
 * Os dados de tentativa de autenticação baseados no Redis expiram automaticamente (geralmente em 24 horas).
 * Usado para evitar ataques de força bruta em contas de usuário.
+* Os logins bem-sucedidos em um alias são mantidos no Redis por 7 dias (o serviço e o endereço IP de cada um, com o horário do login mais recente a partir desse endereço, até 50), para que você possa revisá-los na página do alias em Minha conta.
 
 
 ## Logs de Auditoria {#audit-logs}

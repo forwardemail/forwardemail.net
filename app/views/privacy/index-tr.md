@@ -101,6 +101,7 @@ Bir hesap oluşturduğunuzda, kullanıcıların hizmetimizi nasıl bulduğunu an
   * Giden SMTP e-posta mesaj gövdesinin varsayılan 0 gün (başarıyla teslim veya kalıcı hata sonrası) yerine daha uzun süre saklanmasını istiyorsanız, alan adınız için Gelişmiş Ayarlar'a gidip `0` ile `30` arasında bir değer girin.
   * Bazı kullanıcılar, e-postalarının nasıl görüntülendiğini görmek için [Hesabım > E-postalar](/my-account/emails) önizleme özelliğini kullanmayı seviyor, bu nedenle yapılandırılabilir bir saklama süresini destekliyoruz.
   * Ayrıca [OpenPGP/E2EE](/faq#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd) desteğimiz olduğunu unutmayın.
+  * Ayrıca her giden SMTP e-postasının boyutunu ve onu (SMTP veya API üzerinden) gönderen istemcinin IP adresini e-posta saklandığı sürece saklar, bunları [Hesabım > E-postalar](/my-account/emails) bölümünde gösteririz.
 
 
 ## Geçici Veri İşleme {#temporary-data-processing}
@@ -125,6 +126,7 @@ Aşağıdaki veriler geçici olarak bellekte veya Redis'te işlenir ve **kalıc�
 * Ayrıca, başarısız giriş denemesi sayaçları ve son giriş denemesinin zaman damgası dahil olmak üzere sınırlı hesap düzeyinde kimlik doğrulama meta verilerini de saklıyoruz.
 * Redis tabanlı kimlik doğrulama denemesi verilerinin süresi otomatik olarak dolar (genellikle 24 saat içinde).
 * Kullanıcı hesaplarına yönelik kaba kuvvet saldırılarını önlemek için kullanılır.
+* Bir takma ada yapılan başarılı oturum açmalar Redis’te 7 gün saklanır (her birinin hizmeti ve IP adresi ile o adresten yapılan son oturum açmanın zamanı, en fazla 50 tane), böylece bunları Hesabım bölümünde takma adın sayfasında inceleyebilirsiniz.
 
 
 ## Denetim Kayıtları {#audit-logs}
