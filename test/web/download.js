@@ -403,6 +403,10 @@ test.serial(
   'the footer has a chip per app that opens its card on the download page',
   async (t) => {
     const keys = ['macos', 'windows', 'linux', 'android', 'ios', 'terminal'];
+    const anchor = (key) =>
+      key === 'terminal'
+        ? '#fe-download-terminal-group'
+        : `#fe-download-${key}`;
     const download = new JSDOM(await getDownloadPage(t, releaseWithTerminal))
       .window.document;
 
@@ -423,7 +427,7 @@ test.serial(
       const links = [...nav.querySelectorAll('a.fe-chip')];
       t.deepEqual(
         links.map((a) => a.getAttribute('href')),
-        keys.map((key) => `/${locale}/download#fe-download-${key}`)
+        keys.map((key) => `/${locale}/download${anchor(key)}`)
       );
       t.deepEqual(
         links.map((a) => a.textContent.trim()),
@@ -436,8 +440,14 @@ test.serial(
     }
 
     // every chip lands on that platform's card, which holds its builds
+    // (Terminal lands on the top of its section, above its card)
     for (const key of keys) {
-      const card = download.querySelector(`#fe-download-${key}`);
+      const target = download.querySelector(anchor(key));
+      t.truthy(target, `the download page has a ${key} target`);
+      const card =
+        key === 'terminal'
+          ? target.nextElementSibling.querySelector('#fe-download-terminal')
+          : target;
       t.truthy(card, `the download page has a ${key} card`);
       t.true(card.classList.contains('fe-download-card'));
       t.truthy(card.querySelector('a[href]'), `the ${key} card has a link`);
