@@ -47,11 +47,13 @@ include ../../_pagination
                       span.badge.badge-secondary= log.meta.level
               td.align-middle.text-break
                 if session.remoteAddress
-                  a(href=filterHref("ip", session.remoteAddress)): code= session.remoteAddress
+                  a(
+                    href=logsHref("meta.session.remoteAddress", session.remoteAddress)
+                  ): code= session.remoteAddress
               td.align-middle.text-break
                 if session.resolvedClientHostname
                   a(
-                    href=filterHref("hostname", session.resolvedClientHostname)
+                    href=logsHref("meta.session.resolvedClientHostname", session.resolvedClientHostname)
                   ): code= session.resolvedClientHostname
               td.align-middle.text-center
                 - const statusCode = log.err && (log.err.responseCode || log.err.statusCode || log.err.status);

@@ -7,7 +7,6 @@ const { isIP } = require('node:net');
 
 const Boom = require('@hapi/boom');
 const dayjs = require('dayjs-with-plugins');
-const isSANB = require('is-string-and-not-blank');
 const ms = require('ms');
 const paginate = require('koa-ctx-paginate');
 const _ = require('#helpers/lodash');
@@ -29,13 +28,20 @@ const SORT_FIELDS = new Set(['created_at']);
 const IP_FIELD = 'meta.session.remoteAddress';
 const HOSTNAME_FIELD = 'meta.session.resolvedClientHostname';
 
-// (see the Logs model; one for each filter, with the range and its sort)
-const SPAM_INDEX = { bounce_category: 1, created_at: 1 };
-const IP_INDEX = { bounce_category: 1, [IP_FIELD]: 1, created_at: 1 };
-const HOSTNAME_INDEX = {
-  bounce_category: 1,
-  [HOSTNAME_FIELD]: 1,
-  created_at: 1
+//
+// The indexes to hint, best first (see the Logs model). The compound ones
+// hold the range in its order. Until they are built, a client's own
+// (partial) index holds only that client's logs, and the date index finds
+// the most recent spam at once: the spam/date index would instead read
+// every spam log in the range to find one client's.
+//
+const INDEXES = {
+  ip: [{ bounce_category: 1, [IP_FIELD]: 1, created_at: 1 }, { [IP_FIELD]: 1 }],
+  hostname: [
+    { bounce_category: 1, [HOSTNAME_FIELD]: 1, created_at: 1 },
+    { [HOSTNAME_FIELD]: 1 }
+  ],
+  all: [{ bounce_category: 1, created_at: 1 }, { created_at: 1 }]
 };
 
 const MAX_RANGE = ms('366d');
@@ -100,21 +106,24 @@ async function getFilters(ctx) {
   if (filters.hostname) base[HOSTNAME_FIELD] = filters.hostname;
 
   //
-  // Hint the index for the filters (the planner may otherwise choose one
-  // without `created_at`, and sort or scan every spam log), or the date
-  // index if that one is not built yet: a hint for an index that does not
-  // exist, or is still building, fails the query. A MongoDB query is left
-  // to the planner.
+  // Hint the best built index for the filters (the planner may otherwise
+  // choose one that scans every spam log); a hint for an index that does
+  // not exist, or is still building, fails the query. A MongoDB query is
+  // left to the planner.
   //
   const mongoQuery = getMongoQuery(ctx);
-  const indexes = await getIndexes();
-  const hint = _.isEmpty(mongoQuery)
-    ? [
-        filters.ip && IP_INDEX,
-        filters.hostname && HOSTNAME_INDEX,
-        SPAM_INDEX
-      ].find((index) => index && indexes.has(JSON.stringify(index)))
-    : undefined;
+  let hint;
+  if (_.isEmpty(mongoQuery)) {
+    const built = await getIndexes();
+    hint = (
+      filters.ip
+        ? INDEXES.ip
+        : filters.hostname
+        ? INDEXES.hostname
+        : INDEXES.all
+    ).find((index) => built.has(JSON.stringify(index)));
+  }
+
   const withQuery = (match) =>
     _.isEmpty(mongoQuery) ? match : { $and: [match, mongoQuery] };
 
@@ -132,21 +141,12 @@ async function getFilters(ctx) {
   };
 }
 
-// query string for the filter links (keeps the range and other filters)
-function getSearch(ctx, changes) {
-  const params = new URLSearchParams();
-  for (const key of [
-    'ip',
-    'hostname',
-    'start_date',
-    'end_date',
-    'mongodb_query'
-  ]) {
-    const value = key in changes ? changes[key] : ctx.query[key];
-    if (isSANB(value)) params.set(key, value);
-  }
-
-  return params.toString();
+// a client's spam logs in Admin > Logs
+function getLogsHref(ctx, field, value) {
+  const query = JSON.stringify({ bounce_category: 'spam', [field]: value });
+  return `${ctx.state.l('/admin/logs')}?mongodb_query=${encodeURIComponent(
+    query
+  )}`;
 }
 
 async function list(ctx) {
@@ -197,13 +197,11 @@ async function list(ctx) {
       : total;
 
   const pageCount = Math.ceil(itemCount / ctx.query.limit);
-  const path = ctx.state.l('/admin/spam');
   const data = {
     logs,
     pageCount,
     itemCount,
-    // (a client's link keeps the range and the other filters)
-    filterHref: (key, value) => `${path}?${getSearch(ctx, { [key]: value })}`,
+    logsHref: (field, value) => getLogsHref(ctx, field, value),
     pages: paginate.getArrayPages(ctx)(6, pageCount, ctx.query.page)
   };
 
@@ -324,11 +322,10 @@ async function stats(ctx) {
   // (the range's count is the sum of its timeline, not a second scan)
   const inRange = timeline && timeline.counts.reduce((a, b) => a + b, 0);
 
-  const path = ctx.state.l('/admin/spam');
-  const withLinks = (items, key) =>
+  const withLinks = (items, field) =>
     (items || []).map((item) => ({
       ...item,
-      href: item._id ? `${path}?${getSearch(ctx, { [key]: item._id })}` : null
+      href: item._id ? getLogsHref(ctx, field, item._id) : null
     }));
 
   ctx.body = {
@@ -338,8 +335,8 @@ async function stats(ctx) {
       inRange,
       timeline,
       sampleSize: SAMPLE_SIZE,
-      topIPs: top && withLinks(top.ips, 'ip'),
-      topHostnames: top && withLinks(top.hostnames, 'hostname'),
+      topIPs: top && withLinks(top.ips, IP_FIELD),
+      topHostnames: top && withLinks(top.hostnames, HOSTNAME_FIELD),
       topErrors: top && top.errors
     })
   };

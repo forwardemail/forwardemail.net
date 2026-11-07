@@ -171,9 +171,24 @@ test.serial('the statistics count the connecting clients', async (t) => {
   ]);
   t.false(res.body.html.includes(SERVER_IP));
 
-  // each links to the spam page filtered by it
-  const link = tables[0].querySelector('a');
-  t.is(link.getAttribute('href'), '/en/admin/spam?ip=198.51.100.7');
+  // each links to that client's spam logs in Admin > Logs
+  const link = tables[0].querySelector('a').getAttribute('href');
+  t.is(
+    link,
+    `/en/admin/logs?mongodb_query=${encodeURIComponent(
+      JSON.stringify({
+        bounce_category: 'spam',
+        'meta.session.remoteAddress': '198.51.100.7'
+      })
+    )}`
+  );
+  const logs = await getJSON(t, link);
+  t.is(logs.status, 200);
+  t.is(
+    new JSDOM(logs.body.table).window.document.querySelectorAll('tbody tr')
+      .length,
+    3
+  );
 
   const filtered = await getJSON(t, '/en/admin/spam/stats', {
     ip: '198.51.100.7'
@@ -194,10 +209,18 @@ test.serial('the statistics count the connecting clients', async (t) => {
   t.is(table.status, 200);
   const tableDocument = new JSDOM(table.body.table).window.document;
   t.is(tableDocument.querySelectorAll('tbody tr').length, 1);
-  // (a client's link keeps the range and the other filters)
+  // (a client's link is to its spam logs in Admin > Logs)
+  const hostnameLink = tableDocument
+    .querySelector('tbody a[href*="resolvedClientHostname"]')
+    .getAttribute('href');
+  t.true(hostnameLink.startsWith('/en/admin/logs?mongodb_query='));
+  const hostnameLogs = await getJSON(t, hostnameLink);
+  t.is(hostnameLogs.status, 200);
   t.is(
-    tableDocument.querySelector('tbody a[href*="ip="]').getAttribute('href'),
-    `/en/admin/spam?ip=198.51.100.9&hostname=b.example.net&start_date=2026-01-01&end_date=${today}`
+    new JSDOM(hostnameLogs.body.table).window.document.querySelectorAll(
+      'tbody tr'
+    ).length,
+    1
   );
 });
 
@@ -248,55 +271,58 @@ test.serial('invalid filters are refused', async (t) => {
 //
 // An index the page hints may not be built yet (Mongoose builds them one at
 // a time at startup, and on millions of logs that takes a while): a hint
-// for an index that does not exist fails the query.
+// for an index that does not exist fails the query, so the page hints the
+// next best one that is built.
 //
-test.serial(
-  'a filter whose index is not built yet uses the date index',
-  async (t) => {
-    const name =
-      'bounce_category_1_meta.session.resolvedClientHostname_1_created_at_1';
-    await Logs.collection.dropIndex(name);
-    t.teardown(() =>
-      Logs.collection.createIndex(
-        {
-          bounce_category: 1,
-          'meta.session.resolvedClientHostname': 1,
-          created_at: 1
-        },
-        { name }
-      )
-    );
+for (const [filter, key] of [
+  ['ip', { 'meta.session.remoteAddress': 1 }],
+  ['hostname', { 'meta.session.resolvedClientHostname': 1 }],
+  ['unfiltered', {}]
+]) {
+  test.serial(
+    `the ${filter} page works before its index is built`,
+    async (t) => {
+      const index = { bounce_category: 1, ...key, created_at: 1 };
+      const name = Object.entries(index)
+        .map(([field, order]) => `${field}_${order}`)
+        .join('_');
+      await Logs.collection.dropIndex(name);
+      t.teardown(() => Logs.collection.createIndex(index, { name }));
 
-    await createLog({
-      remoteAddress: '198.51.100.7',
-      hostname: 'a.example.net'
-    });
-    await createLog({
-      remoteAddress: '198.51.100.9',
-      hostname: 'b.example.net'
-    });
+      await createLog({
+        remoteAddress: '198.51.100.7',
+        hostname: 'a.example.net'
+      });
+      await createLog({
+        remoteAddress: '198.51.100.9',
+        hostname: 'b.example.net'
+      });
+      const query =
+        filter === 'ip'
+          ? { ip: '198.51.100.7' }
+          : filter === 'hostname'
+          ? { hostname: 'a.example.net' }
+          : {};
+      const count = filter === 'unfiltered' ? 2 : 1;
 
-    const table = await getJSON(t, '/en/admin/spam', {
-      hostname: 'a.example.net'
-    });
-    t.is(table.status, 200);
-    const rows = new JSDOM(table.body.table).window.document.querySelectorAll(
-      'tbody tr'
-    );
-    t.is(rows.length, 1);
-    t.true(rows[0].textContent.includes('198.51.100.7'));
+      const table = await getJSON(t, '/en/admin/spam', query);
+      t.is(table.status, 200);
+      const rows = new JSDOM(table.body.table).window.document.querySelectorAll(
+        'tbody tr'
+      );
+      t.is(rows.length, count);
+      t.true(rows[0].textContent.includes('198.51.100.'));
 
-    const stats = await getJSON(t, '/en/admin/spam/stats', {
-      hostname: 'a.example.net'
-    });
-    t.is(stats.status, 200);
-    t.deepEqual(
-      [
-        ...new JSDOM(stats.body.html).window.document.querySelectorAll(
-          '.display-4'
-        )
-      ].map((el) => el.textContent.trim()),
-      ['1', '1', '1']
-    );
-  }
-);
+      const stats = await getJSON(t, '/en/admin/spam/stats', query);
+      t.is(stats.status, 200);
+      t.deepEqual(
+        [
+          ...new JSDOM(stats.body.html).window.document.querySelectorAll(
+            '.display-4'
+          )
+        ].map((el) => el.textContent.trim()),
+        [String(count), String(count), String(count)]
+      );
+    }
+  );
+}
