@@ -10,6 +10,8 @@ require('#helpers/harden-node');
 
 // NOTE: DO NOT CHANGE THIS
 // eslint-disable-next-line unicorn/prefer-node-protocol
+const fs = require('fs');
+// eslint-disable-next-line unicorn/prefer-node-protocol
 const path = require('path');
 
 const errors = require('@zone-eu/wildduck/lib/errors');
@@ -24,6 +26,18 @@ const env = require('@ladjs/env')({
   defaults: path.join(__dirname, '..', '.env.defaults'),
   schema: path.join(__dirname, '..', '.env.schema')
 });
+
+//
+// `@ladjs/passport` reads APPLE_KEY_PATH whenever a web or API server starts
+// (even with Apple sign-in off), so in tests a key that is only on one
+// developer's machine (e.g. from a shared .env.test) would stop every server
+// test elsewhere (push notification tests configure their own key path)
+//
+if (test && env.APPLE_KEY_PATH && !fs.existsSync(env.APPLE_KEY_PATH)) {
+  env.APPLE_KEY_PATH = '';
+  // eslint-disable-next-line n/prefer-global/process
+  delete process.env.APPLE_KEY_PATH;
+}
 
 //
 // NOTE: every configured secret is accepted by `helpers/api-secrets` (e.g. for

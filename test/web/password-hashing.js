@@ -4,6 +4,7 @@
  */
 
 const crypto = require('node:crypto');
+const { setTimeout: delay } = require('node:timers/promises');
 
 const falso = require('@ngneat/falso');
 const request = require('supertest');
@@ -78,6 +79,12 @@ function getStored(user) {
   );
 }
 
+// a failed login makes passport-local-mongoose refuse the next attempt for
+// `interval` ms (AttemptTooSoonError, a 429), so wait it out before retrying
+function waitForRetry() {
+  return delay(config.passportLocalMongoose.interval + 50);
+}
+
 function login(t, email, password) {
   return request(t.context._web.server)
     .post('/en/login')
@@ -121,6 +128,7 @@ test('a wrong password does not log in nor change a hash made before', async (t)
   t.is(stored[attemptsField], 1);
 
   // the right one still does, after that
+  await waitForRetry();
   const ok = await login(t, user.email, password);
   t.is(ok.status, 200);
 });
@@ -155,6 +163,7 @@ test('a password changed from one hashed before is hashed with the new iteration
 
   const oldLogin = await login(t, user.email, password);
   t.not(oldLogin.status, 200);
+  await waitForRetry();
   const newLogin = await login(t, user.email, newPassword);
   t.is(newLogin.status, 200);
 });
