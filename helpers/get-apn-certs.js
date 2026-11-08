@@ -178,19 +178,29 @@ async function createCsrs(certs, key) {
     key === 'Alerts'
       ? 'com.apple.server.apns.alerts'
       : `com.apple.servermgrd.apns.${key.toLowerCase()}`;
-  const csr = await X509.Pkcs10CertificateRequestGenerator.create({
-    // TODO: pass `serialNumber` re-using existing if renewal occurring
-    // const serialNumber = getCertSerialNumber(certs, key);
-    default: 'SHA-1',
-    name: `CN=${commonName}`,
-    keys: {
-      publicKey: certs[key].publicKey,
-      privateKey: certs[key].privateKey
+  //
+  // NOTE: the keys are from `crypto.subtle` (see getApnCerts), so that crypto
+  //       is passed: the global provider is shared with the S/MIME helpers
+  //       (get-cert-info, encrypt-message-smime), which set it to
+  //       `@peculiar/webcrypto`, and that refuses keys it did not create
+  //       ("Key is not of type 'CryptoKey'")
+  //
+  const csr = await X509.Pkcs10CertificateRequestGenerator.create(
+    {
+      // TODO: pass `serialNumber` re-using existing if renewal occurring
+      // const serialNumber = getCertSerialNumber(certs, key);
+      default: 'SHA-1',
+      name: `CN=${commonName}`,
+      keys: {
+        publicKey: certs[key].publicKey,
+        privateKey: certs[key].privateKey
+      },
+      // TODO: country name 'US' <------------ required
+      signingAlgorithm: alg,
+      extensions: []
     },
-    // TODO: country name 'US' <------------ required
-    signingAlgorithm: alg,
-    extensions: []
-  });
+    crypto
+  );
   return csr.toString('base64');
 }
 
@@ -441,3 +451,4 @@ async function getApnCerts(client) {
 }
 
 module.exports = getApnCerts;
+module.exports.createCsrs = createCsrs;
