@@ -10,7 +10,8 @@ require('#config/env');
 
 const dns = require('node:dns').promises;
 const process = require('node:process');
-const { parentPort } = require('node:worker_threads');
+const { setTimeout: delay } = require('node:timers/promises');
+const { parentPort, workerData } = require('node:worker_threads');
 
 // eslint-disable-next-line import/no-unassigned-import
 require('#config/mongoose');
@@ -34,6 +35,17 @@ const graceful = new Graceful({
 
 graceful.listen();
 
+// (see `longRunning` in jobs/index.js)
+const { longRunning, interval } = workerData?.job ?? {};
+let isCancelled = false;
+const cancelled = new AbortController();
+if (parentPort)
+  parentPort.on('message', (message) => {
+    if (message !== 'cancel') return;
+    isCancelled = true;
+    cancelled.abort();
+  });
+
 async function getHasEncryptedTxtRecord(domain, locale) {
   if (!domain?.name) return;
 
@@ -56,9 +68,7 @@ async function getHasEncryptedTxtRecord(domain, locale) {
   }
 }
 
-(async () => {
-  await setupMongoose(logger);
-
+async function run() {
   try {
     const object = {
       created_at: {
@@ -132,7 +142,26 @@ async function getHasEncryptedTxtRecord(domain, locale) {
   } catch (err) {
     await logger.error(err);
   }
+}
+
+(async () => {
+  await setupMongoose(logger);
+
+  for (;;) {
+    await run();
+    if (!longRunning || !Number.isFinite(interval) || isCancelled) break;
+    // (a cancel ends the wait, so bree stops without waiting out the interval)
+    await delay(interval, undefined, { signal: cancelled.signal }).catch(
+      () => {}
+    );
+    if (isCancelled) break;
+  }
 
   if (parentPort) parentPort.postMessage('done');
   else process.exit(0);
-})();
+})().catch(async (err) => {
+  // (otherwise the worker keeps running, holding its job slot, until bree
+  // restarts)
+  await Promise.race([logger.error(err), delay(10_000)]);
+  process.exit(1);
+});

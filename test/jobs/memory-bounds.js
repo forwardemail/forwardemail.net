@@ -5,14 +5,16 @@
 
 //
 // Runs real bree jobs against real MongoDB and Redis, the way bree.js runs
-// them (a Bree worker with the job heap cap), on data sets large enough that
+// them (a Bree worker with the job heap cap): on data sets large enough that
 // a job holding everything it reads in memory runs out of heap, while a job
-// that works a page or a batch at a time finishes and does its work.
+// that works a page or a batch at a time finishes and does its work, and to
+// check that a job's worker ends, and its work is written, when it is done.
 //
 
 const { execFile } = require('node:child_process');
 const { randomBytes } = require('node:crypto');
 const fs = require('node:fs');
+const http = require('node:http');
 const os = require('node:os');
 const path = require('node:path');
 const process = require('node:process');
@@ -45,13 +47,29 @@ const bree = new Bree({
   root: false,
   logger: quiet,
   errorHandler() {},
-  jobs: [{ name: 'job', path: jobPath }]
+  jobs: [
+    {
+      name: 'job',
+      path: jobPath,
+      // (as jobs/index.js declares a long-running job)
+      ...(process.env.JOB_INTERVAL
+        ? { interval: process.env.JOB_INTERVAL, longRunning: true }
+        : {})
+    }
+  ]
 });
 const exitCodes = trackExitCodes(bree);
+let stoppedAt;
 bree.on('worker deleted', () => {
   const exitCode = exitCodes.has('job') ? exitCodes.get('job') : 0;
-  process.stdout.write(JSON.stringify({ exitCode }) + '\\n');
+  const stopMs = stoppedAt ? Date.now() - stoppedAt : undefined;
+  process.stdout.write(JSON.stringify({ exitCode, stopMs }) + '\\n');
   process.exit(0);
+});
+// (a SIGTERM stops bree, as graceful does on a deploy)
+process.once('SIGTERM', () => {
+  stoppedAt = Date.now();
+  bree.stop();
 });
 bree.run('job');
 `;
@@ -85,15 +103,16 @@ function databases(run) {
   };
 }
 
-function runJob(job, env) {
-  return new Promise((resolve) => {
-    execFile(
+function runJob(job, env, timeout = 300_000) {
+  let child;
+  const promise = new Promise((resolve) => {
+    child = execFile(
       process.execPath,
       [runnerPath, ROOT, path.join(ROOT, 'jobs', `${job}.js`), HEAP_CAP_MB],
       {
         cwd: ROOT,
         env: { ...process.env, NODE_ENV: 'test', AXE_SILENT: 'true', ...env },
-        timeout: 300_000,
+        timeout,
         maxBuffer: 64 * 1024 * 1024
       },
       (err, stdout) => {
@@ -107,6 +126,20 @@ function runJob(job, env) {
       }
     );
   });
+  promise.child = child;
+  return promise;
+}
+
+async function waitFor(fn, ms) {
+  const end = Date.now() + ms;
+  while (Date.now() < end) {
+    if (await fn()) return true;
+    await new Promise((resolve) => {
+      setTimeout(resolve, 250);
+    });
+  }
+
+  return false;
 }
 
 async function removeKeys(pattern) {
@@ -249,5 +282,347 @@ test.serial(
     t.is(await countKeys(`allowlist:r*-${run}.org`), 1000);
     t.is(await redis.get(`allowlist:banned-${run}.org`), null);
     t.is(await redis.get(`denylist:someone@p1-${run}.com`), null);
+  }
+);
+
+test.serial(
+  'crawl-sitemap ends once it has crawled instead of holding its worker for a day',
+  async (t) => {
+    const run = randomBytes(6).toString('hex');
+    const env = databases(run);
+
+    // the site: a sitemap index, a locale sitemap, two pages and their images
+    const pages = ['one', 'two'];
+    const server = http.createServer((req, res) => {
+      const base = `http://127.0.0.1:${server.address().port}`;
+      const xml = (body) => {
+        res.setHeader('Content-Type', 'application/xml');
+        res.end(`<?xml version="1.0" encoding="UTF-8"?>${body}`);
+      };
+
+      if (req.url === '/sitemap.xml')
+        return xml(
+          `<sitemapindex><sitemap><loc>${base}/en/sitemap.xml</loc></sitemap></sitemapindex>`
+        );
+      if (req.url === '/en/sitemap.xml')
+        return xml(
+          `<urlset>${pages
+            .map((page) => `<url><loc>${base}/en/${page}</loc></url>`)
+            .join('')}</urlset>`
+        );
+      const page = pages.find((page) => req.url.startsWith(`/en/${page}`));
+      if (page && req.url.endsWith('.png')) {
+        res.setHeader('Content-Type', 'image/png');
+        return res.end('png');
+      }
+
+      if (page) {
+        res.setHeader('Content-Type', 'text/html');
+        return res.end(
+          `<!doctype html><html lang="en"><head><title>${page}</title><meta name="description" content="About ${page}"></head><body><h1 id="${page}">${page}</h1><p>All about ${page}.</p></body></html>`
+        );
+      }
+
+      res.statusCode = 404;
+      res.end();
+    });
+    await new Promise((resolve) => {
+      server.listen(0, '127.0.0.1', resolve);
+    });
+    const logs = await mongoose.createConnection(env.LOGS_URI).asPromise();
+    t.teardown(async () => {
+      server.close();
+      await logs.dropDatabase();
+      await logs.close();
+    });
+
+    // (it used to wait a day after crawling, holding its worker and a job
+    // slot, before it posted done)
+    const result = await runJob('crawl-sitemap', {
+      ...env,
+      HTTP_PROTOCOL: 'http',
+      WEB_HOST: '127.0.0.1',
+      WEB_PORT: String(server.address().port),
+      // (no URLs of the local site are sent to Bing)
+      MICROSOFT_BING_API_KEY: ''
+    });
+
+    t.is(result.exitCode, 0, 'job failed or did not finish');
+    const hrefs = await logs.db.collection('searchresults').distinct('href');
+    for (const page of pages)
+      t.true(
+        hrefs.some((href) => href.endsWith(`/en/${page}`)),
+        `${page} was not crawled`
+      );
+  }
+);
+
+test.serial(
+  'a job that fails ends its worker instead of holding it until bree restarts',
+  async (t) => {
+    const run = randomBytes(6).toString('hex');
+    const env = databases(run);
+    const conn = await mongoose.createConnection(env.MONGO_URI).asPromise();
+    t.teardown(async () => {
+      await conn.dropDatabase();
+      await conn.close();
+    });
+
+    // two payments with one PayPal transaction id: the job sends an alert,
+    // which fails with no alerts address, and the job's function rejects
+    const now = new Date();
+    const payment = (paypalTransactionId) => {
+      const _id = new mongoose.Types.ObjectId();
+      return {
+        _id,
+        id: _id.toString(),
+        user: new mongoose.Types.ObjectId(),
+        amount: 300,
+        method: 'paypal',
+        paypal_transaction_id: paypalTransactionId,
+        created_at: now,
+        updated_at: now
+      };
+    };
+
+    await conn.db
+      .collection('payments')
+      .insertMany([
+        payment(`${run}-1`),
+        payment(`${run}-1`),
+        payment(`${run}-2`)
+      ]);
+
+    // (the rejection only reached graceful's handlers, which log it, so the
+    // worker, its heap and its job slot were held until bree restarted)
+    const result = await runJob(
+      'paypal/dup-tx-id',
+      { ...env, EMAIL_ALERTS_FROM_EMAIL: '' },
+      120_000
+    );
+
+    t.is(result.exitCode, 1, 'job worker did not end');
+  }
+);
+
+test.serial(
+  'update-alias-and-domain-counts writes every count before it ends',
+  async (t) => {
+    const run = randomBytes(6).toString('hex');
+    const env = databases(run);
+    const conn = await mongoose.createConnection(env.MONGO_URI).asPromise();
+    t.teardown(async () => {
+      await conn.dropDatabase();
+      await conn.close();
+    });
+
+    const oid = () => new mongoose.Types.ObjectId();
+    const now = new Date();
+    const userId = oid();
+    const domainId = oid();
+    await conn.db.collection('users').insertOne({
+      _id: userId,
+      id: userId.toString(),
+      email: `owner@${run}.example`,
+      group: 'user',
+      created_at: now,
+      updated_at: now
+    });
+    await conn.db.collection('domains').insertOne({
+      _id: domainId,
+      id: domainId.toString(),
+      name: `${run}.example`,
+      plan: 'free',
+      members: [{ user: userId, group: 'admin' }],
+      created_at: now,
+      updated_at: now
+    });
+    await conn.db.collection('aliases').insertMany(
+      ['one', 'two'].map((name) => ({
+        _id: oid(),
+        name,
+        domain: domainId,
+        user: userId,
+        recipients: [`someone@${run}.example`],
+        created_at: now,
+        updated_at: now
+      }))
+    );
+
+    // (the updates were started without waiting, and the last ones were not
+    // written when the job posted done and bree ended the worker)
+    const result = await runJob('update-alias-and-domain-counts', env);
+
+    t.is(result.exitCode, 0, 'job failed or did not finish');
+    const user = await conn.db.collection('users').findOne({ _id: userId });
+    t.is(user.domain_count, 1);
+    t.is(user.alias_count, 2);
+    const domain = await conn.db
+      .collection('domains')
+      .findOne({ _id: domainId });
+    t.is(domain.alias_count, 2);
+  }
+);
+
+test.serial(
+  'parse-logs checks a log with nothing to link once, not on every run',
+  async (t) => {
+    const run = randomBytes(6).toString('hex');
+    const env = databases(run);
+    const logs = await mongoose.createConnection(env.LOGS_URI).asPromise();
+    t.teardown(async () => {
+      await logs.dropDatabase();
+      await logs.close();
+    });
+
+    // logs like the ones bree saves for each job run: restricted, with no
+    // session (so no domain to link) and no Date or Subject header
+    const count = 500;
+    const now = new Date();
+    const docs = [];
+    for (let i = 0; i < count; i++)
+      docs.push({
+        message: 'job:complete',
+        meta: {
+          level: 'info',
+          job: { name: `job-${i}`, breeInstance: 'bree', duration: i }
+        },
+        hash: `${run}-${i}`,
+        domains: [],
+        keywords: [],
+        is_restricted: true,
+        is_empty_domains: true,
+        bounce_category: 'none',
+        created_at: now,
+        updated_at: now
+      });
+    await logs.db.collection('logs').insertMany(docs);
+    // (the index the job's query is hinted to, as the Logs model creates it)
+    await logs.db
+      .collection('logs')
+      .createIndex({ is_restricted: 1, domains: 1, domains_checked_at: 1 });
+
+    const returned = async () => {
+      const status = await logs.db.admin().serverStatus();
+      return status.metrics.document.returned;
+    };
+
+    const first = await runJob('parse-logs', env);
+    t.is(first.exitCode, 0, 'job failed or did not finish');
+    t.is(
+      await logs.db
+        .collection('logs')
+        .countDocuments({ domains_checked_at: { $exists: true } }),
+      count
+    );
+
+    // (each run read and saved again every log of the retention period)
+    const before = await returned();
+    const second = await runJob('parse-logs', env);
+    t.is(second.exitCode, 0, 'job failed or did not finish');
+    t.true(
+      (await returned()) - before < count,
+      'the second run read the logs again'
+    );
+  }
+);
+
+test.serial(
+  'a long-running job keeps its worker and runs again on its interval',
+  async (t) => {
+    const run = randomBytes(6).toString('hex');
+    const env = databases(run);
+    const conn = await mongoose.createConnection(env.MONGO_URI).asPromise();
+    const emails = conn.db.collection('emails');
+
+    // an email locked 10 minutes ago, which unlock-emails puts back in the
+    // queue
+    const locked = () => {
+      const _id = new mongoose.Types.ObjectId();
+      const at = new Date(Date.now() - 10 * 60 * 1000);
+      return {
+        _id,
+        id: _id.toString(),
+        status: 'queued',
+        is_locked: true,
+        locked_at: at,
+        locked_by: '192.0.2.1',
+        created_at: at,
+        updated_at: at
+      };
+    };
+
+    const isUnlocked = async (email) => {
+      const { is_locked: isLocked } = await emails.findOne({ _id: email._id });
+      return isLocked === false;
+    };
+
+    const first = locked();
+    await emails.insertOne(first);
+
+    let ended = false;
+    const job = runJob('unlock-emails', { ...env, JOB_INTERVAL: '1s' });
+    job.then(() => {
+      ended = true;
+    });
+    t.teardown(async () => {
+      job.child.kill();
+      await job;
+      await conn.dropDatabase();
+      await conn.close();
+    });
+
+    t.true(await waitFor(() => isUnlocked(first), 120_000));
+
+    // (each run was a worker of its own, which loaded the whole app and
+    // ended; this one is unlocked by the same worker)
+    const second = locked();
+    await emails.insertOne(second);
+    t.true(await waitFor(() => isUnlocked(second), 30_000));
+    t.false(ended, 'the job worker ended');
+  }
+);
+
+test.serial(
+  'bree stops a long-running job without waiting out its interval',
+  async (t) => {
+    const run = randomBytes(6).toString('hex');
+    const env = databases(run);
+    const conn = await mongoose.createConnection(env.MONGO_URI).asPromise();
+    const emails = conn.db.collection('emails');
+    t.teardown(async () => {
+      await conn.dropDatabase();
+      await conn.close();
+    });
+
+    const _id = new mongoose.Types.ObjectId();
+    const at = new Date(Date.now() - 10 * 60 * 1000);
+    await emails.insertOne({
+      _id,
+      id: _id.toString(),
+      status: 'queued',
+      is_locked: true,
+      locked_at: at,
+      locked_by: '192.0.2.1',
+      created_at: at,
+      updated_at: at
+    });
+
+    const job = runJob('unlock-emails', { ...env, JOB_INTERVAL: '1m' });
+    t.teardown(() => job.child.kill('SIGKILL'));
+
+    // once it has run it waits a minute for the next run
+    t.true(
+      await waitFor(async () => {
+        const email = await emails.findOne({ _id });
+        return email.is_locked === false;
+      }, 120_000)
+    );
+    job.child.kill('SIGTERM');
+
+    // (graceful gives bree 5 seconds to stop before it exits with code 1)
+    const result = await job;
+    t.is(result.exitCode, 0, 'job failed or did not finish');
+    t.true(result.stopMs < 5000, `bree took ${result.stopMs} ms to stop`);
   }
 );

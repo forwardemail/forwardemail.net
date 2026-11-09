@@ -10,6 +10,7 @@ require('#config/env');
 
 const path = require('node:path');
 const process = require('node:process');
+const { setTimeout: delay } = require('node:timers/promises');
 const { parentPort } = require('node:worker_threads');
 
 // eslint-disable-next-line import/no-unassigned-import
@@ -131,4 +132,9 @@ graceful.listen();
 
   if (parentPort) parentPort.postMessage('done');
   else process.exit(0);
-})();
+})().catch(async (err) => {
+  // (otherwise the worker keeps running, holding its job slot, until bree
+  // restarts)
+  await Promise.race([logger.error(err), delay(10_000)]);
+  process.exit(1);
+});

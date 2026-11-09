@@ -9,6 +9,7 @@ require('#helpers/polyfill-towellformed');
 require('#config/env');
 
 const process = require('node:process');
+const { setTimeout: delay } = require('node:timers/promises');
 const { parentPort } = require('node:worker_threads');
 
 // eslint-disable-next-line import/no-unassigned-import
@@ -57,14 +58,17 @@ graceful.listen();
                   user: user._id
                 })
               ]);
-              Users.findByIdAndUpdate(user._id, {
-                $set: {
-                  [config.userFields.domainCount]: domainCount,
-                  [config.userFields.aliasCount]: aliasCount
+              // (awaited: started without waiting, the last updates were still
+              // unwritten when the job posted done and bree ended the worker)
+              await Users.updateOne(
+                { _id: user._id },
+                {
+                  $set: {
+                    [config.userFields.domainCount]: domainCount,
+                    [config.userFields.aliasCount]: aliasCount
+                  }
                 }
-              })
-                .then()
-                .catch((err) => logger.fatal(err));
+              );
             } catch (err) {
               logger.fatal(err);
             }
@@ -84,13 +88,10 @@ graceful.listen();
               const count = await Aliases.countDocuments({
                 domain: domain._id
               });
-              Domains.findByIdAndUpdate(domain._id, {
-                $set: {
-                  alias_count: count
-                }
-              })
-                .then()
-                .catch((err) => logger.fatal(err));
+              await Domains.updateOne(
+                { _id: domain._id },
+                { $set: { alias_count: count } }
+              );
             } catch (err) {
               logger.fatal(err);
             }
@@ -205,4 +206,9 @@ graceful.listen();
 
   if (parentPort) parentPort.postMessage('done');
   else process.exit(0);
-})();
+})().catch(async (err) => {
+  // (otherwise the worker keeps running, holding its job slot, until bree
+  // restarts)
+  await Promise.race([logger.error(err), delay(10_000)]);
+  process.exit(1);
+});

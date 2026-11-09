@@ -111,8 +111,24 @@ async function retryOperation(
   throw lastError;
 }
 
+//
+// one check per value in a run: the paid aliases' recipients share a few
+// domains (gmail.com and the like), and every recipient was checked with
+// Redis requests of its own, millions of them each run
+//
+const denylistChecks = new Map();
+function checkDenylisted(value) {
+  let check = denylistChecks.get(value);
+  if (!check) {
+    check = checkDenylistedValue(value);
+    denylistChecks.set(value, check);
+  }
+
+  return check;
+}
+
 // Helper function to check if value is denylisted (without throwing)
-async function checkDenylisted(value) {
+async function checkDenylistedValue(value) {
   try {
     // Check hard-coded denylist first
     if (config.denylist.has(value)) {
@@ -892,4 +908,9 @@ async function processRedisStreams(client, targets, set, p) {
 
   if (parentPort) parentPort.postMessage('done');
   else process.exit(0);
-})();
+})().catch(async (err) => {
+  // (otherwise the worker keeps running, holding its job slot, until bree
+  // restarts)
+  await Promise.race([logger.error(err), setTimeout(10_000)]);
+  process.exit(1);
+});

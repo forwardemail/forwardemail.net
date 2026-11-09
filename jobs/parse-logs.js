@@ -9,6 +9,7 @@ require('#helpers/polyfill-towellformed');
 require('#config/env');
 
 const process = require('node:process');
+const { setTimeout: delay } = require('node:timers/promises');
 const { parentPort } = require('node:worker_threads');
 
 // eslint-disable-next-line import/no-unassigned-import
@@ -63,6 +64,12 @@ const PARSE_LOGS_INDEX_HINT = {
     // <https://mongoosejs.com/docs/api/querycursor.html#querycursor_QueryCursor-Symbol.asyncIterator>
     // <https://thecodebarbarian.com/whats-new-in-mongoose-53-async-iterators.html
     //
+    // (only logs whose domains were not checked yet: the query also matched
+    // every log without a Date or Subject header, and every log saved
+    // without a hash, keywords or the restricted fields, which every log has
+    // now; most logs have no such headers, so each run read and saved again
+    // every log of the retention period)
+    //
     const query = {
       $or: [
         {
@@ -87,41 +94,6 @@ const PARSE_LOGS_INDEX_HINT = {
             $eq: []
           },
           domains_checked_at: {
-            $exists: false
-          }
-        },
-        {
-          hash: {
-            $exists: false
-          }
-        },
-        {
-          is_empty_domains: {
-            $exists: false
-          }
-        },
-        {
-          is_restricted: {
-            $exists: false
-          }
-        },
-        {
-          keywords: {
-            $exists: false
-          }
-        },
-        {
-          domains: {
-            $exists: false
-          }
-        },
-        {
-          date: {
-            $exists: false
-          }
-        },
-        {
-          subject: {
             $exists: false
           }
         }
@@ -173,4 +145,9 @@ const PARSE_LOGS_INDEX_HINT = {
 
   if (parentPort) parentPort.postMessage('done');
   else process.exit(0);
-})();
+})().catch(async (err) => {
+  // (otherwise the worker keeps running, holding its job slot, until bree
+  // restarts)
+  await Promise.race([logger.error(err), delay(10_000)]);
+  process.exit(1);
+});

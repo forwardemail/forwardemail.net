@@ -5,6 +5,7 @@
 
 const os = require('node:os');
 const process = require('node:process');
+const { setTimeout: delay } = require('node:timers/promises');
 const { parentPort } = require('node:worker_threads');
 
 // eslint-disable-next-line import/no-unassigned-import
@@ -158,31 +159,29 @@ graceful.listen();
   // we should check for duplicate stripe_payment_intent_id in payments model
   //
   try {
-    const paymentIntentIds = await Payments.distinct(
-      'stripe_payment_intent_id',
-      {}
-    );
-    await pMap(
-      // remove null values
-      _.compact(paymentIntentIds),
-      async function (id) {
-        const count = await Payments.countDocuments({
-          stripe_payment_intent_id: id
-        });
-        if (count > 1)
-          await emailHelper({
-            template: 'alert',
-            message: {
-              to: config.alertsEmail,
-              subject: `Duplicate Stripe Payment Intent ID detected (${id})`
-            },
-            locals: {
-              message: `Duplicate Stripe payment intent ID detected with ID ${id}`
-            }
-          });
+    // (one query: every payment intent id ever recorded was read and then
+    // counted with a query of its own, every run)
+    const duplicates = await Payments.aggregate([
+      {
+        $match: {
+          stripe_payment_intent_id: { $exists: true, $nin: [null, ''] }
+        }
       },
-      { concurrency }
-    );
+      { $group: { _id: '$stripe_payment_intent_id', count: { $sum: 1 } } },
+      { $match: { count: { $gt: 1 } } }
+    ]).allowDiskUse(true);
+    for (const { _id: id } of duplicates) {
+      await emailHelper({
+        template: 'alert',
+        message: {
+          to: config.alertsEmail,
+          subject: `Duplicate Stripe Payment Intent ID detected (${id})`
+        },
+        locals: {
+          message: `Duplicate Stripe payment intent ID detected with ID ${id}`
+        }
+      });
+    }
   } catch (err) {
     await logger.error(err);
     await emailHelper({
@@ -224,4 +223,9 @@ graceful.listen();
 
   if (parentPort) parentPort.postMessage('done');
   else process.exit(0);
-})();
+})().catch(async (err) => {
+  // (otherwise the worker keeps running, holding its job slot, until bree
+  // restarts)
+  await Promise.race([logger.error(err), delay(10_000)]);
+  process.exit(1);
+});

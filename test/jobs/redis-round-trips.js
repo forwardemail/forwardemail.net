@@ -554,3 +554,83 @@ test.serial(
     );
   }
 );
+
+test.serial(
+  'sync-paid-alias-allowlist checks a recipient domain once, not once per alias',
+  async (t) => {
+    const run = randomBytes(6).toString('hex');
+    const proxy = await createCountingProxy();
+    const conn = await mongoose
+      .createConnection(databases(run).MONGO_URI)
+      .asPromise();
+    t.teardown(async () => {
+      await proxy.close();
+      await removeKeys(`*${run}*`);
+      await conn.dropDatabase();
+      await conn.close();
+      await redis.del('banned_user_ids');
+    });
+
+    const oid = () => new mongoose.Types.ObjectId();
+    const now = new Date();
+    const ownerId = oid();
+    await conn.db.collection('users').insertOne({
+      _id: ownerId,
+      id: ownerId.toString(),
+      email: `owner@${run}.example`,
+      group: 'user',
+      plan: 'team',
+      is_banned: false,
+      created_at: now,
+      updated_at: now
+    });
+    const domainId = oid();
+    await conn.db.collection('domains').insertOne({
+      _id: domainId,
+      id: domainId.toString(),
+      name: `paid-${run}.com`,
+      plan: 'team',
+      has_txt_record: true,
+      members: [{ user: ownerId, group: 'admin' }],
+      created_at: now,
+      updated_at: now
+    });
+
+    // aliases forwarding to addresses of one domain, as most forward to a
+    // few large providers, and a few to a denylisted domain
+    const count = 2000;
+    const aliases = [];
+    for (let i = 0; i < count; i++)
+      aliases.push({
+        _id: oid(),
+        name: `a${i}`,
+        domain: domainId,
+        user: ownerId,
+        is_enabled: true,
+        recipients: [
+          i % 100 === 0 ? `r${i}@blocked-${run}.org` : `r${i}@shared-${run}.org`
+        ],
+        created_at: now,
+        updated_at: now
+      });
+    await conn.db.collection('aliases').insertMany(aliases);
+    await redis.del('banned_user_ids');
+    await redis.set(`denylist:blocked-${run}.org`, 'true');
+
+    const result = await runJob('sync-paid-alias-allowlist', {
+      ...databases(run),
+      BREE_REDIS_HOST: '127.0.0.1',
+      BREE_REDIS_PORT: String(proxy.port)
+    });
+    t.is(result.error, undefined);
+    t.is(result.exitCode, 0);
+    t.is(await redis.get(`allowlist:shared-${run}.org`), 'true');
+    t.is(await redis.get(`allowlist:blocked-${run}.org`), null);
+    t.is(await redis.get(`denylist:blocked-${run}.org`), 'true');
+
+    // (each recipient was checked with requests of its own)
+    const { writes } = proxy.counts;
+    t.log({ aliases: count, writes });
+    t.true(writes < count / 4, `${writes} requests for ${count} aliases`);
+  }
+);

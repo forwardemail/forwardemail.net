@@ -1071,7 +1071,12 @@ async function parseLog(log) {
     }
 
     // if no domains were found then return early
-    if (set.size === 0) return log;
+    // (checked: with nothing to look up it was left unchecked, and parse-logs
+    // read it again on every run)
+    if (set.size === 0) {
+      log.domains_checked_at = new Date();
+      return log;
+    }
 
     // root domains looked up for recipient hosts (shared by their subdomains)
     const roots = new Map();

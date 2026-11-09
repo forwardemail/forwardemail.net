@@ -9,15 +9,14 @@ require('#helpers/polyfill-towellformed');
 require('#config/env');
 
 const process = require('node:process');
+const { setTimeout: delay } = require('node:timers/promises');
 const { parentPort } = require('node:worker_threads');
 
 // eslint-disable-next-line import/no-unassigned-import
 require('#config/mongoose');
 
 const Graceful = require('@ladjs/graceful');
-const Redis = require('@ladjs/redis');
 const dayjs = require('dayjs-with-plugins');
-const sharedConfig = require('@ladjs/shared-config');
 const mongoose = require('mongoose');
 
 const Aliases = require('#models/aliases');
@@ -30,12 +29,8 @@ const setupMongoose = require('#helpers/setup-mongoose');
 const { paypalAgent } = require('#helpers/paypal');
 const stripe = require('#helpers/stripe');
 
-const breeSharedConfig = sharedConfig('BREE');
-const client = new Redis(breeSharedConfig.redis, logger);
-
 const graceful = new Graceful({
   mongooses: [mongoose],
-  redisClients: [client],
   logger
 });
 
@@ -169,17 +164,18 @@ async function deleteOrphans(Model, pipeline, message) {
       logger.error(err);
     }
 
-    const bannedUserIdSet = await Users.getBannedUserIdSet(client);
-
     // cancel subscriptions for banned users
-    for (const id of bannedUserIdSet) {
-      const user = await Users.findById(id);
-      if (!user) continue;
-      if (
-        !user[config.userFields.paypalSubscriptionID] &&
-        !user[config.userFields.stripeSubscriptionID]
-      )
-        continue;
+    // (only the banned users with a subscription: every banned user was
+    // loaded, one at a time, every hour, to find the ones with one)
+    for await (const user of Users.find({
+      [config.userFields.isBanned]: true,
+      $or: [
+        { [config.userFields.paypalSubscriptionID]: { $nin: [null, ''] } },
+        { [config.userFields.stripeSubscriptionID]: { $nin: [null, ''] } }
+      ]
+    })
+      .cursor()
+      .addCursorFlag('noCursorTimeout', true)) {
       // paypal
       if (user[config.userFields.paypalSubscriptionID]) {
         try {
@@ -218,4 +214,9 @@ async function deleteOrphans(Model, pipeline, message) {
 
   if (parentPort) parentPort.postMessage('done');
   else process.exit(0);
-})();
+})().catch(async (err) => {
+  // (otherwise the worker keeps running, holding its job slot, until bree
+  // restarts)
+  await Promise.race([logger.error(err), delay(10_000)]);
+  process.exit(1);
+});

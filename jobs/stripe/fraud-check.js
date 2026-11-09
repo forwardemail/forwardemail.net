@@ -3,14 +3,11 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
-const pMap = require('p-map');
-
-const getAllStripeCustomers = require('./get-all-stripe-customers');
-
 const Domains = require('#models/domains');
 const Users = require('#models/users');
 const config = require('#config');
 const emailHelper = require('#helpers/email');
+const forEachInBatches = require('#helpers/for-each-in-batches');
 const logger = require('#helpers/logger');
 const stripe = require('#helpers/stripe');
 
@@ -66,13 +63,15 @@ async function mapper(customer) {
 }
 
 async function fraudCheck() {
-  logger.info('Fetching Stripe customers');
-  const customers = await getAllStripeCustomers();
-  logger.info(`Started checking ${customers.length} Stripe customers`);
-  await pMap(customers, mapper, {
-    concurrency: Math.floor(config.concurrency / 3)
-  });
-  logger.info(`Finished checking ${customers.length} Stripe customers`);
+  logger.info('Started checking Stripe customers');
+  // (a page of customers at a time: every customer was fetched into memory
+  // first, and then again for the subscription check)
+  const count = await forEachInBatches(
+    stripe.customers.list({ limit: 100 }),
+    { concurrency: Math.max(1, Math.floor(config.concurrency / 3)) },
+    mapper
+  );
+  logger.info(`Finished checking ${count} Stripe customers`);
 }
 
 module.exports = fraudCheck;

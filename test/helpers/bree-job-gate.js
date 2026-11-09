@@ -153,6 +153,51 @@ test('queues a job once however often its schedule fires while it waits', async 
   t.is(state.started.filter((n) => n === 'tick').length, 1);
 });
 
+test('a long-running job does not take a slot and is started again if it ends', async (t) => {
+  const root = makeRoot(t, {
+    // stays, as a long-running job does, until it ends on its own or is
+    // cancelled
+    resident: `
+const { parentPort } = require('node:worker_threads');
+const timer = setTimeout(() => process.exit(0), 1000);
+parentPort.on('message', (message) => {
+  if (message !== 'cancel') return;
+  clearTimeout(timer);
+  parentPort.postMessage('done');
+});
+`,
+    other: sleeper(50)
+  });
+  const bree = new Bree({
+    root,
+    logger: quietLogger,
+    jobs: [
+      { name: 'resident', interval: '500ms', timeout: 0, longRunning: true },
+      { name: 'other', interval: '1h', timeout: 0 }
+    ]
+  });
+  const state = watch(bree);
+  const gate = createJobGate(bree, {
+    maxConcurrent: 1,
+    reservedForFrequent: 0
+  });
+
+  await bree.start();
+  // the other job gets the only slot while the long-running one stays
+  t.true(await waitFor(() => state.started.includes('other'), 1000));
+  t.true(bree.workers.has('resident'));
+  t.false(gate.active.has('resident'));
+
+  // ended, it is started again by its interval
+  t.true(
+    await waitFor(
+      () => state.started.filter((n) => n === 'resident').length >= 2,
+      5000
+    )
+  );
+  await bree.stop();
+});
+
 test('stop drops queued jobs instead of starting them during shutdown', async (t) => {
   const root = makeRoot(t, { first: sleeper(300), second: sleeper(10) });
   const bree = new Bree({

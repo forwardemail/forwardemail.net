@@ -9,8 +9,9 @@ require('#helpers/polyfill-towellformed');
 require('#config/env');
 
 const process = require('node:process');
+const { setTimeout: delay } = require('node:timers/promises');
 const os = require('node:os');
-const { parentPort } = require('node:worker_threads');
+const { parentPort, workerData } = require('node:worker_threads');
 
 // eslint-disable-next-line import/no-unassigned-import
 require('#config/mongoose');
@@ -41,6 +42,10 @@ const graceful = new Graceful({
   logger
 });
 
+// (see `longRunning` in jobs/index.js)
+const { longRunning, interval } = workerData?.job ?? {};
+const cancelled = new AbortController();
+
 // store boolean if the job is cancelled
 let isCancelled = false;
 
@@ -52,7 +57,9 @@ if (parentPort)
     // we could make it `Number.MAX_VALUE` here to speed cancellation up
     // <https://github.com/sindresorhus/p-map/issues/28>
     //
-    if (message === 'cancel') isCancelled = true;
+    if (message !== 'cancel') return;
+    isCancelled = true;
+    cancelled.abort();
   });
 
 graceful.listen();
@@ -165,9 +172,7 @@ async function mapper(alias) {
   }
 }
 
-(async () => {
-  await setupMongoose(logger);
-
+async function run() {
   try {
     //
     // find all aliases that haven't been sent verification emails yet
@@ -271,7 +276,26 @@ async function mapper(alias) {
     err.isCodeBug = true;
     await logger.error(err);
   }
+}
+
+(async () => {
+  await setupMongoose(logger);
+
+  for (;;) {
+    await run();
+    if (!longRunning || !Number.isFinite(interval) || isCancelled) break;
+    // (a cancel ends the wait, so bree stops without waiting out the interval)
+    await delay(interval, undefined, { signal: cancelled.signal }).catch(
+      () => {}
+    );
+    if (isCancelled) break;
+  }
 
   if (parentPort) parentPort.postMessage('done');
   else process.exit(0);
-})();
+})().catch(async (err) => {
+  // (otherwise the worker keeps running, holding its job slot, until bree
+  // restarts)
+  await Promise.race([logger.error(err), delay(10_000)]);
+  process.exit(1);
+});

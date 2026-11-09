@@ -232,14 +232,16 @@ function delay(ms) {
           const value = key.replace(/^denylist:/i, '');
 
           // Check if the value is allowlisted (this checks Redis allowlist:* keys,
-          // hard-coded config.allowlist, config.truthSources, and performs
-          // reverse DNS lookups for IPs)
+          // hard-coded config.allowlist and config.truthSources)
           // Now returns reason string or false
-          const allowlistedReason = await isAllowlisted(
-            value,
-            client,
-            resolver
-          );
+          //
+          // (no resolver, so IPs are not looked up in reverse DNS: every IP
+          // on the denylist, hundreds of thousands from UCEPROTECT, was
+          // looked up every 30 minutes, though `isDenylisted` already
+          // checks the reverse DNS of an IP against the allowlist, and
+          // update-uceprotect adds the keys back every hour)
+          //
+          const allowlistedReason = await isAllowlisted(value, client);
           if (allowlistedReason) {
             // Explicitly allowlisted - always delete from denylist
             // (explicit allowlist takes precedence over truth source matching)
@@ -465,4 +467,9 @@ ${errorsHtml}
 
   if (parentPort) parentPort.postMessage('done');
   else process.exit(0);
-})();
+})().catch(async (err) => {
+  // (otherwise the worker keeps running, holding its job slot, until bree
+  // restarts)
+  await Promise.race([logger.error(err), delay(10_000)]);
+  process.exit(1);
+});

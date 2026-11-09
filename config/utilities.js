@@ -555,7 +555,12 @@ const NS_PROVIDERS = {
 };
 
 const NS_PROVIDER_KEYS = Object.keys(NS_PROVIDERS);
-const NS_PROVIDER_REGEXES = NS_PROVIDER_KEYS.map((key) => new RE2(key, 'i'));
+//
+// made on first use (every bree job worker loads this file, and an RE2 object
+// still alive when a worker thread ends is never freed: these were most of
+// the RE2 objects a worker made just by starting)
+//
+let nsProviderRegexes;
 
 // Domain Connect provider configuration
 // Maps known DNS providers to their Domain Connect urlSyncUX endpoints
@@ -703,7 +708,10 @@ function nsProviderLookup(domain) {
 
   let provider;
 
-  for (const [i, NS_PROVIDER_REGEX] of NS_PROVIDER_REGEXES.entries()) {
+  if (!nsProviderRegexes)
+    nsProviderRegexes = NS_PROVIDER_KEYS.map((key) => new RE2(key, 'i'));
+
+  for (const [i, NS_PROVIDER_REGEX] of nsProviderRegexes.entries()) {
     if (domain.ns.some((r) => NS_PROVIDER_REGEX.test(r))) {
       const [slug, name, url, gif, host, video, trailingPeriod] =
         NS_PROVIDERS[NS_PROVIDER_KEYS[i]];

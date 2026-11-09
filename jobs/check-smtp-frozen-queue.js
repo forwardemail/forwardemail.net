@@ -9,7 +9,7 @@ require('#helpers/polyfill-towellformed');
 require('#config/env');
 
 const process = require('node:process');
-const { parentPort } = require('node:worker_threads');
+const { parentPort, workerData } = require('node:worker_threads');
 
 // eslint-disable-next-line import/no-unassigned-import
 require('#config/mongoose');
@@ -34,6 +34,17 @@ const graceful = new Graceful({
 });
 
 graceful.listen();
+
+// (see `longRunning` in jobs/index.js)
+const { longRunning, interval } = workerData?.job ?? {};
+let isCancelled = false;
+const cancelled = new AbortController();
+if (parentPort)
+  parentPort.on('message', (message) => {
+    if (message !== 'cancel') return;
+    isCancelled = true;
+    cancelled.abort();
+  });
 
 //
 // Summarize the ids of the emails a query matches: how many there are, an
@@ -69,9 +80,7 @@ async function summarizeIds(query) {
   };
 }
 
-(async () => {
-  await setupMongoose(logger);
-
+async function run() {
   try {
     //
     // NOTE: if you change this then also update `jobs/send-emails` if necessary
@@ -159,7 +168,6 @@ async function summarizeIds(query) {
     // if no ids then return early
     if (ids.count === 0) {
       logger.info('No ids found');
-      process.exit(0);
       return;
     }
 
@@ -177,7 +185,6 @@ async function summarizeIds(query) {
     // if no ids then return early
     if (newIds.count === 0) {
       logger.info('No new ids found');
-      process.exit(0);
       return;
     }
 
@@ -197,10 +204,29 @@ async function summarizeIds(query) {
   } catch (err) {
     await logger.error(err);
     // only send one of these emails every 1 hour
-    // (this prevents the job from exiting)
+    // (the queue is not checked again until then)
     await setTimeout(ms('1h'));
+  }
+}
+
+(async () => {
+  await setupMongoose(logger);
+
+  for (;;) {
+    await run();
+    if (!longRunning || !Number.isFinite(interval) || isCancelled) break;
+    // (a cancel ends the wait, so bree stops without waiting out the interval)
+    await setTimeout(interval, undefined, { signal: cancelled.signal }).catch(
+      () => {}
+    );
+    if (isCancelled) break;
   }
 
   if (parentPort) parentPort.postMessage('done');
   else process.exit(0);
-})();
+})().catch(async (err) => {
+  // (otherwise the worker keeps running, holding its job slot, until bree
+  // restarts)
+  await Promise.race([logger.error(err), setTimeout(10_000)]);
+  process.exit(1);
+});

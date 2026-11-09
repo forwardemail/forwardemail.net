@@ -9,6 +9,7 @@ require('#helpers/polyfill-towellformed');
 require('#config/env');
 
 const process = require('node:process');
+const { setTimeout: delay } = require('node:timers/promises');
 const { parentPort } = require('node:worker_threads');
 
 // eslint-disable-next-line import/no-unassigned-import
@@ -97,44 +98,52 @@ const COMMON_EMAIL_PROVIDERS = new Set([
  */
 async function getBannedUserDomains() {
   try {
-    // Get all banned users (excluding self-deleted accounts)
-    const bannedUsers = await Users.find({
+    //
+    // Domains of banned users (excluding self-deleted accounts): of their
+    // email addresses, and the domains they owned or managed, read a batch
+    // of users at a time (every banned user was loaded, and then every
+    // domain of all of them with one query holding every banned user's id)
+    //
+    const bannedDomains = new Set();
+    const addDomain = (domain) => {
+      if (domain && !COMMON_EMAIL_PROVIDERS.has(domain))
+        bannedDomains.add(domain);
+    };
+
+    let bannedUserCount = 0;
+    let bannedUserIds = [];
+    const addManagedDomains = async () => {
+      if (bannedUserIds.length === 0) return;
+      for await (const domain of Domains.find({
+        'members.user': { $in: bannedUserIds }
+      })
+        .select('name')
+        .lean()
+        .cursor({ batchSize: 1000 })) {
+        addDomain(domain.name);
+      }
+
+      bannedUserIds = [];
+    };
+
+    for await (const user of Users.find({
       [config.userFields.isBanned]: true,
       email: { $not: { $regex: `@${config.removedEmailDomain}$` } }
     })
       .select('email')
       .lean()
-      .exec();
+      .cursor({ batchSize: 1000 })) {
+      bannedUserCount++;
+      if (user.email) addDomain(user.email.split('@')[1]);
+      bannedUserIds.push(user._id);
+      if (bannedUserIds.length >= 1000) await addManagedDomains();
+    }
+
+    await addManagedDomains();
 
     logger.info(
-      `Found ${bannedUsers.length} banned users (excluding self-deleted accounts)`
+      `Found ${bannedUserCount} banned users (excluding self-deleted accounts)`
     );
-
-    // Extract domains from banned users' email addresses
-    const bannedDomains = new Set();
-    for (const user of bannedUsers) {
-      if (user.email) {
-        const domain = user.email.split('@')[1];
-        if (domain && !COMMON_EMAIL_PROVIDERS.has(domain)) {
-          bannedDomains.add(domain);
-        }
-      }
-    }
-
-    // Also get domains that banned users owned/managed
-    const bannedUserIds = bannedUsers.map((user) => user._id);
-    const bannedUserDomains = await Domains.find({
-      'members.user': { $in: bannedUserIds }
-    })
-      .select('name')
-      .lean()
-      .exec();
-
-    for (const domain of bannedUserDomains) {
-      if (domain.name && !COMMON_EMAIL_PROVIDERS.has(domain.name)) {
-        bannedDomains.add(domain.name);
-      }
-    }
 
     logger.info(
       `Collected ${bannedDomains.size} unique domains from banned users (excluding common email providers)`
@@ -720,4 +729,9 @@ function generateHTMLReport(group, severity, severityConfig) {
   } else {
     process.exit(0);
   }
-})();
+})().catch(async (err) => {
+  // (otherwise the worker keeps running, holding its job slot, until bree
+  // restarts)
+  await Promise.race([logger.error(err), delay(10_000)]);
+  process.exit(1);
+});

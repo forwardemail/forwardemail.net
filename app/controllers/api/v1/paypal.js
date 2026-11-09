@@ -442,8 +442,10 @@ async function processEvent(ctx) {
       break;
     }
 
+    // (PayPal reversing a capture, e.g. for a chargeback, comes as a refund
+    // of it; the event name had an underscore, so these were never handled)
     case 'PAYMENT.CAPTURE.REFUNDED':
-    case 'PAYMENT.CAPTURE_REVERSED':
+    case 'PAYMENT.CAPTURE.REVERSED':
     case 'PAYMENT.SALE.REVERSED':
     case 'PAYMENT.SALE.REFUNDED': {
       // if the body contained body.resource.sale_id => paypal transaction id
@@ -458,14 +460,21 @@ async function processEvent(ctx) {
           reference: body.resource.invoice_id
         });
       } else if (_.isArray(body?.resource?.links)) {
-        const str = 'https://api.paypal.com/v2/payments/captures/';
-        const link = body.resource.links.find((link) =>
-          link.href.startsWith(str)
-        );
-        if (!link) throw new Error('Link not found with capture endpoint');
         // the `id` here is a refund so we need to get refund details
         // and then find the link with '/v2/payments/captures/' in it
-        const id = link.href.replace(str, '');
+        //
+        // (by path: PayPal links to api.paypal.com or api-m.paypal.com, and
+        // their sandbox hosts, and only the first was matched)
+        //
+        const str = '/v2/payments/captures/';
+        const link = body.resource.links.find(
+          (link) =>
+            typeof link?.href === 'string' &&
+            URL.canParse(link.href) &&
+            new URL(link.href).pathname.startsWith(str)
+        );
+        if (!link) throw new Error('Link not found with capture endpoint');
+        const id = new URL(link.href).pathname.slice(str.length);
         payment = await Payments.findOne({
           paypal_transaction_id: id
         });

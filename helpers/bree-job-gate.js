@@ -35,6 +35,10 @@ const { intervalOf: jobIntervalOf } = require('./bree-schedule');
 // heap) is still being torn down, and counting it as free there would let the
 // gate exceed the cap in memory terms.
 //
+// A job with `longRunning: true` keeps its worker and does its work on its
+// own interval (its schedule only starts it again if it ended), so it is not
+// counted against the cap: it would hold its slot for good.
+//
 
 const FREQUENT_INTERVAL = ms('15m');
 
@@ -121,6 +125,10 @@ function createJobGate(bree, options = {}) {
     return intervalOf(name) <= FREQUENT_INTERVAL;
   }
 
+  function isLongRunning(name) {
+    return bree.config.jobs.find((j) => j.name === name)?.longRunning === true;
+  }
+
   function used() {
     return active.size + exiting.size;
   }
@@ -175,6 +183,11 @@ function createJobGate(bree, options = {}) {
 
     // already running or already waiting its turn: nothing to add
     if (active.has(name) || bree.workers.has(name) || queued.has(name)) return;
+
+    if (isLongRunning(name)) {
+      if (!stopping) await originalRun(name);
+      return;
+    }
 
     if (stopping || !hasSlot(name)) {
       if (!stopping) queued.set(name, Date.now());

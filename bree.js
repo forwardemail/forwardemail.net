@@ -102,7 +102,8 @@ const bree = new Bree({
 //
 // (by default one long job per core, at least four since most of them wait on
 // MongoDB, Redis or DNS more than they use a core, plus the three slots kept
-// for frequent jobs; at most 10)
+// for frequent jobs; at most 10, besides the long-running jobs, which keep a
+// worker each and are not counted)
 const reservedForFrequent = 3;
 const gate = createJobGate(bree, {
   maxConcurrent: positiveInt(

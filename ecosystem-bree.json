@@ -5,6 +5,7 @@
       "script": "bree.js",
       "max_restarts": 999,
       "max_memory_restart": "28G",
+      "node_args": "--report-on-fatalerror --report-directory=/var/tmp/node-reports",
       "kill_timeout": 30000,
       "exec_mode": "fork",
       "wait_ready": true,

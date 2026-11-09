@@ -9,6 +9,7 @@ require('#helpers/polyfill-towellformed');
 require('#config/env');
 
 const process = require('node:process');
+const { setTimeout: delay } = require('node:timers/promises');
 const { parentPort } = require('node:worker_threads');
 
 // eslint-disable-next-line import/no-unassigned-import
@@ -48,52 +49,40 @@ const TWO_MINUTES_MS = 2 * 60 * 1000;
 
   try {
     //
-    // find any email ids that are scheduled in the future
-    // (filtered from the past week)
+    // the users with emails from the past hour whose Date is 2 minutes or
+    // more after they were created, and the longest of those for each user
     //
-    // Optimized: use $expr to push the date-difference filter server-side
-    // so only matching documents are returned over the wire (avoids scanning
-    // millions of emails from the past week just to find the handful with
-    // scheduled sends of >= 2 minutes).
+    // (the past hour, twelve runs of the job: with the past week, every
+    // email was read on each of some 2,000 runs, for a warning a user gets at
+    // most once a month; and grouped by user in MongoDB, where the matches
+    // were read into memory, then sorted and deduplicated here)
     //
-    const oneWeekAgo = dayjs().subtract(1, 'week').toDate();
+    const results = await Emails.aggregate([
+      {
+        $match: {
+          created_at: { $gte: dayjs().subtract(1, 'hour').toDate() },
+          date: { $exists: true }
+        }
+      },
+      {
+        $project: {
+          user: 1,
+          duration: { $subtract: ['$date', '$created_at'] }
+        }
+      },
+      { $match: { duration: { $gte: TWO_MINUTES_MS } } },
+      { $group: { _id: '$user', duration: { $max: '$duration' } } },
+      { $sort: { duration: -1 } }
+    ]).allowDiskUse(true);
 
-    const results = await Emails.find({
-      created_at: { $gte: oneWeekAgo },
-      date: { $exists: true },
-      $expr: {
-        $gte: [{ $subtract: ['$date', '$created_at'] }, TWO_MINUTES_MS]
-      }
-    })
-      .select('_id user created_at date')
-      .lean()
-      .exec();
-
-    // Calculate duration and sort by duration descending
-    const enriched = results
-      .map((email) => ({
-        _id: email._id,
-        user: email.user,
-        created_at: email.created_at,
-        date: email.date,
-        duration: Math.round(
-          (new Date(email.date).getTime() -
-            new Date(email.created_at).getTime()) /
-            (1000 * 60)
-        )
-      }))
-      .sort((a, b) => b.duration - a.duration);
-
-    const set = new Set();
-
-    for (const result of enriched) {
+    for (const { _id: userId, duration: durationMs } of results) {
+      if (!userId) continue;
+      const duration = Math.round(durationMs / (1000 * 60));
       // difference must be at least 2 minutes to be worthwhile to notify
       // (otherwise users might get annoyed)
-      if (result.duration < 2) continue;
-      if (set.has(result.user.toString())) continue;
-      set.add(result.user.toString());
+      if (duration < 2) continue;
 
-      const user = await Users.findById(result.user).lean().exec();
+      const user = await Users.findById(userId).lean().exec();
       if (!user) continue;
       // if it has been more than 1 month since the
       // last reminder that was sent (or if they were never sent one yet)
@@ -110,12 +99,12 @@ const TWO_MINUTES_MS = 2 * 60 * 1000;
         i18n.translate(
           'SCHEDULED_SEND_SUBJECT',
           user[config.lastLocaleField],
-          result.duration
+          duration
         );
       const message = i18n.translate(
         'SCHEDULED_SEND_MESSAGE',
         user[config.lastLocaleField],
-        result.duration
+        duration
       );
 
       await emailHelper({
@@ -143,4 +132,9 @@ const TWO_MINUTES_MS = 2 * 60 * 1000;
 
   if (parentPort) parentPort.postMessage('done');
   else process.exit(0);
-})();
+})().catch(async (err) => {
+  // (otherwise the worker keeps running, holding its job slot, until bree
+  // restarts)
+  await Promise.race([logger.error(err), delay(10_000)]);
+  process.exit(1);
+});

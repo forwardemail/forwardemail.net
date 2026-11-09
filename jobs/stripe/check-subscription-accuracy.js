@@ -8,10 +8,8 @@ const os = require('node:os');
 const { setTimeout } = require('node:timers/promises');
 const dayjs = require('dayjs-with-plugins');
 const ms = require('ms');
-const pMap = require('p-map');
 const pMapSeries = require('p-map-series');
 
-const getAllStripeCustomers = require('./get-all-stripe-customers');
 const _ = require('#helpers/lodash');
 
 const env = require('#config/env');
@@ -22,6 +20,7 @@ const i18n = require('#helpers/i18n');
 const logger = require('#helpers/logger');
 const Users = require('#models/users');
 const emailHelper = require('#helpers/email');
+const forEachInBatches = require('#helpers/for-each-in-batches');
 
 // stripe api rate limitation is 100 writes/100 reads per second in live mode
 const concurrency = os.cpus().length;
@@ -539,11 +538,15 @@ async function mapper(customer) {
 }
 
 async function checkSubscriptionAccuracy() {
-  logger.info('Fetching Stripe customers');
-  const customers = await getAllStripeCustomers();
-  logger.info(`Started checking ${customers.length} Stripe customers`);
-  await pMap(customers, mapper, { concurrency });
-  logger.info(`Finished checking ${customers.length} Stripe customers`);
+  logger.info('Started checking Stripe customers');
+  // (a page of customers at a time, where every customer was fetched into
+  // memory first)
+  const count = await forEachInBatches(
+    stripe.customers.list({ limit: 100 }),
+    { concurrency },
+    mapper
+  );
+  logger.info(`Finished checking ${count} Stripe customers`);
 }
 
 module.exports = checkSubscriptionAccuracy;

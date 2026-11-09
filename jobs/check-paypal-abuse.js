@@ -9,6 +9,7 @@ require('#helpers/polyfill-towellformed');
 require('#config/env');
 
 const process = require('node:process');
+const { setTimeout: delay } = require('node:timers/promises');
 const { parentPort } = require('node:worker_threads');
 
 // eslint-disable-next-line import/no-unassigned-import
@@ -481,15 +482,24 @@ function levenshteinDistance(str1, str2) {
   try {
     logger.info('Starting enhanced PayPal fraud detection analysis...');
 
-    // Get all distinct PayPal payer IDs
-    const paypalPayerIds = await Users.distinct('paypal_payer_id', {
-      paypal_payer_id: { $exists: true, $ne: null },
-      [config.userFields.isBanned]: false,
-      has_passed_kyc: false
-    });
+    // Get the PayPal payer IDs shared by more than one user
+    // (every payer ID was read and its users queried one ID at a time, each
+    // hour, only for those with a single user to be skipped)
+    const sharedPayerIds = await Users.aggregate([
+      {
+        $match: {
+          paypal_payer_id: { $exists: true, $ne: null },
+          [config.userFields.isBanned]: false,
+          has_passed_kyc: false
+        }
+      },
+      { $group: { _id: '$paypal_payer_id', count: { $sum: 1 } } },
+      { $match: { count: { $gt: 1 } } }
+    ]).allowDiskUse(true);
+    const paypalPayerIds = sharedPayerIds.map((result) => result._id);
 
     logger.info(
-      `Found ${paypalPayerIds.length} unique PayPal payer IDs to analyze`
+      `Found ${paypalPayerIds.length} PayPal payer IDs shared by more than one user to analyze`
     );
 
     const suspiciousReports = [];
@@ -646,7 +656,12 @@ function levenshteinDistance(str1, str2) {
 
   if (parentPort) parentPort.postMessage('done');
   else process.exit(0);
-})();
+})().catch(async (err) => {
+  // (otherwise the worker keeps running, holding its job slot, until bree
+  // restarts)
+  await Promise.race([logger.error(err), delay(10_000)]);
+  process.exit(1);
+});
 
 /**
  * Send fraud alert email

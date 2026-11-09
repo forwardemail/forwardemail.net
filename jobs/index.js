@@ -10,6 +10,12 @@ const { boolean } = require('boolean');
 
 // const config = require('#config');
 
+//
+// `longRunning: true`: the job's worker stays and runs the job again after
+// each interval, as smtp-bree's send-emails does, and the interval only starts
+// it again if it ended (a worker of its own for each run loaded the whole app,
+// about 5 seconds of CPU and 400 MB, every 15 seconds or every minute)
+//
 let jobs = [
   // 'migration',
   'vanity-domains',
@@ -106,7 +112,8 @@ let jobs = [
   {
     name: 'welcome-email',
     interval: '1m',
-    timeout: 0
+    timeout: 0,
+    longRunning: true
   },
   // {
   //   name: 'launch-email',
@@ -115,12 +122,14 @@ let jobs = [
   {
     name: 'account-updates',
     interval: '1m',
-    timeout: 0
+    timeout: 0,
+    longRunning: true
   },
   {
     name: 'domain-updates',
     interval: '1m',
-    timeout: 0
+    timeout: 0,
+    longRunning: true
   },
   {
     name: 'cleanup-database',
@@ -145,7 +154,8 @@ let jobs = [
   {
     name: 'recipient-verification-email',
     interval: '15s',
-    timeout: 0
+    timeout: 0,
+    longRunning: true
   },
   {
     name: 'check-disposable',
@@ -161,12 +171,14 @@ let jobs = [
   {
     name: 'payment-email',
     interval: '1m',
-    timeout: 0
+    timeout: 0,
+    longRunning: true
   },
   {
     name: 'fix-non-free-users',
     interval: '1m',
-    timeout: 0
+    timeout: 0,
+    longRunning: true
   },
   // <https://support.stripe.com/questions/2020-visa-trial-subscription-requirement-changes-guide>
   {
@@ -226,19 +238,21 @@ let jobs = [
   {
     name: 'unlock-emails',
     interval: '1m',
-    timeout: 0
+    timeout: 0,
+    longRunning: true
   },
-  // crawl the sitemap and open graph images
+  // crawl the sitemap and open graph images (once a day)
   {
     name: 'crawl-sitemap',
-    interval: '12h',
+    interval: '1d',
     timeout: '2h'
   },
   // check for frozen outbound smtp queue
   {
     name: 'check-smtp-frozen-queue',
     interval: '15s',
-    timeout: 0
+    timeout: 0,
+    longRunning: true
   },
   // check for smtp queue count (50% threshold)
   {

@@ -9,6 +9,7 @@ require('#helpers/polyfill-towellformed');
 require('#config/env');
 
 const process = require('node:process');
+const { setTimeout: delay } = require('node:timers/promises');
 const { parentPort } = require('node:worker_threads');
 
 // eslint-disable-next-line import/no-unassigned-import
@@ -111,9 +112,13 @@ if (require.main === module) {
       else process.exit(0);
     })
     .catch(async (err) => {
-      await logger.error('Analytics aggregation job failed', { err });
-      if (parentPort) throw err;
-      else process.exit(1);
+      // (a throw here only reached graceful's handlers, which log it and keep
+      // the worker, and its job slot, until bree restarts)
+      await Promise.race([
+        logger.error('Analytics aggregation job failed', { err }),
+        delay(10_000)
+      ]);
+      process.exit(1);
     });
 }
 

@@ -4,8 +4,8 @@
  */
 
 const process = require('node:process');
+const { setTimeout: delay } = require('node:timers/promises');
 const { parentPort } = require('node:worker_threads');
-const os = require('node:os');
 
 // eslint-disable-next-line import/no-unassigned-import
 require('#helpers/polyfill-towellformed');
@@ -14,7 +14,6 @@ require('#config/mongoose');
 
 const Graceful = require('@ladjs/graceful');
 const parseErr = require('parse-err');
-const pMap = require('p-map');
 const safeStringify = require('fast-safe-stringify');
 const { encode } = require('html-entities');
 
@@ -25,20 +24,12 @@ const Payments = require('#models/payments');
 const logger = require('#helpers/logger');
 const setupMongoose = require('#helpers/setup-mongoose');
 
-const concurrency = os.cpus().length;
 const graceful = new Graceful({
   mongooses: [mongoose],
   logger
 });
 
 graceful.listen();
-
-const dupIds = [];
-
-async function mapper(id) {
-  const count = await Payments.countDocuments({ paypal_transaction_id: id });
-  if (count > 1) dupIds.push(id);
-}
 
 (async () => {
   await setupMongoose(logger);
@@ -48,12 +39,14 @@ async function mapper(id) {
   // and if any then email them to an admin
   //
   try {
-    // TODO: rewrite this with aggregate + group
-    const ids = await Payments.distinct('paypal_transaction_id', {
-      paypal_transaction_id: { $exists: true }
-    });
-    logger.info(`found ${ids.length} unique paypal transaction ids`);
-    await pMap(ids, mapper, { concurrency });
+    // (one query: every transaction id ever recorded was read and then counted
+    // with a query of its own, every 30 minutes)
+    const duplicates = await Payments.aggregate([
+      { $match: { paypal_transaction_id: { $exists: true, $ne: null } } },
+      { $group: { _id: '$paypal_transaction_id', count: { $sum: 1 } } },
+      { $match: { count: { $gt: 1 } } }
+    ]).allowDiskUse(true);
+    const dupIds = duplicates.map((result) => result._id);
     logger.info('dupIds', { dupIds });
     if (dupIds.length > 0)
       throw new Error(
@@ -82,4 +75,9 @@ async function mapper(id) {
 
   if (parentPort) parentPort.postMessage('done');
   else process.exit(0);
-})();
+})().catch(async (err) => {
+  // (otherwise the worker keeps running, holding its job slot, until bree
+  // restarts)
+  await Promise.race([logger.error(err), delay(10_000)]);
+  process.exit(1);
+});

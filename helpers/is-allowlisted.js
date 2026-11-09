@@ -22,7 +22,8 @@ const parseRootDomain = require('#helpers/parse-root-domain');
  * Check if a value is allowlisted
  * @param {string} val - The value to check (IP, domain, or email)
  * @param {object} client - Redis client
- * @param {object} resolver - DNS resolver (Tangerine)
+ * @param {object} [resolver] - DNS resolver (Tangerine); without one an IP is
+ *   not looked up in reverse DNS
  * @param {boolean} ignoreRedis - Whether to skip Redis check
  * @returns {Promise<string|false>} - Returns reason string if allowlisted, false otherwise
  */
@@ -96,7 +97,7 @@ async function isAllowlisted(val, client, resolver, ignoreRedis = false) {
       );
       if (rootResult) return `root domain (${root}) → ${rootResult}`;
     }
-  } else if (isIP(val)) {
+  } else if (isIP(val) && resolver) {
     try {
       // reverse lookup IP and if it was allowlisted then return early
       const [clientHostname] = await resolver.reverse(val);

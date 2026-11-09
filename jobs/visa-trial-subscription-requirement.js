@@ -368,4 +368,9 @@ async function mapper(id) {
 
   if (parentPort) parentPort.postMessage('done');
   else process.exit(0);
-})();
+})().catch(async (err) => {
+  // (otherwise the worker keeps running, holding its job slot, until bree
+  // restarts)
+  await Promise.race([logger.error(err), setTimeout(10_000)]);
+  process.exit(1);
+});
