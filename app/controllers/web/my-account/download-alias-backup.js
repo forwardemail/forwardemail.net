@@ -81,8 +81,10 @@ async function downloadAliasBackup(ctx) {
       await ctx.client.del(`auth_limit_${config.env}:${ctx.state.user.id}`);
     }
 
+    // (on the Ubuntu team domains only the member, see the method)
     const { to, locale } = await Domains.getToAndMajorityLocaleByDomain(
-      ctx.state.domain
+      ctx.state.domain,
+      ctx.state.user
     );
 
     // send email notification when backup downloaded

@@ -378,8 +378,10 @@ async function generateAliasPassword(ctx) {
       }
     }
 
+    // (on the Ubuntu team domains only the member, see the method)
     const { to, locale } = await Domains.getToAndMajorityLocaleByDomain(
-      ctx.state.domain
+      ctx.state.domain,
+      ctx.state.user
     );
 
     const username = `${alias.name}@${ctx.state.domain.name}`;

@@ -289,8 +289,10 @@ async function syncUbuntuUser(user, map) {
 
               //
               // if this throws a Boom error (e.g. restricted username, e.g. mark@)
-              // then we should email the uesr and cc admins
+              // then we should email the user
               // (but if and only if revhash of error message doesn't exist in cache for 30d)
+              // (only the user: the team admins are not their support contact,
+              // so their addresses and the team's members are not included)
               try {
                 alias = await Aliases.create({
                   //
@@ -319,19 +321,19 @@ async function syncUbuntuUser(user, map) {
                     template: 'alert',
                     message: {
                       to: user.email,
-                      cc: adminEmailsForDomain,
                       bcc: config.alertsEmail,
                       subject: `${emoji('warning')} ${user[
                         fields.ubuntuUsername
                       ].toLowerCase()}@${domain.name} could not be created`
                     },
                     locals: {
-                      message:
-                        `<p>${user[fields.ubuntuUsername].toLowerCase()}@${
-                          domain.name
-                        } could not be created as a member of ${teamName} due to the following reason:</p><p>${
-                          err.message
-                        }</p>` + renderDebug(map, new Error('null').stack)
+                      message: `<p>${user[
+                        fields.ubuntuUsername
+                      ].toLowerCase()}@${
+                        domain.name
+                      } could not be created as a member of ${teamName} due to the following reason:</p><p>${
+                        err.message
+                      }</p>`
                     }
                   });
                   await client.set(key, true, 'PX', ms('30d'));
@@ -574,12 +576,12 @@ async function syncUbuntuUser(user, map) {
             });
 
             //
-            // only email admins if one of two cases:
+            // only email the user if one of two cases:
             // 1) the user was found in the `map` for the team
             // 2) the user was a member of the team already
+            // (only the user, as when an alias could not be created above)
             //
             if (isMember || map.get(name).has(user[fields.ubuntuUsername])) {
-              // email admins
               const key = `${keyPrefix}:${revHash(err.message)}`;
               const cache = await client.get(key);
 
@@ -589,7 +591,6 @@ async function syncUbuntuUser(user, map) {
                     template: 'alert',
                     message: {
                       to: user.email,
-                      cc: adminEmailsForDomain,
                       bcc: config.alertsEmail,
                       subject: `${emoji('wastebasket')} ${user[
                         fields.ubuntuUsername
@@ -598,14 +599,13 @@ async function syncUbuntuUser(user, map) {
                       } due to invalidity`
                     },
                     locals: {
-                      message:
-                        `<p>${user[fields.ubuntuUsername].toLowerCase()}@${
-                          domain.name
-                        } was ${
-                          isMember ? 'removed' : 'not added'
-                        } for the following invalidity reason from ${teamName}:</p><p>${
-                          err.message
-                        }</p>` + renderDebug(map, new Error('null').stack)
+                      message: `<p>${user[
+                        fields.ubuntuUsername
+                      ].toLowerCase()}@${domain.name} was ${
+                        isMember ? 'removed' : 'not added'
+                      } for the following invalidity reason from ${teamName}:</p><p>${
+                        err.message
+                      }</p>`
                     }
                   });
                   await client.set(key, true, 'PX', ms('30d'));

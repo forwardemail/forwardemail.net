@@ -2932,7 +2932,47 @@ Domains.statics.getVerificationResults = getVerificationResults;
 
 Domains.statics.getNameRestrictions = getDomainNameRestrictions;
 
-async function getToAndMajorityLocaleByDomain(domain) {
+//
+// One of the Ubuntu team domains (see `config.ubuntuTeamMapping`): only the
+// domain that verified its TXT record on the team plan, and never another
+// account's domain of the same name (as in helpers/sync-ubuntu-user.js)
+//
+function isUbuntuTeamDomain(domain) {
+  return Boolean(
+    domain &&
+      domain.plan === 'team' &&
+      domain.has_txt_record === true &&
+      Object.keys(config.ubuntuTeamMapping).includes(domain.name)
+  );
+}
+
+Domains.statics.isUbuntuTeamDomain = isUbuntuTeamDomain;
+
+//
+// The admins of a domain to email, and their majority locale and timezone.
+//
+// `user` is the member an email is about (e.g. who generated a password for
+// their alias).  On the Ubuntu team domains the email then goes to that member
+// only: the team admins are not their members' support contact, and neither
+// sees the other's address.
+//
+async function getToAndMajorityLocaleByDomain(domain, user) {
+  if (
+    user?.email &&
+    isUbuntuTeamDomain(domain) &&
+    !domain.members.some(
+      (member) =>
+        member.group === 'admin' &&
+        member.user &&
+        String(member.user._id || member.user) === String(user._id || user.id)
+    )
+  )
+    return {
+      to: [user.email],
+      locale: user[config.lastLocaleField] || i18n.config.defaultLocale,
+      timezone: user.timezone || 'UTC'
+    };
+
   // Get all the admins we should send the email to
   let users = await conn.models.Users.find({
     _id: {
