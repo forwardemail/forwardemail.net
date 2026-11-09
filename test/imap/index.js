@@ -1807,12 +1807,13 @@ test
   // find all unseen messages
   const list1 = await t.context.imapFlow.search({ seen: true });
   // use OR modifier (array of 2 or more search queries)
+  // (the unseen messages are the ones from Linus, none is flagged)
   const list2 = await t.context.imapFlow.search({
     seen: false,
     or: [{ flagged: true }, { from: 'linus' }]
   });
   t.is(list1.length, 10);
-  t.is(list2.length, 0);
+  t.is(list2.length, 10);
   t.notDeepEqual(list1, list2);
 
   //
@@ -1955,6 +1956,106 @@ test('onSearch > HEADER', async (t) => {
   t.deepEqual(await search({ header: { from: 'nobody' } }), []);
   t.deepEqual(await search({ header: { from: '%' } }), [2]);
   t.deepEqual(await search({ header: { to: '%' } }), []);
+});
+
+//
+// SEARCH TEXT matches the header or body (RFC 3501 section 6.4.4), and an
+// OR matches what any one of its parts matches, whatever the parts are
+//
+test('onSearch > TEXT and OR', async (t) => {
+  await t.context.imapFlow.mailboxCreate('textsearch');
+
+  const messages = [
+    // 1: only in the subject
+    { from: 'Pat <pat@example.com>', subject: 'Pineapple order', body: 'hi' },
+    // 2: only in the body
+    { from: 'Pat <pat@example.com>', subject: 'Order', body: 'a pineapple' },
+    // 3: only in the sender
+    { from: 'pineapple@example.com', subject: 'Hello', body: 'hi' },
+    // 4: nowhere
+    { from: 'Pat <pat@example.com>', subject: 'Other', body: 'hi' }
+  ];
+
+  for (const [i, message] of messages.entries()) {
+    const raw = [
+      `Date: ${new Date().toISOString()}`,
+      'MIME-Version: 1.0',
+      `From: ${message.from}`,
+      'To: someone@example.com',
+      `Subject: ${message.subject}`,
+      'Content-Type: text/plain; charset=UTF-8',
+      '',
+      message.body
+    ].join('\r\n');
+    await t.context.imapFlow.append(
+      'textsearch',
+      Buffer.from(raw),
+      // (2 and 4 are unseen)
+      i % 2 === 0 ? ['\\Seen'] : [],
+      new Date()
+    );
+  }
+
+  await t.context.imapFlow.mailboxOpen('textsearch');
+
+  const search = async (query) => {
+    const seq = await t.context.imapFlow.search(query);
+    return seq.sort((a, b) => a - b);
+  };
+
+  // TEXT matches the subject, body and sender; BODY only the body
+  t.deepEqual(await search({ subject: 'pineapple' }), [1]);
+  t.deepEqual(await search({ text: 'pineapple' }), [1, 2, 3]);
+  t.deepEqual(await search({ text: 'PINEAPPLE' }), [1, 2, 3]);
+  t.deepEqual(await search({ body: 'pineapple' }), [2]);
+  t.deepEqual(await search({ not: { text: 'pineapple' } }), [4]);
+
+  // an OR matches what any one of its parts matches
+  t.deepEqual(
+    await search({
+      or: [
+        { subject: 'pineapple' },
+        { from: 'pineapple' },
+        { text: 'pineapple' }
+      ]
+    }),
+    [1, 2, 3]
+  );
+  t.deepEqual(
+    await search({ or: [{ subject: 'pineapple' }, { body: 'pineapple' }] }),
+    [1, 2]
+  );
+  t.deepEqual(
+    await search({ or: [{ body: 'pineapple' }, { seen: true }] }),
+    [1, 2, 3]
+  );
+
+  // and AND with the other criteria
+  t.deepEqual(
+    await search({
+      seen: false,
+      or: [{ subject: 'pineapple' }, { body: 'pineapple' }]
+    }),
+    [2]
+  );
+
+  // NOT (A OR B) is (NOT A) AND (NOT B)
+  t.deepEqual(
+    await search({
+      not: { or: [{ subject: 'pineapple' }, { body: 'pineapple' }] }
+    }),
+    [3, 4]
+  );
+
+  // a part that matches every message, or that is several criteria
+  t.deepEqual(
+    await search({ or: [{ all: true }, { subject: 'nothing' }] }),
+    [1, 2, 3, 4]
+  );
+  t.deepEqual(
+    await search({ or: [{ new: true }, { subject: 'nothing' }] }),
+    await search({ new: true })
+  );
 });
 
 test('onStatus', async (t) => {

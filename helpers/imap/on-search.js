@@ -33,6 +33,22 @@ const recursivelyParse = require('#helpers/recursively-parse');
 
 const builder = new Builder({ bufferAsNative: true });
 
+//
+// A condition matching the messages with these ids
+// (SQLITE_MAX_VARIABLE_NUMBER defaults to 999; chunk to stay safe)
+//
+function getIdsCondition(ids) {
+  // (no message has this id)
+  if (ids.length === 0) return { _id: -1 };
+  if (ids.length <= 900) return { _id: { $in: ids } };
+  const chunks = [];
+  for (let i = 0; i < ids.length; i += 900) {
+    chunks.push({ _id: { $in: ids.slice(i, i + 900) } });
+  }
+
+  return { $or: chunks };
+}
+
 async function onSearch(mailboxId, options, session, fn) {
   this.logger.debug('SEARCH', { mailboxId, options, session, fn });
 
@@ -99,6 +115,38 @@ async function onSearch(mailboxId, options, session, fn) {
     const set = new Set();
     let mustIncludeIds = false;
 
+    // (the criteria of the query, AND'd)
+    const $and = [];
+
+    //
+    // The messages a criterion matched by their ids (TEXT, BODY, HEADER and
+    // keywords).  At the top level of the query, where all criteria are
+    // AND'd, they narrow the ids every result is in.  Anywhere else (in an
+    // OR) they are a criterion of their own, so that an OR matches what any
+    // one of its parts matches.
+    //
+    // eslint-disable-next-line no-inner-declarations
+    function addIds(parent, ids) {
+      if (parent !== $and) {
+        parent.push(getIdsCondition(ids));
+        return;
+      }
+
+      // RFC 3501: multiple criteria are AND'd; intersect when set already populated
+      if (mustIncludeIds) {
+        const newIds = new Set(ids);
+        for (const id of set) {
+          if (!newIds.has(id)) set.delete(id);
+        }
+      } else {
+        for (const id of ids) {
+          set.add(id);
+        }
+      }
+
+      mustIncludeIds = true;
+    }
+
     // eslint-disable-next-line no-inner-declarations
     async function walkQuery(parent, ne, node) {
       if (returned) {
@@ -126,13 +174,31 @@ async function onSearch(mailboxId, options, session, fn) {
           }
 
           case 'or': {
-            const $or = [];
+            // NOT (A OR B) is (NOT A) AND (NOT B)
+            if (ne) {
+              for (const entry of term.value || []) {
+                await walkQuery(parent, true, [entry || []].flat());
+              }
 
-            for (const entry of [term.value || []].flat()) {
-              await walkQuery($or, false, [entry || []].flat());
+              break;
             }
 
-            if ($or.length > 0) {
+            //
+            // Each part is a group of its own: one search key can be several
+            // criteria that all have to match (e.g. NEW is RECENT UNSEEN)
+            //
+            const $or = [];
+            let matchesAll = false;
+
+            for (const entry of term.value || []) {
+              const group = [];
+              await walkQuery(group, false, [entry || []].flat());
+              // (e.g. ALL, so the OR matches every message)
+              if (group.length === 0) matchesAll = true;
+              else $or.push(group.length === 1 ? group[0] : { $and: group });
+            }
+
+            if (!matchesAll && $or.length > 0) {
               parent.push({
                 $or
               });
@@ -143,6 +209,10 @@ async function onSearch(mailboxId, options, session, fn) {
 
           case 'text': // search over entire email
           case 'body': {
+            // (TEXT matches the header or body, RFC 3501 section 6.4.4)
+            const isText = term.key === 'text';
+            const bodyNe = isText ? false : ne;
+
             //
             // use FTS5 for full text search in onSearch function
             // <https://kimsereylam.com/sqlite/2020/03/06/full-text-search-with-sqlite.html>
@@ -162,7 +232,7 @@ async function onSearch(mailboxId, options, session, fn) {
               const sanitized = term.value
                 .replace(/"/g, '""') // escape embedded double-quotes
                 .replace(/\*/g, ''); // strip wildcard operator
-              if (ne) {
+              if (bodyNe) {
                 // FTS5 does not support NOT MATCH; use a NOT IN subquery
                 sql = {
                   query: `select _id from Messages where mailbox = $mailbox and _id NOT IN (SELECT _id FROM Messages_fts WHERE text MATCH $p1);`,
@@ -184,7 +254,7 @@ async function onSearch(mailboxId, options, session, fn) {
               const escaped = escapeSqliteLike(term.value);
               sql = {
                 query: `select _id from Messages where mailbox = $mailbox and text ${
-                  ne ? 'NOT LIKE' : 'LIKE'
+                  bodyNe ? 'NOT LIKE' : 'LIKE'
                 } $p1 ESCAPE '\\';`,
                 values: {
                   mailbox: mailbox._id.toString(),
@@ -207,7 +277,7 @@ async function onSearch(mailboxId, options, session, fn) {
                 const escaped = escapeSqliteLike(term.value);
                 const fallbackSql = {
                   query: `select _id from Messages where mailbox = $mailbox and text ${
-                    ne ? 'NOT LIKE' : 'LIKE'
+                    bodyNe ? 'NOT LIKE' : 'LIKE'
                   } $p1 ESCAPE '\\';`,
                   values: {
                     mailbox: mailbox._id.toString(),
@@ -223,19 +293,36 @@ async function onSearch(mailboxId, options, session, fn) {
               }
             }
 
-            // RFC 3501: multiple criteria are AND'd; intersect when set already populated
-            if (mustIncludeIds) {
-              const newIds = new Set(ids);
-              for (const id of set) {
-                if (!newIds.has(id)) set.delete(id);
+            //
+            // TEXT also matches the indexed header values (e.g. Subject and
+            // From), as a HEADER search does: lowercased, with LIKE
+            //
+            if (isText) {
+              const matched = new Set(ids);
+              const pattern = `%${escapeSqliteLike(
+                Buffer.from(term.value, 'binary').toString().toLowerCase()
+              )}%`;
+              for (const id of session.db
+                .prepare(
+                  `select Messages._id from Messages, json_each(Messages.headers) where Messages.mailbox = $mailbox and json_extract(value, '$.value') LIKE $p1 ESCAPE '\\';`
+                )
+                .pluck()
+                .iterate({ mailbox: mailbox._id.toString(), p1: pattern })) {
+                matched.add(id);
               }
-            } else {
-              for (const id of ids) {
-                set.add(id);
-              }
+
+              ids = ne
+                ? session.db
+                    .prepare(
+                      'select _id from Messages where mailbox = $mailbox;'
+                    )
+                    .pluck()
+                    .all({ mailbox: mailbox._id.toString() })
+                    .filter((id) => !matched.has(id))
+                : [...matched];
             }
 
-            mustIncludeIds = true;
+            addIds(parent, ids);
 
             // NOTE: this is the wildduck reference (which does not support NOT matches)
             // search over email body
@@ -342,8 +429,7 @@ async function onSearch(mailboxId, options, session, fn) {
                 // Custom keywords are stored in the brotli-compressed
                 // `flags` blob and cannot be queried via SQL operators.
                 // Decode each message's flags and filter in JavaScript,
-                // using the same set/mustIncludeIds intersection pattern
-                // as BODY/TEXT/HEADER searches.
+                // as BODY/TEXT/HEADER searches are (see addIds).
                 //
                 // A search sees the keywords a FETCH shows: the flags and
                 // the labels (set through the API), compared without case,
@@ -371,18 +457,7 @@ async function onSearch(mailboxId, options, session, fn) {
                   }
                 }
 
-                if (mustIncludeIds) {
-                  const newIds = new Set(matchedIds);
-                  for (const id of set) {
-                    if (!newIds.has(id)) set.delete(id);
-                  }
-                } else {
-                  for (const id of matchedIds) {
-                    set.add(id);
-                  }
-                }
-
-                mustIncludeIds = true;
+                addIds(parent, matchedIds);
               }
             }
 
@@ -427,19 +502,7 @@ async function onSearch(mailboxId, options, session, fn) {
                     .prepare(sql.query)
                     .pluck()
                     .all(sql.values);
-                  // RFC 3501: multiple criteria are AND'd; intersect when set already populated
-                  if (mustIncludeIds) {
-                    const newIds = new Set(ids);
-                    for (const id of set) {
-                      if (!newIds.has(id)) set.delete(id);
-                    }
-                  } else {
-                    for (const id of ids) {
-                      set.add(id);
-                    }
-                  }
-
-                  mustIncludeIds = true;
+                  addIds(parent, ids);
                 } else {
                   const sql = {
                     query: `select _id from Messages, json_each(Messages.headers) where Messages.mailbox = $mailbox and json_extract(value, '$.key') = $p1 and json_extract(value, '$.value') LIKE $p2 ESCAPE '\\';`,
@@ -453,19 +516,7 @@ async function onSearch(mailboxId, options, session, fn) {
                     .prepare(sql.query)
                     .pluck()
                     .all(sql.values);
-                  // RFC 3501: multiple criteria are AND'd; intersect when set already populated
-                  if (mustIncludeIds) {
-                    const newIds = new Set(ids);
-                    for (const id of set) {
-                      if (!newIds.has(id)) set.delete(id);
-                    }
-                  } else {
-                    for (const id of ids) {
-                      set.add(id);
-                    }
-                  }
-
-                  mustIncludeIds = true;
+                  addIds(parent, ids);
                 }
               } else if (ne) {
                 const sql = {
@@ -476,19 +527,7 @@ async function onSearch(mailboxId, options, session, fn) {
                   .prepare(sql.query)
                   .pluck()
                   .all(sql.values);
-                // RFC 3501: multiple criteria are AND'd; intersect when set already populated
-                if (mustIncludeIds) {
-                  const newIds = new Set(ids);
-                  for (const id of set) {
-                    if (!newIds.has(id)) set.delete(id);
-                  }
-                } else {
-                  for (const id of ids) {
-                    set.add(id);
-                  }
-                }
-
-                mustIncludeIds = true;
+                addIds(parent, ids);
               } else {
                 const sql = {
                   query: `select _id from Messages, json_each(Messages.headers) where Messages.mailbox = $mailbox and json_extract(value, '$.key') = $p1;`,
@@ -498,19 +537,7 @@ async function onSearch(mailboxId, options, session, fn) {
                   .prepare(sql.query)
                   .pluck()
                   .all(sql.values);
-                // RFC 3501: multiple criteria are AND'd; intersect when set already populated
-                if (mustIncludeIds) {
-                  const newIds = new Set(ids);
-                  for (const id of set) {
-                    if (!newIds.has(id)) set.delete(id);
-                  }
-                } else {
-                  for (const id of ids) {
-                    set.add(id);
-                  }
-                }
-
-                mustIncludeIds = true;
+                addIds(parent, ids);
               }
 
               // wildduck/mongodb version
@@ -787,7 +814,6 @@ async function onSearch(mailboxId, options, session, fn) {
       }
     }
 
-    const $and = [];
     await walkQuery($and, false, options.query);
 
     if (returned) return;
@@ -806,18 +832,7 @@ async function onSearch(mailboxId, options, session, fn) {
         return;
       }
 
-      const ids = [...set];
-      // SQLITE_MAX_VARIABLE_NUMBER defaults to 999; chunk to stay safe
-      if (ids.length <= 900) {
-        $and.push({ _id: { $in: ids } });
-      } else {
-        const chunks = [];
-        for (let i = 0; i < ids.length; i += 900) {
-          chunks.push({ _id: { $in: ids.slice(i, i + 900) } });
-        }
-
-        $and.push({ $or: chunks });
-      }
+      $and.push(getIdsCondition([...set]));
     }
 
     if ($and.length > 0) query.$and = $and;
