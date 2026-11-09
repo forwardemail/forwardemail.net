@@ -100,7 +100,7 @@
     "@zxcvbn-ts/language-id": "3.0.2",
     "@zxcvbn-ts/language-it": "3.0.2",
     "@zxcvbn-ts/language-ja": "3.0.2",
-    "@zxcvbn-ts/language-nl-be": "3.0.2",
+    "@zxcvbn-ts/language-nl-be": "4.1.1",
     "@zxcvbn-ts/language-pl": "3.0.2",
     "@zxcvbn-ts/language-pt-br": "3.0.2",
     "adm-zip": "0.6.1",
