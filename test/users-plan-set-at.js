@@ -127,3 +127,40 @@ test('a start date that agrees with the payments is kept', async (t) => {
     teamStart.add(2, 'months').valueOf()
   );
 });
+
+test('a plan started on the last day of a month renews on the last day', async (t) => {
+  // (local dates, since plan months follow the server's calendar)
+  const start = new Date(2026, 0, 31, 12);
+  const user = await createUser(t, 'enhanced_protection', start);
+  for (const invoiceAt of [
+    start,
+    new Date(2026, 1, 28, 12),
+    new Date(2026, 2, 31, 12)
+  ])
+    await pay(t, { user, plan: 'enhanced_protection', invoiceAt });
+
+  await user.save();
+  // three months, not three times one month (January 31 + 1 month is
+  // February 28, and adding a month at a time stayed on the 28th after that)
+  t.is(
+    dayjs(user[config.userFields.planExpiresAt]).format('YYYY-MM-DD'),
+    '2026-04-30'
+  );
+  t.is(
+    user[config.userFields.planExpiresAt].getTime(),
+    dayjs(start).add(3, 'months').valueOf()
+  );
+
+  // a year counts as twelve months
+  await pay(t, {
+    user,
+    plan: 'enhanced_protection',
+    invoiceAt: new Date(2026, 3, 30, 12),
+    duration: '1y'
+  });
+  await user.save();
+  t.is(
+    dayjs(user[config.userFields.planExpiresAt]).format('YYYY-MM-DD'),
+    '2027-04-30'
+  );
+});

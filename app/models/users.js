@@ -1061,9 +1061,12 @@ Users.pre('save', async function (next) {
     //
     // NOTE: we can't do `_.sumBy` because people pay by the month, not by the # of days in a month (e.g. 30d)
     //
-    user[config.userFields.planExpiresAt] = new Date(
-      user[config.userFields.planSetAt]
-    );
+    // (the months are added to the start date at once: added one payment at
+    // a time, a short month carried its last day into every month after it,
+    // e.g. a plan started on January 31 then expired on the 28th of each
+    // month while its renewal was charged on the last day of the month)
+    //
+    let months = 0;
     for (const payment of payments) {
       //
       // payments cannot be counted for credit that were
@@ -1078,12 +1081,15 @@ Users.pre('save', async function (next) {
         continue;
       }
 
-      user[config.userFields.planExpiresAt] = dayjs(
-        user[config.userFields.planExpiresAt]
-      )
-        .add(...config.durationMapping[payment.duration.toString()])
-        .toDate();
+      const [count, unit] = config.durationMapping[payment.duration.toString()];
+      months += Number(count) * (unit.startsWith('year') ? 12 : 1);
     }
+
+    user[config.userFields.planExpiresAt] = dayjs(
+      user[config.userFields.planSetAt]
+    )
+      .add(months, 'month')
+      .toDate();
 
     // If the new expiry is in the future then reset the API past due sent at reminder
     // and also reset all billing reminders that have been sent

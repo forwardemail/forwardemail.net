@@ -145,6 +145,14 @@ async function mapper(id) {
 async function run() {
   try {
     const ids = await Payments.distinct('_id', {
+      //
+      // a payment is written before its user is saved (which is when the
+      // plan's expiry takes it into account), so a receipt picked up in
+      // between said "Plan expired" for the plan it had just paid for
+      //
+      updated_at: {
+        $lte: dayjs().subtract(1, 'minute').toDate()
+      },
       $or: [
         {
           // within the past 3 months

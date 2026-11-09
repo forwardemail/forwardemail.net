@@ -9,7 +9,7 @@ if user && _.isObject(user) && user.plan !== 'free' && _.isDate(user[config.user
             != t('Plan expired on <span class="notranslate">%s</span>.', dayjs(user[config.userFields.planExpiresAt]).locale(locale).format("LL"))
             = " "
             if hasSubscription && isSANB(user[config.userFields.stripeSubscriptionID])
-              != t('Need to <a class="alert-link" href="%s">update payment method</a>?', `${config.urls.web}/${locale}/my-account/billing/make-payment`, `${config.urls.web}/${locale}/my-account/billing`)
+              != t('Need to <a class="alert-link" href="%s">update payment method</a>?', `${config.urls.web}/${locale}/my-account/billing/update-card`)
             else
               != t('<a class="alert-link" href="%s">Make payment</a> to avoid account termination.', `${config.urls.web}/${locale}/my-account/billing/make-payment`)
   else if !hasSubscription

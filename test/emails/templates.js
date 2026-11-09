@@ -678,3 +678,28 @@ test('short values in a table stay on one line', async (t) => {
   const html = await render('daily-log-alert', tableLocals);
   t.regex(html, /<span class="badge"[^>]*white-space: nowrap[^>]*>421<\/span>/);
 });
+
+test('an expired card subscription links to updating the payment method', async (t) => {
+  const expired = {
+    ...user,
+    plan: 'enhanced_protection',
+    [config.userFields.planExpiresAt]: new Date(Date.now() - 86_400_000),
+    [config.userFields.stripeSubscriptionID]: 'sub_test'
+  };
+  const html = await render('welcome', { user: expired });
+  t.regex(
+    html,
+    new RegExp(
+      `href="${config.urls.web}/en/my-account/billing/update-card"[^>]*>update payment method<`
+    )
+  );
+
+  // without auto-renew it asks for a payment
+  delete expired[config.userFields.stripeSubscriptionID];
+  t.regex(
+    await render('welcome', { user: expired }),
+    new RegExp(
+      `href="${config.urls.web}/en/my-account/billing/make-payment"[^>]*>Make payment<`
+    )
+  );
+});
