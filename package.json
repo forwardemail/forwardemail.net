@@ -363,7 +363,7 @@
     "gulp-livereload": "4.0.2",
     "gulp-order": "1.2.0",
     "gulp-postcss": "9.0.1",
-    "gulp-prettier": "4.0.0",
+    "gulp-prettier": "7.0.0",
     "gulp-pug-linter": "1.5.0",
     "gulp-purgecss": "5.0.0",
     "gulp-remark": "9.0.0",
