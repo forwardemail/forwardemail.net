@@ -31,104 +31,107 @@ block content
                 = t("DMARC Summary")
 
               //- Stats table - simple and clean like daily-log-alert
-              table.table.table-bordered.text-center.mb-0
-                thead.thead-light
-                  tr
-                    th= t("Reports")
-                    th= t("Messages")
-                    th= t("SPF Aligned")
-                    th= t("DKIM Aligned")
-                tbody
-                  tr
-                    td
-                      strong.text-primary= stats.totalReports.toLocaleString()
-                    td
-                      strong.text-primary= stats.totalMessages.toLocaleString()
-                    td
-                      - const spfPct = Math.round(parseFloat(stats.spfAlignedPct));
-                      - const spfColor = spfPct >= 90 ? "#047857" : spfPct >= 70 ? "#92400e" : "#b91c1c";
-                      strong(style=`color: ${spfColor}`)= `${spfPct}%`
-                    td
-                      - const dkimPct = Math.round(parseFloat(stats.dkimAlignedPct));
-                      - const dkimColor = dkimPct >= 90 ? "#047857" : dkimPct >= 70 ? "#92400e" : "#b91c1c";
-                      strong(style=`color: ${dkimColor}`)= `${dkimPct}%`
+              .table-responsive
+                table.table.table-bordered.text-center.mb-0
+                  thead.thead-light
+                    tr
+                      th= t("Reports")
+                      th= t("Messages")
+                      th= t("SPF Aligned")
+                      th= t("DKIM Aligned")
+                  tbody
+                    tr
+                      td
+                        strong.text-primary= stats.totalReports.toLocaleString()
+                      td
+                        strong.text-primary= stats.totalMessages.toLocaleString()
+                      td
+                        - const spfPct = Math.round(parseFloat(stats.spfAlignedPct));
+                        - const spfColor = spfPct >= 90 ? "#047857" : spfPct >= 70 ? "#92400e" : "#b91c1c";
+                        strong(style=`color: ${spfColor}`)= `${spfPct}%`
+                      td
+                        - const dkimPct = Math.round(parseFloat(stats.dkimAlignedPct));
+                        - const dkimColor = dkimPct >= 90 ? "#047857" : dkimPct >= 70 ? "#92400e" : "#b91c1c";
+                        strong(style=`color: ${dkimColor}`)= `${dkimPct}%`
 
             //- Message disposition breakdown
             if stats.totalMessages > 0
               .p-3.bg-light
                 h2.h4.text-center
                   = t("Message Disposition")
-                table.table.table-sm.table-bordered.mb-0
-                  thead.thead-light
-                    tr
-                      th= t("Disposition")
-                      th.text-right= t("Count")
-                      th.text-right= t("Percentage")
-                  tbody
-                    tr
-                      td
-                        = emoji("white_check_mark")
-                        = " "
-                        = t("Accepted")
-                      td.text-right(style="color: #047857")= stats.accepted.toLocaleString()
-                      td.text-right(style="color: #047857")
-                        = stats.totalMessages > 0 ? Math.round((stats.accepted / stats.totalMessages) * 100) : 0
-                        = "%"
-                    if stats.quarantined > 0
+                .table-responsive
+                  table.table.table-sm.table-bordered.mb-0
+                    thead.thead-light
+                      tr
+                        th= t("Disposition")
+                        th.text-right= t("Count")
+                        th.text-right= t("Percentage")
+                    tbody
                       tr
                         td
-                          = emoji("warning")
+                          = emoji("white_check_mark")
                           = " "
-                          = t("Quarantined")
-                        td.text-right(style="color: #92400e")= stats.quarantined.toLocaleString()
-                        td.text-right(style="color: #92400e")
-                          = Math.round((stats.quarantined / stats.totalMessages) * 100)
+                          = t("Accepted")
+                        td.text-right(style="color: #047857")= stats.accepted.toLocaleString()
+                        td.text-right(style="color: #047857")
+                          = stats.totalMessages > 0 ? Math.round((stats.accepted / stats.totalMessages) * 100) : 0
                           = "%"
-                    if stats.rejected > 0
-                      tr
-                        td
-                          = emoji("x")
-                          = " "
-                          = t("Rejected")
-                        td.text-right(style="color: #b91c1c")= stats.rejected.toLocaleString()
-                        td.text-right(style="color: #b91c1c")
-                          = Math.round((stats.rejected / stats.totalMessages) * 100)
-                          = "%"
+                      if stats.quarantined > 0
+                        tr
+                          td
+                            = emoji("warning")
+                            = " "
+                            = t("Quarantined")
+                          td.text-right(style="color: #92400e")= stats.quarantined.toLocaleString()
+                          td.text-right(style="color: #92400e")
+                            = Math.round((stats.quarantined / stats.totalMessages) * 100)
+                            = "%"
+                      if stats.rejected > 0
+                        tr
+                          td
+                            = emoji("x")
+                            = " "
+                            = t("Rejected")
+                          td.text-right(style="color: #b91c1c")= stats.rejected.toLocaleString()
+                          td.text-right(style="color: #b91c1c")
+                            = Math.round((stats.rejected / stats.totalMessages) * 100)
+                            = "%"
 
             //- Domains section
             if domains && domains.length > 0
               .p-3
                 h2.h4.text-center
                   = t("Your Domains")
-                table.table.table-sm.table-bordered.mb-0
-                  thead.thead-light
-                    tr
-                      th= t("Domain")
-                      th.text-right= t("Messages")
-                      th.text-right= t("SPF")
-                      th.text-right= t("DKIM")
-                  tbody
-                    each domain in domains
+                .table-responsive
+                  table.table.table-sm.table-bordered.mb-0
+                    thead.thead-light
                       tr
-                        td
-                          = emoji("link")
-                          = " "
-                          strong= domain.name
-                        td.text-right= domain.messages.toLocaleString()
-                        td.text-right
-                          - const domSpfPct = Math.round(parseFloat(domain.spfAlignedPct));
-                          - const domSpfColor = domSpfPct >= 90 ? "#047857" : domSpfPct >= 70 ? "#92400e" : "#b91c1c";
-                          span(style=`color: ${domSpfColor}`)= `${domSpfPct}%`
-                        td.text-right
-                          - const domDkimPct = Math.round(parseFloat(domain.dkimAlignedPct));
-                          - const domDkimColor = domDkimPct >= 90 ? "#047857" : domDkimPct >= 70 ? "#92400e" : "#b91c1c";
-                          span(style=`color: ${domDkimColor}`)= `${domDkimPct}%`
-                    if additionalDomainsCount > 0
-                      tr.text-muted
-                        td(colspan="4")
-                          = emoji("heavy_plus_sign")
-                          = " "
-                          = `${additionalDomainsCount} ${t("more domains")}`
+                        th= t("Domain")
+                        th.text-right= t("Messages")
+                        th.text-right= t("SPF")
+                        th.text-right= t("DKIM")
+                    tbody
+                      each domain in domains
+                        tr
+                          td
+                            = emoji("link")
+                            = " "
+                            strong= domain.name
+                          td.text-right= domain.messages.toLocaleString()
+                          td.text-right
+                            - const domSpfPct = Math.round(parseFloat(domain.spfAlignedPct));
+                            - const domSpfColor = domSpfPct >= 90 ? "#047857" : domSpfPct >= 70 ? "#92400e" : "#b91c1c";
+                            span(style=`color: ${domSpfColor}`)= `${domSpfPct}%`
+                          td.text-right
+                            - const domDkimPct = Math.round(parseFloat(domain.dkimAlignedPct));
+                            - const domDkimColor = domDkimPct >= 90 ? "#047857" : domDkimPct >= 70 ? "#92400e" : "#b91c1c";
+                            span(style=`color: ${domDkimColor}`)= `${domDkimPct}%`
+                      if additionalDomainsCount > 0
+                        tr.text-muted
+                          td(colspan="4")
+                            = emoji("heavy_plus_sign")
+                            = " "
+                            = `${additionalDomainsCount} ${t("more domains")}`
 
             //- Top reporters section
             if topReporters && topReporters.length > 0
@@ -137,18 +140,19 @@ block content
                   = t("Top Reporters")
                 p.text-center.text-muted.small.mb-3
                   = t("Organizations that sent DMARC reports about your domains")
-                table.table.table-sm.table-bordered.mb-0
-                  thead.thead-light
-                    tr
-                      th= t("Organization")
-                      th.text-right= t("Reports")
-                      th.text-right= t("Messages")
-                  tbody
-                    each reporter in topReporters
+                .table-responsive
+                  table.table.table-sm.table-bordered.mb-0
+                    thead.thead-light
                       tr
-                        td= reporter.name
-                        td.text-right= reporter.reports.toLocaleString()
-                        td.text-right= reporter.messages.toLocaleString()
+                        th= t("Organization")
+                        th.text-right= t("Reports")
+                        th.text-right= t("Messages")
+                    tbody
+                      each reporter in topReporters
+                        tr
+                          td= reporter.name
+                          td.text-right= reporter.reports.toLocaleString()
+                          td.text-right= reporter.messages.toLocaleString()
 
             //- Source IP issues section
             if topIpIssues && topIpIssues.length > 0
@@ -157,43 +161,44 @@ block content
                   = t("IPs with Alignment Issues")
                 p.text-center.text-muted.small.mb-3
                   = t("These IP addresses sent emails that failed SPF or DKIM alignment")
-                table.table.table-sm.table-bordered.mb-0
-                  thead.thead-light
-                    tr
-                      th= t("IP Address")
-                      th.text-right= t("Count")
-                      th.text-center= t("SPF")
-                      th.text-center= t("DKIM")
-                      th.text-center= t("Action")
-                  tbody
-                    each issue in topIpIssues
+                .table-responsive
+                  table.table.table-sm.table-bordered.mb-0
+                    thead.thead-light
                       tr
-                        td
-                          code= issue.ip
-                        td.text-right= issue.count.toLocaleString()
-                        td.text-center
-                          if issue.spfResult === 'pass'
-                            span(style="color: #047857")= emoji("white_check_mark")
-                          else
-                            span(style="color: #b91c1c")= emoji("x")
-                        td.text-center
-                          if issue.dkimResult === 'pass'
-                            span(style="color: #047857")= emoji("white_check_mark")
-                          else
-                            span(style="color: #b91c1c")= emoji("x")
-                        td.text-center
-                          if issue.disposition === 'reject'
-                            span.badge(
-                              style="background-color: #fce9e9; color: #b91c1c"
-                            )= t("Rejected")
-                          else if issue.disposition === 'quarantine'
-                            span.badge(
-                              style="background-color: #fdeed3; color: #92400e"
-                            )= t("Quarantined")
-                          else
-                            span.badge(
-                              style="background-color: #e1efeb; color: #047857"
-                            )= t("Accepted")
+                        th= t("IP Address")
+                        th.text-right= t("Count")
+                        th.text-center= t("SPF")
+                        th.text-center= t("DKIM")
+                        th.text-center= t("Action")
+                    tbody
+                      each issue in topIpIssues
+                        tr
+                          td
+                            code= issue.ip
+                          td.text-right= issue.count.toLocaleString()
+                          td.text-center
+                            if issue.spfResult === 'pass'
+                              span(style="color: #047857")= emoji("white_check_mark")
+                            else
+                              span(style="color: #b91c1c")= emoji("x")
+                          td.text-center
+                            if issue.dkimResult === 'pass'
+                              span(style="color: #047857")= emoji("white_check_mark")
+                            else
+                              span(style="color: #b91c1c")= emoji("x")
+                          td.text-center
+                            if issue.disposition === 'reject'
+                              span.badge(
+                                style="background-color: #fce9e9; color: #b91c1c"
+                              )= t("Rejected")
+                            else if issue.disposition === 'quarantine'
+                              span.badge(
+                                style="background-color: #fdeed3; color: #92400e"
+                              )= t("Quarantined")
+                            else
+                              span.badge(
+                                style="background-color: #e1efeb; color: #047857"
+                              )= t("Accepted")
 
             //- Actionable tips
             .p-3.bg-light

@@ -170,7 +170,7 @@ const Users = require('#models/users');
         bannedUsers.count > 0
           ? `
 <h3 style="color: red;">🚫 Banned Users (${bannedUsers.count})</h3>
-<table border="1" cellpadding="5" cellspacing="0" style="width: 100%; border-collapse: collapse;">
+<div class="table-responsive"><table border="1" cellpadding="5" cellspacing="0" style="width: 100%; border-collapse: collapse;">
   <tr style="background: #f0f0f0;">
     <th style="padding: 8px; text-align: left;">#</th>
     <th style="padding: 8px; text-align: left;">User ID</th>
@@ -188,7 +188,7 @@ const Users = require('#models/users');
   </tr>`
     )
     .join('\n  ')}
-</table>${
+</table></div>${
               bannedUsers.omitted > 0
                 ? `\n<p><em>${bannedUsers.omitted} more not shown.</em></p>`
                 : ''
@@ -202,7 +202,7 @@ const Users = require('#models/users');
 <h3 style="color: green;">✅ Skipped (KYC Verified) (${
               skippedKycUsers.count
             })</h3>
-<table border="1" cellpadding="5" cellspacing="0" style="width: 100%; border-collapse: collapse;">
+<div class="table-responsive"><table border="1" cellpadding="5" cellspacing="0" style="width: 100%; border-collapse: collapse;">
   <tr style="background: #f0f0f0;">
     <th style="padding: 8px; text-align: left;">#</th>
     <th style="padding: 8px; text-align: left;">User ID</th>
@@ -220,7 +220,7 @@ const Users = require('#models/users');
   </tr>`
     )
     .join('\n  ')}
-</table>${
+</table></div>${
               skippedKycUsers.omitted > 0
                 ? `\n<p><em>${skippedKycUsers.omitted} more not shown.</em></p>`
                 : ''
@@ -232,7 +232,7 @@ const Users = require('#models/users');
         errors.count > 0
           ? `
 <h3 style="color: orange;">⚠️ Errors (${errors.count})</h3>
-<table border="1" cellpadding="5" cellspacing="0" style="width: 100%; border-collapse: collapse;">
+<div class="table-responsive"><table border="1" cellpadding="5" cellspacing="0" style="width: 100%; border-collapse: collapse;">
   <tr style="background: #f0f0f0;">
     <th style="padding: 8px; text-align: left;">#</th>
     <th style="padding: 8px; text-align: left;">User ID</th>
@@ -250,7 +250,7 @@ const Users = require('#models/users');
   </tr>`
     )
     .join('\n  ')}
-</table>${
+</table></div>${
               errors.omitted > 0
                 ? `\n<p><em>${errors.omitted} more not shown.</em></p>`
                 : ''
@@ -262,7 +262,7 @@ const Users = require('#models/users');
 <h2>🔍 Denylisted Users Check - Complete Report</h2>
 
 <h3>📊 Summary</h3>
-<table border="1" cellpadding="8" cellspacing="0" style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
+<div class="table-responsive"><table border="1" cellpadding="8" cellspacing="0" style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
   <tr style="background: #f0f0f0;">
     <th style="padding: 10px; text-align: left;">Metric</th>
     <th style="padding: 10px; text-align: left;">Value</th>
@@ -287,7 +287,7 @@ const Users = require('#models/users');
     <td style="padding: 10px;"><strong>Duration</strong></td>
     <td style="padding: 10px;">${totalDuration}ms</td>
   </tr>
-</table>
+</table></div>
 
 <hr style="margin: 30px 0; border: none; border-top: 2px solid #ddd;">
 

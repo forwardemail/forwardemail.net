@@ -360,7 +360,7 @@ function delay(ms) {
         deletedKeys.count > 0
           ? `
 <h3>Deleted Keys (${deletedKeys.count})</h3>
-<table border="1" cellpadding="5" cellspacing="0">
+<div class="table-responsive"><table border="1" cellpadding="5" cellspacing="0">
   <tr><th>#</th><th>Key</th><th>Reason</th><th>Source</th></tr>
   ${deletedKeys.items
     .map(
@@ -370,7 +370,7 @@ function delay(ms) {
         }</td><td>${item.source}</td></tr>`
     )
     .join('\n  ')}
-</table>${omittedNote(deletedKeys)}
+</table></div>${omittedNote(deletedKeys)}
         `.trim()
           : '';
 
@@ -380,7 +380,7 @@ function delay(ms) {
 <h3>⚠️ Truth Source Matches - NOT DELETED (${truthSourceKeys.count})</h3>
 <p><strong>These keys match truth sources via MX lookup (e.g., gmail.com → google.com) and were preserved for manual review.</strong></p>
 <p>Truth sources may contain legitimate spammers that should remain on the denylist.</p>
-<table border="1" cellpadding="5" cellspacing="0">
+<div class="table-responsive"><table border="1" cellpadding="5" cellspacing="0">
   <tr><th>#</th><th>Key</th><th>Reason</th><th>Source</th></tr>
   ${truthSourceKeys.items
     .map(
@@ -390,7 +390,7 @@ function delay(ms) {
         }</td><td>${item.source}</td></tr>`
     )
     .join('\n  ')}
-</table>${omittedNote(truthSourceKeys)}
+</table></div>${omittedNote(truthSourceKeys)}
         `.trim()
           : '';
 
@@ -398,7 +398,7 @@ function delay(ms) {
         errorCount > 0 && errorCount <= 100
           ? `
 <h3>Errors (${errorCount})</h3>
-<table border="1" cellpadding="5" cellspacing="0">
+<div class="table-responsive"><table border="1" cellpadding="5" cellspacing="0">
   <tr><th>#</th><th>Key</th><th>Error</th></tr>
   ${errors.items
     .map(
@@ -406,7 +406,7 @@ function delay(ms) {
         `<tr><td>${index + 1}</td><td>${e.key}</td><td>${e.error}</td></tr>`
     )
     .join('\n  ')}
-</table>
+</table></div>
         `.trim()
           : errorCount > 100
           ? `<p><em>Note: ${errorCount} errors occurred (too many to display)</em></p>`
@@ -414,7 +414,7 @@ function delay(ms) {
 
       const summaryHtml = `
 <h2>Denylist Cleanup Report</h2>
-<table border="1" cellpadding="5" cellspacing="0">
+<div class="table-responsive"><table border="1" cellpadding="5" cellspacing="0">
   <tr><th>Metric</th><th>Value</th></tr>
   <tr><td>Total denylist keys scanned</td><td>${totalKeys}</td></tr>
   <tr><td>Keys to delete (entries + allowlisted)</td><td>${keysToDeleteCount}</td></tr>
@@ -426,7 +426,7 @@ function delay(ms) {
   <tr><td>Filter duration</td><td>${filterDuration}ms</td></tr>
   <tr><td>Delete duration</td><td>${deleteDuration}ms</td></tr>
   <tr><td>Total duration</td><td>${totalDuration}ms</td></tr>
-</table>
+</table></div>
 ${deletedKeysHtml}
 ${truthSourceKeysHtml}
 ${errorsHtml}

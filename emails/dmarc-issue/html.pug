@@ -19,40 +19,42 @@ block content
                 != t('This email did not pass DMARC verification during processing from our trusted source of <strong class="notranslate">%s</strong>.', truthSource)
             .p-3
               h1.h3.text-danger= t("What was the email?")
-              table.table.table-striped.mb-0
-                tbody
-                  tr
-                    th: span.badge.badge-pill.badge-dark MAIL FROM
-                    td: code.text-break= mailFrom
-                  tr
-                    th: span.badge.badge-pill.badge-dark RCPT TO
-                    td
-                      code.text-break= rcptTo
-                  tr
-                    th: span.badge.badge-pill.badge-primary Message-ID
-                    td: code.text-break= messageId
-                  tr
-                    th: span.badge.badge-pill.badge-primary From
-                    td= fromAddress
-                  tr
-                    th: span.badge.badge-pill.badge-primary Subject
-                    td.text-break= subject
-                  tr
-                    th: span.badge.badge-pill.badge-primary Date
-                    td= date
+              .table-responsive
+                table.table.table-striped.mb-0
+                  tbody
+                    tr
+                      th: span.badge.badge-pill.badge-dark MAIL FROM
+                      td: code= mailFrom
+                    tr
+                      th: span.badge.badge-pill.badge-dark RCPT TO
+                      td
+                        code= rcptTo
+                    tr
+                      th: span.badge.badge-pill.badge-primary Message-ID
+                      td: code= messageId
+                    tr
+                      th: span.badge.badge-pill.badge-primary From
+                      td= fromAddress
+                    tr
+                      th: span.badge.badge-pill.badge-primary Subject
+                      td= subject
+                    tr
+                      th: span.badge.badge-pill.badge-primary Date
+                      td= date
             .p-3
               h1.h3.text-danger= t("What was the trusted source?")
-              table.table.table-striped
-                tbody
-                  tr
-                    th= t("Trusted Source")
-                    td.text-left= truthSource
-                  tr
-                    th= t("SMTP Response")
-                    td.markdown-body.text-left.text-break: pre.mb-0: code.text-break= response
-                  tr
-                    th= t("DMARC Results")
-                    td.markdown-body.text-left.text-break: pre.mb-0: code.text-break= JSON.stringify(dmarc, null, 2)
+              .table-responsive
+                table.table.table-striped
+                  tbody
+                    tr
+                      th= t("Trusted Source")
+                      td.text-left= truthSource
+                    tr
+                      th= t("SMTP Response")
+                      td.markdown-body.text-left: pre.mb-0: code= response
+                    tr
+                      th= t("DMARC Results")
+                      td.markdown-body.text-left: pre.mb-0: code= JSON.stringify(dmarc, null, 2)
             .p-3
               h2.h5= t("What will happen if I don't resolve this?")
               p.card-text

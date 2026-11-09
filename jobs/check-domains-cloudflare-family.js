@@ -236,7 +236,7 @@ function buildDigestHtml(opts) {
 
     <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 20px 0;">
       <h3 style="margin-top: 0;">Summary</h3>
-      <table border="1" cellpadding="8" cellspacing="0" style="width: 100%; border-collapse: collapse;">
+      <div class="table-responsive"><table border="1" cellpadding="8" cellspacing="0" style="width: 100%; border-collapse: collapse;">
         <tr style="background: #f0f0f0;">
           <th style="padding: 10px; text-align: left;">Metric</th>
           <th style="padding: 10px; text-align: left;">Value</th>
@@ -277,7 +277,7 @@ ${
           <td style="padding: 10px;"><strong>Duration</strong></td>
           <td style="padding: 10px;">${durationMs}ms</td>
         </tr>
-      </table>
+      </table></div>
     </div>
   `;
 
@@ -287,7 +287,7 @@ ${
   if (Object.keys(categoryCounts).length > 0) {
     html += `
       <h3>Category Breakdown (${dryRun ? 'Would-Be ' : ''}Flagged Domains)</h3>
-      <table border="1" cellpadding="8" cellspacing="0" style="width: 100%; border-collapse: collapse;">
+      <div class="table-responsive"><table border="1" cellpadding="8" cellspacing="0" style="width: 100%; border-collapse: collapse;">
         <tr style="background: #f0f0f0;">
           <th style="padding: 10px; text-align: left;">Category</th>
           <th style="padding: 10px; text-align: left;">Count</th>
@@ -304,7 +304,7 @@ ${
       `;
     }
 
-    html += '</table>';
+    html += '</table></div>';
   }
 
   //

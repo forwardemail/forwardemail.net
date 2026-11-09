@@ -5,9 +5,14 @@
 
 const { randomUUID } = require('node:crypto');
 
+const Email = require('email-templates');
 const Redis = require('ioredis-mock');
 const ms = require('ms');
+const nodemailer = require('nodemailer');
 const test = require('ava');
+const { JSDOM } = require('jsdom');
+
+const config = require('#config');
 
 //
 // Replace the network-bound categorisation and the mailer with stubs so the
@@ -335,6 +340,45 @@ test.serial('a Cloudflare security block is emailed on its own', async (t) => {
     )
   );
 });
+
+test.serial(
+  'the review alert table scrolls sideways instead of being cut off',
+  async (t) => {
+    categorization = {
+      ...CLEAN_PAGE,
+      blocked: true,
+      cloudflareBlock: 'security',
+      categories: ['blocked_by_cloudflare_family']
+    };
+
+    await check('wide-table.example');
+    t.is(sent.length, 1);
+
+    // rendered the way the alert is sent (layout, email CSS, juice)
+    const renderer = new Email({
+      ...config.email,
+      send: true,
+      preview: false,
+      transport: nodemailer.createTransport({ jsonTransport: true })
+    });
+    const info = await renderer.send({
+      template: sent[0].template,
+      message: { to: 'alerts@example.com' },
+      locals: sent[0].locals
+    });
+    const { window } = new JSDOM(JSON.parse(info.message).html);
+    const tables = window.document.querySelectorAll('table');
+    t.true(tables.length > 0);
+    for (const table of tables) {
+      let el = table.parentElement;
+      while (el && !/overflow-x:\s*auto/.test(el.getAttribute('style') || ''))
+        el = el.parentElement;
+      t.truthy(el, `${table.textContent.trim().slice(0, 40)}`);
+    }
+
+    window.close();
+  }
+);
 
 test.serial(
   'a domain is emailed once, and again only when the findings change',

@@ -390,7 +390,7 @@ function getAlertHtml({ name, cat, bannableHits, flaggedUsers, aliasCount }) {
           )}" target="_blank" rel="noopener noreferrer">submit a Cloudflare Radar classification change request for ${safeName}</a>.</p>`
         : ''
     }
-    <table border="1" cellpadding="5" cellspacing="0">
+    <div class="table-responsive"><table border="1" cellpadding="5" cellspacing="0">
       <tr><th>Field</th><th>Value</th></tr>
       <tr><td><strong>Domain</strong></td><td>${safeName}</td></tr>
       <tr><td><strong>Categories</strong></td><td>${_.escape(
@@ -420,7 +420,7 @@ function getAlertHtml({ name, cat, bannableHits, flaggedUsers, aliasCount }) {
       <tr><td><strong>Alias Count</strong></td><td>${_.escape(
         String(aliasCount)
       )}</td></tr>
-    </table>
+    </table></div>
     <h4>Users Requiring Review (${flaggedUsers.length})</h4>
     <ul>${userListHtml}</ul>
     <p>To ban these users and denylist this domain, visit the <a href="${_.escape(

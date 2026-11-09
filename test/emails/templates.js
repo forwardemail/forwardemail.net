@@ -8,10 +8,12 @@ const path = require('node:path');
 
 const Email = require('email-templates');
 const nodemailer = require('nodemailer');
+const pug = require('pug');
 const test = require('ava');
 const { JSDOM } = require('jsdom');
 
 const config = require('#config');
+const i18n = require('#helpers/i18n');
 
 // renders the real templates (layout, partials, i18n, juice) without sending
 const renderer = new Email({
@@ -245,7 +247,9 @@ test('long code lines wrap between words, not inside them', async (t) => {
   const code = html.match(/<code class="small"[^>]*style="([^"]*)"/);
   t.truthy(code);
   t.notRegex(code[1], /break-all/);
-  t.regex(code[1], /overflow-wrap: anywhere/);
+  // (`anywhere` would also let a table cell shrink below a short value)
+  t.notRegex(code[1], /anywhere/);
+  t.regex(code[1], /overflow-wrap: break-word/);
 });
 
 // WCAG contrast ratio of two #rrggbb colors
@@ -530,3 +534,147 @@ for (const template of allTemplates) {
     }
   });
 }
+
+//
+// Tables: a table wider than the screen scrolls sideways in its wrapper
+// instead of being cut off by the card around it, and short values (a
+// response code, a status, a button) are never split across lines ("421"
+// used to render as "42" / "1").
+//
+
+// the receipt the payment email includes (see `Payments.getPDFReceipt`)
+function renderReceipt() {
+  const l = (p = '') => `/en${p}`;
+  return pug.renderFile(
+    path.join(config.views.root, 'my-account', 'billing', '_receipt.pug'),
+    {
+      ...config.views.locals,
+      ctx: {
+        path: l('/my-account/billing/ABC123'),
+        pathWithoutLocale: '/my-account/billing/ABC123',
+        get: () => ''
+      },
+      l,
+      locale: 'en',
+      payment: locals.payment,
+      user,
+      isPDF: true,
+      returnHTML: true,
+      t: (phrase, ...args) => i18n.api.t({ phrase, locale: 'en' }, ...args)
+    }
+  );
+}
+
+const tableLocals = {
+  ...readabilityLocals,
+  stats: {
+    ...locals.stats,
+    bounceCategories: { blocklist: 3 },
+    responseCodes: {
+      421: {
+        totalCount: 3,
+        messages: [
+          {
+            text: '421 4.7.0 Messages temporarily deferred due to unexpected volume or user complaints',
+            count: 3
+          }
+        ]
+      }
+    }
+  },
+  topReporters: [{ name: 'example.org', reports: 1, messages: 3 }],
+  topIpIssues: [
+    {
+      ip: '192.0.2.1',
+      count: 3,
+      spfResult: 'fail',
+      dkimResult: 'pass',
+      disposition: 'quarantine'
+    }
+  ]
+};
+
+// the nearest ancestor that scrolls sideways, as a client reads the inlined
+// styles
+function scroller(element) {
+  for (let el = element.parentElement; el; el = el.parentElement) {
+    if (['auto', 'scroll'].includes(declaration(el, 'overflow-x')?.trim()))
+      return el;
+  }
+
+  return null;
+}
+
+test('every table scrolls sideways instead of being cut off', async (t) => {
+  const receiptHTML = renderReceipt();
+  let count = 0;
+  for (const template of allTemplates) {
+    const html = await render(template, {
+      ...tableLocals,
+      receiptHTML,
+      // (the support reply is an object, not an SMTP response)
+      ...(template === 'inquiry-response'
+        ? { response: { message: 'Hi' } }
+        : {})
+    });
+    const { window } = new JSDOM(html);
+    for (const table of window.document.querySelectorAll('table')) {
+      count++;
+      t.truthy(
+        scroller(table),
+        `${template}: ${table.textContent.trim().slice(0, 40)}`
+      );
+    }
+
+    window.close();
+  }
+
+  // (daily and weekly reports, account summaries, receipts, outbound SMTP,
+  // DMARC and domain setting emails)
+  t.true(count >= 20, `${count} tables`);
+});
+
+test('short values in a table stay on one line', async (t) => {
+  for (const template of [
+    'daily-log-alert',
+    'weekly-dmarc-report',
+    'smtp-prevented',
+    'dmarc-issue',
+    'domain-update',
+    'payment-reminder'
+  ]) {
+    const html = await render(template, tableLocals);
+    const { window } = new JSDOM(html);
+    const cells = window.document.querySelectorAll('td, th');
+    t.true(cells.length > 0, `${template}`);
+    for (const cell of cells) {
+      // (code blocks wrap inside their panel)
+      for (const el of [cell, ...cell.querySelectorAll('*')]) {
+        if (el.closest('pre')) continue;
+        const what = `${template}: <${el.tagName.toLowerCase()}> "${el.textContent
+          .trim()
+          .slice(0, 30)}"`;
+        // these let the table squeeze a column below its shortest value
+        t.not(declaration(el, 'overflow-wrap')?.trim(), 'anywhere', `${what}`);
+        t.notRegex(
+          declaration(el, 'word-break') || '',
+          /break-word|break-all/,
+          `${what}`
+        );
+      }
+
+      for (const el of cell.querySelectorAll('.badge, .btn'))
+        t.is(
+          declaration(el, 'white-space')?.trim(),
+          'nowrap',
+          `${el.textContent}`
+        );
+    }
+
+    window.close();
+  }
+
+  // the response code badge in the daily report
+  const html = await render('daily-log-alert', tableLocals);
+  t.regex(html, /<span class="badge"[^>]*white-space: nowrap[^>]*>421<\/span>/);
+});

@@ -227,7 +227,8 @@ body.email {
   }
 
   // badges
-  // badges wrap instead of running past a narrow screen
+  // badges wrap instead of running past a narrow screen (in a table they keep
+  // one line, see below)
   .badge {
     max-width: 100%;
     line-height: 1.4;
@@ -261,7 +262,11 @@ body.email {
   // code and tables
   // wrap long lines (a long address in a dig example) instead of scrolling:
   // lines break between words, and only a word too long for the line (an
-  // address, a hash) is split; break-all split every word ("Domain I" / "D")
+  // address, a hash) is split; break-all split every word ("Domain I" / "D").
+  // Code blocks break a long word anywhere, so one in a table cell (an SMTP
+  // response) still fits a phone. Inline code uses `break-word` instead:
+  // `anywhere` (and `word-break: break-word`) also let a table squeeze a
+  // column below its shortest value, which split "421" into "42" / "1".
 
   // Code blocks are dark text on a light panel. A dark panel needed its light
   // text color to arrive too: a client, a forward or an older build that
@@ -282,8 +287,7 @@ body.email {
   }
   // Bootstrap colors inline code pink (3.8:1 on white)
   code {
-    overflow-wrap: anywhere;
-    word-break: break-word;
+    overflow-wrap: break-word;
     color: $fe-l-700;
   }
   // code inside a link keeps the link color
@@ -291,6 +295,8 @@ body.email {
     color: inherit;
   }
   pre code {
+    overflow-wrap: inherit;
+    word-break: inherit;
     color: $fe-l-700 !important;
   }
   .table {
@@ -299,17 +305,21 @@ body.email {
   .table td, .table th, .table-bordered, .table-bordered td, .table-bordered th {
     border-color: $fe-l-300;
   }
-  // tables shrink to the screen: long values (addresses, setting names,
-  // dates) wrap inside their cell
+  // Every table sits in a .table-responsive wrapper. Cells wrap between
+  // words; a table that still does not fit (many columns, a long address or
+  // URL) scrolls sideways in its wrapper instead of being cut off by the
+  // card or splitting short values across lines.
   .table td, .table th {
     padding: 8px 6px;
-    overflow-wrap: anywhere;
-    word-break: break-word;
   }
-  // headers only wrap between words
-  .table th {
-    overflow-wrap: normal;
-    word-break: normal;
+  // codes, statuses and buttons in a table stay on one line
+  .table .badge, .table .btn {
+    white-space: nowrap;
+  }
+  // the gap between buttons in a row only widens the column (and pushed a
+  // centered button off center)
+  .table .btn {
+    margin-right: 0;
   }
   .table-sm td, .table-sm th {
     padding: 4px 5px;

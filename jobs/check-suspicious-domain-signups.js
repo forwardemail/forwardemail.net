@@ -533,7 +533,7 @@ async function sendSecurityAlert(severity, reports) {
     }; text-transform: uppercase;">${report.severity}</span>
   </h3>
 
-  <table style="width: 100%; border-collapse: collapse; margin-bottom: 15px;">
+  <div class="table-responsive"><table style="width: 100%; border-collapse: collapse; margin-bottom: 15px;">
     <tr>
       <td style="padding: 8px; border: 1px solid #ddd; background: #f8f9fa; width: 40%;"><strong>Risk Score</strong></td>
       <td style="padding: 8px; border: 1px solid #ddd;">
@@ -562,14 +562,14 @@ async function sendSecurityAlert(severity, reports) {
       <td style="padding: 8px; border: 1px solid #ddd; background: #f8f9fa;"><strong>MX Status</strong></td>
       <td style="padding: 8px; border: 1px solid #ddd;">${report.mxReason}</td>
     </tr>
-  </table>
+  </table></div>
 
   ${
     report.patterns.length > 0
       ? `
   <div style="margin-bottom: 15px;">
     <h4 style="margin: 0 0 10px 0; color: #495057;">Suspicious Patterns</h4>
-    <table style="width: 100%; border-collapse: collapse;">
+    <div class="table-responsive"><table style="width: 100%; border-collapse: collapse;">
       <tr style="background: #f8f9fa;">
         <th style="padding: 8px; border: 1px solid #ddd; text-align: left;">Time Window</th>
         <th style="padding: 8px; border: 1px solid #ddd; text-align: center;">Signups</th>
@@ -603,7 +603,7 @@ async function sendSecurityAlert(severity, reports) {
       </tr>`
         )
         .join('')}
-    </table>
+    </table></div>
   </div>
   `
       : ''
@@ -638,7 +638,7 @@ async function sendSecurityAlert(severity, reports) {
     <h4 style="margin: 0 0 10px 0; color: #495057;">Affected Users (${
       report.users.length
     })</h4>
-    <table style="width: 100%; border-collapse: collapse; font-size: 13px;">
+    <div class="table-responsive"><table style="width: 100%; border-collapse: collapse; font-size: 13px;">
       <tr style="background: #f8f9fa;">
         <th style="padding: 8px; border: 1px solid #ddd; text-align: left;">#</th>
         <th style="padding: 8px; border: 1px solid #ddd; text-align: left;">Email</th>
@@ -664,7 +664,7 @@ async function sendSecurityAlert(severity, reports) {
       </tr>`
         )
         .join('')}
-    </table>
+    </table></div>
   </div>
 </div>
     `.trim()
@@ -693,7 +693,7 @@ async function sendSecurityAlert(severity, reports) {
   }; font-weight: bold; text-transform: uppercase; font-size: 18px; margin-left: 10px;">${severity}</span>
 </div>
 
-<table style="width: 100%; border-collapse: collapse; margin-bottom: 25px;">
+<div class="table-responsive"><table style="width: 100%; border-collapse: collapse; margin-bottom: 25px;">
   <tr style="background: #343a40; color: white;">
     <th style="padding: 12px; text-align: left;" colspan="2">Summary</th>
   </tr>
@@ -735,7 +735,7 @@ async function sendSecurityAlert(severity, reports) {
       reports.filter((r) => r.severity === 'low').length
     }</td>
   </tr>
-</table>
+</table></div>
 
 <h3 style="color: #212529; border-bottom: 1px solid #dee2e6; padding-bottom: 8px;">Detailed Reports</h3>
 ${reportsHtml}

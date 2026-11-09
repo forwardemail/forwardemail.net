@@ -17,49 +17,51 @@ block content
                 != t('Outbound SMTP for <strong class="notranslate">%s</strong> was suspended after multiple recent outbound messages were detected as virus or spam by trusted sources within a short rolling window.', domain.name)
             .p-3.text-center
               h1.h3.text-danger= t("What was the outbound email?")
-              table.table.table-striped
-                tbody
-                  tr
-                    th: span.badge.badge-pill.badge-dark MAIL FROM
-                    td: code= email.envelope.from
-                  tr
-                    th: span.badge.badge-pill.badge-dark RCPT TO
-                    td
-                      code= email.envelope.to.map((t) => (typeof t === "object" && typeof t.address === "string" ? t.address.trim().toLowerCase() : t.trim().toLowerCase())).join(", ")
-                  tr
-                    th: span.badge.badge-pill.badge-primary Message-ID
-                    td: code= email.messageId
-                  tr
-                    th: span.badge.badge-pill.badge-primary Subject
-                    td= email.subject
-                  tr
-                    th: span.badge.badge-pill.badge-primary Date
-                    td: code= dayjs(email.date).format("M/D/YY h:mm A z")
+              .table-responsive
+                table.table.table-striped
+                  tbody
+                    tr
+                      th: span.badge.badge-pill.badge-dark MAIL FROM
+                      td: code= email.envelope.from
+                    tr
+                      th: span.badge.badge-pill.badge-dark RCPT TO
+                      td
+                        code= email.envelope.to.map((t) => (typeof t === "object" && typeof t.address === "string" ? t.address.trim().toLowerCase() : t.trim().toLowerCase())).join(", ")
+                    tr
+                      th: span.badge.badge-pill.badge-primary Message-ID
+                      td: code= email.messageId
+                    tr
+                      th: span.badge.badge-pill.badge-primary Subject
+                      td= email.subject
+                    tr
+                      th: span.badge.badge-pill.badge-primary Date
+                      td: code= dayjs(email.date).format("M/D/YY h:mm A z")
             .p-3.text-center
               h1.h3.text-danger= t("What was the trusted source?")
-              table.table.table-striped
-                tbody
-                  tr
-                    th= t("Trusted Source")
-                    td= truthSource
-                  tr
-                    th= t("Category")
-                    td= t(category)
-                  tr
-                    th= t("Recent detections")
-                    td= `${detectionCount} / ${threshold}`
-                  tr
-                    th= t("Unique recipients")
-                    td= uniqueRecipients
-                  tr
-                    th= t("Unique trusted sources")
-                    td= uniqueTruthSources
-                  tr
-                    th= t("Status Code")
-                    td: span.badge.badge-pill.badge-danger= responseCode
-                  tr
-                    th= t("SMTP Response")
-                    td: pre: code= response
+              .table-responsive
+                table.table.table-striped
+                  tbody
+                    tr
+                      th= t("Trusted Source")
+                      td= truthSource
+                    tr
+                      th= t("Category")
+                      td= t(category)
+                    tr
+                      th= t("Recent detections")
+                      td= `${detectionCount} / ${threshold}`
+                    tr
+                      th= t("Unique recipients")
+                      td= uniqueRecipients
+                    tr
+                      th= t("Unique trusted sources")
+                      td= uniqueTruthSources
+                    tr
+                      th= t("Status Code")
+                      td: span.badge.badge-pill.badge-danger= responseCode
+                    tr
+                      th= t("SMTP Response")
+                      td: pre: code= response
             .p-3.text-center
               h2.h5= t("What will happen if I don't resolve this?")
               p.small.card-text

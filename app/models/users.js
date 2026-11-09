@@ -1320,7 +1320,7 @@ Users.pre('save', async function (next) {
         locals: {
           message: `
 <h3>User Banned Due to Denylisted Email</h3>
-<table border="1" cellpadding="5" cellspacing="0">
+<div class="table-responsive"><table border="1" cellpadding="5" cellspacing="0">
   <tr><th>Field</th><th>Value</th></tr>
   <tr><td>User Email</td><td>${this.email}</td></tr>
   <tr><td>User ID</td><td>${this._id || 'Not yet assigned'}</td></tr>
@@ -1329,7 +1329,7 @@ Users.pre('save', async function (next) {
   }</td></tr>
   <tr><td>Timestamp</td><td>${new Date().toISOString()}</td></tr>
   <tr><td>Action Taken</td><td>User banned immediately, signup prevented</td></tr>
-</table>
+</table></div>
 <p><strong>Reason:</strong> The email address was found in the denylist during signup attempt.</p>
           `.trim()
         }

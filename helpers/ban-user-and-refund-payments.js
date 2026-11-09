@@ -309,7 +309,7 @@ async function banUserAndRefundPayments(user, reason = 'Fraud detected') {
       locals: {
         message: `
 <h3>User Banned and Payments Refunded</h3>
-<table border="1" cellpadding="5" cellspacing="0">
+<div class="table-responsive"><table border="1" cellpadding="5" cellspacing="0">
   <tr><th>Field</th><th>Value</th></tr>
   <tr><td>Email</td><td>${user.email}</td></tr>
   <tr><td>User ID</td><td>${user._id}</td></tr>
@@ -338,7 +338,7 @@ async function banUserAndRefundPayments(user, reason = 'Fraud detected') {
     summary.subscriptionsCancelled
   }</td></tr>
   <tr><td>Errors</td><td>${summary.errors.length}</td></tr>
-</table>
+</table></div>
 <p><em>Note: Refunds follow the 30-day first-time customer policy. Only payments within 30 days of first payment from first-time customers are refunded.</em></p>
 ${
   summary.errors.length > 0

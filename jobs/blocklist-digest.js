@@ -86,15 +86,15 @@ function generateTableRow(options) {
 
   return `
     <tr>
-      <td style="padding: 8px; border: 1px solid #ddd;">${truthSource}</td>
-      <td style="padding: 8px; border: 1px solid #ddd;">${affectedHostname}</td>
-      <td style="padding: 8px; border: 1px solid #ddd;">${affectedIp}</td>
-      <td style="padding: 8px; border: 1px solid #ddd;">${
+      <td style="padding: 8px; border: 1px solid #ddd; white-space: nowrap;">${truthSource}</td>
+      <td style="padding: 8px; border: 1px solid #ddd; white-space: nowrap;">${affectedHostname}</td>
+      <td style="padding: 8px; border: 1px solid #ddd; white-space: nowrap;">${affectedIp}</td>
+      <td style="padding: 8px; border: 1px solid #ddd; white-space: nowrap;">${
         parsedIp || 'N/A'
       }</td>
-      <td style="padding: 8px; border: 1px solid #ddd; max-width: 300px; word-wrap: break-word;">${truncatedError}</td>
+      <td style="padding: 8px; border: 1px solid #ddd; min-width: 300px;">${truncatedError}</td>
       <td style="padding: 8px; border: 1px solid #ddd;">${removalLink}</td>
-      <td style="padding: 8px; border: 1px solid #ddd;"><a href="${logUrl}" target="_blank">View Log</a></td>
+      <td style="padding: 8px; border: 1px solid #ddd; white-space: nowrap;"><a href="${logUrl}" target="_blank">View Log</a></td>
     </tr>
   `;
 }
@@ -232,22 +232,22 @@ function generateTableRow(options) {
     }
 
     const htmlTable = `
-      <table style="border-collapse: collapse; width: 100%; font-family: Arial, sans-serif; font-size: 13px;">
+      <div class="table-responsive"><table style="border-collapse: collapse; width: 100%; font-family: Arial, sans-serif; font-size: 13px;">
         <thead>
           <tr style="background-color: #f2f2f2;">
-            <th style="padding: 10px 6px; border: 1px solid #ddd; text-align: left;">Truth Source</th>
-            <th style="padding: 10px 6px; border: 1px solid #ddd; text-align: left;">Affected Hostname</th>
-            <th style="padding: 10px 6px; border: 1px solid #ddd; text-align: left;">Affected IP</th>
-            <th style="padding: 10px 6px; border: 1px solid #ddd; text-align: left;">Blocked IP (parsed)</th>
-            <th style="padding: 10px 6px; border: 1px solid #ddd; text-align: left;">Error Message</th>
-            <th style="padding: 10px 6px; border: 1px solid #ddd; text-align: left;">IP Removal Form</th>
-            <th style="padding: 10px 6px; border: 1px solid #ddd; text-align: left;">Log Link</th>
+            <th style="padding: 10px 6px; border: 1px solid #ddd; text-align: left; white-space: nowrap;">Truth Source</th>
+            <th style="padding: 10px 6px; border: 1px solid #ddd; text-align: left; white-space: nowrap;">Affected Hostname</th>
+            <th style="padding: 10px 6px; border: 1px solid #ddd; text-align: left; white-space: nowrap;">Affected IP</th>
+            <th style="padding: 10px 6px; border: 1px solid #ddd; text-align: left; white-space: nowrap;">Blocked IP (parsed)</th>
+            <th style="padding: 10px 6px; border: 1px solid #ddd; text-align: left; white-space: nowrap;">Error Message</th>
+            <th style="padding: 10px 6px; border: 1px solid #ddd; text-align: left; white-space: nowrap;">IP Removal Form</th>
+            <th style="padding: 10px 6px; border: 1px solid #ddd; text-align: left; white-space: nowrap;">Log Link</th>
           </tr>
         </thead>
         <tbody>
           ${tableRows.join('')}
         </tbody>
-      </table>
+      </table></div>
     `;
 
     //
