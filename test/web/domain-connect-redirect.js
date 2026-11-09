@@ -8,7 +8,9 @@
 // Domain Connect provider gives in its settings. The provider is whatever
 // server the domain's _domainconnect TXT record points to, which any domain
 // owner can set: it is followed when it is an HTTPS URL on a public host,
-// for every provider that has our template (not only the ones we list).
+// of a provider we list, or of any provider that has our template when a
+// signed-in member of the domain asks (a form on another site cannot, so it
+// cannot send the browser to a page it chose).
 //
 // The DNS-over-HTTPS lookup of the _domainconnect record is answered by an
 // undici MockAgent, and the requests to the provider by a stand-in for
@@ -39,9 +41,12 @@ require.cache[SAFE_FETCH_PATH] = {
 };
 
 const utils = require('../utils');
+const config = require('#config');
+const { Users } = require('#models');
 
 test.before(utils.setupMongoose);
 test.after.always(utils.teardownMongoose);
+test.beforeEach(utils.setupFactories);
 test.beforeEach(async (t) => {
   await utils.setupWebServer(t);
   t.context.dispatcher = getGlobalDispatcher();
@@ -74,7 +79,38 @@ async function spoofA(t, host, address) {
   );
 }
 
-test('sends the browser to a provider that is not one we list', async (t) => {
+// (a member of example.com, signed in)
+async function signInAsMember(t) {
+  t.context.password = 'Sup3r-L0ng-P4ssw0rd!x';
+  let user = await t.context.userFactory.make();
+  user = await Users.register(user, t.context.password);
+  user[config.userFields.hasSetPassword] = true;
+  user[config.userFields.hasVerifiedEmail] = true;
+  t.context.user = await user.save();
+  await t.context.domainFactory
+    .withState({
+      name: 'example.com',
+      members: [{ user: user._id, group: 'admin' }],
+      plan: 'free',
+      skip_verification: true
+    })
+    .create();
+  await utils.loginUser(t);
+}
+
+test('does not send anyone else to a provider that is not one we list', async (t) => {
+  await spoofA(t, 'dns.provider-for-tests.net', '93.184.216.35');
+  settings = {
+    urlSyncUX: 'https://dns.provider-for-tests.net/sync',
+    urlAPI: `https://${PROVIDER}`
+  };
+  const res = await connect(t);
+  t.is(res.status, 200);
+  t.falsy(res.body.applyUrl);
+});
+
+test('sends a member of the domain to a provider that is not one we list', async (t) => {
+  await signInAsMember(t);
   await spoofA(t, 'dns.provider-for-tests.net', '93.184.216.35');
   settings = {
     urlSyncUX: 'https://dns.provider-for-tests.net/sync',
@@ -115,4 +151,16 @@ test('sends the browser to a known provider host', async (t) => {
     ),
     `${res.body.applyUrl}`
   );
+});
+
+test('does not send anyone else to another host of a provider we list', async (t) => {
+  // (a site of anyone, on a domain of a provider we list)
+  await spoofA(t, 'someone.squarespace.com', '93.184.216.36');
+  settings = {
+    urlSyncUX: 'https://someone.squarespace.com',
+    urlAPI: `https://${PROVIDER}`
+  };
+  const res = await connect(t);
+  t.is(res.status, 200);
+  t.falsy(res.body.applyUrl);
 });

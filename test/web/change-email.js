@@ -12,6 +12,7 @@ const utils = require('../utils');
 
 const config = require('#config');
 const phrases = require('#config/phrases');
+const { hashToken } = require('#helpers/encrypt-decrypt');
 const { Users } = require('#models');
 
 test.before(utils.setupMongoose);
@@ -286,5 +287,69 @@ test('the change link token is encrypted at rest, and one stored before still wo
   t.is(response.status, 200);
   stored = await Users.collection.findOne({ _id: user._id });
   t.is(stored.email, newEmail);
+  t.falsy(stored[config.userFields.changeEmailToken]);
+});
+
+//
+// A pending email change was asked for with the old password, so it ends
+// when the password is changed or reset (the link stops working)
+//
+test('a pending change ends when the password is changed', async (t) => {
+  const { password, token, user, web } = t.context;
+  const newPassword = falso.randPassword();
+
+  let response = await web
+    .put('/en/my-account/profile')
+    .set('Accept', 'application/json')
+    .send({
+      change_password: 'true',
+      old_password: password,
+      password: newPassword,
+      confirm_password: newPassword
+    });
+  t.is(response.status, 200);
+
+  response = await web
+    .post(`/en/my-account/change-email/${token}`)
+    .set('Accept', 'application/json')
+    .send({ password: newPassword });
+  t.is(response.status, 400);
+  t.is(response.body.message, phrases.LINK_EXPIRED_OR_INVALID);
+
+  const stored = await Users.findById(user._id);
+  t.is(stored.email, user.email);
+  t.falsy(stored[config.userFields.changeEmailToken]);
+  t.falsy(stored[config.userFields.changeEmailNewAddress]);
+});
+
+test('a pending change ends when the password is reset', async (t) => {
+  const { token, user, web } = t.context;
+  const newPassword = falso.randPassword();
+  const resetToken = randomUUID().replaceAll('-', '');
+  await Users.collection.updateOne(
+    { _id: user._id },
+    {
+      $set: {
+        [config.userFields.resetToken]: hashToken(resetToken),
+        [config.userFields.resetTokenExpiresAt]: new Date(Date.now() + 60_000)
+      }
+    }
+  );
+
+  let response = await web
+    .post(`/en/reset-password/${resetToken}`)
+    .set('Accept', 'application/json')
+    .send({ email: user.email, password: newPassword });
+  t.is(response.status, 200);
+
+  response = await web
+    .post(`/en/my-account/change-email/${token}`)
+    .set('Accept', 'application/json')
+    .send({ password: newPassword });
+  t.is(response.status, 400);
+  t.is(response.body.message, phrases.LINK_EXPIRED_OR_INVALID);
+
+  const stored = await Users.findById(user._id);
+  t.is(stored.email, user.email);
   t.falsy(stored[config.userFields.changeEmailToken]);
 });

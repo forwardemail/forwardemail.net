@@ -258,6 +258,10 @@ async function callbackRedirect(ctx, next) {
       user[config.userFields.hasVerifiedEmail] = true;
       user[config.userFields.resetToken] = undefined;
       user[config.userFields.resetTokenExpiresAt] = undefined;
+      // (and a pending email change: it was asked for with the old password)
+      user[config.userFields.changeEmailToken] = undefined;
+      user[config.userFields.changeEmailTokenExpiresAt] = undefined;
+      user[config.userFields.changeEmailNewAddress] = undefined;
       // Clear the attacker's password so they can no longer log in
       if (user[config.userFields.hasSetPassword]) {
         user[config.userFields.hasSetPassword] = false;

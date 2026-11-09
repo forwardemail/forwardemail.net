@@ -685,6 +685,10 @@ async function resetPassword(ctx) {
   const resetTokenExpiresAt = user[config.userFields.resetTokenExpiresAt];
   user[config.userFields.resetToken] = undefined;
   user[config.userFields.resetTokenExpiresAt] = undefined;
+  // (and a pending email change: it was asked for with the old password)
+  user[config.userFields.changeEmailToken] = undefined;
+  user[config.userFields.changeEmailTokenExpiresAt] = undefined;
+  user[config.userFields.changeEmailNewAddress] = undefined;
   // the reset also ends a lockout from failed login attempts
   user[config.passportLocalMongoose.attemptsField] = 0;
 

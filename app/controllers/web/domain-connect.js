@@ -39,6 +39,27 @@ const { nsProviders } = require('#config/utilities');
 const PROVIDER_ID = config.domainConnect.providerId;
 const SERVICE_ID = config.domainConnect.serviceId;
 
+//
+// The hosts of the providers we know (e.g. "dash.cloudflare.com", the same
+// hosts as the form-action of the CSP in config/web.js, and exact ones, as a
+// provider can host other people's sites under its domain).  Any other host
+// (named by a domain's _domainconnect record) is only followed for a
+// signed-in member of that domain: anyone else, e.g. a form on another site
+// posting a domain its owner set up, would be sent to whatever page that
+// server gives (an open redirect).  Without a member, the template is
+// applied without the domain's records anyway.
+//
+const TRUSTED_PROVIDER_HOSTS = new Set(
+  nsProviders
+    .flatMap((p) =>
+      p.domainConnect
+        ? [p.domainConnect.urlSyncUX, p.domainConnect.applyUrl]
+        : []
+    )
+    .filter(Boolean)
+    .map((url) => new URL(url).hostname)
+);
+
 // Discover the Domain Connect API base URL for a domain via DNS-over-HTTPS
 // Queries _domainconnect.<domain> TXT record via Cloudflare DoH
 async function discoverDomainConnectUrl(domain, resolver) {
@@ -357,12 +378,17 @@ module.exports = async (ctx) => {
   // An attacker who controls the _domainconnect TXT record could point to a
   // malicious server that returns a crafted urlSyncUX, turning this endpoint
   // into an open-redirect / phishing gadget. Only allow HTTPS URLs on
-  // non-private hosts to prevent abuse.
+  // non-private hosts, of a known provider unless a member of the domain
+  // asked (see TRUSTED_PROVIDER_HOSTS), to prevent abuse.
   //
   try {
     const syncUrl = new URL(urlSyncUX);
     if (syncUrl.protocol !== 'https:') {
       throw new Error('urlSyncUX must be HTTPS');
+    }
+
+    if (!userDomain && !TRUSTED_PROVIDER_HOSTS.has(syncUrl.hostname)) {
+      throw new Error('urlSyncUX is not a known provider');
     }
 
     if (await isPrivateHostResolved(syncUrl.hostname, ctx.resolver)) {

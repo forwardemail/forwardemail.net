@@ -85,6 +85,10 @@ async function updateProfile(ctx) {
 
     ctx.state.user[config.userFields.resetToken] = undefined;
     ctx.state.user[config.userFields.resetTokenExpiresAt] = undefined;
+    // (and a pending email change: it was asked for with the old password)
+    ctx.state.user[config.userFields.changeEmailToken] = undefined;
+    ctx.state.user[config.userFields.changeEmailTokenExpiresAt] = undefined;
+    ctx.state.user[config.userFields.changeEmailNewAddress] = undefined;
   } else {
     //
     // personal information
