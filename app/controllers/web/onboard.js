@@ -182,8 +182,9 @@ async function onboard(ctx, next) {
     throw Boom.badRequest(ctx.translateError('INVALID_DOMAIN'));
 
   if (ctx.isAuthenticated()) {
+    // (names are stored in lowercase)
     const match = ctx.state.domains.find(
-      (domain) => domain.name === ctx.request.body.domain
+      (domain) => domain.name === ctx.request.body.domain.trim().toLowerCase()
     );
     if (match) ctx.state.domain = match;
     else {

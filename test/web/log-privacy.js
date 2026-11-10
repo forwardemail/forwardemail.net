@@ -287,3 +287,106 @@ test('a member does not see where another member’s alias forwards', async (t) 
   );
   t.false(res.text.includes('private-inbox@destination.example.net'));
 });
+
+// a log as it is stored without an SMTP envelope (e.g. a Sieve error)
+async function createEnvelopeLessLog(domain) {
+  const _id = new mongoose.Types.ObjectId();
+  await Logs.collection.insertOne({
+    _id,
+    id: _id.toString(),
+    hash: randomUUID(),
+    is_restricted: true,
+    domains: [domain._id],
+    domains_checked_at: new Date(),
+    created_at: new Date(),
+    updated_at: new Date(),
+    message: 'sieve processing error',
+    err: { name: 'Error', message: 'sieve processing error' },
+    meta: {
+      level: 'error',
+      app: { hostname: 'imap.example.com' },
+      alias: 'alice'
+    }
+  });
+  return _id.toString();
+}
+
+//
+// the list shows site admins every log of their domains (e.g. a global
+// domain), so each one it shows must open too
+//
+test('a site admin can open each log of their domains the list shows', async (t) => {
+  t.context.user.group = 'admin';
+  await t.context.user.save();
+  const global = await t.context.domainFactory
+    .withState({
+      name: `global-${randomUUID()}.example.com`,
+      members: [{ user: t.context.user._id, group: 'admin' }],
+      plan: 'team',
+      is_global: true,
+      skip_verification: true
+    })
+    .create();
+  const id = await createEnvelopeLessLog(global);
+
+  const list = await t.context.web.get('/en/my-account/logs');
+  t.is(list.status, 200);
+  t.true(list.text.includes(`/en/my-account/logs/${id}`));
+
+  const res = await t.context.web.get(`/en/my-account/logs/${id}`);
+  t.is(res.status, 200);
+  t.true(res.text.includes('sieve processing error'));
+});
+
+test('a log the user sent is listed and opens', async (t) => {
+  const _id = new mongoose.Types.ObjectId();
+  await Logs.collection.insertOne({
+    _id,
+    id: _id.toString(),
+    hash: randomUUID(),
+    is_restricted: true,
+    domains: [t.context.domain._id],
+    domains_checked_at: new Date(),
+    created_at: new Date(),
+    updated_at: new Date(),
+    message: 'delivered',
+    email: new mongoose.Types.ObjectId(),
+    meta: {
+      level: 'info',
+      app: { hostname: env.SMTP_HOST },
+      session: {
+        id: randomUUID(),
+        arrivalDate: new Date(),
+        envelope: {
+          mailFrom: { address: `alice@${t.context.domain.name}` },
+          rcptTo: [{ address: 'someone@destination.example.net' }]
+        },
+        headers: { Subject: 'Sent by alice' }
+      }
+    }
+  });
+
+  const list = await t.context.web.get('/en/my-account/logs');
+  t.is(list.status, 200);
+  t.true(list.text.includes(`/en/my-account/logs/${_id.toString()}`));
+
+  const res = await t.context.web.get(`/en/my-account/logs/${_id.toString()}`);
+  t.is(res.status, 200);
+  t.true(res.text.includes('Sent by alice'));
+});
+
+test('a log of a domain the user is not an admin of is not shown', async (t) => {
+  const id = await createEnvelopeLessLog(t.context.otherDomain);
+
+  const list = await t.context.web.get('/en/my-account/logs');
+  t.false(list.text.includes(`/en/my-account/logs/${id}`));
+
+  const res = await t.context.web
+    .get(`/en/my-account/logs/${id}`)
+    .set('Accept', 'text/html');
+  t.is(res.status, 400);
+  t.false(res.text.includes('sieve processing error'));
+  // (the error page shows the status it was sent with, not "500")
+  t.true(res.text.includes('Log does not exist on your account.'));
+  t.regex(res.text, /fe-status__code[^>]*>400</);
+});

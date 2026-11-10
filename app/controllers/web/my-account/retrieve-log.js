@@ -53,6 +53,24 @@ async function retrieveLog(ctx, next) {
     throw Boom.badRequest(ctx.translateError('LOG_DOES_NOT_EXIST'));
 
   //
+  // site admins are shown the logs of their domains as they are in the list
+  // (which only filters them for other users, see list-logs)
+  //
+  if (
+    ctx.state.user.group === 'admin' &&
+    log.domains.some((id) =>
+      ctx.state.domains.some(
+        (d) =>
+          d.group === 'admin' && d.plan !== 'free' && d.id === id.toString()
+      )
+    )
+  ) {
+    ctx.state.log = log;
+    ctx.state.getOneClickUnsubscribeUrl = getOneClickUnsubscribeUrl;
+    return next();
+  }
+
+  //
   // go through all domains that the user is not an admin of
   // and add those respective aliases as an $or query for logs
   // (e.g. this allows global vanity domain logs for the user)
@@ -104,7 +122,7 @@ async function retrieveLog(ctx, next) {
       log?.meta?.app?.hostname === env.SMTP_HOST ||
       log?.meta?.app?.hostname === env.MX1_HOST ||
       log?.meta?.app?.hostname === env.MX2_HOST) && // validation safeguard
-    isSANB(log.meta.session.envelope.mailFrom.address) &&
+    isSANB(log?.meta?.session?.envelope?.mailFrom?.address) &&
     isEmail(log.meta.session.envelope.mailFrom.address)
   ) {
     // get the portion without the "+" symbol since aliases don't permit use of "+" (automatic support)
@@ -154,6 +172,9 @@ async function retrieveLog(ctx, next) {
   ) {
     // Check if user is a valid recipient
     const hasValidRecipient = log.meta.session.envelope.rcptTo.some((rcpt) => {
+      // (an entry of the unstructured `meta` may have no address, see list-logs)
+      if (typeof rcpt?.address !== 'string') return false;
+
       // get the portion without the "+" symbol since aliases don't permit use of "+" (automatic support)
       const username = rcpt.address.includes('+')
         ? rcpt.address.slice(0, rcpt.address.indexOf('+'))
@@ -228,6 +249,8 @@ async function retrieveLog(ctx, next) {
   if (Array.isArray(log?.meta?.session?.envelope?.rcptTo))
     log.meta.session.envelope.rcptTo = log.meta.session.envelope.rcptTo.filter(
       (rcpt) => {
+        if (typeof rcpt?.address !== 'string') return false;
+
         // get the portion without the "+" symbol since aliases don't permit use of "+" (automatic support)
         const username = rcpt.address.includes('+')
           ? rcpt.address.slice(0, rcpt.address.indexOf('+'))

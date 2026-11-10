@@ -672,15 +672,13 @@ async function listLogs(ctx) {
       ctx.state.logs.map((log) => {
         // keep the delivery details of other recipients out
         // (where their aliases forward to and what those destinations replied)
-        log = filterLogForViewer(
-          log,
-          filterLogForViewer.createIsVisible({
-            domains: ctx.state.domains,
-            nonAdminDomainsToAliases,
-            logDomains: log.domains,
-            log
-          })
-        );
+        const isVisible = filterLogForViewer.createIsVisible({
+          domains: ctx.state.domains,
+          nonAdminDomainsToAliases,
+          logDomains: log.domains,
+          log
+        });
+        log = filterLogForViewer(log, isVisible);
         if (!log) return null;
 
         // TODO: if user is an admin of the domain then return early with no modifications
@@ -827,9 +825,15 @@ async function listLogs(ctx) {
         }
 
         // safeguard in case query returns results we don't want to render
+        // (a message the user sent is still shown, e.g. with SMTP to others,
+        // as it is when opened, see retrieve-log)
         if (
-          !Array.isArray(log?.meta?.session?.envelope?.rcptTo) ||
-          log.meta.session.envelope.rcptTo.length === 0
+          (!Array.isArray(log?.meta?.session?.envelope?.rcptTo) ||
+            log.meta.session.envelope.rcptTo.length === 0) &&
+          !(
+            (log.email || log.meta?.email) &&
+            isVisible(log.meta?.session?.envelope?.mailFrom?.address)
+          )
         )
           return null;
 

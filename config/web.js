@@ -954,6 +954,13 @@ module.exports = (redis) => ({
     });
   },
   hookBeforePassport(app) {
+    // the response status for views (e.g. the error page, which is also
+    // rendered for a 4xx such as a 429, shows it, see app/views/500.pug)
+    app.use((ctx, next) => {
+      Object.defineProperty(ctx.state.ctx, 'status', { get: () => ctx.status });
+      return next();
+    });
+
     useVerifiedProviderEmails(app.context.passport);
     rememberReplacedGrants(app.context.passport);
 

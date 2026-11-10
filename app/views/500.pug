@@ -7,7 +7,8 @@ block body
   //- description come from meta, as before. The article illustration this
   //- page used to show is hidden site-wide for now.
   .fe-landing
-    +feStatus("500", meta.title, meta.description)
+    //- (the error handler also renders this page for a 4xx with no referrer)
+    +feStatus(String(ctx.status >= 400 ? ctx.status : 500), meta.title, meta.description)
       form(action=ctx.path, method="GET")
         button.fe-btn.fe-btn--hero.fe-btn--lg(type="submit")
           i.fa.fa-redo(aria-hidden="true")

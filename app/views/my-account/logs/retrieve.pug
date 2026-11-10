@@ -44,19 +44,22 @@ block body
                 span.dayjs(data-time=log.meta.session.arrivalTime)= dayjs(log.meta.session.arrivalDate).tz(user.timezone === 'Etc/Unknown' ? 'UTC' : user.timezone).format("M/D/YY h:mm A z")
               else
                 span.dayjs(data-time=log.created_at)= dayjs(log.created_at).tz(user.timezone === 'Etc/Unknown' ? 'UTC' : user.timezone).format("M/D/YY h:mm A z")
-          if log.meta.session.envelope.mailFrom && log.meta.session.envelope.mailFrom.address && isSANB(log.meta.session.envelope.mailFrom.address)
+          //- (a log can have no envelope, e.g. a Sieve error of an alias)
+          - const envelope = (log.meta && log.meta.session && log.meta.session.envelope) || {};
+          if envelope.mailFrom && envelope.mailFrom.address && isSANB(envelope.mailFrom.address)
             tr
               th= t("MAIL FROM")
               td
-                = log.meta.session.envelope.mailFrom.address
-          tr
-            th= t("RCPT TO")
-            td
-              ul.list-inline.mb-0
-                each rcpt in log.meta.session.envelope.rcptTo
-                  li.list-inline-item= rcpt.address
+                = envelope.mailFrom.address
+          if _.isArray(envelope.rcptTo)
+            tr
+              th= t("RCPT TO")
+              td
+                ul.list-inline.mb-0
+                  each rcpt in envelope.rcptTo
+                    li.list-inline-item= rcpt && rcpt.address
           -
-            const detailRcptAddrs = log.meta && log.meta.session && log.meta.session.envelope && log.meta.session.envelope.rcptTo && _.isArray(log.meta.session.envelope.rcptTo) ? log.meta.session.envelope.rcptTo.map(r => r.address) : [];
+            const detailRcptAddrs = _.isArray(envelope.rcptTo) ? envelope.rcptTo.map(r => r && r.address).filter(Boolean) : [];
           -
             const detailInfoDestAddrs = log.meta && log.meta.info && log.meta.info.envelope && log.meta.info.envelope.to && _.isArray(log.meta.info.envelope.to) && !_.isEmpty(log.meta.info.envelope.to) ? log.meta.info.envelope.to : (log.meta && log.meta.info && log.meta.info.accepted && _.isArray(log.meta.info.accepted) && !_.isEmpty(log.meta.info.accepted) ? log.meta.info.accepted : []);
           -

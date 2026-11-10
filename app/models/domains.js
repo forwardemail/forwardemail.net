@@ -1527,6 +1527,32 @@ Domains.pre('validate', function (next) {
 });
 
 //
+// A domain cannot be on a user's account twice: `validate-domain` only checks
+// the domains the user had when the request started, so requests in flight at
+// once (e.g. a form sent again while the WHOIS lookup is slow) and the other
+// ways a domain is added could each create it. Of the domains of this name
+// that share a member, the oldest is kept and this one is removed.
+//
+Domains.post('save', async function (domain) {
+  if (!domain._isNew) return;
+  const users = domain.members
+    .map((member) => member.user?._id || member.user)
+    .filter(Boolean);
+  if (users.length === 0) return;
+  const oldest = await domain.constructor
+    .findOne({ name: domain.name, 'members.user': { $in: users } })
+    .sort({ _id: 1 })
+    .select('_id')
+    .lean()
+    .exec();
+  if (!oldest || oldest._id.equals(domain._id)) return;
+  await domain.constructor.deleteOne({ _id: domain._id });
+  throw Boom.badRequest(
+    i18n.translateError('DOMAIN_ALREADY_EXISTS', domain.locale)
+  );
+});
+
+//
 // If the domain isNew and it's one of the ubuntu domains
 // then prevent creating it if one already exists
 // and instead, throw an error that informs the user to
