@@ -7,6 +7,9 @@ const Boom = require('@hapi/boom');
 const basicAuth = require('basic-auth');
 
 const setupAuthSession = require('#helpers/setup-auth-session');
+const {
+  refreshSubscriptionsInBackground
+} = require('#helpers/refresh-calendar-subscriptions');
 
 async function aliasAuth(ctx, next) {
   try {
@@ -24,6 +27,11 @@ async function aliasAuth(ctx, next) {
 
     // Use setupAuthSession similar to CardDAV
     await setupAuthSession.call(ctx.instance, ctx, creds.name, creds.pass);
+
+    // (calendars subscribed to a feed are refreshed while their owner is
+    // signed in and looking at calendars; never waited for)
+    if (ctx.path.startsWith('/v1/calendar'))
+      refreshSubscriptionsInBackground(ctx.instance, ctx);
 
     return next();
   } catch (err) {

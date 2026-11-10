@@ -57,6 +57,7 @@
   * [How do I connect and configure my contacts](#how-do-i-connect-and-configure-my-contacts)
   * [How do I connect and configure my calendars](#how-do-i-connect-and-configure-my-calendars)
   * [How do I add more calendars and manage existing calendars](#how-do-i-add-more-calendars-and-manage-existing-calendars)
+  * [How do I subscribe to an external calendar (webcal)](#how-do-i-subscribe-to-an-external-calendar-webcal)
   * [How do I connect and configure tasks and reminders](#how-do-i-connect-and-configure-tasks-and-reminders)
   * [Why can't I create tasks in macOS Reminders](#why-cant-i-create-tasks-in-macos-reminders)
   * [How do I set up Tasks.org on Android](#how-do-i-set-up-tasksorg-on-android)
@@ -2306,6 +2307,26 @@ If you also use other services to send mail on your domain's behalf (marketing t
 If you'd like to add additional calendars, then add a new calendar URL of: `https://caldav.forwardemail.net/dav/principals/calendar-name` (**be sure to replace `calendar-name` with your desired calendar name**)
 
 You can change a calendar's name and color after creation in your preferred calendar application (e.g. Apple Mail or [Thunderbird](https://thunderbird.net)).
+
+
+### How do I subscribe to an external calendar (webcal)
+
+You can subscribe a calendar to an external iCalendar feed, such as a public holiday or sports schedule, or a calendar shared from Google Calendar, iCloud, Outlook, or Fastmail.  These are usually given as a link that starts with `webcal://` or `https://` and ends with `.ics`.
+
+A subscribed calendar is created with our [API](/email-api#subscribe-to-a-calendar-feed-webcal).  It then appears in every app connected to your account over CalDAV (e.g. Apple Calendar, Thunderbird, and DAVx5) as a normal calendar that is read-only: its events are those of the feed, and cannot be changed from your side.
+
+**How this works with your encrypted mailbox:**
+
+* Your calendars are stored in your encrypted mailbox, which we cannot open without your password.  We therefore cannot refresh a subscription in the background while you are signed out.  Instead a feed is refreshed while one of your apps is signed in, no more often than the feed asks for (at least 15 minutes apart, and every hour if the feed does not say).
+* The address of the feed, which often contains a secret token, and the events fetched from it are stored only inside your encrypted mailbox.  We do not log the address.
+* The feed is fetched by our servers, so its host sees our IP address and not yours.
+* An unencrypted `http://` feed is refused unless you explicitly allow it, since anyone on the network path could read or change it.
+
+**If a feed stops working** it is tried again after a growing delay (from 15 minutes up to a day).  After 8 failures in a row, or if the host says the feed is gone, the subscription is paused and marked as such instead of failing silently.  The events it already had are kept.  You can resume it once the feed is back.
+
+**Limits:** a feed may be up to 10 MB and 5,000 events.  Events that are malformed are left out and the rest of the feed is kept.
+
+To unsubscribe, delete the calendar.
 
 ### How do I connect and configure tasks and reminders
 

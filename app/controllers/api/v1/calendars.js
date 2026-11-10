@@ -6,6 +6,7 @@
 const { randomUUID } = require('node:crypto');
 
 const Boom = require('@hapi/boom');
+const { boolean } = require('boolean');
 const falso = require('@ngneat/falso');
 const isSANB = require('is-string-and-not-blank');
 
@@ -15,7 +16,15 @@ const Calendars = require('#models/calendars');
 const Domains = require('#models/domains');
 const Emails = require('#models/emails');
 const config = require('#config');
+const fetchCalendarFeed = require('#helpers/fetch-calendar-feed');
 const i18n = require('#helpers/i18n');
+const parseCalendarFeed = require('#helpers/parse-calendar-feed');
+const {
+  limits,
+  refreshInterval,
+  refreshSubscription,
+  subscriptionJson
+} = require('#helpers/refresh-calendar-subscriptions');
 const { buildICS } = require('#helpers/send-calendar-email');
 const { sendApnCalendar } = require('#helpers/send-apn');
 const sendNotification = require('#helpers/send-notification');
@@ -35,12 +44,83 @@ function json(calendar) {
     color: calendar.color,
     timezone: calendar.timezone,
     order: calendar.order,
+    // (a calendar subscribed to a feed cannot be written to)
+    readonly: Boolean(calendar.readonly),
+    // (`null` unless it is subscribed to a feed)
+    subscription: subscriptionJson(calendar),
     created_at: calendar.created_at,
     updated_at: calendar.updated_at,
     object: 'calendar'
   };
 
   return object;
+}
+
+const FEED_ERRORS = {
+  FEED_URL_INVALID: 'CALENDAR_SUBSCRIPTION_URL_INVALID',
+  FEED_HTTP_NOT_ALLOWED: 'CALENDAR_SUBSCRIPTION_HTTP_NOT_ALLOWED',
+  FEED_PRIVATE_ADDRESS: 'CALENDAR_SUBSCRIPTION_PRIVATE_ADDRESS',
+  FEED_TOO_LARGE: 'CALENDAR_SUBSCRIPTION_TOO_LARGE',
+  FEED_TOO_MANY_EVENTS: 'CALENDAR_SUBSCRIPTION_TOO_LARGE',
+  FEED_INVALID: 'CALENDAR_SUBSCRIPTION_NOT_CALENDAR'
+};
+
+// What a failure to fetch or read a feed is answered with (never its address).
+function feedBoom(ctx, err) {
+  if (!err?.isFeedError) return err;
+  if (err.code === 'FEED_OVER_QUOTA')
+    return Boom.forbidden(
+      i18n.translate('IMAP_MAILBOX_OVER_QUOTA', ctx.locale)
+    );
+  return Boom.badRequest(
+    ctx.translateError(
+      FEED_ERRORS[err.code] || 'CALENDAR_SUBSCRIPTION_UNREACHABLE'
+    )
+  );
+}
+
+//
+// Fetch and read the feed at `body.subscription_url` (over `http://` only
+// with `body.subscription_allow_http`), without storing anything.
+//
+async function loadFeed(ctx, body) {
+  if (!isSANB(body.subscription_url))
+    throw Boom.badRequest(
+      ctx.translateError('CALENDAR_SUBSCRIPTION_URL_REQUIRED')
+    );
+  const allowHttp = boolean(body.subscription_allow_http);
+  try {
+    const url = fetchCalendarFeed.normalizeFeedUrl(body.subscription_url, {
+      allowHttp
+    });
+    const fetched = await fetchCalendarFeed(url, {
+      resolver: ctx.resolver,
+      allowHttp
+    });
+    const feed = parseCalendarFeed(fetched.body);
+    return { url, allowHttp, fetched, feed };
+  } catch (err) {
+    throw feedBoom(ctx, err);
+  }
+}
+
+//
+// What subscribing to a feed would add, shown before anything is saved.
+//
+async function previewSubscription(ctx) {
+  const { url, feed } = await loadFeed(ctx, ctx.request.body);
+  const { host, protocol } = new URL(url);
+  ctx.body = {
+    name: feed.name || host,
+    description: feed.description || null,
+    color: feed.color || null,
+    host,
+    insecure: protocol === 'http:',
+    refresh_interval: Math.round(refreshInterval(feed.refreshInterval) / 1000),
+    event_count: feed.resources.length,
+    skipped_count: feed.skipped,
+    object: 'calendar_subscription_preview'
+  };
 }
 
 async function list(ctx) {
@@ -77,6 +157,22 @@ async function list(ctx) {
 
 async function create(ctx) {
   const { body } = ctx.request;
+
+  //
+  // A calendar subscribed to a feed (`webcal://`): the feed is fetched and
+  // read before anything is created, so a bad address creates nothing, and
+  // the calendar is named after the feed unless a name was given.
+  //
+  let subscription = null;
+  if (
+    body.subscription_url !== undefined &&
+    body.subscription_url !== null &&
+    body.subscription_url !== ''
+  ) {
+    subscription = await loadFeed(ctx, body);
+    if (!isSANB(body.name))
+      body.name = subscription.feed.name || new URL(subscription.url).host;
+  }
 
   // Validate required fields
   // (both are query values; a JSON object here would reach the SQL builder)
@@ -140,15 +236,42 @@ async function create(ctx) {
 
     // calendar obj
     name: body.name,
-    description: body.description || config.urls.web,
-    color: body.color || falso.randHex(),
+    description:
+      body.description || subscription?.feed.description || config.urls.web,
+    color: body.color || subscription?.feed.color || falso.randHex(),
     order: body.order || 0,
     prodId: `-//forwardemail.net//caldav//${ctx.locale.toUpperCase()}`,
     timezone: body.timezone || ctx.state.session.user.timezone || 'UTC',
     url: config.urls.web,
-    readonly: false,
-    synctoken: `${config.urls.web}/ns/sync-token/1`
+    readonly: Boolean(subscription),
+    synctoken: `${config.urls.web}/ns/sync-token/1`,
+    ...(subscription
+      ? {
+          source: subscription.url,
+          subscription_allow_http: subscription.allowHttp
+        }
+      : {})
   });
+
+  // (its events, from the copy of the feed fetched above)
+  if (subscription) {
+    try {
+      await refreshSubscription(ctx.instance, ctx.state.session, calendar, {
+        throwOnError: true,
+        logger: ctx.logger,
+        fetch: async () => subscription.fetched
+      });
+    } catch (err) {
+      // (an empty calendar that will never fill is not left behind)
+      await CalendarEvents.deleteMany(ctx.instance, ctx.state.session, {
+        calendar: calendar._id
+      });
+      await Calendars.deleteOne(ctx.instance, ctx.state.session, {
+        _id: calendar._id
+      });
+      throw feedBoom(ctx, err);
+    }
+  }
 
   ctx.body = json(calendar);
 
@@ -341,6 +464,37 @@ async function update(ctx) {
 
   await calendar.save();
 
+  //
+  // `subscription_refresh` fetches the feed of a subscribed calendar now,
+  // and takes up again one that was paused after failing too often.
+  //
+  if (boolean(body.subscription_refresh)) {
+    if (!subscriptionJson(calendar))
+      throw Boom.badRequest(
+        ctx.translateError('CALENDAR_SUBSCRIPTION_NOT_SUBSCRIBED')
+      );
+    const refreshedAt = calendar.subscription_refreshed_at
+      ? new Date(calendar.subscription_refreshed_at).getTime()
+      : 0;
+    if (
+      calendar.subscription_paused_at ||
+      Date.now() - refreshedAt >= limits.manualRefreshInterval
+    ) {
+      await Calendars.findByIdAndUpdate(
+        ctx.instance,
+        ctx.state.session,
+        calendar._id,
+        { $set: { subscription_paused_at: null, subscription_failures: 0 } }
+      );
+      calendar.subscription_paused_at = null;
+      calendar.subscription_failures = 0;
+      // (a failure is recorded on the calendar and shown in the response)
+      await refreshSubscription(ctx.instance, ctx.state.session, calendar, {
+        logger: ctx.logger
+      });
+    }
+  }
+
   ctx.body = json(calendar);
 
   //
@@ -497,7 +651,9 @@ async function remove(ctx) {
     }
   );
 
-  await sendCalendarDeletedBackup(ctx, calendar, calendarEvents);
+  // (the events of a subscribed calendar are the feed's, which still has them)
+  if (!subscriptionJson(calendar))
+    await sendCalendarDeletedBackup(ctx, calendar, calendarEvents);
 
   //
   // Delete all events for this calendar BEFORE deleting the calendar itself.
@@ -558,6 +714,7 @@ async function remove(ctx) {
 module.exports = {
   list,
   create,
+  previewSubscription,
   retrieve,
   update,
   remove

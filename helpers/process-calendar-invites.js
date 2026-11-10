@@ -50,6 +50,17 @@ const config = require('#config');
 const { sendApnCalendar } = require('#helpers/send-apn');
 const sendNotification = require('#helpers/send-notification');
 
+//
+// The calendars an invite may be applied to. A read-only calendar (e.g. one
+// subscribed to a feed, see helpers/refresh-calendar-subscriptions.js) holds
+// what its feed says and nothing else, so an invite neither finds an event
+// in one nor is added to one.
+//
+async function findWritableCalendars(instance, ctx) {
+  const calendars = await Calendars.find(instance, ctx.state.session, {});
+  return calendars.filter((calendar) => !calendar.readonly);
+}
+
 // Maximum invites to process per CalDAV interaction
 const MAX_INVITES_PER_BATCH = 10;
 
@@ -137,7 +148,7 @@ async function processCalendarInvites(instance, ctx) {
   // independently fetched the full calendar list, causing O(invites)
   // redundant WSP round-trips.
   //
-  const calendars = await Calendars.find(instance, ctx.state.session, {});
+  const calendars = await findWritableCalendars(instance, ctx);
 
   // Process each invite based on its method
   for (const invite of pendingInvites) {
@@ -1058,7 +1069,7 @@ async function processDeclineCounter(instance, ctx, invite) {
  */
 async function findEventByUid(instance, ctx, eventUid, calendars) {
   if (!calendars) {
-    calendars = await Calendars.find(instance, ctx.state.session, {});
+    calendars = await findWritableCalendars(instance, ctx);
   }
 
   const uidVariants = getUidVariants(eventUid);
@@ -1190,7 +1201,7 @@ function incrementSynctoken(synctoken) {
  */
 async function getDefaultCalendar(instance, ctx, calendars) {
   if (!calendars) {
-    calendars = await Calendars.find(instance, ctx.state.session, {});
+    calendars = await findWritableCalendars(instance, ctx);
   }
 
   // Prefer the default VEVENT calendar (created by ensureDefaultCalendars)

@@ -122,6 +122,33 @@ const Calendars = new mongoose.Schema(
       validate: (v) => isURL(v, { require_tld: false }) // require_tld: config.env === 'production'
     },
 
+    //
+    // A calendar subscribed to a feed (`webcal://`, see
+    // helpers/refresh-calendar-subscriptions.js) is `readonly`, has the
+    // address of the feed as `source` and its refresh interval (ms) as `ttl`.
+    // What follows is the state of that subscription; like the address,
+    // which often holds a secret token, it is only ever stored here in the
+    // alias' encrypted database.
+    //
+    // (the feed may be fetched over `http://`)
+    // (a boolean column is `NOT NULL`, so it has a default for the databases
+    // it is added to)
+    subscription_allow_http: {
+      type: Boolean,
+      default: false
+    },
+    // (validators of the last copy fetched, for conditional requests)
+    subscription_etag: String,
+    subscription_last_modified: String,
+    // (when it was last fetched, and when it is next due)
+    subscription_refreshed_at: Date,
+    subscription_next_refresh_at: Date,
+    // (consecutive failures, and the `code` of the last one)
+    subscription_failures: Number,
+    subscription_error: String,
+    // (set once it failed too often to keep trying; cleared by the user)
+    subscription_paused_at: Date,
+
     // Supported calendar component types (RFC 5545)
     has_vevent: {
       type: Boolean,

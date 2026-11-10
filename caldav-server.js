@@ -47,6 +47,9 @@ const { sendApnCalendar } = require('#helpers/send-apn');
 const sendNotification = require('#helpers/send-notification');
 const { prepareICSForStorage } = require('#helpers/prepare-ics');
 const setupAuthSession = require('#helpers/setup-auth-session');
+const {
+  refreshSubscriptionsInBackground
+} = require('#helpers/refresh-calendar-subscriptions');
 const { processCalendarInvites } = require('#helpers/process-calendar-invites');
 const {
   buildICS: buildICSHelper,
@@ -1738,6 +1741,10 @@ class CalDAV extends API {
         _inviteProcessingInflight.set(aliasId, promise);
       }
     }
+
+    // (calendars subscribed to a feed are refreshed while their owner is
+    // signed in, see helpers/refresh-calendar-subscriptions.js)
+    refreshSubscriptionsInBackground(this, ctx);
 
     return ctx.state.user;
   }
@@ -4156,6 +4163,10 @@ class CalDAV extends API {
     if (!calendar) {
       throw Boom.notFound('Calendar not found');
     }
+
+    // (e.g. a calendar subscribed to a feed)
+    if (calendar.readonly)
+      throw Boom.forbidden(ctx.translateError('CALENDAR_READ_ONLY'));
 
     const eventIdVariants = getEventIdVariants(eventId);
     let event = null;

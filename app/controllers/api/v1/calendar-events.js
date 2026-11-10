@@ -583,6 +583,23 @@ async function list(ctx) {
   });
 }
 
+//
+// Refuse to change `events` when any of them is in a read-only calendar
+// (e.g. one subscribed to a feed, whose events are the feed's).
+//
+async function assertWritable(ctx, events) {
+  const ids = new Set(
+    events.filter((event) => event?.calendar).map((e) => e.calendar.toString())
+  );
+  for (const id of ids) {
+    const calendar = await Calendars.findOne(ctx.instance, ctx.state.session, {
+      _id: id
+    });
+    if (calendar?.readonly)
+      throw Boom.forbidden(ctx.translateError('CALENDAR_READ_ONLY'));
+  }
+}
+
 async function create(ctx) {
   const { body } = ctx.request;
 
@@ -615,6 +632,10 @@ async function create(ctx) {
   if (!calendar) {
     throw Boom.badRequest(ctx.translateError('CALENDAR_DOES_NOT_EXIST'));
   }
+
+  // (e.g. a calendar subscribed to a feed)
+  if (calendar.readonly)
+    throw Boom.forbidden(ctx.translateError('CALENDAR_READ_ONLY'));
 
   const eventId = body.event_id || new ObjectID().toString();
 
@@ -833,6 +854,10 @@ async function update(ctx) {
     }
   );
 
+  // (an event of a read-only calendar, e.g. one subscribed to a feed, is
+  // refused before anything is written)
+  await assertWritable(ctx, allMatches);
+
   let calendarEvent = null;
   if (allMatches.length > 1) {
     const deduped = deduplicateCalendarEvents(allMatches);
@@ -888,6 +913,10 @@ async function update(ctx) {
     if (!calendar) {
       throw Boom.badRequest(ctx.translateError('CALENDAR_DOES_NOT_EXIST'));
     }
+
+    // (nor is an event moved into a read-only calendar)
+    if (calendar.readonly)
+      throw Boom.forbidden(ctx.translateError('CALENDAR_READ_ONLY'));
 
     calendarEvent.calendar = calendar._id;
   }
@@ -1093,6 +1122,8 @@ async function remove(ctx) {
   if (!calendarEvent) {
     throw Boom.notFound(ctx.translateError('CALENDAR_EVENT_DOES_NOT_EXIST'));
   }
+
+  await assertWritable(ctx, allMatches);
 
   // Soft delete ALL matching events (including duplicates)
   for (const ev of allMatches) {

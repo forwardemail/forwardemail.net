@@ -642,6 +642,7 @@ router
   .use('/calendars', api.v1.aliasAuth)
   .get('/calendars', paginate.middleware(25, 100), api.v1.calendars.list)
   .post('/calendars', api.v1.calendars.create)
+  .post('/calendars/subscription-preview', api.v1.calendars.previewSubscription)
   .get('/calendars/:id', api.v1.calendars.retrieve)
   .put('/calendars/:id', api.v1.calendars.update)
   .delete('/calendars/:id', api.v1.calendars.remove);

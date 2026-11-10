@@ -256,6 +256,23 @@ module.exports = {
   CALENDAR_ALREADY_EXISTS: 'Calendar already exists.',
   CALENDAR_DOES_NOT_EXIST: 'Calendar does not exist.',
   CALENDAR_ID_REQUIRED: 'Calendar ID is required.',
+  CALENDAR_READ_ONLY:
+    'Calendar is read-only because it is subscribed to an external feed.',
+  CALENDAR_SUBSCRIPTION_URL_REQUIRED: 'Calendar subscription URL is required.',
+  CALENDAR_SUBSCRIPTION_URL_INVALID:
+    'Calendar subscription URL is invalid. It must start with webcal:// or https:// and must not contain a username or password.',
+  CALENDAR_SUBSCRIPTION_HTTP_NOT_ALLOWED:
+    'Calendar subscription URL is not encrypted (http://). Anyone on the network path can read or change this calendar. Confirm that you want to subscribe without encryption to continue.',
+  CALENDAR_SUBSCRIPTION_PRIVATE_ADDRESS:
+    'Calendar subscription URL must point to a public address.',
+  CALENDAR_SUBSCRIPTION_TOO_LARGE:
+    'Calendar feed is too large or has too many events.',
+  CALENDAR_SUBSCRIPTION_NOT_CALENDAR:
+    'The URL did not return a calendar feed (an iCalendar file).',
+  CALENDAR_SUBSCRIPTION_UNREACHABLE:
+    'Calendar feed could not be fetched. Please check the URL and try again.',
+  CALENDAR_SUBSCRIPTION_NOT_SUBSCRIBED:
+    'Calendar is not subscribed to an external feed.',
   CALENDAR_DELETED_BACKUP:
     'Calendar named <span class="notranslate">%s</span> was successfully deleted with <span class="notranslate">%d</span> events (attached is a backup in case this was an accident)',
   EVENT_ALREADY_EXISTS: 'Event ID already exists within the same calendar.',

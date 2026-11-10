@@ -372,6 +372,41 @@ curl -X PUT BASE_URI/v1/account \
 
 **Coming soon**
 
+### Subscribe to a calendar feed (webcal)
+
+A calendar can be subscribed to an external iCalendar feed (a `webcal://` or `https://` address, such as a public holiday, sports, or shared Google, iCloud, Outlook, or Fastmail calendar).  A subscribed calendar is read-only, and is kept up to date for as long as you are signed in to it over CalDAV or this API.  See [How do I subscribe to an external calendar](/faq#how-do-i-subscribe-to-an-external-calendar-webcal) for how this works with your encrypted mailbox.
+
+> `POST /v1/calendars/subscription-preview`
+
+Fetches the feed and returns what subscribing would add, without saving anything.
+
+| Body Parameter            | Required | Type    | Description                                                                                  |
+| ------------------------- | -------- | ------- | -------------------------------------------------------------------------------------------- |
+| `subscription_url`        | Yes      | String  | Address of the feed (`webcal://` or `https://`; `webcal://` is fetched over `https://`)       |
+| `subscription_allow_http` | No       | Boolean | Allow an unencrypted `http://` feed (anyone on the network path can read or change the feed) |
+
+The response has `name`, `description`, `color`, `host`, `insecure`, `refresh_interval` (seconds), `event_count`, and `skipped_count` (events left out because they were malformed).
+
+> `POST /v1/calendars`
+
+Pass the same `subscription_url` (and `subscription_allow_http`) to create a subscribed calendar.  `name` is optional and defaults to the name of the feed.  The calendar in the response has `readonly` set to `true` and a `subscription` object:
+
+| Property           | Type   | Description                                                                                          |
+| ------------------ | ------ | ---------------------------------------------------------------------------------------------------- |
+| `url`              | String | Address of the feed                                                                                  |
+| `host`             | String | Host of the feed                                                                                     |
+| `status`           | String | `active`, `failing` (it will be tried again), or `paused` (it failed too often and is no longer tried) |
+| `error`            | String | Code of the last failure (e.g. `FEED_TIMEOUT`, `FEED_HTTP_STATUS_404`), or `null`                    |
+| `refresh_interval` | Number | Seconds between refreshes (from the feed, at least 15 minutes, 1 hour if the feed names none)        |
+| `refreshed_at`     | Date   | When the feed was last fetched                                                                       |
+| `next_refresh_at`  | Date   | When the feed is next due, or `null` if paused                                                       |
+
+> `PUT /v1/calendars/:id`
+
+Pass `subscription_refresh` set to `true` to fetch the feed now (at most once a minute).  This also resumes a paused subscription.
+
+Events of a subscribed calendar cannot be created, updated, moved, or deleted (`403`).  To unsubscribe, delete the calendar.
+
 
 ## Alias Messages (IMAP/POP3)
 
