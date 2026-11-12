@@ -16,7 +16,7 @@
   },
   "devDependencies": {
     "ava": "^6.2.0",
-    "esbuild": "^0.24.0",
+    "esbuild": "^0.28.2",
     "postject": "^1.0.0-alpha.6",
     "xo": "^0.60.0"
   },
