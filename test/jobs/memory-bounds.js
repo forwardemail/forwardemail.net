@@ -626,3 +626,221 @@ test.serial(
     t.true(result.stopMs < 5000, `bree took ${result.stopMs} ms to stop`);
   }
 );
+
+// documents (or index keys) MongoDB read for the commands a job sent to a
+// collection (from the database profiler, which is on for the job's run)
+async function examined(conn, collection, field = 'docsExamined') {
+  const ops = await conn.db
+    .collection('system.profile')
+    .find({ ns: `${conn.db.databaseName}.${collection}` })
+    .toArray();
+  return ops.reduce((sum, op) => sum + (op[field] || 0), 0);
+}
+
+test.serial(
+  'cleanup-database deletes orphaned aliases without reading every alias',
+  async (t) => {
+    const run = randomBytes(6).toString('hex');
+    const env = databases(run);
+    const conn = await mongoose.createConnection(env.MONGO_URI).asPromise();
+    t.teardown(async () => {
+      await conn.db.command({ profile: 0 });
+      await conn.dropDatabase();
+      await conn.close();
+    });
+
+    const oid = () => new mongoose.Types.ObjectId();
+    const now = new Date();
+    const userId = oid();
+    const domainId = oid();
+    const goneUserId = oid();
+    const goneDomainId = oid();
+    const orphanDomainId = oid();
+    await conn.db.collection('users').insertOne({
+      _id: userId,
+      id: userId.toString(),
+      email: `owner@${run}.example`,
+      group: 'user',
+      created_at: now,
+      updated_at: now
+    });
+    await conn.db.collection('domains').insertMany([
+      {
+        _id: domainId,
+        id: domainId.toString(),
+        name: `${run}.example`,
+        plan: 'free',
+        members: [{ user: userId, group: 'admin' }],
+        created_at: now,
+        updated_at: now
+      },
+      {
+        _id: orphanDomainId,
+        id: orphanDomainId.toString(),
+        name: `orphan.${run}.example`,
+        plan: 'free',
+        members: [{ user: goneUserId, group: 'admin' }],
+        created_at: now,
+        updated_at: now
+      }
+    ]);
+
+    const alias = (name, user, domain) => ({
+      _id: oid(),
+      name,
+      user,
+      domain,
+      recipients: [`someone@${run}.example`],
+      created_at: now,
+      updated_at: now
+    });
+    const aliases = conn.db.collection('aliases');
+    // (the indexes the Aliases model declares on `user` and `domain`)
+    await aliases.createIndex({ user: 1 });
+    await aliases.createIndex({ domain: 1 });
+    await aliases.insertMany([
+      ...Array.from({ length: 2000 }, (_, i) =>
+        alias(`kept${i}`, userId, domainId)
+      ),
+      ...Array.from({ length: 10 }, (_, i) =>
+        alias(`gone-user${i}`, goneUserId, domainId)
+      ),
+      ...Array.from({ length: 10 }, (_, i) =>
+        alias(`gone-domain${i}`, userId, goneDomainId)
+      )
+    ]);
+
+    await conn.db.command({ profile: 2 });
+    const result = await runJob('cleanup-database', env);
+    await conn.db.command({ profile: 0 });
+
+    t.is(result.exitCode, 0, 'job failed or did not finish');
+    t.is(await aliases.countDocuments({ user: goneUserId }), 0);
+    t.is(await aliases.countDocuments({ domain: goneDomainId }), 0);
+    t.is(
+      await aliases.countDocuments({ user: userId, domain: domainId }),
+      2000
+    );
+    t.is(await conn.db.collection('domains').countDocuments(), 1);
+
+    // (a `$lookup` from every alias read all 2,020 of them, twice; reading
+    // one index key per user and domain reads neither the aliases nor all
+    // of their keys)
+    const docs = await examined(conn, 'aliases');
+    t.true(docs < 100, `read ${docs} aliases`);
+    const keys = await examined(conn, 'aliases', 'keysExamined');
+    t.true(keys < 100, `read ${keys} alias index keys`);
+  }
+);
+
+test.serial(
+  'recipient-verification-email emails new recipients of paid domains without reading every paid domain',
+  async (t) => {
+    const run = randomBytes(6).toString('hex');
+    const env = {
+      ...databases(run),
+      SEND_EMAIL: 'false',
+      PREVIEW_EMAIL: 'false',
+      // (the verification link is encrypted)
+      HELPER_ENCRYPTION_KEY: randomBytes(16).toString('hex')
+    };
+    const conn = await mongoose.createConnection(env.MONGO_URI).asPromise();
+    t.teardown(async () => {
+      await conn.db.command({ profile: 0 });
+      await conn.dropDatabase();
+      await conn.close();
+    });
+
+    const oid = () => new mongoose.Types.ObjectId();
+    const now = new Date();
+    const userId = oid();
+    await conn.db.collection('users').insertOne({
+      _id: userId,
+      id: userId.toString(),
+      email: `owner@${run}.example`,
+      group: 'user',
+      created_at: now,
+      updated_at: now
+    });
+
+    const domain = (name, plan) => {
+      const _id = oid();
+      return {
+        _id,
+        id: _id.toString(),
+        name,
+        plan,
+        has_mx_record: true,
+        has_txt_record: true,
+        members: [{ user: userId, group: 'admin' }],
+        created_at: now,
+        updated_at: now
+      };
+    };
+
+    const paid = domain(`${run}.example`, 'team');
+    const free = domain(`free.${run}.example`, 'free');
+    await conn.db
+      .collection('domains')
+      .insertMany([
+        paid,
+        free,
+        ...Array.from({ length: 2000 }, (_, i) =>
+          domain(`${i}.${run}.example`, 'enhanced_protection')
+        )
+      ]);
+
+    const alias = (name, domainId, recipients, verified) => {
+      const _id = oid();
+      return {
+        _id,
+        id: _id.toString(),
+        name,
+        user: userId,
+        domain: domainId,
+        has_recipient_verification: true,
+        recipients,
+        verified_recipients: verified,
+        pending_recipients: [],
+        created_at: now,
+        updated_at: now
+      };
+    };
+
+    const aliases = conn.db.collection('aliases');
+    const pending = alias(
+      'pending',
+      paid._id,
+      [`verified@${run}.example`, `new@${run}.example`],
+      [`verified@${run}.example`]
+    );
+    const onFree = alias('free', free._id, [`new@${run}.example`], []);
+    await aliases.insertMany([
+      pending,
+      onFree,
+      ...Array.from({ length: 200 }, (_, i) =>
+        alias(
+          `verified${i}`,
+          paid._id,
+          [`verified@${run}.example`],
+          [`verified@${run}.example`]
+        )
+      )
+    ]);
+
+    await conn.db.command({ profile: 2 });
+    const result = await runJob('recipient-verification-email', env);
+    await conn.db.command({ profile: 0 });
+
+    t.is(result.exitCode, 0, 'job failed or did not finish');
+    const emailed = await aliases.findOne({ _id: pending._id });
+    t.deepEqual(emailed.pending_recipients, [`new@${run}.example`]);
+    const notEmailed = await aliases.findOne({ _id: onFree._id });
+    t.deepEqual(notEmailed.pending_recipients, []);
+
+    // (every run sent every paid domain id in an `$in`, read from all of the
+    // paid domains, and looked up the domain of every alias)
+    const docs = await examined(conn, 'domains');
+    t.true(docs < 10, `read ${docs} domains`);
+  }
+);

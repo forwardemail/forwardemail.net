@@ -10,9 +10,9 @@ Only a small set of important services also sends an **SMS**. Text messages are 
 | Service                                                       | Email | SMS                     | Public status page |
 | ------------------------------------------------------------- | ----- | ----------------------- | ------------------ |
 | Any genuine systemd failure                                   | Yes   | No, unless listed below | No                 |
-| MongoDB on `mongo.forwardemail.net`                           | Yes   | Yes                     | Yes                |
-| MongoDB on `logs.forwardemail.net`                            | Yes   | Yes                     | Yes                |
-| Valkey on `redis.forwardemail.net`                            | Yes   | Yes                     | Yes                |
+| MongoDB or its health check on `mongo.forwardemail.net`       | Yes   | Yes                     | Yes                |
+| MongoDB or its health check on `logs.forwardemail.net`        | Yes   | Yes                     | Yes                |
+| Valkey or its health check on `redis.forwardemail.net`        | Yes   | Yes                     | Yes                |
 | PM2 startup or PM2 health check on a Node.js server           | Yes   | Yes                     | Yes                |
 | Timers, package updates, Unbound, backups, and other services | Yes   | No                      | No                 |
 
@@ -34,6 +34,16 @@ Each service has a separate **10-minute** cooldown for email and SMS.
 | SMS     | Twilio accepts the text message | Another SMS for that service is skipped   |
 
 The two cooldowns are independent. A failed SMS can retry later without sending another email. `EmailQueue=queued` means Postfix accepted the email locally; it does not guarantee final inbox delivery.
+
+
+## Database health checks
+
+A hung database stays "active" and never fails by itself, so it would send no alert. `mongod-health-check` (on `mongo` and `logs`) and `valkey-health-check` (on `redis`) run every 2 minutes. Each asks the local server for a reply: `hello` for MongoDB and `PING` for Valkey. Neither needs a password. If the server does not reply within 15 seconds on 3 tries, the check fails and alerts like the database itself. A stopped or restarting database is skipped, since its own unit alerts for that. These checks catch a server that stops answering (for example, starved by swap), not slow queries; slow queries are in the MongoDB log.
+
+```bash
+sudo systemctl status mongod-health-check.timer --no-pager
+sudo journalctl -u mongod-health-check.service -n 100 --no-pager
+```
 
 
 ## PM2
@@ -92,6 +102,8 @@ Alerts use the server's local send-only [Postfix](https://github.com/vdukhovni/p
 export ALERT_EMAIL_FROM=mailerdaemon@forwardemail.net
 export ALERT_EMAIL_RECIPIENTS=security@forwardemail.net
 ```
+
+Postfix delivers alerts straight to each recipient's MX. Forward Email's own MX needs MongoDB and Redis, so when either hangs, alerts to `@forwardemail.net` wait in the queue. Include an address at another provider in `ALERT_EMAIL_RECIPIENTS`, and set the Twilio variables for SMS. Deployment warns when every recipient is `@forwardemail.net`.
 
 The server's configured hostname is used as the Postfix HELO name. Deployment checks SPF before changing Postfix. See the [Ansible alert transport guide](../README.md#alert-transport-and-dns-prerequisites) for DNS requirements.
 

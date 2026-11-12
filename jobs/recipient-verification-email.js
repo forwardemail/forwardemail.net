@@ -184,22 +184,20 @@ async function run() {
 
     const bannedUserIdSet = await Users.getBannedUserIdSet(client);
 
-    const paidDomainIds = await Domains.distinct('_id', {
-      plan: { $in: ['enhanced_protection', 'team'] },
-      has_mx_record: true,
-      has_txt_record: true
-    });
-
     //
     // read the aliases from a cursor and send a batch at a time (aliases of
     // banned users are skipped and never marked, so they are found again on
     // every run; loading the whole result each time held all of them)
     //
+    // only aliases with recipients still to email look up their domain, and
+    // the lookup keeps the paid domains; this runs every 15 seconds, and it
+    // sent every paid domain id in an `$in` (a 5 MB command) and looked up
+    // the domain of every alias with recipient verification (17K+) each time
+    //
     const cursor = Aliases.aggregate([
       {
         $match: {
-          has_recipient_verification: true,
-          domain: { $in: paidDomainIds }
+          has_recipient_verification: true
         }
       },
       {
@@ -208,19 +206,36 @@ async function run() {
           user: 1,
           domain: 1,
           name: 1,
-          recipients: 1,
-          verified_and_pending: {
-            $setUnion: ['$verified_recipients', '$pending_recipients']
+          emails: {
+            $setDifference: [
+              { $ifNull: ['$recipients', []] },
+              {
+                $setUnion: [
+                  { $ifNull: ['$verified_recipients', []] },
+                  { $ifNull: ['$pending_recipients', []] }
+                ]
+              }
+            ]
           }
         }
       },
       {
+        $match: { $expr: { $gt: [{ $size: '$emails' }, 0] } }
+      },
+      {
         $lookup: {
-          from: 'domains',
+          from: Domains.collection.name,
           as: 'domain',
           let: { domain_id: '$domain' },
           pipeline: [
-            { $match: { $expr: { $eq: ['$_id', '$$domain_id'] } } },
+            {
+              $match: {
+                $expr: { $eq: ['$_id', '$$domain_id'] },
+                plan: { $in: ['enhanced_protection', 'team'] },
+                has_mx_record: true,
+                has_txt_record: true
+              }
+            },
             {
               $project: {
                 id: 1,
@@ -234,18 +249,6 @@ async function run() {
       },
       {
         $unwind: '$domain'
-      },
-      {
-        $project: {
-          id: 1,
-          user: 1,
-          name: 1,
-          domain: 1,
-          emails: { $setDifference: ['$recipients', '$verified_and_pending'] }
-        }
-      },
-      {
-        $match: { $expr: { $gt: [{ $size: '$emails' }, 0] } }
       }
     ])
       .option({

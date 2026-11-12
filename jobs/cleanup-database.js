@@ -38,7 +38,13 @@ graceful.listen();
 
 const ORPHAN_BATCH_SIZE = 500;
 
-async function deleteOrphans(Model, pipeline, message) {
+//
+// `field` is what the pipeline's `_id` values are matched against when
+// deleting (e.g. the alias `user` ids found missing); the driver deletes
+// them as found, since Mongoose would cast them to the schema type (a value
+// that is not an ObjectId threw and ended the job)
+//
+async function deleteOrphans(Model, pipeline, message, field = '_id') {
   const ids = [];
   let deletedCount = 0;
   const cursor = Model.aggregate([
@@ -48,7 +54,9 @@ async function deleteOrphans(Model, pipeline, message) {
 
   async function flush() {
     if (ids.length === 0) return;
-    const result = await Model.deleteMany({ _id: { $in: ids } });
+    const result = await Model.collection.deleteMany({
+      [field]: { $in: ids }
+    });
     deletedCount += result.deletedCount;
     ids.length = 0;
   }
@@ -60,6 +68,30 @@ async function deleteOrphans(Model, pipeline, message) {
 
   await flush();
   logger.info(message, { deletedCount });
+}
+
+//
+// the distinct values of an indexed alias field (`user` or `domain`) that
+// have no document in `Model`: the sort and group read one index key per
+// value (DISTINCT_SCAN) and look up each value once, where a `$lookup` from
+// every alias read all of them (5M+ documents and 5M+ lookups, about four
+// minutes of a CPU on the database server each, two every hour)
+//
+function missingValues(field, Model) {
+  return [
+    { $sort: { [field]: 1 } },
+    { $group: { _id: '$' + field } },
+    {
+      $lookup: {
+        from: Model.collection.name,
+        localField: '_id',
+        foreignField: '_id',
+        pipeline: [{ $project: { _id: 1 } }],
+        as: 'existing'
+      }
+    },
+    { $match: { existing: { $eq: [] } } }
+  ];
 }
 
 (async () => {
@@ -102,19 +134,9 @@ async function deleteOrphans(Model, pipeline, message) {
     if (hasUsers) {
       await deleteOrphans(
         Aliases,
-        [
-          {
-            $lookup: {
-              from: Users.collection.name,
-              localField: 'user',
-              foreignField: '_id',
-              pipeline: [{ $limit: 1 }, { $project: { _id: 1 } }],
-              as: 'existing_users'
-            }
-          },
-          { $match: { existing_users: { $eq: [] } } }
-        ],
-        'deleted aliases for users that did not exist'
+        missingValues('user', Users),
+        'deleted aliases for users that did not exist',
+        'user'
       );
 
       await deleteOrphans(
@@ -139,19 +161,9 @@ async function deleteOrphans(Model, pipeline, message) {
     if (hasDomains) {
       await deleteOrphans(
         Aliases,
-        [
-          {
-            $lookup: {
-              from: Domains.collection.name,
-              localField: 'domain',
-              foreignField: '_id',
-              pipeline: [{ $limit: 1 }, { $project: { _id: 1 } }],
-              as: 'existing_domains'
-            }
-          },
-          { $match: { existing_domains: { $eq: [] } } }
-        ],
-        'deleted aliases for domains that did not exist'
+        missingValues('domain', Domains),
+        'deleted aliases for domains that did not exist',
+        'domain'
       );
     }
 

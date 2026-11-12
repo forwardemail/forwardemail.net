@@ -25,9 +25,9 @@ cat > "$PLAYBOOK" <<EOF_PLAYBOOK
   gather_facts: false
   vars:
     profiles:
-      - { name: mongo, host: mongo.forwardemail.net, units: [mongod.service] }
-      - { name: logs, host: logs.forwardemail.net, units: [mongod.service] }
-      - { name: redis, host: redis.forwardemail.net, units: [valkey-server.service] }
+      - { name: mongo, host: mongo.forwardemail.net, units: [mongod.service, mongod-health-check.service] }
+      - { name: logs, host: logs.forwardemail.net, units: [mongod.service, mongod-health-check.service] }
+      - { name: redis, host: redis.forwardemail.net, units: [valkey-server.service, valkey-health-check.service] }
       - { name: bree, host: bree.forwardemail.net, units: [pm2-deploy.service, pm2-health-check.service] }
       - { name: web, host: forwardemail.net, units: [pm2-deploy.service, pm2-health-check.service] }
       - { name: api, host: api.forwardemail.net, units: [pm2-deploy.service, pm2-health-check.service] }
@@ -89,9 +89,9 @@ assert_policy() {
   fi
 }
 
-assert_policy mongo mongo.forwardemail.net mongod.service
-assert_policy logs logs.forwardemail.net mongod.service
-assert_policy redis redis.forwardemail.net valkey-server.service
+assert_policy mongo mongo.forwardemail.net 'mongod.service:mongod-health-check.service'
+assert_policy logs logs.forwardemail.net 'mongod.service:mongod-health-check.service'
+assert_policy redis redis.forwardemail.net 'valkey-server.service:valkey-health-check.service'
 assert_policy web forwardemail.net 'pm2-deploy.service:pm2-health-check.service'
 for profile in bree api caldav carddav imap mx1 mx2 pop3 smtp sqlite; do
   assert_policy \

@@ -1,0 +1,57 @@
+#!/bin/bash
+# WARNING: This file is managed by Ansible
+#
+# Fail when {{ database_health_check_service }}.service is running but stops
+# answering, so its OnFailure hook sends the email, SMS and public status
+# alerts.  A hung database stays "active" and never fails by itself: a mongod
+# starved by swap answered nothing for 50 minutes and alerted no one.
+
+set -uo pipefail
+
+readonly SERVICE='{{ database_health_check_service }}.service'
+readonly PORT='{{ database_health_check_port }}'
+readonly ATTEMPTS=3
+readonly TIMEOUT_SECONDS=15
+readonly RETRY_SECONDS=10
+
+# A stopped, starting or failed database alerts through its own unit; this
+# is checked again before each retry, in case it was restarted meanwhile.
+running() {
+  systemctl is-active --quiet "$SERVICE"
+}
+
+answers() {
+{% if database_health_check_service == 'mongod' %}
+  # `hello` needs no authentication and takes no locks; a healthy mongod
+  # answers in milliseconds.  mongod requires TLS but no client certificate;
+  # like valkey-cli --insecure below, the local check does not verify the
+  # server certificate (it names the public host, not localhost).  mongosh
+  # waits just 2 seconds for localhost unless serverSelectionTimeoutMS says
+  # otherwise.
+  timeout --signal=KILL "$TIMEOUT_SECONDS" /usr/local/bin/mongosh --quiet --norc \
+    "mongodb://localhost:$PORT/admin?tls=true&tlsAllowInvalidCertificates=true&serverSelectionTimeoutMS=$(((TIMEOUT_SECONDS - 3) * 1000))" \
+    --eval 'db.runCommand({ hello: 1 }).ok' 2>/dev/null |
+    grep -qx 1
+{% else %}
+  # Without a password a responsive server still answers: NOAUTH, or LOADING
+  # while it reads its snapshot after a restart.
+  timeout --signal=KILL "$TIMEOUT_SECONDS" valkey-cli --tls --insecure \
+    -h 127.0.0.1 -p "$PORT" PING 2>/dev/null |
+    grep -Eq '^(PONG|NOAUTH|LOADING)'
+{% endif %}
+}
+
+for ((attempt = 1; attempt <= ATTEMPTS; attempt++)); do
+  if ! running || answers; then
+    exit 0
+  fi
+  printf '%s did not answer within %ss (attempt %d of %d)\n' \
+    "$SERVICE" "$TIMEOUT_SECONDS" "$attempt" "$ATTEMPTS" >&2
+  if ((attempt < ATTEMPTS)); then
+    sleep "$RETRY_SECONDS"
+  fi
+done
+
+# (a restart during the last attempt is not a hang)
+running || exit 0
+exit 1

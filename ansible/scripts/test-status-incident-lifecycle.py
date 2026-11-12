@@ -292,6 +292,14 @@ def main() -> None:
             'set -euo pipefail\n'
             'operation="${1:-}"\n'
             'unit="${!#}"\n'
+            'if [[ "$operation" == show ]]; then\n'
+            '  if [[ -n "${MOCK_SYSTEMD_STATE_DIR:-}" && -f "$MOCK_SYSTEMD_STATE_DIR/$unit" ]]; then\n'
+            '    cat "$MOCK_SYSTEMD_STATE_DIR/$unit"\n'
+            '  else\n'
+            '    cat "$MOCK_SYSTEMD_STATE"\n'
+            '  fi\n'
+            '  exit 0\n'
+            'fi\n'
             'case "$operation" in\n'
             '  is-active) expected=active ;;\n'
             '  is-failed) expected=failed ;;\n'
@@ -351,7 +359,7 @@ fi"""
                     'GITHUB_REPOSITORY=forwardemail/status.forwardemail.net',
                     'SYSTEMD_INCIDENT_PUBLIC_COMPONENT=mongo.forwardemail.net',
                     'SYSTEMD_INCIDENT_COMPONENT_LABEL=mongo-forwardemail-net',
-                    'SYSTEMD_INCIDENT_WATCHED_UNITS=mongod.service',
+                    'SYSTEMD_INCIDENT_WATCHED_UNITS=mongod.service:mongod-health-check.service',
                     'SYSTEMD_INCIDENT_FAILURE_THRESHOLD=3',
                     'SYSTEMD_INCIDENT_RECOVERY_THRESHOLD=3',
                     'SYSTEMD_INCIDENT_OBSERVATION_INTERVAL_SECONDS=60',
@@ -437,6 +445,26 @@ fi"""
             '**Resolved:** Automated health checks confirm **mongo.forwardemail.net** has recovered'
         )
 
+        # A hung mongod stays active while every health check runs for about a
+        # minute and then fails. A running check is no observation, so it does
+        # not reset the failures before they reach the threshold.
+        (service_state_dir / 'mongod.service').write_text('active\n')
+        health_check_state = service_state_dir / 'mongod-health-check.service'
+        issues_before_hang = set(STATE.issues)
+        for check_state in ('failed', 'activating', 'failed', 'activating', 'failed'):
+            health_check_state.write_text(f'{check_state}\n')
+            run([str(rendered_reporter), 'reconcile'], process_env)
+        hang_issues = set(STATE.issues) - issues_before_hang
+        assert len(hang_issues) == 1, f'issues={STATE.issues!r}'
+        hang_incident = STATE.issues[hang_issues.pop()]
+        assert hang_incident['state'] == 'open'
+        health_check_state.write_text('inactive\n')
+        for _ in range(3):
+            run([str(rendered_reporter), 'reconcile'], process_env)
+        assert hang_incident['state'] == 'closed'
+        health_check_state.unlink()
+        (service_state_dir / 'mongod.service').unlink()
+
         # Unmapped units are ignored without API writes.
         calls_before = len(STATE.calls)
         run([str(rendered_reporter), 'event', 'ssh.service'], process_env)
@@ -511,7 +539,7 @@ fi"""
                     'GITHUB_REPOSITORY=forwardemail/status.forwardemail.net',
                     'SYSTEMD_INCIDENT_PUBLIC_COMPONENT=logs.forwardemail.net',
                     'SYSTEMD_INCIDENT_COMPONENT_LABEL=logs-forwardemail-net',
-                    'SYSTEMD_INCIDENT_WATCHED_UNITS=mongod.service',
+                    'SYSTEMD_INCIDENT_WATCHED_UNITS=mongod.service:mongod-health-check.service',
                     'SYSTEMD_INCIDENT_FAILURE_THRESHOLD=3',
                     'SYSTEMD_INCIDENT_RECOVERY_THRESHOLD=3',
                     'SYSTEMD_INCIDENT_OBSERVATION_INTERVAL_SECONDS=60',
@@ -523,7 +551,8 @@ fi"""
         logs_env_file.chmod(0o600)
         logs_reporter_source = REPORTER_TEMPLATE.read_text()
         assert (
-            'redis.forwardemail.net:redis-forwardemail-net:valkey-server.service'
+            'redis.forwardemail.net:redis-forwardemail-net:valkey-server.service:'
+            'valkey-health-check.service'
             in logs_reporter_source
         )
         assert (

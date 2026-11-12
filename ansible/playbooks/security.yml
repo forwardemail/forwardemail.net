@@ -67,16 +67,19 @@
         label: mongo-forwardemail-net
         units:
           - mongod.service
+          - mongod-health-check.service
       logs.forwardemail.net:
         component: logs.forwardemail.net
         label: logs-forwardemail-net
         units:
           - mongod.service
+          - mongod-health-check.service
       redis.forwardemail.net:
         component: redis.forwardemail.net
         label: redis-forwardemail-net
         units:
           - valkey-server.service
+          - valkey-health-check.service
       bree.forwardemail.net:
         component: bree.forwardemail.net
         label: bree-forwardemail-net
@@ -241,13 +244,15 @@
             (security_sms_services | default([]) |
             difference([
               'mongod.service',
+              'mongod-health-check.service',
               'valkey-server.service',
+              'valkey-health-check.service',
               'pm2-deploy.service',
               'pm2-health-check.service'
             ]) | length) == 0
         fail_msg: >-
           security_sms_services may contain only MongoDB, Valkey, PM2 startup,
-          or PM2 health-check services.
+          or their health-check services.
       tags:
         - always
         - forwardemail-alert-policy
@@ -946,16 +951,18 @@
             (forwardemail_systemd_incident_config | length == 0) or
             ((forwardemail_systemd_incident_units | difference([
               'mongod.service',
+              'mongod-health-check.service',
               'valkey-server.service',
+              'valkey-health-check.service',
               'pm2-deploy.service',
               'pm2-health-check.service'
             ]) | length) == 0)
           - >-
             (forwardemail_systemd_incident_config | length == 0) or
             (forwardemail_systemd_incident_mapping_key in [
-              'mongo.forwardemail.net:mongo-forwardemail-net:mongod.service',
-              'logs.forwardemail.net:logs-forwardemail-net:mongod.service',
-              'redis.forwardemail.net:redis-forwardemail-net:valkey-server.service',
+              'mongo.forwardemail.net:mongo-forwardemail-net:mongod.service:mongod-health-check.service',
+              'logs.forwardemail.net:logs-forwardemail-net:mongod.service:mongod-health-check.service',
+              'redis.forwardemail.net:redis-forwardemail-net:valkey-server.service:valkey-health-check.service',
               'bree.forwardemail.net:bree-forwardemail-net:pm2-deploy.service:pm2-health-check.service',
               'forwardemail.net:forwardemail-net-443-i-pv4:pm2-deploy.service:pm2-health-check.service',
               'api.forwardemail.net:api-forwardemail-net-443-i-pv4:pm2-deploy.service:pm2-health-check.service',
@@ -983,6 +990,24 @@
           Twilio variables are unset; every genuine systemd failure and routine
           alert will continue by email only to {{ alert_email_recipients }}.
       when: twilio_values_present | int == 0
+
+    # Postfix delivers alerts straight to each recipient's MX. Forward Email's
+    # own MX needs MongoDB and Redis, so a hung database queued its own alerts
+    # (421) instead of delivering them.
+    - name: Report alert email that depends on Forward Email's own MX
+      ansible.builtin.debug:
+        msg: >-
+          Every alert recipient ({{ alert_email_recipients }}) is delivered by
+          Forward Email's own MX, which needs MongoDB and Redis; when either
+          hangs, alert email waits in the queue. Add an address at another
+          provider to ALERT_EMAIL_RECIPIENTS, and set the Twilio variables so
+          database failures also send SMS.
+      when: >-
+        alert_email_recipients.split(',') | map('trim') | select
+        | reject('search', '@forwardemail\.net>?$', ignorecase=True)
+        | list | length == 0
+      tags:
+        - forwardemail-alert-policy
 
     - name: Report email-only non-eligible systemd mode
       ansible.builtin.debug:
@@ -1182,6 +1207,7 @@
         - /etc/systemd/system/forwardemail-systemd-incident-event@.service.d
         - /etc/systemd/system/forwardemail-systemd-incident-reconcile.service.d
       tags:
+        - forwardemail-systemd-incident
         - forwardemail-alert-policy
 
     - name: Hook every systemd service failure into centralized notifications
@@ -1197,16 +1223,33 @@
       tags:
         - forwardemail-alert-policy
 
+    # A drop-in of the same name in a unit's own directory replaces the
+    # fleet-wide one. An empty `OnFailure=` does not reset a dependency list:
+    # each alert unit kept its hook, and loading one loaded
+    # failure-notification@failure-notification@... until the unit name was
+    # too long (hundreds of "File name too long" errors on every boot and
+    # daemon-reload).
     - name: Prevent recursive failure notifications from alert services
       ansible.builtin.copy:
-        dest: "{{ item }}/99-no-recursion.conf"
+        dest: "{{ item }}/10-forwardemail-failure-notification.conf"
         content: |
           # WARNING: This file is managed by Ansible
-          [Unit]
-          OnFailure=
+          # (replaces the fleet-wide drop-in of this name: no OnFailure hook)
         owner: root
         group: root
         mode: '0644'
+      loop:
+        - /etc/systemd/system/failure-notification@.service.d
+        - /etc/systemd/system/forwardemail-systemd-incident-event@.service.d
+        - /etc/systemd/system/forwardemail-systemd-incident-reconcile.service.d
+      tags:
+        - forwardemail-systemd-incident
+        - forwardemail-alert-policy
+
+    - name: Remove the empty OnFailure reset that did not stop the recursion
+      ansible.builtin.file:
+        path: "{{ item }}/99-no-recursion.conf"
+        state: absent
       loop:
         - /etc/systemd/system/failure-notification@.service.d
         - /etc/systemd/system/forwardemail-systemd-incident-event@.service.d

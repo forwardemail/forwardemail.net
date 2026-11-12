@@ -87,8 +87,11 @@ def main():
         )
     for approved_pair in (
         "mongo.forwardemail.net|mongod.service",
+        "mongo.forwardemail.net|mongod-health-check.service",
         "logs.forwardemail.net|mongod.service",
+        "logs.forwardemail.net|mongod-health-check.service",
         "redis.forwardemail.net|valkey-server.service",
+        "redis.forwardemail.net|valkey-health-check.service",
     ):
         require(script, approved_pair, SCRIPT.name)
     for approved_pm2_unit in (

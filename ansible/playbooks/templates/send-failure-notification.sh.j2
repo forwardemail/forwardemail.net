@@ -266,8 +266,11 @@ sms_pair_allowed=false
 if [[ "$HOST_NAME" == "$SMS_POLICY_HOST" && "$unit_in_sms_policy" == true ]]; then
   case "${HOST_NAME}|${UNIT_NAME}" in
     'mongo.forwardemail.net|mongod.service' | \
+      'mongo.forwardemail.net|mongod-health-check.service' | \
       'logs.forwardemail.net|mongod.service' | \
+      'logs.forwardemail.net|mongod-health-check.service' | \
       'redis.forwardemail.net|valkey-server.service' | \
+      'redis.forwardemail.net|valkey-health-check.service' | \
       *'|pm2-deploy.service' | \
       *'|pm2-health-check.service')
       sms_pair_allowed=true

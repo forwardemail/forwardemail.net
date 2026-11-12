@@ -1,0 +1,11 @@
+# WARNING: This file is managed by Ansible
+[Unit]
+Description={{ database_health_check_service }} health check timer
+
+[Timer]
+OnBootSec=5min
+OnUnitActiveSec=2min
+AccuracySec=15s
+
+[Install]
+WantedBy=timers.target

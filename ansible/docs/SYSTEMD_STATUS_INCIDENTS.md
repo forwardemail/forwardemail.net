@@ -2,12 +2,12 @@
 
 Public GitHub incidents are used for sustained database and PM2 outages under the [Upptime lifecycle][1]. They support the status page; they do not replace private email or SMS alerts.
 
-| Public component | Service                                              | Status-page label            |
-| ---------------- | ---------------------------------------------------- | ---------------------------- |
-| MongoDB          | `mongod.service` on `mongo.forwardemail.net`         | `mongo-forwardemail-net`     |
-| Logs             | `mongod.service` on `logs.forwardemail.net`          | `logs-forwardemail-net`      |
-| Valkey/Redis     | `valkey-server.service` on `redis.forwardemail.net`  | `redis-forwardemail-net`     |
-| Website          | PM2 deployment or health check on `forwardemail.net` | `forwardemail-net-443-i-pv4` |
+| Public component | Service                                                                 | Status-page label            |
+| ---------------- | ----------------------------------------------------------------------- | ---------------------------- |
+| MongoDB          | `mongod.service` or its health check on `mongo.forwardemail.net`        | `mongo-forwardemail-net`     |
+| Logs             | `mongod.service` or its health check on `logs.forwardemail.net`         | `logs-forwardemail-net`      |
+| Valkey/Redis     | `valkey-server.service` or its health check on `redis.forwardemail.net` | `redis-forwardemail-net`     |
+| Website          | PM2 deployment or health check on `forwardemail.net`                    | `forwardemail-net-443-i-pv4` |
 
 PM2 deployment and PM2 health failures also create a public incident for the affected service. This covers Bree, Website, API, CalDAV, CardDAV, IMAP, MX1, MX2, POP3, SMTP, and SQLite. Other systemd services do not create public incidents.
 

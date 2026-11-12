@@ -1,0 +1,15 @@
+# WARNING: This file is managed by Ansible
+[Unit]
+Description={{ database_health_check_service }} health check
+After={{ database_health_check_service }}.service
+OnFailure=failure-notification@%n.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/{{ database_health_check_name }}-health-check.sh
+TimeoutStartSec=120
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier={{ database_health_check_name }}-health-check
+User=root
+Group=root

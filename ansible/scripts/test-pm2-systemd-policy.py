@@ -26,17 +26,17 @@ INCIDENT_MAPPINGS = {
     "mongo.forwardemail.net": (
         "mongo.forwardemail.net",
         "mongo-forwardemail-net",
-        ("mongod.service",),
+        ("mongod.service", "mongod-health-check.service"),
     ),
     "logs.forwardemail.net": (
         "logs.forwardemail.net",
         "logs-forwardemail-net",
-        ("mongod.service",),
+        ("mongod.service", "mongod-health-check.service"),
     ),
     "redis.forwardemail.net": (
         "redis.forwardemail.net",
         "redis-forwardemail-net",
-        ("valkey-server.service",),
+        ("valkey-server.service", "valkey-health-check.service"),
     ),
     "bree.forwardemail.net": (
         "bree.forwardemail.net",

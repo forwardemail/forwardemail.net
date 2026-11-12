@@ -693,6 +693,37 @@
         state: started
         enabled: yes
 
+    # A hung Valkey stays active and never fails by itself; this check fails
+    # its own unit so OnFailure sends the email, SMS and public status alerts
+    - name: Deploy valkey health check
+      template:
+        src: "{{ playbook_dir }}/templates/{{ item.src }}"
+        dest: "{{ item.dest }}"
+        owner: root
+        group: root
+        mode: "{{ item.mode }}"
+      loop:
+        - src: database-health-check.sh.j2
+          dest: /usr/local/bin/valkey-health-check.sh
+          mode: '0755'
+        - src: database-health-check.service.j2
+          dest: /etc/systemd/system/valkey-health-check.service
+          mode: '0644'
+        - src: database-health-check.timer.j2
+          dest: /etc/systemd/system/valkey-health-check.timer
+          mode: '0644'
+      vars:
+        database_health_check_name: valkey
+        database_health_check_service: valkey-server
+        database_health_check_port: "{{ lookup('env', 'REDIS_PORT') | default('6380', true) }}"
+
+    - name: Enable valkey health check timer
+      systemd:
+        name: valkey-health-check.timer
+        daemon_reload: yes
+        enabled: yes
+        state: started
+
     # Configure logrotate for Redis/Valkey logs
     - name: Create logrotate configuration for Redis/Valkey
       copy:

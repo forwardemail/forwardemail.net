@@ -79,9 +79,9 @@ if [[ -z "$GITHUB_OCTOKIT_TOKEN" ]] ||
 fi
 
 case "${SYSTEMD_INCIDENT_PUBLIC_COMPONENT}:${SYSTEMD_INCIDENT_COMPONENT_LABEL}:${SYSTEMD_INCIDENT_WATCHED_UNITS}" in
-  mongo.forwardemail.net:mongo-forwardemail-net:mongod.service | \
-  logs.forwardemail.net:logs-forwardemail-net:mongod.service | \
-  redis.forwardemail.net:redis-forwardemail-net:valkey-server.service | \
+  mongo.forwardemail.net:mongo-forwardemail-net:mongod.service:mongod-health-check.service | \
+  logs.forwardemail.net:logs-forwardemail-net:mongod.service:mongod-health-check.service | \
+  redis.forwardemail.net:redis-forwardemail-net:valkey-server.service:valkey-health-check.service | \
   bree.forwardemail.net:bree-forwardemail-net:pm2-deploy.service:pm2-health-check.service | \
   forwardemail.net:forwardemail-net-443-i-pv4:pm2-deploy.service:pm2-health-check.service | \
   api.forwardemail.net:api-forwardemail-net-443-i-pv4:pm2-deploy.service:pm2-health-check.service | \
@@ -115,7 +115,7 @@ is_watched_unit() {
 
 unit_is_unhealthy() {
   local watched_unit="$1"
-  if [[ "$watched_unit" == 'pm2-health-check.service' ]]; then
+  if [[ "$watched_unit" == *-health-check.service ]]; then
     # A successful oneshot health check becomes inactive. Only a failed run is
     # unhealthy; treating inactive as failed would create a false public incident.
     timeout --signal=TERM 10 systemctl is-failed --quiet "$watched_unit"
@@ -123,6 +123,19 @@ unit_is_unhealthy() {
   fi
 
   ! timeout --signal=TERM 10 systemctl is-active --quiet "$watched_unit"
+}
+
+health_check_running() {
+  local watched_unit
+  for watched_unit in "${SYSTEMD_INCIDENT_WATCHED_UNIT_LIST[@]}"; do
+    if [[ "$watched_unit" == *-health-check.service ]] &&
+      [[ "$(timeout --signal=TERM 10 systemctl show \
+        --property=ActiveState --value "$watched_unit" 2>/dev/null)" == activating ]]; then
+      return 0
+    fi
+  done
+
+  return 1
 }
 
 if [[ "$MODE" == 'event' ]] && ! is_watched_unit "$EVENT_UNIT"; then
@@ -518,6 +531,14 @@ else
       break
     fi
   done
+
+  # A running health check has no result yet. Against a hung database every
+  # check runs for about a minute, while the database unit stays active, so
+  # counting it as healthy reset the failures before they reached the
+  # threshold; it is no observation.
+  if [[ "$unhealthy" != true ]] && health_check_running; then
+    exit 0
+  fi
 
   if [[ "$unhealthy" == true ]] &&
     (( last_event_at == 0 || now - last_event_at >= SYSTEMD_INCIDENT_OBSERVATION_INTERVAL_SECONDS )); then
