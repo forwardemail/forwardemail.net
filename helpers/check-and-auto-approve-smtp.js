@@ -5,13 +5,17 @@
 
 const punycode = require('node:punycode');
 
+const ms = require('ms');
+
 const Domains = require('#models/domains');
 const Users = require('#models/users');
 const config = require('#config');
 const emailHelper = require('#helpers/email');
 const {
   UNAVAILABLE,
-  getDomainCheckVerdict
+  claimAwaitingNotice,
+  getDomainCheckVerdict,
+  isAwaitingVerdict
 } = require('#helpers/domain-check-verdict');
 const i18n = require('#helpers/i18n');
 const logger = require('#helpers/logger');
@@ -172,48 +176,9 @@ async function checkAndAutoApproveSMTP(options) {
 
   //
   // 3. Determine existing approved domains and suspended domains
-  //    Use pre-loaded `userDomains` if available (e.g. from `ctx.state.domains`),
-  //    otherwise query the database.
   //
-  let hasExistingApprovedDomains;
-  let hasSomeSuspendedDomains;
-
-  if (Array.isArray(userDomains)) {
-    // ctx.state.domains has a `group` virtual set by retrieveDomains middleware
-    hasExistingApprovedDomains = userDomains.some(
-      (d) =>
-        d.has_smtp &&
-        !d.is_smtp_suspended &&
-        d.group === 'admin' &&
-        d._id.toString() !== domain._id.toString()
-    );
-
-    hasSomeSuspendedDomains = userDomains.some(
-      (d) => d.is_smtp_suspended && d.group === 'admin'
-    );
-  } else {
-    // Query the database for the user's admin domains
-    const adminDomains = await Domains.find({
-      members: {
-        $elemMatch: {
-          user: userId,
-          group: 'admin'
-        }
-      }
-    })
-      .select('_id has_smtp is_smtp_suspended smtp_suspended_sent_at')
-      .lean()
-      .exec();
-
-    hasExistingApprovedDomains = adminDomains.some(
-      (d) =>
-        d.has_smtp &&
-        !d.is_smtp_suspended &&
-        d._id.toString() !== domain._id.toString()
-    );
-
-    hasSomeSuspendedDomains = adminDomains.some((d) => d.is_smtp_suspended);
-  }
+  const { hasExistingApprovedDomains, hasSomeSuspendedDomains } =
+    await getAdminDomainFlags({ domain, userId, userDomains });
 
   //
   // A domain the domain check flagged (phishing, a disposable email service,
@@ -250,7 +215,18 @@ async function checkAndAutoApproveSMTP(options) {
       ((hasLegitimateHosting && !hasSomeSuspendedDomains) ||
         (hasExistingApprovedDomains && !hasSomeSuspendedDomains)));
 
-  if (!shouldAutoApprove) return result;
+  if (!shouldAutoApprove) {
+    await notifySMTPPending({
+      domain,
+      client,
+      ns,
+      hasLegitimateHosting,
+      flaggedCategories: result.flaggedCategories,
+      hasExistingApprovedDomains,
+      hasSomeSuspendedDomains
+    });
+    return result;
+  }
 
   //
   // 5. Auto-approve: set has_smtp and save
@@ -307,14 +283,16 @@ async function checkAndAutoApproveSMTP(options) {
             <strong>NS Provider(s):</strong>
             ${
               ns && ns.length > 0
-                ? `<ul><li>${ns.join('</li><li>')}</li></ul>`
+                ? `<ul><li>${ns
+                    .map((n) => _.escape(n))
+                    .join('</li><li>')}</li></ul>`
                 : ''
             }
           </li>
         </ul>
-        <a href="${config.urls.web}/admin/domains?name=${
+        <a href="${config.urls.web}/admin/domains?name=${encodeURIComponent(
         domain.name
-      }" class="btn btn-dark btn-md">Review Domain</a>
+      )}" class="btn btn-dark btn-md">Review Domain</a>
         `.trim(),
       locale
     }
@@ -351,4 +329,262 @@ async function checkAndAutoApproveSMTP(options) {
   return result;
 }
 
+//
+// Whether the user has other domains approved for SMTP, or any suspended.
+// Uses pre-loaded `userDomains` if available (e.g. from `ctx.state.domains`,
+// which has a `group` virtual set by the retrieveDomains middleware),
+// otherwise queries the database.
+//
+async function getAdminDomainFlags({ domain, userId, userDomains }) {
+  if (Array.isArray(userDomains))
+    return {
+      hasExistingApprovedDomains: userDomains.some(
+        (d) =>
+          d.has_smtp &&
+          !d.is_smtp_suspended &&
+          d.group === 'admin' &&
+          d._id.toString() !== domain._id.toString()
+      ),
+      hasSomeSuspendedDomains: userDomains.some(
+        (d) => d.is_smtp_suspended && d.group === 'admin'
+      )
+    };
+
+  const adminDomains = await Domains.find({
+    members: {
+      $elemMatch: {
+        user: userId,
+        group: 'admin'
+      }
+    }
+  })
+    .select('_id has_smtp is_smtp_suspended smtp_suspended_sent_at')
+    .lean()
+    .exec();
+
+  return {
+    hasExistingApprovedDomains: adminDomains.some(
+      (d) =>
+        d.has_smtp &&
+        !d.is_smtp_suspended &&
+        d._id.toString() !== domain._id.toString()
+    ),
+    hasSomeSuspendedDomains: adminDomains.some((d) => d.is_smtp_suspended)
+  };
+}
+
+//
+// support is reminded this often while a verified domain waits for approval
+// (the domain's admins are told once)
+//
+const PENDING_NOTICE_INTERVAL_MS = ms('5d');
+
+/**
+ * Tell support (with a link to review it) and the domain's admins that a
+ * domain with verified SMTP records waits for approval: the "Verify" button,
+ * a message sent over SMTP or the API, and the hourly SMTP check all end
+ * here.  `smtp_verified_at` is when this was last done: the admins are told
+ * when it is not set, and support again once it is 5 days old, so a domain
+ * nobody reviewed is not forgotten.  It is claimed in the database, so
+ * concurrent sends tell support once, and given back when the emails cannot
+ * be sent.
+ *
+ * While the domain check has no verdict yet (or it cannot be read), only
+ * support is told, at most once in 10 minutes, and `smtp_verified_at` is
+ * left unset, so support and the admins are told once it has one.
+ *
+ * @param   {object}   options
+ * @param   {object}   options.domain
+ * @param   {object}   [options.client]                      Redis client
+ * @param   {Array}    [options.ns]
+ * @param   {boolean}  options.hasLegitimateHosting
+ * @param   {Array}    options.flaggedCategories
+ * @param   {boolean}  options.hasExistingApprovedDomains
+ * @param   {boolean}  options.hasSomeSuspendedDomains
+ * @param   {boolean}  [options.remind]  Whether support is reminded after 5
+ *                                       days (the hourly SMTP check only
+ *                                       tells once, so a domain an admin
+ *                                       turned off is not reported for a
+ *                                       month)
+ * @returns {Promise<boolean>}  Whether the domain's admins were told now
+ */
+async function notifySMTPPending({
+  domain,
+  client,
+  ns,
+  hasLegitimateHosting,
+  flaggedCategories,
+  hasExistingApprovedDomains,
+  hasSomeSuspendedDomains,
+  remind = true
+}) {
+  const isAwaiting = isAwaitingVerdict(flaggedCategories);
+
+  let isFirstNotice = !_.isDate(domain.smtp_verified_at);
+  let claim;
+  if (isAwaiting) {
+    if (!(await claimAwaitingNotice(client, domain._id))) return false;
+  } else {
+    const now = new Date();
+    const notified = [
+      { smtp_verified_at: { $exists: false } },
+      { smtp_verified_at: null }
+    ];
+    if (remind)
+      notified.push({
+        smtp_verified_at: {
+          $lte: new Date(now.getTime() - PENDING_NOTICE_INTERVAL_MS)
+        }
+      });
+    const previous = await Domains.findOneAndUpdate(
+      { _id: domain._id, has_smtp: { $ne: true }, $or: notified },
+      { $set: { smtp_verified_at: now } },
+      { new: false, projection: { smtp_verified_at: 1 } }
+    )
+      .lean()
+      .exec();
+    if (!previous) return false;
+    claim = { now, previous: previous.smtp_verified_at };
+    domain.smtp_verified_at = now;
+    isFirstNotice = !_.isDate(previous.smtp_verified_at);
+  }
+
+  try {
+    await sendSMTPPendingNotices({
+      domain,
+      ns,
+      hasLegitimateHosting,
+      flaggedCategories,
+      hasExistingApprovedDomains,
+      hasSomeSuspendedDomains,
+      isFirstNotice,
+      tellAdmins: isFirstNotice && !isAwaiting
+    });
+  } catch (err) {
+    //
+    // (not everything was sent: give the claim back, so the next send or
+    //  "Verify" tells them, instead of support in 5 days and the admins
+    //  never; support may hear twice)
+    //
+    if (claim) {
+      domain.smtp_verified_at = claim.previous || undefined;
+      await Domains.updateOne(
+        { _id: domain._id, smtp_verified_at: claim.now },
+        _.isDate(claim.previous)
+          ? { $set: { smtp_verified_at: claim.previous } }
+          : { $unset: { smtp_verified_at: 1 } }
+      );
+    }
+
+    throw err;
+  }
+
+  return isFirstNotice && !isAwaiting;
+}
+
+async function sendSMTPPendingNotices({
+  domain,
+  ns,
+  hasLegitimateHosting,
+  flaggedCategories,
+  hasExistingApprovedDomains,
+  hasSomeSuspendedDomains,
+  isFirstNotice,
+  tellAdmins
+}) {
+  const { to, locale } = await Domains.getToAndMajorityLocaleByDomain(domain);
+  const subject = i18n.translate('SMTP_ACCESS_SUBJECT', locale, domain.name);
+
+  await Promise.all([
+    tellAdmins &&
+      emailHelper({
+        template: 'alert',
+        message: { to, subject },
+        locals: {
+          message: i18n.translate('SMTP_ACCESS_PENDING', locale, domain.name),
+          locale
+        }
+      }),
+    emailHelper({
+      template: 'alert',
+      message: {
+        to: config.supportEmail,
+        replyTo: to,
+        subject
+      },
+      locals: {
+        message: `
+          <ul>
+            <li><strong>Legitimate Hosting</strong> ${Boolean(
+              hasLegitimateHosting
+            ).toString()}</li>
+            <li><strong>Flagged by Domain Check</strong> ${
+              flaggedCategories.length > 0
+                ? _.escape(flaggedCategories.join(', '))
+                : 'No'
+            }</li>
+            <li><strong>Suspended Domains</strong> ${Boolean(
+              hasSomeSuspendedDomains
+            ).toString()}</li>
+            <li><strong>Approved Domains</strong> ${Boolean(
+              hasExistingApprovedDomains
+            ).toString()}</li>
+            <li><strong>First Request</strong> ${isFirstNotice.toString()}</li>
+            <li>
+              <strong>NS Provider(s):</strong>
+              ${
+                ns && ns.length > 0
+                  ? `<ul><li>${ns
+                      .map((n) => _.escape(n))
+                      .join('</li><li>')}</li></ul>`
+                  : ''
+              }
+            </li>
+          </ul>
+          <a href="${config.urls.web}/admin/domains?name=${encodeURIComponent(
+          domain.name
+        )}" class="btn btn-dark btn-md">Review Domain</a>
+          `.trim(),
+        locale
+      }
+    })
+  ]);
+}
+
+//
+// Whether a domain not approved for SMTP waits for approval (its DKIM,
+// Return-Path and DMARC records verify), rather than for its setup:
+// `isVerified` is the result of a check just run, if there was one without
+// a DNS error, otherwise the records' last result.
+//
+function waitsForApproval(domain, isVerified) {
+  if (typeof isVerified === 'boolean') return isVerified;
+  return Boolean(
+    domain.has_dkim_record &&
+      domain.has_return_path_record &&
+      domain.has_dmarc_record
+  );
+}
+
+//
+// The error for a domain not approved for SMTP: a link to finish the setup,
+// or that it waits for approval (see `waitsForApproval`)
+//
+function getSMTPAccessError(domain, locale, isVerified) {
+  if (waitsForApproval(domain, isVerified))
+    return i18n.translateError('SMTP_ACCESS_PENDING', locale, domain.name);
+  return i18n.translateError(
+    'EMAIL_SMTP_CONFIGURATION_REQUIRED',
+    locale,
+    domain.name,
+    `${config.urls.web}/${
+      locale || i18n.config.defaultLocale
+    }/my-account/domains/${punycode.toASCII(domain.name)}/verify-smtp`
+  );
+}
+
 module.exports = checkAndAutoApproveSMTP;
+module.exports.getAdminDomainFlags = getAdminDomainFlags;
+module.exports.notifySMTPPending = notifySMTPPending;
+module.exports.getSMTPAccessError = getSMTPAccessError;
+module.exports.waitsForApproval = waitsForApproval;

@@ -27,7 +27,15 @@ const _ = require('#helpers/lodash');
 const Emails = require('#models/emails');
 const Domains = require('#models/domains');
 const config = require('#config');
+const {
+  getAdminDomainFlags,
+  notifySMTPPending
+} = require('#helpers/check-and-auto-approve-smtp');
 const createTangerine = require('#helpers/create-tangerine');
+const {
+  UNAVAILABLE,
+  getDomainCheckVerdict
+} = require('#helpers/domain-check-verdict');
 const emailHelper = require('#helpers/email');
 const i18n = require('#helpers/i18n');
 const logger = require('#helpers/logger');
@@ -127,6 +135,7 @@ async function mapper(id) {
       spf,
       autoconfig,
       autodiscover,
+      hasLegitimateHosting,
       errors
     } = await Domains.verifySMTP(domain, resolver);
 
@@ -204,31 +213,35 @@ async function mapper(id) {
       }
     } else if (!domain.has_smtp && isVerified) {
       domain.missing_smtp_sent_at = undefined;
-      if (count > 0 && !_.isDate(domain.smtp_verified_at)) {
-        // if the domain was newly verified and doesn't have smtp yet then email admins
-        const subject = i18n.translate(
-          'SMTP_ACCESS_SUBJECT',
-          locale,
-          domain.name
-        );
-        const message = i18n.translate(
-          'SMTP_ACCESS_PENDING',
-          locale,
-          domain.name
-        );
-        await emailHelper({
-          template: 'alert',
-          message: {
-            to,
-            bcc: config.alertsEmail,
-            subject
-          },
-          locals: {
-            message,
-            locale
-          }
+      if (count > 0) {
+        //
+        // the domain waits for approval: support and its admins are told
+        // once, as when it is verified or sends (sends and "Verify" also
+        // remind support after 5 days; see `notifySMTPPending`)
+        //
+        let verdict;
+        try {
+          verdict = await getDomainCheckVerdict(client, domain._id);
+        } catch (err) {
+          logger.error(err);
+          verdict = { categories: [UNAVAILABLE] };
+        }
+
+        const admin = domain.members.find((m) => m.group === 'admin');
+        await notifySMTPPending({
+          domain,
+          client,
+          remind: false,
+          ns,
+          hasLegitimateHosting,
+          flaggedCategories: verdict ? verdict.categories : [],
+          ...(admin
+            ? await getAdminDomainFlags({ domain, userId: admin.user })
+            : {
+                hasExistingApprovedDomains: false,
+                hasSomeSuspendedDomains: false
+              })
         });
-        domain.smtp_verified_at = new Date();
       }
     }
 

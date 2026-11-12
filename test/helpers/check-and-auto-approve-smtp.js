@@ -42,6 +42,8 @@ stubModule('#models/domains', {
   find: () => ({
     select: () => ({ lean: () => ({ exec: async () => [] }) })
   }),
+  // (support was told about the domain recently: see notify-smtp-pending.js)
+  findOneAndUpdate: () => ({ lean: () => ({ exec: async () => null }) }),
   async getToAndMajorityLocaleByDomain() {
     return { to: ['admin@example.com'], locale: 'en' };
   }

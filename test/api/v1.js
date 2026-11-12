@@ -1132,6 +1132,67 @@ async function createDomainWithMember(t) {
   return { admin, member, domain, adminAlias, memberAlias };
 }
 
+test('an email from a domain not set up for SMTP links to the setup', async (t) => {
+  const user = await t.context.userFactory
+    .withState({
+      plan: 'enhanced_protection',
+      [config.userFields.planSetAt]: dayjs().startOf('day').toDate()
+    })
+    .create();
+
+  await t.context.paymentFactory
+    .withState({
+      user: user._id,
+      amount: 300,
+      invoice_at: dayjs().startOf('day').toDate(),
+      method: 'free_beta_program',
+      duration: ms('30d'),
+      plan: user.plan,
+      kind: 'one-time'
+    })
+    .create();
+
+  await user.save();
+
+  // (no DKIM, Return-Path, or DMARC records, and never approved)
+  const domain = await t.context.domainFactory
+    .withState({
+      members: [{ user: user._id, group: 'admin' }],
+      plan: user.plan,
+      resolver,
+      has_smtp: false
+    })
+    .create();
+
+  const alias = await t.context.aliasFactory
+    .withState({
+      user: user._id,
+      domain: domain._id,
+      recipients: [user.email]
+    })
+    .create();
+
+  const res = await t.context.api
+    .post('/v1/emails')
+    .auth(user[config.userFields.apiToken])
+    .set('Accept', 'application/json')
+    .send({
+      from: `${alias.name}@${domain.name}`,
+      to: 'test@foo.com',
+      subject: 'test',
+      text: 'test'
+    });
+
+  t.is(res.status, 403);
+  t.true(
+    res.body.message.includes(
+      `${config.urls.web}/en/my-account/domains/${domain.name}/verify-smtp`
+    )
+  );
+  t.false(res.body.message.includes('contact us'));
+  t.is(await Emails.countDocuments({ domain: domain._id }), 0);
+});
+
 test('user member API token cannot send email as another alias or a non-existent address', async (t) => {
   const { admin, member, domain, adminAlias, memberAlias } =
     await createDomainWithMember(t);

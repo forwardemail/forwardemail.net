@@ -36,6 +36,7 @@ const combineErrors = require('./combine-errors');
 const createBounce = require('./create-bounce');
 const createMtaStsCache = require('./create-mta-sts-cache');
 const createSession = require('./create-session');
+const { getSMTPAccessError } = require('./check-and-auto-approve-smtp');
 const emailHelper = require('./email');
 const getBlockedHashes = require('./get-blocked-hashes');
 const getBounceInfo = require('./get-bounce-info');
@@ -327,8 +328,11 @@ async function processEmail({ email, port = 25, resolver, client }) {
       throw Boom.badRequest(i18n.translateError('DOMAIN_SUSPENDED'));
 
     // domain must be enabled
+    // (a link to finish the setup, or that it waits for approval)
     if (!domain.has_smtp)
-      throw Boom.badRequest(i18n.translateError('EMAIL_SMTP_ACCESS_REQUIRED'));
+      throw Boom.badRequest(
+        getSMTPAccessError(domain, user[config.lastLocaleField])
+      );
 
     // safeguard for global
     if (domain.is_global)

@@ -14,6 +14,7 @@ const { isResendable } = require('./resend-email');
 const _ = require('#helpers/lodash');
 
 const config = require('#config');
+const { getSMTPAccessError } = require('#helpers/check-and-auto-approve-smtp');
 const { getSmtpDayEnd, getSmtpDayStart } = require('#helpers/get-smtp-day');
 const setPaginationHeaders = require('#helpers/set-pagination-headers');
 const {
@@ -267,8 +268,9 @@ async function listEmails(ctx, next) {
     }
 
     // domain must be enabled
+    // (a link to finish the setup, or that it waits for approval)
     if (!domain.has_smtp)
-      throw Boom.badRequest(ctx.translateError('EMAIL_SMTP_ACCESS_REQUIRED'));
+      throw Boom.badRequest(getSMTPAccessError(domain, ctx.locale));
 
     // Filter by domain AND user's aliases/domains (for proper access control)
     query = {

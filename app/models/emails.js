@@ -45,6 +45,8 @@ const isEmail = require('#helpers/is-email');
 
 const MessageSplitter = require('#helpers/message-splitter');
 const checkAndAutoApproveSMTP = require('#helpers/check-and-auto-approve-smtp');
+
+const { getSMTPAccessError } = checkAndAutoApproveSMTP;
 const checkSRS = require('#helpers/check-srs');
 const config = require('#config');
 const createTangerine = require('#helpers/create-tangerine');
@@ -1793,6 +1795,7 @@ Emails.statics.queue = async function (
     // meets auto-approval criteria (e.g. passed KYC), approve on the fly.
     // This mirrors the logic from the "Verify SMTP" button flow.
     //
+    let isVerified;
     try {
       if (userId) {
         // Create a resolver using the existing redis client in this module
@@ -1800,12 +1803,14 @@ Emails.statics.queue = async function (
           _emailsResolver = createTangerine(redis, logger);
         }
 
-        const { isAutoApproved } = await checkAndAutoApproveSMTP({
+        const result = await checkAndAutoApproveSMTP({
           domain,
           resolver: _emailsResolver,
           client: redis,
           userId
         });
+        const { isAutoApproved } = result;
+        if (!result.hasDNSError) isVerified = result.isVerified;
 
         if (isAutoApproved) {
           logger.info('API auto-approved domain for SMTP', {
@@ -1820,10 +1825,9 @@ Emails.statics.queue = async function (
     }
 
     // Re-check after auto-approval attempt
+    // (a link to finish the setup, or that it waits for approval)
     if (!domain.has_smtp)
-      throw Boom.forbidden(
-        i18n.translateError('EMAIL_SMTP_ACCESS_REQUIRED', locale)
-      );
+      throw Boom.forbidden(getSMTPAccessError(domain, locale, isVerified));
   }
 
   //

@@ -11,6 +11,8 @@ const mongoose = require('mongoose');
 
 const _ = require('#helpers/lodash');
 const checkAndAutoApproveSMTP = require('#helpers/check-and-auto-approve-smtp');
+
+const { waitsForApproval } = checkAndAutoApproveSMTP;
 const isEmail = require('#helpers/is-email');
 const parseTLSRequiredHeader = require('#helpers/parse-tls-required-header');
 const Aliases = require('#models/aliases');
@@ -177,6 +179,7 @@ async function onDataSMTP(session, date, headers, body) {
     // meets auto-approval criteria (e.g. passed KYC), approve on the fly.
     // This mirrors the logic from the "Verify SMTP" button flow.
     //
+    let isVerified;
     try {
       // Determine the sending user's ID for auto-approval lookup.
       // If the user authenticated via alias, use the populated alias.user.id.
@@ -196,12 +199,14 @@ async function onDataSMTP(session, date, headers, body) {
       }
 
       if (sendingUserId) {
-        const { isAutoApproved } = await checkAndAutoApproveSMTP({
+        const result = await checkAndAutoApproveSMTP({
           domain,
           resolver: this.resolver,
           client: this.client,
           userId: sendingUserId
         });
+        const { isAutoApproved } = result;
+        if (!result.hasDNSError) isVerified = result.isVerified;
 
         if (isAutoApproved) {
           // Domain was approved – continue with sending
@@ -217,8 +222,9 @@ async function onDataSMTP(session, date, headers, body) {
     }
 
     // Re-check after auto-approval attempt
+    // (whether it waits for approval as in `getSMTPAccessError`)
     if (!domain.has_smtp) {
-      if (_.isDate(domain.smtp_verified_at))
+      if (waitsForApproval(domain, isVerified))
         throw new SMTPError(
           `Domain is pending admin approval for outbound SMTP access. Approval typically takes less than 24 hours; please check your inbox soon as we may be requesting additional information`,
           {
