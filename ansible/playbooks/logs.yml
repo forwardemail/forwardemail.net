@@ -959,7 +959,7 @@
           # decommitted at once (MongoDB 6.0; a little more CPU on frees).
           setParameter:
             tcmallocReleaseRate: 5
-            tcmallocAggressiveMemoryDecommit: true
+            tcmallocAggressiveMemoryDecommit: 1
 
           # Where and how to store data
           storage:
@@ -1182,7 +1182,7 @@
           # decommitted at once (MongoDB 6.0; a little more CPU on frees).
           setParameter:
             tcmallocReleaseRate: 5
-            tcmallocAggressiveMemoryDecommit: true
+            tcmallocAggressiveMemoryDecommit: 1
 
           # Where and how to store data
           storage:
