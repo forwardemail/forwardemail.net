@@ -46,6 +46,15 @@ sudo journalctl -u mongod-health-check.service -n 100 --no-pager
 ```
 
 
+## Disk encryption
+
+`disk-encryption-monitor` runs on every server 10 minutes after boot and once a day. It fails if a disk is not encrypted with LUKS: every mounted filesystem on a disk, every swap area, and the MongoDB (`/var/lib/mongodb`) and Valkey (`/var/lib/valkey`, which holds the RDB snapshot) data directories. LVM or RAID on LUKS counts as encrypted only when every disk under it is. `/boot`, snaps and zram are skipped. A failure emails the alert recipients every day until it is fixed. Servers that already send SMS (MongoDB, Logs, Redis, and the PM2 servers) also text. It is never a public status incident. The check does not encrypt anything: a disk has to be reinstalled on LUKS (see "Bare Metal Advice" in `DEPLOYMENT.md`).
+
+```bash
+sudo systemctl start disk-encryption-monitor.service; sudo journalctl -u disk-encryption-monitor.service -n 20 --no-pager
+```
+
+
 ## PM2
 
 [PM2][2] is checked every 10 minutes. An alert is sent when PM2 is missing, has no managed processes, has a stopped or errored process, or no longer matches its saved process list. See [PM2 monitoring](PM2_MONITORING.md) for the short maintenance procedure.

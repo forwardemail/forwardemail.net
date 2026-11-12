@@ -274,6 +274,17 @@
         - always
         - forwardemail-alert-policy
 
+    # A host that already sends SMS (and so already holds the Twilio
+    # credentials) also texts when a disk is not encrypted; other hosts email.
+    - name: Text unencrypted disks from hosts that send SMS
+      ansible.builtin.set_fact:
+        forwardemail_sms_services: >-
+          {{ forwardemail_sms_services + ['disk-encryption-monitor.service'] }}
+      when: forwardemail_sms_services | length > 0
+      tags:
+        - always
+        - forwardemail-alert-policy
+
     - name: Derive public systemd incident reporter state
       ansible.builtin.set_fact:
         forwardemail_systemd_incident_component: >-
@@ -379,6 +390,12 @@
         - open-ports-monitor.timer
         - ssl-certificate-monitor.timer
         - outbound-traffic-monitor.timer
+
+    - name: Restart disk encryption monitor timer
+      systemd:
+        daemon_reload: yes
+        name: disk-encryption-monitor.timer
+        state: restarted
   tasks:
     # Ensure netplan is installed and protected from removal
     - name: Ensure netplan is installed
@@ -1529,6 +1546,14 @@
       tags:
         - forwardemail-outbound-traffic-monitor
 
+    - name: Deploy disk encryption monitor script
+      copy:
+        src: "{{ playbook_dir }}/files/disk-encryption-monitor.sh"
+        dest: /usr/local/bin/disk-encryption-monitor.sh
+        owner: root
+        group: root
+        mode: '0755'
+
     - name: Deploy system resource monitor script
       copy:
         src: "{{ playbook_dir }}/files/system-resource-monitor.sh"
@@ -1611,6 +1636,24 @@
         - forwardemail-certificate-monitor
 
     # Deploy systemd service units
+    - name: Deploy disk encryption monitor service
+      template:
+        src: "{{ playbook_dir }}/templates/disk-encryption-monitor.service.j2"
+        dest: /etc/systemd/system/disk-encryption-monitor.service
+        owner: root
+        group: root
+        mode: '0644'
+      notify: Restart disk encryption monitor timer
+
+    - name: Deploy disk encryption monitor timer
+      template:
+        src: "{{ playbook_dir }}/templates/disk-encryption-monitor.timer.j2"
+        dest: /etc/systemd/system/disk-encryption-monitor.timer
+        owner: root
+        group: root
+        mode: '0644'
+      notify: Restart disk encryption monitor timer
+
     - name: Deploy system resource monitor service
       template:
         src: "{{ playbook_dir }}/templates/system-resource-monitor.service.j2"
@@ -1786,6 +1829,15 @@
       when: outbound_traffic_monitor_enabled | bool
       tags:
         - forwardemail-outbound-traffic-monitor
+
+    # Fails daily (email, and SMS where SMS is set up) until every disk,
+    # swap area and database directory is on LUKS
+    - name: Enable and start disk encryption monitor timer
+      systemd:
+        name: disk-encryption-monitor.timer
+        daemon_reload: yes
+        enabled: yes
+        state: started
 
     - name: Enable and start system resource monitor timer
       systemd:

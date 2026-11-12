@@ -1,0 +1,12 @@
+[Unit]
+Description=Disk Encryption Monitor Timer
+Documentation=https://github.com/forwardemail/forwardemail.net
+
+[Timer]
+# At boot and once a day (one alert a day until every disk is encrypted)
+OnBootSec=10min
+OnCalendar=daily
+Persistent=true
+
+[Install]
+WantedBy=timers.target

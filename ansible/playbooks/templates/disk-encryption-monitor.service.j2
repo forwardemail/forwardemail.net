@@ -1,0 +1,15 @@
+[Unit]
+Description=Disk Encryption Monitor
+Documentation=https://github.com/forwardemail/forwardemail.net
+After=local-fs.target swap.target
+OnFailure=failure-notification@%n.service
+
+[Service]
+Type=oneshot
+TimeoutStartSec=60
+ExecStart=/usr/local/bin/disk-encryption-monitor.sh
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=disk-encryption-monitor
+User=root
+Group=root
