@@ -24,7 +24,7 @@ const Aliases = require('#models/aliases');
 const config = require('#config');
 const env = require('#config/env');
 const isValidPassword = require('#helpers/is-valid-password');
-const { decrypt } = require('#helpers/encrypt-decrypt');
+const { decryptMobileConfigPassword } = require('#helpers/encrypt-decrypt');
 
 //
 // (this punctuation stuff is borrowed from our work with `spamscanner`)
@@ -433,7 +433,7 @@ async function mobileConfig(ctx, next) {
     // caller from observing cryptographic parser or padding failure details.
     let password;
     try {
-      password = decrypt(ctx.query.p);
+      password = decryptMobileConfigPassword(ctx.query.p);
     } catch (err) {
       ctx.logger.debug(err);
       return next(); // 404

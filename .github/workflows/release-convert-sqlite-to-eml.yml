@@ -11,8 +11,10 @@ permissions: {}
 jobs:
   build-binaries:
     runs-on: ${{ matrix.os }}
+    # This job installs dependencies and runs their code, so it can only read
+    # the repository. The job below attaches what it built to the release.
     permissions:
-      contents: write
+      contents: read
     timeout-minutes: 20
     strategy:
       fail-fast: false
@@ -44,8 +46,9 @@ jobs:
         with:
           node-version: 22
 
+      # (the versions in package-lock.json, which Dependabot keeps current)
       - name: Install dependencies
-        run: npm install
+        run: npm ci
 
       - name: Run converter tests
         run: npm test
@@ -77,18 +80,34 @@ jobs:
           & ".\dist\${{ matrix.artifact }}.exe" --help
         shell: pwsh
 
-      - name: Upload binary to release (Linux/macOS)
-        if: runner.os != 'Windows'
-        uses: softprops/action-gh-release@3bb12739c298aeb8a4eeaf626c5b8d85266b0e65 # v2
+      - name: Hand the binary to the upload job
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
-          files: tools/convert-sqlite-to-eml/dist/${{ matrix.artifact }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          name: ${{ matrix.artifact }}
+          path: tools/convert-sqlite-to-eml/dist/${{ matrix.artifact }}${{ runner.os == 'Windows' && '.exe' || '' }}
+          if-no-files-found: error
+          retention-days: 1
 
-      - name: Upload binary to release (Windows)
-        if: runner.os == 'Windows'
+  upload-binaries:
+    needs: build-binaries
+    # (as before, the binaries that were built are attached when the build
+    # for another system failed)
+    if: ${{ !cancelled() }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    timeout-minutes: 10
+    steps:
+      - name: Collect the binaries
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          path: dist
+          merge-multiple: true
+
+      - name: Upload binaries to release
         uses: softprops/action-gh-release@3bb12739c298aeb8a4eeaf626c5b8d85266b0e65 # v2
         with:
-          files: tools/convert-sqlite-to-eml/dist/${{ matrix.artifact }}.exe
+          files: dist/*
+          fail_on_unmatched_files: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

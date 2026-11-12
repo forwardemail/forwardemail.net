@@ -149,6 +149,25 @@ test('repeated Bcc values are never shown', async (t) => {
   t.false(res.text.includes('hidden-recipient@elsewhere.example.net'));
 });
 
+// (a header is stored under its name as the message wrote it)
+for (const name of ['Bcc', 'BCC', 'bcc', 'Bcc '])
+  test(`a "${name}" recipient that is not the viewer's is never shown`, async (t) => {
+    const id = await createLog(t, {
+      headers: {
+        Subject: 'Hello',
+        'Resent-Bcc': 'resent-hidden@elsewhere.example.net',
+        [name]: `hidden-recipient@elsewhere.example.net, alice@${t.context.domain.name}`
+      }
+    });
+
+    const res = await t.context.web.get(`/en/my-account/logs/${id}`);
+    t.is(res.status, 200);
+    t.false(res.text.includes('hidden-recipient@elsewhere.example.net'));
+    t.false(res.text.includes('resent-hidden@elsewhere.example.net'));
+    // (the viewer's own address in it is still shown)
+    t.true(res.text.includes('<strong>Bcc</strong>'));
+  });
+
 test('a long chain of Received headers is shown in full', async (t) => {
   const received = Array.from(
     { length: 12 },

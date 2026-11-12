@@ -554,6 +554,7 @@
     - name: Download mongosh tarball
       get_url:
         url: https://downloads.mongodb.com/compass/mongosh-2.5.10-linux-x64.tgz
+        checksum: sha256:b9c003d80dbf20d2bb2ad097abe7997a5e2a6a349af96b8510c741570116fc79
         dest: /tmp/mongosh.tgz
         mode: '0644'
       when: not mongosh_binary.stat.exists

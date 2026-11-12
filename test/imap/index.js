@@ -3231,6 +3231,32 @@ test('a sieve copy to a mailbox that does not exist creates it', async (t) => {
   t.deepEqual(await countByMailbox(t, subject), { INBOX: 1, Missing: 1 });
 });
 
+// (the folder is named by the message: its subject, written by the sender)
+test('a sieve folder named by a message is bounded as a created one is', async (t) => {
+  // (the first wildcard of the match, 40 levels deep)
+  const folder = `${'$'.concat('{1}/').repeat(40)}x`;
+  const { subject } = await deliverWithSieve(
+    t,
+    `require ["fileinto", "mailbox", "variables"];\nif header :matches "Subject" "*" { fileinto :create "${folder}"; }\nkeep;`
+  );
+  t.deepEqual(await countByMailbox(t, subject), { INBOX: 1 });
+});
+
+test('a sieve folder is not created past the limit of mailboxes', async (t) => {
+  const { imap, session } = t.context;
+  const { maxMailboxes } = config;
+  config.maxMailboxes = await Mailboxes.countDocuments(imap, session, {});
+  t.teardown(() => {
+    config.maxMailboxes = maxMailboxes;
+  });
+  const { subject } = await deliverWithSieve(
+    t,
+    'require ["fileinto", "mailbox"];\nfileinto :create "OneMore";'
+  );
+  t.deepEqual(await countByMailbox(t, subject), { INBOX: 1 });
+  t.is(await Mailboxes.countDocuments(imap, session, {}), config.maxMailboxes);
+});
+
 test('sieve copies of a message stay within the quota', async (t) => {
   const { alias, client } = t.context;
   const size = 10_200;
@@ -7021,6 +7047,54 @@ test('an IMAP client cannot append to a "Junk" folder that does not exist', asyn
     String(err.serverResponseCode || err.response?.code || err),
     /trycreate/i
   );
+});
+
+//
+// A client that enables UTF8=ACCEPT (imapflow does) sends the name of a
+// folder as UTF-8. APPEND read it one character per byte, did not find the
+// folder and answered NO [TRYCREATE].
+//
+test('an IMAP client can append to a folder named in UTF-8', async (t) => {
+  const { path } = await t.context.imapFlow.mailboxCreate(
+    'Envoy\u00E9s \u4E2D\u6587'
+  );
+  const appended = await t.context.imapFlow.append(
+    path,
+    Buffer.from(
+      [
+        'From: sender@example.com',
+        'To: recipient@example.com',
+        'Subject: test',
+        '',
+        'test',
+        ''
+      ].join('\r\n')
+    ),
+    [],
+    new Date()
+  );
+  t.truthy(appended.uid);
+
+  const mailbox = await Mailboxes.findOne(t.context.imap, t.context.session, {
+    path
+  });
+  const messages = await Messages.find(t.context.imap, t.context.session, {
+    mailbox: mailbox._id
+  });
+  t.is(messages.length, 1);
+});
+
+// (NIL as the name threw in the server, outside any handler, and the client
+// got no answer)
+test('an IMAP client that appends to NIL gets an answer', async (t) => {
+  const err = await t.throwsAsync(
+    t.context.imapFlow.exec('APPEND', [
+      null,
+      { type: 'LITERAL', value: Buffer.from('test') }
+    ])
+  );
+  t.regex(String(err.responseText || err.response || err), /mailbox argument/i);
+  await t.notThrowsAsync(t.context.imapFlow.noop());
 });
 
 test('mail delivered to "junk" goes to an existing Junk folder in any case', async (t) => {

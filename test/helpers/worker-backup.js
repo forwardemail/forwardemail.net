@@ -48,6 +48,7 @@ const Contacts = require('#models/contacts');
 const Domains = require('#models/domains');
 const config = require('#config');
 const getDatabase = require('#helpers/get-database');
+const Mailboxes = require('#models/mailboxes');
 const createWebSocketAsPromised = require('#helpers/create-websocket-as-promised');
 const setupPragma = require('#helpers/setup-pragma');
 const workerConfig = require('#helpers/sqlite-worker-config');
@@ -460,12 +461,80 @@ test('sqlite: uploads an encrypted copy of the mailbox', async (t) => {
   t.is(workerConfig.MIN_FREE_MEM, 0);
 });
 
+// a mailbox can have any name, and the entries of an archive are paths
+const OUTSIDE = 'Lists/../\uFF0E\uFF0E/ .. /outside';
+
+//
+// (a folder whose first segment is replaced, and has an "@" from then on,
+// ahead of dots that only count as dots after an "@")
+//
+const OUTSIDE_AT = '\\\uFF20/\u3002\u3002/\u3002\u3002/x@y';
+
+//
+// (the archive library drops a leading "name:" from an entry, up to three
+// times: one of these had no name left, the other a path on a drive)
+//
+const NAMELESS = 'Re:';
+const OUTSIDE_DRIVE = 'a:b:c:C:/outside';
+
+function assertInsideArchive(t, names) {
+  for (const name of names) {
+    t.false(
+      name.split(/[/\\]/).includes('..'),
+      `entry outside the archive: ${name}`
+    );
+    t.notRegex(name, /^(\w+:|\/|$)/, `entry outside the archive: ${name}`);
+  }
+}
+
+// creates those folders, with two messages of INBOX in the last one
+async function createFolders(t) {
+  for (const path of [OUTSIDE, NAMELESS, OUTSIDE_DRIVE])
+    await t.context.imapFlow.mailboxCreate(path);
+  const { path } = await t.context.imapFlow.mailboxCreate(OUTSIDE_AT);
+  const lock = await t.context.imapFlow.getMailboxLock('INBOX');
+  try {
+    await t.context.imapFlow.messageCopy('1:2', path);
+  } finally {
+    lock.release();
+  }
+}
+
+// the entries of an EML archive of a mailbox with those folders
+function assertFolders(t, names) {
+  assertInsideArchive(t, names);
+  for (const name of ['Lists/_/_/_/outside', 'Re_', 'a_b_c_C_/outside'])
+    t.true(names.includes(`${name}/`), `entries: ${names.join(', ')}`);
+  // each message of that folder is in it, under its own name
+  const folder = names.find((name) => name.endsWith('/x@y/'));
+  t.truthy(folder, `entries: ${names.join(', ')}`);
+  t.is(
+    names.filter((name) => name.startsWith(folder) && name.endsWith('.eml'))
+      .length,
+    2,
+    `entries: ${names.join(', ')}`
+  );
+}
+
 test('mbox: streams every mailbox into an encrypted archive', async (t) => {
   t.timeout(ms('5m'));
+  await createFolders(t);
+  // (two folders with one name in the archive, and a third that has the
+  // name the second is given)
+  await t.context.imapFlow.mailboxCreate('x@y@z');
+  const { _id } = await Mailboxes.findOne(t.context.imap, t.context.session, {
+    path: 'x@y@z'
+  });
+  for (const path of ['x@y', `x@y-${_id}`])
+    await t.context.imapFlow.mailboxCreate(path);
   await backup(backupPayload(t, 'mbox'));
 
   const entries = new AdmZip(uploaded(t, 'zip')).getEntries();
   const names = entries.map((entry) => entry.entryName);
+  assertInsideArchive(t, names);
+  for (const name of ['Lists/_/_/_/outside', 'Re_', 'a_b_c_C_/outside'])
+    t.true(names.includes(`${name}.mbox`), `entries: ${names.join(', ')}`);
+  t.is(names.filter((name) => name.startsWith('x@y')).length, 3);
   t.true(names.includes('README.txt'));
   t.true(names.includes('INBOX.mbox'), `entries: ${names.join(', ')}`);
 
@@ -505,10 +574,12 @@ function readme(t) {
 
 test('eml: streams every message into an encrypted archive', async (t) => {
   t.timeout(ms('5m'));
+  await createFolders(t);
   await backup(backupPayload(t, 'eml'));
 
   const entries = new AdmZip(uploaded(t, 'zip')).getEntries();
   const names = entries.map((entry) => entry.entryName);
+  assertFolders(t, names);
   t.true(names.includes('README.txt'));
   t.true(names.includes('INBOX/'), `entries: ${names.join(', ')}`);
 
@@ -602,6 +673,7 @@ test('a backup waits for the fixed memory reserve, whatever the mailbox size', a
 //
 test('the conversion script turns a mailbox file into the EML archive', async (t) => {
   t.timeout(ms('5m'));
+  await createFolders(t);
   await backup(backupPayload(t, 'sqlite'));
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'convert-'));
   t.teardown(() => fs.rmSync(dir, { recursive: true, force: true }));
@@ -651,6 +723,7 @@ test('the conversion script turns a mailbox file into the EML archive', async (t
   const names = entries.map((entry) => entry.entryName);
   t.true(names.includes('README.txt'), `entries: ${names.join(', ')}`);
   t.true(names.includes('INBOX/'));
+  assertFolders(t, names);
   const messages = entries.filter(
     (entry) =>
       entry.entryName.startsWith('INBOX/') && entry.entryName.endsWith('.eml')

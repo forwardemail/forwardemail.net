@@ -20,7 +20,7 @@ const env = require('#config/env');
 const isErrorConstructorName = require('#helpers/is-error-constructor-name');
 const _ = require('#helpers/lodash');
 const isValidPassword = require('#helpers/is-valid-password');
-const { encrypt } = require('#helpers/encrypt-decrypt');
+const { encryptMobileConfigPassword } = require('#helpers/encrypt-decrypt');
 
 //
 // (this punctuation stuff is borrowed from our work with `spamscanner`)
@@ -98,9 +98,9 @@ async function retrieveQRCode(ctx) {
     const username = `${alias.name}@${ctx.state.domain.name}`;
     const appleLink = `${
       config.urls.web
-    }/c/${username}.mobileconfig?a=${shortID.longToShort(alias.id)}&p=${encrypt(
-      ctx.request.body.password
-    )}`;
+    }/c/${username}.mobileconfig?a=${shortID.longToShort(
+      alias.id
+    )}&p=${encryptMobileConfigPassword(ctx.request.body.password)}`;
     const appleImgSrc = await QRCode.toDataURL(appleLink, {
       margin: 0,
       width: 200

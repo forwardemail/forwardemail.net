@@ -1,4 +1,7 @@
 version: 2
+# `cooldown` holds a new release back for 7 days before a version update is
+# proposed (security updates are not delayed). It is the quarantine that
+# minimum-release-age in .npmrc asks for, which the pinned pnpm 9 ignores.
 updates:
   # npm dependencies
   - package-ecosystem: "npm"
@@ -6,6 +9,8 @@ updates:
     schedule:
       interval: "weekly"
       day: "monday"
+    cooldown:
+      default-days: 7
     open-pull-requests-limit: 10
     reviewers:
       - "forwardemail/core"
@@ -24,12 +29,38 @@ updates:
           - "patch"
     # Security updates are always created regardless of schedule
 
+  # The export tool, whose release binaries are built from its lockfile
+  - package-ecosystem: "npm"
+    directory: "/tools/convert-sqlite-to-eml"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    cooldown:
+      default-days: 7
+    open-pull-requests-limit: 2
+    reviewers:
+      - "forwardemail/core"
+    labels:
+      - "dependencies"
+    commit-message:
+      prefix: "deps"
+      prefix-development: "deps(dev)"
+    groups:
+      export-tool-deps:
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "patch"
+
   # GitHub Actions
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
       interval: "weekly"
       day: "monday"
+    cooldown:
+      default-days: 7
     open-pull-requests-limit: 5
     reviewers:
       - "forwardemail/core"
@@ -49,6 +80,8 @@ updates:
     schedule:
       interval: "weekly"
       day: "monday"
+    cooldown:
+      default-days: 7
     reviewers:
       - "forwardemail/core"
     labels:

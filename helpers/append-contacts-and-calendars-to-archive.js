@@ -32,11 +32,35 @@ function sanitizeArchiveSegment(value, fallback) {
     .normalize('NFKC')
     // eslint-disable-next-line no-control-regex
     .replaceAll(/[\u0000-\u001F\u007F/\\:]/g, '_')
-    .replaceAll(/^\.+|\.+$/g, '')
-    .trim()
-    .slice(0, 200);
+    .slice(0, 200)
+    // (dots and spaces together: " .. " is ".." once only the spaces go)
+    .replaceAll(/^[.\s]+|[.\s]+$/g, '');
 
   return segment || fallback;
+}
+
+//
+// The path of a mailbox as a path in the archive. A mailbox can have any
+// name (e.g. one a Sieve script files into, taken from a message), and a
+// segment such as ".." would place its files outside the folder the archive
+// is extracted to. A segment of dots and spaces alone (and one with a
+// backslash or a control character, which some tools read as a separator) is
+// replaced. So is one with a colon: the archive library drops a leading
+// "name:" from an entry up to three times, which left "Re:" without a name
+// and "a:b:c:C:/x" as a path on a drive. Every other name is kept as it is.
+// The dots other scripts write become "." in `punycode.toASCII`, so this is
+// given its result.
+//
+function getArchiveMailboxPath(mailboxPath) {
+  return String(mailboxPath)
+    .split('/')
+    .map((segment) =>
+      // eslint-disable-next-line no-control-regex
+      /^[.\s]*$|[\u0000-\u001F\u007F\\:]/.test(segment)
+        ? sanitizeArchiveSegment(segment, '_')
+        : segment
+    )
+    .join('/');
 }
 
 function ensureExtension(value, extension) {
@@ -258,4 +282,5 @@ function appendContactsAndCalendarsToArchive({
 module.exports = appendContactsAndCalendarsToArchive;
 module.exports.ensureExtension = ensureExtension;
 module.exports.sanitizeArchiveSegment = sanitizeArchiveSegment;
+module.exports.getArchiveMailboxPath = getArchiveMailboxPath;
 module.exports.getUniquePath = getUniquePath;

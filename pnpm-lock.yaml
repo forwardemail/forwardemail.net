@@ -105,7 +105,7 @@ patchedDependencies:
     hash: ywpvwqia7rlgytvfnkjfbrbqqm
     path: patches/@zone-eu__mailsplit@5.4.9.patch
   '@zone-eu/wildduck@1.48.0':
-    hash: chlg5raar73clx6zn7zk3vssii
+    hash: wvflji5temlls3eyzbpi3nx2ym
     path: patches/@zone-eu__wildduck@1.48.0.patch
   mailauth@4.11.0:
     hash: hu3agrz7bzycne7bk6chwoeiwi
@@ -119,6 +119,9 @@ patchedDependencies:
   mailsplit@5.4.6:
     hash: jw77yhm5w45vhxhiw5ykxpthzy
     path: patches/mailsplit@5.4.6.patch
+  mongoose@6.13.10:
+    hash: ivvnat6z6lfxrarkzfhj3i4ud4
+    path: patches/mongoose@6.13.10.patch
   nodemailer@10.1.7:
     hash: 6q7mhcx4x2ma6gzq5nfio7ecoe
     path: patches/nodemailer@10.1.7.patch
@@ -207,10 +210,10 @@ importers:
         version: 4.1.1
       '@ladjs/mongoose':
         specifier: 7.0.0
-        version: 7.0.0(mongoose@6.13.10)
+        version: 7.0.0(mongoose@6.13.10(patch_hash=ivvnat6z6lfxrarkzfhj3i4ud4))
       '@ladjs/mongoose-error-messages':
         specifier: 1.0.0
-        version: 1.0.0(mongoose@6.13.10)
+        version: 1.0.0(mongoose@6.13.10(patch_hash=ivvnat6z6lfxrarkzfhj3i4ud4))
       '@ladjs/passport':
         specifier: 5.1.5
         version: 5.1.5
@@ -285,7 +288,7 @@ importers:
         version: 2.4.6
       '@zone-eu/wildduck':
         specifier: 1.48.0
-        version: 1.48.0(patch_hash=chlg5raar73clx6zn7zk3vssii)
+        version: 1.48.0(patch_hash=wvflji5temlls3eyzbpi3nx2ym)
       '@zone-eu/zone-mta':
         specifier: 3.10.11
         version: 3.10.11
@@ -693,16 +696,16 @@ importers:
         version: 0.3.3(@aws-sdk/credential-providers@3.1045.0)(snappy@7.3.3(@emnapi/core@1.10.0)(@emnapi/runtime@1.11.3))(socks@2.8.10)
       mongoose:
         specifier: 6.13.10
-        version: 6.13.10
+        version: 6.13.10(patch_hash=ivvnat6z6lfxrarkzfhj3i4ud4)
       mongoose-common-plugin:
         specifier: 4.0.0
-        version: 4.0.0(mongoose@6.13.10)
+        version: 4.0.0(mongoose@6.13.10(patch_hash=ivvnat6z6lfxrarkzfhj3i4ud4))
       mongoose-omit-common-fields:
         specifier: 0.0.6
         version: 0.0.6
       mongoose-unique-validator:
         specifier: 3.1.0
-        version: 3.1.0(mongoose@6.13.10)
+        version: 3.1.0(mongoose@6.13.10(patch_hash=ivvnat6z6lfxrarkzfhj3i4ud4))
       mongoose-validation-error-transform:
         specifier: 0.0.6
         version: 0.0.6
@@ -20750,20 +20753,20 @@ snapshots:
       - walrus
       - whiskers
 
-  '@ladjs/mongoose-error-messages@1.0.0(mongoose@6.13.10)':
+  '@ladjs/mongoose-error-messages@1.0.0(mongoose@6.13.10(patch_hash=ivvnat6z6lfxrarkzfhj3i4ud4))':
     dependencies:
-      mongoose: 6.13.10
+      mongoose: 6.13.10(patch_hash=ivvnat6z6lfxrarkzfhj3i4ud4)
 
-  '@ladjs/mongoose-unique-validator@5.0.0(mongoose@6.13.10)':
+  '@ladjs/mongoose-unique-validator@5.0.0(mongoose@6.13.10(patch_hash=ivvnat6z6lfxrarkzfhj3i4ud4))':
     dependencies:
       '@strikeentco/get': 1.0.1
-      mongoose: 6.13.10
+      mongoose: 6.13.10(patch_hash=ivvnat6z6lfxrarkzfhj3i4ud4)
 
-  '@ladjs/mongoose@7.0.0(mongoose@6.13.10)':
+  '@ladjs/mongoose@7.0.0(mongoose@6.13.10(patch_hash=ivvnat6z6lfxrarkzfhj3i4ud4))':
     dependencies:
       boolean: 3.2.0
       merge-options: 3.0.4
-      mongoose: 6.13.10
+      mongoose: 6.13.10(patch_hash=ivvnat6z6lfxrarkzfhj3i4ud4)
 
   '@ladjs/naivebayes@0.1.0':
     dependencies:
@@ -23888,7 +23891,7 @@ snapshots:
       npmlog: 7.0.1
       punycode.js: 2.3.1
 
-  '@zone-eu/wildduck@1.48.0(patch_hash=chlg5raar73clx6zn7zk3vssii)':
+  '@zone-eu/wildduck@1.48.0(patch_hash=wvflji5temlls3eyzbpi3nx2ym)':
     dependencies:
       '@fidm/x509': 1.2.1
       '@opensearch-project/opensearch': 3.5.1
@@ -32706,10 +32709,10 @@ snapshots:
       snappy: 7.3.3(@emnapi/core@1.10.0)(@emnapi/runtime@1.11.3)
       socks: 2.8.10
 
-  mongoose-common-plugin@4.0.0(mongoose@6.13.10):
+  mongoose-common-plugin@4.0.0(mongoose@6.13.10(patch_hash=ivvnat6z6lfxrarkzfhj3i4ud4)):
     dependencies:
-      '@ladjs/mongoose-error-messages': 1.0.0(mongoose@6.13.10)
-      '@ladjs/mongoose-unique-validator': 5.0.0(mongoose@6.13.10)
+      '@ladjs/mongoose-error-messages': 1.0.0(mongoose@6.13.10(patch_hash=ivvnat6z6lfxrarkzfhj3i4ud4))
+      '@ladjs/mongoose-unique-validator': 5.0.0(mongoose@6.13.10(patch_hash=ivvnat6z6lfxrarkzfhj3i4ud4))
       boolean: 3.2.0
       mongoose-hidden: 1.9.1
       mongoose-omit-common-fields: 0.0.6
@@ -32726,12 +32729,12 @@ snapshots:
     dependencies:
       camelcase: 6.3.0
 
-  mongoose-unique-validator@3.1.0(mongoose@6.13.10):
+  mongoose-unique-validator@3.1.0(mongoose@6.13.10(patch_hash=ivvnat6z6lfxrarkzfhj3i4ud4)):
     dependencies:
       lodash.foreach: 4.5.0
       lodash.get: 4.4.2
       lodash.merge: 4.6.2
-      mongoose: 6.13.10
+      mongoose: 6.13.10(patch_hash=ivvnat6z6lfxrarkzfhj3i4ud4)
 
   mongoose-validation-error-transform@0.0.6:
     dependencies:
@@ -32739,7 +32742,7 @@ snapshots:
       humanize-string: 2.1.0
       lodash: 4.18.1
 
-  mongoose@6.13.10:
+  mongoose@6.13.10(patch_hash=ivvnat6z6lfxrarkzfhj3i4ud4):
     dependencies:
       bson: 4.7.2
       kareem: 2.5.1

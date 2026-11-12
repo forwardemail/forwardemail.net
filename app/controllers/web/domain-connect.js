@@ -12,6 +12,7 @@ const isSANB = require('is-string-and-not-blank');
 const undici = require('undici');
 const config = require('#config');
 const { isPrivateHostResolved } = require('#helpers/is-private-host');
+const readLimitedBody = require('#helpers/read-limited-body');
 const safeFetch = require('#helpers/safe-fetch');
 const Domains = require('#models/domains');
 const { nsProviders } = require('#config/utilities');
@@ -38,6 +39,9 @@ const { nsProviders } = require('#config/utilities');
 
 const PROVIDER_ID = config.domainConnect.providerId;
 const SERVICE_ID = config.domainConnect.serviceId;
+
+// (the settings of a provider are a few hundred bytes)
+const SETTINGS_MAX_BYTES = 64 * 1024;
 
 //
 // The hosts of the providers we know (e.g. "dash.cloudflare.com", the same
@@ -116,8 +120,14 @@ async function fetchProviderSettings(apiBase, domain, resolver) {
       headersTimeout: 5000,
       resolver
     });
+    // (the provider is any server a domain's owner chose, so its reply is
+    // read up to a size and for a time, see `helpers/read-limited-body.js`)
+    const text = await readLimitedBody(body, {
+      limit: SETTINGS_MAX_BYTES,
+      timeout: 5000
+    });
     if (statusCode !== 200) return null;
-    return body.json();
+    return JSON.parse(text);
   } catch {
     return null;
   }
@@ -134,13 +144,15 @@ async function fetchProviderSettings(apiBase, domain, resolver) {
 async function checkTemplateSupport(apiBase, resolver) {
   try {
     const url = `${apiBase}/v2/domainTemplates/providers/${PROVIDER_ID}/services/${SERVICE_ID}`;
-    const { statusCode } = await safeFetch(url, {
+    const { body, statusCode } = await safeFetch(url, {
       method: 'GET',
       headers: { Accept: 'application/json' },
       bodyTimeout: 5000,
       headersTimeout: 5000,
       resolver
     });
+    // (only the status is used, so the rest of the reply is discarded)
+    await readLimitedBody(body, { limit: 1, timeout: 5000 });
     if (statusCode === 200) return 'supported';
     if (statusCode === 404) return 'not_found';
     return 'error';

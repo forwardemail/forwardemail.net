@@ -213,7 +213,7 @@ jobs:
               ;;
             "push")
               ICON="📤"
-              if [[ "${{ github.ref }}" == refs/tags/* ]]; then
+              if [[ "$GITHUB_REF" == refs/tags/* ]]; then
                 ICON="🏷️"
                 TITLE="Tag Pushed"
                 DESCRIPTION="Tag: $REF_NAME"
@@ -343,14 +343,29 @@ jobs:
               ;;
           esac
 
-          # Output variables using proper escaping
+          # Some of these values are text that anyone can type (the title of
+          # an issue, for example). Each one is kept on one line, as a second
+          # line would be read as another output, and escaped for the HTML
+          # message, where it would otherwise be read as markup.
+          one_line() { printf '%s' "$1" | tr '\r\n' '  '; }
+          html() { printf '%s' "$1" | sed -e 's/&/\&amp;/g' -e 's/</\&lt;/g' -e 's/>/\&gt;/g' -e 's/"/\&quot;/g'; }
+
+          TITLE=$(one_line "$TITLE")
+          DESCRIPTION=$(one_line "$DESCRIPTION")
+          URL=$(one_line "$URL")
+          ACTOR=$(one_line "$ACTOR")
+
           {
             echo "icon=$ICON"
             echo "title=$TITLE"
+            echo "title_html=$(html "$TITLE")"
             echo "description=$DESCRIPTION"
+            echo "description_html=$(html "$DESCRIPTION")"
             echo "url=$URL"
+            echo "url_html=$(html "$URL")"
             echo "actor=$ACTOR"
-          } >> $GITHUB_OUTPUT
+            echo "actor_html=$(html "$ACTOR")"
+          } >> "$GITHUB_OUTPUT"
 
       - name: Send Matrix notification
         uses: lkiesow/matrix-notification@8c265f458bdd18351931b715c0735302df597d94 # v1.5.0
@@ -367,8 +382,8 @@ jobs:
 
             Link: ${{ steps.format.outputs.url }}
           formatted_message: |
-            ${{ steps.format.outputs.icon }} <b>${{ steps.format.outputs.title }}</b><br><br>
-            <b>Actor:</b> ${{ steps.format.outputs.actor }}<br>
+            ${{ steps.format.outputs.icon }} <b>${{ steps.format.outputs.title_html }}</b><br><br>
+            <b>Actor:</b> ${{ steps.format.outputs.actor_html }}<br>
             <b>Repository:</b> ${{ github.repository }}<br>
-            ${{ steps.format.outputs.description && format('<b>Details:</b> {0}<br>', steps.format.outputs.description) || '' }}
-            <br><b>Link:</b> <a href="${{ steps.format.outputs.url }}">${{ steps.format.outputs.url }}</a>
+            ${{ steps.format.outputs.description && format('<b>Details:</b> {0}<br>', steps.format.outputs.description_html) || '' }}
+            <br><b>Link:</b> <a href="${{ steps.format.outputs.url_html }}">${{ steps.format.outputs.url_html }}</a>

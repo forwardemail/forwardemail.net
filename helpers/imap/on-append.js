@@ -28,6 +28,7 @@ const { readKey } = require('openpgp');
 
 const ms = require('ms');
 const Aliases = require('#models/aliases');
+const config = require('#config');
 const IMAPError = require('#helpers/imap-error');
 const {
   isOverBandwidth,
@@ -45,6 +46,7 @@ const encryptMessage = require('#helpers/encrypt-message');
 const encryptMessageSMIME = require('#helpers/encrypt-message-smime');
 const getFingerprint = require('#helpers/get-fingerprint');
 const i18n = require('#helpers/i18n');
+const validateMailboxPath = require('#helpers/imap/validate-mailbox-path');
 const isCodeBug = require('#helpers/is-code-bug');
 const isRetryableError = require('#helpers/is-retryable-error');
 const isTimeoutError = require('#helpers/is-timeout-error');
@@ -204,6 +206,35 @@ async function onAppend(path, flags, date, raw, session, fn) {
     //
     // However, for Sieve fileinto :create, we auto-create the folder per RFC 5490
     //
+    //
+    // The folder a Sieve script files into can be named by the message
+    // itself (e.g. `fileinto "${1}"` with part of a header or address), so
+    // it is bounded as a folder created over IMAP is (see on-create.js). A
+    // message whose folder cannot be created is kept in INBOX.
+    //
+    if (!mailbox && session.createFolder) {
+      let canCreate = true;
+      try {
+        validateMailboxPath(path, session.user.locale);
+      } catch {
+        canCreate = false;
+      }
+
+      if (
+        canCreate &&
+        (await Mailboxes.countDocuments(this, session, {})) >=
+          config.maxMailboxes
+      )
+        canCreate = false;
+
+      if (!canCreate) {
+        // (a copy of a message that INBOX already has is not stored twice)
+        if (session.sieveCopy) session.checkForExisting = true;
+        path = 'INBOX';
+        mailbox = await Mailboxes.findOne(this, session, { path });
+      }
+    }
+
     if (!mailbox) {
       // Check if this is a Sieve fileinto :create operation
       if (session.createFolder) {

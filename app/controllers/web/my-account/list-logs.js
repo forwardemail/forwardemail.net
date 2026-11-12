@@ -747,6 +747,7 @@ async function listLogs(ctx) {
         // KEEP: Filter BCC header to only show BCC recipients relevant to this user
         // This is a critical security/privacy fix from Dec 15
         //
+        filterLogForViewer.normalizeBccHeader(log?.meta?.session?.headers);
         if (
           log?.meta?.session?.headers &&
           typeof log.meta.session.headers === 'object' &&

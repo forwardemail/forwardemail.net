@@ -1,0 +1,82 @@
+diff --git a/lib/document.js b/lib/document.js
+index 4aac4d5dd95dde5b45e217ada9aa3e137c754fb2..9ebd44278246a6398c2b1d24b9816463d920970c 100644
+--- a/lib/document.js
++++ b/lib/document.js
+@@ -754,7 +754,11 @@ function init(self, obj, doc, opts, prefix) {
+ 
+     const value = obj[i];
+     if (!schemaType && utils.isPOJO(value)) {
+-      // assume nested object
++      // assume nested object. Skip inherited properties like `Object.prototype.toString`
++      // to avoid setting properties on shared objects
++      if (!utils.object.hasOwnProperty(doc, i) && i in doc) {
++        return;
++      }
+       if (!doc[i]) {
+         doc[i] = {};
+         if (!strict && !(i in docSchema.tree) && !(i in docSchema.methods) && !(i in docSchema.virtuals)) {
+@@ -1722,6 +1726,31 @@ Document.prototype.$__set = function(pathToMark, path, options, constructing, pa
+         obj[parts[i]] = val;
+       }
+     } else {
++      // Skip inherited properties like `Object.prototype.toString`, document methods,
++      // or document internals like `$__schema` to avoid setting properties on shared
++      // objects. Document properties are getters on the prototype, so check `_doc`.
++      // (Not as in 6.13.12, which reads `_doc` of anything with a `$__` here. A
++      // subdocument loaded without one of its paths (a projection) has no such key in
++      // `_doc`, and the object it returns for a nested path has the `_doc` of the
++      // whole subdocument: 6.13.12 drops `parent.set('sub.a.b', value)` for both,
++      // without an error. A stored key named like a document member, though, is in
++      // `_doc`, and so is any key of plain data that has a `$__` and a `_doc`. So:
++      // a subdocument answers by its schema (and, for a key outside it, by whether
++      // it returns what `_doc` holds), a nested path by the getters of its own, and
++      // everything else by its own keys.)
++      let isOwn;
++      if (!(obj instanceof Document)) {
++        isOwn = utils.object.hasOwnProperty(obj, parts[i]);
++      } else if (obj.$__isNested) {
++        isOwn = typeof (Object.getOwnPropertyDescriptor(obj, parts[i]) || {}).get === 'function';
++      } else {
++        isOwn = utils.object.hasOwnProperty(obj.$__schema.paths, parts[i]) ||
++          utils.object.hasOwnProperty(obj.$__schema.nested, parts[i]) ||
++          (utils.object.hasOwnProperty(obj._doc, parts[i]) && obj[parts[i]] === obj._doc[parts[i]]);
++      }
++      if (!isOwn && parts[i] in obj) {
++        return;
++      }
+       if (utils.isPOJO(obj[parts[i]])) {
+         obj = obj[parts[i]];
+       } else if (obj[parts[i]] && obj[parts[i]] instanceof Embedded) {
+diff --git a/lib/helpers/path/setDottedPath.js b/lib/helpers/path/setDottedPath.js
+index b17d549097c67b9fe3d890d242fefb4e9880b22f..cf88c84dec35aaa39cfbcdfab7927c01b07d628f 100644
+--- a/lib/helpers/path/setDottedPath.js
++++ b/lib/helpers/path/setDottedPath.js
+@@ -20,6 +20,11 @@ module.exports = function setDottedPath(obj, path, val) {
+     if (specialProperties.has(part)) {
+       continue;
+     }
++    // Skip inherited properties like `Object.prototype.toString` to avoid
++    // setting properties on shared objects
++    if (!Object.prototype.hasOwnProperty.call(cur, part) && part in cur) {
++      return;
++    }
+     if (cur[part] == null) {
+       cur[part] = {};
+     }
+diff --git a/lib/utils.js b/lib/utils.js
+index 923dc700222697035c0030928ed6e68308675b96..1e2b0443afc3ec3c15b2921dcf23d104f42c7915 100644
+--- a/lib/utils.js
++++ b/lib/utils.js
+@@ -905,6 +905,12 @@ exports.mergeClone = function(to, fromObj) {
+     if (specialProperties.has(key)) {
+       continue;
+     }
++    // Skip inherited properties like `Object.prototype.toString` to avoid setting
++    // properties on shared objects. Document properties are getters on the
++    // prototype, so check `_doc`.
++    if (!exports.object.hasOwnProperty(to.$__ == null ? to : to._doc, key) && key in to) {
++      continue;
++    }
+     if (typeof to[key] === 'undefined') {
+       to[key] = exports.clone(fromObj[key], {
+         transform: false,

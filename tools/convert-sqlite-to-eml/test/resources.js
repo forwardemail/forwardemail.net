@@ -1,6 +1,9 @@
 import Database from 'better-sqlite3-multiple-ciphers';
 import test from 'ava';
-import { appendContactsAndCalendarsToArchive } from '../resources.js';
+import {
+  appendContactsAndCalendarsToArchive,
+  getArchiveMailboxPath
+} from '../resources.js';
 
 function createArchive() {
   const entries = [];
@@ -105,6 +108,48 @@ test('exports active contacts and calendar resources into portable folders', (t)
     archive.entries
       .find((entry) => entry.name.endsWith('planning-2.ics'))
       .content.includes('BEGIN:VTODO')
+  );
+
+  database.close();
+});
+
+//
+// A name of dots with spaces around them is still ".." (or ".") to whatever
+// extracts the archive once the spaces are gone, and Windows drops the
+// spaces at the end of a name by itself.
+//
+test('keeps folders named with dots and spaces inside the archive', (t) => {
+  const database = createDatabase();
+  const archive = createArchive();
+  const inside = (name) =>
+    name.split('/').every((segment) => !/^\.+$/.test(segment.trim()));
+
+  database.prepare('INSERT INTO AddressBooks VALUES (?, ?)').run('b', ' .. ');
+  database
+    .prepare('INSERT INTO Contacts VALUES (?, ?, ?, ?, ?, ?)')
+    .run('c', 'b', 'a.vcf', 'a', 'BEGIN:VCARD\r\nFN:A\r\nEND:VCARD\r\n', null);
+  database.prepare('INSERT INTO Calendars VALUES (?, ?)').run('k', '. . .');
+  database
+    .prepare('INSERT INTO CalendarEvents VALUES (?, ?, ?, ?, ?)')
+    .run('e', 'k', 'e.ics', 'BEGIN:VCALENDAR\r\nEND:VCALENDAR\r\n', null);
+
+  appendContactsAndCalendarsToArchive({ archive, database });
+  const names = archive.entries.map((entry) => entry.name);
+  t.true(names.some((name) => name.endsWith('/a.vcf')));
+  t.true(names.some((name) => name.endsWith('/e.ics')));
+  for (const name of names) t.true(inside(name), `outside: ${name}`);
+
+  for (const mailbox of [
+    'Lists/ .. / .. /outside',
+    ' . / ..　/outside',
+    `Lists/ ..${' '.repeat(200)}\\/outside`
+  ])
+    t.true(inside(getArchiveMailboxPath(mailbox)), `outside: ${mailbox}`);
+
+  // (other names stay as they are)
+  t.is(
+    getArchiveMailboxPath('Lists/2026 .. notes/a.b'),
+    'Lists/2026 .. notes/a.b'
   );
 
   database.close();

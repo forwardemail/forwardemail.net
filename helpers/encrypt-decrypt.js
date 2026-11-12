@@ -486,9 +486,45 @@ function hashToken(token) {
   return crypto.createHash('sha256').update(String(token)).digest('hex');
 }
 
+//
+// The link of an alias's mobile config carries its password, which its owner
+// can choose, so whoever has an alias can get any text of theirs encrypted.
+// Under the key of every other token (unsubscribe, calendar response,
+// recipient verification) that text would be one of those tokens, so these
+// links have a key of their own, derived from it.
+//
+let mobileConfigKey;
+function getMobileConfigKey() {
+  mobileConfigKey ||= Buffer.from(
+    crypto.hkdfSync(
+      'sha256',
+      Buffer.from(env.HELPER_ENCRYPTION_KEY),
+      Buffer.alloc(0),
+      Buffer.from('mobile-config-link'),
+      32
+    )
+  );
+  return mobileConfigKey;
+}
+
+function encryptMobileConfigPassword(password) {
+  return encrypt(password, undefined, getMobileConfigKey());
+}
+
+// (a link made before these links had their own key is still read)
+function decryptMobileConfigPassword(value) {
+  try {
+    return decryptStrict(value, getMobileConfigKey());
+  } catch {
+    return decrypt(value);
+  }
+}
+
 module.exports = {
   encrypt,
   decrypt,
+  encryptMobileConfigPassword,
+  decryptMobileConfigPassword,
   decryptStrict,
   decryptIfEncrypted,
   hashToken

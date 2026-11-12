@@ -182,6 +182,34 @@ function isInheritedRecipient(domains, log, address) {
   );
 }
 
+//
+// The Bcc header of a log is filtered for its viewer under the name `Bcc`,
+// but a header is stored under its name as the message wrote it (e.g. `BCC`,
+// `bcc` or `Bcc ` before the colon, see `helpers/get-headers.js`), so any
+// other spelling is moved there first. Resent-Bcc holds recipients the same
+// way and is not shown.
+//
+function normalizeBccHeader(headers) {
+  if (!_.isObject(headers)) return;
+  const values = [];
+  for (const key of Object.keys(headers)) {
+    if (key.trim().toLowerCase() === 'resent-bcc') {
+      delete headers[key];
+      continue;
+    }
+
+    if (key === 'Bcc' || key.trim().toLowerCase() !== 'bcc') continue;
+    if (typeof headers[key] === 'string') values.push(headers[key]);
+    delete headers[key];
+  }
+
+  if (values.length === 0) return;
+  if (typeof headers.Bcc === 'string' && headers.Bcc)
+    values.unshift(headers.Bcc);
+  headers.Bcc = values.join(', ');
+}
+
 module.exports = filterLogForViewer;
+module.exports.normalizeBccHeader = normalizeBccHeader;
 module.exports.createIsVisible = createIsVisible;
 module.exports.isInheritedRecipient = isInheritedRecipient;

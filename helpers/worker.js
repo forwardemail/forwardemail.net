@@ -1658,6 +1658,7 @@ async function backup(payload) {
           sort: 'path'
         });
 
+        const names = new Set();
         for (const mailbox of db.prepare(sql.query).all(sql.values)) {
           const sql = builder.build({
             type: 'select',
@@ -1669,9 +1670,14 @@ async function backup(payload) {
           });
 
           const stream = new PassThrough();
-          await throttle.append(stream, {
-            name: punycode.toASCII(mailbox.path) + '.mbox'
-          });
+          // (see getArchiveMailboxPath; two mailboxes whose names end up
+          // the same there are told apart, so neither replaces the other)
+          let name = appendContactsAndCalendarsToArchive.getArchiveMailboxPath(
+            punycode.toASCII(mailbox.path)
+          );
+          while (names.has(name)) name += `-${mailbox._id}`;
+          names.add(name);
+          await throttle.append(stream, { name: `${name}.mbox` });
           for (const result of db.prepare(sql.query).iterate(sql.values)) {
             const message = syncConvertResult(Messages, result);
             // <https://github.com/nodemailer/wildduck/blob/49bd5015c188079e3a265c0873178e805f84ca2e/lib/mbox-stream.js#L31C38-L31C78>
@@ -1769,10 +1775,13 @@ async function backup(payload) {
             sort: 'path'
           });
           for (const mailbox of db.prepare(sql.query).iterate(sql.values)) {
-            map.set(mailbox._id, mailbox.path);
-            archive.append(null, {
-              name: `${punycode.toASCII(mailbox.path)}/`
-            });
+            // (see getArchiveMailboxPath)
+            const archivePath =
+              appendContactsAndCalendarsToArchive.getArchiveMailboxPath(
+                punycode.toASCII(mailbox.path)
+              );
+            map.set(mailbox._id, archivePath);
+            archive.append(null, { name: `${archivePath}/` });
           }
         }
 
@@ -1784,12 +1793,13 @@ async function backup(payload) {
           });
           for (const result of db.prepare(sql.query).iterate(sql.values)) {
             const message = syncConvertResult(Messages, result);
+            // (the path of the folder as it is: converting it again reads
+            // an "@" the replaced segments have, and can turn what follows
+            // into ".." segments or drop the name of the message)
             const mailboxPath = map.get(message.mailbox.toString());
-            const name = punycode.toASCII(
-              mailboxPath
-                ? `${mailboxPath}/${message._id.toString()}.eml`
-                : `${message._id.toString()}.eml`
-            );
+            const name = mailboxPath
+              ? `${mailboxPath}/${message._id.toString()}.eml`
+              : `${message._id.toString()}.eml`;
             //
             // The message is rebuilt lazily into a stream (see
             // helpers/indexer.js) which the archive reads once it gets to

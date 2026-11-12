@@ -552,6 +552,70 @@ test('convert handles empty database gracefully', async (t) => {
   fs.unlinkSync(outputPath);
 });
 
+//
+// The archive library drops a leading "name:" from the name of an entry, up
+// to three times: the folder "Re:" had no name left (and the conversion
+// stopped), and "a:b:c:C:/outside" was a path on a drive. The id of a
+// message is part of the name of its entry as well.
+//
+test('convert keeps folders named with colons, and message ids, inside the archive', async (t) => {
+  const databasePath = path.join(os.tmpdir(), `test-${randomUUID()}.sqlite`);
+  const outputPath = path.join(os.tmpdir(), `test-${randomUUID()}.zip`);
+  const password = 'colon-test-pw';
+
+  const database = new Database(databasePath);
+  database.pragma("cipher='chacha20'");
+  database.pragma(`key="${password}"`);
+  database.pragma('journal_mode=WAL');
+  database.exec('CREATE TABLE Mailboxes (_id TEXT PRIMARY KEY, path TEXT)');
+  database.exec(
+    'CREATE TABLE Messages (_id TEXT PRIMARY KEY, mailbox TEXT, uid INTEGER, mimeTree TEXT)'
+  );
+  database.exec(
+    'CREATE TABLE Attachments (_id TEXT PRIMARY KEY, hash TEXT UNIQUE, body BLOB, counter INTEGER)'
+  );
+  const insert = database.prepare('INSERT INTO Mailboxes VALUES (?, ?)');
+  insert.run('mb1', 'Re:');
+  insert.run('mb2', 'a:b:c:C:/outside');
+  const message = database.prepare('INSERT INTO Messages VALUES (?, ?, ?, ?)');
+  // (the second and the third end up as one name)
+  for (const [uid, id] of ['../../../outside', 'a/b', 'a_b'].entries())
+    message.run(
+      id,
+      'mb1',
+      uid + 1,
+      JSON.stringify({
+        header: ['From: test@example.com', 'Content-Type: text/plain'],
+        body: 'body\r\n',
+        lineCount: 1,
+        childNodes: []
+      })
+    );
+  database.close();
+
+  const result = await convert({
+    dbPath: databasePath,
+    password,
+    outputPath,
+    onProgress() {}
+  });
+  t.is(result.folderCount, 2);
+  t.is(result.messageCount, 3);
+
+  // (the names of the entries of a ZIP are not encrypted)
+  const archive = fs.readFileSync(outputPath).toString('latin1');
+  t.true(archive.includes('Re_/'));
+  t.true(archive.includes('a_b_c_C_/outside/'));
+  t.false(archive.includes('C:/outside'));
+  t.true(archive.includes('Re_/_.._.._outside.eml'));
+  t.false(archive.includes('../'));
+  t.true(archive.includes('Re_/a_b.eml'));
+  t.true(archive.includes('Re_/a_b-2.eml'));
+
+  fs.unlinkSync(databasePath);
+  fs.unlinkSync(outputPath);
+});
+
 test('convert throws for invalid file', async (t) => {
   const temporaryDirectory = os.tmpdir();
   const databasePath = path.join(

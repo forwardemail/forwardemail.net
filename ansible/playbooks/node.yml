@@ -15,12 +15,31 @@
       stat:
         path: /home/deploy/n
       register: n_result
+    # The installer is fetched at a fixed commit (the "stable" tag, v0.6.5)
+    # and checked before it runs, instead of piping whatever that tag points
+    # to into bash. (It still clones tj/n, which downloads Node.js from
+    # nodejs.org, at their latest.)
+    - name: Download n installer
+      become: true
+      become_user: deploy
+      get_url:
+        url: https://raw.githubusercontent.com/mklement0/n-install/9e4066ea882bc4c23413e7d66879bc9917451ae5/bin/n-install
+        dest: /home/deploy/n-install
+        checksum: sha256:1f645d9bd5edfbac6c6ad05b5791e60bfcbf568fd651007172f33e2cd469314d
+        mode: '0700'
+      when: not n_result.stat.exists
     - name: Install n
       become: true
       become_user: deploy
       shell:
-        cmd: curl -L https://raw.githubusercontent.com/mklement0/n-install/stable/bin/n-install | bash -s -- -y {{node_version}}
+        cmd: bash /home/deploy/n-install -y {{node_version}}
       when: not n_result.stat.exists
+    - name: Remove n installer
+      become: true
+      become_user: deploy
+      file:
+        path: /home/deploy/n-install
+        state: absent
 
     - name: Debug Node version
       debug:

@@ -1,3 +1,5 @@
 node_modules/
 dist/
 *.blob
+# (the root .gitignore ignores npm's lockfile; this package is built with npm)
+!package-lock.json

@@ -13,12 +13,14 @@ const { randomUUID } = require('node:crypto');
 
 const falso = require('@ngneat/falso');
 const ms = require('ms');
+const shortID = require('mongodb-short-id');
 const test = require('ava');
 
 const utils = require('../utils');
 
 const config = require('#config');
 const { Aliases, Payments, Users } = require('#models');
+const { encrypt } = require('#helpers/encrypt-decrypt');
 
 test.before(utils.setupMongoose);
 test.after.always(utils.teardownMongoose);
@@ -161,4 +163,73 @@ test('an admin can set the same email with other spacing or case', async (t) => 
   t.is(res.status, 200);
   const fresh = await Users.findById(target._id).lean().exec();
   t.is(fresh.email, target.email);
+});
+
+//
+// The link in the QR code dialog carries the alias password encrypted, and
+// the owner of an alias chooses its password. It must not be readable as
+// another kind of link, e.g. the one that verifies a recipient of an alias
+// (`/v/<alias id>|<recipient>` encrypted), which only the recipient gets.
+//
+test('the QR code link of an alias password is not a recipient verification link', async (t) => {
+  await login(t);
+  const domain = await t.context.domainFactory
+    .withState({
+      name: `test-${randomUUID()}.example.com`,
+      members: [{ user: t.context.user._id, group: 'admin' }],
+      plan: 'enhanced_protection',
+      skip_verification: true
+    })
+    .create();
+  const recipient = 'someone-else@example.net';
+  let alias = await t.context.aliasFactory
+    .withState({
+      user: t.context.user._id,
+      domain: domain._id,
+      name: 'hello',
+      recipients: [recipient],
+      has_recipient_verification: true
+    })
+    .create();
+  alias = await Aliases.findById(alias._id)
+    .select('+tokens.hash +tokens.salt +tokens.has_pbkdf2_migration')
+    .exec();
+  const password = `${shortID.longToShort(alias.id)}|${recipient}`;
+  alias.locale = 'en';
+  await alias.createToken('test', password);
+  await alias.save();
+
+  const res = await t.context.web
+    .post(`/en/my-account/domains/${domain.name}/aliases/${alias.id}/qrcode`)
+    .set('Accept', 'application/json')
+    .set('Sec-Fetch-Site', 'same-origin')
+    .send({ password });
+  t.is(res.status, 200);
+  const page = await t.context.web
+    .get(res.body.redirectTo)
+    .set('Accept', 'text/html');
+  const html = JSON.parse(page.text.match(/window\._messages = (.*);\s*$/m)[1])
+    .custom.map((m) => m.html || '')
+    .join('\n');
+  const [, link, p] = html.match(
+    /(\/c\/hello@[^"'<> ]+\.mobileconfig\?a=[\w-]+&(?:amp;)?p=([\w-]+))/
+  );
+
+  // the link still gives the mobile config of the alias
+  const mobileConfig = await t.context.web.get(link.replace('&amp;', '&'));
+  t.is(mobileConfig.status, 200);
+  t.true(mobileConfig.text.includes(`hello@${domain.name}`));
+  // (as does a link made before these links had a key of their own)
+  const earlier = await t.context.web.get(
+    `/c/hello@${domain.name}.mobileconfig?a=${shortID.longToShort(
+      alias.id
+    )}&p=${encrypt(password)}`
+  );
+  t.is(earlier.status, 200);
+
+  // and it does not verify the recipient
+  const verify = await t.context.web.get(`/en/v/${p}`);
+  t.is(verify.status, 400);
+  alias = await Aliases.findById(alias._id).lean().exec();
+  t.deepEqual(alias.verified_recipients, []);
 });

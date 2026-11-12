@@ -12,7 +12,7 @@ const titleize = require('titleize');
 
 const config = require('#config');
 const env = require('#config/env');
-const { encrypt } = require('#helpers/encrypt-decrypt');
+const { encryptMobileConfigPassword } = require('#helpers/encrypt-decrypt');
 
 //
 // (this punctuation stuff is borrowed from our work with `spamscanner`)
@@ -51,9 +51,9 @@ async function getAliasPasswordSwal(
   // (this same logic is in app/controllers/web/index.js)
   const appleLink = `${
     config.urls.web
-  }/c/${username}.mobileconfig?a=${shortID.longToShort(aliasId)}&p=${encrypt(
-    password
-  )}`;
+  }/c/${username}.mobileconfig?a=${shortID.longToShort(
+    aliasId
+  )}&p=${encryptMobileConfigPassword(password)}`;
   const appleImgSrc = await QRCode.toDataURL(appleLink, {
     margin: 0,
     width: 200

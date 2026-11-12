@@ -48,44 +48,42 @@ console.log('Step 1: Bundling with esbuild...');
 const { build } = await import('esbuild');
 
 // Banner that intercepts require('bindings') in SEA context
-// to extract the native .node file from the embedded SEA asset
+// to extract the native .node file from the embedded SEA asset.
+//
+// The file is written to a folder of its own, which only this user can enter
+// and whose name cannot be known in advance. A file with a fixed name in the
+// temporary folder (which is shared between the users of a Linux system)
+// could be put there by another user first, and it is what gets loaded.
+//
+// Nothing else is loaded from disk: when the file cannot be written or
+// loaded, the executable stops with that error. Looking a module up beside
+// the executable also looks in node_modules of every folder above it, and in
+// a shared folder such as /tmp another user can put one there.
 const seaBanner = [
   '(function() {',
   '  if (typeof require !== "undefined") {',
   '    var origRequire = require;',
-  '    var Module = origRequire("module");',
-  '    if (typeof Module.createRequire === "function") {',
-  '      var origResolve = require.resolve;',
-  '      require = function(id) {',
-  '        if (id === "bindings") {',
-  '          return function() {',
-  '            try {',
-  '              var sea = origRequire("node:sea");',
-  '              if (sea && sea.isSea && sea.isSea()) {',
-  '                var os = origRequire("os");',
-  '                var path = origRequire("path");',
-  '                var fs = origRequire("fs");',
-  '                var tmpPath = path.join(os.tmpdir(), "better_sqlite3_" + process.pid + ".node");',
-  '                var raw = sea.getRawAsset("better_sqlite3.node");',
-  '                fs.writeFileSync(tmpPath, Buffer.from(raw));',
-  '                var mod = { exports: {} };',
-  '                process.dlopen(mod, tmpPath);',
-  '                process.on("exit", function() { try { fs.unlinkSync(tmpPath); } catch(e) {} });',
-  '                return mod.exports;',
-  '              }',
-  '            } catch(e) {}',
-  '            var realReq = Module.createRequire(path.join(process.execPath, "..", "package.json"));',
-  '            return realReq("bindings")("better_sqlite3.node");',
-  '          };',
-  '        }',
-  '        try { return origRequire(id); } catch(e) {',
-  '          var p = origRequire("path");',
-  '          var rr = Module.createRequire(p.join(process.execPath, "..", "package.json"));',
-  '          return rr(id);',
-  '        }',
+  '    var origResolve = require.resolve;',
+  '    require = function(id) {',
+  '      if (id !== "bindings") return origRequire(id);',
+  '      return function() {',
+  '        var sea = null;',
+  '        try { sea = origRequire("node:sea"); } catch(e) {}',
+  '        if (!sea || !sea.isSea()) throw new Error("the SQLite library is inside the standalone executable only; with Node.js, run index.js instead");',
+  '        var os = origRequire("os");',
+  '        var path = origRequire("path");',
+  '        var fs = origRequire("fs");',
+  '        var tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "convert-sqlite-to-eml-"));',
+  '        process.on("exit", function() { try { fs.rmSync(tmpDir, { recursive: true, force: true }); } catch(e) {} });',
+  '        var tmpPath = path.join(tmpDir, "better_sqlite3.node");',
+  '        var raw = sea.getRawAsset("better_sqlite3.node");',
+  '        fs.writeFileSync(tmpPath, Buffer.from(raw));',
+  '        var mod = { exports: {} };',
+  '        process.dlopen(mod, tmpPath);',
+  '        return mod.exports;',
   '      };',
-  '      require.resolve = origResolve;',
-  '    }',
+  '    };',
+  '    require.resolve = origResolve;',
   '  }',
   '})();'
 ].join('\n');
@@ -135,8 +133,7 @@ try {
   console.error(
     'Failed to generate SEA blob. Node.js >= 20 is required for SEA support.'
   );
-  console.error('For Node.js 18, use the bundled dist/bundle.cjs directly.');
-  console.log('\nAlternative: run with `node dist/bundle.cjs`');
+  console.error('With an older Node.js, run the tool with: node index.js');
   process.exit(0);
 }
 
@@ -166,7 +163,7 @@ if (process.platform === 'darwin') {
 const sentinelFuse = 'NODE_SEA_FUSE_fce680ab2cc467b6e072b8b5df1996b2';
 try {
   execSync(
-    `npx postject ${binaryPath} NODE_SEA_BLOB ${path.join(
+    `npx --no postject ${binaryPath} NODE_SEA_BLOB ${path.join(
       distributionDirectory,
       'sea-prep.blob'
     )} --sentinel-fuse ${sentinelFuse}` +
@@ -175,7 +172,7 @@ try {
   );
 } catch {
   console.error(
-    'Failed to inject SEA blob. Install postject: npm install -g postject'
+    'Failed to inject SEA blob. Install the dependencies first: npm install'
   );
   process.exit(1);
 }

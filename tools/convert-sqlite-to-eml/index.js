@@ -29,7 +29,12 @@ import zlib from 'node:zlib';
 import Database from 'better-sqlite3-multiple-ciphers';
 import archiver from 'archiver';
 import archiverZipEncrypted from 'archiver-zip-encrypted';
-import { appendContactsAndCalendarsToArchive } from './resources.js';
+import {
+  appendContactsAndCalendarsToArchive,
+  getArchiveMailboxPath,
+  getUniquePath,
+  sanitizeArchiveSegment
+} from './resources.js';
 
 // Register the encrypted zip format
 archiver.registerFormat('zip-encrypted', archiverZipEncrypted);
@@ -552,12 +557,15 @@ async function convert(options) {
       .prepare('SELECT _id, path FROM Mailboxes ORDER BY path')
       .all();
     for (const row of mailboxRows) {
-      mailboxMap.set(row._id, row.path);
-      archive.append(null, { name: `${row.path}/` });
+      // (see getArchiveMailboxPath)
+      const archivePath = getArchiveMailboxPath(row.path);
+      mailboxMap.set(row._id, archivePath);
+      archive.append(null, { name: `${archivePath}/` });
       log(`  Mailbox: ${row.path}`);
     }
 
     // Process messages
+    const names = new Set();
     let processed = 0;
     let skipped = 0;
     let attachmentCount = 0;
@@ -573,8 +581,15 @@ async function convert(options) {
         continue;
       }
 
+      // (the id is a name in the archive too, and the file may not be one
+      // of ours: "../../x" as an id was a path out of the archive; ids that
+      // end up as one name are told apart)
       const mailboxPath = mailboxMap.get(row.mailbox) || 'Unknown';
-      const name = `${mailboxPath}/${row._id}.eml`;
+      const name = getUniquePath(
+        names,
+        mailboxPath,
+        `${sanitizeArchiveSegment(row._id, 'message')}.eml`
+      );
 
       // Count attachments in this message
       attachmentCount += countAttachments(mimeTree);

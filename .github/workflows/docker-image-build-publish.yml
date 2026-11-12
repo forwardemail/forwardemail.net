@@ -33,14 +33,6 @@ jobs:
       TRUTH_SOURCES: "truthsource.com"
       TURNSTILE_ENABLED: "false"
       WEB_HOST: "example.com"
-      SMTP_MESSAGE_MAX_SIZE: ${{ secrets.SMTP_MESSAGE_MAX_SIZE }}
-      DKIM_PRIVATE_KEY_VALUE: ${{ secrets.DKIM_PRIVATE_KEY_VALUE }}
-      AXE_SILENT: ${{ secrets.AXE_SILENT }}
-      AXE_SHOW_META: ${{ secrets.AXE_SHOW_META }}
-      AXE_SHOW_STACK: ${{ secrets.AXE_SHOW_STACK }}
-      TXT_ENCRYPTION_KEY: ${{ secrets.TXT_ENCRYPTION_KEY }}
-      HELPER_ENCRYPTION_KEY: ${{ secrets.HELPER_ENCRYPTION_KEY }}
-      SRS_SECRET: ${{ secrets.SRS_SECRET }}
     steps:
       # Checkout the repository to the runner
       - name: Checkout repository
@@ -75,14 +67,17 @@ jobs:
       # Build / Publish the Docker image to GitHub Container Registry
       - name: Build / Publish Docker image to GitHub Container Registry
         run: |
-          IMAGE_NAME=ghcr.io/${{ github.repository }}-selfhosted:${{ github.ref_name }}
-          docker build -f self-hosting/Dockerfile-selfhosted -t $IMAGE_NAME .
+          # (the name of the release's tag is read from the environment: text
+          # interpolated into this script would run as part of it)
+          IMAGE="ghcr.io/${GITHUB_REPOSITORY}-selfhosted"
+          IMAGE_NAME="${IMAGE}:${GITHUB_REF_NAME}"
+          docker build -f self-hosting/Dockerfile-selfhosted -t "$IMAGE_NAME" .
 
           # Tag the image as 'latest' to update the latest tag
-          docker tag $IMAGE_NAME ghcr.io/${{ github.repository }}-selfhosted:latest
+          docker tag "$IMAGE_NAME" "${IMAGE}:latest"
 
           # Push both the versioned and latest tags to GitHub Container Registry
-          docker push $IMAGE_NAME
-          docker push ghcr.io/${{ github.repository }}-selfhosted:latest
+          docker push "$IMAGE_NAME"
+          docker push "${IMAGE}:latest"
         env:
           DOCKER_CLI_EXPERIMENTAL: enabled

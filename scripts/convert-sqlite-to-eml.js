@@ -169,10 +169,13 @@ const instance = {
       sort: 'path'
     });
     for (const mailbox of db.prepare(sql.query).iterate(sql.values)) {
-      map.set(mailbox._id, mailbox.path);
-      archive.append(null, {
-        name: `${punycode.toASCII(mailbox.path)}/`
-      });
+      // (see getArchiveMailboxPath)
+      const archivePath =
+        appendContactsAndCalendarsToArchive.getArchiveMailboxPath(
+          punycode.toASCII(mailbox.path)
+        );
+      map.set(mailbox._id, archivePath);
+      archive.append(null, { name: `${archivePath}/` });
     }
   }
 
@@ -184,12 +187,11 @@ const instance = {
     });
     for (const result of db.prepare(sql.query).iterate(sql.values)) {
       const message = syncConvertResult(Messages, result);
+      // (as in the "eml" backup of helpers/worker.js)
       const mailboxPath = map.get(message.mailbox.toString());
-      const name = punycode.toASCII(
-        mailboxPath
-          ? `${mailboxPath}/${message._id.toString()}.eml`
-          : `${message._id.toString()}.eml`
-      );
+      const name = mailboxPath
+        ? `${mailboxPath}/${message._id.toString()}.eml`
+        : `${message._id.toString()}.eml`;
       // similar to 'rfc822' case in `helpers/get-query-response.js`
       // (value is a stream)
       const { value } = indexer.getContents(

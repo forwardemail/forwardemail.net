@@ -13,30 +13,61 @@
 // cannot send the browser to a page it chose).
 //
 // The DNS-over-HTTPS lookup of the _domainconnect record is answered by an
-// undici MockAgent, and the requests to the provider by a stand-in for
-// #helpers/safe-fetch (installed before the web server loads it).
+// undici MockAgent, and the requests to the provider by a local server, which
+// a stand-in for #helpers/safe-fetch (installed before the web server loads
+// it) sends them to.
 //
+
+const http = require('node:http');
+const { Buffer } = require('node:buffer');
+const { once } = require('node:events');
 
 const ms = require('ms');
 const test = require('ava');
 const {
+  Agent,
   MockAgent,
   getGlobalDispatcher,
+  request,
   setGlobalDispatcher
 } = require('undici');
 
 // (a public address, so it passes the private host checks without DNS)
 const PROVIDER = '93.184.216.34';
 
+// (the settings the provider replies with, or a reply that never ends)
+const ENDLESS = Symbol('endless');
 let settings;
+let sent = 0;
+const provider = http.createServer((req, res) => {
+  res.writeHead(200, { 'Content-Type': 'application/json' });
+  if (!req.url.endsWith('/settings')) return res.end('{}');
+  if (settings !== ENDLESS) return res.end(JSON.stringify(settings));
+  const chunk = Buffer.alloc(64 * 1024, ' ');
+  res.write('{"urlSyncUX":"https://dash.cloudflare.com/domainconnect","pad":"');
+  const write = () => {
+    while (!res.destroyed) {
+      sent += chunk.length;
+      if (!res.write(chunk)) break;
+    }
+  };
+
+  res.on('drain', write);
+  write();
+});
+
+// (not the MockAgent, which the tests set as the global dispatcher)
+const dispatcher = new Agent();
 const SAFE_FETCH_PATH = require.resolve('#helpers/safe-fetch');
 require.cache[SAFE_FETCH_PATH] = {
   id: SAFE_FETCH_PATH,
   filename: SAFE_FETCH_PATH,
   loaded: true,
-  async exports(url) {
-    const json = async () => (url.endsWith('/settings') ? settings : {});
-    return { statusCode: 200, headers: {}, body: { json } };
+  exports(url) {
+    const { pathname } = new URL(url);
+    return request(`http://127.0.0.1:${provider.address().port}${pathname}`, {
+      dispatcher
+    });
   }
 };
 
@@ -45,7 +76,16 @@ const config = require('#config');
 const { Users } = require('#models');
 
 test.before(utils.setupMongoose);
+test.before(async () => {
+  provider.listen(0, '127.0.0.1');
+  await once(provider, 'listening');
+});
 test.after.always(utils.teardownMongoose);
+test.after.always(async () => {
+  await dispatcher.destroy();
+  provider.closeAllConnections();
+  provider.close();
+});
 test.beforeEach(utils.setupFactories);
 test.beforeEach(async (t) => {
   await utils.setupWebServer(t);
@@ -163,4 +203,23 @@ test('does not send anyone else to another host of a provider we list', async (t
   const res = await connect(t);
   t.is(res.status, 200);
   t.falsy(res.body.applyUrl);
+});
+
+test('stops reading provider settings that never end', async (t) => {
+  await spoofA(t, 'dash.cloudflare.com', '104.16.123.96');
+  settings = ENDLESS;
+  sent = 0;
+  let timer;
+  const res = await Promise.race([
+    connect(t),
+    new Promise((resolve) => {
+      timer = setTimeout(resolve, ms('15s'));
+    })
+  ]);
+  clearTimeout(timer);
+  t.truthy(res, 'the request was still reading the reply');
+  t.is(res.status, 200);
+  t.falsy(res.body.applyUrl);
+  // (what was read, and what was in flight when the connection was closed)
+  t.true(sent < 16 * 1024 * 1024, `${sent} bytes were sent`);
 });

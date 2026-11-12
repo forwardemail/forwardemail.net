@@ -491,13 +491,13 @@ To return those properties and their values, please use the [Retrieve email](#re
 
 > `GET /v1/emails`
 
-| Querystring Parameter | Required | Type                      | Description                                                                                                                                      |
-| --------------------- | -------- | ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `q`                   | No       | String                    | Search for emails by metadata                                                                                                                    |
-| `domain`              | No       | String                    | Search for emails by domain name                                                                                                                 |
-| `sort`                | No       | String                    | Sort by a specific field (prefix with a single hyphen `-` to sort in the reverse direction of that field).  Defaults to `created_at` if not set. |
-| `page`                | No       | Number                    | See [Pagination](#pagination) for more insight                                                                                                   |
-| `limit`               | No       | Number                    | See [Pagination](#pagination) for more insight                                                                                                   |
+| Querystring Parameter | Required | Type   | Description                                                                                                                                      |
+| --------------------- | -------- | ------ | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `q`                   | No       | String | Search for emails by metadata                                                                                                                    |
+| `domain`              | No       | String | Search for emails by domain name                                                                                                                 |
+| `sort`                | No       | String | Sort by a specific field (prefix with a single hyphen `-` to sort in the reverse direction of that field).  Defaults to `created_at` if not set. |
+| `page`                | No       | Number | See [Pagination](#pagination) for more insight                                                                                                   |
+| `limit`               | No       | Number | See [Pagination](#pagination) for more insight                                                                                                   |
 
 > Example Request:
 
@@ -615,13 +615,13 @@ curl -X DELETE BASE_URI/v1/emails/:id \
 
 > `GET /v1/domains`
 
-| Querystring Parameter | Required | Type                      | Description                                                                                                                                      |
-| --------------------- | -------- | ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `q`                   | No       | String                    | Search for domains by name                                                                                                                       |
-| `name`                | No       | String                    | Search for domains by name                                                                                                                       |
-| `sort`                | No       | String                    | Sort by a specific field (prefix with a single hyphen `-` to sort in the reverse direction of that field).  Defaults to `created_at` if not set. |
-| `page`                | No       | Number                    | See [Pagination](#pagination) for more insight                                                                                                   |
-| `limit`               | No       | Number                    | See [Pagination](#pagination) for more insight                                                                                                   |
+| Querystring Parameter | Required | Type   | Description                                                                                                                                      |
+| --------------------- | -------- | ------ | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `q`                   | No       | String | Search for domains by name                                                                                                                       |
+| `name`                | No       | String | Search for domains by name                                                                                                                       |
+| `sort`                | No       | String | Sort by a specific field (prefix with a single hyphen `-` to sort in the reverse direction of that field).  Defaults to `created_at` if not set. |
+| `page`                | No       | Number | See [Pagination](#pagination) for more insight                                                                                                   |
+| `limit`               | No       | Number | See [Pagination](#pagination) for more insight                                                                                                   |
 
 > Example Request:
 
@@ -881,14 +881,14 @@ curl -X POST BASE_URI/v1/domains/DOMAIN_NAME/aliases/ALIAS_ID/generate-password 
 
 > `GET /v1/domains/DOMAIN_NAME/aliases`
 
-| Querystring Parameter | Required | Type                      | Description                                                                                                                                      |
-| --------------------- | -------- | ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `q`                   | No       | String                    | Search for aliases in a domain by name, label, or recipient                                                                                      |
-| `name`                | No       | String                    | Search for aliases in a domain by name                                                                                                           |
-| `recipient`           | No       | String                    | Search for aliases in a domain by recipient                                                                                                      |
-| `sort`                | No       | String                    | Sort by a specific field (prefix with a single hyphen `-` to sort in the reverse direction of that field).  Defaults to `created_at` if not set. |
-| `page`                | No       | Number                    | See [Pagination](#pagination) for more insight                                                                                                   |
-| `limit`               | No       | Number                    | See [Pagination](#pagination) for more insight                                                                                                   |
+| Querystring Parameter | Required | Type   | Description                                                                                                                                      |
+| --------------------- | -------- | ------ | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `q`                   | No       | String | Search for aliases in a domain by name, label, or recipient                                                                                      |
+| `name`                | No       | String | Search for aliases in a domain by name                                                                                                           |
+| `recipient`           | No       | String | Search for aliases in a domain by recipient                                                                                                      |
+| `sort`                | No       | String | Sort by a specific field (prefix with a single hyphen `-` to sort in the reverse direction of that field).  Defaults to `created_at` if not set. |
+| `page`                | No       | Number | See [Pagination](#pagination) for more insight                                                                                                   |
+| `limit`               | No       | Number | See [Pagination](#pagination) for more insight                                                                                                   |
 
 > Example Request:
 

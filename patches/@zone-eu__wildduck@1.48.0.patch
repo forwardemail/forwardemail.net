@@ -1,3 +1,21 @@
+diff --git a/imap-core/lib/commands/append.js b/imap-core/lib/commands/append.js
+index 950da6943e34ce6514f9bce1ac157f61f3a9f0f8..736abe2e24c39b3a2a57854e93105d5ea6d68b42 100644
+--- a/imap-core/lib/commands/append.js
++++ b/imap-core/lib/commands/append.js
+@@ -45,8 +45,11 @@ module.exports = {
+             });
+         }
+ 
+-        let path = (command.attributes.shift() || {}).value;
+-        if (!Buffer.isBuffer(path)) {
++        // (NIL as the name has no value, and threw here outside any handler)
++        let path = (command.attributes.shift() || {}).value || '';
++        // (the two branches were the wrong way round: a name sent as UTF-8
++        // stayed one character per byte, and the folder was not found)
++        if (Buffer.isBuffer(path)) {
+             path = path.toString();
+         } else {
+             path = Buffer.from(path, 'binary').toString();
 diff --git a/imap-core/lib/indexer/parse-mime-tree.js b/imap-core/lib/indexer/parse-mime-tree.js
 index 9f281833ec41a0c7fc841c83b098f89da60a469b..bbffda18cd8d151036a1632d388e3f9d1687cdbc 100644
 --- a/imap-core/lib/indexer/parse-mime-tree.js

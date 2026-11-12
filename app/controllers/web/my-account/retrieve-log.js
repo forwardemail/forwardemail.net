@@ -298,6 +298,7 @@ async function retrieveLog(ctx, next) {
   //
   // Filter BCC header to only show BCC recipients relevant to this user
   //
+  filterLogForViewer.normalizeBccHeader(log?.meta?.session?.headers);
   if (
     log?.meta?.session?.headers &&
     typeof log.meta.session.headers === 'object' &&
