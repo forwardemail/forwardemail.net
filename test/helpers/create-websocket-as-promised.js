@@ -116,11 +116,15 @@ test('reconnection attempts back off and never run in lockstep', async (t) => {
   };
 
   // grows with every failed attempt, bounded, and never below the base
+  // (delays are whole milliseconds, e.g. 2531.25 can be 2531 and its upper
+  // bound of 3796.875 can be 3797)
   const expected = [500, 750, 1125, 1687.5, 2531.25, 3000, 3000, 3000];
   for (const [index, base] of expected.entries()) {
     const delays = delaysAt(index + 1);
     t.true(
-      delays.every((delay) => delay >= base && delay <= base * 1.5),
+      delays.every(
+        (delay) => delay >= Math.round(base) && delay <= Math.round(base * 1.5)
+      ),
       `attempt ${index + 1}: ${Math.min(...delays)}..${Math.max(...delays)}`
     );
   }

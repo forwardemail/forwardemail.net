@@ -24,17 +24,18 @@ test.beforeEach(async (t) => {
   user[config.userFields.hasVerifiedEmail] = true;
   user = await user.save();
 
-  const [first, second] = await Promise.all(
-    [0, 1].map(() =>
-      t.context.domainFactory
-        .withState({
-          members: [{ user: user._id, group: 'admin' }],
-          plan: 'free',
-          resolver: t.context.resolver
-        })
-        .create()
-    )
-  );
+  // (one at a time, as a factory keeps the data it generates until it is
+  // created, so two created at once would both be the same domain)
+  const createDomain = () =>
+    t.context.domainFactory
+      .withState({
+        members: [{ user: user._id, group: 'admin' }],
+        plan: 'free',
+        resolver: t.context.resolver
+      })
+      .create();
+  const first = await createDomain();
+  const second = await createDomain();
   t.context.domains = [first, second];
 
   // start from a saved default domain and an empty audit queue, loaded fresh
