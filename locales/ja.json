@@ -23475,5 +23475,6 @@
   "Create a new alias with this alias' settings and Sieve scripts.": "このエイリアスの設定と Sieve スクリプトを持つ新しいエイリアスを作成します。",
   "The new alias signs in with the same password.": "新しいエイリアスは同じパスワードでサインインします。",
   "<span class=\"notranslate text-monospace font-weight-bold\">%s</span> was cloned to <span class=\"notranslate text-monospace font-weight-bold\">%s</span>.": "<span class=\"notranslate text-monospace font-weight-bold\">%s</span> を <span class=\"notranslate text-monospace font-weight-bold\">%s</span> に複製しました。",
-  "This alias is being cloned.  Please wait for the email letting you know it is done, then try again.": "このエイリアスは複製中です。完了を知らせるメールが届いてから、もう一度お試しください。"
+  "This alias is being cloned.  Please wait for the email letting you know it is done, then try again.": "このエイリアスは複製中です。完了を知らせるメールが届いてから、もう一度お試しください。",
+  "Look up on Cloudflare Radar": "Cloudflare Radar で調べる"
 }

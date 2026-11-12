@@ -23475,5 +23475,6 @@
   "Create a new alias with this alias' settings and Sieve scripts.": "Bu takma adın ayarları ve Sieve betikleriyle yeni bir takma ad oluşturun.",
   "The new alias signs in with the same password.": "Yeni takma ad aynı parolayla oturum açar.",
   "<span class=\"notranslate text-monospace font-weight-bold\">%s</span> was cloned to <span class=\"notranslate text-monospace font-weight-bold\">%s</span>.": "<span class=\"notranslate text-monospace font-weight-bold\">%s</span>, <span class=\"notranslate text-monospace font-weight-bold\">%s</span> olarak klonlandı.",
-  "This alias is being cloned.  Please wait for the email letting you know it is done, then try again.": "Bu takma ad klonlanıyor. Lütfen işlemin bittiğini bildiren e-postayı bekleyin, ardından tekrar deneyin."
+  "This alias is being cloned.  Please wait for the email letting you know it is done, then try again.": "Bu takma ad klonlanıyor. Lütfen işlemin bittiğini bildiren e-postayı bekleyin, ardından tekrar deneyin.",
+  "Look up on Cloudflare Radar": "Cloudflare Radar'da ara"
 }

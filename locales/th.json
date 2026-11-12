@@ -23475,5 +23475,6 @@
   "Create a new alias with this alias' settings and Sieve scripts.": "สร้างนามแฝงใหม่พร้อมการตั้งค่าและสคริปต์ Sieve ของนามแฝงนี้",
   "The new alias signs in with the same password.": "นามแฝงใหม่จะลงชื่อเข้าใช้ด้วยรหัสผ่านเดียวกัน",
   "<span class=\"notranslate text-monospace font-weight-bold\">%s</span> was cloned to <span class=\"notranslate text-monospace font-weight-bold\">%s</span>.": "โคลน <span class=\"notranslate text-monospace font-weight-bold\">%s</span> ไปยัง <span class=\"notranslate text-monospace font-weight-bold\">%s</span> แล้ว",
-  "This alias is being cloned.  Please wait for the email letting you know it is done, then try again.": "กำลังโคลนนามแฝงนี้ โปรดรออีเมลที่แจ้งว่าเสร็จสิ้น แล้วลองอีกครั้ง"
+  "This alias is being cloned.  Please wait for the email letting you know it is done, then try again.": "กำลังโคลนนามแฝงนี้ โปรดรออีเมลที่แจ้งว่าเสร็จสิ้น แล้วลองอีกครั้ง",
+  "Look up on Cloudflare Radar": "ค้นหาใน Cloudflare Radar"
 }

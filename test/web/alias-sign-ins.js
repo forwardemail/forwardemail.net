@@ -243,6 +243,18 @@ test('the alias page shows its recent sign-ins', async (t) => {
       ['IMAP', '198.51.100.7']
     ]
   );
+  // (each IP address links to Cloudflare Radar to look it up)
+  t.deepEqual(
+    [
+      ...document.querySelectorAll(
+        '#recent-sign-ins tbody a[href^="https://radar.cloudflare.com/ip/"]'
+      )
+    ].map((a) => a.getAttribute('href')),
+    [
+      'https://radar.cloudflare.com/ip/2001:db8::1',
+      'https://radar.cloudflare.com/ip/198.51.100.7'
+    ]
+  );
 });
 
 test('only the last 7 days and 50 sign-ins are kept', async (t) => {

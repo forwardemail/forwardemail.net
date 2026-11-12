@@ -115,6 +115,12 @@ test.serial(
     t.is(row.querySelector('td code').textContent, id);
     t.truthy(row.querySelector(`a[href="/en/admin/logs/${id}"]`));
     t.true(row.textContent.includes('198.51.100.7'));
+    // (the client IP links to Cloudflare Radar to look it up)
+    t.truthy(
+      row.querySelector(
+        'a[href="https://radar.cloudflare.com/ip/198.51.100.7"]'
+      )
+    );
     t.true(row.textContent.includes('spammer.example.net'));
     t.false(row.textContent.includes(SERVER_IP));
     t.false(row.textContent.includes(env.MX1_HOST));
@@ -170,6 +176,21 @@ test.serial('the statistics count the connecting clients', async (t) => {
     ['b.example.net', '1']
   ]);
   t.false(res.body.html.includes(SERVER_IP));
+
+  // each IP address links to Cloudflare Radar to look it up (not hostnames)
+  t.deepEqual(
+    [
+      ...tables[0].querySelectorAll('a[href^="https://radar.cloudflare.com/"]')
+    ].map((a) => a.getAttribute('href')),
+    [
+      'https://radar.cloudflare.com/ip/198.51.100.7',
+      'https://radar.cloudflare.com/ip/198.51.100.9'
+    ]
+  );
+  t.is(
+    tables[1].querySelector('a[href^="https://radar.cloudflare.com/"]'),
+    null
+  );
 
   // each links to that client's spam logs in Admin > Logs
   const link = tables[0].querySelector('a').getAttribute('href');

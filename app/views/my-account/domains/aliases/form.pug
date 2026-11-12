@@ -46,8 +46,16 @@ block body
                         tr
                           td.align-middle
                             span.badge.badge-dark.notranslate= signInServices[signIn.service] || signIn.service
-                          td.align-middle
+                          td.align-middle.text-break
                             code= signIn.remote_address
+                            if getIPLookupUrl(signIn.remote_address)
+                              = " "
+                              a.text-muted(
+                                href=getIPLookupUrl(signIn.remote_address),
+                                target="_blank",
+                                rel="noopener noreferrer",
+                                title=t("Look up on Cloudflare Radar")
+                              ): i.fa.fa-globe
                           td.align-middle.text-nowrap
                             span.dayjs(data-time=signIn.date.getTime())= dayjs(signIn.date).tz(user.timezone === 'Etc/Unknown' ? 'UTC' : user.timezone).format("M/D/YY h:mm A z")
     if domain

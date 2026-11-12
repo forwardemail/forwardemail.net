@@ -23475,5 +23475,6 @@
   "Create a new alias with this alias' settings and Sieve scripts.": "Utwórz nowy alias z ustawieniami i skryptami Sieve tego aliasu.",
   "The new alias signs in with the same password.": "Nowy alias loguje się tym samym hasłem.",
   "<span class=\"notranslate text-monospace font-weight-bold\">%s</span> was cloned to <span class=\"notranslate text-monospace font-weight-bold\">%s</span>.": "<span class=\"notranslate text-monospace font-weight-bold\">%s</span> został sklonowany do <span class=\"notranslate text-monospace font-weight-bold\">%s</span>.",
-  "This alias is being cloned.  Please wait for the email letting you know it is done, then try again.": "Ten alias jest klonowany. Poczekaj na wiadomość e-mail z informacją o zakończeniu, a następnie spróbuj ponownie."
+  "This alias is being cloned.  Please wait for the email letting you know it is done, then try again.": "Ten alias jest klonowany. Poczekaj na wiadomość e-mail z informacją o zakończeniu, a następnie spróbuj ponownie.",
+  "Look up on Cloudflare Radar": "Sprawdź w Cloudflare Radar"
 }

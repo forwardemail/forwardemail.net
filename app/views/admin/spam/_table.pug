@@ -50,6 +50,14 @@ include ../../_pagination
                   a(
                     href=logsHref("meta.session.remoteAddress", session.remoteAddress)
                   ): code= session.remoteAddress
+                  if getIPLookupUrl(session.remoteAddress)
+                    = " "
+                    a.text-muted(
+                      href=getIPLookupUrl(session.remoteAddress),
+                      target="_blank",
+                      rel="noopener noreferrer",
+                      title=t("Look up on Cloudflare Radar")
+                    ): i.fa.fa-globe
               td.align-middle.text-break
                 if session.resolvedClientHostname
                   a(

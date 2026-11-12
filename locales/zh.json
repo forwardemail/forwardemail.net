@@ -23475,5 +23475,6 @@
   "Create a new alias with this alias' settings and Sieve scripts.": "创建一个新别名，使用此别名的设置和 Sieve 脚本。",
   "The new alias signs in with the same password.": "新别名使用相同的密码登录。",
   "<span class=\"notranslate text-monospace font-weight-bold\">%s</span> was cloned to <span class=\"notranslate text-monospace font-weight-bold\">%s</span>.": "<span class=\"notranslate text-monospace font-weight-bold\">%s</span> 已克隆到 <span class=\"notranslate text-monospace font-weight-bold\">%s</span>。",
-  "This alias is being cloned.  Please wait for the email letting you know it is done, then try again.": "此别名正在克隆。请等待通知完成的电子邮件，然后再试一次。"
+  "This alias is being cloned.  Please wait for the email letting you know it is done, then try again.": "此别名正在克隆。请等待通知完成的电子邮件，然后再试一次。",
+  "Look up on Cloudflare Radar": "在 Cloudflare Radar 上查询"
 }

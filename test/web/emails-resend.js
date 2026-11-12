@@ -596,6 +596,37 @@ test('each email has its date, sender, recipients, size, delivery time and statu
   t.true(cell('Email').textContent.includes(CLIENT_IP));
   t.is(cell('Size').textContent.trim(), bytes(email.size));
 
+  // the client IP links to Cloudflare Radar to look it up
+  const radar = (document) =>
+    document
+      .querySelector('a[href^="https://radar.cloudflare.com/ip/"]')
+      .getAttribute('href');
+  t.is(radar(cell('Email')), `https://radar.cloudflare.com/ip/${CLIENT_IP}`);
+
+  // on smaller screens the Date (below md) and From and To (below xl) columns
+  // are hidden and shown in the Email column instead, so every column fits
+  t.true(cell('Date').classList.contains('d-none'));
+  t.true(cell('Date').classList.contains('d-md-table-cell'));
+  for (const name of ['From', 'To']) {
+    t.true(cell(name).classList.contains('d-none'));
+    t.true(cell(name).classList.contains('d-xl-table-cell'));
+  }
+
+  const dateItem = cell('Email').querySelector('li.d-md-none');
+  t.is(dateItem.textContent.trim(), cell('Date').textContent.trim());
+
+  const [fromItem, toItem] = cell('Email').querySelectorAll('li.d-xl-none');
+  t.true(fromItem.textContent.includes(from));
+  t.is(
+    fromItem.querySelector('a').getAttribute('href'),
+    cell('From').querySelector('a').getAttribute('href')
+  );
+  t.true(toItem.textContent.includes(RECIPIENT));
+  t.is(
+    toItem.querySelector('a').getAttribute('href'),
+    `/en/my-account/emails?q=${encodeURIComponent(RECIPIENT)}`
+  );
+
   // its status and the response, each filtering the list for it
   const status = cell('Status').querySelector('a.badge-success');
   t.is(status.textContent, 'Sent');
@@ -625,6 +656,17 @@ test('each email has its date, sender, recipients, size, delivery time and statu
     (th) => th.textContent === 'DELIVERY TIME'
   );
   t.is(th.nextElementSibling.textContent.trim(), '1m 15s');
+  t.is(radar(page), `https://radar.cloudflare.com/ip/${CLIENT_IP}`);
+
+  // (an IPv4-mapped IPv6 address links to its IPv4 address)
+  await Emails.findByIdAndUpdate(email._id, {
+    $set: { remote_address: `::ffff:${CLIENT_IP}` }
+  });
+  const mapped = await getList(t);
+  t.is(
+    radar(getCell(mapped.document, getRow(mapped.text, email.id), 'Email')),
+    `https://radar.cloudflare.com/ip/${CLIENT_IP}`
+  );
 });
 
 test('the list is filtered by status, response code and date and sorted by its columns', async (t) => {

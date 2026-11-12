@@ -23475,5 +23475,6 @@
   "Create a new alias with this alias' settings and Sieve scripts.": "이 별칭의 설정 및 Sieve 스크립트로 새 별칭을 만듭니다.",
   "The new alias signs in with the same password.": "새 별칭은 같은 비밀번호로 로그인합니다.",
   "<span class=\"notranslate text-monospace font-weight-bold\">%s</span> was cloned to <span class=\"notranslate text-monospace font-weight-bold\">%s</span>.": "<span class=\"notranslate text-monospace font-weight-bold\">%s</span>을(를) <span class=\"notranslate text-monospace font-weight-bold\">%s</span>(으)로 복제했습니다.",
-  "This alias is being cloned.  Please wait for the email letting you know it is done, then try again.": "이 별칭은 복제 중입니다. 완료를 알리는 이메일을 받은 후 다시 시도해 주세요."
+  "This alias is being cloned.  Please wait for the email letting you know it is done, then try again.": "이 별칭은 복제 중입니다. 완료를 알리는 이메일을 받은 후 다시 시도해 주세요.",
+  "Look up on Cloudflare Radar": "Cloudflare Radar에서 조회"
 }

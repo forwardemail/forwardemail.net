@@ -23475,5 +23475,6 @@
   "Create a new alias with this alias' settings and Sieve scripts.": "Создайте новый псевдоним с настройками и скриптами Sieve этого псевдонима.",
   "The new alias signs in with the same password.": "Новый псевдоним входит с тем же паролем.",
   "<span class=\"notranslate text-monospace font-weight-bold\">%s</span> was cloned to <span class=\"notranslate text-monospace font-weight-bold\">%s</span>.": "<span class=\"notranslate text-monospace font-weight-bold\">%s</span> клонирован в <span class=\"notranslate text-monospace font-weight-bold\">%s</span>.",
-  "This alias is being cloned.  Please wait for the email letting you know it is done, then try again.": "Этот псевдоним клонируется. Дождитесь письма о завершении, затем повторите попытку."
+  "This alias is being cloned.  Please wait for the email letting you know it is done, then try again.": "Этот псевдоним клонируется. Дождитесь письма о завершении, затем повторите попытку.",
+  "Look up on Cloudflare Radar": "Посмотреть в Cloudflare Radar"
 }

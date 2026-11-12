@@ -32,7 +32,16 @@ block body
           if log.meta && log.meta.session && log.meta.session.remoteAddress
             tr
               th= t("Client IP")
-              td= log.meta.session.remoteAddress
+              td.text-break
+                code= log.meta.session.remoteAddress
+                if getIPLookupUrl(log.meta.session.remoteAddress)
+                  = " "
+                  a.text-muted(
+                    href=getIPLookupUrl(log.meta.session.remoteAddress),
+                    target="_blank",
+                    rel="noopener noreferrer",
+                    title=t("Look up on Cloudflare Radar")
+                  ): i.fa.fa-globe
           if log.meta && log.meta.session && log.meta.session.resolvedClientHostname
             tr
               th= t("Client Hostname")

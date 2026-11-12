@@ -34,6 +34,14 @@ mixin topTable(title, heading, items)
                       code= item._id
                     else
                       span.text-muted= t("Unknown")
+                    if getIPLookupUrl(item._id)
+                      = " "
+                      a.text-muted(
+                        href=getIPLookupUrl(item._id),
+                        target="_blank",
+                        rel="noopener noreferrer",
+                        title=t("Look up on Cloudflare Radar")
+                      ): i.fa.fa-globe
                   td.text-right= item.count.toLocaleString()
 
 .row

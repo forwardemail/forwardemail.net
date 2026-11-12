@@ -10,15 +10,41 @@ include ../_list-filters
 //- (an address in the From header, e.g. "Jane <jane@example.com>")
 - const getAddress = (value) => { const match = /<([^<>]+)>\s*$/.exec(value); return (match ? match[1] : value).trim(); };
 
+//- From header (and MAIL FROM if it is another address)
+mixin emailFrom(from, fromAddress, envelopeFrom)
+  if from
+    a.text-break(href=getFilterUrl({ q: fromAddress }))= from
+  else
+    span.text-muted= "—"
+  if envelopeFrom && envelopeFrom.toLowerCase() !== fromAddress.toLowerCase()
+    div
+      span.badge.badge-pill.badge-dark= t("MAIL FROM")
+      = " "
+      a.text-break(href=getFilterUrl({ q: envelopeFrom })): code= envelopeFrom
+
+//- RCPT TO (the rest are on the page of the email)
+mixin emailRecipients(email, recipients)
+  each rcpt in recipients.slice(0, MAX_RECIPIENTS)
+    div
+      a.text-break(href=getFilterUrl({ q: rcpt })): code= rcpt
+  if recipients.length > MAX_RECIPIENTS
+    div
+      a(
+        href=l(`/my-account/emails/${email.id}`),
+        target="_blank",
+        title=t("Recipients")
+      )= `+${recipients.length - MAX_RECIPIENTS}`
+
 .table-responsive
   table.table.table-hover.table-bordered.table-sm
     thead.thead-dark
       tr
-        th.text-center.align-middle(scope="col")
+        //- (Date, From and To are in the Email column on smaller screens)
+        th.text-center.align-middle.d-none.d-md-table-cell(scope="col")
           +sortHeader("created_at", "Date", "#table-emails")
-        th.text-center.align-middle(scope="col")
+        th.text-center.align-middle.d-none.d-xl-table-cell(scope="col")
           +sortHeader("envelope.from", "From", "#table-emails")
-        th.text-center.align-middle(scope="col")= t("To")
+        th.text-center.align-middle.d-none.d-xl-table-cell(scope="col")= t("To")
         th.text-center.align-middle(scope="col")
           +sortHeader("subject", "Email", "#table-emails")
         th.text-center.align-middle.d-none.d-md-table-cell(scope="col")
@@ -49,33 +75,13 @@ include ../_list-filters
             const rejectedErrors = Array.isArray(email.rejectedErrors) ? email.rejectedErrors : [];
           tr
             //- when it was sent to us
-            td.align-middle.text-nowrap
+            td.align-middle.text-nowrap.d-none.d-md-table-cell
               small.text-monospace
                 span.dayjs(data-time=email.created_at.getTime())= dayjs(email.created_at).tz(timezone).format("M/D/YY h:mm A z")
-            //- From header (and MAIL FROM if it is another address)
-            td.align-middle.small
-              if from
-                a.text-break(href=getFilterUrl({ q: fromAddress }))= from
-              else
-                span.text-muted= "—"
-              if envelopeFrom && envelopeFrom.toLowerCase() !== fromAddress.toLowerCase()
-                div
-                  span.badge.badge-pill.badge-dark= t("MAIL FROM")
-                  = " "
-                  a.text-break(href=getFilterUrl({ q: envelopeFrom })): code= envelopeFrom
-            //- RCPT TO
-            td.align-middle.small
-              ul.list-unstyled.mb-0
-                each rcpt in recipients.slice(0, MAX_RECIPIENTS)
-                  li
-                    a.text-break(href=getFilterUrl({ q: rcpt })): code= rcpt
-                if recipients.length > MAX_RECIPIENTS
-                  li
-                    a(
-                      href=l(`/my-account/emails/${email.id}`),
-                      target="_blank",
-                      title=t("Recipients")
-                    )= `+${recipients.length - MAX_RECIPIENTS}`
+            td.align-middle.small.d-none.d-xl-table-cell
+              +emailFrom(from, fromAddress, envelopeFrom)
+            td.align-middle.small.d-none.d-xl-table-cell
+              +emailRecipients(email, recipients)
             //- Subject, Message-ID, ID and the client that sent it
             td.align-middle
               a.font-weight-bold.text-themed.text-break(
@@ -83,6 +89,17 @@ include ../_list-filters
                 target="_blank"
               )= isSANB(email.subject) ? email.subject : "—"
               ul.list-unstyled.small.mb-0
+                //- (Date, From and To on smaller screens, as their columns are not shown)
+                li.d-md-none.text-monospace
+                  span.dayjs(data-time=email.created_at.getTime())= dayjs(email.created_at).tz(timezone).format("M/D/YY h:mm A z")
+                li.d-xl-none
+                  span.badge.badge-pill.badge-primary= "FROM"
+                  = " "
+                  +emailFrom(from, fromAddress, envelopeFrom)
+                if recipients.length > 0
+                  li.d-xl-none
+                    span.badge.badge-pill.badge-primary= "TO"
+                    +emailRecipients(email, recipients)
                 li
                   span.badge.badge-pill.badge-primary= "MESSAGE-ID"
                   = " "
@@ -98,13 +115,23 @@ include ../_list-filters
                 li
                   span.badge.badge-pill.badge-dark= "ID"
                   = " "
-                  code= email.id
+                  code.text-break= email.id
                 //- IP address of the client that sent it (SMTP or API)
                 if email.remote_address
                   li
                     span.badge.badge-pill.badge-dark= "CLIENT IP"
                     = " "
-                    a(href=getFilterUrl({ q: email.remote_address })): code= email.remote_address
+                    a.text-break(
+                      href=getFilterUrl({ q: email.remote_address })
+                    ): code= email.remote_address
+                    if getIPLookupUrl(email.remote_address)
+                      = " "
+                      a.text-muted(
+                        href=getIPLookupUrl(email.remote_address),
+                        target="_blank",
+                        rel="noopener noreferrer",
+                        title=t("Look up on Cloudflare Radar")
+                      ): i.fa.fa-globe
                 //- (the size and delivery time on small screens)
                 if Number.isFinite(email.size)
                   li.d-md-none

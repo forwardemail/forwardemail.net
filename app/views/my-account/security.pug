@@ -316,8 +316,16 @@ block body
                             span.notranslate= session.ua_short
                             if session.is_current
                               span.badge.badge-success.ml-1= t("Current")
-                          td
+                          td.text-break
                             code.notranslate= session.ip
+                            if getIPLookupUrl(session.ip)
+                              = " "
+                              a.text-muted(
+                                href=getIPLookupUrl(session.ip),
+                                target="_blank",
+                                rel="noopener noreferrer",
+                                title=t("Look up on Cloudflare Radar")
+                              ): i.fa.fa-globe
                           td.dayjs(
                             data-time=session.last_active || "",
                             title=session.last_active

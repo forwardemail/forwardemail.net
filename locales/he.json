@@ -23475,5 +23475,6 @@
   "Create a new alias with this alias' settings and Sieve scripts.": "צרו כינוי חדש עם ההגדרות וסקריפטי ה-Sieve של הכינוי הזה.",
   "The new alias signs in with the same password.": "הכינוי החדש נכנס עם אותה סיסמה.",
   "<span class=\"notranslate text-monospace font-weight-bold\">%s</span> was cloned to <span class=\"notranslate text-monospace font-weight-bold\">%s</span>.": "<span class=\"notranslate text-monospace font-weight-bold\">%s</span> שוכפל אל <span class=\"notranslate text-monospace font-weight-bold\">%s</span>.",
-  "This alias is being cloned.  Please wait for the email letting you know it is done, then try again.": "הכינוי הזה נמצא בשכפול. המתינו להודעת הדוא\"ל שמודיעה שהוא הסתיים, ואז נסו שוב."
+  "This alias is being cloned.  Please wait for the email letting you know it is done, then try again.": "הכינוי הזה נמצא בשכפול. המתינו להודעת הדוא\"ל שמודיעה שהוא הסתיים, ואז נסו שוב.",
+  "Look up on Cloudflare Radar": "חיפוש ב-Cloudflare Radar"
 }

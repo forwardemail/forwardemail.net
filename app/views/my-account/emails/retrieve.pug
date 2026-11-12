@@ -71,7 +71,16 @@ block body
           if email.remote_address
             tr
               th= "CLIENT IP"
-              td: code= email.remote_address
+              td.text-break
+                code= email.remote_address
+                if getIPLookupUrl(email.remote_address)
+                  = " "
+                  a.text-muted(
+                    href=getIPLookupUrl(email.remote_address),
+                    target="_blank",
+                    rel="noopener noreferrer",
+                    title=t("Look up on Cloudflare Radar")
+                  ): i.fa.fa-globe
           if Number.isFinite(email.size)
             tr
               th= "SIZE"

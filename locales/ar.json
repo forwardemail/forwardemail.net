@@ -23475,5 +23475,6 @@
   "Create a new alias with this alias' settings and Sieve scripts.": "أنشئ اسمًا مستعارًا جديدًا بإعدادات هذا الاسم المستعار ونصوص Sieve الخاصة به.",
   "The new alias signs in with the same password.": "يسجّل الاسم المستعار الجديد الدخول بكلمة المرور نفسها.",
   "<span class=\"notranslate text-monospace font-weight-bold\">%s</span> was cloned to <span class=\"notranslate text-monospace font-weight-bold\">%s</span>.": "استُنسخ <span class=\"notranslate text-monospace font-weight-bold\">%s</span> إلى <span class=\"notranslate text-monospace font-weight-bold\">%s</span>.",
-  "This alias is being cloned.  Please wait for the email letting you know it is done, then try again.": "يجري استنساخ هذا الاسم المستعار. يُرجى انتظار البريد الإلكتروني الذي يُعلمك باكتماله، ثم المحاولة مرة أخرى."
+  "This alias is being cloned.  Please wait for the email letting you know it is done, then try again.": "يجري استنساخ هذا الاسم المستعار. يُرجى انتظار البريد الإلكتروني الذي يُعلمك باكتماله، ثم المحاولة مرة أخرى.",
+  "Look up on Cloudflare Radar": "البحث في Cloudflare Radar"
 }

@@ -20,6 +20,7 @@ const highlightPug = require('@forwardemail/highlight-pug');
 const highlightWords = require('highlight-words').default;
 const hljs = require('highlight.js');
 const humanize = require('humanize-string');
+const ipaddr = require('ipaddr.js');
 const isFQDN = require('is-fqdn');
 const isSANB = require('is-string-and-not-blank');
 const ms = require('ms');
@@ -58,6 +59,18 @@ const {
 // (ANSI escape codes use ESC char \x1b, not < or >, so escaping is safe)
 function safeAnsiHTML(str) {
   return ansiHTML(_.escape(str));
+}
+
+// link to look up an IP address on Cloudflare Radar (e.g. its network and
+// location), or false if it is not an IP address (e.g. "Unknown");
+// an IPv4-mapped IPv6 address (e.g. "::ffff:1.2.3.4") links to its IPv4 address
+// (and a zone of a link-local address, e.g. "%eth0", is not part of the link)
+function getIPLookupUrl(ip) {
+  if (!isSANB(ip)) return false;
+  const value = ip.trim().split('%')[0];
+  if (!validator.isIP(value)) return false;
+  const address = ipaddr.process(value).toString();
+  return `https://radar.cloudflare.com/ip/${address}`;
 }
 
 // <https://github.com/ztmd/highlight-pug/issues/1>
@@ -3054,6 +3067,7 @@ module.exports = {
   isURL: validator.isURL,
   isEmail: validator.isEmail,
   isIP: validator.isIP,
+  getIPLookupUrl,
   ms,
   prettyMilliseconds,
   developerDocs,

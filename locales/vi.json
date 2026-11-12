@@ -23475,5 +23475,6 @@
   "Create a new alias with this alias' settings and Sieve scripts.": "Tạo bí danh mới với cài đặt và tập lệnh Sieve của bí danh này.",
   "The new alias signs in with the same password.": "Bí danh mới đăng nhập bằng cùng mật khẩu.",
   "<span class=\"notranslate text-monospace font-weight-bold\">%s</span> was cloned to <span class=\"notranslate text-monospace font-weight-bold\">%s</span>.": "<span class=\"notranslate text-monospace font-weight-bold\">%s</span> đã được nhân bản sang <span class=\"notranslate text-monospace font-weight-bold\">%s</span>.",
-  "This alias is being cloned.  Please wait for the email letting you know it is done, then try again.": "Bí danh này đang được nhân bản. Vui lòng đợi email thông báo hoàn tất rồi thử lại."
+  "This alias is being cloned.  Please wait for the email letting you know it is done, then try again.": "Bí danh này đang được nhân bản. Vui lòng đợi email thông báo hoàn tất rồi thử lại.",
+  "Look up on Cloudflare Radar": "Tra cứu trên Cloudflare Radar"
 }

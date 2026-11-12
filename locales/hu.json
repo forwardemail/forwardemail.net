@@ -23475,5 +23475,6 @@
   "Create a new alias with this alias' settings and Sieve scripts.": "Hozzon létre egy új aliast ennek az aliasnak a beállításaival és Sieve-szkriptjeivel.",
   "The new alias signs in with the same password.": "Az új alias ugyanazzal a jelszóval jelentkezik be.",
   "<span class=\"notranslate text-monospace font-weight-bold\">%s</span> was cloned to <span class=\"notranslate text-monospace font-weight-bold\">%s</span>.": "A(z) <span class=\"notranslate text-monospace font-weight-bold\">%s</span> klónozva lett ide: <span class=\"notranslate text-monospace font-weight-bold\">%s</span>.",
-  "This alias is being cloned.  Please wait for the email letting you know it is done, then try again.": "Ennek az aliasnak a klónozása folyamatban van. Kérjük, várja meg az e-mailt, amely jelzi, hogy elkészült, majd próbálja újra."
+  "This alias is being cloned.  Please wait for the email letting you know it is done, then try again.": "Ennek az aliasnak a klónozása folyamatban van. Kérjük, várja meg az e-mailt, amely jelzi, hogy elkészült, majd próbálja újra.",
+  "Look up on Cloudflare Radar": "Keresés a Cloudflare Radaron"
 }
