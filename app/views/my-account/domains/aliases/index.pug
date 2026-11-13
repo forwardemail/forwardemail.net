@@ -208,7 +208,7 @@ block body
     .modal-dialog.modal-lg(role="document")
       .modal-content
         .modal-header.text-center.d-block
-          h4#modal-alias-title.d-inline-block.ml-4= t("Add New Alias")
+          h4#modal-alias-title.d-inline-block.ml-4= t("Add New Mailbox")
           button.close(type="button", data-dismiss="modal", aria-label="Close")
             span(aria-hidden="true") &times;
         .modal-body
@@ -217,7 +217,7 @@ block body
             method="POST"
           )
             include _form
-            button.btn.btn-success.btn-block.btn-lg(type="submit")= t("Create Alias")
+            button.btn.btn-success.btn-block.btn-lg(type="submit")= t("Create Mailbox")
 
   .py-3(
     class=typeof isContainerFluid === "boolean" && isContainerFluid === true ? "container-fluid" : "container"
@@ -225,8 +225,15 @@ block body
     .row
       .col
         include ../../../_breadcrumbs
+        //- what a mailbox is, since an alias confuses people
+        .acct-callout.mb-3
+          i.fa.fa-info-circle.acct-callout-icon
+          p.mb-0.small
+            strong= t("Mailboxes")
+            = ": "
+            = t("A mailbox is an email address at your domain, such as hello@example.com. Some tools call it an alias. Each one can forward email to other inboxes, store email you read with IMAP and webmail, or do both.")
         if domain && domain.aliases && domain.aliases.length === 0 && !ctx.query.q && (!ctx.query.page || ctx.query.page === 1)
-          .alert.alert-info= t("No aliases exist yet")
+          .alert.alert-info= t("No mailboxes exist yet")
         else
           if isSANB(ctx.query.new) && isEmail(ctx.query.new) && ctx.query.new.endsWith(`@${domain.name}`)
             .alert.alert-success.remove-on-table-ajax-form-reloaded
@@ -236,7 +243,7 @@ block body
                 li.list-inline-item.align-middle
                   a.btn.btn-sm.btn-dark(
                     href=l(`/my-account/domains/${punycode.toASCII(domain.name)}/aliases?q=${ctx.query.new}`)
-                  )= t("Review Alias")
+                  )= t("Review Mailbox")
           form.ajax-form.table-ajax-form(
             action=ctx.path,
             method="GET",
@@ -288,4 +295,4 @@ block body
             )
               i.fa.fa-angle-double-left
               = " "
-              = t("Back to Aliases")
+              = t("Back to Mailboxes")

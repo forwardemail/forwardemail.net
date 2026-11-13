@@ -54,6 +54,14 @@ test.beforeEach(async (t) => {
 
 test.afterEach.always(utils.teardownWebServer);
 
+// the menus of the page name the signed-in user, who is random
+function normalizeUser(html, user) {
+  return html
+    .split(user.email)
+    .join('user@example.com')
+    .replace(/(class="acct-avatar" aria-hidden="true">)[^<]*/g, '$1U');
+}
+
 test('GET otp/login > successful', async (t) => {
   // get test server
   const { web } = t.context;
@@ -63,7 +71,10 @@ test('GET otp/login > successful', async (t) => {
 
   t.is(res.status, 200);
   t.snapshot(
-    utils.normalizeBuildHashes(res.text.replace(/<head>[\S\s]*<\/head>/, ''))
+    normalizeUser(
+      utils.normalizeBuildHashes(res.text.replace(/<head>[\S\s]*<\/head>/, '')),
+      t.context.user
+    )
   );
 });
 
@@ -377,7 +388,10 @@ test('GET otp/keys > successful', async (t) => {
 
   t.is(res.status, 200);
   t.snapshot(
-    utils.normalizeBuildHashes(res.text.replace(/<head>[\S\s]*<\/head>/, ''))
+    normalizeUser(
+      utils.normalizeBuildHashes(res.text.replace(/<head>[\S\s]*<\/head>/, '')),
+      t.context.user
+    )
   );
 });
 

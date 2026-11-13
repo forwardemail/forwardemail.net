@@ -166,5 +166,8 @@ $question: theme-color('light');
 // site-wide footer restyle, scoped under footer.fe-footer
 @import 'fe-footer';
 
+// the account shell: sidebar and menus of My Account and Admin
+@import 'app-shell';
+
 // scrollbars that follow the light and dark schemes
 @import 'scrollbars';

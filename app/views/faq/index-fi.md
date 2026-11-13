@@ -8,6 +8,7 @@
 * [Pika-aloitus](#quick-start)
 * [Johdanto](#introduction)
   * [Mikä on Forward Email](#what-is-forward-email)
+  * [Mitä eroa on postilaatikolla ja aliaksella](#what-is-the-difference-between-a-mailbox-and-an-alias)
   * [Kuka käyttää Forward Emailia](#who-uses-forward-email)
   * [Mikä on Forward Emailin historia](#what-is-forward-emails-history)
   * [Kuinka nopea tämä palvelu on](#how-fast-is-this-service)
@@ -179,7 +180,7 @@ Aloittaaksesi Forward Emailin kanssa:
 
 2. **Lisää ja vahvista verkkotunnuksesi** kohdassa [Oma tili → Verkkotunnukset](/my-account/domains)
 
-3. **Lisää ja määritä sähköpostialiaset/postilaatikot** kohdassa [Oma tili → Verkkotunnukset](/my-account/domains) → Aliakset
+3. **Lisää ja määritä sähköpostialiaset/postilaatikot** kohdassa [Oma tili → Verkkotunnukset](/my-account/domains) → Postilaatikot (Aliakset)
 
 4. **Testaa asetuksesi** lähettämällä sähköposti yhdelle uudelle aliasillesi
 
@@ -217,6 +218,12 @@ Voit verrata meitä yli 56 muuhun sähköpostipalveluntarjoajaan [sähköpostipa
 
 > \[!TIP]
 > Opi lisää Forward Emailista lukemalla ilmainen [Tekninen valkoinen kirjamme](/technical-whitepaper.pdf) ja tutustumalla [turvallisuusauditointiimme](/pentest-report_forward-email.pdf) Cure53:lta.
+
+### Mitä eroa on postilaatikolla ja aliaksella {#what-is-the-difference-between-a-mailbox-and-an-alias}
+
+Eroa ei ole. Verkkosivustomme, sovelluksemme, API ja dokumentaatiomme käyttävät molempia sanoja verkkotunnuksesi sähköpostiosoitteesta.
+
+Postilaatikko on verkkotunnuksesi sähköpostiosoite, esimerkiksi `hello@example.com`. Joissakin työkaluissa sitä kutsutaan aliakseksi. Jokainen niistä voi välittää sähköpostit muihin osoitteisiin, tallentaa IMAP-yhteydellä ja verkkosähköpostilla luettavat viestit tai tehdä molempia.
 
 ### Who uses Forward Email {#who-uses-forward-email}
 
@@ -737,7 +744,7 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
 
 1. Mene osoitteeseen <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Oma tili <i class="fa fa-angle-right"></i> Domainit</a> <i class="fa fa-angle-right"></i> Asetukset <i class="fa fa-angle-right"></i> Lähtevän SMTP:n asetukset ja seuraa asennusohjeita
 
-2. Luo uusi alias domainillesi kohdassa <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Oma tili <i class="fa fa-angle-right"></i> Domainit</a> <i class="fa fa-angle-right"></i> Aliakset (esim. <code><hello@example.com></code>)
+2. Luo uusi alias domainillesi kohdassa <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Oma tili <i class="fa fa-angle-right"></i> Domainit</a> <i class="fa fa-angle-right"></i> Postilaatikot (Aliakset) (esim. <code><hello@example.com></code>)
 
 3. Klikkaa <strong class="text-success"><i class="fa fa-key"></i> Luo salasana</strong> juuri luodun aliaksen vieressä. Kopioi salasana leikepöydälle ja säilytä se turvallisesti.
 
@@ -745,7 +752,7 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
 
 5. Kun sinulta kysytään "Nimi", kirjoita nimi, jonka haluat näkyvän lähettäjänä (esim. "Linus Torvalds").
 
-6. Kun sinulta kysytään "Sähköpostiosoite", kirjoita täydellinen sähköpostiosoite aliaksesta, jonka loit kohdassa <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Oma tili <i class="fa fa-angle-right"></i> Domainit</a> <i class="fa fa-angle-right"></i> Aliakset (esim. <code><hello@example.com></code>)
+6. Kun sinulta kysytään "Sähköpostiosoite", kirjoita täydellinen sähköpostiosoite aliaksesta, jonka loit kohdassa <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Oma tili <i class="fa fa-angle-right"></i> Domainit</a> <i class="fa fa-angle-right"></i> Postilaatikot (Aliakset) (esim. <code><hello@example.com></code>)
 
 7. Poista valinta kohdasta "Kohdellaan aliasosoitteena"
 
@@ -753,7 +760,7 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
 
 9. Kun sinulta kysytään "SMTP-palvelin", kirjoita <code>smtp.forwardemail.net</code> ja vaihda portiksi <code>465</code>
 
-10. Kun sinulta kysytään "Käyttäjätunnus", kirjoita täydellinen sähköpostiosoite aliaksesta, jonka loit kohdassa <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Oma tili <i class="fa fa-angle-right"></i> Domainit</a> <i class="fa fa-angle-right"></i> Aliakset (esim. <code><hello@example.com></code>)
+10. Kun sinulta kysytään "Käyttäjätunnus", kirjoita täydellinen sähköpostiosoite aliaksesta, jonka loit kohdassa <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Oma tili <i class="fa fa-angle-right"></i> Domainit</a> <i class="fa fa-angle-right"></i> Postilaatikot (Aliakset) (esim. <code><hello@example.com></code>)
 
 11. Kun sinulta kysytään "Salasana", liitä salasana, jonka sait kohdassa 3 <strong class="text-success"><i class="fa fa-key"></i> Luo salasana</strong>
 
@@ -1123,7 +1130,7 @@ Voit lukea alihankkijoistamme GDPR- (/gdpr), DPA- (/dpa) ja Tietosuojakäytänt�
 
 Voit milloin tahansa viedä postilaatikkosi [EML](https://en.wikipedia.org/wiki/Email#Filename_extensions), [Mbox](https://en.wikipedia.org/wiki/Mbox) tai salatuissa [SQLite](https://en.wikipedia.org/wiki/SQLite) -muodoissa.
 
-Mene osoitteeseen <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Oma tili <i class="fa fa-angle-right"></i> Verkkotunnukset</a> <i class="fa fa-angle-right"></i> Aliakset <i class="fa fa-angle-right"></i> Lataa varmuuskopio ja valitse haluamasi vientimuoto.
+Mene osoitteeseen <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Oma tili <i class="fa fa-angle-right"></i> Verkkotunnukset</a> <i class="fa fa-angle-right"></i> Postilaatikot (Aliakset) <i class="fa fa-angle-right"></i> Lataa varmuuskopio ja valitse haluamasi vientimuoto.
 
 Saat sähköpostitse linkin vientitiedoston lataamista varten, kun vienti on valmis.
 
@@ -2061,7 +2068,7 @@ Jos käytät Microsoft 365:tä (Outlook) ja haluat edelleenlähettää kaikki ei
 
 ### Kuinka asetan lomavastaajan (poissa toimistolta -automaattivastaajan) {#how-do-i-set-up-a-vacation-responder-out-of-office-auto-responder}
 
-Mene osoitteeseen <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Oma tili <i class="fa fa-angle-right"></i> Domainit</a> <i class="fa fa-angle-right"></i> Aliakset ja luo tai muokkaa aliasta, jolle haluat määrittää lomavastaajan.
+Mene osoitteeseen <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Oma tili <i class="fa fa-angle-right"></i> Domainit</a> <i class="fa fa-angle-right"></i> Postilaatikot (Aliakset) ja luo tai muokkaa aliasta, jolle haluat määrittää lomavastaajan.
 Sinulla on mahdollisuus määrittää aloituspäivä, lopetuspäivä, aihe ja viesti sekä ottaa se käyttöön tai poistaa käytöstä milloin tahansa:
 
 * Pelkkä teksti -aihe ja viesti ovat tällä hetkellä tuettuja (käytämme sisäisesti `striptags`-pakettia poistaaksemme kaiken HTML:n).
@@ -2449,7 +2456,7 @@ Kyllä, 16. lokakuuta 2023 alkaen tuemme sähköpostin vastaanottamista IMAPin k
   </span>
 </div>
 
-1. Luo uusi alias verkkotunnuksellesi kohdassa <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Oma tili <i class="fa fa-angle-right"></i> Verkkotunnukset</a> <i class="fa fa-angle-right"></i> Aliakset (esim. <code><hello@example.com></code>)
+1. Luo uusi alias verkkotunnuksellesi kohdassa <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Oma tili <i class="fa fa-angle-right"></i> Verkkotunnukset</a> <i class="fa fa-angle-right"></i> Postilaatikot (Aliakset) (esim. <code><hello@example.com></code>)
 
 2. Klikkaa <strong class="text-success"><i class="fa fa-key"></i> Luo salasana</strong> juuri luodun aliaksen vieressä. Kopioi salasana leikepöydällesi ja säilytä se turvallisesti.
 
@@ -2506,7 +2513,7 @@ Kyllä, 4. joulukuuta 2023 alkaen tuemme [POP3](https://en.wikipedia.org/wiki/Po
   </span>
 </div>
 
-1. Luo uusi alias domainillesi kohdassa <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Oma tili <i class="fa fa-angle-right"></i> Domainit</a> <i class="fa fa-angle-right"></i> Aliakset (esim. <code><hello@example.com></code>)
+1. Luo uusi alias domainillesi kohdassa <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Oma tili <i class="fa fa-angle-right"></i> Domainit</a> <i class="fa fa-angle-right"></i> Postilaatikot (Aliakset) (esim. <code><hello@example.com></code>)
 
 2. Klikkaa <strong class="text-success"><i class="fa fa-key"></i> Luo salasana</strong> juuri luodun aliaksen vieressä. Kopioi salasana leikepöydälle ja säilytä se turvallisesti.
 
@@ -2647,7 +2654,7 @@ Kyllä. Kaikki maksulliset paketit sisältävät lähtevän SMTP:n, ja se on **r
 
 1. Siirry kohtaan <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Oma tili <i class="fa fa-angle-right"></i> Domainit</a> <i class="fa fa-angle-right"></i> Asetukset <i class="fa fa-angle-right"></i> Lähtö-SMTP-asetukset ja seuraa asennusohjeita
 
-2. Luo uusi alias domainillesi kohdassa <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Oma tili <i class="fa fa-angle-right"></i> Domainit</a> <i class="fa fa-angle-right"></i> Aliakset (esim. <code><hello@example.com></code>)
+2. Luo uusi alias domainillesi kohdassa <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Oma tili <i class="fa fa-angle-right"></i> Domainit</a> <i class="fa fa-angle-right"></i> Postilaatikot (Aliakset) (esim. <code><hello@example.com></code>)
 
 3. Klikkaa <strong class="text-success"><i class="fa fa-key"></i> Luo salasana</strong> juuri luodun aliaksen vieressä. Kopioi salasana leikepöydälle ja säilytä se turvallisesti.
 
@@ -2766,7 +2773,7 @@ Kyllä, tuemme [OpenPGP:tä](https://en.wikipedia.org/wiki/Pretty_Good_Privacy#O
        Valinnainen lisäosa:
      </strong>
      <span>
-       Jos käytät <a class="alert-link" href="/blog/docs/best-quantum-safe-encrypted-email-service">salattua tallennustamme (IMAP/POP3)</a> ja haluat, että <i>kaikki</i> sähköpostit, jotka tallennetaan (jo salattuun) SQLite-tietokantaasi, salataan julkisella avaimeksesi, siirry kohtaan <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Oma tili <i class="fa fa-angle-right"></i> Verkkotunnukset</a> <i class="fa fa-angle-right"></i> Aliakset (esim. <code>hello@example.com</code>) <i class="fa fa-angle-right"></i> Muokkaa <i class="fa fa-angle-right"></i> OpenPGP ja lataa julkinen avaimesi.
+       Jos käytät <a class="alert-link" href="/blog/docs/best-quantum-safe-encrypted-email-service">salattua tallennustamme (IMAP/POP3)</a> ja haluat, että <i>kaikki</i> sähköpostit, jotka tallennetaan (jo salattuun) SQLite-tietokantaasi, salataan julkisella avaimeksesi, siirry kohtaan <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Oma tili <i class="fa fa-angle-right"></i> Verkkotunnukset</a> <i class="fa fa-angle-right"></i> Postilaatikot (Aliakset) (esim. <code>hello@example.com</code>) <i class="fa fa-angle-right"></i> Muokkaa <i class="fa fa-angle-right"></i> OpenPGP ja lataa julkinen avaimesi.
      </span>
    </div>
 
@@ -2834,7 +2841,7 @@ S/MIME-salauksen määrittäminen aliaksellesi:
 
 2. Vie sertifikaattisi PEM-muodossa (vain julkinen sertifikaatti, ei yksityistä avainta).
 
-3. Siirry kohtaan <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Oma tili <i class="fa fa-angle-right"></i> Verkkotunnukset</a> <i class="fa fa-angle-right"></i> Aliakset (esim. <code><hello@example.com></code>) <i class="fa fa-angle-right"></i> Muokkaa <i class="fa fa-angle-right"></i> S/MIME ja lataa julkinen sertifikaattisi.
+3. Siirry kohtaan <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Oma tili <i class="fa fa-angle-right"></i> Verkkotunnukset</a> <i class="fa fa-angle-right"></i> Postilaatikot (Aliakset) (esim. <code><hello@example.com></code>) <i class="fa fa-angle-right"></i> Muokkaa <i class="fa fa-angle-right"></i> S/MIME ja lataa julkinen sertifikaattisi.
 4. Kun asetukset on määritetty, kaikki alias-osoitteeseesi tulevat sähköpostit salataan S/MIME-varmenteellasi ennen tallentamista tai edelleenlähetystä.
 
    <div class="alert my-3 alert-secondary">
@@ -2953,7 +2960,7 @@ if header :contains "Subject" "invoice" {
 
 Voit hallita Sieve-skriptejä useilla tavoilla:
 
-1. **Verkkokäyttöliittymä**: Siirry osoitteeseen <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Aliases <i class="fa fa-angle-right"></i> Sieve Scripts luodaksesi ja hallitaksesi skriptejä.
+1. **Verkkokäyttöliittymä**: Siirry osoitteeseen <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Postilaatikot (Aliases) <i class="fa fa-angle-right"></i> Sieve Scripts luodaksesi ja hallitaksesi skriptejä.
 
 2. **ManageSieve-protokolla**: Yhdistä käyttämällä mitä tahansa ManageSieve-yhteensopivaa asiakasta, kuten Thunderbirdin Sieve-lisäosaa tai [sieve-connect](https://github.com/philpennock/sieve-connect), osoitteeseen `imap.forwardemail.net`. Käytä porttia `2190` STARTTLS:llä tai porttia `4190` implisiittisellä TLS:llä.
 
@@ -5792,7 +5799,7 @@ Ei, sitä ei suositella, koska voit käyttää vain yhtä sähköpostinvaihtopal
     Tärkeää:
   </strong>
   <span>
-    Jos olet maksullisella suunnitelmalla, sinun tulee mennä <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Oma tili <i class="fa fa-angle-right"></i> Domainit</a> <i class="fa fa-angle-right"></i> Aliakset <i class="fa fa-angle-right"></i> Muokkaa aliasta <i class="fa fa-angle-right"></i> Poista valinta "Aktiivinen" -valintaruudusta <i class="fa fa-angle-right"></i> Jatka.
+    Jos olet maksullisella suunnitelmalla, sinun tulee mennä <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Oma tili <i class="fa fa-angle-right"></i> Domainit</a> <i class="fa fa-angle-right"></i> Postilaatikot (Aliakset) <i class="fa fa-angle-right"></i> Muokkaa aliasta <i class="fa fa-angle-right"></i> Poista valinta "Aktiivinen" -valintaruudusta <i class="fa fa-angle-right"></i> Jatka.
   </span>
 </div>
 

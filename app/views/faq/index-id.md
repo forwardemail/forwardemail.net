@@ -8,6 +8,7 @@
 * [Mulai Cepat](#quick-start)
 * [Pengenalan](#introduction)
   * [Apa itu Forward Email](#what-is-forward-email)
+  * [Apa perbedaan antara kotak surat dan alias](#what-is-the-difference-between-a-mailbox-and-an-alias)
   * [Siapa yang menggunakan Forward Email](#who-uses-forward-email)
   * [Apa sejarah Forward Email](#what-is-forward-emails-history)
   * [Seberapa cepat layanan ini](#how-fast-is-this-service)
@@ -179,7 +180,7 @@ Untuk memulai dengan Forward Email:
 
 2. **Tambahkan dan verifikasi domain Anda** di bawah [Akun Saya → Domain](/my-account/domains)
 
-3. **Tambahkan dan konfigurasikan alias/kotak surat email** di bawah [Akun Saya → Domain](/my-account/domains) → Alias
+3. **Tambahkan dan konfigurasikan alias/kotak surat email** di bawah [Akun Saya → Domain](/my-account/domains) → Kotak surat (Alias)
 
 4. **Uji pengaturan Anda** dengan mengirim email ke salah satu alias baru Anda
 
@@ -217,6 +218,12 @@ Anda dapat membandingkan kami dengan lebih dari 56 penyedia layanan email lainny
 
 > \[!TIP]
 > Pelajari lebih lanjut tentang Forward Email dengan membaca [Whitepaper Teknis](/technical-whitepaper.pdf) gratis kami dan meninjau [audit keamanan](/pentest-report_forward-email.pdf) kami oleh Cure53.
+
+### Apa perbedaan antara kotak surat dan alias {#what-is-the-difference-between-a-mailbox-and-an-alias}
+
+Tidak ada perbedaan. Situs web, aplikasi, API, dan dokumentasi kami menggunakan kedua istilah untuk alamat email di domain Anda.
+
+Kotak surat adalah alamat email di domain Anda, seperti `hello@example.com`. Sebagian alat menyebutnya alias. Setiap kotak surat dapat meneruskan email ke kotak masuk lain, menyimpan email yang Anda baca dengan IMAP dan webmail, atau keduanya.
 
 ### Siapa yang menggunakan Forward Email {#who-uses-forward-email}
 
@@ -737,7 +744,7 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
 
 1. Pergi ke <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Akun Saya <i class="fa fa-angle-right"></i> Domain</a> <i class="fa fa-angle-right"></i> Pengaturan <i class="fa fa-angle-right"></i> Konfigurasi SMTP Keluar dan ikuti instruksi pengaturan
 
-2. Buat alias baru untuk domain Anda di bawah <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Akun Saya <i class="fa fa-angle-right"></i> Domain</a> <i class="fa fa-angle-right"></i> Alias (misalnya <code><hello@example.com></code>)
+2. Buat alias baru untuk domain Anda di bawah <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Akun Saya <i class="fa fa-angle-right"></i> Domain</a> <i class="fa fa-angle-right"></i> Kotak surat (Alias) (misalnya <code><hello@example.com></code>)
 
 3. Klik pada <strong class="text-success"><i class="fa fa-key"></i> Buat Kata Sandi</strong> di sebelah alias yang baru dibuat. Salin ke clipboard Anda dan simpan kata sandi yang dihasilkan dengan aman yang ditampilkan di layar.
 
@@ -745,7 +752,7 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
 
 5. Saat diminta untuk "Nama", masukkan nama yang ingin Anda tampilkan sebagai "Dari" pada email Anda (misalnya "Linus Torvalds").
 
-6. Saat diminta untuk "Alamat email", masukkan alamat email lengkap dari alias yang Anda buat di bawah <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Akun Saya <i class="fa fa-angle-right"></i> Domain</a> <i class="fa fa-angle-right"></i> Alias (misalnya <code><hello@example.com></code>)
+6. Saat diminta untuk "Alamat email", masukkan alamat email lengkap dari alias yang Anda buat di bawah <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Akun Saya <i class="fa fa-angle-right"></i> Domain</a> <i class="fa fa-angle-right"></i> Kotak surat (Alias) (misalnya <code><hello@example.com></code>)
 
 7. Hapus centang "Perlakukan sebagai alias"
 
@@ -753,7 +760,7 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
 
 9. Saat diminta untuk "Server SMTP", masukkan <code>smtp.forwardemail.net</code> dan ubah port menjadi <code>465</code>
 
-10. Saat diminta untuk "Nama pengguna", masukkan alamat email lengkap dari alias yang Anda buat di bawah <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Akun Saya <i class="fa fa-angle-right"></i> Domain</a> <i class="fa fa-angle-right"></i> Alias (misalnya <code><hello@example.com></code>)
+10. Saat diminta untuk "Nama pengguna", masukkan alamat email lengkap dari alias yang Anda buat di bawah <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Akun Saya <i class="fa fa-angle-right"></i> Domain</a> <i class="fa fa-angle-right"></i> Kotak surat (Alias) (misalnya <code><hello@example.com></code>)
 
 11. Saat diminta untuk "Kata sandi", tempelkan kata sandi dari <strong class="text-success"><i class="fa fa-key"></i> Buat Kata Sandi</strong> pada langkah 3 di atas
 
@@ -1124,7 +1131,7 @@ Anda dapat mempelajari tentang subprosesor kami di halaman [GDPR](/gdpr), [DPA](
 
 Kapan saja Anda dapat mengekspor kotak surat Anda dalam format [EML](https://en.wikipedia.org/wiki/Email#Filename_extensions), [Mbox](https://en.wikipedia.org/wiki/Mbox), atau [SQLite](https://en.wikipedia.org/wiki/SQLite) terenkripsi.
 
-Pergi ke <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Akun Saya <i class="fa fa-angle-right"></i> Domain</a> <i class="fa fa-angle-right"></i> Alias <i class="fa fa-angle-right"></i> Unduh Cadangan dan pilih jenis format ekspor yang Anda inginkan.
+Pergi ke <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Akun Saya <i class="fa fa-angle-right"></i> Domain</a> <i class="fa fa-angle-right"></i> Kotak surat (Alias) <i class="fa fa-angle-right"></i> Unduh Cadangan dan pilih jenis format ekspor yang Anda inginkan.
 
 Anda akan menerima email berisi tautan untuk mengunduh ekspor setelah selesai.
 
@@ -2062,7 +2069,7 @@ Jika Anda menggunakan Microsoft 365 (Outlook) dan ingin meneruskan semua alias y
 
 ### Bagaimana cara mengatur penjawab liburan (auto-responder keluar kantor) {#how-do-i-set-up-a-vacation-responder-out-of-office-auto-responder}
 
-Pergi ke <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Akun Saya <i class="fa fa-angle-right"></i> Domain</a> <i class="fa fa-angle-right"></i> Alias dan buat atau edit alias yang ingin Anda konfigurasikan penjawab liburan otomatis.
+Pergi ke <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Akun Saya <i class="fa fa-angle-right"></i> Domain</a> <i class="fa fa-angle-right"></i> Kotak surat (Alias) dan buat atau edit alias yang ingin Anda konfigurasikan penjawab liburan otomatis.
 Anda memiliki kemampuan untuk mengonfigurasi tanggal mulai, tanggal berakhir, subjek, dan pesan, serta mengaktifkan atau menonaktifkannya kapan saja:
 
 * Subjek dan pesan dalam bentuk teks biasa saat ini didukung (kami menggunakan paket `striptags` secara internal untuk menghapus HTML apa pun).
@@ -2450,7 +2457,7 @@ Ya, sejak 16 Oktober 2023 kami mendukung penerimaan email melalui IMAP sebagai t
   </span>
 </div>
 
-1. Buat alias baru untuk domain Anda di <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Akun Saya <i class="fa fa-angle-right"></i> Domain</a> <i class="fa fa-angle-right"></i> Alias (misalnya <code><hello@example.com></code>)
+1. Buat alias baru untuk domain Anda di <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Akun Saya <i class="fa fa-angle-right"></i> Domain</a> <i class="fa fa-angle-right"></i> Kotak surat (Alias) (misalnya <code><hello@example.com></code>)
 
 2. Klik pada <strong class="text-success"><i class="fa fa-key"></i> Buat Kata Sandi</strong> di sebelah alias yang baru dibuat. Salin ke clipboard Anda dan simpan kata sandi yang dihasilkan dengan aman yang ditampilkan di layar.
 
@@ -2507,7 +2514,7 @@ Ya, sejak 4 Desember 2023 kami mendukung [POP3](https://en.wikipedia.org/wiki/Po
   </span>
 </div>
 
-1. Buat alias baru untuk domain Anda di <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Akun Saya <i class="fa fa-angle-right"></i> Domain</a> <i class="fa fa-angle-right"></i> Alias (misalnya <code><hello@example.com></code>)
+1. Buat alias baru untuk domain Anda di <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Akun Saya <i class="fa fa-angle-right"></i> Domain</a> <i class="fa fa-angle-right"></i> Kotak surat (Alias) (misalnya <code><hello@example.com></code>)
 
 2. Klik pada <strong class="text-success"><i class="fa fa-key"></i> Generate Password</strong> di sebelah alias yang baru dibuat.  Salin ke clipboard Anda dan simpan kata sandi yang dihasilkan dengan aman yang ditampilkan di layar.
 
@@ -2648,7 +2655,7 @@ Ya. Semua paket berbayar mencakup SMTP keluar, dan SMTP keluar **tidak terbatas*
 
 1. Pergi ke <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Akun Saya <i class="fa fa-angle-right"></i> Domain</a> <i class="fa fa-angle-right"></i> Pengaturan <i class="fa fa-angle-right"></i> Konfigurasi SMTP Keluar dan ikuti petunjuk pengaturan
 
-2. Buat alias baru untuk domain Anda di bawah <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Akun Saya <i class="fa fa-angle-right"></i> Domain</a> <i class="fa fa-angle-right"></i> Alias (misalnya <code><hello@example.com></code>)
+2. Buat alias baru untuk domain Anda di bawah <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Akun Saya <i class="fa fa-angle-right"></i> Domain</a> <i class="fa fa-angle-right"></i> Kotak surat (Alias) (misalnya <code><hello@example.com></code>)
 
 3. Klik pada <strong class="text-success"><i class="fa fa-key"></i> Buat Kata Sandi</strong> di sebelah alias yang baru dibuat. Salin ke clipboard Anda dan simpan dengan aman kata sandi yang dihasilkan yang ditampilkan di layar.
 
@@ -2767,7 +2774,7 @@ Ya, kami mendukung [OpenPGP](https://en.wikipedia.org/wiki/Pretty_Good_Privacy#O
        Tambahan Opsional:
      </strong>
      <span>
-       Jika Anda menggunakan layanan <a class="alert-link" href="/blog/docs/best-quantum-safe-encrypted-email-service">penyimpanan terenkripsi (IMAP/POP3)</a> kami dan ingin <i>semua</i> email yang disimpan di database SQLite Anda (yang sudah terenkripsi) dienkripsi dengan kunci publik Anda, maka pergi ke <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Akun Saya <i class="fa fa-angle-right"></i> Domain</a> <i class="fa fa-angle-right"></i> Alias (misalnya <code>hello@example.com</code>) <i class="fa fa-angle-right"></i> Edit <i class="fa fa-angle-right"></i> OpenPGP dan unggah kunci publik Anda.
+       Jika Anda menggunakan layanan <a class="alert-link" href="/blog/docs/best-quantum-safe-encrypted-email-service">penyimpanan terenkripsi (IMAP/POP3)</a> kami dan ingin <i>semua</i> email yang disimpan di database SQLite Anda (yang sudah terenkripsi) dienkripsi dengan kunci publik Anda, maka pergi ke <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Akun Saya <i class="fa fa-angle-right"></i> Domain</a> <i class="fa fa-angle-right"></i> Kotak surat (Alias) (misalnya <code>hello@example.com</code>) <i class="fa fa-angle-right"></i> Edit <i class="fa fa-angle-right"></i> OpenPGP dan unggah kunci publik Anda.
      </span>
    </div>
 
@@ -2835,7 +2842,7 @@ Untuk mengonfigurasi enkripsi S/MIME untuk alias Anda:
 
 2. Ekspor sertifikat Anda dalam format PEM (hanya sertifikat publik, bukan kunci privat).
 
-3. Pergi ke <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Akun Saya <i class="fa fa-angle-right"></i> Domain</a> <i class="fa fa-angle-right"></i> Alias (misalnya <code><hello@example.com></code>) <i class="fa fa-angle-right"></i> Edit <i class="fa fa-angle-right"></i> S/MIME dan unggah sertifikat publik Anda.
+3. Pergi ke <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Akun Saya <i class="fa fa-angle-right"></i> Domain</a> <i class="fa fa-angle-right"></i> Kotak surat (Alias) (misalnya <code><hello@example.com></code>) <i class="fa fa-angle-right"></i> Edit <i class="fa fa-angle-right"></i> S/MIME dan unggah sertifikat publik Anda.
 4. Setelah dikonfigurasi, semua email masuk ke alias Anda akan dienkripsi menggunakan sertifikat S/MIME Anda sebelum disimpan atau diteruskan.
 
    <div class="alert my-3 alert-secondary">
@@ -2954,7 +2961,7 @@ if header :contains "Subject" "invoice" {
 
 Anda dapat mengelola skrip Sieve dengan beberapa cara:
 
-1. **Antarmuka Web**: Pergi ke <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Akun Saya <i class="fa fa-angle-right"></i> Domain</a> <i class="fa fa-angle-right"></i> Alias <i class="fa fa-angle-right"></i> Skrip Sieve untuk membuat dan mengelola skrip.
+1. **Antarmuka Web**: Pergi ke <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Akun Saya <i class="fa fa-angle-right"></i> Domain</a> <i class="fa fa-angle-right"></i> Kotak surat (Alias) <i class="fa fa-angle-right"></i> Skrip Sieve untuk membuat dan mengelola skrip.
 
 2. **Protokol ManageSieve**: Sambungkan menggunakan klien yang kompatibel ManageSieve, seperti add-on Sieve Thunderbird atau [sieve-connect](https://github.com/philpennock/sieve-connect), ke `imap.forwardemail.net`. Gunakan port `2190` dengan STARTTLS atau port `4190` dengan TLS implisit.
 
@@ -5793,7 +5800,7 @@ Tidak, ini tidak disarankan, karena Anda hanya dapat menggunakan satu server per
     Penting:
   </strong>
   <span>
-    Jika Anda menggunakan paket berbayar, maka Anda harus pergi ke <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Akun Saya <i class="fa fa-angle-right"></i> Domain</a> <i class="fa fa-angle-right"></i> Alias <i class="fa fa-angle-right"></i> Edit Alias <i class="fa fa-angle-right"></i> Hapus centang pada kotak "Aktif" <i class="fa fa-angle-right"></i> Lanjutkan.
+    Jika Anda menggunakan paket berbayar, maka Anda harus pergi ke <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Akun Saya <i class="fa fa-angle-right"></i> Domain</a> <i class="fa fa-angle-right"></i> Kotak surat (Alias) <i class="fa fa-angle-right"></i> Edit Alias <i class="fa fa-angle-right"></i> Hapus centang pada kotak "Aktif" <i class="fa fa-angle-right"></i> Lanjutkan.
   </span>
 </div>
 

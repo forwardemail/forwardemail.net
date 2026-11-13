@@ -9633,7 +9633,7 @@
     },
     {
       "name": "Alias",
-      "description": "Endpoint di gestione degli alias di dominio"
+      "description": "Endpoint di gestione degli alias di dominio. Un alias si chiama anche cassetta postale."
     },
     {
       "name": "Crittografare",

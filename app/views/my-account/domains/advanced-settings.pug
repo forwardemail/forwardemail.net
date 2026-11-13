@@ -276,6 +276,21 @@ block body
       .row
         .col
           include ../../_breadcrumbs
+      //- a way to each setting, since there are many
+      if domain.group === 'admin' && !domain.is_global
+        nav.acct-jump.mb-3(aria-label=t("On this page"))
+          span.acct-jump-label= t("On this page")
+          a.acct-jump-link(href="#manage-team")= t("Manage Team")
+          a.acct-jump-link(href="#outbound-smtp")= t("Outbound SMTP Configuration")
+          a.acct-jump-link(href="#catch-all-passwords")= t("Catch-all Passwords")
+          a.acct-jump-link(href="#zone-file")= t("Zone File")
+          a.acct-jump-link(href="#current-plan")= t("Current Plan")
+          a.acct-jump-link(href="#storage-quota")= t("Storage Max Quota Per Alias")
+          a.acct-jump-link(href="#wildcard-subdomains")= t("Allow Wildcard Subdomain Forwarding")
+          a.acct-jump-link(href="#custom-storage")= t("Custom S3-Compatible Storage")
+          a.acct-jump-link(href="#bounce-webhook")= t("Bounce Webhook URL")
+          a.acct-jump-link(href="#denylist")= t("Denylisted Senders")
+          a.acct-jump-link.text-danger(href="#delete-domain")= t("Delete Domain")
       if !dayjs().isBefore(dayjs(domain.created_at).add(30, 'days'))
         .row
           .col
@@ -412,7 +427,7 @@ block body
       if domain.group === 'admin'
         .row
           .col
-            .card.border-themed.mb-3
+            #outbound-smtp.card.border-themed.mb-3
               h2.h6.card-header= t("Outbound SMTP Configuration")
               .card-body
                 +planRequired(false)
@@ -442,7 +457,7 @@ block body
                   ul.list-inline.mb-0
                     li.list-inline-item.mb-3.mb-md-0: a.btn.btn-sm.btn-success(
                       href=l(`/my-account/domains/${punycode.toASCII(domain.name)}/aliases`)
-                    )= t("Generate alias passwords")
+                    )= t("Generate mailbox passwords")
                     li.list-inline-item.mb-3.mb-md-0: a.btn.btn-sm.btn-dark(
                       href=l("/faq#do-you-support-sending-email-with-smtp"),
                       target="_blank"
@@ -470,7 +485,7 @@ block body
           if dayjs().isBefore(dayjs(domain.created_at).add(30, 'days'))
             +deleteDomain
           if domain.group === 'admin'
-            .card.border-themed.mb-3
+            #current-plan.card.border-themed.mb-3
               h2.h6.card-header= t("Current Plan")
               .card-body
                 .alert.alert-success.small.mb-0!= t('This domain is currently on the <span class="notranslate">%s</span> plan. Visit your <a class="alert-link" href="%s">Billing</a> page and our <a class="alert-link" href="%s">Pricing</a> page to learn more and compare plans.', t(titleize(humanize(domain.plan))), l("/my-account/billing"), l(`/private-business-email?domain=${domain.name}`))
@@ -508,7 +523,7 @@ block body
 
           //- Max Quota Per Alias
           if domain.group === 'admin'
-            form.ajax-form.confirm-prompt.card.border-themed.mb-3(
+            form#storage-quota.ajax-form.confirm-prompt.card.border-themed.mb-3(
               action=ctx.path,
               method="POST",
               disabled=isDisabled
@@ -622,7 +637,7 @@ block body
 
           //- Allow Subdomain Forwarding
           if domain.group === 'admin'
-            form.ajax-form.confirm-prompt.card.border-themed.mb-3(
+            form#wildcard-subdomains.ajax-form.confirm-prompt.card.border-themed.mb-3(
               action=ctx.path,
               method="POST",
               disabled=isDisabled
@@ -695,7 +710,7 @@ block body
 
           //- Outbound SMTP Retention
           if domain.group === 'admin'
-            form.ajax-form.confirm-prompt.card.border-themed.mb-3(
+            form#smtp-retention.ajax-form.confirm-prompt.card.border-themed.mb-3(
               action=ctx.path,
               method="POST",
               disabled=isDisabled
@@ -722,7 +737,7 @@ block body
 
           //- Custom S3-Compatible Storage
           if domain.group === 'admin' && !domain.is_global
-            form.ajax-form.confirm-prompt.card.border-themed.mb-3(
+            form#custom-storage.ajax-form.confirm-prompt.card.border-themed.mb-3(
               action=ctx.path,
               method="POST",
               disabled=isDisabled
@@ -878,7 +893,7 @@ block body
 
           //- Bounce Webhook
           if domain.group === 'admin'
-            form.ajax-form.confirm-prompt.card.border-themed.mb-3(
+            form#bounce-webhook.ajax-form.confirm-prompt.card.border-themed.mb-3(
               action=ctx.path,
               method="POST",
               disabled=isDisabled
@@ -1015,7 +1030,7 @@ block body
 
           //- Denylisted Senders
           if domain.group === 'admin'
-            form.ajax-form.confirm-prompt.card.border-themed.mb-3(
+            form#denylist.ajax-form.confirm-prompt.card.border-themed.mb-3(
               action=l(`/my-account/domains/${punycode.toASCII(domain.name)}/denylist`),
               method="POST"
             )

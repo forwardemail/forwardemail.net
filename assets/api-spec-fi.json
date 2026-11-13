@@ -9633,7 +9633,7 @@
     },
     {
       "name": "Aliakset",
-      "description": "Verkkotunnusaliasten hallinnan päätepisteet"
+      "description": "Verkkotunnusaliasten hallinnan päätepisteet. Aliasta kutsutaan myös postilaatikoksi."
     },
     {
       "name": "Salaa",

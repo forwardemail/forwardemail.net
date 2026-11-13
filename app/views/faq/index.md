@@ -8,6 +8,7 @@
 * [Quick Start](#quick-start)
 * [Introduction](#introduction)
   * [What is Forward Email](#what-is-forward-email)
+  * [What is the difference between a mailbox and an alias](#what-is-the-difference-between-a-mailbox-and-an-alias)
   * [Who uses Forward Email](#who-uses-forward-email)
   * [What is Forward Email's history](#what-is-forward-emails-history)
   * [How fast is this service](#how-fast-is-this-service)
@@ -182,7 +183,7 @@ To get started with Forward Email:
 
 2. **Add and verify your domain** under [My Account → Domains](/my-account/domains)
 
-3. **Add and configure email aliases/mailboxes** under [My Account → Domains](/my-account/domains) → Aliases
+3. **Add and configure email aliases/mailboxes** under [My Account → Domains](/my-account/domains) → Mailboxes
 
 4. **Test your setup** by sending an email to one of your new aliases
 
@@ -220,6 +221,12 @@ You can compare us to 56+ other email service providers on [our Email Comparison
 
 > \[!TIP]
 > Learn more about Forward Email by reading our free [Technical Whitepaper](/technical-whitepaper.pdf) and reviewing our [Security Audit](/pentest-report_forward-email.pdf) by Cure53.
+
+### What is the difference between a mailbox and an alias
+
+There is no difference. Our website, apps, API and documentation use both words for an email address at your domain.
+
+A mailbox is an email address at your domain, such as `hello@example.com`. Some tools call it an alias. Each one can forward email to other inboxes, store email you read with IMAP and webmail, or do both.
 
 ### Who uses Forward Email
 
@@ -746,7 +753,7 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
 
 1. Go to <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Settings <i class="fa fa-angle-right"></i> Outbound SMTP Configuration and follow setup instructions
 
-2. Create a new alias for your domain under <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Aliases (e.g. <code><hello@example.com></code>)
+2. Create a new alias for your domain under <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Mailboxes (e.g. <code><hello@example.com></code>)
 
 3. Click on <strong class="text-success"><i class="fa fa-key"></i> Generate Password</strong> next to the newly created alias.  Copy to your clipboard and securely store the generated password shown on the screen.
 
@@ -754,7 +761,7 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
 
 5. When prompted for "Name", enter the name that you want your email to be seen as "From" (e.g. "Linus Torvalds").
 
-6. When prompted for "Email address", enter the full email address of an alias you created under <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Aliases (e.g. <code><hello@example.com></code>)
+6. When prompted for "Email address", enter the full email address of an alias you created under <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Mailboxes (e.g. <code><hello@example.com></code>)
 
 7. Uncheck "Treat as an alias"
 
@@ -762,7 +769,7 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
 
 9. When prompted for "SMTP Server", enter <code>smtp.forwardemail.net</code> and change the port to <code>465</code>
 
-10. When prompted for "Username", enter the full email address of an alias you created under <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Aliases (e.g. <code><hello@example.com></code>)
+10. When prompted for "Username", enter the full email address of an alias you created under <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Mailboxes (e.g. <code><hello@example.com></code>)
 
 11. When prompted for "Password", paste the password from <strong class="text-success"><i class="fa fa-key"></i> Generate Password</strong> in step 3 above
 
@@ -1141,7 +1148,7 @@ You can learn about our subprocessors on our [GDPR](/gdpr),  [DPA](/dpa), and [P
 
 At anytime you can export your mailboxes as [EML](https://en.wikipedia.org/wiki/Email#Filename_extensions), [Mbox](https://en.wikipedia.org/wiki/Mbox), or encrypted [SQLite](https://en.wikipedia.org/wiki/SQLite) formats.
 
-Go to <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Aliases <i class="fa fa-angle-right"></i> Download Backup and select your preferred export format type.
+Go to <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Mailboxes <i class="fa fa-angle-right"></i> Download Backup and select your preferred export format type.
 
 You will be emailed a link to download the export once it has finished.
 
@@ -2089,7 +2096,7 @@ If you are using Microsoft 365 (Outlook) and you want to forward all non-matchin
 
 ### How do I set up a vacation responder (out of office auto-responder)
 
-Go to <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Aliases and either create or edit the alias you would like to configure a vacation autoresponder for.
+Go to <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Mailboxes and either create or edit the alias you would like to configure a vacation autoresponder for.
 
 You have the ability to configure a start date, end date, subject, and message, and enable or disable it at anytime:
 
@@ -2483,7 +2490,7 @@ Yes, as of October 16, 2023 we support receiving email over IMAP as an add-on fo
   </span>
 </div>
 
-1. Create a new alias for your domain under <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Aliases (e.g. <code><hello@example.com></code>)
+1. Create a new alias for your domain under <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Mailboxes (e.g. <code><hello@example.com></code>)
 
 2. Click on <strong class="text-success"><i class="fa fa-key"></i> Generate Password</strong> next to the newly created alias.  Copy to your clipboard and securely store the generated password shown on the screen.
 
@@ -2541,7 +2548,7 @@ Yes, as of December 4, 2023 we support [POP3](https://en.wikipedia.org/wiki/Post
   </span>
 </div>
 
-1. Create a new alias for your domain under <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Aliases (e.g. <code><hello@example.com></code>)
+1. Create a new alias for your domain under <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Mailboxes (e.g. <code><hello@example.com></code>)
 
 2. Click on <strong class="text-success"><i class="fa fa-key"></i> Generate Password</strong> next to the newly created alias.  Copy to your clipboard and securely store the generated password shown on the screen.
 
@@ -2684,7 +2691,7 @@ Yes. All paid plans include outbound SMTP, and it is **unlimited**: your daily s
 
 1. Go to <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Settings <i class="fa fa-angle-right"></i> Outbound SMTP Configuration and follow setup instructions
 
-2. Create a new alias for your domain under <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Aliases (e.g. <code><hello@example.com></code>)
+2. Create a new alias for your domain under <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Mailboxes (e.g. <code><hello@example.com></code>)
 
 3. Click on <strong class="text-success"><i class="fa fa-key"></i> Generate Password</strong> next to the newly created alias.  Copy to your clipboard and securely store the generated password shown on the screen.
 
@@ -2806,7 +2813,7 @@ Yes, we support [OpenPGP](https://en.wikipedia.org/wiki/Pretty_Good_Privacy#Open
        Optional Add-on:
      </strong>
      <span>
-       If you are using our <a class="alert-link" href="/blog/docs/best-quantum-safe-encrypted-email-service">encrypted storage (IMAP/POP3)</a> service and want <i>all</i> email stored in your (already encrypted) SQLite database to be encrypted with your public key, then go to <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Aliases (e.g. <code>hello@example.com</code>) <i class="fa fa-angle-right"></i> Edit <i class="fa fa-angle-right"></i> OpenPGP and upload your public key.
+       If you are using our <a class="alert-link" href="/blog/docs/best-quantum-safe-encrypted-email-service">encrypted storage (IMAP/POP3)</a> service and want <i>all</i> email stored in your (already encrypted) SQLite database to be encrypted with your public key, then go to <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Mailboxes (e.g. <code>hello@example.com</code>) <i class="fa fa-angle-right"></i> Edit <i class="fa fa-angle-right"></i> OpenPGP and upload your public key.
      </span>
    </div>
 
@@ -2874,7 +2881,7 @@ To configure S/MIME encryption for your alias:
 
 2. Export your certificate in PEM format (the public certificate only, not the private key).
 
-3. Go to <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Aliases (e.g. <code><hello@example.com></code>) <i class="fa fa-angle-right"></i> Edit <i class="fa fa-angle-right"></i> S/MIME and upload your public certificate.
+3. Go to <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Mailboxes (e.g. <code><hello@example.com></code>) <i class="fa fa-angle-right"></i> Edit <i class="fa fa-angle-right"></i> S/MIME and upload your public certificate.
 
 4. Once configured, all incoming emails to your alias will be encrypted using your S/MIME certificate before being stored or forwarded.
 
@@ -2994,7 +3001,7 @@ if header :contains "Subject" "invoice" {
 
 You can manage Sieve scripts in several ways:
 
-1. **Web Interface**: Go to <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Aliases <i class="fa fa-angle-right"></i> Sieve Scripts to create and manage scripts.
+1. **Web Interface**: Go to <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Mailboxes <i class="fa fa-angle-right"></i> Sieve Scripts to create and manage scripts.
 
 2. **ManageSieve Protocol**: Connect using any ManageSieve-compatible client, such as Thunderbird's Sieve add-on or [sieve-connect](https://github.com/philpennock/sieve-connect), to `imap.forwardemail.net`. Use port `2190` with STARTTLS or port `4190` with implicit TLS.
 
@@ -5869,7 +5876,7 @@ No, it is not recommended, as you can only use one mail exchange server at a tim
     Important:
   </strong>
   <span>
-    If you are on a paid plan, then you must go to <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Aliases <i class="fa fa-angle-right"></i> Edit Alias <i class="fa fa-angle-right"></i> Uncheck "Active" checkbox <i class="fa fa-angle-right"></i> Continue.
+    If you are on a paid plan, then you must go to <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Mailboxes <i class="fa fa-angle-right"></i> Edit Mailbox <i class="fa fa-angle-right"></i> Uncheck "Active" checkbox <i class="fa fa-angle-right"></i> Continue.
   </span>
 </div>
 

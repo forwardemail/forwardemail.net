@@ -8,6 +8,7 @@
 * [Rychlý start](#quick-start)
 * [Úvod](#introduction)
   * [Co je Forward Email](#what-is-forward-email)
+  * [Jaký je rozdíl mezi poštovní schránkou a přezdívkou](#what-is-the-difference-between-a-mailbox-and-an-alias)
   * [Kdo používá Forward Email](#who-uses-forward-email)
   * [Jaká je historie Forward Email](#what-is-forward-emails-history)
   * [Jak rychlá je tato služba](#how-fast-is-this-service)
@@ -179,7 +180,7 @@ Pro začátek s Forward Email:
 
 2. **Přidejte a ověřte svou doménu** v [Můj účet → Domény](/my-account/domains)
 
-3. **Přidejte a nakonfigurujte e-mailové aliasy/schránky** v [Můj účet → Domény](/my-account/domains) → Aliasy
+3. **Přidejte a nakonfigurujte e-mailové aliasy/schránky** v [Můj účet → Domény](/my-account/domains) → Poštovní schránky (Aliasy)
 
 4. **Otestujte své nastavení** odesláním e-mailu na jeden z vašich nových aliasů
 
@@ -217,6 +218,12 @@ Můžete nás porovnat s více než 56 dalšími poskytovateli e-mailových slu�
 
 > \[!TIP]
 > Více o Forward Email se dozvíte v našem bezplatném [Technickém whitepaperu](/technical-whitepaper.pdf) a přečtením našeho [bezpečnostního auditu](/pentest-report_forward-email.pdf) od Cure53.
+
+### Jaký je rozdíl mezi poštovní schránkou a přezdívkou {#what-is-the-difference-between-a-mailbox-and-an-alias}
+
+Žádný rozdíl neexistuje. Náš web, aplikace, API a dokumentace používají obě slova pro e-mailovou adresu na vaší doméně.
+
+Poštovní schránka je e-mailová adresa na vaší doméně, například `hello@example.com`. Některé nástroje jí říkají přezdívka. Každá může přeposílat e-maily do jiných schránek, ukládat e-maily, které čtete přes IMAP a webmail, nebo dělat obojí.
 
 ### Kdo používá Forward Email {#who-uses-forward-email}
 
@@ -737,7 +744,7 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
 
 1. Přejděte na <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Můj účet <i class="fa fa-angle-right"></i> Domény</a> <i class="fa fa-angle-right"></i> Nastavení <i class="fa fa-angle-right"></i> Konfigurace odchozího SMTP a postupujte podle pokynů pro nastavení
 
-2. Vytvořte nový alias pro svou doménu v <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Můj účet <i class="fa fa-angle-right"></i> Domény</a> <i class="fa fa-angle-right"></i> Aliasy (např. <code><hello@example.com></code>)
+2. Vytvořte nový alias pro svou doménu v <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Můj účet <i class="fa fa-angle-right"></i> Domény</a> <i class="fa fa-angle-right"></i> Poštovní schránky (Aliasy) (např. <code><hello@example.com></code>)
 
 3. Klikněte na <strong class="text-success"><i class="fa fa-key"></i> Vygenerovat heslo</strong> vedle nově vytvořeného aliasu. Zkopírujte do schránky a bezpečně uložte zobrazené heslo.
 
@@ -745,7 +752,7 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
 
 5. Když budete vyzváni k zadání "Jména", zadejte jméno, které chcete, aby se zobrazovalo jako odesílatel (např. "Linus Torvalds").
 
-6. Když budete vyzváni k zadání "E-mailové adresy", zadejte plnou e-mailovou adresu aliasu, který jste vytvořili v <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Můj účet <i class="fa fa-angle-right"></i> Domény</a> <i class="fa fa-angle-right"></i> Aliasy (např. <code><hello@example.com></code>)
+6. Když budete vyzváni k zadání "E-mailové adresy", zadejte plnou e-mailovou adresu aliasu, který jste vytvořili v <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Můj účet <i class="fa fa-angle-right"></i> Domény</a> <i class="fa fa-angle-right"></i> Poštovní schránky (Aliasy) (např. <code><hello@example.com></code>)
 
 7. Zrušte zaškrtnutí "Považovat za alias"
 
@@ -753,7 +760,7 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
 
 9. Když budete vyzváni k zadání "SMTP serveru", zadejte <code>smtp.forwardemail.net</code> a změňte port na <code>465</code>
 
-10. Když budete vyzváni k zadání "Uživatelského jména", zadejte plnou e-mailovou adresu aliasu, který jste vytvořili v <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Můj účet <i class="fa fa-angle-right"></i> Domény</a> <i class="fa fa-angle-right"></i> Aliasy (např. <code><hello@example.com></code>)
+10. Když budete vyzváni k zadání "Uživatelského jména", zadejte plnou e-mailovou adresu aliasu, který jste vytvořili v <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Můj účet <i class="fa fa-angle-right"></i> Domény</a> <i class="fa fa-angle-right"></i> Poštovní schránky (Aliasy) (např. <code><hello@example.com></code>)
 
 11. Když budete vyzváni k zadání "Hesla", vložte heslo z <strong class="text-success"><i class="fa fa-key"></i> Vygenerovat heslo</strong> z kroku 3 výše
 
@@ -1124,7 +1131,7 @@ O našich subzpracovatelích se můžete dozvědět na našich stránkách [GDPR
 
 Kdykoli můžete exportovat své poštovní schránky ve formátech [EML](https://en.wikipedia.org/wiki/Email#Filename_extensions), [Mbox](https://en.wikipedia.org/wiki/Mbox) nebo šifrovaných [SQLite](https://en.wikipedia.org/wiki/SQLite).
 
-Přejděte na <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Můj účet <i class="fa fa-angle-right"></i> Domény</a> <i class="fa fa-angle-right"></i> Aliasy <i class="fa fa-angle-right"></i> Stáhnout zálohu a vyberte preferovaný typ exportu.
+Přejděte na <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Můj účet <i class="fa fa-angle-right"></i> Domény</a> <i class="fa fa-angle-right"></i> Poštovní schránky (Aliasy) <i class="fa fa-angle-right"></i> Stáhnout zálohu a vyberte preferovaný typ exportu.
 
 Po dokončení exportu vám bude zaslán odkaz ke stažení.
 
@@ -2062,7 +2069,7 @@ Pokud používáte Microsoft 365 (Outlook) a chcete přeposílat všechny neodpo
 
 ### Jak nastavit automatickou odpověď během dovolené (out of office auto-responder) {#how-do-i-set-up-a-vacation-responder-out-of-office-auto-responder}
 
-Přejděte na <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Můj účet <i class="fa fa-angle-right"></i> Domény</a> <i class="fa fa-angle-right"></i> Aliasy a vytvořte nebo upravte alias, pro který chcete nastavit automatickou odpověď během dovolené.
+Přejděte na <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Můj účet <i class="fa fa-angle-right"></i> Domény</a> <i class="fa fa-angle-right"></i> Poštovní schránky (Aliasy) a vytvořte nebo upravte alias, pro který chcete nastavit automatickou odpověď během dovolené.
 Máte možnost nastavit počáteční datum, koncové datum, předmět a zprávu a kdykoli je povolit nebo zakázat:
 
 * Aktuálně jsou podporovány pouze prostý text předmětu a zprávy (interně používáme balíček `striptags` k odstranění jakéhokoli HTML).
@@ -2450,7 +2457,7 @@ Ano, od 16. října 2023 podporujeme příjem e-mailů přes IMAP jako doplněk 
   </span>
 </div>
 
-1. Vytvořte nový alias pro svou doménu v <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Můj účet <i class="fa fa-angle-right"></i> Domény</a> <i class="fa fa-angle-right"></i> Aliasy (např. <code><hello@example.com></code>)
+1. Vytvořte nový alias pro svou doménu v <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Můj účet <i class="fa fa-angle-right"></i> Domény</a> <i class="fa fa-angle-right"></i> Poštovní schránky (Aliasy) (např. <code><hello@example.com></code>)
 
 2. Klikněte na <strong class="text-success"><i class="fa fa-key"></i> Vygenerovat heslo</strong> vedle nově vytvořeného aliasu. Zkopírujte do schránky a bezpečně uložte zobrazené heslo.
 
@@ -2507,7 +2514,7 @@ Ano, od 4. prosince 2023 podporujeme [POP3](https://en.wikipedia.org/wiki/Post_O
   </span>
 </div>
 
-1. Vytvořte nový alias pro vaši doménu v <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Můj účet <i class="fa fa-angle-right"></i> Domény</a> <i class="fa fa-angle-right"></i> Aliasy (např. <code><hello@example.com></code>)
+1. Vytvořte nový alias pro vaši doménu v <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Můj účet <i class="fa fa-angle-right"></i> Domény</a> <i class="fa fa-angle-right"></i> Poštovní schránky (Aliasy) (např. <code><hello@example.com></code>)
 
 2. Klikněte na <strong class="text-success"><i class="fa fa-key"></i> Vygenerovat heslo</strong> vedle nově vytvořeného aliasu.  Zkopírujte do schránky a bezpečně uložte zobrazené heslo.
 
@@ -2648,7 +2655,7 @@ Ano. Všechny placené plány zahrnují odchozí SMTP a je **neomezené**: váš
 
 1. Přejděte na <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Můj účet <i class="fa fa-angle-right"></i> Domény</a> <i class="fa fa-angle-right"></i> Nastavení <i class="fa fa-angle-right"></i> Konfigurace odchozího SMTP a postupujte podle pokynů pro nastavení
 
-2. Vytvořte nový alias pro vaši doménu v <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Můj účet <i class="fa fa-angle-right"></i> Domény</a> <i class="fa fa-angle-right"></i> Aliasy (např. <code><hello@example.com></code>)
+2. Vytvořte nový alias pro vaši doménu v <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Můj účet <i class="fa fa-angle-right"></i> Domény</a> <i class="fa fa-angle-right"></i> Poštovní schránky (Aliasy) (např. <code><hello@example.com></code>)
 
 3. Klikněte na <strong class="text-success"><i class="fa fa-key"></i> Vygenerovat heslo</strong> vedle nově vytvořeného aliasu. Zkopírujte do schránky a bezpečně uložte zobrazené generované heslo.
 
@@ -2767,7 +2774,7 @@ Ano, podporujeme [OpenPGP](https://en.wikipedia.org/wiki/Pretty_Good_Privacy#Ope
        Volitelný doplněk:
      </strong>
      <span>
-       Pokud používáte naši službu <a class="alert-link" href="/blog/docs/best-quantum-safe-encrypted-email-service">šifrovaného úložiště (IMAP/POP3)</a> a chcete, aby <i>všechny</i> e-maily uložené ve vaší (již zašifrované) databázi SQLite byly zašifrovány vaším veřejným klíčem, přejděte na <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Můj účet <i class="fa fa-angle-right"></i> Domény</a> <i class="fa fa-angle-right"></i> Alias (např. <code>hello@example.com</code>) <i class="fa fa-angle-right"></i> Upravit <i class="fa fa-angle-right"></i> OpenPGP a nahrajte svůj veřejný klíč.
+       Pokud používáte naši službu <a class="alert-link" href="/blog/docs/best-quantum-safe-encrypted-email-service">šifrovaného úložiště (IMAP/POP3)</a> a chcete, aby <i>všechny</i> e-maily uložené ve vaší (již zašifrované) databázi SQLite byly zašifrovány vaším veřejným klíčem, přejděte na <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Můj účet <i class="fa fa-angle-right"></i> Domény</a> <i class="fa fa-angle-right"></i> Poštovní schránky (Alias) (např. <code>hello@example.com</code>) <i class="fa fa-angle-right"></i> Upravit <i class="fa fa-angle-right"></i> OpenPGP a nahrajte svůj veřejný klíč.
      </span>
    </div>
 
@@ -2835,7 +2842,7 @@ Pro konfiguraci šifrování S/MIME pro váš alias:
 
 2. Exportujte svůj certifikát ve formátu PEM (pouze veřejný certifikát, nikoli soukromý klíč).
 
-3. Přejděte na <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Můj účet <i class="fa fa-angle-right"></i> Domény</a> <i class="fa fa-angle-right"></i> Alias (např. <code><hello@example.com></code>) <i class="fa fa-angle-right"></i> Upravit <i class="fa fa-angle-right"></i> S/MIME a nahrajte svůj veřejný certifikát.
+3. Přejděte na <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Můj účet <i class="fa fa-angle-right"></i> Domény</a> <i class="fa fa-angle-right"></i> Poštovní schránky (Alias) (např. <code><hello@example.com></code>) <i class="fa fa-angle-right"></i> Upravit <i class="fa fa-angle-right"></i> S/MIME a nahrajte svůj veřejný certifikát.
 4. Po konfiguraci budou všechny příchozí e-maily na váš alias šifrovány pomocí vašeho S/MIME certifikátu před uložením nebo přeposláním.
 
    <div class="alert my-3 alert-secondary">
@@ -2954,7 +2961,7 @@ if header :contains "Subject" "invoice" {
 
 S Sieve skripty můžete pracovat několika způsoby:
 
-1. **Webové rozhraní**: Přejděte na <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Můj účet <i class="fa fa-angle-right"></i> Domény</a> <i class="fa fa-angle-right"></i> Aliasy <i class="fa fa-angle-right"></i> Sieve skripty pro vytváření a správu skriptů.
+1. **Webové rozhraní**: Přejděte na <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Můj účet <i class="fa fa-angle-right"></i> Domény</a> <i class="fa fa-angle-right"></i> Poštovní schránky (Aliasy) <i class="fa fa-angle-right"></i> Sieve skripty pro vytváření a správu skriptů.
 
 2. **Protokol ManageSieve**: Připojte se pomocí libovolného klienta kompatibilního s ManageSieve, například Sieve rozšíření pro Thunderbird nebo [sieve-connect](https://github.com/philpennock/sieve-connect), na `imap.forwardemail.net`. Použijte port `2190` se STARTTLS nebo port `4190` s implicitním TLS.
 
@@ -5793,7 +5800,7 @@ Ne, nedoporučuje se to, protože můžete používat pouze jeden mail exchange 
     Důležité:
   </strong>
   <span>
-    Pokud máte placený plán, musíte přejít na <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Můj účet <i class="fa fa-angle-right"></i> Domény</a> <i class="fa fa-angle-right"></i> Aliasy <i class="fa fa-angle-right"></i> Upravit alias <i class="fa fa-angle-right"></i> Zrušit zaškrtnutí políčka "Aktivní" <i class="fa fa-angle-right"></i> Pokračovat.
+    Pokud máte placený plán, musíte přejít na <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Můj účet <i class="fa fa-angle-right"></i> Domény</a> <i class="fa fa-angle-right"></i> Poštovní schránky (Aliasy) <i class="fa fa-angle-right"></i> Upravit alias <i class="fa fa-angle-right"></i> Zrušit zaškrtnutí políčka "Aktivní" <i class="fa fa-angle-right"></i> Pokračovat.
   </span>
 </div>
 

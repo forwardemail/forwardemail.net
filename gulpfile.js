@@ -167,6 +167,17 @@ const purgeCssOptions = {
   safelist: [
     ...new Set([
       ...developerDocsIcons,
+      // (the state of a domain card in My Account is picked in an expression)
+      'acct-card--global',
+      'acct-card--ready',
+      'acct-card--setup',
+      'acct-card--warn',
+      // (icons of the account menus, which the views pass in objects)
+      'fa-bug',
+      'fa-comments',
+      'fa-tachometer-alt',
+      'fa-tasks',
+      'fa-user-shield',
       'active',
       'alert-danger',
       'alert-success',

@@ -8,6 +8,7 @@
 * [빠른 시작](#quick-start)
 * [소개](#introduction)
   * [Forward Email이란 무엇인가요](#what-is-forward-email)
+  * [우편함과 별칭의 차이점](#what-is-the-difference-between-a-mailbox-and-an-alias)
   * [누가 Forward Email을 사용하나요](#who-uses-forward-email)
   * [Forward Email의 역사](#what-is-forward-emails-history)
   * [이 서비스는 얼마나 빠른가요](#how-fast-is-this-service)
@@ -179,7 +180,7 @@ Forward Email을 시작하려면:
 
 2. **도메인 추가 및 인증** [내 계정 → 도메인](/my-account/domains)에서
 
-3. **이메일 별칭/메일박스 추가 및 구성** [내 계정 → 도메인](/my-account/domains) → 별칭에서
+3. **이메일 별칭/메일박스 추가 및 구성** [내 계정 → 도메인](/my-account/domains) → 우편함 (별칭)에서
 
 4. **설정 테스트** 새 별칭 중 하나로 이메일을 보내 확인
 
@@ -217,6 +218,12 @@ Forward Email의 주요 기능:
 
 > \[!TIP]
 > 무료 [기술 백서](/technical-whitepaper.pdf)를 읽어 Forward Email에 대해 더 알아보세요. 그리고 Cure53의 [보안 감사](/pentest-report_forward-email.pdf)를 검토하세요.
+
+### 우편함과 별칭의 차이점 {#what-is-the-difference-between-a-mailbox-and-an-alias}
+
+차이는 없습니다. 저희 웹사이트, 앱, API 및 문서에서는 도메인의 이메일 주소를 가리킬 때 두 단어를 모두 사용합니다.
+
+우편함은 `hello@example.com` 같은 도메인의 이메일 주소입니다. 일부 도구에서는 별칭이라고도 부릅니다. 각 우편함은 다른 받은편지함으로 이메일을 전달하거나, IMAP과 웹메일로 읽는 이메일을 저장하거나, 둘 다 할 수 있습니다.
 
 ### Forward Email 사용자 {#who-uses-forward-email}
 
@@ -737,7 +744,7 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
 
 1. <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">내 계정 <i class="fa fa-angle-right"></i> 도메인</a> <i class="fa fa-angle-right"></i> 설정 <i class="fa fa-angle-right"></i> 발신 SMTP 구성으로 이동하여 설정 지침을 따르세요
 
-2. <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">내 계정 <i class="fa fa-angle-right"></i> 도메인</a> <i class="fa fa-angle-right"></i> 별칭에서 도메인에 대한 새 별칭을 만드세요 (예: <code><hello@example.com></code>)
+2. <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">내 계정 <i class="fa fa-angle-right"></i> 도메인</a> <i class="fa fa-angle-right"></i> 우편함 (별칭)에서 도메인에 대한 새 별칭을 만드세요 (예: <code><hello@example.com></code>)
 
 3. 새로 생성한 별칭 옆에 있는 <strong class="text-success"><i class="fa fa-key"></i> 비밀번호 생성</strong>을 클릭하세요. 클립보드에 복사하고 화면에 표시된 생성된 비밀번호를 안전하게 보관하세요.
 
@@ -745,7 +752,7 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
 
 5. "이름" 입력 요청 시, 이메일 발신자 이름으로 표시할 이름을 입력하세요 (예: "Linus Torvalds").
 
-6. "이메일 주소" 입력 요청 시, <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">내 계정 <i class="fa fa-angle-right"></i> 도메인</a> <i class="fa fa-angle-right"></i> 별칭에서 생성한 전체 이메일 주소를 입력하세요 (예: <code><hello@example.com></code>)
+6. "이메일 주소" 입력 요청 시, <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">내 계정 <i class="fa fa-angle-right"></i> 도메인</a> <i class="fa fa-angle-right"></i> 우편함 (별칭)에서 생성한 전체 이메일 주소를 입력하세요 (예: <code><hello@example.com></code>)
 
 7. "별칭으로 취급" 선택을 해제하세요
 
@@ -753,7 +760,7 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
 
 9. "SMTP 서버" 입력 요청 시, <code>smtp.forwardemail.net</code>을 입력하고 포트를 <code>465</code>로 변경하세요
 
-10. "사용자 이름" 입력 요청 시, <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">내 계정 <i class="fa fa-angle-right"></i> 도메인</a> <i class="fa fa-angle-right"></i> 별칭에서 생성한 전체 이메일 주소를 입력하세요 (예: <code><hello@example.com></code>)
+10. "사용자 이름" 입력 요청 시, <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">내 계정 <i class="fa fa-angle-right"></i> 도메인</a> <i class="fa fa-angle-right"></i> 우편함 (별칭)에서 생성한 전체 이메일 주소를 입력하세요 (예: <code><hello@example.com></code>)
 
 11. "비밀번호" 입력 요청 시, 3단계에서 <strong class="text-success"><i class="fa fa-key"></i> 비밀번호 생성</strong>에서 복사한 비밀번호를 붙여넣으세요
 
@@ -1124,7 +1131,7 @@ Microsoft 365(이전 Office 365) 사용자가 메일박스와 일치하지 않�
 
 언제든지 메일박스를 [EML](https://en.wikipedia.org/wiki/Email#Filename_extensions), [Mbox](https://en.wikipedia.org/wiki/Mbox), 또는 암호화된 [SQLite](https://en.wikipedia.org/wiki/SQLite) 형식으로 내보낼 수 있습니다.
 
-<a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">내 계정 <i class="fa fa-angle-right"></i> 도메인</a> <i class="fa fa-angle-right"></i> 별칭 <i class="fa fa-angle-right"></i> 백업 다운로드로 이동하여 원하는 내보내기 형식을 선택하세요.
+<a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">내 계정 <i class="fa fa-angle-right"></i> 도메인</a> <i class="fa fa-angle-right"></i> 우편함 (별칭) <i class="fa fa-angle-right"></i> 백업 다운로드로 이동하여 원하는 내보내기 형식을 선택하세요.
 
 내보내기가 완료되면 다운로드 링크가 이메일로 전송됩니다.
 
@@ -2062,7 +2069,7 @@ Microsoft 365(Outlook)를 사용 중이며 일치하지 않는 모든 별칭을 
 
 ### 휴가 자동응답기(부재중 자동응답기)를 어떻게 설정하나요? {#how-do-i-set-up-a-vacation-responder-out-of-office-auto-responder}
 
-<a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">내 계정 <i class="fa fa-angle-right"></i> 도메인</a> <i class="fa fa-angle-right"></i> 별칭으로 이동하여 휴가 자동응답기를 설정하려는 별칭을 생성하거나 편집하세요.
+<a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">내 계정 <i class="fa fa-angle-right"></i> 도메인</a> <i class="fa fa-angle-right"></i> 우편함 (별칭)으로 이동하여 휴가 자동응답기를 설정하려는 별칭을 생성하거나 편집하세요.
 시작 날짜, 종료 날짜, 제목 및 메시지를 구성하고 언제든지 활성화 또는 비활성화할 수 있습니다:
 
 * 현재는 일반 텍스트 제목과 메시지만 지원됩니다 (`striptags` 패키지를 내부적으로 사용하여 모든 HTML을 제거합니다).
@@ -2450,7 +2457,7 @@ DELETE /v1/account/api-token에 DELETE 요청을 보내 API 토큰을 비활성�
   </span>
 </div>
 
-1. <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">내 계정 <i class="fa fa-angle-right"></i> 도메인</a> <i class="fa fa-angle-right"></i> 별칭에서 도메인에 대한 새 별칭을 생성하세요 (예: <code><hello@example.com></code>)
+1. <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">내 계정 <i class="fa fa-angle-right"></i> 도메인</a> <i class="fa fa-angle-right"></i> 우편함 (별칭)에서 도메인에 대한 새 별칭을 생성하세요 (예: <code><hello@example.com></code>)
 
 2. 새로 생성한 별칭 옆에 있는 <strong class="text-success"><i class="fa fa-key"></i> 비밀번호 생성</strong>을 클릭하세요. 클립보드에 복사하고 화면에 표시된 생성된 비밀번호를 안전하게 보관하세요.
 
@@ -2507,7 +2514,7 @@ DELETE /v1/account/api-token에 DELETE 요청을 보내 API 토큰을 비활성�
   </span>
 </div>
 
-1. <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">내 계정 <i class="fa fa-angle-right"></i> 도메인</a> <i class="fa fa-angle-right"></i> 별칭에서 도메인에 대한 새 별칭을 만드세요 (예: <code><hello@example.com></code>)
+1. <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">내 계정 <i class="fa fa-angle-right"></i> 도메인</a> <i class="fa fa-angle-right"></i> 우편함 (별칭)에서 도메인에 대한 새 별칭을 만드세요 (예: <code><hello@example.com></code>)
 
 2. 새로 생성한 별칭 옆에 있는 <strong class="text-success"><i class="fa fa-key"></i> 비밀번호 생성</strong>을 클릭하세요. 클립보드에 복사하고 화면에 표시된 생성된 비밀번호를 안전하게 보관하세요.
 
@@ -2648,7 +2655,7 @@ IPv4와 IPv6 모두를 지원하며 포트 `443`(HTTPS)에서 이용 가능합�
 
 1. <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">내 계정 <i class="fa fa-angle-right"></i> 도메인</a> <i class="fa fa-angle-right"></i> 설정 <i class="fa fa-angle-right"></i> 아웃바운드 SMTP 구성으로 이동하여 설정 지침을 따르세요.
 
-2. <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">내 계정 <i class="fa fa-angle-right"></i> 도메인</a> <i class="fa fa-angle-right"></i> 별칭에서 도메인에 대한 새 별칭을 만드세요 (예: <code><hello@example.com></code>)
+2. <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">내 계정 <i class="fa fa-angle-right"></i> 도메인</a> <i class="fa fa-angle-right"></i> 우편함 (별칭)에서 도메인에 대한 새 별칭을 만드세요 (예: <code><hello@example.com></code>)
 
 3. 새로 생성한 별칭 옆에 있는 <strong class="text-success"><i class="fa fa-key"></i> 비밀번호 생성</strong>을 클릭하세요. 클립보드에 복사하고 화면에 표시된 생성된 비밀번호를 안전하게 보관하세요.
 
@@ -2767,7 +2774,7 @@ IPv4와 IPv6 모두를 지원하며 포트 `443`(HTTPS)에서 이용 가능합�
        선택적 추가 기능:
      </strong>
      <span>
-       당사의 <a class="alert-link" href="/blog/docs/best-quantum-safe-encrypted-email-service">암호화 저장소(IMAP/POP3)</a> 서비스를 사용 중이며 (이미 암호화된) SQLite 데이터베이스에 저장된 <i>모든</i> 이메일을 공개 키로 암호화하려면 <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">내 계정 <i class="fa fa-angle-right"></i> 도메인</a> <i class="fa fa-angle-right"></i> 별칭(예: <code>hello@example.com</code>) <i class="fa fa-angle-right"></i> 편집 <i class="fa fa-angle-right"></i> OpenPGP로 이동하여 공개 키를 업로드하세요.
+       당사의 <a class="alert-link" href="/blog/docs/best-quantum-safe-encrypted-email-service">암호화 저장소(IMAP/POP3)</a> 서비스를 사용 중이며 (이미 암호화된) SQLite 데이터베이스에 저장된 <i>모든</i> 이메일을 공개 키로 암호화하려면 <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">내 계정 <i class="fa fa-angle-right"></i> 도메인</a> <i class="fa fa-angle-right"></i> 우편함 (별칭)(예: <code>hello@example.com</code>) <i class="fa fa-angle-right"></i> 편집 <i class="fa fa-angle-right"></i> OpenPGP로 이동하여 공개 키를 업로드하세요.
      </span>
    </div>
 
@@ -2835,7 +2842,7 @@ IPv4와 IPv6 모두를 지원하며 포트 `443`(HTTPS)에서 이용 가능합�
 
 2. 인증서를 PEM 형식으로 내보내세요(공개 인증서만, 개인 키는 제외).
 
-3. <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">내 계정 <i class="fa fa-angle-right"></i> 도메인</a> <i class="fa fa-angle-right"></i> 별칭(예: <code><hello@example.com></code>) <i class="fa fa-angle-right"></i> 편집 <i class="fa fa-angle-right"></i> S/MIME로 이동하여 공개 인증서를 업로드하세요.
+3. <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">내 계정 <i class="fa fa-angle-right"></i> 도메인</a> <i class="fa fa-angle-right"></i> 우편함 (별칭)(예: <code><hello@example.com></code>) <i class="fa fa-angle-right"></i> 편집 <i class="fa fa-angle-right"></i> S/MIME로 이동하여 공개 인증서를 업로드하세요.
 4. 구성되면, 별칭으로 들어오는 모든 이메일은 저장되거나 전달되기 전에 S/MIME 인증서를 사용하여 암호화됩니다.
 
    <div class="alert my-3 alert-secondary">
@@ -2954,7 +2961,7 @@ if header :contains "Subject" "invoice" {
 
 Sieve 스크립트는 여러 방법으로 관리할 수 있습니다:
 
-1. **웹 인터페이스**: <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">내 계정 <i class="fa fa-angle-right"></i> 도메인</a> <i class="fa fa-angle-right"></i> 별칭 <i class="fa fa-angle-right"></i> Sieve 스크립트로 이동하여 스크립트를 생성하고 관리하십시오.
+1. **웹 인터페이스**: <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">내 계정 <i class="fa fa-angle-right"></i> 도메인</a> <i class="fa fa-angle-right"></i> 우편함 (별칭) <i class="fa fa-angle-right"></i> Sieve 스크립트로 이동하여 스크립트를 생성하고 관리하십시오.
 
 2. **ManageSieve 프로토콜**: Thunderbird의 Sieve 애드온이나 [sieve-connect](https://github.com/philpennock/sieve-connect)과 같은 ManageSieve 호환 클라이언트를 사용하여 `imap.forwardemail.net`에 연결하십시오. STARTTLS 사용 시 포트 `2190`, 암시적 TLS 사용 시 포트 `4190`을 사용합니다.
 
@@ -5793,7 +5800,7 @@ dig example.com txt +short
     중요:
   </strong>
   <span>
-    유료 플랜을 사용 중이라면 <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">내 계정 <i class="fa fa-angle-right"></i> 도메인</a> <i class="fa fa-angle-right"></i> 별칭 <i class="fa fa-angle-right"></i> 별칭 편집 <i class="fa fa-angle-right"></i> "활성" 체크박스 선택 해제 <i class="fa fa-angle-right"></i> 계속 진행해야 합니다.
+    유료 플랜을 사용 중이라면 <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">내 계정 <i class="fa fa-angle-right"></i> 도메인</a> <i class="fa fa-angle-right"></i> 우편함 (별칭) <i class="fa fa-angle-right"></i> 별칭 편집 <i class="fa fa-angle-right"></i> "활성" 체크박스 선택 해제 <i class="fa fa-angle-right"></i> 계속 진행해야 합니다.
   </span>
 </div>
 

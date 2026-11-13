@@ -9633,7 +9633,7 @@
     },
     {
       "name": "Aliaser",
-      "description": "Slutpunkter for administration af domænealias"
+      "description": "Slutpunkter for administration af domænealias. Et alias kaldes også en postkasse."
     },
     {
       "name": "Krypter",

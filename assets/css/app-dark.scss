@@ -209,6 +209,22 @@ $input-placeholder-color: $fe-n-600;
     color: var(--app-fg-secondary) !important;
   }
 
+  // On the My Account and Admin pages, bootstrap's success green and danger
+  // red (storage figures, links, outlined buttons) are under 4.5:1 on the
+  // dark cards; the palette's dark-scheme tones are legible there.
+  .acct-main .text-success:not(.badge) {
+    color: $fe-mint !important;
+  }
+
+  .acct-main .text-danger:not(.badge) {
+    color: $fe-danger !important;
+  }
+
+  .acct-main .btn-outline-danger:not(:hover):not(:focus):not(:active) {
+    color: $fe-danger;
+    border-color: $fe-danger;
+  }
+
   .border,
   .border-top,
   .border-right,

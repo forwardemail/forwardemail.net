@@ -1,0 +1,923 @@
+/**
+ * Copyright (c) Forward Email LLC
+ * SPDX-License-Identifier: BUSL-1.1
+ */
+
+// The account shell: the sidebar beside every My Account and Admin page
+// (app/views/_account-sidebar.pug), the account menus of the navbar and the
+// parts the redesigned account pages share (cards, chips, steps). Colours come
+// from the --app-* tokens, so the dark scheme (app-dark.scss) follows without
+// rules of its own; radii, type and motion come from the --fe-* tokens, so the
+// pages match the rest of the site.
+
+$acct-sidebar-width: 15.5rem;
+
+// the status dot of a domain
+.acct-dot {
+  display: inline-block;
+  flex: 0 0 auto;
+  width: 0.55rem;
+  height: 0.55rem;
+  border-radius: 50%;
+  background: var(--app-fg-muted);
+}
+
+.acct-dot--ready {
+  background: theme-color('success');
+}
+
+.acct-dot--setup {
+  background: theme-color('danger');
+}
+
+.acct-dot--global {
+  background: var(--app-fg-muted);
+}
+
+// the initial of a person
+.acct-avatar {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  line-height: 1;
+  color: #fff;
+  background: var(--fe-primary);
+  border-radius: 50%;
+}
+
+.acct-user-text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  line-height: 1.25;
+}
+
+.acct-user-name {
+  overflow: hidden;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.acct-user-meta {
+  font-size: 0.8rem;
+  color: var(--app-fg-secondary);
+}
+
+// ---------------------------------------------------------------------------
+// the layout
+// ---------------------------------------------------------------------------
+
+.acct-shell {
+  position: relative;
+  flex-direction: column;
+}
+
+.acct-main {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  min-width: 0;
+}
+
+@media (min-width: 992px) {
+  .acct-shell {
+    flex-direction: row !important;
+    align-items: stretch;
+  }
+
+  .acct-sidebar {
+    flex: 0 0 $acct-sidebar-width;
+    width: $acct-sidebar-width;
+  }
+
+  .acct-main {
+    flex: 1 1 0;
+  }
+
+  // the page keeps room for the sidebar without the extra gutter of a
+  // full-width container
+  .acct-main > .container,
+  .acct-main > .container-fluid {
+    max-width: 100%;
+  }
+}
+
+// ---------------------------------------------------------------------------
+// the sidebar
+// ---------------------------------------------------------------------------
+
+.acct-sidebar {
+  background: var(--app-bg-raised);
+  border-bottom: 1px solid var(--app-border);
+}
+
+// below lg: the bar that opens the list, pinned under the navbar
+@media (max-width: 991.98px) {
+  .acct-sidebar {
+    position: sticky;
+    top: var(--fe-nav-offset);
+    z-index: 999;
+    // (covers the few pixels between the navbar and the bar)
+    box-shadow: 0 -0.25rem 0 var(--app-bg-raised);
+  }
+
+  .acct-sidebar-toggle {
+    display: flex;
+    align-items: center;
+    padding: 0.65rem 1rem;
+    font-weight: 600;
+    color: var(--app-fg-primary);
+    text-align: left;
+    background: var(--app-bg-raised);
+    border: 0;
+    border-radius: 0;
+  }
+
+  .acct-sidebar-toggle-label {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .acct-sidebar-toggle-caret {
+    font-size: 0.75rem;
+    transition: transform var(--fe-motion-base) var(--fe-ease);
+  }
+
+  .acct-sidebar-toggle[aria-expanded='true'] .acct-sidebar-toggle-caret {
+    transform: rotate(180deg);
+  }
+
+  // a long list scrolls inside the screen instead of the page behind it
+  #acct-sidebar-nav {
+    max-height: calc(100vh - 8rem);
+    overflow-y: auto;
+    border-top: 1px solid var(--app-border);
+  }
+
+  .acct-sidebar-inner {
+    padding: 0.75rem 1rem 1rem;
+  }
+}
+
+@media (min-width: 992px) {
+  .acct-sidebar {
+    border-right: 1px solid var(--app-border);
+    border-bottom: 0;
+  }
+
+  // sticky to the navbar, with its own scroll for a long list of domains
+  #acct-sidebar-nav {
+    position: sticky;
+    top: var(--fe-nav-offset);
+    max-height: calc(100vh - var(--fe-nav-offset));
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+
+  .acct-sidebar-inner {
+    // (room under the last link for the bar that is fixed to the bottom of
+    // the setup page)
+    padding: 1rem 0.75rem 4rem;
+  }
+}
+
+.acct-user {
+  display: flex;
+  gap: 0.65rem;
+  align-items: center;
+  padding: 0.35rem 0.5rem 0.75rem;
+  margin-bottom: 0.25rem;
+  color: var(--app-fg-primary);
+  text-decoration: none;
+
+  &:hover {
+    color: var(--app-fg-primary);
+    text-decoration: none;
+  }
+}
+
+.acct-add {
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+}
+
+.acct-group {
+  padding: 0.35rem 0;
+
+  & + & {
+    border-top: 1px solid var(--app-border);
+  }
+}
+
+.acct-group-title {
+  padding: 0.4rem 0.5rem 0.25rem;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--app-fg-secondary);
+  text-transform: uppercase;
+  letter-spacing: var(--fe-tracking-label);
+}
+
+.acct-link {
+  display: flex;
+  gap: 0.6rem;
+  align-items: center;
+  min-height: 2.25rem;
+  padding: 0.35rem 0.5rem;
+  font-size: 0.9rem;
+  color: var(--app-fg-primary);
+  text-decoration: none;
+  border-radius: var(--fe-radius-md);
+  transition: background-color var(--fe-motion-fast) var(--fe-ease);
+
+  &:hover {
+    color: var(--app-fg-primary);
+    text-decoration: none;
+    background: var(--app-bg-sunken);
+  }
+
+  &.active {
+    font-weight: 600;
+    color: var(--app-fg-primary);
+    background: var(--app-focus-ring);
+    box-shadow: inset 3px 0 0 var(--app-link);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--app-link);
+    outline-offset: -2px;
+  }
+}
+
+.acct-link-icon {
+  flex: 0 0 auto;
+  color: var(--app-fg-secondary);
+}
+
+.active > .acct-link-icon {
+  color: inherit;
+}
+
+.acct-link-label {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.acct-link-lock {
+  font-size: 0.7rem;
+  color: var(--app-fg-secondary);
+}
+
+.acct-link-badge {
+  font-weight: 600;
+}
+
+.acct-domain {
+  padding-left: 0.6rem;
+}
+
+// the links of the domain being viewed
+.acct-sublinks {
+  padding-left: 1.1rem;
+  margin: 0.1rem 0 0.35rem 0.85rem;
+  border-left: 1px solid var(--app-border);
+
+  .acct-link {
+    min-height: 2rem;
+    font-size: 0.85rem;
+  }
+}
+
+.acct-more {
+  display: block;
+  padding: 0.25rem 0.5rem;
+  font-size: 0.8rem;
+}
+
+// ---------------------------------------------------------------------------
+// the account menus of the navbar
+// ---------------------------------------------------------------------------
+
+.acct-menu {
+  min-width: 16rem;
+  max-height: calc(100vh - 5rem);
+  overflow-y: auto;
+}
+
+.acct-menu-user {
+  display: flex;
+  gap: 0.65rem;
+  align-items: center;
+  padding: 0.5rem 1rem 0.65rem;
+  margin-bottom: 0.25rem;
+  border-bottom: 1px solid var(--app-border);
+}
+
+.acct-menu .dropdown-item {
+  display: flex;
+  align-items: center;
+}
+
+// ---------------------------------------------------------------------------
+// the parts the account pages share
+// ---------------------------------------------------------------------------
+
+// the numbers above the list of domains
+.acct-stats {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.75rem;
+}
+
+@media (min-width: 768px) {
+  .acct-stats {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.acct-stat {
+  padding: 0.85rem 1rem;
+  background: var(--app-bg-raised);
+  border: 1px solid var(--app-border);
+  border-radius: var(--fe-radius-lg);
+}
+
+.acct-stat-label {
+  margin: 0;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--app-fg-secondary);
+  text-transform: uppercase;
+  letter-spacing: var(--fe-tracking-label);
+}
+
+.acct-stat-value {
+  font-size: 1.75rem;
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+// a card of a list (the domains)
+.acct-domain-list {
+  display: grid;
+  gap: 1rem;
+}
+
+.acct-card {
+  background: var(--app-bg-raised);
+  border: 1px solid var(--app-border);
+  border-left-width: 4px;
+  border-radius: var(--fe-radius-lg);
+}
+
+.acct-card--ready {
+  border-left-color: theme-color('success');
+}
+
+.acct-card--warn {
+  border-left-color: theme-color('warning');
+}
+
+.acct-card--setup {
+  border-left-color: theme-color('danger');
+}
+
+.acct-card--global {
+  border-left-color: var(--app-fg-muted);
+}
+
+.acct-card-head {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem 1rem;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.85rem 1rem 0.5rem;
+}
+
+.acct-card-title {
+  min-width: 0;
+  font-weight: 600;
+}
+
+// the DNS records and the next step, beside the team and the storage from lg
+.acct-card-body {
+  display: grid;
+  gap: 0.75rem 2rem;
+  align-items: start;
+  padding: 0 1rem 0.85rem;
+}
+
+@media (min-width: 992px) {
+  .acct-card-body {
+    grid-template-columns: minmax(0, 1fr) minmax(12rem, 17rem);
+  }
+}
+
+.acct-card-main,
+.acct-card-side {
+  display: grid;
+  gap: 0.6rem;
+  min-width: 0;
+}
+
+.acct-next > p {
+  margin-bottom: 0.4rem;
+}
+
+.acct-card-foot {
+  padding: 0.55rem 1rem;
+  background: var(--app-bg-sunken);
+  border-top: 1px solid var(--app-border);
+  border-radius: 0 0 var(--fe-radius-lg) 0;
+}
+
+// the buttons of a card, in a row that wraps
+.acct-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  align-items: center;
+
+  > form {
+    margin: 0;
+  }
+}
+
+.acct-action {
+  display: inline-flex;
+  gap: 0.35rem;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+}
+
+// (the plan of the domain is changed at the end of the row)
+.acct-action-plan {
+  margin-left: auto;
+}
+
+// on a phone the buttons of the next step fill the row
+@media (max-width: 575.98px) {
+  .acct-actions--cta > *,
+  .acct-actions--cta .acct-action {
+    flex: 1 1 100%;
+    width: 100%;
+  }
+
+  .acct-action-plan {
+    margin-left: 0;
+  }
+}
+
+// the icons of the row are shown where there is room for them
+.acct-card-foot .acct-action > .fa-fw {
+  display: none;
+}
+
+@media (min-width: 1200px) {
+  .acct-card-foot .acct-action > .fa-fw {
+    display: inline-block;
+  }
+}
+
+// a quiet button that reads on both schemes: the secondary actions of the
+// cards and of the setup steps
+.acct-btn {
+  font-weight: 500;
+  color: var(--app-fg-primary);
+  background: var(--app-bg-raised);
+  border: 1px solid var(--app-border-strong);
+
+  &:hover,
+  &:focus,
+  .show > &.dropdown-toggle {
+    color: var(--app-fg-primary);
+    background: var(--app-bg-sunken);
+    border-color: var(--app-fg-secondary);
+  }
+}
+
+.acct-btn--warn {
+  border-color: theme-color('warning');
+  box-shadow: inset 0 -2px 0 theme-color('warning');
+}
+
+// the people of a domain
+.acct-team {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.acct-avatar--sm {
+  width: 1.75rem;
+  height: 1.75rem;
+  margin-right: -0.35rem;
+  font-size: 0.75rem;
+  background: var(--fe-primary);
+  border: 2px solid var(--app-bg-raised);
+}
+
+.acct-avatar--admin {
+  background: var(--fe-primary);
+}
+
+.acct-storage {
+  min-width: 0;
+}
+
+.acct-sort form {
+  margin: 0;
+}
+
+// the steps of a setup: one column on a phone, two on a tablet, four from lg
+.acct-steps {
+  display: grid;
+  gap: 0.75rem;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+@media (min-width: 576px) {
+  .acct-steps {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 992px) {
+  .acct-steps {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+.acct-step {
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
+  text-align: left;
+  background: var(--app-bg-raised);
+  border: 1px solid var(--app-border);
+  border-radius: var(--fe-radius-lg);
+}
+
+.acct-step--current {
+  border-color: var(--app-link);
+  box-shadow: 0 0 0 1px var(--app-link);
+}
+
+.acct-step--done {
+  border-color: theme-color('success');
+}
+
+.acct-step-head {
+  display: flex;
+  gap: 0.6rem;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.acct-step-number {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--app-fg-primary);
+  background: var(--app-bg-sunken);
+  border: 1px solid var(--app-border-strong);
+  border-radius: 50%;
+}
+
+.acct-step--current .acct-step-number {
+  color: #fff;
+  background: var(--fe-primary);
+  border-color: var(--fe-primary);
+}
+
+.acct-step--done .acct-step-number {
+  color: #fff;
+  background: theme-color('success');
+  border-color: theme-color('success');
+}
+
+.acct-step-title {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.acct-step-text {
+  margin-bottom: 0.75rem;
+  font-size: 0.85rem;
+  color: var(--app-fg-secondary);
+}
+
+// (the buttons follow the text: they are not pushed to the foot of the step)
+.acct-step-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  align-items: center;
+
+  > form {
+    margin: 0;
+  }
+
+  // 1-Click Setup has a row of its own
+  > .domain-connect-form {
+    flex: 1 1 100%;
+  }
+}
+
+.acct-step-hint {
+  margin: 0.75rem 0 0;
+  font-size: 0.8rem;
+  color: var(--app-fg-secondary);
+}
+
+// the three steps of adding a domain
+.acct-steps--path {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+
+  .acct-step {
+    padding: 0.6rem 0.85rem;
+  }
+
+  .acct-step-head {
+    margin-bottom: 0;
+  }
+
+  .acct-step-title {
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .acct-steps--path .acct-step-title {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  .acct-steps--path .acct-step {
+    align-items: center;
+  }
+}
+
+.acct-card--form {
+  border-left-width: 1px;
+}
+
+// the guide that switches between "new to DNS" and "I know DNS"
+.acct-paths {
+  min-width: 0;
+  padding: 1rem;
+}
+
+.acct-paths-title {
+  margin-bottom: 0.75rem;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.acct-path-input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.acct-path-tabs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.4rem;
+  margin-bottom: 0.85rem;
+}
+
+.acct-path-tab {
+  padding: 0.5rem 0.6rem;
+  margin: 0;
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-align: center;
+  cursor: pointer;
+  background: var(--app-bg-sunken);
+  border: 1px solid var(--app-border);
+  border-radius: var(--fe-radius-md);
+}
+
+.acct-path-panel {
+  display: none;
+  font-size: 0.9rem;
+}
+
+.acct-path-list {
+  padding-left: 1.2rem;
+  margin-bottom: 0.75rem;
+
+  li {
+    margin-bottom: 0.3rem;
+  }
+}
+
+#path-new:checked ~ .acct-path-panel--new,
+#path-know:checked ~ .acct-path-panel--know {
+  display: block;
+}
+
+#path-new:checked ~ .acct-path-tabs .acct-path-tab--new,
+#path-know:checked ~ .acct-path-tabs .acct-path-tab--know {
+  color: #fff;
+  background: var(--fe-primary);
+  border-color: var(--fe-primary);
+}
+
+#path-new:focus-visible ~ .acct-path-tabs .acct-path-tab--new,
+#path-know:focus-visible ~ .acct-path-tabs .acct-path-tab--know {
+  outline: 2px solid var(--app-link);
+  outline-offset: 2px;
+}
+
+// a note that explains a word
+.acct-callout {
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-start;
+  padding: 0.75rem 1rem;
+  color: var(--app-fg-primary);
+  background: var(--app-bg-sunken);
+  border: 1px solid var(--app-border);
+  border-left: 4px solid var(--app-link);
+  border-radius: var(--fe-radius-md);
+}
+
+.acct-callout-icon {
+  margin-top: 0.2rem;
+  color: var(--app-link);
+}
+
+// a row of links to the parts of a long page
+// (not sticky: the page scrolls a section to just under the navbar, where a
+// sticky bar would cover its heading)
+.acct-jump {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  align-items: center;
+  padding: 0.5rem 0.75rem;
+  background: var(--app-bg-raised);
+  border: 1px solid var(--app-border);
+  border-radius: var(--fe-radius-md);
+}
+
+.acct-jump-label {
+  margin-right: 0.25rem;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--app-fg-secondary);
+  text-transform: uppercase;
+  letter-spacing: var(--fe-tracking-label);
+}
+
+.acct-jump-link {
+  padding: 0.15rem 0.6rem;
+  font-size: 0.8rem;
+  background: var(--app-bg-sunken);
+  border: 1px solid var(--app-border);
+  border-radius: var(--fe-radius-full);
+}
+
+#opt-in-delivery-logs,
+#require-tls-inbound,
+#zone-file,
+#catch-all-passwords,
+#manage-team,
+#outbound-smtp,
+#current-plan,
+#storage-quota,
+#wildcard-subdomains,
+#custom-storage,
+#bounce-webhook,
+#denylist,
+#delete-domain,
+#setup-step-1,
+#setup-zone-file {
+  scroll-margin-top: 7rem;
+}
+
+// links to the parts of Admin
+.acct-tiles {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(10rem, 1fr));
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.acct-tile {
+  display: flex;
+  gap: 0.6rem;
+  align-items: center;
+  padding: 0.65rem 0.85rem;
+  font-weight: 600;
+  color: var(--app-fg-primary);
+  text-decoration: none;
+  background: var(--app-bg-raised);
+  border: 1px solid var(--app-border);
+  border-radius: var(--fe-radius-md);
+
+  &:hover {
+    color: var(--app-link);
+    text-decoration: none;
+    border-color: var(--app-link);
+  }
+}
+
+.acct-tile-icon {
+  color: var(--app-fg-secondary);
+}
+
+// the name and plan at the top of an account menu follow the menu's colours
+.acct-menu .acct-user-meta {
+  color: inherit;
+  opacity: 0.7;
+}
+
+// a locked link of a domain is a button in a form (it asks before it switches
+// the plan of the domain) that looks like the other links
+.acct-link-form {
+  margin: 0;
+}
+
+button.acct-link {
+  width: 100%;
+  font-family: inherit;
+  text-align: left;
+  cursor: pointer;
+  background: transparent;
+  border: 0;
+}
+
+#acct-main:focus {
+  outline: 0;
+}
+
+// finding a domain by name, for an account with many
+.acct-find {
+  padding: 0.25rem 0.5rem 0.35rem;
+  margin: 0;
+}
+
+// the buttons beside the heading of a My Account or Admin page are compact,
+// so that they stay on one line beside the sidebar
+.acct-main .acct-head {
+  flex-wrap: wrap;
+  gap: 0.5rem 1rem;
+  align-items: center;
+
+  .list-inline-item:not(:last-child) {
+    margin-right: 0.25rem;
+  }
+
+  .btn:not(.btn-sm) {
+    padding: 0.3rem 0.65rem;
+    font-size: 0.875rem;
+  }
+}
+
+// the domains viewed last in this browser, and the default domain's star
+.acct-recent {
+  padding-bottom: 0.25rem;
+  margin-bottom: 0.25rem;
+  border-bottom: 1px dashed var(--app-border);
+}
+
+.acct-recent-title {
+  padding: 0.15rem 0.6rem;
+  font-size: 0.7rem;
+  color: var(--app-fg-secondary);
+}
+
+.acct-link-star {
+  font-size: 0.65rem;
+  color: theme-color('warning');
+}

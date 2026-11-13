@@ -4,6 +4,9 @@
 //- The fe gates (isFePage, isFeFlushNav, …), shared with every
 //- partial and page block below. Pug includes share one compiled scope.
 include _fe-flags
+//- The My Account and Admin navigation, shared by the navbar menus and the
+//- sidebar (see _account-nav.pug).
+include _account-nav
 
 //- A page-level script. In test the unhashed build is served from the web
 //- URL; everywhere else the hashed, SRI-signed file from the manifest.
@@ -107,9 +110,17 @@ html.h-100.no-js(
     //- tabindex lets the skip link move focus here
     main#main-content.flex-grow-1.d-flex.flex-column.flex-grow-1(
       role="main",
-      tabindex="-1"
+      tabindex="-1",
+      class=acctShell ? "acct-shell" : false
     )
-      block body
+      //- My Account and Admin pages sit beside the account sidebar. (The
+      //- body is declared twice so that other pages keep their markup as is.)
+      if acctShell
+        include _account-sidebar
+        #acct-main.acct-main(tabindex="-1")
+          block body
+      else
+        block body
 
     //- footer
     block footer

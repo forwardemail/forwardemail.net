@@ -8,6 +8,7 @@
 * [התחלה מהירה](#quick-start)
 * [הקדמה](#introduction)
   * [מה זה Forward Email](#what-is-forward-email)
+  * [מה ההבדל בין תיבת דואר לכינוי](#what-is-the-difference-between-a-mailbox-and-an-alias)
   * [מי משתמש ב-Forward Email](#who-uses-forward-email)
   * [מה ההיסטוריה של Forward Email](#what-is-forward-emails-history)
   * [כמה מהירה השירות הזה](#how-fast-is-this-service)
@@ -179,7 +180,7 @@
 
 2. **הוסף ואמת את הדומיין שלך** תחת [My Account → Domains](/my-account/domains)
 
-3. **הוסף וקבע תצורה של כינויים/תיבות דואר אלקטרוני** תחת [My Account → Domains](/my-account/domains) → Aliases
+3. **הוסף וקבע תצורה של כינויים/תיבות דואר אלקטרוני** תחת [My Account → Domains](/my-account/domains) → תיבות דואר (Aliases)
 
 4. **בדוק את ההגדרות שלך** על ידי שליחת אימייל לאחד מהכינויים החדשים שלך
 
@@ -217,6 +218,12 @@ Forward Email הוא **ספק שירות דואר אלקטרוני מלא תכו
 
 > \[!TIP]
 > למד עוד על Forward Email על ידי קריאת [המסמך הטכני החינמי שלנו](/technical-whitepaper.pdf) ולעיין ב[ביקורת האבטחה](/pentest-report_forward-email.pdf) שלנו מ-Cure53.
+
+### מה ההבדל בין תיבת דואר לכינוי {#what-is-the-difference-between-a-mailbox-and-an-alias}
+
+אין הבדל. האתר, האפליקציות, ה-API והתיעוד שלנו משתמשים בשני המונחים לכתובת אימייל בדומיין שלך.
+
+תיבת דואר היא כתובת אימייל בדומיין שלך, כמו `hello@example.com`. כלים מסוימים קוראים לה כינוי. כל אחת מהן יכולה להעביר אימייל לתיבות דואר נכנס אחרות, לאחסן אימייל שאתה קורא באמצעות IMAP ודואר אינטרנט, או לעשות את שניהם.
 
 ### מי משתמש ב-Forward Email {#who-uses-forward-email}
 
@@ -737,7 +744,7 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
 
 1. עבור אל <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">החשבון שלי <i class="fa fa-angle-right"></i> דומיינים</a> <i class="fa fa-angle-right"></i> הגדרות <i class="fa fa-angle-right"></i> הגדרת SMTP יוצא ופעל לפי הוראות ההתקנה
 
-2. צור כינוי חדש לדומיין שלך תחת <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">החשבון שלי <i class="fa fa-angle-right"></i> דומיינים</a> <i class="fa fa-angle-right"></i> כינויים (למשל <code><hello@example.com></code>)
+2. צור כינוי חדש לדומיין שלך תחת <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">החשבון שלי <i class="fa fa-angle-right"></i> דומיינים</a> <i class="fa fa-angle-right"></i> תיבות דואר (כינויים) (למשל <code><hello@example.com></code>)
 
 3. לחץ על <strong class="text-success"><i class="fa fa-key"></i> צור סיסמה</strong> ליד הכינוי שנוצר זה עתה. העתק ללוח והעבר לאחסון מאובטח את הסיסמה שנוצרה המוצגת על המסך.
 
@@ -745,7 +752,7 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
 
 5. כאשר תתבקש להזין "שם", הזן את השם שברצונך שיופיע כ"שולח" בדואר האלקטרוני שלך (למשל "לינוס טורוולדס").
 
-6. כאשר תתבקש להזין "כתובת דואר אלקטרוני", הזן את כתובת הדואר המלאה של כינוי שיצרת תחת <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">החשבון שלי <i class="fa fa-angle-right"></i> דומיינים</a> <i class="fa fa-angle-right"></i> כינויים (למשל <code><hello@example.com></code>)
+6. כאשר תתבקש להזין "כתובת דואר אלקטרוני", הזן את כתובת הדואר המלאה של כינוי שיצרת תחת <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">החשבון שלי <i class="fa fa-angle-right"></i> דומיינים</a> <i class="fa fa-angle-right"></i> תיבות דואר (כינויים) (למשל <code><hello@example.com></code>)
 
 7. בטל את הסימון של "טפל ככינוי"
 
@@ -753,7 +760,7 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
 
 9. כאשר תתבקש להזין "שרת SMTP", הזן <code>smtp.forwardemail.net</code> ושנה את הפורט ל-<code>465</code>
 
-10. כאשר תתבקש להזין "שם משתמש", הזן את כתובת הדואר המלאה של כינוי שיצרת תחת <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">החשבון שלי <i class="fa fa-angle-right"></i> דומיינים</a> <i class="fa fa-angle-right"></i> כינויים (למשל <code><hello@example.com></code>)
+10. כאשר תתבקש להזין "שם משתמש", הזן את כתובת הדואר המלאה של כינוי שיצרת תחת <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">החשבון שלי <i class="fa fa-angle-right"></i> דומיינים</a> <i class="fa fa-angle-right"></i> תיבות דואר (כינויים) (למשל <code><hello@example.com></code>)
 
 11. כאשר תתבקש להזין "סיסמה", הדבק את הסיסמה מ-<strong class="text-success"><i class="fa fa-key"></i> צור סיסמה</strong> בשלב 3 למעלה
 
@@ -1124,7 +1131,7 @@ SMTP יוצא כלול בכל התוכניות בתשלום (ללא הגבלה �
 
 בכל עת תוכל לייצא את תיבות הדואר שלך בפורמטים של [EML](https://en.wikipedia.org/wiki/Email#Filename_extensions), [Mbox](https://en.wikipedia.org/wiki/Mbox), או [SQLite](https://en.wikipedia.org/wiki/SQLite) מוצפנים.
 
-גש ל-<a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">החשבון שלי <i class="fa fa-angle-right"></i> דומיינים</a> <i class="fa fa-angle-right"></i> כינויים <i class="fa fa-angle-right"></i> הורדת גיבוי ובחר את סוג פורמט הייצוא המועדף עליך.
+גש ל-<a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">החשבון שלי <i class="fa fa-angle-right"></i> דומיינים</a> <i class="fa fa-angle-right"></i> תיבות דואר (כינויים) <i class="fa fa-angle-right"></i> הורדת גיבוי ובחר את סוג פורמט הייצוא המועדף עליך.
 
 תקבל במייל קישור להורדת הייצוא לאחר סיום התהליך.
 
@@ -2062,7 +2069,7 @@ Drafts/
 
 ### כיצד להגדיר משיב חופשה (משיב אוטומטי מחוץ למשרד) {#how-do-i-set-up-a-vacation-responder-out-of-office-auto-responder}
 
-גש ל- <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">החשבון שלי <i class="fa fa-angle-right"></i> דומיינים</a> <i class="fa fa-angle-right"></i> כינויים ויצר או ערוך את הכינוי שברצונך להגדיר עבורו משיב חופשה אוטומטי.
+גש ל- <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">החשבון שלי <i class="fa fa-angle-right"></i> דומיינים</a> <i class="fa fa-angle-right"></i> תיבות דואר (כינויים) ויצר או ערוך את הכינוי שברצונך להגדיר עבורו משיב חופשה אוטומטי.
 יש לך את היכולת להגדיר תאריך התחלה, תאריך סיום, נושא והודעה, ולהפעיל או להשבית זאת בכל עת:
 
 * נושא והודעה בטקסט פשוט נתמכים כרגע (אנו משתמשים בחבילת `striptags` פנימית להסרת כל HTML).
@@ -2450,7 +2457,7 @@ Tasks.org הוא מנהל משימות קוד פתוח פופולרי שעובד
   </span>
 </div>
 
-1. צרו כינוי חדש לדומיין שלכם תחת <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">החשבון שלי <i class="fa fa-angle-right"></i> דומיינים</a> <i class="fa fa-angle-right"></i> כינויים (למשל <code><hello@example.com></code>)
+1. צרו כינוי חדש לדומיין שלכם תחת <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">החשבון שלי <i class="fa fa-angle-right"></i> דומיינים</a> <i class="fa fa-angle-right"></i> תיבות דואר (כינויים) (למשל <code><hello@example.com></code>)
 
 2. לחצו על <strong class="text-success"><i class="fa fa-key"></i> יצירת סיסמה</strong> ליד הכינוי שנוצר זה עתה. העתיקו ללוח והחזיקו את הסיסמה שנוצרה בצורה מאובטחת המוצגת על המסך.
 
@@ -2507,7 +2514,7 @@ Tasks.org הוא מנהל משימות קוד פתוח פופולרי שעובד
   </span>
 </div>
 
-1. צור כינוי חדש לדומיין שלך תחת <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">החשבון שלי <i class="fa fa-angle-right"></i> דומיינים</a> <i class="fa fa-angle-right"></i> כינויים (למשל <code><hello@example.com></code>)
+1. צור כינוי חדש לדומיין שלך תחת <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">החשבון שלי <i class="fa fa-angle-right"></i> דומיינים</a> <i class="fa fa-angle-right"></i> תיבות דואר (כינויים) (למשל <code><hello@example.com></code>)
 
 2. לחץ על <strong class="text-success"><i class="fa fa-key"></i> יצירת סיסמה</strong> לצד הכינוי החדש שנוצר. העתק ללוח והעבר לאחסון מאובטח את הסיסמה שנוצרה המוצגת על המסך.
 
@@ -2648,7 +2655,7 @@ Tasks.org הוא מנהל משימות קוד פתוח פופולרי שעובד
 
 1. עבור אל <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> הגדרות <i class="fa fa-angle-right"></i> תצורת SMTP יוצא ופעל לפי הוראות ההגדרה
 
-2. צור כינוי חדש לדומיין שלך תחת <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> כינויים (למשל <code><hello@example.com></code>)
+2. צור כינוי חדש לדומיין שלך תחת <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> תיבות דואר (כינויים) (למשל <code><hello@example.com></code>)
 
 3. לחץ על <strong class="text-success"><i class="fa fa-key"></i> צור סיסמה</strong> ליד הכינוי שנוצר זה עתה. העתק ללוח הגזירים שלך ושמור בבטחה את הסיסמה שנוצרה המוצגת על המסך.
 
@@ -2767,7 +2774,7 @@ Tasks.org הוא מנהל משימות קוד פתוח פופולרי שעובד
        תוספת אופציונלית:
      </strong>
      <span>
-       אם אתה משתמש בשירות <a class="alert-link" href="/blog/docs/best-quantum-safe-encrypted-email-service">אחסון מוצפן (IMAP/POP3)</a> שלנו ורוצה שכל הדוא"ל המאוחסן במסד הנתונים SQLite שלך (כבר מוצפן) יהיה מוצפן עם המפתח הציבורי שלך, עבור אל <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">החשבון שלי <i class="fa fa-angle-right"></i> דומיינים</a> <i class="fa fa-angle-right"></i> כינויים (למשל <code>hello@example.com</code>) <i class="fa fa-angle-right"></i> ערוך <i class="fa fa-angle-right"></i> OpenPGP והעלה את המפתח הציבורי שלך.
+       אם אתה משתמש בשירות <a class="alert-link" href="/blog/docs/best-quantum-safe-encrypted-email-service">אחסון מוצפן (IMAP/POP3)</a> שלנו ורוצה שכל הדוא"ל המאוחסן במסד הנתונים SQLite שלך (כבר מוצפן) יהיה מוצפן עם המפתח הציבורי שלך, עבור אל <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">החשבון שלי <i class="fa fa-angle-right"></i> דומיינים</a> <i class="fa fa-angle-right"></i> תיבות דואר (כינויים) (למשל <code>hello@example.com</code>) <i class="fa fa-angle-right"></i> ערוך <i class="fa fa-angle-right"></i> OpenPGP והעלה את המפתח הציבורי שלך.
      </span>
    </div>
 
@@ -2835,7 +2842,7 @@ Tasks.org הוא מנהל משימות קוד פתוח פופולרי שעובד
 
 2. ייצא את התעודה שלך בפורמט PEM (רק התעודה הציבורית, לא המפתח הפרטי).
 
-3. עבור אל <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">החשבון שלי <i class="fa fa-angle-right"></i> דומיינים</a> <i class="fa fa-angle-right"></i> כינויים (למשל <code><hello@example.com></code>) <i class="fa fa-angle-right"></i> ערוך <i class="fa fa-angle-right"></i> S/MIME והעלה את התעודה הציבורית שלך.
+3. עבור אל <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">החשבון שלי <i class="fa fa-angle-right"></i> דומיינים</a> <i class="fa fa-angle-right"></i> תיבות דואר (כינויים) (למשל <code><hello@example.com></code>) <i class="fa fa-angle-right"></i> ערוך <i class="fa fa-angle-right"></i> S/MIME והעלה את התעודה הציבורית שלך.
 4. לאחר ההגדרה, כל המיילים הנכנסים לכתובת החילופית שלך יוצפנו באמצעות תעודת S/MIME שלך לפני האחסון או ההעברה.
 
    <div class="alert my-3 alert-secondary">
@@ -2954,7 +2961,7 @@ if header :contains "Subject" "invoice" {
 
 ניתן לנהל סקריפטים של Sieve בכמה דרכים:
 
-1. **ממשק אינטרנטי**: עבור אל <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">החשבון שלי <i class="fa fa-angle-right"></i> דומיינים</a> <i class="fa fa-angle-right"></i> כינויים <i class="fa fa-angle-right"></i> סקריפטים של Sieve כדי ליצור ולנהל סקריפטים.
+1. **ממשק אינטרנטי**: עבור אל <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">החשבון שלי <i class="fa fa-angle-right"></i> דומיינים</a> <i class="fa fa-angle-right"></i> תיבות דואר (כינויים) <i class="fa fa-angle-right"></i> סקריפטים של Sieve כדי ליצור ולנהל סקריפטים.
 
 2. **פרוטוקול ManageSieve**: התחבר באמצעות כל לקוח התואם ל-ManageSieve, כגון תוסף Sieve של Thunderbird או [sieve-connect](https://github.com/philpennock/sieve-connect), אל `imap.forwardemail.net`. השתמש ביציאה `2190` עם STARTTLS או ביציאה `4190` עם TLS מרומז.
 
@@ -5793,7 +5800,7 @@ dig example.com txt +short
     חשוב:
   </strong>
   <span>
-    אם אתה בתוכנית בתשלום, עליך לגשת ל- <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">החשבון שלי <i class="fa fa-angle-right"></i> דומיינים</a> <i class="fa fa-angle-right"></i> כינויים <i class="fa fa-angle-right"></i> ערוך כינוי <i class="fa fa-angle-right"></i> הסר סימון מתיבת הסימון "פעיל" <i class="fa fa-angle-right"></i> המשך.
+    אם אתה בתוכנית בתשלום, עליך לגשת ל- <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">החשבון שלי <i class="fa fa-angle-right"></i> דומיינים</a> <i class="fa fa-angle-right"></i> תיבות דואר (כינויים) <i class="fa fa-angle-right"></i> ערוך כינוי <i class="fa fa-angle-right"></i> הסר סימון מתיבת הסימון "פעיל" <i class="fa fa-angle-right"></i> המשך.
   </span>
 </div>
 

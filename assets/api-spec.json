@@ -9633,7 +9633,7 @@
     },
     {
       "name": "Aliases",
-      "description": "Domain alias management endpoints"
+      "description": "Domain alias management endpoints. An alias is also called a mailbox."
     },
     {
       "name": "Encrypt",

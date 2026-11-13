@@ -8,6 +8,7 @@
 * [Snabbstart](#quick-start)
 * [Introduktion](#introduction)
   * [Vad är Forward Email](#what-is-forward-email)
+  * [Vad är skillnaden mellan en brevlåda och ett alias](#what-is-the-difference-between-a-mailbox-and-an-alias)
   * [Vem använder Forward Email](#who-uses-forward-email)
   * [Vad är Forward Emails historia](#what-is-forward-emails-history)
   * [Hur snabbt är denna tjänst](#how-fast-is-this-service)
@@ -179,7 +180,7 @@ För att komma igång med Forward Email:
 
 2. **Lägg till och verifiera din domän** under [Mitt konto → Domäner](/my-account/domains)
 
-3. **Lägg till och konfigurera e-postalias/mailboxar** under [Mitt konto → Domäner](/my-account/domains) → Aliaser
+3. **Lägg till och konfigurera e-postalias/mailboxar** under [Mitt konto → Domäner](/my-account/domains) → Brevlådor (Aliaser)
 
 4. **Testa din installation** genom att skicka ett e-postmeddelande till ett av dina nya alias
 
@@ -217,6 +218,12 @@ Du kan jämföra oss med 56+ andra e-postleverantörer på [vår sida för e-pos
 
 > \[!TIP]
 > Läs mer om Forward Email genom att läsa vårt kostnadsfria [Tekniska Whitepaper](/technical-whitepaper.pdf) och granska vår [säkerhetsrevision](/pentest-report_forward-email.pdf) av Cure53.
+
+### Vad är skillnaden mellan en brevlåda och ett alias {#what-is-the-difference-between-a-mailbox-and-an-alias}
+
+Det finns ingen skillnad. Vår webbplats, våra appar, vårt API och vår dokumentation använder båda orden för en e-postadress på din domän.
+
+En brevlåda är en e-postadress på din domän, till exempel `hello@example.com`. Vissa verktyg kallar den alias. Varje brevlåda kan vidarebefordra e-post till andra inkorgar, lagra e-post som du läser med IMAP och webbmail, eller göra båda.
 
 ### Vem använder Forward Email {#who-uses-forward-email}
 
@@ -737,7 +744,7 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
 
 1. Gå till <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Mitt konto <i class="fa fa-angle-right"></i> Domäner</a> <i class="fa fa-angle-right"></i> Inställningar <i class="fa fa-angle-right"></i> Outbound SMTP-konfiguration och följ installationsinstruktionerna
 
-2. Skapa ett nytt alias för din domän under <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Mitt konto <i class="fa fa-angle-right"></i> Domäner</a> <i class="fa fa-angle-right"></i> Aliaser (t.ex. <code><hello@example.com></code>)
+2. Skapa ett nytt alias för din domän under <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Mitt konto <i class="fa fa-angle-right"></i> Domäner</a> <i class="fa fa-angle-right"></i> Brevlådor (Aliaser) (t.ex. <code><hello@example.com></code>)
 
 3. Klicka på <strong class="text-success"><i class="fa fa-key"></i> Generera lösenord</strong> bredvid det nyligen skapade aliaset. Kopiera till ditt urklipp och spara det genererade lösenordet säkert som visas på skärmen.
 
@@ -745,7 +752,7 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
 
 5. När du uppmanas att ange "Namn", skriv det namn som du vill att din e-post ska visas som "Från" (t.ex. "Linus Torvalds").
 
-6. När du uppmanas att ange "E-postadress", skriv in hela e-postadressen för ett alias du skapade under <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Mitt konto <i class="fa fa-angle-right"></i> Domäner</a> <i class="fa fa-angle-right"></i> Aliaser (t.ex. <code><hello@example.com></code>)
+6. När du uppmanas att ange "E-postadress", skriv in hela e-postadressen för ett alias du skapade under <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Mitt konto <i class="fa fa-angle-right"></i> Domäner</a> <i class="fa fa-angle-right"></i> Brevlådor (Aliaser) (t.ex. <code><hello@example.com></code>)
 
 7. Avmarkera "Behandla som ett alias"
 
@@ -753,7 +760,7 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
 
 9. När du uppmanas att ange "SMTP-server", skriv <code>smtp.forwardemail.net</code> och ändra porten till <code>465</code>
 
-10. När du uppmanas att ange "Användarnamn", skriv in hela e-postadressen för ett alias du skapade under <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Mitt konto <i class="fa fa-angle-right"></i> Domäner</a> <i class="fa fa-angle-right"></i> Aliaser (t.ex. <code><hello@example.com></code>)
+10. När du uppmanas att ange "Användarnamn", skriv in hela e-postadressen för ett alias du skapade under <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Mitt konto <i class="fa fa-angle-right"></i> Domäner</a> <i class="fa fa-angle-right"></i> Brevlådor (Aliaser) (t.ex. <code><hello@example.com></code>)
 
 11. När du uppmanas att ange "Lösenord", klistra in lösenordet från <strong class="text-success"><i class="fa fa-key"></i> Generera lösenord</strong> i steg 3 ovan
 
@@ -1124,7 +1131,7 @@ Du kan läsa om våra underleverantörer på våra sidor för [GDPR](/gdpr), [DP
 
 När som helst kan du exportera dina brevlådor i [EML](https://en.wikipedia.org/wiki/Email#Filename_extensions), [Mbox](https://en.wikipedia.org/wiki/Mbox) eller krypterade [SQLite](https://en.wikipedia.org/wiki/SQLite) format.
 
-Gå till <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Mitt konto <i class="fa fa-angle-right"></i> Domäner</a> <i class="fa fa-angle-right"></i> Aliaser <i class="fa fa-angle-right"></i> Ladda ner säkerhetskopia och välj din föredragna exportformattyp.
+Gå till <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Mitt konto <i class="fa fa-angle-right"></i> Domäner</a> <i class="fa fa-angle-right"></i> Brevlådor (Aliaser) <i class="fa fa-angle-right"></i> Ladda ner säkerhetskopia och välj din föredragna exportformattyp.
 
 Du kommer att få en länk för nedladdning av exporten via e-post när den är klar.
 
@@ -2062,7 +2069,7 @@ Om du använder Microsoft 365 (Outlook) och vill vidarebefordra alla icke-matcha
 
 ### Hur ställer jag in en semesterautomatiskt svar (out of office auto-responder) {#how-do-i-set-up-a-vacation-responder-out-of-office-auto-responder}
 
-Gå till <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Mitt Konto <i class="fa fa-angle-right"></i> Domäner</a> <i class="fa fa-angle-right"></i> Alias och skapa eller redigera det alias du vill konfigurera en semesterautomatiskt svar för.
+Gå till <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Mitt Konto <i class="fa fa-angle-right"></i> Domäner</a> <i class="fa fa-angle-right"></i> Brevlådor (Alias) och skapa eller redigera det alias du vill konfigurera en semesterautomatiskt svar för.
 Du har möjlighet att konfigurera ett startdatum, slutdatum, ämne och meddelande, samt aktivera eller inaktivera det när som helst:
 
 * Ämne och meddelande i ren text stöds för närvarande (vi använder `striptags`-paketet internt för att ta bort eventuell HTML).
@@ -2450,7 +2457,7 @@ Ja, från och med 16 oktober 2023 stödjer vi att ta emot e-post via IMAP som et
   </span>
 </div>
 
-1. Skapa ett nytt alias för din domän under <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Mitt konto <i class="fa fa-angle-right"></i> Domäner</a> <i class="fa fa-angle-right"></i> Aliaser (t.ex. <code><hello@example.com></code>)
+1. Skapa ett nytt alias för din domän under <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Mitt konto <i class="fa fa-angle-right"></i> Domäner</a> <i class="fa fa-angle-right"></i> Brevlådor (Aliaser) (t.ex. <code><hello@example.com></code>)
 
 2. Klicka på <strong class="text-success"><i class="fa fa-key"></i> Generera lösenord</strong> bredvid det nyligen skapade aliaset. Kopiera till ditt urklipp och spara det genererade lösenordet säkert som visas på skärmen.
 
@@ -2507,7 +2514,7 @@ Ja, från och med den 4 december 2023 stödjer vi [POP3](https://en.wikipedia.or
   </span>
 </div>
 
-1. Skapa ett nytt alias för din domän under <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Mitt konto <i class="fa fa-angle-right"></i> Domäner</a> <i class="fa fa-angle-right"></i> Aliaser (t.ex. <code><hello@example.com></code>)
+1. Skapa ett nytt alias för din domän under <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Mitt konto <i class="fa fa-angle-right"></i> Domäner</a> <i class="fa fa-angle-right"></i> Brevlådor (Aliaser) (t.ex. <code><hello@example.com></code>)
 
 2. Klicka på <strong class="text-success"><i class="fa fa-key"></i> Generate Password</strong> bredvid det nyligen skapade aliaset. Kopiera till ditt urklipp och spara det genererade lösenordet säkert som visas på skärmen.
 
@@ -2648,7 +2655,7 @@ Ja. Alla betalda planer inkluderar utgående SMTP, och den är **obegränsad**: 
 
 1. Gå till <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Mitt konto <i class="fa fa-angle-right"></i> Domäner</a> <i class="fa fa-angle-right"></i> Inställningar <i class="fa fa-angle-right"></i> Outbound SMTP-konfiguration och följ installationsinstruktionerna
 
-2. Skapa ett nytt alias för din domän under <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Mitt konto <i class="fa fa-angle-right"></i> Domäner</a> <i class="fa fa-angle-right"></i> Aliaser (t.ex. <code><hello@example.com></code>)
+2. Skapa ett nytt alias för din domän under <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Mitt konto <i class="fa fa-angle-right"></i> Domäner</a> <i class="fa fa-angle-right"></i> Brevlådor (Aliaser) (t.ex. <code><hello@example.com></code>)
 
 3. Klicka på <strong class="text-success"><i class="fa fa-key"></i> Generera lösenord</strong> bredvid det nyligen skapade aliaset. Kopiera till ditt urklipp och spara det genererade lösenordet säkert som visas på skärmen.
 
@@ -2767,7 +2774,7 @@ Ja, vi stödjer [OpenPGP](https://en.wikipedia.org/wiki/Pretty_Good_Privacy#Open
        Valfritt tillägg:
      </strong>
      <span>
-       Om du använder vår <a class="alert-link" href="/blog/docs/best-quantum-safe-encrypted-email-service">krypterade lagring (IMAP/POP3)</a>-tjänst och vill att <i>all</i> e-post som lagras i din (redan krypterade) SQLite-databas ska krypteras med din publika nyckel, gå då till <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Mitt konto <i class="fa fa-angle-right"></i> Domäner</a> <i class="fa fa-angle-right"></i> Aliaser (t.ex. <code>hello@example.com</code>) <i class="fa fa-angle-right"></i> Redigera <i class="fa fa-angle-right"></i> OpenPGP och ladda upp din publika nyckel.
+       Om du använder vår <a class="alert-link" href="/blog/docs/best-quantum-safe-encrypted-email-service">krypterade lagring (IMAP/POP3)</a>-tjänst och vill att <i>all</i> e-post som lagras i din (redan krypterade) SQLite-databas ska krypteras med din publika nyckel, gå då till <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Mitt konto <i class="fa fa-angle-right"></i> Domäner</a> <i class="fa fa-angle-right"></i> Brevlådor (Aliaser) (t.ex. <code>hello@example.com</code>) <i class="fa fa-angle-right"></i> Redigera <i class="fa fa-angle-right"></i> OpenPGP och ladda upp din publika nyckel.
      </span>
    </div>
 
@@ -2835,7 +2842,7 @@ För att konfigurera S/MIME-kryptering för ditt alias:
 
 2. Exportera ditt certifikat i PEM-format (endast det publika certifikatet, inte den privata nyckeln).
 
-3. Gå till <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Mitt konto <i class="fa fa-angle-right"></i> Domäner</a> <i class="fa fa-angle-right"></i> Aliaser (t.ex. <code><hello@example.com></code>) <i class="fa fa-angle-right"></i> Redigera <i class="fa fa-angle-right"></i> S/MIME och ladda upp ditt publika certifikat.
+3. Gå till <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Mitt konto <i class="fa fa-angle-right"></i> Domäner</a> <i class="fa fa-angle-right"></i> Brevlådor (Aliaser) (t.ex. <code><hello@example.com></code>) <i class="fa fa-angle-right"></i> Redigera <i class="fa fa-angle-right"></i> S/MIME och ladda upp ditt publika certifikat.
 4. När det är konfigurerat kommer alla inkommande e-postmeddelanden till din alias att krypteras med ditt S/MIME-certifikat innan de lagras eller vidarebefordras.
 
    <div class="alert my-3 alert-secondary">
@@ -2954,7 +2961,7 @@ if header :contains "Subject" "invoice" {
 
 Du kan hantera Sieve-skript på flera sätt:
 
-1. **Webbgränssnitt**: Gå till <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Mitt konto <i class="fa fa-angle-right"></i> Domäner</a> <i class="fa fa-angle-right"></i> Aliaser <i class="fa fa-angle-right"></i> Sieve-skript för att skapa och hantera skript.
+1. **Webbgränssnitt**: Gå till <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Mitt konto <i class="fa fa-angle-right"></i> Domäner</a> <i class="fa fa-angle-right"></i> Brevlådor (Aliaser) <i class="fa fa-angle-right"></i> Sieve-skript för att skapa och hantera skript.
 
 2. **ManageSieve-protokollet**: Anslut med valfri ManageSieve-kompatibel klient, såsom Thunderbirds Sieve-tillägg eller [sieve-connect](https://github.com/philpennock/sieve-connect), till `imap.forwardemail.net`. Använd port `2190` med STARTTLS eller port `4190` med implicit TLS.
 
@@ -5793,7 +5800,7 @@ Nej, det rekommenderas inte, eftersom du bara kan använda en mail exchange-serv
     Viktigt:
   </strong>
   <span>
-    Om du har ett betalt abonnemang måste du gå till <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Mitt konto <i class="fa fa-angle-right"></i> Domäner</a> <i class="fa fa-angle-right"></i> Alias <i class="fa fa-angle-right"></i> Redigera alias <i class="fa fa-angle-right"></i> Avmarkera kryssrutan "Aktiv" <i class="fa fa-angle-right"></i> Fortsätt.
+    Om du har ett betalt abonnemang måste du gå till <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Mitt konto <i class="fa fa-angle-right"></i> Domäner</a> <i class="fa fa-angle-right"></i> Brevlådor (Alias) <i class="fa fa-angle-right"></i> Redigera alias <i class="fa fa-angle-right"></i> Avmarkera kryssrutan "Aktiv" <i class="fa fa-angle-right"></i> Fortsätt.
   </span>
 </div>
 

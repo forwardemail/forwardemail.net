@@ -8,6 +8,7 @@
 * [Hızlı Başlangıç](#quick-start)
 * [Giriş](#introduction)
   * [Forward Email nedir](#what-is-forward-email)
+  * [Posta kutusu ile takma ad arasındaki fark nedir](#what-is-the-difference-between-a-mailbox-and-an-alias)
   * [Forward Email'i kimler kullanır](#who-uses-forward-email)
   * [Forward Email'in geçmişi nedir](#what-is-forward-emails-history)
   * [Bu hizmet ne kadar hızlıdır](#how-fast-is-this-service)
@@ -179,7 +180,7 @@ Forward Email ile başlamak için:
 
 2. **Alan adınızı ekleyin ve doğrulayın** [Hesabım → Alan Adları](/my-account/domains) altında
 
-3. **E-posta takma adları/posta kutuları ekleyin ve yapılandırın** [Hesabım → Alan Adları](/my-account/domains) → Takma Adlar altında
+3. **E-posta takma adları/posta kutuları ekleyin ve yapılandırın** [Hesabım → Alan Adları](/my-account/domains) → Posta kutuları (Takma Adlar) altında
 
 4. **Kurulumunuzu test edin** yeni takma adlarınızdan birine e-posta göndererek
 
@@ -217,6 +218,12 @@ Bizi 56+ diğer e-posta servis sağlayıcı ile [E-posta Karşılaştırma sayfa
 
 > \[!TIP]
 > Forward Email hakkında daha fazla bilgi edinmek için ücretsiz [Teknik Beyaz Kitabımızı](/technical-whitepaper.pdf) okuyun ve Cure53 tarafından yapılan [güvenlik denetimimizi](/pentest-report_forward-email.pdf) inceleyerek.
+
+### Posta kutusu ile takma ad arasındaki fark nedir {#what-is-the-difference-between-a-mailbox-and-an-alias}
+
+Fark yoktur. Web sitemiz, uygulamalarımız, API'miz ve belgelerimiz, alan adınızdaki bir e-posta adresi için her iki sözcüğü de kullanır.
+
+Posta kutusu, alan adınızdaki bir e-posta adresidir, örneğin `hello@example.com`. Bazı araçlar buna takma ad der. Her biri e-postaları başka gelen kutularına yönlendirebilir, IMAP ve web posta ile okuduğunuz e-postaları saklayabilir ya da ikisini birden yapabilir.
 
 ### Forward Email'i Kimler Kullanıyor {#who-uses-forward-email}
 
@@ -737,7 +744,7 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
 
 1. <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Hesabım <i class="fa fa-angle-right"></i> Alan Adları</a> <i class="fa fa-angle-right"></i> Ayarlar <i class="fa fa-angle-right"></i> Giden SMTP Yapılandırması sayfasına gidin ve kurulum talimatlarını takip edin
 
-2. <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Hesabım <i class="fa fa-angle-right"></i> Alan Adları</a> <i class="fa fa-angle-right"></i> Takma Adlar altında alan adınız için yeni bir takma ad oluşturun (örneğin <code><hello@example.com></code>)
+2. <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Hesabım <i class="fa fa-angle-right"></i> Alan Adları</a> <i class="fa fa-angle-right"></i> Posta kutuları (Takma Adlar) altında alan adınız için yeni bir takma ad oluşturun (örneğin <code><hello@example.com></code>)
 
 3. Yeni oluşturduğunuz takma adın yanında bulunan <strong class="text-success"><i class="fa fa-key"></i> Şifre Oluştur</strong> butonuna tıklayın. Ekranda gösterilen oluşturulan şifreyi panonuza kopyalayın ve güvenli bir şekilde saklayın.
 
@@ -745,7 +752,7 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
 
 5. "İsim" istendiğinde, e-postanızın "Gönderen" olarak görünmesini istediğiniz ismi girin (örneğin "Linus Torvalds").
 
-6. "E-posta adresi" istendiğinde, <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Hesabım <i class="fa fa-angle-right"></i> Alan Adları</a> <i class="fa fa-angle-right"></i> Takma Adlar altında oluşturduğunuz tam takma ad e-posta adresini girin (örneğin <code><hello@example.com></code>)
+6. "E-posta adresi" istendiğinde, <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Hesabım <i class="fa fa-angle-right"></i> Alan Adları</a> <i class="fa fa-angle-right"></i> Posta kutuları (Takma Adlar) altında oluşturduğunuz tam takma ad e-posta adresini girin (örneğin <code><hello@example.com></code>)
 
 7. "Takma ad olarak işle" seçeneğinin işaretini kaldırın
 
@@ -753,7 +760,7 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
 
 9. "SMTP Sunucusu" istendiğinde, <code>smtp.forwardemail.net</code> yazın ve portu <code>465</code> olarak değiştirin
 
-10. "Kullanıcı adı" istendiğinde, <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Hesabım <i class="fa fa-angle-right"></i> Alan Adları</a> <i class="fa fa-angle-right"></i> Takma Adlar altında oluşturduğunuz tam takma ad e-posta adresini girin (örneğin <code><hello@example.com></code>)
+10. "Kullanıcı adı" istendiğinde, <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Hesabım <i class="fa fa-angle-right"></i> Alan Adları</a> <i class="fa fa-angle-right"></i> Posta kutuları (Takma Adlar) altında oluşturduğunuz tam takma ad e-posta adresini girin (örneğin <code><hello@example.com></code>)
 
 11. "Şifre" istendiğinde, yukarıdaki 3. adımda <strong class="text-success"><i class="fa fa-key"></i> Şifre Oluştur</strong> ile oluşturduğunuz şifreyi yapıştırın
 
@@ -1124,7 +1131,7 @@ Alt işlemcilerimiz hakkında bilgi edinmek için [GDPR](/gdpr), [DPA](/dpa) ve 
 
 Her zaman posta kutularınızı [EML](https://en.wikipedia.org/wiki/Email#Filename_extensions), [Mbox](https://en.wikipedia.org/wiki/Mbox) veya şifrelenmiş [SQLite](https://en.wikipedia.org/wiki/SQLite) formatlarında dışa aktarabilirsiniz.
 
-<a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Hesabım <i class="fa fa-angle-right"></i> Alan Adları</a> <i class="fa fa-angle-right"></i> Takma Adlar <i class="fa fa-angle-right"></i> Yedeklemeyi İndir bölümüne gidin ve tercih ettiğiniz dışa aktarma formatını seçin.
+<a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Hesabım <i class="fa fa-angle-right"></i> Alan Adları</a> <i class="fa fa-angle-right"></i> Posta kutuları (Takma Adlar) <i class="fa fa-angle-right"></i> Yedeklemeyi İndir bölümüne gidin ve tercih ettiğiniz dışa aktarma formatını seçin.
 
 Dışa aktarma tamamlandığında indirmeniz için bir bağlantı e-posta ile gönderilecektir.
 
@@ -2062,7 +2069,7 @@ Microsoft 365 (Outlook) kullanıyorsanız ve eşleşmeyen tüm takma adları hiz
 
 ### Tatil yanıtlayıcısı (ofis dışı otomatik yanıtlayıcı) nasıl kurulur? {#how-do-i-set-up-a-vacation-responder-out-of-office-auto-responder}
 
-<a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Hesabım <i class="fa fa-angle-right"></i> Alan Adları</a> <i class="fa fa-angle-right"></i> Takma Adlar sayfasına gidin ve tatil otomatik yanıtlayıcısı yapılandırmak istediğiniz takma adı oluşturun veya düzenleyin.
+<a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Hesabım <i class="fa fa-angle-right"></i> Alan Adları</a> <i class="fa fa-angle-right"></i> Posta kutuları (Takma Adlar) sayfasına gidin ve tatil otomatik yanıtlayıcısı yapılandırmak istediğiniz takma adı oluşturun veya düzenleyin.
 Başlangıç tarihi, bitiş tarihi, konu ve mesaj yapılandırma yeteneğiniz vardır ve istediğiniz zaman etkinleştirebilir veya devre dışı bırakabilirsiniz:
 
 * Düz metin konu ve mesaj şu anda desteklenmektedir (içeride herhangi bir HTML'yi kaldırmak için `striptags` paketini kullanıyoruz).
@@ -2450,7 +2457,7 @@ Evet, 16 Ekim 2023 itibarıyla tüm ücretli kullanıcılar için bir eklenti ol
   </span>
 </div>
 
-1. Alan adınız için <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Hesabım <i class="fa fa-angle-right"></i> Alan Adları</a> <i class="fa fa-angle-right"></i> Takma Adlar altında yeni bir takma ad oluşturun (örneğin <code><hello@example.com></code>)
+1. Alan adınız için <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Hesabım <i class="fa fa-angle-right"></i> Alan Adları</a> <i class="fa fa-angle-right"></i> Posta kutuları (Takma Adlar) altında yeni bir takma ad oluşturun (örneğin <code><hello@example.com></code>)
 
 2. Yeni oluşturulan takma adın yanında bulunan <strong class="text-success"><i class="fa fa-key"></i> Şifre Oluştur</strong> butonuna tıklayın. Ekranda gösterilen oluşturulan şifreyi panonuza kopyalayın ve güvenli bir şekilde saklayın.
 
@@ -2507,7 +2514,7 @@ Evet, 4 Aralık 2023 itibarıyla tüm ücretli kullanıcılar için bir eklenti 
   </span>
 </div>
 
-1. Alan adınız için <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Hesabım <i class="fa fa-angle-right"></i> Alan Adları</a> <i class="fa fa-angle-right"></i> Takma Adlar altında yeni bir takma ad oluşturun (örneğin <code><hello@example.com></code>)
+1. Alan adınız için <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Hesabım <i class="fa fa-angle-right"></i> Alan Adları</a> <i class="fa fa-angle-right"></i> Posta kutuları (Takma Adlar) altında yeni bir takma ad oluşturun (örneğin <code><hello@example.com></code>)
 
 2. Yeni oluşturulan takma adın yanında bulunan <strong class="text-success"><i class="fa fa-key"></i> Şifre Oluştur</strong> butonuna tıklayın. Ekranda gösterilen şifreyi panonuza kopyalayın ve güvenli bir şekilde saklayın.
 
@@ -2648,7 +2655,7 @@ Evet. Tüm ücretli planlar giden SMTP içerir ve bu **sınırsızdır**: günl�
 
 1. <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Hesabım <i class="fa fa-angle-right"></i> Alan Adları</a> <i class="fa fa-angle-right"></i> Ayarlar <i class="fa fa-angle-right"></i> Giden SMTP Yapılandırması sayfasına gidin ve kurulum talimatlarını takip edin
 
-2. Alan adınız için <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Hesabım <i class="fa fa-angle-right"></i> Alan Adları</a> <i class="fa fa-angle-right"></i> Takma Adlar bölümünde yeni bir takma ad oluşturun (örneğin <code><hello@example.com></code>)
+2. Alan adınız için <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Hesabım <i class="fa fa-angle-right"></i> Alan Adları</a> <i class="fa fa-angle-right"></i> Posta kutuları (Takma Adlar) bölümünde yeni bir takma ad oluşturun (örneğin <code><hello@example.com></code>)
 
 3. Yeni oluşturduğunuz takma adın yanında bulunan <strong class="text-success"><i class="fa fa-key"></i> Şifre Oluştur</strong> butonuna tıklayın. Ekranda gösterilen oluşturulan şifreyi panonuza kopyalayın ve güvenli bir şekilde saklayın.
 
@@ -2767,7 +2774,7 @@ Evet, [OpenPGP](https://en.wikipedia.org/wiki/Pretty_Good_Privacy#OpenPGP), [uç
        İsteğe Bağlı Eklenti:
      </strong>
      <span>
-       Eğer <a class="alert-link" href="/blog/docs/best-quantum-safe-encrypted-email-service">şifreli depolama (IMAP/POP3)</a> hizmetimizi kullanıyorsanız ve (zaten şifrelenmiş) SQLite veritabanınızda depolanan <i>tüm</i> e-postaların genel anahtarınızla şifrelenmesini istiyorsanız, o zaman <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Hesabım <i class="fa fa-angle-right"></i> Alan Adları</a> <i class="fa fa-angle-right"></i> Takma Adlar (örneğin <code>hello@example.com</code>) <i class="fa fa-angle-right"></i> Düzenle <i class="fa fa-angle-right"></i> OpenPGP bölümüne gidip genel anahtarınızı yükleyin.
+       Eğer <a class="alert-link" href="/blog/docs/best-quantum-safe-encrypted-email-service">şifreli depolama (IMAP/POP3)</a> hizmetimizi kullanıyorsanız ve (zaten şifrelenmiş) SQLite veritabanınızda depolanan <i>tüm</i> e-postaların genel anahtarınızla şifrelenmesini istiyorsanız, o zaman <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Hesabım <i class="fa fa-angle-right"></i> Alan Adları</a> <i class="fa fa-angle-right"></i> Posta kutuları (Takma Adlar) (örneğin <code>hello@example.com</code>) <i class="fa fa-angle-right"></i> Düzenle <i class="fa fa-angle-right"></i> OpenPGP bölümüne gidip genel anahtarınızı yükleyin.
      </span>
    </div>
 
@@ -2835,7 +2842,7 @@ Takma adınız için S/MIME şifrelemesini yapılandırmak için:
 
 2. Sertifikanızı PEM formatında dışa aktarın (yalnızca genel sertifika, özel anahtar değil).
 
-3. <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Hesabım <i class="fa fa-angle-right"></i> Alan Adları</a> <i class="fa fa-angle-right"></i> Takma Adlar (örneğin <code><hello@example.com></code>) <i class="fa fa-angle-right"></i> Düzenle <i class="fa fa-angle-right"></i> S/MIME bölümüne gidin ve genel sertifikanızı yükleyin.
+3. <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Hesabım <i class="fa fa-angle-right"></i> Alan Adları</a> <i class="fa fa-angle-right"></i> Posta kutuları (Takma Adlar) (örneğin <code><hello@example.com></code>) <i class="fa fa-angle-right"></i> Düzenle <i class="fa fa-angle-right"></i> S/MIME bölümüne gidin ve genel sertifikanızı yükleyin.
 4. Yapılandırıldıktan sonra, takma adınıza gelen tüm e-postalar, saklanmadan veya iletilmeden önce S/MIME sertifikanız kullanılarak şifrelenecektir.
 
    <div class="alert my-3 alert-secondary">
@@ -2954,7 +2961,7 @@ if header :contains "Subject" "invoice" {
 
 Sieve betiklerini birkaç yolla yönetebilirsiniz:
 
-1. **Web Arayüzü**: Betikleri oluşturmak ve yönetmek için <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Hesabım <i class="fa fa-angle-right"></i> Alanlar</a> <i class="fa fa-angle-right"></i> Takma Adlar <i class="fa fa-angle-right"></i> Sieve Betikleri sayfasına gidin.
+1. **Web Arayüzü**: Betikleri oluşturmak ve yönetmek için <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Hesabım <i class="fa fa-angle-right"></i> Alanlar</a> <i class="fa fa-angle-right"></i> Posta kutuları (Takma Adlar) <i class="fa fa-angle-right"></i> Sieve Betikleri sayfasına gidin.
 
 2. **ManageSieve Protokolü**: Thunderbird'in Sieve eklentisi veya [sieve-connect](https://github.com/philpennock/sieve-connect) gibi herhangi bir ManageSieve uyumlu istemci ile `imap.forwardemail.net` adresine bağlanın. STARTTLS ile `2190` portunu veya implicit TLS ile `4190` portunu kullanın.
 
@@ -5793,7 +5800,7 @@ Hayır, önerilmez, çünkü aynı anda yalnızca bir posta değişim sunucusu k
     Önemli:
   </strong>
   <span>
-    Ücretli bir plandaysanız, <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Hesabım <i class="fa fa-angle-right"></i> Alan Adları</a> <i class="fa fa-angle-right"></i> Takma Adlar <i class="fa fa-angle-right"></i> Takma Adı Düzenle <i class="fa fa-angle-right"></i> "Aktif" onay kutusunun işaretini kaldır <i class="fa fa-angle-right"></i> Devam etmeniz gerekir.
+    Ücretli bir plandaysanız, <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Hesabım <i class="fa fa-angle-right"></i> Alan Adları</a> <i class="fa fa-angle-right"></i> Posta kutuları (Takma Adlar) <i class="fa fa-angle-right"></i> Takma Adı Düzenle <i class="fa fa-angle-right"></i> "Aktif" onay kutusunun işaretini kaldır <i class="fa fa-angle-right"></i> Devam etmeniz gerekir.
   </span>
 </div>
 

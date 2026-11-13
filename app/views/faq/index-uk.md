@@ -8,6 +8,7 @@
 * [Швидкий старт](#quick-start)
 * [Вступ](#introduction)
   * [Що таке Forward Email](#what-is-forward-email)
+  * [Чим відрізняється поштова скринька від псевдоніма](#what-is-the-difference-between-a-mailbox-and-an-alias)
   * [Хто користується Forward Email](#who-uses-forward-email)
   * [Яка історія Forward Email](#what-is-forward-emails-history)
   * [Наскільки швидкий цей сервіс](#how-fast-is-this-service)
@@ -179,7 +180,7 @@
 
 2. **Додайте та підтвердіть свій домен** у розділі [Мій обліковий запис → Домени](/my-account/domains)
 
-3. **Додайте та налаштуйте поштові псевдоніми/скриньки** у розділі [Мій обліковий запис → Домени](/my-account/domains) → Псевдоніми
+3. **Додайте та налаштуйте поштові псевдоніми/скриньки** у розділі [Мій обліковий запис → Домени](/my-account/domains) → Поштові скриньки (Псевдоніми)
 
 4. **Перевірте налаштування**, надіславши лист на один із ваших нових псевдонімів
 
@@ -217,6 +218,12 @@ Forward Email — це **повнофункціональний провайде
 
 > \[!TIP]
 > Дізнайтеся більше про Forward Email, прочитавши наш безкоштовний [Технічний білет](/technical-whitepaper.pdf) та ознайомившись з нашим [аудитом безпеки](/pentest-report_forward-email.pdf) від Cure53.
+
+### Чим відрізняється поштова скринька від псевдоніма {#what-is-the-difference-between-a-mailbox-and-an-alias}
+
+Різниці немає. Наш вебсайт, застосунки, API та документація використовують обидва слова для адреси електронної пошти у вашому домені.
+
+Поштова скринька є адресою електронної пошти у вашому домені, наприклад `hello@example.com`. Деякі інструменти називають її псевдонімом. Кожна може пересилати листи в інші скриньки, зберігати листи, які ви читаєте через IMAP і вебпошту, або робити і те, і інше.
 
 ### Хто користується Forward Email {#who-uses-forward-email}
 
@@ -737,7 +744,7 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
 
 1. Перейдіть до <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Мій акаунт <i class="fa fa-angle-right"></i> Домени</a> <i class="fa fa-angle-right"></i> Налаштування <i class="fa fa-angle-right"></i> Конфігурація вихідного SMTP та дотримуйтесь інструкцій налаштування
 
-2. Створіть новий псевдонім для вашого домену в розділі <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Мій акаунт <i class="fa fa-angle-right"></i> Домени</a> <i class="fa fa-angle-right"></i> Псевдоніми (наприклад, <code><hello@example.com></code>)
+2. Створіть новий псевдонім для вашого домену в розділі <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Мій акаунт <i class="fa fa-angle-right"></i> Домени</a> <i class="fa fa-angle-right"></i> Поштові скриньки (Псевдоніми) (наприклад, <code><hello@example.com></code>)
 
 3. Натисніть на <strong class="text-success"><i class="fa fa-key"></i> Згенерувати пароль</strong> поруч із щойно створеним псевдонімом. Скопіюйте в буфер обміну та надійно збережіть згенерований пароль, який відобразиться на екрані.
 
@@ -745,7 +752,7 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
 
 5. Коли буде запропоновано "Ім'я", введіть ім'я, яке ви хочете бачити як відправника (наприклад, "Linus Torvalds").
 
-6. Коли буде запропоновано "Адреса електронної пошти", введіть повну адресу електронної пошти псевдоніма, який ви створили в розділі <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Мій акаунт <i class="fa fa-angle-right"></i> Домени</a> <i class="fa fa-angle-right"></i> Псевдоніми (наприклад, <code><hello@example.com></code>)
+6. Коли буде запропоновано "Адреса електронної пошти", введіть повну адресу електронної пошти псевдоніма, який ви створили в розділі <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Мій акаунт <i class="fa fa-angle-right"></i> Домени</a> <i class="fa fa-angle-right"></i> Поштові скриньки (Псевдоніми) (наприклад, <code><hello@example.com></code>)
 
 7. Зніміть прапорець "Розглядати як псевдонім"
 
@@ -753,7 +760,7 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
 
 9. Коли буде запропоновано "SMTP-сервер", введіть <code>smtp.forwardemail.net</code> і змініть порт на <code>465</code>
 
-10. Коли буде запропоновано "Ім'я користувача", введіть повну адресу електронної пошти псевдоніма, який ви створили в розділі <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Мій акаунт <i class="fa fa-angle-right"></i> Домени</a> <i class="fa fa-angle-right"></i> Псевдоніми (наприклад, <code><hello@example.com></code>)
+10. Коли буде запропоновано "Ім'я користувача", введіть повну адресу електронної пошти псевдоніма, який ви створили в розділі <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Мій акаунт <i class="fa fa-angle-right"></i> Домени</a> <i class="fa fa-angle-right"></i> Поштові скриньки (Псевдоніми) (наприклад, <code><hello@example.com></code>)
 
 11. Коли буде запропоновано "Пароль", вставте пароль із <strong class="text-success"><i class="fa fa-key"></i> Згенерувати пароль</strong> з кроку 3 вище
 
@@ -1124,7 +1131,7 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
 
 У будь-який час ви можете експортувати свої поштові скриньки у форматах [EML](https://en.wikipedia.org/wiki/Email#Filename_extensions), [Mbox](https://en.wikipedia.org/wiki/Mbox) або зашифрованих [SQLite](https://en.wikipedia.org/wiki/SQLite).
 
-Перейдіть до <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Мій акаунт <i class="fa fa-angle-right"></i> Домени</a> <i class="fa fa-angle-right"></i> Псевдоніми <i class="fa fa-angle-right"></i> Завантажити резервну копію та оберіть бажаний формат експорту.
+Перейдіть до <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Мій акаунт <i class="fa fa-angle-right"></i> Домени</a> <i class="fa fa-angle-right"></i> Поштові скриньки (Псевдоніми) <i class="fa fa-angle-right"></i> Завантажити резервну копію та оберіть бажаний формат експорту.
 
 Вам надішлють посилання для завантаження експорту після його завершення.
 
@@ -2062,7 +2069,7 @@ Drafts/
 
 ### Як налаштувати відповідь під час відпустки (автоматичний відповідь поза офісом) {#how-do-i-set-up-a-vacation-responder-out-of-office-auto-responder}
 
-Перейдіть до <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Мій акаунт <i class="fa fa-angle-right"></i> Домени</a> <i class="fa fa-angle-right"></i> Псевдоніми та створіть або відредагуйте псевдонім, для якого хочете налаштувати автоматичну відповідь під час відпустки.
+Перейдіть до <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Мій акаунт <i class="fa fa-angle-right"></i> Домени</a> <i class="fa fa-angle-right"></i> Поштові скриньки (Псевдоніми) та створіть або відредагуйте псевдонім, для якого хочете налаштувати автоматичну відповідь під час відпустки.
 Ви маєте можливість налаштувати дату початку, дату завершення, тему та повідомлення, а також увімкнути або вимкнути це у будь-який час:
 
 * Підтримуються наразі лише текстова тема та повідомлення (ми внутрішньо використовуємо пакет `striptags` для видалення будь-якого HTML).
@@ -2450,7 +2457,7 @@ Tasks.org — популярний відкритий менеджер завд�
   </span>
 </div>
 
-1. Створіть новий псевдонім для вашого домену у розділі <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Мій акаунт <i class="fa fa-angle-right"></i> Домени</a> <i class="fa fa-angle-right"></i> Псевдоніми (наприклад, <code><hello@example.com></code>)
+1. Створіть новий псевдонім для вашого домену у розділі <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Мій акаунт <i class="fa fa-angle-right"></i> Домени</a> <i class="fa fa-angle-right"></i> Поштові скриньки (Псевдоніми) (наприклад, <code><hello@example.com></code>)
 
 2. Натисніть на <strong class="text-success"><i class="fa fa-key"></i> Згенерувати пароль</strong> поруч із новоствореним псевдонімом. Скопіюйте у буфер обміну та надійно збережіть згенерований пароль, який відобразиться на екрані.
 
@@ -2507,7 +2514,7 @@ Tasks.org — популярний відкритий менеджер завд�
   </span>
 </div>
 
-1. Створіть новий псевдонім для вашого домену в розділі <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Мій акаунт <i class="fa fa-angle-right"></i> Домени</a> <i class="fa fa-angle-right"></i> Псевдоніми (наприклад, <code><hello@example.com></code>)
+1. Створіть новий псевдонім для вашого домену в розділі <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Мій акаунт <i class="fa fa-angle-right"></i> Домени</a> <i class="fa fa-angle-right"></i> Поштові скриньки (Псевдоніми) (наприклад, <code><hello@example.com></code>)
 
 2. Натисніть на <strong class="text-success"><i class="fa fa-key"></i> Generate Password</strong> поруч із щойно створеним псевдонімом. Скопіюйте в буфер обміну та надійно збережіть згенерований пароль, який відображається на екрані.
 
@@ -2648,7 +2655,7 @@ Tasks.org — популярний відкритий менеджер завд�
 
 1. Перейдіть до <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Мій акаунт <i class="fa fa-angle-right"></i> Домени</a> <i class="fa fa-angle-right"></i> Налаштування <i class="fa fa-angle-right"></i> Конфігурація вихідного SMTP і дотримуйтесь інструкцій налаштування
 
-2. Створіть новий псевдонім для вашого домену в розділі <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Мій акаунт <i class="fa fa-angle-right"></i> Домени</a> <i class="fa fa-angle-right"></i> Псевдоніми (наприклад, <code><hello@example.com></code>)
+2. Створіть новий псевдонім для вашого домену в розділі <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Мій акаунт <i class="fa fa-angle-right"></i> Домени</a> <i class="fa fa-angle-right"></i> Поштові скриньки (Псевдоніми) (наприклад, <code><hello@example.com></code>)
 
 3. Натисніть на <strong class="text-success"><i class="fa fa-key"></i> Згенерувати пароль</strong> поруч із новоствореним псевдонімом. Скопіюйте в буфер обміну та надійно збережіть згенерований пароль, який відображається на екрані.
 
@@ -2767,7 +2774,7 @@ Tasks.org — популярний відкритий менеджер завд�
        Додатково за бажанням:
      </strong>
      <span>
-       Якщо ви користуєтеся нашим сервісом <a class="alert-link" href="/blog/docs/best-quantum-safe-encrypted-email-service">шифрованого зберігання (IMAP/POP3)</a> і хочете, щоб <i>вся</i> пошта, що зберігається у вашій (вже зашифрованій) базі даних SQLite, була зашифрована вашим публічним ключем, тоді перейдіть до <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Мій акаунт <i class="fa fa-angle-right"></i> Домени</a> <i class="fa fa-angle-right"></i> Псевдоніми (наприклад, <code>hello@example.com</code>) <i class="fa fa-angle-right"></i> Редагувати <i class="fa fa-angle-right"></i> OpenPGP і завантажте свій публічний ключ.
+       Якщо ви користуєтеся нашим сервісом <a class="alert-link" href="/blog/docs/best-quantum-safe-encrypted-email-service">шифрованого зберігання (IMAP/POP3)</a> і хочете, щоб <i>вся</i> пошта, що зберігається у вашій (вже зашифрованій) базі даних SQLite, була зашифрована вашим публічним ключем, тоді перейдіть до <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Мій акаунт <i class="fa fa-angle-right"></i> Домени</a> <i class="fa fa-angle-right"></i> Поштові скриньки (Псевдоніми) (наприклад, <code>hello@example.com</code>) <i class="fa fa-angle-right"></i> Редагувати <i class="fa fa-angle-right"></i> OpenPGP і завантажте свій публічний ключ.
      </span>
    </div>
 
@@ -2835,7 +2842,7 @@ Tasks.org — популярний відкритий менеджер завд�
 
 2. Експортуйте свій сертифікат у форматі PEM (тільки публічний сертифікат, без приватного ключа).
 
-3. Перейдіть до <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Мій акаунт <i class="fa fa-angle-right"></i> Домени</a> <i class="fa fa-angle-right"></i> Псевдоніми (наприклад, <code><hello@example.com></code>) <i class="fa fa-angle-right"></i> Редагувати <i class="fa fa-angle-right"></i> S/MIME і завантажте свій публічний сертифікат.
+3. Перейдіть до <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Мій акаунт <i class="fa fa-angle-right"></i> Домени</a> <i class="fa fa-angle-right"></i> Поштові скриньки (Псевдоніми) (наприклад, <code><hello@example.com></code>) <i class="fa fa-angle-right"></i> Редагувати <i class="fa fa-angle-right"></i> S/MIME і завантажте свій публічний сертифікат.
 4. Після налаштування всі вхідні листи на ваш псевдонім будуть зашифровані за допомогою вашого сертифіката S/MIME перед збереженням або пересиланням.
 
    <div class="alert my-3 alert-secondary">
@@ -2954,7 +2961,7 @@ if header :contains "Subject" "invoice" {
 
 Ви можете керувати сценаріями Sieve кількома способами:
 
-1. **Веб-інтерфейс**: Перейдіть до <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Мій акаунт <i class="fa fa-angle-right"></i> Домени</a> <i class="fa fa-angle-right"></i> Аліаси <i class="fa fa-angle-right"></i> Сценарії Sieve, щоб створювати та керувати сценаріями.
+1. **Веб-інтерфейс**: Перейдіть до <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Мій акаунт <i class="fa fa-angle-right"></i> Домени</a> <i class="fa fa-angle-right"></i> Поштові скриньки (Аліаси) <i class="fa fa-angle-right"></i> Сценарії Sieve, щоб створювати та керувати сценаріями.
 
 2. **Протокол ManageSieve**: Підключіться за допомогою будь-якого клієнта, сумісного з ManageSieve, наприклад додатка Sieve для Thunderbird або [sieve-connect](https://github.com/philpennock/sieve-connect), до `imap.forwardemail.net`. Використовуйте порт `2190` з STARTTLS або порт `4190` з неявним TLS.
 
@@ -5793,7 +5800,7 @@ dig example.com txt +short
     Важливо:
   </strong>
   <span>
-    Якщо у вас платний план, вам потрібно перейти до <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Мій акаунт <i class="fa fa-angle-right"></i> Домени</a> <i class="fa fa-angle-right"></i> Псевдоніми <i class="fa fa-angle-right"></i> Редагувати псевдонім <i class="fa fa-angle-right"></i> Зняти прапорець "Активний" <i class="fa fa-angle-right"></i> Продовжити.
+    Якщо у вас платний план, вам потрібно перейти до <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Мій акаунт <i class="fa fa-angle-right"></i> Домени</a> <i class="fa fa-angle-right"></i> Поштові скриньки (Псевдоніми) <i class="fa fa-angle-right"></i> Редагувати псевдонім <i class="fa fa-angle-right"></i> Зняти прапорець "Активний" <i class="fa fa-angle-right"></i> Продовжити.
   </span>
 </div>
 

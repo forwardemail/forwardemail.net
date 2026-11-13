@@ -8,6 +8,7 @@
 * [Démarrage Rapide](#quick-start)
 * [Introduction](#introduction)
   * [Qu'est-ce que Forward Email](#what-is-forward-email)
+  * [Quelle est la différence entre une boîte aux lettres et un alias](#what-is-the-difference-between-a-mailbox-and-an-alias)
   * [Qui utilise Forward Email](#who-uses-forward-email)
   * [Quelle est l'histoire de Forward Email](#what-is-forward-emails-history)
   * [Quelle est la rapidité de ce service](#how-fast-is-this-service)
@@ -179,7 +180,7 @@ Pour commencer avec Forward Email :
 
 2. **Ajoutez et vérifiez votre domaine** dans [Mon Compte → Domaines](/my-account/domains)
 
-3. **Ajoutez et configurez des alias/boîtes mail** dans [Mon Compte → Domaines](/my-account/domains) → Alias
+3. **Ajoutez et configurez des alias/boîtes mail** dans [Mon Compte → Domaines](/my-account/domains) → Boîtes aux lettres (Alias)
 
 4. **Testez votre configuration** en envoyant un email à l’un de vos nouveaux alias
 
@@ -217,6 +218,12 @@ Vous pouvez nous comparer à plus de 56 autres fournisseurs de service email sur
 
 > \[!TIP]
 > En savoir plus sur Forward Email en lisant notre [Livre blanc technique](/technical-whitepaper.pdf) gratuit et en consultant notre [audit de sécurité](/pentest-report_forward-email.pdf) par Cure53.
+
+### Quelle est la différence entre une boîte aux lettres et un alias {#what-is-the-difference-between-a-mailbox-and-an-alias}
+
+Il n'y a aucune différence. Notre site web, nos applications, notre API et notre documentation utilisent les deux termes pour désigner une adresse courriel de votre domaine.
+
+Une boîte aux lettres est une adresse courriel de votre domaine, comme `hello@example.com`. Certains outils parlent d'alias. Chacune peut transférer les courriels vers d'autres boîtes de réception, stocker les courriels que vous lisez avec IMAP et le webmail, ou faire les deux.
 
 ### Qui utilise Forward Email {#who-uses-forward-email}
 
@@ -737,7 +744,7 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
 
 1. Allez dans <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Mon compte <i class="fa fa-angle-right"></i> Domaines</a> <i class="fa fa-angle-right"></i> Paramètres <i class="fa fa-angle-right"></i> Configuration SMTP sortante et suivez les instructions d'installation
 
-2. Créez un nouvel alias pour votre domaine sous <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Mon compte <i class="fa fa-angle-right"></i> Domaines</a> <i class="fa fa-angle-right"></i> Alias (par exemple <code><hello@example.com></code>)
+2. Créez un nouvel alias pour votre domaine sous <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Mon compte <i class="fa fa-angle-right"></i> Domaines</a> <i class="fa fa-angle-right"></i> Boîtes aux lettres (Alias) (par exemple <code><hello@example.com></code>)
 
 3. Cliquez sur <strong class="text-success"><i class="fa fa-key"></i> Générer un mot de passe</strong> à côté de l'alias nouvellement créé. Copiez-le dans votre presse-papiers et stockez en toute sécurité le mot de passe généré affiché à l'écran.
 
@@ -745,7 +752,7 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
 
 5. Lorsque vous êtes invité à saisir le "Nom", entrez le nom que vous souhaitez voir apparaître comme expéditeur (par exemple "Linus Torvalds").
 
-6. Lorsque vous êtes invité à saisir "Adresse e-mail", entrez l'adresse e-mail complète d'un alias que vous avez créé sous <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Mon compte <i class="fa fa-angle-right"></i> Domaines</a> <i class="fa fa-angle-right"></i> Alias (par exemple <code><hello@example.com></code>)
+6. Lorsque vous êtes invité à saisir "Adresse e-mail", entrez l'adresse e-mail complète d'un alias que vous avez créé sous <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Mon compte <i class="fa fa-angle-right"></i> Domaines</a> <i class="fa fa-angle-right"></i> Boîtes aux lettres (Alias) (par exemple <code><hello@example.com></code>)
 
 7. Décochez "Traiter comme un alias"
 
@@ -753,7 +760,7 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
 
 9. Lorsque vous êtes invité à saisir "Serveur SMTP", entrez <code>smtp.forwardemail.net</code> et changez le port en <code>465</code>
 
-10. Lorsque vous êtes invité à saisir "Nom d'utilisateur", entrez l'adresse e-mail complète d'un alias que vous avez créé sous <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Mon compte <i class="fa fa-angle-right"></i> Domaines</a> <i class="fa fa-angle-right"></i> Alias (par exemple <code><hello@example.com></code>)
+10. Lorsque vous êtes invité à saisir "Nom d'utilisateur", entrez l'adresse e-mail complète d'un alias que vous avez créé sous <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Mon compte <i class="fa fa-angle-right"></i> Domaines</a> <i class="fa fa-angle-right"></i> Boîtes aux lettres (Alias) (par exemple <code><hello@example.com></code>)
 
 11. Lorsque vous êtes invité à saisir "Mot de passe", collez le mot de passe depuis <strong class="text-success"><i class="fa fa-key"></i> Générer un mot de passe</strong> à l'étape 3 ci-dessus
 
@@ -1124,7 +1131,7 @@ Vous pouvez en apprendre davantage sur nos sous-traitants sur nos pages [RGPD](/
 
 À tout moment, vous pouvez exporter vos boîtes aux lettres aux formats [EML](https://en.wikipedia.org/wiki/Email#Filename_extensions), [Mbox](https://en.wikipedia.org/wiki/Mbox), ou [SQLite](https://en.wikipedia.org/wiki/SQLite) chiffré.
 
-Allez à <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Mon Compte <i class="fa fa-angle-right"></i> Domaines</a> <i class="fa fa-angle-right"></i> Alias <i class="fa fa-angle-right"></i> Télécharger la sauvegarde et sélectionnez votre type de format d'export préféré.
+Allez à <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Mon Compte <i class="fa fa-angle-right"></i> Domaines</a> <i class="fa fa-angle-right"></i> Boîtes aux lettres (Alias) <i class="fa fa-angle-right"></i> Télécharger la sauvegarde et sélectionnez votre type de format d'export préféré.
 
 Un lien pour télécharger l'export vous sera envoyé par e-mail une fois terminé.
 
@@ -2063,7 +2070,7 @@ Si vous utilisez Microsoft 365 (Outlook) et souhaitez transférer tous les alias
 
 ### Comment configurer un répondeur de vacances (répondeur automatique d'absence) {#how-do-i-set-up-a-vacation-responder-out-of-office-auto-responder}
 
-Allez dans <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Mon Compte <i class="fa fa-angle-right"></i> Domaines</a> <i class="fa fa-angle-right"></i> Alias et créez ou modifiez l'alias pour lequel vous souhaitez configurer un répondeur automatique de vacances.
+Allez dans <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Mon Compte <i class="fa fa-angle-right"></i> Domaines</a> <i class="fa fa-angle-right"></i> Boîtes aux lettres (Alias) et créez ou modifiez l'alias pour lequel vous souhaitez configurer un répondeur automatique de vacances.
 Vous avez la possibilité de configurer une date de début, une date de fin, un sujet et un message, et de l’activer ou de la désactiver à tout moment :
 
 * Le sujet et le message en texte brut sont actuellement pris en charge (nous utilisons le paquet `striptags` en interne pour supprimer tout HTML).
@@ -2451,7 +2458,7 @@ Oui, depuis le 16 octobre 2023, nous prenons en charge la réception d'emails vi
   </span>
 </div>
 
-1. Créez un nouvel alias pour votre domaine sous <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Mon compte <i class="fa fa-angle-right"></i> Domaines</a> <i class="fa fa-angle-right"></i> Alias (par exemple <code><hello@example.com></code>)
+1. Créez un nouvel alias pour votre domaine sous <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Mon compte <i class="fa fa-angle-right"></i> Domaines</a> <i class="fa fa-angle-right"></i> Boîtes aux lettres (Alias) (par exemple <code><hello@example.com></code>)
 
 2. Cliquez sur <strong class="text-success"><i class="fa fa-key"></i> Générer un mot de passe</strong> à côté de l'alias nouvellement créé. Copiez-le dans votre presse-papiers et stockez en toute sécurité le mot de passe généré affiché à l'écran.
 
@@ -2508,7 +2515,7 @@ Oui, depuis le 4 décembre 2023, nous prenons en charge le [POP3](https://en.wik
   </span>
 </div>
 
-1. Créez un nouvel alias pour votre domaine sous <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Mon compte <i class="fa fa-angle-right"></i> Domaines</a> <i class="fa fa-angle-right"></i> Alias (par exemple <code><hello@example.com></code>)
+1. Créez un nouvel alias pour votre domaine sous <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Mon compte <i class="fa fa-angle-right"></i> Domaines</a> <i class="fa fa-angle-right"></i> Boîtes aux lettres (Alias) (par exemple <code><hello@example.com></code>)
 
 2. Cliquez sur <strong class="text-success"><i class="fa fa-key"></i> Générer un mot de passe</strong> à côté de l’alias nouvellement créé. Copiez-le dans votre presse-papiers et stockez en toute sécurité le mot de passe généré affiché à l’écran.
 
@@ -2649,7 +2656,7 @@ Oui. Tous les forfaits payants incluent le SMTP sortant, et il est **illimité**
 
 1. Allez dans <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Mon Compte <i class="fa fa-angle-right"></i> Domaines</a> <i class="fa fa-angle-right"></i> Paramètres <i class="fa fa-angle-right"></i> Configuration SMTP sortante et suivez les instructions d'installation
 
-2. Créez un nouvel alias pour votre domaine dans <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Mon Compte <i class="fa fa-angle-right"></i> Domaines</a> <i class="fa fa-angle-right"></i> Alias (par exemple <code><hello@example.com></code>)
+2. Créez un nouvel alias pour votre domaine dans <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Mon Compte <i class="fa fa-angle-right"></i> Domaines</a> <i class="fa fa-angle-right"></i> Boîtes aux lettres (Alias) (par exemple <code><hello@example.com></code>)
 
 3. Cliquez sur <strong class="text-success"><i class="fa fa-key"></i> Générer un mot de passe</strong> à côté de l'alias nouvellement créé. Copiez-le dans votre presse-papiers et stockez en toute sécurité le mot de passe généré affiché à l'écran.
 
@@ -2768,7 +2775,7 @@ Oui, nous supportons [OpenPGP](https://en.wikipedia.org/wiki/Pretty_Good_Privacy
        Option supplémentaire :
      </strong>
      <span>
-       Si vous utilisez notre service <a class="alert-link" href="/blog/docs/best-quantum-safe-encrypted-email-service">de stockage chiffré (IMAP/POP3)</a> et souhaitez que <i>tous</i> les e-mails stockés dans votre base de données SQLite (déjà chiffrée) soient chiffrés avec votre clé publique, alors rendez-vous sur <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Mon Compte <i class="fa fa-angle-right"></i> Domaines</a> <i class="fa fa-angle-right"></i> Alias (par ex. <code>hello@example.com</code>) <i class="fa fa-angle-right"></i> Modifier <i class="fa fa-angle-right"></i> OpenPGP et téléversez votre clé publique.
+       Si vous utilisez notre service <a class="alert-link" href="/blog/docs/best-quantum-safe-encrypted-email-service">de stockage chiffré (IMAP/POP3)</a> et souhaitez que <i>tous</i> les e-mails stockés dans votre base de données SQLite (déjà chiffrée) soient chiffrés avec votre clé publique, alors rendez-vous sur <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Mon Compte <i class="fa fa-angle-right"></i> Domaines</a> <i class="fa fa-angle-right"></i> Boîtes aux lettres (Alias) (par ex. <code>hello@example.com</code>) <i class="fa fa-angle-right"></i> Modifier <i class="fa fa-angle-right"></i> OpenPGP et téléversez votre clé publique.
      </span>
    </div>
 
@@ -2836,7 +2843,7 @@ Pour configurer le chiffrement S/MIME pour votre alias :
 
 2. Exportez votre certificat au format PEM (le certificat public uniquement, pas la clé privée).
 
-3. Rendez-vous sur <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Mon Compte <i class="fa fa-angle-right"></i> Domaines</a> <i class="fa fa-angle-right"></i> Alias (par ex. <code><hello@example.com></code>) <i class="fa fa-angle-right"></i> Modifier <i class="fa fa-angle-right"></i> S/MIME et téléversez votre certificat public.
+3. Rendez-vous sur <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Mon Compte <i class="fa fa-angle-right"></i> Domaines</a> <i class="fa fa-angle-right"></i> Boîtes aux lettres (Alias) (par ex. <code><hello@example.com></code>) <i class="fa fa-angle-right"></i> Modifier <i class="fa fa-angle-right"></i> S/MIME et téléversez votre certificat public.
 4. Une fois configuré, tous les emails entrants vers votre alias seront chiffrés à l’aide de votre certificat S/MIME avant d’être stockés ou transférés.
 
    <div class="alert my-3 alert-secondary">
@@ -2955,7 +2962,7 @@ if header :contains "Subject" "invoice" {
 
 Vous pouvez gérer les scripts Sieve de plusieurs façons :
 
-1. **Interface Web** : Accédez à <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Mon compte <i class="fa fa-angle-right"></i> Domaines</a> <i class="fa fa-angle-right"></i> Alias <i class="fa fa-angle-right"></i> Scripts Sieve pour créer et gérer des scripts.
+1. **Interface Web** : Accédez à <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Mon compte <i class="fa fa-angle-right"></i> Domaines</a> <i class="fa fa-angle-right"></i> Boîtes aux lettres (Alias) <i class="fa fa-angle-right"></i> Scripts Sieve pour créer et gérer des scripts.
 
 2. **Protocole ManageSieve** : Connectez-vous en utilisant n'importe quel client compatible ManageSieve, tel que l'extension Sieve de Thunderbird ou [sieve-connect](https://github.com/philpennock/sieve-connect), vers `imap.forwardemail.net`. Utilisez le port `2190` avec STARTTLS ou le port `4190` avec TLS implicite.
 
@@ -5794,7 +5801,7 @@ Non, ce n’est pas recommandé, car vous ne pouvez utiliser qu’un seul serveu
     Important :
   </strong>
   <span>
-    Si vous êtes sur un forfait payant, vous devez alors aller dans <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Mon Compte <i class="fa fa-angle-right"></i> Domaines</a> <i class="fa fa-angle-right"></i> Alias <i class="fa fa-angle-right"></i> Modifier l’Alias <i class="fa fa-angle-right"></i> Décochez la case "Actif" <i class="fa fa-angle-right"></i> Continuer.
+    Si vous êtes sur un forfait payant, vous devez alors aller dans <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Mon Compte <i class="fa fa-angle-right"></i> Domaines</a> <i class="fa fa-angle-right"></i> Boîtes aux lettres (Alias) <i class="fa fa-angle-right"></i> Modifier l’Alias <i class="fa fa-angle-right"></i> Décochez la case "Actif" <i class="fa fa-angle-right"></i> Continuer.
   </span>
 </div>
 

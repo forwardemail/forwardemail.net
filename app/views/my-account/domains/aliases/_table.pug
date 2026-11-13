@@ -191,7 +191,7 @@ p.text-center.d-lg-none
     thead.thead-dark
       tr
         th(scope="col")
-          +sortHeader('name', 'Alias', '#table-aliases')
+          +sortHeader('name', 'Mailbox', '#table-aliases')
         th.d-none.d-lg-table-cell(scope="col")
           +sortHeader('description', 'Description', '#table-aliases')
         th.text-center.d-none.d-lg-table-cell(scope="col")
@@ -243,7 +243,7 @@ p.text-center.d-lg-none
                     )
                       i.fas.fa-bolt.align-middle
                       = " "
-                      = t("Instantly create alias")
+                      = t("Instantly create mailbox")
       if domain && domain.aliases && domain.aliases.length > 0
         each alias in domain.aliases
           //- (as app/controllers/web/my-account/clone-alias.js: its password is
@@ -405,7 +405,7 @@ p.text-center.d-lg-none
                       .modal-header.text-center.d-block
                         h4.d-inline-block.ml-4(
                           id=`modal-clone-alias-${alias.id}-title`
-                        )= t("Clone Alias")
+                        )= t("Clone Mailbox")
                         button.close(
                           type="button",
                           data-dismiss="modal",
@@ -462,7 +462,7 @@ p.text-center.d-lg-none
                             .cf-explicit-turnstile
                           button.btn.btn-success.btn-block.btn-lg(
                             type="submit"
-                          )= t("Clone Alias")
+                          )= t("Clone Mailbox")
 
               //- Generate Password
               if !domain.is_global && alias.name !== '*' && !alias.name.startsWith('/') && domain.plan !== 'free'
@@ -1028,8 +1028,8 @@ p.text-center.d-lg-none
                     form.ajax-form.confirm-prompt.d-block(
                       action=l(`/my-account/domains/${punycode.toASCII(domain.name)}/aliases/${alias.id}`),
                       method="POST",
-                      data-confirm-prompt-title=t("Delete alias?"),
-                      data-confirm-prompt-html=t("Please confirm if you wish to delete the alias <strong>%s</strong>.", alias.name)
+                      data-confirm-prompt-title=t("Delete mailbox?"),
+                      data-confirm-prompt-html=t("Please confirm if you wish to delete the mailbox <strong>%s</strong>.", alias.name)
                     )
                       input(type="hidden", name="_method", value="DELETE")
                       button.btn.btn-sm.btn-link.text-danger.btn-block(

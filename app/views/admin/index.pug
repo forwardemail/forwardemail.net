@@ -17,6 +17,20 @@ block body
       .col
         include ../_breadcrumbs
 
+    //- every part of Admin, one click away (the sidebar lists them from lg)
+    .d-lg-none
+      each group in acctAdminGroups
+        if group.items.some((item) => item.href !== "/admin")
+          .row.mb-2
+            .col
+              h2.acct-group-title.px-0= group.title
+              .acct-tiles
+                each item in group.items
+                  if item.href !== "/admin"
+                    a.acct-tile(href=l(item.href))
+                      i.fa.fa-fw.acct-tile-icon(class=item.icon)
+                      span= item.label
+
     //- SaaS Metrics Header Section
     .row.mb-4
       .col

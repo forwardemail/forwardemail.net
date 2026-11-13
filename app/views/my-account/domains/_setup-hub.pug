@@ -1,0 +1,155 @@
+//- The setup of a domain in four steps, at the top of its page: connect the
+//- DNS, create mailboxes, send with SMTP, use them. Every step has the one
+//- button that does it. (The longer instructions stay below.)
+- const hubBase = `/my-account/domains/${punycode.toASCII(domain.name)}`;
+- const hubDns = Boolean(domain.has_mx_record && domain.has_txt_record);
+- const hubSending = Boolean(domain.has_dkim_record && domain.has_spf_record && domain.has_dmarc_record);
+- const hubAdmin = domain.group === "admin";
+- const hubFree = domain.plan === "free";
+- const hubProvider = nsProviderLookup(domain);
+//- 1-Click Setup, unless the DNS provider of the domain is known not to
+//- support it (an unknown provider is looked up when the button is used)
+- const hubOneClick = !hubProvider || Boolean(hubProvider.domainConnect);
+- const hubOneClickProviders = nsProviders.filter((p) => p.domainConnect).map((p) => p.name).join(", ");
+.container.mb-3
+  ol.acct-steps
+    //- 1. DNS
+    li.acct-step(class=hubDns ? "acct-step--done" : "acct-step--current")
+      .acct-step-head
+        span.acct-step-number
+          if hubDns
+            i.fa.fa-check
+          else
+            = "1"
+        h2.acct-step-title= t("Connect your domain")
+      p.acct-step-text
+        if hubDns
+          = t("Your DNS records are verified.")
+        else
+          = t("Add the DNS records below to your domain to start receiving email.")
+      if !hubDns && hubAdmin
+        .acct-step-actions
+          if hubOneClick && !hubFree
+            form.domain-connect-form(
+              action=l("/domain-connect"),
+              method="POST",
+              data-verify-url=l(`${hubBase}/verify-records`)
+            )
+              if hubProvider && hubProvider.domainConnect
+                input(type="hidden", name="provider", value=hubProvider.slug)
+              input(type="hidden", name="domain", value=domain.name)
+              input(type="hidden", name="redirect_to", value=hubBase)
+              button.btn.btn-success(
+                type="submit",
+                data-toggle="tooltip",
+                data-placement="bottom",
+                title=hubOneClickProviders
+              )
+                i.fa.fa-magic
+                = " "
+                = t("1-Click Setup")
+          else if hubOneClick
+            button.btn.acct-btn(
+              type="button",
+              data-toggle="modal",
+              data-target="#modal-upgrade"
+            )
+              i.fa.fa-lock
+              = " "
+              = t("1-Click Setup")
+          a.btn.btn-sm.acct-btn(href="#setup-step-1")
+            i.fa.fa-list-ol
+            = " "
+            = t("Step by step")
+          if zoneFile
+            a.btn.btn-sm.acct-btn(href="#setup-zone-file")
+              i.fa.fa-file-import
+              = " "
+              = t("Import a zone file")
+          form.ajax-form(action=l(`${hubBase}/verify-records`), method="POST")
+            button.btn.btn-sm.acct-btn(type="submit")
+              i.fa.fa-sync
+              = " "
+              = t("Verify")
+        if hubOneClick
+          p.acct-step-hint
+            != t("New to DNS? Choose <strong>1-Click Setup</strong>. We find your DNS provider and add every record for you.")
+
+    //- 2. mailboxes
+    li.acct-step(class=hubDns ? "acct-step--current" : false)
+      .acct-step-head
+        span.acct-step-number 2
+        h2.acct-step-title= t("Mailboxes")
+      p.acct-step-text= t("Create the email addresses at your domain. A mailbox is also called an alias.")
+      .acct-step-actions
+        if hubFree
+          button.btn.btn-sm.btn-primary(
+            type="button",
+            data-toggle="modal",
+            data-target="#modal-upgrade"
+          )
+            i.fa.fa-inbox
+            = " "
+            = t("Mailboxes")
+        else
+          a.btn.btn-sm(
+            href=l(`${hubBase}/aliases`),
+            class=hubDns ? "btn-primary" : "acct-btn"
+          )
+            i.fa.fa-inbox
+            = " "
+            = t("Mailboxes")
+
+    //- 3. sending
+    li.acct-step(class=hubSending ? "acct-step--done" : false)
+      .acct-step-head
+        span.acct-step-number
+          if hubSending
+            i.fa.fa-check
+          else
+            = "3"
+        h2.acct-step-title= t("Outbound SMTP")
+      p.acct-step-text
+        if hubSending
+          = t("Your domain can send email.")
+        else
+          = t("Send emails with your domain using SMTP")
+      if hubAdmin
+        .acct-step-actions
+          if hubFree
+            button.btn.btn-sm.acct-btn(
+              type="button",
+              data-toggle="modal",
+              data-target="#modal-upgrade"
+            )
+              i.fa.fa-lock
+              = " "
+              = t("Outbound SMTP")
+          else
+            a.btn.btn-sm(
+              href=l(`${hubBase}/verify-smtp`),
+              class=hubDns && !hubSending ? "btn-primary" : "acct-btn"
+            )
+              i.fa.fa-paper-plane
+              = " "
+              = t("Outbound SMTP")
+
+    //- 4. using them
+    li.acct-step
+      .acct-step-head
+        span.acct-step-number 4
+        h2.acct-step-title= t("Apps")
+      p.acct-step-text= t("Read and send email with webmail or any app that supports IMAP.")
+      .acct-step-actions
+        a.btn.btn-sm.acct-btn(
+          href="https://mail.forwardemail.net",
+          target="_blank",
+          rel="noopener noreferrer"
+        )
+          i.fa.fa-inbox
+          = " "
+          = t("Webmail")
+        a.btn.btn-sm.acct-btn(href=l("/download"))
+          i.fa.fa-download
+          = " "
+          = t("Download")

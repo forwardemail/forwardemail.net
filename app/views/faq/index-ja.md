@@ -8,6 +8,7 @@
 * [クイックスタート](#quick-start)
 * [はじめに](#introduction)
   * [Forward Emailとは何ですか](#what-is-forward-email)
+  * [メールボックスとエイリアスの違いは何ですか](#what-is-the-difference-between-a-mailbox-and-an-alias)
   * [誰がForward Emailを使っていますか](#who-uses-forward-email)
   * [Forward Emailの歴史は何ですか](#what-is-forward-emails-history)
   * [このサービスの速度はどのくらいですか](#how-fast-is-this-service)
@@ -179,7 +180,7 @@ Forward Email を始めるには：
 
 2. **ドメインを追加して確認** する [マイアカウント → ドメイン](/my-account/domains)
 
-3. **メールエイリアス／メールボックスを追加・設定** する [マイアカウント → ドメイン](/my-account/domains) → エイリアス
+3. **メールエイリアス／メールボックスを追加・設定** する [マイアカウント → ドメイン](/my-account/domains) → メールボックス (エイリアス)
 
 4. **セットアップをテスト** するために、新しいエイリアスのいずれかにメールを送信します
 
@@ -217,6 +218,12 @@ Forward Email の主な特徴：
 
 > \[!TIP]
 > 無料の[技術ホワイトペーパー](/technical-whitepaper.pdf)を読んでForward Emailについてさらに学びましょう。 また、Cure53による[セキュリティ監査](/pentest-report_forward-email.pdf)もご覧ください。
+
+### メールボックスとエイリアスの違いは何ですか {#what-is-the-difference-between-a-mailbox-and-an-alias}
+
+違いはありません。当社のウェブサイト、アプリ、API、ドキュメントでは、ドメインのメールアドレスを指すのにどちらの用語も使っています。
+
+メールボックスは、`hello@example.com` のようなドメインのメールアドレスです。ツールによってはエイリアスと呼ばれます。それぞれ、他の受信トレイへの転送、IMAPやウェブメールで読むメールの保存、またはその両方ができます。
 
 ### Forward Emailの利用者 {#who-uses-forward-email}
 
@@ -737,7 +744,7 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
 
 1. <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">マイアカウント <i class="fa fa-angle-right"></i> ドメイン</a> <i class="fa fa-angle-right"></i> 設定 <i class="fa fa-angle-right"></i> 送信SMTP設定に移動し、セットアップ手順に従ってください
 
-2. <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">マイアカウント <i class="fa fa-angle-right"></i> ドメイン</a> <i class="fa fa-angle-right"></i> エイリアスでドメイン用の新しいエイリアスを作成します（例：<code><hello@example.com></code>）
+2. <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">マイアカウント <i class="fa fa-angle-right"></i> ドメイン</a> <i class="fa fa-angle-right"></i> メールボックス (エイリアス)でドメイン用の新しいエイリアスを作成します（例：<code><hello@example.com></code>）
 
 3. 新しく作成したエイリアスの横にある<strong class="text-success"><i class="fa fa-key"></i> パスワードを生成</strong>をクリックします。画面に表示された生成されたパスワードをクリップボードにコピーし、安全に保管してください。
 
@@ -745,7 +752,7 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
 
 5. 「名前」の入力を求められたら、メールの送信元として表示したい名前を入力します（例：「Linus Torvalds」）
 
-6. 「メールアドレス」の入力を求められたら、<a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">マイアカウント <i class="fa fa-angle-right"></i> ドメイン</a> <i class="fa fa-angle-right"></i> エイリアスで作成したエイリアスの完全なメールアドレスを入力します（例：<code><hello@example.com></code>）
+6. 「メールアドレス」の入力を求められたら、<a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">マイアカウント <i class="fa fa-angle-right"></i> ドメイン</a> <i class="fa fa-angle-right"></i> メールボックス (エイリアス)で作成したエイリアスの完全なメールアドレスを入力します（例：<code><hello@example.com></code>）
 
 7. 「エイリアスとして扱う」のチェックを外します
 
@@ -753,7 +760,7 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
 
 9. 「SMTPサーバー」の入力を求められたら、<code>smtp.forwardemail.net</code>を入力し、ポートを<code>465</code>に変更します
 
-10. 「ユーザー名」の入力を求められたら、<a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">マイアカウント <i class="fa fa-angle-right"></i> ドメイン</a> <i class="fa fa-angle-right"></i> エイリアスで作成したエイリアスの完全なメールアドレスを入力します（例：<code><hello@example.com></code>）
+10. 「ユーザー名」の入力を求められたら、<a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">マイアカウント <i class="fa fa-angle-right"></i> ドメイン</a> <i class="fa fa-angle-right"></i> メールボックス (エイリアス)で作成したエイリアスの完全なメールアドレスを入力します（例：<code><hello@example.com></code>）
 
 11. 「パスワード」の入力を求められたら、ステップ3で<strong class="text-success"><i class="fa fa-key"></i> パスワードを生成</strong>した際にコピーしたパスワードを貼り付けます
 
@@ -1124,7 +1131,7 @@ Gmailで自分宛にテストメールを送った際や、エイリアスを使
 
 いつでもメールボックスを [EML](https://en.wikipedia.org/wiki/Email#Filename_extensions)、[Mbox](https://en.wikipedia.org/wiki/Mbox)、または暗号化された [SQLite](https://en.wikipedia.org/wiki/SQLite) 形式でエクスポートできます。
 
-<a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">マイアカウント <i class="fa fa-angle-right"></i> ドメイン</a> <i class="fa fa-angle-right"></i> エイリアス <i class="fa fa-angle-right"></i> バックアップをダウンロード から希望のエクスポート形式を選択してください。
+<a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">マイアカウント <i class="fa fa-angle-right"></i> ドメイン</a> <i class="fa fa-angle-right"></i> メールボックス (エイリアス) <i class="fa fa-angle-right"></i> バックアップをダウンロード から希望のエクスポート形式を選択してください。
 
 エクスポートが完了すると、ダウンロード用リンクがメールで送信されます。
 
@@ -2062,7 +2069,7 @@ Microsoft 365（Outlook）を使用していて、マッチしないエイリア
 
 ### 休暇応答（不在自動応答）を設定するにはどうすればよいですか {#how-do-i-set-up-a-vacation-responder-out-of-office-auto-responder}
 
-<a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">マイアカウント <i class="fa fa-angle-right"></i> ドメイン</a> <i class="fa fa-angle-right"></i> エイリアスに移動し、休暇自動応答を設定したいエイリアスを作成または編集してください。
+<a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">マイアカウント <i class="fa fa-angle-right"></i> ドメイン</a> <i class="fa fa-angle-right"></i> メールボックス (エイリアス)に移動し、休暇自動応答を設定したいエイリアスを作成または編集してください。
 開始日、終了日、件名、メッセージを設定し、いつでも有効化または無効化することができます：
 
 * 現在はプレーンテキストの件名とメッセージがサポートされています（内部的に `striptags` パッケージを使用してHTMLを除去しています）。
@@ -2450,7 +2457,7 @@ APIで送信メールを送るには、[マイセキュリティ](/my-account/se
   </span>
 </div>
 
-1. <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">マイアカウント <i class="fa fa-angle-right"></i> ドメイン</a> <i class="fa fa-angle-right"></i> エイリアスでドメインの新しいエイリアスを作成します（例: <code><hello@example.com></code>）
+1. <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">マイアカウント <i class="fa fa-angle-right"></i> ドメイン</a> <i class="fa fa-angle-right"></i> メールボックス (エイリアス)でドメインの新しいエイリアスを作成します（例: <code><hello@example.com></code>）
 
 2. 新しく作成したエイリアスの横にある<strong class="text-success"><i class="fa fa-key"></i> パスワードを生成</strong>をクリックします。画面に表示される生成されたパスワードをクリップボードにコピーし、安全に保管してください。
 
@@ -2511,7 +2518,7 @@ APIで送信メールを送るには、[マイセキュリティ](/my-account/se
   </span>
 </div>
 
-1. <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">マイアカウント <i class="fa fa-angle-right"></i> ドメイン</a> <i class="fa fa-angle-right"></i> エイリアスで、ドメインの新しいエイリアスを作成します（例：<code><hello@example.com></code>）
+1. <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">マイアカウント <i class="fa fa-angle-right"></i> ドメイン</a> <i class="fa fa-angle-right"></i> メールボックス (エイリアス)で、ドメインの新しいエイリアスを作成します（例：<code><hello@example.com></code>）
 
 2. 新しく作成したエイリアスの横にある<strong class="text-success"><i class="fa fa-key"></i> パスワード生成</strong>をクリックします。画面に表示された生成されたパスワードをクリップボードにコピーし、安全に保管してください。
 
@@ -2649,7 +2656,7 @@ IPv4およびIPv6の両方に対応しており、ポート `443`（HTTPS）で�
 
 1. <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">マイアカウント <i class="fa fa-angle-right"></i> ドメイン</a> <i class="fa fa-angle-right"></i> 設定 <i class="fa fa-angle-right"></i> 送信SMTP設定 に移動し、セットアップ手順に従ってください
 
-2. <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">マイアカウント <i class="fa fa-angle-right"></i> ドメイン</a> <i class="fa fa-angle-right"></i> エイリアス でドメイン用の新しいエイリアスを作成します（例: <code><hello@example.com></code>）
+2. <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">マイアカウント <i class="fa fa-angle-right"></i> ドメイン</a> <i class="fa fa-angle-right"></i> メールボックス (エイリアス) でドメイン用の新しいエイリアスを作成します（例: <code><hello@example.com></code>）
 
 3. 新しく作成したエイリアスの横にある <strong class="text-success"><i class="fa fa-key"></i> パスワードを生成</strong> をクリックします。画面に表示される生成されたパスワードをクリップボードにコピーし、安全に保管してください。
 
@@ -2768,7 +2775,7 @@ IPv4およびIPv6の両方に対応しており、ポート `443`（HTTPS）で�
        オプション追加機能:
      </strong>
      <span>
-       当社の<a class="alert-link" href="/blog/docs/best-quantum-safe-encrypted-email-service">暗号化ストレージ（IMAP/POP3）</a>サービスをご利用で、（すでに暗号化されている）SQLiteデータベースに保存されている<i>すべての</i>メールを公開鍵で暗号化したい場合は、<a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">マイアカウント <i class="fa fa-angle-right"></i> ドメイン</a> <i class="fa fa-angle-right"></i> エイリアス（例: <code>hello@example.com</code>） <i class="fa fa-angle-right"></i> 編集 <i class="fa fa-angle-right"></i> OpenPGP に移動し、公開鍵をアップロードしてください。
+       当社の<a class="alert-link" href="/blog/docs/best-quantum-safe-encrypted-email-service">暗号化ストレージ（IMAP/POP3）</a>サービスをご利用で、（すでに暗号化されている）SQLiteデータベースに保存されている<i>すべての</i>メールを公開鍵で暗号化したい場合は、<a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">マイアカウント <i class="fa fa-angle-right"></i> ドメイン</a> <i class="fa fa-angle-right"></i> メールボックス (エイリアス)（例: <code>hello@example.com</code>） <i class="fa fa-angle-right"></i> 編集 <i class="fa fa-angle-right"></i> OpenPGP に移動し、公開鍵をアップロードしてください。
      </span>
    </div>
 
@@ -2836,7 +2843,7 @@ RSA証明書とECC（楕円曲線暗号）証明書の両方をサポートし�
 
 2. 証明書をPEM形式（公開証明書のみ、秘密鍵は含まない）でエクスポートします。
 
-3. <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">マイアカウント <i class="fa fa-angle-right"></i> ドメイン</a> <i class="fa fa-angle-right"></i> エイリアス（例: <code><hello@example.com></code>） <i class="fa fa-angle-right"></i> 編集 <i class="fa fa-angle-right"></i> S/MIME に移動し、公開証明書をアップロードします。
+3. <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">マイアカウント <i class="fa fa-angle-right"></i> ドメイン</a> <i class="fa fa-angle-right"></i> メールボックス (エイリアス)（例: <code><hello@example.com></code>） <i class="fa fa-angle-right"></i> 編集 <i class="fa fa-angle-right"></i> S/MIME に移動し、公開証明書をアップロードします。
 4. 一度設定すると、エイリアス宛てのすべての受信メールは、保存または転送される前にあなたのS/MIME証明書を使って暗号化されます。
 
    <div class="alert my-3 alert-secondary">
@@ -2955,7 +2962,7 @@ if header :contains "Subject" "invoice" {
 
 以下の方法で Sieve スクリプトを管理できます:
 
-1. **Web インターフェース**: <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">マイアカウント <i class="fa fa-angle-right"></i> ドメイン</a> <i class="fa fa-angle-right"></i> エイリアス <i class="fa fa-angle-right"></i> Sieve スクリプト に移動してスクリプトを作成および管理します。
+1. **Web インターフェース**: <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">マイアカウント <i class="fa fa-angle-right"></i> ドメイン</a> <i class="fa fa-angle-right"></i> メールボックス (エイリアス) <i class="fa fa-angle-right"></i> Sieve スクリプト に移動してスクリプトを作成および管理します。
 
 2. **ManageSieve プロトコル**: Thunderbird の Sieve アドオンや [sieve-connect](https://github.com/philpennock/sieve-connect) のような ManageSieve 互換クライアントを使用して `imap.forwardemail.net` に接続します。STARTTLS を使用する場合はポート `2190`、暗黙の TLS を使用する場合はポート `4190` を使用してください。
 
@@ -5794,7 +5801,7 @@ dig example.com txt +short
     重要:
   </strong>
   <span>
-    有料プランをご利用の場合は、<a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">マイアカウント <i class="fa fa-angle-right"></i> ドメイン</a> <i class="fa fa-angle-right"></i> エイリアス <i class="fa fa-angle-right"></i> エイリアス編集 <i class="fa fa-angle-right"></i> 「アクティブ」チェックボックスのチェックを外す <i class="fa fa-angle-right"></i> 続行してください。
+    有料プランをご利用の場合は、<a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">マイアカウント <i class="fa fa-angle-right"></i> ドメイン</a> <i class="fa fa-angle-right"></i> メールボックス (エイリアス) <i class="fa fa-angle-right"></i> エイリアス編集 <i class="fa fa-angle-right"></i> 「アクティブ」チェックボックスのチェックを外す <i class="fa fa-angle-right"></i> 続行してください。
   </span>
 </div>
 

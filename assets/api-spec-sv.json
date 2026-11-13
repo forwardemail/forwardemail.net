@@ -9633,7 +9633,7 @@
     },
     {
       "name": "Alias",
-      "description": "Slutpunkter för hantering av domänalias"
+      "description": "Slutpunkter för hantering av domänalias. Ett alias kallas också brevlåda."
     },
     {
       "name": "Kryptera",

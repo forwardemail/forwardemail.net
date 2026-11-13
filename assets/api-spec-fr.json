@@ -9633,7 +9633,7 @@
     },
     {
       "name": "Alias",
-      "description": "Points de terminaison de gestion des alias de domaine"
+      "description": "Points de terminaison de gestion des alias de domaine. Un alias s'appelle aussi une boîte aux lettres."
     },
     {
       "name": "Chiffrer",

@@ -19,75 +19,178 @@ block body
             data-vendor="youtube_nocookie",
             data-src="https://www.youtube-nocookie.com/embed/q7zfEpn2NdA?autoplay=0"
           )
+  - const oneClickProviders = nsProviders.filter((p) => p.domainConnect).map((p) => p.name);
+  - const zoneProviders = nsProviders.filter((p) => p.zoneImport).map((p) => p.name);
   .min-vh-80.d-flex.flex-column
     .container.pt-3
       .row
         .col
           include ../../_breadcrumbs
-    .container.pb-3.text-center
+    .container.pb-3
+      //- where the visitor is, and what comes next
+      ol.acct-steps.acct-steps--path.mb-4
+        li.acct-step.acct-step--current
+          .acct-step-head
+            span.acct-step-number 1
+            h2.acct-step-title= t("Add your domain")
+        li.acct-step
+          .acct-step-head
+            span.acct-step-number 2
+            h2.acct-step-title= t("Connect your domain")
+        li.acct-step
+          .acct-step-head
+            span.acct-step-number 3
+            h2.acct-step-title= t("Mailboxes")
       .row
-        .col-sm-12.col-md-12.col-lg-8.offset-lg-2
-          form.ajax-form(action=ctx.path, method="POST")
-            if isSANB(ctx.query.plan) && ['free','enhanced_protection','team'].includes(ctx.query.plan)
-              input(type="hidden", name="plan", value=ctx.query.plan)
-            .alert.alert-success.small
-              != t('If you have a domain with <a href="https://developers.cloudflare.com/registrar/get-started/register-domain/" class="alert-link notranslate" target="_blank" rel="noopener noreferrer">Cloudflare</a>, <a href="https://www.godaddy.com/" class="alert-link notranslate" target="_blank" rel="noopener noreferrer">GoDaddy</a>, or another <a href="https://en.wikipedia.org/wiki/Domain_name_registrar" class="alert-link notranslate" target="_blank" rel="noopener noreferrer">registrar</a>, then enter it below:')
-            .form-group.floating-label
-              input#input-domain.form-control.form-control-lg(
-                required,
-                value=isSANB(ctx.query.domain) && isFQDN(ctx.query.domain) ? ctx.query.domain : "",
-                name="domain",
-                autocomplete=config.env === "test" ? "off" : randomstring(),
-                placeholder="example.com",
-                autocorrect="off",
-                spellcheck="false",
-                autocapitalize="off",
-                type="text"
+        .col-lg-7.mb-4
+          .acct-card.acct-card--form
+            .p-3.p-md-4
+              form.ajax-form(action=ctx.path, method="POST")
+                if isSANB(ctx.query.plan) && ['free','enhanced_protection','team'].includes(ctx.query.plan)
+                  input(type="hidden", name="plan", value=ctx.query.plan)
+                p.small.text-muted
+                  != t('If you have a domain with <a href="https://developers.cloudflare.com/registrar/get-started/register-domain/" class="alert-link notranslate" target="_blank" rel="noopener noreferrer">Cloudflare</a>, <a href="https://www.godaddy.com/" class="alert-link notranslate" target="_blank" rel="noopener noreferrer">GoDaddy</a>, or another <a href="https://en.wikipedia.org/wiki/Domain_name_registrar" class="alert-link notranslate" target="_blank" rel="noopener noreferrer">registrar</a>, then enter it below:')
+                .form-group.floating-label
+                  input#input-domain.form-control.form-control-lg(
+                    required,
+                    value=isSANB(ctx.query.domain) && isFQDN(ctx.query.domain) ? ctx.query.domain : "",
+                    name="domain",
+                    autocomplete=config.env === "test" ? "off" : randomstring(),
+                    placeholder="example.com",
+                    autocorrect="off",
+                    spellcheck="false",
+                    autocapitalize="off",
+                    type="text"
+                  )
+                  label(for="input-domain")= t("Domain name")
+                if user.plan === 'free' && (!isSANB(ctx.query.plan) || !['free','enhanced_protection','team'].includes(ctx.query.plan))
+                  input(
+                    type="hidden",
+                    name="plan",
+                    value="enhanced_protection"
+                  )
+
+                //-
+                //- if user is an admin of any teams they belong to
+                //- then render a dropdown menu and allow the user to select one
+                //-
+                if adminTeams && adminTeams.length > 0
+                  if adminTeams.length >= 500
+                    p.small.help-text.text-muted= t("Limited to the first 1000 results")
+                  .form-group.floating-label
+                    select#input-team-domain.form-control.input-lg(
+                      name="team_domain"
+                    )
+                      option(value="none", selected)= t("None; this is my own domain")
+                      each adminTeam in adminTeams
+                        option(value=adminTeam.id)= adminTeam.name
+                    label(for="input-team-domain")= t("Assign to same domain team")
+
+                if user.group === 'admin'
+                  .form-group.form-check
+                    input#input-is-global.form-check-input(
+                      type="checkbox",
+                      name="is_global",
+                      value="true"
+                    )
+                    label.form-check-label(for="input-is-global")= t("Global domain")
+
+                button.btn.btn-success.btn-block.btn-lg(type="submit")
+                  = t("Continue")
+                  = " "
+                  i.fa.fa-angle-double-right.align-middle
+
+          //- the two other ways to get a domain
+          .row.mt-3
+            .col-md-6.mb-3.mb-md-0
+              .acct-card.h-100
+                .p-3
+                  h2.h6.font-weight-bold= t("Use one of our domains:")
+                  form(
+                    action=l("/my-account/domains/aliases/new"),
+                    method="GET"
+                  )
+                    .form-group.floating-label
+                      select#input-group.form-control.input-lg(
+                        name="domain",
+                        required
+                      )
+                        each vanityDomain, i in config.vanityDomains
+                          option(value=vanityDomain, selected=i === 0)= `you@${vanityDomain}`
+                      label(for="input-group")= t("Domain Name")
+                    button.btn.btn-primary.btn-block(type="submit")= t("Continue")
+            .col-md-6
+              .acct-card.h-100
+                .p-3.d-flex.flex-column.h-100
+                  h2.h6.font-weight-bold= t("Don't have a domain yet?")
+                  a.btn.btn-dark.btn-block.mt-auto(
+                    href=l("/domain-registration")
+                  )= t("Register a new domain name")
+
+        //- a guide for each kind of visitor: someone who has never edited DNS
+        //- records, and someone who has
+        .col-lg-5.mb-4
+          .acct-card.acct-card--form.acct-paths(
+            role="group",
+            aria-labelledby="acct-paths-title"
+          )
+            h2#acct-paths-title.acct-paths-title= t("Do you know what DNS records are?")
+            //- (these are not part of the form: they only switch the guide)
+            input#path-new.acct-path-input(
+              type="radio",
+              name="dns-path",
+              checked
+            )
+            input#path-know.acct-path-input(type="radio", name="dns-path")
+            .acct-path-tabs
+              label.acct-path-tab.acct-path-tab--new(for="path-new")
+                i.fa.fa-fw.fa-seedling
+                = " "
+                = t("I'm new to DNS")
+              label.acct-path-tab.acct-path-tab--know(for="path-know")
+                i.fa.fa-fw.fa-terminal
+                = " "
+                = t("I know DNS")
+            .acct-path-panel.acct-path-panel--new
+              p.mb-2= t("No problem. DNS records are the settings that tell the internet where to deliver the email of your domain. We add them for you.")
+              ol.acct-path-list
+                li= t("Enter your domain and continue.")
+                li
+                  != t("Click <strong>1-Click Setup</strong>. We find who hosts your DNS and ask you to approve the records there.")
+                li= t("Create your mailboxes. A mailbox is an email address at your domain, also called an alias.")
+              if oneClickProviders.length > 0
+                p.small.text-muted.mb-2
+                  = t("1-Click Setup works with")
+                  = " "
+                  span.notranslate= oneClickProviders.join(", ")
+                  = "."
+              p.small.text-muted.mb-2= t("With another provider, we show you each step for it.")
+              button.btn.btn-outline-secondary.btn-sm(
+                type="button",
+                data-toggle="modal",
+                data-target="#modal-onboard-pricing-video"
               )
-              label(for="input-domain")= t("Domain name")
-            if user.plan === 'free' && (!isSANB(ctx.query.plan) || !['free','enhanced_protection','team'].includes(ctx.query.plan))
-              input(type="hidden", name="plan", value="enhanced_protection")
+                i.fa.fa-play-circle
+                = " "
+                = t("Setup your domain with email")
+            .acct-path-panel.acct-path-panel--know
+              p.mb-2= t("You get every record in the format of your DNS provider:")
+              ul.acct-path-list
+                li
+                  = t("MX and TXT records to receive email")
+                li= t("SPF, DKIM, Return-Path and DMARC records to send email")
+                li
+                  = t("A zone file to import every record at once")
+                  if zoneProviders.length > 0
+                    = " ("
+                    span.notranslate= zoneProviders.slice(0, 6).join(", ")
+                    != ", &hellip;)"
+                li= t("A Verify button that checks them")
+              p.small.text-muted.mb-0= t("1-Click Setup is also available if you prefer it.")
 
-            //-
-            //- if user is an admin of any teams they belong to
-            //- then render a dropdown menu and allow the user to select one
-            //-
-            if adminTeams && adminTeams.length > 0
-              if adminTeams.length >= 500
-                p.small.help-text.text-muted= t("Limited to the first 1000 results")
-              .form-group.floating-label
-                select#input-team-domain.form-control.input-lg(
-                  name="team_domain"
-                )
-                  option(value="none", selected)= t("None; this is my own domain")
-                  each adminTeam in adminTeams
-                    option(value=adminTeam.id)= adminTeam.name
-                label(for="input-team-domain")= t("Assign to same domain team")
-
-            if user.group === 'admin'
-              .form-group.form-check
-                input#input-is-global.form-check-input(
-                  type="checkbox",
-                  name="is_global",
-                  value="true"
-                )
-                label.form-check-label(for="input-is-global")= t("Global domain")
-
-            button.btn.btn-success.btn-block.btn-lg(type="submit")= t("Continue")
-          .hr-text.d-flex.text-secondary.align-items-center= t("or")
-          h3.mb-3= t("Use one of our domains:")
-          form(action=l("/my-account/domains/aliases/new"), method="GET")
-            .form-group.floating-label
-              select#input-group.form-control.input-lg(name="domain", required)
-                each vanityDomain, i in config.vanityDomains
-                  option(value=vanityDomain, selected=i === 0)= `you@${vanityDomain}`
-              label(for="input-group")= t("Domain Name")
-            button.btn.btn-primary.btn-block.btn-lg(type="submit")= t("Continue")
-          .hr-text.d-flex.text-secondary.align-items-center= t("or")
-          a.btn.btn-dark.btn-lg(href=l("/domain-registration"))= t("Register a new domain name")
       - const filteredDomains = domains.filter((domain) => !domain.is_global || domain.group === "admin");
       if filteredDomains.length > 0
-        .row.my-5
+        .row.my-4
           .col
             a.btn.btn-outline-secondary(href=l("/my-account/domains"))
               i.fa.fa-angle-double-left

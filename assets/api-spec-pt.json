@@ -9633,7 +9633,7 @@
     },
     {
       "name": "Aliases",
-      "description": "Pontos de extremidade de gerenciamento de aliases de domínio"
+      "description": "Pontos de extremidade de gerenciamento de aliases de domínio. Um pseudônimo também é chamado de caixa de correio."
     },
     {
       "name": "Criptografar",

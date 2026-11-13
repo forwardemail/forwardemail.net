@@ -9633,7 +9633,7 @@
     },
     {
       "name": "Alias",
-      "description": "Titik akhir manajemen alias domain"
+      "description": "Titik akhir manajemen alias domain. Alias juga disebut kotak surat."
     },
     {
       "name": "Enkripsi",

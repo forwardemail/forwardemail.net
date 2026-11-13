@@ -8,6 +8,7 @@
 * [البدء السريع](#quick-start)
 * [مقدمة](#introduction)
   * [ما هي خدمة إعادة توجيه البريد الإلكتروني](#what-is-forward-email)
+  * [ما الفرق بين صندوق البريد والاسم المستعار](#what-is-the-difference-between-a-mailbox-and-an-alias)
   * [من يستخدم خدمة إعادة توجيه البريد الإلكتروني](#who-uses-forward-email)
   * [ما هو تاريخ خدمة إعادة توجيه البريد الإلكتروني](#what-is-forward-emails-history)
   * [ما مدى سرعة هذه الخدمة](#how-fast-is-this-service)
@@ -179,7 +180,7 @@
 
 2. **أضف وحقق من نطاقك** تحت [حسابي → النطاقات](/my-account/domains)
 
-3. **أضف وقم بتكوين الأسماء المستعارة/صناديق البريد الإلكتروني** تحت [حسابي → النطاقات](/my-account/domains) → الأسماء المستعارة
+3. **أضف وقم بتكوين الأسماء المستعارة/صناديق البريد الإلكتروني** تحت [حسابي → النطاقات](/my-account/domains) → صناديق البريد (الأسماء المستعارة)
 
 4. **اختبر إعدادك** عن طريق إرسال بريد إلكتروني إلى أحد الأسماء المستعارة الجديدة الخاصة بك
 
@@ -217,6 +218,12 @@ Forward Email هو **مزود خدمة بريد إلكتروني متكامل ا
 
 > \[!TIP]
 > تعرّف أكثر على Forward Email بقراءة [الورقة التقنية المجانية](/technical-whitepaper.pdf) ومراجعة [تدقيق الأمان](/pentest-report_forward-email.pdf) الخاص بنا من Cure53.
+
+### ما الفرق بين صندوق البريد والاسم المستعار {#what-is-the-difference-between-a-mailbox-and-an-alias}
+
+لا يوجد فرق. يستخدم موقعنا وتطبيقاتنا وواجهة API ووثائقنا الكلمتين للإشارة إلى عنوان بريد إلكتروني في نطاقك.
+
+صندوق البريد هو عنوان بريد إلكتروني في نطاقك، مثل `hello@example.com`. تسميه بعض الأدوات اسمًا مستعارًا. يمكن لكل واحد منها تحويل البريد إلى صناديق وارد أخرى، أو تخزين الرسائل التي تقرؤها عبر IMAP والبريد الإلكتروني عبر الويب، أو القيام بالأمرين معًا.
 
 ### من يستخدم Forward Email {#who-uses-forward-email}
 
@@ -737,7 +744,7 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
 
 1. اذهب إلى <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">حسابي <i class="fa fa-angle-right"></i> النطاقات</a> <i class="fa fa-angle-right"></i> الإعدادات <i class="fa fa-angle-right"></i> تكوين SMTP الصادر واتبع تعليمات الإعداد
 
-2. أنشئ اسم مستعار جديد لنطاقك تحت <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">حسابي <i class="fa fa-angle-right"></i> النطاقات</a> <i class="fa fa-angle-right"></i> الأسماء المستعارة (مثلاً <code><hello@example.com></code>)
+2. أنشئ اسم مستعار جديد لنطاقك تحت <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">حسابي <i class="fa fa-angle-right"></i> النطاقات</a> <i class="fa fa-angle-right"></i> صناديق البريد (الأسماء المستعارة) (مثلاً <code><hello@example.com></code>)
 
 3. انقر على <strong class="text-success"><i class="fa fa-key"></i> إنشاء كلمة مرور</strong> بجانب الاسم المستعار الذي أنشأته حديثًا. انسخها إلى الحافظة واحتفظ بكلمة المرور التي تم إنشاؤها بأمان كما تظهر على الشاشة.
 
@@ -745,7 +752,7 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
 
 5. عند طلب "الاسم"، أدخل الاسم الذي تريد أن يظهر به بريدك الإلكتروني كـ "من" (مثلاً "لينوس تورفالدس").
 
-6. عند طلب "عنوان البريد الإلكتروني"، أدخل عنوان البريد الإلكتروني الكامل لاسم مستعار أنشأته تحت <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">حسابي <i class="fa fa-angle-right"></i> النطاقات</a> <i class="fa fa-angle-right"></i> الأسماء المستعارة (مثلاً <code><hello@example.com></code>)
+6. عند طلب "عنوان البريد الإلكتروني"، أدخل عنوان البريد الإلكتروني الكامل لاسم مستعار أنشأته تحت <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">حسابي <i class="fa fa-angle-right"></i> النطاقات</a> <i class="fa fa-angle-right"></i> صناديق البريد (الأسماء المستعارة) (مثلاً <code><hello@example.com></code>)
 
 7. قم بإلغاء تحديد "اعتباره اسمًا مستعارًا"
 
@@ -753,7 +760,7 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
 
 9. عند طلب "خادم SMTP"، أدخل <code>smtp.forwardemail.net</code> وغيّر المنفذ إلى <code>465</code>
 
-10. عند طلب "اسم المستخدم"، أدخل عنوان البريد الإلكتروني الكامل لاسم مستعار أنشأته تحت <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">حسابي <i class="fa fa-angle-right"></i> النطاقات</a> <i class="fa fa-angle-right"></i> الأسماء المستعارة (مثلاً <code><hello@example.com></code>)
+10. عند طلب "اسم المستخدم"، أدخل عنوان البريد الإلكتروني الكامل لاسم مستعار أنشأته تحت <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">حسابي <i class="fa fa-angle-right"></i> النطاقات</a> <i class="fa fa-angle-right"></i> صناديق البريد (الأسماء المستعارة) (مثلاً <code><hello@example.com></code>)
 
 11. عند طلب "كلمة المرور"، الصق كلمة المرور من <strong class="text-success"><i class="fa fa-key"></i> إنشاء كلمة مرور</strong> في الخطوة 3 أعلاه
 
@@ -1124,7 +1131,7 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
 
 يمكنك في أي وقت تصدير صناديق بريدك بصيغ [EML](https://en.wikipedia.org/wiki/Email#Filename_extensions)، أو [Mbox](https://en.wikipedia.org/wiki/Mbox)، أو بصيغ [SQLite](https://en.wikipedia.org/wiki/SQLite) المشفرة.
 
-اذهب إلى <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">حسابي <i class="fa fa-angle-right"></i> النطاقات</a> <i class="fa fa-angle-right"></i> الأسماء المستعارة <i class="fa fa-angle-right"></i> تحميل النسخة الاحتياطية واختر نوع صيغة التصدير المفضلة لديك.
+اذهب إلى <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">حسابي <i class="fa fa-angle-right"></i> النطاقات</a> <i class="fa fa-angle-right"></i> صناديق البريد (الأسماء المستعارة) <i class="fa fa-angle-right"></i> تحميل النسخة الاحتياطية واختر نوع صيغة التصدير المفضلة لديك.
 
 سيتم إرسال رابط لتحميل التصدير عبر البريد الإلكتروني بمجرد الانتهاء.
 
@@ -2062,7 +2069,7 @@ Drafts/
 
 ### كيف أقوم بإعداد رد تلقائي للعطلة (الرد التلقائي خارج المكتب) {#how-do-i-set-up-a-vacation-responder-out-of-office-auto-responder}
 
-اذهب إلى <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">حسابي <i class="fa fa-angle-right"></i> النطاقات</a> <i class="fa fa-angle-right"></i> الأسماء المستعارة وأنشئ أو حرر الاسم المستعار الذي ترغب في تكوين رد تلقائي للعطلة له.
+اذهب إلى <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">حسابي <i class="fa fa-angle-right"></i> النطاقات</a> <i class="fa fa-angle-right"></i> صناديق البريد (الأسماء المستعارة) وأنشئ أو حرر الاسم المستعار الذي ترغب في تكوين رد تلقائي للعطلة له.
 لديك القدرة على تكوين تاريخ بدء، تاريخ انتهاء، موضوع، ورسالة، وتمكينها أو تعطيلها في أي وقت:
 
 * يتم دعم الموضوع والرسالة بنص عادي حاليًا (نستخدم حزمة `striptags` داخليًا لإزالة أي HTML).
@@ -2450,7 +2457,7 @@ Tasks.org هو مدير مهام مفتوح المصدر شهير يعمل بش�
   </span>
 </div>
 
-1. أنشئ اسم مستعار جديد لنطاقك ضمن <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">حسابي <i class="fa fa-angle-right"></i> النطاقات</a> <i class="fa fa-angle-right"></i> الأسماء المستعارة (مثلاً <code><hello@example.com></code>)
+1. أنشئ اسم مستعار جديد لنطاقك ضمن <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">حسابي <i class="fa fa-angle-right"></i> النطاقات</a> <i class="fa fa-angle-right"></i> صناديق البريد (الأسماء المستعارة) (مثلاً <code><hello@example.com></code>)
 
 2. انقر على <strong class="text-success"><i class="fa fa-key"></i> إنشاء كلمة مرور</strong> بجانب الاسم المستعار الذي تم إنشاؤه حديثًا. انسخها إلى الحافظة واحتفظ بكلمة المرور المولدة بأمان كما هو معروض على الشاشة.
 
@@ -2507,7 +2514,7 @@ Tasks.org هو مدير مهام مفتوح المصدر شهير يعمل بش�
   </span>
 </div>
 
-1. أنشئ اسم مستعار جديد لنطاقك تحت <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">حسابي <i class="fa fa-angle-right"></i> النطاقات</a> <i class="fa fa-angle-right"></i> الأسماء المستعارة (مثلاً <code><hello@example.com></code>)
+1. أنشئ اسم مستعار جديد لنطاقك تحت <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">حسابي <i class="fa fa-angle-right"></i> النطاقات</a> <i class="fa fa-angle-right"></i> صناديق البريد (الأسماء المستعارة) (مثلاً <code><hello@example.com></code>)
 
 2. انقر على <strong class="text-success"><i class="fa fa-key"></i> توليد كلمة المرور</strong> بجانب الاسم المستعار الذي تم إنشاؤه حديثًا. انسخها إلى الحافظة واحتفظ بكلمة المرور المولدة بأمان كما هو معروض على الشاشة.
 
@@ -2648,7 +2655,7 @@ Tasks.org هو مدير مهام مفتوح المصدر شهير يعمل بش�
 
 1. اذهب إلى <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">حسابي <i class="fa fa-angle-right"></i> النطاقات</a> <i class="fa fa-angle-right"></i> الإعدادات <i class="fa fa-angle-right"></i> تكوين SMTP الصادر واتبع تعليمات الإعداد
 
-2. أنشئ اسم مستعار جديد لنطاقك تحت <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">حسابي <i class="fa fa-angle-right"></i> النطاقات</a> <i class="fa fa-angle-right"></i> الأسماء المستعارة (مثلاً <code><hello@example.com></code>)
+2. أنشئ اسم مستعار جديد لنطاقك تحت <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">حسابي <i class="fa fa-angle-right"></i> النطاقات</a> <i class="fa fa-angle-right"></i> صناديق البريد (الأسماء المستعارة) (مثلاً <code><hello@example.com></code>)
 
 3. انقر على <strong class="text-success"><i class="fa fa-key"></i> توليد كلمة مرور</strong> بجانب الاسم المستعار الذي تم إنشاؤه حديثًا. انسخها إلى الحافظة واحتفظ بكلمة المرور المولدة بأمان كما هو معروض على الشاشة.
 
@@ -2767,7 +2774,7 @@ Tasks.org هو مدير مهام مفتوح المصدر شهير يعمل بش�
        إضافة اختيارية:
      </strong>
      <span>
-       إذا كنت تستخدم خدمتنا <a class="alert-link" href="/blog/docs/best-quantum-safe-encrypted-email-service">لتخزين مشفر (IMAP/POP3)</a> وترغب في أن يتم تشفير <i>كل</i> البريد الإلكتروني المخزن في قاعدة بيانات SQLite الخاصة بك (وهي مشفرة بالفعل) باستخدام مفتاحك العام، فانتقل إلى <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">حسابي <i class="fa fa-angle-right"></i> النطاقات</a> <i class="fa fa-angle-right"></i> الأسماء المستعارة (مثل <code>hello@example.com</code>) <i class="fa fa-angle-right"></i> تحرير <i class="fa fa-angle-right"></i> OpenPGP وقم بتحميل مفتاحك العام.
+       إذا كنت تستخدم خدمتنا <a class="alert-link" href="/blog/docs/best-quantum-safe-encrypted-email-service">لتخزين مشفر (IMAP/POP3)</a> وترغب في أن يتم تشفير <i>كل</i> البريد الإلكتروني المخزن في قاعدة بيانات SQLite الخاصة بك (وهي مشفرة بالفعل) باستخدام مفتاحك العام، فانتقل إلى <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">حسابي <i class="fa fa-angle-right"></i> النطاقات</a> <i class="fa fa-angle-right"></i> صناديق البريد (الأسماء المستعارة) (مثل <code>hello@example.com</code>) <i class="fa fa-angle-right"></i> تحرير <i class="fa fa-angle-right"></i> OpenPGP وقم بتحميل مفتاحك العام.
      </span>
    </div>
 
@@ -2835,7 +2842,7 @@ Tasks.org هو مدير مهام مفتوح المصدر شهير يعمل بش�
 
 2. صدّر شهادتك بصيغة PEM (الشهادة العامة فقط، وليس المفتاح الخاص).
 
-3. اذهب إلى <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">حسابي <i class="fa fa-angle-right"></i> النطاقات</a> <i class="fa fa-angle-right"></i> الأسماء المستعارة (مثل <code><hello@example.com></code>) <i class="fa fa-angle-right"></i> تحرير <i class="fa fa-angle-right"></i> S/MIME وقم بتحميل شهادتك العامة.
+3. اذهب إلى <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">حسابي <i class="fa fa-angle-right"></i> النطاقات</a> <i class="fa fa-angle-right"></i> صناديق البريد (الأسماء المستعارة) (مثل <code><hello@example.com></code>) <i class="fa fa-angle-right"></i> تحرير <i class="fa fa-angle-right"></i> S/MIME وقم بتحميل شهادتك العامة.
 4. بمجرد التكوين، سيتم تشفير جميع الرسائل الواردة إلى الاسم المستعار الخاص بك باستخدام شهادة S/MIME الخاصة بك قبل تخزينها أو إعادة توجيهها.
 
    <div class="alert my-3 alert-secondary">
@@ -2954,7 +2961,7 @@ if header :contains "Subject" "invoice" {
 
 يمكنك إدارة سكربتات Sieve بعدة طرق:
 
-1. **واجهة الويب**: انتقل إلى <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">حسابي <i class="fa fa-angle-right"></i> النطاقات</a> <i class="fa fa-angle-right"></i> الأسماء المستعارة <i class="fa fa-angle-right"></i> سكربتات Sieve لإنشاء وإدارة السكربتات.
+1. **واجهة الويب**: انتقل إلى <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">حسابي <i class="fa fa-angle-right"></i> النطاقات</a> <i class="fa fa-angle-right"></i> صناديق البريد (الأسماء المستعارة) <i class="fa fa-angle-right"></i> سكربتات Sieve لإنشاء وإدارة السكربتات.
 
 2. **بروتوكول ManageSieve**: اتصل باستخدام أي عميل متوافق مع ManageSieve، مثل إضافة Sieve لثندربرد أو [sieve-connect](https://github.com/philpennock/sieve-connect)، إلى `imap.forwardemail.net`. استخدم المنفذ `2190` مع STARTTLS أو المنفذ `4190` مع TLS الضمني.
 
@@ -5792,7 +5799,7 @@ dig example.com txt +short
     مهم:
   </strong>
   <span>
-    إذا كنت على خطة مدفوعة، فيجب عليك الذهاب إلى <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">حسابي <i class="fa fa-angle-right"></i> النطاقات</a> <i class="fa fa-angle-right"></i> الألقاب <i class="fa fa-angle-right"></i> تعديل اللقب <i class="fa fa-angle-right"></i> إلغاء تحديد مربع "نشط" <i class="fa fa-angle-right"></i> متابعة.
+    إذا كنت على خطة مدفوعة، فيجب عليك الذهاب إلى <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">حسابي <i class="fa fa-angle-right"></i> النطاقات</a> <i class="fa fa-angle-right"></i> صناديق البريد (الألقاب) <i class="fa fa-angle-right"></i> تعديل اللقب <i class="fa fa-angle-right"></i> إلغاء تحديد مربع "نشط" <i class="fa fa-angle-right"></i> متابعة.
   </span>
 </div>
 

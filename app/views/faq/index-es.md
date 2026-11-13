@@ -8,6 +8,7 @@
 * [Inicio Rápido](#quick-start)
 * [Introducción](#introduction)
   * [Qué es Forward Email](#what-is-forward-email)
+  * [Cuál es la diferencia entre un buzón y un alias](#what-is-the-difference-between-a-mailbox-and-an-alias)
   * [Quién usa Forward Email](#who-uses-forward-email)
   * [Cuál es la historia de Forward Email](#what-is-forward-emails-history)
   * [Qué tan rápido es este servicio](#how-fast-is-this-service)
@@ -179,7 +180,7 @@ Para comenzar con Forward Email:
 
 2. **Agrega y verifica tu dominio** en [Mi Cuenta → Dominios](/my-account/domains)
 
-3. **Agrega y configura alias/buzones de correo** en [Mi Cuenta → Dominios](/my-account/domains) → Alias
+3. **Agrega y configura alias/buzones de correo** en [Mi Cuenta → Dominios](/my-account/domains) → Buzones de correo (Alias)
 
 4. **Prueba tu configuración** enviando un correo a uno de tus nuevos alias
 
@@ -217,6 +218,12 @@ Puedes compararnos con más de 56 otros proveedores de servicios de correo en [n
 
 > \[!TIP]
 > Aprende más sobre Forward Email leyendo nuestro [Whitepaper Técnico](/technical-whitepaper.pdf) gratuito y revisando nuestra [auditoría de seguridad](/pentest-report_forward-email.pdf) realizada por Cure53.
+
+### Cuál es la diferencia entre un buzón y un alias {#what-is-the-difference-between-a-mailbox-and-an-alias}
+
+No hay diferencia. Nuestro sitio web, aplicaciones, API y documentación usan ambas palabras para una dirección de correo electrónico de tu dominio.
+
+Un buzón es una dirección de correo electrónico de su dominio, como `hello@example.com`. Algunas herramientas lo llaman alias. Cada uno puede reenviar correo a otras bandejas de entrada, almacenar el correo que lee con IMAP y correo web, o hacer ambas cosas.
 
 ### Quién usa Forward Email {#who-uses-forward-email}
 
@@ -737,7 +744,7 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
 
 1. Ve a <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Mi Cuenta <i class="fa fa-angle-right"></i> Dominios</a> <i class="fa fa-angle-right"></i> Configuración <i class="fa fa-angle-right"></i> Configuración SMTP de salida y sigue las instrucciones de configuración
 
-2. Crea un nuevo alias para tu dominio en <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Mi Cuenta <i class="fa fa-angle-right"></i> Dominios</a> <i class="fa fa-angle-right"></i> Aliases (por ejemplo, <code><hello@example.com></code>)
+2. Crea un nuevo alias para tu dominio en <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Mi Cuenta <i class="fa fa-angle-right"></i> Dominios</a> <i class="fa fa-angle-right"></i> Buzones de correo (Aliases) (por ejemplo, <code><hello@example.com></code>)
 
 3. Haz clic en <strong class="text-success"><i class="fa fa-key"></i> Generar Contraseña</strong> junto al alias recién creado. Copia al portapapeles y guarda de forma segura la contraseña generada que se muestra en pantalla.
 
@@ -745,7 +752,7 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
 
 5. Cuando se te pida "Nombre", ingresa el nombre que quieres que aparezca como remitente (por ejemplo, "Linus Torvalds").
 
-6. Cuando se te pida "Dirección de correo electrónico", ingresa la dirección completa de un alias que creaste en <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Mi Cuenta <i class="fa fa-angle-right"></i> Dominios</a> <i class="fa fa-angle-right"></i> Aliases (por ejemplo, <code><hello@example.com></code>)
+6. Cuando se te pida "Dirección de correo electrónico", ingresa la dirección completa de un alias que creaste en <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Mi Cuenta <i class="fa fa-angle-right"></i> Dominios</a> <i class="fa fa-angle-right"></i> Buzones de correo (Aliases) (por ejemplo, <code><hello@example.com></code>)
 
 7. Desmarca "Tratar como un alias"
 
@@ -753,7 +760,7 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
 
 9. Cuando se te pida "Servidor SMTP", ingresa <code>smtp.forwardemail.net</code> y cambia el puerto a <code>465</code>
 
-10. Cuando se te pida "Nombre de usuario", ingresa la dirección completa de un alias que creaste en <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Mi Cuenta <i class="fa fa-angle-right"></i> Dominios</a> <i class="fa fa-angle-right"></i> Aliases (por ejemplo, <code><hello@example.com></code>)
+10. Cuando se te pida "Nombre de usuario", ingresa la dirección completa de un alias que creaste en <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Mi Cuenta <i class="fa fa-angle-right"></i> Dominios</a> <i class="fa fa-angle-right"></i> Buzones de correo (Aliases) (por ejemplo, <code><hello@example.com></code>)
 
 11. Cuando se te pida "Contraseña", pega la contraseña de <strong class="text-success"><i class="fa fa-key"></i> Generar Contraseña</strong> del paso 3 arriba
 
@@ -1124,7 +1131,7 @@ Puede conocer a nuestros subprocesadores en nuestras páginas de [GDPR](/gdpr), 
 
 En cualquier momento puede exportar sus buzones en formatos [EML](https://en.wikipedia.org/wiki/Email#Filename_extensions), [Mbox](https://en.wikipedia.org/wiki/Mbox) o [SQLite](https://en.wikipedia.org/wiki/SQLite) cifrados.
 
-Vaya a <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Mi Cuenta <i class="fa fa-angle-right"></i> Dominios</a> <i class="fa fa-angle-right"></i> Alias <i class="fa fa-angle-right"></i> Descargar Respaldo y seleccione su tipo de formato de exportación preferido.
+Vaya a <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Mi Cuenta <i class="fa fa-angle-right"></i> Dominios</a> <i class="fa fa-angle-right"></i> Buzones de correo (Alias) <i class="fa fa-angle-right"></i> Descargar Respaldo y seleccione su tipo de formato de exportación preferido.
 
 Se le enviará un enlace para descargar la exportación una vez que haya finalizado.
 
@@ -2063,7 +2070,7 @@ Si está usando Microsoft 365 (Outlook) y desea reenviar todos los alias que no 
 
 ### ¿Cómo configuro un contestador de vacaciones (respuesta automática de fuera de la oficina)? {#how-do-i-set-up-a-vacation-responder-out-of-office-auto-responder}
 
-Vaya a <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Mi Cuenta <i class="fa fa-angle-right"></i> Dominios</a> <i class="fa fa-angle-right"></i> Alias y cree o edite el alias para el que desea configurar un contestador automático de vacaciones.
+Vaya a <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Mi Cuenta <i class="fa fa-angle-right"></i> Dominios</a> <i class="fa fa-angle-right"></i> Buzones de correo (Alias) y cree o edite el alias para el que desea configurar un contestador automático de vacaciones.
 Tienes la capacidad de configurar una fecha de inicio, fecha de finalización, asunto y mensaje, y habilitarlo o deshabilitarlo en cualquier momento:
 
 * Actualmente se soportan asunto y mensaje en texto plano (usamos el paquete `striptags` internamente para eliminar cualquier HTML).
@@ -2451,7 +2458,7 @@ Sí, desde el 16 de octubre de 2023 soportamos la recepción de correos electró
   </span>
 </div>
 
-1. Crea un nuevo alias para tu dominio en <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Mi Cuenta <i class="fa fa-angle-right"></i> Dominios</a> <i class="fa fa-angle-right"></i> Aliases (por ejemplo, <code><hello@example.com></code>)
+1. Crea un nuevo alias para tu dominio en <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Mi Cuenta <i class="fa fa-angle-right"></i> Dominios</a> <i class="fa fa-angle-right"></i> Buzones de correo (Aliases) (por ejemplo, <code><hello@example.com></code>)
 
 2. Haz clic en <strong class="text-success"><i class="fa fa-key"></i> Generar Contraseña</strong> junto al alias recién creado. Copia al portapapeles y guarda de forma segura la contraseña generada que se muestra en pantalla.
 
@@ -2508,7 +2515,7 @@ Sí, desde el 4 de diciembre de 2023 soportamos [POP3](https://en.wikipedia.org/
   </span>
 </div>
 
-1. Cree un nuevo alias para su dominio en <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Mi Cuenta <i class="fa fa-angle-right"></i> Dominios</a> <i class="fa fa-angle-right"></i> Alias (por ejemplo, <code><hello@example.com></code>)
+1. Cree un nuevo alias para su dominio en <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Mi Cuenta <i class="fa fa-angle-right"></i> Dominios</a> <i class="fa fa-angle-right"></i> Buzones de correo (Alias) (por ejemplo, <code><hello@example.com></code>)
 
 2. Haga clic en <strong class="text-success"><i class="fa fa-key"></i> Generar Contraseña</strong> junto al alias recién creado. Copie al portapapeles y guarde de forma segura la contraseña generada que se muestra en pantalla.
 
@@ -2649,7 +2656,7 @@ Sí. Todos los planes de pago incluyen SMTP saliente, y es **ilimitado**: su umb
 
 1. Vaya a <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Mi Cuenta <i class="fa fa-angle-right"></i> Dominios</a> <i class="fa fa-angle-right"></i> Configuración <i class="fa fa-angle-right"></i> Configuración SMTP Saliente y siga las instrucciones de configuración
 
-2. Cree un nuevo alias para su dominio en <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Mi Cuenta <i class="fa fa-angle-right"></i> Dominios</a> <i class="fa fa-angle-right"></i> Aliases (por ejemplo, <code><hello@example.com></code>)
+2. Cree un nuevo alias para su dominio en <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Mi Cuenta <i class="fa fa-angle-right"></i> Dominios</a> <i class="fa fa-angle-right"></i> Buzones de correo (Aliases) (por ejemplo, <code><hello@example.com></code>)
 
 3. Haga clic en <strong class="text-success"><i class="fa fa-key"></i> Generar Contraseña</strong> junto al alias recién creado. Copie al portapapeles y guarde de forma segura la contraseña generada que se muestra en pantalla.
 
@@ -2768,7 +2775,7 @@ Sí, soportamos [OpenPGP](https://en.wikipedia.org/wiki/Pretty_Good_Privacy#Open
        Complemento opcional:
      </strong>
      <span>
-       Si está usando nuestro servicio de <a class="alert-link" href="/blog/docs/best-quantum-safe-encrypted-email-service">almacenamiento cifrado (IMAP/POP3)</a> y desea que <i>todos</i> los correos electrónicos almacenados en su base de datos SQLite (ya cifrada) estén cifrados con su clave pública, entonces vaya a <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Mi Cuenta <i class="fa fa-angle-right"></i> Dominios</a> <i class="fa fa-angle-right"></i> Alias (por ejemplo, <code>hello@example.com</code>) <i class="fa fa-angle-right"></i> Editar <i class="fa fa-angle-right"></i> OpenPGP y suba su clave pública.
+       Si está usando nuestro servicio de <a class="alert-link" href="/blog/docs/best-quantum-safe-encrypted-email-service">almacenamiento cifrado (IMAP/POP3)</a> y desea que <i>todos</i> los correos electrónicos almacenados en su base de datos SQLite (ya cifrada) estén cifrados con su clave pública, entonces vaya a <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Mi Cuenta <i class="fa fa-angle-right"></i> Dominios</a> <i class="fa fa-angle-right"></i> Buzones de correo (Alias) (por ejemplo, <code>hello@example.com</code>) <i class="fa fa-angle-right"></i> Editar <i class="fa fa-angle-right"></i> OpenPGP y suba su clave pública.
      </span>
    </div>
 
@@ -2836,7 +2843,7 @@ Para configurar el cifrado S/MIME para su alias:
 
 2. Exporte su certificado en formato PEM (solo el certificado público, no la clave privada).
 
-3. Vaya a <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Mi Cuenta <i class="fa fa-angle-right"></i> Dominios</a> <i class="fa fa-angle-right"></i> Alias (por ejemplo, <code><hello@example.com></code>) <i class="fa fa-angle-right"></i> Editar <i class="fa fa-angle-right"></i> S/MIME y suba su certificado público.
+3. Vaya a <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Mi Cuenta <i class="fa fa-angle-right"></i> Dominios</a> <i class="fa fa-angle-right"></i> Buzones de correo (Alias) (por ejemplo, <code><hello@example.com></code>) <i class="fa fa-angle-right"></i> Editar <i class="fa fa-angle-right"></i> S/MIME y suba su certificado público.
 4. Una vez configurado, todos los correos entrantes a tu alias serán cifrados usando tu certificado S/MIME antes de ser almacenados o reenviados.
 
    <div class="alert my-3 alert-secondary">
@@ -2955,7 +2962,7 @@ if header :contains "Subject" "invoice" {
 
 Puedes gestionar scripts Sieve de varias maneras:
 
-1. **Interfaz web**: Ve a <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Mi Cuenta <i class="fa fa-angle-right"></i> Dominios</a> <i class="fa fa-angle-right"></i> Alias <i class="fa fa-angle-right"></i> Scripts Sieve para crear y administrar scripts.
+1. **Interfaz web**: Ve a <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Mi Cuenta <i class="fa fa-angle-right"></i> Dominios</a> <i class="fa fa-angle-right"></i> Buzones de correo (Alias) <i class="fa fa-angle-right"></i> Scripts Sieve para crear y administrar scripts.
 
 2. **Protocolo ManageSieve**: Conéctate usando cualquier cliente compatible con ManageSieve, como el complemento Sieve de Thunderbird o [sieve-connect](https://github.com/philpennock/sieve-connect), a `imap.forwardemail.net`. Usa el puerto `2190` con STARTTLS o el puerto `4190` con TLS implícito.
 
@@ -5794,7 +5801,7 @@ No, no se recomienda, ya que solo puedes usar un servidor de intercambio de corr
     Importante:
   </strong>
   <span>
-    Si estás en un plan pago, debes ir a <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Mi Cuenta <i class="fa fa-angle-right"></i> Dominios</a> <i class="fa fa-angle-right"></i> Alias <i class="fa fa-angle-right"></i> Editar Alias <i class="fa fa-angle-right"></i> Desmarcar la casilla "Activo" <i class="fa fa-angle-right"></i> Continuar.
+    Si estás en un plan pago, debes ir a <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Mi Cuenta <i class="fa fa-angle-right"></i> Dominios</a> <i class="fa fa-angle-right"></i> Buzones de correo (Alias) <i class="fa fa-angle-right"></i> Editar Alias <i class="fa fa-angle-right"></i> Desmarcar la casilla "Activo" <i class="fa fa-angle-right"></i> Continuar.
   </span>
 </div>
 

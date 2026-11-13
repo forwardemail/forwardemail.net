@@ -1,0 +1,108 @@
+//- The navigation of My Account and Admin, defined once and rendered twice:
+//- as the account and admin menus of the navbar (_nav.pug) and as the sidebar
+//- beside every My Account and Admin page (_account-sidebar.pug). Pug
+//- includes share one compiled scope, so layout.pug includes this ahead of
+//- _nav.pug (as it does _fe-flags.pug) and email-api.pug, which builds its own
+//- html element, includes it as well.
+
+- const acctPath = ctx.pathWithoutLocale || "";
+- const acctSignedIn = Boolean(user);
+- const acctIsAdminUser = acctSignedIn && user.group === "admin";
+- const acctInAdmin = acctIsAdminUser && (acctPath === "/admin" || acctPath.startsWith("/admin/"));
+- const acctInAccount = acctSignedIn && (acctPath === "/my-account" || acctPath.startsWith("/my-account/"));
+//- The sidebar sits beside every page of My Account and Admin, except the
+//- print layouts of the receipts (.pdf and .html).
+- const acctShell = (acctInAdmin || acctInAccount) && !isPDF && !acctPath.endsWith(".pdf") && !acctPath.endsWith(".html");
+- const acctOn = (prefix) => acctPath === prefix || acctPath.startsWith(`${prefix}/`);
+
+//- The domain whose page the visitor is on (a domain page names the domain by
+//- its ASCII name or its id), and the plan its locked features switch to.
+//- (the list of domains page pages `domains`, `allDomains` holds them all)
+- const acctDomains = acctSignedIn ? (typeof allDomains !== "undefined" && Array.isArray(allDomains) ? allDomains : Array.isArray(domains) ? domains : []) : [];
+- let acctDomainKey = "";
+- const acctDomainMatch = acctInAccount ? acctPath.match(/^\/my-account\/domains\/([^/]+)/) : null;
+- if (acctDomainMatch && !["new", "aliases"].includes(acctDomainMatch[1])) { try { acctDomainKey = decodeURIComponent(acctDomainMatch[1]).toLowerCase(); } catch { acctDomainKey = acctDomainMatch[1].toLowerCase(); } }
+- const acctDomain = acctDomainKey ? acctDomains.find((d) => d.id === acctDomainKey || d.name.toLowerCase() === acctDomainKey || punycode.toASCII(d.name).toLowerCase() === acctDomainKey) : null;
+- const acctOwnDomains = acctDomains.filter((d) => !d.is_global);
+- const acctDomainStatus = (d) => (d.is_global ? "global" : d.has_mx_record && d.has_txt_record ? "ready" : "setup");
+- const acctDomainBase = (d) => `/my-account/domains/${punycode.toASCII(d.name)}`;
+
+//- The links of My Account. `on` marks the page the visitor is on.
+- const acctActivity = [ { href: "/my-account/emails", icon: "fa-envelope", label: t("Emails"), on: acctOn("/my-account/emails") }, { href: "/my-account/logs", icon: "fa-stream", label: t("Logs"), on: acctOn("/my-account/logs") }, { href: "/my-account/analytics", icon: "fa-chart-area", label: t("Analytics"), on: acctOn("/my-account/analytics") }, { href: "/my-account/dmarc-reports", icon: "fa-shield-alt", label: t("DMARC Reports"), on: acctOn("/my-account/dmarc-reports") } ];
+- const acctProfile = [ { href: "/my-account/profile", icon: "fa-user", label: t("Profile"), on: acctPath === "/my-account/profile" }, { href: "/my-account/billing", icon: "fa-credit-card", label: t("Billing"), on: acctOn("/my-account/billing") }, { href: "/my-account/security", icon: "fa-lock", label: t("Security"), on: acctPath === "/my-account/security" } ];
+//- The links of Admin, in groups.
+- const acctAdminGroups = [ { title: t("Overview"), items: [ { href: "/admin", icon: "fa-tachometer-alt", label: t("Dashboard"), on: acctPath === "/admin" }, { href: "/admin/analytics", icon: "fa-chart-area", label: t("Analytics"), on: acctOn("/admin/analytics") }, { href: "/admin/payments", icon: "fa-credit-card", label: t("Payments"), on: acctOn("/admin/payments") } ] }, { title: t("Customers"), items: [ { href: "/admin/users", icon: "fa-user", label: t("Users"), on: acctOn("/admin/users") }, { href: "/admin/domains", icon: "fa-globe", label: t("Domains"), on: acctOn("/admin/domains") }, { href: "/admin/inquiries", icon: "fa-comments", label: t("Inquiries"), on: acctOn("/admin/inquiries") } ] }, { title: t("Mail"), items: [ { href: "/admin/emails", icon: "fa-envelope", label: t("Emails"), on: acctOn("/admin/emails") }, { href: "/admin/logs", icon: "fa-stream", label: t("Logs"), on: acctOn("/admin/logs") }, { href: "/admin/spam", icon: "fa-bug", label: t("Spam"), on: acctOn("/admin/spam") }, { href: "/admin/jobs", icon: "fa-tasks", label: t("Jobs"), on: acctOn("/admin/jobs") } ] }, { title: t("Lists"), items: [ { href: "/admin/allowlist", icon: "fa-check-circle", label: t("Allowlist"), on: acctOn("/admin/allowlist") }, { href: "/admin/denylist", icon: "fa-ban", label: t("Denylist"), on: acctOn("/admin/denylist") } ] } ];
+
+//- What a domain offers, as links. On a free domain a domain admin finds most
+//- of these locked, as in the list of domains: a free account is sent to
+//- upgrade and a paid account is asked to switch the domain to its plan.
+-
+  const acctDomainLinks = (d) => {
+    const base = acctDomainBase(d);
+    // (the page names the domain by its name or its id)
+    const cur = acctDomainMatch ? `/my-account/domains/${acctDomainMatch[1]}` : base;
+    const isAdmin = d.group === "admin";
+    const locked = d.plan === "free" && isAdmin;
+    const lock = (msg) => (locked ? { locked: true, billing: `${base}/billing`, msg } : {});
+    const links = [];
+    if (isAdmin) links.push({ href: base, icon: "fa-cog", label: t("Setup"), on: acctPath === cur });
+    links.push({ href: `${base}/aliases`, icon: "fa-inbox", label: t("Mailboxes"), on: acctOn(`${cur}/aliases`), ...lock(t("To unlock the alias manager for this domain, you need to switch its plan. Don't worry &ndash; there is no extra cost.")) });
+    if (isAdmin) links.push({ href: `${base}/verify-smtp`, icon: "fa-paper-plane", label: t("Outbound SMTP"), on: acctOn(`${cur}/verify-smtp`), ...lock(t("To unlock outbound SMTP email for this domain, you need to switch its plan.")) });
+    if (!d.is_global) links.push({ href: `/my-account/emails?domain=${d.name}`, icon: "fa-envelope", label: t("Emails"), ...lock(t("To unlock outbound SMTP email for this domain, you need to switch its plan.")) });
+    links.push({ href: `/my-account/logs?domains=${d.name}`, icon: "fa-stream", label: t("Logs"), ...lock(t("To unlock logs for this domain, you need to switch its plan. Don't worry &ndash; there is no extra cost.")) });
+    links.push({ href: `/my-account/analytics?domains=${d.name}`, icon: "fa-chart-area", label: t("Analytics"), ...lock(t("To unlock analytics for this domain, you need to switch its plan. Don't worry &ndash; there is no extra cost.")) });
+    links.push({ href: `/my-account/dmarc-reports?domains=${d.name}`, icon: "fa-shield-alt", label: t("DMARC Reports"), ...lock(t("To unlock DMARC reports for this domain, you need to switch its plan. Don't worry &ndash; there is no extra cost.")) });
+    if (isAdmin) links.push({ href: `${base}/advanced-settings#manage-team`, icon: "fa-users", label: t("Team"), on: false });
+    if (isAdmin) links.push({ href: `${base}/advanced-settings`, icon: "fa-tools", label: t("Settings"), on: acctPath === `${cur}/advanced-settings` });
+    return links;
+  };
+
+//- One link of the sidebar.
+mixin acctLinkInner(item)
+  i.fa.fa-fw.acct-link-icon(class=item.icon)
+  span.acct-link-label= item.label
+  if item.locked
+    i.fa.fa-lock.acct-link-lock(aria-hidden="true")
+    span.sr-only
+      = " "
+      = t("Upgrade")
+  else if item.badge
+    span.badge.badge-pill.badge-secondary.acct-link-badge= item.badge
+
+mixin acctLink(item)
+  if item.locked && user.plan === "free"
+    //- a free account upgrades
+    a.acct-link(href=l("/my-account/billing/upgrade?plan=enhanced_protection"))
+      +acctLinkInner(item)
+  else if item.locked
+    //- a paid account switches the domain to its plan after a confirmation
+    form.acct-link-form.confirm-prompt(
+      action=l(item.billing),
+      data-confirm-prompt-title=t("Switch domain plan?"),
+      data-confirm-prompt-html=item.msg,
+      method="GET"
+    )
+      input(type="hidden", name="plan", value=user.plan)
+      button.acct-link(type="submit")
+        +acctLinkInner(item)
+  else
+    a.acct-link(
+      href=item.external ? item.href : l(item.href),
+      class=item.on ? "active" : false,
+      aria-current=item.on ? "page" : false,
+      target=item.external ? "_blank" : false,
+      rel=item.external ? "noopener noreferrer" : false,
+      title=item.title ? item.title : false
+    )
+      +acctLinkInner(item)
+
+//- One link of a navbar menu.
+mixin acctMenuItem(item)
+  a.dropdown-item(
+    href=item.external ? item.href : l(item.href),
+    class=item.on ? "active" : false,
+    target=item.external ? "_blank" : false,
+    rel=item.external ? "noopener noreferrer" : false
+  )
+    i.fa.fa-fw.mr-1.text-muted(class=item.icon)
+    = item.label

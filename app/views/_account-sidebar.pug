@@ -1,0 +1,171 @@
+//- The sidebar beside every My Account and Admin page (see _account-nav.pug
+//- for the links). From the lg breakpoint it is a sticky column; below that it
+//- is a bar under the navbar that opens the same links as a list.
+- const acctName = user[config.passport.fields.displayName] || user.email;
+- const acctInitial = (acctName || "?").trim().charAt(0).toUpperCase();
+- const acctPlanName = t(titleize(humanize(user.plan || "free")));
+- const acctNeedsSetup = acctOwnDomains.filter((d) => acctDomainStatus(d) === "setup").length;
+//- Up to this many domains are listed; the page of domains lists the rest.
+//- The default domain of the profile comes first, then domains that still
+//- need their setup, then the newest. (The browser adds the domains
+//- viewed last, see assets/js/core.js.)
+- const acctDefaultId = user[config.userFields.defaultDomain] ? String(user[config.userFields.defaultDomain]) : "";
+- const acctTime = (d) => (d.created_at ? new Date(d.created_at).getTime() : 0);
+//- (a few of the domains that need setup, so that they leave room for the rest)
+- const acctSetupFirst = acctOwnDomains.filter((d) => acctDomainStatus(d) === "setup").sort((a, b) => acctTime(b) - acctTime(a)).slice(0, 3);
+- const acctRank = (d) => (d.id === acctDefaultId ? 0 : acctSetupFirst.includes(d) ? 1 : 2);
+- const acctSorted = [...acctOwnDomains].sort((a, b) => acctRank(a) - acctRank(b) || acctTime(b) - acctTime(a) || a.name.localeCompare(b.name));
+- const acctListed = acctSorted.slice(0, 8);
+- if (acctDomain && !acctDomain.is_global && !acctListed.includes(acctDomain)) acctListed.push(acctDomain);
+- const acctMany = acctOwnDomains.length > acctListed.length;
+- const acctSections = acctInAdmin ? acctAdminGroups.flatMap((g) => g.items) : [{ label: t("Domains"), on: acctPath === "/my-account/domains" || acctPath === "/my-account/domains/new" || acctPath.startsWith("/my-account/domains/aliases") }, ...acctActivity, ...acctProfile];
+- const acctCurrent = acctInAdmin ? t("Admin") : acctDomain ? acctDomain.name : (acctSections.find((item) => item.on) || { label: t("My Account") }).label;
+- const acctSwitch = acctInAdmin ? { href: "/my-account/domains", icon: "fa-arrow-left", label: t("My Account") } : null;
+
+aside.acct-sidebar.d-print-none
+  button.acct-sidebar-toggle.btn.btn-block.d-lg-none(
+    type="button",
+    data-toggle="collapse",
+    data-target="#acct-sidebar-nav",
+    aria-controls="acct-sidebar-nav",
+    aria-expanded="false"
+  )
+    i.fa.fa-fw.fa-bars.mr-2
+    span.acct-sidebar-toggle-label= acctCurrent
+    i.fa.fa-chevron-down.acct-sidebar-toggle-caret.ml-auto
+  #acct-sidebar-nav.collapse.d-lg-block
+    nav.acct-sidebar-inner(
+      aria-label=acctInAdmin ? t("Admin") : t("My Account")
+    )
+      //- who is signed in
+      a.acct-user(
+        href=l(acctInAdmin ? "/admin" : "/my-account/profile"),
+        title=acctInAdmin ? false : t("Profile")
+      )
+        span.acct-avatar(aria-hidden="true")= acctInitial
+        span.acct-user-text
+          span.acct-user-name.notranslate= acctName
+          if acctInAdmin
+            span.acct-user-meta= t("Admin")
+          else
+            span.acct-user-meta
+              = acctPlanName
+        if !acctInAdmin && user.plan === "free"
+          span.badge.badge-danger.text-uppercase.ml-auto= t("Upgrade")
+
+      if acctInAdmin
+        .acct-group
+          +acctLink(acctSwitch)
+        each group in acctAdminGroups
+          .acct-group
+            .acct-group-title= group.title
+            each item in group.items
+              +acctLink(item)
+      else
+        a.btn.btn-success.btn-block.acct-add(
+          href=l("/my-account/domains/new"),
+          class=acctPath === "/my-account/domains/new" ? "active" : false
+        )
+          i.fa.fa-plus-circle.mr-1
+          = t("Domain")
+
+        .acct-group
+          +acctLink({ href: "https://mail.forwardemail.net", external: true, icon: "fa-inbox", label: t("Webmail"), title: t("Open your inbox") })
+
+        //- the domains, each with one dot for its status, and the links of the
+        //- domain the visitor is on
+        .acct-group
+          .acct-group-title
+            = t("Domains")
+            if acctNeedsSetup > 0
+              span.badge.badge-pill.badge-danger.ml-1(
+                title=t("Setup Required")
+              )= acctNeedsSetup
+          +acctLink({ href: "/my-account/domains", icon: "fa-list", label: t("All domains"), on: acctPath === "/my-account/domains" || acctPath === "/my-account/domains/new", badge: acctOwnDomains.length > 0 ? String(acctOwnDomains.length) : false })
+          //- an account with many domains finds one by name (the names are
+          //- suggested as they are typed, and the list of domains shows the
+          //- matches)
+          if acctMany
+            form.acct-find(action=l("/my-account/domains"), method="GET")
+              input.form-control.form-control-sm(
+                type="search",
+                name="q",
+                list="acct-find-list",
+                placeholder=t("Search"),
+                aria-label=`${t("Search")}: ${t("Domains")}`,
+                autocomplete="off",
+                autocapitalize="off",
+                spellcheck="false"
+              )
+              datalist#acct-find-list
+                each d in acctOwnDomains.slice(0, 500)
+                  option(value=d.name, data-status=acctDomainStatus(d))
+            //- the domains viewed last in this browser, filled in by the page
+            #acct-recent.acct-recent.d-none(
+              data-user=user.id,
+              data-base=l("/my-account/domains")
+            )
+              .acct-recent-title= t("Recently viewed")
+          each d in acctListed
+            - const dStatus = acctDomainStatus(d);
+            - const dActive = acctDomain && acctDomain.id === d.id;
+            a.acct-link.acct-domain(
+              href=l(acctDomainBase(d)),
+              class=dActive ? "active" : false,
+              aria-current=dActive ? "page" : false,
+              data-name=d.name
+            )
+              span.acct-dot(
+                class=dStatus === "ready" ? "acct-dot--ready" : dStatus === "setup" ? "acct-dot--setup" : "acct-dot--global",
+                aria-hidden="true"
+              )
+              span.acct-link-label.notranslate= d.name
+              if d.id === acctDefaultId
+                i.fa.fa-star.acct-link-star(title=t("Default Domain"))
+              span.sr-only
+                = ": "
+                = dStatus === "ready" ? t("Setup Complete") : dStatus === "setup" ? t("Setup Required") : t("Vanity Domain")
+                if d.id === acctDefaultId
+                  = ", "
+                  = t("Default Domain")
+            if dActive
+              .acct-sublinks
+                each item in acctDomainLinks(d)
+                  +acctLink(item)
+          if acctOwnDomains.length > acctListed.length
+            a.acct-more(href=l("/my-account/domains"))
+              = t("See all")
+              = " "
+              span.notranslate= acctOwnDomains.length
+              = " "
+              = t("Domains")
+
+        .acct-group
+          .acct-group-title= t("Activity")
+          each item in acctActivity
+            +acctLink(item)
+
+        .acct-group
+          .acct-group-title= t("Account")
+          each item in acctProfile
+            +acctLink(item)
+          if acctIsAdminUser
+            +acctLink({ href: "/admin", icon: "fa-user-shield", label: t("Admin") })
+
+        .acct-group
+          .acct-group-title= t("Help")
+          +acctLink({ href: "/faq", icon: "fa-question-circle", label: t("Frequently Asked Questions") })
+          +acctLink({ href: "/guides", icon: "fa-book", label: t("Guides") })
+          a.acct-link(
+            href=l("/help"),
+            role="button",
+            data-toggle="modal",
+            data-target="#modal-help"
+          )
+            i.fa.fa-fw.fa-life-ring.acct-link-icon
+            span.acct-link-label= t("Ask a question")
+
+      .acct-group.acct-group--end
+        a.acct-link(href=l("/logout"))
+          i.fa.fa-fw.fa-sign-out-alt.acct-link-icon
+          span.acct-link-label= t("Sign out")

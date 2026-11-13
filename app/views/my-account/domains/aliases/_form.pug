@@ -44,14 +44,14 @@ if alias
         )
           i.fa.fa-dice
           = " "
-          = t("Generate random alias")
+          = t("Generate random mailbox")
       if domain
         li.list-inline-item
           button.btn.btn-success(type="submit")
             if alias
-              = t("Update Alias")
+              = t("Update Mailbox")
             else
-              = t("Create Alias")
+              = t("Create Mailbox")
   if !domain
     .form-group.col-md-6
       label(for="select-alias-domain")
@@ -79,9 +79,9 @@ if alias
         .input-group-append
           button.btn.btn-success(type="submit")
             if alias
-              = t("Update Alias")
+              = t("Update Mailbox")
             else
-              = t("Create Alias")
+              = t("Create Mailbox")
       ul.list-inline.form-text
         if user.plan === 'free'
           li.list-inline-item

@@ -8,6 +8,7 @@
 * [Szybki start](#quick-start)
 * [Wprowadzenie](#introduction)
   * [Czym jest Forward Email](#what-is-forward-email)
+  * [Jaka jest różnica między skrzynką pocztową a aliasem](#what-is-the-difference-between-a-mailbox-and-an-alias)
   * [Kto korzysta z Forward Email](#who-uses-forward-email)
   * [Jaka jest historia Forward Email](#what-is-forward-emails-history)
   * [Jak szybka jest ta usługa](#how-fast-is-this-service)
@@ -179,7 +180,7 @@ Aby rozpocząć korzystanie z Forward Email:
 
 2. **Dodaj i zweryfikuj swoją domenę** w [Moje konto → Domeny](/my-account/domains)
 
-3. **Dodaj i skonfiguruj aliasy/skrzynki e-mail** w [Moje konto → Domeny](/my-account/domains) → Aliasy
+3. **Dodaj i skonfiguruj aliasy/skrzynki e-mail** w [Moje konto → Domeny](/my-account/domains) → Skrzynki pocztowe (Aliasy)
 
 4. **Przetestuj konfigurację** wysyłając e-mail na jeden z nowych aliasów
 
@@ -217,6 +218,12 @@ Możesz porównać nas z ponad 56 innymi dostawcami usług e-mail na [naszej str
 
 > \[!TIP]
 > Dowiedz się więcej o Forward Email, czytając nasz darmowy [Technical Whitepaper](/technical-whitepaper.pdf) oraz zapoznając się z naszym [audytem bezpieczeństwa](/pentest-report_forward-email.pdf) przeprowadzonym przez Cure53.
+
+### Jaka jest różnica między skrzynką pocztową a aliasem {#what-is-the-difference-between-a-mailbox-and-an-alias}
+
+Nie ma żadnej różnicy. Nasza strona internetowa, aplikacje, API i dokumentacja używają obu słów na określenie adresu e-mail w Twojej domenie.
+
+Skrzynka pocztowa to adres e-mail w Twojej domenie, na przykład `hello@example.com`. Niektóre narzędzia nazywają ją pseudonimem. Każda może przekazywać e-maile do innych skrzynek odbiorczych, przechowywać e-maile czytane przez IMAP i webmail albo robić jedno i drugie.
 
 ### Kto korzysta z Forward Email {#who-uses-forward-email}
 
@@ -737,7 +744,7 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
 
 1. Przejdź do <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Moje konto <i class="fa fa-angle-right"></i> Domeny</a> <i class="fa fa-angle-right"></i> Ustawienia <i class="fa fa-angle-right"></i> Konfiguracja SMTP wychodzącego i postępuj zgodnie z instrukcjami konfiguracji
 
-2. Utwórz nowy alias dla swojej domeny w sekcji <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Moje konto <i class="fa fa-angle-right"></i> Domeny</a> <i class="fa fa-angle-right"></i> Aliasy (np. <code><hello@example.com></code>)
+2. Utwórz nowy alias dla swojej domeny w sekcji <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Moje konto <i class="fa fa-angle-right"></i> Domeny</a> <i class="fa fa-angle-right"></i> Skrzynki pocztowe (Aliasy) (np. <code><hello@example.com></code>)
 
 3. Kliknij na <strong class="text-success"><i class="fa fa-key"></i> Wygeneruj hasło</strong> obok nowo utworzonego aliasu. Skopiuj do schowka i bezpiecznie przechowuj wygenerowane hasło wyświetlone na ekranie.
 
@@ -745,7 +752,7 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
 
 5. Gdy pojawi się pole "Nazwa", wpisz nazwę, która ma być widoczna jako nadawca (np. "Linus Torvalds").
 
-6. Gdy pojawi się pole "Adres e-mail", wpisz pełny adres e-mail aliasu, który utworzyłeś w sekcji <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Moje konto <i class="fa fa-angle-right"></i> Domeny</a> <i class="fa fa-angle-right"></i> Aliasy (np. <code><hello@example.com></code>)
+6. Gdy pojawi się pole "Adres e-mail", wpisz pełny adres e-mail aliasu, który utworzyłeś w sekcji <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Moje konto <i class="fa fa-angle-right"></i> Domeny</a> <i class="fa fa-angle-right"></i> Skrzynki pocztowe (Aliasy) (np. <code><hello@example.com></code>)
 
 7. Odznacz opcję "Traktuj jako alias"
 
@@ -753,7 +760,7 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
 
 9. Gdy pojawi się pole "Serwer SMTP", wpisz <code>smtp.forwardemail.net</code> i zmień port na <code>465</code>
 
-10. Gdy pojawi się pole "Nazwa użytkownika", wpisz pełny adres e-mail aliasu, który utworzyłeś w sekcji <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Moje konto <i class="fa fa-angle-right"></i> Domeny</a> <i class="fa fa-angle-right"></i> Aliasy (np. <code><hello@example.com></code>)
+10. Gdy pojawi się pole "Nazwa użytkownika", wpisz pełny adres e-mail aliasu, który utworzyłeś w sekcji <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Moje konto <i class="fa fa-angle-right"></i> Domeny</a> <i class="fa fa-angle-right"></i> Skrzynki pocztowe (Aliasy) (np. <code><hello@example.com></code>)
 
 11. Gdy pojawi się pole "Hasło", wklej hasło z <strong class="text-success"><i class="fa fa-key"></i> Wygeneruj hasło</strong> z kroku 3 powyżej
 
@@ -1124,7 +1131,7 @@ Możesz dowiedzieć się o naszych podwykonawcach na stronach [RODO](/gdpr), [DP
 
 W każdej chwili możesz wyeksportować swoje skrzynki pocztowe w formatach [EML](https://en.wikipedia.org/wiki/Email#Filename_extensions), [Mbox](https://en.wikipedia.org/wiki/Mbox) lub zaszyfrowanym formacie [SQLite](https://en.wikipedia.org/wiki/SQLite).
 
-Przejdź do <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Moje konto <i class="fa fa-angle-right"></i> Domeny</a> <i class="fa fa-angle-right"></i> Aliasy <i class="fa fa-angle-right"></i> Pobierz kopię zapasową i wybierz preferowany format eksportu.
+Przejdź do <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Moje konto <i class="fa fa-angle-right"></i> Domeny</a> <i class="fa fa-angle-right"></i> Skrzynki pocztowe (Aliasy) <i class="fa fa-angle-right"></i> Pobierz kopię zapasową i wybierz preferowany format eksportu.
 
 Po zakończeniu otrzymasz link do pobrania eksportu na swój e-mail.
 
@@ -2061,7 +2068,7 @@ Jeśli korzystasz z Microsoft 365 (Outlook) i chcesz przekazywać wszystkie alia
 
 ### Jak ustawić autoresponder urlopowy (automatyczną odpowiedź poza biurem) {#how-do-i-set-up-a-vacation-responder-out-of-office-auto-responder}
 
-Przejdź do <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Moje konto <i class="fa fa-angle-right"></i> Domeny</a> <i class="fa fa-angle-right"></i> Aliasy i utwórz lub edytuj alias, dla którego chcesz skonfigurować autoresponder urlopowy.
+Przejdź do <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Moje konto <i class="fa fa-angle-right"></i> Domeny</a> <i class="fa fa-angle-right"></i> Skrzynki pocztowe (Aliasy) i utwórz lub edytuj alias, dla którego chcesz skonfigurować autoresponder urlopowy.
 Masz możliwość skonfigurowania daty rozpoczęcia, daty zakończenia, tematu i wiadomości oraz włączania lub wyłączania tego w dowolnym momencie:
 
 * Obecnie obsługiwane są tematy i wiadomości w formacie tekstowym (używamy wewnętrznie pakietu `striptags` do usuwania wszelkiego HTML).
@@ -2449,7 +2456,7 @@ Tak, od 16 października 2023 roku obsługujemy odbieranie e-maili przez IMAP ja
   </span>
 </div>
 
-1. Utwórz nowy alias dla swojej domeny w <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Moje konto <i class="fa fa-angle-right"></i> Domeny</a> <i class="fa fa-angle-right"></i> Aliasy (np. <code><hello@example.com></code>)
+1. Utwórz nowy alias dla swojej domeny w <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Moje konto <i class="fa fa-angle-right"></i> Domeny</a> <i class="fa fa-angle-right"></i> Skrzynki pocztowe (Aliasy) (np. <code><hello@example.com></code>)
 
 2. Kliknij na <strong class="text-success"><i class="fa fa-key"></i> Wygeneruj hasło</strong> obok nowo utworzonego aliasu. Skopiuj do schowka i bezpiecznie przechowaj wygenerowane hasło wyświetlone na ekranie.
 
@@ -2506,7 +2513,7 @@ Tak, od 4 grudnia 2023 obsługujemy [POP3](https://en.wikipedia.org/wiki/Post_Of
   </span>
 </div>
 
-1. Utwórz nowy alias dla swojej domeny w <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Moje konto <i class="fa fa-angle-right"></i> Domeny</a> <i class="fa fa-angle-right"></i> Aliasy (np. <code><hello@example.com></code>)
+1. Utwórz nowy alias dla swojej domeny w <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Moje konto <i class="fa fa-angle-right"></i> Domeny</a> <i class="fa fa-angle-right"></i> Skrzynki pocztowe (Aliasy) (np. <code><hello@example.com></code>)
 
 2. Kliknij na <strong class="text-success"><i class="fa fa-key"></i> Generate Password</strong> obok nowo utworzonego aliasu. Skopiuj do schowka i bezpiecznie przechowuj wygenerowane hasło wyświetlone na ekranie.
 
@@ -2647,7 +2654,7 @@ Tak. Wszystkie płatne plany obejmują wychodzący SMTP i jest on **nielimitowan
 
 1. Przejdź do <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Moje konto <i class="fa fa-angle-right"></i> Domeny</a> <i class="fa fa-angle-right"></i> Ustawienia <i class="fa fa-angle-right"></i> Konfiguracja SMTP wychodzącego i postępuj zgodnie z instrukcjami konfiguracji
 
-2. Utwórz nowy alias dla swojej domeny w <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Moje konto <i class="fa fa-angle-right"></i> Domeny</a> <i class="fa fa-angle-right"></i> Aliasy (np. <code><hello@example.com></code>)
+2. Utwórz nowy alias dla swojej domeny w <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Moje konto <i class="fa fa-angle-right"></i> Domeny</a> <i class="fa fa-angle-right"></i> Skrzynki pocztowe (Aliasy) (np. <code><hello@example.com></code>)
 
 3. Kliknij na <strong class="text-success"><i class="fa fa-key"></i> Wygeneruj hasło</strong> obok nowo utworzonego aliasu. Skopiuj do schowka i bezpiecznie przechowuj wygenerowane hasło wyświetlone na ekranie.
 
@@ -2766,7 +2773,7 @@ Tak, obsługujemy [OpenPGP](https://en.wikipedia.org/wiki/Pretty_Good_Privacy#Op
        Opcjonalny dodatek:
      </strong>
      <span>
-       Jeśli korzystasz z naszej usługi <a class="alert-link" href="/blog/docs/best-quantum-safe-encrypted-email-service">zaszyfrowanego magazynu (IMAP/POP3)</a> i chcesz, aby <i>cała</i> poczta przechowywana w twojej (już zaszyfrowanej) bazie danych SQLite była szyfrowana twoim kluczem publicznym, przejdź do <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Moje konto <i class="fa fa-angle-right"></i> Domeny</a> <i class="fa fa-angle-right"></i> Aliasów (np. <code>hello@example.com</code>) <i class="fa fa-angle-right"></i> Edytuj <i class="fa fa-angle-right"></i> OpenPGP i prześlij swój klucz publiczny.
+       Jeśli korzystasz z naszej usługi <a class="alert-link" href="/blog/docs/best-quantum-safe-encrypted-email-service">zaszyfrowanego magazynu (IMAP/POP3)</a> i chcesz, aby <i>cała</i> poczta przechowywana w twojej (już zaszyfrowanej) bazie danych SQLite była szyfrowana twoim kluczem publicznym, przejdź do <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Moje konto <i class="fa fa-angle-right"></i> Domeny</a> <i class="fa fa-angle-right"></i> Skrzynki pocztowe (Aliasów) (np. <code>hello@example.com</code>) <i class="fa fa-angle-right"></i> Edytuj <i class="fa fa-angle-right"></i> OpenPGP i prześlij swój klucz publiczny.
      </span>
    </div>
 
@@ -2834,7 +2841,7 @@ Aby skonfigurować szyfrowanie S/MIME dla swojego aliasu:
 
 2. Eksportuj swój certyfikat w formacie PEM (tylko certyfikat publiczny, nie klucz prywatny).
 
-3. Przejdź do <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Moje konto <i class="fa fa-angle-right"></i> Domeny</a> <i class="fa fa-angle-right"></i> Aliasów (np. <code><hello@example.com></code>) <i class="fa fa-angle-right"></i> Edytuj <i class="fa fa-angle-right"></i> S/MIME i prześlij swój certyfikat publiczny.
+3. Przejdź do <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Moje konto <i class="fa fa-angle-right"></i> Domeny</a> <i class="fa fa-angle-right"></i> Skrzynki pocztowe (Aliasów) (np. <code><hello@example.com></code>) <i class="fa fa-angle-right"></i> Edytuj <i class="fa fa-angle-right"></i> S/MIME i prześlij swój certyfikat publiczny.
 4. Po skonfigurowaniu wszystkie przychodzące e-maile na Twój alias będą szyfrowane za pomocą certyfikatu S/MIME przed ich przechowywaniem lub przekazywaniem dalej.
 
    <div class="alert my-3 alert-secondary">
@@ -2953,7 +2960,7 @@ if header :contains "Subject" "invoice" {
 
 Możesz zarządzać skryptami Sieve na kilka sposobów:
 
-1. **Interfejs webowy**: Przejdź do <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Moje konto <i class="fa fa-angle-right"></i> Domeny</a> <i class="fa fa-angle-right"></i> Aliasy <i class="fa fa-angle-right"></i> Skrypty Sieve, aby tworzyć i zarządzać skryptami.
+1. **Interfejs webowy**: Przejdź do <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Moje konto <i class="fa fa-angle-right"></i> Domeny</a> <i class="fa fa-angle-right"></i> Skrzynki pocztowe (Aliasy) <i class="fa fa-angle-right"></i> Skrypty Sieve, aby tworzyć i zarządzać skryptami.
 
 2. **Protokół ManageSieve**: Połącz się za pomocą dowolnego klienta zgodnego z ManageSieve, takiego jak dodatek Sieve dla Thunderbirda lub [sieve-connect](https://github.com/philpennock/sieve-connect), do `imap.forwardemail.net`. Użyj portu `2190` z STARTTLS lub portu `4190` z implicit TLS.
 
@@ -5792,7 +5799,7 @@ Nie, nie jest to zalecane, ponieważ można używać tylko jednego serwera wymia
     Ważne:
   </strong>
   <span>
-    Jeśli korzystasz z płatnego planu, musisz przejść do <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Moje konto <i class="fa fa-angle-right"></i> Domeny</a> <i class="fa fa-angle-right"></i> Aliasy <i class="fa fa-angle-right"></i> Edytuj alias <i class="fa fa-angle-right"></i> Odznacz pole "Aktywny" <i class="fa fa-angle-right"></i> Kontynuuj.
+    Jeśli korzystasz z płatnego planu, musisz przejść do <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Moje konto <i class="fa fa-angle-right"></i> Domeny</a> <i class="fa fa-angle-right"></i> Skrzynki pocztowe (Aliasy) <i class="fa fa-angle-right"></i> Edytuj alias <i class="fa fa-angle-right"></i> Odznacz pole "Aktywny" <i class="fa fa-angle-right"></i> Kontynuuj.
   </span>
 </div>
 

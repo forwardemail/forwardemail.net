@@ -8,6 +8,7 @@
 * [快速开始](#quick-start)
 * [介绍](#introduction)
   * [什么是 Forward Email](#what-is-forward-email)
+  * [邮箱和别名有什么区别](#what-is-the-difference-between-a-mailbox-and-an-alias)
   * [谁在使用 Forward Email](#who-uses-forward-email)
   * [Forward Email 的历史是什么](#what-is-forward-emails-history)
   * [此服务速度有多快](#how-fast-is-this-service)
@@ -179,7 +180,7 @@
 
 2. **添加并验证您的域名**，在 [我的账户 → 域名](/my-account/domains)
 
-3. **添加并配置邮箱别名/邮箱**，在 [我的账户 → 域名](/my-account/domains) → 别名
+3. **添加并配置邮箱别名/邮箱**，在 [我的账户 → 域名](/my-account/domains) → 邮箱 (别名)
 
 4. **测试您的设置**，向您的新别名发送一封邮件
 
@@ -217,6 +218,12 @@ Forward Email 的主要功能：
 
 > \[!TIP]
 > 通过阅读我们的免费[技术白皮书](/technical-whitepaper.pdf)了解更多关于 Forward Email 的信息 并查阅我们由Cure53进行的[安全审计](/pentest-report_forward-email.pdf)。
+
+### 邮箱和别名有什么区别 {#what-is-the-difference-between-a-mailbox-and-an-alias}
+
+没有区别。我们的网站、应用、API 和文档使用这两个词来指代您域名下的电子邮件地址。
+
+邮箱是您域名下的一个电子邮件地址，例如 `hello@example.com`。有些工具称之为别名。每个邮箱都可以将邮件转发到其他收件箱，也可以存储您通过 IMAP 和网页版邮件阅读的邮件，或者两者兼有。
 
 ### 谁在使用 Forward Email {#who-uses-forward-email}
 
@@ -736,7 +743,7 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
 
 1. 访问 <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">我的账户 <i class="fa fa-angle-right"></i> 域名</a> <i class="fa fa-angle-right"></i> 设置 <i class="fa fa-angle-right"></i> 外发 SMTP 配置，并按照设置说明操作
 
-2. 在 <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">我的账户 <i class="fa fa-angle-right"></i> 域名</a> <i class="fa fa-angle-right"></i> 别名 下为您的域名创建一个新的别名（例如 <code><hello@example.com></code>）
+2. 在 <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">我的账户 <i class="fa fa-angle-right"></i> 域名</a> <i class="fa fa-angle-right"></i> 邮箱 (别名) 下为您的域名创建一个新的别名（例如 <code><hello@example.com></code>）
 
 3. 点击新创建别名旁边的 <strong class="text-success"><i class="fa fa-key"></i> 生成密码</strong>。复制到剪贴板并安全保存屏幕上显示的生成密码。
 
@@ -744,7 +751,7 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
 
 5. 在提示输入“姓名”时，输入您希望邮件显示的发件人名称（例如“Linus Torvalds”）。
 
-6. 在提示输入“电子邮件地址”时，输入您在 <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">我的账户 <i class="fa fa-angle-right"></i> 域名</a> <i class="fa fa-angle-right"></i> 别名 下创建的完整别名邮箱地址（例如 <code><hello@example.com></code>）
+6. 在提示输入“电子邮件地址”时，输入您在 <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">我的账户 <i class="fa fa-angle-right"></i> 域名</a> <i class="fa fa-angle-right"></i> 邮箱 (别名) 下创建的完整别名邮箱地址（例如 <code><hello@example.com></code>）
 
 7. 取消勾选“作为别名处理”
 
@@ -752,7 +759,7 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
 
 9. 在提示输入“SMTP 服务器”时，输入 <code>smtp.forwardemail.net</code> 并将端口更改为 <code>465</code>
 
-10. 在提示输入“用户名”时，输入您在 <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">我的账户 <i class="fa fa-angle-right"></i> 域名</a> <i class="fa fa-angle-right"></i> 别名 下创建的完整别名邮箱地址（例如 <code><hello@example.com></code>）
+10. 在提示输入“用户名”时，输入您在 <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">我的账户 <i class="fa fa-angle-right"></i> 域名</a> <i class="fa fa-angle-right"></i> 邮箱 (别名) 下创建的完整别名邮箱地址（例如 <code><hello@example.com></code>）
 
 11. 在提示输入“密码”时，粘贴步骤 3 中 <strong class="text-success"><i class="fa fa-key"></i> 生成密码</strong> 显示的密码
 
@@ -1122,7 +1129,7 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
 
 您随时可以将邮箱导出为 [EML](https://en.wikipedia.org/wiki/Email#Filename_extensions)、[Mbox](https://en.wikipedia.org/wiki/Mbox) 或加密的 [SQLite](https://en.wikipedia.org/wiki/SQLite) 格式。
 
-前往 <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">我的账户 <i class="fa fa-angle-right"></i> 域名</a> <i class="fa fa-angle-right"></i> 别名 <i class="fa fa-angle-right"></i> 下载备份，选择您偏好的导出格式。
+前往 <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">我的账户 <i class="fa fa-angle-right"></i> 域名</a> <i class="fa fa-angle-right"></i> 邮箱 (别名) <i class="fa fa-angle-right"></i> 下载备份，选择您偏好的导出格式。
 
 导出完成后，您将收到一封包含下载链接的邮件。
 
@@ -2059,7 +2066,7 @@ EML 文件按邮箱文件夹组织。ZIP 密码与您的 IMAP/别名密码相同
 
 ### 如何设置假期自动回复（离开办公室自动回复） {#how-do-i-set-up-a-vacation-responder-out-of-office-auto-responder}
 
-前往 <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">我的账户 <i class="fa fa-angle-right"></i> 域名</a> <i class="fa fa-angle-right"></i> 别名，创建或编辑您想要配置假期自动回复的别名。
+前往 <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">我的账户 <i class="fa fa-angle-right"></i> 域名</a> <i class="fa fa-angle-right"></i> 邮箱 (别名)，创建或编辑您想要配置假期自动回复的别名。
 您可以配置开始日期、结束日期、主题和消息，并随时启用或禁用：
 
 * 目前支持纯文本主题和消息（我们内部使用 `striptags` 包来移除任何 HTML）。
@@ -2447,7 +2454,7 @@ Tasks.org 是一个流行的开源任务管理器，与 Forward Email 的 CalDAV
   </span>
 </div>
 
-1. 在 <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">我的账户 <i class="fa fa-angle-right"></i> 域名</a> <i class="fa fa-angle-right"></i> 别名 下为您的域名创建一个新的别名（例如 <code><hello@example.com></code>）
+1. 在 <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">我的账户 <i class="fa fa-angle-right"></i> 域名</a> <i class="fa fa-angle-right"></i> 邮箱 (别名) 下为您的域名创建一个新的别名（例如 <code><hello@example.com></code>）
 
 2. 点击新创建别名旁的 <strong class="text-success"><i class="fa fa-key"></i> 生成密码</strong>。复制到剪贴板并安全保存屏幕上显示的生成密码。
 
@@ -2504,7 +2511,7 @@ Tasks.org 是一个流行的开源任务管理器，与 Forward Email 的 CalDAV
   </span>
 </div>
 
-1. 在 <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">我的账户 <i class="fa fa-angle-right"></i> 域名</a> <i class="fa fa-angle-right"></i> 别名 下为您的域名创建一个新的别名（例如 <code><hello@example.com></code>）
+1. 在 <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">我的账户 <i class="fa fa-angle-right"></i> 域名</a> <i class="fa fa-angle-right"></i> 邮箱 (别名) 下为您的域名创建一个新的别名（例如 <code><hello@example.com></code>）
 
 2. 点击新创建别名旁边的 <strong class="text-success"><i class="fa fa-key"></i> 生成密码</strong>。复制到剪贴板并安全保存屏幕上显示的生成密码。
 
@@ -2645,7 +2652,7 @@ Tasks.org 是一个流行的开源任务管理器，与 Forward Email 的 CalDAV
 
 1. 访问<a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">我的账户 <i class="fa fa-angle-right"></i> 域名</a> <i class="fa fa-angle-right"></i> 设置 <i class="fa fa-angle-right"></i> SMTP 外发配置，按照设置说明操作
 
-2. 在<a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">我的账户 <i class="fa fa-angle-right"></i> 域名</a> <i class="fa fa-angle-right"></i> 别名下为您的域名创建一个新别名（例如 <code><hello@example.com></code>）
+2. 在<a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">我的账户 <i class="fa fa-angle-right"></i> 域名</a> <i class="fa fa-angle-right"></i> 邮箱 (别名)下为您的域名创建一个新别名（例如 <code><hello@example.com></code>）
 
 3. 点击新创建别名旁的<strong class="text-success"><i class="fa fa-key"></i> 生成密码</strong>。复制到剪贴板并安全保存屏幕上显示的生成密码。
 
@@ -2764,7 +2771,7 @@ Tasks.org 是一个流行的开源任务管理器，与 Forward Email 的 CalDAV
        可选附加功能：
      </strong>
      <span>
-       如果您正在使用我们的 <a class="alert-link" href="/blog/docs/best-quantum-safe-encrypted-email-service">加密存储（IMAP/POP3）</a> 服务，并且希望将存储在您（已加密的）SQLite数据库中的<i>所有</i>邮件都用您的公钥加密，那么请前往 <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">我的账户 <i class="fa fa-angle-right"></i> 域名</a> <i class="fa fa-angle-right"></i> 别名（例如 <code>hello@example.com</code>） <i class="fa fa-angle-right"></i> 编辑 <i class="fa fa-angle-right"></i> OpenPGP 并上传您的公钥。
+       如果您正在使用我们的 <a class="alert-link" href="/blog/docs/best-quantum-safe-encrypted-email-service">加密存储（IMAP/POP3）</a> 服务，并且希望将存储在您（已加密的）SQLite数据库中的<i>所有</i>邮件都用您的公钥加密，那么请前往 <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">我的账户 <i class="fa fa-angle-right"></i> 域名</a> <i class="fa fa-angle-right"></i> 邮箱 (别名)（例如 <code>hello@example.com</code>） <i class="fa fa-angle-right"></i> 编辑 <i class="fa fa-angle-right"></i> OpenPGP 并上传您的公钥。
      </span>
    </div>
 
@@ -2832,7 +2839,7 @@ Tasks.org 是一个流行的开源任务管理器，与 Forward Email 的 CalDAV
 
 2. 以 PEM 格式导出您的证书（仅公钥证书，不包括私钥）。
 
-3. 前往 <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">我的账户 <i class="fa fa-angle-right"></i> 域名</a> <i class="fa fa-angle-right"></i> 别名（例如 <code><hello@example.com></code>） <i class="fa fa-angle-right"></i> 编辑 <i class="fa fa-angle-right"></i> S/MIME 并上传您的公钥证书。
+3. 前往 <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">我的账户 <i class="fa fa-angle-right"></i> 域名</a> <i class="fa fa-angle-right"></i> 邮箱 (别名)（例如 <code><hello@example.com></code>） <i class="fa fa-angle-right"></i> 编辑 <i class="fa fa-angle-right"></i> S/MIME 并上传您的公钥证书。
 4. 一旦配置完成，所有发送到您的别名的来信将在存储或转发之前使用您的 S/MIME 证书进行加密。
 
    <div class="alert my-3 alert-secondary">
@@ -2951,7 +2958,7 @@ if header :contains "Subject" "invoice" {
 
 您可以通过多种方式管理 Sieve 脚本：
 
-1. **Web 界面**：前往 <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">我的账户 <i class="fa fa-angle-right"></i> 域名</a> <i class="fa fa-angle-right"></i> 别名 <i class="fa fa-angle-right"></i> Sieve 脚本 来创建和管理脚本。
+1. **Web 界面**：前往 <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">我的账户 <i class="fa fa-angle-right"></i> 域名</a> <i class="fa fa-angle-right"></i> 邮箱 (别名) <i class="fa fa-angle-right"></i> Sieve 脚本 来创建和管理脚本。
 
 2. **ManageSieve 协议**：使用任何与 ManageSieve 兼容的客户端连接，例如 Thunderbird 的 Sieve 插件或 [sieve-connect](https://github.com/philpennock/sieve-connect)，连接到 `imap.forwardemail.net`。使用带 STARTTLS 的端口 `2190` 或 使用隐式 TLS 的端口 `4190`。
 
@@ -5790,7 +5797,7 @@ dig example.com txt +short
     重要提示：
   </strong>
   <span>
-    如果您使用的是付费套餐，则必须前往 <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">我的账户 <i class="fa fa-angle-right"></i> 域名</a> <i class="fa fa-angle-right"></i> 别名 <i class="fa fa-angle-right"></i> 编辑别名 <i class="fa fa-angle-right"></i> 取消勾选“激活”复选框 <i class="fa fa-angle-right"></i> 继续。
+    如果您使用的是付费套餐，则必须前往 <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">我的账户 <i class="fa fa-angle-right"></i> 域名</a> <i class="fa fa-angle-right"></i> 邮箱 (别名) <i class="fa fa-angle-right"></i> 编辑别名 <i class="fa fa-angle-right"></i> 取消勾选“激活”复选框 <i class="fa fa-angle-right"></i> 继续。
   </span>
 </div>
 

@@ -8,6 +8,7 @@
 * [Snel aan de slag](#quick-start)
 * [Introductie](#introduction)
   * [Wat is Forward Email](#what-is-forward-email)
+  * [Wat is het verschil tussen een brievenbus en een alias](#what-is-the-difference-between-a-mailbox-and-an-alias)
   * [Wie gebruikt Forward Email](#who-uses-forward-email)
   * [Wat is de geschiedenis van Forward Email](#what-is-forward-emails-history)
   * [Hoe snel is deze dienst](#how-fast-is-this-service)
@@ -179,7 +180,7 @@ Om te beginnen met Forward Email:
 
 2. **Voeg je domein toe en verifieer het** onder [Mijn Account → Domeinen](/my-account/domains)
 
-3. **Voeg e-mailaliassen/postvakken toe en configureer ze** onder [Mijn Account → Domeinen](/my-account/domains) → Aliassen
+3. **Voeg e-mailaliassen/postvakken toe en configureer ze** onder [Mijn Account → Domeinen](/my-account/domains) → Brievenbussen (Aliassen)
 
 4. **Test je setup** door een e-mail te sturen naar een van je nieuwe aliassen
 
@@ -217,6 +218,12 @@ Je kunt ons vergelijken met 56+ andere e-mailserviceproviders op [onze pagina me
 
 > \[!TIP]
 > Leer meer over Forward Email door ons gratis [Technisch Whitepaper](/technical-whitepaper.pdf) te lezen en onze [beveiligingsaudit](/pentest-report_forward-email.pdf) door Cure53 te bekijken.
+
+### Wat is het verschil tussen een brievenbus en een alias {#what-is-the-difference-between-a-mailbox-and-an-alias}
+
+Er is geen verschil. Onze website, apps, API en documentatie gebruiken beide woorden voor een e-mailadres op uw domein.
+
+Een brievenbus is een e-mailadres op uw domein, zoals `hello@example.com`. Sommige tools noemen het een alias. Elke brievenbus kan e-mail doorsturen naar andere inboxen, e-mail opslaan die u leest met IMAP en webmail, of beide.
 
 ### Wie gebruikt Forward Email {#who-uses-forward-email}
 
@@ -737,7 +744,7 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
 
 1. Ga naar <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Mijn Account <i class="fa fa-angle-right"></i> Domeinen</a> <i class="fa fa-angle-right"></i> Instellingen <i class="fa fa-angle-right"></i> Outbound SMTP-configuratie en volg de installatie-instructies
 
-2. Maak een nieuw alias aan voor je domein onder <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Mijn Account <i class="fa fa-angle-right"></i> Domeinen</a> <i class="fa fa-angle-right"></i> Aliassen (bijv. <code><hello@example.com></code>)
+2. Maak een nieuw alias aan voor je domein onder <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Mijn Account <i class="fa fa-angle-right"></i> Domeinen</a> <i class="fa fa-angle-right"></i> Brievenbussen (Aliassen) (bijv. <code><hello@example.com></code>)
 
 3. Klik op <strong class="text-success"><i class="fa fa-key"></i> Wachtwoord genereren</strong> naast het zojuist aangemaakte alias. Kopieer naar je klembord en bewaar het gegenereerde wachtwoord veilig dat op het scherm wordt weergegeven.
 
@@ -745,7 +752,7 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
 
 5. Wanneer gevraagd om "Naam", voer de naam in waaronder je wilt dat je e-mail wordt weergegeven als "Van" (bijv. "Linus Torvalds").
 
-6. Wanneer gevraagd om "E-mailadres", voer het volledige e-mailadres in van een alias die je hebt aangemaakt onder <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Mijn Account <i class="fa fa-angle-right"></i> Domeinen</a> <i class="fa fa-angle-right"></i> Aliassen (bijv. <code><hello@example.com></code>)
+6. Wanneer gevraagd om "E-mailadres", voer het volledige e-mailadres in van een alias die je hebt aangemaakt onder <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Mijn Account <i class="fa fa-angle-right"></i> Domeinen</a> <i class="fa fa-angle-right"></i> Brievenbussen (Aliassen) (bijv. <code><hello@example.com></code>)
 
 7. Haal het vinkje weg bij "Behandelen als alias"
 
@@ -753,7 +760,7 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
 
 9. Wanneer gevraagd om "SMTP-server", voer <code>smtp.forwardemail.net</code> in en wijzig de poort naar <code>465</code>
 
-10. Wanneer gevraagd om "Gebruikersnaam", voer het volledige e-mailadres in van een alias die je hebt aangemaakt onder <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Mijn Account <i class="fa fa-angle-right"></i> Domeinen</a> <i class="fa fa-angle-right"></i> Aliassen (bijv. <code><hello@example.com></code>)
+10. Wanneer gevraagd om "Gebruikersnaam", voer het volledige e-mailadres in van een alias die je hebt aangemaakt onder <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Mijn Account <i class="fa fa-angle-right"></i> Domeinen</a> <i class="fa fa-angle-right"></i> Brievenbussen (Aliassen) (bijv. <code><hello@example.com></code>)
 
 11. Wanneer gevraagd om "Wachtwoord", plak het wachtwoord van <strong class="text-success"><i class="fa fa-key"></i> Wachtwoord genereren</strong> uit stap 3 hierboven
 
@@ -1124,7 +1131,7 @@ Je kunt meer leren over onze subprocessors op onze [GDPR](/gdpr), [DPA](/dpa), e
 
 Je kunt op elk moment je mailboxen exporteren als [EML](https://en.wikipedia.org/wiki/Email#Filename_extensions), [Mbox](https://en.wikipedia.org/wiki/Mbox), of versleutelde [SQLite](https://en.wikipedia.org/wiki/SQLite) formaten.
 
-Ga naar <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Mijn Account <i class="fa fa-angle-right"></i> Domeinen</a> <i class="fa fa-angle-right"></i> Aliassen <i class="fa fa-angle-right"></i> Download Back-up en selecteer je gewenste exportformaat.
+Ga naar <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Mijn Account <i class="fa fa-angle-right"></i> Domeinen</a> <i class="fa fa-angle-right"></i> Brievenbussen (Aliassen) <i class="fa fa-angle-right"></i> Download Back-up en selecteer je gewenste exportformaat.
 
 Je ontvangt een e-mail met een link om de export te downloaden zodra deze klaar is.
 
@@ -2062,7 +2069,7 @@ Als u Microsoft 365 (Outlook) gebruikt en u wilt alle niet-overeenkomende aliass
 
 ### Hoe stel ik een afwezigheidsassistent in (out of office auto-responder) {#how-do-i-set-up-a-vacation-responder-out-of-office-auto-responder}
 
-Ga naar <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Mijn Account <i class="fa fa-angle-right"></i> Domeinen</a> <i class="fa fa-angle-right"></i> Aliassen en maak een alias aan of bewerk de alias waarvoor u een afwezigheidsassistent wilt instellen.
+Ga naar <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Mijn Account <i class="fa fa-angle-right"></i> Domeinen</a> <i class="fa fa-angle-right"></i> Brievenbussen (Aliassen) en maak een alias aan of bewerk de alias waarvoor u een afwezigheidsassistent wilt instellen.
 Je hebt de mogelijkheid om een startdatum, einddatum, onderwerp en bericht te configureren, en deze op elk moment in of uit te schakelen:
 
 * Alleen platte tekst onderwerp en bericht worden momenteel ondersteund (we gebruiken intern het `striptags` pakket om eventuele HTML te verwijderen).
@@ -2450,7 +2457,7 @@ Ja, sinds 16 oktober 2023 ondersteunen we het ontvangen van e-mail via IMAP als 
   </span>
 </div>
 
-1. Maak een nieuw alias aan voor uw domein onder <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Mijn Account <i class="fa fa-angle-right"></i> Domeinen</a> <i class="fa fa-angle-right"></i> Aliassen (bijv. <code><hello@example.com></code>)
+1. Maak een nieuw alias aan voor uw domein onder <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Mijn Account <i class="fa fa-angle-right"></i> Domeinen</a> <i class="fa fa-angle-right"></i> Brievenbussen (Aliassen) (bijv. <code><hello@example.com></code>)
 
 2. Klik op <strong class="text-success"><i class="fa fa-key"></i> Wachtwoord genereren</strong> naast het nieuw aangemaakte alias.  Kopieer naar uw klembord en bewaar het gegenereerde wachtwoord veilig dat op het scherm wordt weergegeven.
 
@@ -2507,7 +2514,7 @@ Ja, vanaf 4 december 2023 ondersteunen we [POP3](https://en.wikipedia.org/wiki/P
   </span>
 </div>
 
-1. Maak een nieuw alias aan voor uw domein onder <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Mijn Account <i class="fa fa-angle-right"></i> Domeinen</a> <i class="fa fa-angle-right"></i> Aliassen (bijv. <code><hello@example.com></code>)
+1. Maak een nieuw alias aan voor uw domein onder <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Mijn Account <i class="fa fa-angle-right"></i> Domeinen</a> <i class="fa fa-angle-right"></i> Brievenbussen (Aliassen) (bijv. <code><hello@example.com></code>)
 
 2. Klik op <strong class="text-success"><i class="fa fa-key"></i> Wachtwoord genereren</strong> naast het nieuw aangemaakte alias.  Kopieer naar uw klembord en bewaar het gegenereerde wachtwoord veilig dat op het scherm wordt weergegeven.
 
@@ -2648,7 +2655,7 @@ Ja. Alle betaalde abonnementen bevatten uitgaande SMTP, en het is **onbeperkt**:
 
 1. Ga naar <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Mijn Account <i class="fa fa-angle-right"></i> Domeinen</a> <i class="fa fa-angle-right"></i> Instellingen <i class="fa fa-angle-right"></i> Outbound SMTP-configuratie en volg de installatie-instructies
 
-2. Maak een nieuwe alias aan voor uw domein onder <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Mijn Account <i class="fa fa-angle-right"></i> Domeinen</a> <i class="fa fa-angle-right"></i> Aliassen (bijv. <code><hello@example.com></code>)
+2. Maak een nieuwe alias aan voor uw domein onder <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Mijn Account <i class="fa fa-angle-right"></i> Domeinen</a> <i class="fa fa-angle-right"></i> Brievenbussen (Aliassen) (bijv. <code><hello@example.com></code>)
 
 3. Klik op <strong class="text-success"><i class="fa fa-key"></i> Wachtwoord genereren</strong> naast de nieuw aangemaakte alias. Kopieer naar uw klembord en bewaar het gegenereerde wachtwoord dat op het scherm wordt weergegeven veilig.
 
@@ -2767,7 +2774,7 @@ Ja, wij ondersteunen [OpenPGP](https://en.wikipedia.org/wiki/Pretty_Good_Privacy
        Optionele toevoeging:
      </strong>
      <span>
-       Als je onze <a class="alert-link" href="/blog/docs/best-quantum-safe-encrypted-email-service">versleutelde opslag (IMAP/POP3)</a> service gebruikt en wilt dat <i>alle</i> e-mail die in je (al versleutelde) SQLite-database wordt opgeslagen, wordt versleuteld met je publieke sleutel, ga dan naar <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Mijn Account <i class="fa fa-angle-right"></i> Domeinen</a> <i class="fa fa-angle-right"></i> Aliassen (bijv. <code>hello@example.com</code>) <i class="fa fa-angle-right"></i> Bewerken <i class="fa fa-angle-right"></i> OpenPGP en upload je publieke sleutel.
+       Als je onze <a class="alert-link" href="/blog/docs/best-quantum-safe-encrypted-email-service">versleutelde opslag (IMAP/POP3)</a> service gebruikt en wilt dat <i>alle</i> e-mail die in je (al versleutelde) SQLite-database wordt opgeslagen, wordt versleuteld met je publieke sleutel, ga dan naar <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Mijn Account <i class="fa fa-angle-right"></i> Domeinen</a> <i class="fa fa-angle-right"></i> Brievenbussen (Aliassen) (bijv. <code>hello@example.com</code>) <i class="fa fa-angle-right"></i> Bewerken <i class="fa fa-angle-right"></i> OpenPGP en upload je publieke sleutel.
      </span>
    </div>
 
@@ -2835,7 +2842,7 @@ Om S/MIME-encryptie voor je alias te configureren:
 
 2. Exporteer je certificaat in PEM-formaat (alleen het publieke certificaat, niet de private sleutel).
 
-3. Ga naar <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Mijn Account <i class="fa fa-angle-right"></i> Domeinen</a> <i class="fa fa-angle-right"></i> Aliassen (bijv. <code><hello@example.com></code>) <i class="fa fa-angle-right"></i> Bewerken <i class="fa fa-angle-right"></i> S/MIME en upload je publieke certificaat.
+3. Ga naar <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Mijn Account <i class="fa fa-angle-right"></i> Domeinen</a> <i class="fa fa-angle-right"></i> Brievenbussen (Aliassen) (bijv. <code><hello@example.com></code>) <i class="fa fa-angle-right"></i> Bewerken <i class="fa fa-angle-right"></i> S/MIME en upload je publieke certificaat.
 4. Zodra geconfigureerd, worden alle binnenkomende e-mails naar uw alias versleuteld met uw S/MIME-certificaat voordat ze worden opgeslagen of doorgestuurd.
 
    <div class="alert my-3 alert-secondary">
@@ -2954,7 +2961,7 @@ if header :contains "Subject" "invoice" {
 
 U kunt Sieve-scripts op verschillende manieren beheren:
 
-1. **Webinterface**: Ga naar <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Mijn account <i class="fa fa-angle-right"></i> Domeinen</a> <i class="fa fa-angle-right"></i> Aliassen <i class="fa fa-angle-right"></i> Sieve-scripts om scripts te maken en te beheren.
+1. **Webinterface**: Ga naar <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Mijn account <i class="fa fa-angle-right"></i> Domeinen</a> <i class="fa fa-angle-right"></i> Brievenbussen (Aliassen) <i class="fa fa-angle-right"></i> Sieve-scripts om scripts te maken en te beheren.
 
 2. **ManageSieve Protocol**: Maak verbinding met elke ManageSieve-compatibele client, zoals de Sieve-add-on van Thunderbird of [sieve-connect](https://github.com/philpennock/sieve-connect), met `imap.forwardemail.net`. Gebruik poort `2190` met STARTTLS of poort `4190` met impliciete TLS.
 
@@ -5793,7 +5800,7 @@ Nee, dat wordt niet aanbevolen, omdat je maar één mail exchange-server tegelij
     Belangrijk:
   </strong>
   <span>
-    Als je een betaald abonnement hebt, moet je naar <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Mijn Account <i class="fa fa-angle-right"></i> Domeinen</a> <i class="fa fa-angle-right"></i> Aliassen <i class="fa fa-angle-right"></i> Alias bewerken <i class="fa fa-angle-right"></i> Vink het vakje "Actief" uit <i class="fa fa-angle-right"></i> Doorgaan.
+    Als je een betaald abonnement hebt, moet je naar <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Mijn Account <i class="fa fa-angle-right"></i> Domeinen</a> <i class="fa fa-angle-right"></i> Brievenbussen (Aliassen) <i class="fa fa-angle-right"></i> Alias bewerken <i class="fa fa-angle-right"></i> Vink het vakje "Actief" uit <i class="fa fa-angle-right"></i> Doorgaan.
   </span>
 </div>
 

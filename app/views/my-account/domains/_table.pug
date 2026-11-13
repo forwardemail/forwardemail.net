@@ -112,7 +112,179 @@ mixin renderProgressBar(domain, isMobile = false)
   else
     = t("Not Available")
 
-p.text-center.d-lg-none
+//- The DNS records of a domain, each with its status (and a link to fix it)
+mixin domainDns(domain)
+  .small.mt-1.mb-1
+    //- TXT Record Status
+    if domain.has_txt_record
+      span.mr-2(
+        data-toggle="tooltip",
+        data-placement="bottom",
+        data-html="true",
+        data-title=t("TXT record verified. Your domain ownership has been confirmed and email forwarding is properly configured.")
+      )
+        = "TXT "
+        i.fa.fa-check-circle.text-success
+    else
+      a.mr-2.text-reset(
+        href=l(`/my-account/domains/${punycode.toASCII(domain.name)}`),
+        data-toggle="tooltip",
+        data-placement="bottom",
+        data-html="true",
+        data-title=t("TXT record missing. This record is required to verify domain ownership and configure email forwarding. Click to complete setup.")
+      )
+        = "TXT "
+        i.fa.fa-times-circle.text-danger
+    //- MX Record Status
+    if domain.has_mx_record
+      span.mr-2(
+        data-toggle="tooltip",
+        data-placement="bottom",
+        data-html="true",
+        data-title=t("MX record verified. Your domain is correctly configured to receive emails through our mail servers.")
+      )
+        = "MX "
+        i.fa.fa-check-circle.text-success
+    else if domain.ignore_mx_check
+      span.mr-2(
+        data-toggle="tooltip",
+        data-placement="bottom",
+        data-html="true",
+        data-title=t("MX check ignored. You have configured advanced MX settings. Ensure your mail routing is properly set up.")
+      )
+        = "MX "
+        i.fa.fa-check-circle.text-success
+        sup.badge.badge-info.ml-1(style="font-size: 0.6em") i
+    else
+      a.mr-2.text-reset(
+        href=l(`/my-account/domains/${punycode.toASCII(domain.name)}`),
+        data-toggle="tooltip",
+        data-placement="bottom",
+        data-html="true",
+        data-title=t("MX record missing. This record is required to route incoming emails to our servers. Click to complete setup.")
+      )
+        = "MX "
+        i.fa.fa-times-circle.text-danger
+    if domain.plan !== 'free'
+      //- DKIM Record Status
+      if domain.has_dkim_record
+        span.mr-2(
+          data-toggle="tooltip",
+          data-placement="bottom",
+          data-html="true",
+          data-title=t("DKIM record verified. Your outbound emails are cryptographically signed to prevent tampering and improve deliverability.")
+        )
+          = "DKIM "
+          i.fa.fa-check-circle.text-success
+      else
+        a.mr-2.text-reset(
+          href=l(`/my-account/domains/${punycode.toASCII(domain.name)}/verify-smtp`),
+          data-toggle="tooltip",
+          data-placement="bottom",
+          data-html="true",
+          data-title=t("DKIM record missing. This record is required for outbound SMTP to cryptographically sign your emails and improve deliverability. Click to configure.")
+        )
+          = "DKIM "
+          i.fa.fa-times-circle.text-danger
+      //- SPF Record Status
+      if domain.has_spf_record
+        span.mr-2(
+          data-toggle="tooltip",
+          data-placement="bottom",
+          data-html="true",
+          data-title=t("SPF record verified. Receiving mail servers can verify that emails from your domain are sent from authorized servers.")
+        )
+          = "SPF "
+          i.fa.fa-check-circle.text-success
+      else
+        a.mr-2.text-reset(
+          href=l(`/my-account/domains/${punycode.toASCII(domain.name)}/verify-smtp`),
+          data-toggle="tooltip",
+          data-placement="bottom",
+          data-html="true",
+          data-title=t("SPF record missing. Without SPF, your emails may be marked as spam or rejected. This record authorizes our servers to send email on your behalf. Click to configure.")
+        )
+          = "SPF "
+          i.fa.fa-exclamation-circle.text-warning
+      //- DMARC Record Status
+      if domain.has_dmarc_record
+        if domain.has_strict_dmarc
+          span.mr-2(
+            data-toggle="tooltip",
+            data-placement="bottom",
+            data-html="true",
+            data-title=t("DMARC record verified with p=reject policy. Your domain has maximum protection against email spoofing and impersonation.")
+          )
+            = "DMARC "
+            i.fa.fa-check-circle.text-success
+        else
+          a.mr-2.text-reset(
+            href=l(`/my-account/domains/${punycode.toASCII(domain.name)}/verify-smtp`),
+            data-toggle="tooltip",
+            data-placement="bottom",
+            data-html="true",
+            data-title=t("DMARC record found but p=reject is recommended. Without p=reject, attackers can still impersonate your domain which may negatively impact your domain reputation. Click to update.")
+          )
+            = "DMARC "
+            i.fa.fa-exclamation-circle.text-warning
+      else
+        a.mr-2.text-reset(
+          href=l(`/my-account/domains/${punycode.toASCII(domain.name)}/verify-smtp`),
+          data-toggle="tooltip",
+          data-placement="bottom",
+          data-html="true",
+          data-title=t("DMARC record missing. Without DMARC, your domain can be easily impersonated by attackers, potentially damaging your reputation and enabling phishing attacks. Click to configure.")
+        )
+          = "DMARC "
+          i.fa.fa-times-circle.text-danger
+//-
+//- One action of a domain, as a button of its card. A domain on the free plan
+//- locks most of them: a free account is shown why it needs to upgrade (a
+//- modal), a paid account is asked to switch the domain to its plan.
+//-   o.href      where it leads
+//-   o.icon      the Font Awesome icon
+//-   o.label     the label
+//-   o.locked    whether the free plan locks it
+//-   o.modal     the upgrade modal that explains it to a free account
+//-   o.switch    the prompt that asks a paid account to switch the domain
+//-   o.cta       the main button of the card
+//-
+mixin domainAction(domain, o)
+  - const billingUrl = l(`/my-account/domains/${punycode.toASCII(domain.name)}/billing`);
+  if o.locked && domain.plan === 'free'
+    if user.plan === 'free'
+      button.btn.acct-action(
+        class=o.cta ? "btn-primary" : "btn-sm acct-btn",
+        type="button",
+        data-target=o.modal,
+        data-toggle="modal"
+      )
+        i.fa.fa-fw(class=o.icon)
+        = " "
+        = o.label
+        i.fa.fa-lock.small.ml-auto.pl-2
+    else
+      form.confirm-prompt(
+        action=billingUrl,
+        data-confirm-prompt-title=t("Switch domain plan?"),
+        data-confirm-prompt-html=o.switch,
+        method="GET"
+      )
+        input(type="hidden", name="plan", value=user.plan)
+        button.btn.acct-action(
+          class=o.cta ? "btn-primary" : "btn-sm acct-btn",
+          type="submit"
+        )
+          i.fa.fa-fw(class=o.icon)
+          = " "
+          = o.label
+  else
+    a.btn.acct-action(class=o.cta ? "btn-primary" : "btn-sm acct-btn", href=l(o.href))
+      i.fa.fa-fw(class=o.icon)
+      = " "
+      = o.label
+
+p.text-center
   a.btn.btn-link.btn-sm(
     href=l("/blog/docs/best-quantum-safe-encrypted-email-service"),
     role="button",
@@ -125,429 +297,218 @@ p.text-center.d-lg-none
 
 - const isOnlyUbuntuDomains = isSANB(ctx.query.q) ? false : domains.length > 0 && domains.every((d) => d.plan === "team" && d.has_txt_record && Object.keys(config.ubuntuTeamMapping).includes(d.name));
 
-.table-responsive
-  table.table.table-hover.table-bordered.table-sm
-    thead.thead-dark
-      tr
-        th(scope="col", colspan=2)
-          +sortHeader('name', 'Domain Name', '#table-domains', 'text-left')
-        if !isOnlyUbuntuDomains
-          th.text-center.align-middle.d-none.d-lg-table-cell.text-nowrap(
-            scope="col"
-          )
-            = t("Storage Usage")
-            a.btn.btn-link.text-uppercase.text-white(
-              href=l("/blog/docs/best-quantum-safe-encrypted-email-service"),
-              role="button",
-              data-toggle="modal",
-              data-target="#modal-storage"
-            )
-              i.fa.fa-info-circle
-        th.align-middle.text-nowrap(scope="col")= t("Quick Links")
-    tbody
-      if domains.length === 0
-        td.alert.alert-info(colspan=4)= t("No domains exist for that search.")
-      else
-        each domain in domains
-          - domain.plan = domain.plan || "free";
-          tr
-            td(
-              class=domain.is_global ? "bg-secondary" : domain.has_mx_record && domain.has_txt_record ? (domain.plan === user.plan || domain.plan === "team" ? "bg-success" : "bg-warning") : "bg-danger"
-            )
-            td.align-middle.p-3.position-relative
-              h2.h5.mb-0= domain.name
-              //- DNS Record Status Indicators
-              .small.mt-1.mb-1.position-relative(style="z-index: 2")
-                //- TXT Record Status
-                if domain.has_txt_record
-                  span.mr-2(
-                    data-toggle="tooltip",
-                    data-placement="bottom",
-                    data-html="true",
-                    data-title=t("TXT record verified. Your domain ownership has been confirmed and email forwarding is properly configured.")
-                  )
-                    = "TXT "
-                    i.fa.fa-check-circle.text-success
+.d-flex.flex-wrap.align-items-center.justify-content-between.mb-2
+  p.small.text-muted.mb-0.mr-3.flex-grow-1
+    i.fa.fa-info-circle
+    = " "
+    = t("Mailboxes are the email addresses at your domain. Some people call them aliases.")
+  .acct-sort
+    +sortHeader('name', 'Domain Name', '#table-domains', 'text-right')
+
+if domains.length === 0
+  .alert.alert-info= t("No domains exist for that search.")
+else
+  .acct-domain-list
+    each domain in domains
+      - domain.plan = domain.plan || "free";
+      - const base = `/my-account/domains/${punycode.toASCII(domain.name)}`;
+      - const isReady = domain.has_mx_record && domain.has_txt_record;
+      - const isAdmin = domain.group === "admin";
+      - const needsSetup = !domain.is_global && isAdmin && !isReady;
+      - const needsSending = !domain.is_global && isAdmin && isReady && domain.plan !== "free" && !(domain.has_dkim_record && domain.has_spf_record && domain.has_dmarc_record);
+      //- 1-Click Setup, unless the DNS provider of the domain is known not to
+      //- support it (an unknown provider is looked up when the button is used)
+      - const provider = needsSetup ? nsProviderLookup(domain) : null;
+      - const oneClick = needsSetup && domain.plan !== "free" && (!provider || Boolean(provider.domainConnect));
+      .acct-card.acct-domain-card(
+        class=domain.is_global ? "acct-card--global" : isReady ? (domain.plan === user.plan || domain.plan === "team" ? "acct-card--ready" : "acct-card--warn") : "acct-card--setup"
+      )
+        .acct-card-head
+          h2.h5.acct-card-title.mb-0
+            a.text-reset.text-break(href=l(base))= domain.name
+          ul.list-inline.mb-0.acct-card-badges
+            if needsSetup || (!domain.is_global && !isReady && !isAdmin)
+              li.list-inline-item
+                a.badge.badge-danger.text-uppercase(href=l(base))
+                  i.fa.fa-fw.fa-times
+                  = " "
+                  = t("Setup Required")
+            if domain.is_global
+              li.list-inline-item
+                a.badge.badge-secondary.text-uppercase(
+                  href=l(`${base}/aliases`)
+                )= t("Vanity Domain")
+            else if (domain.plan === user.plan || domain.plan === 'team') && user.plan !== 'free'
+              li.list-inline-item
+                if isReady
+                  a.badge.badge-success.text-uppercase(
+                    href=l(`${base}/aliases`)
+                  )= titleize(humanize(domain.plan))
                 else
-                  a.mr-2.text-reset(
-                    href=l(`/my-account/domains/${punycode.toASCII(domain.name)}`),
-                    data-toggle="tooltip",
-                    data-placement="bottom",
-                    data-html="true",
-                    data-title=t("TXT record missing. This record is required to verify domain ownership and configure email forwarding. Click to complete setup.")
-                  )
-                    = "TXT "
-                    i.fa.fa-times-circle.text-danger
-                //- MX Record Status
-                if domain.has_mx_record
-                  span.mr-2(
-                    data-toggle="tooltip",
-                    data-placement="bottom",
-                    data-html="true",
-                    data-title=t("MX record verified. Your domain is correctly configured to receive emails through our mail servers.")
-                  )
-                    = "MX "
-                    i.fa.fa-check-circle.text-success
-                else if domain.ignore_mx_check
-                  span.mr-2(
-                    data-toggle="tooltip",
-                    data-placement="bottom",
-                    data-html="true",
-                    data-title=t("MX check ignored. You have configured advanced MX settings. Ensure your mail routing is properly set up.")
-                  )
-                    = "MX "
-                    i.fa.fa-check-circle.text-success
-                    sup.badge.badge-info.ml-1(style="font-size: 0.6em") i
+                  span.badge.badge-success.text-uppercase= titleize(humanize(domain.plan))
+            else
+              li.list-inline-item
+                if isReady
+                  a.badge.text-uppercase(
+                    class=domain.plan === "free" && user.plan === "free" ? "badge-danger" : "badge-warning",
+                    href=domain.plan === "free" ? l(base) : l(`/my-account/domains/${domain.name}/aliases`)
+                  )= titleize(humanize(domain.plan))
                 else
-                  a.mr-2.text-reset(
-                    href=l(`/my-account/domains/${punycode.toASCII(domain.name)}`),
-                    data-toggle="tooltip",
-                    data-placement="bottom",
-                    data-html="true",
-                    data-title=t("MX record missing. This record is required to route incoming emails to our servers. Click to complete setup.")
-                  )
-                    = "MX "
-                    i.fa.fa-times-circle.text-danger
-                if domain.plan !== 'free'
-                  //- DKIM Record Status
-                  if domain.has_dkim_record
-                    span.mr-2(
-                      data-toggle="tooltip",
-                      data-placement="bottom",
-                      data-html="true",
-                      data-title=t("DKIM record verified. Your outbound emails are cryptographically signed to prevent tampering and improve deliverability.")
+                  span.badge.text-uppercase(
+                    class=domain.plan === "free" && user.plan === "free" ? "badge-danger" : "badge-warning"
+                  )= titleize(humanize(domain.plan))
+
+        .acct-card-body
+          //- its DNS records and its next step
+          .acct-card-main
+            +domainDns(domain)
+
+            //- the next step: one button for what this domain needs now
+            .acct-next
+              if needsSetup
+                p.small.mb-2
+                  strong= t("Setup Required")
+                  = ": "
+                  = t("Add the DNS records below to your domain to start receiving email.")
+                .acct-actions.acct-actions--cta
+                  a.btn.btn-primary.acct-action(href=l(base))
+                    i.fa.fa-fw.fa-cog
+                    = " "
+                    = t("Setup")
+                  if oneClick
+                    form.domain-connect-form(
+                      action=l("/domain-connect"),
+                      method="POST",
+                      data-verify-url=l(`${base}/verify-records`),
+                      data-next-url=l(base)
                     )
-                      = "DKIM "
-                      i.fa.fa-check-circle.text-success
-                  else
-                    a.mr-2.text-reset(
-                      href=l(`/my-account/domains/${punycode.toASCII(domain.name)}/verify-smtp`),
-                      data-toggle="tooltip",
-                      data-placement="bottom",
-                      data-html="true",
-                      data-title=t("DKIM record missing. This record is required for outbound SMTP to cryptographically sign your emails and improve deliverability. Click to configure.")
-                    )
-                      = "DKIM "
-                      i.fa.fa-times-circle.text-danger
-                  //- SPF Record Status
-                  if domain.has_spf_record
-                    span.mr-2(
-                      data-toggle="tooltip",
-                      data-placement="bottom",
-                      data-html="true",
-                      data-title=t("SPF record verified. Receiving mail servers can verify that emails from your domain are sent from authorized servers.")
-                    )
-                      = "SPF "
-                      i.fa.fa-check-circle.text-success
-                  else
-                    a.mr-2.text-reset(
-                      href=l(`/my-account/domains/${punycode.toASCII(domain.name)}/verify-smtp`),
-                      data-toggle="tooltip",
-                      data-placement="bottom",
-                      data-html="true",
-                      data-title=t("SPF record missing. Without SPF, your emails may be marked as spam or rejected. This record authorizes our servers to send email on your behalf. Click to configure.")
-                    )
-                      = "SPF "
-                      i.fa.fa-exclamation-circle.text-warning
-                  //- DMARC Record Status
-                  if domain.has_dmarc_record
-                    if domain.has_strict_dmarc
-                      span.mr-2(
+                      if provider && provider.domainConnect
+                        input(
+                          type="hidden",
+                          name="provider",
+                          value=provider.slug
+                        )
+                      input(type="hidden", name="domain", value=domain.name)
+                      input(type="hidden", name="redirect_to", value=base)
+                      button.btn.btn-success.acct-action(
+                        type="submit",
                         data-toggle="tooltip",
-                        data-placement="bottom",
-                        data-html="true",
-                        data-title=t("DMARC record verified with p=reject policy. Your domain has maximum protection against email spoofing and impersonation.")
+                        title=t("Automatically configure all DNS records in one click")
                       )
-                        = "DMARC "
-                        i.fa.fa-check-circle.text-success
-                    else
-                      a.mr-2.text-reset(
-                        href=l(`/my-account/domains/${punycode.toASCII(domain.name)}/verify-smtp`),
-                        data-toggle="tooltip",
-                        data-placement="bottom",
-                        data-html="true",
-                        data-title=t("DMARC record found but p=reject is recommended. Without p=reject, attackers can still impersonate your domain which may negatively impact your domain reputation. Click to update.")
-                      )
-                        = "DMARC "
-                        i.fa.fa-exclamation-circle.text-warning
-                  else
-                    a.mr-2.text-reset(
-                      href=l(`/my-account/domains/${punycode.toASCII(domain.name)}/verify-smtp`),
-                      data-toggle="tooltip",
-                      data-placement="bottom",
-                      data-html="true",
-                      data-title=t("DMARC record missing. Without DMARC, your domain can be easily impersonated by attackers, potentially damaging your reputation and enabling phishing attacks. Click to configure.")
-                    )
-                      = "DMARC "
-                      i.fa.fa-times-circle.text-danger
-              ul.list-inline.mt-1.mb-0
-                if !domain.is_global && domain.group === 'admin' && !domain.has_mx_record || !domain.has_txt_record
-                  li.list-inline-item
-                    a.badge.badge-danger.text-uppercase.stretched-link(
-                      href=l(`/my-account/domains/${punycode.toASCII(domain.name)}`)
-                    )
-                      i.fa.fa-fw.fa-times
+                        i.fa.fa-fw.fa-magic
+                        = " "
+                        = t("1-Click Setup")
+              else if needsSending
+                p.small.mb-2
+                  = t("Send emails with your domain using SMTP")
+                .acct-actions.acct-actions--cta
+                  a.btn.btn-primary.acct-action(href=l(`${base}/verify-smtp`))
+                    i.fa.fa-fw.fa-paper-plane
+                    = " "
+                    = t("Outbound SMTP")
+                  +domainAction(domain, { href: `${base}/aliases`, icon: "fa-inbox", label: t("Mailboxes"), locked: true, modal: "#modal-upgrade", switch: t("To unlock the alias manager for this domain, you need to switch its plan. Don't worry &ndash; there is no extra cost.") })
+              else
+                .acct-actions.acct-actions--cta
+                  +domainAction(domain, { cta: true, href: `${base}/aliases`, icon: "fa-inbox", label: t("Mailboxes"), locked: true, modal: "#modal-upgrade", switch: t("To unlock the alias manager for this domain, you need to switch its plan. Don't worry &ndash; there is no extra cost.") })
+                  if !domain.is_global && isAdmin && domain.plan !== 'free'
+                    a.btn.acct-btn.acct-action(href=l(`${base}/verify-smtp`))
+                      i.fa.fa-fw.fa-paper-plane
                       = " "
-                      = t("Setup Required")
-                if domain.is_global
-                  li.list-inline-item
-                    a.badge.badge-secondary.text-uppercase.stretched-link(
-                      href=l(`/my-account/domains/${punycode.toASCII(domain.name)}/aliases`)
-                    )= t("Vanity Domain")
-                else if (domain.plan === user.plan || domain.plan === 'team') && user.plan !== 'free'
-                  li.list-inline-item
-                    if domain.has_mx_record && domain.has_txt_record
-                      a.badge.badge-success.text-uppercase.stretched-link(
-                        href=l(`/my-account/domains/${punycode.toASCII(domain.name)}/aliases`)
-                      )= titleize(humanize(domain.plan))
-                    else
-                      span.badge.badge-success.text-uppercase
-                        = titleize(humanize(domain.plan))
-                else
-                  li.list-inline-item
-                    if domain.has_mx_record && domain.has_txt_record
-                      a.badge.text-uppercase.stretched-link(
-                        class=domain.plan === "free" && user.plan === "free" ? "badge-danger" : "badge-warning",
-                        href=domain.plan === "free" ? l(`/my-account/domains/${punycode.toASCII(domain.name)}`) : l(`/my-account/domains/${domain.name}/aliases`)
-                      )= titleize(humanize(domain.plan))
-                    else
-                      span.badge.text-uppercase(
-                        class=domain.plan === "free" && user.plan === "free" ? "badge-danger" : "badge-warning"
-                      )
-                        = titleize(humanize(domain.plan))
-              if !isOnlyUbuntuDomains
-                .d-lg-none.small.mt-1
-                  +renderProgressBar(domain, true)
+                      = t("Outbound SMTP")
+
+          //- the team and the storage of the domain
+          .acct-card-side
+            //- the team at a glance
+            if !domain.is_global && isAdmin
+              .acct-team
+                each member in domain.members.slice(0, 6)
+                  - const memberName = member.user[config.passport.fields.displayName] || member.user.email || "";
+                  span.acct-avatar.acct-avatar--sm(
+                    title=`${memberName} (${member.group === "admin" ? t("Admin") : t("Member")})`,
+                    class=member.group === "admin" ? "acct-avatar--admin" : false
+                  )= (memberName || "?").trim().charAt(0).toUpperCase()
+                if domain.members.length > 6
+                  span.small.text-muted.ml-1= `+${domain.members.length - 6}`
+                a.small.ml-2(href=l(`${base}/advanced-settings#manage-team`))
+                  i.fa.fa-fw.fa-users
+                  = " "
+                  = domain.plan === "team" ? t("Manage Team") : t("Team")
+            else if isAdmin
+              //- (a vanity domain has too many members to show)
+              .acct-team
+                a.small(href=l(`${base}/advanced-settings#manage-team`))
+                  i.fa.fa-fw.fa-users
+                  = " "
+                  = t("Team")
+
             if !isOnlyUbuntuDomains
-              td.align-middle.p-3.small.d-none.d-lg-table-cell.text-center
+              .acct-storage
                 +renderProgressBar(domain)
-            td.align-middle
-              ul.list-inline.mb-0.text-nowrap
-                li.list-inline-item.d-block.d-lg-inline-block
-                  if domain.plan === 'free'
-                    if user.plan === 'free'
-                      button.btn.btn-sm.btn-link.text-themed(
-                        type="button",
-                        data-target="#modal-upgrade",
-                        data-toggle="modal"
-                      )
-                        i.fa.fa-fw.fa-users
-                        = " "
-                        = t("Aliases")
-                    else
-                      form.confirm-prompt(
-                        action=l(`/my-account/domains/${punycode.toASCII(domain.name)}/billing`),
-                        data-confirm-prompt-title=t("Switch domain plan?"),
-                        data-confirm-prompt-html=t("To unlock the alias manager for this domain, you need to switch its plan. Don't worry &ndash; there is no extra cost."),
-                        method="GET"
-                      )
-                        input(type="hidden", name="plan", value=user.plan)
-                        button.btn.btn-sm.btn-link.text-themed(type="submit")
-                          i.fa.fa-fw.fa-users
-                          = " "
-                          = t("Aliases")
-                  else
-                    a.btn.btn-sm.btn-link.text-themed(
-                      href=l(`/my-account/domains/${punycode.toASCII(domain.name)}/aliases`)
-                    )
-                      i.fa.fa-fw.fa-users
-                      = " "
-                      = t("Aliases")
-                //- Emails
-                if !domain.is_global
-                  li.list-inline-item.d-block.d-lg-inline-block
-                    if domain.plan === 'free'
-                      if user.plan === 'free'
-                        button.btn.btn-sm.btn-link.text-themed(
-                          type="button",
-                          data-target="#modal-upgrade-logs",
-                          data-toggle="modal"
-                        )
-                          i.fa.fa-fw.fa-envelope
-                          = " "
-                          = t("Emails")
-                      else
-                        form.confirm-prompt(
-                          action=l(`/my-account/domains/${punycode.toASCII(domain.name)}/billing`),
-                          data-confirm-prompt-title=t("Switch domain plan?"),
-                          data-confirm-prompt-html=t("To unlock outbound SMTP email for this domain, you need to switch its plan."),
-                          method="GET"
-                        )
-                          input(type="hidden", name="plan", value=user.plan)
-                          button.btn.btn-sm.btn-link.text-themed(type="submit")
-                            i.fa.fa-fw.fa-envelope
+
+        //- everything else, one click away
+        .acct-card-foot
+          .acct-actions
+            if isAdmin
+              a.btn.btn-sm.acct-btn.acct-action(
+                href=l(`${base}/advanced-settings`)
+              )
+                i.fa.fa-fw.fa-tools
+                = " "
+                = t("Settings")
+            if needsSetup
+              +domainAction(domain, { href: `${base}/aliases`, icon: "fa-inbox", label: t("Mailboxes"), locked: true, modal: "#modal-upgrade", switch: t("To unlock the alias manager for this domain, you need to switch its plan. Don't worry &ndash; there is no extra cost.") })
+            if !domain.is_global
+              +domainAction(domain, { href: `/my-account/emails?domain=${domain.name}`, icon: "fa-envelope", label: t("Emails"), locked: true, modal: "#modal-upgrade-logs", switch: t("To unlock outbound SMTP email for this domain, you need to switch its plan.") })
+            +domainAction(domain, { href: `/my-account/logs?domains=${domain.name}`, icon: "fa-stream", label: t("Logs"), locked: true, modal: "#modal-upgrade-logs", switch: t("To unlock logs for this domain, you need to switch its plan. Don't worry &ndash; there is no extra cost.") })
+            +domainAction(domain, { href: `/my-account/analytics?domains=${domain.name}`, icon: "fa-chart-area", label: t("Analytics"), locked: true, modal: "#modal-upgrade-analytics", switch: t("To unlock analytics for this domain, you need to switch its plan. Don't worry &ndash; there is no extra cost.") })
+            +domainAction(domain, { href: `/my-account/dmarc-reports?domains=${domain.name}`, icon: "fa-shield-alt", label: t("DMARC Reports"), locked: true, modal: "#modal-upgrade-analytics", switch: t("To unlock DMARC reports for this domain, you need to switch its plan. Don't worry &ndash; there is no extra cost.") })
+            if isAdmin
+              if !needsSetup
+                a.btn.btn-sm.acct-btn.acct-action(href=l(base))
+                  i.fa.fa-fw.fa-cog
+                  = " "
+                  = t("Setup")
+              a.btn.btn-sm.acct-btn.acct-action(
+                href=l(`${base}/zone-file`),
+                download=`${punycode.toASCII(domain.name).toLowerCase()}.zone`
+              )
+                i.fa.fa-fw.fa-download
+                = " "
+                = t("Zone File")
+              //- we hide the change plan button if the plan was team
+              if domain.plan !== 'team'
+                .btn-group.acct-action-plan
+                  button.btn.btn-sm.acct-btn.dropdown-toggle(
+                    class=user.plan !== "free" && domain.plan !== user.plan && domain.plan !== "team" ? "acct-btn--warn" : false,
+                    type="button",
+                    data-toggle="dropdown",
+                    data-boundary="window",
+                    aria-haspopup="true",
+                    aria-expanded="false"
+                  )
+                    = t("Change Plan")
+                  .dropdown-menu.dropdown-menu-right
+                    h6.dropdown-header= t("Change plan to:")
+                    each plan in [ 'free', 'enhanced_protection', 'team' ].filter(plan => plan !== domain.plan)
+                      +changePlanOption(domain, plan)
+                        case plan
+                          when 'enhanced_protection'
+                            i.fa.fa-fw.fa-shield
                             = " "
-                            = t("Emails")
-                    else
-                      a.btn.btn-sm.btn-link.text-themed(
-                        href=l(`/my-account/emails?domain=${domain.name}`)
-                      )
-                        i.fa.fa-fw.fa-envelope
-                        = " "
-                        = t("Emails")
-
-                //- DMARC Reports
-                li.list-inline-item.d-block.d-lg-inline-block
-                  if domain.plan === 'free'
-                    if user.plan === 'free'
-                      button.btn.btn-sm.btn-link.text-themed(
-                        type="button",
-                        data-target="#modal-upgrade-analytics",
-                        data-toggle="modal"
-                      )
-                        i.fa.fa-fw.fa-shield-alt
-                        = " "
-                        = t("DMARC Reports")
-                    else
-                      form.confirm-prompt(
-                        action=l(`/my-account/domains/${punycode.toASCII(domain.name)}/billing`),
-                        data-confirm-prompt-title=t("Switch domain plan?"),
-                        data-confirm-prompt-html=t("To unlock DMARC reports for this domain, you need to switch its plan. Don't worry &ndash; there is no extra cost."),
-                        method="GET"
-                      )
-                        input(type="hidden", name="plan", value=user.plan)
-                        button.btn.btn-sm.btn-link.text-themed(type="submit")
-                          i.fa.fa-fw.fa-shield-alt
-                          = " "
-                          = t("DMARC Reports")
-                  else
-                    a.btn.btn-sm.btn-link.text-themed(
-                      href=l(`/my-account/dmarc-reports?domains=${domain.name}`)
-                    )
-                      i.fa.fa-fw.fa-shield-alt
-                      = " "
-                      = t("DMARC Reports")
-
-                //- Analytics
-                li.list-inline-item.d-block.d-lg-inline-block
-                  if domain.plan === 'free'
-                    if user.plan === 'free'
-                      button.btn.btn-sm.btn-link.text-themed(
-                        type="button",
-                        data-target="#modal-upgrade-analytics",
-                        data-toggle="modal"
-                      )
-                        i.fa.fa-fw.fas.fa-chart-area
-                        = " "
-                        = t("Analytics")
-                    else
-                      form.confirm-prompt(
-                        action=l(`/my-account/domains/${punycode.toASCII(domain.name)}/billing`),
-                        data-confirm-prompt-title=t("Switch domain plan?"),
-                        data-confirm-prompt-html=t("To unlock analytics for this domain, you need to switch its plan. Don't worry &ndash; there is no extra cost."),
-                        method="GET"
-                      )
-                        input(type="hidden", name="plan", value=user.plan)
-                        button.btn.btn-sm.btn-link.text-themed(type="submit")
-                          i.fa.fa-fw.fas.fa-chart-area
-                          = " "
-                          = t("Analytics")
-                  else
-                    a.btn.btn-sm.btn-link.text-themed(
-                      href=l(`/my-account/analytics?domains=${domain.name}`)
-                    )
-                      i.fa.fa-fw.fa-chart-area
-                      = " "
-                      = t("Analytics")
-
-                //- Logs
-                li.list-inline-item.d-block.d-lg-inline-block
-                  if domain.plan === 'free'
-                    if user.plan === 'free'
-                      button.btn.btn-sm.btn-link.text-themed(
-                        type="button",
-                        data-target="#modal-upgrade-logs",
-                        data-toggle="modal"
-                      )
-                        i.fa.fa-fw.fa-stream
-                        = " "
-                        = t("Logs")
-                    else
-                      form.confirm-prompt(
-                        action=l(`/my-account/domains/${punycode.toASCII(domain.name)}/billing`),
-                        data-confirm-prompt-title=t("Switch domain plan?"),
-                        data-confirm-prompt-html=t("To unlock logs for this domain, you need to switch its plan. Don't worry &ndash; there is no extra cost."),
-                        method="GET"
-                      )
-                        input(type="hidden", name="plan", value=user.plan)
-                        button.btn.btn-sm.btn-link.text-themed(type="submit")
-                          i.fa.fa-fw.fa-stream
-                          = " "
-                          = t("Logs")
-                  else
-                    a.btn.btn-sm.btn-link.text-themed(
-                      href=l(`/my-account/logs?domains=${domain.name}`)
-                    )
-                      i.fa.fa-fw.fa-stream
-                      = " "
-                      = t("Logs")
-
-                if domain.group === 'admin'
-                  li.list-inline-item.d-block.d-lg-inline-block
-                    a.btn.btn-sm.btn-link(
-                      class=domain.has_mx_record && domain.has_txt_record ? "text-themed" : "text-danger font-weight-bold",
-                      href=l(`/my-account/domains/${punycode.toASCII(domain.name)}`)
-                    )
-                      i.fa.fa-fw.fa-cog
-                      = " "
-                      = t("Setup")
-                  li.list-inline-item.d-block.d-lg-inline-block
-                    a.btn.btn-sm.btn-link.text-themed(
-                      href=l(`/my-account/domains/${punycode.toASCII(domain.name)}/advanced-settings`)
-                    )
-                      i.fa.fa-fw.fa-tools
-                      = " "
-                      = t("Settings")
-                  li.list-inline-item.d-block.d-lg-inline-block
-                    a.btn.btn-sm.btn-link.text-themed(
-                      href=l(`/my-account/domains/${punycode.toASCII(domain.name)}/advanced-settings#manage-team`)
-                    )
-                      i.fa.fa-fw.fa-users
-                      = " "
-                      = t("Team")
-                  li.list-inline-item.d-block.d-lg-inline-block
-                    a.btn.btn-sm.btn-link.text-themed(
-                      href=l(`/my-account/domains/${punycode.toASCII(domain.name)}/zone-file`),
-                      download=`${punycode.toASCII(domain.name).toLowerCase()}.zone`
-                    )
-                      i.fa.fa-fw.fa-download
-                      = " "
-                      = t("Zone File")
-                  //- we hide the change plan button if the plan was team
-                  if domain.plan !== 'team'
-                    li.list-inline-item.d-block.d-lg-inline-block
-                      .btn-group.btn-link.btn-group-sm
-                        button.btn.btn-sm.btn-link.dropdown-toggle(
-                          class=user.plan !== "free" && domain.plan !== user.plan && domain.plan !== "team" ? "text-warning font-weight-bold" : "text-themed",
-                          type="button",
-                          data-toggle="dropdown",
-                          data-boundary="window",
-                          aria-haspopup="true",
-                          aria-expanded="false"
-                        )
-                          = t("Change Plan")
-                        .dropdown-menu
-                          h6.dropdown-header= t("Change plan to:")
-                          each plan in [ 'free', 'enhanced_protection', 'team' ].filter(plan => plan !== domain.plan)
-                            +changePlanOption(domain, plan)
-                              case plan
-                                when 'enhanced_protection'
-                                  i.fa.fa-fw.fa-shield
-                                  = " "
-                                  = t("Enhanced Protection")
-                                when 'team'
-                                  i.fa.fa-fw.fa-users
-                                  = " "
-                                  = t("Team")
-                                default
-                                  = t("Free")
-                                  = " ("
-                                  = t("DNS-based")
-                                  = ")"
-                          .dropdown-divider
-                          a.dropdown-item.small.text-muted(
-                            href=l(`/private-business-email?domain=${domain.name}`)
-                          )= t("See all plan features")
+                            = t("Enhanced Protection")
+                          when 'team'
+                            i.fa.fa-fw.fa-users
+                            = " "
+                            = t("Team")
+                          default
+                            = t("Free")
+                            = " ("
+                            = t("DNS-based")
+                            = ")"
+                    .dropdown-divider
+                    a.dropdown-item.small.text-muted(
+                      href=l(`/private-business-email?domain=${domain.name}`)
+                    )= t("See all plan features")
 .alert.alert-secondary.small.text-center
   strong= t("Need to remove a domain?")
   = " "

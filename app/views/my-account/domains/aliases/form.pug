@@ -16,9 +16,9 @@ block body
               include _form
               button.btn.btn-success.btn-block.btn-lg(type="submit")
                 if alias
-                  = t("Update Alias")
+                  = t("Update Mailbox")
                 else
-                  = t("Create Alias")
+                  = t("Create Mailbox")
     //- Recent sign-ins (see helpers/alias-sign-ins.js)
     if alias && Array.isArray(signIns) && alias.name !== "*" && !alias.name.startsWith("/")
       - const signInServices = { smtp: "SMTP", imap: "IMAP", pop3: "POP3", caldav: "CalDAV", carddav: "CardDAV", api: "API", managesieve: "ManageSieve" };
@@ -66,4 +66,4 @@ block body
           )
             i.fa.fa-angle-double-left
             = " "
-            = t("Back to Aliases")
+            = t("Back to Mailboxes")

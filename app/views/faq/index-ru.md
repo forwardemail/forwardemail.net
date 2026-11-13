@@ -8,6 +8,7 @@
 * [Быстрый старт](#quick-start)
 * [Введение](#introduction)
   * [Что такое Forward Email](#what-is-forward-email)
+  * [В чем разница между почтовым ящиком и псевдонимом](#what-is-the-difference-between-a-mailbox-and-an-alias)
   * [Кто использует Forward Email](#who-uses-forward-email)
   * [История Forward Email](#what-is-forward-emails-history)
   * [Насколько быстро работает этот сервис](#how-fast-is-this-service)
@@ -179,7 +180,7 @@
 
 2. **Добавьте и подтвердите свой домен** в разделе [Мой аккаунт → Домены](/my-account/domains)
 
-3. **Добавьте и настройте почтовые псевдонимы/почтовые ящики** в разделе [Мой аккаунт → Домены](/my-account/domains) → Псевдонимы
+3. **Добавьте и настройте почтовые псевдонимы/почтовые ящики** в разделе [Мой аккаунт → Домены](/my-account/domains) → Почтовые ящики (Псевдонимы)
 
 4. **Проверьте настройку**, отправив письмо на один из ваших новых псевдонимов
 
@@ -217,6 +218,12 @@ Forward Email — это **полнофункциональный поставщ
 
 > \[!TIP]
 > Узнайте больше о Forward Email, прочитав наш бесплатный [Технический белый документ](/technical-whitepaper.pdf) и ознакомившись с нашим [аудитом безопасности](/pentest-report_forward-email.pdf) от Cure53.
+
+### В чем разница между почтовым ящиком и псевдонимом {#what-is-the-difference-between-a-mailbox-and-an-alias}
+
+Разницы нет. Наш сайт, приложения, API и документация используют оба слова для обозначения адреса электронной почты в вашем домене.
+
+Почтовый ящик является адресом электронной почты в вашем домене, например `hello@example.com`. В некоторых сервисах его называют псевдонимом. Каждый ящик может пересылать письма в другие ящики, хранить письма, которые вы читаете через IMAP и веб-почту, или делать и то и другое.
 
 ### Кто использует Forward Email {#who-uses-forward-email}
 
@@ -737,7 +744,7 @@ echo "Тело тестового письма" | mail -s "Тестовая те
 
 1. Перейдите в <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Мой аккаунт <i class="fa fa-angle-right"></i> Домены</a> <i class="fa fa-angle-right"></i> Настройки <i class="fa fa-angle-right"></i> Конфигурация исходящего SMTP и следуйте инструкциям по настройке
 
-2. Создайте новый алиас для вашего домена в разделе <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Мой аккаунт <i class="fa fa-angle-right"></i> Домены</a> <i class="fa fa-angle-right"></i> Алиасы (например, <code><hello@example.com></code>)
+2. Создайте новый алиас для вашего домена в разделе <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Мой аккаунт <i class="fa fa-angle-right"></i> Домены</a> <i class="fa fa-angle-right"></i> Почтовые ящики (Алиасы) (например, <code><hello@example.com></code>)
 
 3. Нажмите на <strong class="text-success"><i class="fa fa-key"></i> Сгенерировать пароль</strong> рядом с только что созданным алиасом. Скопируйте в буфер обмена и надежно сохраните сгенерированный пароль, отображаемый на экране.
 
@@ -745,7 +752,7 @@ echo "Тело тестового письма" | mail -s "Тестовая те
 
 5. При запросе "Имя" введите имя, которое вы хотите видеть в поле "От" (например, "Linus Torvalds").
 
-6. При запросе "Адрес электронной почты" введите полный адрес электронной почты алиаса, который вы создали в разделе <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Мой аккаунт <i class="fa fa-angle-right"></i> Домены</a> <i class="fa fa-angle-right"></i> Алиасы (например, <code><hello@example.com></code>)
+6. При запросе "Адрес электронной почты" введите полный адрес электронной почты алиаса, который вы создали в разделе <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Мой аккаунт <i class="fa fa-angle-right"></i> Домены</a> <i class="fa fa-angle-right"></i> Почтовые ящики (Алиасы) (например, <code><hello@example.com></code>)
 
 7. Снимите галочку с "Обрабатывать как алиас"
 
@@ -753,7 +760,7 @@ echo "Тело тестового письма" | mail -s "Тестовая те
 
 9. При запросе "SMTP-сервер" введите <code>smtp.forwardemail.net</code> и измените порт на <code>465</code>
 
-10. При запросе "Имя пользователя" введите полный адрес электронной почты алиаса, который вы создали в разделе <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Мой аккаунт <i class="fa fa-angle-right"></i> Домены</a> <i class="fa fa-angle-right"></i> Алиасы (например, <code><hello@example.com></code>)
+10. При запросе "Имя пользователя" введите полный адрес электронной почты алиаса, который вы создали в разделе <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Мой аккаунт <i class="fa fa-angle-right"></i> Домены</a> <i class="fa fa-angle-right"></i> Почтовые ящики (Алиасы) (например, <code><hello@example.com></code>)
 
 11. При запросе "Пароль" вставьте пароль из шага 3, полученный с помощью <strong class="text-success"><i class="fa fa-key"></i> Сгенерировать пароль</strong>
 
@@ -1124,7 +1131,7 @@ echo "Тело тестового письма" | mail -s "Тестовая те
 
 В любое время вы можете экспортировать свои почтовые ящики в форматах [EML](https://en.wikipedia.org/wiki/Email#Filename_extensions), [Mbox](https://en.wikipedia.org/wiki/Mbox) или зашифрованном формате [SQLite](https://en.wikipedia.org/wiki/SQLite).
 
-Перейдите на <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Мой аккаунт <i class="fa fa-angle-right"></i> Домены</a> <i class="fa fa-angle-right"></i> Алиасы <i class="fa fa-angle-right"></i> Скачать резервную копию и выберите предпочитаемый формат экспорта.
+Перейдите на <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Мой аккаунт <i class="fa fa-angle-right"></i> Домены</a> <i class="fa fa-angle-right"></i> Почтовые ящики (Алиасы) <i class="fa fa-angle-right"></i> Скачать резервную копию и выберите предпочитаемый формат экспорта.
 
 После завершения экспорта вам будет отправлена ссылка для скачивания.
 
@@ -2062,7 +2069,7 @@ Drafts/
 
 ### Как настроить автоответчик на отпуск (автоматический ответчик "вне офиса") {#how-do-i-set-up-a-vacation-responder-out-of-office-auto-responder}
 
-Перейдите в <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Мой аккаунт <i class="fa fa-angle-right"></i> Домены</a> <i class="fa fa-angle-right"></i> Псевдонимы и создайте или отредактируйте псевдоним, для которого хотите настроить автоответчик на отпуск.
+Перейдите в <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Мой аккаунт <i class="fa fa-angle-right"></i> Домены</a> <i class="fa fa-angle-right"></i> Почтовые ящики (Псевдонимы) и создайте или отредактируйте псевдоним, для которого хотите настроить автоответчик на отпуск.
 Вы можете настроить дату начала, дату окончания, тему и сообщение, а также включать или отключать это в любое время:
 
 * В настоящее время поддерживаются только обычные текстовые тема и сообщение (мы используем пакет `striptags` для удаления любого HTML).
@@ -2450,7 +2457,7 @@ Tasks.org — популярный менеджер задач с открыты
   </span>
 </div>
 
-1. Создайте новый алиас для вашего домена в разделе <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Мой аккаунт <i class="fa fa-angle-right"></i> Домены</a> <i class="fa fa-angle-right"></i> Алиасы (например, <code><hello@example.com></code>)
+1. Создайте новый алиас для вашего домена в разделе <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Мой аккаунт <i class="fa fa-angle-right"></i> Домены</a> <i class="fa fa-angle-right"></i> Почтовые ящики (Алиасы) (например, <code><hello@example.com></code>)
 
 2. Нажмите на <strong class="text-success"><i class="fa fa-key"></i> Сгенерировать пароль</strong> рядом с только что созданным алиасом. Скопируйте в буфер обмена и надежно сохраните сгенерированный пароль, отображаемый на экране.
 
@@ -2507,7 +2514,7 @@ Tasks.org — популярный менеджер задач с открыты
   </span>
 </div>
 
-1. Создайте новый алиас для вашего домена в разделе <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Мой аккаунт <i class="fa fa-angle-right"></i> Домены</a> <i class="fa fa-angle-right"></i> Алиасы (например, <code><hello@example.com></code>)
+1. Создайте новый алиас для вашего домена в разделе <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Мой аккаунт <i class="fa fa-angle-right"></i> Домены</a> <i class="fa fa-angle-right"></i> Почтовые ящики (Алиасы) (например, <code><hello@example.com></code>)
 
 2. Нажмите на <strong class="text-success"><i class="fa fa-key"></i> Сгенерировать пароль</strong> рядом с только что созданным алиасом. Скопируйте в буфер обмена и надежно сохраните сгенерированный пароль, показанный на экране.
 
@@ -2648,7 +2655,7 @@ Tasks.org — популярный менеджер задач с открыты
 
 1. Перейдите в <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Мой аккаунт <i class="fa fa-angle-right"></i> Домены</a> <i class="fa fa-angle-right"></i> Настройки <i class="fa fa-angle-right"></i> Конфигурация исходящего SMTP и следуйте инструкциям по настройке
 
-2. Создайте новый алиас для вашего домена в разделе <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Мой аккаунт <i class="fa fa-angle-right"></i> Домены</a> <i class="fa fa-angle-right"></i> Алиасы (например, <code><hello@example.com></code>)
+2. Создайте новый алиас для вашего домена в разделе <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Мой аккаунт <i class="fa fa-angle-right"></i> Домены</a> <i class="fa fa-angle-right"></i> Почтовые ящики (Алиасы) (например, <code><hello@example.com></code>)
 
 3. Нажмите на <strong class="text-success"><i class="fa fa-key"></i> Сгенерировать пароль</strong> рядом с недавно созданным алиасом. Скопируйте в буфер обмена и надежно сохраните сгенерированный пароль, показанный на экране.
 
@@ -2767,7 +2774,7 @@ Tasks.org — популярный менеджер задач с открыты
        Дополнительная опция:
      </strong>
      <span>
-       Если вы используете наш сервис <a class="alert-link" href="/blog/docs/best-quantum-safe-encrypted-email-service">шифрованного хранилища (IMAP/POP3)</a> и хотите, чтобы <i>вся</i> почта, хранящаяся в вашей (уже зашифрованной) базе данных SQLite, была зашифрована вашим публичным ключом, перейдите в <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Мой аккаунт <i class="fa fa-angle-right"></i> Домены</a> <i class="fa fa-angle-right"></i> Псевдонимы (например, <code>hello@example.com</code>) <i class="fa fa-angle-right"></i> Редактировать <i class="fa fa-angle-right"></i> OpenPGP и загрузите свой публичный ключ.
+       Если вы используете наш сервис <a class="alert-link" href="/blog/docs/best-quantum-safe-encrypted-email-service">шифрованного хранилища (IMAP/POP3)</a> и хотите, чтобы <i>вся</i> почта, хранящаяся в вашей (уже зашифрованной) базе данных SQLite, была зашифрована вашим публичным ключом, перейдите в <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Мой аккаунт <i class="fa fa-angle-right"></i> Домены</a> <i class="fa fa-angle-right"></i> Почтовые ящики (Псевдонимы) (например, <code>hello@example.com</code>) <i class="fa fa-angle-right"></i> Редактировать <i class="fa fa-angle-right"></i> OpenPGP и загрузите свой публичный ключ.
      </span>
    </div>
 
@@ -2835,7 +2842,7 @@ Tasks.org — популярный менеджер задач с открыты
 
 2. Экспортируйте свой сертификат в формате PEM (только публичный сертификат, без приватного ключа).
 
-3. Перейдите в <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Мой аккаунт <i class="fa fa-angle-right"></i> Домены</a> <i class="fa fa-angle-right"></i> Псевдонимы (например, <code><hello@example.com></code>) <i class="fa fa-angle-right"></i> Редактировать <i class="fa fa-angle-right"></i> S/MIME и загрузите свой публичный сертификат.
+3. Перейдите в <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Мой аккаунт <i class="fa fa-angle-right"></i> Домены</a> <i class="fa fa-angle-right"></i> Почтовые ящики (Псевдонимы) (например, <code><hello@example.com></code>) <i class="fa fa-angle-right"></i> Редактировать <i class="fa fa-angle-right"></i> S/MIME и загрузите свой публичный сертификат.
 4. После настройки все входящие письма на ваш псевдоним будут зашифрованы с использованием вашего сертификата S/MIME перед сохранением или пересылкой.
 
    <div class="alert my-3 alert-secondary">
@@ -2954,7 +2961,7 @@ if header :contains "Subject" "invoice" {
 
 Вы можете управлять Sieve-скриптами несколькими способами:
 
-1. **Веб-интерфейс**: Перейдите в <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Мой аккаунт <i class="fa fa-angle-right"></i> Домены</a> <i class="fa fa-angle-right"></i> Алиасы <i class="fa fa-angle-right"></i> Скрипты Sieve, чтобы создавать и управлять скриптами.
+1. **Веб-интерфейс**: Перейдите в <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Мой аккаунт <i class="fa fa-angle-right"></i> Домены</a> <i class="fa fa-angle-right"></i> Почтовые ящики (Алиасы) <i class="fa fa-angle-right"></i> Скрипты Sieve, чтобы создавать и управлять скриптами.
 
 2. **Протокол ManageSieve**: Подключитесь с помощью любого клиента, совместимого с ManageSieve, например, аддона Sieve для Thunderbird или [sieve-connect](https://github.com/philpennock/sieve-connect), к `imap.forwardemail.net`. Используйте порт `2190` с STARTTLS или порт `4190` с неявным TLS.
 
@@ -5793,7 +5800,7 @@ dig example.com txt +short
     Важно:
   </strong>
   <span>
-    Если у вас платный план, то вам нужно перейти в <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Мой аккаунт <i class="fa fa-angle-right"></i> Домены</a> <i class="fa fa-angle-right"></i> Псевдонимы <i class="fa fa-angle-right"></i> Редактировать псевдоним <i class="fa fa-angle-right"></i> Снять отметку "Активен" <i class="fa fa-angle-right"></i> Продолжить.
+    Если у вас платный план, то вам нужно перейти в <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Мой аккаунт <i class="fa fa-angle-right"></i> Домены</a> <i class="fa fa-angle-right"></i> Почтовые ящики (Псевдонимы) <i class="fa fa-angle-right"></i> Редактировать псевдоним <i class="fa fa-angle-right"></i> Снять отметку "Активен" <i class="fa fa-angle-right"></i> Продолжить.
   </span>
 </div>
 

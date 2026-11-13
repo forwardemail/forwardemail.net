@@ -8,6 +8,7 @@
 * [Avvio Rapido](#quick-start)
 * [Introduzione](#introduction)
   * [Cos'è Forward Email](#what-is-forward-email)
+  * [Qual è la differenza tra una cassetta postale e un alias](#what-is-the-difference-between-a-mailbox-and-an-alias)
   * [Chi usa Forward Email](#who-uses-forward-email)
   * [Qual è la storia di Forward Email](#what-is-forward-emails-history)
   * [Quanto è veloce questo servizio](#how-fast-is-this-service)
@@ -179,7 +180,7 @@ Per iniziare con Forward Email:
 
 2. **Aggiungi e verifica il tuo dominio** sotto [Il Mio Account → Domini](/my-account/domains)
 
-3. **Aggiungi e configura alias di posta/caselle email** sotto [Il Mio Account → Domini](/my-account/domains) → Alias
+3. **Aggiungi e configura alias di posta/caselle email** sotto [Il Mio Account → Domini](/my-account/domains) → Cassette postali (Alias)
 
 4. **Testa la tua configurazione** inviando un'email a uno dei tuoi nuovi alias
 
@@ -217,6 +218,12 @@ Puoi confrontarci con oltre 56 altri provider di servizi email sulla [nostra pag
 
 > \[!TIP]
 > Scopri di più su Forward Email leggendo il nostro [Whitepaper Tecnico gratuito](/technical-whitepaper.pdf) e consultando il nostro [audit di sicurezza](/pentest-report_forward-email.pdf) di Cure53.
+
+### Qual è la differenza tra una cassetta postale e un alias {#what-is-the-difference-between-a-mailbox-and-an-alias}
+
+Non c'è alcuna differenza. Il nostro sito web, le nostre app, l'API e la documentazione usano entrambi i termini per un indirizzo e-mail del tuo dominio.
+
+Una cassetta postale è un indirizzo e-mail del tuo dominio, come `hello@example.com`. Alcuni strumenti la chiamano alias. Ognuna può inoltrare le e-mail ad altri indirizzi, conservare le e-mail che leggi con IMAP e webmail, oppure fare entrambe le cose.
 
 ### Chi usa Forward Email {#who-uses-forward-email}
 
@@ -737,7 +744,7 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
 
 1. Vai su <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Il mio account <i class="fa fa-angle-right"></i> Domini</a> <i class="fa fa-angle-right"></i> Impostazioni <i class="fa fa-angle-right"></i> Configurazione SMTP in uscita e segui le istruzioni di configurazione
 
-2. Crea un nuovo alias per il tuo dominio sotto <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Il mio account <i class="fa fa-angle-right"></i> Domini</a> <i class="fa fa-angle-right"></i> Alias (es. <code><hello@example.com></code>)
+2. Crea un nuovo alias per il tuo dominio sotto <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Il mio account <i class="fa fa-angle-right"></i> Domini</a> <i class="fa fa-angle-right"></i> Cassette postali (Alias) (es. <code><hello@example.com></code>)
 
 3. Clicca su <strong class="text-success"><i class="fa fa-key"></i> Genera password</strong> accanto al nuovo alias creato. Copia negli appunti e conserva in modo sicuro la password generata mostrata a schermo.
 
@@ -745,7 +752,7 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
 
 5. Quando richiesto "Nome", inserisci il nome che vuoi venga mostrato come mittente (es. "Linus Torvalds").
 
-6. Quando richiesto "Indirizzo email", inserisci l'indirizzo email completo di un alias creato sotto <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Il mio account <i class="fa fa-angle-right"></i> Domini</a> <i class="fa fa-angle-right"></i> Alias (es. <code><hello@example.com></code>)
+6. Quando richiesto "Indirizzo email", inserisci l'indirizzo email completo di un alias creato sotto <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Il mio account <i class="fa fa-angle-right"></i> Domini</a> <i class="fa fa-angle-right"></i> Cassette postali (Alias) (es. <code><hello@example.com></code>)
 
 7. Deseleziona "Tratta come alias"
 
@@ -753,7 +760,7 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
 
 9. Quando richiesto "Server SMTP", inserisci <code>smtp.forwardemail.net</code> e cambia la porta in <code>465</code>
 
-10. Quando richiesto "Nome utente", inserisci l'indirizzo email completo di un alias creato sotto <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Il mio account <i class="fa fa-angle-right"></i> Domini</a> <i class="fa fa-angle-right"></i> Alias (es. <code><hello@example.com></code>)
+10. Quando richiesto "Nome utente", inserisci l'indirizzo email completo di un alias creato sotto <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Il mio account <i class="fa fa-angle-right"></i> Domini</a> <i class="fa fa-angle-right"></i> Cassette postali (Alias) (es. <code><hello@example.com></code>)
 
 11. Quando richiesto "Password", incolla la password da <strong class="text-success"><i class="fa fa-key"></i> Genera password</strong> al punto 3 sopra
 
@@ -1124,7 +1131,7 @@ Puoi conoscere i nostri subprocessori sulle nostre pagine [GDPR](/gdpr), [DPA](/
 
 In qualsiasi momento puoi esportare le tue caselle di posta in formati [EML](https://en.wikipedia.org/wiki/Email#Filename_extensions), [Mbox](https://en.wikipedia.org/wiki/Mbox) o [SQLite](https://en.wikipedia.org/wiki/SQLite) criptati.
 
-Vai su <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Il mio account <i class="fa fa-angle-right"></i> Domini</a> <i class="fa fa-angle-right"></i> Alias <i class="fa fa-angle-right"></i> Scarica Backup e seleziona il formato di esportazione preferito.
+Vai su <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Il mio account <i class="fa fa-angle-right"></i> Domini</a> <i class="fa fa-angle-right"></i> Cassette postali (Alias) <i class="fa fa-angle-right"></i> Scarica Backup e seleziona il formato di esportazione preferito.
 
 Ti verrà inviato via email un link per scaricare l'esportazione una volta terminata.
 
@@ -2063,7 +2070,7 @@ Se usi Microsoft 365 (Outlook) e vuoi inoltrare tutti gli alias non corrisponden
 
 ### Come configuro un risponditore automatico per le vacanze (risponditore automatico fuori sede) {#how-do-i-set-up-a-vacation-responder-out-of-office-auto-responder}
 
-Vai su <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Il Mio Account <i class="fa fa-angle-right"></i> Domini</a> <i class="fa fa-angle-right"></i> Alias e crea o modifica l'alias per cui desideri configurare un risponditore automatico per le vacanze.
+Vai su <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Il Mio Account <i class="fa fa-angle-right"></i> Domini</a> <i class="fa fa-angle-right"></i> Cassette postali (Alias) e crea o modifica l'alias per cui desideri configurare un risponditore automatico per le vacanze.
 Hai la possibilità di configurare una data di inizio, una data di fine, un oggetto e un messaggio, e abilitarlo o disabilitarlo in qualsiasi momento:
 
 * Attualmente sono supportati oggetto e messaggio in testo semplice (internamente utilizziamo il pacchetto `striptags` per rimuovere qualsiasi HTML).
@@ -2451,7 +2458,7 @@ Sì, dal 16 ottobre 2023 supportiamo la ricezione di email tramite IMAP come com
   </span>
 </div>
 
-1. Crea un nuovo alias per il tuo dominio sotto <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Il Mio Account <i class="fa fa-angle-right"></i> Domini</a> <i class="fa fa-angle-right"></i> Alias (es. <code><hello@example.com></code>)
+1. Crea un nuovo alias per il tuo dominio sotto <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Il Mio Account <i class="fa fa-angle-right"></i> Domini</a> <i class="fa fa-angle-right"></i> Cassette postali (Alias) (es. <code><hello@example.com></code>)
 
 2. Clicca su <strong class="text-success"><i class="fa fa-key"></i> Genera Password</strong> accanto al nuovo alias creato. Copia negli appunti e conserva in modo sicuro la password generata mostrata a schermo.
 
@@ -2508,7 +2515,7 @@ Sì, dal 4 dicembre 2023 supportiamo [POP3](https://en.wikipedia.org/wiki/Post_O
   </span>
 </div>
 
-1. Crea un nuovo alias per il tuo dominio sotto <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Il Mio Account <i class="fa fa-angle-right"></i> Domini</a> <i class="fa fa-angle-right"></i> Alias (es. <code><hello@example.com></code>)
+1. Crea un nuovo alias per il tuo dominio sotto <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Il Mio Account <i class="fa fa-angle-right"></i> Domini</a> <i class="fa fa-angle-right"></i> Cassette postali (Alias) (es. <code><hello@example.com></code>)
 
 2. Clicca su <strong class="text-success"><i class="fa fa-key"></i> Genera Password</strong> accanto al nuovo alias creato. Copia negli appunti e conserva in modo sicuro la password generata mostrata a schermo.
 
@@ -2649,7 +2656,7 @@ Sì. Tutti i piani a pagamento includono l'SMTP in uscita, ed è **illimitato**:
 
 1. Vai su <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Il Mio Account <i class="fa fa-angle-right"></i> Domini</a> <i class="fa fa-angle-right"></i> Impostazioni <i class="fa fa-angle-right"></i> Configurazione SMTP in uscita e segui le istruzioni di configurazione
 
-2. Crea un nuovo alias per il tuo dominio in <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Il Mio Account <i class="fa fa-angle-right"></i> Domini</a> <i class="fa fa-angle-right"></i> Alias (es. <code><hello@example.com></code>)
+2. Crea un nuovo alias per il tuo dominio in <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Il Mio Account <i class="fa fa-angle-right"></i> Domini</a> <i class="fa fa-angle-right"></i> Cassette postali (Alias) (es. <code><hello@example.com></code>)
 
 3. Clicca su <strong class="text-success"><i class="fa fa-key"></i> Genera Password</strong> accanto al nuovo alias creato. Copia negli appunti e conserva in modo sicuro la password generata mostrata a schermo.
 
@@ -2768,7 +2775,7 @@ Sì, supportiamo [OpenPGP](https://en.wikipedia.org/wiki/Pretty_Good_Privacy#Ope
        Componenti aggiuntivi opzionali:
      </strong>
      <span>
-       Se stai utilizzando il nostro servizio di <a class="alert-link" href="/blog/docs/best-quantum-safe-encrypted-email-service">archiviazione crittografata (IMAP/POP3)</a> e vuoi che <i>tutte</i> le email memorizzate nel tuo database SQLite (già crittografato) siano criptate con la tua chiave pubblica, allora vai su <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Il mio account <i class="fa fa-angle-right"></i> Domini</a> <i class="fa fa-angle-right"></i> Alias (es. <code>hello@example.com</code>) <i class="fa fa-angle-right"></i> Modifica <i class="fa fa-angle-right"></i> OpenPGP e carica la tua chiave pubblica.
+       Se stai utilizzando il nostro servizio di <a class="alert-link" href="/blog/docs/best-quantum-safe-encrypted-email-service">archiviazione crittografata (IMAP/POP3)</a> e vuoi che <i>tutte</i> le email memorizzate nel tuo database SQLite (già crittografato) siano criptate con la tua chiave pubblica, allora vai su <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Il mio account <i class="fa fa-angle-right"></i> Domini</a> <i class="fa fa-angle-right"></i> Cassette postali (Alias) (es. <code>hello@example.com</code>) <i class="fa fa-angle-right"></i> Modifica <i class="fa fa-angle-right"></i> OpenPGP e carica la tua chiave pubblica.
      </span>
    </div>
 
@@ -2836,7 +2843,7 @@ Per configurare la crittografia S/MIME per il tuo alias:
 
 2. Esporta il tuo certificato in formato PEM (solo il certificato pubblico, non la chiave privata).
 
-3. Vai su <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Il mio account <i class="fa fa-angle-right"></i> Domini</a> <i class="fa fa-angle-right"></i> Alias (es. <code><hello@example.com></code>) <i class="fa fa-angle-right"></i> Modifica <i class="fa fa-angle-right"></i> S/MIME e carica il tuo certificato pubblico.
+3. Vai su <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Il mio account <i class="fa fa-angle-right"></i> Domini</a> <i class="fa fa-angle-right"></i> Cassette postali (Alias) (es. <code><hello@example.com></code>) <i class="fa fa-angle-right"></i> Modifica <i class="fa fa-angle-right"></i> S/MIME e carica il tuo certificato pubblico.
 4. Una volta configurato, tutte le email in arrivo al tuo alias saranno criptate utilizzando il tuo certificato S/MIME prima di essere archiviate o inoltrate.
 
    <div class="alert my-3 alert-secondary">
@@ -2955,7 +2962,7 @@ if header :contains "Subject" "invoice" {
 
 Puoi gestire gli script Sieve in diversi modi:
 
-1. **Interfaccia web**: Vai a <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Aliases <i class="fa fa-angle-right"></i> Sieve Scripts per creare e gestire gli script.
+1. **Interfaccia web**: Vai a <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Cassette postali (Aliases) <i class="fa fa-angle-right"></i> Sieve Scripts per creare e gestire gli script.
 
 2. **Protocollo ManageSieve**: Connettiti usando qualsiasi client compatibile ManageSieve, come l'add-on Sieve di Thunderbird o [sieve-connect](https://github.com/philpennock/sieve-connect), a `imap.forwardemail.net`. Usa la porta `2190` con STARTTLS o la porta `4190` con TLS implicito.
 
@@ -5794,7 +5801,7 @@ No, non è consigliato, poiché puoi usare un solo server di scambio mail alla v
     Importante:
   </strong>
   <span>
-    Se sei su un piano a pagamento, devi andare su <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Il Mio Account <i class="fa fa-angle-right"></i> Domini</a> <i class="fa fa-angle-right"></i> Alias <i class="fa fa-angle-right"></i> Modifica Alias <i class="fa fa-angle-right"></i> Deseleziona la casella "Attivo" <i class="fa fa-angle-right"></i> Continua.
+    Se sei su un piano a pagamento, devi andare su <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Il Mio Account <i class="fa fa-angle-right"></i> Domini</a> <i class="fa fa-angle-right"></i> Cassette postali (Alias) <i class="fa fa-angle-right"></i> Modifica Alias <i class="fa fa-angle-right"></i> Deseleziona la casella "Attivo" <i class="fa fa-angle-right"></i> Continua.
   </span>
 </div>
 

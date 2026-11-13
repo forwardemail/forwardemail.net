@@ -8,6 +8,7 @@
 * [Bắt Đầu Nhanh](#quick-start)
 * [Giới Thiệu](#introduction)
   * [Forward Email là gì](#what-is-forward-email)
+  * [Sự khác biệt giữa hộp thư và bí danh là gì](#what-is-the-difference-between-a-mailbox-and-an-alias)
   * [Ai sử dụng Forward Email](#who-uses-forward-email)
   * [Lịch sử của Forward Email là gì](#what-is-forward-emails-history)
   * [Dịch vụ này nhanh như thế nào](#how-fast-is-this-service)
@@ -179,7 +180,7 @@
 
 2. **Thêm và xác minh tên miền của bạn** trong [Tài Khoản Của Tôi → Tên Miền](/my-account/domains)
 
-3. **Thêm và cấu hình các bí danh/hộp thư email** trong [Tài Khoản Của Tôi → Tên Miền](/my-account/domains) → Bí Danh
+3. **Thêm và cấu hình các bí danh/hộp thư email** trong [Tài Khoản Của Tôi → Tên Miền](/my-account/domains) → Hộp thư (Bí Danh)
 
 4. **Kiểm tra thiết lập của bạn** bằng cách gửi email đến một trong các bí danh mới của bạn
 
@@ -217,6 +218,12 @@ Bạn có thể so sánh chúng tôi với hơn 56 nhà cung cấp dịch vụ e
 
 > \[!TIP]
 > Tìm hiểu thêm về Forward Email bằng cách đọc [Bản Báo Cáo Kỹ Thuật](/technical-whitepaper.pdf) miễn phí của chúng tôi và xem xét [kiểm toán bảo mật](/pentest-report_forward-email.pdf) của chúng tôi bởi Cure53.
+
+### Sự khác biệt giữa hộp thư và bí danh là gì {#what-is-the-difference-between-a-mailbox-and-an-alias}
+
+Không có sự khác biệt. Trang web, ứng dụng, API và tài liệu của chúng tôi dùng cả hai từ để chỉ một địa chỉ email thuộc tên miền của bạn.
+
+Hộp thư là một địa chỉ email thuộc tên miền của bạn, chẳng hạn `hello@example.com`. Một số công cụ gọi nó là bí danh. Mỗi hộp thư có thể chuyển tiếp email đến các hộp thư đến khác, lưu email bạn đọc bằng IMAP và webmail, hoặc làm cả hai.
 
 ### Ai sử dụng Forward Email {#who-uses-forward-email}
 
@@ -737,7 +744,7 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
 
 1. Truy cập <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Tài khoản của tôi <i class="fa fa-angle-right"></i> Tên miền</a> <i class="fa fa-angle-right"></i> Cài đặt <i class="fa fa-angle-right"></i> Cấu hình SMTP gửi đi và làm theo hướng dẫn thiết lập
 
-2. Tạo một bí danh mới cho tên miền của bạn trong <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Tài khoản của tôi <i class="fa fa-angle-right"></i> Tên miền</a> <i class="fa fa-angle-right"></i> Bí danh (ví dụ <code><hello@example.com></code>)
+2. Tạo một bí danh mới cho tên miền của bạn trong <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Tài khoản của tôi <i class="fa fa-angle-right"></i> Tên miền</a> <i class="fa fa-angle-right"></i> Hộp thư (Bí danh) (ví dụ <code><hello@example.com></code>)
 
 3. Nhấp vào <strong class="text-success"><i class="fa fa-key"></i> Tạo mật khẩu</strong> bên cạnh bí danh mới tạo. Sao chép vào bộ nhớ tạm và lưu trữ an toàn mật khẩu được tạo hiển thị trên màn hình.
 
@@ -745,7 +752,7 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
 
 5. Khi được yêu cầu "Tên", nhập tên bạn muốn hiển thị trong phần "Từ" của email (ví dụ "Linus Torvalds").
 
-6. Khi được yêu cầu "Địa chỉ email", nhập địa chỉ email đầy đủ của bí danh bạn đã tạo trong <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Tài khoản của tôi <i class="fa fa-angle-right"></i> Tên miền</a> <i class="fa fa-angle-right"></i> Bí danh (ví dụ <code><hello@example.com></code>)
+6. Khi được yêu cầu "Địa chỉ email", nhập địa chỉ email đầy đủ của bí danh bạn đã tạo trong <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Tài khoản của tôi <i class="fa fa-angle-right"></i> Tên miền</a> <i class="fa fa-angle-right"></i> Hộp thư (Bí danh) (ví dụ <code><hello@example.com></code>)
 
 7. Bỏ chọn "Xử lý như một bí danh"
 
@@ -753,7 +760,7 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
 
 9. Khi được yêu cầu "Máy chủ SMTP", nhập <code>smtp.forwardemail.net</code> và đổi cổng thành <code>465</code>
 
-10. Khi được yêu cầu "Tên đăng nhập", nhập địa chỉ email đầy đủ của bí danh bạn đã tạo trong <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Tài khoản của tôi <i class="fa fa-angle-right"></i> Tên miền</a> <i class="fa fa-angle-right"></i> Bí danh (ví dụ <code><hello@example.com></code>)
+10. Khi được yêu cầu "Tên đăng nhập", nhập địa chỉ email đầy đủ của bí danh bạn đã tạo trong <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Tài khoản của tôi <i class="fa fa-angle-right"></i> Tên miền</a> <i class="fa fa-angle-right"></i> Hộp thư (Bí danh) (ví dụ <code><hello@example.com></code>)
 
 11. Khi được yêu cầu "Mật khẩu", dán mật khẩu từ <strong class="text-success"><i class="fa fa-key"></i> Tạo mật khẩu</strong> ở bước 3 phía trên
 
@@ -1124,7 +1131,7 @@ Bạn có thể tìm hiểu về các nhà xử lý phụ của chúng tôi trê
 
 Bất cứ lúc nào bạn có thể xuất hộp thư của mình dưới định dạng [EML](https://en.wikipedia.org/wiki/Email#Filename_extensions), [Mbox](https://en.wikipedia.org/wiki/Mbox), hoặc [SQLite](https://en.wikipedia.org/wiki/SQLite) được mã hóa.
 
-Đi tới <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Tài khoản của tôi <i class="fa fa-angle-right"></i> Tên miền</a> <i class="fa fa-angle-right"></i> Bí danh <i class="fa fa-angle-right"></i> Tải xuống sao lưu và chọn loại định dạng xuất ưa thích của bạn.
+Đi tới <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Tài khoản của tôi <i class="fa fa-angle-right"></i> Tên miền</a> <i class="fa fa-angle-right"></i> Hộp thư (Bí danh) <i class="fa fa-angle-right"></i> Tải xuống sao lưu và chọn loại định dạng xuất ưa thích của bạn.
 
 Bạn sẽ nhận được email chứa liên kết tải xuống sau khi quá trình xuất hoàn tất.
 
@@ -2061,7 +2068,7 @@ Nếu bạn đang sử dụng Microsoft 365 (Outlook) và muốn chuyển tiếp
 
 ### Làm thế nào để tôi thiết lập trả lời tự động khi đi nghỉ (trả lời tự động khi vắng mặt) {#how-do-i-set-up-a-vacation-responder-out-of-office-auto-responder}
 
-Đi đến <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Tài Khoản Của Tôi <i class="fa fa-angle-right"></i> Tên Miền</a> <i class="fa fa-angle-right"></i> Bí Danh và tạo mới hoặc chỉnh sửa bí danh mà bạn muốn cấu hình trả lời tự động khi đi nghỉ.
+Đi đến <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Tài Khoản Của Tôi <i class="fa fa-angle-right"></i> Tên Miền</a> <i class="fa fa-angle-right"></i> Hộp thư (Bí Danh) và tạo mới hoặc chỉnh sửa bí danh mà bạn muốn cấu hình trả lời tự động khi đi nghỉ.
 Bạn có khả năng cấu hình ngày bắt đầu, ngày kết thúc, chủ đề và tin nhắn, và bật hoặc tắt nó bất cứ lúc nào:
 
 * Chủ đề và tin nhắn dạng văn bản thuần túy hiện được hỗ trợ (chúng tôi sử dụng gói `striptags` nội bộ để loại bỏ bất kỳ HTML nào).
@@ -2449,7 +2456,7 @@ Vâng, kể từ ngày 16 tháng 10 năm 2023, chúng tôi hỗ trợ nhận ema
   </span>
 </div>
 
-1. Tạo một bí danh mới cho tên miền của bạn trong <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Tài khoản của tôi <i class="fa fa-angle-right"></i> Tên miền</a> <i class="fa fa-angle-right"></i> Bí danh (ví dụ <code><hello@example.com></code>)
+1. Tạo một bí danh mới cho tên miền của bạn trong <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Tài khoản của tôi <i class="fa fa-angle-right"></i> Tên miền</a> <i class="fa fa-angle-right"></i> Hộp thư (Bí danh) (ví dụ <code><hello@example.com></code>)
 
 2. Nhấp vào <strong class="text-success"><i class="fa fa-key"></i> Tạo Mật khẩu</strong> bên cạnh bí danh mới tạo. Sao chép vào bộ nhớ tạm và lưu trữ an toàn mật khẩu được hiển thị trên màn hình.
 
@@ -2506,7 +2513,7 @@ Có, kể từ ngày 4 tháng 12 năm 2023, chúng tôi hỗ trợ [POP3](https:
   </span>
 </div>
 
-1. Tạo một bí danh mới cho tên miền của bạn trong <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Tài khoản của tôi <i class="fa fa-angle-right"></i> Tên miền</a> <i class="fa fa-angle-right"></i> Bí danh (ví dụ <code><hello@example.com></code>)
+1. Tạo một bí danh mới cho tên miền của bạn trong <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Tài khoản của tôi <i class="fa fa-angle-right"></i> Tên miền</a> <i class="fa fa-angle-right"></i> Hộp thư (Bí danh) (ví dụ <code><hello@example.com></code>)
 
 2. Nhấp vào <strong class="text-success"><i class="fa fa-key"></i> Generate Password</strong> bên cạnh bí danh mới tạo. Sao chép vào bộ nhớ tạm và lưu trữ an toàn mật khẩu được tạo hiển thị trên màn hình.
 
@@ -2647,7 +2654,7 @@ Có. Tất cả các gói trả phí đều bao gồm SMTP gửi đi, và SMTP g
 
 1. Truy cập <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Tài khoản của tôi <i class="fa fa-angle-right"></i> Miền</a> <i class="fa fa-angle-right"></i> Cài đặt <i class="fa fa-angle-right"></i> Cấu hình SMTP gửi đi và làm theo hướng dẫn thiết lập
 
-2. Tạo một bí danh mới cho miền của bạn trong <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Tài khoản của tôi <i class="fa fa-angle-right"></i> Miền</a> <i class="fa fa-angle-right"></i> Bí danh (ví dụ <code><hello@example.com></code>)
+2. Tạo một bí danh mới cho miền của bạn trong <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Tài khoản của tôi <i class="fa fa-angle-right"></i> Miền</a> <i class="fa fa-angle-right"></i> Hộp thư (Bí danh) (ví dụ <code><hello@example.com></code>)
 
 3. Nhấp vào <strong class="text-success"><i class="fa fa-key"></i> Tạo mật khẩu</strong> bên cạnh bí danh mới tạo. Sao chép vào bộ nhớ tạm và lưu trữ an toàn mật khẩu được tạo hiển thị trên màn hình.
 
@@ -2766,7 +2773,7 @@ Vâng, chúng tôi hỗ trợ [OpenPGP](https://en.wikipedia.org/wiki/Pretty_Goo
        Tùy chọn bổ sung:
      </strong>
      <span>
-       Nếu bạn đang sử dụng dịch vụ <a class="alert-link" href="/blog/docs/best-quantum-safe-encrypted-email-service">lưu trữ mã hóa (IMAP/POP3)</a> của chúng tôi và muốn <i>tất cả</i> email được lưu trong cơ sở dữ liệu SQLite (đã được mã hóa) của bạn được mã hóa bằng khóa công khai của bạn, thì hãy vào <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Tài khoản của tôi <i class="fa fa-angle-right"></i> Tên miền</a> <i class="fa fa-angle-right"></i> Bí danh (ví dụ <code>hello@example.com</code>) <i class="fa fa-angle-right"></i> Chỉnh sửa <i class="fa fa-angle-right"></i> OpenPGP và tải lên khóa công khai của bạn.
+       Nếu bạn đang sử dụng dịch vụ <a class="alert-link" href="/blog/docs/best-quantum-safe-encrypted-email-service">lưu trữ mã hóa (IMAP/POP3)</a> của chúng tôi và muốn <i>tất cả</i> email được lưu trong cơ sở dữ liệu SQLite (đã được mã hóa) của bạn được mã hóa bằng khóa công khai của bạn, thì hãy vào <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Tài khoản của tôi <i class="fa fa-angle-right"></i> Tên miền</a> <i class="fa fa-angle-right"></i> Hộp thư (Bí danh) (ví dụ <code>hello@example.com</code>) <i class="fa fa-angle-right"></i> Chỉnh sửa <i class="fa fa-angle-right"></i> OpenPGP và tải lên khóa công khai của bạn.
      </span>
    </div>
 
@@ -2834,7 +2841,7 @@ Chúng tôi hỗ trợ cả chứng chỉ RSA và ECC (Mã hóa đường cong e
 
 2. Xuất chứng chỉ của bạn ở định dạng PEM (chỉ chứng chỉ công khai, không phải khóa riêng).
 
-3. Truy cập <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Tài khoản của tôi <i class="fa fa-angle-right"></i> Tên miền</a> <i class="fa fa-angle-right"></i> Bí danh (ví dụ <code><hello@example.com></code>) <i class="fa fa-angle-right"></i> Chỉnh sửa <i class="fa fa-angle-right"></i> S/MIME và tải lên chứng chỉ công khai của bạn.
+3. Truy cập <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Tài khoản của tôi <i class="fa fa-angle-right"></i> Tên miền</a> <i class="fa fa-angle-right"></i> Hộp thư (Bí danh) (ví dụ <code><hello@example.com></code>) <i class="fa fa-angle-right"></i> Chỉnh sửa <i class="fa fa-angle-right"></i> S/MIME và tải lên chứng chỉ công khai của bạn.
 4. Khi đã cấu hình, tất cả email đến alias của bạn sẽ được mã hóa bằng chứng chỉ S/MIME trước khi được lưu trữ hoặc chuyển tiếp.
 
    <div class="alert my-3 alert-secondary">
@@ -2953,7 +2960,7 @@ if header :contains "Subject" "invoice" {
 
 Bạn có thể quản lý script Sieve bằng một số cách:
 
-1. **Giao diện Web**: Đi tới <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Aliases <i class="fa fa-angle-right"></i> Sieve Scripts để tạo và quản lý script.
+1. **Giao diện Web**: Đi tới <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Hộp thư (Aliases) <i class="fa fa-angle-right"></i> Sieve Scripts để tạo và quản lý script.
 
 2. **Giao thức ManageSieve**: Kết nối bằng bất kỳ client tương thích ManageSieve nào, chẳng hạn add-on Sieve của Thunderbird hoặc [sieve-connect](https://github.com/philpennock/sieve-connect), tới `imap.forwardemail.net`. Sử dụng cổng `2190` với STARTTLS hoặc cổng `4190` với TLS ngầm định.
 
@@ -5792,7 +5799,7 @@ Không, điều này không được khuyến nghị, vì bạn chỉ có thể 
     Quan trọng:
   </strong>
   <span>
-    Nếu bạn đang sử dụng gói trả phí, thì bạn phải vào <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Tài khoản của tôi <i class="fa fa-angle-right"></i> Tên miền</a> <i class="fa fa-angle-right"></i> Bí danh <i class="fa fa-angle-right"></i> Chỉnh sửa bí danh <i class="fa fa-angle-right"></i> Bỏ chọn hộp kiểm "Hoạt động" <i class="fa fa-angle-right"></i> Tiếp tục.
+    Nếu bạn đang sử dụng gói trả phí, thì bạn phải vào <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Tài khoản của tôi <i class="fa fa-angle-right"></i> Tên miền</a> <i class="fa fa-angle-right"></i> Hộp thư (Bí danh) <i class="fa fa-angle-right"></i> Chỉnh sửa bí danh <i class="fa fa-angle-right"></i> Bỏ chọn hộp kiểm "Hoạt động" <i class="fa fa-angle-right"></i> Tiếp tục.
   </span>
 </div>
 

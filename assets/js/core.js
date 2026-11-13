@@ -252,8 +252,88 @@ document.addEventListener(
 // The jump-to handler scrolls to a link's target without following the
 // link, so the skip link (layout.pug) moves focus into the page itself
 $('body').on('click.skipLink', '.fe-skip-link', () => {
-  const main = document.querySelector('#main-content');
+  // (past the account sidebar, on the pages that have one)
+  const main =
+    document.querySelector('#acct-main') ||
+    document.querySelector('#main-content');
   if (main) main.focus({ preventScroll: true });
+});
+
+// The account sidebar of an account with many domains lists, ahead of the
+// others, the domains viewed last in this browser (_account-sidebar.pug).
+// Only names of the account's own domains, which the page lists, are shown.
+$(() => {
+  const recent = document.querySelector('#acct-recent');
+  if (!recent) return;
+  const key = `fe:recent-domains:${recent.dataset.user}`;
+  let visits = {};
+  try {
+    visits = JSON.parse(window.localStorage.getItem(key)) || {};
+  } catch (err) {
+    // (storage is off in this browser: nothing is remembered)
+    logger.debug(err);
+  }
+
+  if (typeof visits !== 'object' || Array.isArray(visits)) visits = {};
+  const byLastVisit = (a, b) => visits[b] - visits[a];
+
+  // remember the domain of this page (and the 20 viewed last)
+  const active = document.querySelector('.acct-sidebar a.acct-domain.active');
+  if (active && active.dataset.name) {
+    visits[active.dataset.name] = Date.now();
+    const kept = {};
+    for (const name of Object.keys(visits)
+      .filter((name) => typeof visits[name] === 'number')
+      .sort(byLastVisit)
+      .slice(0, 20))
+      kept[name] = visits[name];
+    visits = kept;
+    try {
+      window.localStorage.setItem(key, JSON.stringify(visits));
+    } catch (err) {
+      // (storage is off in this browser: nothing is remembered)
+      logger.debug(err);
+    }
+  }
+
+  const statuses = new Map();
+  for (const option of document.querySelectorAll('#acct-find-list option'))
+    statuses.set(option.value, option.dataset.status);
+  const listed = new Set(
+    [...document.querySelectorAll('.acct-sidebar a.acct-domain')].map(
+      (a) => a.dataset.name
+    )
+  );
+  const dots = {
+    ready: 'acct-dot acct-dot--ready',
+    setup: 'acct-dot acct-dot--setup',
+    global: 'acct-dot acct-dot--global'
+  };
+  const names = Object.keys(visits)
+    .filter(
+      (name) =>
+        typeof visits[name] === 'number' &&
+        statuses.has(name) &&
+        !listed.has(name)
+    )
+    .sort(byLastVisit)
+    .slice(0, 5);
+  if (names.length === 0) return;
+  for (const name of names) {
+    const link = document.createElement('a');
+    link.className = 'acct-link acct-domain';
+    link.href = `${recent.dataset.base}/${encodeURIComponent(name)}`;
+    const dot = document.createElement('span');
+    dot.className = dots[statuses.get(name)] || dots.ready;
+    dot.setAttribute('aria-hidden', 'true');
+    const label = document.createElement('span');
+    label.className = 'acct-link-label notranslate';
+    label.textContent = name;
+    link.append(dot, label);
+    recent.append(link);
+  }
+
+  recent.classList.remove('d-none');
 });
 
 // Share dialog (see assets/js/share.js)
@@ -528,6 +608,15 @@ window.addEventListener(
           confirmButtonText: 'Close',
           allowOutsideClick: false
         });
+        // from the list of domains, continue on the page of the domain,
+        // which has the Verify button
+        const next = $form.attr('data-next-url');
+        if (
+          typeof next === 'string' &&
+          // (a path of this site only)
+          /^\/[^/\\]/.test(next)
+        )
+          window.location.href = next;
       } catch (err) {
         spinner.hide();
         Swal.fire(window._types.error, err.message, 'error');
@@ -577,6 +666,12 @@ window.addEventListener(
     window.addEventListener('tableAjaxFormReloaded', function () {
       // remove any elements that have `remove-on-table-ajax-form-reloaded`
       $('.remove-on-table-ajax-form-reloaded').remove();
+      // the tooltips of the new rows (and none left open from the old ones)
+      $('.tooltip').remove();
+      $('[data-toggle="tooltip"]').tooltip({
+        boundary: 'window',
+        container: 'body'
+      });
       // scroll to top of first ajax table form found
       // <https://github.com/forwardemail/forwardemail.net/issues/479>
       // const $form = $('form.table-ajax-form:first');

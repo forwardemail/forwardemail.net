@@ -8,6 +8,7 @@
 * [Gyors Kezdés](#quick-start)
 * [Bevezetés](#introduction)
   * [Mi az a Forward Email](#what-is-forward-email)
+  * [Mi a különbség a postafiók és az álnév között](#what-is-the-difference-between-a-mailbox-and-an-alias)
   * [Ki használja a Forward Emailt](#who-uses-forward-email)
   * [Mi a Forward Email története](#what-is-forward-emails-history)
   * [Milyen gyors ez a szolgáltatás](#how-fast-is-this-service)
@@ -179,7 +180,7 @@ A Forward Email használatának megkezdéséhez:
 
 2. **Adja hozzá és igazolja domainjét** a [Saját fiók → Domainok](/my-account/domains) menüpont alatt
 
-3. **Adjon hozzá és konfiguráljon e-mail aliasokat/postafiókokat** a [Saját fiók → Domainok](/my-account/domains) → Aliasok alatt
+3. **Adjon hozzá és konfiguráljon e-mail aliasokat/postafiókokat** a [Saját fiók → Domainok](/my-account/domains) → Postaládák (Aliasok) alatt
 
 4. **Tesztelje beállításait** úgy, hogy küld egy e-mailt az egyik új aliasára
 
@@ -217,6 +218,12 @@ A Forward Email főbb jellemzői:
 
 > \[!TIP]
 > Tudjon meg többet a Forward Emailről ingyenes [Műszaki fehér könyvünk](/technical-whitepaper.pdf) elolvasásával és áttekintve a [biztonsági auditunkat](/pentest-report_forward-email.pdf) a Cure53-tól.
+
+### Mi a különbség a postafiók és az álnév között {#what-is-the-difference-between-a-mailbox-and-an-alias}
+
+Nincs különbség. Weboldalunk, alkalmazásaink, API-nk és dokumentációnk mindkét szót használja a domainjéhez tartozó e-mail-címre.
+
+A postafiók a domainjéhez tartozó e-mail-cím, például `hello@example.com`. Egyes eszközök álnévnek hívják. Mindegyik továbbíthatja az e-maileket más címekre, tárolhatja az IMAP-pal és webmaillel olvasott leveleket, vagy mindkettőt.
 
 ### Kik használják a Forward Emailt {#who-uses-forward-email}
 
@@ -737,7 +744,7 @@ echo "Teszt e-mail törzse" | mail -s "Teszt tárgy" recipient@example.com
 
 1. Menjen a <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Saját fiók <i class="fa fa-angle-right"></i> Domain-ek</a> <i class="fa fa-angle-right"></i> Beállítások <i class="fa fa-angle-right"></i> Kimenő SMTP konfiguráció és kövesse a beállítási utasításokat
 
-2. Hozzon létre egy új alias-t a domainje alatt a <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Saját fiók <i class="fa fa-angle-right"></i> Domain-ek</a> <i class="fa fa-angle-right"></i> Aliasok menüpontban (pl. <code><hello@example.com></code>)
+2. Hozzon létre egy új alias-t a domainje alatt a <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Saját fiók <i class="fa fa-angle-right"></i> Domain-ek</a> <i class="fa fa-angle-right"></i> Postaládák (Aliasok) menüpontban (pl. <code><hello@example.com></code>)
 
 3. Kattintson a <strong class="text-success"><i class="fa fa-key"></i> Jelszó generálása</strong> gombra az újonnan létrehozott alias mellett. Másolja a vágólapjára, és biztonságosan tárolja a képernyőn megjelenő generált jelszót.
 
@@ -745,7 +752,7 @@ echo "Teszt e-mail törzse" | mail -s "Teszt tárgy" recipient@example.com
 
 5. Amikor a „Név” mező megjelenik, írja be azt a nevet, amelyet szeretne, hogy az e-mailje „Feladóként” mutasson (pl. „Linus Torvalds”).
 
-6. Amikor az „E-mail cím” mező megjelenik, írja be annak az aliasnak a teljes e-mail címét, amelyet a <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Saját fiók <i class="fa fa-angle-right"></i> Domain-ek</a> <i class="fa fa-angle-right"></i> Aliasok alatt hozott létre (pl. <code><hello@example.com></code>)
+6. Amikor az „E-mail cím” mező megjelenik, írja be annak az aliasnak a teljes e-mail címét, amelyet a <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Saját fiók <i class="fa fa-angle-right"></i> Domain-ek</a> <i class="fa fa-angle-right"></i> Postaládák (Aliasok) alatt hozott létre (pl. <code><hello@example.com></code>)
 
 7. Törölje a jelölést a „Kezelés aliaszként” opcióból
 
@@ -753,7 +760,7 @@ echo "Teszt e-mail törzse" | mail -s "Teszt tárgy" recipient@example.com
 
 9. Amikor az „SMTP szerver” mező megjelenik, írja be: <code>smtp.forwardemail.net</code> és állítsa a portot <code>465</code>-re
 
-10. Amikor a „Felhasználónév” mező megjelenik, írja be annak az aliasnak a teljes e-mail címét, amelyet a <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Saját fiók <i class="fa fa-angle-right"></i> Domain-ek</a> <i class="fa fa-angle-right"></i> Aliasok alatt hozott létre (pl. <code><hello@example.com></code>)
+10. Amikor a „Felhasználónév” mező megjelenik, írja be annak az aliasnak a teljes e-mail címét, amelyet a <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Saját fiók <i class="fa fa-angle-right"></i> Domain-ek</a> <i class="fa fa-angle-right"></i> Postaládák (Aliasok) alatt hozott létre (pl. <code><hello@example.com></code>)
 
 11. Amikor a „Jelszó” mező megjelenik, illessze be a 3. lépésben a <strong class="text-success"><i class="fa fa-key"></i> Jelszó generálása</strong> gombbal kapott jelszót
 
@@ -1124,7 +1131,7 @@ A feldolgozó alvállalkozóinkról a [GDPR](/gdpr), [DPA](/dpa) és [Adatvédel
 
 Bármikor exportálhatja postafiókjait [EML](https://en.wikipedia.org/wiki/Email#Filename_extensions), [Mbox](https://en.wikipedia.org/wiki/Mbox) vagy titkosított [SQLite](https://en.wikipedia.org/wiki/SQLite) formátumban.
 
-Lépjen a <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Fiókom <i class="fa fa-angle-right"></i> Domain-ek</a> <i class="fa fa-angle-right"></i> Aliasok <i class="fa fa-angle-right"></i> Biztonsági mentés letöltése menüpontra, és válassza ki a kívánt export formátumot.
+Lépjen a <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Fiókom <i class="fa fa-angle-right"></i> Domain-ek</a> <i class="fa fa-angle-right"></i> Postaládák (Aliasok) <i class="fa fa-angle-right"></i> Biztonsági mentés letöltése menüpontra, és válassza ki a kívánt export formátumot.
 
 Az exportálás befejezése után e-mailben kap egy letöltési linket.
 
@@ -2062,7 +2069,7 @@ Ha Microsoft 365-öt (Outlook) használ, és szeretné az összes nem egyező al
 
 ### Hogyan állítsak be szabadságválaszt (irodán kívüli automatikus válaszadó) {#how-do-i-set-up-a-vacation-responder-out-of-office-auto-responder}
 
-Lépjen a <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Saját fiók <i class="fa fa-angle-right"></i> Domain-ek</a> <i class="fa fa-angle-right"></i> Aliasok menüpontra, és hozzon létre vagy szerkesszen egy alias-t, amelyhez szabadságválaszt szeretne beállítani.
+Lépjen a <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Saját fiók <i class="fa fa-angle-right"></i> Domain-ek</a> <i class="fa fa-angle-right"></i> Postaládák (Aliasok) menüpontra, és hozzon létre vagy szerkesszen egy alias-t, amelyhez szabadságválaszt szeretne beállítani.
 Lehetőséged van beállítani egy kezdő dátumot, befejező dátumot, tárgyat és üzenetet, valamint bármikor engedélyezni vagy letiltani azt:
 
 * Jelenleg csak egyszerű szöveges tárgy és üzenet támogatott (belsejében a `striptags` csomagot használjuk az esetleges HTML eltávolítására).
@@ -2450,7 +2457,7 @@ Igen, 2023. október 16-tól támogatjuk az e-mailek fogadását IMAP-on kereszt
   </span>
 </div>
 
-1. Hozz létre egy új alias-t a domainedhez a <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Saját fiók <i class="fa fa-angle-right"></i> Domain-ek</a> <i class="fa fa-angle-right"></i> Aliasok alatt (pl. <code><hello@example.com></code>)
+1. Hozz létre egy új alias-t a domainedhez a <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Saját fiók <i class="fa fa-angle-right"></i> Domain-ek</a> <i class="fa fa-angle-right"></i> Postaládák (Aliasok) alatt (pl. <code><hello@example.com></code>)
 
 2. Kattints a <strong class="text-success"><i class="fa fa-key"></i> Jelszó generálása</strong> gombra az újonnan létrehozott alias mellett. Másold a vágólapodra, és biztonságosan tárold a képernyőn megjelenő jelszót.
 
@@ -2507,7 +2514,7 @@ Igen, 2023. december 4-től minden fizetős felhasználó számára elérhető k
   </span>
 </div>
 
-1. Hozzon létre egy új alias-t a domainje alatt a <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Saját fiók <i class="fa fa-angle-right"></i> Domain-ek</a> <i class="fa fa-angle-right"></i> Aliasok menüpontban (pl. <code><hello@example.com></code>)
+1. Hozzon létre egy új alias-t a domainje alatt a <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Saját fiók <i class="fa fa-angle-right"></i> Domain-ek</a> <i class="fa fa-angle-right"></i> Postaládák (Aliasok) menüpontban (pl. <code><hello@example.com></code>)
 
 2. Kattintson a frissen létrehozott alias mellett található <strong class="text-success"><i class="fa fa-key"></i> Jelszó generálása</strong> gombra. Másolja a vágólapra, és biztonságosan tárolja a képernyőn megjelenő jelszót.
 
@@ -2648,7 +2655,7 @@ Igen. Minden fizetős csomag tartalmazza a kimenő SMTP-t, és ez **korlátlan**
 
 1. Lépjen a <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Saját fiók <i class="fa fa-angle-right"></i> Domain-ek</a> <i class="fa fa-angle-right"></i> Beállítások <i class="fa fa-angle-right"></i> Kimenő SMTP konfiguráció oldalra, és kövesse a beállítási utasításokat
 
-2. Hozzon létre egy új alias-t a domainje alatt a <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Saját fiók <i class="fa fa-angle-right"></i> Domain-ek</a> <i class="fa fa-angle-right"></i> Aliasok menüpontban (pl. <code><hello@example.com></code>)
+2. Hozzon létre egy új alias-t a domainje alatt a <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Saját fiók <i class="fa fa-angle-right"></i> Domain-ek</a> <i class="fa fa-angle-right"></i> Postaládák (Aliasok) menüpontban (pl. <code><hello@example.com></code>)
 
 3. Kattintson a <strong class="text-success"><i class="fa fa-key"></i> Jelszó generálása</strong> gombra az újonnan létrehozott alias mellett. Másolja a vágólapjára, és biztonságosan tárolja a képernyőn megjelenő generált jelszót.
 
@@ -2767,7 +2774,7 @@ Igen, támogatjuk az [OpenPGP](https://en.wikipedia.org/wiki/Pretty_Good_Privacy
        Opcionális kiegészítő:
      </strong>
      <span>
-       Ha használja a <a class="alert-link" href="/blog/docs/best-quantum-safe-encrypted-email-service">titkosított tárolás (IMAP/POP3)</a> szolgáltatásunkat, és szeretné, hogy <i>minden</i> e-mail, amely az (már titkosított) SQLite adatbázisában tárolódik, a nyilvános kulcsával legyen titkosítva, akkor lépjen a <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Saját fiók <i class="fa fa-angle-right"></i> Tartományok</a> <i class="fa fa-angle-right"></i> Átirányítások (pl. <code>hello@example.com</code>) <i class="fa fa-angle-right"></i> Szerkesztés <i class="fa fa-angle-right"></i> OpenPGP menüpontra, és töltse fel a nyilvános kulcsát.
+       Ha használja a <a class="alert-link" href="/blog/docs/best-quantum-safe-encrypted-email-service">titkosított tárolás (IMAP/POP3)</a> szolgáltatásunkat, és szeretné, hogy <i>minden</i> e-mail, amely az (már titkosított) SQLite adatbázisában tárolódik, a nyilvános kulcsával legyen titkosítva, akkor lépjen a <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Saját fiók <i class="fa fa-angle-right"></i> Tartományok</a> <i class="fa fa-angle-right"></i> Postaládák (Átirányítások) (pl. <code>hello@example.com</code>) <i class="fa fa-angle-right"></i> Szerkesztés <i class="fa fa-angle-right"></i> OpenPGP menüpontra, és töltse fel a nyilvános kulcsát.
      </span>
    </div>
 
@@ -2835,7 +2842,7 @@ Az S/MIME titkosítás beállításához az átirányításához:
 
 2. Exportálja a tanúsítványát PEM formátumban (csak a nyilvános tanúsítványt, a privát kulcsot nem).
 
-3. Lépjen a <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Saját fiók <i class="fa fa-angle-right"></i> Tartományok</a> <i class="fa fa-angle-right"></i> Átirányítások (pl. <code><hello@example.com></code>) <i class="fa fa-angle-right"></i> Szerkesztés <i class="fa fa-angle-right"></i> S/MIME menüpontra, és töltse fel a nyilvános tanúsítványát.
+3. Lépjen a <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Saját fiók <i class="fa fa-angle-right"></i> Tartományok</a> <i class="fa fa-angle-right"></i> Postaládák (Átirányítások) (pl. <code><hello@example.com></code>) <i class="fa fa-angle-right"></i> Szerkesztés <i class="fa fa-angle-right"></i> S/MIME menüpontra, és töltse fel a nyilvános tanúsítványát.
 4. Miután beállította, az aliasára érkező összes bejövő e-mail titkosítva lesz az Ön S/MIME tanúsítványával, mielőtt tárolásra vagy továbbításra kerülne.
 
    <div class="alert my-3 alert-secondary">
@@ -2954,7 +2961,7 @@ if header :contains "Subject" "invoice" {
 
 Különböző módokon kezelheti a Sieve szkripteket:
 
-1. **Webes felület**: Menjen a <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Fiókom <i class="fa fa-angle-right"></i> Domainok</a> <i class="fa fa-angle-right"></i> Aliasok <i class="fa fa-angle-right"></i> Sieve-szkriptek oldalra a szkriptek létrehozásához és kezeléséhez.
+1. **Webes felület**: Menjen a <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Fiókom <i class="fa fa-angle-right"></i> Domainok</a> <i class="fa fa-angle-right"></i> Postaládák (Aliasok) <i class="fa fa-angle-right"></i> Sieve-szkriptek oldalra a szkriptek létrehozásához és kezeléséhez.
 
 2. **ManageSieve protokoll**: Csatlakozzon bármilyen ManageSieve-kompatibilis klienssel, például a Thunderbird Sieve bővítményével vagy a [sieve-connect](https://github.com/philpennock/sieve-connect) eszközzel az `imap.forwardemail.net` szerverhez. Használja a `2190` portot STARTTLS-szel vagy a `4190` portot implicit TLS-sel.
 
@@ -5793,7 +5800,7 @@ Nem, ez nem ajánlott, mivel egyszerre csak egy levelezőszervert lehet használ
     Fontos:
   </strong>
   <span>
-    Ha fizetős csomagod van, akkor a <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Saját fiók <i class="fa fa-angle-right"></i> Domain-ek</a> <i class="fa fa-angle-right"></i> Aliasok <i class="fa fa-angle-right"></i> Alias szerkesztése <i class="fa fa-angle-right"></i> Az „Aktív” jelölőnégyzet törlése <i class="fa fa-angle-right"></i> Folytatás menüpontot kell használnod.
+    Ha fizetős csomagod van, akkor a <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Saját fiók <i class="fa fa-angle-right"></i> Domain-ek</a> <i class="fa fa-angle-right"></i> Postaládák (Aliasok) <i class="fa fa-angle-right"></i> Alias szerkesztése <i class="fa fa-angle-right"></i> Az „Aktív” jelölőnégyzet törlése <i class="fa fa-angle-right"></i> Folytatás menüpontot kell használnod.
   </span>
 </div>
 

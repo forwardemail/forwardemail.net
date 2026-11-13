@@ -779,6 +779,7 @@ nav.navbar(class=navbarClasses.join(" "), aria-label=t("Main menu"))
                   = "RSS Feed"
 
         //- links that show only if you're logged in
+        //- (the same links as the account sidebar, see _account-nav.pug)
         if user
           //- links that show if you're an admin
           if user.group === 'admin'
@@ -793,55 +794,15 @@ nav.navbar(class=navbarClasses.join(" "), aria-label=t("Main menu"))
                   class=ctx.pathWithoutLocale.startsWith("/admin") ? `${navLinkClass} text-decoration-underline` : navLinkClass
                 )
                   = t("Admin")
-                .dropdown-menu(aria-labelledby="navbar-dropdown-admin")
-                  a.dropdown-item(
-                    class=ctx.pathWithoutLocale === "/admin" ? "active" : "",
-                    href=l("/admin")
-                  )= t("Dashboard")
-                  a.dropdown-item(
-                    class=ctx.pathWithoutLocale.startsWith("/admin/users") ? "active" : "",
-                    href=l("/admin/users")
-                  )= t("Users")
-                  a.dropdown-item(
-                    class=ctx.pathWithoutLocale.startsWith("/admin/domains") ? "active" : "",
-                    href=l("/admin/domains")
-                  )= t("Domains")
-                  a.dropdown-item(
-                    class=ctx.pathWithoutLocale.startsWith("/admin/inquiries") ? "active" : "",
-                    href=l("/admin/inquiries")
-                  )= t("Inquiries")
-                  a.dropdown-item(
-                    class=ctx.pathWithoutLocale.startsWith("/admin/emails") ? "active" : "",
-                    href=l("/admin/emails")
-                  )= t("Emails")
-                  a.dropdown-item(
-                    class=ctx.pathWithoutLocale.startsWith("/admin/payments") ? "active" : "",
-                    href=l("/admin/payments")
-                  )= t("Payments")
-                  a.dropdown-item(
-                    class=ctx.pathWithoutLocale.startsWith("/admin/logs") ? "active" : "",
-                    href=l("/admin/logs")
-                  )= t("Logs")
-                  a.dropdown-item(
-                    class=ctx.pathWithoutLocale.startsWith("/admin/spam") ? "active" : "",
-                    href=l("/admin/spam")
-                  )= t("Spam")
-                  a.dropdown-item(
-                    class=ctx.pathWithoutLocale.startsWith("/admin/jobs") ? "active" : "",
-                    href=l("/admin/jobs")
-                  )= t("Jobs")
-                  a.dropdown-item(
-                    class=ctx.pathWithoutLocale.startsWith("/admin/analytics") ? "active" : "",
-                    href=l("/admin/analytics")
-                  )= t("Analytics")
-                  a.dropdown-item(
-                    class=ctx.pathWithoutLocale.startsWith("/admin/allowlist") ? "active" : "",
-                    href=l("/admin/allowlist")
-                  )= t("Allowlist")
-                  a.dropdown-item(
-                    class=ctx.pathWithoutLocale.startsWith("/admin/denylist") ? "active" : "",
-                    href=l("/admin/denylist")
-                  )= t("Denylist")
+                .dropdown-menu.dropdown-menu-right.acct-menu(
+                  aria-labelledby="navbar-dropdown-admin"
+                )
+                  each group, i in acctAdminGroups
+                    if i > 0
+                      .dropdown-divider
+                    .dropdown-header= group.title
+                    each item in group.items
+                      +acctMenuItem(item)
           li.nav-item.dropdown.ml-xl-1.mt-1.mt-lg-0
             form.mb-0
               a#navbar-dropdown-my-account.btn.dropdown-toggle.d-block.text-left(
@@ -853,47 +814,27 @@ nav.navbar(class=navbarClasses.join(" "), aria-label=t("Main menu"))
                 class=ctx.pathWithoutLocale.startsWith("/my-account") ? `${navLinkClass} text-decoration-underline` : navLinkClass
               )
                 = t("My Account")
-              .dropdown-menu(aria-labelledby="navbar-dropdown-my-account")
-                //- a.dropdown-item(class=ctx.pathWithoutLocale === '/my-account' ? 'active' : '', href=l('/my-account'))= t('Dashboard')
-                a.dropdown-item(
-                  href="https://mail.forwardemail.net",
-                  rel="noopener noreferrer",
-                  target="_blank"
-                )
-                  = t("Webmail")
-                a.dropdown-item(
-                  class=ctx.pathWithoutLocale.startsWith("/my-account/domains") ? "active" : "",
-                  href=l("/my-account/domains")
-                )= t("Domains")
-                a.dropdown-item(
-                  class=ctx.pathWithoutLocale.startsWith("/my-account/emails") ? "active" : "",
-                  href=l("/my-account/emails")
-                )= t("Emails")
-                a.dropdown-item(
-                  class=ctx.pathWithoutLocale.startsWith("/my-account/dmarc-reports") ? "active" : "",
-                  href=l("/my-account/dmarc-reports")
-                )= t("DMARC Reports")
-                a.dropdown-item(
-                  class=ctx.pathWithoutLocale.startsWith("/my-account/analytics") ? "active" : "",
-                  href=l("/my-account/analytics")
-                )= t("Analytics")
-                a.dropdown-item(
-                  class=ctx.pathWithoutLocale.startsWith("/my-account/logs") ? "active" : "",
-                  href=l("/my-account/logs")
-                )= t("Logs")
-                a.dropdown-item(
-                  class=ctx.pathWithoutLocale === "/my-account/profile" ? "active" : "",
-                  href=l("/my-account/profile")
-                )= t("Profile")
-                a.dropdown-item(
-                  class=ctx.pathWithoutLocale === "/my-account/billing" ? "active" : "",
-                  href=l("/my-account/billing")
-                )= t("Billing")
-                a.dropdown-item(
-                  class=ctx.pathWithoutLocale === "/my-account/security" ? "active" : "",
-                  href=l("/my-account/security")
-                )= t("Security")
-                a.dropdown-item(href=l("/logout"))= t("Sign out")
+              .dropdown-menu.dropdown-menu-right.acct-menu(
+                aria-labelledby="navbar-dropdown-my-account"
+              )
+                .acct-menu-user
+                  span.acct-avatar(aria-hidden="true")= (user[config.passport.fields.displayName] || user.email || "?").trim().charAt(0).toUpperCase()
+                  span.acct-user-text
+                    span.acct-user-name.notranslate= user[config.passport.fields.displayName] || user.email
+                    span.acct-user-meta= t(titleize(humanize(user.plan || "free")))
+                +acctMenuItem({ href: "https://mail.forwardemail.net", external: true, icon: "fa-inbox", label: t("Webmail") })
+                +acctMenuItem({ href: "/my-account/domains", icon: "fa-globe", label: t("Domains"), on: ctx.pathWithoutLocale.startsWith("/my-account/domains") })
+                +acctMenuItem({ href: "/my-account/domains/new", icon: "fa-plus-circle", label: t("Add domain"), on: ctx.pathWithoutLocale === "/my-account/domains/new" })
+                .dropdown-divider
+                each item in acctActivity
+                  +acctMenuItem(item)
+                .dropdown-divider
+                each item in acctProfile
+                  +acctMenuItem(item)
+                .dropdown-divider
+                a.dropdown-item(href=l("/logout"))
+                  i.fa.fa-fw.mr-1.text-muted.fa-sign-out-alt
+                  = t("Sign out")
         //- links that show only if you're logged out
         else
           if ctx.pathWithoutLocale !== config.loginRoute

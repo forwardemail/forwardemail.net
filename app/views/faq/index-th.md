@@ -8,6 +8,7 @@
 * [เริ่มต้นอย่างรวดเร็ว](#quick-start)
 * [บทนำ](#introduction)
   * [Forward Email คืออะไร](#what-is-forward-email)
+  * [ตู้ไปรษณีย์และนามแฝงต่างกันอย่างไร](#what-is-the-difference-between-a-mailbox-and-an-alias)
   * [ใครใช้ Forward Email](#who-uses-forward-email)
   * [ประวัติของ Forward Email คืออะไร](#what-is-forward-emails-history)
   * [บริการนี้เร็วแค่ไหน](#how-fast-is-this-service)
@@ -179,7 +180,7 @@
 
 2. **เพิ่มและยืนยันโดเมนของคุณ** ภายใต้ [My Account → Domains](/my-account/domains)
 
-3. **เพิ่มและตั้งค่าอีเมลอาลิอาส/กล่องจดหมาย** ภายใต้ [My Account → Domains](/my-account/domains) → Aliases
+3. **เพิ่มและตั้งค่าอีเมลอาลิอาส/กล่องจดหมาย** ภายใต้ [My Account → Domains](/my-account/domains) → ตู้ไปรษณีย์ (Aliases)
 
 4. **ทดสอบการตั้งค่าของคุณ** โดยส่งอีเมลไปยังหนึ่งในอาลิอาสใหม่ของคุณ
 
@@ -217,6 +218,12 @@ Forward Email คือ **ผู้ให้บริการอีเมลท
 
 > \[!TIP]
 > เรียนรู้เพิ่มเติมเกี่ยวกับ Forward Email โดยอ่าน [Technical Whitepaper](/technical-whitepaper.pdf) ฟรีของเรา และตรวจสอบ[การตรวจสอบความปลอดภัย](/pentest-report_forward-email.pdf)ของเราโดย Cure53
+
+### ตู้ไปรษณีย์และนามแฝงต่างกันอย่างไร {#what-is-the-difference-between-a-mailbox-and-an-alias}
+
+ไม่มีความแตกต่าง เว็บไซต์ แอป API และเอกสารของเราใช้ทั้งสองคำสำหรับอีเมลแอดเดรสในโดเมนของคุณ
+
+ตู้ไปรษณีย์คืออีเมลแอดเดรสในโดเมนของคุณ เช่น `hello@example.com` บางเครื่องมือเรียกว่านามแฝง แต่ละตู้สามารถส่งต่ออีเมลไปยังกล่องขาเข้าอื่น เก็บอีเมลที่คุณอ่านผ่าน IMAP และเว็บเมล หรือทำทั้งสองอย่างก็ได้
 
 ### Who uses Forward Email {#who-uses-forward-email}
 
@@ -737,7 +744,7 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
 
 1. ไปที่ <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">บัญชีของฉัน <i class="fa fa-angle-right"></i> โดเมน</a> <i class="fa fa-angle-right"></i> การตั้งค่า <i class="fa fa-angle-right"></i> การกำหนดค่า SMTP ขาออก และทำตามคำแนะนำการตั้งค่า
 
-2. สร้างนามแฝงใหม่สำหรับโดเมนของคุณภายใต้ <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">บัญชีของฉัน <i class="fa fa-angle-right"></i> โดเมน</a> <i class="fa fa-angle-right"></i> นามแฝง (เช่น <code><hello@example.com></code>)
+2. สร้างนามแฝงใหม่สำหรับโดเมนของคุณภายใต้ <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">บัญชีของฉัน <i class="fa fa-angle-right"></i> โดเมน</a> <i class="fa fa-angle-right"></i> ตู้ไปรษณีย์ (นามแฝง) (เช่น <code><hello@example.com></code>)
 
 3. คลิกที่ <strong class="text-success"><i class="fa fa-key"></i> สร้างรหัสผ่าน</strong> ข้างนามแฝงที่สร้างใหม่ คัดลอกไปยังคลิปบอร์ดและเก็บรหัสผ่านที่สร้างขึ้นอย่างปลอดภัยตามที่แสดงบนหน้าจอ
 
@@ -745,7 +752,7 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
 
 5. เมื่อถูกถาม "ชื่อ" ให้กรอกชื่อที่คุณต้องการให้แสดงเป็นผู้ส่งอีเมล (เช่น "Linus Torvalds")
 
-6. เมื่อถูกถาม "ที่อยู่อีเมล" ให้กรอกที่อยู่อีเมลเต็มของนามแฝงที่คุณสร้างภายใต้ <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">บัญชีของฉัน <i class="fa fa-angle-right"></i> โดเมน</a> <i class="fa fa-angle-right"></i> นามแฝง (เช่น <code><hello@example.com></code>)
+6. เมื่อถูกถาม "ที่อยู่อีเมล" ให้กรอกที่อยู่อีเมลเต็มของนามแฝงที่คุณสร้างภายใต้ <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">บัญชีของฉัน <i class="fa fa-angle-right"></i> โดเมน</a> <i class="fa fa-angle-right"></i> ตู้ไปรษณีย์ (นามแฝง) (เช่น <code><hello@example.com></code>)
 
 7. ยกเลิกเลือก "ปฏิบัติเป็นนามแฝง"
 
@@ -753,7 +760,7 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
 
 9. เมื่อถูกถาม "เซิร์ฟเวอร์ SMTP" ให้กรอก <code>smtp.forwardemail.net</code> และเปลี่ยนพอร์ตเป็น <code>465</code>
 
-10. เมื่อถูกถาม "ชื่อผู้ใช้" ให้กรอกที่อยู่อีเมลเต็มของนามแฝงที่คุณสร้างภายใต้ <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">บัญชีของฉัน <i class="fa fa-angle-right"></i> โดเมน</a> <i class="fa fa-angle-right"></i> นามแฝง (เช่น <code><hello@example.com></code>)
+10. เมื่อถูกถาม "ชื่อผู้ใช้" ให้กรอกที่อยู่อีเมลเต็มของนามแฝงที่คุณสร้างภายใต้ <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">บัญชีของฉัน <i class="fa fa-angle-right"></i> โดเมน</a> <i class="fa fa-angle-right"></i> ตู้ไปรษณีย์ (นามแฝง) (เช่น <code><hello@example.com></code>)
 
 11. เมื่อถูกถาม "รหัสผ่าน" ให้วางรหัสผ่านจาก <strong class="text-success"><i class="fa fa-key"></i> สร้างรหัสผ่าน</strong> ในขั้นตอนที่ 3 ข้างต้น
 
@@ -1124,7 +1131,7 @@ SMTP ขาออกมาพร้อมกับแผนแบบชำระ
 
 คุณสามารถส่งออกกล่องจดหมายของคุณเป็นรูปแบบ [EML](https://en.wikipedia.org/wiki/Email#Filename_extensions), [Mbox](https://en.wikipedia.org/wiki/Mbox), หรือ [SQLite](https://en.wikipedia.org/wiki/SQLite) ที่เข้ารหัสได้ทุกเมื่อ
 
-ไปที่ <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">บัญชีของฉัน <i class="fa fa-angle-right"></i> โดเมน</a> <i class="fa fa-angle-right"></i> นามแฝง <i class="fa fa-angle-right"></i> ดาวน์โหลดสำรองข้อมูล และเลือกประเภทรูปแบบส่งออกที่คุณต้องการ
+ไปที่ <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">บัญชีของฉัน <i class="fa fa-angle-right"></i> โดเมน</a> <i class="fa fa-angle-right"></i> ตู้ไปรษณีย์ (นามแฝง) <i class="fa fa-angle-right"></i> ดาวน์โหลดสำรองข้อมูล และเลือกประเภทรูปแบบส่งออกที่คุณต้องการ
 
 คุณจะได้รับอีเมลลิงก์สำหรับดาวน์โหลดไฟล์ส่งออกเมื่อกระบวนการเสร็จสิ้น
 
@@ -2061,7 +2068,7 @@ Drafts/
 
 ### ฉันจะตั้งค่าตอบกลับอัตโนมัติช่วงวันหยุด (vacation responder) ได้อย่างไร {#how-do-i-set-up-a-vacation-responder-out-of-office-auto-responder}
 
-ไปที่ <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">บัญชีของฉัน <i class="fa fa-angle-right"></i> โดเมน</a> <i class="fa fa-angle-right"></i> นามแฝง และสร้างหรือตั้งค่านามแฝงที่คุณต้องการตั้งค่าตอบกลับอัตโนมัติช่วงวันหยุดสำหรับนามแฝงนั้น
+ไปที่ <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">บัญชีของฉัน <i class="fa fa-angle-right"></i> โดเมน</a> <i class="fa fa-angle-right"></i> ตู้ไปรษณีย์ (นามแฝง) และสร้างหรือตั้งค่านามแฝงที่คุณต้องการตั้งค่าตอบกลับอัตโนมัติช่วงวันหยุดสำหรับนามแฝงนั้น
 คุณสามารถกำหนดวันที่เริ่มต้น วันที่สิ้นสุด หัวเรื่อง และข้อความ รวมถึงเปิดหรือปิดใช้งานได้ตลอดเวลา:
 
 * ขณะนี้รองรับหัวเรื่องและข้อความแบบข้อความธรรมดา (เราใช้แพ็กเกจ `striptags` ภายในเพื่อลบ HTML ใด ๆ)
@@ -2449,7 +2456,7 @@ Tasks.org เป็นแอปจัดการงานโอเพนซอ�
   </span>
 </div>
 
-1. สร้างนามแฝงใหม่สำหรับโดเมนของคุณภายใต้ <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">บัญชีของฉัน <i class="fa fa-angle-right"></i> โดเมน</a> <i class="fa fa-angle-right"></i> นามแฝง (เช่น <code><hello@example.com></code>)
+1. สร้างนามแฝงใหม่สำหรับโดเมนของคุณภายใต้ <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">บัญชีของฉัน <i class="fa fa-angle-right"></i> โดเมน</a> <i class="fa fa-angle-right"></i> ตู้ไปรษณีย์ (นามแฝง) (เช่น <code><hello@example.com></code>)
 
 2. คลิกที่ <strong class="text-success"><i class="fa fa-key"></i> สร้างรหัสผ่าน</strong> ข้างนามแฝงที่สร้างใหม่ คัดลอกไปยังคลิปบอร์ดของคุณและเก็บรหัสผ่านที่สร้างขึ้นอย่างปลอดภัยตามที่แสดงบนหน้าจอ
 
@@ -2506,7 +2513,7 @@ Tasks.org เป็นแอปจัดการงานโอเพนซอ�
   </span>
 </div>
 
-1. สร้างนามแฝงใหม่สำหรับโดเมนของคุณภายใต้ <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">บัญชีของฉัน <i class="fa fa-angle-right"></i> โดเมน</a> <i class="fa fa-angle-right"></i> นามแฝง (เช่น <code><hello@example.com></code>)
+1. สร้างนามแฝงใหม่สำหรับโดเมนของคุณภายใต้ <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">บัญชีของฉัน <i class="fa fa-angle-right"></i> โดเมน</a> <i class="fa fa-angle-right"></i> ตู้ไปรษณีย์ (นามแฝง) (เช่น <code><hello@example.com></code>)
 
 2. คลิกที่ <strong class="text-success"><i class="fa fa-key"></i> Generate Password</strong> ข้างนามแฝงที่สร้างใหม่ คัดลอกไปยังคลิปบอร์ดและเก็บรหัสผ่านที่สร้างขึ้นอย่างปลอดภัยตามที่แสดงบนหน้าจอ
 
@@ -2647,7 +2654,7 @@ It supports both IPv4 and IPv6 and is available over port `443` (HTTPS).
 
 1. ไปที่ <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">บัญชีของฉัน <i class="fa fa-angle-right"></i> โดเมน</a> <i class="fa fa-angle-right"></i> การตั้งค่า <i class="fa fa-angle-right"></i> การตั้งค่า SMTP ขาออก และทำตามคำแนะนำการตั้งค่า
 
-2. สร้างแอเลียสใหม่สำหรับโดเมนของคุณภายใต้ <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">บัญชีของฉัน <i class="fa fa-angle-right"></i> โดเมน</a> <i class="fa fa-angle-right"></i> แอเลียส (เช่น <code><hello@example.com></code>)
+2. สร้างแอเลียสใหม่สำหรับโดเมนของคุณภายใต้ <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">บัญชีของฉัน <i class="fa fa-angle-right"></i> โดเมน</a> <i class="fa fa-angle-right"></i> ตู้ไปรษณีย์ (แอเลียส) (เช่น <code><hello@example.com></code>)
 
 3. คลิกที่ <strong class="text-success"><i class="fa fa-key"></i> สร้างรหัสผ่าน</strong> ถัดจากแอเลียสที่สร้างใหม่ คัดลอกไปยังคลิปบอร์ดและเก็บรหัสผ่านที่สร้างขึ้นอย่างปลอดภัยตามที่แสดงบนหน้าจอ
 
@@ -2766,7 +2773,7 @@ It supports both IPv4 and IPv6 and is available over port `443` (HTTPS).
        ส่วนเสริมเพิ่มเติม:
      </strong>
      <span>
-       หากคุณกำลังใช้บริการ <a class="alert-link" href="/blog/docs/best-quantum-safe-encrypted-email-service">ที่เก็บข้อมูลเข้ารหัส (IMAP/POP3)</a> ของเรา และต้องการให้ <i>อีเมลทั้งหมด</i> ที่เก็บไว้ในฐานข้อมูล SQLite (ที่เข้ารหัสอยู่แล้ว) ของคุณถูกเข้ารหัสด้วยกุญแจสาธารณะของคุณ ให้ไปที่ <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">บัญชีของฉัน <i class="fa fa-angle-right"></i> โดเมน</a> <i class="fa fa-angle-right"></i> อีเมลแฝง (เช่น <code>hello@example.com</code>) <i class="fa fa-angle-right"></i> แก้ไข <i class="fa fa-angle-right"></i> OpenPGP และอัปโหลดกุญแจสาธารณะของคุณ
+       หากคุณกำลังใช้บริการ <a class="alert-link" href="/blog/docs/best-quantum-safe-encrypted-email-service">ที่เก็บข้อมูลเข้ารหัส (IMAP/POP3)</a> ของเรา และต้องการให้ <i>อีเมลทั้งหมด</i> ที่เก็บไว้ในฐานข้อมูล SQLite (ที่เข้ารหัสอยู่แล้ว) ของคุณถูกเข้ารหัสด้วยกุญแจสาธารณะของคุณ ให้ไปที่ <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">บัญชีของฉัน <i class="fa fa-angle-right"></i> โดเมน</a> <i class="fa fa-angle-right"></i> ตู้ไปรษณีย์ (อีเมลแฝง) (เช่น <code>hello@example.com</code>) <i class="fa fa-angle-right"></i> แก้ไข <i class="fa fa-angle-right"></i> OpenPGP และอัปโหลดกุญแจสาธารณะของคุณ
      </span>
    </div>
 
@@ -2834,7 +2841,7 @@ It supports both IPv4 and IPv6 and is available over port `443` (HTTPS).
 
 2. ส่งออกใบรับรองของคุณในรูปแบบ PEM (เฉพาะใบรับรองสาธารณะ ไม่ใช่กุญแจส่วนตัว)
 
-3. ไปที่ <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">บัญชีของฉัน <i class="fa fa-angle-right"></i> โดเมน</a> <i class="fa fa-angle-right"></i> อีเมลแฝง (เช่น <code><hello@example.com></code>) <i class="fa fa-angle-right"></i> แก้ไข <i class="fa fa-angle-right"></i> S/MIME และอัปโหลดใบรับรองสาธารณะของคุณ
+3. ไปที่ <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">บัญชีของฉัน <i class="fa fa-angle-right"></i> โดเมน</a> <i class="fa fa-angle-right"></i> ตู้ไปรษณีย์ (อีเมลแฝง) (เช่น <code><hello@example.com></code>) <i class="fa fa-angle-right"></i> แก้ไข <i class="fa fa-angle-right"></i> S/MIME และอัปโหลดใบรับรองสาธารณะของคุณ
 4. เมื่อกำหนดค่าเสร็จแล้ว อีเมลขาเข้าทั้งหมดที่ส่งไปยังนามแฝงของคุณจะถูกเข้ารหัสโดยใช้ใบรับรอง S/MIME ของคุณก่อนที่จะถูกจัดเก็บหรือส่งต่อ
 
    <div class="alert my-3 alert-secondary">
@@ -2953,7 +2960,7 @@ if header :contains "Subject" "invoice" {
 
 คุณสามารถจัดการสคริปต์ Sieve ได้หลายวิธี:
 
-1. **ส่วนติดต่อเว็บ**: ไปที่ <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">บัญชีของฉัน <i class="fa fa-angle-right"></i> โดเมน</a> <i class="fa fa-angle-right"></i> นามแฝง <i class="fa fa-angle-right"></i> สคริปต์ Sieve เพื่อสร้างและจัดการสคริปต์
+1. **ส่วนติดต่อเว็บ**: ไปที่ <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">บัญชีของฉัน <i class="fa fa-angle-right"></i> โดเมน</a> <i class="fa fa-angle-right"></i> ตู้ไปรษณีย์ (นามแฝง) <i class="fa fa-angle-right"></i> สคริปต์ Sieve เพื่อสร้างและจัดการสคริปต์
 2. **โปรโตคอล ManageSieve**: เชื่อมต่อโดยใช้ไคลเอนต์ที่เข้ากันได้กับ ManageSieve เช่น ส่วนเสริม Sieve ของ Thunderbird หรือ [sieve-connect](https://github.com/philpennock/sieve-connect) ไปยัง `imap.forwardemail.net` ใช้พอร์ต `2190` ร่วมกับ STARTTLS หรือพอร์ต `4190` กับ TLS แบบ implicit
 3. **API**: ใช้ [REST API](/email-api) เพื่อจัดการสคริปต์แบบโปรแกรมมิ่ง
 
@@ -5790,7 +5797,7 @@ dig example.com txt +short
     สำคัญ:
   </strong>
   <span>
-    หากคุณใช้แผนที่ชำระเงิน คุณต้องไปที่ <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">บัญชีของฉัน <i class="fa fa-angle-right"></i> โดเมน</a> <i class="fa fa-angle-right"></i> นามแฝง <i class="fa fa-angle-right"></i> แก้ไขนามแฝง <i class="fa fa-angle-right"></i> ยกเลิกเลือกช่องทำเครื่องหมาย "ใช้งาน" <i class="fa fa-angle-right"></i> ดำเนินการต่อ
+    หากคุณใช้แผนที่ชำระเงิน คุณต้องไปที่ <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">บัญชีของฉัน <i class="fa fa-angle-right"></i> โดเมน</a> <i class="fa fa-angle-right"></i> ตู้ไปรษณีย์ (นามแฝง) <i class="fa fa-angle-right"></i> แก้ไขนามแฝง <i class="fa fa-angle-right"></i> ยกเลิกเลือกช่องทำเครื่องหมาย "ใช้งาน" <i class="fa fa-angle-right"></i> ดำเนินการต่อ
   </span>
 </div>
 

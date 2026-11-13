@@ -9633,7 +9633,7 @@
     },
     {
       "name": "Aliase",
-      "description": "Endpunkte für die Domänenaliasverwaltung"
+      "description": "Endpunkte für die Domänenaliasverwaltung. Ein Alias wird auch Postfach genannt."
     },
     {
       "name": "Verschlüsseln",

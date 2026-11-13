@@ -8,6 +8,7 @@
 * [Hurtig Start](#quick-start)
 * [Introduktion](#introduction)
   * [Hvad er Forward Email](#what-is-forward-email)
+  * [Hvad er forskellen på en postkasse og et alias](#what-is-the-difference-between-a-mailbox-and-an-alias)
   * [Hvem bruger Forward Email](#who-uses-forward-email)
   * [Hvad er Forward Emails historie](#what-is-forward-emails-history)
   * [Hvor hurtigt er denne tjeneste](#how-fast-is-this-service)
@@ -179,7 +180,7 @@ For at komme i gang med Forward Email:
 
 2. **Tilføj og verificer dit domæne** under [Min konto → Domæner](/my-account/domains)
 
-3. **Tilføj og konfigurer e-mail aliaser/postkasser** under [Min konto → Domæner](/my-account/domains) → Aliaser
+3. **Tilføj og konfigurer e-mail aliaser/postkasser** under [Min konto → Domæner](/my-account/domains) → Postkasser (Aliaser)
 
 4. **Test din opsætning** ved at sende en e-mail til et af dine nye aliaser
 
@@ -217,6 +218,12 @@ Du kan sammenligne os med 56+ andre e-mailtjenesteudbydere på [vores Email Comp
 
 > \[!TIP]
 > Lær mere om Forward Email ved at læse vores gratis [Tekniske Whitepaper](/technical-whitepaper.pdf) og gennemgå vores [sikkerhedsaudit](/pentest-report_forward-email.pdf) fra Cure53.
+
+### Hvad er forskellen på en postkasse og et alias {#what-is-the-difference-between-a-mailbox-and-an-alias}
+
+Der er ingen forskel. Vores websted, apps, API og dokumentation bruger begge ord om en e-mailadresse på dit domæne.
+
+En postkasse er en e-mailadresse på dit domæne, f.eks. `hello@example.com`. Nogle værktøjer kalder den et alias. Hver postkasse kan videresende e-mail til andre indbakker, gemme e-mail, som du læser med IMAP og webmail, eller gøre begge dele.
 
 ### Hvem bruger Forward Email {#who-uses-forward-email}
 
@@ -737,7 +744,7 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
 
 1. Gå til <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Min konto <i class="fa fa-angle-right"></i> Domæner</a> <i class="fa fa-angle-right"></i> Indstillinger <i class="fa fa-angle-right"></i> Udgående SMTP-konfiguration og følg opsætningsinstruktionerne
 
-2. Opret et nyt alias for dit domæne under <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Min konto <i class="fa fa-angle-right"></i> Domæner</a> <i class="fa fa-angle-right"></i> Aliasser (f.eks. <code><hello@example.com></code>)
+2. Opret et nyt alias for dit domæne under <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Min konto <i class="fa fa-angle-right"></i> Domæner</a> <i class="fa fa-angle-right"></i> Postkasser (Aliasser) (f.eks. <code><hello@example.com></code>)
 
 3. Klik på <strong class="text-success"><i class="fa fa-key"></i> Generer adgangskode</strong> ved siden af det nyligt oprettede alias. Kopiér til dit udklipsholder og gem sikkert den genererede adgangskode, der vises på skærmen.
 
@@ -745,7 +752,7 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
 
 5. Når du bliver bedt om "Navn", indtast det navn, du ønsker, at din e-mail skal vises som "Fra" (f.eks. "Linus Torvalds").
 
-6. Når du bliver bedt om "E-mailadresse", indtast den fulde e-mailadresse på et alias, du har oprettet under <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Min konto <i class="fa fa-angle-right"></i> Domæner</a> <i class="fa fa-angle-right"></i> Aliasser (f.eks. <code><hello@example.com></code>)
+6. Når du bliver bedt om "E-mailadresse", indtast den fulde e-mailadresse på et alias, du har oprettet under <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Min konto <i class="fa fa-angle-right"></i> Domæner</a> <i class="fa fa-angle-right"></i> Postkasser (Aliasser) (f.eks. <code><hello@example.com></code>)
 
 7. Fjern markeringen i "Behandl som et alias"
 
@@ -753,7 +760,7 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
 
 9. Når du bliver bedt om "SMTP-server", indtast <code>smtp.forwardemail.net</code> og ændr porten til <code>465</code>
 
-10. Når du bliver bedt om "Brugernavn", indtast den fulde e-mailadresse på et alias, du har oprettet under <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Min konto <i class="fa fa-angle-right"></i> Domæner</a> <i class="fa fa-angle-right"></i> Aliasser (f.eks. <code><hello@example.com></code>)
+10. Når du bliver bedt om "Brugernavn", indtast den fulde e-mailadresse på et alias, du har oprettet under <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Min konto <i class="fa fa-angle-right"></i> Domæner</a> <i class="fa fa-angle-right"></i> Postkasser (Aliasser) (f.eks. <code><hello@example.com></code>)
 
 11. Når du bliver bedt om "Adgangskode", indsæt adgangskoden fra <strong class="text-success"><i class="fa fa-key"></i> Generer adgangskode</strong> i trin 3 ovenfor
 
@@ -1124,7 +1131,7 @@ Du kan læse om vores databehandlere på vores [GDPR](/gdpr), [DPA](/dpa), og [P
 
 Du kan til enhver tid eksportere dine postkasser som [EML](https://en.wikipedia.org/wiki/Email#Filename_extensions), [Mbox](https://en.wikipedia.org/wiki/Mbox), eller krypterede [SQLite](https://en.wikipedia.org/wiki/SQLite) formater.
 
-Gå til <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Min konto <i class="fa fa-angle-right"></i> Domæner</a> <i class="fa fa-angle-right"></i> Aliasser <i class="fa fa-angle-right"></i> Download backup og vælg din foretrukne eksportformattype.
+Gå til <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Min konto <i class="fa fa-angle-right"></i> Domæner</a> <i class="fa fa-angle-right"></i> Postkasser (Aliasser) <i class="fa fa-angle-right"></i> Download backup og vælg din foretrukne eksportformattype.
 
 Du vil modtage et link til at downloade eksporten, når den er færdig.
 
@@ -2063,7 +2070,7 @@ Hvis du bruger Microsoft 365 (Outlook) og ønsker at videresende alle ikke-match
 
 ### Hvordan opsætter jeg en ferieautomatisk svar (out of office auto-responder) {#how-do-i-set-up-a-vacation-responder-out-of-office-auto-responder}
 
-Gå til <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Min Konto <i class="fa fa-angle-right"></i> Domæner</a> <i class="fa fa-angle-right"></i> Aliaser og opret eller rediger det alias, du ønsker at konfigurere en ferieautomatisk svar for.
+Gå til <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Min Konto <i class="fa fa-angle-right"></i> Domæner</a> <i class="fa fa-angle-right"></i> Postkasser (Aliaser) og opret eller rediger det alias, du ønsker at konfigurere en ferieautomatisk svar for.
 Du har mulighed for at konfigurere en startdato, slutdato, emne og besked, og aktivere eller deaktivere det når som helst:
 
 * Almindeligt tekst-emne og besked understøttes i øjeblikket (vi bruger `striptags`-pakken internt til at fjerne eventuel HTML).
@@ -2451,7 +2458,7 @@ Ja, fra den 16. oktober 2023 understøtter vi modtagelse af email via IMAP som e
   </span>
 </div>
 
-1. Opret en ny alias for dit domæne under <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Min Konto <i class="fa fa-angle-right"></i> Domæner</a> <i class="fa fa-angle-right"></i> Aliasser (f.eks. <code><hello@example.com></code>)
+1. Opret en ny alias for dit domæne under <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Min Konto <i class="fa fa-angle-right"></i> Domæner</a> <i class="fa fa-angle-right"></i> Postkasser (Aliasser) (f.eks. <code><hello@example.com></code>)
 
 2. Klik på <strong class="text-success"><i class="fa fa-key"></i> Generer adgangskode</strong> ved siden af den nyligt oprettede alias. Kopiér til dit udklipsholder og gem sikkert den genererede adgangskode, der vises på skærmen.
 
@@ -2508,7 +2515,7 @@ Ja, fra og med den 4. december 2023 understøtter vi [POP3](https://en.wikipedia
   </span>
 </div>
 
-1. Opret et nyt alias for dit domæne under <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Min konto <i class="fa fa-angle-right"></i> Domæner</a> <i class="fa fa-angle-right"></i> Aliaser (f.eks. <code><hello@example.com></code>)
+1. Opret et nyt alias for dit domæne under <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Min konto <i class="fa fa-angle-right"></i> Domæner</a> <i class="fa fa-angle-right"></i> Postkasser (Aliaser) (f.eks. <code><hello@example.com></code>)
 
 2. Klik på <strong class="text-success"><i class="fa fa-key"></i> Generate Password</strong> ved siden af det nyligt oprettede alias.  Kopiér til dit udklipsholder og gem sikkert den viste adgangskode.
 
@@ -2649,7 +2656,7 @@ Ja. Alle betalte abonnementer inkluderer udgående SMTP, og det er **ubegrænset
 
 1. Gå til <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Min konto <i class="fa fa-angle-right"></i> Domæner</a> <i class="fa fa-angle-right"></i> Indstillinger <i class="fa fa-angle-right"></i> Udgående SMTP-konfiguration og følg opsætningsinstruktionerne
 
-2. Opret et nyt alias for dit domæne under <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Min konto <i class="fa fa-angle-right"></i> Domæner</a> <i class="fa fa-angle-right"></i> Aliaser (f.eks. <code><hello@example.com></code>)
+2. Opret et nyt alias for dit domæne under <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Min konto <i class="fa fa-angle-right"></i> Domæner</a> <i class="fa fa-angle-right"></i> Postkasser (Aliaser) (f.eks. <code><hello@example.com></code>)
 
 3. Klik på <strong class="text-success"><i class="fa fa-key"></i> Generer adgangskode</strong> ved siden af det nyligt oprettede alias. Kopiér til dit udklipsholder og gem sikkert den viste genererede adgangskode.
 
@@ -2768,7 +2775,7 @@ Ja, vi understøtter [OpenPGP](https://en.wikipedia.org/wiki/Pretty_Good_Privacy
        Valgfrit tilføjelsesmodul:
      </strong>
      <span>
-       Hvis du bruger vores <a class="alert-link" href="/blog/docs/best-quantum-safe-encrypted-email-service">krypterede lager (IMAP/POP3)</a> service og ønsker, at <i>alle</i> e-mails, der er gemt i din (allerede krypterede) SQLite-database, skal krypteres med din offentlige nøgle, så gå til <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Min konto <i class="fa fa-angle-right"></i> Domæner</a> <i class="fa fa-angle-right"></i> Aliasser (f.eks. <code>hello@example.com</code>) <i class="fa fa-angle-right"></i> Rediger <i class="fa fa-angle-right"></i> OpenPGP og upload din offentlige nøgle.
+       Hvis du bruger vores <a class="alert-link" href="/blog/docs/best-quantum-safe-encrypted-email-service">krypterede lager (IMAP/POP3)</a> service og ønsker, at <i>alle</i> e-mails, der er gemt i din (allerede krypterede) SQLite-database, skal krypteres med din offentlige nøgle, så gå til <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Min konto <i class="fa fa-angle-right"></i> Domæner</a> <i class="fa fa-angle-right"></i> Postkasser (Aliasser) (f.eks. <code>hello@example.com</code>) <i class="fa fa-angle-right"></i> Rediger <i class="fa fa-angle-right"></i> OpenPGP og upload din offentlige nøgle.
      </span>
    </div>
 
@@ -2836,7 +2843,7 @@ For at konfigurere S/MIME-kryptering for dit alias:
 
 2. Eksporter dit certifikat i PEM-format (kun det offentlige certifikat, ikke den private nøgle).
 
-3. Gå til <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Min konto <i class="fa fa-angle-right"></i> Domæner</a> <i class="fa fa-angle-right"></i> Aliasser (f.eks. <code><hello@example.com></code>) <i class="fa fa-angle-right"></i> Rediger <i class="fa fa-angle-right"></i> S/MIME og upload dit offentlige certifikat.
+3. Gå til <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Min konto <i class="fa fa-angle-right"></i> Domæner</a> <i class="fa fa-angle-right"></i> Postkasser (Aliasser) (f.eks. <code><hello@example.com></code>) <i class="fa fa-angle-right"></i> Rediger <i class="fa fa-angle-right"></i> S/MIME og upload dit offentlige certifikat.
 4. Når det er konfigureret, vil alle indkommende e-mails til dit alias blive krypteret ved hjælp af dit S/MIME-certifikat, før de gemmes eller videresendes.
 
    <div class="alert my-3 alert-secondary">
@@ -2955,7 +2962,7 @@ if header :contains "Subject" "invoice" {
 
 Du kan administrere Sieve-scripts på flere måder:
 
-1. **Webgrænseflade**: Gå til <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Min konto <i class="fa fa-angle-right"></i> Domæner</a> <i class="fa fa-angle-right"></i> Aliasser <i class="fa fa-angle-right"></i> Sieve-scripts for at oprette og administrere scripts.
+1. **Webgrænseflade**: Gå til <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Min konto <i class="fa fa-angle-right"></i> Domæner</a> <i class="fa fa-angle-right"></i> Postkasser (Aliasser) <i class="fa fa-angle-right"></i> Sieve-scripts for at oprette og administrere scripts.
 
 2. **ManageSieve-protokol**: Opret forbindelse med enhver ManageSieve-kompatibel klient, såsom Thunderbirds Sieve-tilføjelse eller [sieve-connect](https://github.com/philpennock/sieve-connect), til `imap.forwardemail.net`. Brug port `2190` med STARTTLS eller port `4190` med implicit TLS.
 
@@ -5794,7 +5801,7 @@ Nej, det anbefales ikke, da du kun kan bruge én mailudvekslingsserver ad gangen
     Vigtigt:
   </strong>
   <span>
-    Hvis du er på en betalt plan, skal du gå til <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Min Konto <i class="fa fa-angle-right"></i> Domæner</a> <i class="fa fa-angle-right"></i> Aliaser <i class="fa fa-angle-right"></i> Rediger Alias <i class="fa fa-angle-right"></i> Fjern markeringen i "Aktiv" afkrydsningsfeltet <i class="fa fa-angle-right"></i> Fortsæt.
+    Hvis du er på en betalt plan, skal du gå til <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Min Konto <i class="fa fa-angle-right"></i> Domæner</a> <i class="fa fa-angle-right"></i> Postkasser (Aliaser) <i class="fa fa-angle-right"></i> Rediger Alias <i class="fa fa-angle-right"></i> Fjern markeringen i "Aktiv" afkrydsningsfeltet <i class="fa fa-angle-right"></i> Fortsæt.
   </span>
 </div>
 

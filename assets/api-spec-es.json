@@ -9633,7 +9633,7 @@
     },
     {
       "name": "Alias",
-      "description": "Puntos finales de gestión de alias de dominio"
+      "description": "Puntos finales de gestión de alias de dominio. Un alias también se llama buzón."
     },
     {
       "name": "Encriptar",
