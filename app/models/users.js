@@ -347,9 +347,9 @@ object[config.userFields.maxQuotaPerAlias] = {
   default: config.maxQuotaPerAlias,
   min: 0,
   //
-  // NOTE: hard-coded max of 100 GB (safeguard)
+  // NOTE: hard-coded max of 200 GB (safeguard)
   //
-  max: bytes('100GB')
+  max: bytes('200GB')
 };
 
 //
