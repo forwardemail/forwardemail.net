@@ -70,7 +70,7 @@
     "@ladjs/shared-config": "10.0.0",
     "@ladjs/web": "21.1.4",
     "@lancedb/lancedb": "0.22.3",
-    "@mermaid-js/mermaid-cli": "10.9.1",
+    "@mermaid-js/mermaid-cli": "11.17.1",
     "@ngneat/falso": "7.4.0",
     "@node-rs/argon2": "2.1.0",
     "@octokit/core": "5.2.2",
