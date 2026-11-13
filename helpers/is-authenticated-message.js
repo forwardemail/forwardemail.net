@@ -10,6 +10,8 @@ const isSANB = require('is-string-and-not-blank');
 const { spf } = require('mailauth/lib/spf');
 const { authenticate } = require('mailauth');
 const isEmail = require('#helpers/is-email');
+const { createBoundedResolver } = require('#helpers/authentication-limits');
+const { checkFromLimits, countFields } = require('#helpers/header-limits');
 const _ = require('#helpers/lodash');
 
 const SMTPError = require('#helpers/smtp-error');
@@ -62,18 +64,16 @@ function isTransientDKIMError(status) {
   return Boolean(match) && TRANSIENT_DNS_ERRORS.has(match[1]);
 }
 
-// Header field lines beginning at column zero with the given name. Folded
-// lines can contain arbitrary text and must not count as fields.
-function countHeaderFields(headers, re) {
+// Header fields with the given name (lowercase), as mailauth reads them (see
+// `helpers/header-limits`): folded lines can contain arbitrary text and must
+// not count as fields, and a field mailauth reads as one must ("From\xa0:")
+function countHeaderFields(headers, name) {
   if (!headers?.headers) return 0;
-  return headers.headers
-    .toString()
-    .split(/\r?\n/)
-    .filter((line) => re.test(line)).length;
+  return countFields(headers.headers, name);
 }
 
 function hasMultipleFromHeaders(headers) {
-  return countHeaderFields(headers, /^from\s*:/i) > 1;
+  return countHeaderFields(headers, 'from') > 1;
 }
 
 async function isAuthenticatedMessage(headers, body, session, resolver) {
@@ -86,7 +86,7 @@ async function isAuthenticatedMessage(headers, body, session, resolver) {
       ignore_hook: true
     });
 
-  if (countHeaderFields(headers, /^dkim-signature\s*:/i) > MAX_DKIM_SIGNATURES)
+  if (countHeaderFields(headers, 'dkim-signature') > MAX_DKIM_SIGNATURES)
     throw new SMTPError(
       `The email sent has more than ${MAX_DKIM_SIGNATURES} DKIM-Signature headers`,
       {
@@ -96,18 +96,32 @@ async function isAuthenticatedMessage(headers, body, session, resolver) {
       }
     );
 
+  // (mailauth reads the From field in time in the square of its groups, see
+  //  `helpers/header-limits`; it names one address)
+  const fromTooComplex = checkFromLimits(headers.headers);
+  if (fromTooComplex)
+    throw new SMTPError(fromTooComplex, {
+      responseCode: 421,
+      ignore_hook: true
+    });
+
   const options = {
     ip: session.remoteAddress,
     helo: session.hostNameAppearsAs,
     mta: HOSTNAME,
-    resolver: resolver.resolve
+    // (at most so many DNS queries, for so long, for the message: both SPF
+    //  checks, its DKIM signatures, ARC sets, DMARC and BIMI; mailauth sets
+    //  no limit of its own on them, see `helpers/authentication-limits`)
+    resolver: createBoundedResolver(resolver.resolve)
   };
 
   const [results, spfFromHeader] = await Promise.all([
+    // (the message is sealed once it is rewritten, see `sealMessage` in
+    //  on-data-mx: a seal asked for here cost two RSA signatures a message,
+    //  was not used, and wrote each message's body hash to the shared options)
     authenticate(Buffer.concat([headers.build(), body]), {
       ...options,
-      sender: session.envelope.mailFrom.address,
-      seal: config.signatureData
+      sender: session.envelope.mailFrom.address
     }),
     spf({
       ...options,

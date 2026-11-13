@@ -52,6 +52,7 @@ This repository is the code that runs the service: the website, the API, and eve
   * [Run the tests](#run-the-tests)
   * [Push notifications](#push-notifications)
   * [Production deployment](#production-deployment)
+  * [Spam Scanner](#spam-scanner)
 * [Get help](#get-help)
 * [Security](#security)
 * [Contributing](#contributing)
@@ -371,6 +372,10 @@ APNs reuses the existing `APPLE_TEAM_ID`, `APPLE_KEY_ID`, and `APPLE_KEY_PATH` v
 For server tuning, monitoring, and database operations, see [`ansible/README.md`](ansible/README.md).
 
 To run a single-server instance with Docker instead, see the [self-hosting guide](self-hosting/README.md).
+
+### Spam Scanner
+
+[`SPAM_SCANNER.md`](SPAM_SCANNER.md) covers how inbound and outbound mail is scanned, monitor mode, domain settings, abuse reports, the local language model, every setting, and a runbook for deploying, checking, scaling, turning off, and leaving monitor mode.
 
 
 ## Get help

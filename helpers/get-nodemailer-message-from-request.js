@@ -76,6 +76,15 @@ function getNodemailerMessageFromRequest(ctx) {
     message.requireTLS = message.requireTLSExtensionEnabled;
   delete message.requireTLSExtensionEnabled;
 
+  // (of a JSON body: it is read as text for its emoji below, and by what
+  // queues the email)
+  if (
+    message.subject !== undefined &&
+    message.subject !== null &&
+    typeof message.subject !== 'string'
+  )
+    throw Boom.badRequest('Nodemailer option "subject" must be a String');
+
   // dsn: {
   //   id: "msg-123",
   //   return: "headers",

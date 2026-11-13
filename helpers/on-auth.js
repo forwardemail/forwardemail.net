@@ -82,6 +82,16 @@ const onConnectPromise = pify(onConnect);
 //
 const UNIFORM_AUTH_FAILURE_MESSAGE = 'Invalid username or password';
 
+//
+// The longest username that is looked up: an address is some hundred
+// characters long, with what may follow a "+" in it.  The length was not
+// looked at (nor is it by the check for an address below): the domain of a
+// username of a megabyte, which ManageSieve reads in a line before
+// authentication, was looked up in the settings and in the DNS, and written
+// out in the answer, which took a second.
+//
+const MAX_USERNAME_LENGTH = 4096;
+
 function getUniformAuthFailureMessage(domainName) {
   return `${UNIFORM_AUTH_FAILURE_MESSAGE}, please try again or go to ${
     config.urls.web
@@ -325,6 +335,7 @@ async function onAuth(auth, session, fn) {
     if (
       typeof auth.username !== 'string' ||
       !isSANB(auth.username) ||
+      auth.username.length > MAX_USERNAME_LENGTH ||
       !isEmail(auth.username.trim()) ||
       // <https://react.email/docs/integrations/nodemailer>
       auth.username === 'my_user' ||

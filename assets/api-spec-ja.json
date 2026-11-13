@@ -2066,7 +2066,7 @@
             "allowlist": [],
             "denylist": [],
             "restricted_alias_names": [],
-            "has_adult_content_protection": true,
+            "has_adult_content_protection": false,
             "has_phishing_protection": true,
             "has_executable_protection": true,
             "has_virus_protection": true,
@@ -2149,19 +2149,21 @@
           },
           "has_adult_content_protection": {
             "type": "boolean",
-            "description": "スパムスキャナのアダルトコンテンツ保護を有効にする"
+            "description": "Cloudflare のファミリーフィルターが成人向けコンテンツやマルウェアを理由にブロックするサイトへのリンクを含む送信メールをブロックするかどうか（デフォルトは false）"
           },
           "has_phishing_protection": {
             "type": "boolean",
-            "description": "スパムスキャナのフィッシング対策を有効にする"
+            "description": "非推奨のため無視されます",
+            "deprecated": true
           },
           "has_executable_protection": {
             "type": "boolean",
-            "description": "スパムスキャナの実行ファイル保護を有効にする"
+            "description": ".exe、.js、.bat ファイルなどの実行ファイルが添付された送信メールをブロックするかどうか（デフォルトは true）"
           },
           "has_virus_protection": {
             "type": "boolean",
-            "description": "スパムスキャナのウイルス保護を有効にする"
+            "description": "非推奨のため無視されます",
+            "deprecated": true
           },
           "has_recipient_verification": {
             "type": "boolean",
@@ -2223,19 +2225,21 @@
           },
           "has_adult_content_protection": {
             "type": "boolean",
-            "description": "このドメインでスパムスキャナによるアダルトコンテンツ保護を有効にするかどうか"
+            "description": "Cloudflare のファミリーフィルターが成人向けコンテンツやマルウェアを理由にブロックするサイトへのリンクを含む送信メールをブロックするかどうか（デフォルトは false）"
           },
           "has_phishing_protection": {
             "type": "boolean",
-            "description": "このドメインでスパムスキャナのフィッシング保護を有効にするかどうか"
+            "description": "非推奨のため無視されます",
+            "deprecated": true
           },
           "has_executable_protection": {
             "type": "boolean",
-            "description": "このドメインでスパムスキャナ実行ファイル保護を有効にするかどうか"
+            "description": ".exe、.js、.bat ファイルなどの実行ファイルが添付された送信メールをブロックするかどうか（デフォルトは true）"
           },
           "has_virus_protection": {
             "type": "boolean",
-            "description": "このドメインでスパムスキャナウイルス対策を有効にするかどうか"
+            "description": "非推奨のため無視されます",
+            "deprecated": true
           },
           "has_recipient_verification": {
             "type": "boolean",

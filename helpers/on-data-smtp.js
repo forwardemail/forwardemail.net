@@ -261,8 +261,7 @@ async function onDataSMTP(session, date, headers, body) {
 
   //
   // only our own domain may use an envelope MAIL FROM on our own domain
-  // (it is not SRS-rewritten in `process-email`, and `support@` skips the
-  // outbound phishing/virus scan in `Emails.queue`)
+  // (it is not SRS-rewritten in `process-email`)
   //
   if (
     envelope.from &&
@@ -514,7 +513,13 @@ async function onDataSMTP(session, date, headers, body) {
       dsn,
       requireTLS: session.envelope.requireTLS,
       tlsOptional,
-      remoteAddress: session.remoteAddress
+      remoteAddress: session.remoteAddress,
+      // (what Spam Scanner logs with a message it would mark as spam)
+      spamScanSession: {
+        id: session.id,
+        resolvedClientHostname: session.resolvedClientHostname,
+        hostNameAppearsAs: session.hostNameAppearsAs
+      }
     });
 
     // (the message exists now, so it counts even if queueing it fails below)

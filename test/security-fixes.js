@@ -65,6 +65,15 @@ test('REGEX_LOCALHOST matches IPv6 private ranges', (t) => {
   t.true(REGEX_LOCALHOST.test('::ffff:10.0.0.1'));
 });
 
+test('REGEX_LOCALHOST matches IPv4-compatible IPv6 addresses (::/96)', (t) => {
+  // (127.0.0.1, 10.0.0.1 and 169.254.169.254 written as IPv6 addresses)
+  t.true(REGEX_LOCALHOST.test('::7f00:1'));
+  t.true(REGEX_LOCALHOST.test('[::a00:1]'));
+  t.true(REGEX_LOCALHOST.test('0:0:0:0:0:0:a9fe:a9fe'));
+  t.true(REGEX_LOCALHOST.test('::808:808'));
+  t.false(REGEX_LOCALHOST.test('2606:4700:4700::1111'));
+});
+
 test('REGEX_LOCALHOST does not match public IPs', (t) => {
   t.false(REGEX_LOCALHOST.test('8.8.8.8'));
   t.false(REGEX_LOCALHOST.test('1.1.1.1'));

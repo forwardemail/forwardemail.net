@@ -1,0 +1,39 @@
+#!/bin/bash
+# WARNING: This file is managed by Ansible (ansible/playbooks/spamscanner-llm.yml)
+# Manual changes will be overwritten on next deployment
+#
+# Load Spam Scanner's model into Ollama and keep it loaded: a scan waits 3
+# seconds at most, far less than loading it takes, so without this the first
+# scans after a restart would each start loading it and give up.
+set -euo pipefail
+
+readonly BASE='http://127.0.0.1:{{ spamscanner_llm_port }}'
+
+# (Ollama answers within a few seconds of starting)
+answered=false
+for _ in $(seq 1 30); do
+  if curl --fail --silent --max-time 5 --output /dev/null "$BASE/api/version"; then
+    answered=true
+    break
+  fi
+  sleep 2
+done
+
+if [ "$answered" != true ]; then
+  echo "Ollama for Spam Scanner did not answer on $BASE" >&2
+  exit 1
+fi
+
+# (not made yet, e.g. on the first deploy or when the base model could not be
+#  pulled: nothing to load, and not an error; the playbook warns of it)
+if ! curl --fail --silent --max-time 10 --output /dev/null \
+  --header 'Content-Type: application/json' \
+  --data '{"model":"{{ spamscanner_llm_model }}"}' "$BASE/api/show"; then
+  echo 'The model {{ spamscanner_llm_model }} is not there yet; nothing to load'
+  exit 0
+fi
+
+curl --fail --silent --show-error --max-time 600 --output /dev/null \
+  --header 'Content-Type: application/json' \
+  --data '{"model":"{{ spamscanner_llm_model }}","keep_alive":-1}' \
+  "$BASE/api/generate"

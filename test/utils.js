@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
+const net = require('node:net');
+const tls = require('node:tls');
 const { Buffer } = require('node:buffer');
 const { randomUUID } = require('node:crypto');
 const { setTimeout: delay } = require('node:timers/promises');
@@ -18,6 +20,8 @@ const Redis = require('ioredis-mock');
 const Web = require('@ladjs/web');
 const falso = require('@ngneat/falso');
 const mongoose = require('mongoose');
+const ms = require('ms');
+const pWaitFor = require('p-wait-for');
 const request = require('supertest');
 const { MongoMemoryServer } = require('mongodb-memory-server');
 const { listen } = require('async-listen');
@@ -184,6 +188,151 @@ exports.captureNotifications = (client, aliasId) => {
       client.publishBuffer = publishBuffer;
     }
   };
+};
+
+//
+// The "[SPAM_SCANNER]" lines written to the console during a test (see
+// `helpers/spam-scanner`), which are kept out of the test output; other lines
+// are written as usual
+//
+// (not the stats lines, see `captureSpamScannerStats`)
+exports.captureSpamScannerLog = (t) => {
+  const lines = [];
+  const { log } = console;
+  console.log = (...args) => {
+    if (
+      typeof args[0] === 'string' &&
+      args[0].startsWith('[SPAM_SCANNER]') &&
+      !args[0].startsWith('[SPAM_SCANNER] stats ')
+    )
+      lines.push(args.join(' '));
+    else log(...args);
+  };
+
+  t.teardown(() => {
+    console.log = log;
+  });
+  return lines;
+};
+
+// the warnings and errors Spam Scanner writes to the console, as [message,
+// fields, level] ("warn" with console.warn, "error" with console.error)
+exports.captureSpamScannerWarnings = (t) => {
+  const warnings = [];
+  const original = { warn: console.warn, error: console.error };
+  for (const level of ['warn', 'error'])
+    console[level] = (...args) => {
+      if (typeof args[0] === 'string' && args[0].startsWith('[SPAM_SCANNER] '))
+        warnings.push([
+          args[0].slice('[SPAM_SCANNER] '.length),
+          typeof args[1] === 'string' ? JSON.parse(args[1]) : {},
+          level
+        ]);
+      else original[level](...args);
+    };
+
+  t.teardown(() => {
+    console.warn = original.warn;
+    console.error = original.error;
+  });
+  return warnings;
+};
+
+// the "[SPAM_SCANNER] stats" lines written, as their fields
+exports.captureSpamScannerStats = (t) => {
+  const lines = [];
+  const { log } = console;
+  console.log = (...args) => {
+    if (
+      typeof args[0] === 'string' &&
+      args[0].startsWith('[SPAM_SCANNER] stats ')
+    )
+      lines.push(JSON.parse(args[0].slice('[SPAM_SCANNER] stats '.length)));
+    else log(...args);
+  };
+
+  t.teardown(() => {
+    console.log = log;
+  });
+  return lines;
+};
+
+//
+// The requests that lines were logged for during a test, each as the request
+// logger (Cabin) described it for its line (for one test of a file at a time)
+//
+exports.captureRequestLog = (t) => {
+  const requests = [];
+  const original = {};
+  for (const level of ['debug', 'info', 'warn', 'error']) {
+    original[level] = logger[level];
+    logger[level] = (...args) => {
+      if (args[1]?.request) requests.push(args[1].request);
+      return original[level](...args);
+    };
+  }
+
+  t.teardown(() => Object.assign(logger, original));
+  return requests;
+};
+
+//
+// What a server says over a socket: `write` sends bytes, `until(re)` waits
+// for the accumulated server output to match, `closed` resolves on
+// disconnect.
+//
+function conversation(socket) {
+  const connection = {
+    socket,
+    output: '',
+    closed: new Promise((resolve) => {
+      socket.once('close', resolve);
+    }),
+    write(data) {
+      socket.write(data);
+    },
+    async until(re, timeout = ms('10s')) {
+      try {
+        await pWaitFor(() => re.test(connection.output), { timeout });
+      } catch (err) {
+        err.message += ` waiting for ${re} in ${JSON.stringify(
+          connection.output.slice(-500)
+        )}`;
+        throw err;
+      }
+    }
+  };
+  socket.on('data', (chunk) => {
+    connection.output += chunk.toString('binary');
+  });
+  socket.on('error', () => {});
+  return connection;
+}
+
+// a raw connection to a mail server (`options` as `net.connect` takes them),
+// once it has sent its greeting
+exports.connectRaw = async (t, options, greeting) => {
+  const connection = conversation(net.connect(options));
+  t.teardown(() => connection.socket.destroy());
+  await connection.until(greeting);
+  return connection;
+};
+
+// the TLS session of such a connection after its STARTTLS (or STLS), or none
+// when there is no handshake (over `socket`, when what the connection reads
+// has to be told apart first)
+exports.startTLS = async (connection, socket = connection.socket) => {
+  const session = conversation(
+    tls.connect({ socket, rejectUnauthorized: false })
+  );
+  const isSecure = await Promise.race([
+    new Promise((resolve) => {
+      session.socket.once('secureConnect', () => resolve(true));
+    }),
+    connection.closed.then(() => false),
+    delay(ms('5s'), false)
+  ]);
+  return isSecure ? session : null;
 };
 
 exports.setupRedisClient = async (t) => {

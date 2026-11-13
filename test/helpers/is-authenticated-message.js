@@ -10,6 +10,7 @@ const test = require('ava');
 const { Splitter } = require('mailsplit');
 const { dkimSign } = require('mailauth/lib/dkim/sign');
 
+const config = require('#config');
 const isAuthenticatedMessage = require('#helpers/is-authenticated-message');
 
 //
@@ -163,4 +164,21 @@ test('a DKIM key name the sender made invalid rejects permanently', async (t) =>
   t.false(session.hadAlignedTemporaryDKIMError);
   t.regex(err.message, /failed DMARC validation/);
   t.is(err.responseCode, 550);
+});
+
+//
+// The message is sealed once it is rewritten (see `sealMessage` in
+// on-data-mx), with what its authentication found. A seal asked for while it
+// was authenticated as well cost two RSA signatures a message, was not used,
+// and wrote the body hash of each message to the options every seal shares.
+//
+test('authenticating a message does not seal it', async (t) => {
+  const { session, err } = await check(async () => [
+    [`v=DKIM1; k=rsa; p=${publicKey.toString('base64')}`]
+  ]);
+  t.is(err, undefined);
+  t.false('bodyHash' in config.signatureData);
+  // (what the seal is made with)
+  t.is(session.arc.status.result, 'none');
+  t.regex(session.arc.authResults, /dkim=pass/);
 });

@@ -148,9 +148,7 @@ async function updateDomain(ctx, next) {
     // require paid plan (note that the API middleware already does this)
     for (const bool of [
       'has_adult_content_protection',
-      'has_phishing_protection',
       'has_executable_protection',
-      'has_virus_protection',
       'has_recipient_verification',
       'ignore_mx_check',
       'allow_subdomain_forwarding',
@@ -291,9 +289,7 @@ async function updateDomain(ctx, next) {
           );
         for (const bool of [
           'has_adult_content_protection',
-          'has_phishing_protection',
-          'has_executable_protection',
-          'has_virus_protection'
+          'has_executable_protection'
         ]) {
           ctx.state.domain[bool] = boolean(ctx.request.body[bool]);
         }

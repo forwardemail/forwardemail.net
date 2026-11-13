@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
+const { Buffer } = require('node:buffer');
 const crypto = require('node:crypto');
 const process = require('node:process');
 const querystring = require('node:querystring');
@@ -39,6 +40,48 @@ const store = new SessionChallengeStore();
 const storeChallenge = promisify(store.challenge).bind(store);
 
 const router = new Router({ prefix: '/auth' });
+
+//
+// Sign in with Apple answers with a POST from appleid.apple.com (its
+// `form_post` response mode), with which a browser sends no SameSite=Lax
+// cookie, so the session cannot hold its `state`, as Google's and GitHub's
+// do (see `config.passport.strategies`): without one an attacker could have
+// a victim's browser post the attacker's authorization code and sign the
+// victim in to the attacker's account (login CSRF). The state is kept in a
+// cookie of its own sent with that POST (SameSite=None, which needs HTTPS),
+// and the callback is refused unless it brings the same state back.
+//
+const APPLE_STATE_COOKIE = 'apple_oauth_state';
+function appleStateCookieOptions(ctx) {
+  return {
+    httpOnly: true,
+    overwrite: true,
+    secure: ctx.secure,
+    sameSite: ctx.secure ? 'none' : 'lax',
+    maxAge: 10 * 60 * 1000
+  };
+}
+
+function appleAuthenticateOptions(ctx, options) {
+  const state = crypto.randomBytes(32).toString('hex');
+  ctx.cookies.set(APPLE_STATE_COOKIE, state, appleStateCookieOptions(ctx));
+  return { ...options, state };
+}
+
+function checkAppleState(ctx, next) {
+  if (ctx.params.provider !== 'apple' || !ctx.request.body?.code) return next();
+  const expected = ctx.cookies.get(APPLE_STATE_COOKIE);
+  ctx.cookies.set(APPLE_STATE_COOKIE, null, appleStateCookieOptions(ctx));
+  const given = ctx.request.body.state;
+  if (
+    typeof expected !== 'string' ||
+    typeof given !== 'string' ||
+    expected.length !== given.length ||
+    !crypto.timingSafeEqual(Buffer.from(expected), Buffer.from(given))
+  )
+    throw Boom.badRequest(ctx.translateError('INVALID_PROVIDER'));
+  return next();
+}
 
 //
 // Ubuntu SSO only ever talks to Ubuntu One.
@@ -379,10 +422,12 @@ router
       ctx.passport.authenticate
         ? ctx.passport.authenticate(
             ctx.params.provider,
-            config.passport[ctx.params.provider] ||
-              (ctx.params.provider === 'google'
-                ? { accessType: 'offline' }
-                : undefined)
+            ctx.params.provider === 'apple'
+              ? appleAuthenticateOptions(ctx, config.passport.apple)
+              : config.passport[ctx.params.provider] ||
+                  (ctx.params.provider === 'google'
+                    ? { accessType: 'offline' }
+                    : undefined)
           )(ctx, next)
         : next()
   )
@@ -417,6 +462,7 @@ router
       return next();
     },
     escapeProviderError,
+    checkAppleState,
     pinUbuntuProvider,
     callbackCheck,
     callbackRedirect

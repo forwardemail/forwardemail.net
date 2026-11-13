@@ -24,6 +24,7 @@ const parseRootDomain = require('#helpers/parse-root-domain');
 const refineAndLogError = require('#helpers/refine-and-log-error');
 const { restoreSrsReverses } = require('#helpers/srs-reverse');
 const updateSession = require('#helpers/update-session');
+const { checkHeaderLimits } = require('#helpers/header-limits');
 
 const ONE_SECOND_AFTER_UNIX_EPOCH = new Date(1000);
 const MAX_BYTES = bytes(env.SMTP_MESSAGE_MAX_SIZE);
@@ -100,6 +101,18 @@ async function onData(stream, _session, fn) {
 
     const { headers } = messageSplitter;
 
+    // (a header no parser can read in reasonable time, see
+    //  `helpers/header-limits`: refused before anything reads it)
+    // (temporary on the MX server, as for every new rejection rule there, so
+    //  a rollback loses no mail; permanent on the SMTP server, as the unsafe
+    //  address check below is, so a client does not try it again for days)
+    const tooLarge = checkHeaderLimits(headers.headers);
+    if (tooLarge)
+      throw new SMTPError(tooLarge, {
+        responseCode: this.constructor.name === 'MX' ? 421 : 552,
+        ignore_hook: true
+      });
+
     // (before anything parses an address, see helpers/get-unsafe-address-header.js)
     const unsafe = await getUnsafeAddressHeader([
       messageSplitter.rawHeaders,
@@ -156,8 +169,12 @@ async function onData(stream, _session, fn) {
               //       however because srs0 was rewritten from SRS0
               //       and because tv was rewritten from TV it is not being delivered correctly
               //
+              // (a submission's only on our own domain, as for mail queued
+              //  to it: see `checkHeaderSRS`; another reaches our MX, which
+              //  reverses it, when it is a return path of ours)
               const original = to.address;
-              to.address = checkSRS(to.address, shouldThrow);
+              if (this.constructor.name === 'MX' || shouldThrow)
+                to.address = checkSRS(to.address, shouldThrow);
               if (original !== to.address) {
                 to.srs = true;
                 // (kept to look up the reverse delivery it was granted)

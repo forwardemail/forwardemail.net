@@ -22,11 +22,7 @@ const config = require('#config');
 const Users = require('#models/users');
 const Payments = require('#models/payments');
 
-const { PAYPAL_PLAN_MAPPING } = config.payments;
-const PAYPAL_PLANS = {
-  enhanced_protection: Object.values(PAYPAL_PLAN_MAPPING.enhanced_protection),
-  team: Object.values(PAYPAL_PLAN_MAPPING.team)
-};
+const { PAYPAL_MAPPING, PAYPAL_PLAN_MAPPING } = config.payments;
 
 async function syncPayPalSubscriptionPaymentsByUser(
   errorEmails,
@@ -128,15 +124,18 @@ async function syncPayPalSubscriptionPaymentsByUser(
           `/v1/billing/subscriptions/${subscriptionId}`
         );
 
-        const plan = Object.keys(PAYPAL_PLANS).find((plan) =>
-          PAYPAL_PLANS[plan].includes(subscription.plan_id)
+        const plan = Object.keys(PAYPAL_PLAN_MAPPING).find((plan) =>
+          Object.values(PAYPAL_PLAN_MAPPING[plan]).includes(
+            subscription.plan_id
+          )
         );
 
-        const duration = ms(
-          Object.entries(PAYPAL_PLAN_MAPPING[plan]).find(
-            (mapping) => mapping[1] === subscription.plan_id
-          )[0]
+        const [key] = Object.entries(PAYPAL_PLAN_MAPPING[plan]).find(
+          (mapping) => mapping[1] === subscription.plan_id
         );
+        const duration = ms(key);
+        // (the price of the plan, in cents)
+        const price = PAYPAL_MAPPING[plan][key] * 100;
 
         //
         // NOTE: this re-uses the auth token from `agent` created above
@@ -282,6 +281,24 @@ async function syncPayPalSubscriptionPaymentsByUser(
                   `Transaction ${transaction.id} already exists for user ${existingPayment.user} (payment ${existingPayment.id}), skipping for user ${customer.email} (shared payer ID)`
                 );
                 return; // Skip this transaction
+              }
+
+              // (a payment that was declined was not made)
+              if (transaction.status === 'DECLINED') return;
+
+              //
+              // a subscription made in the browser can override its plan's
+              // price, so a payment of less than that price is not credited
+              // (and is not an error of the sync either: those stop it for
+              // every account once there are enough, see the threshold below)
+              //
+              if (!(amount >= price)) {
+                const err = new Error(
+                  'PayPal subscription payment was less than the price of its plan'
+                );
+                err.transaction = transaction;
+                logger.fatal(err, { customer });
+                return;
               }
 
               // otherwise create the payment

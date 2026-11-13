@@ -70,6 +70,29 @@ test('too many multipart fields is a 400', async (t) => {
 });
 
 //
+// A field name is an object path, as deep as it has brackets, and a body
+// nested deeper than a body may be is refused as it is set (see
+// helpers/limit-body-depth.js): in a callback of multer's here, where what
+// was thrown was caught by nothing, and the request was never answered.
+//
+test('a multipart field name nested too deep is a 400', async (t) => {
+  const { api } = t.context;
+  const name = (levels) => `a${'[b]'.repeat(levels)}`;
+
+  // (read, and no email or password was sent)
+  let res = await api.post('/v1/account').field(name(32), 'x');
+  t.is(res.status, 400);
+  t.notRegex(res.body.message, /nest/i);
+
+  // (84 brackets are all that a name of 256 bytes holds)
+  for (const levels of [33, 63, 64, 84]) {
+    res = await api.post('/v1/account').field(name(levels), 'x');
+    t.is(res.status, 400);
+    t.is(res.body.message, `Field name nesting too deep: ${name(levels)}`);
+  }
+});
+
+//
 // The parsed body keeps the usual shape for ordinary names, and stores a
 // name with an out-of-range index under its literal name.
 //

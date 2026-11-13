@@ -21,7 +21,9 @@ TIMESTAMP="$(date '+%Y-%m-%d %H:%M:%S %Z')"
 AUTH_LOG="/var/log/auth.log"
 SUDO_LOG="/var/log/sudo.log"
 MONITOR_LOG="/var/log/root-access-monitor.log"
-LOCK_DIR="/var/lock"
+# (in /run, which only root can write: a file a local user made in /var/lock,
+#  dated ahead, would hold back every alert)
+LOCK_DIR="/run"
 LOCK_DURATION=1800  # 30 minutes between alerts
 CONFIG_DIR="/etc/security-monitor"
 AUTHORIZED_ROOT_USERS_FILE="$CONFIG_DIR/authorized-root-users.conf"

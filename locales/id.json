@@ -23531,5 +23531,19 @@
   "Delete mailbox?": "Hapus kotak surat?",
   "Please confirm if you wish to delete the mailbox <strong>%s</strong>.": "Harap konfirmasi jika Anda ingin menghapus kotak surat <strong>%s</strong>.",
   "Generate mailbox passwords": "Hasilkan kata sandi kotak surat",
-  "Generate random mailbox": "Hasilkan kotak surat acak"
+  "Generate random mailbox": "Hasilkan kotak surat acak",
+  "The message could not be scanned at this time, please try again later.": "Pesan tidak dapat dipindai saat ini, silakan coba lagi nanti.",
+  "The message could not be scanned at this time and will be retried.": "Pesan tidak dapat dipindai saat ini dan akan dicoba lagi.",
+  "Senders blocked after spam reports": "Pengirim yang diblokir setelah laporan spam",
+  "The recipient at these forwarding addresses reported mail from these senders as spam to their mailbox provider, so their mail to that address gets a temporary error until the date shown.": "Penerima di alamat penerusan ini melaporkan email dari pengirim ini sebagai spam kepada penyedia emailnya, sehingga email mereka ke alamat tersebut mendapat galat sementara hingga tanggal yang ditampilkan.",
+  "Sender": "Pengirim",
+  "Forwarding address": "Alamat penerusan",
+  "Until": "Hingga",
+  "Unblock": "Buka blokir",
+  "Unblock sender?": "Buka blokir pengirim?",
+  "Please confirm if you wish to receive mail from <strong>%s</strong> at <strong>%s</strong> again.": "Konfirmasikan jika Anda ingin menerima email dari <strong>%s</strong> di <strong>%s</strong> lagi.",
+  "If you check this, then links in mail you send are checked with <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"%s\">Cloudflare's family filter</a>, and mail linking to a site it blocks for adult-related content or malware is not sent. Off by default.": "Jika dicentang, tautan dalam email yang Anda kirim diperiksa dengan <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"%s\">filter keluarga Cloudflare</a>, dan email yang menautkan ke situs yang diblokir filter tersebut karena konten dewasa atau malware tidak akan dikirim. Nonaktif secara default.",
+  "If you uncheck this, then mail you send with <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"%s\">executable</a> attachments, such as .exe, .js or .bat files (also inside archives), is no longer blocked. On by default.": "Jika centang dihapus, email yang Anda kirim dengan lampiran <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"%s\">file eksekusi</a>, seperti file .exe, .js, atau .bat (termasuk di dalam arsip), tidak lagi diblokir. Aktif secara default.",
+  "Mail is always scanned for spam, and links in mail you send are always checked with <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"%s\">Cloudflare's malware filter</a>: mail linking to a site it blocks for phishing or malware is not sent.": "Email selalu dipindai untuk spam, dan tautan dalam email yang Anda kirim selalu diperiksa dengan <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"%s\">filter malware Cloudflare</a>: email yang menautkan ke situs yang diblokir filter tersebut karena phishing atau malware tidak akan dikirim.",
+  "The passwords generated for these aliases still work.  Generate a new password for each one to replace them:": "Kata sandi yang dibuat untuk alias-alias ini masih berfungsi. Buat kata sandi baru untuk setiap alias untuk menggantinya:"
 }

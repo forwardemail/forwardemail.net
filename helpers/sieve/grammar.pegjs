@@ -12,6 +12,25 @@
     return { type, ...props, location: location() };
   }
 
+  //
+  // How deep tests and blocks may be nested, counted together (RFC 5228
+  // section 2.10.7 asks for 15 levels of each at least).  A script is
+  // followed as deep as it goes, by this parser and by the engine when a
+  // message comes in: a few thousand "not" tests in a row took seconds to
+  // parse, each being placed by counting the lines before it, and more than
+  // the stack holds to run.
+  //
+  const MAX_NESTING = 64;
+  let nesting = 0;
+
+  // On the way into a test or block (true), and on the way out of one that
+  // did not match (false)
+  function nest(by) {
+    nesting += by;
+    if (nesting > MAX_NESTING) error('Tests or blocks are nested too deep');
+    return by > 0;
+  }
+
   // Precedence of the modifiers of "set" and "extracttext", applied largest
   // first (RFC 5229 section 4.1, RFC 5435 section 6)
   const MODIFIER_PRECEDENCE = {
@@ -461,6 +480,10 @@ AnychildTag
 
 // Tests
 Test
+  = &{ return nest(1); } test:AnyTest { nest(-1); return test; }
+  / &{ return nest(-1); }
+
+AnyTest
   = AllofTest
   / AnyofTest
   / NotTest
@@ -834,9 +857,11 @@ AddressPart
 
 // Block
 Block
-  = "{" _ commands:CommandList _ "}" {
+  = &{ return nest(1); } "{" _ commands:CommandList _ "}" {
+      nest(-1);
       return commands;
     }
+  / &{ return nest(-1); }
 
 // String and String List
 StringList

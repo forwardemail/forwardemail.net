@@ -12,7 +12,7 @@ const addressParser = createRequire(
 )('nodemailer/lib/addressparser');
 
 const SMTPError = require('#helpers/smtp-error');
-const checkSRS = require('#helpers/check-srs');
+const { checkHeaderSRS } = require('#helpers/check-srs');
 const isEmail = require('#helpers/is-email');
 const parseAddresses = require('#helpers/parse-addresses');
 
@@ -68,7 +68,8 @@ function getFromAddress(originalFrom) {
     [address] = dmarcAddresses;
 
   // set original from address that was parsed
-  return checkSRS(punycode.toASCII(address)).toLowerCase();
+  // (an SRS address only on our own domain, see `checkHeaderSRS`)
+  return checkHeaderSRS(punycode.toASCII(address)).toLowerCase();
 }
 
 module.exports = getFromAddress;

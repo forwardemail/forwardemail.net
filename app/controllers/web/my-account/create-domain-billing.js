@@ -19,6 +19,7 @@ const _ = require('#helpers/lodash');
 
 const config = require('#config');
 const emailHelper = require('#helpers/email');
+const { issuePayPalOrder } = require('#helpers/get-paypal-order-capture');
 const { paypalAgent } = require('#helpers/paypal');
 const stripe = require('#helpers/stripe');
 
@@ -371,6 +372,8 @@ async function createDomainBilling(ctx) {
           const { body } = await agent
             .post('/v2/checkout/orders')
             .send(requestBody);
+          // (only an order made here is credited, see `issuePayPalOrder`)
+          await issuePayPalOrder(ctx.client, body, ctx.state.user.id);
           ctx.body = { orderID: body.id };
         } catch (err) {
           ctx.logger.error(err);

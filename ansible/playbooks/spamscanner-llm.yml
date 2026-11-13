@@ -1,0 +1,603 @@
+# Copyright (c) Forward Email LLC
+# SPDX-License-Identifier: BUSL-1.1
+
+---
+# ============================================================================
+# Spam Scanner's language model (helpers/spam-scanner.js)
+# ============================================================================
+# Ollama on each MX and SMTP server, for its own close calls (inbound mail
+# on the MX servers; outbound mail as smtp-bree sends it on the SMTP
+# servers): on 127.0.0.1 only (no port is opened, and no API key or TLS is
+# needed), with its own pinned binary, user, models and port.  systemd
+# restarts it when it stops, a health check restarts it when it stops
+# answering and loads the model when it is not loaded, and failures go to
+# the usual alerts (failure-notification@).
+#
+# The model the server asks for (SPAM_SCANNER_LLM_MODEL, "spamscanner") is
+# made here from SPAM_SCANNER_LLM_BASE_MODEL with half the server's CPUs, so
+# mail always has the rest.
+#
+# Imported by mx1.yml, mx2.yml and smtp.yml.  Optional, in .env.production
+# (the servers read the same values, see env.yml); read from the environment
+# of ansible-playbook, which ansible-playbook.js (in the repository's root,
+# the usual way to run a playbook) loads from .env.production and
+# .env.defaults first (running ansible-playbook directly, export them):
+#   SPAM_SCANNER_LLM_PORT        default 11436
+#   SPAM_SCANNER_LLM_MODEL       default spamscanner
+#   SPAM_SCANNER_LLM_BASE_MODEL  default gemma4:e2b
+#   SPAM_SCANNER_LLM_MEMORY_MAX  default 8G (the most Ollama may use)
+#   SPAM_SCANNER_LLM_PULL=true   pull the base model again (it is pulled only
+#                                when missing otherwise)
+# With SPAM_SCANNER_ENABLED=false, SPAM_SCANNER_LLM_MODE=off, or a
+# SPAM_SCANNER_LLM_URL on another server (any host but 127.0.0.1 or
+# localhost, where it listens), Ollama is stopped here instead, as it is when
+# the settings are invalid.
+#
+# To upgrade Ollama, change the version below and its checksums (from
+# https://github.com/ollama/ollama/releases/download/v<version>/sha256sum.txt)
+- hosts: "{{ spamscanner_llm_target_hosts | default('mx1:mx2:smtp') }}"
+  name: Spam Scanner LLM
+  become: true
+  become_user: root
+  vars:
+    ollama_version: "0.40.3"
+    ollama_checksums:
+      amd64: "sha256:ce6f8b671a699bf1ebafb28d60dbbabf4f37b30b499145fa308a8ba72de021d6"
+      arm64: "sha256:5754700747a93ea14db88888f08072386d2da6fbf7dd75be19a684348b9f28b8"
+    ollama_arch: "{{ 'arm64' if ansible_architecture in ['aarch64', 'arm64'] else 'amd64' }}"
+    spamscanner_llm_dir: /opt/ollama-spamscanner
+    spamscanner_llm_home: /var/lib/ollama-spamscanner
+    spamscanner_llm_bin: "{{ spamscanner_llm_dir }}/{{ ollama_version }}/bin/ollama"
+    spamscanner_llm_port: "{{ lookup('env', 'SPAM_SCANNER_LLM_PORT') | default('11436', true) }}"
+    spamscanner_llm_model: "{{ lookup('env', 'SPAM_SCANNER_LLM_MODEL') | default('spamscanner', true) }}"
+    spamscanner_llm_base_model: "{{ lookup('env', 'SPAM_SCANNER_LLM_BASE_MODEL') | default('gemma4:e2b', true) }}"
+    spamscanner_llm_memory_max: "{{ lookup('env', 'SPAM_SCANNER_LLM_MEMORY_MAX') | default('8G', true) }}"
+    spamscanner_llm_force_pull: "{{ lookup('env', 'SPAM_SCANNER_LLM_PULL') | default('false', true) | bool }}"
+    # (the model's name as Ollama lists it: "spamscanner:latest")
+    spamscanner_llm_model_tag: "{{ spamscanner_llm_model if ':' in spamscanner_llm_model else spamscanner_llm_model ~ ':latest' }}"
+    # half the CPUs (at least 1) for the model, the rest for mail
+    spamscanner_llm_threads: "{{ [1, (ansible_processor_vcpus | default(4) | int) // 2] | max }}"
+    spamscanner_llm_url: "{{ lookup('env', 'SPAM_SCANNER_LLM_URL') | default('', true) }}"
+    # (any SPAM_SCANNER_LLM_MODE but off, false, 0 or no is "always" or
+    #  "auto", as the servers read it, see config/index.js)
+    spamscanner_llm_enabled: >-
+      {{
+        (lookup('env', 'SPAM_SCANNER_ENABLED') | default('true', true) | bool)
+        and (lookup('env', 'SPAM_SCANNER_LLM_MODE') | default('auto', true) | lower | trim) not in ['off', 'false', '0', 'no']
+        and (spamscanner_llm_url == '' or spamscanner_llm_url is match('(?i)^https?://(127\.0\.0\.1|localhost)(:[0-9]+)?(/|$)'))
+      }}
+  tasks:
+    # ==========================================================================
+    # Turned off: stop and disable Ollama (and its health check), keep files
+    # ==========================================================================
+    - name: Stop Ollama for Spam Scanner (the language model is turned off)
+      systemd:
+        name: "{{ item }}"
+        state: stopped
+        enabled: false
+      loop:
+        - ollama-spamscanner-health-check.timer
+        - ollama-spamscanner.service
+      failed_when: false
+      when: not spamscanner_llm_enabled | bool
+
+    - name: Skip the rest (the language model is turned off)
+      meta: end_host
+      when: not spamscanner_llm_enabled | bool
+
+    # (these go into the service unit and commands, so nothing else, and no
+    #  line break: "\Z" is the very end; and no cloud models, which would send
+    #  mail to ollama.com)
+    # (invalid settings are a warning, not a failed MX or SMTP deploy)
+    - name: Validate the Spam Scanner LLM settings
+      ansible.builtin.assert:
+        that:
+          - spamscanner_llm_port | string is match('^[0-9]{1,5}\Z')
+          - spamscanner_llm_port | int >= 1024
+          - spamscanner_llm_port | int <= 65535
+          - spamscanner_llm_model is match('^[A-Za-z0-9][A-Za-z0-9._:/-]*\Z')
+          - spamscanner_llm_base_model is match('^[A-Za-z0-9][A-Za-z0-9._:/-]*\Z')
+          - "'cloud' not in spamscanner_llm_base_model | lower"
+          - spamscanner_llm_model != spamscanner_llm_base_model
+          - spamscanner_llm_memory_max is match('^[0-9]+[KMGT]?\Z')
+          # (at least 1G: less, e.g. 0, has systemd stop it as it starts)
+          - (spamscanner_llm_memory_max | human_to_bytes) >= 1073741824
+          # (a SPAM_SCANNER_LLM_URL on this server, 127.0.0.1 or localhost, is
+          #  the Ollama set up here, which listens there only)
+          - spamscanner_llm_url == '' or spamscanner_llm_url is match('(?i)^https?://(127\.0\.0\.1|localhost):' ~ spamscanner_llm_port ~ '(/|$)')
+        fail_msg: |
+          SPAM_SCANNER_LLM_PORT (1024 to 65535), SPAM_SCANNER_LLM_MODEL and
+          SPAM_SCANNER_LLM_BASE_MODEL (letters, digits, ".", "_", ":", "/" or
+          "-"; different names; not a cloud model) and
+          SPAM_SCANNER_LLM_MEMORY_MAX (e.g. 8G) must be valid, and a
+          SPAM_SCANNER_LLM_URL on this server (127.0.0.1 or localhost) must
+          use SPAM_SCANNER_LLM_PORT; the language model is not set up on
+          {{ inventory_hostname }} until they are.
+        quiet: true
+      register: spamscanner_llm_settings
+      ignore_errors: true
+
+    # (whether Ollama for Spam Scanner runs: then it has a memory figure)
+    - name: Check whether Ollama for Spam Scanner runs
+      command: systemctl show --property=MemoryCurrent --value ollama-spamscanner.service
+      register: spamscanner_llm_memory_current
+      changed_when: false
+      failed_when: false
+      check_mode: false
+      when: spamscanner_llm_settings is not failed
+
+    # (the model is held in memory: a server without room for it and 2 GB
+    #  more for the mail servers would have mail slowed, or the model stopped
+    #  and started again by the kernel's OOM killer over and over (swap is
+    #  off, see security.yml); before it first starts, the memory its
+    #  processes do not use now counts, and once it runs, all the server has,
+    #  so a deploy while mail is busy does not stop it; and on one CPU it
+    #  would take all of it)
+    - name: Check for memory for the Spam Scanner LLM (its memory limit and 2 GB more), and CPUs
+      ansible.builtin.assert:
+        that:
+          - (ansible_processor_vcpus | default(1) | int) >= 2
+          - >-
+            ((spamscanner_llm_memory_current.stdout | default('') | regex_search('^[0-9]+$')) is not none)
+            | ternary(ansible_memtotal_mb | int, ansible_memory_mb.nocache.free | int)
+            * 1048576
+            >= (spamscanner_llm_memory_max | human_to_bytes) + 2147483648
+        fail_msg: |
+          {{ inventory_hostname }} has {{ ansible_memory_mb.nocache.free }} MB
+          of memory free (of {{ ansible_memtotal_mb }} MB) and
+          {{ ansible_processor_vcpus | default(1) }} CPUs: too little for
+          SPAM_SCANNER_LLM_MEMORY_MAX ({{ spamscanner_llm_memory_max }}) and
+          2 GB for the mail servers, or one CPU; the language model is not set
+          up on it (lower SPAM_SCANNER_LLM_MEMORY_MAX, or turn it off with
+          SPAM_SCANNER_LLM_MODE=off).
+        quiet: true
+      register: spamscanner_llm_memory
+      ignore_errors: true
+      when:
+        - spamscanner_llm_settings is not failed
+        - ansible_memory_mb is defined
+
+    # (and one set up before with other settings is not left running)
+    - name: Stop Ollama for Spam Scanner (the settings are invalid, or memory too little)
+      systemd:
+        name: "{{ item }}"
+        state: stopped
+        enabled: false
+      loop:
+        - ollama-spamscanner-health-check.timer
+        - ollama-spamscanner.service
+      failed_when: false
+      when: spamscanner_llm_settings is failed or spamscanner_llm_memory is failed
+
+    - name: Skip the rest (the Spam Scanner LLM settings are invalid, or memory too little)
+      meta: end_host
+      when: spamscanner_llm_settings is failed or spamscanner_llm_memory is failed
+
+    # ==========================================================================
+    # Ollama installed and started.  The language model is optional (monitor
+    # mode), so this failing (a download that cannot be had, too little disk,
+    # an Ollama that does not start) does not stop the rest of the MX or SMTP
+    # deploy: it is a warning, and Ansible's next run tries again
+    # ==========================================================================
+    - name: Install and start Ollama for Spam Scanner
+      block:
+        - name: Install zstd and curl
+          apt:
+            name:
+              - zstd
+              - curl
+            state: present
+            update_cache: true
+            cache_valid_time: 3600
+
+        - name: Create the Ollama for Spam Scanner group
+          group:
+            name: ollama-spamscanner
+            system: true
+
+        - name: Create the Ollama for Spam Scanner user
+          user:
+            name: ollama-spamscanner
+            group: ollama-spamscanner
+            system: true
+            home: "{{ spamscanner_llm_home }}"
+            create_home: true
+            shell: /usr/sbin/nologin
+
+        - name: Create the Ollama for Spam Scanner directories
+          file:
+            path: "{{ item.path }}"
+            state: directory
+            owner: "{{ item.owner }}"
+            group: "{{ item.owner }}"
+            mode: "0755"
+            # (not a link put in its place by that user: root does not follow
+            #  it)
+            follow: false
+          loop:
+            - path: "{{ spamscanner_llm_dir }}"
+              owner: root
+            - path: "{{ spamscanner_llm_home }}/models"
+              owner: ollama-spamscanner
+
+        # ==========================================================================
+        # Ollama: downloaded (checksum verified), extracted without the GPU
+        # libraries (2 GB this server has no use for) into a temporary directory,
+        # which is renamed only once complete, and the download removed
+        # ==========================================================================
+        - name: Check whether Ollama {{ ollama_version }} is installed
+          stat:
+            path: "{{ spamscanner_llm_dir }}/{{ ollama_version }}/.installed"
+          register: spamscanner_llm_installed
+
+        - name: Install Ollama {{ ollama_version }}
+          when: not spamscanner_llm_installed.stat.exists
+          block:
+            - name: Check for free disk space (the download and Ollama need about 2 GB)
+              assert:
+                that:
+                  - >-
+                    ((ansible_mounts
+                    | selectattr('mount', 'in', ['/', '/opt', '/var'])
+                    | map(attribute='size_available') | list) or [0]) | min
+                    > 3 * 1024 * 1024 * 1024
+                fail_msg: Less than 3 GB free to install Ollama for Spam Scanner.
+                quiet: true
+
+            - name: Download Ollama {{ ollama_version }}
+              get_url:
+                url: "https://github.com/ollama/ollama/releases/download/v{{ ollama_version }}/ollama-linux-{{ ollama_arch }}.tar.zst"
+                dest: "{{ spamscanner_llm_dir }}/ollama-{{ ollama_version }}-{{ ollama_arch }}.tar.zst"
+                checksum: "{{ ollama_checksums[ollama_arch] }}"
+                mode: "0644"
+                timeout: 300
+
+            - name: Prepare an empty directory for Ollama {{ ollama_version }}
+              file:
+                path: "{{ spamscanner_llm_dir }}/{{ ollama_version }}.tmp"
+                state: "{{ item }}"
+                owner: root
+                group: root
+                mode: "0755"
+              loop:
+                - absent
+                - directory
+
+            - name: Extract Ollama {{ ollama_version }}
+              command:
+                argv:
+                  - tar
+                  - --zstd
+                  - -xf
+                  - "{{ spamscanner_llm_dir }}/ollama-{{ ollama_version }}-{{ ollama_arch }}.tar.zst"
+                  - -C
+                  - "{{ spamscanner_llm_dir }}/{{ ollama_version }}.tmp"
+                  - --exclude=lib/ollama/cuda_*
+                  - --exclude=lib/ollama/rocm*
+                  - --exclude=lib/ollama/vulkan*
+
+            - name: Mark Ollama {{ ollama_version }} as complete
+              copy:
+                dest: "{{ spamscanner_llm_dir }}/{{ ollama_version }}.tmp/.installed"
+                content: "{{ ollama_checksums[ollama_arch] }}\n"
+                owner: root
+                group: root
+                mode: "0644"
+
+            # (a version directory without the marker is incomplete)
+            - name: Remove an incomplete Ollama {{ ollama_version }}
+              file:
+                path: "{{ spamscanner_llm_dir }}/{{ ollama_version }}"
+                state: absent
+
+            - name: Put Ollama {{ ollama_version }} in place
+              command:
+                argv:
+                  - mv
+                  - -T
+                  - "{{ spamscanner_llm_dir }}/{{ ollama_version }}.tmp"
+                  - "{{ spamscanner_llm_dir }}/{{ ollama_version }}"
+              register: spamscanner_llm_moved
+
+            - name: Remove the Ollama {{ ollama_version }} download
+              file:
+                path: "{{ spamscanner_llm_dir }}/ollama-{{ ollama_version }}-{{ ollama_arch }}.tar.zst"
+                state: absent
+
+        # ==========================================================================
+        # The health check and the model warm-up, installed before the service is
+        # restarted (so the check never asks an old port while the model is
+        # pulled).  The check restarts a running Ollama that does not answer, and
+        # starts one systemd gave up on (once every 30 minutes at most), and
+        # fails then (an alert through OnFailure); it starts the warm-up when the
+        # model is not loaded (after a restart, the first scans would otherwise
+        # each start loading it and give up)
+        # ==========================================================================
+        - name: Install the Ollama for Spam Scanner health check and warm-up
+          template:
+            src: "{{ playbook_dir }}/templates/{{ item.src }}"
+            dest: "{{ item.dest }}"
+            owner: root
+            group: root
+            mode: "{{ item.mode }}"
+          loop:
+            - src: ollama-spamscanner-health-check.sh.j2
+              dest: /usr/local/bin/ollama-spamscanner-health-check.sh
+              mode: "0755"
+            - src: ollama-spamscanner-health-check.service.j2
+              dest: /etc/systemd/system/ollama-spamscanner-health-check.service
+              mode: "0644"
+            - src: ollama-spamscanner-health-check.timer.j2
+              dest: /etc/systemd/system/ollama-spamscanner-health-check.timer
+              mode: "0644"
+            - src: ollama-spamscanner-warmup.sh.j2
+              dest: /usr/local/bin/ollama-spamscanner-warmup.sh
+              mode: "0755"
+            - src: ollama-spamscanner-warmup.service.j2
+              dest: /etc/systemd/system/ollama-spamscanner-warmup.service
+              mode: "0644"
+
+        - name: Install the Ollama for Spam Scanner service
+          template:
+            src: "{{ playbook_dir }}/templates/ollama-spamscanner.service.j2"
+            dest: /etc/systemd/system/ollama-spamscanner.service
+            owner: root
+            group: root
+            mode: "0644"
+          register: spamscanner_llm_unit
+
+        # (Ollama's model runner listens on a random 127.0.0.1 port, which the
+        #  open ports monitor leaves out for this service only)
+        - name: Authorize Ollama for Spam Scanner's local ports for the open ports monitor
+          lineinfile:
+            path: /etc/security-monitor/authorized-local-services.conf
+            line: ollama-spamscanner.service
+            create: true
+            owner: root
+            group: root
+            mode: "0644"
+
+        - name: Enable the model warm-up (it runs whenever Ollama starts)
+          systemd:
+            name: ollama-spamscanner-warmup.service
+            enabled: true
+            daemon_reload: true
+
+        # (one systemd gave up on is started again)
+        - name: Clear a failed start of Ollama for Spam Scanner
+          command: systemctl reset-failed ollama-spamscanner.service
+          changed_when: false
+          failed_when: false
+
+        # (the program it runs now, if it runs: another version, e.g. after a
+        #  run that installed this one failed before restarting it, is
+        #  restarted too, before that version is removed below)
+        - name: Find the Ollama for Spam Scanner that runs
+          shell: >-
+            pid=$(systemctl show -p MainPID --value ollama-spamscanner.service);
+            if [ -n "$pid" ] && [ "$pid" != 0 ]; then
+            [ "$(readlink -f "/proc/$pid/exe")" = "$(readlink -f {{ spamscanner_llm_bin | quote }})" ]
+            && echo pinned || echo other; fi
+          register: spamscanner_llm_running
+          changed_when: false
+          failed_when: false
+
+        # (restarted for a new version or service, or one running another)
+        - name: Start Ollama for Spam Scanner
+          systemd:
+            name: ollama-spamscanner
+            state: >-
+              {{ 'restarted' if (spamscanner_llm_moved is changed
+              or spamscanner_llm_unit is changed
+              or (spamscanner_llm_running.stdout | default('')) == 'other')
+              else 'started' }}
+            enabled: true
+            daemon_reload: true
+
+        - name: Start the Ollama for Spam Scanner health check timer
+          systemd:
+            name: ollama-spamscanner-health-check.timer
+            state: started
+            enabled: true
+
+        - name: Wait for Ollama for Spam Scanner
+          uri:
+            url: "http://127.0.0.1:{{ spamscanner_llm_port }}/api/version"
+            status_code: 200
+          register: spamscanner_llm_version
+          until: spamscanner_llm_version.status == 200
+          retries: 30
+          delay: 2
+      rescue:
+        - name: Warn that Ollama for Spam Scanner could not be set up
+          debug:
+            msg: >-
+              Ollama for Spam Scanner could not be set up on
+              {{ inventory_hostname }} ({{ ansible_failed_result.stderr | default(ansible_failed_result.msg, true) | default('see above', true) }});
+              scans go on without the language model, and the next run tries
+              again.
+
+        - name: Skip the model (Ollama could not be set up)
+          set_fact:
+            spamscanner_llm_ready: false
+
+    # ==========================================================================
+    # The model: the base model pulled only when missing (or asked for), and
+    # the model the MX server asks for made from it.  The language model is
+    # optional (monitor mode), so a registry that cannot be reached does not
+    # stop the rest of the MX deploy: it is a warning, and Ansible's next run
+    # tries again
+    # ==========================================================================
+    # (every run: a run stopped while it pulled the base model, e.g. its
+    #  connection lost, left Ollama able to reach the network until reboot,
+    #  see the pull below)
+    - name: Keep Ollama for Spam Scanner to loopback
+      command: systemctl set-property --runtime ollama-spamscanner.service IPAddressDeny=any
+      register: spamscanner_llm_loopback
+      changed_when: false
+      failed_when: false
+
+    # (not when its unit is not there yet, or no longer)
+    - name: Warn that Ollama for Spam Scanner could not be kept to loopback
+      debug:
+        msg: >-
+          Ollama for Spam Scanner on {{ inventory_hostname }} could not be
+          kept to loopback ({{ spamscanner_llm_loopback.stderr | default('', true) }});
+          it may reach the network until it is restarted.
+      when:
+        - spamscanner_llm_loopback.rc | default(0) != 0
+        - "'not found' not in (spamscanner_llm_loopback.stderr | default(''))"
+        - "'not loaded' not in (spamscanner_llm_loopback.stderr | default(''))"
+
+    - name: Set up the model
+      when: spamscanner_llm_ready | default(true) | bool
+      block:
+        - name: Check whether the base model ({{ spamscanner_llm_base_model }}) is here
+          command:
+            argv:
+              - runuser
+              - -u
+              - ollama-spamscanner
+              - --
+              - "{{ spamscanner_llm_bin }}"
+              - show
+              - "{{ spamscanner_llm_base_model }}"
+          environment:
+            OLLAMA_HOST: "127.0.0.1:{{ spamscanner_llm_port }}"
+            HOME: "{{ spamscanner_llm_home }}"
+          register: spamscanner_llm_base_present
+          changed_when: false
+          failed_when: false
+
+        - name: Check for free disk space for the base model (about 5 GB)
+          assert:
+            that:
+              - >-
+                ((ansible_mounts
+                | selectattr('mount', 'in', ['/', '/var', '/var/lib', spamscanner_llm_home])
+                | map(attribute='size_available') | list) or [0]) | min
+                > 8 * 1024 * 1024 * 1024
+            fail_msg: Less than 8 GB free to pull the base model for Spam Scanner.
+            quiet: true
+          when: spamscanner_llm_base_present.rc != 0 or spamscanner_llm_force_pull | bool
+
+        # (Ollama may reach only loopback, see IPAddressDeny in its unit, so
+        #  nothing on this server can have it download a model: it may reach
+        #  the registry while it pulls the base model, and no longer, also when
+        #  the pull fails)
+        - name: Pull the base model ({{ spamscanner_llm_base_model }})
+          when: spamscanner_llm_base_present.rc != 0 or spamscanner_llm_force_pull | bool
+          block:
+            - name: Let Ollama for Spam Scanner reach the registry while it pulls
+              command: systemctl set-property --runtime ollama-spamscanner.service IPAddressDeny=
+
+            - name: Pull the base model ({{ spamscanner_llm_base_model }})
+              command:
+                argv:
+                  - runuser
+                  - -u
+                  - ollama-spamscanner
+                  - --
+                  - "{{ spamscanner_llm_bin }}"
+                  - pull
+                  - "{{ spamscanner_llm_base_model }}"
+              environment:
+                OLLAMA_HOST: "127.0.0.1:{{ spamscanner_llm_port }}"
+                HOME: "{{ spamscanner_llm_home }}"
+              register: spamscanner_llm_pull
+              # (a pull that stalls does not hold up the deploy for good: it
+              #  fails once at the timeout, which is not retried, and the next
+              #  deploy goes on from where it stopped, as Ollama keeps what it
+              #  pulled; a pull that fails sooner, e.g. for a dropped
+              #  connection, is retried once)
+              timeout: 600
+              retries: 1
+              delay: 10
+              until: spamscanner_llm_pull is succeeded
+          always:
+            - name: Keep Ollama for Spam Scanner to loopback again
+              command: systemctl set-property --runtime ollama-spamscanner.service IPAddressDeny=any
+              changed_when: false
+
+        # (the client of each command runs as Ollama's own user, so a file a
+        #  definition names is read as that user, never as root; the definition
+        #  is in a directory only root can write)
+        - name: Write the model's definition
+          template:
+            src: "{{ playbook_dir }}/templates/ollama-spamscanner.Modelfile.j2"
+            dest: "{{ spamscanner_llm_dir }}/Modelfile"
+            owner: root
+            group: root
+            mode: "0644"
+          register: spamscanner_llm_modelfile
+
+        - name: Check whether the model ({{ spamscanner_llm_model }}) is here
+          command:
+            argv:
+              - runuser
+              - -u
+              - ollama-spamscanner
+              - --
+              - "{{ spamscanner_llm_bin }}"
+              - show
+              - "{{ spamscanner_llm_model }}"
+          environment:
+            OLLAMA_HOST: "127.0.0.1:{{ spamscanner_llm_port }}"
+            HOME: "{{ spamscanner_llm_home }}"
+          register: spamscanner_llm_model_present
+          changed_when: false
+          failed_when: false
+
+        - name: Make the model ({{ spamscanner_llm_model }}) from the base model
+          command:
+            argv:
+              - runuser
+              - -u
+              - ollama-spamscanner
+              - --
+              - "{{ spamscanner_llm_bin }}"
+              - create
+              - "{{ spamscanner_llm_model }}"
+              - -f
+              - "{{ spamscanner_llm_dir }}/Modelfile"
+          environment:
+            OLLAMA_HOST: "127.0.0.1:{{ spamscanner_llm_port }}"
+            HOME: "{{ spamscanner_llm_home }}"
+          when: >-
+            spamscanner_llm_model_present.rc != 0
+            or spamscanner_llm_modelfile is changed
+            or spamscanner_llm_pull is changed
+
+        # (in the background, see ollama-spamscanner-warmup.sh: loading it
+        #  takes minutes, and the mail servers are deployed after this; it
+        #  stays loaded, and a failure is sent as a failure notification)
+        - name: Load the model (it stays loaded)
+          systemd:
+            name: ollama-spamscanner-warmup.service
+            state: started
+            no_block: true
+          changed_when: false
+      rescue:
+        - name: Warn that the model could not be set up
+          debug:
+            msg: >-
+              The Spam Scanner language model could not be set up on
+              {{ inventory_hostname }} ({{ ansible_failed_result.stderr | default(ansible_failed_result.msg, true) | default('see above', true) }});
+              scans go on without it, and the next run tries again.
+
+        # (so the next run makes the model again from a changed definition)
+        - name: Remove the model's definition
+          file:
+            path: "{{ spamscanner_llm_dir }}/Modelfile"
+            state: absent
+
+    - name: Remove other versions of Ollama for Spam Scanner
+      shell: >-
+        find {{ spamscanner_llm_dir | quote }} -mindepth 1 -maxdepth 1
+        \( \( -type f -name 'ollama-*.tar.zst' ! -name {{ ('ollama-' ~ ollama_version ~ '-' ~ ollama_arch ~ '.tar.zst') | quote }} \)
+        -o \( -type d -regex '.*/[0-9]+\.[0-9]+\.[0-9]+\(\.tmp\)?' ! -name {{ ollama_version | quote }} \) \)
+        -print -exec rm -rf {} +
+      register: spamscanner_llm_old_versions
+      changed_when: spamscanner_llm_old_versions.stdout != ''
+      failed_when: false
+      when: spamscanner_llm_ready | default(true) | bool

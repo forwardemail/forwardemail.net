@@ -5,6 +5,7 @@
  * Sieve Parser Tests
  */
 
+const process = require('node:process');
 const { describe, it } = require('node:test');
 const assert = require('node:assert');
 
@@ -1245,3 +1246,74 @@ describe('Sieve Parser - RFC conformance', () => {
   });
 });
 /* eslint-enable no-template-curly-in-string */
+
+//
+// A script is followed as deep as it goes: by the parser, which places each
+// test by counting the lines before it (a few thousand "not" tests in a row,
+// with comments between them, took seconds to parse), and by the engine when
+// a message comes in (whose stack they overflowed).  So tests and blocks are
+// only nested so deep, counted together.
+//
+describe('Sieve Parser - nesting', () => {
+  // `levels` of tests around "true", and of blocks around "keep"
+  const tests = (levels, open = 'anyof(', close = ')') =>
+    `${open.repeat(levels)}true${close.repeat(levels)}`;
+  const blocks = (levels, open = 'if true {') =>
+    `${open.repeat(levels)} keep; ${'}'.repeat(levels)}`;
+  const tooDeep = /Tests or blocks are nested too deep/;
+
+  it('parses tests and blocks nested deeper than RFC 5228 asks for', () => {
+    // (section 2.10.7: 15 levels of blocks and of lists of tests; here each
+    // block is under 15 lists, and each list is negated)
+    const ast = parse(blocks(15, `if ${tests(15, 'not anyof(')} {`));
+    let command = ast.commands[0];
+    for (let i = 1; i < 15; i++) command = command.block[0];
+    assert.strictEqual(command.block[0].type, 'Keep');
+    let { test } = command;
+    for (let i = 0; i < 15; i++) {
+      assert.strictEqual(test.type, 'NotTest');
+      test = test.test.tests[0];
+    }
+
+    assert.strictEqual(test.type, 'TrueTest');
+  });
+
+  it('parses 64 levels and refuses more', () => {
+    for (const [nested, most] of [
+      // (a test of `levels` tests around "true")
+      [(levels) => `if ${tests(levels)} { keep; }`, 63],
+      [(levels) => `if ${tests(levels, 'not ', '')} { keep; }`, 63],
+      [(levels) => blocks(levels), 64],
+      [(levels) => blocks(levels, 'foreverypart {'), 64],
+      // (what an unknown command or test holds is not kept, but is read)
+      [(levels) => `require "ihave"; ${blocks(levels, 'x {')}`, 64],
+      [(levels) => `require "ihave"; if ${tests(levels, 'x(')} { keep; }`, 63]
+    ]) {
+      assert.strictEqual(parse(nested(most)).type, 'Script');
+      assert.throws(() => parse(nested(most + 1)), tooDeep);
+    }
+  });
+
+  it('counts how deep, not how many', () => {
+    const test = tests(60, 'not ', '');
+    const ast = parse(
+      `if anyof(${`${test}, `.repeat(50)}true) { ${blocks(60)} }\r\n`.repeat(5)
+    );
+    assert.strictEqual(ast.commands.length, 5);
+    assert.strictEqual(ast.commands[4].test.tests.length, 51);
+  });
+
+  it('refuses a script nested deeper without following it', () => {
+    // (as many as fit in a stored script, with comments between them)
+    const script = `if ${'not /*xxxxxxxxxxxxxxxx*/ '.repeat(
+      2500
+    )}true { keep; }`;
+    assert.ok(script.length < 65_536);
+    const started = process.cpuUsage();
+    assert.throws(() => parse(script), tooDeep);
+    assert.ok(process.cpuUsage(started).user < 500_000);
+    const result = validate(script);
+    assert.strictEqual(result.valid, false);
+    assert.match(result.errors[0].message, tooDeep);
+  });
+});

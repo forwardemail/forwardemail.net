@@ -38,9 +38,16 @@ const LAST_RESPONSE_PREFIX = `${KEY_PREFIX}last:`;
  * @param {string} options.eventUid - Event UID
  * @param {string} options.attendeeEmail - Attendee email
  * @param {string} options.ip - IP address
+ * @param {Object} [settings]
+ * @param {boolean} [settings.reserve] - take the cooldown now (for the
+ *   request that records a response, not the page that asks to confirm it)
  * @returns {Promise<Object>} { limited: boolean, reason?: string, retryAfter?: number }
  */
-async function checkRateLimit(client, { eventUid, attendeeEmail, ip }) {
+async function checkRateLimit(
+  client,
+  { eventUid, attendeeEmail, ip },
+  { reserve = false } = {}
+) {
   if (!client) {
     // If no Redis client, skip rate limiting (for testing)
     return { limited: false };
@@ -49,15 +56,34 @@ async function checkRateLimit(client, { eventUid, attendeeEmail, ip }) {
   const now = Date.now();
   const windowStart = now - RATE_LIMIT_WINDOW_MS;
 
-  // Check cooldown (5 second minimum between responses)
+  // Check cooldown (5 second minimum between responses); taken at once (SET
+  // NX) by the request that records a response, so responses sent at the
+  // same time cannot all pass it before any is recorded
   const cooldownKey = `${COOLDOWN_PREFIX}${eventUid}:${attendeeEmail}`;
-  const lastResponseTime = await client.get(cooldownKey);
-  if (
-    lastResponseTime &&
-    now - Number.parseInt(lastResponseTime, 10) < RESPONSE_COOLDOWN_MS
-  ) {
-    const retryAfter =
-      RESPONSE_COOLDOWN_MS - (now - Number.parseInt(lastResponseTime, 10));
+  let retryAfter = 0;
+  if (reserve) {
+    const reserved = await client.set(
+      cooldownKey,
+      now.toString(),
+      'PX',
+      RESPONSE_COOLDOWN_MS,
+      'NX'
+    );
+    if (reserved !== 'OK')
+      retryAfter = Math.max(
+        1000,
+        Number(await client.pttl(cooldownKey)) || RESPONSE_COOLDOWN_MS
+      );
+  } else {
+    const lastResponseTime = Number.parseInt(await client.get(cooldownKey), 10);
+    if (
+      Number.isFinite(lastResponseTime) &&
+      now - lastResponseTime < RESPONSE_COOLDOWN_MS
+    )
+      retryAfter = RESPONSE_COOLDOWN_MS - (now - lastResponseTime);
+  }
+
+  if (retryAfter > 0) {
     return {
       limited: true,
       reason: 'Please wait a few seconds before responding again',

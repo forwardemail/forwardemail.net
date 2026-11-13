@@ -23531,5 +23531,19 @@
   "Delete mailbox?": "Ta bort brevlåda?",
   "Please confirm if you wish to delete the mailbox <strong>%s</strong>.": "Vänligen bekräfta om du vill ta bort brevlådan <strong>%s</strong>.",
   "Generate mailbox passwords": "Generera brevlådelösenord",
-  "Generate random mailbox": "Generera slumpmässig brevlåda"
+  "Generate random mailbox": "Generera slumpmässig brevlåda",
+  "The message could not be scanned at this time, please try again later.": "Meddelandet kunde inte skannas just nu, försök igen senare.",
+  "The message could not be scanned at this time and will be retried.": "Meddelandet kunde inte skannas just nu; ett nytt försök att skicka det görs senare.",
+  "Senders blocked after spam reports": "Avsändare blockerade efter skräppostrapporter",
+  "The recipient at these forwarding addresses reported mail from these senders as spam to their mailbox provider, so their mail to that address gets a temporary error until the date shown.": "Mottagaren på dessa vidarebefordringsadresser rapporterade e-post från dessa avsändare som skräppost till sin e-postleverantör, så deras e-post till den adressen får ett tillfälligt fel fram till det visade datumet.",
+  "Sender": "Avsändare",
+  "Forwarding address": "Vidarebefordringsadress",
+  "Until": "Till och med",
+  "Unblock": "Avblockera",
+  "Unblock sender?": "Avblockera avsändaren?",
+  "Please confirm if you wish to receive mail from <strong>%s</strong> at <strong>%s</strong> again.": "Bekräfta att du vill ta emot e-post från <strong>%s</strong> på <strong>%s</strong> igen.",
+  "If you check this, then links in mail you send are checked with <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"%s\">Cloudflare's family filter</a>, and mail linking to a site it blocks for adult-related content or malware is not sent. Off by default.": "Om du markerar detta kontrolleras länkar i e-post du skickar med <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"%s\">Cloudflares familjefilter</a>, och e-post som länkar till en webbplats som filtret blockerar för vuxenrelaterat innehåll eller skadlig kod skickas inte. Av som standard.",
+  "If you uncheck this, then mail you send with <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"%s\">executable</a> attachments, such as .exe, .js or .bat files (also inside archives), is no longer blocked. On by default.": "Om du avmarkerar detta blockeras inte längre e-post du skickar med <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"%s\">körbara</a> bilagor, till exempel .exe-, .js- eller .bat-filer (även i arkiv). På som standard.",
+  "Mail is always scanned for spam, and links in mail you send are always checked with <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"%s\">Cloudflare's malware filter</a>: mail linking to a site it blocks for phishing or malware is not sent.": "E-post skannas alltid efter spam, och länkar i e-post du skickar kontrolleras alltid med <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"%s\">Cloudflares filter mot skadlig kod</a>: e-post som länkar till en webbplats som filtret blockerar för nätfiske eller skadlig kod skickas inte.",
+  "The passwords generated for these aliases still work.  Generate a new password for each one to replace them:": "Lösenorden som genererats för dessa alias fungerar fortfarande. Generera ett nytt lösenord för vart och ett för att ersätta dem:"
 }

@@ -13,6 +13,7 @@ const env = require('./env');
 
 const config = require('.');
 const koaRedirectBackPolyfill = require('#helpers/koa-redirect-back-polyfill');
+const limitBodyDepth = require('#helpers/limit-body-depth');
 const sanitizeQueryLimit = require('#helpers/sanitize-query-limit');
 const validateHostHeader = require('#helpers/validate-host-header');
 
@@ -27,8 +28,15 @@ const denylistMiddleware = require('#helpers/denylist-request');
 
 const sharedAPIConfig = sharedConfig('API');
 
+//
 // setup our Cabin instance
-const cabin = new Cabin({ logger });
+//
+// It describes a request anew for each line that is logged for it, and read
+// its body each time, to mask what it holds: a line took over a second for
+// an email of 40 MB.  No log carries a body (the logger redacts it, see
+// `REDACTED_FIELDS` in helpers/logger), so it is not read for one.
+//
+const cabin = new Cabin({ logger, parseRequest: { parseBody: false } });
 
 const RATELIMIT_ALLOWLIST =
   typeof env.RATELIMIT_ALLOWLIST === 'string'
@@ -79,6 +87,8 @@ module.exports = {
     // (before the body parser, which would Brotli-decode the body: see
     //  helpers/refuse-unsafe-encoding.js)
     app.use(refuseUnsafeRequestEncoding);
+    // (and one nested deeper than a body is: see helpers/limit-body-depth.js)
+    app.use(limitBodyDepth);
     // before anything reads ctx.hostname / ctx.origin
     app.use(validateHostHeader());
     // `?limit=0` must not mean "no limit" (see helpers/sanitize-query-limit.js)

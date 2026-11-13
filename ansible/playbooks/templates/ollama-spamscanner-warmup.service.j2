@@ -1,0 +1,30 @@
+# WARNING: This file is managed by Ansible (ansible/playbooks/spamscanner-llm.yml)
+# Manual changes will be overwritten on next deployment
+#
+# Load Spam Scanner's model whenever Ollama starts (and when the health check
+# finds it not loaded)
+[Unit]
+Description=Load the model of Ollama for Spam Scanner
+After=ollama-spamscanner.service
+Requisite=ollama-spamscanner.service
+# (stopped, and started again, with it: a restart of Ollama while the model
+#  loads does not fail this, which would send a failure notification)
+PartOf=ollama-spamscanner.service
+OnFailure=failure-notification@%n.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/ollama-spamscanner-warmup.sh
+TimeoutStartSec=12min
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=ollama-spamscanner-warmup
+User=ollama-spamscanner
+Group=ollama-spamscanner
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+
+[Install]
+WantedBy=ollama-spamscanner.service

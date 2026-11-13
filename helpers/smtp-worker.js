@@ -32,6 +32,12 @@ const createTangerine = require('#helpers/create-tangerine');
 const logger = require('#helpers/logger');
 const processEmail = require('#helpers/process-email');
 const setupMongoose = require('#helpers/setup-mongoose');
+const config = require('#config');
+const spamScanner = require('#helpers/spam-scanner');
+
+// (each thread scans the mail it sends with one worker of its own, see
+//  `checkOutbound` in `helpers/spam-scanner.js`, loaded with its first task)
+config.spamScanner.threads = 1;
 
 const breeSharedConfig = sharedConfig('BREE');
 
@@ -61,6 +67,8 @@ async function initialize() {
       client = new Redis(breeSharedConfig.redis, logger);
       resolver = createTangerine(client, logger);
     }
+
+    spamScanner.warm('outbound', { llm: true });
   })();
 
   return initializationPromise;

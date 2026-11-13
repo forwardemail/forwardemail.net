@@ -43,7 +43,7 @@ async function wasRelayed(session, address) {
   return (await this.client.exists(getFingerprintKey(session, address))) === 1;
 }
 
-async function getRecipients(session, scan) {
+async function getRecipients(session) {
   const bounces = [];
   const normalized = [];
   const imap = [];
@@ -55,10 +55,6 @@ async function getRecipients(session, scan) {
     async (to) => {
       let port = 25;
       try {
-        let hasAdultContentProtection = true;
-        let hasPhishingProtection = true;
-        let hasExecutableProtection = true;
-        let hasVirusProtection = true;
         let customAllowlist = [];
         let customDenylist = [];
         let webhookKey;
@@ -102,19 +98,6 @@ async function getRecipients(session, scan) {
             });
           }
 
-          // Spam Scanner boolean values adjusted by user in Advanced Settings page
-          if (_.isBoolean(body.has_adult_content_protection))
-            hasAdultContentProtection = body.has_adult_content_protection;
-
-          if (_.isBoolean(body.has_phishing_protection))
-            hasPhishingProtection = body.has_phishing_protection;
-
-          if (_.isBoolean(body.has_executable_protection))
-            hasExecutableProtection = body.has_executable_protection;
-
-          if (_.isBoolean(body.has_virus_protection))
-            hasVirusProtection = body.has_virus_protection;
-
           if (Array.isArray(body.allowlist)) customAllowlist = body.allowlist;
 
           if (Array.isArray(body.denylist)) customDenylist = body.denylist;
@@ -133,93 +116,6 @@ async function getRecipients(session, scan) {
                 ignoreHook: true
               }
             );
-          }
-        }
-
-        //
-        // NOTE: here is where we check if Spam Scanner settings
-        // were either enabled or disabled, and if they were enabled
-        // and the respective policy did not pass, then throw that error as a bounce
-        //
-        if (_.isObject(scan)) {
-          //
-          // NOTE: until we are confident with the accuracy
-          // we are not utilizing classification right now
-          // however we still want to use other detections
-          //
-          const messages = [];
-
-          if (
-            hasPhishingProtection &&
-            _.isArray(scan?.results?.phishing) &&
-            !_.isEmpty(scan.results.phishing)
-          ) {
-            for (const message of scan.results.phishing) {
-              // if we're not filtering for adult-related content then continue early
-
-              if (
-                !hasAdultContentProtection &&
-                message.includes('adult-related content')
-              )
-                continue;
-
-              if (message.includes('adult-related content'))
-                messages.push(
-                  'Links were detected that may contain adult-related content'
-                );
-              else
-                messages.push(
-                  'Links were detected that may contain phishing and/or malware'
-                );
-              //
-              // NOTE: we do not want to push the link in the response
-              //       (otherwise bounce emails may never arrive to sender)
-              //
-              // messages.push(message);
-            }
-          }
-
-          if (
-            hasExecutableProtection &&
-            _.isArray(scan?.results?.executables) &&
-            !_.isEmpty(scan.results.executables)
-          ) {
-            for (const message of scan.results.executables.slice(0, 2)) {
-              messages.push(message);
-            }
-
-            messages.push(
-              `You may want to re-send your attachment in a compressed archive format (e.g. a ZIP file)`
-            );
-          }
-
-          if (
-            hasVirusProtection &&
-            _.isArray(scan?.results?.viruses) &&
-            !_.isEmpty(scan.results.viruses)
-          ) {
-            for (const message of scan.results.viruses.slice(0, 2)) {
-              messages.push(message);
-            }
-          }
-
-          if (messages.length > 0) {
-            messages.push(
-              'For more information on Spam Scanner visit https://spamscanner.net'
-            );
-            const err = new SMTPError(_.uniq(messages).join(' '), {
-              responseCode: 554
-            });
-
-            //
-            // NOTE: we don't scan messages going to abuse@forwardemail.net
-            //
-            if (to.address.toLowerCase() === config.abuseEmail) {
-              err.isCodeBug = true;
-              logger.fatal(err, { session, resolver: this.resolver });
-            } else {
-              throw err;
-            }
           }
         }
 

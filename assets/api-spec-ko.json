@@ -2066,7 +2066,7 @@
             "allowlist": [],
             "denylist": [],
             "restricted_alias_names": [],
-            "has_adult_content_protection": true,
+            "has_adult_content_protection": false,
             "has_phishing_protection": true,
             "has_executable_protection": true,
             "has_virus_protection": true,
@@ -2149,19 +2149,21 @@
           },
           "has_adult_content_protection": {
             "type": "boolean",
-            "description": "스팸 스캐너 성인 콘텐츠 보호 활성화"
+            "description": "Cloudflare 가족 필터가 성인 관련 콘텐츠나 악성 코드 때문에 차단하는 사이트로 연결되는 보낸 메일을 차단할지 여부(기본값 false)"
           },
           "has_phishing_protection": {
             "type": "boolean",
-            "description": "스팸 스캐너 피싱 보호 활성화"
+            "description": "더 이상 사용되지 않으며 무시됨",
+            "deprecated": true
           },
           "has_executable_protection": {
             "type": "boolean",
-            "description": "스팸 스캐너 실행 파일 보호 활성화"
+            "description": ".exe, .js, .bat 파일 같은 실행 파일이 첨부된 보낸 메일을 차단할지 여부(기본값 true)"
           },
           "has_virus_protection": {
             "type": "boolean",
-            "description": "스팸 스캐너 바이러스 보호 활성화"
+            "description": "더 이상 사용되지 않으며 무시됨",
+            "deprecated": true
           },
           "has_recipient_verification": {
             "type": "boolean",
@@ -2223,19 +2225,21 @@
           },
           "has_adult_content_protection": {
             "type": "boolean",
-            "description": "이 도메인에서 스팸 스캐너 성인 콘텐츠 보호를 활성화할지 여부"
+            "description": "Cloudflare 가족 필터가 성인 관련 콘텐츠나 악성 코드 때문에 차단하는 사이트로 연결되는 보낸 메일을 차단할지 여부(기본값 false)"
           },
           "has_phishing_protection": {
             "type": "boolean",
-            "description": "이 도메인에서 스팸 스캐너 피싱 보호를 활성화할지 여부"
+            "description": "더 이상 사용되지 않으며 무시됨",
+            "deprecated": true
           },
           "has_executable_protection": {
             "type": "boolean",
-            "description": "이 도메인에서 스팸 스캐너 실행 파일 보호를 활성화할지 여부"
+            "description": ".exe, .js, .bat 파일 같은 실행 파일이 첨부된 보낸 메일을 차단할지 여부(기본값 true)"
           },
           "has_virus_protection": {
             "type": "boolean",
-            "description": "이 도메인에서 스팸 스캐너 바이러스 보호 기능을 활성화할지 여부"
+            "description": "더 이상 사용되지 않으며 무시됨",
+            "deprecated": true
           },
           "has_recipient_verification": {
             "type": "boolean",

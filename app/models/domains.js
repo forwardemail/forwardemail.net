@@ -24,6 +24,7 @@ const isSANB = require('is-string-and-not-blank');
 const mongoose = require('mongoose');
 const mongooseCommonPlugin = require('mongoose-common-plugin');
 const ms = require('ms');
+const pTimeout = require('p-timeout');
 const pMap = require('p-map');
 const revHash = require('rev-hash');
 const striptags = require('striptags');
@@ -96,6 +97,94 @@ function getDomainClient() {
   }
 
   return _domainClient;
+}
+
+//
+// The claim of a new domain, for each of its members and its name, held from
+// just before it is saved until it is known to be the only one (see the
+// post-save hook that removes a domain already on an account): another of the
+// name for one of them, saved at the same time, is refused. Without Redis, or
+// an answer from it in time, a domain is saved without one.
+//
+const domainClaims = new WeakMap();
+const DOMAIN_CLAIM_TTL = ms('30s');
+const DOMAIN_CLAIM_TIMEOUT = ms('2s');
+const RELEASE_DOMAIN_CLAIM = `
+if redis.call('GET', KEYS[1]) == ARGV[1] then return redis.call('DEL', KEYS[1]) end
+return 0
+`;
+
+function getMemberUsers(domain) {
+  return [
+    ...new Set(
+      (Array.isArray(domain.members) ? domain.members : [])
+        .map((member) => String(member?.user?._id || member?.user || ''))
+        .filter(Boolean)
+    )
+  ].sort();
+}
+
+async function releaseDomainClaims(keys, token) {
+  try {
+    const client = getDomainClient();
+    await pTimeout(
+      Promise.all(
+        keys.map((key) => client.eval(RELEASE_DOMAIN_CLAIM, 1, key, token))
+      ),
+      DOMAIN_CLAIM_TIMEOUT
+    );
+  } catch (err) {
+    // (it ends by itself)
+    logger.warn(err);
+  }
+}
+
+async function claimNewDomain(domain) {
+  const users = getMemberUsers(domain);
+  if (users.length === 0 || typeof domain.name !== 'string') return;
+  const keys = [];
+  let taken = false;
+  try {
+    const client = getDomainClient();
+    for (const user of users) {
+      const key = `domain_claim:${user}:${crypto
+        .createHash('sha256')
+        .update(domain.name)
+        .digest('hex')}`;
+      // (kept only when it was this one's: one asked for and not answered
+      //  in time is given up below, should it be made after all)
+      keys.push(key);
+      const claimed = await pTimeout(
+        client.set(key, String(domain._id), 'PX', DOMAIN_CLAIM_TTL, 'NX'),
+        DOMAIN_CLAIM_TIMEOUT
+      );
+      if (claimed !== 'OK') {
+        keys.pop();
+        taken = true;
+        break;
+      }
+    }
+  } catch (err) {
+    logger.warn(err);
+    await releaseDomainClaims(keys, String(domain._id));
+    return;
+  }
+
+  if (taken) {
+    await releaseDomainClaims(keys, String(domain._id));
+    throw Boom.badRequest(
+      i18n.translateError('DOMAIN_ALREADY_EXISTS', domain.locale)
+    );
+  }
+
+  domainClaims.set(domain, keys);
+}
+
+async function releaseNewDomain(domain) {
+  const keys = domainClaims.get(domain);
+  if (!keys) return;
+  domainClaims.delete(domain);
+  await releaseDomainClaims(keys, String(domain._id));
 }
 
 function getDomainCheckResolvers() {
@@ -367,10 +456,16 @@ const Domains = new mongoose.Schema({
   // restricted alias names for admins only (prevents non-admin from using)
   restricted_alias_names: [String],
 
+  // Spam Scanner settings (see `protectionOf` in `helpers/spam-scanner.js`):
+  // mail linking to a host Cloudflare blocks for adult content is blocked
+  // only when enabled; program attachments are blocked unless disabled
   has_adult_content_protection: {
     type: Boolean,
-    default: true
+    default: false
   },
+  // (no longer a setting: mail linking to a host Cloudflare blocks as
+  //  phishing or malware is always blocked; kept so API clients that send or
+  //  read it keep working)
   has_phishing_protection: {
     type: Boolean,
     default: true
@@ -379,6 +474,9 @@ const Domains = new mongoose.Schema({
     type: Boolean,
     default: true
   },
+  // (no longer a setting: viruses are blocked whenever ClamAV is turned on,
+  //  SPAM_SCANNER_CLAMAV; kept so API clients that send or read it keep
+  //  working)
   has_virus_protection: {
     type: Boolean,
     default: true
@@ -1531,24 +1629,46 @@ Domains.pre('validate', function (next) {
 // the domains the user had when the request started, so requests in flight at
 // once (e.g. a form sent again while the WHOIS lookup is slow) and the other
 // ways a domain is added could each create it. Of the domains of this name
-// that share a member, the oldest is kept and this one is removed.
+// that share a member, the one saved first is kept and this one is removed.
+//
+// (The first saved, not the oldest: a document's id is made before its
+//  lookups, and the ids of two processes are in no order, so the oldest may be
+//  saved after another that found none and was kept. Each member's domain of
+//  a name is therefore claimed from just before it is saved until this is
+//  done, see `claimNewDomain`: no other is saved meanwhile, and any found
+//  here was saved before. Without the claim, e.g. without Redis, the oldest
+//  is kept, as before.)
 //
 Domains.post('save', async function (domain) {
   if (!domain._isNew) return;
-  const users = domain.members
-    .map((member) => member.user?._id || member.user)
-    .filter(Boolean);
-  if (users.length === 0) return;
-  const oldest = await domain.constructor
-    .findOne({ name: domain.name, 'members.user': { $in: users } })
-    .sort({ _id: 1 })
-    .select('_id')
-    .lean()
-    .exec();
-  if (!oldest || oldest._id.equals(domain._id)) return;
-  await domain.constructor.deleteOne({ _id: domain._id });
-  throw Boom.badRequest(
-    i18n.translateError('DOMAIN_ALREADY_EXISTS', domain.locale)
+  try {
+    const users = getMemberUsers(domain);
+    if (users.length === 0) return;
+    const other = await domain.constructor
+      .findOne({
+        name: domain.name,
+        'members.user': { $in: users },
+        ...(domainClaims.has(domain) ? { _id: { $ne: domain._id } } : {})
+      })
+      .sort({ _id: 1 })
+      .select('_id')
+      .lean()
+      .exec();
+    if (!other || other._id.equals(domain._id)) return;
+    await domain.constructor.deleteOne({ _id: domain._id });
+    throw Boom.badRequest(
+      i18n.translateError('DOMAIN_ALREADY_EXISTS', domain.locale)
+    );
+  } finally {
+    await releaseNewDomain(domain);
+  }
+});
+
+// (a domain that could not be saved gives up its claim)
+Domains.post('save', function (err, domain, next) {
+  releaseNewDomain(domain).then(
+    () => next(),
+    () => next()
   );
 });
 
@@ -1895,6 +2015,12 @@ Domains.pre('save', function (next) {
 Domains.pre('save', function (next) {
   this._isNew = this.isNew;
   next();
+});
+
+// (the last step before a new domain is saved, see the hook that removes one
+//  already on an account)
+Domains.pre('save', async function () {
+  if (this.isNew) await claimNewDomain(this);
 });
 
 //

@@ -1,0 +1,12 @@
+# WARNING: This file is managed by Ansible (ansible/playbooks/spamscanner-llm.yml)
+# Manual changes will be overwritten on next deployment
+[Unit]
+Description=Ollama for Spam Scanner health check (every 5 minutes)
+
+[Timer]
+OnBootSec=5min
+OnUnitActiveSec=5min
+AccuracySec=1min
+
+[Install]
+WantedBy=timers.target

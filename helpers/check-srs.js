@@ -10,6 +10,7 @@ const _ = require('#helpers/lodash');
 
 const logger = require('#helpers/logger');
 const config = require('#config');
+const env = require('#config/env');
 
 const srs = new SRS(config.srs);
 
@@ -96,4 +97,21 @@ function checkSRS(address, shouldThrow = false, ignoreHook = false) {
   }
 }
 
+//
+// An SRS address in a header (From, Reply-To) reversed only when it is on our
+// own domain (WEB_HOST, or a host of it): its signature does not cover its
+// domain, so anyone could put one we made for a sender of theirs on a domain
+// they control (where DMARC passes) and pass as the address it reverses to,
+// e.g. one on our own domain, past checks that trust it
+//
+function checkHeaderSRS(address) {
+  const domain = String(address)
+    .slice(String(address).lastIndexOf('@') + 1)
+    .toLowerCase();
+  const ours = env.WEB_HOST.toLowerCase();
+  if (domain !== ours && !domain.endsWith(`.${ours}`)) return address;
+  return checkSRS(address);
+}
+
 module.exports = checkSRS;
+module.exports.checkHeaderSRS = checkHeaderSRS;

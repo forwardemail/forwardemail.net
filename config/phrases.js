@@ -467,6 +467,10 @@ module.exports = {
   INVALID_DKIM_SIGNATURE: 'Invalid DKIM signature.',
   MULTIPLE_DKIM_RECORDS:
     'Domain has more than one DNS <span class="notranslate">TXT</span> record for <span class="notranslate">%s</span>.  Please ensure there is only one <span class="notranslate">DKIM</span> record for this name.',
+  SPAM_SCANNER_UNCHECKED:
+    'The message could not be scanned at this time, please try again later.',
+  SPAM_SCANNER_UNCHECKED_RETRY:
+    'The message could not be scanned at this time and will be retried.',
   INVALID_FROM_HEADER:
     'From header must be equal to <span class="notranslate">%s</span> (or) you can use a domain-wide catch-all password at <a href="%s" target="_blank" rel="noopener noreferrer">%s</a>',
   INVALID_CATCHALL_FROM_HEADER:
@@ -1013,6 +1017,8 @@ module.exports = {
     'The reset token has already expired. Please start a new <a href="/forgot-password">Forgot Password</a> request to continue.',
   REASSIGNED_ALIAS_OWNERSHIP:
     'We have reassigned ownership of the following aliases to you:',
+  REASSIGNED_ALIASES_HAVE_PASSWORDS:
+    'The passwords generated for these aliases still work.  Generate a new password for each one to replace them:',
   REMOVED_ALIASES_FROM_OWNER:
     'We have removed the following aliases that belonged to you:',
   REASSIGNED_ALIASES_FROM_OWNER:

@@ -4127,14 +4127,12 @@ Forward Email 实施了多层保护：
 
 ### 我可以禁用成人内容、网络钓鱼、可执行文件或病毒扫描吗 {#can-i-disable-adult-content-phishing-executable-or-virus-scanning}
 
-可以。每个域名都会使用 <a href="https://spamscanner.net" target="_blank" rel="noopener noreferrer">Spam Scanner</a> 扫描传入的链接和附件。Spam Scanner 是我们自主开发的开源反垃圾邮件、反网络钓鱼和病毒防护工具（并遵循与 Forward Email 其他部分相同的隐私优先、零日志政策）。以下四个类别均可在 <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">我的账户 <i class="fa fa-angle-right"></i> 域名</a> <i class="fa fa-angle-right"></i> 高级设置 中单独开启或关闭：
+可以，适用于成人内容和可执行文件。邮件会使用 <a href="https://spamscanner.net" target="_blank" rel="noopener noreferrer">Spam Scanner</a> 进行扫描。Spam Scanner 是我们自主开发的开源反垃圾邮件、反网络钓鱼和病毒防护工具（并遵循与 Forward Email 其他部分相同的隐私优先、零日志政策）。以下两项设置均可在 <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">我的账户 <i class="fa fa-angle-right"></i> 域名</a> <i class="fa fa-angle-right"></i> 高级设置 中单独开启或关闭：
 
-* **成人内容防护**：如果禁用，将不会扫描链接中的成人相关内容。
-* **网络钓鱼防护**：如果禁用，将不会扫描链接中的恶意软件、域名替换、IDN 同形异义字攻击或一般的网络钓鱼。
-* **可执行文件防护**：如果禁用，将不会扫描链接和附件中可能具有恶意的可执行文件类型、扩展名、名称、标头或 IDN 同形异义字攻击。
-* **病毒防护**：如果禁用，将不会扫描附件中的木马、病毒、恶意软件或其他恶意威胁（通过 ClamAV）。
+* **成人相关内容保护**（默认关闭）：如果启用，您发送的邮件中的链接将通过 <a href="https://developers.cloudflare.com/1.1.1.1/setup/#1111-for-families" target="_blank" rel="noopener noreferrer">Cloudflare 家庭过滤器</a>进行检查，链接到被其以成人相关内容或恶意软件为由拦截的网站的邮件将不会发送。
+* **可执行保护**（默认开启）：如果禁用，您发送的带有可执行文件附件（如 .exe、.js 或 .bat 文件，包括压缩包内的文件）的邮件将不再被拦截。
 
-这四项默认均为启用。禁用其中一项只会关闭该特定类别的扫描。它不会禁用整体的垃圾邮件过滤，并且与[禁用特定别名](#can-i-disable-specific-aliases)是两回事。禁用某个类别最常见的原因是出现了您的流量特有的误报模式（例如，成人内容扫描将某个成人主题场所或企业的正当邮件列表标记出来）。
+垃圾邮件过滤和网络钓鱼防护始终开启，无法禁用：您发送的邮件如果包含指向 Cloudflare 恶意软件过滤器因网络钓鱼或恶意软件而拦截的网站的链接，将不会被发送。免费计划的域名使用默认设置。成人内容防护以前默认开启，在此项变更时已对所有域名关闭，如需使用，请重新开启。这些设置与[禁用特定别名](#can-i-disable-specific-aliases)是两回事。
 
 ### 你们是否将邮件内容存储到磁盘 {#do-you-store-email-content-on-disk}
 
@@ -4503,8 +4501,8 @@ Forward Email 完全依赖两个关键基础设施提供商，且均未使用第
    * 对于每个转发地址，我们支持一次递归查找（这将对给定地址重新开始这一系列操作）。如果找到递归匹配，则父结果将从转发地址中移除，子地址将被添加。
    * 解析转发地址以确保唯一性（因为我们不希望向同一地址发送重复邮件或产生额外不必要的 SMTP 客户端连接）。
    * 对于每个转发地址，我们通过我们的 API 端点 `/v1/max-forwarded-addresses` 查询其域名（以确定该域名每个别名允许转发的地址数量，例如默认是 10 个——详见章节 [每个别名转发的最大地址限制](#is-there-a-maximum-limit-on-the-number-of-email-addresses-i-can-forward-to-per-alias)）。如果超过此限制，则会发生 550 错误，发送者将收到该收件人的退信。
-   * 我们通过 API 端点 `/v1/settings` 查询原始收件人的设置，该端点支持付费用户查询（并为免费用户提供回退）。这会返回一个配置对象，包含高级设置，如 `port`（数字，例如 `25`）、`has_adult_content_protection`（布尔值）、`has_phishing_protection`（布尔值）、`has_executable_protection`（布尔值）和 `has_virus_protection`（布尔值）。
-   * 基于这些设置，我们检查垃圾邮件扫描器的结果，如果出现任何错误，则邮件将以 554 错误代码被拒绝（例如，如果启用了 `has_virus_protection`，我们将检查垃圾邮件扫描器的病毒检测结果）。注意，所有免费计划用户默认启用成人内容、钓鱼、可执行文件和病毒的检查。默认情况下，所有付费计划用户也启用此功能，但此配置可以在 Forward Email 仪表板的域名设置页面中更改。
+   * 我们通过 API 端点 `/v1/settings` 查询原始收件人的设置，该端点支持付费用户查询（并为免费用户提供回退）。这会返回一个配置对象，包含高级设置，如 `port`（数字，例如 `25`）、`has_adult_content_protection`（布尔值）、`has_phishing_protection`（布尔值，始终为 `true`）、`has_executable_protection`（布尔值）和 `has_virus_protection`（布尔值，始终为 `true`）。
+   * 免费计划用户使用默认设置：成人内容防护关闭，网络钓鱼防护和可执行文件防护开启。付费计划用户可以在 Forward Email 仪表板中域名的高级设置页面更改这些设置（请参阅[我可以禁用成人内容、网络钓鱼、可执行文件或病毒扫描吗](#can-i-disable-adult-content-phishing-executable-or-virus-scanning)）。这些设置适用于您通过我们的 SMTP 服务器和 API 发送的邮件；我们收到的邮件按默认设置扫描。
 
 10. 对于每个处理过的收件人的转发地址，我们执行以下操作：
 

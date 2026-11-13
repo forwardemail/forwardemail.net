@@ -17,7 +17,26 @@ const readLimitedBody = require('#helpers/read-limited-body');
 
 const config = require('#config');
 
+// A URL as errors and logs show it: without the user name and password it
+// may carry (e.g. a webhook's basic auth; either can be the secret, as a
+// token is in "https://TOKEN@host" and "https://TOKEN:x@host")
+function hideCredentials(url) {
+  const shown = String(url ?? '');
+  try {
+    const parsed = new URL(shown);
+    if (!parsed.username && !parsed.password) return shown;
+    if (parsed.username) parsed.username = '***';
+    if (parsed.password) parsed.password = '***';
+    return parsed.href;
+  } catch {
+    return shown.replace(/\/\/[^/\s]*@/, '//***@');
+  }
+}
+
 async function retryRequest(url, opts = {}, count = 1) {
+  // (the URL as errors and logs show it, see `hideCredentials`)
+  const shown = hideCredentials(url);
+
   const ownsDispatcher = !opts.dispatcher && Boolean(opts.resolver);
   let timer;
 
@@ -30,13 +49,13 @@ async function retryRequest(url, opts = {}, count = 1) {
       if (!parsedUrl.hostname) {
         const err = new TypeError(`Invalid URL: missing hostname`);
         err.code = 'ERR_INVALID_URL';
-        err.input = url;
+        err.input = shown;
         throw err;
       }
     } catch (urlErr) {
       // Re-throw with additional context
       urlErr.requestContext = {
-        url: String(url),
+        url: shown,
         method: opts.method || 'GET',
         retryCount: count
       };
@@ -59,7 +78,7 @@ async function retryRequest(url, opts = {}, count = 1) {
     timer = setTimeout(() => {
       if (!abortController?.signal?.aborted)
         abortController.abort(
-          new TimeoutError(`${url} took longer than ${opts.timeout}ms`)
+          new TimeoutError(`${shown} took longer than ${opts.timeout}ms`)
         );
     }, opts.timeout);
 
@@ -166,7 +185,7 @@ async function retryRequest(url, opts = {}, count = 1) {
         response.statusCode,
         { headers: response.headers, body }
       );
-      err.url = url;
+      err.url = shown;
       err.options = opts;
       err.count = count;
       throw err;
@@ -205,7 +224,7 @@ async function retryRequest(url, opts = {}, count = 1) {
     // Only add if not already set (e.g., from URL validation)
     if (!err.requestContext) {
       err.requestContext = {
-        url: typeof url === 'string' ? url : String(url || ''),
+        url: shown,
         method: opts.method || 'GET',
         timeout: opts.timeout,
         retryCount: count,
@@ -260,3 +279,4 @@ async function retryRequest(url, opts = {}, count = 1) {
 }
 
 module.exports = retryRequest;
+module.exports.hideCredentials = hideCredentials;

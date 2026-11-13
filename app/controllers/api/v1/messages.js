@@ -1471,7 +1471,14 @@ async function create(ctx) {
   const message = getNodemailerMessageFromRequest(ctx);
   const mail = new MailComposer(message);
   const stream = mail.compile().createReadStream();
-  const raw = await getStream.buffer(stream);
+  // (it fails as it is written out when a text of a JSON body is a number,
+  // `true` or a list: what was asked for, and no error of the server)
+  let raw;
+  try {
+    raw = await getStream.buffer(stream);
+  } catch (err) {
+    throw Boom.badRequest(err.message);
+  }
 
   // Find or create the target mailbox
   let mailbox = await findFolderByPath(ctx, requestedPath);

@@ -47,10 +47,15 @@ const MessageSplitter = require('#helpers/message-splitter');
 const checkAndAutoApproveSMTP = require('#helpers/check-and-auto-approve-smtp');
 
 const { getSMTPAccessError } = checkAndAutoApproveSMTP;
-const checkSRS = require('#helpers/check-srs');
+const { checkHeaderSRS } = require('#helpers/check-srs');
 const config = require('#config');
 const createTangerine = require('#helpers/create-tangerine');
-const emailHelper = require('#helpers/email');
+const sendSmtpPreventedEmail = require('#helpers/send-smtp-prevented-email');
+const spamScanner = require('#helpers/spam-scanner');
+const {
+  checkHeaderLimits,
+  checkFromLimits
+} = require('#helpers/header-limits');
 const env = require('#config/env');
 const getBlockedHashes = require('#helpers/get-blocked-hashes');
 const getEmailDeliveryTime = require('#helpers/get-email-delivery-time');
@@ -116,9 +121,6 @@ const transporter = nodemailer.createTransport({
     silent: true
   })
 });
-
-let SpamScanner;
-let scanner;
 
 //
 // The IP address of the client that sent a message, as stored (e.g. an
@@ -458,7 +460,13 @@ const Emails = new mongoose.Schema(
     // an array of errors with `err.recipient` as the email address rejected
     // (we only store the most recent `rejectedError` per recipient)
     //
-    rejectedErrors: [mongoose.Schema.Types.Mixed]
+    rejectedErrors: [mongoose.Schema.Types.Mixed],
+    //
+    // Spam Scanner's verdict on the message (see `toStored` in
+    // `helpers/spam-scanner.js`): kept when it is submitted, and when it is
+    // scanned again as it is sent, so retries are not scanned again
+    //
+    spam_scan: mongoose.Schema.Types.Mixed
   },
   {
     versionKey: false,
@@ -485,7 +493,9 @@ Emails.plugin(mongooseCommonPlugin, {
     'message',
     'locked_by',
     'locked_at',
-    'priority'
+    'priority',
+    // (its score and tests would help a sender tune spam to pass)
+    'spam_scan'
   ]
 });
 
@@ -668,13 +678,15 @@ Emails.pre('validate', function (next) {
     // NOTE: we don't convert to lowercase here because of SRS
     // (e.g. srs0 is invalid but SRS0 is valid in RCPT TO)
     //
+    // (an SRS address is reversed only on our own domain, see
+    //  `checkHeaderSRS`: one on another domain is sent there as it is)
     // if the envelope is in address object format then convert it
     // make the envelope to unique
     this.envelope.to = _.uniq(
       this.envelope.to.map((to) =>
         typeof to === 'object' && typeof to.address === 'string'
-          ? checkSRS(to.address.trim())
-          : checkSRS(to.trim())
+          ? checkHeaderSRS(to.address.trim())
+          : checkHeaderSRS(to.trim())
       )
     );
 
@@ -903,8 +915,12 @@ Emails.pre('save', function (next) {
         //
         // if lowest error code was >= 500 and none of the rejected errors had `response`
         // then consider this message to be "rejected" by our side without delivery attempts made
+        // (but "partially_sent" when Spam Scanner blocked the rest of a message some
+        // recipients already accepted on an earlier attempt)
         //
         if (
+          (this.accepted.length > 0 &&
+            this.rejectedErrors.some((err) => err.is_spam_scanner === true)) ||
           this.rejectedErrors.some(
             (err) => err.maxRetryDuration || typeof err.response === 'string'
           )
@@ -1012,8 +1028,8 @@ Emails.pre('save', async function (next) {
       if (!header) return;
       const { value } = libmime.decodeHeader(header.line);
       if (!isSANB(value)) return;
-      if (checkSRS(value) !== value)
-        data.headers.update(header.line.split(': ')[0], checkSRS(value));
+      if (checkHeaderSRS(value) !== value)
+        data.headers.update(header.line.split(': ')[0], checkHeaderSRS(value));
     });
 
     // not necessary, but a safeguard in case pre hooks moved around
@@ -1109,15 +1125,16 @@ Emails.post('save', async function (email) {
     );
 
   // return early if domain is suspended or if email was marked as spam
-  // (this way we can investigate spam detected content/links to help users)
+  // (this way we can investigate spam detected content/links to help users),
+  // or Spam Scanner blocked or rejected it
   if (
     domain.is_smtp_suspended ||
     (Array.isArray(email.rejectedErrors) &&
       email.rejectedErrors.some(
         (err) =>
           _.isObject(err) &&
-          err?.truthSource &&
-          err?.bounceInfo?.category === 'spam'
+          ((err?.truthSource && err?.bounceInfo?.category === 'spam') ||
+            err?.is_spam_scanner === true)
       ))
   )
     return;
@@ -1607,12 +1624,19 @@ Emails.statics.queue = async function (
   const messageSplitter = new MessageSplitter({
     maxBytes: MAX_BYTES
   });
-  const body = await getStream.buffer(
-    getEmailMessageStream(info?.message).pipe(messageSplitter),
-    {
-      maxBuffer: MAX_BYTES
-    }
+  //
+  // NOTE: `pipe` passes no error on, and the message fails as nodemailer
+  //       writes it out when a text, or the content of an attachment, is a
+  //       number, `true` or a list (of a JSON body): this waited for the
+  //       rest of the message for ever, and the request was not answered
+  //
+  const source = getEmailMessageStream(info?.message);
+  source.once('error', (err) =>
+    messageSplitter.destroy(Boom.badRequest(err.message))
   );
+  const body = await getStream.buffer(source.pipe(messageSplitter), {
+    maxBuffer: MAX_BYTES
+  });
 
   // ensure the message is not more than 50 MB
   if (messageSplitter.sizeExceeded) {
@@ -1627,6 +1651,20 @@ Emails.statics.queue = async function (
     throw Boom.badRequest('Headers were unable to be parsed');
 
   const { headers } = messageSplitter;
+
+  // (a header no parser can read in reasonable time, e.g. tens of thousands
+  //  of folded lines in a raw submission, see `helpers/header-limits`:
+  //  refused before anything reads it)
+  // (nor a From field mailauth would take seconds to read as it is sent,
+  //  see `checkFromLimits`)
+  const headerTooLarge =
+    checkHeaderLimits(headers.headers) || checkFromLimits(headers.headers);
+  if (headerTooLarge) {
+    const err = Boom.badRequest(headerTooLarge);
+    // (permanent over SMTP, as the SMTP server answers it)
+    err.responseCode = 552;
+    throw err;
+  }
 
   // (before anything parses an address, see helpers/get-unsafe-address-header.js)
   const unsafe = await getUnsafeAddressHeader([
@@ -2066,113 +2104,115 @@ Emails.statics.queue = async function (
 
   //
   // sanitize message and attachments
+  // (all but mail from our own domain, mail only to our own addresses, see
+  // `shouldScanOutbound`, and the bounces we make, which only repeat the
+  // headers of a message and why it was not delivered)
   //
+  let spamScan;
   if (
-    isSANB(info?.envelope?.from) &&
-    isEmail(info.envelope.from) &&
-    //
-    // only our own system mail (sent as support@ on our own domain) skips
-    // the scan; the envelope sender alone is client-controlled
-    //
-    !(
-      config.supportEmail === info.envelope.from.toLowerCase() &&
-      punycode.toASCII(domain.name).toLowerCase() ===
-        config.webHost.toLowerCase()
-    ) &&
-    //
-    // we don't want to scan messages sent with our own SMTP service
-    // by our users/customers to our support@ or abuse@ email addresses
-    // (otherwise it'll get banned just for users reporting spam/phishing)
-    // (also handles edge case where a user sends to both support@ and abuse@)
-    //
-    _.isArray(info?.envelope?.to) &&
-    !_.isEmpty(info.envelope.to) &&
-    info.envelope.to.every(
-      (to) =>
-        isSANB(to) &&
-        isEmail(to) &&
-        ![config.supportEmail, config.abuseEmail].includes(to.toLowerCase())
-    )
+    !(isBounce && boolean(options?.is_dsn)) &&
+    spamScanner.shouldScanOutbound(info?.envelope, domain.name)
   ) {
-    if (!SpamScanner) {
-      SpamScanner = require('spamscanner');
-      // (see helpers/harden-file-type.js)
-      // eslint-disable-next-line import/no-unassigned-import
-      require('#helpers/harden-file-type');
-    }
+    //
+    // Spam Scanner (see `helpers/spam-scanner.js`): a message is refused for
+    // a virus or the GTUBE test string, and, by the domain's Spam Scanner
+    // settings (`protectionOf`), a program attachment or a link to a malware
+    // or adult site (`getOutboundBlockingMessages`), in monitor mode
+    // (SPAM_SCANNER_MONITOR_ONLY) too, as before Spam Scanner 7, unless
+    // SPAM_SCANNER_OUTBOUND_BLOCK=false (`blocksOutbound`); anything else it
+    // would mark as spam is only logged in monitor mode
+    //
+    const scan = await spamScanner.scan(message, {
+      direction: 'outbound',
+      // (a client submission has its client, `options.remoteAddress`)
+      session: spamScanner.toSession(info.envelope, {
+        ...options?.spamScanSession,
+        ...(options?.remoteAddress
+          ? { remoteAddress: options.remoteAddress }
+          : {})
+      }),
+      client: redis,
+      // (with the outbound time limit, in monitor mode too while it refuses
+      //  what blocks a message: one with no result in time is held back with
+      //  a temporary error, see `holdUnchecked` below)
+      enforce: spamScanner.isEnforcing(),
+      blocks: spamScanner.blocksOutbound(),
+      stage: 'submitted',
+      protection: spamScanner.protectionOf(domain),
+      // (its account's scans wait their turn with others', see `scan`)
+      owner: userId ? `user:${userId}` : `domain:${domain._id}`
+    });
 
-    if (!scanner)
-      scanner = new SpamScanner({
-        logger,
-        clamscan: env.NODE_ENV === 'test'
+    // (kept with the email, so it is not scanned again as it is sent unless
+    //  the language model is to be asked, see `helpers/process-email.js`)
+    spamScan = spamScanner.toStored(scan);
+    // (in monitor mode as origin did with Spam Scanner 5: a virus, GTUBE,
+    //  and by the domain's settings a program, a malware or adult link host,
+    //  or more link hosts than are looked up, as origin looked up every one:
+    //  a malware link past them would otherwise get out)
+    const messages = spamScanner.isEnforcing()
+      ? spamScan?.blocking || []
+      : scan
+      ? spamScanner.getOutboundBlockingMessages(scan)
+      : [];
+
+    // (with SPAM_SCANNER_OUTBOUND_BLOCK=false in monitor mode it was only
+    //  logged, see `logResult`)
+    if (messages.length > 0 && spamScanner.blocksOutbound()) {
+      // email the domain's admins (once a day at most)
+      await sendSmtpPreventedEmail({
+        Domains,
+        client: redis,
+        domain,
+        category: 'virus',
+        response: spamScanner.getBlockedResponse(messages),
+        email: { envelope: info.envelope, messageId, subject, date }
       });
 
-    const scan = await scanner.scan(message);
-
-    //
-    // a link that Cloudflare's Family DNS blocks only for adult-related
-    // content is allowed when the domain turned off its adult-related
-    // content protection, as for inbound mail (see `helpers/get-recipients`);
-    // phishing and malware (Cloudflare's Security DNS) are still blocked
-    // <https://github.com/forwardemail/forwardemail.net/issues/586>
-    //
-    const phishing =
-      domain.has_adult_content_protection === false
-        ? scan.results.phishing.filter(
-            (text) => !text.includes('adult-related content')
-          )
-        : scan.results.phishing;
-
-    const messages = [
-      ...new Set([
-        ...phishing,
-        ...scan.results.executables,
-        ...scan.results.arbitrary,
-        ...scan.results.viruses
-      ])
-    ];
-
-    if (messages.length > 0) {
-      // send an email to all admins
-      const obj = await Domains.getToAndMajorityLocaleByDomain(domain);
-      try {
-        // only send smtp prevented emails once a day for the domain
-        const key = `smtp_prevented:${domain.id}`;
-        const cache = await redis.get(key);
-        if (!cache) {
-          await emailHelper({
-            template: 'smtp-prevented',
-            message: { to: obj.to }, // , bcc: config.alertsEmail },
-            locals: {
-              domain:
-                typeof domain.toObject === 'function'
-                  ? domain.toObject()
-                  : domain,
-              locale: obj.locale,
-              category: 'virus',
-              responseCode: 554,
-              response: messages.join(' '),
-              truthSource: config.webHost,
-              email: {
-                envelope: info.envelope,
-                messageId,
-                subject,
-                date
-              }
-            }
-          });
-          await redis.set(key, true, 'PX', ms('1d'));
-        }
-      } catch (err) {
-        // NOTE: it would be better to use `ctx.logger` probably here
-        logger.fatal(err);
-      }
-
       // needs to be forbidden so it gets mapped to 5xx error
-      const error = Boom.forbidden(messages.join(' '));
-      error.scan = scan;
+      throw Boom.forbidden(spamScanner.getBlockedResponse(messages));
+    }
+
+    //
+    // a message that could not be checked (the scan failed or took too long,
+    // or not every link host was looked up):
+    // out of monitor mode, one a client submitted (SMTP or the API) is not
+    // sent; the error is temporary, so the client tries again later
+    // (SPAM_SCANNER_OUTBOUND_FAIL_CLOSED=false sends it unchecked instead);
+    // in monitor mode, and for one this server made (a calendar invitation, a
+    // vacation reply, a bounce...), which has no client to try again, it is
+    // queued unchecked, and scanned as it is sent (`checkOutbound`, deferred
+    // while it cannot be; in monitor mode refused then for what blocks it,
+    // see `blocksAsSent`), so a busy server never refuses a submission it
+    // could not scan in time (one whose link hosts were not all looked up is
+    // sent)
+    //
+    if (
+      (!scan || spamScan.links_complete === false) &&
+      (await spamScanner.holdUnchecked({
+        client: redis,
+        submitted: spamScanner.isEnforcing() && isSANB(options?.remoteAddress),
+        failed: !scan,
+        meta: {
+          domains: [domain.id],
+          ...(scan ? { links_incomplete: true } : {})
+        }
+      }))
+    ) {
+      const error = Boom.serverUnavailable(
+        i18n.translateError('SPAM_SCANNER_UNCHECKED', locale)
+      );
+      error.responseCode = 421;
+      // (reported once an hour at most, see `holdUnchecked`)
+      error.ignoreHook = true;
       throw error;
     }
+
+    // (queued unchecked, as mail this server made is: so marked, and so
+    //  scanned as it is sent, see `blocksAsSent`; not mail queued before
+    //  Spam Scanner 7, which has no scan kept and is sent as before)
+    if (!scan && spamScanner.blocksOutbound())
+      spamScan = { ...spamScanner.UNCHECKED };
   }
 
   // Determine status based on domain suspension
@@ -2199,7 +2239,8 @@ Emails.statics.queue = async function (
     dsn: options?.dsn,
     rcptTo: options?.rcptTo,
     requireTLS: boolean(options?.requireTLS),
-    remote_address: normalizeRemoteAddress(options?.remoteAddress)
+    remote_address: normalizeRemoteAddress(options?.remoteAddress),
+    ...(spamScan ? { spam_scan: spamScan } : {})
   });
 
   // the SMTP path already enforced sending limits before queueing

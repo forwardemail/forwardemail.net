@@ -21,7 +21,7 @@ A successful, stale, malformed, or mismatched systemd event sends no alert. This
 
 ## Automatic security-update reboots
 
-Non-database hosts may reboot automatically at **08:00 UTC** after security updates. `logs`, `mongo`, and `redis` hosts never reboot automatically; schedule their maintenance restart yourself.
+Non-database hosts may reboot automatically between **08:00 and 08:55 UTC** after security updates, each five minutes after the host before it in the inventory, so two servers of one service (such as `mx1` and `mx2`) are not down at once. `logs`, `mongo`, and `redis` hosts never reboot automatically; schedule their maintenance restart yourself.
 
 
 ## Email and SMS cooldowns

@@ -23531,5 +23531,19 @@
   "Delete mailbox?": "ลบตู้ไปรษณีย์?",
   "Please confirm if you wish to delete the mailbox <strong>%s</strong>.": "โปรดยืนยันว่าคุณต้องการลบตู้ไปรษณีย์ <strong>%s</strong> หรือไม่",
   "Generate mailbox passwords": "สร้างรหัสผ่านตู้ไปรษณีย์",
-  "Generate random mailbox": "สร้างตู้ไปรษณีย์แบบสุ่ม"
+  "Generate random mailbox": "สร้างตู้ไปรษณีย์แบบสุ่ม",
+  "The message could not be scanned at this time, please try again later.": "ไม่สามารถสแกนข้อความได้ในขณะนี้ โปรดลองอีกครั้งในภายหลัง",
+  "The message could not be scanned at this time and will be retried.": "ไม่สามารถสแกนข้อความได้ในขณะนี้ ระบบจะลองใหม่อีกครั้งในภายหลัง",
+  "Senders blocked after spam reports": "ผู้ส่งที่ถูกบล็อกหลังจากมีการรายงานสแปม",
+  "The recipient at these forwarding addresses reported mail from these senders as spam to their mailbox provider, so their mail to that address gets a temporary error until the date shown.": "ผู้รับที่ที่อยู่ส่งต่อเหล่านี้รายงานอีเมลจากผู้ส่งเหล่านี้ว่าเป็นสแปมต่อผู้ให้บริการอีเมลของตน อีเมลของผู้ส่งเหล่านี้ที่ส่งไปยังที่อยู่นั้นจึงได้รับข้อผิดพลาดชั่วคราวจนถึงวันที่ที่แสดง",
+  "Sender": "ผู้ส่ง",
+  "Forwarding address": "ที่อยู่ส่งต่อ",
+  "Until": "จนถึง",
+  "Unblock": "เลิกบล็อก",
+  "Unblock sender?": "เลิกบล็อกผู้ส่งหรือไม่?",
+  "Please confirm if you wish to receive mail from <strong>%s</strong> at <strong>%s</strong> again.": "โปรดยืนยันว่าคุณต้องการรับอีเมลจาก <strong>%s</strong> ที่ <strong>%s</strong> อีกครั้ง",
+  "If you check this, then links in mail you send are checked with <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"%s\">Cloudflare's family filter</a>, and mail linking to a site it blocks for adult-related content or malware is not sent. Off by default.": "หากเลือกตัวเลือกนี้ ลิงก์ในอีเมลที่คุณส่งจะถูกตรวจสอบด้วย <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"%s\">ตัวกรองสำหรับครอบครัวของ Cloudflare</a> และอีเมลที่ลิงก์ไปยังเว็บไซต์ที่ตัวกรองบล็อกเนื่องจากเนื้อหาสำหรับผู้ใหญ่หรือมัลแวร์จะไม่ถูกส่ง ปิดเป็นค่าเริ่มต้น",
+  "If you uncheck this, then mail you send with <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"%s\">executable</a> attachments, such as .exe, .js or .bat files (also inside archives), is no longer blocked. On by default.": "หากยกเลิกการเลือกตัวเลือกนี้ อีเมลที่คุณส่งพร้อมไฟล์แนบที่เป็น<a target=\"_blank\" rel=\"noopener noreferrer\" href=\"%s\">ไฟล์ปฏิบัติการ</a> เช่น ไฟล์ .exe, .js หรือ .bat (รวมถึงไฟล์ที่อยู่ในไฟล์บีบอัด) จะไม่ถูกบล็อกอีกต่อไป เปิดเป็นค่าเริ่มต้น",
+  "Mail is always scanned for spam, and links in mail you send are always checked with <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"%s\">Cloudflare's malware filter</a>: mail linking to a site it blocks for phishing or malware is not sent.": "อีเมลจะถูกสแกนหาสแปมเสมอ และลิงก์ในอีเมลที่คุณส่งจะถูกตรวจสอบด้วย <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"%s\">ตัวกรองมัลแวร์ของ Cloudflare</a> เสมอ อีเมลที่ลิงก์ไปยังเว็บไซต์ที่ตัวกรองบล็อกเนื่องจากฟิชชิงหรือมัลแวร์จะไม่ถูกส่ง",
+  "The passwords generated for these aliases still work.  Generate a new password for each one to replace them:": "รหัสผ่านที่สร้างขึ้นสำหรับนามแฝงเหล่านี้ยังคงใช้งานได้ สร้างรหัสผ่านใหม่สำหรับแต่ละนามแฝงเพื่อแทนที่:"
 }

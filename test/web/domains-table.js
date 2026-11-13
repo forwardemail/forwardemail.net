@@ -358,6 +358,19 @@ test('1-Click Setup is offered unless the DNS provider is known not to support i
   });
   const unknown = await makeDomain(t, state);
 
+  // (the page of a domain checks its records again, and takes its name
+  //  servers from DNS: these are the ones the domains have, whatever the
+  //  DNS of the machine the tests run on answers for them)
+  const { resolver } = t.context._web.app.context;
+  const { resolveNs } = resolver;
+  const nameServers = new Map(
+    [supported, unsupported].map((domain) => [domain.name, domain.ns])
+  );
+  resolver.resolveNs = (name, ...args) =>
+    nameServers.has(name)
+      ? Promise.resolve(nameServers.get(name))
+      : resolveNs.call(resolver, name, ...args);
+
   const res = await web.get('/en/my-account/domains');
   t.is(res.status, 200);
   const { document } = new JSDOM(res.text).window;

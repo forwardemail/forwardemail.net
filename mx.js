@@ -24,6 +24,7 @@ const MX = require('./mx-server');
 
 const createWebSocketAsPromised = require('#helpers/create-websocket-as-promised');
 const logger = require('#helpers/logger');
+const spamScanner = require('#helpers/spam-scanner');
 const setupMongoose = require('#helpers/setup-mongoose');
 
 const breeSharedConfig = sharedConfig('BREE');
@@ -66,6 +67,8 @@ graceful.listen();
   try {
     await mx.listen();
     if (process.send) process.send('ready');
+    // load the Spam Scanner classifier now, not on the first message
+    spamScanner.warm();
     logger.info(
       `MX server listening on ${
         mx.server.address().port

@@ -19,7 +19,9 @@ HOST_IP="$(hostname -I | awk '{print $1}')"
 TIMESTAMP="$(date '+%Y-%m-%d %H:%M:%S %Z')"
 MONITOR_LOG="/var/log/package-monitor.log"
 PACKAGE_STATE_FILE="/var/lib/package-monitor/package-state.txt"
-LOCK_DIR="/var/lock"
+# (in /run, which only root can write: a file a local user made in /var/lock,
+#  dated ahead, would hold back every alert)
+LOCK_DIR="/run"
 LOCK_DURATION=3600  # 1 hour
 CONFIG_DIR="/etc/security-monitor"
 

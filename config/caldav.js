@@ -63,7 +63,11 @@ const RATELIMIT_ALLOWLIST =
 // <https://github.com/sedenardi/node-caldav-adapter/issues/14>
 
 // setup our Cabin instance
-const cabin = new Cabin({ logger });
+// (which does not read the body of a request for each line of its log, as
+// in config/api.js: a line is logged for each object a REPORT is answered
+// with, so a multiget of 500 objects took 5 seconds rather than 1, and a
+// query of 300 with a megabyte of comment in it 9 seconds)
+const cabin = new Cabin({ logger, parseRequest: { parseBody: false } });
 
 module.exports = {
   ...sharedCalDAVConfig,

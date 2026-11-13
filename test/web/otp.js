@@ -95,6 +95,68 @@ test('POST otp/login > successful', async (t) => {
   t.is(res.body.redirectTo, '/en/my-account');
 });
 
+//
+// A passcode stays valid for up to 90 seconds, so anyone who saw it (and has
+// the password) could sign in with it as well: it signs in one session.
+//
+test('POST otp/login > a passcode signs in one session only', async (t) => {
+  const { web, user, _web, password } = t.context;
+  const passcode = authenticator.generate(
+    user[config.passport.fields.otpToken]
+  );
+
+  // another session that passed the password step
+  const other = request.agent(_web.server);
+  const login = await other
+    .post('/en/login')
+    .set('Accept', 'application/json')
+    .send({ email: user.email, password });
+  t.is(login.status, 200);
+
+  let res = await web.post(`/en${config.loginOtpRoute}`).send({ passcode });
+  t.is(res.status, 200);
+
+  // (sent again by the session it signed in, e.g. a form sent twice)
+  res = await web.post(`/en${config.loginOtpRoute}`).send({ passcode });
+  t.is(res.status, 200);
+
+  res = await other
+    .post(`/en${config.loginOtpRoute}`)
+    .set('Accept', 'application/json')
+    .send({ passcode });
+  t.is(res.status, 401);
+  t.is(JSON.parse(res.text).message, phrases.INVALID_OTP_PASSCODE);
+
+  // (nor in the query string, behind a body the passcode is not read from)
+  res = await other
+    .post(`/en${config.loginOtpRoute}`)
+    .query({ passcode })
+    .set('Accept', 'application/json')
+    .send({ passcode: ['x'] });
+  t.is(res.status, 401);
+
+  // (the other session is not signed in, and cannot turn two-factor off
+  // with the passcode either)
+  res = await other.get('/en/my-account/security');
+  t.is(res.status, 302);
+  t.true(res.headers.location.includes(config.loginOtpRoute));
+  res = await other
+    .post('/en/otp/disable')
+    .set('Accept', 'application/json')
+    .send({ password, token: passcode });
+  t.is(res.status, 400);
+  t.is(JSON.parse(res.text).message, phrases.INVALID_OTP_PASSCODE);
+  const fresh = await Users.findById(user._id);
+  t.true(fresh[config.passport.fields.otpEnabled]);
+
+  // (the session it signed in can)
+  res = await web
+    .post('/en/otp/disable')
+    .set('Accept', 'application/json')
+    .send({ password, token: passcode });
+  t.is(res.status, 200);
+});
+
 test('POST otp/login > invalid OTP passcode', async (t) => {
   // get test server
   const { web } = t.context;

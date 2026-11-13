@@ -5,6 +5,8 @@
 
 const test = require('ava');
 
+const utils = require('../utils');
+
 const {
   RESPONSE_COOLDOWN_MS,
   ATTENDEE_EVENT_LIMIT,
@@ -170,4 +172,33 @@ test('isDuplicateResponse with mock client - not duplicate', async (t) => {
   });
 
   t.false(result);
+});
+
+test('responses sent at the same time cannot all pass the cooldown', async (t) => {
+  await utils.setupRedisClient(t);
+  const { client, subscriber } = t.context;
+  t.teardown(() => {
+    client.disconnect();
+    subscriber.disconnect();
+  });
+  const options = {
+    eventUid: 'same-time-event',
+    attendeeEmail: 'test@example.com',
+    ip: '127.0.0.1'
+  };
+  // (the page asking to confirm a response only reads it)
+  for (let i = 0; i < 2; i++) {
+    const read = await checkRateLimit(client, options);
+    t.false(read.limited);
+  }
+
+  const results = await Promise.all(
+    Array.from({ length: 5 }, () =>
+      checkRateLimit(client, options, { reserve: true })
+    )
+  );
+  t.is(results.filter((result) => !result.limited).length, 1);
+  t.true(
+    results.filter((result) => result.limited).every((r) => r.retryAfter > 0)
+  );
 });

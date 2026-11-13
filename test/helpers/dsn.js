@@ -732,3 +732,69 @@ test('createBounce includes X-Forward-Email-ID when email has id', async (t) => 
   const output = await getStream(stream);
   t.true(output.includes('X-Forward-Email-ID: my-log-id'));
 });
+
+test('createBounce keeps a remote server’s response on one line, so it cannot add a recipient’s group to the delivery-status part', async (t) => {
+  const error = {
+    recipient: 'baduser@example.com',
+    response:
+      '550 5.1.1 user unknown<p>Final-Recipient: rfc822;alice@victim.example<br>Action: failed<br>Status: 5.1.1<br>Diagnostic-Code: smtp; 550 5.1.1 no such user</p>',
+    responseCode: 550,
+    bounceInfo: { action: 'reject', category: 'recipient' }
+  };
+  const output = await getStream(
+    await createBounce(
+      makeEmail(),
+      error,
+      'From: x@x.com\r\nSubject: Test\r\n\r\nBody'
+    )
+  );
+  // (the delivery-status part: one recipient's group, one Final-Recipient
+  //  field at the start of a line, and none for the address in the response)
+  const start = output.indexOf('Content-Type: message/delivery-status');
+  const status = output.slice(
+    start,
+    output.indexOf('Content-Type:', start + 1)
+  );
+  t.is(status.match(/^Final-Recipient:/gm).length, 1);
+  t.is(status.match(/^Action:/gm).length, 1);
+  t.regex(status, /^Final-Recipient: rfc822;baduser@example\.com/m);
+  t.regex(
+    status,
+    /user unknown Final-Recipient: rfc822;alice@victim\.example Action/
+  );
+});
+
+test('createDSNSuccess keeps a remote server’s reply on one line, and an ORCPT with its own address type', async (t) => {
+  const output = await getStream(
+    await createDSNSuccess(
+      makeEmail({
+        envelope: {
+          from: 'mailer-daemon@mx1.forwardemail.net',
+          to: 'sender@example.com',
+          rcptTo: [
+            {
+              address: 'user@example.com',
+              dsn: { orcpt: 'rfc822;user@example.com' }
+            }
+          ]
+        }
+      }),
+      'user@example.com',
+      new Date(),
+      {
+        info: {
+          response:
+            '250 2.0.0 Ok\nFinal-Recipient: rfc822;alice@victim.example\nAction: failed'
+        }
+      }
+    )
+  );
+  const start = output.indexOf('Content-Type: message/delivery-status');
+  const status = output.slice(
+    start,
+    output.indexOf('Content-Type:', start + 1)
+  );
+  t.is(status.match(/^Final-Recipient:/gm).length, 1);
+  t.is(status.match(/^Action:/gm).length, 1);
+  t.regex(status, /^Original-Recipient: rfc822;user@example\.com\r?$/m);
+});

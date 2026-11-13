@@ -7,6 +7,7 @@ const Boom = require('@hapi/boom');
 const isSANB = require('is-string-and-not-blank');
 const { authenticator } = require('otplib');
 
+const claimOtpPasscode = require('#helpers/claim-otp-passcode');
 const config = require('#config');
 
 // allow last and current totp passcode
@@ -38,8 +39,12 @@ async function disable(ctx) {
   const recoveryKeys = ctx.state.user[config.userFields.otpRecoveryKeys];
 
   if (isSANB(body.token)) {
+    // (and not a passcode another session used already, e.g. to sign in)
     const isValid = authenticator.checkDelta(body.token, secret);
-    if (isValid !== 0 && isValid !== -1)
+    if (
+      (isValid !== 0 && isValid !== -1) ||
+      !(await claimOtpPasscode(ctx, ctx.state.user.id, body.token))
+    )
       throw Boom.badRequest(ctx.translateError('INVALID_OTP_PASSCODE'));
   } else if (isSANB(body.recovery_key)) {
     if (

@@ -7,35 +7,38 @@
 // Outbound SMTP and the domain's adult-related content protection: a link
 // that Cloudflare's Family DNS blocks only for adult-related content is sent
 // when the domain turned the protection off, and phishing and malware links
-// are always blocked (see #586).
+// are always blocked (see #586).  Links are looked up by Spam Scanner with
+// Cloudflare's resolvers (see `helpers/spam-scanner.js`), here fakes of them.
 //
 
 const dayjs = require('dayjs-with-plugins');
 const ms = require('ms');
-const sinon = require('sinon');
-const SpamScanner = require('spamscanner');
 const test = require('ava');
 
 const utils = require('../utils');
 
 const config = require('#config');
+const spamScanner = require('#helpers/spam-scanner');
 const { Emails } = require('#models');
 
-const ADULT =
-  "Link hostname of example.org was detected by Cloudflare's Family DNS to contain adult-related content, phishing, and/or malware.";
-const MALWARE =
-  "Link hostname of example.org was detected by Cloudflare's Security DNS to contain phishing and/or malware.";
+// (a host Cloudflare's family resolver blocks for adult content alone, and
+//  one its malware resolver blocks, which the family resolver blocks too)
+const ADULT = 'adult.example.net';
+const MALWARE = 'malware.example.net';
+const blocks = (blocked) => ({
+  async resolve4(name) {
+    return blocked.includes(name) ? ['0.0.0.0'] : ['192.0.2.1'];
+  }
+});
 
-//
-// (the scanner binds `scan` to its instance when it is made, so it is stubbed
-// once, before that, and each test sets what it finds)
-//
-let phishing = [];
-test.before(() => {
-  sinon.stub(SpamScanner.prototype, 'scan').callsFake(async () => ({
-    results: { phishing, executables: [], arbitrary: [], viruses: [] },
-    links: ['https://example.org']
-  }));
+test.before(async () => {
+  config.spamScanner.cloudflare = true;
+  // (time for a worker's first scan, which loads the classifier)
+  config.spamScanner.outboundTimeout = ms('20s');
+  await spamScanner.reset();
+  const resolvers = spamScanner.getResolvers({}, blocks([MALWARE]));
+  resolvers.malware = blocks([MALWARE]);
+  resolvers.family = blocks([MALWARE, ADULT]);
 });
 
 test.before(utils.setupMongoose);
@@ -89,27 +92,22 @@ async function setup(t, hasAdultContentProtection) {
   return { user, domain, alias };
 }
 
-function queue({ user, domain, alias }) {
+function queue({ user, domain, alias }, hosts) {
   return Emails.queue({
     message: {
       from: `${alias.name}@${domain.name}`,
       to: 'test@example.net',
       subject: 'test',
-      text: 'https://example.org'
+      text: hosts.map((host) => `https://${host}/x`).join(' ')
     },
     user: user._id
   });
 }
 
-function setPhishingResults(messages) {
-  phishing = messages;
-}
-
 test.serial(
   'a link blocked only as adult-related content is sent when the protection is off',
   async (t) => {
-    setPhishingResults([ADULT]);
-    const email = await queue(await setup(t, false));
+    const email = await queue(await setup(t, false), [ADULT]);
     t.is(email.status, 'queued');
   }
 );
@@ -117,19 +115,20 @@ test.serial(
 test.serial(
   'a link blocked as adult-related content is not sent when the protection is on',
   async (t) => {
-    setPhishingResults([ADULT]);
-    const err = await t.throwsAsync(queue(await setup(t, true)));
+    const err = await t.throwsAsync(queue(await setup(t, true), [ADULT]));
     t.is(err.output.statusCode, 403);
-    t.true(err.message.includes('adult-related content'));
+    t.true(err.message.includes(ADULT));
   }
 );
 
 test.serial(
   'a phishing or malware link is not sent when the protection is off',
   async (t) => {
-    setPhishingResults([ADULT, MALWARE]);
-    const err = await t.throwsAsync(queue(await setup(t, false)));
+    const err = await t.throwsAsync(
+      queue(await setup(t, false), [ADULT, MALWARE])
+    );
     t.is(err.output.statusCode, 403);
-    t.true(err.message.includes("Cloudflare's Security DNS"));
+    t.true(err.message.includes(MALWARE));
+    t.false(err.message.includes(ADULT));
   }
 );

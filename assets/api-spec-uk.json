@@ -2066,7 +2066,7 @@
             "allowlist": [],
             "denylist": [],
             "restricted_alias_names": [],
-            "has_adult_content_protection": true,
+            "has_adult_content_protection": false,
             "has_phishing_protection": true,
             "has_executable_protection": true,
             "has_virus_protection": true,
@@ -2149,19 +2149,21 @@
           },
           "has_adult_content_protection": {
             "type": "boolean",
-            "description": "Увімкнути захист від контенту для дорослих за допомогою сканера спаму"
+            "description": "Чи блокувати надіслані листи з посиланнями на сайти, які сімейний фільтр Cloudflare блокує через вміст для дорослих або шкідливе ПЗ (типово false)"
           },
           "has_phishing_protection": {
             "type": "boolean",
-            "description": "Увімкнути захист від фішингу за допомогою сканера спаму"
+            "description": "Застаріле й ігнорується",
+            "deprecated": true
           },
           "has_executable_protection": {
             "type": "boolean",
-            "description": "Увімкнути захист виконуваного файлу сканера спаму"
+            "description": "Чи блокувати надіслані листи з виконуваними вкладеннями, як-от файлами .exe, .js чи .bat (типово true)"
           },
           "has_virus_protection": {
             "type": "boolean",
-            "description": "Увімкнути захист від вірусів сканера спаму"
+            "description": "Застаріле й ігнорується",
+            "deprecated": true
           },
           "has_recipient_verification": {
             "type": "boolean",
@@ -2223,19 +2225,21 @@
           },
           "has_adult_content_protection": {
             "type": "boolean",
-            "description": "Чи вмикати захист від контенту для дорослих за допомогою сканера спаму на цьому домені"
+            "description": "Чи блокувати надіслані листи з посиланнями на сайти, які сімейний фільтр Cloudflare блокує через вміст для дорослих або шкідливе ПЗ (типово false)"
           },
           "has_phishing_protection": {
             "type": "boolean",
-            "description": "Чи вмикати захист від фішингу за допомогою сканера спаму на цьому домені"
+            "description": "Застаріле й ігнорується",
+            "deprecated": true
           },
           "has_executable_protection": {
             "type": "boolean",
-            "description": "Чи вмикати захист виконуваного файлу Spam Scanner на цьому домені"
+            "description": "Чи блокувати надіслані листи з виконуваними вкладеннями, як-от файлами .exe, .js чи .bat (типово true)"
           },
           "has_virus_protection": {
             "type": "boolean",
-            "description": "Чи вмикати захист від вірусів Spam Scanner на цьому домені"
+            "description": "Застаріле й ігнорується",
+            "deprecated": true
           },
           "has_recipient_verification": {
             "type": "boolean",

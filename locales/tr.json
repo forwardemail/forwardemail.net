@@ -23531,5 +23531,19 @@
   "Delete mailbox?": "Posta kutusu silinsin mi?",
   "Please confirm if you wish to delete the mailbox <strong>%s</strong>.": "<strong>%s</strong> posta kutusunu silmek istediğinizi lütfen onaylayın.",
   "Generate mailbox passwords": "Posta kutusu parolaları oluşturun",
-  "Generate random mailbox": "Rastgele posta kutusu oluştur"
+  "Generate random mailbox": "Rastgele posta kutusu oluştur",
+  "The message could not be scanned at this time, please try again later.": "İleti şu anda taranamadı, lütfen daha sonra tekrar deneyin.",
+  "The message could not be scanned at this time and will be retried.": "İleti şu anda taranamadı ve yeniden denenecek.",
+  "Senders blocked after spam reports": "Spam bildirimlerinden sonra engellenen gönderenler",
+  "The recipient at these forwarding addresses reported mail from these senders as spam to their mailbox provider, so their mail to that address gets a temporary error until the date shown.": "Bu yönlendirme adreslerindeki alıcı, bu gönderenlerden gelen e-postaları e-posta sağlayıcısına spam olarak bildirdi; bu nedenle bu adrese gönderdikleri e-postalar gösterilen tarihe kadar geçici bir hata alır.",
+  "Sender": "Gönderen",
+  "Forwarding address": "Yönlendirme adresi",
+  "Until": "Şu tarihe kadar",
+  "Unblock": "Engeli kaldır",
+  "Unblock sender?": "Gönderenin engeli kaldırılsın mı?",
+  "Please confirm if you wish to receive mail from <strong>%s</strong> at <strong>%s</strong> again.": "<strong>%s</strong> adresinden gelen e-postaları <strong>%s</strong> adresinde yeniden almak istediğinizi lütfen onaylayın.",
+  "If you check this, then links in mail you send are checked with <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"%s\">Cloudflare's family filter</a>, and mail linking to a site it blocks for adult-related content or malware is not sent. Off by default.": "Bunu işaretlerseniz gönderdiğiniz e-postalardaki bağlantılar <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"%s\">Cloudflare'in aile filtresi</a> ile kontrol edilir ve filtrenin yetişkinlere yönelik içerik veya kötü amaçlı yazılım nedeniyle engellediği bir siteye bağlantı veren e-postalar gönderilmez. Varsayılan olarak kapalıdır.",
+  "If you uncheck this, then mail you send with <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"%s\">executable</a> attachments, such as .exe, .js or .bat files (also inside archives), is no longer blocked. On by default.": "Bunun işaretini kaldırırsanız gönderdiğiniz, .exe, .js veya .bat dosyaları gibi <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"%s\">yürütülebilir</a> ekler (arşiv içindekiler dahil) içeren e-postalar artık engellenmez. Varsayılan olarak açıktır.",
+  "Mail is always scanned for spam, and links in mail you send are always checked with <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"%s\">Cloudflare's malware filter</a>: mail linking to a site it blocks for phishing or malware is not sent.": "E-postalar her zaman spam için taranır ve gönderdiğiniz e-postalardaki bağlantılar her zaman <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"%s\">Cloudflare'in kötü amaçlı yazılım filtresi</a> ile kontrol edilir: filtrenin kimlik avı veya kötü amaçlı yazılım nedeniyle engellediği bir siteye bağlantı veren e-postalar gönderilmez.",
+  "The passwords generated for these aliases still work.  Generate a new password for each one to replace them:": "Bu takma adlar için oluşturulan parolalar hâlâ çalışıyor. Bunları değiştirmek için her biri için yeni bir parola oluşturun:"
 }

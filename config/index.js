@@ -25,6 +25,19 @@ const { defaultDKIMFieldNames } = require('mailauth/lib/tools');
 
 const noReplyList = require('reserved-email-addresses-list/no-reply-list.json');
 
+//
+// A setting that is on unless explicitly false ("false", "0", "no" or "off",
+// in any case): a mistyped value keeps it on, for settings where off is the
+// riskier way (e.g. starting to reject mail)
+//
+function unlessFalse(value) {
+  return !['false', '0', 'no', 'off'].includes(
+    String(value ?? '')
+      .trim()
+      .toLowerCase()
+  );
+}
+
 const pkg = require('../package');
 const env = require('./env');
 
@@ -64,6 +77,42 @@ if (!dayjs.Ls.no && dayjs.Ls.nb)
   dayjs.locale({ ...dayjs.Ls.nb, name: 'no' }, null, true);
 
 let zxcvbn;
+
+// a whole number from the environment, at least 1 (otherwise the fallback)
+function toCount(value, fallback) {
+  const number = Math.floor(Number(value));
+  return Number.isFinite(number) && number >= 1 ? number : fallback;
+}
+
+// a duration from the environment: "10s" or a number of milliseconds
+// (dotenv-parse-variables turns "10000" into a number, which `ms()` would
+// format instead of parse), at least 100 ms (otherwise the fallback: "20",
+// meant as seconds, is no time limit of 20 milliseconds)
+function toMilliseconds(value, fallback) {
+  if (typeof value === 'number' && Number.isFinite(value) && value >= 100)
+    return value;
+  if (typeof value === 'string' && value.trim() !== '') {
+    const parsed = ms(value.trim());
+    if (typeof parsed === 'number' && Number.isFinite(parsed) && parsed >= 100)
+      return parsed;
+  }
+
+  return fallback;
+}
+
+// a percentage from the environment, 0 to 100 ("10", "10%" or "0.5"): one
+// out of range is taken as the nearest end, and one that does not parse (or
+// is empty) is the fallback
+function toPercent(value, fallback) {
+  const text = String(value ?? '')
+    .trim()
+    .replace(/%$/, '')
+    .trim();
+  if (text === '') return fallback;
+  const number = Number(text);
+  if (!Number.isFinite(number)) return fallback;
+  return Math.min(100, Math.max(0, number));
+}
 
 const brandAndCorporateDomains = [
   'aaa',
@@ -1239,6 +1288,230 @@ const config = {
   // root on the sending server under an unrelated From domain
   // (see `helpers/is-high-confidence-root-script-spam.js`)
   rootScriptSpamMonitorOnly: boolean(env.ROOT_SCRIPT_SPAM_MONITOR_ONLY),
+  // Spam Scanner for inbound and outbound mail (see `helpers/spam-scanner.js`
+  // and SPAM_SCANNER_* in .env.defaults)
+  spamScanner: {
+    enabled: boolean(env.SPAM_SCANNER_ENABLED),
+    // only log, and add X-Spam-Scanner-* headers; never reject, block,
+    // defer or file a message as spam, inbound or outbound (only an explicit
+    // false turns this off: a mistyped value must not start rejecting mail)
+    monitorOnly: unlessFalse(env.SPAM_SCANNER_MONITOR_ONLY),
+    // outbound spam (at the reject threshold) is only logged, not rejected
+    // as smtp-bree sends it (only an explicit false turns this off)
+    outboundMonitorOnly: unlessFalse(env.SPAM_SCANNER_OUTBOUND_MONITOR_ONLY),
+    // outbound mail with a virus, a program attachment, a link to a malware
+    // or adult site or the GTUBE test string is refused as it is submitted,
+    // in monitor mode too, as before Spam Scanner 7 (only an explicit false
+    // turns this off, and then only in monitor mode)
+    outboundBlock: unlessFalse(env.SPAM_SCANNER_OUTBOUND_BLOCK),
+    // add X-Spam-Scanner-* headers to inbound mail
+    headers: boolean(env.SPAM_SCANNER_HEADERS),
+    // the share of inbound mail (MX) scanned, 0 to 100 (each message is
+    // picked at random as it is received; 0 scans none, 100 all)
+    // (false, off or no: 0)
+    mxPercent: unlessFalse(env.SPAM_SCANNER_MX_PERCENT)
+      ? toPercent(env.SPAM_SCANNER_MX_PERCENT, 10)
+      : 0,
+    // how often each process writes a "[SPAM_SCANNER] stats" line with how
+    // many scans it made, skipped, stopped or lost and how long they took
+    // (0, off or false: never)
+    // (at most a day: a timer takes no more than about 24 days)
+    statsInterval:
+      unlessFalse(env.SPAM_SCANNER_STATS_INTERVAL) &&
+      (() => {
+        try {
+          return (
+            ms(String(env.SPAM_SCANNER_STATS_INTERVAL ?? '').trim() || '1m') !==
+            0
+          );
+        } catch {
+          return true;
+        }
+      })()
+        ? Math.min(
+            toMilliseconds(env.SPAM_SCANNER_STATS_INTERVAL, ms('1m')),
+            ms('1d')
+          )
+        : 0,
+    // worker threads per process (each loads the classifier), and the most
+    // each may use
+    // (a whole number of threads, at least 1)
+    // (at most 32: a typo must not start a worker, and its memory, for each
+    //  of hundreds)
+    threads: Math.min(32, toCount(env.SPAM_SCANNER_THREADS, 1)),
+    // (MB for each worker, at least 256: a scan of an ordinary message takes
+    //  about 100, and a worker that runs out of memory fails every scan)
+    // (and at most 8 GB)
+    maxMemory: Math.min(
+      8192,
+      Math.max(256, toCount(env.SPAM_SCANNER_MAX_MEMORY, 512))
+    ),
+    // worker threads for smtp-bree, which scans outbound mail as it is sent
+    // with the language model (one scan waiting on it lets another go on)
+    sendThreads: Math.min(32, toCount(env.SPAM_SCANNER_SEND_THREADS, 2)),
+    // scans waiting for a worker, beyond which messages go unscanned
+    maxQueue: toCount(env.SPAM_SCANNER_MAX_QUEUE, 50),
+    // the most an inbound scan may take before delivery goes on without it
+    // (at most 22 seconds, as for `outboundTimeout`: in monitor mode a
+    //  submission waits for its scan this long, and an API request is
+    //  answered within 30 seconds)
+    timeout: Math.min(
+      toMilliseconds(env.SPAM_SCANNER_TIMEOUT, ms('8s')),
+      ms('22s')
+    ),
+    // in monitor mode, the most the MX server waits for a scan of a message
+    // it received before it delivers it without the X-Spam-Scanner-* headers
+    // (the scan goes on, and is logged); out of it, the whole `timeout`
+    mxWait: toMilliseconds(env.SPAM_SCANNER_MX_WAIT, ms('1s')),
+    // the most each network check of an inbound scan may take
+    networkTimeout: toMilliseconds(env.SPAM_SCANNER_NETWORK_TIMEOUT, ms('2s')),
+    // outbound scans decide what is blocked, so they may take longer (and
+    // their link lookups too)
+    // (at most 22 seconds: with the extra quarter an outbound scan may wait
+    //  for a worker, an API request is still answered within 30 seconds)
+    outboundTimeout: Math.min(
+      toMilliseconds(env.SPAM_SCANNER_OUTBOUND_TIMEOUT, ms('20s')),
+      ms('22s')
+    ),
+    outboundNetworkTimeout: toMilliseconds(
+      env.SPAM_SCANNER_OUTBOUND_NETWORK_TIMEOUT,
+      ms('5s')
+    ),
+    // larger messages are not scanned by scans that only log (0: no limit; a
+    // size that does not parse keeps the default rather than removing it)
+    maxSize: (() => {
+      const size =
+        env.SPAM_SCANNER_MAX_SIZE === undefined ||
+        env.SPAM_SCANNER_MAX_SIZE === ''
+          ? null
+          : bytes(String(env.SPAM_SCANNER_MAX_SIZE));
+      return Number.isFinite(size) && size >= 0 ? size : bytes('25MB');
+    })(),
+    // ask Cloudflare's malware and family resolvers about link hosts
+    // (off in tests unless set)
+    cloudflare:
+      env.SPAM_SCANNER_CLOUDFLARE === undefined ||
+      env.SPAM_SCANNER_CLOUDFLARE === ''
+        ? env.NODE_ENV !== 'test'
+        : boolean(env.SPAM_SCANNER_CLOUDFLARE),
+    // scan attachments with clamd on its default socket
+    clamav: boolean(env.SPAM_SCANNER_CLAMAV),
+    // an outbound message that could not be checked is deferred (a
+    // temporary error) rather than sent unchecked
+    // (only an explicit false turns this off: a mistyped value keeps it on)
+    outboundFailClosed: unlessFalse(env.SPAM_SCANNER_OUTBOUND_FAIL_CLOSED),
+    // a language model for close calls on inbound mail, and on outbound mail
+    // as it is sent (smtp-bree): Ollama on this server by default (see
+    // ansible/playbooks/spamscanner-llm.yml), and none in tests unless set
+    llm: {
+      url:
+        env.SPAM_SCANNER_LLM_URL ||
+        (env.NODE_ENV === 'test'
+          ? ''
+          : `http://127.0.0.1:${
+              Number.parseInt(env.SPAM_SCANNER_LLM_PORT, 10) || 11436
+            }`),
+      provider: env.SPAM_SCANNER_LLM_PROVIDER || 'ollama',
+      model: env.SPAM_SCANNER_LLM_MODEL || 'spamscanner',
+      // (a string: dotenv-parse-variables reads "a,b" as a list, and a
+      //  number as one; see .env.defaults for a key that reads as a number)
+      apiKey:
+        env.SPAM_SCANNER_LLM_API_KEY === undefined ||
+        env.SPAM_SCANNER_LLM_API_KEY === null
+          ? ''
+          : String(env.SPAM_SCANNER_LLM_API_KEY),
+      // ("off", or "false", "0" or "no", turns it off; "always" asks it
+      //  about every message; anything else is "auto", as Ansible reads it
+      //  too, see ansible/playbooks/spamscanner-llm.yml)
+      mode: unlessFalse(env.SPAM_SCANNER_LLM_MODE)
+        ? String(env.SPAM_SCANNER_LLM_MODE || '')
+            .trim()
+            .toLowerCase() === 'always'
+          ? 'always'
+          : 'auto'
+        : 'off',
+      timeout: toMilliseconds(env.SPAM_SCANNER_LLM_TIMEOUT, ms('3s')),
+      maxInputChars: toCount(env.SPAM_SCANNER_LLM_MAX_INPUT_CHARS, 1500),
+      // (empty: remove personal data unless the server is this machine)
+      redact:
+        env.SPAM_SCANNER_LLM_REDACT === undefined ||
+        env.SPAM_SCANNER_LLM_REDACT === ''
+          ? null
+          : boolean(env.SPAM_SCANNER_LLM_REDACT),
+      // (0 unloads it after each request)
+      // (a bare number is seconds: dotenv-parse-variables reads "300" as a
+      //  number, which Ollama does not take as a string without a unit)
+      keepAlive:
+        env.SPAM_SCANNER_LLM_KEEP_ALIVE === undefined ||
+        env.SPAM_SCANNER_LLM_KEEP_ALIVE === ''
+          ? '-1m'
+          : typeof env.SPAM_SCANNER_LLM_KEEP_ALIVE === 'number' ||
+            /^-?\d+$/.test(String(env.SPAM_SCANNER_LLM_KEEP_ALIVE).trim())
+          ? `${String(env.SPAM_SCANNER_LLM_KEEP_ALIVE).trim()}s`
+          : String(env.SPAM_SCANNER_LLM_KEEP_ALIVE)
+    }
+  },
+  // Abuse reports (ARF, RFC 5965) from mailbox providers' feedback loops to
+  // the abuse address (`abuseEmail`), handled by the MX server rather than
+  // delivered (see `helpers/arf-report.js` and ARF_* in .env.defaults)
+  arf: {
+    // (only an explicit false turns this off)
+    enabled: unlessFalse(env.ARF_ENABLED),
+    // the feedback loop addresses whose reports are read: an address, or
+    // "@" and a domain for any address at that domain itself (not its
+    // subdomains); each must also pass DMARC, and its root domain be listed
+    // in `TRUTH_SOURCES`
+    reporters: new Set(
+      (_.isArray(env.ARF_REPORTERS)
+        ? env.ARF_REPORTERS
+        : isSANB(env.ARF_REPORTERS)
+        ? env.ARF_REPORTERS.split(',')
+        : []
+      )
+        .map((value) => String(value).toLowerCase().trim())
+        .filter((value) => value.includes('@'))
+    ),
+    // learn the messages reported as spam, for every server's classifier
+    // (only an explicit false turns this off)
+    learn: unlessFalse(env.ARF_LEARN),
+    // larger reports are delivered to the abuse address as other mail is
+    maxSize: bytes('2MB'),
+    // reports read per reporting domain and day (more are delivered)
+    maxPerDay: 10_000,
+    // a report counts against the sender of a message we sent this long ago
+    // at most (feedback loops report within days)
+    maxAge: ms('30d'),
+    // what was learned is kept this many days (a day's learning expires as a
+    // whole), at most this many messages and features a day, and at most
+    // this many features of each message
+    learnDays: 30,
+    maxLearnedPerDay: 1000,
+    // messages learned a day from one party (the mailbox a reported message
+    // was sent or forwarded to), so one reporter cannot fill the day
+    maxLearnedPerPartyPerDay: 5,
+    // and from one group (the account that sent it, or owns the alias it was
+    // forwarded for), so one account cannot learn more by reporting to more
+    // of its mailboxes or domains
+    maxLearnedPerGroupPerDay: 20,
+    maxLearnedFeaturesPerDay: 20_000,
+    // (new features a day from one group, so no account fills the day's;
+    //  past them, or the day's, only features learned already are counted)
+    maxLearnedFeaturesPerGroupPerDay: 2000,
+    maxFeaturesPerMessage: 2000,
+    // (and each feature at most this many times a day)
+    maxLearnedPerFeaturePerDay: 3,
+    // the most a report may take to read (in a Spam Scanner worker)
+    timeout: ms('10s'),
+    // a sender of mail we forwarded that its recipient reported is blocked
+    // for that alias's forwarding address alone (a temporary error), this
+    // long, at most this many for an alias, and at most this many new ones a
+    // day (see `helpers/arf-recipient-block.js`; only an explicit false
+    // turns this off)
+    recipientBlock: unlessFalse(env.ARF_RECIPIENT_BLOCK),
+    blockDuration: ms('90d'),
+    maxBlocksPerAlias: 100,
+    maxBlocksPerAliasPerDay: 20
+  },
   // Suspend domain when >= this fraction of its aliases are suspended
   smtpDomainSuspensionAliasThreshold:
     Number(env.SMTP_DOMAIN_SUSPENSION_ALIAS_THRESHOLD) || 0.25,
@@ -2509,5 +2782,27 @@ config.sieve = {
   // helpers/sieve/capabilities.js; a separate list here had fallen behind it,
   // so Settings showed fewer extensions than scripts can use)
 };
+
+// (a scan's network checks, the wait for one, and the language model take no
+// longer than the scan may)
+config.spamScanner.mxWait = Math.min(
+  config.spamScanner.mxWait,
+  config.spamScanner.timeout
+);
+config.spamScanner.networkTimeout = Math.min(
+  config.spamScanner.networkTimeout,
+  config.spamScanner.timeout
+);
+// (an outbound scan's link checks wait two lookups' time, each up to it and
+//  half a second more, and half a second more in all, see
+//  `helpers/spam-scanner-worker`: so they end within the scan)
+config.spamScanner.outboundNetworkTimeout = Math.min(
+  config.spamScanner.outboundNetworkTimeout,
+  Math.max(0, Math.floor((config.spamScanner.outboundTimeout - 1500) / 2))
+);
+config.spamScanner.llm.timeout = Math.min(
+  config.spamScanner.llm.timeout,
+  config.spamScanner.timeout
+);
 
 module.exports = config;

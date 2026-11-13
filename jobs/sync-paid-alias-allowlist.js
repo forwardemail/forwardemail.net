@@ -194,7 +194,12 @@ async function checkDenylistedValue(value) {
 }
 
 // Optimized function to process domains with pagination
-async function processDomainsBatch(bannedUserIdsSet, set, denylistedEntries) {
+async function processDomainsBatch(
+  bannedUserIdsSet,
+  set,
+  denylistedEntries,
+  paidDomains
+) {
   let lastId = null;
 
   // eslint-disable-next-line no-constant-condition
@@ -282,6 +287,7 @@ async function processDomainsBatch(bannedUserIdsSet, set, denylistedEntries) {
 
           if (isAllowlistTld(domainName)) {
             set.add(domainName);
+            paidDomains.add(domainName);
           } else {
             logger.debug(
               'domain %s TLD is not allowlisted, skipping',
@@ -299,6 +305,7 @@ async function processDomainsBatch(bannedUserIdsSet, set, denylistedEntries) {
             if (!rootDenylistCheck.denylisted) {
               if (isAllowlistTld(rootDomainAscii)) {
                 set.add(rootDomainAscii);
+                paidDomains.add(rootDomainAscii);
               } else {
                 logger.debug(
                   'root domain %s TLD is not allowlisted, skipping',
@@ -658,7 +665,12 @@ async function processAliasesBatch(
 // them (a SCAN with MATCH still walks every key, so one SCAN per prefix walked
 // all of Redis three times every run).
 //
-async function processRedisStreams(client, targets, set, p) {
+// Each value of the allowlist (`set`) is removed as it is, and the addresses
+// and hosts of the paid domains (`paidDomains`) with it; not those of the
+// domains paid aliases forward to (e.g. gmail.com), whose addresses are
+// denylisted on their own (see `isDenylisted`)
+//
+async function processRedisStreams(client, targets, { set, paidDomains }, p) {
   try {
     const prefixes = [...targets.keys()];
     for await (const page of client.scanStream({
@@ -686,12 +698,12 @@ async function processRedisStreams(client, targets, set, p) {
             const host = parseHostFromDomainOrAddress(keyWithoutPrefix);
             const root = parseRootDomain(host);
 
-            if (set.has(host)) {
+            if (paidDomains.has(host)) {
               matched.add(key);
               targetSet.add(keyWithoutPrefix);
             }
 
-            if (host !== root && set.has(root)) {
+            if (host !== root && paidDomains.has(root)) {
               matched.add(key);
               targetSet.add(keyWithoutPrefix);
             }
@@ -722,10 +734,17 @@ async function processRedisStreams(client, targets, set, p) {
     logger.info(`Found ${bannedUserIdsSet.size} banned users`);
 
     const set = new Set();
+    // (the paid domains and their root domains, see `processRedisStreams`)
+    const paidDomains = new Set();
     const denylistedEntries = new Map();
 
     // Process domains with optimized pagination
-    await processDomainsBatch(bannedUserIdsSet, set, denylistedEntries);
+    await processDomainsBatch(
+      bannedUserIdsSet,
+      set,
+      denylistedEntries,
+      paidDomains
+    );
 
     stats.entriesBeforeDenylistCheck = set.size + denylistedEntries.size;
     stats.entriesAddedToAllowlist = set.size;
@@ -751,7 +770,7 @@ async function processRedisStreams(client, targets, set, p) {
         ['silent:', silentSet],
         ['backscatter:', backscatterSet]
       ]),
-      set,
+      { set, paidDomains },
       p
     );
     stats.denylistRemovals = denylistSet.size;

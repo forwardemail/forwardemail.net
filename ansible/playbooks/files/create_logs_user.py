@@ -66,10 +66,12 @@ def main():
 
     # Write with restrictive permissions (owner read/write only)
     try:
-        fd = os.open('/tmp/create_logs_user.js', os.O_WRONLY | os.O_CREAT | os.O_TRUNC, 0o600)
+        # (a new file at the path given, never one already there or a link)
+        path = os.environ['USER_SCRIPT_PATH']
+        fd = os.open(path, os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW, 0o600)
         with os.fdopen(fd, 'w', encoding='utf-8') as f:
             f.write(script)
-        print("INFO: Script created successfully at /tmp/create_logs_user.js")
+        print(f"INFO: Script created successfully at {path}")
     except Exception as e:
         print(f"ERROR: Failed to write script file: {e}")
         sys.exit(1)

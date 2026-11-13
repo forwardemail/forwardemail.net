@@ -408,7 +408,7 @@ async function sendCalendarDeletedBackup(ctx, calendar, calendarEvents) {
   }
 
   try {
-    const ics = await buildICS(ctx, calendarEvents, calendar);
+    const ics = await buildICS(ctx, calendarEvents, calendar, false, true);
 
     let alias;
     let domain;

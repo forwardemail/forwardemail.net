@@ -4122,6 +4122,342 @@ This is a test email from gmail.com to test Sieve filtering.
   await mx.close();
 });
 
+test('sieve fileinto :create - a folder no IMAP CREATE could make files the message in INBOX', async (t) => {
+  // Set up SQLite server
+  const sqlitePort = await getPort();
+  const sqlite = new SQLite({
+    client: t.context.client,
+    subscriber: t.context.subscriber
+  });
+  await sqlite.listen(sqlitePort);
+  const wsp = createWebSocketAsPromised({ port: sqlitePort });
+  await wsp.open();
+
+  // Set up IMAP server
+  const imapPort = await getPort();
+  const imap = new IMAP(
+    { client: t.context.client, subscriber: t.context.subscriber, wsp },
+    false
+  );
+  await imap.listen(imapPort);
+
+  // Set up MX server
+  const mxPort = await getPort();
+  const mx = new MX({ client: t.context.client, wsp });
+  // Share databaseMap so MX can reuse IMAP database connections
+  mx.databaseMap = sqlite.databaseMap;
+  await mx.listen(mxPort);
+  const { resolver } = mx;
+
+  // Create user with enhanced_protection plan
+  const user = await t.context.userFactory
+    .withState({
+      plan: 'enhanced_protection',
+      [config.userFields.planSetAt]: dayjs().startOf('day').toDate()
+    })
+    .create();
+
+  await t.context.paymentFactory
+    .withState({
+      user: user._id,
+      amount: 300,
+      invoice_at: dayjs().startOf('day').toDate(),
+      method: 'free_beta_program',
+      duration: ms('30d'),
+      plan: user.plan,
+      kind: 'one-time'
+    })
+    .create();
+
+  // Create domain
+  const domain = await t.context.domainFactory
+    .withState({
+      members: [{ user: user._id, group: 'admin' }],
+      plan: user.plan,
+      has_mx_record: true,
+      has_txt_record: true
+    })
+    .create();
+
+  // Create alias with IMAP enabled
+  const alias = await t.context.aliasFactory
+    .withState({
+      user: user._id,
+      domain: domain._id,
+      recipients: [],
+      has_imap: true,
+      imap_backup_at: null
+    })
+    .create();
+
+  // Create password for IMAP access
+  const password = await alias.createToken();
+  await alias.save();
+
+  // (a path deeper than an IMAP CREATE may make, see
+  //  helpers/imap/validate-mailbox-path.js; and an extra copy to another,
+  //  which is not stored in INBOX a second time)
+  await SieveScripts.create({
+    user: user._id,
+    domain: domain._id,
+    alias: alias._id,
+    name: 'Customer Script',
+    content: `require ["fileinto", "mailbox", "copy"];
+
+if address :domain "from" "gmail.com"
+{
+    fileinto :copy :create "${'y/'.repeat(80)}deep";
+    fileinto :create "${'x/'.repeat(80)}deep";
+    stop;
+}`,
+    is_active: true
+  });
+
+  // Spoof DNS records
+  const map = new Map();
+
+  map.set(
+    `a:${domain.name}`,
+    resolver.spoofPacket(domain.name, 'A', [IP_ADDRESS], true, ms('5m'))
+  );
+
+  map.set(
+    `mx:${domain.name}`,
+    resolver.spoofPacket(
+      domain.name,
+      'MX',
+      [{ exchange: IP_ADDRESS, priority: 0 }],
+      true,
+      ms('5m')
+    )
+  );
+
+  map.set(
+    `txt:${domain.name}`,
+    resolver.spoofPacket(
+      domain.name,
+      'TXT',
+      [`${config.paidPrefix}${domain.verification_record}`],
+      true,
+      ms('5m')
+    )
+  );
+
+  // dkim
+  map.set(
+    `txt:${domain.dkim_key_selector}._domainkey.${domain.name}`,
+    resolver.spoofPacket(
+      `${domain.dkim_key_selector}._domainkey.${domain.name}`,
+      'TXT',
+      [`v=DKIM1; k=rsa; p=${domain.dkim_public_key.toString('base64')};`],
+      true
+    )
+  );
+
+  // spf
+  map.set(
+    `txt:${env.WEB_HOST}`,
+    resolver.spoofPacket(
+      `${env.WEB_HOST}`,
+      'TXT',
+      [`v=spf1 ip4:${IP_ADDRESS} -all`],
+      true,
+      ms('5m')
+    )
+  );
+
+  // cname
+  map.set(
+    `cname:${domain.return_path}.${domain.name}`,
+    resolver.spoofPacket(
+      `${domain.return_path}.${domain.name}`,
+      'CNAME',
+      [env.WEB_HOST],
+      true
+    )
+  );
+
+  // cname -> txt
+  map.set(
+    `txt:${domain.return_path}.${domain.name}`,
+    resolver.spoofPacket(
+      `${domain.return_path}.${domain.name}`,
+      'TXT',
+      [`v=spf1 ip4:${IP_ADDRESS} -all`],
+      true,
+      ms('5m')
+    )
+  );
+
+  // Model a legitimate Gmail-originating message. The local test transport
+  // connects from IP_ADDRESS, so spoof aligned Gmail SPF for this fixture.
+  map.set(
+    'txt:gmail.com',
+    resolver.spoofPacket(
+      'gmail.com',
+      'TXT',
+      [`v=spf1 ip4:${IP_ADDRESS} -all`],
+      true,
+      ms('5m')
+    )
+  );
+
+  await resolver.options.cache.mset(map);
+
+  // Set allowlist for local IP
+  await t.context.client.set(`allowlist:${IP_ADDRESS}`, true);
+
+  // Connect to IMAP first to initialize the database for the alias
+  const initImapClient = new ImapFlow({
+    host: IP_ADDRESS,
+    port: imapPort,
+    secure: false,
+    auth: {
+      user: `${alias.name}@${domain.name}`,
+      pass: password
+    },
+    tls: { rejectUnauthorized: false },
+    logger: false
+  });
+  await initImapClient.connect();
+  // Select INBOX to ensure database is initialized
+  await initImapClient.getMailboxLock('INBOX');
+  await initImapClient.logout();
+
+  // Send email from gmail.com via MX
+  const mxConnection = await asyncMxConnect({
+    target: IP_ADDRESS,
+    port: mx.server.address().port,
+    dnsOptions: {
+      resolve: util.callbackify(resolver.resolve.bind(resolver))
+    }
+  });
+
+  const transporter = nodemailer.createTransport({
+    logger,
+    debug: true,
+    host: mxConnection.host,
+    port: mxConnection.port,
+    connection: mxConnection.socket,
+    ignoreTLS: true,
+    secure: false,
+    tls
+  });
+
+  const testSubject = `Sieve test ${Date.now()}`;
+
+  await t.notThrowsAsync(
+    transporter.sendMail({
+      envelope: {
+        from: 'sender@gmail.com',
+        to: [`${alias.name}@${domain.name}`]
+      },
+      raw: `
+To: ${alias.name}@${domain.name}
+From: Test User <sender@gmail.com>
+Subject: ${testSubject}
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+
+This is a test email from gmail.com to test Sieve filtering.
+`.trim()
+    })
+  );
+
+  // Wait for message processing - check both System and INBOX
+  await pWaitFor(
+    async () => {
+      try {
+        const imapClient = new ImapFlow({
+          host: IP_ADDRESS,
+          port: imapPort,
+          secure: false,
+          auth: {
+            user: `${alias.name}@${domain.name}`,
+            pass: password
+          },
+          tls: { rejectUnauthorized: false },
+          logger: false
+        });
+
+        await imapClient.connect();
+
+        // Check if System folder exists and has messages
+        let foundInSystem = false;
+        let foundInInbox = false;
+        try {
+          const lock = await imapClient.getMailboxLock('System');
+          try {
+            foundInSystem = imapClient.mailbox.exists > 0;
+          } finally {
+            lock.release();
+          }
+        } catch {
+          // Folder doesn't exist yet
+        }
+
+        // Also check INBOX
+        try {
+          const lock = await imapClient.getMailboxLock('INBOX');
+          try {
+            foundInInbox = imapClient.mailbox.exists > 0;
+          } finally {
+            lock.release();
+          }
+        } catch {
+          // INBOX error
+        }
+
+        await imapClient.logout();
+        return foundInSystem || foundInInbox;
+      } catch {
+        return false;
+      }
+    },
+    { timeout: ms('30s'), interval: ms('1s') }
+  );
+
+  // Final verification - connect to IMAP and check System folder
+  const imapClient = new ImapFlow({
+    host: IP_ADDRESS,
+    port: imapPort,
+    secure: false,
+    auth: {
+      user: `${alias.name}@${domain.name}`,
+      pass: password
+    },
+    tls: { rejectUnauthorized: false },
+    logger: false
+  });
+
+  await imapClient.connect();
+
+  // (in INBOX once, and no folder made for it; the extra copy is stored, or
+  //  skipped, after the message)
+  await delay(ms('3s'));
+  const inboxLock = await imapClient.getMailboxLock('INBOX');
+  try {
+    t.is(imapClient.mailbox.exists, 1);
+    const message = await imapClient.fetchOne('*', { envelope: true });
+    t.is(message.envelope.subject, testSubject);
+  } finally {
+    inboxLock.release();
+  }
+
+  const list = await imapClient.list();
+  t.false(list.some((mailbox) => mailbox.path.endsWith('deep')));
+  t.false(list.some((mailbox) => mailbox.path.startsWith('x')));
+  t.false(list.some((mailbox) => mailbox.path.startsWith('y')));
+
+  await imapClient.logout();
+
+  // Cleanup
+  await wsp.close();
+  await sqlite.close();
+  await imap.close();
+  await mx.close();
+});
+
 test('sieve fileinto - address :domain does NOT match non-gmail sender', async (t) => {
   // Set up SQLite server
   const sqlitePort = await getPort();

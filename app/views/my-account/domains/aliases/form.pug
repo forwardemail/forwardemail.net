@@ -58,6 +58,49 @@ block body
                               ): i.fa.fa-globe
                           td.align-middle.text-nowrap
                             span.dayjs(data-time=signIn.date.getTime())= dayjs(signIn.date).tz(user.timezone === 'Etc/Unknown' ? 'UTC' : user.timezone).format("M/D/YY h:mm A z")
+    if alias && Array.isArray(arfBlocks) && arfBlocks.length > 0
+      .row.mt-3
+        .col
+          .card.border-themed
+            .card-body
+              h2.h5= t("Senders blocked after spam reports")
+              p.text-muted= t("The recipient at these forwarding addresses reported mail from these senders as spam to their mailbox provider, so their mail to that address gets a temporary error until the date shown.")
+              .table-responsive
+                table.table.table-sm.table-bordered.mb-0
+                  thead
+                    tr
+                      th(scope="col")= t("Sender")
+                      th(scope="col")= t("Forwarding address")
+                      th(scope="col")= t("Until")
+                      th.text-center(scope="col")= t("Unblock")
+                  tbody
+                    each block in arfBlocks
+                      tr
+                        td.align-middle
+                          code.notranslate= block.sender
+                        td.align-middle
+                          code.notranslate= block.destination
+                        td.align-middle.notranslate= dayjs(block.until).locale(locale).format("LL")
+                        td.align-middle.text-center
+                          form.ajax-form.confirm-prompt.d-inline-block(
+                            action=l(`/my-account/domains/${punycode.toASCII(domain.name)}/aliases/${alias.id}/unblock-sender`),
+                            method="POST",
+                            data-confirm-prompt-title=t("Unblock sender?"),
+                            data-confirm-prompt-html=t("Please confirm if you wish to receive mail from <strong>%s</strong> at <strong>%s</strong> again.", _.escape(block.sender), _.escape(block.destination))
+                          )
+                            input(
+                              type="hidden",
+                              name="destination",
+                              value=block.destination
+                            )
+                            input(
+                              type="hidden",
+                              name="sender",
+                              value=block.sender
+                            )
+                            button.btn.btn-sm.btn-outline-secondary(
+                              type="submit"
+                            )= t("Unblock")
     if domain
       .row.text-center.my-5
         .col

@@ -13,10 +13,6 @@ const { Buffer } = require('node:buffer');
 // TODO: SMTP needs resolver option
 //       https://github.com/nodemailer/smtp-server/issues/177
 
-// TODO: block these file attachments in spam scanner
-// .z, .ade, .adp, .apk, .appx, .appxbundle, .bat, .cab, .chm, .cmd, .com, .cpl, .diagcab, .diagcfg, .diagpack, .dll, .dmg, .ex, .ex_, .exe, .hta, .img, .ins, .iso, .isp, .jar, .jnlp, .js, .jse, .lib, .lnk, .mde, .msc, .msi, .msix, .msixbundle, .msp, .mst, .nsh, .pif, .ps1, .scr, .sct, .shb, .sys, .vb, .vbe, .vbs, .vhd, .vxd, .wsc, .wsf, .wsh, .xll
-// const SpamScanner = require('spamscanner');
-
 // TODO: integrate ASN check and reputation check into spam scanner
 
 // TODO: mullvad dns blocklist (Extended)
@@ -67,6 +63,8 @@ const getFingerprintKey = require('#helpers/get-fingerprint-key');
 const getGreylistKey = require('#helpers/get-greylist-key');
 const getHeaders = require('#helpers/get-headers');
 const getRecipients = require('#helpers/get-recipients');
+const handleArfReport = require('#helpers/arf-report');
+const arfRecipientBlock = require('#helpers/arf-recipient-block');
 const {
   grantSrsReverseOnce,
   hasSrsReverse,
@@ -115,6 +113,8 @@ const sendEmail = require('#helpers/send-email');
 const sendForwardingIssueEmails = require('#helpers/send-forwarding-issue-emails');
 const signMessage = require('#helpers/sign-message');
 const { stuffBareCrDots } = require('#helpers/sign-message');
+const spamScanner = require('#helpers/spam-scanner');
+const withDeadline = require('#helpers/with-deadline');
 const updateHeaders = require('#helpers/update-headers');
 const { Emails, Users, SelfTests } = require('#models');
 const { encrypt, decrypt } = require('#helpers/encrypt-decrypt');
@@ -146,24 +146,6 @@ const srs = new SRS(config.srs);
 // `srs.forward` replaces that hash with our own (so we normalize it first)
 //
 const REGEX_SRS1_HASH = new RE2(/^SRS1[+=-][^=]*=/);
-
-/*
-// TODO: re-enable spam scanner once v7 released
-const scanner = new SpamScanner({
-  logger,
-  clamscan: config.env === 'test',
-  memoize: {
-    // since memoizee doesn't support supplying mb or gb of cache size
-    // we can calculate how much the maximum could potentially be
-    // the max length of a domain name is 253 characters (bytes)
-    // and if we want to store up to 1 GB in memory, that's
-    // `Math.floor(bytes('1GB') / 253)` = 4244038 (domains)
-    // note that this is per thread, so if you have 4 core server
-    // you will have 4 threads, and therefore need 4 GB of free memory
-    size: Math.floor(bytes('0.5GB') / 253)
-  }
-});
-*/
 
 //
 // NOTE: Outlook appears to have a major bug in their system
@@ -805,7 +787,8 @@ function isInternalError(err, isMailbox = false) {
   );
 }
 
-async function imap(alias, headers, session, body) {
+// eslint-disable-next-line max-params
+async function imap(alias, headers, session, body, _spamScan) {
   const accepted = [];
   const bounces = [];
   const vacationResponders = [];
@@ -946,6 +929,14 @@ async function imap(alias, headers, session, body) {
             ? session.arrivalDate
             : session.arrivalDate.toISOString(),
         raw: Buffer.concat([sealHeaders, unsealed]),
+        //
+        // TODO: once out of monitor mode, file spam in the Junk folder (see
+        //       `isSpam` in the `tmp` action of `helpers/parse-payload.js`),
+        //       but not for our own addresses (see `isOurAddress`)
+        //
+        // ...(!config.spamScanner.monitorOnly && _spamScan?.isSpam
+        //   ? { isSpam: true }
+        //   : {}),
         timeout: ms('1m')
       },
       1
@@ -1095,8 +1086,9 @@ async function checkBounceForSpam(bounce, headers, session) {
   if (bounce?.err?.isCodeBug) return;
 
   // (nor when a reply to an SRS address was refused for now on our side,
-  // so its retry is not greylisted, see `forward`)
-  if (bounce?.err?.isSrsReverseRetry) return;
+  // so its retry is not greylisted, see `forward`, nor mail refused at a
+  // recipient's request, which says nothing about the sender to others)
+  if (bounce?.err?.isSrsReverseRetry || bounce?.err?.isRecipientBlock) return;
 
   //
   // NOTE: we always store the message fingerprint in our greylist database
@@ -1730,10 +1722,7 @@ async function forward(recipient, headers, session, body) {
         is_webhook: true,
         // Webhook logging details for debugging
         webhook_log: {
-          endpoint: recipient.webhook.replace(
-            /\/\/([^:]+):([^@]+)@/,
-            '//$1:***@'
-          ), // hide password if present
+          endpoint: retryRequest.hideCredentials(recipient.webhook), // hide credentials if present
           method: 'POST',
           status_code: response.statusCode,
           response_text:
@@ -1770,18 +1759,17 @@ async function forward(recipient, headers, session, body) {
       // in order to prevent huge payloads in-memory
       delete err_.body;
 
-      // preserve webhook for admins to inspect if user needs help
-      err_.webhook = recipient.webhook;
+      // preserve webhook for admins to inspect if user needs help (with any
+      // password in it hidden, as `retryRequest` hides it where it keeps it)
+      const endpoint = retryRequest.hideCredentials(recipient.webhook);
+      err_.webhook = endpoint;
       // (so the log is only shown to those who may see these aliases)
       err_.forwardedFor = Object.keys(recipient.replacements);
       //
       // Add webhook error logging details for debugging
       //
       err_.webhook_log = {
-        endpoint: recipient.webhook.replace(
-          /\/\/([^:]+):([^@]+)@/,
-          '//$1:***@'
-        ), // hide password if present
+        endpoint, // hide credentials if present
         method: 'POST',
         status_code: err_.statusCode || err_.status || null,
         error_code: err_.code || null,
@@ -2047,12 +2035,45 @@ async function forward(recipient, headers, session, body) {
     }
 
     //
+    // X-Forward-Email-Report, so a feedback loop's report of this copy can
+    // block its sender for this destination alone (see
+    // `helpers/arf-recipient-block.js`), or be learned from (see
+    // `helpers/arf-report.js`)
+    //
+    const reportSender =
+      config.arf.recipientBlock || config.arf.learn
+        ? arfRecipientBlock.getAuthenticatedSender(session)
+        : null;
+    const report = {
+      recipient: recipient.recipient,
+      destination: recipient.to[0],
+      sender: reportSender,
+      messageId: headers.getFirst('message-id')
+    };
+    // (a sender its recipient reported is refused below, before the copy is
+    //  sealed)
+    const isReportBlocked =
+      config.arf.recipientBlock &&
+      reportSender !== null &&
+      // (none when Redis or its checks are slow: the mail is not held up)
+      (await withDeadline(
+        arfRecipientBlock.isBlocked(this.client, report, this.resolver),
+        config.spamScanner.networkTimeout,
+        false
+      ));
+    if (reportSender && !isReportBlocked) {
+      const field = arfRecipientBlock.createHeader(report);
+      if (field) headers.add(arfRecipientBlock.HEADER, field);
+    }
+
+    //
     // Gmail rejects a message that fails DMARC on its From header, so rewrite it
     // up front instead of sending one that we know will be rejected
     // (other destinations get the rewrite if they reject it for DMARC below)
     //
     let hasFriendlyFrom = false;
     if (
+      !isReportBlocked &&
       isTrustedArcDmarcFailure(session) &&
       session.dmarc.policy === 'reject' &&
       (await isGoogleMX(this.resolver, recipient.host))
@@ -2062,12 +2083,29 @@ async function forward(recipient, headers, session, body) {
     }
 
     // (as it is sent, see `stuffBareCrDots`)
-    const unsealed = stuffBareCrDots(Buffer.concat([headers.build(), body]));
-    const sealHeaders = await sealMessage(unsealed, {
-      ...config.signatureData,
-      authResults: session.arc.authResults,
-      cv: session.arc.status.result
-    });
+    const unsealed = isReportBlocked
+      ? null
+      : stuffBareCrDots(Buffer.concat([headers.build(), body]));
+    const sealHeaders = isReportBlocked
+      ? null
+      : await sealMessage(unsealed, {
+          ...config.signatureData,
+          authResults: session.arc.authResults,
+          cv: session.arc.status.result
+        });
+
+    //
+    // a sender this alias's forwarding address reported (see
+    // `helpers/arf-recipient-block.js`) gets a temporary error for it alone
+    //
+    if (isReportBlocked)
+      throw new SMTPError('Try again later', {
+        responseCode: 421,
+        ignore_hook: true,
+        // (refused here at the recipient's request, see `checkBounceForSpam`,
+        //  `getDeliveryOutcome` and `isDestinationIssue`)
+        isRecipientBlock: true
+      });
 
     //
     // a reply to an SRS address is only relayed with the reverse delivery it
@@ -2469,6 +2507,27 @@ async function forward(recipient, headers, session, body) {
 //
 
 function updateMXHeaders(headers, session) {
+  // (only our MX servers add it, to each copy they forward, see `forward`)
+  headers.remove('x-forward-email-report');
+  //
+  // X-Forward-Email-ID names a message our SMTP servers sent (see
+  // `helpers/process-email.js`), which an abuse report about it counts
+  // against (see `helpers/arf-report.js`): only kept on mail from our own
+  // servers (by forward-confirmed reverse DNS), so a sender cannot name a
+  // message someone else sent
+  //
+  const removed = new Set(['x-forward-email-report', 'x-forward-email-sender']);
+  if (session.resolvedRootClientHostname !== env.WEB_HOST) {
+    headers.remove('x-forward-email-id');
+    removed.add('x-forward-email-id');
+  }
+
+  // (and from the header objects webhooks and logs get, by name as mailsplit
+  //  reads it, without white space around it)
+  for (const object of [session.headers, session.repeatedHeaders])
+    if (object && typeof object === 'object')
+      for (const key of Object.keys(object))
+        if (removed.has(key.trim().toLowerCase())) delete object[key];
   headers.remove('x-forward-email-sender');
   const senderHeader = [];
   if (
@@ -2733,6 +2792,13 @@ async function onDataMX(session, headers, body) {
   if (silentBanned) return;
 
   //
+  // an abuse report (ARF) from a mailbox provider's feedback loop to our
+  // abuse address alone is read and acted on here, and not delivered (any
+  // other mail to it, and a report that cannot be read, is delivered)
+  //
+  if (await handleArfReport.call(this, session, headers, raw)) return;
+
+  //
   // A fully authenticated custom domain message that Microsoft's outbound
   // filter flagged with only a generic spam verdict was exempted in
   // `isArbitrary`; cap how many distinct recipients a sender can reach per
@@ -2895,24 +2961,10 @@ async function onDataMX(session, headers, body) {
     }
   }
 
-  /*
-  // TODO: re-enable spam scanner once v7 released
-  const scan = await scanner.scan(raw);
-
-  // arbitrary tests (e.g. EICAR) always should throw
-  if (_.isArray(scan?.results?.arbitrary) && !_.isEmpty(scan.results.arbitrary))
-    throw new SMTPError(scan.results.arbitrary.join(' '), {
-      responseCode: 554
-    });
-  */
-
   //
-  // NOTE: however the other spamscanner tests including these should be on a per-domain basis
-  // - phishing
-  // - executables
-  // - viruses
-  //
-  // (see `helpers/get-recipients.js` as these args are passed)
+  // NOTE: the per-domain Spam Scanner settings (adult content, phishing,
+  //       executables and viruses, see `helpers/get-settings.js`) are not
+  //       applied yet (see the TODO below)
   //
 
   // add X-* headers (e.g. version + report-to)
@@ -2967,10 +3019,50 @@ async function onDataMX(session, headers, body) {
     }
   }
 
+  //
+  // Spam Scanner (see `helpers/spam-scanner.js`), in monitor mode: it only
+  // logs what it would mark as spam and adds X-Spam-Scanner-* headers.  It
+  // runs while the recipients are looked up, scans the message as it was
+  // received, and never rejects (an error or a timeout resolves to null).
+  //
+  // (stopped when the message is rejected, or goes nowhere, before then)
+  // (not mail only to our own addresses, or our own signed mail, see
+  //  `shouldScanInbound`, nor a message already to be rejected for Gmail's
+  //  authentication policy below; and only SPAM_SCANNER_MX_PERCENT of the
+  //  rest, picked at random, see `isSampledInbound`)
+  const spamScanAbort = new AbortController();
+  const spamScanning =
+    !shouldRejectUnauthenticatedGmail &&
+    spamScanner.shouldScanInbound(session) &&
+    spamScanner.isSampledInbound();
+  const spamScanPromise = spamScanning
+    ? spamScanner.scan(raw, {
+        session,
+        direction: 'inbound',
+        // (where it was scanned, as `submitted` and `sending` are for
+        //  outbound mail)
+        stage: 'received',
+        client: this.client,
+        resolver: this.resolver,
+        signal: spamScanAbort.signal
+      })
+    : Promise.resolve(null);
+
   // this is the core logic that determines where to forward and deliver emails to
-  // TODO: re-enable spam scanner once v7 released
-  // const data = await getRecipients.call(this, session, scan);
-  const data = await getRecipients.call(this, session);
+  // (inbound mail is scanned with the default Spam Scanner settings, see
+  //  `protectionOf`: its link hosts are not looked up, as the recipients and
+  //  their domains' settings are not known until `getRecipients` is done)
+  // TODO: once out of monitor mode, apply each recipient domain's settings
+  //       (`has_adult_content_protection`, `has_phishing_protection` and
+  //       `has_executable_protection` from `helpers/get-settings.js`) to
+  //       the scan after it is awaited below: only what blocks outbound mail
+  //       (`getOutboundBlockingMessages`), not the lookalike and script
+  //       findings that only count toward the score, and with a temporary
+  //       error (421)
+  const data = await getRecipients.call(this, session).catch((err) => {
+    spamScanAbort.abort();
+    throw err;
+  });
 
   // Recipient resolution stores domain-custom policy failures as bounces so a
   // multi-recipient message can still reach non-blocked destinations.  When an
@@ -2980,12 +3072,16 @@ async function onDataMX(session, headers, body) {
   const denylistBounce = data?.bounces?.find(
     ({ err }) => err instanceof DenylistError
   );
-  if (denylistBounce) throw denylistBounce.err;
+  if (denylistBounce) {
+    spamScanAbort.abort();
+    throw denylistBounce.err;
+  }
 
   // Do not preempt recipient policy evaluation with the Gmail-only local
   // policy.  It is enforced only after no explicit domain denylist rejected
   // the transaction and before any message delivery occurs.
-  if (shouldRejectUnauthenticatedGmail)
+  if (shouldRejectUnauthenticatedGmail) {
+    spamScanAbort.abort();
     throw new SMTPError(
       'The email sent has no passing authentication aligned with the From address (SPF, DKIM, or DMARC). Please configure email authentication for your sending domain.',
       {
@@ -2996,6 +3092,7 @@ async function onDataMX(session, headers, body) {
             : 550
       }
     );
+  }
 
   // return early if necessary (e.g. all recipients were silent banned)
   if (
@@ -3005,8 +3102,71 @@ async function onDataMX(session, headers, body) {
       data.imap.length === 0)
   ) {
     logger.debug('returning early', { session, resolver: this.resolver });
+    spamScanAbort.abort();
     return;
   }
+
+  //
+  // the Spam Scanner result goes into X-Spam-Scanner-* headers on every copy
+  // (any such headers a sender added are removed, with or without a result)
+  //
+  // (not for a message that only bounces, which is rejected)
+  const delivered = data.normalized.length > 0 || data.imap.length > 0;
+  if (!delivered) spamScanAbort.abort();
+  // (in monitor mode, where it only adds headers, it is waited for at most
+  //  SPAM_SCANNER_MX_WAIT more: a message it has not finished with by then is
+  //  delivered without them, and the scan goes on and is logged; out of
+  //  monitor mode for its whole time limit)
+  // (one not done by then is counted, see `flushStats` in
+  //  `helpers/spam-scanner.js`)
+  const NOT_DONE = Symbol('not done');
+  let spamScan = delivered
+    ? await (config.spamScanner.monitorOnly
+        ? withDeadline(spamScanPromise, config.spamScanner.mxWait, NOT_DONE)
+        : spamScanPromise)
+    : null;
+  if (spamScan === NOT_DONE) {
+    if (spamScanning) spamScanner.countSkipped('received', 'over_mx_wait');
+    spamScan = null;
+  }
+
+  spamScanner.addHeaders(headers, spamScan);
+  // (as do the headers webhooks and logs get)
+  spamScanner.updateHeaderObject(
+    session.headers,
+    spamScan,
+    session.repeatedHeaders
+  );
+
+  //
+  // TODO: once out of monitor mode, defer spam that would be forwarded with a
+  //       temporary error (421), so the sender retries and a wrong decision
+  //       can be undone; IMAP recipients still get it (in their Junk folder,
+  //       see `imap()`); leave these deferrals out of
+  //       `sendForwardingIssueEmails` (which would tell the alias owner and
+  //       the domain's admins its destination is broken), mind that past
+  //       `partialDeliveryRetryWindow` a partly delivered message is accepted
+  //       (and these copies dropped), and decide whether webhooks are
+  //       deferred too
+  //
+  // if (
+  //   !config.spamScanner.monitorOnly &&
+  //   spamScan?.isSpam &&
+  //   data.normalized.length > 0
+  // ) {
+  //   const err = new SMTPError(
+  //     'The message was detected as spam by Spam Scanner, please try again later; for more information visit https://spamscanner.net',
+  //     { responseCode: 421, ignoreHook: true }
+  //   );
+  //   // (not for our own addresses, see `isOurAddress`)
+  //   const ours = data.normalized.filter((recipient) =>
+  //     spamScanner.isOurAddress(recipient.recipient)
+  //   );
+  //   for (const recipient of data.normalized)
+  //     if (!ours.includes(recipient))
+  //       data.bounces.push({ address: recipient.recipient, err });
+  //   data.normalized = ours;
+  // }
 
   //
   // a mailbox that more than one recipient reaches (e.g. an address and its
@@ -3063,7 +3223,8 @@ async function onDataMX(session, headers, body) {
                   // clone headers to prevent mutations
                   new Headers(headers.build(), { Iconv }),
                   session,
-                  body
+                  body,
+                  spamScan
                 )
               );
             }
@@ -3273,10 +3434,13 @@ async function onDataMX(session, headers, body) {
 //
 function getDeliveryOutcome(session, accepted, bounces) {
   if (accepted.length === 0) {
-    return {
-      action: 'reject',
-      err: combineBounceErrors(bounces)
-    };
+    // (a recipient's block, a temporary error for months, does not hold up
+    //  a permanent error for the rest: the sender is told at once, of the
+    //  rest; its bounce is kept, so the log shows it to the alias's owner)
+    const others = bounces.filter((bounce) => !bounce.err?.isRecipientBlock);
+    const err = combineBounceErrors(others.length > 0 ? others : bounces);
+    err.bounces = bounces;
+    return { action: 'reject', err };
   }
 
   const firstArrivalTime = Number.isFinite(session.fingerprintFirstArrivalTime)
@@ -3297,6 +3461,8 @@ function getDeliveryOutcome(session, accepted, bounces) {
   const deferred = [];
   for (const bounce of bounces) {
     if (getErrorCode(bounce.err) >= 500) continue;
+    // (a recipient's block lasts for months: the rest is not held up for it)
+    if (bounce.err?.isRecipientBlock) continue;
     if (
       bounce.isInternal ? isInternalRetryWindowExceeded : isRetryWindowExceeded
     ) {
@@ -3394,3 +3560,5 @@ function combineBounceErrors(bounces, summary) {
 }
 
 module.exports = onDataMX;
+module.exports.updateMXHeaders = updateMXHeaders;
+module.exports.getDeliveryOutcome = getDeliveryOutcome;

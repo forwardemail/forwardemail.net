@@ -108,3 +108,70 @@ test('a domain already on the account is not added again', async (t) => {
   });
   t.is(await Domains.countDocuments({ name }), 2);
 });
+
+//
+// The documents of requests in flight at once are not saved in the order
+// they are made (and the ids of two processes are in no order), so the one
+// that is not kept is the one saved after another, whatever its id.
+//
+test('a domain saved after another of its name is not kept, though it was made first', async (t) => {
+  const name = `${randomUUID().slice(0, 8)}.com`;
+  const fields = {
+    name,
+    members: [{ user: t.context.user._id, group: 'admin' }],
+    plan: 'free',
+    skip_verification: true
+  };
+  const first = new Domains(fields);
+  const second = new Domains(fields);
+  t.true(String(first._id) < String(second._id));
+  await second.save();
+  const err = await t.throwsAsync(first.save());
+  t.is(err.message, 'Domain already exists on your account.');
+  t.is(await Domains.countDocuments({ name }), 1);
+  t.truthy(await Domains.findById(second._id));
+});
+
+test('of the domains of one name saved at once, one is kept', async (t) => {
+  for (let i = 0; i < 5; i++) {
+    const name = `${randomUUID().slice(0, 8)}.com`;
+    const results = await Promise.allSettled(
+      Array.from({ length: 6 }, () =>
+        Domains.create({
+          name,
+          members: [{ user: t.context.user._id, group: 'admin' }],
+          plan: 'free',
+          skip_verification: true
+        })
+      )
+    );
+    const saved = results.filter((result) => result.status === 'fulfilled');
+    t.is(saved.length, 1);
+    for (const result of results.filter((r) => r.status === 'rejected'))
+      t.is(result.reason.message, 'Domain already exists on your account.');
+    t.is(await Domains.countDocuments({ name }), 1);
+  }
+});
+
+test('a domain that was removed, or could not be saved, can be added at once', async (t) => {
+  const fields = (name) => ({
+    name,
+    members: [{ user: t.context.user._id, group: 'admin' }],
+    plan: 'free',
+    skip_verification: true
+  });
+  const name = `${randomUUID().slice(0, 8)}.com`;
+  const domain = await Domains.create(fields(name));
+  await Domains.deleteOne({ _id: domain._id });
+  await t.notThrowsAsync(Domains.create(fields(name)));
+
+  // (one that the database refuses, here for its id)
+  const other = `${randomUUID().slice(0, 8)}.com`;
+  const kept = await Domains.findOne({ name });
+  const err = await t.throwsAsync(
+    Domains.create({ ...fields(other), _id: kept._id })
+  );
+  t.is(err.code, 11_000);
+  await t.notThrowsAsync(Domains.create(fields(other)));
+  t.is(await Domains.countDocuments({ name: other }), 1);
+});

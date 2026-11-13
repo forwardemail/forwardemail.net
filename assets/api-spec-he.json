@@ -2066,7 +2066,7 @@
             "allowlist": [],
             "denylist": [],
             "restricted_alias_names": [],
-            "has_adult_content_protection": true,
+            "has_adult_content_protection": false,
             "has_phishing_protection": true,
             "has_executable_protection": true,
             "has_virus_protection": true,
@@ -2149,19 +2149,21 @@
           },
           "has_adult_content_protection": {
             "type": "boolean",
-            "description": "הפעלת הגנה מפני תוכן למבוגרים בלבד באמצעות סורק ספאם"
+            "description": "האם לחסום הודעות יוצאות עם קישור לאתר שמסנן המשפחה של Cloudflare חוסם בגלל תוכן למבוגרים או תוכנות זדוניות (ברירת מחדל: false)"
           },
           "has_phishing_protection": {
             "type": "boolean",
-            "description": "הפעלת הגנה מפני פישינג באמצעות סורק ספאם"
+            "description": "הוצא משימוש ומתעלמים ממנו",
+            "deprecated": true
           },
           "has_executable_protection": {
             "type": "boolean",
-            "description": "הפעל הגנה על קובץ ההפעלה של סורק ספאם"
+            "description": "האם לחסום הודעות יוצאות שמצורפים אליהן קבצי הפעלה, כמו קבצי .exe, .js או .bat (ברירת מחדל: true)"
           },
           "has_virus_protection": {
             "type": "boolean",
-            "description": "הפעלת הגנה מפני וירוסים של ספאם סורק"
+            "description": "הוצא משימוש ומתעלמים ממנו",
+            "deprecated": true
           },
           "has_recipient_verification": {
             "type": "boolean",
@@ -2223,19 +2225,21 @@
           },
           "has_adult_content_protection": {
             "type": "boolean",
-            "description": "האם להפעיל הגנה על תוכן למבוגרים באמצעות סורק ספאם בדומיין זה"
+            "description": "האם לחסום הודעות יוצאות עם קישור לאתר שמסנן המשפחה של Cloudflare חוסם בגלל תוכן למבוגרים או תוכנות זדוניות (ברירת מחדל: false)"
           },
           "has_phishing_protection": {
             "type": "boolean",
-            "description": "האם להפעיל הגנה מפני פישינג באמצעות סורק ספאם בדומיין זה"
+            "description": "הוצא משימוש ומתעלמים ממנו",
+            "deprecated": true
           },
           "has_executable_protection": {
             "type": "boolean",
-            "description": "האם להפעיל הגנה על קובץ ההפעלה של סורק ספאם בדומיין זה"
+            "description": "האם לחסום הודעות יוצאות שמצורפים אליהן קבצי הפעלה, כמו קבצי .exe, .js או .bat (ברירת מחדל: true)"
           },
           "has_virus_protection": {
             "type": "boolean",
-            "description": "האם להפעיל את הגנה מפני וירוסים של Spam Scanner בדומיין זה"
+            "description": "הוצא משימוש ומתעלמים ממנו",
+            "deprecated": true
           },
           "has_recipient_verification": {
             "type": "boolean",

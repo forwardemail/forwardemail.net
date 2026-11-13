@@ -2066,7 +2066,7 @@
             "allowlist": [],
             "denylist": [],
             "restricted_alias_names": [],
-            "has_adult_content_protection": true,
+            "has_adult_content_protection": false,
             "has_phishing_protection": true,
             "has_executable_protection": true,
             "has_virus_protection": true,
@@ -2149,19 +2149,21 @@
           },
           "has_adult_content_protection": {
             "type": "boolean",
-            "description": "启用垃圾邮件扫描器成人内容保护"
+            "description": "是否拦截链接到被 Cloudflare 家庭过滤器以成人相关内容或恶意软件为由拦截的网站的已发送邮件（默认为 false）"
           },
           "has_phishing_protection": {
             "type": "boolean",
-            "description": "启用垃圾邮件扫描器网络钓鱼防护"
+            "description": "已弃用并忽略",
+            "deprecated": true
           },
           "has_executable_protection": {
             "type": "boolean",
-            "description": "启用垃圾邮件扫描程序可执行文件保护"
+            "description": "是否拦截带有可执行文件附件（如 .exe、.js 或 .bat 文件）的已发送邮件（默认为 true）"
           },
           "has_virus_protection": {
             "type": "boolean",
-            "description": "启用垃圾邮件扫描器病毒防护"
+            "description": "已弃用并忽略",
+            "deprecated": true
           },
           "has_recipient_verification": {
             "type": "boolean",
@@ -2223,19 +2225,21 @@
           },
           "has_adult_content_protection": {
             "type": "boolean",
-            "description": "是否在此域名上启用垃圾邮件扫描器成人内容保护"
+            "description": "是否拦截链接到被 Cloudflare 家庭过滤器以成人相关内容或恶意软件为由拦截的网站的已发送邮件（默认为 false）"
           },
           "has_phishing_protection": {
             "type": "boolean",
-            "description": "是否在此域上启用垃圾邮件扫描器网络钓鱼防护"
+            "description": "已弃用并忽略",
+            "deprecated": true
           },
           "has_executable_protection": {
             "type": "boolean",
-            "description": "是否在此域上启用垃圾邮件扫描程序可执行文件保护"
+            "description": "是否拦截带有可执行文件附件（如 .exe、.js 或 .bat 文件）的已发送邮件（默认为 true）"
           },
           "has_virus_protection": {
             "type": "boolean",
-            "description": "是否在此域上启用垃圾邮件扫描器病毒防护"
+            "description": "已弃用并忽略",
+            "deprecated": true
           },
           "has_recipient_verification": {
             "type": "boolean",

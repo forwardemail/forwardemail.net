@@ -115,3 +115,58 @@ test.serial(
     }
   }
 );
+
+test.serial(
+  'a password in the URL is hidden in the errors and logs of a failed request',
+  async (t) => {
+    const { request } = undici;
+    const { error, warn } = logger;
+    const logged = [];
+    undici.request = async () => {
+      const err = new TypeError('fetch failed');
+      err.code = 'UND_ERR_SOCKET';
+      throw err;
+    };
+
+    logger.error = (...args) => logged.push(args);
+    logger.warn = (...args) => logged.push(args);
+    try {
+      const err = await t.throwsAsync(
+        retryRequest('https://hook:s3cr3t@example.com/hook', {
+          retries: 0,
+          timeout: 1000
+        })
+      );
+      t.true(logged.length > 0);
+      for (const text of [
+        err.url,
+        err.requestContext?.url,
+        JSON.stringify(logged.map(([, meta]) => meta))
+      ]) {
+        t.false(String(text).includes('s3cr3t'), `${text}`);
+      }
+
+      t.is(err.requestContext.url, 'https://***:***@example.com/hook');
+      // (also an empty user name, an @ in the password, or a token given as
+      //  the user name, alone or with a password that is not one)
+      for (const url of [
+        'https://:s3cr3t@example.com/hook',
+        'https://hook:s3c@r3t@example.com/hook',
+        'https://s3cr3t@example.com/hook',
+        'https://s3cr3t:x@example.com/hook'
+      ]) {
+        const other = await t.throwsAsync(
+          retryRequest(url, { retries: 0, timeout: 1000 })
+        );
+        t.false(
+          other.requestContext.url.includes('s3c'),
+          `${other.requestContext.url}`
+        );
+      }
+    } finally {
+      undici.request = request;
+      logger.error = error;
+      logger.warn = warn;
+    }
+  }
+);

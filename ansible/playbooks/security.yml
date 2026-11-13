@@ -674,21 +674,26 @@
 
     # prevents port scanning
     # https://github.com/forwardemail/portscan-protection
-    # (we maintain our own fork since it has an auto-update in place)
+    # (our own fork, deployed from this repository: its auto-update is off)
     # https://unix.stackexchange.com/a/580520
-    # Deploy from local file to avoid GitHub rate limiting
-    - name: Copy portscan protection script to server
+    # Deploy from local file to avoid GitHub rate limiting, straight to where
+    # it runs from (root's cron runs it there at every boot): installed from
+    # anywhere else, the script downloads itself from GitHub, so unreviewed
+    # code would run as root
+    - name: Install portscan protection script
       copy:
         src: "{{ playbook_dir }}/files/portscan-protection.sh"
-        dest: /tmp/portscan-protection.sh
+        dest: /usr/local/sbin/portscan-protection.sh
+        owner: root
+        group: root
         mode: '0755'
 
     - name: Run portscan protection script
-      shell: bash /tmp/portscan-protection.sh -i
+      command: /usr/local/sbin/portscan-protection.sh -i
       register: port_scan
       failed_when: port_scan.rc != 1
 
-    - name: Remove temporary portscan script
+    - name: Remove the copy an earlier deploy left in /tmp
       file:
         path: /tmp/portscan-protection.sh
         state: absent
@@ -2096,6 +2101,24 @@
         - { key: PasswordAuthentication, value: "yes", state: absent }
         - { key: PermitRootLogin, value: "no", state: present }
         - { key: PasswordAuthentication, value: "no", state: present }
+      notify: Restart SSH
+
+    # (sshd takes the first value it reads, and reads sshd_config.d first:
+    #  e.g. a cloud-init 50-cloud-init.conf with PasswordAuthentication yes
+    #  would win over the lines above)
+    - name: Disable root login and password authentication before other drop-ins
+      copy:
+        dest: /etc/ssh/sshd_config.d/00-hardening.conf
+        content: |
+          # WARNING: This file is managed by Ansible (ansible/playbooks/security.yml)
+          PermitRootLogin no
+          PasswordAuthentication no
+          KbdInteractiveAuthentication no
+        owner: root
+        group: root
+        mode: '0644'
+        validate: /usr/sbin/sshd -t -f %s
+      notify: Restart SSH
 
     # https://superuser.com/a/1578266
     - name: Disable root password
@@ -2144,7 +2167,9 @@
     - name: Silence git safe dir warning
       become: true
       become_user: deploy
-      shell: git config --global --add safe.directory '*'
+      # (replaced, not added: --add added the same line on every run)
+      shell: git config --global --replace-all safe.directory '*'
+      changed_when: false
 
 - hosts: "{{ security_target_hosts | default('all') }}"
   name: Mongo Shell
@@ -2183,15 +2208,19 @@
         mode: '0644'
 
     - name: Create mongosh config directory for deploy user
+      # (as deploy: root would follow a link deploy put here)
+      become: true
+      become_user: deploy
       file:
         path: /home/deploy/.mongodb/mongosh
         state: directory
-        owner: deploy
-        group: deploy
         mode: '0755'
       ignore_errors: true
 
     - name: Disable mongosh telemetry for deploy user
+      # (as deploy: root would follow a link deploy put here)
+      become: true
+      become_user: deploy
       copy:
         dest: /home/deploy/.mongodb/mongosh/config
         content: |
@@ -2199,8 +2228,6 @@
             "enableTelemetry": false,
             "disableGreetingMessage": true
           }
-        owner: deploy
-        group: deploy
         mode: '0644'
       ignore_errors: true
 
@@ -2340,6 +2367,15 @@
       # allow local port range
       - name: net.ipv4.ip_local_port_range
         value: 1024 65535
+
+      # (the ports our services listen on, never taken as the source port of an
+      #  outbound connection, or a service restarted then could not bind its
+      #  port: SMTP, IMAP, POP3, ManageSieve, web, API, CalDAV, CardDAV, SQLite,
+      #  Redis/Valkey, MongoDB, and Ollama for Spam Scanner; in ascending order,
+      #  consecutive ports as a range, as the kernel reads them back, so the
+      #  value is unchanged on the next run)
+      - name: net.ipv4.ip_local_reserved_ports
+        value: "2110,2143,2190,2455,2465,2525,2555,2587,2993,2995,3000,3456,4000,4190,5000,6000,6379-6380,11436,27017"
 
       #
       # increase amount of option memory buffers
@@ -2667,9 +2703,11 @@
     # https://github.com/jnv/ansible-role-unattended-upgrades (old)
     # - role: unattended-upgrades
     - role: hifis.toolkit.unattended_upgrades
-      # 08:00 UTC = 3:00 AM CDT / 2:00 AM CST for non-database hosts
+      # 08:00 UTC = 3:00 AM CDT / 2:00 AM CST for non-database hosts, each
+      # five minutes after the one before it in the inventory (to 08:55), so
+      # hosts of one service (mx1 and mx2) do not reboot at once
       unattended_automatic_reboot: "{{ false if ('mongo' in group_names or 'redis' in group_names or 'logs' in group_names) else true }}"
-      unattended_automatic_reboot_time: "08:00"
+      unattended_automatic_reboot_time: "{{ '08:%02d' | format((groups['all'].index(inventory_hostname) % 12) * 5) }}"
       unattended_automatic_reboot_with_users: false
       # Email notifications for updates
       unattended_mail: "{{ alert_email_recipients | default('security@forwardemail.net', true) }}"

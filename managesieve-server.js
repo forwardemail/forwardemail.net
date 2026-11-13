@@ -7,6 +7,7 @@ const { Buffer } = require('node:buffer');
 const fs = require('node:fs');
 const net = require('node:net');
 const tls = require('node:tls');
+const { setImmediate: nextTurn } = require('node:timers/promises');
 const pify = require('pify');
 const { Aliases, SieveScripts } = require('#models');
 const config = require('#config');
@@ -53,6 +54,18 @@ const RESPONSE = {
   NO: 'NO',
   BYE: 'BYE'
 };
+
+//
+// Lines read from a client before it signs in (CAPABILITY, STARTTLS and
+// AUTHENTICATE are all it has to send).  Anyone can send as many as a
+// script is long, a megabyte of them in one write, which took half a
+// minute to read, and went on being read after the client had left.
+//
+const MAX_UNAUTHENTICATED_LINES = 100;
+
+// commands (or the data one waits for) that are read before the event loop
+// gets a turn
+const MAX_STEPS_PER_TURN = 100;
 
 class ManageSieveServer {
   constructor(options = {}) {
@@ -380,9 +393,29 @@ class ManageSieveServer {
   }
 
   //
-  // Process incoming data buffer
+  // Process incoming data buffer: a step at a time (a command, or the data
+  // that one waits for), and the event loop gets a turn every hundred.
+  //
+  // A client can send as many commands in one write as a script is long.
+  // Each was read from inside the one before, in one chain of promises,
+  // which gave nothing else a turn until all were read (30,000 of them,
+  // 90 KB, held every other connection for three seconds) and kept a call
+  // waiting for each of them.
+  //
+  // (A hundred, and not each: a client that writes its commands and ends
+  // its side without waiting for the answers is answered in the turn they
+  // arrived in, before the connection is closed.)
   //
   async processBuffer(session) {
+    for (let steps = 1; await this.processNext(session); steps++)
+      if (steps % MAX_STEPS_PER_TURN === 0) await nextTurn();
+  }
+
+  //
+  // Process the next command, or the data a command waits for (and say
+  // whether there may be more to process)
+  //
+  async processNext(session) {
     // Wait for onConnect check to complete before processing any commands.
     // CAPABILITY and STARTTLS are safe pre-auth commands, but the buffer
     // processing is simpler if we gate everything here; the greeting was
@@ -393,7 +426,7 @@ class ManageSieveServer {
       await session.connectCheckReady;
     } catch {
       // Connection was rejected by onConnect; socket is being closed.
-      return;
+      return false;
     }
 
     //
@@ -412,56 +445,69 @@ class ManageSieveServer {
       });
       this.send(session, `${RESPONSE.BYE} "Buffer overflow"`);
       session.socket.destroy();
-      return;
+      return false;
     }
 
     // If we're waiting for SASL authentication continuation, handle it first
     if (session.pendingAuthMechanism) {
       const crlfIndex = session.buffer.indexOf('\r\n');
       if (crlfIndex === -1) {
-        return; // Wait for complete line
+        return false; // Wait for complete line
       }
 
       const authData = session.buffer.subarray(0, crlfIndex).toString('utf8');
       session.buffer = session.buffer.subarray(crlfIndex + 2);
       await this.handleAuthContinuation(session, authData);
       // (a command sent right after it is in the buffer already)
-      if (session.buffer.length > 0) await this.processBuffer(session);
-      return;
+      return session.buffer.length > 0;
     }
 
     // If we're waiting for literal data, handle it first
     if (session.pendingLiteral) {
       const { size, callback } = session.pendingLiteral;
-      if (session.buffer.length >= size) {
-        const content = session.buffer.subarray(0, size).toString('utf8');
-        session.buffer = session.buffer.subarray(size);
-        session.pendingLiteral = null;
-        await callback(content);
-        // Continue processing remaining buffer
-        await this.processBuffer(session);
-      }
-
-      return;
+      if (session.buffer.length < size) return false;
+      const content = session.buffer.subarray(0, size).toString('utf8');
+      session.buffer = session.buffer.subarray(size);
+      session.pendingLiteral = null;
+      await callback(content);
+      // Continue processing remaining buffer
+      return true;
     }
 
     // ManageSieve uses CRLF line endings
     const crlfIndex = session.buffer.indexOf('\r\n');
     if (crlfIndex === -1) {
-      return; // Wait for complete line
+      return false; // Wait for complete line
     }
 
     const line = session.buffer.subarray(0, crlfIndex).toString('utf8');
     session.buffer = session.buffer.subarray(crlfIndex + 2);
 
+    if (!session.authenticated) {
+      session.unauthenticatedLines = (session.unauthenticatedLines || 0) + 1;
+      if (session.unauthenticatedLines > MAX_UNAUTHENTICATED_LINES) {
+        this.logger.warn('ManageSieve too many commands, closing connection', {
+          component: 'ManageSieve',
+          sessionId: session.id
+        });
+        // (nor is the rest of what it sent read, by a run that is queued)
+        session.buffer = Buffer.alloc(0);
+        this.send(
+          session,
+          `${RESPONSE.BYE} "Too many commands before authentication"`
+        );
+        session.socket.destroy();
+        return false;
+      }
+    }
+
     if (line.length > 0) {
       await this.processCommand(session, line);
     }
 
-    // Continue processing remaining buffer
-    if (session.buffer.length > 0) {
-      await this.processBuffer(session);
-    }
+    // Continue processing remaining buffer (the data a command waits for
+    // may be none: a script of no octets)
+    return session.buffer.length > 0 || Boolean(session.pendingLiteral);
   }
 
   //
@@ -1020,7 +1066,6 @@ class ManageSieveServer {
         size: scriptSize,
         callback: async () => this.send(session, response)
       };
-      await this.processBuffer(session);
     };
 
     // Validate script name
@@ -1103,9 +1148,6 @@ class ManageSieveServer {
         }
       }
     };
-
-    // Try to process if data is already in buffer
-    await this.processBuffer(session);
   }
 
   //
@@ -1281,7 +1323,6 @@ class ManageSieveServer {
             `${RESPONSE.NO} (QUOTA/MAXSIZE) "Script too large"`
           )
       };
-      await this.processBuffer(session);
       return;
     }
 
@@ -1305,9 +1346,6 @@ class ManageSieveServer {
         }
       }
     };
-
-    // Try to process if data is already in buffer
-    await this.processBuffer(session);
   }
 
   //

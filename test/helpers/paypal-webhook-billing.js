@@ -25,6 +25,7 @@ const utils = require('../utils');
 
 const config = require('#config');
 const webhook = require('#controllers/api/v1/paypal');
+const { issuePayPalOrder } = require('#helpers/get-paypal-order-capture');
 const { paypal } = require('#helpers/paypal');
 const { Payments, Users } = require('#models');
 
@@ -123,12 +124,22 @@ function deliver(t, body, extra = {}) {
   return { ctx, logs, promise: webhook(ctx) };
 }
 
-function order(user, id, { status, captureStatus }) {
+// (an order for an item priced 3 US dollars, that charges `charged` to
+// `payee`)
+function order(
+  user,
+  id,
+  { status, captureStatus, charged = '3.00', payee = 'MERCHANT-1' }
+) {
   const unit = {
     reference_id: user.id,
     custom_id: 'ENHANCED_PROTECTION',
     invoice_id: `REF-${id}`,
-    items: [{ unit_amount: { currency_code: 'USD', value: '3' } }]
+    payee: { merchant_id: payee },
+    amount: { currency_code: 'USD', value: charged },
+    items: [
+      { unit_amount: { currency_code: 'USD', value: '3.00' }, quantity: '1' }
+    ]
   };
   if (captureStatus)
     unit.payments = {
@@ -136,6 +147,7 @@ function order(user, id, { status, captureStatus }) {
         {
           id: `CAPTURE-${id}`,
           status: captureStatus,
+          amount: { currency_code: 'USD', value: charged },
           create_time: new Date().toISOString()
         }
       ]
@@ -150,11 +162,23 @@ function order(user, id, { status, captureStatus }) {
   };
 }
 
+// an order as the billing page's checkout makes it for an account (see
+// create-domain-billing)
+async function makeOrder(t, user, madeFor = user) {
+  const id = `ORDER-${user.id}`;
+  await issuePayPalOrder(
+    t.context.client,
+    order(user, id, { status: 'CREATED' }),
+    madeFor.id
+  );
+  return id;
+}
+
 test.serial(
   'an approved order whose capture is declined is not credited',
   async (t) => {
     const user = await t.context.userFactory.create();
-    const id = `ORDER-${user.id}`;
+    const id = await makeOrder(t, user);
     mockPayPal((request) => {
       if (request === `GET /v2/checkout/orders/${id}`)
         return order(user, id, { status: 'APPROVED' });
@@ -183,9 +207,179 @@ test.serial(
   }
 );
 
+// (an order can be changed until it is captured, so also after it was
+// looked up)
+test.serial(
+  'an order captured to pay someone else than it was to is not credited',
+  async (t) => {
+    const user = await t.context.userFactory.create();
+    const id = await makeOrder(t, user);
+    let captured = false;
+    mockPayPal((request) => {
+      const paid = order(user, id, {
+        status: 'COMPLETED',
+        captureStatus: 'COMPLETED',
+        payee: 'MERCHANT-2'
+      });
+      if (request === `GET /v2/checkout/orders/${id}`)
+        return captured ? paid : order(user, id, { status: 'APPROVED' });
+      if (request === `POST /v2/checkout/orders/${id}/capture`) {
+        captured = true;
+        return paid;
+      }
+
+      throw new Error(`Unexpected ${request}`);
+    });
+
+    const { logs, promise } = deliver(t, {
+      event_type: 'CHECKOUT.ORDER.APPROVED',
+      resource: { id }
+    });
+    await promise;
+    await pWaitFor(
+      () =>
+        logs.fatal.length > 0 ||
+        logs.warn.includes('paypal order was not captured') ||
+        logs.info.includes('paypal payment created'),
+      { timeout: ms('10s') }
+    );
+
+    t.true(captured);
+    t.deepEqual(logs.fatal, []);
+    const fresh = await Users.findById(user._id).lean().exec();
+    t.is(fresh.plan, 'free');
+    t.is(await Payments.countDocuments({ user: user._id }), 0);
+  }
+);
+
+//
+// An order can be created or changed in the browser (with the PayPal SDK the
+// billing page loads): what it charges is not what its item is priced at,
+// and it pays whom it names.
+//
+for (const [title, options, made = 'for the account'] of [
+  ['charges less than the price of its item', { charged: '0.01' }],
+  ['was changed to pay someone else', { payee: 'MERCHANT-2' }],
+  ['was not made here', {}, 'elsewhere'],
+  ['was made for another account', {}, 'for another account']
+])
+  test.serial(`an order that ${title} is not captured`, async (t) => {
+    const user = await t.context.userFactory.create();
+    const id =
+      made === 'elsewhere'
+        ? `ORDER-${user.id}`
+        : await makeOrder(
+            t,
+            user,
+            made === 'for the account'
+              ? user
+              : await t.context.userFactory.create()
+          );
+    const requests = [];
+    mockPayPal((request) => {
+      requests.push(request);
+      if (request === `GET /v2/checkout/orders/${id}`)
+        return order(user, id, { status: 'APPROVED', ...options });
+      if (request === `POST /v2/checkout/orders/${id}/capture`)
+        return order(user, id, {
+          status: 'COMPLETED',
+          captureStatus: 'COMPLETED',
+          ...options
+        });
+      throw new Error(`Unexpected ${request}`);
+    });
+
+    const { logs, promise } = deliver(t, {
+      event_type: 'CHECKOUT.ORDER.APPROVED',
+      resource: { id }
+    });
+    await promise;
+    await pWaitFor(
+      () =>
+        logs.fatal.length > 0 || logs.info.includes('paypal payment created'),
+      { timeout: ms('10s') }
+    );
+
+    t.deepEqual(requests, [`GET /v2/checkout/orders/${id}`]);
+    const fresh = await Users.findById(user._id).lean().exec();
+    t.is(fresh.plan, 'free');
+    t.is(await Payments.countDocuments({ user: user._id }), 0);
+  });
+
+//
+// A subscription is created in the browser, which can override the price of
+// its plan: its payments are credited at the plan's price or more.
+//
+for (const [title, value, credited, status = 'COMPLETED'] of [
+  ['of less than the price of its plan is not credited', '0.01', 0],
+  ['of the price of its plan is credited', '3.00', 1],
+  ['that was declined is not credited', '3.00', 0, 'DECLINED']
+])
+  test.serial(`a subscription payment ${title}`, async (t) => {
+    const user = await t.context.userFactory.create();
+    const id = `I-${user.id}`;
+    const subscription = {
+      id,
+      status: 'ACTIVE',
+      plan_id: PAYPAL_PLAN_ID,
+      custom_id: user.id,
+      create_time: new Date().toISOString(),
+      start_time: new Date().toISOString(),
+      subscriber: { payer_id: 'PAYER-1', email_address: 'payer@example.com' }
+    };
+    mockPayPal((request) => {
+      if (request === `GET /v1/billing/subscriptions/${id}`)
+        return subscription;
+      // (the list of all subscriptions)
+      if (request.startsWith('GET /v1/billing/subscriptions?')) return {};
+      if (
+        request.startsWith(`GET /v1/billing/subscriptions/${id}/transactions?`)
+      )
+        return {
+          transactions: [
+            {
+              id: `TX-${id}`,
+              status,
+              time: new Date().toISOString(),
+              amount_with_breakdown: {
+                gross_amount: { currency_code: 'USD', value }
+              }
+            }
+          ]
+        };
+      throw new Error(`Unexpected ${request}`);
+    });
+
+    const { logs, promise } = deliver(t, {
+      event_type: 'BILLING.SUBSCRIPTION.ACTIVATED',
+      resource: { id }
+    });
+    await promise;
+    // (processing ends with the plan of the subscription saved, or with the
+    // error of a subscription that has no payment)
+    await pWaitFor(
+      async () =>
+        logs.fatal.length > 0 ||
+        Boolean(
+          await Users.exists({ _id: user._id, plan: 'enhanced_protection' })
+        ),
+      { timeout: ms('20s') }
+    );
+
+    t.is(logs.fatal.length, credited ? 0 : 1);
+    const fresh = await Users.findById(user._id).lean().exec();
+    t.is(fresh[config.userFields.paypalSubscriptionID], id);
+    t.is(await Payments.countDocuments({ user: user._id }), credited);
+    t.is(fresh.plan, credited ? 'enhanced_protection' : 'free');
+    t.is(
+      new Date(fresh[config.userFields.planExpiresAt]) > new Date(),
+      Boolean(credited)
+    );
+  });
+
 test.serial('a paid order is credited', async (t) => {
   const user = await t.context.userFactory.create();
-  const id = `ORDER-${user.id}`;
+  const id = await makeOrder(t, user);
   mockPayPal((request) => {
     if (request === `GET /v2/checkout/orders/${id}`)
       return order(user, id, { status: 'APPROVED' });
@@ -261,7 +455,7 @@ test.serial(
   'an order whose capture is pending is credited (the payer was charged)',
   async (t) => {
     const user = await t.context.userFactory.create();
-    const id = `ORDER-${user.id}`;
+    const id = await makeOrder(t, user);
     mockPayPal((request) => {
       if (request === `GET /v2/checkout/orders/${id}`)
         return order(user, id, { status: 'APPROVED' });
@@ -348,3 +542,54 @@ test.serial(
     );
   }
 );
+
+//
+// A subscription is made in the browser, which can ask for a later start
+// (nothing is charged until then) and for other terms than its plan's.  An
+// account with a subscription counts as paying, so such a subscription is
+// not assigned to the account it names, and is cancelled like one that
+// names none.
+//
+for (const [title, changes] of [
+  [
+    'starts later than now',
+    { start_time: new Date(Date.now() + ms('1y')).toISOString() }
+  ],
+  ['is on other terms than its plan’s', { plan_overridden: true }]
+])
+  test.serial(`a subscription that ${title} is not assigned`, async (t) => {
+    const user = await t.context.userFactory.create();
+    const id = `I-${user.id}`;
+    const subscription = {
+      id,
+      status: 'ACTIVE',
+      plan_id: PAYPAL_PLAN_ID,
+      custom_id: user.id,
+      start_time: new Date().toISOString(),
+      subscriber: { payer_id: 'PAYER-1', email_address: 'payer@example.com' },
+      ...changes
+    };
+    const requests = [];
+    mockPayPal((request) => {
+      requests.push(request);
+      if (request === `GET /v1/billing/subscriptions/${id}`)
+        return subscription;
+      if (request.endsWith('/cancel')) return {};
+      throw new Error(`Unexpected ${request}`);
+    });
+
+    const { promise } = deliver(
+      t,
+      { event_type: 'BILLING.SUBSCRIPTION.ACTIVATED', resource: { id } },
+      { isProcessed: true }
+    );
+    await promise;
+    await pWaitFor(
+      () => requests.includes(`POST /v1/billing/subscriptions/${id}/cancel`),
+      { timeout: ms('20s') }
+    );
+
+    const fresh = await Users.findById(user._id).lean().exec();
+    t.falsy(fresh[config.userFields.paypalSubscriptionID]);
+    t.is(fresh.plan, 'free');
+  });

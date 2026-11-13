@@ -34,9 +34,10 @@ test.beforeEach(utils.setupFactories);
 //
 // Runs the job once against this test's databases and returns the emails it
 // sent (their HTML is written to a file; the PDF copy of the receipt is not
-// rendered, since that needs wkhtmltopdf and the site's assets)
+// rendered, since that needs wkhtmltopdf and the site's assets). The receipts
+// of the payments with the references `failing`, if any, cannot be made.
 //
-async function runJob(t) {
+async function runJob(t, failing = []) {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'payment-email-'));
   t.teardown(() => fs.rmSync(dir, { recursive: true, force: true }));
   const out = path.join(dir, 'sent.ndjson');
@@ -53,10 +54,13 @@ const { Payments } = require(${JSON.stringify(
       path.join(ROOT, 'app', 'models')
     )});
 const { getPDFReceipt } = Payments;
-Payments.getPDFReceipt = (payment, user, locale, returnHTML) =>
-  returnHTML
+Payments.getPDFReceipt = (payment, user, locale, returnHTML) => {
+  if (${JSON.stringify(failing)}.includes(payment.reference))
+    throw new Error('Receipt could not be made');
+  return returnHTML
     ? getPDFReceipt(payment, user, locale, returnHTML)
     : Readable.from([Buffer.from('%PDF-1.4')]);
+};
 const file = ${JSON.stringify(path.join(ROOT, 'helpers', 'email.js'))};
 const email = require(file);
 require.cache[file].exports = async (data) => {
@@ -165,4 +169,86 @@ test('a receipt waits for the plan to count the payment', async (t) => {
   t.true(sent[0].html.includes('Thank you!'));
   t.false(sent[0].html.includes('Plan expired'));
   t.true(await isReceiptSent(renewal));
+});
+
+//
+// The receipts are sent a few at a time, and the first error ended the run:
+// a payment whose receipt always failed held back every receipt after it.
+//
+test('a receipt that cannot be made does not hold back the ones after it', async (t) => {
+  t.timeout(ms('5m'));
+
+  const startedAt = dayjs().subtract(1, 'day').toDate();
+  const user = await t.context.userFactory
+    .withState({
+      plan: 'enhanced_protection',
+      [config.userFields.planSetAt]: startedAt,
+      [config.userFields.hasVerifiedEmail]: true
+    })
+    .create();
+  const payments = [];
+  for (let i = 0; i < 9; i++)
+    payments.push(
+      await t.context.paymentFactory
+        .withState({
+          user: user._id,
+          amount: 300,
+          method: 'visa',
+          duration: ms('30d'),
+          plan: 'enhanced_protection',
+          kind: 'one-time',
+          invoice_at: dayjs(startedAt).add(i, 'minute').toDate()
+        })
+        .create()
+    );
+  await user.save();
+  await Payments.collection.updateMany(
+    { user: user._id },
+    { $set: { updated_at: dayjs().subtract(2, 'minutes').toDate() } }
+  );
+
+  // (the first of them, so it is tried before the others)
+  const [failing, ...others] = payments;
+  t.truthy(failing.reference);
+  const sent = await runJob(t, [failing.reference]);
+  t.is(sent.length, others.length);
+  t.false(await isReceiptSent(failing));
+
+  for (const payment of others) t.true(await isReceiptSent(payment));
+
+  // (while receipts keep failing, as when none can be rendered, a run stops
+  // trying: of 17 whose first 14 fail, the 3 after them wait for the next)
+  await Payments.collection.updateMany(
+    { user: user._id },
+    { $unset: { receipt_sent_at: '' } }
+  );
+  const more = [];
+  for (let i = 0; i < 8; i++)
+    more.push(
+      await t.context.paymentFactory
+        .withState({
+          user: user._id,
+          amount: 300,
+          method: 'visa',
+          duration: ms('30d'),
+          plan: 'enhanced_protection',
+          kind: 'one-time',
+          invoice_at: dayjs(startedAt)
+            .add(10 + i, 'minute')
+            .toDate()
+        })
+        .create()
+    );
+  await Payments.collection.updateMany(
+    { user: user._id },
+    { $set: { updated_at: dayjs().subtract(2, 'minutes').toDate() } }
+  );
+  t.deepEqual(
+    await runJob(
+      t,
+      [...payments, ...more.slice(0, 5)].map((payment) => payment.reference)
+    ),
+    []
+  );
+  for (const payment of more) t.false(await isReceiptSent(payment));
 });

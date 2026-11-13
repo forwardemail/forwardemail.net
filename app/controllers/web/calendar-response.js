@@ -114,11 +114,16 @@ async function processResponse(ctx) {
   }
 
   // Check rate limiting
-  const rateLimitResult = await checkRateLimit(ctx.client, {
-    eventUid: tokenData.eventUid,
-    attendeeEmail: tokenData.attendeeEmail,
-    ip: ctx.ip
-  });
+  const rateLimitResult = await checkRateLimit(
+    ctx.client,
+    {
+      eventUid: tokenData.eventUid,
+      attendeeEmail: tokenData.attendeeEmail,
+      ip: ctx.ip
+    },
+    // (taken now: see `checkRateLimit`)
+    { reserve: true }
+  );
 
   if (rateLimitResult.limited) {
     throw Boom.tooManyRequests(rateLimitResult.reason);

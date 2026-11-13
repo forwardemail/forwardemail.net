@@ -34,4 +34,47 @@ async function claimPayPalSubscription(client, subscriptionId, userId) {
   return (await client.get(key)) === userId;
 }
 
+//
+// A subscription is made in the browser, which can ask PayPal for a later
+// start (nothing is charged until then), for other terms than its plan's
+// (e.g. a lower price), or not to make it active (it then never charges).
+// One like that is not assigned to an account: an account with a
+// subscription counts as paying while it has one (see
+// helpers/validate-domain), whatever the subscription charges.
+//
+// `latestStart` is when it may start at the latest, if not now: when the
+// plan it will renew expires (see /my-account/billing/enable-auto-renew).
+//
+const START_TOLERANCE = ms('5m');
+
+/**
+ * @param   {object}  subscription PayPal subscription
+ * @param   {Date}    [latestStart] The latest it may start, if later than now
+ * @returns {boolean} Whether it is on the terms we offer
+ */
+function hasOurTerms(subscription, latestStart) {
+  if (!subscription || subscription.plan_overridden === true) return false;
+  const latest = Math.max(
+    Date.now(),
+    new Date(latestStart ?? 0).getTime() || 0
+  );
+  return !(
+    new Date(subscription.start_time).getTime() >
+    latest + START_TOLERANCE
+  );
+}
+
+/**
+ * @param   {object}  subscription PayPal subscription
+ * @param   {Date}    [latestStart] The latest it may start, if later than now
+ * @returns {boolean} Whether it is the subscription we offer, and active
+ */
+function isAsOffered(subscription, latestStart) {
+  return (
+    subscription?.status === 'ACTIVE' && hasOurTerms(subscription, latestStart)
+  );
+}
+
 module.exports = claimPayPalSubscription;
+module.exports.hasOurTerms = hasOurTerms;
+module.exports.isAsOffered = isAsOffered;

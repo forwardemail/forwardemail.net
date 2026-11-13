@@ -10,6 +10,7 @@ const { encode } = require('html-entities');
 const Users = require('#models/users');
 const Payments = require('#models/payments');
 const config = require('#config');
+const claimPayPalSubscription = require('#helpers/claim-paypal-subscription');
 const syncPayPalSubscriptionPaymentsByUser = require('#helpers/sync-paypal-subscription-payments-by-user');
 const getAllPayPalSubscriptions = require('#helpers/get-all-paypal-subscriptions');
 const getAllPayPalSubscriptionTransactions = require('#helpers/get-all-paypal-subscription-transactions');
@@ -19,10 +20,6 @@ const logger = require('#helpers/logger');
 const i18n = require('#helpers/i18n');
 
 const { PAYPAL_PLAN_MAPPING } = config.payments;
-const PAYPAL_PLANS = {
-  enhanced_protection: Object.values(PAYPAL_PLAN_MAPPING.enhanced_protection),
-  team: Object.values(PAYPAL_PLAN_MAPPING.team)
-};
 
 async function syncPayPalSubscriptionPayments() {
   //
@@ -110,8 +107,10 @@ async function syncPayPalSubscriptionPayments() {
         }
 
         // Determine the plan from subscription
-        const plan = Object.keys(PAYPAL_PLANS).find((plan) =>
-          PAYPAL_PLANS[plan].includes(subscription.plan_id)
+        const plan = Object.keys(PAYPAL_PLAN_MAPPING).find((plan) =>
+          Object.values(PAYPAL_PLAN_MAPPING[plan]).includes(
+            subscription.plan_id
+          )
         );
 
         if (!plan) {
@@ -121,6 +120,47 @@ async function syncPayPalSubscriptionPayments() {
             )
           );
           continue;
+        }
+
+        //
+        // A subscription the account does not have yet is only given to it
+        // (in place of its own, below) if it is active and the one we offer.
+        // A subscription is made in the browser, with any subscriber's
+        // address, and is not active before its payer agreed to it; and one
+        // made to start later than it may, or on other terms than its
+        // plan's, is not ours to give (see `isAsOffered`; as it is when
+        // looked up, since a listed one may not say).  That one is reported
+        // with the unmatched ones.
+        //
+        if (user[config.userFields.paypalSubscriptionID] !== subscription.id) {
+          if (subscription.status !== 'ACTIVE') continue;
+          const agent = await paypalAgent();
+          const { body } = await agent.get(
+            `/v1/billing/subscriptions/${subscription.id}`
+          );
+          if (
+            body?.id !== subscription.id ||
+            !claimPayPalSubscription.isAsOffered(
+              body,
+              user[config.userFields.planExpiresAt]
+            )
+          ) {
+            logger.warn(
+              `PayPal subscription ${subscription.id} is not as offered, not assigned to ${user.email}`
+            );
+            unmatchedSubscriptions.push({
+              subscription_id: subscription.id,
+              reason:
+                'starts later than it may, or is not on the terms of its plan',
+              user: user.email,
+              status: body?.status,
+              plan_id: body?.plan_id,
+              plan_overridden: body?.plan_overridden,
+              start_time: body?.start_time,
+              billing_info: body?.billing_info
+            });
+            continue;
+          }
         }
 
         //
@@ -265,9 +305,11 @@ async function syncPayPalSubscriptionPayments() {
 
           userDoc.plan = plan;
 
+          // The plan only changes once the subscription was paid for, as in
+          // the webhook (an active subscription may not have charged yet).
           // If user was on free plan, set planSetAt to first payment's invoice_at
           // This mirrors the webhook logic at app/controllers/api/v1/paypal.js:323
-          if (wasFree) {
+          {
             let payment = await Payments.findOne(
               {
                 user: userDoc._id,
@@ -312,14 +354,17 @@ async function syncPayPalSubscriptionPayments() {
               }
             }
 
-            if (payment) {
+            if (!payment) {
+              logger.warn(
+                `No payment found for subscription ${subscription.id} even after fetching from PayPal, plan not changed`
+              );
+              continue;
+            }
+
+            if (wasFree) {
               userDoc[config.userFields.planSetAt] = payment.invoice_at;
               logger.info(
                 `Set planSetAt to ${payment.invoice_at} for user ${userDoc.email}`
-              );
-            } else {
-              logger.warn(
-                `No payment found for subscription ${subscription.id} even after fetching from PayPal, cannot set planSetAt`
               );
             }
           }

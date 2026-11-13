@@ -21,7 +21,9 @@ TIMESTAMP="$(date '+%Y-%m-%d %H:%M:%S %Z')"
 LOG_FILE="/var/log/auth.log"
 MONITOR_LOG="/var/log/ssh-security-monitor.log"
 ACTIVITY_LOG="/var/log/ssh-activity.log"
-LOCK_DIR="/var/lock"
+# (in /run, which only root can write: a file a local user made in /var/lock,
+#  dated ahead, would hold back every alert)
+LOCK_DIR="/run"
 
 # Rate limiting configuration (can be overridden via environment variables)
 LOCK_DURATION_FAILED="${SSH_MONITOR_FAILED_RATE_LIMIT:-1800}"  # Default: 30 minutes for failed login alerts

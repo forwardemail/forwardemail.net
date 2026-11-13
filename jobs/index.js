@@ -19,6 +19,8 @@ const { boolean } = require('boolean');
 let jobs = [
   // 'migration',
   'vanity-domains',
+  // (once, on start: see `helpers/reset-spam-scanner-settings.js`)
+  'reset-spam-scanner-settings',
   // NOTE: we had to combine paypal sync jobs together because of API 429 rate limiting
   {
     name: 'paypal',
@@ -409,6 +411,8 @@ if (boolean(process.env.CACHE_RESPONSES))
 
 if (boolean(process.env.SELF_HOSTED)) {
   jobs = [
+    // (once, on start: see `helpers/reset-spam-scanner-settings.js`)
+    'reset-spam-scanner-settings',
     {
       name: 'backfill-analytics',
       interval: '6h',

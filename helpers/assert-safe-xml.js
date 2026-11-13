@@ -14,21 +14,23 @@ const Boom = require('@hapi/boom');
 // resolve external entities by default, but a DTD is never legitimate in
 // these inputs, so reject any markup declaration outright.
 //
-// This replaces per-call inline checks of the form
-//   xmlString.includes('<!ENTITY') || xmlString.includes('<!DOCTYPE')
-// which were CASE-SENSITIVE and therefore trivially bypassed with a
-// lowercase `<!doctype`/`<!entity>` (XML markup declaration keywords are
-// case-insensitive to parsers). We match any `<!` markup declaration
-// (DOCTYPE, ENTITY, and the rest) case-insensitively, tolerating
-// whitespace/newlines between `<!` and the keyword.
+// A markup declaration is `<!` followed by anything but the start of a
+// comment or of CDATA: a DOCTYPE or an ENTITY (in any case, with or without
+// white space), and what is no declaration at all (`<!1`, `<!-x`, `<!<`).
+// The parser of CardDAV bodies (sax, under xml2js) keeps such a thing whole
+// until its ">", and upper-cases all of it again for each of its
+// characters: 100 KB of it in one request held the process for 17 seconds,
+// 1 MB for a quarter of an hour.
 //
-const REGEX_MARKUP_DECLARATION =
-  /<!\s*(?:doctype|entity|element|attlist|notation)\b/i;
-
-// Also catch a bare `<!` followed by a letter that is not a comment `<!--`
-// or CDATA `<![CDATA[`, which covers obfuscation attempts and unknown
-// declaration types without rejecting legitimate comments/CDATA.
-const REGEX_SUSPICIOUS_BANG = /<!(?!--|\[CDATA\[)\s*[A-Za-z]/;
+// It is looked for anywhere in the raw input, also inside comments, CDATA
+// and attribute values. Deciding what is "inside" one of those is exactly
+// what attackers play with, e.g.
+//   <!-- <![CDATA[ --><!DOCTYPE x [...]><!-- ]]> -->
+// hid a DOCTYPE from a strip-CDATA-then-comments approach, and
+//   <a b="<!--"><!1 ...><c d="-->"/>
+// hid a declaration from one that stripped comments in document order.
+//
+const REGEX_MARKUP_DECLARATION = /<!(?!--|\[CDATA\[)/;
 
 /**
  * Throw a 400 if the XML contains any markup (DTD) declaration.
@@ -59,47 +61,7 @@ function isSafeXml(xml) {
   const xmlString =
     typeof xml === 'string' ? xml : Buffer.from(xml).toString('utf8');
 
-  // A DOCTYPE/ENTITY (or other DTD) declaration is never legitimate in
-  // DMARC reports or CardDAV/WebDAV bodies, so reject the keywords anywhere
-  // in the raw input, even inside comments or CDATA. Deciding what is "inside"
-  // a comment or CDATA is exactly what attackers play with, e.g.
-  //   <!-- <![CDATA[ --><!DOCTYPE x [...]><!-- ]]> -->
-  // hid a DOCTYPE from the previous strip-CDATA-then-comments approach.
-  if (REGEX_MARKUP_DECLARATION.test(xmlString)) return false;
-
-  return !REGEX_SUSPICIOUS_BANG.test(stripCommentsAndCdata(xmlString));
-}
-
-/**
- * Remove comments and CDATA sections in document order (a single linear
- * pass), so a `<!--` inside CDATA or a `<![CDATA[` inside a comment is
- * treated as data, the same way an XML parser treats it.
- * An unterminated comment/CDATA is left in place so it is still scanned.
- * @param {string} str
- * @returns {string}
- */
-function stripCommentsAndCdata(str) {
-  let out = '';
-  let i = 0;
-  for (;;) {
-    const start = str.indexOf('<!', i);
-    if (start === -1) return out + str.slice(i);
-
-    let close;
-    if (str.startsWith('<!--', start)) close = '-->';
-    else if (str.startsWith('<![CDATA[', start)) close = ']]>';
-
-    if (!close) {
-      out += str.slice(i, start + 2);
-      i = start + 2;
-      continue;
-    }
-
-    const end = str.indexOf(close, start + (close === '-->' ? 4 : 9));
-    if (end === -1) return out + str.slice(i);
-    out += str.slice(i, start);
-    i = end + close.length;
-  }
+  return !REGEX_MARKUP_DECLARATION.test(xmlString);
 }
 
 module.exports = assertSafeXml;

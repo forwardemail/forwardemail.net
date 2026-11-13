@@ -60,6 +60,7 @@ const getPathToDatabase = require('#helpers/get-path-to-database');
 const openDatabaseHandle = require('#helpers/open-database-handle');
 const { vacuum } = require('#helpers/worker');
 const { encrypt } = require('#helpers/encrypt-decrypt');
+const { getBandwidthUsage } = require('#helpers/bandwidth-limiter');
 const createPassword = require('#helpers/create-password');
 const IMAPError = require('#helpers/imap-error');
 const getTemporaryDatabase = require('#helpers/get-temporary-database');
@@ -2538,14 +2539,20 @@ for (const [title, username] of [
         }
       : t.context.session;
     // (100 KB of quota left, and the storage used is not computed again)
+    //
+    // (the quota is the alias's own, used up but for that: a quota of
+    //  100 KB written in its cache was replaced at times by the alias's
+    //  quota, which a check started when the session signed in caches
+    //  when it is done, so the message fitted)
     await client.set(`storage_debounce:${alias.id}`, '1', 'PX', ms('2m'));
-    await Aliases.findByIdAndUpdate(alias._id, { $set: { storage_used: 0 } });
-    await client.set(
-      `alias_quota_v2:${alias.id}`,
-      JSON.stringify({ maxQuotaPerAlias: bytes('100KB') }),
-      'PX',
-      ms('2m')
+    const { maxQuotaPerAlias } = await Aliases.isOverQuota(
+      { id: alias.id, domain: alias.domain },
+      0,
+      client
     );
+    await Aliases.findByIdAndUpdate(alias._id, {
+      $set: { storage_used: maxQuotaPerAlias - bytes('100KB') }
+    });
 
     // (the oldest one does not fit in the quota)
     const { tmpDb, id } = await addTemporaryMessage(
@@ -7116,4 +7123,188 @@ test('mail delivered to "junk" goes to an existing Junk folder in any case', asy
     mailbox: junk._id
   });
   t.is(messages.length, 1);
+});
+
+test('onSearch answers as many keys that each read the whole mailbox as a client sends', async (t) => {
+  const { imapFlow } = t.context;
+  await imapFlow.mailboxOpen('INBOX');
+  // (the keywords read once for all of them)
+  const keywords = [];
+  for (let i = 0; i < 32; i++)
+    keywords.push(
+      { type: 'ATOM', value: i % 2 ? 'UNKEYWORD' : 'KEYWORD' },
+      { type: 'ATOM', value: `k${i}` }
+    );
+  const answered = await imapFlow.exec('SEARCH', keywords);
+  t.is(answered.response.command, 'OK');
+  answered.next();
+  // (nor are the values searched for keys, however they are named: 32 keys)
+  const values = [];
+  for (let i = 0; i < 16; i++)
+    values.push(
+      { type: 'ATOM', value: 'SUBJECT' },
+      { type: 'STRING', value: ['to', 'from', 'text', 'body'][i % 4] },
+      { type: 'ATOM', value: 'HEADER' },
+      { type: 'ATOM', value: 'cc' },
+      { type: 'STRING', value: 'subject' }
+    );
+  const searched = await imapFlow.exec('SEARCH', values);
+  t.is(searched.response.command, 'OK');
+  searched.next();
+});
+
+test('onFetch refuses an item asked for many times, and more of a message than twice over', async (t) => {
+  const { imapFlow } = t.context;
+  await imapFlow.mailboxOpen('INBOX');
+  // a message of parts that each hold the next, the last one a long text
+  const depth = 5;
+  const lines = ['From: a@example.com', 'Subject: s', 'MIME-Version: 1.0'];
+  for (let i = 1; i <= depth; i++)
+    lines.push(
+      `Content-Type: multipart/mixed; boundary="b${i}"`,
+      '',
+      `--b${i}`
+    );
+  lines.push('Content-Type: text/plain', '');
+  for (let i = 0; i < 8000; i++) lines.push('x'.repeat(74));
+  for (let i = depth; i >= 1; i--) lines.push(`--b${i}--`);
+  const raw = Buffer.from(lines.join('\r\n') + '\r\n');
+  await imapFlow.append('INBOX', raw);
+
+  const atom = (value, extra = {}) => ({ type: 'ATOM', value, ...extra });
+  const section = (path, extra = {}) =>
+    atom('BODY.PEEK', { section: path ? [atom(path)] : [], ...extra });
+  const fetch = (items) =>
+    imapFlow.exec('FETCH', [{ type: 'SEQUENCE', value: '1' }, items]);
+  const fetched = async (items) => {
+    const res = await fetch(items);
+    t.is(res.response.command, 'OK');
+    res.next();
+  };
+
+  // (as a client asks: the message, or each of its parts with its header,
+  // of which a message can have many)
+  await fetched([
+    atom('UID'),
+    atom('FLAGS'),
+    atom('RFC822.SIZE'),
+    section('HEADER'),
+    section('TEXT', { partial: [0, 100] }),
+    section('')
+  ]);
+  await fetched([
+    section('HEADER'),
+    ...Array.from({ length: 200 }, (_, i) => [
+      section(`${i + 1}.MIME`),
+      section(String(i + 1))
+    ]).flat()
+  ]);
+
+  const fields = (name) =>
+    atom('BODY.PEEK', {
+      section: [atom('HEADER.FIELDS'), [atom('SUBJECT'), atom(name)]]
+    });
+  await fetched(Array.from({ length: 8 }, (_, i) => fields(`X-${i}`)));
+
+  // one item many times (each a little different, or its part number
+  // written another way), more items than any message has parts, and more
+  // lists of header fields than a client asks for
+  for (const items of [
+    Array.from({ length: 5 }, (_, i) =>
+      section('', { partial: [i, 1_000_000] })
+    ),
+    Array.from({ length: 5 }, () => atom('flags')),
+    Array.from({ length: 5 }, (_, i) => section(`${'0'.repeat(i)}1.1`)),
+    Array.from({ length: 1025 }, (_, i) => section(String(i + 1))),
+    Array.from({ length: 9 }, (_, i) => fields(`X-${i}`))
+  ]) {
+    const err = await t.throwsAsync(fetch(items));
+    t.is(err.responseText, 'Too many fetch items');
+  }
+
+  // parts that hold each other: a few of them are less than the message
+  // twice over, and all of them are it seven times
+  const nested = ['', 'TEXT', '1', '1.1', '1.1.1', '1.1.1.1', '1.1.1.1.1'];
+  const refused = async (items) => {
+    const err = await t.throwsAsync(fetch(items));
+    t.is(err.response.attributes[0].section[0].value, 'LIMIT');
+  };
+
+  await fetched(nested.slice(0, 3).map((path) => section(path)));
+  await refused(nested.map((path) => section(path)));
+  // (a byte of a section counts as the section: it is read whole for it)
+  await refused(
+    nested.slice(0, 4).map((path) => section(path, { partial: [0, 1] }))
+  );
+
+  // (and the session goes on)
+  await fetched([section('')]);
+});
+
+//
+// The bytes of a FETCH were counted when it ended, and only if it ended
+// well: one that failed at its last message had sent the others for free.
+//
+test('onFetch counts what it sent before it ended in an error', async (t) => {
+  const { imapFlow } = t.context;
+  await imapFlow.mailboxOpen('INBOX');
+  const message = (lines) =>
+    Buffer.from(
+      [
+        'From: a@example.com',
+        'Subject: s',
+        '',
+        ...Array.from({ length: lines }, () => 'x'.repeat(74))
+      ].join('\r\n') + '\r\n'
+    );
+  // (each is sent four times over, which the last one is too large for)
+  for (let i = 0; i < 7; i++) await imapFlow.append('INBOX', message(6000));
+  await imapFlow.append('INBOX', message(12_500));
+
+  const usage = async () => {
+    const { hourlyUsed } = await getBandwidthUsage(t.context.client, {
+      userId: t.context.user.id,
+      service: 'imap_download'
+    });
+    return hourlyUsed;
+  };
+
+  t.is(await usage(), 0);
+  const err = await t.throwsAsync(
+    imapFlow.exec('FETCH', [
+      { type: 'SEQUENCE', value: '1:*' },
+      Array.from({ length: 4 }, () => ({
+        type: 'ATOM',
+        value: 'BODY.PEEK',
+        section: []
+      }))
+    ])
+  );
+  t.is(err.response.attributes[0].section[0].value, 'LIMIT');
+  await pWaitFor(async () => (await usage()) >= 10 * 1024 * 1024, {
+    timeout: ms('10s')
+  });
+  t.pass();
+});
+
+test('onSearch refuses more keys that each read the whole mailbox, however few terms in all', async (t) => {
+  const { imapFlow } = t.context;
+  await imapFlow.mailboxOpen('INBOX');
+  const scans = [];
+  for (let i = 0; i < 33; i++)
+    scans.push(
+      { type: 'ATOM', value: ['FROM', 'SUBJECT', 'TEXT'][i % 3] },
+      { type: 'ATOM', value: `k${i}` }
+    );
+  const err = await t.throwsAsync(imapFlow.exec('SEARCH', scans));
+  t.is(err.responseText, 'Too many search terms');
+  // (and the flags read as keywords are: \Answered and \Recent)
+  const flags = [];
+  for (let i = 0; i < 33; i++)
+    flags.push({
+      type: 'ATOM',
+      value: ['ANSWERED', 'UNANSWERED', 'RECENT', 'NEW', 'OLD'][i % 5]
+    });
+  const flagged = await t.throwsAsync(imapFlow.exec('SEARCH', flags));
+  t.is(flagged.responseText, 'Too many search terms');
 });

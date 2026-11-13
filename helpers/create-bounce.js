@@ -25,6 +25,28 @@ const HOSTNAME = os.hostname();
 
 // most of a remote server's response included in a minimal notification
 const MAX_MINIMAL_RESPONSE_LENGTH = 200;
+
+// (a value the remote server or the sender chose, e.g. an SMTP response the
+//  HTML-to-text conversion may break into lines, on one line: in the
+//  delivery-status part a line break would start a field, or a recipient's
+//  group, of its choosing, e.g. another recipient failed for good)
+function oneLine(value) {
+  return (
+    String(value ?? '')
+      // eslint-disable-next-line no-control-regex
+      .replace(/[\u0000-\u001F\u007F]+/g, ' ')
+      .replace(/ {2,}/g, ' ')
+      .trim()
+  );
+}
+
+// (an Original-Recipient field's value: an ORCPT holds its address type,
+//  e.g. "rfc822;a@example.com", an address given through the API does not)
+function originalRecipient(value) {
+  const text = oneLine(value);
+  return /^[a-z\d-]+;/i.test(text) ? text : `rfc822;${text}`;
+}
+
 const IP_ADDRESS = ip.address();
 
 const HTML_TO_TEXT_OPTIONS = {
@@ -69,7 +91,7 @@ async function createBounce(email, error, message) {
 
   // Use DSN envelope ID if available (RFC 3461 ENVID parameter)
   let envelopeId;
-  if (isSANB(email?.dsn?.id)) envelopeId = email.dsn.id;
+  if (isSANB(email?.dsn?.id)) envelopeId = oneLine(email.dsn.id);
 
   //
   // Extract delivery details from the error object.
@@ -100,13 +122,12 @@ async function createBounce(email, error, message) {
 
   // The full SMTP diagnostic code (uses existing getDiagnosticCode helper)
   const diagnosticCode = isMinimal
-    ? getDiagnosticCode(error).slice(0, MAX_MINIMAL_RESPONSE_LENGTH)
-    : getDiagnosticCode(error);
+    ? oneLine(getDiagnosticCode(error)).slice(0, MAX_MINIMAL_RESPONSE_LENGTH)
+    : oneLine(getDiagnosticCode(error));
 
   // The response text for human-readable display (convert HTML to text)
-  const responseText = convert(
-    error.response || error.message,
-    HTML_TO_TEXT_OPTIONS
+  const responseText = oneLine(
+    convert(error.response || error.message, HTML_TO_TEXT_OPTIONS)
   ).slice(0, isMinimal ? MAX_MINIMAL_RESPONSE_LENGTH : undefined);
 
   //
@@ -272,14 +293,16 @@ async function createBounce(email, error, message) {
   // Original-Recipient (RFC 3464 Section 2.3.1) — optional
   if (isSANB(email.dsn?.recipient)) {
     perRecipientFields.push(
-      `Original-Recipient: rfc822;${email.dsn.recipient}`
+      `Original-Recipient: ${originalRecipient(email.dsn.recipient)}`
     );
   } else if (email.envelope?.rcptTo) {
     const rcpt = email.envelope.rcptTo.find(
       (r) => r.address === error.recipient
     );
     if (rcpt?.dsn?.orcpt) {
-      perRecipientFields.push(`Original-Recipient: rfc822;${rcpt.dsn.orcpt}`);
+      perRecipientFields.push(
+        `Original-Recipient: ${originalRecipient(rcpt.dsn.orcpt)}`
+      );
     }
   }
 
@@ -416,3 +439,5 @@ function resolveRemoteMtaIp(error) {
 }
 
 module.exports = createBounce;
+module.exports.oneLine = oneLine;
+module.exports.originalRecipient = originalRecipient;

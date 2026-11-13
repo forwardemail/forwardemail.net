@@ -22,6 +22,7 @@ const config = require('#config');
 const email = require('#helpers/email');
 const { decryptIfEncrypted, hashToken } = require('#helpers/encrypt-decrypt');
 const invalidateOtherSessions = require('#helpers/invalidate-other-sessions');
+const claimOtpPasscode = require('#helpers/claim-otp-passcode');
 const clearUnverifiedSignIns = require('#helpers/clear-unverified-sign-ins');
 
 const { isEmailProven } = clearUnverifiedSignIns;
@@ -184,6 +185,16 @@ async function login(ctx, next) {
     return;
   }
 
+  // (passport-local takes a number or `true` of a JSON body for an email
+  // address or a password, and the model failed on either, as an error of
+  // the server)
+  for (const [field, phrase] of [
+    ['email', 'PASSPORT_MISSING_USERNAME_ERROR'],
+    ['password', 'PASSPORT_MISSING_PASSWORD_ERROR']
+  ])
+    if (['number', 'boolean'].includes(typeof ctx.request.body?.[field]))
+      throw Boom.badRequest(ctx.translateError(phrase));
+
   return ctx.passport &&
     ctx.passport.authenticate &&
     ctx.passport.config &&
@@ -193,6 +204,17 @@ async function login(ctx, next) {
         if (err) throw err;
 
         if (!user) {
+          // (a form without an email address or a password: passport-local
+          // says so in a plain object, which thrown as it is was an error
+          // of the server)
+          if (info && !_.isError(info))
+            throw Boom.badRequest(
+              ctx.translateError(
+                isSANB(ctx.request.body?.email)
+                  ? 'PASSPORT_MISSING_PASSWORD_ERROR'
+                  : 'PASSPORT_MISSING_USERNAME_ERROR'
+              )
+            );
           if (info) throw info;
           throw Boom.badRequest(ctx.translateError('UNKNOWN_ERROR'));
         }
@@ -296,6 +318,21 @@ function loginOtp(ctx, next) {
     ? ctx.passport.authenticate('otp', async (err, user) => {
         if (err) throw err;
         if (!user)
+          throw Boom.unauthorized(ctx.translateError('INVALID_OTP_PASSCODE'));
+
+        // a passcode signs in one session (see `claimOtpPasscode`): the
+        // one the strategy read, from the body unless that holds an object
+        // or nothing, and else from the query string
+        const { codeField } = ctx.passport.config.strategies.otp;
+        const read = (from) =>
+          typeof from?.[codeField] === 'object' ? undefined : from?.[codeField];
+        if (
+          !(await claimOtpPasscode(
+            ctx,
+            user.id,
+            read(ctx.request.body) || read(ctx.query)
+          ))
+        )
           throw Boom.unauthorized(ctx.translateError('INVALID_OTP_PASSCODE'));
 
         if (ctx.session) {

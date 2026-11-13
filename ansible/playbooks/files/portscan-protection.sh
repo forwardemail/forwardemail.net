@@ -52,36 +52,10 @@ WHITELIST()
 
 UPDATE()
 {
-	# Getting info about the latest GitHub version
-	NEW=$(curl -s "$GITHUBRAW" | awk -F'"' '/^VERSION/ {print $2}')
-
-	# Compare the installed and the GitHub stored version - Only internal, not available by any argument
-	if [[ "$1" == "ONLYCHECK" ]] && [[ "$NEW" != "$VERSION" ]]; then
-		[ "$1" != '--cron' ] && printf "New version ${YL}available!${NC}\n"
-	else
-		[[ "$1" == "ONLYCHECK" ]] && [ "$1" != '--cron' ] && printf "The downloaded $SCRIPTNAME is ${GR}up to date.${NC}\n\n"
-	fi
-
-	# Check the current installation
-	if [[ "$1" != "ONLYCHECK" ]] && [ -f "$CRONLOCATION" ] && [ -x "$SCRIPTLOCATION" ]; then
-
-		# Check the GitHub - Is it available? - Exit if not
-  		if [[ ! "$NEW" ]]; then
-			[ "$1" != '--cron' ] && printf "GitHub is ${RED}not available now.${NC} Try again later.\n"
-   			exit 8
-   		fi
-
-		# Compare the installed and the GitHub stored version
-		if [[ "$NEW" != "$VERSION" ]]; then
-			curl -s -o "$SCRIPTLOCATION" "$GITHUBRAW"
-			SETCRONTAB
-			[ "$1" != '--cron' ] && printf "Script has been ${GR}updated.${NC}\n"
-		else
-			[ "$1" != '--cron' ] && printf "The installed $SCRIPTNAME is ${GR}up to date.${NC}\n\n"
-		fi
-	else
-		[[ "$1" != "ONLYCHECK" ]] && [ "$1" != '--cron' ] && printf "Script ${RED}not installed.${NC} Install first then you can update it.\n"
-	fi
+	# (never from GitHub: the copy ansible installs is the one that runs, see
+	#  AUTOUPDATE above; a downloaded one would run unreviewed as root)
+	[ "$1" != '--cron' ] && printf "Updates come from the ansible playbook (security.yml).\n"
+	return 0
 }
 
 
@@ -198,8 +172,10 @@ if [ "$OPT" == '-i' ] || [ "$OPTL" == '--install' ]; then
 
 	# Copy the script to $SCRIPTLOCATION and add execute permission
 	INSTALLERLOCATION=$(realpath $0)
+	# (this copy, never one downloaded: the one ansible installs, see
+	#  AUTOUPDATE above)
 	if [ "$INSTALLERLOCATION" != "$SCRIPTLOCATION" ]; then
-		curl -s -o "$SCRIPTLOCATION" "$GITHUBRAW" && chmod +x "$SCRIPTLOCATION" && printf "$SCRIPTNAME has been copied in $SCRIPTLOCATION ${GR}OK.${NC}\n"
+		install -m 0755 "$INSTALLERLOCATION" "$SCRIPTLOCATION" && printf "$SCRIPTNAME has been copied in $SCRIPTLOCATION ${GR}OK.${NC}\n"
 	else
 		printf "$SCRIPTNAME already copied to destination. Nothing to do. ${GR}OK.${NC}\n"
 	fi

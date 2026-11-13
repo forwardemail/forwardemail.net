@@ -73,13 +73,17 @@ def main() -> None:
         "or 'redis' in group_names or 'logs' in group_names) else true }}\""
     )
     require(security, reboot_policy, SECURITY)
-    require(security, 'unattended_automatic_reboot_time: "08:00"', SECURITY)
+    reboot_time = (
+        "unattended_automatic_reboot_time: \"{{ '08:%02d' | format("
+        "(groups['all'].index(inventory_hostname) % 12) * 5) }}\""
+    )
+    require(security, reboot_time, SECURITY)
     if 'unattended_automatic_reboot_time: "02:00"' in security:
         raise AssertionError("Old 02:00 UTC reboot schedule remains in the security play")
 
     print(
         "PASS: fleet rollout masks the legacy notifier, installs and verifies the "
-        "current policy, applies the 08:00 UTC reboot window, writes the "
+        "current policy, applies the 08:00 to 08:55 UTC reboot window, writes the "
         "readiness marker, then unblocks notifications"
     )
 

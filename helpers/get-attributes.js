@@ -12,6 +12,8 @@ const { spf } = require('mailauth/lib/spf');
 const _ = require('#helpers/lodash');
 
 const checkSRS = require('#helpers/check-srs');
+
+const { checkHeaderSRS } = checkSRS;
 const getHeaders = require('#helpers/get-headers');
 const isPrivateHost = require('#helpers/is-private-host');
 const logger = require('#helpers/logger');
@@ -113,7 +115,7 @@ async function getAttributes(headers, session, resolver, isAligned = false) {
   //       we check the root domain to prevent bypasses like mymalicious.noreply.com
   //
   const filteredReplyToAddresses = replyToAddresses.filter((addr) => {
-    const resolved = checkSRS(addr);
+    const resolved = checkHeaderSRS(addr);
     // extract domain from raw address (before calling parseHostFromDomainOrAddress)
     const atPos = resolved.lastIndexOf('@');
     const rawDomain =
@@ -135,14 +137,16 @@ async function getAttributes(headers, session, resolver, isAligned = false) {
 
   const replyTo = [
     // check the Reply-To header
-    ...filteredReplyToAddresses.map((addr) => checkSRS(addr).toLowerCase()),
+    ...filteredReplyToAddresses.map((addr) =>
+      checkHeaderSRS(addr).toLowerCase()
+    ),
     // check the Reply-To header domains
     ...filteredReplyToAddresses.map((addr) =>
-      parseHostFromDomainOrAddress(checkSRS(addr))
+      parseHostFromDomainOrAddress(checkHeaderSRS(addr))
     ),
     // check the Reply-To header root domains
     ...filteredReplyToAddresses.map((addr) =>
-      parseRootDomain(parseHostFromDomainOrAddress(checkSRS(addr)))
+      parseRootDomain(parseHostFromDomainOrAddress(checkHeaderSRS(addr)))
     )
   ];
 

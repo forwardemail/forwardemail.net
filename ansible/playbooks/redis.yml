@@ -344,29 +344,40 @@
         name: valkey
         system: yes
 
+    # (built in a directory only root can write: in /var/tmp, a source tree a
+    #  local user made first would be built and installed as root; and only
+    #  when Valkey is not installed, as it is installed only then)
+    - name: Check whether Valkey is installed
+      stat:
+        path: /usr/bin/valkey-server
+      register: valkey_installed
+
     - name: Download Valkey {{ hostvars['localhost']['valkey_version'] | default('8.0.6') }} source
       get_url:
         url: https://github.com/valkey-io/valkey/archive/refs/tags/{{ hostvars['localhost']['valkey_version'] | default('8.0.6') }}.tar.gz
-        dest: /var/tmp/valkey-{{ hostvars['localhost']['valkey_version'] | default('8.0.6') }}.tar.gz
+        dest: /usr/local/src/valkey-{{ hostvars['localhost']['valkey_version'] | default('8.0.6') }}.tar.gz
         checksum: "{{ hostvars['localhost']['valkey_checksum'] | default('sha256:f8d15c257a3619e0e42e68998e9dc16536009d257662efa4c62ef7d08a71b0dd') }}"
+      when: not valkey_installed.stat.exists
 
     - name: Extract Valkey source
       unarchive:
-        src: /var/tmp/valkey-{{ hostvars['localhost']['valkey_version'] | default('8.0.6') }}.tar.gz
-        dest: /var/tmp/
+        src: /usr/local/src/valkey-{{ hostvars['localhost']['valkey_version'] | default('8.0.6') }}.tar.gz
+        dest: /usr/local/src/
         remote_src: yes
-        creates: /var/tmp/valkey-{{ hostvars['localhost']['valkey_version'] | default('8.0.6') }}
+        creates: /usr/local/src/valkey-{{ hostvars['localhost']['valkey_version'] | default('8.0.6') }}
+      when: not valkey_installed.stat.exists
 
     - name: Compile Valkey
       shell: |
-        cd /var/tmp/valkey-{{ hostvars['localhost']['valkey_version'] | default('8.0.6') }}
+        cd /usr/local/src/valkey-{{ hostvars['localhost']['valkey_version'] | default('8.0.6') }}
         make BUILD_TLS=yes
       args:
-        creates: /var/tmp/valkey-{{ hostvars['localhost']['valkey_version'] | default('8.0.6') }}/src/valkey-server
+        creates: /usr/local/src/valkey-{{ hostvars['localhost']['valkey_version'] | default('8.0.6') }}/src/valkey-server
+      when: not valkey_installed.stat.exists
 
     - name: Install Valkey binaries
       shell: |
-        cd /var/tmp/valkey-{{ hostvars['localhost']['valkey_version'] | default('8.0.6') }}
+        cd /usr/local/src/valkey-{{ hostvars['localhost']['valkey_version'] | default('8.0.6') }}
         make install PREFIX=/usr
       args:
         creates: /usr/bin/valkey-server
@@ -756,15 +767,21 @@
           - gnupg
         update_cache: true
 
+    # (in a directory only root can write, made for it: a file another user
+    #  left at a fixed path in /tmp would otherwise be unzipped and its
+    #  installer run as root, also when the download failed)
     - name: Install AWS CLI
       shell: |
+        set -euo pipefail
         if ! command -v aws &> /dev/null; then
-          curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "/tmp/awscliv2.zip"
-          unzip -q /tmp/awscliv2.zip -d /tmp
-          /tmp/aws/install
-          rm -rf /tmp/aws /tmp/awscliv2.zip
+          dir="$(mktemp -d)"
+          trap 'rm -rf "$dir"' EXIT
+          curl -fsSL "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "$dir/awscliv2.zip"
+          unzip -q "$dir/awscliv2.zip" -d "$dir"
+          "$dir/aws/install"
         fi
       args:
+        executable: /bin/bash
         creates: /usr/local/bin/aws
 
     # Create Redis backup script

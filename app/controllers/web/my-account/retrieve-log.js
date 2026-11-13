@@ -20,7 +20,7 @@ async function retrieveLog(ctx, next) {
   if (!ctx.isAuthenticated())
     throw Boom.badRequest(ctx.translateError('LOGIN_REQUIRED'));
 
-  if (!isSANB(ctx.params.id))
+  if (!isSANB(ctx.params.id) || !mongoose.isValidObjectId(ctx.params.id))
     throw Boom.badRequest(ctx.translateError('LOG_DOES_NOT_EXIST'));
 
   const log = await Logs.findOne({

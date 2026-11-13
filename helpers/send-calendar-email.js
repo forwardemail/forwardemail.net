@@ -21,6 +21,16 @@ const isEmail = require('#helpers/is-email');
 const calendarResponse = require('#helpers/calendar-response');
 
 //
+// What a calendar says of itself (its name, its description, what it was
+// uploaded with) is copied into each iCalendar that is built of it, and one
+// is built for every object of it that is read: a description of 100 KB, in
+// the data of 2,000 events, was 200 MB.  So the first of that text is taken,
+// this many characters, for the iCalendar of one of its objects (the
+// calendar read whole has all of it, once).
+//
+const MAX_COPIED_TEXT = 1024;
+
+//
 // Helper to extract the RECURRENCE-ID from a VEVENT as a string (or null).
 //
 function getRecurrenceId(vevent) {
@@ -333,9 +343,11 @@ function buildInviteHtml(ctx, event, links) {
  * @param {Array|Object} events - Event objects with { eventId, calendar, ical }
  * @param {Object} calendar - Calendar object with calendarId, name, prodId, etc.
  * @param {string|false} [method=false] - iTIP method (REQUEST, REPLY, CANCEL, etc.)
+ * @param {boolean} [isWhole=false] - The calendar whole, with all it says of itself
  * @returns {string} ICS string
  */
-function buildICS(ctx, events, calendar, method = false) {
+// eslint-disable-next-line max-params
+function buildICS(ctx, events, calendar, method = false, isWhole = false) {
   const startTime = Date.now();
   ctx.logger.debug('buildICS', {
     eventCount: Array.isArray(events) ? events.length : events ? 1 : 0,
@@ -344,6 +356,33 @@ function buildICS(ctx, events, calendar, method = false) {
 
   // Always normalize events to an array to ensure consistent VCALENDAR output
   const eventArray = events ? (Array.isArray(events) ? events : [events]) : [];
+
+  // what the calendar says of itself: all of it once when the calendar is
+  // read whole (exported, or mailed as it is deleted), and within
+  // MAX_COPIED_TEXT for one of its objects (the shortest first, and what a
+  // client reads the data by)
+  let left = isWhole ? Number.POSITIVE_INFINITY : MAX_COPIED_TEXT;
+  const own = { x: [] };
+  for (const key of [
+    'prodId',
+    'scale',
+    'name',
+    'url',
+    'source',
+    'description'
+  ]) {
+    own[key] =
+      typeof calendar[key] === 'string'
+        ? calendar[key].slice(0, left)
+        : calendar[key];
+    left -= own[key]?.length ?? 0;
+  }
+
+  for (const xData of Array.isArray(calendar.x) ? calendar.x : []) {
+    left -= String(xData.key).length + String(xData.value).length;
+    if (left < 0) break;
+    own.x.push(xData);
+  }
 
   // <https://github.com/kewisch/ical.js/wiki/Creating-basic-iCalendar>
   const comp = new ICAL.Component(['vcalendar', [], []]);
@@ -373,39 +412,37 @@ function buildICS(ctx, events, calendar, method = false) {
   else comp.updatePropertyWithValue('uid', calendar._id.toString());
 
   // name -> calendar.name
-  comp.updatePropertyWithValue('name', calendar.name);
+  comp.updatePropertyWithValue('name', own.name);
 
   // prodid
   // RFC 5545 Section 3.7.3 requires PRODID to begin with "-//"
   // (e.g. "-//forwardemail.net//caldav//EN").  Existing calendars may
   // have been stored without the leading "-"; heal on read so that
   // CalDAV clients (especially iOS) receive a conformant VCALENDAR.
-  if (calendar.prodId) {
-    const prodId = calendar.prodId.startsWith('-')
-      ? calendar.prodId
-      : `-${calendar.prodId}`;
+  if (own.prodId) {
+    const prodId = own.prodId.startsWith('-') ? own.prodId : `-${own.prodId}`;
     comp.updatePropertyWithValue('prodid', prodId);
   }
 
   // description
-  if (calendar.description)
-    comp.updatePropertyWithValue('description', calendar.description);
+  if (own.description)
+    comp.updatePropertyWithValue('description', own.description);
 
   // calscale -> calendar.scale
-  if (calendar.scale) comp.updatePropertyWithValue('calscale', calendar.scale);
+  if (own.scale) comp.updatePropertyWithValue('calscale', own.scale);
 
   // url
-  if (calendar.url) comp.updatePropertyWithValue('url', calendar.url);
+  if (own.url) comp.updatePropertyWithValue('url', own.url);
 
   // source
-  if (calendar.source) comp.updatePropertyWithValue('source', calendar.source);
+  if (own.source) comp.updatePropertyWithValue('source', own.source);
 
-  // X-Meta-Data
-  if (Array.isArray(calendar.x) && calendar.x.length > 0) {
-    for (const xData of calendar.x) {
-      comp.updatePropertyWithValue(xData.key.toUpperCase(), xData.value);
-    }
-  }
+  // X-Meta-Data (each key once, with the last of its values, as
+  // `updatePropertyWithValue` left them: that looks through every property
+  // there is for each one it sets, and took over a minute for 100,000)
+  const xValues = new Map();
+  for (const xData of own.x) xValues.set(xData.key.toUpperCase(), xData.value);
+  for (const [key, value] of xValues) comp.addPropertyWithValue(key, value);
 
   //
   // Track which VTIMEZONE TZIDs have already been added to avoid

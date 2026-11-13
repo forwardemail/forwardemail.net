@@ -19,10 +19,16 @@ HOST_IP="$(hostname -I | awk '{print $1}')"
 TIMESTAMP="$(date '+%Y-%m-%d %H:%M:%S %Z')"
 MONITOR_LOG="/var/log/open-ports-monitor.log"
 PORTS_STATE_FILE="/var/lib/open-ports-monitor/ports-state.txt"
-LOCK_DIR="/var/lock"
+# (in /run, which only root can write: a file a local user made in /var/lock,
+#  dated ahead, would hold back every alert)
+LOCK_DIR="/run"
 LOCK_DURATION=3600  # 1 hour
 CONFIG_DIR="/etc/security-monitor"
 AUTHORIZED_PORTS_FILE="$CONFIG_DIR/authorized-ports.conf"
+# systemd services (one per line, e.g. "ollama-spamscanner.service") whose
+# listeners on 127.0.0.1 or ::1 are not reported: a service that opens local
+# ports of its own choosing (Ollama's model runner takes a random one)
+AUTHORIZED_LOCAL_SERVICES_FILE="$CONFIG_DIR/authorized-local-services.conf"
 
 # Ensure directories exist
 mkdir -p "$(dirname "$PORTS_STATE_FILE")"
@@ -77,11 +83,30 @@ is_authorized_port() {
     return 1
 }
 
+# The control groups of the authorized local services, space separated
+# (only well-formed service names)
+authorized_local_cgroups() {
+    [ -f "$AUTHORIZED_LOCAL_SERVICES_FILE" ] || return 0
+    grep -E '^[A-Za-z0-9@_.-]+\.service$' "$AUTHORIZED_LOCAL_SERVICES_FILE" 2>/dev/null | sed 's|^|/system.slice/|' | tr '\n' ' '
+}
+
 # Get current open ports
 get_open_ports() {
     # Use ss (socket statistics) or fallback to netstat
     if command -v ss &> /dev/null; then
-        { ss -tuln | grep LISTEN || true; } | awk '{print $5}' | sed 's/.*://' | sort -un
+        # (with each socket's control group, which systemd sets and the
+        #  service cannot choose, to leave out the authorized local services)
+        { ss -tulne | grep LISTEN || true; } | awk -v allowed="$(authorized_local_cgroups)" '
+            BEGIN { n = split(allowed, list, " "); for (i = 1; i <= n; i++) ok[list[i]] = 1 }
+            {
+                address = $5
+                port = address; sub(/.*:/, "", port)
+                host = address; sub(/:[^:]*$/, "", host)
+                cgroup = ""
+                for (i = 6; i <= NF; i++) if ($i ~ /^cgroup:/) cgroup = substr($i, 8)
+                if ((host == "127.0.0.1" || host == "[::1]") && (cgroup in ok)) next
+                print port
+            }' | sort -un
     elif command -v netstat &> /dev/null; then
         { netstat -tuln | grep LISTEN || true; } | awk '{print $4}' | sed 's/.*://' | sort -un
     else

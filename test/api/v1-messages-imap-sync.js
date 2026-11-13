@@ -343,10 +343,14 @@ test('flag changes through the API are found by a CONDSTORE resync', async (t) =
 
 test('deleting through the API expunges it in an IMAP client in IDLE', async (t) => {
   const { imapFlow } = t.context;
+  // (appended before the mailbox is opened: the server leaves out the
+  //  EXPUNGE of a message whose EXISTS it has not sent yet, see
+  //  `emitNotifications` in imap-core, and the EXISTS of a message this
+  //  client appended to its open mailbox may still be waiting)
+  await appendMessage(t, 'INBOX', 'keep');
+  const { id } = await appendMessage(t, 'INBOX', 'delete me');
   const lock = await imapFlow.getMailboxLock('INBOX');
   try {
-    await appendMessage(t, 'INBOX', 'keep');
-    const { id } = await appendMessage(t, 'INBOX', 'delete me');
     t.is(imapFlow.mailbox.exists, 2);
 
     const expunged = collect(imapFlow, 'expunge');
@@ -371,9 +375,10 @@ test('deleting through the API expunges it in an IMAP client in IDLE', async (t)
 
 test('moving through the API (e.g. to Trash) updates an IMAP client in IDLE', async (t) => {
   const { imapFlow } = t.context;
+  // (appended before the mailbox is opened, as above)
+  const { id } = await appendMessage(t, 'INBOX', 'move me');
   const lock = await imapFlow.getMailboxLock('INBOX');
   try {
-    const { id } = await appendMessage(t, 'INBOX', 'move me');
     t.is(imapFlow.mailbox.exists, 1);
 
     const expunged = collect(imapFlow, 'expunge');

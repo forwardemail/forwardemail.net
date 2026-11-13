@@ -1220,17 +1220,7 @@ block body
                     checked=domain.has_adult_content_protection
                   )
                   label.form-check-label(for="input-has-adult-protection")= t("Adult-related content protection")
-                  p.form-text.small.text-black.text-themed-50!= t("If you uncheck this, then links will <u>not be scanned</u> for adult-related content.")
-                .form-group.form-check
-                  input#input-has-phishing-protection.form-check-input(
-                    type="checkbox",
-                    disabled=isDisabled,
-                    name="has_phishing_protection",
-                    value="true",
-                    checked=domain.has_phishing_protection
-                  )
-                  label.form-check-label(for="input-has-phishing-protection")= t("Phishing protection")
-                  p.form-text.small.text-black.text-themed-50!= t('If you uncheck this, then links will <u>not be scanned</u> for malware, domain swapping, <a target="_blank" rel="noopener noreferrer" href="%s">IDN homograph attacks</a>, nor phishing in general.', "https://wikipedia.org/wiki/IDN_homograph_attack")
+                  p.form-text.small.text-black.text-themed-50!= t('If you check this, then links in mail you send are checked with <a target="_blank" rel="noopener noreferrer" href="%s">Cloudflare\'s family filter</a>, and mail linking to a site it blocks for adult-related content or malware is not sent. Off by default.', "https://developers.cloudflare.com/1.1.1.1/setup/#1111-for-families")
                 .form-group.form-check
                   input#input-has-executable-protection.form-check-input(
                     type="checkbox",
@@ -1240,17 +1230,8 @@ block body
                     checked=domain.has_executable_protection
                   )
                   label.form-check-label(for="input-has-executable-protection")= t("Executable protection")
-                  p.form-text.small.text-black.text-themed-50!= t('If you uncheck this, then links and attachments will <u>not be scanned</u> for potentially-malicious <a target="_blank" rel="noopener noreferrer" href="%s">executable</a> file types, extensions, names, headers, <a target="_blank" rel="noopener noreferrer" href="%s">IDN homograph attacks</a>, nor <a target="_blank" rel="noopener noreferrer" href="%s">magic numbers</a>.', "https://github.com/spamscanner/spamscanner/blob/master/executables.json", "https://wikipedia.org/wiki/IDN_homograph_attack", "https://wikipedia.org/wiki/Magic_number_(programming)#Magic_numbers_in_files")
-                .form-group.form-check.mb-0
-                  input#input-has-virus-protection.form-check-input(
-                    type="checkbox",
-                    disabled=isDisabled,
-                    name="has_virus_protection",
-                    value="true",
-                    checked=domain.has_virus_protection
-                  )
-                  label.form-check-label(for="input-has-virus-protection")= t("Virus protection")
-                  p.form-text.small.text-black.text-themed-50!= t('If you uncheck this, then attachments will <u>not be scanned</u> for trojans, viruses, malware, nor other malicious threats with <a target="_blank" rel="noopener noreferrer" href="%s" class="notranslate">ClamAV</a>.', "https://www.clamav.net/")
+                  p.form-text.small.text-black.text-themed-50!= t('If you uncheck this, then mail you send with <a target="_blank" rel="noopener noreferrer" href="%s">executable</a> attachments, such as .exe, .js or .bat files (also inside archives), is no longer blocked. On by default.', "https://github.com/spamscanner/spamscanner/blob/master/executables.json")
+                p.small.text-black.text-themed-50.mb-0!= t('Mail is always scanned for spam, and links in mail you send are always checked with <a target="_blank" rel="noopener noreferrer" href="%s">Cloudflare\'s malware filter</a>: mail linking to a site it blocks for phishing or malware is not sent.', "https://developers.cloudflare.com/1.1.1.1/setup/#1111-for-families")
               .card-footer.text-right
                 ul.list-inline.mb-0
                   li.list-inline-item

@@ -252,6 +252,116 @@ test('accepts a message with DKIM-Signature headers within the limit', async (t)
   t.pass();
 });
 
+// a value folded into lines of `width` characters
+function foldLines(value, width = 76) {
+  return value.match(new RegExp(`.{1,${width}}`, 'g')).join('\r\n ');
+}
+
+// how long (CPU, all threads) and how long in all `fn` takes
+async function timed(fn) {
+  const cpu = process.cpuUsage();
+  const started = Date.now();
+  const result = await fn();
+  const used = process.cpuUsage(cpu);
+  return {
+    result,
+    cpu: (used.user + used.system) / 1000,
+    elapsed: Date.now() - started
+  };
+}
+
+test('refuses at once a message whose header no parser could read in reasonable time', async (t) => {
+  const { domain, received, send } = await setupForwarding(t);
+  // 40,000 folded lines in one field (160 KB): each parser joins them one at
+  // a time, in time in the square of their number
+  const folded = `Subject: x${'\r\n y'.repeat(40_000)}`;
+  const many = await timed(() =>
+    t.throwsAsync(send(message(domain, { headers: [folded] })))
+  );
+  t.is(many.result.responseCode, 421);
+  t.regex(many.result.message, /more than 5000 lines/);
+  t.true(many.cpu < 2000, `${Math.round(many.cpu)}ms of CPU`);
+
+  // a field far longer than Postfix's limit
+  const long = await timed(() =>
+    t.throwsAsync(
+      send(
+        message(domain, {
+          headers: [`X-Long: ${foldLines('x'.repeat(200_000), 998)}`]
+        })
+      )
+    )
+  );
+  t.is(long.result.responseCode, 421);
+  t.regex(long.result.message, /longer than 131072 bytes/);
+  t.true(long.cpu < 2000, `${Math.round(long.cpu)}ms of CPU`);
+  t.is(received.length, 0);
+
+  // (a header with a few thousand lines is read)
+  const some = `Subject: x${'\r\n y'.repeat(2000)}`;
+  await send(
+    message(domain, { headers: [some] }).replace('Subject: hardening\r\n', '')
+  );
+  await pWaitFor(() => received.length === 1, { timeout: ms('10s') });
+});
+
+test('delivers a field as long as Postfix leaves it, relayed with CRLF line breaks', async (t) => {
+  const { domain, received, send } = await setupForwarding(t);
+  // a References field Postfix truncated at header_size_limit: 102,400
+  // bytes counted with LF line breaks, 1,678 more with CRLF
+  const ids = [];
+  let { length } = 'References:';
+  for (let i = 0; length < 102_400 - 80; i++) {
+    const id = ` <thread-${String(i).padStart(6, '0')}@lists.example.org>`;
+    ids.push(id);
+    length += id.length + 1;
+  }
+
+  let references = `References:${ids.join('\n')}`;
+  references += 'x'.repeat(102_400 - references.length);
+  t.is(references.length, 102_400);
+  const crlf = references.replaceAll('\n', '\r\n');
+  t.true(crlf.length > 104_000);
+  await send(message(domain, { headers: [crlf] }));
+  await pWaitFor(() => received.length === 1, { timeout: ms('10s') });
+  t.pass();
+});
+
+test('refuses at once a From header mailauth could not read in reasonable time', async (t) => {
+  const { domain, received, send } = await setupForwarding(t);
+  // one address, and 99 KB of empty groups (nodemailer's addressparser,
+  // which mailauth reads it with, takes time in the square of their number)
+  const groups = await timed(() =>
+    t.throwsAsync(
+      send(
+        message(domain, {
+          from: `sender@acme-mail.net, ${foldLines('g:;'.repeat(33_000), 998)}`
+        })
+      )
+    )
+  );
+  t.is(groups.result.responseCode, 421);
+  t.regex(groups.result.message, /"From" header/);
+  t.true(groups.cpu < 2000, `${Math.round(groups.cpu)}ms of CPU`);
+  // (and 65 groups in a short one)
+  const short = await t.throwsAsync(
+    send(message(domain, { from: `sender@acme-mail.net, ${'g:;'.repeat(65)}` }))
+  );
+  t.is(short.responseCode, 421);
+  t.regex(short.message, /too many addresses or groups/);
+  // (also groups after a quote in angle brackets, or a comment in a comment,
+  //  which the parser does not read as a quoted string or a comment)
+  for (const from of [
+    `sender@acme-mail.net, <">${':;'.repeat(65)}<">`,
+    `sender@acme-mail.net (()${':'.repeat(65)})`
+  ]) {
+    const err = await t.throwsAsync(send(message(domain, { from })));
+    t.is(err.responseCode, 421, `${from}`);
+  }
+
+  t.is(received.length, 0);
+});
+
 test('accepts a From header whose display name is another address', async (t) => {
   const { domain, received, send } = await setupForwarding(t);
 
@@ -262,11 +372,15 @@ test('accepts a From header whose display name is another address', async (t) =>
     'support@beta-corp.net <x@acme-mail.net>',
     'alice@beta-corp.net via Group <x@acme-mail.net>',
     '"x@acme-mail.net" <x@acme-mail.net>',
-    'Sender <x@acme-mail.net>'
+    'Sender <x@acme-mail.net>',
+    // (colons and commas in a quoted display name or a comment are no
+    //  groups or addresses)
+    `"Alert: ${'disk: '.repeat(20)}full, again" <x@acme-mail.net>`,
+    `x@acme-mail.net (${'note: '.repeat(20)})`
   ])
     await send(message(domain, { from }));
 
-  await pWaitFor(() => received.length === 4, { timeout: ms('20s') });
+  await pWaitFor(() => received.length === 6, { timeout: ms('20s') });
   t.pass();
 });
 

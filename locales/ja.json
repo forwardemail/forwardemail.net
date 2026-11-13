@@ -23531,5 +23531,19 @@
   "Delete mailbox?": "メールボックスを削除しますか？",
   "Please confirm if you wish to delete the mailbox <strong>%s</strong>.": "メールボックス <strong>%s</strong> を削除してよろしいですか。",
   "Generate mailbox passwords": "メールボックスのパスワードを生成する",
-  "Generate random mailbox": "ランダムなメールボックスを生成する"
+  "Generate random mailbox": "ランダムなメールボックスを生成する",
+  "The message could not be scanned at this time, please try again later.": "現在、メッセージをスキャンできませんでした。しばらくしてからもう一度お試しください。",
+  "The message could not be scanned at this time and will be retried.": "現在、メッセージをスキャンできませんでした。後ほど再試行されます。",
+  "Senders blocked after spam reports": "迷惑メール報告によりブロックされた送信者",
+  "The recipient at these forwarding addresses reported mail from these senders as spam to their mailbox provider, so their mail to that address gets a temporary error until the date shown.": "これらの転送先アドレスの受信者が、これらの送信者からのメールをメールプロバイダーに迷惑メールとして報告したため、そのアドレス宛てのメールには表示された日付まで一時的なエラーが返されます。",
+  "Sender": "送信者",
+  "Forwarding address": "転送先アドレス",
+  "Until": "期限",
+  "Unblock": "ブロック解除",
+  "Unblock sender?": "送信者のブロックを解除しますか？",
+  "Please confirm if you wish to receive mail from <strong>%s</strong> at <strong>%s</strong> again.": "<strong>%s</strong> からのメールを <strong>%s</strong> で再び受信することを確認してください。",
+  "If you check this, then links in mail you send are checked with <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"%s\">Cloudflare's family filter</a>, and mail linking to a site it blocks for adult-related content or malware is not sent. Off by default.": "オンにすると、送信するメール内のリンクを <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"%s\">Cloudflare のファミリーフィルター</a> で確認し、成人向けコンテンツやマルウェアを理由にブロックされたサイトへのリンクを含むメールは送信されません。デフォルトはオフです。",
+  "If you uncheck this, then mail you send with <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"%s\">executable</a> attachments, such as .exe, .js or .bat files (also inside archives), is no longer blocked. On by default.": "オフにすると、.exe、.js、.bat ファイルなどの<a target=\"_blank\" rel=\"noopener noreferrer\" href=\"%s\">実行ファイル</a>が添付された送信メール（アーカイブ内のものも含む）はブロックされなくなります。デフォルトはオンです。",
+  "Mail is always scanned for spam, and links in mail you send are always checked with <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"%s\">Cloudflare's malware filter</a>: mail linking to a site it blocks for phishing or malware is not sent.": "メールは常にスパムスキャンされ、送信するメール内のリンクは常に <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"%s\">Cloudflare のマルウェアフィルター</a> で確認されます。フィッシングやマルウェアを理由にブロックされたサイトへのリンクを含むメールは送信されません。",
+  "The passwords generated for these aliases still work.  Generate a new password for each one to replace them:": "これらのエイリアス用に生成されたパスワードは引き続き使用できます。置き換えるには、それぞれに新しいパスワードを生成してください:"
 }

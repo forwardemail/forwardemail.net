@@ -40,6 +40,39 @@ test('creates new user', async (t) => {
   t.is(res.header.location, '/en/my-account');
 });
 
+test('signing in without an email address or a password is no error of the server', async (t) => {
+  const { web } = t.context;
+  const user = await t.context.userFactory.create();
+  await user.setPassword(falso.randPassword());
+  await user.save();
+  for (const [body, message] of [
+    [{}, phrases.PASSPORT_MISSING_USERNAME_ERROR],
+    [
+      { password: falso.randPassword() },
+      phrases.PASSPORT_MISSING_USERNAME_ERROR
+    ],
+    [{ email: falso.randEmail() }, phrases.PASSPORT_MISSING_PASSWORD_ERROR],
+    // (nor with a number or `true` for one, which is read as one)
+    [
+      { email: 5, password: falso.randPassword() },
+      phrases.PASSPORT_MISSING_USERNAME_ERROR
+    ],
+    [{ email: true, password: true }, phrases.PASSPORT_MISSING_USERNAME_ERROR],
+    [
+      { email: user.email, password: 5 },
+      phrases.PASSPORT_MISSING_PASSWORD_ERROR
+    ],
+    [
+      { email: user.email, password: true },
+      phrases.PASSPORT_MISSING_PASSWORD_ERROR
+    ]
+  ]) {
+    const res = await web.post('/en/login').timeout(ms('30s')).send(body);
+    t.is(res.status, 400);
+    t.is(JSON.parse(res.text).message, message);
+  }
+});
+
 /*
 test('rejects new user with disposable email', async (t) => {
   const { web } = t.context;

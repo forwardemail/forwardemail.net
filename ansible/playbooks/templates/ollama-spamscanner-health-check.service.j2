@@ -1,0 +1,16 @@
+# WARNING: This file is managed by Ansible (ansible/playbooks/spamscanner-llm.yml)
+# Manual changes will be overwritten on next deployment
+[Unit]
+Description=Ollama for Spam Scanner health check
+After=ollama-spamscanner.service
+OnFailure=failure-notification@%n.service
+# (touch this file to pause the check, e.g. while working on the server)
+ConditionPathExists=!/run/forwardemail-spamscanner-llm-maintenance
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/ollama-spamscanner-health-check.sh
+TimeoutStartSec=2min
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=ollama-spamscanner-health-check

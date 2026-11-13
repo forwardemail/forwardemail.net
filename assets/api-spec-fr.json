@@ -2066,7 +2066,7 @@
             "allowlist": [],
             "denylist": [],
             "restricted_alias_names": [],
-            "has_adult_content_protection": true,
+            "has_adult_content_protection": false,
             "has_phishing_protection": true,
             "has_executable_protection": true,
             "has_virus_protection": true,
@@ -2149,19 +2149,21 @@
           },
           "has_adult_content_protection": {
             "type": "boolean",
-            "description": "Activer la protection contre le spam pour les contenus adultes"
+            "description": "Bloquer ou non les e-mails envoyés contenant un lien vers un site que le filtre familial de Cloudflare bloque pour contenu pour adultes ou logiciel malveillant (false par défaut)"
           },
           "has_phishing_protection": {
             "type": "boolean",
-            "description": "Activer la protection anti-hameçonnage du scanner anti-spam"
+            "description": "Obsolète et ignoré",
+            "deprecated": true
           },
           "has_executable_protection": {
             "type": "boolean",
-            "description": "Activer la protection des exécutables du scanner anti-spam"
+            "description": "Bloquer ou non les e-mails envoyés avec des pièces jointes exécutables, comme des fichiers .exe, .js ou .bat (true par défaut)"
           },
           "has_virus_protection": {
             "type": "boolean",
-            "description": "Activer la protection antivirus du scanner anti-spam"
+            "description": "Obsolète et ignoré",
+            "deprecated": true
           },
           "has_recipient_verification": {
             "type": "boolean",
@@ -2223,19 +2225,21 @@
           },
           "has_adult_content_protection": {
             "type": "boolean",
-            "description": "Faut-il activer la protection contre le contenu adulte du scanner anti-spam sur ce domaine ?"
+            "description": "Bloquer ou non les e-mails envoyés contenant un lien vers un site que le filtre familial de Cloudflare bloque pour contenu pour adultes ou logiciel malveillant (false par défaut)"
           },
           "has_phishing_protection": {
             "type": "boolean",
-            "description": "Faut-il activer la protection anti-hameçonnage de Spam Scanner sur ce domaine ?"
+            "description": "Obsolète et ignoré",
+            "deprecated": true
           },
           "has_executable_protection": {
             "type": "boolean",
-            "description": "Faut-il activer la protection contre le spam sur ce domaine ?"
+            "description": "Bloquer ou non les e-mails envoyés avec des pièces jointes exécutables, comme des fichiers .exe, .js ou .bat (true par défaut)"
           },
           "has_virus_protection": {
             "type": "boolean",
-            "description": "Faut-il activer la protection antivirus Spam Scanner sur ce domaine ?"
+            "description": "Obsolète et ignoré",
+            "deprecated": true
           },
           "has_recipient_verification": {
             "type": "boolean",

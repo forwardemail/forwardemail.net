@@ -35,7 +35,9 @@ HOSTNAME="$(hostname)"
 HOST_IP="$(hostname -I 2>/dev/null | awk '{print $1}')"
 TIMESTAMP="$(date '+%Y-%m-%d %H:%M:%S %Z')"
 MONITOR_LOG="${CERT_MONITOR_LOG:-/var/log/ssl-certificate-monitor.log}"
-LOCK_DIR="${CERT_MONITOR_LOCK_DIR:-/var/lock}"
+# (in /run, which only root can write: a file a local user made in /var/lock,
+#  dated ahead, would hold back every alert)
+LOCK_DIR="${CERT_MONITOR_LOCK_DIR:-/run}"
 # 23 hours: the daily timer starts at about the same time each day, so a full
 # 24 hours would skip every other day's alert whenever a run finishes sooner
 LOCK_DURATION=82800

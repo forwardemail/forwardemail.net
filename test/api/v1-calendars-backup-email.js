@@ -9,6 +9,7 @@ const dayjs = require('dayjs-with-plugins');
 const ms = require('ms');
 const pWaitFor = require('p-wait-for');
 const test = require('ava');
+const { simpleParser } = require('mailparser');
 
 const utils = require('../utils');
 const config = require('#config');
@@ -92,11 +93,13 @@ test.serial(
     const { alias, pass, username } = await createTestAlias(t);
     const auth = createAliasAuth(username, pass);
     const calendarName = 'Delete Backup Calendar';
+    // (longer than what is copied of it into the data of each of its events)
+    const description = `Calendar to delete ${'d'.repeat(3000)}`;
 
     const calendarRes = await api
       .post('/v1/calendars')
       .set('Authorization', auth)
-      .send({ name: calendarName, description: 'Calendar to delete' });
+      .send({ name: calendarName, description });
 
     t.is(calendarRes.status, 200);
     const calendarId = calendarRes.body.id;
@@ -154,5 +157,15 @@ test.serial(
       email.subject.includes(calendarName),
       'Backup email subject should contain the deleted calendar name'
     );
+
+    // (with all of what the calendar said of itself)
+    const { attachments } = await simpleParser(
+      await Emails.getMessage(email.message)
+    );
+    const ics = attachments
+      .map((attachment) => attachment.content.toString().replace(/\r\n /g, ''))
+      .find((content) => content.includes('BEGIN:VCALENDAR'));
+    t.true(ics.includes('SUMMARY:Delete backup test event'));
+    t.true(ics.includes(`DESCRIPTION:${description}`));
   }
 );

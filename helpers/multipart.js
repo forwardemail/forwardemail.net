@@ -101,8 +101,15 @@ const multer = require('multer');
 // authentication and buffers every field in memory, so the counts also bound
 // what one anonymous request can hold (200 fields x 1 MB).
 //
+// A field name is an object path, as deep as it has brackets (`a[b][c]`),
+// and a name of 256 bytes makes a body nested 85 deep: more than a body may
+// be (see helpers/limit-body-depth.js, which refuses one as it is set: here
+// in a callback of multer's, where what it threw was caught by nothing and
+// the request was never answered). No form of ours nests more than a few.
+//
 const DEFAULT_LIMITS = {
   fieldNameSize: 256,
+  fieldNestingDepth: 32,
   fieldSize: 1024 * 1024,
   fields: 200,
   files: 0,

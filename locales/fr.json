@@ -23531,5 +23531,19 @@
   "Delete mailbox?": "Supprimer la boîte aux lettres ?",
   "Please confirm if you wish to delete the mailbox <strong>%s</strong>.": "Veuillez confirmer si vous souhaitez supprimer la boîte aux lettres <strong>%s</strong>.",
   "Generate mailbox passwords": "Générer des mots de passe de boîte aux lettres",
-  "Generate random mailbox": "Générer une boîte aux lettres aléatoire"
+  "Generate random mailbox": "Générer une boîte aux lettres aléatoire",
+  "The message could not be scanned at this time, please try again later.": "Le message n’a pas pu être analysé pour le moment, veuillez réessayer plus tard.",
+  "The message could not be scanned at this time and will be retried.": "Le message n’a pas pu être analysé pour le moment, une nouvelle tentative sera effectuée plus tard.",
+  "Senders blocked after spam reports": "Expéditeurs bloqués après des signalements de spam",
+  "The recipient at these forwarding addresses reported mail from these senders as spam to their mailbox provider, so their mail to that address gets a temporary error until the date shown.": "Le destinataire de ces adresses de transfert a signalé comme spam à son fournisseur de messagerie les e-mails de ces expéditeurs : leurs e-mails vers cette adresse reçoivent donc une erreur temporaire jusqu’à la date indiquée.",
+  "Sender": "Expéditeur",
+  "Forwarding address": "Adresse de transfert",
+  "Until": "Jusqu’au",
+  "Unblock": "Débloquer",
+  "Unblock sender?": "Débloquer l’expéditeur ?",
+  "Please confirm if you wish to receive mail from <strong>%s</strong> at <strong>%s</strong> again.": "Veuillez confirmer que vous souhaitez de nouveau recevoir les e-mails de <strong>%s</strong> à <strong>%s</strong>.",
+  "If you check this, then links in mail you send are checked with <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"%s\">Cloudflare's family filter</a>, and mail linking to a site it blocks for adult-related content or malware is not sent. Off by default.": "Si vous cochez cette case, les liens des e-mails que vous envoyez sont vérifiés avec le <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"%s\">filtre familial de Cloudflare</a>, et les e-mails contenant un lien vers un site qu'il bloque pour contenu pour adultes ou logiciel malveillant ne sont pas envoyés. Désactivé par défaut.",
+  "If you uncheck this, then mail you send with <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"%s\">executable</a> attachments, such as .exe, .js or .bat files (also inside archives), is no longer blocked. On by default.": "Si vous décochez cette case, les e-mails que vous envoyez avec des pièces jointes <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"%s\">exécutables</a>, comme des fichiers .exe, .js ou .bat (y compris dans des archives), ne sont plus bloqués. Activé par défaut.",
+  "Mail is always scanned for spam, and links in mail you send are always checked with <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"%s\">Cloudflare's malware filter</a>: mail linking to a site it blocks for phishing or malware is not sent.": "Le courrier est toujours analysé à la recherche de spam, et les liens des e-mails que vous envoyez sont toujours vérifiés avec le <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"%s\">filtre anti-malware de Cloudflare</a> : les e-mails contenant un lien vers un site qu'il bloque pour phishing ou logiciel malveillant ne sont pas envoyés.",
+  "The passwords generated for these aliases still work.  Generate a new password for each one to replace them:": "Les mots de passe générés pour ces alias fonctionnent toujours. Générez un nouveau mot de passe pour chacun afin de les remplacer :"
 }

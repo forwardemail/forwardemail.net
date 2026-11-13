@@ -4,6 +4,7 @@
  */
 
 const punycode = require('node:punycode');
+const timers = require('node:timers/promises');
 
 const Boom = require('@hapi/boom');
 const numeral = require('numeral');
@@ -34,7 +35,10 @@ const { paypalAgent } = require('#helpers/paypal');
 const retryPayPalRequest = require('#helpers/retry-paypal-request');
 const getPayPalOrderCapture = require('#helpers/get-paypal-order-capture');
 
-const { STRIPE_MAPPING, STRIPE_PRODUCTS, PAYPAL_PLAN_MAPPING } =
+// (between looking up a subscription that is not active yet, see below)
+const ACTIVATION_DELAY = config.env === 'test' ? 10 : ms('2s');
+
+const { STRIPE_MAPPING, STRIPE_PRODUCTS, PAYPAL_MAPPING, PAYPAL_PLAN_MAPPING } =
   config.payments;
 
 // (marked so the error is told apart from failures that are only reported)
@@ -1203,6 +1207,22 @@ async function retrieveDomainBilling(ctx) {
         return;
       }
 
+      // only an order made here is credited (see `isIssuedPayPalOrder`;
+      // one credited already is only looked up again, as when its link is
+      // opened later)
+      if (
+        !(await getPayPalOrderCapture.isIssuedPayPalOrder(
+          ctx.client,
+          body,
+          ctx.state.user.id
+        )) &&
+        !(await Payments.exists({
+          user: ctx.state.user._id,
+          paypal_order_id: body.id
+        }))
+      )
+        throw ctx.translateError('UNKNOWN_ERROR');
+
       // store customer
       ctx.state.user[config.userFields.paypalPayerID] = body.payer.payer_id;
 
@@ -1221,7 +1241,11 @@ async function retrieveDomainBilling(ctx) {
 
       // we will take the amount and divide it by the cost per the custom_id
       // in order to determine the duration the customer purchased/added
-      const amount = Number(body.purchase_units[0].items[0].unit_amount.value);
+      // (the amount the order charges, not the price it gives its item)
+      const amount = getPayPalOrderCapture.getPayPalOrderAmount(
+        body,
+        ctx.query.plan
+      );
       const months = Math.round(amount / (ctx.query.plan === 'team' ? 9 : 3));
       if (!_.isFinite(months) || months < 1)
         throw ctx.translateError('UNKNOWN_ERROR');
@@ -1304,7 +1328,12 @@ ${encode(safeStringify(parseErr(err), null, 2))}</code></pre>`
       // only credit the plan once the order was paid (a declined capture
       // leaves the order APPROVED, and one already captured by the webhook
       // is COMPLETED when looked up again)
-      const capture = await getPayPalOrderCapture(body.id, captured);
+      const capture = await getPayPalOrderCapture(
+        body.id,
+        captured,
+        amount,
+        body.purchase_units[0].payee?.merchant_id
+      );
       if (!capture) throw ctx.translateError('INVALID_PAYMENT_INTENT');
 
       // parse the transaction id
@@ -1438,12 +1467,11 @@ ${encode(safeStringify(parseErr(err), null, 2))}</code></pre>`
     //
     if (isSANB(ctx.query.paypal_subscription_id)) {
       const agent2 = await paypalAgent();
-      const { body } = await agent2.get(
+      let { body } = await agent2.get(
         `/v1/billing/subscriptions/${ctx.query.paypal_subscription_id}`
       );
 
-      // validate subscription is active
-      // (only an approved or active subscription was paid for or will be)
+      // validate subscription is active (or approved, see below)
       if (
         !_.isObject(body) ||
         !['ACTIVE', 'APPROVED'].includes(body.status) ||
@@ -1477,6 +1505,74 @@ ${encode(safeStringify(parseErr(err), null, 2))}</code></pre>`
           _id: { $ne: ctx.state.user._id },
           [config.userFields.paypalSubscriptionID]: body.id
         })
+      )
+        throw ctx.translateError('UNKNOWN_ERROR');
+
+      // validate plans matched up
+      const mapping = PAYPAL_PLAN_MAPPING[ctx.query.plan];
+      if (!_.isObject(mapping)) throw ctx.translateError('UNKNOWN_ERROR');
+      let duration;
+      for (const key of Object.keys(mapping)) {
+        if (mapping[key] === body.plan_id) {
+          duration = key;
+          break;
+        }
+      }
+
+      if (!duration) throw ctx.translateError('UNKNOWN_ERROR');
+
+      //
+      // a subscription is made in the browser, so one that starts later
+      // than it may (when the plan it renews expires, or else now), is on
+      // other terms than its plan's, is not active, or was last paid less
+      // than its plan's price, is refused before anything is changed (see
+      // `isAsOffered`)
+      //
+      const latestStart = isEnableAutoRenew
+        ? ctx.state.user[config.userFields.planExpiresAt]
+        : undefined;
+
+      //
+      // PayPal makes a subscription active once its payer agreed to it, as
+      // we ask it to (see assets/js/billing.js).  One made in the browser
+      // to wait for us instead stays approved: it never charges, while an
+      // account with a subscription counts as paying.  So one that is not
+      // active yet is made so here (which starts its charges), when it is
+      // this account's and on our terms, and looked up again.
+      //
+      if (
+        body.status === 'APPROVED' &&
+        body.custom_id === ctx.state.user.id &&
+        claimPayPalSubscription.hasOurTerms(body, latestStart)
+      ) {
+        try {
+          await agent2
+            .post(`/v1/billing/subscriptions/${body.id}/activate`)
+            .send({ reason: 'Approved by the subscriber' });
+        } catch (err) {
+          ctx.logger.warn(err, { paypal_subscription_id: body.id });
+        }
+
+        for (let i = 0; i < 3; i++) {
+          ({ body } = await agent2.get(
+            `/v1/billing/subscriptions/${ctx.query.paypal_subscription_id}`
+          ));
+          if (body?.status !== 'APPROVED') break;
+          await timers.setTimeout(ACTIVATION_DELAY);
+        }
+      }
+
+      const lastPayment = body?.billing_info?.last_payment?.amount;
+      if (
+        body?.id !== ctx.query.paypal_subscription_id ||
+        !isSANB(body.subscriber?.payer_id) ||
+        !claimPayPalSubscription.isAsOffered(body, latestStart) ||
+        (lastPayment?.value &&
+          (lastPayment.currency_code !== 'USD' ||
+            !(
+              Number(lastPayment.value) >=
+              PAYPAL_MAPPING[ctx.query.plan][duration]
+            )))
       )
         throw ctx.translateError('UNKNOWN_ERROR');
 
@@ -1528,30 +1624,14 @@ ${encode(safeStringify(parseErr(err), null, 2))}</code></pre>`
       // save the new subscription ID to their account
       ctx.state.user[config.userFields.paypalSubscriptionID] = body.id;
 
-      // validate plans matched up
-      const mapping = PAYPAL_PLAN_MAPPING[ctx.query.plan];
-      if (!_.isObject(mapping)) throw ctx.translateError('UNKNOWN_ERROR');
-      let duration;
-      for (const key of Object.keys(mapping)) {
-        if (mapping[key] === body.plan_id) {
-          duration = key;
-          break;
-        }
-      }
-
-      if (!duration) throw ctx.translateError('UNKNOWN_ERROR');
-
       // if they upgraded their plan then store it on the user object
       if (!isMakePayment && !isEnableAutoRenew)
         ctx.state.user.plan = ctx.query.plan;
 
       // get the date
-      let now = new Date();
-      if (body.start_time) {
-        now = new Date(body.start_time);
-      }
-
-      if (!_.isDate(now)) now = new Date();
+      // (never a later one: the plan would count as paid until then)
+      let now = new Date(body.start_time);
+      if (!(now.getTime() <= Date.now())) now = new Date();
 
       // set planSetAt (since we're changing plans or making an upgrade/change to the plan)
       if (!isMakePayment && !isEnableAutoRenew) {

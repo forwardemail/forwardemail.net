@@ -6,6 +6,7 @@
 const os = require('node:os');
 const punycode = require('node:punycode');
 const { Buffer } = require('node:buffer');
+const { setTimeout: delay } = require('node:timers/promises');
 const { createPublicKey, randomBytes, createHmac } = require('node:crypto');
 
 const Boom = require('@hapi/boom');
@@ -23,13 +24,16 @@ const safeStringify = require('fast-safe-stringify');
 const { encode } = require('html-entities');
 const { SRS } = require('sender-rewriting-scheme');
 const { Splitter, Joiner } = require('mailsplit');
-const { authenticate } = require('mailauth');
 const { dkimSign } = require('mailauth/lib/dkim/sign');
 const { isURL } = require('@forwardemail/validator');
 
 const pkg = require('../package.json');
 
 const _ = require('./lodash');
+const {
+  authenticateSent,
+  limits: authenticationLimits
+} = require('./authentication-limits');
 const bsonOverflowFallbackSave = require('./bson-overflow-fallback-save');
 const isBsonOverflow = require('./is-bson-overflow');
 const combineErrors = require('./combine-errors');
@@ -50,6 +54,8 @@ const isEmail = require('./is-email');
 const logger = require('./logger');
 const parseRootDomain = require('./parse-root-domain');
 const retryRequest = require('./retry-request');
+const sendSmtpPreventedEmail = require('./send-smtp-prevented-email');
+const spamScanner = require('./spam-scanner');
 const { isPrivateHostResolved } = require('./is-private-host');
 const sendEmail = require('./send-email');
 const updateHeaders = require('./update-headers');
@@ -59,6 +65,10 @@ const shouldSendDSN = require('./should-send-dsn');
 const { isWithinGracePeriod } = require('./is-within-grace-period');
 const { canSendBounceTo } = require('./reserve-auto-reply');
 const { grantSrsReverseOnce } = require('./srs-reverse');
+
+// the most a Spam Scanner check is waited for as a message is sent (the send
+// job gives a message two minutes in all, see `jobs/send-emails.js`)
+const SPAM_CHECK_LIMIT = 45_000;
 
 const config = require('#config');
 const env = require('#config/env');
@@ -159,7 +169,18 @@ function isInboundTriggered(email) {
 // truncated response (so it cannot carry content of the sender's choosing to
 // an address the sender chose, see `helpers/create-bounce.js`)
 //
-function getBounceDsn(email, bounceTo) {
+//
+// (a message Spam Scanner blocked or rejected is not sent back in its
+// bounce either, whatever the sender asked for: only its headers)
+//
+function getBounceDsn(email, bounceTo, error) {
+  if (error?.is_spam_scanner && bounceTo !== 'external')
+    return {
+      dsn: {
+        ...(email && typeof email.dsn === 'object' ? email.dsn : {}),
+        return: 'headers'
+      }
+    };
   if (bounceTo !== 'external') return {};
   return {
     dsn: {
@@ -492,7 +513,7 @@ async function processEmail({ email, port = 25, resolver, client }) {
                   ...(typeof email.toObject === 'function'
                     ? email.toObject()
                     : email),
-                  ...getBounceDsn(email, bounceTo),
+                  ...getBounceDsn(email, bounceTo, error),
                   envelope
                 },
                 error,
@@ -610,6 +631,202 @@ async function processEmail({ email, port = 25, resolver, client }) {
     }
 
     //
+    // Spam Scanner's verdict (see `checkOutbound` in `helpers/spam-scanner.js`):
+    // from the scan kept when the message was submitted, or a scan now (with
+    // the language model's verdict on a close call, or for mail that was not
+    // checked then, such as mail this server made); kept with the email, so a
+    // retry is not scanned again
+    //
+    // (not the bounces we make, which only repeat a message's headers and why
+    //  it was not delivered)
+    //
+    // In monitor mode (SPAM_SCANNER_MONITOR_ONLY) nothing is rejected or
+    // deferred for it, and the message does not wait for it: a scan made now
+    // runs alongside sending, and what it would block or reject is logged
+    // (see `logResult`); but mail this server made with no scan kept from
+    // when it was queued is waited for, and refused for what blocks it
+    // (`blocksAsSent`), as it would have been then
+    //
+    // (what Spam Scanner's logs say of the email: not `meta.session`, which
+    //  holds its recipients' addresses and its headers)
+    const scanMeta = {
+      email: email._id,
+      user: email.user,
+      domains: [email.domain]
+    };
+    let spamRejection;
+    // (how long the check was waited for: the DNS queries of the message's
+    //  authentication then take no longer than what is left of its time, see
+    //  `authenticateSent`, so both stay within the send job's two minutes)
+    let spamCheckTook = 0;
+    // (the Spam Scanner settings of the domain, see `protectionOf`)
+    const protection = spamScanner.protectionOf(domain);
+    const scansAsSent =
+      !email.is_dsn &&
+      spamScanner.shouldScanOutbound(email.envelope, domain.name);
+    // (in monitor mode, not a message larger than a scan that only logs
+    //  reads, which would only take a send slot, see `withSendSlot`; counted
+    //  as skipped, see `flushStats`)
+    const tooLargeToLog =
+      !spamScanner.isEnforcing() &&
+      !spamScanner.blocksAsSent(email.spam_scan) &&
+      config.spamScanner.maxSize > 0 &&
+      message.length > config.spamScanner.maxSize;
+    // (only one that would have been scanned: not one decided by the scan
+    //  kept from when it was submitted, see `checkOutbound`)
+    if (
+      scansAsSent &&
+      tooLargeToLog &&
+      config.spamScanner.enabled &&
+      (!spamScanner.isCurrent(email.spam_scan, protection) ||
+        (spamScanner.needsLanguageModel(email.spam_scan) &&
+          email.spam_scan.blocking.length === 0))
+    )
+      spamScanner.countSkipped('sending', 'skipped_size');
+    if (scansAsSent && !tooLargeToLog) {
+      const checking = spamScanner
+        .checkOutbound({
+          message,
+          stored: email.spam_scan,
+          envelope: email.envelope,
+          session: { id: String(email._id) },
+          client,
+          resolver,
+          protection
+        })
+        .then(async (check) => {
+          // (not for one queued unchecked in monitor mode, see `blocksAsSent`:
+          //  a result that came after the message stopped waiting for it
+          //  would be kept without what refuses it, and the next attempt
+          //  would send it, so that attempt scans it again)
+          if (check.scanned && !spamScanner.blocksAsSent(email.spam_scan)) {
+            try {
+              await Emails.findByIdAndUpdate(
+                email._id,
+                { $set: { spam_scan: check.stored } },
+                // (not `updated_at`, which retries and backoff go by)
+                { timestamps: false, writeConcern: { w: 1 } }
+              );
+            } catch (err) {
+              // (scanned again on the next attempt)
+              spamScanner.errorOften('spam scanner could not keep its result', {
+                error: err,
+                email: String(email._id)
+              });
+            }
+          }
+
+          return check;
+        });
+
+      // (in monitor mode waited for only by one refused for what blocks it,
+      //  see `blocksAsSent`)
+      let check = null;
+      if (
+        spamScanner.isEnforcing() ||
+        spamScanner.blocksAsSent(email.spam_scan)
+      ) {
+        // (no longer than a check may take before the message is sent within
+        //  the send job's time for it: one that took longer is unchecked)
+        const limit = new AbortController();
+        const checkStarted = Date.now();
+        try {
+          check = await Promise.race([
+            checking,
+            delay(SPAM_CHECK_LIMIT, null, { signal: limit.signal }).then(
+              () => ({ verdict: 'unchecked', enforced: false, stored: null }),
+              () => null
+            )
+          ]);
+        } finally {
+          limit.abort();
+          spamCheckTook = Date.now() - checkStarted;
+        }
+      } else
+        checking.catch((err) =>
+          spamScanner.errorOften('spam scanner could not check a message', {
+            error: err,
+            email: String(email._id)
+          })
+        );
+
+      if (check?.verdict === 'unchecked') {
+        // (tried again later, as a temporary error, out of monitor mode; or
+        //  sent unchecked, with SPAM_SCANNER_OUTBOUND_FAIL_CLOSED=false; see
+        //  `holdUnchecked`)
+        if (
+          await spamScanner.holdUnchecked({
+            client,
+            // (in monitor mode, one refused for what blocks it as it is
+            //  sent, see `blocksAsSent`, is held back too: it could carry
+            //  what is refused)
+            failed: spamScanner.blocksAsSent(email.spam_scan),
+            // (when it was first to be sent: the later of when it was
+            //  queued and the date it was scheduled for)
+            since: Math.max(
+              new Date(email.created_at).getTime() || 0,
+              new Date(email.date).getTime() || 0
+            ),
+            meta: {
+              ...scanMeta,
+              ignore_hook: false,
+              ...(check.stored ? { links_incomplete: true } : {})
+            }
+          })
+        ) {
+          const err = Boom.badRequest(
+            i18n.translateError('SPAM_SCANNER_UNCHECKED_RETRY')
+          );
+          err.isCodeBug = false;
+          err.ignoreHook = true;
+          throw err;
+        }
+      } else if (
+        check?.enforced &&
+        (check.verdict === 'block' ||
+          //
+          // (spam is not rejected for auto-replies, redirects and bounces,
+          //  which get no bounce of their own and would just disappear, nor
+          //  for the rest of a message already sent to some recipients)
+          //
+          (check.verdict === 'spam' &&
+            !email.is_bounce &&
+            !(Array.isArray(email.accepted) && email.accepted.length > 0)))
+      ) {
+        // (each recipient is rejected below, see `createRejection`)
+        spamRejection = check;
+        logger.warn(
+          new Error(`Outbound message prevented: ${check.response}`),
+          {
+            ...scanMeta,
+            ignore_hook: false,
+            spam_scanner: true,
+            verdict: check.verdict,
+            score: check.stored.score
+          }
+        );
+        sendSmtpPreventedEmail({
+          Domains,
+          client,
+          domain,
+          category: check.verdict === 'block' ? 'virus' : 'spam',
+          responseCode: check.verdict === 'block' ? 554 : 550,
+          response: check.response,
+          email: {
+            envelope: email.envelope,
+            messageId: email.messageId,
+            subject: email.subject,
+            date: email.date
+          }
+        })
+          .then()
+          .catch((err) =>
+            logger.fatal(err, { ...scanMeta, ignore_hook: true })
+          );
+      }
+    }
+
+    //
     // prepare message for sending with mailsplit
     //
     // - [x] remove Bcc header
@@ -723,7 +940,14 @@ async function processEmail({ email, port = 25, resolver, client }) {
       updateHeaders(data.headers);
 
       // additional headers to add specifically for outbound smtp
+      // (and none naming a forwarding destination, which only our MX servers
+      //  add, see `helpers/arf-recipient-block.js`)
+      data.headers.remove('x-forward-email-report');
       data.headers.remove('x-forward-email-sender');
+      // (nor any X-Spam-Scanner-* header a sender added, nor, out of monitor
+      //  mode, where ours are the standard X-Spam-* ones too, any of those:
+      //  either would read as our verdict to whoever receives it)
+      spamScanner.removeHeaders(data.headers);
       data.headers.add(
         'X-Forward-Email-Sender',
         `rfc822; ${[
@@ -756,7 +980,12 @@ async function processEmail({ email, port = 25, resolver, client }) {
       intoStream(message).pipe(splitter).pipe(joiner)
     );
 
-    if (hasNewsletter && !domain.has_newsletter) {
+    //
+    // (a message Spam Scanner blocked or rejected is not sent, so the checks
+    // of how it would be sent below are skipped: it is rejected for each
+    // recipient, not retried for a setting of the domain)
+    //
+    if (hasNewsletter && !domain.has_newsletter && !spamRejection) {
       // only send email if it's not sent yet or been more than three days without approval
       if (
         !_.isDate(domain.newsletter_sent_at) ||
@@ -889,7 +1118,7 @@ async function processEmail({ email, port = 25, resolver, client }) {
     }
 
     // verify Return-Path (enforces domain reputation)
-    if (srsDomain !== returnPath) {
+    if (srsDomain !== returnPath && !spamRejection) {
       //
       // NOTE: this indicates typically an outbound SMTP configuration issue
       //       (as a courtesy send this once a week to the user on a per-domain basis)
@@ -955,7 +1184,10 @@ async function processEmail({ email, port = 25, resolver, client }) {
 
     // allow a few replies to the SRS address per recipient (e.g. bounces or
     // an auto-reply to the Return-Path, see `helpers/srs-reverse`)
-    if (envelope.from !== punycode.toASCII(email.envelope.from))
+    if (
+      envelope.from !== punycode.toASCII(email.envelope.from) &&
+      !spamRejection
+    )
       await grantSrsReverseOnce(
         client,
         envelope.from,
@@ -970,15 +1202,26 @@ async function processEmail({ email, port = 25, resolver, client }) {
       ip = ips[0];
     }
 
-    const { dkim, spf, dmarc } = await authenticate(raw, {
-      sender: envelope.from,
-      ip,
-      helo: HOSTNAME,
-      mta: HOSTNAME,
-      disableArc: true,
-      disableBimi: true,
-      resolver: resolver.resolve
-    });
+    const { dkim, spf, dmarc } = spamRejection
+      ? { dkim: { results: [] }, spf: null, dmarc: null }
+      : // (our own signature, which comes first, and a few more: mailauth
+        //  hashes the body once for each, and a sender may add hundreds; and
+        //  at most so many DNS queries, see `helpers/authentication-limits`)
+        await authenticateSent(raw, {
+          sender: envelope.from,
+          ip,
+          helo: HOSTNAME,
+          mta: HOSTNAME,
+          disableArc: true,
+          disableBimi: true,
+          resolver: resolver.resolve,
+          // (what is left of the time the check and these queries may take
+          //  together, at least 10s)
+          timeout: Math.max(
+            10_000,
+            authenticationLimits.timeout - spamCheckTook
+          )
+        });
 
     const dkimPublicKey = createPublicKey(
       Buffer.from(
@@ -1038,7 +1281,7 @@ async function processEmail({ email, port = 25, resolver, client }) {
     )
       bodyHashIssue = true;
 
-    if (!bodyHashIssue && (!dkim || !dkimAlignedMatch)) {
+    if (!spamRejection && !bodyHashIssue && (!dkim || !dkimAlignedMatch)) {
       const err = Boom.badRequest(
         i18n.translateError('INVALID_DKIM_SIGNATURE')
       );
@@ -1048,13 +1291,14 @@ async function processEmail({ email, port = 25, resolver, client }) {
 
     // verify SPF
     if (
-      !spf ||
-      !spf.domain ||
-      ![
-        `${domain.return_path}.${punycode.toASCII(domain.name)}`,
-        env.WEB_HOST
-      ].includes(punycode.toASCII(spf.domain)) ||
-      spf?.status?.result !== 'pass'
+      !spamRejection &&
+      (!spf ||
+        !spf.domain ||
+        ![
+          `${domain.return_path}.${punycode.toASCII(domain.name)}`,
+          env.WEB_HOST
+        ].includes(punycode.toASCII(spf.domain)) ||
+        spf?.status?.result !== 'pass')
     ) {
       const err = Boom.badRequest(i18n.translateError('INVALID_SPF_RESULT'));
       if (spf) err.spf = spf;
@@ -1066,17 +1310,18 @@ async function processEmail({ email, port = 25, resolver, client }) {
 
     // verify DMARC
     if (
-      !dmarc ||
-      (dmarc?.domain &&
-        punycode.toASCII(dmarc.domain) !== punycode.toASCII(domain.name) &&
-        dmarc?.domain &&
-        punycode.toASCII(dmarc.domain) !==
-          parseRootDomain(punycode.toASCII(domain.name))) ||
-      // !isSANB(dmarc?.policy) ||
-      // !['none', 'reject', 'quarantine'].includes(dmarc.policy) ||
-      // dmarc?.policy !== 'reject' ||
-      dmarc?.status?.result !== 'pass' ||
-      (typeof dmarc?.pct === 'number' && dmarc.pct !== 100)
+      !spamRejection &&
+      (!dmarc ||
+        (dmarc?.domain &&
+          punycode.toASCII(dmarc.domain) !== punycode.toASCII(domain.name) &&
+          dmarc?.domain &&
+          punycode.toASCII(dmarc.domain) !==
+            parseRootDomain(punycode.toASCII(domain.name))) ||
+        // !isSANB(dmarc?.policy) ||
+        // !['none', 'reject', 'quarantine'].includes(dmarc.policy) ||
+        // dmarc?.policy !== 'reject' ||
+        dmarc?.status?.result !== 'pass' ||
+        (typeof dmarc?.pct === 'number' && dmarc.pct !== 100))
     ) {
       const err = Boom.badRequest(i18n.translateError('INVALID_DMARC_RESULT'));
       if (dmarc) err.dmarc = dmarc;
@@ -1200,6 +1445,10 @@ async function processEmail({ email, port = 25, resolver, client }) {
             throw Boom.badRequest(i18n.translateError('DOMAIN_SUSPENDED'));
 
           try {
+            // (blocked or rejected by Spam Scanner, see above)
+            if (spamRejection)
+              throw spamScanner.createRejection(spamRejection, to);
+
             //
             // if target is our own service then ignore
             //
@@ -1907,8 +2156,25 @@ async function processEmail({ email, port = 25, resolver, client }) {
     if (!email.is_bounce && filteredErrors.length > 0) {
       const softBounces = [];
       const hardBounces = [];
+      // (a message Spam Scanner blocked or rejected is bounced once, for a
+      //  recipient the sender wants a bounce for, not once for each of its
+      //  recipients; the rest are recorded as bounced)
+      let spamScannerBounce = false;
+      const bouncing = filteredErrors.filter((error) => {
+        if (!error.is_spam_scanner) return true;
+        if (
+          !spamScannerBounce &&
+          shouldSendDSN(email, error.recipient, 'FAILURE')
+        ) {
+          spamScannerBounce = true;
+          return true;
+        }
+
+        hardBounces.push(error.recipient);
+        return false;
+      });
       await pMap(
-        filteredErrors,
+        bouncing,
         async (error) => {
           try {
             //
@@ -1953,7 +2219,7 @@ async function processEmail({ email, port = 25, resolver, client }) {
                 ...(typeof email.toObject === 'function'
                   ? email.toObject()
                   : email),
-                ...getBounceDsn(email, bounceTo),
+                ...getBounceDsn(email, bounceTo, error),
                 envelope
               },
               error,

@@ -12,6 +12,9 @@ const { parseStringPromise, processors } = require('xml2js');
 
 const assertSafeXml = require('#helpers/assert-safe-xml');
 
+// how many objects deep the XML of a request is read
+const MAX_XML_DEPTH = 64;
+
 //
 // Properties whose value the server builds as XML (an href, a resource type,
 // a privilege set). Any other value is escaped: a stored vCard, an address
@@ -76,15 +79,46 @@ async function parseXML(xmlString) {
   assertSafeXml(xmlString);
 
   // Parse with security options
-  return parseStringPromise(xmlString, {
-    explicitArray: false,
-    explicitCharkey: false,
-    trim: true,
-    attrkey: '_attr',
-    charkey: '_',
-    normalizeTags: true,
-    tagNameProcessors: [processors.stripPrefix]
-  });
+  let parsed;
+  try {
+    parsed = await parseStringPromise(xmlString, {
+      explicitArray: false,
+      explicitCharkey: false,
+      trim: true,
+      attrkey: '_attr',
+      charkey: '_',
+      normalizeTags: true,
+      tagNameProcessors: [processors.stripPrefix]
+    });
+  } catch {
+    // (what its parser cannot read, and what it throws over: an element
+    // named as its key for text, an attribute named as what every object has)
+    throw Boom.badRequest('XML input is not well-formed');
+  }
+
+  // (an element is an object, or one of a list of them; a request is a few
+  // of them deep, and what logs an error with such a body, 1,600 deep, fails)
+  let level = [parsed];
+  for (let depth = 0; level.length > 0; depth++) {
+    if (depth > MAX_XML_DEPTH) throw Boom.badRequest('XML input too deep');
+    level = level.flatMap((value) =>
+      value && typeof value === 'object' ? Object.values(value) : []
+    );
+  }
+
+  return parsed;
+}
+
+/**
+ * The XML of a request, if it has any: one without a body, or with a body
+ * that is not read as text, has an object for one, which was parsed as the
+ * text "[object Object]" and failed (RFC 4918 9.1 reads a PROPFIND without a
+ * body as a request for all properties)
+ * @param {*} body - What the body parser made of the body
+ * @returns {Promise<Object|null>} - Parsed XML object, or null without XML
+ */
+async function parseBody(body) {
+  return typeof body === 'string' && body ? parseXML(body) : null;
 }
 
 /**
@@ -808,6 +842,7 @@ function generateETag(vCardContent) {
 
 module.exports = {
   // Existing functions (preserved)
+  parseBody,
   parseXML,
   getMultistatusXML,
   getPropfindContactXML,

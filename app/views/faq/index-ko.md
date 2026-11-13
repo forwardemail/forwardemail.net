@@ -4130,14 +4130,12 @@ Forward Email은 포괄적인 다중 계층 보호를 구현합니다:
 
 ### 성인 콘텐츠, 피싱, 실행 파일 또는 바이러스 검사를 비활성화할 수 있나요 {#can-i-disable-adult-content-phishing-executable-or-virus-scanning}
 
-네. 모든 도메인은 수신되는 링크와 첨부 파일을 <a href="https://spamscanner.net" target="_blank" rel="noopener noreferrer">Spam Scanner</a>로 검사합니다. 이는 저희가 직접 개발한 오픈 소스 스팸, 피싱, 바이러스 방지 솔루션입니다(Forward Email의 나머지 부분과 동일한 개인정보 보호 우선 및 무로그 정책을 따릅니다). 네 가지 범주는 각각 <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">내 계정 <i class="fa fa-angle-right"></i> 도메인</a> <i class="fa fa-angle-right"></i> 고급 설정에서 개별적으로 켜거나 끌 수 있습니다:
+네, 성인 콘텐츠와 실행 파일 검사는 비활성화할 수 있습니다. 메일은 <a href="https://spamscanner.net" target="_blank" rel="noopener noreferrer">Spam Scanner</a>로 검사합니다. 이는 저희가 직접 개발한 오픈 소스 스팸, 피싱, 바이러스 방지 솔루션입니다(Forward Email의 나머지 부분과 동일한 개인정보 보호 우선 및 무로그 정책을 따릅니다). 두 가지 설정은 각각 <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">내 계정 <i class="fa fa-angle-right"></i> 도메인</a> <i class="fa fa-angle-right"></i> 고급 설정에서 개별적으로 켜거나 끌 수 있습니다:
 
-* **성인 관련 콘텐츠 보호**: 비활성화하면 링크에서 성인 관련 콘텐츠를 검사하지 않습니다.
-* **피싱 보호**: 비활성화하면 링크에서 악성 코드, 도메인 바꿔치기, IDN 호모그래프 공격 또는 일반적인 피싱을 검사하지 않습니다.
-* **실행 파일 보호**: 비활성화하면 링크와 첨부 파일에서 잠재적으로 악성인 실행 파일 형식, 확장자, 이름, 헤더 또는 IDN 호모그래프 공격을 검사하지 않습니다.
-* **바이러스 보호**: 비활성화하면 첨부 파일에서 트로이 목마, 바이러스, 악성 코드 또는 기타 악의적인 위협을 검사하지 않습니다(ClamAV 사용).
+* **성인 관련 콘텐츠 보호**(기본값: 꺼짐): 활성화하면 보내는 메일의 링크를 <a href="https://developers.cloudflare.com/1.1.1.1/setup/#1111-for-families" target="_blank" rel="noopener noreferrer">Cloudflare 가족 필터</a>로 확인하며, 성인 관련 콘텐츠나 악성 코드 때문에 차단된 사이트로 연결되는 메일은 발송되지 않습니다.
+* **실행 파일 보호**(기본값: 켜짐): 비활성화하면 .exe, .js, .bat 파일 같은 실행 파일이 첨부된 보내는 메일(압축 파일 내부 포함)이 더 이상 차단되지 않습니다.
 
-네 가지 모두 기본적으로 활성화되어 있습니다. 하나를 비활성화하면 해당 범주의 검사만 꺼집니다. 스팸 필터링 전체가 비활성화되는 것은 아니며, [특정 별칭 비활성화](#can-i-disable-specific-aliases)와도 별개입니다. 범주를 비활성화하는 가장 흔한 이유는 사용자의 트래픽에 특유한 오탐 패턴입니다(예: 성인 테마 업소나 업체의 정상적인 메일링 리스트를 성인 콘텐츠 검사가 걸러내는 경우).
+스팸 필터링과 피싱 보호는 항상 켜져 있으며 비활성화할 수 없습니다. Cloudflare 악성 코드 필터가 피싱이나 악성 코드로 차단하는 사이트로 연결되는 링크가 포함된 메일은 보내지지 않습니다. 무료 플랜 도메인은 기본값을 사용합니다. 성인 콘텐츠 보호는 이전에는 기본적으로 켜져 있었지만, 이 변경과 함께 모든 도메인에서 꺼졌으므로 필요하면 다시 켜세요. 이 설정은 [특정 별칭 비활성화](#can-i-disable-specific-aliases)와 별개입니다.
 
 ### 이메일 내용을 디스크에 저장하나요 {#do-you-store-email-content-on-disk}
 
@@ -4506,8 +4504,8 @@ Forward Email은 섹션 889에서 금지된 장비를 사용하지 않는 두 �
    * 각 전달 주소에 대해 하나의 재귀 조회를 지원합니다(이 작업은 해당 주소에 대해 이 일련의 작업을 다시 시작합니다). 재귀 일치가 발견되면 상위 결과는 전달 주소에서 제거되고 하위 항목이 추가됩니다.
    * 전달 주소는 중복 전송이나 불필요한 SMTP 클라이언트 연결 생성을 방지하기 위해 고유성 검사를 거칩니다.
    * 각 전달 주소에 대해 도메인 이름을 API 엔드포인트 `/v1/max-forwarded-addresses`에 조회하여 도메인이 별칭당 이메일을 전달할 수 있는 최대 주소 수(기본값 10 – [별칭당 전달 최대 제한](#is-there-a-maximum-limit-on-the-number-of-email-addresses-i-can-forward-to-per-alias) 섹션 참조)를 확인합니다. 이 제한을 초과하면 550 오류가 발생하고 발신자는 해당 수신자에 대해 반송 메일을 받게 됩니다.
-   * 원래 수신자의 설정을 API 엔드포인트 `/v1/settings`에 조회합니다. 이 엔드포인트는 유료 사용자 조회를 지원하며 무료 사용자에 대한 대체 경로도 제공합니다. 이 조회는 `port` (숫자, 예: `25`), `has_adult_content_protection` (불리언), `has_phishing_protection` (불리언), `has_executable_protection` (불리언), `has_virus_protection` (불리언)에 대한 고급 설정 구성 객체를 반환합니다.
-   * 이러한 설정을 기반으로 스팸 스캐너 결과를 확인하고 오류가 발생하면 554 오류 코드로 메시지를 거부합니다(예: `has_virus_protection`이 활성화된 경우 스팸 스캐너 결과에서 바이러스를 검사합니다). 모든 무료 플랜 사용자는 성인 콘텐츠, 피싱, 실행 파일, 바이러스 검사에 기본적으로 옵트인됩니다. 기본적으로 모든 유료 플랜 사용자도 옵트인되어 있지만, 이 구성은 Forward Email 대시보드의 도메인 설정 페이지에서 변경할 수 있습니다.
+   * 원래 수신자의 설정을 API 엔드포인트 `/v1/settings`에 조회합니다. 이 엔드포인트는 유료 사용자 조회를 지원하며 무료 사용자에 대한 대체 경로도 제공합니다.  이 조회는 `port` (숫자, 예: `25`), `has_adult_content_protection` (불리언), `has_phishing_protection` (불리언, 항상 `true`), `has_executable_protection` (불리언), `has_virus_protection` (불리언, 항상 `true`)에 대한 고급 설정 구성 객체를 반환합니다.
+   * 무료 플랜 사용자에게는 기본값이 적용됩니다. 성인 콘텐츠 보호는 꺼져 있고 피싱 보호와 실행 파일 보호는 켜져 있습니다.  유료 플랜 사용자는 Forward Email 대시보드의 도메인 고급 설정 페이지에서 이를 변경할 수 있습니다([성인 콘텐츠, 피싱, 실행 파일 또는 바이러스 검사를 비활성화할 수 있나요](#can-i-disable-adult-content-phishing-executable-or-virus-scanning) 참조).  이 설정은 당사의 SMTP 서버와 API를 통해 보내는 메일에 적용되며, 당사가 받는 메일은 기본 설정으로 검사합니다.
 
 10. 처리된 각 수신자의 전달 주소에 대해 다음 작업을 수행합니다:
 

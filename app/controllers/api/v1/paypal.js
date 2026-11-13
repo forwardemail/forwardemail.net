@@ -266,10 +266,15 @@ async function processEvent(ctx) {
           id: res.body.custom_id,
           [config.userFields.paypalSubscriptionID]: { $exists: false }
         });
-        // (unless the redirect of another account claimed it meanwhile)
+        // (unless it is not the subscription we offer, see `isAsOffered`,
+        //  or the redirect of another account claimed it meanwhile)
         if (
           user &&
-          !(await claimPayPalSubscription(ctx.client, res.body.id, user.id))
+          (!claimPayPalSubscription.isAsOffered(
+            res.body,
+            user[config.userFields.planExpiresAt]
+          ) ||
+            !(await claimPayPalSubscription(ctx.client, res.body.id, user.id)))
         )
           user = null;
         if (user) {
@@ -287,7 +292,11 @@ async function processEvent(ctx) {
         });
         if (
           user &&
-          !(await claimPayPalSubscription(ctx.client, res.body.id, user.id))
+          (!claimPayPalSubscription.isAsOffered(
+            res.body,
+            user[config.userFields.planExpiresAt]
+          ) ||
+            !(await claimPayPalSubscription(ctx.client, res.body.id, user.id)))
         )
           user = null;
         // save user's subscription ID and payer ID to their account
@@ -537,11 +546,32 @@ async function processEvent(ctx) {
           'User ID missing in reference ID in purchase units array'
         );
 
+      // the plan and the amount the order charges for it
+      // (checked before the payment is captured)
+      const plan = String(res.body.purchase_units[0].custom_id).toLowerCase();
+      const amount = getPayPalOrderCapture.getPayPalOrderAmount(res.body, plan);
+      if (!amount) throw new Error('Invalid checkout order amount');
+
       // lookup the user
       const user = await Users.findOne({
         id: res.body.purchase_units[0].reference_id
       });
       if (!user) throw new Error('User did not exist for customer');
+
+      // only an order made here is credited (see `isIssuedPayPalOrder`;
+      // one the redirect credited already is only looked up again)
+      if (
+        !(await getPayPalOrderCapture.isIssuedPayPalOrder(
+          ctx.client,
+          res.body,
+          user.id
+        )) &&
+        !(await Payments.exists({
+          user: user._id,
+          paypal_order_id: res.body.id
+        }))
+      )
+        throw new Error('Checkout order was not made here');
 
       // store customer
       user[config.userFields.paypalPayerID] = res.body.payer.payer_id;
@@ -617,7 +647,12 @@ ${encode(safeStringify(parseErr(err), null, 2))}</code></pre>`
       // only credit the plan once the order was paid (a declined capture
       // leaves the order APPROVED, and one already captured by the redirect
       // is COMPLETED when looked up again)
-      const capture = await getPayPalOrderCapture(res.body.id, captured);
+      const capture = await getPayPalOrderCapture(
+        res.body.id,
+        captured,
+        amount,
+        res.body.purchase_units[0].payee?.merchant_id
+      );
       if (!capture) {
         ctx.logger.warn('paypal order was not captured', {
           paypal_order_id: res.body.id,
@@ -630,7 +665,6 @@ ${encode(safeStringify(parseErr(err), null, 2))}</code></pre>`
 
       // if the user's plan doesn't match up or if they never had a plan set date
       // then adjust the plan set date to the current time or date parsed
-      const plan = res.body.purchase_units[0].custom_id.toLowerCase();
       if (user.plan !== plan) {
         user.plan = plan;
         user[config.userFields.planSetAt] = now;
@@ -687,9 +721,6 @@ ${encode(safeStringify(parseErr(err), null, 2))}</code></pre>`
       } else {
         // we will take the amount and divide it by the cost per the custom_id
         // in order to determine the duration the customer purchased/added
-        const amount = Number(
-          res.body.purchase_units[0].items[0].unit_amount.value
-        );
         const months = Math.round(amount / (plan === 'team' ? 9 : 3));
         if (!_.isFinite(months) || months < 1)
           throw new Error('Months was not finite');

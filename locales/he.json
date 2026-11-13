@@ -23531,5 +23531,19 @@
   "Delete mailbox?": "למחוק תיבת דואר?",
   "Please confirm if you wish to delete the mailbox <strong>%s</strong>.": "אנא אשר אם ברצונך למחוק את תיבת הדואר <strong>%s</strong>.",
   "Generate mailbox passwords": "צור סיסמאות לתיבות דואר",
-  "Generate random mailbox": "צור תיבת דואר אקראית"
+  "Generate random mailbox": "צור תיבת דואר אקראית",
+  "The message could not be scanned at this time, please try again later.": "לא ניתן היה לסרוק את ההודעה כעת, נא לנסות שוב מאוחר יותר.",
+  "The message could not be scanned at this time and will be retried.": "לא ניתן היה לסרוק את ההודעה כעת, וניסיון נוסף יתבצע בהמשך.",
+  "Senders blocked after spam reports": "שולחים שנחסמו לאחר דיווחי ספאם",
+  "The recipient at these forwarding addresses reported mail from these senders as spam to their mailbox provider, so their mail to that address gets a temporary error until the date shown.": "הנמען בכתובות ההעברה האלה דיווח לספק הדואר שלו על דואר מהשולחים האלה כספאם, ולכן הדואר שלהם לכתובת זו מקבל שגיאה זמנית עד התאריך המוצג.",
+  "Sender": "שולח",
+  "Forwarding address": "כתובת העברה",
+  "Until": "עד",
+  "Unblock": "ביטול חסימה",
+  "Unblock sender?": "לבטל את חסימת השולח?",
+  "Please confirm if you wish to receive mail from <strong>%s</strong> at <strong>%s</strong> again.": "אנא אשר שברצונך לקבל שוב דואר מ-<strong>%s</strong> בכתובת <strong>%s</strong>.",
+  "If you check this, then links in mail you send are checked with <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"%s\">Cloudflare's family filter</a>, and mail linking to a site it blocks for adult-related content or malware is not sent. Off by default.": "כשאפשרות זו מסומנת, הקישורים בהודעות יוצאות נבדקים באמצעות <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"%s\">מסנן המשפחה של Cloudflare</a>, והודעות עם קישור לאתר שהמסנן חוסם בגלל תוכן למבוגרים או תוכנות זדוניות אינן נשלחות. כבוי כברירת מחדל.",
+  "If you uncheck this, then mail you send with <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"%s\">executable</a> attachments, such as .exe, .js or .bat files (also inside archives), is no longer blocked. On by default.": "כשהסימון של אפשרות זו מוסר, הודעות יוצאות שמצורפים אליהן <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"%s\">קבצי הפעלה</a>, כמו קבצי .exe, .js או .bat (גם בתוך ארכיונים), כבר אינן נחסמות. מופעל כברירת מחדל.",
+  "Mail is always scanned for spam, and links in mail you send are always checked with <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"%s\">Cloudflare's malware filter</a>: mail linking to a site it blocks for phishing or malware is not sent.": "הדואר תמיד נסרק לאיתור ספאם, והקישורים בהודעות יוצאות תמיד נבדקים באמצעות <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"%s\">מסנן התוכנות הזדוניות של Cloudflare</a>: הודעות עם קישור לאתר שהמסנן חוסם בגלל פישינג או תוכנות זדוניות אינן נשלחות.",
+  "The passwords generated for these aliases still work.  Generate a new password for each one to replace them:": "הסיסמאות שנוצרו עבור כינויים אלה עדיין פועלות. צרו סיסמה חדשה לכל אחד מהם כדי להחליף אותן:"
 }

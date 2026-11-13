@@ -145,6 +145,27 @@ test('rejects a DOCTYPE hidden between overlapping comment and CDATA markers', (
   );
 });
 
+//
+// What is no declaration at all is one to the parser of CardDAV bodies,
+// which reads it at the cost of the square of its length (see
+// helpers/assert-safe-xml.js)
+//
+test('rejects a declaration that is none, wherever it is', (t) => {
+  for (const declaration of [
+    '<!1>',
+    '<!-a>',
+    '<! >',
+    '<!>',
+    '<!<',
+    '<![cdata[ ]]>',
+    '<!'
+  ]) {
+    t.false(isSafeXml(`<a>${declaration}</a>`), `${declaration}`);
+    t.false(isSafeXml(`<a><!-- ${declaration} --></a>`), `${declaration}`);
+    t.false(isSafeXml(`<a b="<!--">${declaration}<c d="-->"/></a>`));
+  }
+});
+
 test('still accepts ordinary comments and CDATA sections', (t) => {
   const xml = report(1).replace(
     '<org_name>Example Reporter</org_name>',

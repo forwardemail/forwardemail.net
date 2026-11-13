@@ -209,6 +209,29 @@ const PAYLOAD_ACTIONS = new Set([
 ]);
 const STATEMENT_OPERATIONS = new Set(['prepare', 'run', 'get', 'all', 'pluck']);
 
+// Statements a `stmt` request may not prepare: they read or write other
+// files (ATTACH of any path, VACUUM INTO one) or change how the mailbox, or
+// every mailbox of this process, is stored (PRAGMA key, temp_store_directory),
+// which no client asks for (the worker vacuums and rekeys mailboxes itself)
+const FILE_STATEMENTS = /^(?:attach|detach|vacuum|pragma)\b/i;
+
+// The start of a statement after what SQLite skips before it: white space,
+// comments and empty statements (so "/* x */ ATTACH" is an ATTACH)
+function statementStart(sql) {
+  let i = 0;
+  for (;;) {
+    while (i < sql.length && /[\s;]/.test(sql[i])) i++;
+    let end;
+    if (sql.startsWith('--', i)) end = sql.indexOf('\n', i);
+    else if (sql.startsWith('/*', i)) {
+      end = sql.indexOf('*/', i + 2);
+      if (end !== -1) end++;
+    } else return sql.slice(i, i + 16);
+    if (end === -1) return '';
+    i = end + 1;
+  }
+}
+
 //
 // Actions that are still served while the alias' password is being rotated:
 // `size` only stats the file, `tmp` writes inbound mail to the separate
@@ -2072,6 +2095,30 @@ async function handlePayload(data, ws) {
               const targetFolder = sieveDelivery.folder || 'INBOX';
               const targetFlags = sieveDelivery.flags || [];
 
+              //
+              // TODO: once Spam Scanner is out of monitor mode, the MX server
+              //       passes `isSpam` (see `imap()` in on-data-mx.js): file
+              //       the message in the Junk folder, unless a Sieve script
+              //       chose a folder (a user's own rules win), and only if
+              //       the mailbox still has one (Junk can be deleted; the
+              //       message then stays in INBOX); a message stored for
+              //       later without `session.db` needs the same where it is
+              //       written to its mailbox
+              //
+              // (change `const targetFolder` above to `let`, and require
+              // `#models/mailboxes`)
+              //
+              // if (
+              //   payload.isSpam === true &&
+              //   sieveResult.deliveries.length === 0 &&
+              //   session.db
+              // ) {
+              //   const junk = await Mailboxes.findOne(this, session, {
+              //     specialUse: '\\Junk'
+              //   });
+              //   if (junk) targetFolder = junk.path;
+              // }
+
               // Use modified raw message if header changes were applied (editheader extension)
               // NOTE: use a per-alias copy so encryption (S/MIME, PGP) below
               // does not mutate the shared payload.raw across concurrent aliases
@@ -2959,6 +3006,11 @@ async function handlePayload(data, ws) {
             throw new TypeError('Op must have valid function');
           switch (op[0]) {
             case 'prepare': {
+              if (
+                typeof op[1] !== 'string' ||
+                FILE_STATEMENTS.test(statementStart(op[1]))
+              )
+                throw new TypeError('Statement not allowed');
               stmt = db.prepare(op[1]);
               stmtSql = op[1];
               break;

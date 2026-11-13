@@ -88,6 +88,9 @@ async function assertCredited(t, user) {
   return { user: fresh, payment: payments[0] };
 }
 
+// the order PayPal answers the next checkout with (see `checkout`)
+let created;
+
 //
 // PayPal's REST API, answered by `handler(request)` with `request` being
 // e.g. "GET /v2/checkout/orders/ID" (it returns the response body, or
@@ -95,6 +98,7 @@ async function assertCredited(t, user) {
 //
 function mockPayPal(handler) {
   const requests = [];
+  created = undefined;
   sinon
     .stub(paypal, 'generateToken')
     .callsFake((...args) => args.at(-1)(null, 'Bearer test'));
@@ -105,9 +109,11 @@ function mockPayPal(handler) {
     for (const method of ['get', 'post']) {
       agent[method] = (url) => {
         const request = `${method.toUpperCase()} ${url}`;
-        requests.push(request);
+        // (the order `checkout` has made, not one of the requests looked at)
+        const isCheckout = request === 'POST /v2/checkout/orders' && created;
+        if (!isCheckout) requests.push(request);
         const promise = (async () => {
-          const body = await handler(request);
+          const body = isCheckout ? created : await handler(request);
           return { body };
         })();
         promise.set = () => promise;
@@ -128,13 +134,32 @@ function paypalError(status, name) {
   return err;
 }
 
-function order(t, { status, referenceId = t.context.user.id, captureStatus }) {
+//
+// An order for an item priced `value`, that charges `charged` in `currency`
+// to `payee` and of which `captured` was paid (all the same for an order as
+// it is created, see create-domain-billing.js)
+//
+function order(
+  t,
+  {
+    status,
+    referenceId = t.context.user.id,
+    captureStatus,
+    value = '3.00',
+    charged = value,
+    captured = charged,
+    currency = 'USD',
+    payee = 'MERCHANT-1'
+  }
+) {
   const id = `ORDER-${t.context.id}`;
   const unit = {
     reference_id: referenceId,
     custom_id: 'ENHANCED_PROTECTION',
     invoice_id: `REF-${id}`,
-    items: [{ unit_amount: { currency_code: 'USD', value: '3' } }]
+    payee: { merchant_id: payee },
+    amount: { currency_code: currency, value: charged },
+    items: [{ unit_amount: { currency_code: currency, value }, quantity: '1' }]
   };
   if (captureStatus)
     unit.payments = {
@@ -142,6 +167,7 @@ function order(t, { status, referenceId = t.context.user.id, captureStatus }) {
         {
           id: `CAPTURE-${id}`,
           status: captureStatus,
+          amount: { currency_code: currency, value: captured },
           create_time: new Date().toISOString()
         }
       ]
@@ -154,6 +180,22 @@ function order(t, { status, referenceId = t.context.user.id, captureStatus }) {
     payer: { payer_id: 'PAYER-1' },
     purchase_units: [unit]
   };
+}
+
+//
+// Starts a checkout as the billing page does (PayPal answers with the order
+// it made), so the order is one made here for this account
+//
+async function checkout(t) {
+  created = order(t, { status: 'CREATED' });
+  const res = await t.context.web.post('/en/my-account/billing/upgrade').send({
+    plan: 'enhanced_protection',
+    payment_method: 'paypal',
+    payment_type: 'one-time',
+    payment_duration: '30d'
+  });
+  t.is(res.status, 200);
+  t.is(res.body.orderID, created.id);
 }
 
 //
@@ -172,6 +214,7 @@ test.serial(
       throw new Error(`Unexpected ${request}`);
     });
 
+    await checkout(t);
     const res = await upgrade(t, { paypal_order_id: orderId });
     t.is(res.status, 302);
     t.true(requests.includes(`POST /v2/checkout/orders/${orderId}/capture`));
@@ -210,6 +253,7 @@ test.serial('a paid PayPal order credits the plan', async (t) => {
     throw new Error(`Unexpected ${request}`);
   });
 
+  await checkout(t);
   const res = await upgrade(t, { paypal_order_id: orderId });
   t.is(res.status, 302);
   const { payment } = await assertCredited(t, t.context.user);
@@ -237,8 +281,108 @@ test.serial(
       throw new Error(`Unexpected ${request}`);
     });
 
+    await checkout(t);
     const res = await upgrade(t, { paypal_order_id: orderId });
     t.is(res.status, 302);
+    const { payment } = await assertCredited(t, t.context.user);
+    t.is(payment.paypal_transaction_id, `CAPTURE-${orderId}`);
+  }
+);
+
+//
+// An order can be created or changed in the browser (with the PayPal SDK the
+// billing page loads): what it charges is not what its item is priced at,
+// and it pays whom it names.
+//
+for (const [title, options, made = true] of [
+  ['charges less than the price of its item', { charged: '0.01' }],
+  ['charges in another currency', { currency: 'JPY' }],
+  ['charges for no price of the plan', { value: '1.50' }],
+  ['was changed to pay someone else', { payee: 'MERCHANT-2' }],
+  ['was not made here', {}, false]
+])
+  test.serial(
+    `a PayPal order that ${title} is refused before it is captured`,
+    async (t) => {
+      const orderId = `ORDER-${t.context.id}`;
+      const requests = mockPayPal((request) => {
+        if (request === `GET /v2/checkout/orders/${orderId}`)
+          return order(t, { status: 'APPROVED', ...options });
+        if (request === `POST /v2/checkout/orders/${orderId}/capture`)
+          return order(t, {
+            status: 'COMPLETED',
+            captureStatus: 'COMPLETED',
+            ...options
+          });
+        throw new Error(`Unexpected ${request}`);
+      });
+
+      if (made) await checkout(t);
+      const res = await upgrade(t, { paypal_order_id: orderId });
+      t.is(res.status, 302);
+      t.deepEqual(requests, [`GET /v2/checkout/orders/${orderId}`]);
+      await assertNotCredited(t, t.context.user);
+    }
+  );
+
+// (an order can be changed until it is captured, so also after it was
+// looked up)
+for (const [title, options] of [
+  ['for less than it charged', { charged: '0.01' }],
+  ['to pay someone else than it was to', { payee: 'MERCHANT-2' }]
+])
+  test.serial(`a PayPal order captured ${title} is not credited`, async (t) => {
+    const orderId = `ORDER-${t.context.id}`;
+    let captured = false;
+    mockPayPal((request) => {
+      const paid = order(t, {
+        status: 'COMPLETED',
+        captureStatus: 'COMPLETED',
+        ...options
+      });
+      if (request === `GET /v2/checkout/orders/${orderId}`)
+        return captured ? paid : order(t, { status: 'APPROVED' });
+      if (request === `POST /v2/checkout/orders/${orderId}/capture`) {
+        captured = true;
+        return paid;
+      }
+
+      throw new Error(`Unexpected ${request}`);
+    });
+
+    await checkout(t);
+    const res = await upgrade(t, { paypal_order_id: orderId });
+    t.is(res.status, 302);
+    t.true(captured);
+    await assertNotCredited(t, t.context.user);
+  });
+
+test.serial(
+  'a PayPal order is credited when its capture does not name its payee',
+  async (t) => {
+    const orderId = `ORDER-${t.context.id}`;
+    let captured = false;
+    const requests = mockPayPal((request) => {
+      const paid = order(t, {
+        status: 'COMPLETED',
+        captureStatus: 'COMPLETED'
+      });
+      if (request === `GET /v2/checkout/orders/${orderId}`)
+        return captured ? paid : order(t, { status: 'APPROVED' });
+      if (request === `POST /v2/checkout/orders/${orderId}/capture`) {
+        captured = true;
+        delete paid.purchase_units[0].payee;
+        return paid;
+      }
+
+      throw new Error(`Unexpected ${request}`);
+    });
+
+    await checkout(t);
+    const res = await upgrade(t, { paypal_order_id: orderId });
+    t.is(res.status, 302);
+    // (so it was looked up again)
+    t.is(requests.at(-1), `GET /v2/checkout/orders/${orderId}`);
     const { payment } = await assertCredited(t, t.context.user);
     t.is(payment.paypal_transaction_id, `CAPTURE-${orderId}`);
   }
@@ -333,24 +477,52 @@ test.serial(
 // PayPal subscriptions
 //
 
-function mockSubscription(t, { status = 'ACTIVE', customId } = {}) {
+// (`paid` is the amount of its last payment, if it had one, `extra` what
+// else PayPal says of it, `becomes` its status once it was looked up, and
+// `activated` its status once we asked PayPal to make it active)
+function mockSubscription(
+  t,
+  {
+    status = 'ACTIVE',
+    becomes = status,
+    activated = becomes,
+    customId,
+    startTime = new Date(),
+    paid = '3.00',
+    ...extra
+  } = {}
+) {
   const id = `I-${t.context.id}`;
   const subscription = {
     id,
     status,
     plan_id: PAYPAL_PLAN_ID,
+    ...extra,
     ...(customId ? { custom_id: customId } : {}),
-    start_time: new Date().toISOString(),
+    start_time: startTime.toISOString(),
     subscriber: { payer_id: 'PAYER-1', email_address: 'payer@example.com' },
-    billing_info: {
-      last_payment: {
-        amount: { currency_code: 'USD', value: '3.00' },
-        time: new Date().toISOString()
-      }
-    }
+    billing_info: paid
+      ? {
+          last_payment: {
+            amount: { currency_code: 'USD', value: paid },
+            time: new Date().toISOString()
+          }
+        }
+      : {}
   };
-  mockPayPal((request) => {
-    if (request === `GET /v1/billing/subscriptions/${id}`) return subscription;
+  t.context.requests = mockPayPal((request) => {
+    if (request === `GET /v1/billing/subscriptions/${id}`) {
+      const now = { ...subscription };
+      subscription.status = becomes;
+      return now;
+    }
+
+    if (request === `POST /v1/billing/subscriptions/${id}/activate`) {
+      subscription.status = activated;
+      becomes = activated;
+      return {};
+    }
+
     if (request.startsWith(`GET /v1/billing/subscriptions/${id}/transactions?`))
       return {
         transactions: [{ id: `TX-${id}`, time: new Date().toISOString() }]
@@ -392,19 +564,77 @@ test.serial(
   }
 );
 
-test.serial(
-  'a PayPal subscription that is not approved or active is refused',
-  async (t) => {
-    const id = mockSubscription(t, {
-      status: 'APPROVAL_PENDING',
-      customId: t.context.user.id
-    });
+//
+// PayPal makes a subscription active once its payer agreed to it, as the
+// billing page asks it to.  One made in the browser to wait for us instead
+// stays approved and never charges, while an account with a subscription
+// counts as paying: so an approved one is made active (when it is this
+// account's and on our terms), and only an active one is given to an account.
+//
+const lookUp = (id) => `GET /v1/billing/subscriptions/${id}`;
+const activate = (id) => `POST /v1/billing/subscriptions/${id}/activate`;
+
+for (const [title, options, requests] of [
+  ['is not approved', { status: 'APPROVAL_PENDING' }, [lookUp]],
+  // (looked up a few times, in case PayPal is not done)
+  [
+    'does not become active',
+    { status: 'APPROVED' },
+    [lookUp, activate, lookUp, lookUp, lookUp]
+  ],
+  // (not made active for an account it does not name, or on other terms)
+  [
+    'is approved for no account',
+    { status: 'APPROVED', customId: '' },
+    [lookUp]
+  ],
+  [
+    'is approved on other terms',
+    { status: 'APPROVED', plan_overridden: true },
+    [lookUp]
+  ]
+])
+  test.serial(`a PayPal subscription that ${title} is refused`, async (t) => {
+    const id = mockSubscription(t, { customId: t.context.user.id, ...options });
 
     const res = await upgrade(t, { paypal_subscription_id: id });
     t.is(res.status, 302);
+    t.deepEqual(
+      t.context.requests,
+      requests.map((request) => request(id))
+    );
     await assertSubscriptionNotCredited(t, t.context.user);
-  }
-);
+  });
+
+for (const [title, options, requests] of [
+  ['is made active', { activated: 'ACTIVE' }, [lookUp, activate, lookUp]],
+  // (by PayPal, a moment after it was approved)
+  [
+    'is active once it is looked up again',
+    { becomes: 'ACTIVE' },
+    [lookUp, activate, lookUp]
+  ]
+])
+  test.serial(
+    `an approved PayPal subscription that ${title} credits the plan`,
+    async (t) => {
+      const { user } = t.context;
+      const id = mockSubscription(t, {
+        status: 'APPROVED',
+        customId: user.id,
+        ...options
+      });
+
+      const res = await upgrade(t, { paypal_subscription_id: id });
+      t.is(res.status, 302);
+      t.deepEqual(
+        t.context.requests.slice(0, 3),
+        requests.map((request) => request(id))
+      );
+      const { user: fresh } = await assertCredited(t, user);
+      t.is(fresh[config.userFields.paypalSubscriptionID], id);
+    }
+  );
 
 test.serial(
   'the user’s own PayPal subscription credits the plan',
@@ -417,6 +647,84 @@ test.serial(
     const { user: fresh, payment } = await assertCredited(t, user);
     t.is(fresh[config.userFields.paypalSubscriptionID], id);
     t.is(payment.paypal_transaction_id, `TX-${id}`);
+  }
+);
+
+//
+// A subscription is created in the browser, which can ask for a later start
+// (nothing is charged until then) and for other terms than its plan's (a
+// lower price).  An account with a subscription counts as paying, so one
+// that does either is refused before anything is changed.
+//
+for (const [title, options] of [
+  [
+    'starts later than now',
+    { startTime: dayjs().add(5, 'years').toDate(), paid: null }
+  ],
+  ['is on other terms than its plan’s', { plan_overridden: true }],
+  ['was paid less than the price of its plan', { paid: '0.01' }]
+])
+  test.serial(`a PayPal subscription that ${title} is refused`, async (t) => {
+    const { user } = t.context;
+    const id = mockSubscription(t, { customId: user.id, ...options });
+
+    const res = await upgrade(t, { paypal_subscription_id: id });
+    t.is(res.status, 302);
+    await assertSubscriptionNotCredited(t, user);
+  });
+
+//
+// A plan that is paid for is renewed by a subscription that starts when it
+// expires (the billing page asks PayPal for that), and no later.
+//
+async function enableAutoRenew(t, startsAfterExpiry) {
+  const { user } = t.context;
+  user.plan = 'enhanced_protection';
+  user[config.userFields.planSetAt] = dayjs().startOf('day').toDate();
+  await Payments.create({
+    user: user._id,
+    amount: 300,
+    method: 'free_beta_program',
+    duration: ms('30d'),
+    plan: 'enhanced_protection',
+    kind: 'one-time',
+    invoice_at: user[config.userFields.planSetAt]
+  });
+  await user.save();
+  const expiresAt = new Date(user[config.userFields.planExpiresAt]);
+  t.true(expiresAt > new Date());
+
+  const id = mockSubscription(t, {
+    customId: user.id,
+    startTime: dayjs(expiresAt).add(startsAfterExpiry, 'days').toDate(),
+    paid: null
+  });
+  const res = await t.context.web
+    .get('/en/my-account/billing/enable-auto-renew')
+    .query({ plan: 'enhanced_protection', paypal_subscription_id: id });
+  t.is(res.status, 302);
+  const fresh = await Users.findById(user._id).lean().exec();
+  t.is(fresh.plan, 'enhanced_protection');
+  t.is(
+    new Date(fresh[config.userFields.planExpiresAt]).getTime(),
+    expiresAt.getTime()
+  );
+  return { id, subscriptionId: fresh[config.userFields.paypalSubscriptionID] };
+}
+
+test.serial(
+  'a PayPal subscription that starts when the plan expires renews it',
+  async (t) => {
+    const { id, subscriptionId } = await enableAutoRenew(t, 0);
+    t.is(subscriptionId, id);
+  }
+);
+
+test.serial(
+  'a PayPal subscription that starts after the plan expires is refused',
+  async (t) => {
+    const { subscriptionId } = await enableAutoRenew(t, 365);
+    t.falsy(subscriptionId);
   }
 );
 
@@ -550,10 +858,10 @@ test.serial(
     const paid = () => {
       const body = order(t, {
         status: 'COMPLETED',
-        captureStatus: 'COMPLETED'
+        captureStatus: 'COMPLETED',
+        value: '36.00'
       });
       body.create_time = dayjs().subtract(2, 'days').toISOString();
-      body.purchase_units[0].items[0].unit_amount.value = '36';
       return body;
     };
 
@@ -563,6 +871,7 @@ test.serial(
         throw paypalError(422, 'ORDER_ALREADY_CAPTURED');
       throw new Error(`Unexpected ${request}`);
     });
+    await checkout(t);
     await payThenConvertThenReplay(t, () =>
       upgrade(t, { paypal_order_id: orderId }).set(
         'Sec-Fetch-Site',

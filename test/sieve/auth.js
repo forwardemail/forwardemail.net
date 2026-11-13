@@ -1250,3 +1250,140 @@ test('should quote the reason a sign in failed', async (t) => {
 
   client.end();
 });
+
+//
+// A client can send a megabyte of commands in one write.  They were read one
+// after the other without the event loop getting a turn (each read waits for
+// the next one in the same chain of promises), so every other connection of
+// the server waited for all of them: three seconds for 30,000 of them
+// (90 KB).  Each is read from the event loop now.
+//
+test('the commands of one write do not hold up another connection', async (t) => {
+  const options = { port: t.context.port, host: '127.0.0.1' };
+  const busy = await utils.connectRaw(t, options, /^OK /m);
+  const other = await utils.connectRaw(t, options, /^OK /m);
+  const credentials = Buffer.from(
+    `\0${t.context.alias.name}@${t.context.domain.name}\0${t.context.pass}`
+  ).toString('base64');
+  busy.write(`AUTHENTICATE "PLAIN" "${credentials}"\r\nNOOP "first"\r\n`);
+  await busy.until(/TAG "first"/);
+  busy.write(`${'NOOP\r\n'.repeat(15_000)}NOOP "last"\r\n`);
+  await delay(50);
+  const start = Date.now();
+  other.write('NOOP "other"\r\n');
+  await other.until(/TAG "other"/, ms('60s'));
+  const waited = Date.now() - start;
+  await busy.until(/TAG "last"/, ms('60s'));
+  // (answered while the others were being read, not once they all were)
+  t.true(waited * 4 < Date.now() - start);
+});
+
+//
+// (A hundred steps before the event loop gets a turn, and not one: a client
+// that writes its commands and ends its side without waiting for the
+// answers is answered in the turn they arrived in, a hundred of them at
+// least.  A turn apart, the answers after the second would find the
+// connection closed.)
+//
+test('answers the commands of a client that has ended its side', async (t) => {
+  const options = { port: t.context.port, host: '127.0.0.1' };
+  const connection = await utils.connectRaw(t, options, /^OK /m);
+  // (once the server has checked the connection)
+  connection.write('NOOP "ready"\r\n');
+  await connection.until(/TAG "ready"/);
+  connection.socket.end(`${'NOOP\r\n'.repeat(50)}NOOP "last"\r\nLOGOUT\r\n`);
+  await connection.closed;
+  t.is(connection.output.split('OK "NOOP completed"').length - 1, 50);
+  t.deepEqual(connection.output.match(/TAG "last"|Logout completed/g), [
+    'TAG "last"',
+    'Logout completed'
+  ]);
+});
+
+// (a command that waits for a script of no octets has nothing to wait for)
+test('should check a script of no octets as soon as it is asked', async (t) => {
+  const client = await createClient(t.context.port);
+  await client.waitForGreeting();
+  const credentials = Buffer.from(
+    `\0${t.context.alias.name}@${t.context.domain.name}\0${t.context.pass}`
+  ).toString('base64');
+  await client.sendCommand(`AUTHENTICATE "PLAIN" "${credentials}"`);
+
+  const response = await client.sendCommand('CHECKSCRIPT {0+}');
+  t.true(
+    response.some((line) => line.startsWith('OK')),
+    `CHECKSCRIPT: ${response.join(' ')}`
+  );
+
+  client.end();
+});
+
+// (and so is a command that was sent with the answer to a challenge)
+test('should read a command sent with the answer to a challenge', async (t) => {
+  const client = await createClient(t.context.port);
+  await client.waitForGreeting();
+  const credentials = Buffer.from(
+    `\0${t.context.alias.name}@${t.context.domain.name}\0${t.context.pass}`
+  ).toString('base64');
+  await client.sendCommand('AUTHENTICATE "PLAIN"');
+
+  const response = await client.sendCommand(`${credentials}\r\nNOOP "after"`);
+  t.true(
+    response.some((line) => line.includes('TAG "after"')),
+    `NOOP: ${response.join(' ')}`
+  );
+
+  client.end();
+});
+
+//
+// Before it signs in, a client has a handful of commands to send.  Anyone
+// could send a megabyte of them (350,000), which took half a minute to read,
+// and went on being read after the client had left.
+//
+test('disconnects a client that sends many commands before it signs in', async (t) => {
+  const options = { port: t.context.port, host: '127.0.0.1' };
+  const answered = (connection) =>
+    connection.output.split('OK "NOOP completed"').length - 1;
+
+  const anyone = await utils.connectRaw(t, options, /^OK /m);
+  anyone.write('NOOP\r\n'.repeat(150));
+  await Promise.race([anyone.closed, delay(ms('10s'))]);
+  t.true(anyone.socket.destroyed);
+  t.is(answered(anyone), 100);
+
+  // (not one that has signed in)
+  const known = await utils.connectRaw(t, options, /^OK /m);
+  const credentials = Buffer.from(
+    `\0${t.context.alias.name}@${t.context.domain.name}\0${t.context.pass}`
+  ).toString('base64');
+  known.write(
+    `AUTHENTICATE "PLAIN" "${credentials}"\r\n${'NOOP\r\n'.repeat(
+      150
+    )}NOOP "last"\r\n`
+  );
+  await known.until(/TAG "last"/);
+  t.is(answered(known), 150);
+
+  // (and nothing more is read of what one that was disconnected had sent:
+  // it is said once, also when more arrived while a sign-in was looked up)
+  const { logger } = t.context.managesieve;
+  const { warn } = logger;
+  let warnings = 0;
+  logger.warn = (message, ...args) => {
+    if (/too many commands/.test(message)) warnings++;
+    return warn.call(logger, message, ...args);
+  };
+
+  t.teardown(() => {
+    logger.warn = warn;
+  });
+  const hasty = await utils.connectRaw(t, options, /^OK /m);
+  const refused = Buffer.from('\0nobody@example.com\0wrong').toString('base64');
+  hasty.write(`AUTHENTICATE "PLAIN" "${refused}"\r\n${'NOOP\r\n'.repeat(120)}`);
+  setImmediate(() => hasty.write('NOOP\r\n'.repeat(10)));
+  await Promise.race([hasty.closed, delay(ms('10s'))]);
+  await delay(100);
+  t.true(hasty.socket.destroyed);
+  t.is(warnings, 1);
+});

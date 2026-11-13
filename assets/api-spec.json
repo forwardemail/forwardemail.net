@@ -2066,7 +2066,7 @@
             "allowlist": [],
             "denylist": [],
             "restricted_alias_names": [],
-            "has_adult_content_protection": true,
+            "has_adult_content_protection": false,
             "has_phishing_protection": true,
             "has_executable_protection": true,
             "has_virus_protection": true,
@@ -2149,19 +2149,21 @@
           },
           "has_adult_content_protection": {
             "type": "boolean",
-            "description": "Enable Spam Scanner adult content protection"
+            "description": "Whether to block sent mail linking to a site Cloudflare's family filter blocks for adult-related content or malware (defaults to false)"
           },
           "has_phishing_protection": {
             "type": "boolean",
-            "description": "Enable Spam Scanner phishing protection"
+            "description": "Deprecated and ignored",
+            "deprecated": true
           },
           "has_executable_protection": {
             "type": "boolean",
-            "description": "Enable Spam Scanner executable protection"
+            "description": "Whether to block sent mail with executable attachments, such as .exe, .js or .bat files (defaults to true)"
           },
           "has_virus_protection": {
             "type": "boolean",
-            "description": "Enable Spam Scanner virus protection"
+            "description": "Deprecated and ignored",
+            "deprecated": true
           },
           "has_recipient_verification": {
             "type": "boolean",
@@ -2223,19 +2225,21 @@
           },
           "has_adult_content_protection": {
             "type": "boolean",
-            "description": "Whether to enable Spam Scanner adult content protection on this domain"
+            "description": "Whether to block sent mail linking to a site Cloudflare's family filter blocks for adult-related content or malware (defaults to false)"
           },
           "has_phishing_protection": {
             "type": "boolean",
-            "description": "Whether to enable Spam Scanner phishing protection on this domain"
+            "description": "Deprecated and ignored",
+            "deprecated": true
           },
           "has_executable_protection": {
             "type": "boolean",
-            "description": "Whether to enable Spam Scanner executable protection on this domain"
+            "description": "Whether to block sent mail with executable attachments, such as .exe, .js or .bat files (defaults to true)"
           },
           "has_virus_protection": {
             "type": "boolean",
-            "description": "Whether to enable Spam Scanner virus protection on this domain"
+            "description": "Deprecated and ignored",
+            "deprecated": true
           },
           "has_recipient_verification": {
             "type": "boolean",

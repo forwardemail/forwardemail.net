@@ -402,6 +402,7 @@ router
     web.myAccount.ensureUpgradedPlan,
     web.myAccount.retrieveAlias,
     web.myAccount.ensureAliasAdmin,
+    web.myAccount.retrieveArfBlocks,
     render('my-account/domains/aliases/form')
   )
   .put(
@@ -420,6 +421,15 @@ router
     web.myAccount.retrieveAlias,
     web.myAccount.ensureAliasAdmin,
     web.myAccount.removeAlias
+  )
+  .post(
+    '/domains/:domain_id/aliases/:alias_id/unblock-sender',
+    web.myAccount.retrieveDomain,
+    web.myAccount.ensureUpgradedPlan,
+    web.myAccount.retrieveAlias,
+    web.myAccount.ensureAliasAdmin,
+    rateLimit(100, 'unblock sender'),
+    web.myAccount.removeArfBlock
   )
   .post(
     '/domains/:domain_id/aliases/:alias_id/resend-verification',

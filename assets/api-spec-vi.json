@@ -2066,7 +2066,7 @@
             "allowlist": [],
             "denylist": [],
             "restricted_alias_names": [],
-            "has_adult_content_protection": true,
+            "has_adult_content_protection": false,
             "has_phishing_protection": true,
             "has_executable_protection": true,
             "has_virus_protection": true,
@@ -2149,19 +2149,21 @@
           },
           "has_adult_content_protection": {
             "type": "boolean",
-            "description": "Bật tính năng bảo vệ nội dung người lớn của Spam Scanner"
+            "description": "Có chặn thư đã gửi chứa liên kết đến trang web mà bộ lọc gia đình của Cloudflare chặn vì nội dung người lớn hoặc phần mềm độc hại hay không (mặc định là false)"
           },
           "has_phishing_protection": {
             "type": "boolean",
-            "description": "Bật tính năng bảo vệ chống lừa đảo của Spam Scanner"
+            "description": "Không còn dùng và bị bỏ qua",
+            "deprecated": true
           },
           "has_executable_protection": {
             "type": "boolean",
-            "description": "Bật tính năng bảo vệ tệp thực thi Spam Scanner"
+            "description": "Có chặn thư đã gửi có tệp đính kèm thực thi, chẳng hạn như tệp .exe, .js hoặc .bat hay không (mặc định là true)"
           },
           "has_virus_protection": {
             "type": "boolean",
-            "description": "Bật tính năng bảo vệ chống vi-rút của Spam Scanner"
+            "description": "Không còn dùng và bị bỏ qua",
+            "deprecated": true
           },
           "has_recipient_verification": {
             "type": "boolean",
@@ -2223,19 +2225,21 @@
           },
           "has_adult_content_protection": {
             "type": "boolean",
-            "description": "Có nên bật tính năng bảo vệ nội dung người lớn của Spam Scanner trên miền này không"
+            "description": "Có chặn thư đã gửi chứa liên kết đến trang web mà bộ lọc gia đình của Cloudflare chặn vì nội dung người lớn hoặc phần mềm độc hại hay không (mặc định là false)"
           },
           "has_phishing_protection": {
             "type": "boolean",
-            "description": "Có nên bật tính năng bảo vệ chống lừa đảo Spam Scanner trên miền này không"
+            "description": "Không còn dùng và bị bỏ qua",
+            "deprecated": true
           },
           "has_executable_protection": {
             "type": "boolean",
-            "description": "Có nên bật tính năng bảo vệ thực thi Spam Scanner trên miền này không"
+            "description": "Có chặn thư đã gửi có tệp đính kèm thực thi, chẳng hạn như tệp .exe, .js hoặc .bat hay không (mặc định là true)"
           },
           "has_virus_protection": {
             "type": "boolean",
-            "description": "Có nên bật tính năng bảo vệ chống vi-rút Spam Scanner trên miền này không"
+            "description": "Không còn dùng và bị bỏ qua",
+            "deprecated": true
           },
           "has_recipient_verification": {
             "type": "boolean",

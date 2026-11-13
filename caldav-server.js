@@ -5,6 +5,7 @@
 
 const { randomUUID } = require('node:crypto');
 const { Buffer } = require('node:buffer');
+const path = require('node:path');
 const { Readable } = require('node:stream');
 
 // const getUuid = require('@forwardemail/uuid-by-string');
@@ -36,6 +37,12 @@ const env = require('#config/env');
 const isCodeBug = require('#helpers/is-code-bug');
 const isTimeoutError = require('#helpers/is-timeout-error');
 const { createRecurrenceBudget } = require('#helpers/recurrence-budget');
+
+// the XML parser of the adapter (a dependency of its own), to read a request
+// as it will (see `limitXmlBody`)
+const { DOMParser } = require(require.resolve('@xmldom/xmldom', {
+  paths: [path.dirname(require.resolve('caldav-adapter'))]
+}));
 const createTangerine = require('#helpers/create-tangerine');
 // eslint-disable-next-line import/no-unassigned-import
 require('#helpers/polyfill-towellformed');
@@ -111,6 +118,322 @@ const DAV_HEADER_VALUE =
 
 // an Extended MKCOL body only carries a few collection properties
 const MKCOL_BODY_LIMIT = '1mb';
+
+//
+// The adapter answers a request for each thing its XML names, as often as it
+// names it, and all at once: every node under "prop" (also a comment) for
+// every object of a calendar (5,000 of them for 2,000 events are 10 million
+// answers in the making, more than the process holds), with a copy of the
+// text in it, the data of every object once more for each time it is asked
+// for, what a calendar says of itself (its name, its description, its time
+// zone) once more for each node that asks for it, every filter on every
+// object (by a pattern made of its name, and with its text), and the hrefs
+// of a calendar-multiget, which it finds with XPath in time that grows with
+// the square of what the request holds (10,000 hold the process for a
+// second, and the 300,000 its limit of 10 MB lets through for minutes).  Its
+// parser goes on past what it cannot parse, printing each such thing, and
+// reads some things at the cost of all of the body, or of the square of
+// their length, without calling them an error (400 KB of space in a
+// declaration took over a minute).
+//
+// A client names a few dozen properties, each of them once, asks for a few
+// hundred objects at a time, and sets a name, a description and a time zone
+// of a few KB, in XML that is well-formed: a request of more than this is
+// refused, and one that is not well-formed, before the adapter reads it.
+//
+const XML_BODY_LIMIT = '1mb';
+const MAX_XML_NODES = 256;
+const MAX_XML_HREFS = 5000;
+const MAX_XML_TOTAL = 4 * (MAX_XML_HREFS + MAX_XML_NODES);
+const MAX_XML_DEPTH = 32;
+const MAX_XML_FILTERS = 16;
+const MAX_XML_PROPS = 32;
+const MAX_XML_REPEATS = 4;
+const MAX_XML_TEXT = 4096;
+const MAX_XML_VALUE = 256;
+const MAX_XML_EXTRAS = 16;
+const MAX_CALENDAR_TEXT = 4 * MAX_XML_TEXT;
+const XHTML = 'http://www.w3.org/1999/xhtml';
+
+//
+// Reads XML as the adapter's parser will (it is that parser, told to report
+// what it reads here in place of making a document of it), and refuses it at
+// the first thing that is too much, or that is not well-formed.  Returns the
+// most nodes that a "prop" of it holds, the space between them aside.
+//
+function checkXml(text, isAnswered) {
+  let reason;
+  const refuse = (err) => {
+    // (the parser catches what is thrown at it, and reports it as an error)
+    reason ??= err;
+    throw reason;
+  };
+
+  const malformed = () =>
+    refuse(Boom.badRequest('The XML of the request is not well-formed'));
+  const tooMuch = () =>
+    refuse(
+      Boom.entityTooLarge('Too many elements or too much text in the request')
+    );
+
+  // (two things the adapter's parser reads by a pattern that takes the
+  // square of their length: a line that ends in a paragraph separator, and
+  // the space in a declaration, as of a document type, that is neither a
+  // comment nor CDATA)
+  if (text.includes('\u2029')) malformed();
+  for (let at = text.indexOf('<!'); at !== -1; at = text.indexOf('<!', at + 2))
+    if (text[at + 2] !== '-' && !text.startsWith('CDATA[', at + 3)) malformed();
+
+  const skip = () => {};
+  const open = [];
+  const names = new Set();
+  let hasRoot = false;
+  let isCdata = false;
+  let isRead = false;
+  let total = 0;
+  let extras = 0;
+  let warnings = 0;
+  let props = 0;
+  let inside = 0;
+  let copied = 0;
+
+  // A node in the element that is open: an element of a name, or text and
+  // the like of a length
+  function add(name, length = 0, isBlank = false) {
+    if (++total > MAX_XML_TOTAL) tooMuch();
+    const parent = open.at(-1);
+    if (!parent) {
+      // (around the request's element the adapter's parser goes through all
+      // that is there again for each node: a declaration, a comment, space;
+      // and the adapter looks a REPORT up by the name of its element, among
+      // which it finds what every object has)
+      if (
+        name ? hasRoot || name in Object.prototype : ++extras > MAX_XML_EXTRAS
+      )
+        malformed();
+      hasRoot ||= Boolean(name);
+      return;
+    }
+
+    // (the space between two nodes, which costs next to nothing to answer;
+    // after other text it is one more text, to put together with it)
+    const isSpace = isBlank && !parent.isText;
+    parent.isText = false;
+    // (only a calendar-multiget is read for its hrefs alone, and for the
+    // space between two of them: more of it than one text is put together
+    // at the cost of all the hrefs)
+    if (parent.isMultiget && name === 'href') parent.hrefs++;
+    else if (!parent.isMultiget || !isSpace) parent.nodes++;
+    if (parent.name === 'prop' && !isSpace)
+      props = Math.max(props, ++parent.asked);
+    // (the data of an object is built once more for each time it is asked
+    // for, and what a calendar says of itself is copied for each: a client
+    // names a property once)
+    if (parent.name === 'prop' && name) {
+      parent.times ??= new Map();
+      const times = (parent.times.get(name) ?? 0) + 1;
+      parent.times.set(name, times);
+      if (times > (name === 'calendar-data' ? 1 : MAX_XML_REPEATS)) tooMuch();
+    }
+
+    // (a property is answered for each object with the text in it, which is
+    // looked for in all that it holds, and a filter is matched with each
+    // object by its text; what a request sets, a calendar says of itself)
+    if (parent.isCopied) {
+      inside++;
+      if (!name) copied += length;
+    }
+
+    if (
+      parent.nodes >
+        (parent.name === 'comp-filter' ? MAX_XML_FILTERS : MAX_XML_NODES) ||
+      parent.hrefs > MAX_XML_HREFS ||
+      inside > MAX_XML_NODES ||
+      copied > (isAnswered ? MAX_XML_TEXT : MAX_CALENDAR_TEXT)
+    )
+      tooMuch();
+  }
+
+  new DOMParser({
+    domBuilder: {
+      // (text after the last tag is made a node of the document itself)
+      doc: { createTextNode: malformed },
+      startDocument: skip,
+      endDocument() {
+        isRead = true;
+      },
+      startPrefixMapping: skip,
+      endPrefixMapping: skip,
+      startElement(uri, localName, qName, attributes) {
+        // (an element of XHTML is read as HTML is: a script up to its end
+        // tag, which is looked for in all of the body; and a prefix that
+        // was not declared is looked up among what every object has)
+        if (uri === XHTML || (uri !== undefined && typeof uri !== 'string'))
+          malformed();
+        add(localName);
+        const parent = open.at(-1);
+        open.push({
+          name: localName,
+          nodes: 0,
+          hrefs: 0,
+          asked: 0,
+          isText: false,
+          isMultiget: !parent && localName === 'calendar-multiget',
+          isCopied:
+            Boolean(parent) &&
+            (parent.isCopied ||
+              parent.name === 'prop' ||
+              parent.name === 'filter')
+        });
+        // (the end tag of each new name is looked for in all of the body)
+        names.add(qName);
+        if (
+          open.length > MAX_XML_DEPTH ||
+          names.size > MAX_XML_NODES / 2 ||
+          attributes.length > MAX_XML_NODES
+        )
+          tooMuch();
+        // (the name of a filter, a time, a namespace)
+        for (let i = 0; i < attributes.length; i++)
+          if (attributes.getValue(i).length > MAX_XML_VALUE) tooMuch();
+      },
+      endElement() {
+        open.pop();
+      },
+      characters(chars, start, length) {
+        // (what the parser cannot read it takes for text, a "<" at a time
+        // and CDATA that does not end, having looked through all of the body
+        // for its end)
+        if (length < 0 || (chars === '<' && length === 1)) malformed();
+        const text = chars.slice(start, start + length);
+        const isBlank = !text.trim();
+        // (around the request's element, text other than space is not read,
+        // and CDATA is an error to the adapter's parser, not to this one)
+        if (open.length === 0 && (isCdata || !isBlank)) malformed();
+        add(null, text.length, isBlank && !isCdata);
+        if (open.length > 0) open.at(-1).isText = true;
+      },
+      comment(chars, start, length) {
+        add(null, length);
+      },
+      processingInstruction(target, data) {
+        add(null, data.length);
+      },
+      startCDATA() {
+        isCdata = true;
+      },
+      endCDATA() {
+        isCdata = false;
+      }
+    },
+    errorHandler: {
+      // (it goes on past an error, and past any number of warnings)
+      warning() {
+        if (++warnings > MAX_XML_EXTRAS) malformed();
+      },
+      error: malformed,
+      fatalError: malformed
+    }
+  }).parseFromString(text);
+  // (a parser that does not report what it reads is not the one this is for)
+  if (!isRead) throw new TypeError('The XML of the request was not read');
+  return props;
+}
+
+//
+// The adapter answers each node under "prop" for each object that it lists,
+// all at once: a client asks a few properties of the objects of a calendar
+// (256 of them, of 2,000 objects, held the process for 3 seconds).
+//
+function limitProps(ctx) {
+  if (ctx.state.props > MAX_XML_PROPS)
+    throw Boom.entityTooLarge('Too many properties asked of each object');
+}
+
+//
+// What a calendar says of itself (its name, its description, its color and
+// its time zone, the longest of them) is answered once more for each node
+// that asks for it, of each calendar that is listed: a megabyte of it, asked
+// for 256 times, held the process for half a minute.  And all of it is read
+// with the calendar for each request to it: the X- properties that the
+// upload of a calendar took from its file, 550,000 of them in 10 MB, took a
+// second each time.  So a request sets no more than a client does, an upload
+// stores as much, and of what was stored before as much is answered.
+//
+function limitCalendar(calendar) {
+  for (const key of [
+    'name',
+    'description',
+    'color',
+    'timezone',
+    'prodId',
+    'scale',
+    'source',
+    'url'
+  ])
+    if (
+      typeof calendar?.[key] === 'string' &&
+      calendar[key].length > MAX_CALENDAR_TEXT
+    )
+      calendar[key] = calendar[key].slice(0, MAX_CALENDAR_TEXT);
+  return calendar;
+}
+
+//
+// A calendar-multiget is answered with a copy of each object it names (by the
+// last part of an href, in more than one spelling), and the adapter asks for
+// them all at once: a thousand hrefs to one event of 1 MB were a response of
+// 1 GB.  So a REPORT is answered for an object a few times at most, by its
+// name before it is read and by what was found for it.
+//
+const MAX_REPORT_REPEATS = 4;
+
+function countReported(ctx, key) {
+  if (ctx.method !== 'REPORT') return;
+  ctx.state.reported ??= new Map();
+  const count = (ctx.state.reported.get(key) ?? 0) + 1;
+  if (count > MAX_REPORT_REPEATS)
+    throw Boom.badRequest('An object is asked for too many times');
+  ctx.state.reported.set(key, count);
+}
+
+// A request to read `body` from, in place of the one it was read from (with
+// what else that one carries: its headers, and what the logs know it by)
+function withBody(source, body) {
+  const req = Readable.from(body.length > 0 ? [body] : [], {
+    objectMode: false
+  });
+  for (const key of Reflect.ownKeys(source))
+    if (!(key in req)) req[key] = source[key];
+  req.headers = source.headers;
+  return req;
+}
+
+// Reads the XML of a request within those limits (once it is authenticated),
+// and gives the adapter the body to read in its place
+async function limitXmlBody(ctx) {
+  const source = ctx.req;
+  // (a request whose client has gone is the adapter's to report)
+  if (!ctx.request.type.includes('xml') || !source.readable) return;
+  let body;
+  try {
+    body = await rawBody(source, { limit: XML_BODY_LIMIT });
+  } catch (err) {
+    // (the rest of a body over the limit is read and dropped, so that the
+    // connection can take the answer, and the next request)
+    if (err.type === 'entity.too.large') source.resume();
+    throw err;
+  }
+
+  // (as the adapter decodes it, and parses it unless it is empty)
+  const text = body.toString('utf8').replace(/^\uFEFF/, '');
+  if (text.trim())
+    ctx.state.props = checkXml(
+      text,
+      ctx.method === 'PROPFIND' || ctx.method === 'REPORT'
+    );
+  ctx.req = withBody(source, body);
+}
 
 //
 // RFC 5689: Extended MKCOL body -> RFC 4791 MKCALENDAR body.
@@ -667,9 +990,14 @@ function getEventIdVariants(eventId) {
   if (typeof eventId !== 'string') return [eventId];
 
   // Decode %40 to @ for lookup (calendar-multiget sends encoded hrefs)
-  const decoded = eventId.includes('%40')
-    ? decodeURIComponent(eventId)
-    : eventId;
+  let decoded = eventId;
+  if (eventId.includes('%40'))
+    try {
+      decoded = decodeURIComponent(eventId);
+    } catch {
+      // (an href that is not encoded as one is looked up as it is: it
+      // was an error for the whole REPORT that named it)
+    }
 
   const base = decoded.endsWith('.ics') ? decoded.slice(0, -4) : decoded;
   const variants = [base, `${base}.ics`];
@@ -1208,6 +1536,19 @@ class CalDAV extends API {
       }
 
       //
+      // The adapter decodes the path of a request before it authenticates
+      // it (as does what is done here for attachments): a path that is not
+      // encoded as one was an error of the server, and logged as one, for
+      // anyone who sent it.
+      //
+      try {
+        decodeURIComponent(ctx.path);
+      } catch {
+        ctx.status = 400;
+        return;
+      }
+
+      //
       // RFC 5689: Handle Extended MKCOL requests for calendar collection creation.
       // tasks.org (via dav4jvm) sends MKCOL instead of MKCALENDAR to create
       // new task lists.  The caldav-adapter only handles MKCALENDAR, so MKCOL
@@ -1248,6 +1589,9 @@ class CalDAV extends API {
               },
               (err) => {
                 logger.warn('MKCOL body read error', { err });
+                // (see `limitXmlBody`, which reads this stream, not the
+                // request)
+                if (err.type === 'entity.too.large') source.resume();
                 this.destroy(err);
               }
             );
@@ -1638,6 +1982,9 @@ class CalDAV extends API {
 
     await setupAuthSession.call(this, ctx, username, password);
 
+    // (the adapter reads the body next: see `limitXmlBody`)
+    await limitXmlBody(ctx);
+
     // caldav related user properties
     ctx.state.user.principalId = ctx.state.user.username;
     ctx.state.user.principalName = ctx.state.user.username; // .toUpperCase()
@@ -1996,7 +2343,7 @@ class CalDAV extends API {
 
     ctx.logger.debug('getCalendar result', { calendarId: calendar?._id });
 
-    return calendar;
+    return limitCalendar(calendar);
   }
 
   //
@@ -2076,13 +2423,18 @@ class CalDAV extends API {
             : updates.order;
       }
 
-      calendar = await Calendars.findByIdAndUpdate(
-        this,
-        ctx.state.session,
-        calendar._id,
-        {
-          $set: sanitizedUpdates
-        }
+      // (the calendar as it is now, for what is answered and sent on: the
+      // one before the update was, with all of its text)
+      calendar = limitCalendar(
+        await Calendars.findByIdAndUpdate(
+          this,
+          ctx.state.session,
+          calendar._id,
+          {
+            $set: sanitizedUpdates
+          },
+          { returnDocument: 'after' }
+        )
       );
 
       // send websocket push notification
@@ -2136,6 +2488,7 @@ class CalDAV extends API {
 
       // update the calendar metadata based off VCALENDAR
       const x = [];
+      let left = MAX_CALENDAR_TEXT;
       for (const prop of comp.getAllProperties()) {
         // <https://github.com/kewisch/ical.js/blob/main/lib/ical/property.js>
         // prop.name = "x-wr-calname"
@@ -2144,9 +2497,14 @@ class CalDAV extends API {
         // (or could we just do `getValues()` and it would set it properly?)
         // prop.toICALString()
         if (!prop.name.startsWith('x-')) continue;
+        // (those that fit in what a calendar says of itself)
+        const value = prop.getValues();
+        const length = prop.name.length + String(value).length;
+        if (length > left) continue;
+        left -= length;
         x.push({
           key: prop.name.toUpperCase(),
-          value: prop.getValues()
+          value
         });
       }
 
@@ -2188,15 +2546,18 @@ class CalDAV extends API {
           }
         );
 
-        calendar = await this.createCalendar(ctx, {
-          name: calName,
-          description: comp.getFirstPropertyValue('description') || '',
-          timezone: comp.getFirstPropertyValue('x-wr-timezone') || '',
-          supportedComponents
-        });
+        calendar = await this.createCalendar(
+          ctx,
+          limitCalendar({
+            name: calName,
+            description: comp.getFirstPropertyValue('description') || '',
+            timezone: comp.getFirstPropertyValue('x-wr-timezone') || '',
+            supportedComponents
+          })
+        );
       }
 
-      const update = {
+      const update = limitCalendar({
         name: comp.getFirstPropertyValue('name'),
         prodId: comp.getFirstPropertyValue('prodid'),
 
@@ -2217,7 +2578,7 @@ class CalDAV extends API {
         x,
         // TODO: this should probably only happen if the create was successful
         synctoken: bumpSyncToken(calendar.synctoken)
-      };
+      });
 
       // Filter out undefined/null values to avoid empty UPDATE statements
       const filteredUpdate = {};
@@ -2316,10 +2677,13 @@ class CalDAV extends API {
         }
 
         for (const eventId of Object.keys(eventIdToEvents)) {
+          // (one object of the calendar, not the whole of it)
           const ical = await this.buildICS(
             ctx,
             eventIdToEvents[eventId],
-            calendar
+            calendar,
+            false,
+            false
           );
           events.push({
             // db virtual helper
@@ -2375,7 +2739,8 @@ class CalDAV extends API {
   // NOTE: in the future we could do readonly and sharing here with auth permissioning system
   async getCalendarsForPrincipal(ctx, { principalId, _user }) {
     ctx.logger.debug('getCalendarsForPrincipal', { principalId });
-    return Calendars.find(this, ctx.state.session, {});
+    const calendars = await Calendars.find(this, ctx.state.session, {});
+    return calendars.map((calendar) => limitCalendar(calendar));
   }
 
   async getEventsForCalendar(
@@ -2397,6 +2762,8 @@ class CalDAV extends API {
       syncToken,
       componentType
     });
+
+    limitProps(ctx);
 
     let calendar;
     try {
@@ -2570,6 +2937,8 @@ class CalDAV extends API {
       fullData,
       componentType
     });
+
+    limitProps(ctx);
 
     const calendar = await this.getCalendar(ctx, {
       calendarId,
@@ -3103,6 +3472,9 @@ class CalDAV extends API {
       fullData
     });
 
+    // (before anything is read: see `countReported`)
+    countReported(ctx, `name:${getEventIdVariants(eventId)[0]}`);
+
     const calendar = await this.getCalendar(ctx, {
       calendarId,
       principalId,
@@ -3138,6 +3510,9 @@ class CalDAV extends API {
         deleted_at: { $exists: false }
       });
     }
+
+    // (the same object by another of its spellings)
+    if (allMatches.length > 0) countReported(ctx, `id:${allMatches[0]._id}`);
 
     // Deduplicate: keep the latest by updated_at, soft-delete extras
     if (allMatches.length > 1) {
@@ -3815,6 +4190,13 @@ class CalDAV extends API {
           .exec()
       ]);
 
+      //
+      // NOTE: a backup that cannot be mailed (one too large for an email, or
+      //       past what the alias may send) does not keep the calendar from
+      //       being deleted, as when it is deleted over the API (see
+      //       `sendCalendarDeletedBackup`): the request failed as an error
+      //       of the server, each time, and the calendar stayed
+      //
       await Emails.queue({
         message: {
           from: ctx.state.user.username,
@@ -3834,7 +4216,7 @@ class CalDAV extends API {
         domain,
         user: alias ? alias.user : undefined,
         date: new Date()
-      });
+      }).catch((err) => ctx.logger.fatal(err));
     }
 
     // delete all events for this calendar
@@ -4080,8 +4462,17 @@ class CalDAV extends API {
   //       however it wasn't in conformity with the RFC specification
   //       and after finding numerous issues we decided to simply re-use the existing ICS file
   //
-  async buildICS(ctx, events, calendar, method = false) {
-    return buildICSHelper(ctx, events, calendar, method);
+  // (the adapter asks for the calendar whole with all of its events, and
+  // for one of its objects with that one)
+  // eslint-disable-next-line max-params
+  async buildICS(
+    ctx,
+    events,
+    calendar,
+    method = false,
+    isWhole = Array.isArray(events)
+  ) {
+    return buildICSHelper(ctx, events, calendar, method, isWhole);
   }
 
   //

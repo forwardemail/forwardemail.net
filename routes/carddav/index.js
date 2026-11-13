@@ -278,9 +278,7 @@ davRouter.all('/:user/addressbooks/:addressbook/:contact(.+)', async (ctx) => {
         throw Boom.notFound(ctx.translateError('CONTACT_DOES_NOT_EXIST'));
 
       // Parse XML request body
-      const xmlBody = ctx.request.body
-        ? await xmlHelpers.parseXML(ctx.request.body.toString())
-        : null;
+      const xmlBody = await xmlHelpers.parseBody(ctx.request.body);
       const props = xmlHelpers.extractRequestedProps(xmlBody);
 
       // Create response - include .vcf extension for client compatibility
@@ -770,9 +768,7 @@ davRouter.all('/:user/addressbooks/:addressbook', async (ctx) => {
       // Parse the PROPFIND request body so we only return push-transports
       // when the client explicitly asked for it (not for allprop).
       //
-      const xmlBody = ctx.request.body
-        ? await xmlHelpers.parseXML(ctx.request.body.toString())
-        : null;
+      const xmlBody = await xmlHelpers.parseBody(ctx.request.body);
       const requestedProps = xmlHelpers.extractRequestedProps(xmlBody);
       const wantsPush = requestedProps.includes('push-transports');
       const wantsPushkey = requestedProps.includes('pushkey');
@@ -938,9 +934,7 @@ davRouter.all('/:user/addressbooks/:addressbook', async (ctx) => {
         throw Boom.conflict(ctx.translateError('ADDRESS_BOOK_ALREADY_EXISTS'));
 
       // Parse XML request body
-      const xmlBody = ctx.request.body
-        ? await xmlHelpers.parseXML(ctx.request.body.toString())
-        : null;
+      const xmlBody = await xmlHelpers.parseBody(ctx.request.body);
 
       // Extract properties
       let displayName = addressbook;
@@ -1044,9 +1038,7 @@ davRouter.all('/:user/addressbooks/:addressbook', async (ctx) => {
 
     case 'REPORT': {
       // Parse XML request body
-      const xmlBody = ctx.request.body
-        ? await xmlHelpers.parseXML(ctx.request.body.toString())
-        : null;
+      const xmlBody = await xmlHelpers.parseBody(ctx.request.body);
 
       if (!xmlBody)
         throw Boom.badRequest(ctx.translateError('INVALID_XML_REQUEST_BODY'));
@@ -1074,9 +1066,7 @@ davRouter.all('/:user/addressbooks/:addressbook', async (ctx) => {
 
     case 'PROPPATCH': {
       // Parse XML request body
-      const xmlBody = ctx.request.body
-        ? await xmlHelpers.parseXML(ctx.request.body.toString())
-        : null;
+      const xmlBody = await xmlHelpers.parseBody(ctx.request.body);
 
       if (!xmlBody || !xmlBody.propertyupdate)
         throw Boom.badRequest(ctx.translateError('INVALID_XML_REQUEST_BODY'));
@@ -1226,9 +1216,7 @@ davRouter.all('/:user/addressbooks', async (ctx) => {
     // pattern and caldav-pubsubdiscovery.txt §6, push-transports
     // SHOULD NOT appear in allprop responses; iOS ignores it there.
     //
-    const xmlBody = ctx.request.body
-      ? await xmlHelpers.parseXML(ctx.request.body.toString())
-      : null;
+    const xmlBody = await xmlHelpers.parseBody(ctx.request.body);
     const requestedProps = xmlHelpers.extractRequestedProps(xmlBody);
     const wantsPush = requestedProps.includes('push-transports');
     const wantsPushkey = requestedProps.includes('pushkey');
@@ -1415,6 +1403,8 @@ davRouter.all('/:user/addressbooks', async (ctx) => {
     setCardDAVMultistatusResponse(ctx);
     ctx.body = xml;
   } catch (err) {
+    // (a request that cannot be read is no error of the server)
+    if (err.isBoom) throw err;
     ctx.logger.error(err);
     throw new TypeError('Error processing PROPFIND request');
   }
@@ -1798,9 +1788,7 @@ async function propFindPrincipal(ctx) {
     // silently ignored, but when it appears in response to an explicit
     // request it is recognised and the account flips to Push.
     //
-    const xmlBody = ctx.request.body
-      ? await xmlHelpers.parseXML(ctx.request.body.toString())
-      : null;
+    const xmlBody = await xmlHelpers.parseBody(ctx.request.body);
     const requestedProps = xmlHelpers.extractRequestedProps(xmlBody);
     const wantsPush = requestedProps.includes('push-transports');
 
@@ -1906,6 +1894,8 @@ async function propFindPrincipal(ctx) {
     setCardDAVMultistatusResponse(ctx);
     ctx.body = xml;
   } catch (err) {
+    // (a request that cannot be read is no error of the server)
+    if (err.isBoom) throw err;
     ctx.logger.error(err);
     throw new TypeError('Error processing PROPFIND request');
   }

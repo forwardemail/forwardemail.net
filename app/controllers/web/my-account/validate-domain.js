@@ -211,9 +211,7 @@ async function validateDomain(ctx, next) {
   ctx.state.optionalBooleans = {};
   for (const bool of [
     'has_adult_content_protection',
-    'has_phishing_protection',
     'has_executable_protection',
-    'has_virus_protection',
     'has_recipient_verification',
     'ignore_mx_check',
     'allow_subdomain_forwarding',

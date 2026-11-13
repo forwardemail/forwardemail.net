@@ -1,0 +1,82 @@
+# WARNING: This file is managed by Ansible (ansible/playbooks/spamscanner-llm.yml)
+# Manual changes will be overwritten on next deployment
+#
+# Ollama for Spam Scanner's language model (helpers/spam-scanner.js), for
+# this server's close calls, on 127.0.0.1 only.  Separate from any other
+# Ollama on this server: its own binary, user, models and port.
+#
+[Unit]
+Description=Ollama for Spam Scanner
+After=network-online.target
+Wants=network-online.target
+# (an alert when it fails, at most one every 10 minutes:
+#  send-rate-limited-email.sh; systemd restarts it at once, and gives up after
+#  5 starts in 10 minutes, when the health check starts it again later; before
+#  systemd 254, a stop it restarts from is no failure, so the alert comes once
+#  it gives up)
+OnFailure=failure-notification@%n.service
+StartLimitIntervalSec=10min
+StartLimitBurst=5
+
+[Service]
+User=ollama-spamscanner
+Group=ollama-spamscanner
+ExecStart={{ spamscanner_llm_bin }} serve
+Environment=HOME={{ spamscanner_llm_home }}
+Environment=OLLAMA_HOST=127.0.0.1:{{ spamscanner_llm_port }}
+Environment=OLLAMA_MODELS={{ spamscanner_llm_home }}/models
+# keep the model loaded (loading it takes far longer than a scan may)
+Environment=OLLAMA_KEEP_ALIVE=-1
+Environment=OLLAMA_MAX_LOADED_MODELS=1
+# one message at a time (on a CPU, two at once each take twice as long), and
+# a short queue: beyond it, requests are refused at once rather than waiting
+# past the scan's time limit
+Environment=OLLAMA_NUM_PARALLEL=1
+Environment=OLLAMA_MAX_QUEUE=2
+# a message summary is at most a few thousand tokens
+Environment=OLLAMA_CONTEXT_LENGTH=4096
+# no cloud models (a message would go to ollama.com)
+Environment=OLLAMA_NO_CLOUD=1
+Restart=always
+RestartSec=3
+# mail comes first: the model uses {{ spamscanner_llm_threads }} of the server's CPUs
+# (num_thread in ollama-spamscanner.Modelfile.j2), at most, and less when
+# the server's own processes need them
+CPUQuota={{ (spamscanner_llm_threads | int) * 100 }}%
+CPUWeight=20
+IOWeight=20
+Nice=10
+# the model (Gemma 4 E2B: about 5 GB with its context), with room to spare,
+# and no more, so the server keeps its memory
+MemoryMax={{ spamscanner_llm_memory_max }}
+OOMScoreAdjust=500
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+PrivateTmp=true
+PrivateDevices=true
+ReadWritePaths={{ spamscanner_llm_home }}
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectKernelLogs=true
+ProtectControlGroups=true
+ProtectClock=true
+ProtectHostname=true
+RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX
+# loopback only: nothing on this server can have it download (pull) a model,
+# which would fill the disk mail is kept on; the playbook lifts this while it
+# pulls the base model (systemctl set-property --runtime)
+IPAddressDeny=any
+IPAddressAllow=localhost
+RestrictNamespaces=true
+RestrictRealtime=true
+RestrictSUIDSGID=true
+LockPersonality=true
+SystemCallArchitectures=native
+CapabilityBoundingSet=
+AmbientCapabilities=
+ProtectProc=invisible
+UMask=0077
+
+[Install]
+WantedBy=multi-user.target

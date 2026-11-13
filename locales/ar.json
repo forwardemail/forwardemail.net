@@ -23531,5 +23531,19 @@
   "Delete mailbox?": "حذف صندوق البريد؟",
   "Please confirm if you wish to delete the mailbox <strong>%s</strong>.": "يرجى التأكيد إذا كنت ترغب في حذف صندوق البريد <strong>%s</strong>.",
   "Generate mailbox passwords": "إنشاء كلمات مرور لصناديق البريد",
-  "Generate random mailbox": "إنشاء صندوق بريد عشوائي"
+  "Generate random mailbox": "إنشاء صندوق بريد عشوائي",
+  "The message could not be scanned at this time, please try again later.": "تعذّر فحص الرسالة في الوقت الحالي، يُرجى المحاولة مرة أخرى لاحقًا.",
+  "The message could not be scanned at this time and will be retried.": "تعذّر فحص الرسالة في الوقت الحالي، وستتم إعادة المحاولة.",
+  "Senders blocked after spam reports": "المرسلون المحظورون بعد بلاغات البريد العشوائي",
+  "The recipient at these forwarding addresses reported mail from these senders as spam to their mailbox provider, so their mail to that address gets a temporary error until the date shown.": "أبلغ المستلم على عناوين إعادة التوجيه هذه مزود بريده بأن رسائل هؤلاء المرسلين بريد عشوائي، لذلك تتلقى رسائلهم إلى ذلك العنوان خطأً مؤقتًا حتى التاريخ المعروض.",
+  "Sender": "المرسل",
+  "Forwarding address": "عنوان إعادة التوجيه",
+  "Until": "حتى",
+  "Unblock": "إلغاء الحظر",
+  "Unblock sender?": "إلغاء حظر المرسل؟",
+  "Please confirm if you wish to receive mail from <strong>%s</strong> at <strong>%s</strong> again.": "يرجى التأكيد إذا كنت ترغب في تلقي البريد من <strong>%s</strong> على <strong>%s</strong> مرة أخرى.",
+  "If you check this, then links in mail you send are checked with <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"%s\">Cloudflare's family filter</a>, and mail linking to a site it blocks for adult-related content or malware is not sent. Off by default.": "إذا فعّلت هذا الخيار، فستُفحص الروابط في الرسائل التي ترسلها باستخدام <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"%s\">فلتر العائلة من Cloudflare</a>، ولن تُرسل الرسائل التي تحتوي على روابط لمواقع يحظرها بسبب محتوى البالغين أو البرامج الضارة. معطّل افتراضياً.",
+  "If you uncheck this, then mail you send with <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"%s\">executable</a> attachments, such as .exe, .js or .bat files (also inside archives), is no longer blocked. On by default.": "إذا ألغيت تفعيل هذا الخيار، فلن تُحظر بعد الآن الرسائل التي ترسلها مع مرفقات <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"%s\">تنفيذية</a>، مثل ملفات .exe أو .js أو .bat (حتى داخل الأرشيفات). مفعّل افتراضياً.",
+  "Mail is always scanned for spam, and links in mail you send are always checked with <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"%s\">Cloudflare's malware filter</a>: mail linking to a site it blocks for phishing or malware is not sent.": "يُفحص البريد دائماً بحثاً عن البريد المزعج، وتُفحص الروابط في الرسائل التي ترسلها دائماً باستخدام <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"%s\">فلتر البرامج الضارة من Cloudflare</a>، ولا تُرسل الرسائل التي تحتوي على روابط لمواقع يحظرها بسبب التصيد الاحتيالي أو البرامج الضارة.",
+  "The passwords generated for these aliases still work.  Generate a new password for each one to replace them:": "كلمات المرور التي تم إنشاؤها لهذه الأسماء المستعارة ما زالت تعمل. أنشئ كلمة مرور جديدة لكل منها لاستبدالها:"
 }

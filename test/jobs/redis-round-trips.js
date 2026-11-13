@@ -514,6 +514,9 @@ test.serial(
     for (const prefix of ['denylist', 'silent', 'backscatter']) {
       p.set(`${prefix}:someone@paid-${run}.com`, 'true');
       p.set(`${prefix}:other-${run}.org`, 'true');
+      // (nor an address at a domain a paid alias forwards to, which is
+      //  denylisted on its own)
+      p.set(`${prefix}:spammer@dest-${run}.org`, 'true');
     }
 
     for (let i = 0; i < 40_000; i++)
@@ -537,6 +540,11 @@ test.serial(
       );
       t.is(
         await redis.get(`${prefix}:other-${run}.org`),
+        'true',
+        `${prefix} list`
+      );
+      t.is(
+        await redis.get(`${prefix}:spammer@dest-${run}.org`),
         'true',
         `${prefix} list`
       );

@@ -2066,7 +2066,7 @@
             "allowlist": [],
             "denylist": [],
             "restricted_alias_names": [],
-            "has_adult_content_protection": true,
+            "has_adult_content_protection": false,
             "has_phishing_protection": true,
             "has_executable_protection": true,
             "has_virus_protection": true,
@@ -2149,19 +2149,21 @@
           },
           "has_adult_content_protection": {
             "type": "boolean",
-            "description": "Spam Scanner felnőtt tartalom elleni védelem engedélyezése"
+            "description": "Letiltsuk-e azokat a küldött leveleket, amelyek olyan oldalra mutatnak, amelyet a Cloudflare családi szűrője felnőtt tartalom vagy kártevő miatt letilt (alapértelmezés: false)"
           },
           "has_phishing_protection": {
             "type": "boolean",
-            "description": "Spam Scanner adathalászat elleni védelem engedélyezése"
+            "description": "Elavult, figyelmen kívül hagyjuk",
+            "deprecated": true
           },
           "has_executable_protection": {
             "type": "boolean",
-            "description": "Spam Scanner futtatható fájlvédelmének engedélyezése"
+            "description": "Letiltsuk-e azokat a küldött leveleket, amelyekben futtatható melléklet van, például .exe, .js vagy .bat fájl (alapértelmezés: true)"
           },
           "has_virus_protection": {
             "type": "boolean",
-            "description": "Spam Scanner vírusvédelem engedélyezése"
+            "description": "Elavult, figyelmen kívül hagyjuk",
+            "deprecated": true
           },
           "has_recipient_verification": {
             "type": "boolean",
@@ -2223,19 +2225,21 @@
           },
           "has_adult_content_protection": {
             "type": "boolean",
-            "description": "Engedélyezze-e a Spam Scanner felnőtt tartalomvédelmét ezen a domainen"
+            "description": "Letiltsuk-e azokat a küldött leveleket, amelyek olyan oldalra mutatnak, amelyet a Cloudflare családi szűrője felnőtt tartalom vagy kártevő miatt letilt (alapértelmezés: false)"
           },
           "has_phishing_protection": {
             "type": "boolean",
-            "description": "Engedélyezze-e a Spam Scanner adathalászat elleni védelmét ezen a domainen"
+            "description": "Elavult, figyelmen kívül hagyjuk",
+            "deprecated": true
           },
           "has_executable_protection": {
             "type": "boolean",
-            "description": "Engedélyezze-e a Spam Scanner futtatható fájlvédelmét ezen a domainen"
+            "description": "Letiltsuk-e azokat a küldött leveleket, amelyekben futtatható melléklet van, például .exe, .js vagy .bat fájl (alapértelmezés: true)"
           },
           "has_virus_protection": {
             "type": "boolean",
-            "description": "Engedélyezze-e a Spam Scanner vírusvédelmet ezen a domainen"
+            "description": "Elavult, figyelmen kívül hagyjuk",
+            "deprecated": true
           },
           "has_recipient_verification": {
             "type": "boolean",

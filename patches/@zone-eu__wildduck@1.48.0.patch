@@ -16,6 +16,171 @@ index 950da6943e34ce6514f9bce1ac157f61f3a9f0f8..736abe2e24c39b3a2a57854e93105d5e
              path = path.toString();
          } else {
              path = Buffer.from(path, 'binary').toString();
+diff --git a/imap-core/lib/handler/imap-compiler.js b/imap-core/lib/handler/imap-compiler.js
+index 8ad1dce5ed51fe1d57ff0f868b20d559e4a3d533..577bafc1b7c0d0febd8ab5715ae7dfc47ff5195c 100644
+--- a/imap-core/lib/handler/imap-compiler.js
++++ b/imap-core/lib/handler/imap-compiler.js
+@@ -9,17 +9,33 @@ const imapFormalSyntax = require('./imap-formal-syntax');
+  */
+ module.exports = function (response, asArray, isLogging) {
+     let respParts = [];
+-    let resp = (response.tag || '') + (response.command ? ' ' + response.command : '');
++    // NOTE: what is written is kept in pieces, with its length and its last
++    //       character, and joined at the end: appending each value to one
++    //       string and reading its last character back copied all of it for
++    //       every value, so the time grew with the square of the number of
++    //       values (they come from whoever sent the message or the command)
++    let resp = [];
++    let respLength = 0;
++    let respLast = '';
++    let add = function (value) {
++        value = '' + value;
++        if (value.length) {
++            resp.push(value);
++            respLength += value.length;
++            respLast = value.charAt(value.length - 1);
++        }
++    };
++    add((response.tag || '') + (response.command ? ' ' + response.command : ''));
+     let val;
+     let lastType;
+     let walk = function (node, options) {
+         options = options || {};
+
+-        if (lastType === 'LITERAL' || (!['(', '<', '['].includes(resp.substr(-1)) && resp.length)) {
++        if (lastType === 'LITERAL' || (!['(', '<', '['].includes(respLast) && respLength)) {
+             if (options.subArray) {
+                 // ignore separator
+             } else {
+-                resp += ' ';
++                add(' ');
+             }
+         }
+
+@@ -30,7 +46,7 @@ module.exports = function (response, asArray, isLogging) {
+
+         if (Array.isArray(node)) {
+             lastType = 'LIST';
+-            resp += '(';
++            add('(');
+
+             // check if we need to skip separator WS between two arrays
+             let subArray = node.length > 1 && Array.isArray(node[0]);
+@@ -41,65 +57,68 @@ module.exports = function (response, asArray, isLogging) {
+                 }
+                 walk(child, { subArray });
+             });
+-            resp += ')';
++            add(')');
+             return;
+         }
+
+         if (!node && typeof node !== 'string' && typeof node !== 'number' && !Buffer.isBuffer(node)) {
+-            resp += 'NIL';
++            add('NIL');
+             return;
+         }
+
+         if (typeof node === 'string' || Buffer.isBuffer(node)) {
+             if (isLogging && node.length > 20) {
+-                resp += '"(* ' + node.length + 'B string *)"';
++                add('"(* ' + node.length + 'B string *)"');
+             } else {
+-                resp += JSON.stringify(node.toString('binary'));
++                add(JSON.stringify(node.toString('binary')));
+             }
+             return;
+         }
+
+         if (typeof node === 'number') {
+-            resp += Math.round(node) || 0; // Only integers allowed
++            add(Math.round(node) || 0); // Only integers allowed
+             return;
+         }
+
+         lastType = node.type;
+
+         if (isLogging && node.sensitive) {
+-            resp += '"(* value hidden *)"';
++            add('"(* value hidden *)"');
+             return;
+         }
+
+         switch (node.type.toUpperCase()) {
+             case 'LITERAL':
+                 if (isLogging) {
+-                    resp += '"(* ' + node.value.length + 'B literal *)"';
++                    add('"(* ' + node.value.length + 'B literal *)"');
+                 } else {
+                     if (!node.value) {
+-                        resp += '{0}\r\n';
++                        add('{0}\r\n');
+                     } else {
+-                        resp += '{' + Math.max(node.value.length, 0) + '}\r\n';
++                        add('{' + Math.max(node.value.length, 0) + '}\r\n');
+                     }
+-                    respParts.push(resp);
+-                    resp = (node.value || '').toString('binary');
++                    respParts.push(resp.join(''));
++                    resp = [];
++                    respLength = 0;
++                    respLast = '';
++                    add((node.value || '').toString('binary'));
+                 }
+                 break;
+
+             case 'STRING':
+                 if (isLogging && node.value.length > 20) {
+-                    resp += '"(* ' + node.value.length + 'B string *)"';
++                    add('"(* ' + node.value.length + 'B string *)"');
+                 } else {
+-                    resp += JSON.stringify(node.value || '');
++                    add(JSON.stringify(node.value || ''));
+                 }
+                 break;
+             case 'TEXT':
+             case 'SEQUENCE':
+-                resp += (node.value || '').toString('binary');
++                add((node.value || '').toString('binary'));
+                 break;
+
+             case 'NUMBER':
+-                resp += node.value || 0;
++                add(node.value || 0);
+                 break;
+
+             case 'ATOM':
+@@ -110,15 +129,15 @@ module.exports = function (response, asArray, isLogging) {
+                     val = JSON.stringify(val);
+                 }
+
+-                resp += val;
++                add(val);
+
+                 if (node.section) {
+-                    resp += '[';
++                    add('[');
+                     node.section.forEach(child => walk(child));
+-                    resp += ']';
++                    add(']');
+                 }
+                 if (node.partial) {
+-                    resp += '<' + node.partial.join('.') + '>';
++                    add('<' + node.partial.join('.') + '>');
+                 }
+                 break;
+         }
+@@ -126,8 +145,8 @@ module.exports = function (response, asArray, isLogging) {
+
+     [].concat(response.attributes || []).forEach(child => walk(child));
+
+-    if (resp.length) {
+-        respParts.push(resp);
++    if (respLength) {
++        respParts.push(resp.join(''));
+     }
+
+     return asArray ? respParts : respParts.join('');
 diff --git a/imap-core/lib/indexer/parse-mime-tree.js b/imap-core/lib/indexer/parse-mime-tree.js
 index 9f281833ec41a0c7fc841c83b098f89da60a469b..bbffda18cd8d151036a1632d388e3f9d1687cdbc 100644
 --- a/imap-core/lib/indexer/parse-mime-tree.js
@@ -100,3 +265,107 @@ index 9f281833ec41a0c7fc841c83b098f89da60a469b..bbffda18cd8d151036a1632d388e3f9d
          // always ensure the presence of Content-Type
          if (!this._node.parsedHeader['content-type']) {
              this._node.parsedHeader['content-type'] = 'text/plain';
+diff --git a/lib/pop3/connection.js b/lib/pop3/connection.js
+index abb544ea85d711917b064a7e7aa5b3608fbc5191..08909b645baac85bcf182ccaa9f34176c499c7bf 100644
+--- a/lib/pop3/connection.js
++++ b/lib/pop3/connection.js
+@@ -252,8 +252,11 @@ class POP3Connection extends EventEmitter {
+         while ((chunk = this._socket.read()) !== null) {
+             data += chunk.toString('binary');
+             if (data.indexOf('\n') >= 0) {
+-                let lines = data.split(/\r?\n/).map(line => Buffer.from(line, 'binary').toString());
++                // NOTE: the start of the next line is kept as it was read (it was decoded here, and
++                //       again with the rest of its line)
++                let lines = data.split(/\r?\n/);
+                 this._remainder = lines.pop();
++                lines = lines.map(line => Buffer.from(line, 'binary').toString());
+
+                 if (lines.length) {
+                     if (this.queue.length) {
+@@ -267,10 +270,23 @@ class POP3Connection extends EventEmitter {
+             }
+         }
+
++        // NOTE: the start of a line is kept until its end arrives (it was dropped, and the rest
++        //       of the line read as a command of its own), up to a length that no command has
++        this._remainder = data;
++        if (data.length > 8192) {
++            this.send('-ERR Line too long');
++            return this.close();
++        }
++
+         this.processing = false;
+     }
+
+     processQueue() {
++        if (!this.session) {
++            // already closed, do nothing
++            return;
++        }
++
+         if (!this.queue.length) {
+             this.read(); // see if there's anything left to read
+             return;
+@@ -316,8 +332,12 @@ class POP3Connection extends EventEmitter {
+         let args = parts.join(' ');
+
+         let logLine = (line || '').toString();
+-        if (/^(PASS|AUTH PLAIN)\s+[^\s]+/i.test(line)) {
+-            logLine = logLine.replace(/[^\s]+$/, '*hidden*');
++        // NOTE: all that follows the command is hidden, in one pass: only the last word was,
++        //       looked for from every character of the line (seconds for a line of 60 KB,
++        //       before authentication)
++        let secret = /^(?:PASS|AUTH PLAIN)\s+(?=\S)/i.exec(logLine);
++        if (secret) {
++            logLine = secret[0] + '*hidden*';
+         }
+         this.logger.debug(
+             {
+@@ -330,6 +350,17 @@ class POP3Connection extends EventEmitter {
+         );
+
+         if (typeof this['command_' + command] === 'function') {
++            // NOTE: before it signs in a client has a handful of commands to send (CAPA, STLS,
++            //       USER and PASS, or AUTH): anyone could send them without end, each of them
++            //       answered, and the answers kept for a client that does not read them
++            if (this.session.state === 'AUTHORIZATION') {
++                this._unauthenticated = (this._unauthenticated || 0) + 1;
++                if (this._unauthenticated > 100) {
++                    this.send('-ERR Too many commands before authentication');
++                    return this.close();
++                }
++            }
++
+             this['command_' + command](args, err => {
+                 if (err) {
+                     this.logger.info(
+@@ -349,7 +380,16 @@ class POP3Connection extends EventEmitter {
+                 } else {
+                     // Reset socket timeout after successful command processing
+                     this._resetSocketTimeout();
+-                    this.processQueue();
++                    // NOTE: every hundredth line is read from the event loop: a command that is
++                    //       answered at once (NOOP, STAT) calls back from inside the call for the
++                    //       line before, one level deeper for each line of what was written to the
++                    //       socket, and a few thousand in one write ran out of stack
++                    this._processed = (this._processed || 0) + 1;
++                    if (this._processed % 100) {
++                        this.processQueue();
++                    } else {
++                        setImmediate(() => this.processQueue());
++                    }
+                 }
+             });
+         } else {
+@@ -994,6 +1034,11 @@ class POP3Connection extends EventEmitter {
+
+         this.send('+OK Begin TLS negotiation');
+
++        // NOTE: what was sent after it in the clear is not the client's for sure, and was
++        //       read as if it had been sent inside the session, once the handshake was done
++        this.queue = [];
++        this._remainder = '';
++
+         this.upgrade(err => {
+             if (err) {
+                 return this._onError(err);

@@ -1,0 +1,8 @@
+# WARNING: This file is managed by Ansible (ansible/playbooks/spamscanner-llm.yml)
+# Manual changes will be overwritten on next deployment
+#
+# The model Spam Scanner asks for ({{ spamscanner_llm_model }}): {{ spamscanner_llm_base_model }}
+# with half of this server's CPUs and a context for a message summary
+FROM {{ spamscanner_llm_base_model }}
+PARAMETER num_thread {{ spamscanner_llm_threads }}
+PARAMETER num_ctx 4096

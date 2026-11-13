@@ -23531,5 +23531,19 @@
   "Delete mailbox?": "우편함을 삭제하시겠습니까?",
   "Please confirm if you wish to delete the mailbox <strong>%s</strong>.": "우편함 <strong>%s</strong>을(를) 삭제하시려면 확인해 주세요.",
   "Generate mailbox passwords": "우편함 비밀번호 생성",
-  "Generate random mailbox": "무작위 우편함 생성"
+  "Generate random mailbox": "무작위 우편함 생성",
+  "The message could not be scanned at this time, please try again later.": "현재 메시지를 검사할 수 없습니다. 나중에 다시 시도해 주세요.",
+  "The message could not be scanned at this time and will be retried.": "현재 메시지를 검사할 수 없어 나중에 다시 시도합니다.",
+  "Senders blocked after spam reports": "스팸 신고 후 차단된 발신자",
+  "The recipient at these forwarding addresses reported mail from these senders as spam to their mailbox provider, so their mail to that address gets a temporary error until the date shown.": "이 전달 주소의 수신자가 이 발신자들의 메일을 메일 제공업체에 스팸으로 신고했으므로, 해당 주소로 보내는 메일은 표시된 날짜까지 일시적인 오류를 받습니다.",
+  "Sender": "발신자",
+  "Forwarding address": "전달 주소",
+  "Until": "까지",
+  "Unblock": "차단 해제",
+  "Unblock sender?": "발신자 차단을 해제하시겠습니까?",
+  "Please confirm if you wish to receive mail from <strong>%s</strong> at <strong>%s</strong> again.": "<strong>%s</strong>에서 보낸 메일을 <strong>%s</strong>에서 다시 받으시려면 확인해 주세요.",
+  "If you check this, then links in mail you send are checked with <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"%s\">Cloudflare's family filter</a>, and mail linking to a site it blocks for adult-related content or malware is not sent. Off by default.": "선택하면 보내는 메일의 링크를 <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"%s\">Cloudflare 가족 필터</a>로 확인하며, 성인 관련 콘텐츠나 악성 코드 때문에 차단된 사이트로 연결되는 메일은 발송되지 않습니다. 기본값은 꺼짐입니다.",
+  "If you uncheck this, then mail you send with <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"%s\">executable</a> attachments, such as .exe, .js or .bat files (also inside archives), is no longer blocked. On by default.": "선택을 해제하면 .exe, .js, .bat 파일 같은 <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"%s\">실행 파일</a>이 첨부된 보내는 메일(압축 파일 내부 포함)이 더 이상 차단되지 않습니다. 기본값은 켜짐입니다.",
+  "Mail is always scanned for spam, and links in mail you send are always checked with <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"%s\">Cloudflare's malware filter</a>: mail linking to a site it blocks for phishing or malware is not sent.": "메일은 항상 스팸 검사를 거치며, 보내는 메일의 링크는 항상 <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"%s\">Cloudflare 악성 코드 필터</a>로 확인됩니다. 피싱이나 악성 코드 때문에 차단된 사이트로 연결되는 메일은 발송되지 않습니다.",
+  "The passwords generated for these aliases still work.  Generate a new password for each one to replace them:": "이 별칭들에 대해 생성된 비밀번호는 여전히 작동합니다. 교체하려면 각 별칭에 새 비밀번호를 생성하세요:"
 }

@@ -54,7 +54,21 @@ const emailHelper = require('#helpers/email');
 const getBlockedHashes = require('#helpers/get-blocked-hashes');
 const logger = require('#helpers/logger');
 const processEmail = require('#helpers/process-email');
+const spamScanner = require('#helpers/spam-scanner');
 const setupMongoose = require('#helpers/setup-mongoose');
+
+// (outbound mail is scanned as it is sent, with the language model: more
+//  than one worker, so one scan waiting on it lets another go on, see
+//  `checkOutbound` in `helpers/spam-scanner.js`; with the Piscina thread
+//  pool, mail is sent and scanned in its threads, see `helpers/smtp-worker`)
+if (!workerData?.piscinaEnabled) {
+  config.spamScanner.threads = Math.max(
+    config.spamScanner.threads,
+    config.spamScanner.sendThreads
+  );
+  // (its workers load the classifier now, not in the first timed scans)
+  spamScanner.warm('outbound', { llm: true });
+}
 
 const IP_ADDRESS = ip.address();
 const breeSharedConfig = sharedConfig('BREE');

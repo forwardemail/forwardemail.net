@@ -12,9 +12,11 @@ const isFQDN = require('is-fqdn');
 const isSANB = require('is-string-and-not-blank');
 
 const config = require('#config');
+const createBounce = require('#helpers/create-bounce');
 const getRawHeaders = require('#helpers/get-raw-headers');
 
 const { getMinimalHeaders } = getRawHeaders;
+const { oneLine, originalRecipient } = createBounce;
 const parseEnhancedStatusCode = require('#helpers/parse-enhanced-status-code');
 
 const HOSTNAME = os.hostname();
@@ -53,7 +55,7 @@ async function createDSNSuccess(email, recipient, deliveryTime, options = {}) {
 
   // Use DSN envelope ID if available (RFC 3461 ENVID parameter)
   let envelopeId;
-  if (isSANB(email?.dsn?.id)) envelopeId = email.dsn.id;
+  if (isSANB(email?.dsn?.id)) envelopeId = oneLine(email.dsn.id);
 
   //
   // Extract delivery details from the nodemailer info object and session.
@@ -66,8 +68,10 @@ async function createDSNSuccess(email, recipient, deliveryTime, options = {}) {
   // includes a minimum of what the recipient's server or the sender chose,
   // see `helpers/send-email.js`)
   const isMinimal = email?.dsn?.minimal === true;
+  // (on one line, see `oneLine`: a multi-line reply is joined with line
+  //  breaks)
   const smtpResponse = isSANB(info?.response)
-    ? info.response.slice(0, isMinimal ? 200 : undefined)
+    ? oneLine(info.response).slice(0, isMinimal ? 200 : undefined)
     : '';
 
   // The remote MX hostname (e.g. "mx.example.com")
@@ -186,12 +190,14 @@ async function createDSNSuccess(email, recipient, deliveryTime, options = {}) {
   // Original-Recipient (RFC 3464 Section 2.3.1) — optional
   if (isSANB(email.dsn?.recipient)) {
     perRecipientFields.push(
-      `Original-Recipient: rfc822;${email.dsn.recipient}`
+      `Original-Recipient: ${originalRecipient(email.dsn.recipient)}`
     );
   } else if (email.envelope?.rcptTo) {
     const rcpt = email.envelope.rcptTo.find((r) => r.address === recipient);
     if (rcpt?.dsn?.orcpt) {
-      perRecipientFields.push(`Original-Recipient: rfc822;${rcpt.dsn.orcpt}`);
+      perRecipientFields.push(
+        `Original-Recipient: ${originalRecipient(rcpt.dsn.orcpt)}`
+      );
     }
   }
 

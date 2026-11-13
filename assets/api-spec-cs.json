@@ -2066,7 +2066,7 @@
             "allowlist": [],
             "denylist": [],
             "restricted_alias_names": [],
-            "has_adult_content_protection": true,
+            "has_adult_content_protection": false,
             "has_phishing_protection": true,
             "has_executable_protection": true,
             "has_virus_protection": true,
@@ -2149,19 +2149,21 @@
           },
           "has_adult_content_protection": {
             "type": "boolean",
-            "description": "Povolit ochranu proti obsahu pro dospělé ve Spam Scanneru"
+            "description": "Zda blokovat odeslané e-maily s odkazem na web, který rodinný filtr Cloudflare blokuje kvůli obsahu pro dospělé nebo malwaru (výchozí hodnota false)"
           },
           "has_phishing_protection": {
             "type": "boolean",
-            "description": "Povolit ochranu proti phishingu pomocí skeneru spamu"
+            "description": "Zastaralé a ignorované",
+            "deprecated": true
           },
           "has_executable_protection": {
             "type": "boolean",
-            "description": "Povolit ochranu spustitelného souboru skeneru spamu"
+            "description": "Zda blokovat odeslané e-maily se spustitelnými přílohami, například soubory .exe, .js nebo .bat (výchozí hodnota true)"
           },
           "has_virus_protection": {
             "type": "boolean",
-            "description": "Povolit antivirovou ochranu skeneru spamu"
+            "description": "Zastaralé a ignorované",
+            "deprecated": true
           },
           "has_recipient_verification": {
             "type": "boolean",
@@ -2223,19 +2225,21 @@
           },
           "has_adult_content_protection": {
             "type": "boolean",
-            "description": "Zda povolit ochranu proti obsahu pro dospělé pomocí skeneru spamu v této doméně"
+            "description": "Zda blokovat odeslané e-maily s odkazem na web, který rodinný filtr Cloudflare blokuje kvůli obsahu pro dospělé nebo malwaru (výchozí hodnota false)"
           },
           "has_phishing_protection": {
             "type": "boolean",
-            "description": "Zda povolit v této doméně ochranu proti phishingu pomocí skeneru spamu"
+            "description": "Zastaralé a ignorované",
+            "deprecated": true
           },
           "has_executable_protection": {
             "type": "boolean",
-            "description": "Zda povolit ochranu spustitelného souboru Spam Scanner v této doméně"
+            "description": "Zda blokovat odeslané e-maily se spustitelnými přílohami, například soubory .exe, .js nebo .bat (výchozí hodnota true)"
           },
           "has_virus_protection": {
             "type": "boolean",
-            "description": "Zda povolit antivirovou ochranu Spam Scanner v této doméně"
+            "description": "Zastaralé a ignorované",
+            "deprecated": true
           },
           "has_recipient_verification": {
             "type": "boolean",

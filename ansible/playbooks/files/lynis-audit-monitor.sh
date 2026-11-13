@@ -19,7 +19,9 @@ TIMESTAMP="$(date '+%Y-%m-%d %H:%M:%S %Z')"
 MONITOR_LOG="/var/log/lynis-audit-monitor.log"
 LYNIS_LOG="/var/log/lynis.log"
 LYNIS_REPORT="/var/log/lynis-report.dat"
-LOCK_DIR="/var/lock"
+# (in /run, which only root can write: a file a local user made in /var/lock,
+#  dated ahead, would hold back every alert)
+LOCK_DIR="/run"
 LOCK_DURATION=86400  # 24 hours (daily reports)
 CONFIG_DIR="/etc/security-monitor"
 

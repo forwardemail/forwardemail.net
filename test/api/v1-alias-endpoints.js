@@ -2031,6 +2031,18 @@ test('creates, retrieves, and deletes message with alias auth', async (t) => {
   t.is(res.body.object, 'message');
   t.is(res.body.subject, messageData.subject);
 
+  // (one whose text is not text is refused, as an email is)
+  for (const fields of [{ text: 5 }, { html: true }, { subject: 5 }]) {
+    const refused = await api
+      .post('/v1/messages')
+      .set(
+        'Authorization',
+        createAliasAuth(`${alias.name}@${domain.name}`, pass)
+      )
+      .send({ ...messageData, ...fields });
+    t.is(refused.status, 400, `${JSON.stringify(fields)} ${refused.text}`);
+  }
+
   const retrieveRes = await api
     .get(`/v1/messages/${res.body.id}`)
     .set(

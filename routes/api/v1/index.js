@@ -156,6 +156,10 @@ router.post(
             throw Boom.badRequest('Too many fields in the form.');
           }
 
+          case 'LIMIT_FIELD_NESTING': {
+            throw Boom.badRequest(`Field name nested too deep: ${err.field}.`);
+          }
+
           case 'LIMIT_UNEXPECTED_FILE': {
             throw Boom.badRequest(
               `Unexpected file field: "${err.field}". You must use "attachment" or "attachments" as the file field name.`

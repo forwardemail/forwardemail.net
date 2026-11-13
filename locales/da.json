@@ -23531,5 +23531,19 @@
   "Delete mailbox?": "Slet postkasse?",
   "Please confirm if you wish to delete the mailbox <strong>%s</strong>.": "Bekræft venligst, om du ønsker at slette postkassen <strong>%s</strong>.",
   "Generate mailbox passwords": "Generer postkasseadgangskoder",
-  "Generate random mailbox": "Generer tilfældig postkasse"
+  "Generate random mailbox": "Generer tilfældig postkasse",
+  "The message could not be scanned at this time, please try again later.": "Beskeden kunne ikke scannes lige nu, prøv igen senere.",
+  "The message could not be scanned at this time and will be retried.": "Beskeden kunne ikke scannes lige nu; afsendelsen forsøges igen senere.",
+  "Senders blocked after spam reports": "Afsendere blokeret efter spamrapporter",
+  "The recipient at these forwarding addresses reported mail from these senders as spam to their mailbox provider, so their mail to that address gets a temporary error until the date shown.": "Modtageren på disse videresendelsesadresser rapporterede mail fra disse afsendere som spam til sin mailudbyder, så deres mail til den adresse får en midlertidig fejl indtil den viste dato.",
+  "Sender": "Afsender",
+  "Forwarding address": "Videresendelsesadresse",
+  "Until": "Indtil",
+  "Unblock": "Fjern blokering",
+  "Unblock sender?": "Fjern blokering af afsender?",
+  "Please confirm if you wish to receive mail from <strong>%s</strong> at <strong>%s</strong> again.": "Bekræft venligst, at du vil modtage mail fra <strong>%s</strong> på <strong>%s</strong> igen.",
+  "If you check this, then links in mail you send are checked with <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"%s\">Cloudflare's family filter</a>, and mail linking to a site it blocks for adult-related content or malware is not sent. Off by default.": "Hvis du markerer dette, kontrolleres links i de e-mails, du sender, med <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"%s\">Cloudflares familiefilter</a>, og e-mails med links til et websted, som filteret blokerer for voksenindhold eller malware, sendes ikke. Slået fra som standard.",
+  "If you uncheck this, then mail you send with <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"%s\">executable</a> attachments, such as .exe, .js or .bat files (also inside archives), is no longer blocked. On by default.": "Hvis du fjerner markeringen, blokeres e-mails, du sender med <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"%s\">eksekverbare</a> vedhæftede filer som .exe-, .js- eller .bat-filer (også i arkiver), ikke længere. Slået til som standard.",
+  "Mail is always scanned for spam, and links in mail you send are always checked with <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"%s\">Cloudflare's malware filter</a>: mail linking to a site it blocks for phishing or malware is not sent.": "Mail scannes altid for spam, og links i de e-mails, du sender, kontrolleres altid med <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"%s\">Cloudflares malwarefilter</a>: e-mails med links til et websted, som filteret blokerer for phishing eller malware, sendes ikke.",
+  "The passwords generated for these aliases still work.  Generate a new password for each one to replace them:": "De adgangskoder, der er genereret til disse aliaser, virker stadig. Generer en ny adgangskode til hvert alias for at erstatte dem:"
 }

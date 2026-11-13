@@ -1358,6 +1358,188 @@ test('PROPFIND should include supported-report-set with addressbook-multiget', a
   t.true(propfindResponse.data.includes('sync-collection'));
 });
 
+//
+// The parser of a request's XML (sax, under xml2js) keeps all of a
+// declaration it does not know, and upper-cases it again for each of its
+// characters: 100 KB of one held the process for 17 seconds
+//
+test('a request with a declaration in its XML is refused', async (t) => {
+  const axios = require('axios');
+
+  const addressBooks = await fetchAddressBooks({
+    account: t.context.account,
+    headers: t.context.authHeaders
+  });
+
+  const propfind = (extra) =>
+    axios({
+      method: 'PROPFIND',
+      url: addressBooks[0].url,
+      headers: {
+        'Content-Type': 'application/xml',
+        Depth: '0',
+        ...t.context.authHeaders
+      },
+      data: `<d:propfind xmlns:d="DAV:"><d:allprop/>${extra}</d:propfind>`,
+      validateStatus: () => true
+    });
+
+  for (const declaration of [
+    '<!DOCTYPE d:propfind>',
+    '<!1>',
+    '<!-a>',
+    '<! >',
+    '<![cdata[ ]]>',
+    '<b c="<!--"/><!1><b c="-->"/>'
+  ]) {
+    const res = await propfind(declaration);
+    t.is(res.status, 400, `${declaration}`);
+  }
+
+  // (a comment and CDATA are none)
+  const res = await propfind('<!-- a --><![CDATA[ ]]>');
+  t.is(res.status, 207);
+});
+
+//
+// What that parser cannot read, and what it throws over, was an error of the
+// server; so was XML some thousand elements deep, to what logs the error that
+// carries it
+//
+// (see config/api.js: no log carries a body, and it was read for each line)
+test('the body of a request is not read for each line of its log', async (t) => {
+  const axios = require('axios');
+
+  const [{ url }] = await fetchAddressBooks({
+    account: t.context.account,
+    headers: t.context.authHeaders
+  });
+  const requests = utils.captureRequestLog(t);
+  const logged = () =>
+    requests.filter(
+      (request) =>
+        request.method === 'PROPFIND' &&
+        decodeURIComponent(request.url) ===
+          `${decodeURIComponent(new URL(url).pathname)}?logged=1`
+    );
+  const res = await axios({
+    method: 'PROPFIND',
+    url: `${url}?logged=1`,
+    headers: {
+      'Content-Type': 'application/xml',
+      Depth: '0',
+      ...t.context.authHeaders
+    },
+    data: '<d:propfind xmlns:d="DAV:"><d:prop><d:displayname/></d:prop></d:propfind>',
+    validateStatus: () => true
+  });
+  t.is(res.status, 207);
+  await pWaitFor(() => logged().length > 0, { timeout: ms('10s') });
+  t.true(logged().every((request) => request.body === undefined));
+});
+
+test('a request whose XML cannot be read is refused', async (t) => {
+  const axios = require('axios');
+
+  const addressBooks = await fetchAddressBooks({
+    account: t.context.account,
+    headers: t.context.authHeaders
+  });
+
+  const send = (method, data, url = addressBooks[0].url) =>
+    axios({
+      method,
+      url,
+      headers: {
+        'Content-Type': 'application/xml',
+        Depth: '0',
+        ...t.context.authHeaders
+      },
+      data,
+      validateStatus: () => true
+    });
+
+  for (const body of [
+    // (an element that does not end, and no element)
+    '<d:propfind xmlns:d="DAV:"><d:allprop/>',
+    'a',
+    // (an element named as the parser's key for text, an attribute named as
+    // what every object has)
+    '<d:propfind xmlns:d="DAV:"><d:prop><_/></d:prop></d:propfind>',
+    '<d:propfind xmlns:d="DAV:" hasOwnProperty="" a=""><d:allprop/></d:propfind>',
+    // (deeper than a request is)
+    `${'<a>'.repeat(65)}${'</a>'.repeat(65)}`,
+    `${'<a>'.repeat(2000)}${'</a>'.repeat(2000)}`
+  ])
+    for (const method of ['PROPFIND', 'REPORT', 'PROPPATCH']) {
+      const res = await send(method, body);
+      t.is(res.status, 400, `${method} ${body.slice(0, 80)}`);
+    }
+
+  // (as deep as one may be, with what is in it)
+  const nested = await send(
+    'PROPFIND',
+    `<d:propfind xmlns:d="DAV:"><d:prop><d:displayname/>${'<a>'.repeat(
+      62
+    )}${'</a>'.repeat(62)}</d:prop></d:propfind>`
+  );
+  t.is(nested.status, 207);
+
+  // (nor where the address books are listed, nor of the principal: what
+  // could not be read there was an error of the server)
+  const home = `${t.context.serverUrl}/dav/${t.context.username}/addressbooks`;
+  const principal = `${t.context.serverUrl}/dav/${t.context.username}`;
+  for (const url of [home, principal])
+    for (const body of [
+      '<d:propfind xmlns:d="DAV:"><d:allprop/>',
+      `${'<a>'.repeat(65)}${'</a>'.repeat(65)}`
+    ]) {
+      const res = await send('PROPFIND', body, url);
+      t.is(res.status, 400, `${url} ${body.slice(0, 80)}`);
+    }
+
+  // (a PROPFIND without a body asks for all properties, RFC 4918 9.1: its
+  // body is an object then, which was read as the text of one; a REPORT or
+  // a PROPPATCH has to have one)
+  for (const [method, url, status] of [
+    ['PROPFIND', addressBooks[0].url, 207],
+    ['PROPFIND', home, 207],
+    ['PROPFIND', principal, 207],
+    ['REPORT', addressBooks[0].url, 400],
+    ['PROPPATCH', addressBooks[0].url, 400]
+  ]) {
+    const res = await axios({
+      method,
+      url,
+      headers: { Depth: '0', ...t.context.authHeaders },
+      validateStatus: () => true
+    });
+    t.is(res.status, status, `${method} ${url}`);
+    if (status === 207) t.true(res.data.includes('displayname'));
+    else t.notRegex(res.data.message, /well-formed/);
+  }
+
+  // (a body of JSON, which is parsed for anyone, however deep it is nested,
+  // is no XML: all properties are answered, as without a body.  What
+  // described the request for its log failed on one some thousand levels
+  // deep, and the request was never answered)
+  for (const [headers, status] of [
+    [{}, 401],
+    [t.context.authHeaders, 207]
+  ]) {
+    const res = await axios({
+      method: 'PROPFIND',
+      url: addressBooks[0].url,
+      headers: { 'Content-Type': 'application/json', Depth: '0', ...headers },
+      data: `${'{"a":'.repeat(5000)}1${'}'.repeat(5000)}`,
+      transformRequest: [(data) => data],
+      timeout: ms('10s'),
+      validateStatus: () => true
+    });
+    t.is(res.status, status);
+  }
+});
+
 test('PROPFIND on principal should include principal-URL and principal-collection-set', async (t) => {
   const axios = require('axios');
 

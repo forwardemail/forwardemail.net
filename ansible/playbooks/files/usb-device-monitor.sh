@@ -18,7 +18,9 @@ HOSTNAME="$(hostname)"
 HOST_IP="$(hostname -I | awk '{print $1}')"
 TIMESTAMP="$(date '+%Y-%m-%d %H:%M:%S %Z')"
 MONITOR_LOG="/var/log/usb-device-monitor.log"
-LOCK_DIR="/var/lock"
+# (in /run, which only root can write: a file a local user made in /var/lock,
+#  dated ahead, would hold back every alert)
+LOCK_DIR="/run"
 LOCK_DURATION=3600  # 1 hour between alerts for same device
 CONFIG_DIR="/etc/security-monitor"
 AUTHORIZED_DEVICES_FILE="$CONFIG_DIR/authorized-usb-devices.conf"

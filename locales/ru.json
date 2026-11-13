@@ -23531,5 +23531,19 @@
   "Delete mailbox?": "Удалить почтовый ящик?",
   "Please confirm if you wish to delete the mailbox <strong>%s</strong>.": "Пожалуйста, подтвердите, что хотите удалить почтовый ящик <strong>%s</strong>.",
   "Generate mailbox passwords": "Генерация паролей почтовых ящиков",
-  "Generate random mailbox": "Генерировать случайный почтовый ящик"
+  "Generate random mailbox": "Генерировать случайный почтовый ящик",
+  "The message could not be scanned at this time, please try again later.": "Сейчас не удалось проверить сообщение, повторите попытку позже.",
+  "The message could not be scanned at this time and will be retried.": "Сейчас не удалось проверить сообщение, попытка будет повторена.",
+  "Senders blocked after spam reports": "Отправители, заблокированные после жалоб на спам",
+  "The recipient at these forwarding addresses reported mail from these senders as spam to their mailbox provider, so their mail to that address gets a temporary error until the date shown.": "Получатель на этих адресах пересылки пожаловался своему почтовому провайдеру на письма этих отправителей как на спам, поэтому их письма на этот адрес до указанной даты получают временную ошибку.",
+  "Sender": "Отправитель",
+  "Forwarding address": "Адрес пересылки",
+  "Until": "До",
+  "Unblock": "Разблокировать",
+  "Unblock sender?": "Разблокировать отправителя?",
+  "Please confirm if you wish to receive mail from <strong>%s</strong> at <strong>%s</strong> again.": "Подтвердите, что хотите снова получать почту от <strong>%s</strong> на адрес <strong>%s</strong>.",
+  "If you check this, then links in mail you send are checked with <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"%s\">Cloudflare's family filter</a>, and mail linking to a site it blocks for adult-related content or malware is not sent. Off by default.": "Если включить этот параметр, ссылки в отправляемых вами письмах проверяются <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"%s\">семейным фильтром Cloudflare</a>, а письма со ссылками на сайты, которые он блокирует за контент для взрослых или вредоносное ПО, не отправляются. По умолчанию выключено.",
+  "If you uncheck this, then mail you send with <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"%s\">executable</a> attachments, such as .exe, .js or .bat files (also inside archives), is no longer blocked. On by default.": "Если отключить этот параметр, отправляемые вами письма с <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"%s\">исполняемыми</a> вложениями, например файлами .exe, .js или .bat (в том числе внутри архивов), больше не блокируются. По умолчанию включено.",
+  "Mail is always scanned for spam, and links in mail you send are always checked with <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"%s\">Cloudflare's malware filter</a>: mail linking to a site it blocks for phishing or malware is not sent.": "Почта всегда проверяется на спам, а ссылки в отправляемых вами письмах всегда проверяются <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"%s\">фильтром вредоносного ПО Cloudflare</a>: письма со ссылками на сайты, которые он блокирует за фишинг или вредоносное ПО, не отправляются.",
+  "The passwords generated for these aliases still work.  Generate a new password for each one to replace them:": "Пароли, сгенерированные для этих псевдонимов, по-прежнему работают. Чтобы заменить их, сгенерируйте новый пароль для каждого из них:"
 }

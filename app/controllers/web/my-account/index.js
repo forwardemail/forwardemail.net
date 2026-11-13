@@ -36,6 +36,7 @@ const {
   retrieveAPIToken
 } = require('./retrieve-api-token');
 const retrieveAlias = require('./retrieve-alias');
+const { retrieveArfBlocks, removeArfBlock } = require('./arf-blocks');
 const retrieveAliases = require('./retrieve-aliases');
 const retrieveBilling = require('./retrieve-billing');
 const sieve = require('./sieve');
@@ -118,6 +119,8 @@ module.exports = {
   resetAPIToken,
   retrieveAPIToken,
   retrieveAlias,
+  retrieveArfBlocks,
+  removeArfBlock,
   retrieveAliases,
   retrieveBilling,
   retrieveDomain,

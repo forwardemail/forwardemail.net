@@ -390,3 +390,8 @@ test('a log of a domain the user is not an admin of is not shown', async (t) => 
   t.true(res.text.includes('Log does not exist on your account.'));
   t.regex(res.text, /fe-status__code[^>]*>400</);
 });
+
+test('a log id that is no id is a bad request, not an error', async (t) => {
+  const res = await t.context.web.get('/en/my-account/logs/zzz');
+  t.is(res.status, 400);
+});

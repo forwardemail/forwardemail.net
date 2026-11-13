@@ -1350,6 +1350,83 @@ test('creates email with binary attachment', async (t) => {
   t.is(res.status, 200);
 });
 
+//
+// A message is written out by nodemailer, which fails as it does on a text
+// that is a number, `true` or a list (of a JSON body): what queues the email
+// did not hear of it, and the request was never answered
+//
+test('refuses an email whose text is not text', async (t) => {
+  const user = await t.context.userFactory
+    .withState({
+      plan: 'enhanced_protection',
+      [config.userFields.planSetAt]: dayjs().startOf('day').toDate()
+    })
+    .create();
+
+  await t.context.paymentFactory
+    .withState({
+      user: user._id,
+      amount: 300,
+      invoice_at: dayjs().startOf('day').toDate(),
+      method: 'free_beta_program',
+      duration: ms('30d'),
+      plan: user.plan,
+      kind: 'one-time'
+    })
+    .create();
+
+  await user.save();
+
+  const domain = await t.context.domainFactory
+    .withState({
+      members: [{ user: user._id, group: 'admin' }],
+      plan: user.plan,
+      resolver,
+      has_smtp: true
+    })
+    .create();
+
+  const alias = await t.context.aliasFactory
+    .withState({
+      user: user._id,
+      domain: domain._id,
+      recipients: [user.email]
+    })
+    .create();
+
+  const send = (fields) =>
+    t.context.api
+      .post('/v1/emails')
+      .auth(user[config.userFields.apiToken])
+      .timeout(ms('20s'))
+      .send({
+        from: `${alias.name}@${domain.name}`,
+        to: 'test@foo.com',
+        subject: 'test',
+        text: 'test message',
+        ...fields
+      });
+
+  for (const fields of [
+    { text: 5 },
+    { html: true },
+    { text: ['a'] },
+    { attachments: [{ filename: 'a.txt', content: 5 }] },
+    { subject: 5 },
+    { subject: ['a'] }
+  ]) {
+    const res = await send(fields);
+    t.is(res.status, 400, `${JSON.stringify(fields)} ${res.text}`);
+  }
+
+  // (and one that is text is sent, with no subject too)
+  for (const fields of [{}, { subject: null }]) {
+    const res = await send(fields);
+    t.is(res.status, 200, `${JSON.stringify(fields)} ${res.text}`);
+    t.true(res.body.message.includes('test message'));
+  }
+});
+
 test('creates email with 50 attachments and many form fields', async (t) => {
   const user = await t.context.userFactory
     .withState({
@@ -1416,6 +1493,18 @@ test('creates email with 50 attachments and many form fields', async (t) => {
   const res = await req;
   t.is(res.status, 200, `${res.text}`);
   t.true(res.body.message.includes('name=image49.gif'));
+
+  // (and a field name is nested no deeper than a form is: see
+  // helpers/multipart.js)
+  for (const levels of [33, 84]) {
+    const nested = await t.context.api
+      .post('/v1/emails')
+      .auth(user[config.userFields.apiToken])
+      .field('from', `${alias.name}@${domain.name}`)
+      .field(`h${'[a]'.repeat(levels)}`, 'x');
+    t.is(nested.status, 400);
+    t.regex(nested.body.message, /^Field name nested too deep: h\[a]/);
+  }
 });
 
 test('5+ day email bounce', async (t) => {

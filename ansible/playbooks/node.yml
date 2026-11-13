@@ -336,9 +336,11 @@
         path: /var/www
         state: directory
         owner: deploy
-        # https://chmodcommand.com/chmod-770/
-        mode: '0770'
+        # (as 0770, but files are not made executable and others get nothing;
+        #  a link in it is not followed, so one to /etc is never made deploy's)
+        mode: 'u+rwX,g+rwX,o-rwx'
         recurse: true
+        follow: false
 
     - name: Create PM2 log directory
       file:

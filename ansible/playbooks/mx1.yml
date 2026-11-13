@@ -43,6 +43,10 @@
   import_playbook: ssh-keys.yml
   vars:
     ssh_keys_target_hosts: "mx1"
+- name: Import Spam Scanner LLM playbook
+  import_playbook: spamscanner-llm.yml
+  vars:
+    spamscanner_llm_target_hosts: "mx1"
 
 - hosts: mx1
   name: MX1
@@ -81,6 +85,13 @@
         rule: allow
         port: 25
         proto: tcp
+    # (an empty port is left out, and ufw then allows every port)
+    - name: Check the http and https ports are set
+      assert:
+        that:
+          - "lookup('env', 'PROXY_PORT') is match('^[0-9]+$')"
+          - "lookup('env', 'HTTP_PORT') is match('^[0-9]+$')"
+        fail_msg: PROXY_PORT and HTTP_PORT must be set to port numbers
     - name: Allow http
       ufw:
         rule: allow

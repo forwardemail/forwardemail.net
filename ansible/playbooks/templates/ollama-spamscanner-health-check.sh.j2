@@ -1,0 +1,66 @@
+#!/bin/bash
+# WARNING: This file is managed by Ansible (ansible/playbooks/spamscanner-llm.yml)
+# Manual changes will be overwritten on next deployment
+#
+# Health check of Ollama for Spam Scanner, every 5 minutes:
+# - running but not answering: restarted, and an error (an alert, OnFailure)
+# - given up on by systemd (it kept stopping): started again, once every 30
+#   minutes at most, and an error
+# - stopped by someone (inactive): an error
+# - (re)starting: nothing (systemd restarts it)
+# - answering, but its model not loaded: the warm-up is started (which does
+#   nothing while the model has not been made)
+set -euo pipefail
+
+readonly SERVICE='ollama-spamscanner.service'
+readonly BASE='http://127.0.0.1:{{ spamscanner_llm_port }}'
+readonly MODEL='{{ spamscanner_llm_model_tag }}'
+readonly RESET_STAMP='/run/ollama-spamscanner-health-check.reset'
+
+state=$(systemctl show --property=ActiveState --value "$SERVICE" 2>/dev/null || true)
+
+case "$state" in
+  failed)
+    if [ -z "$(find "$RESET_STAMP" -mmin -30 2>/dev/null)" ]; then
+      touch "$RESET_STAMP"
+      echo 'Ollama for Spam Scanner failed; starting it again' >&2
+      systemctl reset-failed "$SERVICE"
+      systemctl start --no-block "$SERVICE"
+    else
+      echo 'Ollama for Spam Scanner failed (started again less than 30 minutes ago)' >&2
+    fi
+    exit 1
+    ;;
+  inactive)
+    echo 'Ollama for Spam Scanner is stopped' >&2
+    exit 1
+    ;;
+  active) ;;
+  *)
+    echo "Ollama for Spam Scanner is ${state:-unknown} (systemd restarts it)"
+    exit 0
+    ;;
+esac
+
+# (two tries: one slow answer under load is not a failure)
+answered=false
+for attempt in 1 2; do
+  if curl --fail --silent --show-error --max-time 10 --output /dev/null "$BASE/api/version"; then
+    answered=true
+    break
+  fi
+  [ "$attempt" -eq 1 ] && sleep 5
+done
+
+if [ "$answered" != true ]; then
+  echo 'Ollama for Spam Scanner did not answer; restarting it' >&2
+  systemctl restart --no-block "$SERVICE"
+  exit 1
+fi
+
+# (the models it has loaded: {"models":[{"name":"spamscanner:latest",...}]})
+loaded=$(curl --fail --silent --max-time 10 "$BASE/api/ps" || true)
+if ! grep -qF "\"name\":\"$MODEL\"" <<< "$loaded"; then
+  echo 'The model of Ollama for Spam Scanner is not loaded; loading it'
+  systemctl start --no-block ollama-spamscanner-warmup.service
+fi

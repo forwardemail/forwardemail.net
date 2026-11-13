@@ -46,10 +46,13 @@ async function getSettings(name, resolver, locale = i18n.config.defaultLocale) {
     const verifications = [];
     const ports = [];
     let port = '25';
-    let hasAdultContentProtection = true;
-    let hasPhishingProtection = true;
+    // (the defaults, see `protectionOf` in `helpers/spam-scanner.js`;
+    //  phishing and malware links are always blocked, and viruses whenever
+    //  ClamAV is turned on)
+    let hasAdultContentProtection = false;
+    const hasPhishingProtection = true;
     let hasExecutableProtection = true;
-    let hasVirusProtection = true;
+    const hasVirusProtection = true;
     let requireTlsInbound = false;
     let allowlist = [];
     let denylist = [];
@@ -77,17 +80,16 @@ async function getSettings(name, resolver, locale = i18n.config.defaultLocale) {
         verification_record: verifications[0]
       })
         .select(
-          'plan allowlist denylist smtp_port has_adult_content_protection has_phishing_protection has_executable_protection has_virus_protection require_tls_inbound webhook_key'
+          'plan allowlist denylist smtp_port has_adult_content_protection has_executable_protection require_tls_inbound webhook_key'
         )
         .lean()
         .exec();
 
       if (domain && domain.plan !== 'free') {
         port = domain.smtp_port;
-        hasAdultContentProtection = domain.has_adult_content_protection;
-        hasPhishingProtection = domain.has_phishing_protection;
-        hasExecutableProtection = domain.has_executable_protection;
-        hasVirusProtection = domain.has_virus_protection;
+        hasAdultContentProtection =
+          domain.has_adult_content_protection === true;
+        hasExecutableProtection = domain.has_executable_protection !== false;
         requireTlsInbound = domain.require_tls_inbound === true;
         webhookKey = domain.webhook_key;
         //

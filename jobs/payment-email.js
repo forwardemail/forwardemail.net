@@ -46,6 +46,9 @@ if (parentPort)
     cancelled.abort();
   });
 
+// receipts that may fail in one run before the rest of it is left for the next
+const MAX_FAILURES = 10;
+
 async function mapper(id) {
   // can't use `lean()` because we need payment.description virtual
   const payment = await Payments.findById(id);
@@ -178,7 +181,27 @@ async function run() {
         }
       ]
     });
-    await pMap(ids, mapper, { concurrency: 4 });
+    // (a receipt that fails does not hold back the ones after it; once
+    // `MAX_FAILURES` have failed, e.g. while none can be rendered, the
+    // rest wait for the next run, and an error they share is logged once)
+    let failures = 0;
+    const logged = new Set();
+    await pMap(
+      ids,
+      async (id) => {
+        if (failures >= MAX_FAILURES) return;
+        try {
+          await mapper(id);
+        } catch (err) {
+          failures++;
+          if (logged.has(err.message)) return;
+          logged.add(err.message);
+          err.isCodeBug = true;
+          logger.error(err);
+        }
+      },
+      { concurrency: 4 }
+    );
   } catch (err) {
     err.isCodeBug = true;
     await logger.error(err);

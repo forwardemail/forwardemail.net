@@ -114,6 +114,9 @@ async function onSearch(mailboxId, options, session, fn) {
 
     const set = new Set();
     let mustIncludeIds = false;
+    // (each message's keywords, decoded once for all keyword terms of the
+    //  search, lowercase, by message)
+    let keywordsById;
 
     // (the criteria of the query, AND'd)
     const $and = [];
@@ -436,24 +439,33 @@ async function onSearch(mailboxId, options, session, fn) {
                 // as IMAP compares keywords.
                 const wantPresent = term.exists ? !ne : ne;
                 const keyword = String(term.value).toLowerCase();
-                const flagSql = {
-                  query:
-                    'select _id, flags, labels from Messages where mailbox = $mailbox;',
-                  values: { mailbox: mailbox._id.toString() }
-                };
-                const flagRows = session.db
-                  .prepare(flagSql.query)
-                  .all(flagSql.values);
+                if (!keywordsById) {
+                  keywordsById = new Map();
+                  const flagRows = session.db
+                    .prepare(
+                      'select _id, flags, labels from Messages where mailbox = $mailbox;'
+                    )
+                    .all({ mailbox: mailbox._id.toString() });
+                  for (const row of flagRows) {
+                    keywordsById.set(
+                      row._id,
+                      new Set(
+                        getImapFlags({
+                          flags: decodeMetadata(row.flags, recursivelyParse),
+                          labels: row.labels
+                            ? decodeMetadata(row.labels, recursivelyParse)
+                            : []
+                        }).map((f) => f.toLowerCase())
+                      )
+                    );
+                  }
+                }
+
                 const matchedIds = [];
-                for (const row of flagRows) {
-                  const has = getImapFlags({
-                    flags: decodeMetadata(row.flags, recursivelyParse),
-                    labels: row.labels
-                      ? decodeMetadata(row.labels, recursivelyParse)
-                      : []
-                  }).some((f) => f.toLowerCase() === keyword);
+                for (const [id, keywords] of keywordsById) {
+                  const has = keywords.has(keyword);
                   if (wantPresent ? has : !has) {
-                    matchedIds.push(row._id);
+                    matchedIds.push(id);
                   }
                 }
 
@@ -491,7 +503,7 @@ async function onSearch(mailboxId, options, session, fn) {
                     // NOT HEADER X value: messages where the header is absent
                     // OR the header value does not match the pattern.
                     // Using NOT IN (positive match set) captures both cases.
-                    query: `select _id from Messages where mailbox = $mailbox and _id NOT IN (select _id from Messages, json_each(Messages.headers) where json_extract(value, '$.key') = $p1 and json_extract(value, '$.value') LIKE $p2 ESCAPE '\\');`,
+                    query: `select _id from Messages where mailbox = $mailbox and _id NOT IN (select _id from Messages, json_each(Messages.headers) where Messages.mailbox = $mailbox and json_extract(value, '$.key') = $p1 and json_extract(value, '$.value') LIKE $p2 ESCAPE '\\');`,
                     values: {
                       mailbox: mailbox._id.toString(),
                       p1: term.header,

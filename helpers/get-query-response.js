@@ -18,8 +18,37 @@ const { Buffer } = require('node:buffer');
 
 const libmime = require('libmime');
 
+const IMAPError = require('./imap-error');
 const Indexer = require('./indexer');
 const getImapFlags = require('./get-imap-flags');
+
+//
+// Content a response may hold of one message: twice its size, and this much
+// (a client asks for a message, or for its parts, once). The response of a
+// message is built whole before it is sent, and sections asked for in one
+// FETCH can hold each other (BODY[1] holds BODY[1.1], and each of many
+// HEADER.FIELDS lists a part of the same header), so without a bound a
+// message of many nested parts could be asked for many times over.
+//
+const MAX_CONTENT_EXTRA = 1024 * 1024;
+
+// the bytes of content a value takes to build (the whole of a section, also
+// when a range of it is asked for: its attachments are read whole)
+function contentLength(value) {
+  if (typeof value === 'string' || Buffer.isBuffer(value)) return value.length;
+  return value?.type === 'stream' ? value.expectedLength || 0 : 0;
+}
+
+// the size of a message: as stored, or else by its parts (which cannot be
+// added up for a message of thousands of them, and is then not bounded)
+function messageSize(message, mimeTree, indexer) {
+  if (message.size > 0) return message.size;
+  try {
+    return indexer.getSize(mimeTree);
+  } catch {
+    return Number.POSITIVE_INFINITY;
+  }
+}
 
 // eslint-disable-next-line max-params
 function getQueryResponse(query, message, options = {}, instance, session) {
@@ -42,6 +71,10 @@ function getQueryResponse(query, message, options = {}, instance, session) {
 
   // generate response object
   const values = [];
+  // (see `MAX_CONTENT_EXTRA`; the size is only worked out for a response
+  //  that holds that much)
+  let contentBytes = 0;
+  let maxContentBytes;
   for (const item of query) {
     let value = '';
     switch (item.item) {
@@ -331,6 +364,24 @@ function getQueryResponse(query, message, options = {}, instance, session) {
     }
 
     values.push(value);
+
+    contentBytes += contentLength(value);
+    if (contentBytes > MAX_CONTENT_EXTRA) {
+      maxContentBytes ??=
+        2 * messageSize(message, mimeTree, indexer) + MAX_CONTENT_EXTRA;
+      if (contentBytes > maxContentBytes) {
+        // (nothing reads the content that was started)
+        for (const value of values) {
+          if (value?.type === 'stream') value.value.abort();
+        }
+
+        // (a client's mistake, answered NO [LIMIT]: not one to alert on)
+        throw new IMAPError('Too much of the message asked for at once', {
+          imapResponse: 'LIMIT',
+          ignoreHook: true
+        });
+      }
+    }
   }
 
   return values;

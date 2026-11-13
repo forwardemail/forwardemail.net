@@ -197,3 +197,28 @@ test('config.testDomains includes non-routable TLDs', (t) => {
     );
   }
 });
+
+test('an SRS Reply-To address is reversed only on our own domain', async (t) => {
+  const { SRS } = require('sender-rewriting-scheme');
+  const env = require('#config/env');
+  const srs = new SRS(config.srs);
+  const ours = srs.forward('someone@victim.org', env.WEB_HOST);
+  const session = createMockSession();
+  const reversed = await getAttributes(
+    createMockHeaders(ours),
+    session,
+    stubResolver
+  );
+  t.true(reversed.includes('someone@victim.org'));
+  // (its signature does not cover its domain, so one put on another domain
+  //  is not taken as the address it reverses to)
+  const forged = `${ours.slice(0, ours.lastIndexOf('@'))}@attacker.org`;
+  const attrs = await getAttributes(
+    createMockHeaders(forged),
+    session,
+    stubResolver
+  );
+  t.false(attrs.includes('someone@victim.org'));
+  t.false(attrs.includes('victim.org'));
+  t.true(attrs.includes('attacker.org'));
+});

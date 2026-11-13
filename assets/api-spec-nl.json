@@ -2066,7 +2066,7 @@
             "allowlist": [],
             "denylist": [],
             "restricted_alias_names": [],
-            "has_adult_content_protection": true,
+            "has_adult_content_protection": false,
             "has_phishing_protection": true,
             "has_executable_protection": true,
             "has_virus_protection": true,
@@ -2149,19 +2149,21 @@
           },
           "has_adult_content_protection": {
             "type": "boolean",
-            "description": "Spam Scanner-bescherming voor inhoud voor volwassenen inschakelen"
+            "description": "Of verzonden mail met een link naar een site die het gezinsfilter van Cloudflare blokkeert vanwege inhoud voor volwassenen of malware, wordt geblokkeerd (standaard false)"
           },
           "has_phishing_protection": {
             "type": "boolean",
-            "description": "Spam Scanner phishing-beveiliging inschakelen"
+            "description": "Verouderd en genegeerd",
+            "deprecated": true
           },
           "has_executable_protection": {
             "type": "boolean",
-            "description": "Spam Scanner-uitvoerbare bescherming inschakelen"
+            "description": "Of verzonden mail met uitvoerbare bijlagen, zoals .exe-, .js- of .bat-bestanden, wordt geblokkeerd (standaard true)"
           },
           "has_virus_protection": {
             "type": "boolean",
-            "description": "Spam Scanner-virusbeveiliging inschakelen"
+            "description": "Verouderd en genegeerd",
+            "deprecated": true
           },
           "has_recipient_verification": {
             "type": "boolean",
@@ -2223,19 +2225,21 @@
           },
           "has_adult_content_protection": {
             "type": "boolean",
-            "description": "Of de bescherming tegen inhoud voor volwassenen van Spam Scanner op dit domein moet worden ingeschakeld"
+            "description": "Of verzonden mail met een link naar een site die het gezinsfilter van Cloudflare blokkeert vanwege inhoud voor volwassenen of malware, wordt geblokkeerd (standaard false)"
           },
           "has_phishing_protection": {
             "type": "boolean",
-            "description": "Of de phishingbeveiliging van Spam Scanner op dit domein moet worden ingeschakeld"
+            "description": "Verouderd en genegeerd",
+            "deprecated": true
           },
           "has_executable_protection": {
             "type": "boolean",
-            "description": "Of de uitvoerbare bescherming van Spam Scanner op dit domein moet worden ingeschakeld"
+            "description": "Of verzonden mail met uitvoerbare bijlagen, zoals .exe-, .js- of .bat-bestanden, wordt geblokkeerd (standaard true)"
           },
           "has_virus_protection": {
             "type": "boolean",
-            "description": "Of de Spam Scanner-virusbeveiliging op dit domein moet worden ingeschakeld"
+            "description": "Verouderd en genegeerd",
+            "deprecated": true
           },
           "has_recipient_verification": {
             "type": "boolean",

@@ -16,6 +16,7 @@ const {
 } = require('./ask-to-downgrade-account');
 const _ = require('#helpers/lodash');
 const emailHelper = require('#helpers/email');
+const getAliasPasswordsNotice = require('#helpers/get-alias-passwords-notice');
 const { Aliases, Domains, Users } = require('#models');
 
 // admin invites for existing members expire after 7 days (as other invites)
@@ -236,7 +237,12 @@ async function updateMember(ctx, next) {
           : 'REASSIGNED_ALIAS_OWNERSHIP'
       )}</p><ul class="mb-0 text-left"><li>${updatedAliases
         .map((alias) => _.escape(alias.name))
-        .join('</li><li>')}</li></ul>`;
+        .join('</li><li>')}</li></ul>${
+        // (told to the admin the aliases went to, not to their past owner)
+        isCurrentUserBeingUpdated
+          ? ''
+          : await getAliasPasswordsNotice(ctx, updatedAliases)
+      }`;
 
       // flash a message if we're not on the API
       if (!ctx.api) ctx.flash('info', message);

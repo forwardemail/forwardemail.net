@@ -550,24 +550,35 @@
         path: /usr/local/bin/mongosh
       register: mongosh_binary
 
+    # (in a directory only root can write, made for it: a file another user
+    #  left at a fixed path in /tmp would otherwise be installed, and run, as
+    #  root)
+    - name: Make a directory for the mongosh download
+      tempfile:
+        state: directory
+        suffix: mongosh
+      register: mongosh_dir
+      when: not mongosh_binary.stat.exists
+
     - name: Download mongosh tarball
       get_url:
         url: https://downloads.mongodb.com/compass/mongosh-2.5.10-linux-x64.tgz
         checksum: sha256:b9c003d80dbf20d2bb2ad097abe7997a5e2a6a349af96b8510c741570116fc79
-        dest: /tmp/mongosh.tgz
-        mode: '0644'
+        dest: "{{ mongosh_dir.path }}/mongosh.tgz"
+        mode: '0600'
+        force: true
       when: not mongosh_binary.stat.exists
 
     - name: Extract mongosh tarball
       unarchive:
-        src: /tmp/mongosh.tgz
-        dest: /tmp/
+        src: "{{ mongosh_dir.path }}/mongosh.tgz"
+        dest: "{{ mongosh_dir.path }}"
         remote_src: yes
       when: not mongosh_binary.stat.exists
 
     - name: Install mongosh binary
       copy:
-        src: /tmp/mongosh-2.5.10-linux-x64/bin/mongosh
+        src: "{{ mongosh_dir.path }}/mongosh-2.5.10-linux-x64/bin/mongosh"
         dest: /usr/local/bin/mongosh
         mode: '0755'
         remote_src: yes
@@ -575,7 +586,7 @@
 
     - name: Install mongosh crypto library
       copy:
-        src: /tmp/mongosh-2.5.10-linux-x64/bin/mongosh_crypt_v1.so
+        src: "{{ mongosh_dir.path }}/mongosh-2.5.10-linux-x64/bin/mongosh_crypt_v1.so"
         dest: /usr/local/lib/mongosh_crypt_v1.so
         mode: '0644'
         remote_src: yes
@@ -583,11 +594,8 @@
 
     - name: Clean up mongosh installation files
       file:
-        path: "{{ item }}"
+        path: "{{ mongosh_dir.path }}"
         state: absent
-      loop:
-        - /tmp/mongosh.tgz
-        - /tmp/mongosh-2.5.10-linux-x64
       when: not mongosh_binary.stat.exists
 
     - name: Verify mongosh installation
@@ -610,24 +618,32 @@
       copy:
         dest: /root/.mongodb/mongosh/config
         content: |
-          enableTelemetry: false
+          {
+            "enableTelemetry": false,
+            "disableGreetingMessage": true
+          }
         mode: '0644'
 
     - name: Disable mongosh telemetry for deploy user
+      # (as deploy: root would follow a link deploy put here)
+      become: true
+      become_user: deploy
       file:
         path: /home/deploy/.mongodb/mongosh
         state: directory
-        owner: deploy
-        group: deploy
         mode: '0755'
 
     - name: Create mongosh config for deploy to disable telemetry
+      # (as deploy: root would follow a link deploy put here)
+      become: true
+      become_user: deploy
       copy:
         dest: /home/deploy/.mongodb/mongosh/config
         content: |
-          enableTelemetry: false
-        owner: deploy
-        group: deploy
+          {
+            "enableTelemetry": false,
+            "disableGreetingMessage": true
+          }
         mode: '0644'
 
     - name: Disable mongosh telemetry for devops user
@@ -642,7 +658,10 @@
       copy:
         dest: /home/devops/.mongodb/mongosh/config
         content: |
-          enableTelemetry: false
+          {
+            "enableTelemetry": false,
+            "disableGreetingMessage": true
+          }
         owner: devops
         group: devops
         mode: '0644'
@@ -951,7 +970,6 @@
         content: |
           # MongoDB configuration file
           # This file is managed by Ansible - manual changes may be overwritten
-          # Last updated: {{ ansible_date_time.iso8601 }}
 
           # Return unused tcmalloc pages to Linux more aggressively.
           # This controls allocator retention; it does not shrink live allocations.
@@ -1068,14 +1086,24 @@
         owner: mongodb
         group: mongodb
         mode: "0400"
+      register: mongo_ssl_ca
 
+    # (made again when the certificate or key changed, e.g. renewed; it was
+    #  made once, so mongod kept the old certificate)
     - name: Create MongoDB TLS/SSL certificate PEM file (cert + key)
       shell: |
-        cat /etc/mongodb/ssl/mongodb.crt /etc/mongodb/ssl/mongodb.key > /etc/mongodb/ssl/mongodb.pem
-        chown mongodb:mongodb /etc/mongodb/ssl/mongodb.pem
-        chmod 0400 /etc/mongodb/ssl/mongodb.pem
-      args:
-        creates: /etc/mongodb/ssl/mongodb.pem
+        set -e
+        if ! cat /etc/mongodb/ssl/mongodb.crt /etc/mongodb/ssl/mongodb.key | cmp -s - /etc/mongodb/ssl/mongodb.pem; then
+          umask 0377
+          rm -f /etc/mongodb/ssl/mongodb.pem.new
+          cat /etc/mongodb/ssl/mongodb.crt /etc/mongodb/ssl/mongodb.key > /etc/mongodb/ssl/mongodb.pem.new
+          chown mongodb:mongodb /etc/mongodb/ssl/mongodb.pem.new
+          chmod 0400 /etc/mongodb/ssl/mongodb.pem.new
+          mv -f /etc/mongodb/ssl/mongodb.pem.new /etc/mongodb/ssl/mongodb.pem
+          echo changed
+        fi
+      register: mongo_ssl_pem
+      changed_when: "'changed' in mongo_ssl_pem.stdout"
 
     # ========================================
     # USER CREATION (if needed)
@@ -1098,16 +1126,27 @@
         - not mongod_was_running
         - not admin_user_exists
 
+    # (in a directory of its own only root can open: the script it writes
+    #  holds the admin password, and a fixed path in /tmp could be a file a
+    #  local user made first)
+    - name: Create a temporary directory for the MongoDB user scripts
+      tempfile:
+        state: directory
+        suffix: mongo-user
+      register: mongo_user_dir
+      when: not admin_user_exists
+
     - name: Copy MongoDB user creation Python script
       copy:
         src: files/create_logs_user.py
-        dest: /tmp/create_logs_user.py
+        dest: "{{ mongo_user_dir.path }}/create_logs_user.py"
         mode: '0700'
       when: not admin_user_exists
 
     - name: Create MongoDB user creation script using Python
-      command: python3 /tmp/create_logs_user.py
+      command: python3 "{{ mongo_user_dir.path }}/create_logs_user.py"
       environment:
+        USER_SCRIPT_PATH: "{{ mongo_user_dir.path }}/create_logs_user.js"
         LOGS_USER: "{{ lookup('env', 'LOGS_USER') }}"
         LOGS_PASS: "{{ lookup('env', 'LOGS_PASS') }}"
       register: script_creation
@@ -1126,8 +1165,8 @@
     - name: Create MongoDB admin user
       shell: |
         # Try without TLS first (for base config), then with TLS if that fails
-        /usr/local/bin/mongosh --quiet admin --file /tmp/create_logs_user.js 2>/dev/null || \
-        /usr/local/bin/mongosh --quiet --tls --tlsAllowInvalidCertificates admin --file /tmp/create_logs_user.js
+        /usr/local/bin/mongosh --quiet admin --file "{{ mongo_user_dir.path }}/create_logs_user.js" 2>/dev/null || \
+        /usr/local/bin/mongosh --quiet --tls --tlsAllowInvalidCertificates admin --file "{{ mongo_user_dir.path }}/create_logs_user.js"
       register: create_user_result
       when: not admin_user_exists
       failed_when: false
@@ -1135,11 +1174,8 @@
 
     - name: Remove temporary MongoDB scripts
       file:
-        path: "{{ item }}"
+        path: "{{ mongo_user_dir.path }}"
         state: absent
-      loop:
-        - /tmp/create_logs_user.py
-        - /tmp/create_logs_user.js
       when: not admin_user_exists
       no_log: true
 
@@ -1169,12 +1205,12 @@
     # ========================================
 
     - name: Create final mongod.conf with TLS and authentication
+      register: mongo_final_conf
       copy:
         dest: /etc/mongod.conf
         content: |
           # MongoDB configuration file
           # This file is managed by Ansible - manual changes may be overwritten
-          # Last updated: {{ ansible_date_time.iso8601 }}
 
           # Return unused tcmalloc pages to Linux more aggressively.
           # This controls allocator retention; it does not shrink live allocations.
@@ -1250,11 +1286,17 @@
     # RESTART MONGODB WITH SECURE CONFIGURATION
     # ========================================
 
+    # (only when something it reads changed, or it does not run: it was
+    #  restarted on every run, taking the database down on every deploy)
     - name: Restart mongod to apply TLS and authentication
       systemd:
         name: mongod
         state: restarted
-      when: admin_user_exists or (not admin_user_exists and create_user_result.rc == 0)
+      when: >-
+        (not admin_user_exists and create_user_result.rc == 0)
+        or (admin_user_exists and (mongo_final_conf is changed
+        or mongo_ssl_pem is changed or mongo_ssl_ca is changed
+        or mongod_running.rc != 0))
 
     - name: Wait for mongod to be ready after restart
       wait_for:
@@ -1376,15 +1418,21 @@
           - gnupg
         update_cache: true
 
+    # (in a directory only root can write, made for it: a file another user
+    #  left at a fixed path in /tmp would otherwise be unzipped and its
+    #  installer run as root, also when the download failed)
     - name: Install AWS CLI
       shell: |
+        set -euo pipefail
         if ! command -v aws &> /dev/null; then
-          curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "/tmp/awscliv2.zip"
-          unzip -q /tmp/awscliv2.zip -d /tmp
-          /tmp/aws/install
-          rm -rf /tmp/aws /tmp/awscliv2.zip
+          dir="$(mktemp -d)"
+          trap 'rm -rf "$dir"' EXIT
+          curl -fsSL "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "$dir/awscliv2.zip"
+          unzip -q "$dir/awscliv2.zip" -d "$dir"
+          "$dir/aws/install"
         fi
       args:
+        executable: /bin/bash
         creates: /usr/local/bin/aws
 
     # Create MongoDB backup script

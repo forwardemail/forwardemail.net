@@ -114,7 +114,9 @@ async function storeSieveCopies(session, message) {
         this.client.del(key).catch((err) => logger.fatal(err, { session }));
       logger.error('sieve fileinto copy failed', {
         user: { id: session.user.alias_user_id },
-        ignore_hook: false,
+        // (not for a folder the script named that could not be made, which
+        //  is the script, not us, see `onAppend`)
+        ignore_hook: err?.imapResponse === 'TRYCREATE',
         err,
         folder: copy.folder
       });

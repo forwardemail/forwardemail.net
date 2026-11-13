@@ -2171,6 +2171,52 @@ Test`.trim()
   // validate message-id
   t.is(email.messageId, messageId);
 
+  // (an SRS recipient on another domain is sent to as it is, not reversed:
+  //  its signature does not cover its domain, see `checkHeaderSRS`)
+  {
+    const { SRS } = require('sender-rewriting-scheme');
+    const signed = new SRS(config.srs).forward(
+      'victim@victim.org',
+      env.WEB_HOST
+    );
+    const foreign = `${signed.slice(0, signed.lastIndexOf('@'))}@xyz.com`;
+    const srsMessageId = `srs-${messageId}`;
+    // (on a connection of its own: the first message used the other one)
+    const srsMx = await asyncMxConnect({
+      target: IP_ADDRESS,
+      port: smtp.server.address().port,
+      dnsOptions: { resolve: util.callbackify(resolver.resolve.bind(resolver)) }
+    });
+    await nodemailer
+      .createTransport({
+        logger,
+        host: srsMx.host,
+        port: srsMx.port,
+        connection: srsMx.socket,
+        secure: false,
+        tls: { rejectUnauthorized: false },
+        auth: { user: `${alias.name}@${domain.name}`, pass }
+      })
+      .sendMail({
+        envelope: { from: `${alias.name}@${domain.name}`, to: [foreign] },
+        raw: `
+Message-ID: <${srsMessageId}>
+To: ${foreign}
+From: Test <${alias.name}@${domain.name}>
+Subject: testing this
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+
+Test`.trim()
+      });
+    const srsEmail = await Emails.findOne({ messageId: srsMessageId })
+      .lean()
+      .exec();
+    t.deepEqual(srsEmail.envelope.to, [foreign]);
+    t.is(srsEmail.headers.To, foreign);
+    await Emails.deleteOne({ _id: srsEmail._id });
+  }
+
   //
   // spoof envelope RCPT TO mx records
   //

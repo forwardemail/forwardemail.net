@@ -54,6 +54,7 @@ const {
   refuseUnsafeRequestEncoding
 } = require('#helpers/refuse-unsafe-encoding');
 const i18n = require('#helpers/i18n');
+const limitBodyDepth = require('#helpers/limit-body-depth');
 const isErrorConstructorName = require('#helpers/is-error-constructor-name');
 const logger = require('#helpers/logger');
 const analyticsMiddleware = require('#helpers/analytics-middleware');
@@ -192,7 +193,9 @@ const sharedWebConfig = sharedConfig('WEB');
 const sessionKeys = getSessionKeys();
 
 // setup our Cabin instance
-const cabin = new Cabin({ logger });
+// (which does not read the body of a request for each line of its log, as
+// in config/api.js)
+const cabin = new Cabin({ logger, parseRequest: { parseBody: false } });
 
 module.exports = (redis) => ({
   ...sharedWebConfig,
@@ -365,6 +368,8 @@ module.exports = (redis) => ({
     // (before the body parser, which would Brotli-decode the body: see
     //  helpers/refuse-unsafe-encoding.js)
     app.use(refuseUnsafeRequestEncoding);
+    // (and one nested deeper than a body is: see helpers/limit-body-depth.js)
+    app.use(limitBodyDepth);
     // before anything reads ctx.hostname / ctx.origin
     app.use(validateHostHeader());
     // `?limit=0` must not mean "no limit" (see helpers/sanitize-query-limit.js)

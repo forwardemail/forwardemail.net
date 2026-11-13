@@ -215,7 +215,9 @@
           SOURCE="{{ mirror_source }}"
           TARGET="{{ mirror_target }}"
           LOG="/var/log/sqlite-mirror/mirror.log"
-          LOCK="/tmp/sqlite-mirror.lock"
+          # (in /run, which only root can write: one a local user made in /tmp
+          #  or /run/lock would stop mirroring with no alert)
+          LOCK="/run/sqlite-mirror.lock"
 
           # Rotate log if > 100MB
           if [ -f "$LOG" ]; then

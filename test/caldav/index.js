@@ -3,14 +3,18 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
+const { Buffer } = require('node:buffer');
 const fsp = require('node:fs/promises');
+const net = require('node:net');
 const path = require('node:path');
+const process = require('node:process');
 
 const Redis = require('ioredis-mock');
 const dayjs = require('dayjs-with-plugins');
 const ip = require('ip');
 const ms = require('ms');
 const pWaitFor = require('p-wait-for');
+const sinon = require('sinon');
 const splitLines = require('split-lines');
 const test = require('ava');
 const undici = require('undici');
@@ -21,6 +25,8 @@ const utils = require('../utils');
 const CalDAV = require('../../caldav-server');
 const SQLite = require('../../sqlite-server');
 
+const CalendarEvents = require('#models/calendar-events');
+const Calendars = require('#models/calendars');
 const Emails = require('#models/emails');
 const Users = require('#models/users');
 const calDAVConfig = require('#config/caldav');
@@ -802,6 +808,807 @@ test('davRequest should be able to send normal webdav requests', async (t) => {
   t.true(result.ok);
   t.regex(result.props?.currentUserPrincipal.href, /principals\/.+/);
   t.true(Object.prototype.hasOwnProperty.call(result, 'raw'));
+});
+
+//
+// The adapter answers a request for each thing its XML names, as often as it
+// names it, and all at once (see `limitXmlBody` in caldav-server.js)
+//
+const DAV_NS = 'xmlns:d="DAV:" xmlns:c="urn:ietf:params:xml:ns:caldav"';
+
+async function sendXml(t, method, body, depth = '1') {
+  const res = await undici.fetch(t.context.calendars[0].url, {
+    method,
+    headers: {
+      ...t.context.authHeaders,
+      'Content-Type': 'application/xml; charset=utf-8',
+      Depth: depth
+    },
+    body
+  });
+  return { status: res.status, text: await res.text() };
+}
+
+test('a request of more XML than a client sends is refused', async (t) => {
+  const { url } = t.context.calendars[0];
+  const status = async (method, body, depth) => {
+    const res = await sendXml(t, method, body, depth);
+    return res.status;
+  };
+
+  const multiget = (hrefs, rest = '', between = '') =>
+    `<c:calendar-multiget ${DAV_NS}>${between}<d:prop><d:getetag/><c:calendar-data/></d:prop>${Array.from(
+      { length: hrefs },
+      (_, i) => `${between}<d:href>${url}${i}.ics</d:href>`
+    ).join('')}${rest}</c:calendar-multiget>`;
+  const propfind = (props, rest = '') =>
+    `<d:propfind ${DAV_NS}><d:prop>${props}</d:prop>${rest}</d:propfind>`;
+  const query = (props, filters = '') =>
+    `<c:calendar-query ${DAV_NS}><d:prop>${props}</d:prop><c:filter><c:comp-filter name="VCALENDAR"><c:comp-filter name="VEVENT">${filters}</c:comp-filter></c:comp-filter></c:filter></c:calendar-query>`;
+
+  // (as a client asks for the objects of a calendar, a few hundred at a
+  // time and one to a line, after a byte order mark and a declaration)
+  t.is(
+    await status(
+      'REPORT',
+      `${String.fromCodePoint(
+        0xfeff
+      )}<?xml version="1.0" encoding="utf-8"?>\n${multiget(300, '', '\n  ')}`
+    ),
+    207
+  );
+  t.is(await status('REPORT', multiget(5001)), 413);
+  // (with as much else as a request has, and no more)
+  t.is(await status('REPORT', multiget(1, '<d:x/>'.repeat(255))), 207);
+  t.is(await status('REPORT', multiget(1, '<d:x/>'.repeat(256))), 413);
+  // (the space between two hrefs is one text: CDATA is not put together
+  // with it, and more texts than one are, at the cost of all the hrefs)
+  for (const between of ['<![CDATA[ ]]>', ' <![CDATA[]]> ', ' </d:x> '])
+    t.is(await status('REPORT', multiget(300, '', between)), 413);
+
+  // (as a client asks for the properties of a calendar, each element with
+  // its namespace)
+  const props = (count, name = (i) => `p${i % 100}`, between = '') =>
+    Array.from(
+      { length: count },
+      (_, i) => `${between}<x:${name(i)} xmlns:x="DAV:"/>`
+    ).join('');
+  t.is(
+    await status('PROPFIND', propfind(`<d:getetag/>${props(60)}`), '0'),
+    207
+  );
+  t.is(await status('PROPFIND', propfind(props(256)), '0'), 207);
+  t.is(await status('PROPFIND', propfind(props(257)), '0'), 413);
+  // (a comment, text or an instruction under "prop" is answered for as an
+  // element is)
+  for (const node of ['a<!---->', '<?a b?>a']) {
+    t.is(await status('PROPFIND', propfind(node.repeat(128)), '0'), 207);
+    t.is(await status('PROPFIND', propfind(node.repeat(129)), '0'), 413);
+  }
+
+  // (each of them a few times at most: what a calendar says of itself is
+  // copied once more for each time it is asked for, or set)
+  const asked = (count) => '<d:displayname>a</d:displayname>'.repeat(count);
+  const set = (props) =>
+    `<d:propertyupdate ${DAV_NS}><d:set><d:prop>${props}</d:prop></d:set></d:propertyupdate>`;
+  t.is(await status('PROPFIND', propfind(asked(4)), '0'), 207);
+  t.is(await status('PROPFIND', propfind(asked(5)), '0'), 413);
+  t.is(await status('PROPPATCH', set(asked(4))), 207);
+  t.is(await status('PROPPATCH', set(asked(5))), 413);
+
+  // (and as it asks for those of its objects, each of which the adapter
+  // answers with each: by PROPFIND, by a query, with or without a time
+  // range, and by a sync)
+  const range =
+    '<c:time-range start="20260101T000000Z" end="20260201T000000Z"/>';
+  const sync = (props) =>
+    `<d:sync-collection ${DAV_NS}><d:sync-token/><d:sync-level>1</d:sync-level><d:prop>${props}</d:prop></d:sync-collection>`;
+  for (const [method, body] of [
+    ['PROPFIND', propfind],
+    ['REPORT', query],
+    ['REPORT', (props) => query(props, range)],
+    ['REPORT', sync]
+  ]) {
+    t.is(await status(method, body(props(32))), 207);
+    t.is(await status(method, body(props(33))), 413);
+    // (one to a line: the space between two of them is not one more; other
+    // text is, and CDATA, and the space that comes after either)
+    const lines = (count) => `${props(count, undefined, '\n  ')}\n`;
+    t.is(await status(method, body(lines(32))), 207);
+    t.is(await status(method, body(lines(33))), 413);
+    t.is(await status(method, body(`${lines(31)}a`)), 207);
+    t.is(await status(method, body(`${lines(32)}a`)), 413);
+    t.is(await status(method, body(`${lines(30)}<![CDATA[]]> `)), 207);
+    t.is(await status(method, body(`${lines(31)}<![CDATA[]]> `)), 413);
+  }
+
+  // (nested as deep as a request is, and no deeper)
+  const nested = (levels) =>
+    propfind(`${'<d:x>'.repeat(levels)}${'</d:x>'.repeat(levels)}`);
+  t.is(await status('PROPFIND', nested(30)), 207);
+  t.is(await status('PROPFIND', nested(31)), 413);
+  // (hrefs are only those of a calendar-multiget, which a request is by its
+  // first element, not by one in a comment or in another element)
+  const hrefs = props(257, () => 'href');
+  for (const body of [
+    propfind('<d:getetag/>', hrefs),
+    `<!-- <c:calendar-multiget> -->${propfind('<d:getetag/>', hrefs)}`,
+    propfind(
+      '<d:getetag/>',
+      `<c:calendar-multiget>${hrefs}</c:calendar-multiget>`
+    )
+  ])
+    t.is(await status('PROPFIND', body), 413);
+
+  // (the data of the objects, once, however its name is written)
+  t.is(await status('REPORT', query('<d:getetag/><c:calendar-data/>')), 207);
+  for (const again of [
+    '<c:calendar-data/>',
+    '<x:calendar-data xmlns:x="urn:ietf:params:xml:ns:caldav"/>',
+    '<c:calendar-data\u0001/>',
+    '<à:calendar-data xmlns:à="urn:ietf:params:xml:ns:caldav"/>'
+  ])
+    t.is(await status('REPORT', query(`<c:calendar-data/>${again}`)), 413);
+  // (not the kinds of data a server lists it supports)
+  t.is(
+    await status(
+      'PROPFIND',
+      propfind(
+        '<c:supported-calendar-data><c:calendar-data/><c:calendar-data/></c:supported-calendar-data>'
+      )
+    ),
+    207
+  );
+  // (the text in a property is copied for each object, and looked for in
+  // all that the property holds: what to return of the data is a few names)
+  const data = (inside) => `<c:calendar-data>${inside}</c:calendar-data>`;
+  t.is(await status('REPORT', query(data('x'.repeat(4096)))), 207);
+  t.is(await status('REPORT', query(data('x'.repeat(4097)))), 413);
+  // (with the one element that the filter of the query holds)
+  const held = (count) =>
+    `${data('<c:comp/>'.repeat(200))}<d:getetag>${'<d:x/>'.repeat(
+      count - 201
+    )}</d:getetag>`;
+  t.is(await status('REPORT', query(held(256))), 207);
+  t.is(await status('REPORT', query(held(257))), 413);
+  // (what a property is set to is as long as a time zone is, and no longer:
+  // a calendar says it of itself, to each node that asks)
+  for (const [length, expected] of [
+    [5000, 207],
+    [16_384, 207],
+    [16_385, 413]
+  ])
+    t.is(
+      await status(
+        'PROPPATCH',
+        set(
+          `<c:calendar-description>${'x'.repeat(
+            length
+          )}</c:calendar-description>`
+        )
+      ),
+      expected
+    );
+  t.is(
+    await status(
+      'MKCALENDAR',
+      `<c:mkcalendar ${DAV_NS}><d:set><d:prop><d:displayname>${'x'.repeat(
+        16_385
+      )}</d:displayname></d:prop></d:set></c:mkcalendar>`
+    ),
+    413
+  );
+  // (and each filter is tried on each object, by a pattern made of its
+  // name and with its text)
+  const filters = (count) => '<c:prop-filter name="X-NONE"/>'.repeat(count);
+  t.is(await status('REPORT', query('<d:getetag/>', filters(16))), 207);
+  t.is(await status('REPORT', query('<d:getetag/>', filters(17))), 413);
+  const filter = (name, match = '') =>
+    `<c:prop-filter name="${name}"><c:text-match>${match}</c:text-match></c:prop-filter>`;
+  for (const [name, match, expected] of [
+    ['N'.repeat(256), 'x', 207],
+    ['N'.repeat(257), 'x', 413],
+    ['SUMMARY', 'x'.repeat(4096), 207],
+    ['SUMMARY', 'x'.repeat(4097), 413]
+  ])
+    t.is(
+      await status('REPORT', query('<d:getetag/>', filter(name, match))),
+      expected
+    );
+
+  // (an element has as many attributes as it has nodes)
+  const attributes = (count) =>
+    propfind(
+      `<d:getetag ${Array.from({ length: count }, (_, i) => `a${i}=""`).join(
+        ' '
+      )}/>`
+    );
+  t.is(await status('PROPFIND', attributes(256)), 207);
+  t.is(await status('PROPFIND', attributes(257)), 413);
+
+  // (a request has no more nodes in all than the hrefs of a
+  // calendar-multiget come to, one to a line)
+  const groups = (count) =>
+    propfind(
+      '<d:getetag/>',
+      `<d:g>${'<d:x/>'.repeat(250)}</d:g>`.repeat(count)
+    );
+  t.is(await status('PROPFIND', groups(83)), 207);
+  t.is(await status('PROPFIND', groups(84)), 413);
+
+  // (the end tag of each new name of an element is looked for in all of
+  // the body: with "propfind", "prop", "getetag" and "g" these are 128
+  // names, and 129)
+  const named = (count) =>
+    propfind(
+      '<d:getetag/>',
+      `<d:g>${Array.from({ length: count }, (_, i) => `<d:n${i}/>`).join(
+        ''
+      )}</d:g>`
+    );
+  t.is(await status('PROPFIND', named(124)), 207);
+  t.is(await status('PROPFIND', named(125)), 413);
+});
+
+//
+// What is not well-formed is not read by the adapter, whose parser goes on
+// past it (to another element than the first, as the one the request is),
+// printing each thing it cannot parse, and reads some of it at the cost of
+// all of the body, or of more.
+//
+test('a request whose XML is not well-formed is refused', async (t) => {
+  const propfind = (props, before = '', after = '') =>
+    sendXml(
+      t,
+      'PROPFIND',
+      `${before}<d:propfind ${DAV_NS}><d:prop>${props}</d:prop></d:propfind>${after}`
+    );
+  const unquoted = (count) =>
+    `<d:getetag ${Array.from({ length: count }, (_, i) => `a${i}=b`).join(
+      ' '
+    )}/>`;
+  for (const [props, before, after] of [
+    // (what the parser calls an error: an entity it does not know, an
+    // attribute given twice, a tag that does not end, an element that does
+    // not start)
+    ['<d:displayname>&nbsp;</d:displayname>'],
+    ['<d:getetag a="1" a="2"/>'],
+    ['<d:getetag'],
+    ['<d:getetag/>', '<c:calendar-multiget =>'],
+    // (more than a few of what it only warns of, as a value without quotes)
+    [unquoted(17)],
+    // (what it takes for text, having looked through all of the body for its
+    // end: an instruction or CDATA that does not end, half a comment)
+    ['<d:getetag/><?a'],
+    [`<d:displayname><![CDATA[${'a'.repeat(5000)}</d:displayname>`],
+    ['<d:getetag/><!-a'],
+    // (what it reads by a pattern that takes the square of its length: a
+    // declaration, as of a document type, and a line that ends in a
+    // paragraph separator)
+    ['<d:getetag/>', '<!DOCTYPE d:propfind>'],
+    [`<d:displayname>a${String.fromCodePoint(0x2029)}</d:displayname>`],
+    // (what it reads as HTML: an element of XHTML)
+    ['<d:getetag/><b xmlns="http://www.w3.org/1999/xhtml"/>'],
+    // (and around the request's element: another one, text, CDATA, more
+    // than a few comments, or the space between end tags that end nothing)
+    ['<d:getetag/>', `<d:propfind ${DAV_NS}/>`],
+    ['<d:getetag/>', 'a'],
+    ['<d:getetag/>', '', 'a'],
+    ['<d:getetag/>', '<![CDATA[ ]]>'],
+    ['<d:getetag/>', '<!---->'.repeat(17)],
+    ['<d:getetag/>', ' </d:x>'.repeat(17)]
+  ]) {
+    const res = await propfind(props, before, after);
+    t.is(res.status, 400, `${before ?? ''}${props}${after ?? ''}`);
+  }
+
+  // (a declaration is refused before the parser reads it: 200 KB of space
+  // in one took it 19 seconds)
+  const before = process.cpuUsage();
+  const spaced = await propfind(
+    '<d:getetag/>',
+    `<!DOCTYPE${' '.repeat(2e5)}d:propfind>`
+  );
+  const { user, system } = process.cpuUsage(before);
+  t.is(spaced.status, 400);
+  t.true(user + system < 5e6, `${user + system} microseconds`);
+
+  // (a request cut short has no element in the end: its parser takes what
+  // is not ended for empty)
+  const cut = await sendXml(
+    t,
+    'PROPFIND',
+    `<d:propfind ${DAV_NS}><d:prop><d:getetag/></d:prop>`
+  );
+  t.is(cut.status, 400);
+
+  // (the adapter looks a REPORT up by the name of its element, and finds
+  // what every object has; so does the parser a prefix that is not
+  // declared, which the adapter then takes for a namespace)
+  for (const [method, body] of [
+    ['REPORT', '<hasOwnProperty xmlns="DAV:"/>'],
+    [
+      'PROPFIND',
+      `<d:propfind ${DAV_NS} xmlns:toString="x"><d:prop><__proto__:x xmlns:q="x"/></d:prop></d:propfind>`
+    ]
+  ]) {
+    const res = await sendXml(t, method, body);
+    t.is(res.status, 400, `${body}`);
+  }
+
+  // (a request without XML is none of this)
+  for (const body of ['', '\n']) {
+    const res = await sendXml(t, 'PROPFIND', body);
+    t.is(res.status, 207);
+  }
+
+  // (what is well-formed, or all but: CDATA, comments and entities, a
+  // declaration and a few comments before the element, a few values without
+  // quotes, an end tag with space in it)
+  for (const [props, before] of [
+    [
+      '<d:getetag/><d:displayname><![CDATA[<b> & </i>]]></d:displayname><!-- < -->&amp;&#65;'
+    ],
+    [
+      '<d:getetag/>',
+      `<?xml version="1.0"?>\n${'<!---->'.repeat(7)}${' </d:x>'.repeat(7)}`
+    ],
+    [`${unquoted(15)}<d:x></d:x><d:x></d:x >`]
+  ]) {
+    const res = await propfind(props, before);
+    t.is(res.status, 207, `${before ?? ''}${props}`);
+  }
+});
+
+test('a request with too large a body leaves the connection of use', async (t) => {
+  const { hostname, port, pathname } = new URL(t.context.calendars[0].url);
+  const request = (method, path, body) =>
+    [
+      `${method} ${path} HTTP/1.1`,
+      `Host: ${hostname}`,
+      ...Object.entries(t.context.authHeaders).map(
+        ([name, value]) => `${name}: ${value}`
+      ),
+      'Content-Type: application/xml; charset=utf-8',
+      'Depth: 0',
+      `Content-Length: ${Buffer.byteLength(body)}`,
+      '',
+      body
+    ].join('\r\n');
+  const small = `<d:propfind ${DAV_NS}><d:prop><d:displayname/></d:prop></d:propfind>`;
+  const large = `<!--${'x'.repeat(3 * 1024 * 1024)}-->`;
+  // (an extended MKCOL is read through a stream of its own)
+  for (const first of [
+    request('PROPFIND', pathname, `${small}${large}`),
+    request(
+      'MKCOL',
+      `${pathname}large/`,
+      `<d:mkcol ${DAV_NS}><d:set><d:prop><d:displayname>a</d:displayname></d:prop></d:set>${large}</d:mkcol>`
+    )
+  ]) {
+    // (the next request is sent right after it, on the same connection: a
+    // client that waits for the answer first may give up the connection)
+    const socket = net.connect(Number(port), hostname);
+    t.teardown(() => socket.destroy());
+    let answers = '';
+    socket.on('data', (chunk) => {
+      answers += chunk.toString('latin1');
+    });
+    socket.write(first);
+    socket.write(request('PROPFIND', pathname, small));
+    const statuses = () =>
+      [...answers.matchAll(/HTTP\/1\.1 (\d{3}) [A-Za-z -]*\r\n/g)].map(
+        (match) => match[1]
+      );
+    await pWaitFor(() => statuses().length >= 2, { timeout: ms('10s') });
+    t.deepEqual(statuses(), ['413', '207']);
+  }
+});
+
+//
+// The adapter decodes the path of a request before it authenticates it
+//
+test('a request whose path is not encoded as one is refused', async (t) => {
+  const { origin } = new URL(t.context.calendars[0].url);
+  for (const headers of [{}, t.context.authHeaders]) {
+    const res = await undici.fetch(`${origin}/dav/%ZZ/`, {
+      method: 'PROPFIND',
+      headers
+    });
+    await res.arrayBuffer();
+    t.is(res.status, 400);
+  }
+});
+
+//
+// A calendar-multiget is answered with a copy of each object it names, by
+// the last part of an href and in more than one spelling
+//
+test('a calendar-multiget returns an object a few times at most', async (t) => {
+  const { url } = t.context.calendars[0];
+  // (the last, made without an extension, is found for "once-3@example.com"
+  // too)
+  for (const [uid, extension] of [
+    ['once-1', '.ics'],
+    ['once-2', '.ics'],
+    ['once-3_example.com', '']
+  ]) {
+    const res = await undici.fetch(`${url}${uid}${extension}`, {
+      method: 'PUT',
+      headers: {
+        ...t.context.authHeaders,
+        'Content-Type': 'text/calendar; charset=utf-8'
+      },
+      body: [
+        'BEGIN:VCALENDAR',
+        'VERSION:2.0',
+        'PRODID:-//Test//EN',
+        'BEGIN:VEVENT',
+        `UID:${uid}`,
+        'DTSTAMP:20260101T000000Z',
+        'DTSTART:20260201T100000Z',
+        'DTEND:20260201T110000Z',
+        `SUMMARY:${uid}`,
+        'END:VEVENT',
+        'END:VCALENDAR',
+        ''
+      ].join('\r\n')
+    });
+    await res.arrayBuffer();
+    t.is(res.status, 201);
+  }
+
+  const multiget = (...hrefs) =>
+    sendXml(
+      t,
+      'REPORT',
+      `<c:calendar-multiget ${DAV_NS}><d:prop><d:getetag/><c:calendar-data/></d:prop>${hrefs
+        .map((href) => `<d:href>${href}</d:href>`)
+        .join('')}</c:calendar-multiget>`
+    );
+  const summaries = ({ text }) =>
+    (text.match(/SUMMARY:once-\d/g) || []).join(',');
+
+  const both = await multiget(`${url}once-1.ics`, `${url}once-2.ics`);
+  t.is(both.status, 207);
+  t.is(summaries(both), 'SUMMARY:once-1,SUMMARY:once-2');
+
+  // (again, also by another path and without its extension)
+  const spellings = [
+    `${url}once-1.ics`,
+    `${url}once-1.ics`,
+    '/x/once-1.ics',
+    `${url}once-1`,
+    `${url}once-1.ics.ics`
+  ];
+  const few = await multiget(...spellings.slice(0, 4));
+  t.is(few.status, 207);
+  t.is(
+    summaries(few),
+    Array.from({ length: 4 }).fill('SUMMARY:once-1').join(',')
+  );
+  // (the one too many is refused before it is read)
+  const find = sinon.spy(CalendarEvents, 'find');
+  t.teardown(() => find.restore());
+  const read = () =>
+    find.getCalls().filter((call) => call.args[2]?.eventId === 'once-1').length;
+  const many = await multiget(...spellings);
+  t.is(many.status, 400);
+  t.is(summaries(many), '');
+  await pWaitFor(() => read() >= 4, { timeout: ms('10s') });
+  await new Promise((resolve) => {
+    setTimeout(resolve, 500);
+  });
+  t.is(read(), 4);
+
+  // (and by another name it is found for)
+  const other = `${url}once-3%40example.com.ics`;
+  const found = await multiget(other, other, other, other);
+  t.is(found.status, 207);
+  t.is(
+    summaries(found),
+    Array.from({ length: 4 }).fill('SUMMARY:once-3').join(',')
+  );
+  const named = await multiget(
+    other,
+    other,
+    other,
+    other,
+    `${url}once-3_example.com`
+  );
+  t.is(named.status, 400);
+
+  // (what is not there may be asked for as often as it is, by other names)
+  const missing = await multiget(
+    ...Array.from({ length: 6 }, (_, i) => `${url}none-${i}.ics`)
+  );
+  t.is(missing.status, 207);
+
+  // (and an href that is not encoded as one is no error for the others)
+  const odd = await multiget(`${url}once-1.ics`, `${url}a%40%ZZ.ics`);
+  t.is(odd.status, 207);
+  t.is(summaries(odd), 'SUMMARY:once-1');
+});
+
+//
+// The request logger describes a request anew for each line that is logged
+// for it, and read its body each time: a line is logged for each object a
+// REPORT is answered with, so a multiget of 500 objects took 5 seconds rather
+// than 1, and a query of 300 with a megabyte of comment in it 9 seconds.  No
+// log carries a body, so it is no longer read for one (see config/api.js).
+//
+test('the body of a request is not read for each line of its log', async (t) => {
+  const { url } = t.context.calendars[0];
+  const requests = utils.captureRequestLog(t);
+  const logged = () =>
+    requests.filter(
+      (request) =>
+        request.method === 'REPORT' &&
+        decodeURIComponent(request.url) ===
+          decodeURIComponent(new URL(url).pathname)
+    );
+  const res = await sendXml(
+    t,
+    'REPORT',
+    `<c:calendar-multiget ${DAV_NS}><d:prop><d:getetag/></d:prop><d:href>${url}none.ics</d:href></c:calendar-multiget>`
+  );
+  t.is(res.status, 207);
+  // (the lines of the server as it answered, and the one of the response)
+  await pWaitFor(() => logged().length > 1, { timeout: ms('10s') });
+  t.true(logged().every((request) => request.body === undefined));
+});
+
+//
+// A copy of a calendar is mailed to its owner as it is deleted, and one that
+// could not be (too large for an email, here) failed the request as an error
+// of the server, each time: the calendar could not be deleted
+//
+test('deletes a calendar whose backup cannot be mailed', async (t) => {
+  const url = new URL('../large/', t.context.calendars[0].url).href;
+  const uploaded = await undici.fetch(url, {
+    method: 'PUT',
+    headers: {
+      ...t.context.authHeaders,
+      'Content-Type': 'text/calendar; charset=utf-8'
+    },
+    body: [
+      'BEGIN:VCALENDAR',
+      'VERSION:2.0',
+      'PRODID:-//Test//EN',
+      ...[1, 2, 3].flatMap((i) => [
+        'BEGIN:VEVENT',
+        `UID:large-${i}`,
+        'DTSTAMP:20260101T000000Z',
+        `DTSTART:2026020${i}T100000Z`,
+        `DTEND:2026020${i}T110000Z`,
+        `SUMMARY:large-${i}`,
+        `DESCRIPTION:${'d'.repeat(400_000)}`,
+        'END:VEVENT'
+      ]),
+      'END:VCALENDAR',
+      ''
+    ].join('\r\n')
+  });
+  await uploaded.arrayBuffer();
+  t.is(uploaded.status, 201);
+
+  const deleted = await undici.fetch(url, {
+    method: 'DELETE',
+    headers: t.context.authHeaders
+  });
+  await deleted.arrayBuffer();
+  t.true(deleted.ok, `${deleted.status}`);
+
+  const after = await undici.fetch(url, {
+    method: 'PROPFIND',
+    headers: { ...t.context.authHeaders, Depth: '0' }
+  });
+  await after.arrayBuffer();
+  t.is(after.status, 404);
+});
+
+//
+// What a calendar says of itself (its name, its description, its color, its
+// time zone) the adapter answers once more for each node that asks for it,
+// and the server copies its name, its description and what it was uploaded
+// with into the data of each of its objects.
+//
+test('what a calendar says of itself is answered and copied in part', async (t) => {
+  const home = new URL('..', t.context.calendars[0].url).href;
+  const event = (i) => [
+    'BEGIN:VEVENT',
+    `UID:own-${i}`,
+    'DTSTAMP:20260101T000000Z',
+    `DTSTART:2026020${i + 1}T100000Z`,
+    `DTEND:2026020${i + 1}T110000Z`,
+    `SUMMARY:own-${i}`,
+    'END:VEVENT'
+  ];
+  // (a calendar is uploaded whole, as Thunderbird publishes one, with three
+  // events and what it says of itself)
+  const upload = async (name, lines, prodId = '-//Test//EN') => {
+    const res = await undici.fetch(`${home}${name}`, {
+      method: 'PUT',
+      headers: {
+        ...t.context.authHeaders,
+        'Content-Type': 'text/calendar; charset=utf-8'
+      },
+      body: [
+        'BEGIN:VCALENDAR',
+        'VERSION:2.0',
+        `PRODID:${prodId}`,
+        ...lines,
+        ...event(0),
+        ...event(1),
+        ...event(2),
+        'END:VCALENDAR',
+        ''
+      ].join('\r\n')
+    });
+    await res.arrayBuffer();
+    t.is(res.status, 201);
+  };
+
+  // (what is answered, with the lines that iCalendar folds put together)
+  const read = async (path, method = 'GET', depth = '0') => {
+    const res = await undici.fetch(`${home}${path}`, {
+      method,
+      headers: {
+        ...t.context.authHeaders,
+        'Content-Type': 'application/xml; charset=utf-8',
+        Accept: 'text/calendar',
+        Depth: depth
+      },
+      body:
+        method === 'GET'
+          ? undefined
+          : `<d:propfind ${DAV_NS} xmlns:i="http://apple.com/ns/ical/"><d:prop><d:displayname/><c:calendar-description/><c:calendar-timezone/><i:calendar-color/></d:prop></d:propfind>`
+    });
+    const text = await res.text();
+    return text.replace(/\r\n /g, '');
+  };
+
+  // the longest run of a letter in it
+  const run = (text, letter) =>
+    Math.max(
+      0,
+      ...(text.match(new RegExp(`${letter}+`, 'g')) ?? []).map(
+        (match) => match.length
+      )
+    );
+
+  const create = sinon.spy(CalendarEvents, 'create');
+  const made = sinon.spy(Calendars, 'create');
+  const update = sinon.spy(Calendars, 'findByIdAndUpdate');
+  t.teardown(() => {
+    create.restore();
+    made.restore();
+    update.restore();
+  });
+  await upload('long', [
+    `NAME:${'n'.repeat(20_000)}`,
+    `DESCRIPTION:${'d'.repeat(20_000)}`,
+    `COLOR:${'c'.repeat(20_000)}`,
+    `X-WR-TIMEZONE:${'z'.repeat(20_000)}`,
+    `X-WR-CALDESC:${'x'.repeat(2000)}`
+  ]);
+
+  // (each object of an upload is stored with the first of it)
+  const stored = create
+    .getCalls()
+    .flatMap((call) => call.args[0])
+    .filter((event) => /^own-\d$/.test(event?.eventId));
+  t.is(stored.length, 3);
+  for (const { ical } of stored) t.true(ical.length < 2048, `${ical.length}`);
+
+  // (and the calendar with as much of each as is answered, as it is made
+  // for the upload and as it is updated from it)
+  const first = made
+    .getCalls()
+    .map((call) => call.args[0])
+    .find((calendar) => calendar?.calendarId === 'long');
+  t.is(first.timezone.length, 16_384);
+  t.is(first.description.length, 16_384);
+  const own = update
+    .getCalls()
+    .map((call) => call.args[3]?.$set)
+    .find((set) => set?.name?.startsWith('nnn'));
+  for (const key of ['name', 'description', 'color'])
+    t.is(own[key].length, 16_384, `${key}`);
+
+  // (answered as long as a time zone is, of the calendar and where the
+  // calendars are listed)
+  for (const [path, depth] of [
+    ['long/', '0'],
+    ['', '1']
+  ]) {
+    const answer = await read(path, 'PROPFIND', depth);
+    for (const letter of 'ndcz') t.is(run(answer, letter), 16_384, `${letter}`);
+  }
+
+  // (copied into the data of an object: the first of it, 1,024 characters
+  // with its product and scale, and for each object in a calendar that is
+  // read whole)
+  const object = await read('long/own-1.ics');
+  t.true(object.includes('SUMMARY:own-1'));
+  t.true(run(object, 'n') > 900);
+  t.true(run(object, 'n') <= 1024, `${run(object, 'n')}`);
+  for (const name of ['DESCRIPTION', 'X-WR-CALDESC'])
+    t.false(object.includes(name), `${name}`);
+  // (and all that is stored of it, once, in the calendar read whole: an
+  // upload stores as much of each as is answered, and of what else the
+  // calendar was uploaded with what fits in as much)
+  const whole = await read('long/');
+  t.true(whole.includes('SUMMARY:own-2'));
+  for (const [letter, length] of [
+    ['n', 16_384],
+    ['d', 16_384],
+    ['x', 2000]
+  ])
+    t.is(run(whole, letter), length, `${letter}`);
+  t.false(whole.includes('X-WR-TIMEZONE'));
+
+  // (to the character, by its name and its value: a thousand that fit and
+  // leave 494, one that is one more, one that is as much, and one after)
+  const fitting = Array.from(
+    { length: 1000 },
+    (_, i) => `X-P${i}:${'v'.repeat(10)}`
+  );
+  t.is(16_384 - fitting.join('').length + fitting.length, 494);
+  await upload(
+    'many',
+    [
+      ...fitting,
+      `X-OVER:${'o'.repeat(489)}`,
+      `X-FILL:${'f'.repeat(488)}`,
+      'X-LAST:l',
+      `CALSCALE:${'g'.repeat(20_000)}`,
+      `SOURCE:https://example.com/${'s'.repeat(20_000)}`,
+      `URL:https://example.com/${'u'.repeat(20_000)}`
+    ],
+    'p'.repeat(20_000)
+  );
+  const many = await read('many/');
+  t.deepEqual(many.match(/^X-[A-Z]+\d*:.*$/gm), [
+    ...fitting,
+    `X-FILL:${'f'.repeat(488)}`
+  ]);
+  // (and of what else it says of itself as much as of its name)
+  const rest = update
+    .getCalls()
+    .map((call) => call.args[3]?.$set)
+    .find((set) => set?.prodId?.startsWith('ppp'));
+  for (const key of ['prodId', 'scale', 'source', 'url'])
+    t.is(rest[key].length, 16_384, `${key}`);
+
+  // (a PROPPATCH is answered with the calendar as it is after it, no longer
+  // either: one that sets no name with the name there is)
+  const patched = await undici.fetch(`${home}long/`, {
+    method: 'PROPPATCH',
+    headers: {
+      ...t.context.authHeaders,
+      'Content-Type': 'application/xml; charset=utf-8'
+    },
+    body: `<d:propertyupdate ${DAV_NS}><d:set><d:prop><d:displayname></d:displayname><c:calendar-description>described</c:calendar-description></d:prop></d:set></d:propertyupdate>`
+  });
+  const answer = await patched.text();
+  t.is(patched.status, 207);
+  t.is(run(answer, 'n'), 16_384);
+  t.true(run(answer, 'd') < 1024, `${run(answer, 'd')}`);
+  t.true(answer.includes('described'));
+
+  // (all of what a calendar says of itself in fewer, and what it says twice
+  // once, as it said it last)
+  await upload('short', [
+    `NAME:${'m'.repeat(300)}`,
+    `DESCRIPTION:${'e'.repeat(600)}`,
+    'X-OWN:first',
+    'X-OWN:kept'
+  ]);
+  const kept = await read('short/own-1.ics');
+  t.is(run(kept, 'm'), 300);
+  t.is(run(kept, 'e'), 600);
+  t.is(kept.match(/^X-OWN:.*$/gm)?.join(','), 'X-OWN:kept');
 });
 
 test('davRequest should be able to send raw xml requests', async (t) => {

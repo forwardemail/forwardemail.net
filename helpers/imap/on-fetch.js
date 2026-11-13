@@ -129,6 +129,9 @@ async function onFetch(mailboxId, options, session, fn) {
     return;
   }
 
+  // (what was sent to the client before the command ended, see the flushes)
+  let sentBytes = 0;
+
   try {
     const compiledPayloads = [];
     const entries = [];
@@ -170,7 +173,12 @@ async function onFetch(mailboxId, options, session, fn) {
     if (options.bodystructureExist) projection.bodystructure = true;
     if (options.rfc822sizeExist) projection.size = true;
     if (options.envelopeExist) projection.envelope = true;
-    if (!options.metadataOnly) projection.mimeTree = true;
+    // (the size bounds how much of a message one response may hold, see
+    //  `MAX_CONTENT_EXTRA` in helpers/get-query-response)
+    if (!options.metadataOnly) {
+      projection.mimeTree = true;
+      projection.size = true;
+    }
 
     const query = {
       mailbox: mailbox._id
@@ -295,6 +303,7 @@ async function onFetch(mailboxId, options, session, fn) {
         if (isBatchMode && pendingBytes >= FLUSH_BYTES) {
           await this.wss.broadcast(session, compiledPayloads);
           compiledPayloads.length = 0;
+          sentBytes += pendingBytes;
           pendingBytes = 0;
         }
 
@@ -351,6 +360,7 @@ async function onFetch(mailboxId, options, session, fn) {
       if (isBatchMode && pendingBytes >= FLUSH_BYTES) {
         await this.wss.broadcast(session, compiledPayloads);
         compiledPayloads.length = 0;
+        sentBytes += pendingBytes;
         pendingBytes = 0;
       }
 
@@ -435,6 +445,8 @@ async function onFetch(mailboxId, options, session, fn) {
         service: 'imap_download',
         bytes: totalBytes
       });
+    // (all of it is counted now, should what follows end in an error)
+    sentBytes = 0;
 
     //
     // mark the messages as seen
@@ -557,6 +569,16 @@ async function onFetch(mailboxId, options, session, fn) {
         );
     }
   } catch (err) {
+    // a FETCH that ends in an error has sent what it flushed before it,
+    // which counts as downloaded too (it was only counted on success, so
+    // one that failed at its last message was free)
+    if (sentBytes > 0)
+      recordBandwidth(this.client, {
+        userId: session.user.alias_user_id,
+        service: 'imap_download',
+        bytes: sentBytes
+      });
+
     fn(refineAndLogError(err, session, true, this));
   }
 }

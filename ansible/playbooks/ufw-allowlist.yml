@@ -75,7 +75,9 @@
 
           # Fetch with retries (3 attempts, 10 second timeout each)
           for attempt in {1..3}; do
-            NEW_IPS=$(curl -s --max-time 10 "$IP_LIST_URL" | grep -E '^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$' | sort -u)
+            # (a failed or cut-off fetch gives no list, not part of one, which
+            #  would remove the rest of the allowed servers)
+            NEW_IPS=$(set -o pipefail; curl -fsS --max-time 10 "$IP_LIST_URL" | grep -E '^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$' | sort -u) || NEW_IPS=""
 
             if [ -n "$NEW_IPS" ]; then
               echo "[$(date -Iseconds)] Successfully fetched $(echo "$NEW_IPS" | wc -l) IPs"
@@ -93,10 +95,10 @@
           fi
 
           # Get current IPs from UFW for the CORRECT port
-          CURRENT_IPS=$(ufw status | grep "${SERVICE_PORT}/tcp" | grep "$COMMENT" | awk '{print $3}' | grep -E '^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$' | sort -u)
+          CURRENT_IPS=$(ufw status | grep -wF -- "${SERVICE_PORT}/tcp" | grep -F -- "$COMMENT" | awk '{print $3}' | grep -E '^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$' | sort -u)
 
           # Find orphaned rules with the comment but WRONG port (from old deploys)
-          ORPHANED_RULES=$(ufw status numbered | grep "$COMMENT" | grep -v "${SERVICE_PORT}/tcp" | grep -oP '^\[\s*\K[0-9]+' | sort -rn)
+          ORPHANED_RULES=$(ufw status numbered | grep -F -- "$COMMENT" | grep -vwF -- "${SERVICE_PORT}/tcp" | grep -oP '^\[\s*\K[0-9]+' | sort -rn)
 
           # Remove orphaned rules first (delete from highest to lowest)
           ORPHANED_COUNT=0
@@ -112,6 +114,18 @@
           # Calculate diff (only for correct port)
           TO_ADD=$(comm -13 <(echo "$CURRENT_IPS") <(echo "$NEW_IPS"))
           TO_REMOVE=$(comm -23 <(echo "$CURRENT_IPS") <(echo "$NEW_IPS"))
+
+          # (never more than half of the allowed servers at once: a list that
+          #  lost most of them is more likely wrong than true)
+          CURRENT_COUNT=$(echo "$CURRENT_IPS" | grep -c . || true)
+          REMOVE_COUNT=$(echo "$TO_REMOVE" | grep -c . || true)
+          HELD_BACK=""
+          if [ "$CURRENT_COUNT" -gt 0 ] && [ $((REMOVE_COUNT * 2)) -gt "$CURRENT_COUNT" ]; then
+            HELD_BACK="WARNING: not removing $REMOVE_COUNT of $CURRENT_COUNT allowed IPs at once; remove them by hand if intended:
+          $(echo "$TO_REMOVE" | sed 's/^/  - /' | head -20)"
+            echo "[$(date -Iseconds)] $HELD_BACK"
+            TO_REMOVE=""
+          fi
 
           # Check if changes needed
           if [ -z "$TO_ADD" ] && [ -z "$TO_REMOVE" ] && [ $ORPHANED_COUNT -eq 0 ]; then
@@ -130,7 +144,9 @@
             # Remove old IPs (delete from highest rule number to lowest)
             if [ -n "$TO_REMOVE" ]; then
               for ip in $TO_REMOVE; do
-                RULE_NUMS=$(ufw status numbered | grep "${SERVICE_PORT}/tcp" | grep "$ip" | grep "$COMMENT" | grep -oP '^\[\s*\K[0-9]+' | sort -rn)
+                # (whole words, as written: "1.2.3.4" is not in "11.2.3.45", nor
+                #  "25/tcp" in "2525/tcp")
+                RULE_NUMS=$(ufw status numbered | grep -wF -- "${SERVICE_PORT}/tcp" | grep -wF -- "$ip" | grep -F -- "$COMMENT" | grep -oP '^\[\s*\K[0-9]+' | sort -rn)
                 for rule_num in $RULE_NUMS; do
                   echo "y" | ufw delete "$rule_num" > /dev/null 2>&1
                   REMOVED_COUNT=$((REMOVED_COUNT + 1))
@@ -189,14 +205,19 @@
             - Orphaned cleaned: $ORPHANED_COUNT
             - Current total: $TOTAL_IPS IPs whitelisted
 
+          $HELD_BACK
+
           Server: $(hostname)
           Port: $SERVICE_PORT/tcp
 
           View logs: sudo journalctl -u {{ service_identifier }}-ufw-whitelist-update.service -n 50"
 
-          # Send email report only if changes were made
-          if [ "$CHANGES_MADE" = true ]; then
+          # Send email report only if changes were made (or removals held back)
+          if [ "$CHANGES_MADE" = true ] || [ -n "$HELD_BACK" ]; then
             SUBJECT="[UFW] Whitelist Updated: $SERVICE_NAME (Port $SERVICE_PORT)"
+            if [ -n "$HELD_BACK" ]; then
+              SUBJECT="[UFW] Whitelist Removals Held Back: $SERVICE_NAME (Port $SERVICE_PORT)"
+            fi
 
             /usr/local/bin/send-rate-limited-email.sh \
               "ufw-whitelist-{{ service_identifier }}" \

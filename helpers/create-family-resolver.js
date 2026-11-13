@@ -66,7 +66,8 @@ function createFamilyResolver(client, logger, overrides) {
 // which answers 0.0.0.0 for malware and phishing but not for adult content.
 // Asked about a domain the family resolver blocks, it tells a security threat
 // from a domain categorized as adult (cached apart from both other resolvers
-// for the same reasons).
+// for the same reasons). Spam Scanner asks it about link hosts too
+// (see `helpers/spam-scanner`).
 //
 function createSecurityResolver(client, logger, overrides) {
   return createFilteredResolver(client, logger, {
@@ -94,4 +95,5 @@ module.exports = createFamilyResolver;
 module.exports.createSecurityResolver = createSecurityResolver;
 module.exports.createDomainCheckResolvers = createDomainCheckResolvers;
 module.exports.FAMILY_SERVERS = FAMILY_SERVERS;
+module.exports.SECURITY_SERVERS = SECURITY_SERVERS;
 module.exports.isBlockedAnswer = isBlockedAnswer;

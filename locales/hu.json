@@ -23531,5 +23531,19 @@
   "Delete mailbox?": "Postafiók törlése?",
   "Please confirm if you wish to delete the mailbox <strong>%s</strong>.": "Kérjük, erősítse meg, hogy törölni kívánja a(z) <strong>%s</strong> postafiókot.",
   "Generate mailbox passwords": "Postafiók-jelszavak generálása",
-  "Generate random mailbox": "Véletlenszerű postafiók generálása"
+  "Generate random mailbox": "Véletlenszerű postafiók generálása",
+  "The message could not be scanned at this time, please try again later.": "Az üzenetet most nem sikerült ellenőrizni, kérjük, próbálja újra később.",
+  "The message could not be scanned at this time and will be retried.": "Az üzenetet most nem sikerült ellenőrizni, a küldést később újra megpróbáljuk.",
+  "Senders blocked after spam reports": "Spambejelentések után letiltott feladók",
+  "The recipient at these forwarding addresses reported mail from these senders as spam to their mailbox provider, so their mail to that address gets a temporary error until the date shown.": "Ezeken a továbbítási címeken a címzett spamként jelentette a levelezési szolgáltatójának ezeknek a feladóknak a leveleit, ezért az erre a címre küldött leveleik a megadott dátumig ideiglenes hibát kapnak.",
+  "Sender": "Feladó",
+  "Forwarding address": "Továbbítási cím",
+  "Until": "Eddig",
+  "Unblock": "Letiltás feloldása",
+  "Unblock sender?": "Feloldja a feladó letiltását?",
+  "Please confirm if you wish to receive mail from <strong>%s</strong> at <strong>%s</strong> again.": "Kérjük, erősítse meg, hogy ismét szeretne leveleket kapni a(z) <strong>%s</strong> feladótól a(z) <strong>%s</strong> címre.",
+  "If you check this, then links in mail you send are checked with <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"%s\">Cloudflare's family filter</a>, and mail linking to a site it blocks for adult-related content or malware is not sent. Off by default.": "Ha bejelölöd, az általad küldött levelekben lévő linkeket a <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"%s\">Cloudflare családi szűrőjével</a> ellenőrizzük, és nem küldjük el azt a levelet, amely olyan oldalra mutat, amelyet a szűrő felnőtt tartalom vagy kártevő miatt letilt. Alapértelmezés szerint ki van kapcsolva.",
+  "If you uncheck this, then mail you send with <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"%s\">executable</a> attachments, such as .exe, .js or .bat files (also inside archives), is no longer blocked. On by default.": "Ha törlöd a jelölést, többé nem tiltjuk le az olyan küldött leveleket, amelyekben <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"%s\">futtatható</a> melléklet van, például .exe, .js vagy .bat fájl (archívumban is). Alapértelmezés szerint be van kapcsolva.",
+  "Mail is always scanned for spam, and links in mail you send are always checked with <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"%s\">Cloudflare's malware filter</a>: mail linking to a site it blocks for phishing or malware is not sent.": "A leveleket mindig ellenőrizzük spam szempontjából, és az általad küldött levelekben lévő linkeket mindig a <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"%s\">Cloudflare kártevőszűrőjével</a> ellenőrizzük: nem küldjük el azt a levelet, amely olyan oldalra mutat, amelyet a szűrő adathalászat vagy kártevő miatt letilt.",
+  "The passwords generated for these aliases still work.  Generate a new password for each one to replace them:": "Az ezekhez az aliasokhoz generált jelszavak továbbra is működnek. A lecserélésükhöz generáljon mindegyikhez új jelszót:"
 }

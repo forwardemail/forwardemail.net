@@ -22,6 +22,7 @@ const sharedConfig = require('@ladjs/shared-config');
 
 const SMTP = require('./smtp-server');
 const logger = require('#helpers/logger');
+const spamScanner = require('#helpers/spam-scanner');
 const setupMongoose = require('#helpers/setup-mongoose');
 
 const breeSharedConfig = sharedConfig('BREE');
@@ -52,6 +53,8 @@ graceful.listen();
   try {
     await smtp.listen();
     if (process.send) process.send('ready');
+    // load the Spam Scanner classifier now, not on the first message
+    spamScanner.warm('outbound');
     logger.info(
       `SMTP server listening on ${
         smtp.server.address().port

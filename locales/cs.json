@@ -23531,5 +23531,19 @@
   "Delete mailbox?": "Smazat poštovní schránku?",
   "Please confirm if you wish to delete the mailbox <strong>%s</strong>.": "Prosím potvrďte, zda chcete smazat poštovní schránku <strong>%s</strong>.",
   "Generate mailbox passwords": "Generování hesel poštovních schránek",
-  "Generate random mailbox": "Generovat náhodnou poštovní schránku"
+  "Generate random mailbox": "Generovat náhodnou poštovní schránku",
+  "The message could not be scanned at this time, please try again later.": "Zprávu se nyní nepodařilo zkontrolovat, zkuste to prosím později.",
+  "The message could not be scanned at this time and will be retried.": "Zprávu se nyní nepodařilo zkontrolovat, odeslání se zopakuje.",
+  "Senders blocked after spam reports": "Odesílatelé zablokovaní po nahlášení spamu",
+  "The recipient at these forwarding addresses reported mail from these senders as spam to their mailbox provider, so their mail to that address gets a temporary error until the date shown.": "Příjemce na těchto adresách pro přeposílání nahlásil svému poskytovateli pošty e-maily od těchto odesílatelů jako spam, takže jejich pošta na tuto adresu dostává až do uvedeného data dočasnou chybu.",
+  "Sender": "Odesílatel",
+  "Forwarding address": "Adresa pro přeposílání",
+  "Until": "Do",
+  "Unblock": "Odblokovat",
+  "Unblock sender?": "Odblokovat odesílatele?",
+  "Please confirm if you wish to receive mail from <strong>%s</strong> at <strong>%s</strong> again.": "Potvrďte prosím, že chcete znovu přijímat poštu od <strong>%s</strong> na adrese <strong>%s</strong>.",
+  "If you check this, then links in mail you send are checked with <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"%s\">Cloudflare's family filter</a>, and mail linking to a site it blocks for adult-related content or malware is not sent. Off by default.": "Pokud tuto možnost zaškrtnete, odkazy v e-mailech, které odešlete, se zkontrolují <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"%s\">rodinným filtrem Cloudflare</a> a e-maily s odkazem na web, který filtr blokuje kvůli obsahu pro dospělé nebo malwaru, se neodešlou. Ve výchozím stavu vypnuto.",
+  "If you uncheck this, then mail you send with <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"%s\">executable</a> attachments, such as .exe, .js or .bat files (also inside archives), is no longer blocked. On by default.": "Pokud tuto možnost odškrtnete, e-maily, které odešlete se <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"%s\">spustitelnými</a> přílohami, například soubory .exe, .js nebo .bat (i uvnitř archivů), již nebudou blokovány. Ve výchozím stavu zapnuto.",
+  "Mail is always scanned for spam, and links in mail you send are always checked with <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"%s\">Cloudflare's malware filter</a>: mail linking to a site it blocks for phishing or malware is not sent.": "Pošta se vždy kontroluje na spam a odkazy v e-mailech, které odešlete, se vždy kontrolují <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"%s\">filtrem malwaru Cloudflare</a>: e-maily s odkazem na web, který filtr blokuje kvůli phishingu nebo malwaru, se neodešlou.",
+  "The passwords generated for these aliases still work.  Generate a new password for each one to replace them:": "Hesla vygenerovaná pro tyto aliasy stále fungují. Chcete-li je nahradit, vygenerujte pro každý z nich nové heslo:"
 }

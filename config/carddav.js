@@ -28,7 +28,9 @@ const denylistMiddleware = require('#helpers/denylist-request');
 const sharedCardDAVConfig = sharedConfig('CARDDAV');
 
 // setup our Cabin instance
-const cabin = new Cabin({ logger });
+// (which does not read the body of a request for each line of its log, as
+// in config/api.js)
+const cabin = new Cabin({ logger, parseRequest: { parseBody: false } });
 
 const RATELIMIT_ALLOWLIST =
   typeof env.RATELIMIT_ALLOWLIST === 'string'

@@ -4131,14 +4131,12 @@ Forward Email は包括的な多層防御を実装しています：
 
 ### アダルトコンテンツ、フィッシング、実行ファイル、ウイルスのスキャンを無効にできますか {#can-i-disable-adult-content-phishing-executable-or-virus-scanning}
 
-はい。すべてのドメインで、受信したリンクと添付ファイルを <a href="https://spamscanner.net" target="_blank" rel="noopener noreferrer">Spam Scanner</a> でスキャンしています。これは私たちが独自に開発したオープンソースのスパム・フィッシング・ウイルス対策ツールです（Forward Email の他の部分と同じく、プライバシー優先でログを一切残さないポリシーに従っています）。4つのカテゴリは、<a href="/my-account/domains" target="_blank" rel="noopener noreferrer">マイアカウント <i class="fa fa-angle-right"></i> ドメイン</a> <i class="fa fa-angle-right"></i> 詳細設定 でそれぞれ個別にオン・オフを切り替えられます：
+はい、アダルトコンテンツと実行ファイルについては無効にできます。メールは <a href="https://spamscanner.net" target="_blank" rel="noopener noreferrer">Spam Scanner</a> でスキャンされます。これは私たちが独自に開発したオープンソースのスパム・フィッシング・ウイルス対策ツールです（Forward Email の他の部分と同じく、プライバシー優先でログを一切残さないポリシーに従っています）。2つの設定は、<a href="/my-account/domains" target="_blank" rel="noopener noreferrer">マイアカウント <i class="fa fa-angle-right"></i> ドメイン</a> <i class="fa fa-angle-right"></i> 詳細設定 でそれぞれ個別にオン・オフを切り替えられます：
 
-* **成人向けコンテンツの保護**：無効にすると、リンクは成人向けコンテンツについてスキャンされません。
-* **フィッシング対策**：無効にすると、リンクはマルウェア、ドメインのすり替え、IDN ホモグラフ攻撃、フィッシング全般についてスキャンされません。
-* **実行ファイルの保護**：無効にすると、リンクと添付ファイルは、悪意のある可能性がある実行ファイルの種類、拡張子、名前、ヘッダー、または IDN ホモグラフ攻撃についてスキャンされません。
-* **ウイルス対策**：無効にすると、添付ファイルはトロイの木馬、ウイルス、マルウェア、その他の悪意のある脅威について（ClamAV による）スキャンが行われません。
+* **成人向けコンテンツの保護**（デフォルトはオフ）：有効にすると、送信するメール内のリンクを <a href="https://developers.cloudflare.com/1.1.1.1/setup/#1111-for-families" target="_blank" rel="noopener noreferrer">Cloudflare のファミリーフィルター</a> で確認し、成人向けコンテンツやマルウェアを理由にブロックされたサイトへのリンクを含むメールは送信されません。
+* **実行ファイルの保護**（デフォルトはオン）：無効にすると、.exe、.js、.bat ファイルなどの実行ファイルが添付された送信メール（アーカイブ内のものも含む）はブロックされなくなります。
 
-4つともデフォルトで有効です。1つを無効にしても、オフになるのはその特定のカテゴリのスキャンだけです。スパムフィルタリング全体が無効になるわけではなく、[特定のエイリアスの無効化](#can-i-disable-specific-aliases)とも別のものです。カテゴリを無効にする最も一般的な理由は、お使いのトラフィックに特有の誤検知パターンです（例：アダルトをテーマにした店舗や企業の正当なメーリングリストが、アダルトコンテンツのスキャンで検出される場合）。
+スパムフィルタリングとフィッシング対策は常に有効で、無効にすることはできません。送信するメールに、Cloudflare のマルウェアフィルターがフィッシングまたはマルウェアとしてブロックするサイトへのリンクが含まれている場合、そのメールは送信されません。無料プランのドメインではデフォルト設定が使われます。アダルトコンテンツの保護は以前はデフォルトで有効でしたが、この変更に伴いすべてのドメインで無効になりました。必要な場合は再度有効にしてください。これらの設定は[特定のエイリアスの無効化](#can-i-disable-specific-aliases)とは別のものです。
 
 ### メール内容をディスクに保存しますか {#do-you-store-email-content-on-disk}
 
@@ -4507,8 +4505,8 @@ Forward Emailは、セクション889で禁止されている機器を使用し�
    * 各 Forwarding Address に対して、1回の再帰的な検索をサポートします（これにより、指定されたアドレスでこの一連の操作が再開されます）。再帰的な一致が見つかった場合、親の結果は Forwarding Addresses から削除され、子が追加されます。
    * Forwarding Addresses は一意性のために解析されます（同じアドレスに重複して送信したり、不要なSMTPクライアント接続を増やしたくないため）。
    * 各 Forwarding Address に対して、そのドメイン名をAPIエンドポイント `/v1/max-forwarded-addresses` に照会し、ドメインがエイリアスごとに転送可能なアドレス数（デフォルトは10、詳細は [maximum limit on forwarding per alias](#is-there-a-maximum-limit-on-the-number-of-email-addresses-i-can-forward-to-per-alias) セクション参照）を確認します。この制限を超えた場合は550エラーが発生し、送信者にバウンスが返されます。
-   * 元の受信者の設定をAPIエンドポイント `/v1/settings` に照会します。これは有料ユーザー向けの検索をサポートし（無料ユーザー向けのフォールバックあり）、`port`（数値、例: `25`）、`has_adult_content_protection`（ブール値）、`has_phishing_protection`（ブール値）、`has_executable_protection`（ブール値）、`has_virus_protection`（ブール値）といった高度な設定の構成オブジェクトを返します。
-   * これらの設定に基づき、スパムスキャナーの結果をチェックし、エラーがあれば554エラーコードでメッセージを拒否します（例：`has_virus_protection` が有効な場合はウイルスのスキャン結果をチェックします）。無料プランのすべてのユーザーは成人向けコンテンツ、フィッシング、実行可能ファイル、ウイルスのチェックに自動的に参加します。デフォルトでは有料プランのすべてのユーザーも参加していますが、この設定はForward Emailダッシュボードのドメインの設定ページで変更可能です。
+   * 元の受信者の設定を API エンドポイント `/v1/settings` に照会します。これは有料ユーザー向けの検索をサポートしています（無料ユーザー向けのフォールバックあり）。`port`（数値、例: `25`）、`has_adult_content_protection`（ブール値）、`has_phishing_protection`（ブール値、常に `true`）、`has_executable_protection`（ブール値）、`has_virus_protection`（ブール値、常に `true`）の詳細設定を含む構成オブジェクトを返します。
+   * 無料プランのユーザーにはデフォルト設定が適用されます：アダルトコンテンツの保護はオフ、フィッシングと実行ファイルの保護はオンです。有料プランのユーザーは、Forward Email ダッシュボードのドメインの詳細設定ページでこれらを変更できます（[アダルトコンテンツ、フィッシング、実行ファイル、ウイルスのスキャンを無効にできますか](#can-i-disable-adult-content-phishing-executable-or-virus-scanning)を参照）。これらの設定は、当社の SMTP サーバーと API を通じて送信するメールに適用されます。当社が受信するメールはデフォルト設定でスキャンされます。
 
 10. 処理された各受信者の Forwarding Addresses に対して、以下の操作を行います:
 

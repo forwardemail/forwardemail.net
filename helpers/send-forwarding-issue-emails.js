@@ -91,9 +91,11 @@ const USER_FIELDS = [
 function isDestinationIssue(bounce) {
   if (!isSANB(bounce?.destination) || !bounce.err) return false;
 
-  // our own errors and denylisted senders are never the destination's fault
+  // our own errors, denylisted senders and senders a destination's recipient
+  // blocked are never the destination's fault
   if (
     bounce.err.isCodeBug ||
+    bounce.err.isRecipientBlock ||
     bounce.err instanceof DenylistError ||
     bounce.err.name === 'DenylistError'
   )
