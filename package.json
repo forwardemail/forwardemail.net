@@ -379,7 +379,7 @@
     "ioredis": "5.6.1",
     "ioredis-mock": "8.13.1",
     "koa": "3.2.1",
-    "lint-staged": "14.0.1",
+    "lint-staged": "17.6.0",
     "make-dir": "3.1.0",
     "node-pop3": "0.9.1",
     "nodemon": "3.1.10",
