@@ -1456,7 +1456,7 @@ Yes, as of March 2025, we support a self-hosted option. Read the blog [here](htt
 
 ### Can I self-host a mail server behind CGNAT or Starlink
 
-Yes. Starlink, 5G home internet, and other providers that use CGNAT block inbound connections and port 25, so a mail server at home cannot receive mail directly. Our Mail Server Tunnel app keeps an outbound connection open to us and delivers mail for your domain to your own server, with no port forwarding, static IP address, VPN, or VPS. If the app is offline, senders get a temporary 421 response and try again, so mail is not lost. Read the [guide](https://forwardemail.net/guides/self-hosted-mail-server-behind-cgnat) or see our [Starlink page](https://forwardemail.net/starlink). Your domain must be on a paid plan and pass TXT record verification first, which keeps another account from receiving your mail.
+Yes. Starlink, 5G home internet, and other providers that use CGNAT block inbound connections and port 25, so a mail server at home cannot receive mail directly. Our Mail Server Tunnel app keeps an outbound connection open to us and delivers mail for your domain to your own server, with no port forwarding, static IP address, VPN, or VPS. If the app is offline, senders get a temporary 421 response and try again, so mail is not lost. Read the [guide](https://forwardemail.net/guides/self-hosted-mail-server-behind-cgnat) or see our [Starlink page](https://forwardemail.net/starlink). Your domain must be on a paid plan and pass TXT record verification first, which keeps another account from receiving your mail. Forward Email is not affiliated with, endorsed by, or sponsored by SpaceX or Starlink.
 
 
 ## Email Configuration

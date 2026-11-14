@@ -14,10 +14,30 @@ const isMessageEncrypted = require('../../helpers/is-message-encrypted');
 // Helper: perform a raw WKD lookup (without caching layer)
 // to test real-world WKD endpoints directly
 //
-async function rawWKDLookup(email) {
+// A lookup that could not connect is tried again: these are other people's
+// servers, and one slow connection from CI is not what is tested here
+const CONNECT_ERRORS = new Set([
+  'UND_ERR_CONNECT_TIMEOUT',
+  'UND_ERR_SOCKET',
+  'ECONNRESET',
+  'ETIMEDOUT',
+  'EAI_AGAIN'
+]);
+
+async function rawWKDLookup(email, attempts = 3) {
   const wkd = new WKDClient();
-  const binaryKey = await wkd.lookup({ email });
-  return readKey({ binaryKey });
+  for (let attempt = 1; ; attempt++) {
+    try {
+      const binaryKey = await wkd.lookup({ email });
+      return readKey({ binaryKey });
+    } catch (err) {
+      if (attempt >= attempts || !CONNECT_ERRORS.has(err.cause?.code))
+        throw err;
+      await new Promise((resolve) => {
+        setTimeout(resolve, 2000 * attempt);
+      });
+    }
+  }
 }
 
 //

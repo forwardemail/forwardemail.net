@@ -1434,7 +1434,7 @@ EML 파일은 메일박스 폴더별로 정리됩니다. ZIP 비밀번호는 IMA
 
 ### CGNAT 또는 Starlink 환경에서 메일 서버를 직접 호스팅할 수 있나요 {#can-i-self-host-a-mail-server-behind-cgnat-or-starlink}
 
-네. Starlink, 5G 홈 인터넷 및 CGNAT를 사용하는 다른 통신사는 인바운드 연결과 포트 25를 차단하므로 집에 있는 메일 서버는 메일을 직접 받을 수 없습니다. 당사의 Mail Server Tunnel 앱은 당사로 향하는 아웃바운드 연결을 유지하고 도메인의 메일을 사용자의 서버로 전달하며, 포트 포워딩, 고정 IP 주소, VPN, VPS가 필요 없습니다. 앱이 오프라인이면 발신자는 임시 421 응답을 받고 다시 시도하므로 메일이 유실되지 않습니다. [가이드](https://forwardemail.net/guides/self-hosted-mail-server-behind-cgnat)를 읽거나 [Starlink 페이지](https://forwardemail.net/starlink)를 확인하세요. 도메인은 유료 요금제를 사용해야 하며 먼저 TXT 레코드 인증을 통과해야 합니다. 이렇게 하면 다른 계정이 귀하의 메일을 받을 수 없습니다.
+네. Starlink, 5G 홈 인터넷 및 CGNAT를 사용하는 다른 통신사는 인바운드 연결과 포트 25를 차단하므로 집에 있는 메일 서버는 메일을 직접 받을 수 없습니다. 당사의 Mail Server Tunnel 앱은 당사로 향하는 아웃바운드 연결을 유지하고 도메인의 메일을 사용자의 서버로 전달하며, 포트 포워딩, 고정 IP 주소, VPN, VPS가 필요 없습니다. 앱이 오프라인이면 발신자는 임시 421 응답을 받고 다시 시도하므로 메일이 유실되지 않습니다. [가이드](https://forwardemail.net/guides/self-hosted-mail-server-behind-cgnat)를 읽거나 [Starlink 페이지](https://forwardemail.net/starlink)를 확인하세요. 도메인은 유료 요금제를 사용해야 하며 먼저 TXT 레코드 인증을 통과해야 합니다. 이렇게 하면 다른 계정이 귀하의 메일을 받을 수 없습니다. Forward Email은 SpaceX 또는 Starlink와 제휴 관계가 없으며, 이들의 승인이나 후원을 받지 않았습니다.
 
 
 ## 이메일 설정 {#email-configuration}

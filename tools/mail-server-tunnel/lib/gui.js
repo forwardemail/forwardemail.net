@@ -27,6 +27,7 @@ import {
   runDoctor,
   startBackground,
   install,
+  getUpdateTargets,
   stopRunning,
   uninstall,
   waitUntilStopped
@@ -415,7 +416,8 @@ function createHandlers(load, file, saveOptions) {
       const config = load();
       const result = await checkForUpdate(config, {
         force: true,
-        checkOnly: Boolean(checkOnly)
+        checkOnly: Boolean(checkOnly),
+        targets: getUpdateTargets()
       });
       if (result.updated && stopRunning(config)) {
         await waitUntilStopped(config);

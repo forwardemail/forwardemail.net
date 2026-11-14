@@ -84,6 +84,7 @@ test.after.always((t) => {
 test.beforeEach(utils.setupFactories);
 test.beforeEach(async (t) => {
   if (!getPort) await pWaitFor(() => Boolean(getPort), { timeout: ms('30s') });
+  t.context.cleanup = [];
   const sqlitePort = await getPort();
   const sqlite = new SQLite({
     client: t.context.client,
@@ -91,10 +92,10 @@ test.beforeEach(async (t) => {
   });
   t.context.sqlite = sqlite;
   await sqlite.listen(sqlitePort, HOST);
-  const wsp = createWebSocketAsPromised({ port: sqlitePort });
+  // (where it listens: `localhost` can be ::1)
+  const wsp = createWebSocketAsPromised({ port: sqlitePort, host: HOST });
   await wsp.open();
   t.context.wsp = wsp;
-  t.context.cleanup = [];
 });
 
 test.afterEach.always(async (t) => {

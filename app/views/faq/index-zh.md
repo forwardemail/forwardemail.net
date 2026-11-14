@@ -1432,7 +1432,7 @@ EML 文件按邮箱文件夹组织。ZIP 密码与您的 IMAP/别名密码相同
 
 ### 我可以在 CGNAT 或 Starlink 后面自托管邮件服务器吗 {#can-i-self-host-a-mail-server-behind-cgnat-or-starlink}
 
-可以。Starlink、5G 家庭宽带以及其他使用 CGNAT 的运营商会阻止入站连接和 25 端口，因此家中的邮件服务器无法直接接收邮件。我们的 Mail Server Tunnel 应用会保持一条通往我们的出站连接，并将您域名的邮件投递到您自己的服务器，无需端口转发、静态 IP 地址、VPN 或 VPS。如果应用离线，发件方会收到临时的 421 响应并重试，因此邮件不会丢失。请阅读[指南](https://forwardemail.net/guides/self-hosted-mail-server-behind-cgnat)或查看我们的 [Starlink 页面](https://forwardemail.net/starlink)。 您的域名必须使用付费套餐并先通过 TXT 记录验证，这可以防止其他账户接收您的邮件。
+可以。Starlink、5G 家庭宽带以及其他使用 CGNAT 的运营商会阻止入站连接和 25 端口，因此家中的邮件服务器无法直接接收邮件。我们的 Mail Server Tunnel 应用会保持一条通往我们的出站连接，并将您域名的邮件投递到您自己的服务器，无需端口转发、静态 IP 地址、VPN 或 VPS。如果应用离线，发件方会收到临时的 421 响应并重试，因此邮件不会丢失。请阅读[指南](https://forwardemail.net/guides/self-hosted-mail-server-behind-cgnat)或查看我们的 [Starlink 页面](https://forwardemail.net/starlink)。 您的域名必须使用付费套餐并先通过 TXT 记录验证，这可以防止其他账户接收您的邮件。 Forward Email 与 SpaceX 或 Starlink 没有任何关联，也未获得其认可或赞助。
 
 ## 邮件配置 {#email-configuration}
 

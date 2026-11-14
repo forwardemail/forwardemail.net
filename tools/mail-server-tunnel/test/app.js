@@ -859,10 +859,49 @@ test('updates: only a newer release that is signed, complete and intact is insta
   // And it is not looked for again within update.interval
   t.like(await check({ force: false }), { skipped: true });
 
+  // Every copy named is replaced (the one in Downloads and the one the
+  // background service runs), and one that cannot be written to is said
+  // without keeping the other from updating
+  publish('1.2.0');
+  const serviceCopy = path.join(directory, 'service', 'mail-server-tunnel');
+  fs.mkdirSync(path.dirname(serviceCopy));
+  fs.writeFileSync(serviceCopy, 'old version', { mode: 0o755 });
+  const missing = path.join(directory, 'gone', 'mail-server-tunnel');
+  const result = await check({
+    current: '1.1.0',
+    target: undefined,
+    targets: [target, serviceCopy, missing]
+  });
+  t.like(result, { updated: true, latest: '1.2.0' });
+  t.is(fs.readFileSync(serviceCopy, 'utf8'), binary.toString());
+  t.is(result.failed.length, 1);
+
   t.is(compareVersions('2.19.22', '2.19.21'), 1);
   t.is(compareVersions('1.0.0-beta.10', '1.0.0-beta.9'), 1);
   t.is(compareVersions('1.0.0', '1.0.0-beta.1'), 1);
   t.false(verifySignature(Buffer.from('data'), 'garbage', signer.publicKey));
+});
+
+test('after an update a run in a terminal stays in that terminal', (t) => {
+  // The app as it restarts itself: the new version gets the same arguments,
+  // writes to the same terminal, and how it ends is how the run ends
+  const actions = new URL('../lib/actions.js', import.meta.url).href;
+  const script = `
+    import { restartInForeground } from ${JSON.stringify(actions)};
+    console.log('old version leaves');
+    const code = await restartInForeground(['run', '--config', 'x'], {
+      file: process.execPath,
+      args: ['-e', 'console.log("new version: " + process.argv.slice(1).join(" ")); process.exit(7)']
+    });
+    process.exit(code);
+  `;
+  const result = spawnSync(
+    process.execPath,
+    ['--input-type=module', '-e', script],
+    { encoding: 'utf8', timeout: 30_000 }
+  );
+  t.is(result.status, 7);
+  t.is(result.stdout, 'old version leaves\nnew version: run --config x\n');
 });
 
 test('GUI: only its own page can use it, and it does what the command line does', async (t) => {

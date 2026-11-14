@@ -22,6 +22,7 @@ Full guide: <https://forwardemail.net/guides/self-hosted-mail-server-behind-cgna
 * [Security](#security)
 * [Development](#development)
 * [License](#license)
+* [Disclaimer](#disclaimer)
 
 
 ## How it works
@@ -73,14 +74,19 @@ From a terminal:
 mail-server-tunnel setup
 ```
 
-Setup asks for:
+Setup takes five steps:
 
-1. Your API token from [My Account → Security](https://forwardemail.net/my-account/security)
-2. Which domains should deliver to your mail server
-3. Where your mail server listens (default `127.0.0.1:25`)
-4. Whether to start at boot and keep running
+1. Your API token from [My Account → Security](https://forwardemail.net/my-account/security). What you paste is not shown.
+2. Which domains deliver to your mail server. Choose them from the list with Space.
+3. Where your mail server listens (default `127.0.0.1:25`) and whether it speaks SMTP or LMTP. Setup connects to it and offers to try again or change the address if nothing answers.
+4. Whether the API may read mailboxes on your server over IMAP. Off by default.
+5. Whether to start at boot and keep running.
 
-It turns on the **Mail Server Tunnel** setting for each domain, checks your MX records, tests the connection to your mail server, and installs the background service.
+It shows your answers and asks before it changes anything. Then it turns on the **Mail Server Tunnel** setting for each domain, checks your DNS records, saves the settings, and installs the background service. Ctrl+C at any question cancels with nothing changed.
+
+Keys: Enter accepts the value shown in brackets, ↑ and ↓ move through a list, Space chooses, `a` chooses all, `y` and `n` answer yes and no.
+
+Colors follow [`NO_COLOR`](https://no-color.org) and `FORCE_COLOR`. When the input is not a terminal, each question reads one line, so answers can be piped in.
 
 For scripted installs:
 
@@ -219,6 +225,15 @@ A system-mode install has no desktop session, so it shows no desktop notificatio
 
 The standalone executable checks GitHub releases once a day and installs a newer version by itself. It only installs a release whose checksum list is signed by Forward Email, names that release, and matches the download. Then it restarts.
 
+What happens to the file:
+
+* The new version replaces the executable where it is, under the same name. Nothing needs to be downloaded or made executable again.
+* A tunnel running in a terminal (`./mail-server-tunnel run`) restarts in that same terminal.
+* A tunnel started by `install` restarts in the background, as before.
+* `mail-server-tunnel update` replaces both the copy you run it from and the copy `install` keeps for the background service.
+* If the executable is in a folder you cannot write to, the app says so once and keeps running the version it has. Run `mail-server-tunnel update` with `sudo`, or from an Administrator terminal on Windows.
+* `mail-server-tunnel status` warns when the running tunnel is a different version from the copy you are using.
+
 Turn this off with `update.enabled` set to `false`. Run `mail-server-tunnel update` to update by hand.
 
 
@@ -252,3 +267,8 @@ sudo npm test
 ## License
 
 [(BUSL-1.1 AND MPL-2.0)](LICENSE.md) © [Forward Email LLC](https://forwardemail.net)
+
+
+## Disclaimer
+
+Forward Email is not affiliated with, endorsed by, or sponsored by SpaceX or Starlink. Starlink and SpaceX are trademarks of Space Exploration Technologies Corp.

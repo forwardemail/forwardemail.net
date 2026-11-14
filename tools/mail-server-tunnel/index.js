@@ -16,7 +16,6 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import process from 'node:process';
-import readline from 'node:readline';
 import { fileURLToPath } from 'node:url';
 
 import * as api from './lib/api.js';
@@ -40,10 +39,12 @@ import {
   install,
   isAlive,
   runDoctor,
+  restartInForeground,
   startBackground,
   stopRunning,
   uninstall,
   getStopFile,
+  getUpdateTargets,
   waitUntilStopped
 } from './lib/actions.js';
 import { TunnelClient } from './lib/client.js';
@@ -52,6 +53,7 @@ import { checkForUpdate, cleanupPreviousBinary } from './lib/update.js';
 import { probe } from './lib/deliver.js';
 import { createLogger } from './lib/logger.js';
 import { createNotifier } from './lib/notify.js';
+import { CancelError, createUi, suggest } from './lib/ui.js';
 
 const GUIDE_URL =
   'https://forwardemail.net/guides/self-hosted-mail-server-behind-cgnat';
@@ -88,7 +90,7 @@ Options:
   --local-port <port>    Local mail server port (default: 25)
   --set <key=value>      Any setting, e.g. --set local.protocol=lmtp
   --mode <mode>          For install: user, system or cron
-  --yes                  Answer yes to every question of setup
+  --yes                  Ask nothing (setup, uninstall, disable)
   --no-install           For setup: do not set up autostart
   --quiet                Print nothing to the terminal (the log still records)
   --json                 For status and config: print JSON
@@ -96,6 +98,39 @@ Options:
 Every setting can also be set by an environment variable, e.g.
 ${getEnvName('local.port')}=2525. Guide: ${GUIDE_URL}
 `;
+
+const COMMANDS = [
+  'gui',
+  'setup',
+  'run',
+  'start',
+  'install',
+  'uninstall',
+  'status',
+  'doctor',
+  'enable',
+  'disable',
+  'config',
+  'logs',
+  'update',
+  'version',
+  'help'
+];
+
+// The help, with its headings and command names set apart in a terminal
+function formatHelp() {
+  const { style } = ui;
+  return HELP.replace(/^(Usage:|Commands:|Options:)/gm, (heading) =>
+    style.bold(heading)
+  )
+    .replace(/^( {2})([a-z]+)( {2,})/gm, (_, indent, name, gap) =>
+      COMMANDS.includes(name) ? indent + style.cyan(name) + gap : _
+    )
+    .replace(
+      /^( {2})(--[a-z-]+(?: <[^>]+>)?)/gm,
+      (_, indent, flag) => indent + style.cyan(flag)
+    );
+}
 
 function parseArgs(argv) {
   const options = { overrides: {}, domains: [], flags: new Set() };
@@ -192,226 +227,350 @@ function toChanges(overrides) {
   return changes;
 }
 
-const ok = (message) => console.log(`  ✓ ${message}`);
-const bad = (message) => console.log(`  ✗ ${message}`);
-const note = (message) => console.log(`    ${message}`);
+// (what is printed and asked, see lib/ui.js)
+const ui = createUi();
+const { ok, bad, note } = ui;
 
 //
-// questions of the guided setup
+// guided setup
 //
-function createPrompt() {
-  const rl = readline.createInterface({
-    input: process.stdin,
-    output: process.stdout,
-    terminal: process.stdin.isTTY
-  });
-  let isMuted = false;
-  const write = rl._writeToOutput.bind(rl);
-  // (the token is not echoed while it is typed or pasted)
-  rl._writeToOutput = (text) => {
-    if (!isMuted) write(text);
-  };
+const SETUP_STEPS = 5;
+const TOKEN_URL = 'https://forwardemail.net/my-account/security';
+const DOMAINS_URL = 'https://forwardemail.net/my-account/domains';
 
-  const ask = (question, { defaultValue = '', secret = false } = {}) =>
-    new Promise((resolve) => {
-      const suffix = defaultValue ? ` [${defaultValue}]` : '';
-      process.stdout.write(`${question}${suffix}: `);
-      isMuted = secret;
-      rl.question('', (answer) => {
-        if (secret) process.stdout.write('\n');
-        isMuted = false;
-        resolve(answer.trim() || defaultValue);
-      });
-    });
-  const confirm = async (question, defaultYes = true) => {
-    const answer = await ask(`${question} (${defaultYes ? 'Y/n' : 'y/N'})`);
-    if (!answer) return defaultYes;
-    return /^y/i.test(answer);
-  };
-
-  return { ask, confirm, close: () => rl.close() };
-}
+const isHost = (value) =>
+  /^[a-z\d]([a-z\d.:-]*[a-z\d])?$/i.test(value) && value.length <= 253
+    ? undefined
+    : 'Enter a host name or an IP address, e.g. 127.0.0.1';
+const isPort = (value) =>
+  /^\d{1,5}$/.test(value) && Number(value) >= 1 && Number(value) <= 65_535
+    ? undefined
+    : 'Enter a port from 1 to 65535';
 
 async function setup(options) {
   const isYes = options.flags.has('yes');
-  const prompt = isYes ? null : createPrompt();
   const existing = load(options);
   const changes = toChanges(options.overrides);
 
-  console.log(`\n${APP_TITLE} setup\n`);
+  ui.title(`${APP_TITLE} setup`, VERSION);
+  if (!isYes) {
+    ui.note(
+      'Receive mail on your own mail server behind CGNAT. Five short steps.'
+    );
+    ui.note(
+      ui.isInteractive
+        ? 'Enter accepts what is shown in (brackets). Ctrl+C cancels, and nothing is saved until the end.'
+        : 'An empty answer accepts what is shown in [brackets].'
+    );
+  }
+
   try {
     // 1. API token
+    if (!isYes) ui.step(1, SETUP_STEPS, 'Sign in');
     let token = changes.token || existing.token;
     let account;
     for (;;) {
       if (!token) {
         if (isYes) throw new Error('--token is required with --yes');
-        console.log(
-          'Copy your API token from https://forwardemail.net/my-account/security'
-        );
-        token = await prompt.ask('API token', { secret: true });
+        ui.note(`Copy your API token from ${TOKEN_URL}`);
+        token = await ui.secret('API token', {
+          validate: (value) =>
+            value ? undefined : 'Paste your API token, then press Enter',
+          help: 'What you paste is not shown'
+        });
       }
 
       try {
-        account = await api.getAccount({ ...existing, token });
+        const current = token;
+        account = await ui.spin(
+          'Checking the token',
+          () => api.getAccount({ ...existing, token: current }),
+          (result) => `Signed in as ${result.email}`
+        );
         break;
       } catch (error) {
-        bad(error.message);
+        ui.bad(error.message);
         if (isYes || error.isNetwork) throw error;
         token = '';
       }
     }
 
-    ok(`Signed in as ${account.email}`);
     changes.token = token;
     const config = { ...existing, token };
 
     // 2. domains
-    const domains = await api.listDomains(config);
+    if (!isYes) ui.step(2, SETUP_STEPS, 'Domains');
+    const domains = await ui.spin(
+      'Loading your domains',
+      () => api.listDomains(config),
+      false
+    );
     const usable = domains.filter((d) => d.plan !== 'free' && !d.is_global);
     let names = changes.domains || existing.domains;
-    if (names.length === 0) {
+    if (names.length === 0 || (!isYes && !changes.domains)) {
       if (usable.length === 0)
         throw new Error(
-          'No domain on a paid plan was found for this account. Add your domain at https://forwardemail.net/my-account/domains and upgrade it, then run setup again.'
+          `No domain on a paid plan was found for ${account.email}. Add your domain at ${DOMAINS_URL} and upgrade it, then run setup again.`
         );
       if (isYes) throw new Error('--domain is required with --yes');
-      console.log('\nDomains on a paid plan:');
-      for (const [index, domain] of usable.entries())
-        console.log(`  ${index + 1}. ${domain.name}`);
-      const answer = await prompt.ask(
-        'Which domains should deliver to your mail server? (numbers or names, comma separated, or "all")',
-        { defaultValue: usable.length === 1 ? '1' : '' }
+      const chosen = new Set(names);
+      names = await ui.multiselect(
+        'Which domains deliver to your mail server?',
+        usable.map((domain) => ({
+          value: normalizeDomain(domain.name),
+          label: domain.name,
+          hint:
+            domain.has_txt_record === false
+              ? 'not verified yet'
+              : domain.has_tunnel
+              ? 'tunnel is on'
+              : undefined
+        })),
+        {
+          defaultValues:
+            chosen.size > 0
+              ? [...chosen]
+              : usable.length === 1
+              ? [normalizeDomain(usable[0].name)]
+              : usable
+                  .filter((domain) => domain.has_tunnel)
+                  .map((domain) => normalizeDomain(domain.name))
+        }
       );
-      names =
-        answer.toLowerCase() === 'all'
-          ? usable.map((d) => d.name)
-          : answer
-              .split(',')
-              .map((item) => item.trim())
-              .filter(Boolean)
-              .map((item) =>
-                /^\d+$/.test(item)
-                  ? usable[Number(item) - 1]?.name
-                  : normalizeDomain(item)
-              )
-              .filter(Boolean);
-      if (names.length === 0) throw new Error('No domain was chosen');
     }
 
     changes.domains = [...new Set(names)];
-
     for (const name of changes.domains) {
       const domain = domains.find((d) => normalizeDomain(d.name) === name);
-      if (!domain) {
-        bad(`${name} is not a domain of this account`);
+      if (!domain)
         throw new Error(
-          `Add ${name} at https://forwardemail.net/my-account/domains first`
+          `${name} is not a domain of ${account.email}. Add it at ${DOMAINS_URL} first.`
         );
-      }
-
       if (domain.plan === 'free')
         throw new Error(
-          `${name} is on the free plan. Upgrade it at https://forwardemail.net/my-account/domains/${name}/billing, then run setup again.`
+          `${name} is on the free plan. Upgrade it at ${DOMAINS_URL}/${name}/billing, then run setup again.`
         );
-      await api.setTunnel(config, name, true);
-      ok(`Mail Server Tunnel is on for ${name}`);
-      if (domain.has_txt_record === false) {
-        bad(`${name} is not verified yet`);
-        note(
-          'Add its TXT verification record to your DNS (shown under My Account > Domains). Mail is only delivered to a verified domain.'
-        );
-      }
-
-      const mx = await checkMx(name);
-      if (!mx.ok) {
-        bad(`${name} does not have the Forward Email MX records yet`);
-        note('Set these MX records at your DNS provider (priority 10):');
-        note('  mx1.forwardemail.net');
-        note('  mx2.forwardemail.net');
-      }
     }
 
     // 3. local mail server
+    if (!isYes) ui.step(3, SETUP_STEPS, 'Your mail server');
     let host = changes.local?.host || existing.local.host;
     let port = changes.local?.port || existing.local.port;
+    let protocol = changes.local?.protocol || existing.local.protocol;
     for (;;) {
       if (!isYes) {
-        console.log(
-          '\nWhere is your mail server (as seen from this computer)?'
+        ui.note('Where this computer reaches it. Mail is delivered there.');
+        host = await ui.text('Host', { defaultValue: host, validate: isHost });
+        port = Number(
+          await ui.text('Port', {
+            defaultValue: String(port),
+            validate: isPort
+          })
         );
-        host = await prompt.ask('Host', { defaultValue: host });
-        port = Number(await prompt.ask('Port', { defaultValue: String(port) }));
+        protocol = await ui.select(
+          'Protocol',
+          [
+            {
+              value: 'smtp',
+              label: 'SMTP',
+              hint: 'Postfix, Exim, most servers'
+            },
+            { value: 'lmtp', label: 'LMTP', hint: 'Dovecot, Cyrus' }
+          ],
+          { defaultValue: protocol }
+        );
       }
 
-      const result = await probe({ ...existing.local, host, port }, 5000);
+      const local = { ...existing.local, host, port, protocol };
+      const result = await ui.spin(
+        `Connecting to ${host}:${port}`,
+        () => probe(local, 5000),
+        false
+      );
       if (result.ok) {
-        ok(`Mail server answered at ${host}:${port}`);
+        ui.ok(`A mail server answered at ${host}:${port}`);
         break;
       }
 
-      bad(`No mail server answered at ${host}:${port} (${result.message})`);
-      if (isYes || (await prompt.confirm('Keep these settings anyway?', false)))
-        break;
+      ui.bad(`No mail server answered at ${host}:${port} (${result.message})`);
+      if (isYes) break;
+      const next = await ui.select(
+        'What now?',
+        [
+          { value: 'retry', label: 'Try again', hint: 'after starting it' },
+          { value: 'edit', label: 'Change the host or port' },
+          {
+            value: 'keep',
+            label: 'Keep these and continue',
+            hint: 'mail is deferred until it answers'
+          }
+        ],
+        { defaultValue: 'edit' }
+      );
+      if (next === 'keep') break;
+      if (next === 'retry') {
+        const again = await ui.spin(
+          `Connecting to ${host}:${port}`,
+          () => probe(local, 5000),
+          false
+        );
+        if (again.ok) {
+          ui.ok(`A mail server answered at ${host}:${port}`);
+          break;
+        }
+
+        ui.bad(`Still no answer at ${host}:${port} (${again.message})`);
+      }
     }
 
-    changes.local = { ...changes.local, host, port };
+    changes.local = { ...changes.local, host, port, protocol };
 
     // 4. remote mailbox access
+    if (!isYes) ui.step(4, SETUP_STEPS, 'Remote mailbox access');
     if (!isYes && !('imap' in changes)) {
-      const isEnabled = await prompt.confirm(
-        '\nAllow reading the mailboxes of your mail server through the tunnel (IMAP)?',
+      ui.note(
+        'Lets the Forward Email API read the mailboxes of your server over IMAP, with the password of each mailbox. Off unless you turn it on.'
+      );
+      const isEnabled = await ui.confirm(
+        'Allow reading mailboxes through the tunnel?',
         existing.imap.enabled
       );
       changes.imap = { enabled: isEnabled };
       if (isEnabled) {
-        changes.imap.host = await prompt.ask('IMAP host', {
-          defaultValue: existing.imap.host
+        changes.imap.host = await ui.text('IMAP host', {
+          defaultValue: existing.imap.host,
+          validate: isHost
         });
         changes.imap.port = Number(
-          await prompt.ask('IMAP port', {
-            defaultValue: String(existing.imap.port)
+          await ui.text('IMAP port', {
+            defaultValue: String(existing.imap.port),
+            validate: isPort
           })
         );
       }
+    }
+
+    // 5. autostart
+    if (!isYes) ui.step(5, SETUP_STEPS, 'Keep it running');
+    let isInstalling = !options.flags.has('no-install');
+    if (isInstalling && !isYes)
+      isInstalling = await ui.confirm(
+        'Start at boot and keep running in the background?'
+      );
+
+    // Nothing has been changed so far: the answers are shown first
+    if (!isYes) {
+      ui.line();
+      ui.line(ui.style.bold('Ready to set up'));
+      ui.table([
+        ['Account', account.email],
+        ['Domains', changes.domains.join(', ')],
+        ['Mail server', `${host}:${port} (${protocol.toUpperCase()})`],
+        [
+          'Mailbox access',
+          changes.imap?.enabled ?? existing.imap.enabled
+            ? `on, ${changes.imap?.host || existing.imap.host}:${
+                changes.imap?.port || existing.imap.port
+              }`
+            : 'off'
+        ],
+        ['Start at boot', isInstalling ? 'yes' : 'no']
+      ]);
+      ui.line();
+      if (!(await ui.confirm('Save and turn the tunnel on?')))
+        throw new CancelError();
+    }
+
+    ui.line();
+    const problems = [];
+    for (const name of changes.domains) {
+      const domain = domains.find((d) => normalizeDomain(d.name) === name);
+      await ui.spin(
+        `Turning the tunnel on for ${name}`,
+        () => api.setTunnel(config, name, true),
+        `Mail Server Tunnel is on for ${name}`
+      );
+      if (domain.has_txt_record === false)
+        problems.push({
+          message: `${name} is not verified yet`,
+          notes: [
+            'Mail is only delivered to a verified domain. Add its TXT record at your DNS provider:'
+          ],
+          code: [`${DOMAINS_URL}/${name}`]
+        });
+      const mx = await ui.spin(
+        `Checking the MX records of ${name}`,
+        () => checkMx(name),
+        false
+      );
+      if (!mx.ok)
+        problems.push({
+          message: `${name} does not have the Forward Email MX records yet`,
+          notes: ['Set these MX records at your DNS provider (priority 10):'],
+          code: ['mx1.forwardemail.net', 'mx2.forwardemail.net']
+        });
     }
 
     const file = saveConfig(changes, {
       file: options.file,
       directory: options.file ? path.dirname(options.file) : undefined
     });
-    ok(`Settings saved to ${file}`);
+    ui.ok(`Settings saved to ${file}`);
 
-    // 5. autostart
     const saved = load({ file: options.file, overrides: {} });
     let isInstalled = false;
-    if (
-      !options.flags.has('no-install') &&
-      (isYes ||
-        (await prompt.confirm(
-          '\nStart at boot and keep running in the background?'
-        )))
-    ) {
+    if (isInstalling) {
       try {
         const result = install(saved, { mode: options.mode });
-        ok(`Installed with ${result.manager} (${result.mode})`);
-        for (const line of result.notes) note(line);
+        ui.ok(`Starts automatically with ${result.manager} (${result.mode})`);
+        for (const text of result.notes) ui.note(text);
         isInstalled = true;
       } catch (error) {
-        bad(`Not installed: ${error.message}`);
+        ui.bad(`Not set to start automatically: ${error.message}`);
+        ui.note(`Try again with: ${APP_NAME} install`);
       }
     }
 
-    console.log(
-      isInstalled
-        ? `\nDone. The tunnel is running. Check it with: ${APP_NAME} status`
-        : `\nDone. Start the tunnel with: ${APP_NAME} run`
+    for (const problem of problems) {
+      ui.line();
+      ui.warn(problem.message);
+      for (const text of problem.notes) ui.note(text);
+      for (const text of problem.code) ui.code(text);
+    }
+
+    ui.line();
+    ui.line(
+      problems.length > 0
+        ? ui.style.bold('Almost done. Fix the DNS records above, then:')
+        : ui.style.bold(
+            isInstalled ? 'Done. The tunnel is running.' : 'Done. Next:'
+          )
     );
-    console.log(
-      `To send mail, relay through smtp.forwardemail.net: ${GUIDE_URL}#sending\n`
+    const next = [];
+    if (!isInstalled) next.push([`${APP_NAME} run`, 'start the tunnel']);
+    next.push(
+      [`${APP_NAME} status`, 'see whether it is connected'],
+      [`${APP_NAME} doctor`, 'check the token, DNS and your mail server']
     );
+    for (const [command, purpose] of next)
+      ui.line(
+        `  ${ui.style.cyan(
+          command.padEnd(APP_NAME.length + 8)
+        )} ${ui.style.gray(purpose)}`
+      );
+    ui.line();
+    ui.note(
+      `To send mail, relay through smtp.forwardemail.net: ${GUIDE_URL}#sending`
+    );
+    ui.line();
+  } catch (error) {
+    if (!error.isCancel) throw error;
+    ui.line();
+    ui.warn('Setup cancelled. Nothing was changed.');
+    ui.line();
+    process.exitCode = 130;
   } finally {
-    prompt?.close();
+    ui.close();
   }
 }
 
@@ -563,10 +722,16 @@ async function runTunnel(options) {
         isStopping = true;
         await client.stop();
         releaseLock(lock);
+        // (run in a terminal, it stays in that terminal)
+        if (!isManaged && !isQuiet && process.stdout.isTTY)
+          process.exit(await restartInForeground(process.argv.slice(2)));
         if (!isManaged) startBackground(config);
         process.exit(0);
       } catch (error) {
         logger.warn(`Update check failed: ${error.message}`);
+        // (said once: e.g. the executable is where this user cannot write)
+        if (/No permission to replace/.test(error.message))
+          notify('update_failed', error.message);
       }
     };
 
@@ -582,7 +747,8 @@ function status(options) {
   if (options.flags.has('json'))
     return console.log(JSON.stringify(data, null, 2));
 
-  console.log(`\n${APP_TITLE} ${VERSION}\n`);
+  ui.title(APP_TITLE, VERSION);
+  ui.line();
   if (data.state === 'connected') ok(`Connected since ${data.since}`);
   else if (data.running)
     bad(
@@ -610,6 +776,11 @@ function status(options) {
     );
   }
 
+  // (e.g. a newer download beside an older copy that the service runs)
+  if (data.running && data.version && data.version !== VERSION)
+    ui.warn(
+      `The running tunnel is version ${data.version}; this is ${VERSION}. Run "${APP_NAME} install" to run this one.`
+    );
   if (data.installed.length > 0)
     ok(`Starts automatically with ${data.installed.join(', ')}`);
   else note(`Not set to start automatically. Run: ${APP_NAME} install`);
@@ -618,7 +789,8 @@ function status(options) {
 }
 
 async function doctor(options) {
-  console.log(`\n${APP_TITLE} doctor\n`);
+  ui.title(`${APP_TITLE} doctor`, VERSION);
+  ui.line();
   let config;
   try {
     config = load(options);
@@ -628,7 +800,11 @@ async function doctor(options) {
     return;
   }
 
-  const checks = await runDoctor(config);
+  const checks = await ui.spin(
+    'Checking the token, domains, DNS and your mail server',
+    () => runDoctor(config),
+    false
+  );
   for (const check of checks) {
     if (check.ok) ok(check.message);
     else {
@@ -638,22 +814,36 @@ async function doctor(options) {
   }
 
   const failures = checks.filter((check) => !check.ok).length;
-  console.log(
-    failures === 0
-      ? '\nEverything looks good.\n'
-      : `\n${failures} problem(s) found. Guide: ${GUIDE_URL}\n`
-  );
+  ui.line();
+  if (failures === 0) ui.line(ui.style.green('Everything looks good.'));
+  else {
+    ui.line(
+      ui.style.bold(
+        `${failures} ${failures === 1 ? 'problem' : 'problems'} found.`
+      )
+    );
+    ui.note(`Guide: ${GUIDE_URL}`);
+  }
+
+  ui.line();
   if (failures > 0) process.exitCode = 1;
 }
 
 async function update(options) {
   const config = load(options);
-  const result = await checkForUpdate(config, {
-    force: true,
-    checkOnly: options.flags.has('check')
-  });
+  const result = await ui.spin(
+    'Looking for a newer version',
+    () =>
+      checkForUpdate(config, {
+        force: true,
+        checkOnly: options.flags.has('check'),
+        targets: getUpdateTargets()
+      }),
+    false
+  );
   if (result.updated) {
     ok(result.message);
+    for (const message of result.failed) bad(message);
     if (!stopRunning(config)) return;
     note('The running tunnel was stopped; it restarts into the new version.');
     // (a service manager starts it again by itself)
@@ -668,10 +858,24 @@ async function toggle(options, isEnabled) {
   const config = load(options);
   if (config.domains.length === 0)
     throw new Error('Name a domain with --domain');
-  for (const name of config.domains) {
-    await api.setTunnel(config, name, isEnabled);
-    ok(`Mail Server Tunnel is ${isEnabled ? 'on' : 'off'} for ${name}`);
-  }
+  if (
+    !isEnabled &&
+    ui.isInteractive &&
+    !options.flags.has('yes') &&
+    !(await ui.confirm(
+      `Turn the tunnel off for ${config.domains.join(
+        ', '
+      )}? Mail for addresses without a mailbox or forwarding then bounces.`,
+      false
+    ))
+  )
+    throw new CancelError();
+  for (const name of config.domains)
+    await ui.spin(
+      `Turning the tunnel ${isEnabled ? 'on' : 'off'} for ${name}`,
+      () => api.setTunnel(config, name, isEnabled),
+      `Mail Server Tunnel is ${isEnabled ? 'on' : 'off'} for ${name}`
+    );
 }
 
 function printLogs(options) {
@@ -702,7 +906,9 @@ async function main() {
     case 'install': {
       const config = load(options);
       if (!config.token || config.domains.length === 0)
-        throw new Error(`Run "${APP_NAME} setup" first`);
+        throw Object.assign(new Error('The tunnel is not set up yet.'), {
+          hint: `Run: ${APP_NAME} setup`
+        });
       const result = install(config, { mode: options.mode });
       ok(`Installed with ${result.manager} (${result.mode}): ${result.path}`);
       for (const line of result.notes) note(line);
@@ -710,6 +916,15 @@ async function main() {
     }
 
     case 'uninstall': {
+      if (
+        ui.isInteractive &&
+        !options.flags.has('yes') &&
+        !(await ui.confirm(
+          'Stop the tunnel and no longer start it automatically?',
+          false
+        ))
+      )
+        throw new CancelError();
       const removed = await uninstall(load(options));
       if (removed.length === 0) return console.log('Nothing was installed.');
       for (const name of removed) ok(`Removed from ${name}`);
@@ -766,7 +981,7 @@ async function main() {
     }
 
     case 'help': {
-      return console.log(HELP);
+      return console.log(formatHelp());
     }
 
     // (started with a double click, or with no command: the window opens)
@@ -781,8 +996,14 @@ async function main() {
     }
 
     default: {
-      console.log(HELP);
-      throw new Error(`Unknown command "${options.command}"`);
+      const close = suggest(String(options.command).toLowerCase(), COMMANDS);
+      const error = new Error(
+        `Unknown command "${options.command}".${
+          close ? ` Did you mean "${close}"?` : ''
+        }`
+      );
+      error.hint = `See every command with: ${APP_NAME} help`;
+      throw error;
     }
   }
 }
@@ -803,8 +1024,14 @@ const isMain = (() => {
 
 if (isMain)
   main().catch((error) => {
-    console.error(`\n  ✗ ${error.message}\n`);
-    process.exitCode = 1;
+    // (to the error output, in its own colors)
+    const errors = createUi({ output: process.stderr });
+    errors.line();
+    if (error.isCancel) errors.warn('Cancelled.');
+    else errors.bad(error.message);
+    if (error.hint) errors.note(error.hint);
+    errors.line();
+    process.exitCode = error.isCancel ? 130 : 1;
   });
 
 export { acquireLock, parseArgs };

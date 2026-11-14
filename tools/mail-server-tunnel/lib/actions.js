@@ -83,6 +83,47 @@ export function startBackground(config) {
   return child.pid;
 }
 
+//
+// Starts the app again in this terminal (after an update, when it runs in
+// the foreground): the new version takes over the screen and the keyboard,
+// and this process stays only to pass on how it ends.
+//
+export function restartInForeground(
+  args,
+  program = service.getProgram('user')
+) {
+  const child = spawn(program.file, [...program.args, ...args], {
+    stdio: 'inherit'
+  });
+  // (Ctrl+C reaches the new version by itself: it is in this terminal too)
+  for (const signal of ['SIGINT', 'SIGTERM', 'SIGHUP', 'SIGBREAK']) {
+    process.removeAllListeners(signal);
+    process.on(signal, () => {
+      if (signal !== 'SIGINT') child.kill(signal);
+    });
+  }
+
+  return new Promise((resolve, reject) => {
+    child.on('error', reject);
+    child.on('exit', (code, signal) => resolve(code ?? (signal ? 1 : 0)));
+  });
+}
+
+// Every copy of the standalone executable that an update should replace:
+// this one, and the one that "install" keeps for the background service
+export function getUpdateTargets() {
+  if (!service.isStandalone()) return [process.execPath];
+  const targets = [fs.realpathSync(process.execPath)];
+  for (const mode of ['user', 'system']) {
+    try {
+      const target = fs.realpathSync(service.getInstallPath(mode));
+      if (!targets.includes(target)) targets.push(target);
+    } catch {}
+  }
+
+  return targets;
+}
+
 export function getStopFile(config) {
   return path.join(config.directory, 'stop.request');
 }

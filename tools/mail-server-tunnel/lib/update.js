@@ -374,12 +374,27 @@ export async function checkForUpdate(config, options = {}) {
     };
   }
 
-  await installBinary(release, options);
+  // (every copy named, e.g. the one the background service runs; a copy
+  // that cannot be written to does not keep the others from updating)
+  const failed = [];
+  let installed = 0;
+  for (const target of options.targets ?? [options.target]) {
+    try {
+      await installBinary(release, { ...options, target });
+      installed++;
+    } catch (error) {
+      if (installed === 0 && !options.targets) throw error;
+      failed.push(error.message);
+    }
+  }
+
+  if (installed === 0) throw new Error(failed.join(' '));
   save({ applied: release.version });
   return {
     current,
     latest: release.version,
     updated: true,
+    failed,
     message: `Updated ${current} to ${release.version}`
   };
 }

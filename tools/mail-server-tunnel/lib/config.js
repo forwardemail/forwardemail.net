@@ -137,6 +137,7 @@ export const DEFAULTS = {
       'replaced',
       'unauthorized',
       'updated',
+      'update_failed',
       'error'
     ]
   },

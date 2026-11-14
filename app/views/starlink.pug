@@ -86,9 +86,10 @@ block body
               li
                 != t('<a href="%s" target="_blank" rel="noopener noreferrer">Download Mail Server Tunnel</a> for Linux, macOS, or Windows.', releases)
               li
-                != t('Run <code class="notranslate">mail-server-tunnel setup</code> and follow the four questions.')
+                != t('Run <code class="notranslate">mail-server-tunnel setup</code> and follow the five steps.')
             p
               != t('The <a href="%s">setup guide</a> covers DNS records, Postfix relay settings, remote mailbox access, alerts, and troubleshooting.', guide)
 
             h2#other-providers= t("Not only Starlink")
             p= t("The same setup works on T-Mobile Home Internet, other 5G and LTE home internet, mobile hotspots, and any fiber, cable, or wireless provider that uses CGNAT or blocks port 25.")
+            p.small.text-muted.mt-5= t("Forward Email is not affiliated with, endorsed by, or sponsored by SpaceX or Starlink. Starlink and SpaceX are trademarks of Space Exploration Technologies Corp.")

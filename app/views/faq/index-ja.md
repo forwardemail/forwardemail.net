@@ -1434,7 +1434,7 @@ EMLファイルはメールボックスのフォルダごとに整理されて�
 
 ### CGNATやStarlinkの環境でメールサーバーをセルフホストできますか {#can-i-self-host-a-mail-server-behind-cgnat-or-starlink}
 
-はい。Starlink、5Gホームインターネット、その他CGNATを使うプロバイダーは着信接続とポート25をブロックするため、自宅のメールサーバーは直接メールを受信できません。当社のアプリ Mail Server Tunnel は当社への発信接続を開いたままにし、お客様のドメイン宛てのメールをお客様自身のサーバーに配送します。ポート転送、固定IPアドレス、VPN、VPSは不要です。アプリがオフラインの場合、送信者は一時的な421応答を受け取って再試行するため、メールは失われません。[ガイド](https://forwardemail.net/guides/self-hosted-mail-server-behind-cgnat)または[Starlinkのページ](https://forwardemail.net/starlink)をご覧ください。 ドメインは有料プランに加入し、先にTXTレコードの検証に合格している必要があります。これにより、別のアカウントがお客様のメールを受信することを防ぎます。
+はい。Starlink、5Gホームインターネット、その他CGNATを使うプロバイダーは着信接続とポート25をブロックするため、自宅のメールサーバーは直接メールを受信できません。当社のアプリ Mail Server Tunnel は当社への発信接続を開いたままにし、お客様のドメイン宛てのメールをお客様自身のサーバーに配送します。ポート転送、固定IPアドレス、VPN、VPSは不要です。アプリがオフラインの場合、送信者は一時的な421応答を受け取って再試行するため、メールは失われません。[ガイド](https://forwardemail.net/guides/self-hosted-mail-server-behind-cgnat)または[Starlinkのページ](https://forwardemail.net/starlink)をご覧ください。 ドメインは有料プランに加入し、先にTXTレコードの検証に合格している必要があります。これにより、別のアカウントがお客様のメールを受信することを防ぎます。 Forward Email は SpaceX および Starlink と提携しておらず、両社による承認や後援も受けていません。
 
 
 ## メール設定 {#email-configuration}
