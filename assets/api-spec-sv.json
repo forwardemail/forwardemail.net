@@ -1978,6 +1978,10 @@
             "type": "boolean",
             "description": "Avvisa inkommande e-postmeddelanden som inte skickas via TLS när den är aktiverad"
           },
+          "has_tunnel": {
+            "type": "boolean",
+            "description": "Leverera e-post för adresser utan brevlåda eller vidarebefordran till din egen e-postserver via appen Mail Server Tunnel (för servrar bakom CGNAT)"
+          },
           "verification_record": {
             "type": "string"
           },
@@ -5945,6 +5949,193 @@
                 "schema": {
                   "type": "string",
                   "example": "You have successfully configured and verified DNS records for outbound SMTP."
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          }
+        }
+      }
+    },
+    "/v1/domains/{domain_id}/tunnel": {
+      "get": {
+        "summary": "Hämta status för Mail Server Tunnel",
+        "description": "Returnerar om appen Mail Server Tunnel för domänen är ansluten och om den når din e-postserver.",
+        "operationId": "getTunnelStatus",
+        "tags": [
+          "Domäner"
+        ],
+        "parameters": [
+          {
+            "name": "domain_id",
+            "in": "path",
+            "required": true,
+            "description": "Fullständigt kvalificerat domännamn (FQDN) att verifiera",
+            "schema": {
+              "type": "string",
+              "format": "hostname"
+            }
+          }
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Hämta status för Mail Server Tunnel",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "has_tunnel": {
+                      "type": "boolean"
+                    },
+                    "is_online": {
+                      "type": "boolean"
+                    },
+                    "connected_at": {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    "hostname": {
+                      "type": "string"
+                    },
+                    "version": {
+                      "type": "string"
+                    },
+                    "platform": {
+                      "type": "string"
+                    },
+                    "has_imap": {
+                      "type": "boolean"
+                    },
+                    "local": {
+                      "type": "object",
+                      "properties": {
+                        "state": {
+                          "type": "string",
+                          "enum": [
+                            "up",
+                            "down"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          }
+        }
+      }
+    },
+    "/v1/domains/{domain_id}/tunnel/imap": {
+      "post": {
+        "summary": "Kör ett IMAP-kommando via Mail Server Tunnel",
+        "description": "Kör ett IMAP-kommando mot e-postservern bakom tunneln. Fjärråtkomst till brevlådan måste vara påslagen i appen. Brevlådans användarnamn och lösenord skickas vidare och lagras inte.",
+        "operationId": "runTunnelImapCommand",
+        "tags": [
+          "Domäner"
+        ],
+        "parameters": [
+          {
+            "name": "domain_id",
+            "in": "path",
+            "required": true,
+            "description": "Fullständigt kvalificerat domännamn (FQDN) att verifiera",
+            "schema": {
+              "type": "string",
+              "format": "hostname"
+            }
+          }
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "command",
+                  "username",
+                  "password"
+                ],
+                "properties": {
+                  "command": {
+                    "type": "string",
+                    "enum": [
+                      "list",
+                      "status",
+                      "search",
+                      "fetch",
+                      "download",
+                      "flags",
+                      "move",
+                      "copy",
+                      "delete",
+                      "append",
+                      "mailboxCreate",
+                      "mailboxRename",
+                      "mailboxDelete"
+                    ]
+                  },
+                  "args": {
+                    "type": "object",
+                    "additionalProperties": true,
+                    "example": {
+                      "path": "INBOX",
+                      "range": "1:*"
+                    }
+                  },
+                  "username": {
+                    "type": "string",
+                    "example": "you@example.com"
+                  },
+                  "password": {
+                    "type": "string",
+                    "format": "password"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Kör ett IMAP-kommando via Mail Server Tunnel",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": true
                 }
               }
             }

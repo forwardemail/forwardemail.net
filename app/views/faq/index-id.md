@@ -46,6 +46,7 @@
   * [Bagaimana cara menggunakan penyimpanan kompatibel S3 saya sendiri untuk cadangan](#how-do-i-use-my-own-s3-compatible-storage-for-backups)
   * [Bagaimana cara mengonversi cadangan SQLite ke file EML](#how-do-i-convert-sqlite-backups-to-eml-files)
   * [Apakah Anda mendukung self-hosting](#do-you-support-self-hosting)
+  * [Bisakah saya meng-host sendiri server email di balik CGNAT atau Starlink](#can-i-self-host-a-mail-server-behind-cgnat-or-starlink)
 * [Konfigurasi Email](#email-configuration)
   * [Bagaimana cara memulai dan mengatur penerusan email](#how-do-i-get-started-and-set-up-email-forwarding)
   * [Bisakah saya menggunakan beberapa pertukaran MX dan server untuk penerusan lanjutan](#can-i-use-multiple-mx-exchanges-and-servers-for-advanced-forwarding)
@@ -1430,6 +1431,10 @@ File EML diatur berdasarkan folder kotak surat. Kata sandi ZIP sama dengan kata 
 ### Apakah Anda mendukung self-hosting {#do-you-support-self-hosting}
 
 Ya, sejak Maret 2025, kami mendukung opsi self-hosted. Baca blog [di sini](https://forwardemail.net/blog/docs/self-hosted-solution). Lihat [panduan self-hosted](https://forwardemail.net/self-hosted) untuk memulai. Dan bagi yang tertarik versi langkah demi langkah yang lebih terperinci, lihat panduan kami berbasis [Ubuntu](https://forwardemail.net/guides/selfhosted-on-ubuntu) atau [Debian](https://forwardemail.net/guides/selfhosted-on-debian).
+
+### Bisakah saya meng-host sendiri server email di balik CGNAT atau Starlink {#can-i-self-host-a-mail-server-behind-cgnat-or-starlink}
+
+Ya. Starlink, internet rumah 5G, dan penyedia lain yang memakai CGNAT memblokir koneksi masuk dan port 25, sehingga server email di rumah tidak dapat menerima email secara langsung. Aplikasi Mail Server Tunnel kami menjaga koneksi keluar tetap terbuka ke kami dan mengirimkan email untuk domain Anda ke server Anda sendiri, tanpa port forwarding, alamat IP statis, VPN, atau VPS. Jika aplikasi offline, pengirim menerima respons sementara 421 dan mencoba lagi, sehingga email tidak hilang. Baca [panduan](https://forwardemail.net/guides/self-hosted-mail-server-behind-cgnat) atau lihat [halaman Starlink](https://forwardemail.net/starlink) kami. Domain Anda harus menggunakan paket berbayar dan lulus verifikasi data TXT terlebih dahulu, sehingga akun lain tidak dapat menerima email Anda.
 
 
 ## Konfigurasi Email {#email-configuration}

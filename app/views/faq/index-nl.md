@@ -46,6 +46,7 @@
   * [Hoe gebruik ik mijn eigen S3-compatibele opslag voor back-ups](#how-do-i-use-my-own-s3-compatible-storage-for-backups)
   * [Hoe converteer ik SQLite-back-ups naar EML-bestanden](#how-do-i-convert-sqlite-backups-to-eml-files)
   * [Ondersteunt u zelfhosting](#do-you-support-self-hosting)
+  * [Kan ik zelf een mailserver hosten achter CGNAT of Starlink](#can-i-self-host-a-mail-server-behind-cgnat-or-starlink)
 * [E-mailconfiguratie](#email-configuration)
   * [Hoe begin ik en stel ik e-mail forwarding in](#how-do-i-get-started-and-set-up-email-forwarding)
   * [Kan ik meerdere MX-uitwisselingen en servers gebruiken voor geavanceerde forwarding](#can-i-use-multiple-mx-exchanges-and-servers-for-advanced-forwarding)
@@ -1430,6 +1431,10 @@ EML-bestanden zijn georganiseerd per mailboxmap. Het ZIP-wachtwoord is hetzelfde
 ### Ondersteunen jullie zelf-hosting? {#do-you-support-self-hosting}
 
 Ja, vanaf maart 2025 ondersteunen we een zelf-gehoste optie. Lees de blog [hier](https://forwardemail.net/blog/docs/self-hosted-solution). Bekijk de [zelf-gehoste gids](https://forwardemail.net/self-hosted) om aan de slag te gaan. En voor wie geïnteresseerd is in een meer stapsgewijze versie, zie onze [Ubuntu](https://forwardemail.net/guides/selfhosted-on-ubuntu) of [Debian](https://forwardemail.net/guides/selfhosted-on-debian) gebaseerde handleidingen.
+
+### Kan ik zelf een mailserver hosten achter CGNAT of Starlink {#can-i-self-host-a-mail-server-behind-cgnat-or-starlink}
+
+Ja. Starlink, 5G-thuisinternet en andere providers die CGNAT gebruiken blokkeren inkomende verbindingen en poort 25, waardoor een mailserver thuis niet rechtstreeks mail kan ontvangen. Onze app Mail Server Tunnel houdt een uitgaande verbinding met ons open en levert mail voor uw domein af bij uw eigen server, zonder port forwarding, vast IP-adres, VPN of VPS. Als de app offline is, krijgen afzenders een tijdelijk 421-antwoord en proberen ze het opnieuw, zodat er geen mail verloren gaat. Lees de [handleiding](https://forwardemail.net/guides/self-hosted-mail-server-behind-cgnat) of bekijk onze [Starlink-pagina](https://forwardemail.net/starlink). Uw domein moet een betaald abonnement hebben en eerst de TXT-recordverificatie doorstaan, zodat geen ander account uw e-mail kan ontvangen.
 
 
 ## E-mailconfiguratie {#email-configuration}

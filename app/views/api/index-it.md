@@ -55,6 +55,8 @@
   * [Recupera dominio](#retrieve-domain)
   * [Verifica record dominio](#verify-domain-records)
   * [Verifica record SMTP dominio](#verify-domain-smtp-records)
+  * [Ottieni lo stato di Mail Server Tunnel](#get-mail-server-tunnel-status)
+  * [Esegui un comando IMAP tramite Mail Server Tunnel](#run-an-imap-command-through-the-mail-server-tunnel)
   * [Elenca password catch-all a livello di dominio](#list-domain-wide-catch-all-passwords)
   * [Crea password catch-all a livello di dominio](#create-domain-wide-catch-all-password)
   * [Rimuovi password catch-all a livello di dominio](#remove-domain-wide-catch-all-password)
@@ -689,6 +691,36 @@ curl BASE_URI/v1/domains/DOMAIN_NAME/verify-smtp \
   -u API_TOKEN:
 ```
 
+### Ottieni lo stato di Mail Server Tunnel {#get-mail-server-tunnel-status}
+
+> `GET /v1/domains/DOMAIN_NAME/tunnel`
+
+Restituisce se l'app Mail Server Tunnel del dominio è connessa e se raggiunge il tuo server di posta.
+
+> Esempio di richiesta:
+
+```sh
+curl BASE_URI/v1/domains/DOMAIN_NAME/tunnel \
+  -u API_TOKEN:
+```
+
+### Esegui un comando IMAP tramite Mail Server Tunnel {#run-an-imap-command-through-the-mail-server-tunnel}
+
+> `POST /v1/domains/DOMAIN_NAME/tunnel/imap`
+
+Esegue un comando IMAP sul server di posta dietro il tunnel. L'accesso remoto alle caselle deve essere attivato nell'app. Nome utente e password della casella vengono inoltrati e non memorizzati.
+
+`command`: `list`, `status`, `search`, `fetch`, `download`, `flags`, `move`, `copy`, `delete`, `append`, `mailboxCreate`, `mailboxRename`, `mailboxDelete`
+
+> Esempio di richiesta:
+
+```sh
+curl -X POST BASE_URI/v1/domains/DOMAIN_NAME/tunnel/imap \
+  -u API_TOKEN: \
+  -H "Content-Type: application/json" \
+  -d '{"command":"fetch","username":"EMAIL","password":"PASSWORD","args":{"path":"INBOX","range":"1:*"}}'
+```
+
 ### Elenca password catch-all a livello di dominio {#list-domain-wide-catch-all-passwords}
 
 > `GET /v1/domains/DOMAIN_NAME/catch-all-passwords`
@@ -734,6 +766,7 @@ curl -X DELETE BASE_URI/v1/domains/:domain_name/catch-all-passwords/:token_id \
 | Parametro nel body             | Obbligatorio | Tipo                            | Descrizione                                                                                                                                                                                                                                                                                   |
 | ----------------------------- | ------------ | ------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `smtp_port`                   | No           | String o Number                 | Porta personalizzata da configurare per l'inoltro SMTP (default è `"25"`)                                                                                                                                                                                                                     |
+| `has_tunnel` | No | Boolean | Consegna la posta degli indirizzi senza casella o inoltro al tuo server di posta tramite l'app Mail Server Tunnel (per server dietro CGNAT) |
 | `has_adult_content_protection`| No           | Boolean                        | Indica se bloccare le email inviate con link a un sito che il filtro per famiglie di Cloudflare blocca per contenuti per adulti o malware (predefinito `false`)                                                                                                                              |
 | `has_phishing_protection`     | No           | Boolean                        | Deprecato e ignorato                                                                                                                                                                                                                                                                         |
 | `has_executable_protection`   | No           | Boolean                        | Indica se bloccare le email inviate con allegati eseguibili, come file .exe, .js o .bat (predefinito `true`)                                                                                                                                                                                 |

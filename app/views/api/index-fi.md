@@ -55,6 +55,8 @@
   * [Hae domain](#retrieve-domain)
   * [Vahvista domain-tietueet](#verify-domain-records)
   * [Vahvista domainin SMTP-tietueet](#verify-domain-smtp-records)
+  * [Hae Mail Server Tunnelin tila](#get-mail-server-tunnel-status)
+  * [Suorita IMAP-komento Mail Server Tunnelin kautta](#run-an-imap-command-through-the-mail-server-tunnel)
   * [Listaa domainin catch-all-salasanat](#list-domain-wide-catch-all-passwords)
   * [Luo domainin catch-all-salasana](#create-domain-wide-catch-all-password)
   * [Poista domainin catch-all-salasana](#remove-domain-wide-catch-all-password)
@@ -689,6 +691,36 @@ curl BASE_URI/v1/domains/DOMAIN_NAME/verify-smtp \
   -u API_TOKEN:
 ```
 
+### Hae Mail Server Tunnelin tila {#get-mail-server-tunnel-status}
+
+> `GET /v1/domains/DOMAIN_NAME/tunnel`
+
+Palauttaa, onko verkkotunnuksen Mail Server Tunnel -sovellus yhdistetty ja tavoittaako se sähköpostipalvelimesi.
+
+> Esimerkkipyyntö:
+
+```sh
+curl BASE_URI/v1/domains/DOMAIN_NAME/tunnel \
+  -u API_TOKEN:
+```
+
+### Suorita IMAP-komento Mail Server Tunnelin kautta {#run-an-imap-command-through-the-mail-server-tunnel}
+
+> `POST /v1/domains/DOMAIN_NAME/tunnel/imap`
+
+Suorittaa yhden IMAP-komennon tunnelin takana olevalla sähköpostipalvelimella. Postilaatikon etäkäytön on oltava päällä sovelluksessa. Postilaatikon käyttäjätunnus ja salasana välitetään eteenpäin eikä niitä tallenneta.
+
+`command`: `list`, `status`, `search`, `fetch`, `download`, `flags`, `move`, `copy`, `delete`, `append`, `mailboxCreate`, `mailboxRename`, `mailboxDelete`
+
+> Esimerkkipyyntö:
+
+```sh
+curl -X POST BASE_URI/v1/domains/DOMAIN_NAME/tunnel/imap \
+  -u API_TOKEN: \
+  -H "Content-Type: application/json" \
+  -d '{"command":"fetch","username":"EMAIL","password":"PASSWORD","args":{"path":"INBOX","range":"1:*"}}'
+```
+
 ### Listaa domainin catch-all-salasanat {#list-domain-wide-catch-all-passwords}
 
 > `GET /v1/domains/DOMAIN_NAME/catch-all-passwords`
@@ -734,6 +766,7 @@ curl -X DELETE BASE_URI/v1/domains/:domain_name/catch-all-passwords/:token_id \
 | Body Parameter                 | Pakollinen | Tyyppi                            | Kuvaus                                                                                                                                                                                                                                                                                   |
 | ------------------------------ | ---------- | -------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `smtp_port`                    | Ei         | Merkkijono tai Numero            | Mukautettu portti SMTP-uudelleenohjaukselle (oletus on `"25"`)                                                                                                                                                                                                                            |
+| `has_tunnel` | Ei | Totuusarvo | Toimita postilaatikottomien ja edelleenlähetyksettömien osoitteiden posti omalle sähköpostipalvelimellesi Mail Server Tunnel -sovelluksen kautta (CGNATin takana oleville palvelimille) |
 | `has_adult_content_protection` | Ei         | Totuusarvo                      | Estetäänkö lähetetyt viestit, joissa on linkki sivustolle, jonka Cloudflaren perhesuodatin estää aikuissisällön tai haittaohjelmien vuoksi (oletus `false`)                                                                                                                               |
 | `has_phishing_protection`      | Ei         | Totuusarvo                      | Vanhentunut, eikä sitä huomioida                                                                                                                                                                                                                                                         |
 | `has_executable_protection`    | Ei         | Totuusarvo                      | Estetäänkö lähetetyt viestit, joissa on suoritettavia liitteitä, kuten .exe-, .js- tai .bat-tiedostoja (oletus `true`)                                                                                                                                                                   |

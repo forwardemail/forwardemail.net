@@ -225,6 +225,10 @@ footer.fe-footer.mt-auto(aria-label=t("Footer"))
             li: a.d-block.py-2.py-md-0(
               href=domain && domain.name ? l(`/guides/port-25-blocked-by-isp-workaround?domain=${domain.name}`) : l("/guides/port-25-blocked-by-isp-workaround")
             )= t("Port 25 blocked by ISP")
+            li: a.d-block.py-2.py-md-0(
+              href=l("/guides/self-hosted-mail-server-behind-cgnat")
+            )= t("Mail Server Behind CGNAT")
+            li: a.d-block.py-2.py-md-0(href=l("/starlink"))= t("Email Server on Starlink")
         .flex-wrap.flex-fill.d-flex.flex-column
           div
             hr.d-lg-none.w-100

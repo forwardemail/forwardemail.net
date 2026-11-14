@@ -27,6 +27,7 @@ const sieve = require('./sieve');
 const sieveAliasAuth = require('./sieve-alias-auth');
 const stripe = require('./stripe');
 const test = require('./test');
+const tunnel = require('./tunnel');
 const upgrade = require('./upgrade');
 const users = require('./users');
 
@@ -55,6 +56,7 @@ module.exports = {
   settings,
   stripe,
   test,
+  tunnel,
   upgrade,
   users
 };

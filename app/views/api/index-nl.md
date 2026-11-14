@@ -55,6 +55,8 @@
   * [Domein ophalen](#retrieve-domain)
   * [Domeinrecords verifiëren](#verify-domain-records)
   * [Domein SMTP-records verifiëren](#verify-domain-smtp-records)
+  * [Status van Mail Server Tunnel ophalen](#get-mail-server-tunnel-status)
+  * [Een IMAP-opdracht uitvoeren via Mail Server Tunnel](#run-an-imap-command-through-the-mail-server-tunnel)
   * [Domeinbrede catch-all wachtwoorden weergeven](#list-domain-wide-catch-all-passwords)
   * [Domeinbreed catch-all wachtwoord aanmaken](#create-domain-wide-catch-all-password)
   * [Domeinbreed catch-all wachtwoord verwijderen](#remove-domain-wide-catch-all-password)
@@ -689,6 +691,36 @@ curl BASE_URI/v1/domains/DOMAIN_NAME/verify-smtp \
   -u API_TOKEN:
 ```
 
+### Status van Mail Server Tunnel ophalen {#get-mail-server-tunnel-status}
+
+> `GET /v1/domains/DOMAIN_NAME/tunnel`
+
+Geeft terug of de app Mail Server Tunnel voor het domein verbonden is en of deze uw mailserver kan bereiken.
+
+> Voorbeeldverzoek:
+
+```sh
+curl BASE_URI/v1/domains/DOMAIN_NAME/tunnel \
+  -u API_TOKEN:
+```
+
+### Een IMAP-opdracht uitvoeren via Mail Server Tunnel {#run-an-imap-command-through-the-mail-server-tunnel}
+
+> `POST /v1/domains/DOMAIN_NAME/tunnel/imap`
+
+Voert één IMAP-opdracht uit op de mailserver achter de tunnel. Externe mailboxtoegang moet in de app zijn ingeschakeld. De gebruikersnaam en het wachtwoord van de mailbox worden doorgegeven en niet opgeslagen.
+
+`command`: `list`, `status`, `search`, `fetch`, `download`, `flags`, `move`, `copy`, `delete`, `append`, `mailboxCreate`, `mailboxRename`, `mailboxDelete`
+
+> Voorbeeldverzoek:
+
+```sh
+curl -X POST BASE_URI/v1/domains/DOMAIN_NAME/tunnel/imap \
+  -u API_TOKEN: \
+  -H "Content-Type: application/json" \
+  -d '{"command":"fetch","username":"EMAIL","password":"PASSWORD","args":{"path":"INBOX","range":"1:*"}}'
+```
+
 ### Lijst met domeinbrede catch-all wachtwoorden {#list-domain-wide-catch-all-passwords}
 
 > `GET /v1/domains/DOMAIN_NAME/catch-all-passwords`
@@ -734,6 +766,7 @@ curl -X DELETE BASE_URI/v1/domains/:domain_name/catch-all-passwords/:token_id \
 | Body Parameter                 | Verplicht | Type                            | Beschrijving                                                                                                                                                                                                                                                                                   |
 | ------------------------------ | --------- | ------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `smtp_port`                    | Nee       | String of Number                | Aangepaste poort om te configureren voor SMTP-forwarding (standaard is `"25"`)                                                                                                                                                                                                                |
+| `has_tunnel` | Nee | Boolean | Mail voor adressen zonder mailbox of doorsturing afleveren bij uw eigen mailserver via de app Mail Server Tunnel (voor servers achter CGNAT) |
 | `has_adult_content_protection` | Nee       | Boolean                         | Of verzonden mail met een link naar een site die het gezinsfilter van Cloudflare blokkeert vanwege inhoud voor volwassenen of malware, wordt geblokkeerd (standaard `false`)                                                                                                                 |
 | `has_phishing_protection`      | Nee       | Boolean                         | Verouderd en genegeerd                                                                                                                                                                                                                                                                        |
 | `has_executable_protection`    | Nee       | Boolean                         | Of verzonden mail met uitvoerbare bijlagen, zoals .exe-, .js- of .bat-bestanden, wordt geblokkeerd (standaard `true`)                                                                                                                                                                        |

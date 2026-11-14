@@ -1,0 +1,201 @@
+extends ../layout
+
+block body
+  - const releases = "https://github.com/forwardemail/forwardemail.net/releases/latest";
+  - const readme = "https://github.com/forwardemail/forwardemail.net/tree/master/tools/mail-server-tunnel#readme";
+  .container.py-3.py-md-4.py-lg-5
+    .row
+      .col-12.text-center
+        h1= t("Self-Hosted Mail Server Behind CGNAT")
+        p.lead= t("Receive email on your own mail server on Starlink, 5G home internet, or any provider without a public IP address. No port forwarding, static IP address, VPN, or VPS.")
+        include ../_author
+        ul.list-inline.mt-3
+          li.list-inline-item
+            a.btn.btn-lg.btn-success(
+              href=releases,
+              target="_blank",
+              rel="noopener noreferrer"
+            )
+              i.fa.fa-download
+              = " "
+              = t("Download Mail Server Tunnel")
+          li.list-inline-item
+            a.btn.btn-lg.btn-dark(href="#setup")= t("Setup steps")
+      .col-12.mt-3
+        .card
+          .card-body.markdown-body
+            h2#the-problem= t("Why a mail server behind CGNAT cannot receive email")
+            p= t("Carrier-grade NAT (CGNAT) puts many customers behind one shared public IPv4 address. Other mail servers have no address to connect to, so port forwarding and dynamic DNS do not help. Most of these providers also block outbound port 25, so the server cannot deliver mail either.")
+            .table-responsive
+              table.table.table-striped.table-hover
+                thead.thead-dark
+                  tr
+                    th= t("Provider")
+                    th= t("Inbound connections")
+                    th= t("Outbound port 25")
+                tbody
+                  tr
+                    td.notranslate Starlink (Residential, Roam)
+                    td= t("Blocked by CGNAT")
+                    td= t("Blocked")
+                  tr
+                    td.notranslate T-Mobile Home Internet
+                    td= t("Blocked by CGNAT")
+                    td= t("Usually blocked")
+                  tr
+                    td= t("Other 5G and LTE home internet, mobile hotspots")
+                    td= t("Usually blocked by CGNAT")
+                    td= t("Usually blocked")
+                  tr
+                    td= t("Fiber, cable, and wireless providers that share IPv4 addresses")
+                    td= t("Blocked by CGNAT")
+                    td= t("Varies")
+                  tr
+                    td= t("Residential providers with a public but changing IP address")
+                    td= t("Often port 25 is blocked")
+                    td= t("Often blocked")
+            p
+              != t('Check yours: if the WAN address on your router starts with <code class="notranslate">100.64</code> through <code class="notranslate">100.127</code>, or differs from the address a "what is my IP" site shows, you are behind CGNAT.')
+
+            h2#how-it-works= t("How Mail Server Tunnel works")
+            ol
+              li= t("Your domain's MX records point to Forward Email.")
+              li= t("The Mail Server Tunnel app runs beside your mail server and keeps one outbound connection open to Forward Email. Outbound connections work behind CGNAT.")
+              li= t("When mail arrives for your domain, Forward Email hands it to the app over that connection.")
+              li= t("The app delivers it to your mail server over SMTP or LMTP and returns your server's answer to the sender.")
+            p= t("The message is not stored by Forward Email. If the app is not connected, senders get a temporary 421 response, keep the message, and try again, usually for up to 5 days. Mail is deferred, not lost.")
+            p= t("It works with Postfix, Dovecot, Stalwart, Mailcow, Mail-in-a-Box, Exchange, and the self-hosted Forward Email stack. Spam, SPF, DKIM, and DMARC checks run at Forward Email before the message reaches you, and the results are added to its headers.")
+
+            h2#requirements= t("Requirements")
+            ul
+              li
+                != t('A domain on a paid Forward Email plan, added under <a href="%s">My Account &rarr; Domains</a>', l("/my-account/domains"))
+              li= t("A mail server on your network")
+              li= t("A computer on the same network that stays on (Linux, macOS, or Windows). It can be the mail server itself.")
+
+            h2#setup= t("Setup")
+            h3= t("1. Verify your domain and point its MX records to Forward Email")
+            p
+              != t('Add your domain under <a href="%s">My Account &rarr; Domains</a> and add the TXT verification record shown there to your DNS. It looks like this, with a value that is unique to your account:', l("/my-account/domains"))
+            pre: code.notranslate forward-email-site-verification=XXXXXXXXXX
+            p
+              != t("<strong>The TXT verification record is required.</strong> It proves that the domain is yours. Mail is only handed to the tunnel of the account whose verification record is in the domain's DNS, so nobody else can receive your mail by adding your domain name to their own account.")
+            p= t("Then set these two MX records with priority 10 and remove any others:")
+            pre: code.notranslate
+              | mx1.forwardemail.net
+              | mx2.forwardemail.net
+            h3= t("2. Download the app")
+            p
+              != t('Download the file for your system from the <a href="%s" target="_blank" rel="noopener noreferrer">latest release</a>:', releases)
+            ul
+              li
+                = t("Linux:")
+                = " "
+                code.notranslate mail-server-tunnel-linux-x64
+                = " "
+                = t("or")
+                = " "
+                code.notranslate mail-server-tunnel-linux-arm64
+              li
+                = t("macOS (Apple Silicon):")
+                = " "
+                code.notranslate mail-server-tunnel-darwin-arm64
+              li
+                = t("Windows:")
+                = " "
+                code.notranslate mail-server-tunnel-win-x64.exe
+            p= t("On Linux and macOS, make it executable:")
+            pre: code.notranslate chmod +x mail-server-tunnel-*
+            h3= t("3. Run the setup")
+            p= t("Double-click the file to open the app in your browser, or run the setup in a terminal:")
+            pre: code.notranslate ./mail-server-tunnel-linux-x64 setup
+            p= t("The setup asks for four things:")
+            ol
+              li
+                != t('Your API token from <a href="%s">My Account &rarr; Security</a>', l("/my-account/security"))
+              li= t("Which domains deliver to your mail server")
+              li
+                != t('Where your mail server listens (default <code class="notranslate">127.0.0.1:25</code>)')
+              li= t("Whether to start at boot and keep running")
+            p
+              != t('It turns on <strong>Mail Server Tunnel</strong> under each domain\'s <a href="%s">Advanced Settings</a>, checks your MX records, tests the connection to your mail server, and installs a background service (systemd, launchd, Task Scheduler, or cron).', l("/my-account/domains"))
+            h3= t("4. Check that it works")
+            pre: code.notranslate
+              | mail-server-tunnel status
+              | mail-server-tunnel doctor
+            p= t("Then send a message to an address at your domain from another email account. It should arrive in your mail server within seconds.")
+
+            h2#which-addresses= t("Which addresses go to your mail server")
+            p= t("Every address at the domain that has no mailbox or forwarding at Forward Email goes through the tunnel. Your mail server decides whether the address exists. Mailboxes and forwarding you create at Forward Email keep working as before, so one domain can use both.")
+            p= t("To deliver one address both ways, add your domain's own name as one of its forwarding recipients. Mail for that address then goes to its other recipients and to your mail server. A catch-all that forwards elsewhere receives every address, so add your domain's name to it as well if your server should get that mail.")
+            p= t("The tunnel only carries mail for the domain that its DNS verification record belongs to. A domain of the same name on another account receives none of it. Mail Server Tunnel cannot be combined with a custom SMTP port.")
+
+            h2#sending= t("Sending mail")
+            p
+              != t('Most CGNAT providers block outbound port 25, so relay outgoing mail through Forward Email on port 587 or 465. Enable <a href="%s">outbound SMTP</a> for your domain, create a password for a mailbox, then configure your server. For Postfix:', l("/guides/send-email-with-custom-domain-smtp"))
+            pre: code.notranslate
+              | # /etc/postfix/main.cf
+              | relayhost = [smtp.forwardemail.net]:587
+              | smtp_sasl_auth_enable = yes
+              | smtp_sasl_password_maps = hash:/etc/postfix/sasl_passwd
+              | smtp_sasl_security_options = noanonymous
+              | smtp_tls_security_level = encrypt
+              |
+              | # /etc/postfix/sasl_passwd
+              | [smtp.forwardemail.net]:587 you@example.com:PASSWORD
+            pre: code.notranslate
+              | sudo postmap /etc/postfix/sasl_passwd
+              | sudo chmod 600 /etc/postfix/sasl_passwd /etc/postfix/sasl_passwd.db
+              | sudo systemctl reload postfix
+
+            h2#remote-mailbox-access= t("Reading mail from outside your network")
+            p= t("Mail clients outside your network cannot reach an IMAP server behind CGNAT. There are two options:")
+            ul
+              li= t("Use your mail clients on your own network, or over a private VPN such as Tailscale or WireGuard.")
+              li
+                != t('Turn on remote mailbox access in the app (<code class="notranslate">imap.enabled</code>). The app then runs IMAP commands against your local IMAP server on request from the <a href="%s">Forward Email API</a>. It is off by default, only ever connects to the IMAP host in its own settings, and the mailbox password is passed through for one command and not stored.', l("/email-api"))
+
+            h2#alerts= t("Alerts when something is wrong")
+            ul
+              li= t("The app shows a desktop notification when the connection drops for more than a minute, when it returns, and when your mail server stops answering.")
+              li= t("Forward Email emails the domain's admins when the tunnel has been offline, or your mail server unreachable, for 10 minutes. It sends a reminder each day and a notice when it is back.")
+              li
+                != t('Set <code class="notranslate">notify.webhookUrl</code> or <code class="notranslate">notify.command</code> to send the same events to your own monitoring.')
+
+            h2#settings= t("Settings")
+            p
+              != t('Every timeout, port, target, and notification can be changed in the config file, with <code class="notranslate">--set key=value</code>, or with an environment variable. Each domain can deliver to a different server. See the <a href="%s" target="_blank" rel="noopener noreferrer">full list of settings</a>.', readme)
+            p= t("The app updates itself from GitHub releases. It only installs a release whose checksums are signed by Forward Email.")
+
+            h2#troubleshooting= t("Troubleshooting")
+            .table-responsive
+              table.table.table-striped.table-hover
+                thead.thead-dark
+                  tr
+                    th= t("Symptom")
+                    th= t("Fix")
+                tbody
+                  tr
+                    td= t("Senders get a 421 response")
+                    td
+                      != t('The app is not connected or cannot reach your mail server. Run <code class="notranslate">mail-server-tunnel doctor</code>.')
+                  tr
+                    td= t("The API token was refused")
+                    td= t("Copy the token again from My Account, Security, and run the setup again.")
+                  tr
+                    td= t("Mail Server Tunnel is not enabled for this domain")
+                    td
+                      != t('Run <code class="notranslate">mail-server-tunnel enable --domain example.com</code>, or turn it on under Advanced Settings.')
+                  tr
+                    td= t("Domain is not verified")
+                    td= t("Add the TXT verification record from My Account, Domains to your DNS and verify the domain there.")
+                  tr
+                    td= t("Another app connected for these domains")
+                    td= t("Only one app serves a domain at a time. Stop the other copy.")
+                  tr
+                    td= t("Mail still goes to the old server")
+                    td= t("Check that the MX records are only mx1.forwardemail.net and mx2.forwardemail.net.")
+
+            h2#stop-using-it= t("Turning it off")
+            p
+              != t('Run <code class="notranslate">mail-server-tunnel disable</code> and <code class="notranslate">mail-server-tunnel uninstall</code>, or turn off Mail Server Tunnel under Advanced Settings. Addresses without a mailbox or forwarding then bounce as before.')

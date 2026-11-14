@@ -46,6 +46,7 @@
   * [Come usare il mio storage compatibile S3 per i backup](#how-do-i-use-my-own-s3-compatible-storage-for-backups)
   * [Come convertire backup SQLite in file EML](#how-do-i-convert-sqlite-backups-to-eml-files)
   * [Supportate il self-hosting](#do-you-support-self-hosting)
+  * [Posso ospitare un mio server di posta dietro CGNAT o Starlink](#can-i-self-host-a-mail-server-behind-cgnat-or-starlink)
 * [Configurazione Email](#email-configuration)
   * [Come iniziare e configurare l'inoltro email](#how-do-i-get-started-and-set-up-email-forwarding)
   * [Posso usare più scambi MX e server per inoltri avanzati](#can-i-use-multiple-mx-exchanges-and-servers-for-advanced-forwarding)
@@ -1430,6 +1431,10 @@ I file EML sono organizzati per cartella della casella di posta. La password del
 ### Supportate l’auto-ospitazione? {#do-you-support-self-hosting}
 
 Sì, da marzo 2025 supportiamo un’opzione auto-ospitata. Leggi il blog [qui](https://forwardemail.net/blog/docs/self-hosted-solution). Consulta la [guida per l’auto-ospitazione](https://forwardemail.net/self-hosted) per iniziare. E per chi è interessato a una versione più dettagliata passo-passo, vedi le nostre guide basate su [Ubuntu](https://forwardemail.net/guides/selfhosted-on-ubuntu) o [Debian](https://forwardemail.net/guides/selfhosted-on-debian).
+
+### Posso ospitare un mio server di posta dietro CGNAT o Starlink {#can-i-self-host-a-mail-server-behind-cgnat-or-starlink}
+
+Sì. Starlink, l'internet 5G domestico e altri provider che usano il CGNAT bloccano le connessioni in entrata e la porta 25, quindi un server di posta in casa non può ricevere posta direttamente. La nostra app Mail Server Tunnel mantiene aperta una connessione in uscita verso di noi e consegna la posta del tuo dominio al tuo server, senza port forwarding, indirizzo IP statico, VPN o VPS. Se l'app è offline, i mittenti ricevono una risposta temporanea 421 e riprovano, quindi la posta non va persa. Leggi la [guida](https://forwardemail.net/guides/self-hosted-mail-server-behind-cgnat) o vedi la nostra [pagina Starlink](https://forwardemail.net/starlink). Il dominio deve avere un piano a pagamento e superare prima la verifica del record TXT, che impedisce a un altro account di ricevere la posta.
 
 
 ## Configurazione Email {#email-configuration}

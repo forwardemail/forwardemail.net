@@ -55,6 +55,8 @@
   * [Mengambil domain](#retrieve-domain)
   * [Verifikasi catatan domain](#verify-domain-records)
   * [Verifikasi catatan SMTP domain](#verify-domain-smtp-records)
+  * [Dapatkan status Mail Server Tunnel](#get-mail-server-tunnel-status)
+  * [Jalankan perintah IMAP melalui Mail Server Tunnel](#run-an-imap-command-through-the-mail-server-tunnel)
   * [Daftar kata sandi catch-all domain-wide](#list-domain-wide-catch-all-passwords)
   * [Membuat kata sandi catch-all domain-wide](#create-domain-wide-catch-all-password)
   * [Menghapus kata sandi catch-all domain-wide](#remove-domain-wide-catch-all-password)
@@ -689,6 +691,36 @@ curl BASE_URI/v1/domains/DOMAIN_NAME/verify-smtp \
   -u API_TOKEN:
 ```
 
+### Dapatkan status Mail Server Tunnel {#get-mail-server-tunnel-status}
+
+> `GET /v1/domains/DOMAIN_NAME/tunnel`
+
+Mengembalikan apakah aplikasi Mail Server Tunnel untuk domain terhubung dan apakah dapat menjangkau server email Anda.
+
+> Contoh Permintaan:
+
+```sh
+curl BASE_URI/v1/domains/DOMAIN_NAME/tunnel \
+  -u API_TOKEN:
+```
+
+### Jalankan perintah IMAP melalui Mail Server Tunnel {#run-an-imap-command-through-the-mail-server-tunnel}
+
+> `POST /v1/domains/DOMAIN_NAME/tunnel/imap`
+
+Menjalankan satu perintah IMAP pada server email di balik tunnel. Akses kotak surat jarak jauh harus diaktifkan di aplikasi. Nama pengguna dan kata sandi kotak surat hanya diteruskan dan tidak disimpan.
+
+`command`: `list`, `status`, `search`, `fetch`, `download`, `flags`, `move`, `copy`, `delete`, `append`, `mailboxCreate`, `mailboxRename`, `mailboxDelete`
+
+> Contoh Permintaan:
+
+```sh
+curl -X POST BASE_URI/v1/domains/DOMAIN_NAME/tunnel/imap \
+  -u API_TOKEN: \
+  -H "Content-Type: application/json" \
+  -d '{"command":"fetch","username":"EMAIL","password":"PASSWORD","args":{"path":"INBOX","range":"1:*"}}'
+```
+
 ### Daftar kata sandi catch-all domain {#list-domain-wide-catch-all-passwords}
 
 > `GET /v1/domains/DOMAIN_NAME/catch-all-passwords`
@@ -734,6 +766,7 @@ curl -X DELETE BASE_URI/v1/domains/:domain_name/catch-all-passwords/:token_id \
 | Parameter Body                | Wajib | Tipe                            | Deskripsi                                                                                                                                                                                                                                                                                   |
 | ---------------------------- | ------ | ------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `smtp_port`                  | Tidak  | String atau Number              | Port kustom untuk konfigurasi penerusan SMTP (default adalah `"25"`)                                                                                                                                                                                                                         |
+| `has_tunnel` | Tidak | Boolean | Kirim email untuk alamat tanpa kotak surat atau penerusan ke server email Anda sendiri melalui aplikasi Mail Server Tunnel (untuk server di balik CGNAT) |
 | `has_adult_content_protection` | Tidak  | Boolean                         | Apakah email terkirim yang menautkan ke situs yang diblokir filter keluarga Cloudflare karena konten dewasa atau malware akan diblokir (default `false`)                                                                                                                                     |
 | `has_phishing_protection`    | Tidak  | Boolean                         | Usang dan diabaikan                                                                                                                                                                                                                                                                          |
 | `has_executable_protection`  | Tidak  | Boolean                         | Apakah email terkirim dengan lampiran file eksekusi, seperti file .exe, .js, atau .bat, akan diblokir (default `true`)                                                                                                                                                                       |

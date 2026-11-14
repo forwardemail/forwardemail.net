@@ -55,6 +55,8 @@
   * [도메인 조회](#retrieve-domain)
   * [도메인 레코드 검증](#verify-domain-records)
   * [도메인 SMTP 레코드 검증](#verify-domain-smtp-records)
+  * [Mail Server Tunnel 상태 조회](#get-mail-server-tunnel-status)
+  * [Mail Server Tunnel을 통해 IMAP 명령 실행](#run-an-imap-command-through-the-mail-server-tunnel)
   * [도메인 전체 캐치올 비밀번호 목록](#list-domain-wide-catch-all-passwords)
   * [도메인 전체 캐치올 비밀번호 생성](#create-domain-wide-catch-all-password)
   * [도메인 전체 캐치올 비밀번호 제거](#remove-domain-wide-catch-all-password)
@@ -689,6 +691,36 @@ curl BASE_URI/v1/domains/DOMAIN_NAME/verify-smtp \
   -u API_TOKEN:
 ```
 
+### Mail Server Tunnel 상태 조회 {#get-mail-server-tunnel-status}
+
+> `GET /v1/domains/DOMAIN_NAME/tunnel`
+
+도메인의 Mail Server Tunnel 앱이 연결되어 있는지, 메일 서버에 도달할 수 있는지 반환합니다.
+
+> 예제 요청:
+
+```sh
+curl BASE_URI/v1/domains/DOMAIN_NAME/tunnel \
+  -u API_TOKEN:
+```
+
+### Mail Server Tunnel을 통해 IMAP 명령 실행 {#run-an-imap-command-through-the-mail-server-tunnel}
+
+> `POST /v1/domains/DOMAIN_NAME/tunnel/imap`
+
+터널 뒤의 메일 서버에서 IMAP 명령 하나를 실행합니다. 앱에서 원격 메일함 액세스를 켜야 합니다. 메일함 사용자 이름과 비밀번호는 전달만 되고 저장되지 않습니다.
+
+`command`: `list`, `status`, `search`, `fetch`, `download`, `flags`, `move`, `copy`, `delete`, `append`, `mailboxCreate`, `mailboxRename`, `mailboxDelete`
+
+> 예제 요청:
+
+```sh
+curl -X POST BASE_URI/v1/domains/DOMAIN_NAME/tunnel/imap \
+  -u API_TOKEN: \
+  -H "Content-Type: application/json" \
+  -d '{"command":"fetch","username":"EMAIL","password":"PASSWORD","args":{"path":"INBOX","range":"1:*"}}'
+```
+
 ### 도메인 전체 수신 비밀번호 목록 {#list-domain-wide-catch-all-passwords}
 
 > `GET /v1/domains/DOMAIN_NAME/catch-all-passwords`
@@ -734,6 +766,7 @@ curl -X DELETE BASE_URI/v1/domains/:domain_name/catch-all-passwords/:token_id \
 | Body Parameter                 | 필수 | 타입                            | 설명                                                                                                                                                                                                                                                                                     |
 | ------------------------------ | ---- | ------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `smtp_port`                    | 아니오 | String 또는 Number              | SMTP 포워딩에 사용할 사용자 지정 포트 (기본값은 `"25"`)                                                                                                                                                                                                                                  |
+| `has_tunnel` | 아니오 | Boolean | 메일함이나 전달이 없는 주소의 메일을 Mail Server Tunnel 앱을 통해 사용자의 메일 서버로 전달합니다(CGNAT 뒤의 서버용) |
 | `has_adult_content_protection` | 아니오 | Boolean                        | Cloudflare 가족 필터가 성인 관련 콘텐츠나 악성 코드 때문에 차단하는 사이트로 연결되는 보낸 메일을 차단할지 여부(기본값 `false`)                                                                                                                                                                              |
 | `has_phishing_protection`      | 아니오 | Boolean                        | 더 이상 사용되지 않으며 무시됨                                                                                                                                                                                                                                                |
 | `has_executable_protection`    | 아니오 | Boolean                        | .exe, .js, .bat 파일 같은 실행 파일이 첨부된 보낸 메일을 차단할지 여부(기본값 `true`)                                                                                                                                                                                                   |

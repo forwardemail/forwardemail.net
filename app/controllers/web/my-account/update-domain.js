@@ -154,6 +154,7 @@ async function updateDomain(ctx, next) {
       'allow_subdomain_forwarding',
       'has_delivery_logs',
       'require_tls_inbound',
+      'has_tunnel',
       'has_custom_s3'
     ]) {
       if (_.isBoolean(ctx.request.body[bool]) || isSANB(ctx.request.body[bool]))
@@ -397,6 +398,24 @@ async function updateDomain(ctx, next) {
         break;
       }
 
+      case 'has_tunnel': {
+        // require paid plan
+        if (ctx.state.domain.plan === 'free')
+          throw Boom.paymentRequired(
+            ctx.translateError(
+              'PLAN_UPGRADE_REQUIRED',
+              ctx.state.l(
+                `/my-account/domains/${punycode.toASCII(
+                  ctx.state.domain.name
+                )}/billing?plan=enhanced_protection`
+              )
+            )
+          );
+        ctx.state.domain.has_tunnel = boolean(ctx.request.body.has_tunnel);
+
+        break;
+      }
+
       case 'custom_s3_storage': {
         // require paid plan
         if (ctx.state.domain.plan === 'free')
@@ -498,6 +517,20 @@ async function updateDomain(ctx, next) {
   // TODO: eventually let users customize the text portion (for now we use html-to-text)
 
   ctx.state.domain.locale = ctx.locale;
+  //
+  // Mail Server Tunnel and a custom SMTP port are two ways to reach the
+  // domain's own mail server (through the tunnel app, or by connecting to
+  // it), so only one of them is set
+  //
+  if (
+    (ctx.state.domain.isModified('has_tunnel') ||
+      ctx.state.domain.isModified('smtp_port')) &&
+    ctx.state.domain.has_tunnel &&
+    isSANB(ctx.state.domain.smtp_port) &&
+    ctx.state.domain.smtp_port !== '25'
+  )
+    throw Boom.badRequest(ctx.translateError('TUNNEL_CUSTOM_PORT_CONFLICT'));
+
   ctx.state.domain.skip_verification = true;
 
   // Set audit metadata for domain update tracking

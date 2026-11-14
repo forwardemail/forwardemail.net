@@ -1978,6 +1978,10 @@
             "type": "boolean",
             "description": "Cuando está habilitado, rechaza los correos electrónicos entrantes que no se envían a través de TLS"
           },
+          "has_tunnel": {
+            "type": "boolean",
+            "description": "Entregar el correo de direcciones sin buzón ni reenvío a su propio servidor de correo mediante la aplicación Mail Server Tunnel (para servidores detrás de CGNAT)"
+          },
           "verification_record": {
             "type": "string"
           },
@@ -5945,6 +5949,193 @@
                 "schema": {
                   "type": "string",
                   "example": "You have successfully configured and verified DNS records for outbound SMTP."
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          }
+        }
+      }
+    },
+    "/v1/domains/{domain_id}/tunnel": {
+      "get": {
+        "summary": "Obtener el estado de Mail Server Tunnel",
+        "description": "Devuelve si la aplicación Mail Server Tunnel del dominio está conectada y si puede alcanzar su servidor de correo.",
+        "operationId": "getTunnelStatus",
+        "tags": [
+          "Dominios"
+        ],
+        "parameters": [
+          {
+            "name": "domain_id",
+            "in": "path",
+            "required": true,
+            "description": "Nombre de dominio completo (FQDN) para verificar",
+            "schema": {
+              "type": "string",
+              "format": "hostname"
+            }
+          }
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Obtener el estado de Mail Server Tunnel",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "has_tunnel": {
+                      "type": "boolean"
+                    },
+                    "is_online": {
+                      "type": "boolean"
+                    },
+                    "connected_at": {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    "hostname": {
+                      "type": "string"
+                    },
+                    "version": {
+                      "type": "string"
+                    },
+                    "platform": {
+                      "type": "string"
+                    },
+                    "has_imap": {
+                      "type": "boolean"
+                    },
+                    "local": {
+                      "type": "object",
+                      "properties": {
+                        "state": {
+                          "type": "string",
+                          "enum": [
+                            "up",
+                            "down"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          }
+        }
+      }
+    },
+    "/v1/domains/{domain_id}/tunnel/imap": {
+      "post": {
+        "summary": "Ejecutar un comando IMAP a través de Mail Server Tunnel",
+        "description": "Ejecuta un comando IMAP en el servidor de correo detrás del túnel. El acceso remoto al buzón debe estar activado en la aplicación. El usuario y la contraseña del buzón se transmiten y no se almacenan.",
+        "operationId": "runTunnelImapCommand",
+        "tags": [
+          "Dominios"
+        ],
+        "parameters": [
+          {
+            "name": "domain_id",
+            "in": "path",
+            "required": true,
+            "description": "Nombre de dominio completo (FQDN) para verificar",
+            "schema": {
+              "type": "string",
+              "format": "hostname"
+            }
+          }
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "command",
+                  "username",
+                  "password"
+                ],
+                "properties": {
+                  "command": {
+                    "type": "string",
+                    "enum": [
+                      "list",
+                      "status",
+                      "search",
+                      "fetch",
+                      "download",
+                      "flags",
+                      "move",
+                      "copy",
+                      "delete",
+                      "append",
+                      "mailboxCreate",
+                      "mailboxRename",
+                      "mailboxDelete"
+                    ]
+                  },
+                  "args": {
+                    "type": "object",
+                    "additionalProperties": true,
+                    "example": {
+                      "path": "INBOX",
+                      "range": "1:*"
+                    }
+                  },
+                  "username": {
+                    "type": "string",
+                    "example": "you@example.com"
+                  },
+                  "password": {
+                    "type": "string",
+                    "format": "password"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Ejecutar un comando IMAP a través de Mail Server Tunnel",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": true
                 }
               }
             }

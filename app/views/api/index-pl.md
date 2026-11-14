@@ -55,6 +55,8 @@
   * [Pobierz domenę](#retrieve-domain)
   * [Weryfikuj rekordy domeny](#verify-domain-records)
   * [Weryfikuj rekordy SMTP domeny](#verify-domain-smtp-records)
+  * [Pobierz stan Mail Server Tunnel](#get-mail-server-tunnel-status)
+  * [Wykonaj polecenie IMAP przez Mail Server Tunnel](#run-an-imap-command-through-the-mail-server-tunnel)
   * [Lista haseł catch-all dla domeny](#list-domain-wide-catch-all-passwords)
   * [Utwórz hasło catch-all dla domeny](#create-domain-wide-catch-all-password)
   * [Usuń hasło catch-all dla domeny](#remove-domain-wide-catch-all-password)
@@ -689,6 +691,36 @@ curl BASE_URI/v1/domains/DOMAIN_NAME/verify-smtp \
   -u API_TOKEN:
 ```
 
+### Pobierz stan Mail Server Tunnel {#get-mail-server-tunnel-status}
+
+> `GET /v1/domains/DOMAIN_NAME/tunnel`
+
+Zwraca, czy aplikacja Mail Server Tunnel dla domeny jest połączona i czy może połączyć się z Twoim serwerem poczty.
+
+> Przykładowe zapytanie:
+
+```sh
+curl BASE_URI/v1/domains/DOMAIN_NAME/tunnel \
+  -u API_TOKEN:
+```
+
+### Wykonaj polecenie IMAP przez Mail Server Tunnel {#run-an-imap-command-through-the-mail-server-tunnel}
+
+> `POST /v1/domains/DOMAIN_NAME/tunnel/imap`
+
+Wykonuje jedno polecenie IMAP na serwerze poczty za tunelem. Zdalny dostęp do skrzynki musi być włączony w aplikacji. Nazwa użytkownika i hasło skrzynki są tylko przekazywane i nie są przechowywane.
+
+`command`: `list`, `status`, `search`, `fetch`, `download`, `flags`, `move`, `copy`, `delete`, `append`, `mailboxCreate`, `mailboxRename`, `mailboxDelete`
+
+> Przykładowe zapytanie:
+
+```sh
+curl -X POST BASE_URI/v1/domains/DOMAIN_NAME/tunnel/imap \
+  -u API_TOKEN: \
+  -H "Content-Type: application/json" \
+  -d '{"command":"fetch","username":"EMAIL","password":"PASSWORD","args":{"path":"INBOX","range":"1:*"}}'
+```
+
 ### Lista haseł catch-all dla całej domeny {#list-domain-wide-catch-all-passwords}
 
 > `GET /v1/domains/DOMAIN_NAME/catch-all-passwords`
@@ -734,6 +766,7 @@ curl -X DELETE BASE_URI/v1/domains/:domain_name/catch-all-passwords/:token_id \
 | Parametr w ciele               | Wymagany | Typ                            | Opis                                                                                                                                                                                                                                                                                       |
 | ----------------------------- | -------- | ------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | `smtp_port`                   | Nie      | String lub Number              | Niestandardowy port do konfiguracji przekazywania SMTP (domyślnie `"25"`)                                                                                                                                                                                                                   |
+| `has_tunnel` | Nie | Boolean | Dostarczaj pocztę dla adresów bez skrzynki lub przekierowania na własny serwer poczty przez aplikację Mail Server Tunnel (dla serwerów za CGNAT) |
 | `has_adult_content_protection`| Nie      | Boolean                       | Czy blokować wysyłane wiadomości z linkiem do witryny, którą filtr rodzinny Cloudflare blokuje z powodu treści dla dorosłych lub złośliwego oprogramowania (domyślnie `false`)                                                                                                             |
 | `has_phishing_protection`     | Nie      | Boolean                       | Przestarzałe i ignorowane                                                                                                                                                                                                                                                                   |
 | `has_executable_protection`   | Nie      | Boolean                       | Czy blokować wysyłane wiadomości z załącznikami wykonywalnymi, takimi jak pliki .exe, .js lub .bat (domyślnie `true`)                                                                                                                                                                       |

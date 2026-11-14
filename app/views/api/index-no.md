@@ -55,6 +55,8 @@
   * [Hent domene](#retrieve-domain)
   * [Verifiser domeneposter](#verify-domain-records)
   * [Verifiser SMTP-poster for domene](#verify-domain-smtp-records)
+  * [Hent status for Mail Server Tunnel](#get-mail-server-tunnel-status)
+  * [Kjør en IMAP-kommando gjennom Mail Server Tunnel](#run-an-imap-command-through-the-mail-server-tunnel)
   * [List domenebredde catch-all-passord](#list-domain-wide-catch-all-passwords)
   * [Opprett domenebredde catch-all-passord](#create-domain-wide-catch-all-password)
   * [Fjern domenebredde catch-all-passord](#remove-domain-wide-catch-all-password)
@@ -689,6 +691,36 @@ curl BASE_URI/v1/domains/DOMAIN_NAME/verify-smtp \
   -u API_TOKEN:
 ```
 
+### Hent status for Mail Server Tunnel {#get-mail-server-tunnel-status}
+
+> `GET /v1/domains/DOMAIN_NAME/tunnel`
+
+Returnerer om appen Mail Server Tunnel for domenet er tilkoblet og om den når e-postserveren din.
+
+> Eksempel Forespørsel:
+
+```sh
+curl BASE_URI/v1/domains/DOMAIN_NAME/tunnel \
+  -u API_TOKEN:
+```
+
+### Kjør en IMAP-kommando gjennom Mail Server Tunnel {#run-an-imap-command-through-the-mail-server-tunnel}
+
+> `POST /v1/domains/DOMAIN_NAME/tunnel/imap`
+
+Kjører én IMAP-kommando mot e-postserveren bak tunnelen. Ekstern postkassetilgang må være slått på i appen. Postkassens brukernavn og passord sendes videre og lagres ikke.
+
+`command`: `list`, `status`, `search`, `fetch`, `download`, `flags`, `move`, `copy`, `delete`, `append`, `mailboxCreate`, `mailboxRename`, `mailboxDelete`
+
+> Eksempel Forespørsel:
+
+```sh
+curl -X POST BASE_URI/v1/domains/DOMAIN_NAME/tunnel/imap \
+  -u API_TOKEN: \
+  -H "Content-Type: application/json" \
+  -d '{"command":"fetch","username":"EMAIL","password":"PASSWORD","args":{"path":"INBOX","range":"1:*"}}'
+```
+
 ### List domenebredde catch-all passord {#list-domain-wide-catch-all-passwords}
 
 > `GET /v1/domains/DOMAIN_NAME/catch-all-passwords`
@@ -734,6 +766,7 @@ curl -X DELETE BASE_URI/v1/domains/:domain_name/catch-all-passwords/:token_id \
 | Body Parameter                 | Obligatorisk | Type                            | Beskrivelse                                                                                                                                                                                                                                                                                   |
 | ------------------------------ | ------------ | ------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `smtp_port`                    | Nei          | String eller Nummer             | Egendefinert port for konfigurasjon av SMTP-videresending (standard er `"25"`)                                                                                                                                                                                                               |
+| `has_tunnel` | Nei | Boolean | Lever e-post til adresser uten postkasse eller videresending til din egen e-postserver gjennom appen Mail Server Tunnel (for servere bak CGNAT) |
 | `has_adult_content_protection` | Nei          | Boolean                        | Om sendt e-post som lenker til et nettsted Cloudflares familiefilter blokkerer for voksent innhold eller skadevare, skal blokkeres (standard `false`)                                                                                                                                         |
 | `has_phishing_protection`      | Nei          | Boolean                        | Utfaset og ignorert                                                                                                                                                                                                                                                                          |
 | `has_executable_protection`    | Nei          | Boolean                        | Om sendt e-post med kjørbare vedlegg, som .exe-, .js- eller .bat-filer, skal blokkeres (standard `true`)                                                                                                                                                                                    |

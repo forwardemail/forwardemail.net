@@ -55,6 +55,8 @@
   * [Отримати домен](#retrieve-domain)
   * [Перевірити записи домену](#verify-domain-records)
   * [Перевірити SMTP записи домену](#verify-domain-smtp-records)
+  * [Отримати стан Mail Server Tunnel](#get-mail-server-tunnel-status)
+  * [Виконати команду IMAP через Mail Server Tunnel](#run-an-imap-command-through-the-mail-server-tunnel)
   * [Список загальних паролів для домену](#list-domain-wide-catch-all-passwords)
   * [Створити загальний пароль для домену](#create-domain-wide-catch-all-password)
   * [Видалити загальний пароль для домену](#remove-domain-wide-catch-all-password)
@@ -689,6 +691,36 @@ curl BASE_URI/v1/domains/DOMAIN_NAME/verify-smtp \
   -u API_TOKEN:
 ```
 
+### Отримати стан Mail Server Tunnel {#get-mail-server-tunnel-status}
+
+> `GET /v1/domains/DOMAIN_NAME/tunnel`
+
+Повертає, чи підключено застосунок Mail Server Tunnel для домену і чи доступний йому ваш поштовий сервер.
+
+> Приклад запиту:
+
+```sh
+curl BASE_URI/v1/domains/DOMAIN_NAME/tunnel \
+  -u API_TOKEN:
+```
+
+### Виконати команду IMAP через Mail Server Tunnel {#run-an-imap-command-through-the-mail-server-tunnel}
+
+> `POST /v1/domains/DOMAIN_NAME/tunnel/imap`
+
+Виконує одну команду IMAP на поштовому сервері за тунелем. Віддалений доступ до скриньок має бути ввімкнено в застосунку. Ім'я користувача і пароль скриньки лише передаються і не зберігаються.
+
+`command`: `list`, `status`, `search`, `fetch`, `download`, `flags`, `move`, `copy`, `delete`, `append`, `mailboxCreate`, `mailboxRename`, `mailboxDelete`
+
+> Приклад запиту:
+
+```sh
+curl -X POST BASE_URI/v1/domains/DOMAIN_NAME/tunnel/imap \
+  -u API_TOKEN: \
+  -H "Content-Type: application/json" \
+  -d '{"command":"fetch","username":"EMAIL","password":"PASSWORD","args":{"path":"INBOX","range":"1:*"}}'
+```
+
 ### Список паролів для домену з функцією catch-all {#list-domain-wide-catch-all-passwords}
 
 > `GET /v1/domains/DOMAIN_NAME/catch-all-passwords`
@@ -734,6 +766,7 @@ curl -X DELETE BASE_URI/v1/domains/:domain_name/catch-all-passwords/:token_id \
 | Параметр у тілі               | Обов’язковий | Тип                            | Опис                                                                                                                                                                                                                                                                                       |
 | ----------------------------- | ------------ | ------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | `smtp_port`                   | Ні           | String або Number              | Користувацький порт для налаштування SMTP пересилання (за замовчуванням `"25"`)                                                                                                                                                                                                           |
+| `has_tunnel` | Ні | Boolean | Доставляти пошту для адрес без поштової скриньки чи пересилання на ваш власний поштовий сервер через застосунок Mail Server Tunnel (для серверів за CGNAT) |
 | `has_adult_content_protection`| Ні           | Boolean                       | Чи блокувати надіслані листи з посиланнями на сайти, які сімейний фільтр Cloudflare блокує через вміст для дорослих або шкідливе ПЗ (типово `false`)                                                                                                                                       |
 | `has_phishing_protection`     | Ні           | Boolean                       | Застаріле й ігнорується                                                                                                                                                                                                                                                                    |
 | `has_executable_protection`   | Ні           | Boolean                       | Чи блокувати надіслані листи з виконуваними вкладеннями, як-от файлами .exe, .js чи .bat (типово `true`)                                                                                                                                                                                   |

@@ -55,6 +55,8 @@
   * [Alan adını al](#retrieve-domain)
   * [Alan adı kayıtlarını doğrula](#verify-domain-records)
   * [Alan adı SMTP kayıtlarını doğrula](#verify-domain-smtp-records)
+  * [Mail Server Tunnel durumunu al](#get-mail-server-tunnel-status)
+  * [Mail Server Tunnel üzerinden bir IMAP komutu çalıştır](#run-an-imap-command-through-the-mail-server-tunnel)
   * [Alan adı genel catch-all şifrelerini listele](#list-domain-wide-catch-all-passwords)
   * [Alan adı genel catch-all şifresi oluştur](#create-domain-wide-catch-all-password)
   * [Alan adı genel catch-all şifresini kaldır](#remove-domain-wide-catch-all-password)
@@ -689,6 +691,36 @@ curl BASE_URI/v1/domains/DOMAIN_NAME/verify-smtp \
   -u API_TOKEN:
 ```
 
+### Mail Server Tunnel durumunu al {#get-mail-server-tunnel-status}
+
+> `GET /v1/domains/DOMAIN_NAME/tunnel`
+
+Alan adının Mail Server Tunnel uygulamasının bağlı olup olmadığını ve posta sunucunuza ulaşıp ulaşamadığını döndürür.
+
+> Örnek İstek:
+
+```sh
+curl BASE_URI/v1/domains/DOMAIN_NAME/tunnel \
+  -u API_TOKEN:
+```
+
+### Mail Server Tunnel üzerinden bir IMAP komutu çalıştır {#run-an-imap-command-through-the-mail-server-tunnel}
+
+> `POST /v1/domains/DOMAIN_NAME/tunnel/imap`
+
+Tünelin arkasındaki posta sunucusunda bir IMAP komutu çalıştırır. Uygulamada uzaktan posta kutusu erişimi açık olmalıdır. Posta kutusunun kullanıcı adı ve parolası yalnızca iletilir, saklanmaz.
+
+`command`: `list`, `status`, `search`, `fetch`, `download`, `flags`, `move`, `copy`, `delete`, `append`, `mailboxCreate`, `mailboxRename`, `mailboxDelete`
+
+> Örnek İstek:
+
+```sh
+curl -X POST BASE_URI/v1/domains/DOMAIN_NAME/tunnel/imap \
+  -u API_TOKEN: \
+  -H "Content-Type: application/json" \
+  -d '{"command":"fetch","username":"EMAIL","password":"PASSWORD","args":{"path":"INBOX","range":"1:*"}}'
+```
+
 ### Alan genelindeki catch-all şifrelerini listele {#list-domain-wide-catch-all-passwords}
 
 > `GET /v1/domains/DOMAIN_NAME/catch-all-passwords`
@@ -734,6 +766,7 @@ curl -X DELETE BASE_URI/v1/domains/:domain_name/catch-all-passwords/:token_id \
 | Body Parametresi               | Zorunlu | Tür                            | Açıklama                                                                                                                                                                                                                                                                                     |
 | ----------------------------- | ------- | ------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `smtp_port`                   | Hayır   | String veya Number             | SMTP yönlendirme için yapılandırılacak özel port (varsayılan `"25"`)                                                                                                                                                                                                                         |
+| `has_tunnel` | Hayır | Boolean | Posta kutusu veya yönlendirmesi olmayan adreslerin e-postalarını Mail Server Tunnel uygulaması üzerinden kendi posta sunucunuza teslim edin (CGNAT arkasındaki sunucular için) |
 | `has_adult_content_protection`| Hayır   | Boolean                       | Cloudflare'in aile filtresinin yetişkinlere yönelik içerik veya kötü amaçlı yazılım nedeniyle engellediği bir siteye bağlantı veren gönderilen e-postaların engellenip engellenmeyeceği (varsayılan: `false`)                                                                                |
 | `has_phishing_protection`     | Hayır   | Boolean                       | Kullanımdan kaldırıldı ve yok sayılır                                                                                                                                                                                                                                                         |
 | `has_executable_protection`   | Hayır   | Boolean                       | .exe, .js veya .bat dosyaları gibi yürütülebilir ekler içeren gönderilen e-postaların engellenip engellenmeyeceği (varsayılan: `true`)                                                                                                                                                      |

@@ -46,6 +46,7 @@
   * [Làm thế nào để sử dụng bộ nhớ tương thích S3 của riêng tôi cho sao lưu](#how-do-i-use-my-own-s3-compatible-storage-for-backups)
   * [Làm thế nào để chuyển đổi sao lưu SQLite sang tập tin EML](#how-do-i-convert-sqlite-backups-to-eml-files)
   * [Bạn có hỗ trợ tự lưu trữ không](#do-you-support-self-hosting)
+  * [Tôi có thể tự lưu trữ máy chủ thư phía sau CGNAT hoặc Starlink không](#can-i-self-host-a-mail-server-behind-cgnat-or-starlink)
 * [Cấu Hình Email](#email-configuration)
   * [Làm thế nào để bắt đầu và thiết lập chuyển tiếp email](#how-do-i-get-started-and-set-up-email-forwarding)
   * [Tôi có thể sử dụng nhiều MX exchanges và máy chủ cho chuyển tiếp nâng cao không](#can-i-use-multiple-mx-exchanges-and-servers-for-advanced-forwarding)
@@ -1430,6 +1431,10 @@ Các tệp EML được tổ chức theo thư mục hộp thư. Mật khẩu ZIP
 ### Bạn có hỗ trợ tự lưu trữ không {#do-you-support-self-hosting}
 
 Có, kể từ tháng 3 năm 2025, chúng tôi hỗ trợ tùy chọn tự lưu trữ. Đọc bài blog [tại đây](https://forwardemail.net/blog/docs/self-hosted-solution). Xem hướng dẫn [tự lưu trữ](https://forwardemail.net/self-hosted) để bắt đầu. Và với những ai quan tâm đến phiên bản hướng dẫn chi tiết hơn, xem các hướng dẫn dựa trên [Ubuntu](https://forwardemail.net/guides/selfhosted-on-ubuntu) hoặc [Debian](https://forwardemail.net/guides/selfhosted-on-debian).
+
+### Tôi có thể tự lưu trữ máy chủ thư phía sau CGNAT hoặc Starlink không {#can-i-self-host-a-mail-server-behind-cgnat-or-starlink}
+
+Có. Starlink, internet 5G tại nhà và các nhà cung cấp khác dùng CGNAT chặn kết nối đến và cổng 25, nên máy chủ thư tại nhà không thể nhận thư trực tiếp. Ứng dụng Mail Server Tunnel của chúng tôi giữ một kết nối đi luôn mở tới chúng tôi và chuyển thư của tên miền của bạn đến máy chủ của chính bạn, không cần chuyển tiếp cổng, địa chỉ IP tĩnh, VPN hay VPS. Nếu ứng dụng ngoại tuyến, người gửi nhận phản hồi tạm thời 421 và thử lại, nên thư không bị mất. Hãy đọc [hướng dẫn](https://forwardemail.net/guides/self-hosted-mail-server-behind-cgnat) hoặc xem [trang Starlink](https://forwardemail.net/starlink) của chúng tôi. Tên miền của bạn phải dùng gói trả phí và vượt qua xác minh bản ghi TXT trước, điều này ngăn tài khoản khác nhận thư của bạn.
 
 ## Cấu Hình Email {#email-configuration}
 

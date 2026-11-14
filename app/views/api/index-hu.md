@@ -55,6 +55,8 @@
   * [Domain lekérése](#retrieve-domain)
   * [Domain rekordok ellenőrzése](#verify-domain-records)
   * [Domain SMTP rekordok ellenőrzése](#verify-domain-smtp-records)
+  * [A Mail Server Tunnel állapotának lekérése](#get-mail-server-tunnel-status)
+  * [IMAP-parancs futtatása a Mail Server Tunnelen keresztül](#run-an-imap-command-through-the-mail-server-tunnel)
   * [Domain szintű catch-all jelszavak listázása](#list-domain-wide-catch-all-passwords)
   * [Domain szintű catch-all jelszó létrehozása](#create-domain-wide-catch-all-password)
   * [Domain szintű catch-all jelszó eltávolítása](#remove-domain-wide-catch-all-password)
@@ -689,6 +691,36 @@ curl BASE_URI/v1/domains/DOMAIN_NAME/verify-smtp \
   -u API_TOKEN:
 ```
 
+### A Mail Server Tunnel állapotának lekérése {#get-mail-server-tunnel-status}
+
+> `GET /v1/domains/DOMAIN_NAME/tunnel`
+
+Visszaadja, hogy a domain Mail Server Tunnel alkalmazása csatlakozik-e, és eléri-e az Ön levelezőszerverét.
+
+> Példa kérés:
+
+```sh
+curl BASE_URI/v1/domains/DOMAIN_NAME/tunnel \
+  -u API_TOKEN:
+```
+
+### IMAP-parancs futtatása a Mail Server Tunnelen keresztül {#run-an-imap-command-through-the-mail-server-tunnel}
+
+> `POST /v1/domains/DOMAIN_NAME/tunnel/imap`
+
+Egy IMAP-parancsot futtat az alagút mögötti levelezőszerveren. A távoli postafiók-hozzáférést be kell kapcsolni az alkalmazásban. A postafiók felhasználóneve és jelszava csak továbbításra kerül, tárolásra nem.
+
+`command`: `list`, `status`, `search`, `fetch`, `download`, `flags`, `move`, `copy`, `delete`, `append`, `mailboxCreate`, `mailboxRename`, `mailboxDelete`
+
+> Példa kérés:
+
+```sh
+curl -X POST BASE_URI/v1/domains/DOMAIN_NAME/tunnel/imap \
+  -u API_TOKEN: \
+  -H "Content-Type: application/json" \
+  -d '{"command":"fetch","username":"EMAIL","password":"PASSWORD","args":{"path":"INBOX","range":"1:*"}}'
+```
+
 ### Domain szintű catch-all jelszavak listázása {#list-domain-wide-catch-all-passwords}
 
 > `GET /v1/domains/DOMAIN_NAME/catch-all-passwords`
@@ -734,6 +766,7 @@ curl -X DELETE BASE_URI/v1/domains/:domain_name/catch-all-passwords/:token_id \
 | Body Parameter                 | Kötelező | Típus                            | Leírás                                                                                                                                                                                                                                                                                     |
 | ------------------------------ | -------- | ------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `smtp_port`                    | Nem      | String vagy Szám                | Egyéni port az SMTP továbbításhoz (alapértelmezett: `"25"`)                                                                                                                                                                                                                                |
+| `has_tunnel` | Nem | Boolean | A postafiók vagy továbbítás nélküli címek leveleinek kézbesítése saját levelezőszerverére a Mail Server Tunnel alkalmazáson keresztül (CGNAT mögötti szerverekhez) |
 | `has_adult_content_protection` | Nem      | Boolean                         | Letiltsuk-e azokat a küldött leveleket, amelyek olyan oldalra mutatnak, amelyet a Cloudflare családi szűrője felnőtt tartalom vagy kártevő miatt letilt (alapértelmezés: `false`)                                                                                                           |
 | `has_phishing_protection`      | Nem      | Boolean                         | Elavult, figyelmen kívül hagyjuk                                                                                                                                                                                                                                                           |
 | `has_executable_protection`    | Nem      | Boolean                         | Letiltsuk-e azokat a küldött leveleket, amelyekben futtatható melléklet van, például .exe, .js vagy .bat fájl (alapértelmezés: `true`)                                                                                                                                                     |

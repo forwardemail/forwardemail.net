@@ -1809,6 +1809,7 @@ const config = {
     'has_executable_protection',
     'has_virus_protection',
     'require_tls_inbound',
+    'has_tunnel',
 
     // Alias and recipient settings
     'is_catchall_regex_disabled',

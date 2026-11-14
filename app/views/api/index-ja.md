@@ -55,6 +55,8 @@
   * [ドメインの取得](#retrieve-domain)
   * [ドメインレコードの検証](#verify-domain-records)
   * [ドメインSMTPレコードの検証](#verify-domain-smtp-records)
+  * [Mail Server Tunnel のステータスを取得](#get-mail-server-tunnel-status)
+  * [Mail Server Tunnel 経由で IMAP コマンドを実行](#run-an-imap-command-through-the-mail-server-tunnel)
   * [ドメイン全体のキャッチオールパスワード一覧](#list-domain-wide-catch-all-passwords)
   * [ドメイン全体のキャッチオールパスワード作成](#create-domain-wide-catch-all-password)
   * [ドメイン全体のキャッチオールパスワード削除](#remove-domain-wide-catch-all-password)
@@ -689,6 +691,36 @@ curl BASE_URI/v1/domains/DOMAIN_NAME/verify-smtp \
   -u API_TOKEN:
 ```
 
+### Mail Server Tunnel のステータスを取得 {#get-mail-server-tunnel-status}
+
+> `GET /v1/domains/DOMAIN_NAME/tunnel`
+
+ドメインの Mail Server Tunnel アプリが接続されているか、メールサーバーに到達できるかを返します。
+
+> Example Request:
+
+```sh
+curl BASE_URI/v1/domains/DOMAIN_NAME/tunnel \
+  -u API_TOKEN:
+```
+
+### Mail Server Tunnel 経由で IMAP コマンドを実行 {#run-an-imap-command-through-the-mail-server-tunnel}
+
+> `POST /v1/domains/DOMAIN_NAME/tunnel/imap`
+
+トンネルの背後にあるメールサーバーに対して IMAP コマンドを 1 つ実行します。アプリでリモートメールボックスアクセスを有効にする必要があります。メールボックスのユーザー名とパスワードは中継されるだけで保存されません。
+
+`command`: `list`, `status`, `search`, `fetch`, `download`, `flags`, `move`, `copy`, `delete`, `append`, `mailboxCreate`, `mailboxRename`, `mailboxDelete`
+
+> Example Request:
+
+```sh
+curl -X POST BASE_URI/v1/domains/DOMAIN_NAME/tunnel/imap \
+  -u API_TOKEN: \
+  -H "Content-Type: application/json" \
+  -d '{"command":"fetch","username":"EMAIL","password":"PASSWORD","args":{"path":"INBOX","range":"1:*"}}'
+```
+
 ### ドメイン全体のキャッチオールパスワード一覧 {#list-domain-wide-catch-all-passwords}
 
 > `GET /v1/domains/DOMAIN_NAME/catch-all-passwords`
@@ -734,6 +766,7 @@ curl -X DELETE BASE_URI/v1/domains/:domain_name/catch-all-passwords/:token_id \
 | Body Parameter                 | 必須 | タイプ                         | 説明                                                                                                                                                                                                                                                                                       |
 | ------------------------------ | ---- | ------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | `smtp_port`                    | いいえ | String または Number           | SMTP転送用に設定するカスタムポート（デフォルトは `"25"`）                                                                                                                                                                                                                                |
+| `has_tunnel` | いいえ | Boolean | メールボックスや転送のないアドレス宛てのメールを、Mail Server Tunnel アプリ経由でお客様自身のメールサーバーに配送します（CGNAT 環境のサーバー向け） |
 | `has_adult_content_protection` | いいえ | Boolean                       | Cloudflare のファミリーフィルターが成人向けコンテンツやマルウェアを理由にブロックするサイトへのリンクを含む送信メールをブロックするかどうか（デフォルトは `false`）                                                                                                                                                           |
 | `has_phishing_protection`      | いいえ | Boolean                       | 非推奨のため無視されます                                                                                                                                                                                                                                            |
 | `has_executable_protection`    | いいえ | Boolean                       | .exe、.js、.bat ファイルなどの実行ファイルが添付された送信メールをブロックするかどうか（デフォルトは `true`）                                                                                                                                                                                      |

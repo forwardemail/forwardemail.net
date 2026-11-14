@@ -653,6 +653,31 @@ module.exports = {
     'We tried to create a new account with this email address, but it already exists.  Please log in with this email address if it belongs to you and then try again.',
   LOGOUT_REQUIRED: 'Please log out to view the page you requested.',
   ALIAS_DOES_NOT_EXIST: 'Alias does not exist on the domain.',
+  TUNNEL_NOT_ENABLED:
+    'Mail Server Tunnel is not enabled for this domain. Enable it under Advanced Settings or run the Mail Server Tunnel app setup.',
+  TUNNEL_CUSTOM_PORT_CONFLICT:
+    'Mail Server Tunnel and a custom SMTP port cannot both be set. Set the port back to 25 to use the tunnel, or turn the tunnel off to use a custom port.',
+  TUNNEL_NOT_VERIFIED:
+    'This domain is not verified. Add its TXT verification record to its DNS, then verify it under My Account, Domains.',
+  TUNNEL_OFFLINE:
+    'The Mail Server Tunnel app for this domain is not connected. Check that it is running on the computer beside your mail server.',
+  TUNNEL_TIMEOUT:
+    'The mail server behind the Mail Server Tunnel did not answer in time. Please try again.',
+  TUNNEL_INVALID_COMMAND: 'IMAP command or its arguments were invalid.',
+  TUNNEL_INVALID_CREDENTIALS:
+    'Mailbox username and password of your mail server are required.',
+  TUNNEL_OFFLINE_SUBJECT:
+    'Mail Server Tunnel for <span class="notranslate">%s</span> is offline',
+  TUNNEL_OFFLINE_MESSAGE:
+    '<p>The Mail Server Tunnel app for <strong class="notranslate">%s</strong> has not been connected since <span class="notranslate">%s</span>.</p><p>Incoming mail for this domain is being deferred, not lost: senders keep it and try again, usually for up to 5 days. After that it is returned to them.</p><p>Check that the computer running the app is on, has internet access, and that the app is running (<code class="notranslate">mail-server-tunnel status</code>). To receive mail without the tunnel again, turn off "Mail Server Tunnel" under <a href="%s" target="_blank" rel="noopener noreferrer">Advanced Settings</a>.</p>',
+  TUNNEL_LOCAL_DOWN_SUBJECT:
+    'Mail server for <span class="notranslate">%s</span> is not reachable',
+  TUNNEL_LOCAL_DOWN_MESSAGE:
+    '<p>The Mail Server Tunnel app for <strong class="notranslate">%s</strong> is connected, but it has not been able to reach your mail server since <span class="notranslate">%s</span>.</p><p>It reported: <span class="notranslate">%s</span></p><p>Incoming mail for this domain is being deferred, not lost: senders keep it and try again, usually for up to 5 days. Check that your mail server is running and that the host and port in the app match it (<code class="notranslate">mail-server-tunnel doctor</code>). You can review the setting under <a href="%s" target="_blank" rel="noopener noreferrer">Advanced Settings</a>.</p>',
+  TUNNEL_RESTORED_SUBJECT:
+    'Mail Server Tunnel for <span class="notranslate">%s</span> is back online',
+  TUNNEL_RESTORED_MESSAGE:
+    '<p>The Mail Server Tunnel app for <strong class="notranslate">%s</strong> is connected and your mail server is reachable again. Deferred mail arrives as senders retry it.</p>',
   CALDAV_SMTP_NOT_ENABLED_SUBJECT:
     'Configure Outbound SMTP for <span class="notranslate">%s</span> to send calendar invites',
   CALDAV_SMTP_NOT_ENABLED_MESSAGE:

@@ -46,6 +46,7 @@
   * [Kuinka käyttää omaa S3-yhteensopivaa tallennustilaa varmuuskopioihin](#how-do-i-use-my-own-s3-compatible-storage-for-backups)
   * [Kuinka muuntaa SQLite-varmuuskopiot EML-tiedostoiksi](#how-do-i-convert-sqlite-backups-to-eml-files)
   * [Tuetteko itseisännöintiä](#do-you-support-self-hosting)
+  * [Voinko ylläpitää omaa sähköpostipalvelinta CGNATin tai Starlinkin takana](#can-i-self-host-a-mail-server-behind-cgnat-or-starlink)
 * [Sähköpostin asetukset](#email-configuration)
   * [Kuinka aloittaa ja määrittää sähköpostin edelleenlähetys](#how-do-i-get-started-and-set-up-email-forwarding)
   * [Voinko käyttää useita MX-vaihtoehtoja ja palvelimia edistyneeseen edelleenlähetykseen](#can-i-use-multiple-mx-exchanges-and-servers-for-advanced-forwarding)
@@ -1429,6 +1430,10 @@ EML-tiedostot on järjestetty postilaatikon kansioittain. ZIP-salasanana toimii 
 ### Do you support self-hosting {#do-you-support-self-hosting}
 
 Kyllä, maaliskuusta 2025 alkaen tuemme itseisännöityä vaihtoehtoa. Lue blogi [tästä](https://forwardemail.net/blog/docs/self-hosted-solution). Aloita tutustumalla [itseisännöityyn oppaaseen](https://forwardemail.net/self-hosted). Ja jos haluat yksityiskohtaisemman vaiheittaisen version, katso [Ubuntu](https://forwardemail.net/guides/selfhosted-on-ubuntu) tai [Debian](https://forwardemail.net/guides/selfhosted-on-debian) -pohjaiset oppaamme.
+
+### Voinko ylläpitää omaa sähköpostipalvelinta CGNATin tai Starlinkin takana {#can-i-self-host-a-mail-server-behind-cgnat-or-starlink}
+
+Kyllä. Starlink, 5G-kotinetti ja muut CGNATia käyttävät palveluntarjoajat estävät saapuvat yhteydet ja portin 25, joten kotona oleva sähköpostipalvelin ei voi vastaanottaa postia suoraan. Mail Server Tunnel -sovelluksemme pitää lähtevän yhteyden auki meihin ja toimittaa verkkotunnuksesi postin omalle palvelimellesi ilman portinohjausta, kiinteää IP-osoitetta, VPN:ää tai VPS:ää. Jos sovellus ei ole yhteydessä, lähettäjät saavat väliaikaisen 421-vastauksen ja yrittävät uudelleen, joten postia ei katoa. Lue [opas](https://forwardemail.net/guides/self-hosted-mail-server-behind-cgnat) tai katso [Starlink-sivumme](https://forwardemail.net/starlink). Verkkotunnuksellasi on oltava maksullinen tilaus ja sen on ensin läpäistävä TXT-tietueen vahvistus, mikä estää toista tiliä vastaanottamasta postiasi.
 
 
 ## Email Configuration {#email-configuration}

@@ -55,6 +55,8 @@
   * [Lấy tên miền](#retrieve-domain)
   * [Xác minh bản ghi tên miền](#verify-domain-records)
   * [Xác minh bản ghi SMTP tên miền](#verify-domain-smtp-records)
+  * [Lấy trạng thái Mail Server Tunnel](#get-mail-server-tunnel-status)
+  * [Chạy lệnh IMAP qua Mail Server Tunnel](#run-an-imap-command-through-the-mail-server-tunnel)
   * [Liệt kê mật khẩu catch-all toàn miền](#list-domain-wide-catch-all-passwords)
   * [Tạo mật khẩu catch-all toàn miền](#create-domain-wide-catch-all-password)
   * [Xóa mật khẩu catch-all toàn miền](#remove-domain-wide-catch-all-password)
@@ -689,6 +691,36 @@ curl BASE_URI/v1/domains/DOMAIN_NAME/verify-smtp \
   -u API_TOKEN:
 ```
 
+### Lấy trạng thái Mail Server Tunnel {#get-mail-server-tunnel-status}
+
+> `GET /v1/domains/DOMAIN_NAME/tunnel`
+
+Trả về việc ứng dụng Mail Server Tunnel của tên miền có đang kết nối và có truy cập được máy chủ thư của bạn hay không.
+
+> Ví dụ Yêu cầu:
+
+```sh
+curl BASE_URI/v1/domains/DOMAIN_NAME/tunnel \
+  -u API_TOKEN:
+```
+
+### Chạy lệnh IMAP qua Mail Server Tunnel {#run-an-imap-command-through-the-mail-server-tunnel}
+
+> `POST /v1/domains/DOMAIN_NAME/tunnel/imap`
+
+Chạy một lệnh IMAP trên máy chủ thư phía sau đường hầm. Phải bật truy cập hộp thư từ xa trong ứng dụng. Tên người dùng và mật khẩu hộp thư chỉ được chuyển tiếp và không được lưu trữ.
+
+`command`: `list`, `status`, `search`, `fetch`, `download`, `flags`, `move`, `copy`, `delete`, `append`, `mailboxCreate`, `mailboxRename`, `mailboxDelete`
+
+> Ví dụ Yêu cầu:
+
+```sh
+curl -X POST BASE_URI/v1/domains/DOMAIN_NAME/tunnel/imap \
+  -u API_TOKEN: \
+  -H "Content-Type: application/json" \
+  -d '{"command":"fetch","username":"EMAIL","password":"PASSWORD","args":{"path":"INBOX","range":"1:*"}}'
+```
+
 ### Liệt kê mật khẩu catch-all toàn domain {#list-domain-wide-catch-all-passwords}
 
 > `GET /v1/domains/DOMAIN_NAME/catch-all-passwords`
@@ -734,6 +766,7 @@ curl -X DELETE BASE_URI/v1/domains/:domain_name/catch-all-passwords/:token_id \
 | Tham số Body                  | Bắt buộc | Loại                            | Mô tả                                                                                                                                                                                                                                                                                       |
 | ----------------------------- | -------- | ------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `smtp_port`                   | Không    | Chuỗi hoặc Số                   | Cổng tùy chỉnh để cấu hình cho chuyển tiếp SMTP (mặc định là `"25"`)                                                                                                                                                                                                                        |
+| `has_tunnel` | Không | Boolean | Chuyển thư của các địa chỉ không có hộp thư hoặc chuyển tiếp đến máy chủ thư của chính bạn qua ứng dụng Mail Server Tunnel (dành cho máy chủ phía sau CGNAT) |
 | `has_adult_content_protection`| Không    | Boolean                        | Có chặn thư đã gửi chứa liên kết đến trang web mà bộ lọc gia đình của Cloudflare chặn vì nội dung người lớn hoặc phần mềm độc hại hay không (mặc định là `false`)                                                                                                                           |
 | `has_phishing_protection`     | Không    | Boolean                        | Không còn dùng và bị bỏ qua                                                                                                                                                                                                                                                                  |
 | `has_executable_protection`   | Không    | Boolean                        | Có chặn thư đã gửi có tệp đính kèm thực thi, chẳng hạn như tệp .exe, .js hoặc .bat hay không (mặc định là `true`)                                                                                                                                                                           |

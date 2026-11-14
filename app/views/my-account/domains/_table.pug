@@ -357,6 +357,16 @@ else
                   span.badge.text-uppercase(
                     class=domain.plan === "free" && user.plan === "free" ? "badge-danger" : "badge-warning"
                   )= titleize(humanize(domain.plan))
+            //- Mail Server Tunnel (see helpers/tunnel.js)
+            if domain.has_tunnel && domain.plan !== 'free' && !domain.is_global
+              li.list-inline-item
+                a.badge.badge-info.text-uppercase(
+                  href=l(`${base}/advanced-settings#mail-server-tunnel`),
+                  title=t("Mail for addresses without a mailbox or forwarding is delivered to your own mail server through the Mail Server Tunnel app")
+                )
+                  i.fa.fa-fw.fa-exchange-alt
+                  = " "
+                  = t("Tunnel Enabled")
 
         .acct-card-body
           //- its DNS records and its next step

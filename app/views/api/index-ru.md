@@ -55,6 +55,8 @@
   * [Получить домен](#retrieve-domain)
   * [Проверить записи домена](#verify-domain-records)
   * [Проверить SMTP записи домена](#verify-domain-smtp-records)
+  * [Получить состояние Mail Server Tunnel](#get-mail-server-tunnel-status)
+  * [Выполнить команду IMAP через Mail Server Tunnel](#run-an-imap-command-through-the-mail-server-tunnel)
   * [Список универсальных паролей для домена](#list-domain-wide-catch-all-passwords)
   * [Создать универсальный пароль для домена](#create-domain-wide-catch-all-password)
   * [Удалить универсальный пароль для домена](#remove-domain-wide-catch-all-password)
@@ -689,6 +691,36 @@ curl BASE_URI/v1/domains/DOMAIN_NAME/verify-smtp \
   -u API_TOKEN:
 ```
 
+### Получить состояние Mail Server Tunnel {#get-mail-server-tunnel-status}
+
+> `GET /v1/domains/DOMAIN_NAME/tunnel`
+
+Возвращает, подключено ли приложение Mail Server Tunnel для домена и доступен ли ему ваш почтовый сервер.
+
+> Пример запроса:
+
+```sh
+curl BASE_URI/v1/domains/DOMAIN_NAME/tunnel \
+  -u API_TOKEN:
+```
+
+### Выполнить команду IMAP через Mail Server Tunnel {#run-an-imap-command-through-the-mail-server-tunnel}
+
+> `POST /v1/domains/DOMAIN_NAME/tunnel/imap`
+
+Выполняет одну команду IMAP на почтовом сервере за туннелем. Удалённый доступ к почтовым ящикам должен быть включён в приложении. Имя пользователя и пароль ящика только передаются и не сохраняются.
+
+`command`: `list`, `status`, `search`, `fetch`, `download`, `flags`, `move`, `copy`, `delete`, `append`, `mailboxCreate`, `mailboxRename`, `mailboxDelete`
+
+> Пример запроса:
+
+```sh
+curl -X POST BASE_URI/v1/domains/DOMAIN_NAME/tunnel/imap \
+  -u API_TOKEN: \
+  -H "Content-Type: application/json" \
+  -d '{"command":"fetch","username":"EMAIL","password":"PASSWORD","args":{"path":"INBOX","range":"1:*"}}'
+```
+
 ### Список паролей catch-all для всего домена {#list-domain-wide-catch-all-passwords}
 
 > `GET /v1/domains/DOMAIN_NAME/catch-all-passwords`
@@ -734,6 +766,7 @@ curl -X DELETE BASE_URI/v1/domains/:domain_name/catch-all-passwords/:token_id \
 | Параметр тела                 | Обязательно | Тип                            | Описание                                                                                                                                                                                                                                                                                   |
 | ----------------------------- | ----------- | ------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | `smtp_port`                   | Нет         | String или Number              | Пользовательский порт для настройки SMTP-перенаправления (по умолчанию `"25"`)                                                                                                                                                                                                             |
+| `has_tunnel` | Нет | Boolean | Доставлять почту для адресов без почтового ящика или пересылки на ваш собственный почтовый сервер через приложение Mail Server Tunnel (для серверов за CGNAT) |
 | `has_adult_content_protection`| Нет         | Boolean                       | Блокировать ли отправляемые письма со ссылками на сайты, которые семейный фильтр Cloudflare блокирует за контент для взрослых или вредоносное ПО (по умолчанию `false`)                                                                                                                    |
 | `has_phishing_protection`     | Нет         | Boolean                       | Устарело и игнорируется                                                                                                                                                                                                                                                                    |
 | `has_executable_protection`   | Нет         | Boolean                       | Блокировать ли отправляемые письма с исполняемыми вложениями, например файлами .exe, .js или .bat (по умолчанию `true`)                                                                                                                                                                    |

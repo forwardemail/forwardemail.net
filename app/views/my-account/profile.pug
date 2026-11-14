@@ -80,6 +80,14 @@ block body
       .row
         .col
           include ../_breadcrumbs
+      //- a way to each section (as on a domain's advanced settings)
+      nav.acct-jump.mb-3(aria-label=t("On this page"))
+        span.acct-jump-label= t("On this page")
+        a.acct-jump-link(href="#communication-preferences")= t("Communication Preferences")
+        a.acct-jump-link(href="#personal-information")= t("Personal Information")
+        if user[config.passport.fields.githubProfileID] || user[config.passport.fields.googleProfileID]
+          a.acct-jump-link(href="#connected-accounts")= t("Connected Accounts")
+        a.acct-jump-link(href="#company-information")= t("Company Information")
           if user[config.userFields.changeEmailNewAddress]
             .alert.alert-warning(role="alert")
               ul.list-inline.mb-0
@@ -107,7 +115,7 @@ block body
               name="is_communication_preferences",
               value="true"
             )
-            .card.border-themed
+            #communication-preferences.card.border-themed
               h2.h6.card-header= t("Communication Preferences")
               .card-body.pb-0
                 .form-group.form-check
@@ -157,7 +165,7 @@ block body
 
           form.ajax-form.confirm-prompt.mt-3(action=ctx.path, method="POST")
             input(type="hidden", name="_method", value="PUT")
-            .card.border-themed
+            #personal-information.card.border-themed
               h2.h6.card-header= t("Personal Information")
               .card-body.pb-0
                 .form-group.floating-label.mt-3
@@ -257,7 +265,7 @@ block body
 
           //- Connected Accounts Section
           if user[config.passport.fields.githubProfileID] || user[config.passport.fields.googleProfileID]
-            .card.border-themed.mt-3
+            #connected-accounts.card.border-themed.mt-3
               h2.h6.card-header= t("Connected Accounts")
               .card-body
                 if !user[config.userFields.hasVerifiedEmail]
@@ -307,7 +315,7 @@ block body
         .col-md.mt-3.mt-md-0
           form.ajax-form.confirm-prompt(action=ctx.path, method="POST")
             input(type="hidden", name="_method", value="PUT")
-            .card.border-themed
+            #company-information.card.border-themed
               h2.h6.card-header= t("Company Information")
               .card-body.pb-0
                 .alert.alert-warning.small!= t("Receipts are automatically emailed to you.  If you set a receipt email address below, then receipts will be sent there and you will receive a copy too.")

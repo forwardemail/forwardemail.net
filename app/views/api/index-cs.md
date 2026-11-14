@@ -55,6 +55,8 @@
   * [Získání domény](#retrieve-domain)
   * [Ověření záznamů domény](#verify-domain-records)
   * [Ověření SMTP záznamů domény](#verify-domain-smtp-records)
+  * [Získat stav Mail Server Tunnel](#get-mail-server-tunnel-status)
+  * [Spustit příkaz IMAP přes Mail Server Tunnel](#run-an-imap-command-through-the-mail-server-tunnel)
   * [Seznam hesel pro catch-all na úrovni domény](#list-domain-wide-catch-all-passwords)
   * [Vytvoření hesla pro catch-all na úrovni domény](#create-domain-wide-catch-all-password)
   * [Odstranění hesla pro catch-all na úrovni domény](#remove-domain-wide-catch-all-password)
@@ -689,6 +691,36 @@ curl BASE_URI/v1/domains/DOMAIN_NAME/verify-smtp \
   -u API_TOKEN:
 ```
 
+### Získat stav Mail Server Tunnel {#get-mail-server-tunnel-status}
+
+> `GET /v1/domains/DOMAIN_NAME/tunnel`
+
+Vrací, zda je aplikace Mail Server Tunnel pro doménu připojena a zda dosáhne na váš poštovní server.
+
+> Příklad požadavku:
+
+```sh
+curl BASE_URI/v1/domains/DOMAIN_NAME/tunnel \
+  -u API_TOKEN:
+```
+
+### Spustit příkaz IMAP přes Mail Server Tunnel {#run-an-imap-command-through-the-mail-server-tunnel}
+
+> `POST /v1/domains/DOMAIN_NAME/tunnel/imap`
+
+Spustí jeden příkaz IMAP na poštovním serveru za tunelem. Vzdálený přístup ke schránce musí být v aplikaci zapnutý. Uživatelské jméno a heslo schránky se pouze předávají a neukládají se.
+
+`command`: `list`, `status`, `search`, `fetch`, `download`, `flags`, `move`, `copy`, `delete`, `append`, `mailboxCreate`, `mailboxRename`, `mailboxDelete`
+
+> Příklad požadavku:
+
+```sh
+curl -X POST BASE_URI/v1/domains/DOMAIN_NAME/tunnel/imap \
+  -u API_TOKEN: \
+  -H "Content-Type: application/json" \
+  -d '{"command":"fetch","username":"EMAIL","password":"PASSWORD","args":{"path":"INBOX","range":"1:*"}}'
+```
+
 ### Vypsat hesla catch-all pro celou doménu {#list-domain-wide-catch-all-passwords}
 
 > `GET /v1/domains/DOMAIN_NAME/catch-all-passwords`
@@ -734,6 +766,7 @@ curl -X DELETE BASE_URI/v1/domains/:domain_name/catch-all-passwords/:token_id \
 | Parametr v těle               | Povinné | Typ                            | Popis                                                                                                                                                                                                                                                                                      |
 | ---------------------------- | ------- | ------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | `smtp_port`                  | Ne      | String nebo Number             | Vlastní port pro konfiguraci SMTP přeposílání (výchozí je `"25"`)                                                                                                                                                                                                                         |
+| `has_tunnel` | Ne | Boolean | Doručovat poštu pro adresy bez schránky nebo přeposílání na váš vlastní poštovní server přes aplikaci Mail Server Tunnel (pro servery za CGNAT) |
 | `has_adult_content_protection` | Ne      | Boolean                       | Zda blokovat odeslané e-maily s odkazem na web, který rodinný filtr Cloudflare blokuje kvůli obsahu pro dospělé nebo malwaru (výchozí hodnota `false`)                                                                                                                                    |
 | `has_phishing_protection`    | Ne      | Boolean                       | Zastaralé a ignorované                                                                                                                                                                                                                                                                    |
 | `has_executable_protection`  | Ne      | Boolean                       | Zda blokovat odeslané e-maily se spustitelnými přílohami, například soubory .exe, .js nebo .bat (výchozí hodnota `true`)                                                                                                                                                                  |

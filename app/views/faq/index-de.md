@@ -46,6 +46,7 @@
   * [Wie nutze ich meinen eigenen S3-kompatiblen Speicher für Backups](#how-do-i-use-my-own-s3-compatible-storage-for-backups)
   * [Wie konvertiere ich SQLite-Backups in EML-Dateien](#how-do-i-convert-sqlite-backups-to-eml-files)
   * [Unterstützen Sie Self-Hosting](#do-you-support-self-hosting)
+  * [Kann ich einen eigenen Mailserver hinter CGNAT oder Starlink betreiben](#can-i-self-host-a-mail-server-behind-cgnat-or-starlink)
 * [E-Mail-Konfiguration](#email-configuration)
   * [Wie starte ich und richte E-Mail-Weiterleitung ein](#how-do-i-get-started-and-set-up-email-forwarding)
   * [Kann ich mehrere MX-Exchanges und Server für erweiterte Weiterleitung verwenden](#can-i-use-multiple-mx-exchanges-and-servers-for-advanced-forwarding)
@@ -1430,6 +1431,10 @@ EML-Dateien sind nach Postfachordnern organisiert. Das ZIP-Passwort ist dasselbe
 ### Unterstützen Sie Self-Hosting? {#do-you-support-self-hosting}
 
 Ja, seit März 2025 unterstützen wir eine Self-Hosting-Option. Lesen Sie den Blog [hier](https://forwardemail.net/blog/docs/self-hosted-solution). Schauen Sie sich die [Self-Hosting-Anleitung](https://forwardemail.net/self-hosted) an, um loszulegen. Und für diejenigen, die eine detailliertere Schritt-für-Schritt-Version wünschen, siehe unsere [Ubuntu](https://forwardemail.net/guides/selfhosted-on-ubuntu) oder [Debian](https://forwardemail.net/guides/selfhosted-on-debian) basierten Anleitungen.
+
+### Kann ich einen eigenen Mailserver hinter CGNAT oder Starlink betreiben {#can-i-self-host-a-mail-server-behind-cgnat-or-starlink}
+
+Ja. Starlink, 5G-Heiminternet und andere Anbieter mit CGNAT blockieren eingehende Verbindungen und Port 25, daher kann ein Mailserver zu Hause keine E-Mails direkt empfangen. Unsere App Mail Server Tunnel hält eine ausgehende Verbindung zu uns offen und stellt E-Mails für Ihre Domain an Ihren eigenen Server zu, ohne Portweiterleitung, statische IP-Adresse, VPN oder VPS. Ist die App offline, erhalten Absender eine temporäre 421-Antwort und versuchen es erneut, sodass keine E-Mail verloren geht. Lesen Sie die [Anleitung](https://forwardemail.net/guides/self-hosted-mail-server-behind-cgnat) oder unsere [Starlink-Seite](https://forwardemail.net/starlink). Ihre Domain benötigt einen kostenpflichtigen Tarif und muss zuerst die TXT-Eintrag-Verifizierung bestehen, damit kein anderes Konto Ihre E-Mails empfangen kann.
 
 
 ## E-Mail-Konfiguration {#email-configuration}

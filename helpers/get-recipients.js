@@ -54,6 +54,9 @@ async function getRecipients(session) {
 
     async (to) => {
       let port = 25;
+      // Mail Server Tunnel (see `helpers/tunnel.js`)
+      let hasTunnel = false;
+      let tunnelId;
       try {
         let customAllowlist = [];
         let customDenylist = [];
@@ -103,6 +106,11 @@ async function getRecipients(session) {
           if (Array.isArray(body.denylist)) customDenylist = body.denylist;
 
           if (isSANB(body.webhook_key)) webhookKey = body.webhook_key;
+
+          if (body.has_tunnel === true && isSANB(body.tunnel_id)) {
+            hasTunnel = true;
+            tunnelId = body.tunnel_id;
+          }
 
           //
           // Check if domain requires TLS for inbound connections
@@ -340,7 +348,9 @@ async function getRecipients(session) {
           aliasHasWkdDisabled,
           vacationResponder,
           aliasIds,
-          webhookKey
+          webhookKey,
+          hasTunnel,
+          tunnelId
         };
       } catch (err) {
         //
@@ -372,6 +382,25 @@ async function getRecipients(session) {
             srsAddress: to.srsAddress || to.address
           };
         }
+
+        //
+        // an address with no mailbox or forwarding here belongs to the
+        // domain's own mail server when it has a Mail Server Tunnel (that
+        // server decides whether the address exists)
+        //
+        if (err.notConfigured && hasTunnel && !to.srs)
+          return {
+            address: to.address,
+            addresses: [],
+            port,
+            hasIMAP: false,
+            aliasPublicKey: false,
+            aliasSmimeCertificate: false,
+            aliasHasWkdDisabled: false,
+            vacationResponder: false,
+            hasTunnel,
+            tunnelId
+          };
 
         logger.warn(err, { session, resolver: this.resolver });
         err.responseCode = getErrorCode(err);
@@ -506,7 +535,12 @@ async function getRecipients(session) {
 
       // TODO: how does work with IMAP (?)
       // custom port support
-      if (recipient.addresses.length === 0 && recipient.port !== 25) {
+      // (and a domain with a Mail Server Tunnel, whose own mail server
+      // receives every address that has no mailbox or forwarding here)
+      if (
+        recipient.addresses.length === 0 &&
+        (recipient.port !== 25 || (recipient.hasTunnel && !recipient.hasIMAP))
+      ) {
         recipient.addresses.push({
           to: recipient.address,
           host: parseHostFromDomainOrAddress(recipient.address)
@@ -677,9 +711,24 @@ async function getRecipients(session) {
         continue;
       }
 
+      //
+      // Mail Server Tunnel: mail for the domain's own mail server goes
+      // through the tunnel app instead of an SMTP connection, which a server
+      // behind CGNAT cannot receive (see `forward` in `helpers/on-data-mx`)
+      //
+      const tunnelDomain = parseHostFromDomainOrAddress(recipient.address);
+      const isTunnel =
+        recipient.hasTunnel === true &&
+        !recipient.srs &&
+        typeof address.host === 'string' &&
+        address.host.toLowerCase() === tunnelDomain.toLowerCase();
+
       const replacements = {};
       replacements[recipient.address] = address.to;
       normalized.push({
+        ...(isTunnel
+          ? { tunnel: tunnelDomain, tunnelId: recipient.tunnelId }
+          : {}),
         aliasPublicKey: recipient.aliasPublicKey,
         aliasSmimeCertificate: recipient.aliasSmimeCertificate,
         aliasHasWkdDisabled: recipient.aliasHasWkdDisabled,

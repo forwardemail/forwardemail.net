@@ -679,6 +679,22 @@ const Domains = new mongoose.Schema({
     index: true
   },
 
+  //
+  // Mail Server Tunnel (for a mail server behind CGNAT, e.g. Starlink)
+  // When enabled, mail for addresses of this domain that have no mailbox or
+  // forwarding of their own is delivered to the owner's own mail server
+  // through the tunnel app (see `helpers/tunnel.js`)
+  //
+  has_tunnel: {
+    type: Boolean,
+    default: false,
+    index: true
+  },
+  // (see `jobs/tunnel-alerts.js`)
+  tunnel_issue_at: Date,
+  tunnel_issue_state: String,
+  tunnel_alert_sent_at: Date,
+
   // Default option to require `has_recipient_verification`
   // on all aliases for verification emails to send
   has_recipient_verification: {
@@ -2180,6 +2196,11 @@ Domains.post('save', (doc, next) => {
 Domains.plugin(mongooseCommonPlugin, {
   object: 'domain',
   omitExtraFields: [
+    // (when its Mail Server Tunnel alerts were sent, see
+    // `helpers/check-tunnel-alerts.js`)
+    'tunnel_issue_at',
+    'tunnel_issue_state',
+    'tunnel_alert_sent_at',
     'alias_count',
     'is_global',
     'is_api',

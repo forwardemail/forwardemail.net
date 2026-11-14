@@ -55,6 +55,8 @@
   * [Hämta domän](#retrieve-domain)
   * [Verifiera domänposter](#verify-domain-records)
   * [Verifiera domän SMTP-poster](#verify-domain-smtp-records)
+  * [Hämta status för Mail Server Tunnel](#get-mail-server-tunnel-status)
+  * [Kör ett IMAP-kommando via Mail Server Tunnel](#run-an-imap-command-through-the-mail-server-tunnel)
   * [Lista domänomfattande catch-all-lösenord](#list-domain-wide-catch-all-passwords)
   * [Skapa domänomfattande catch-all-lösenord](#create-domain-wide-catch-all-password)
   * [Ta bort domänomfattande catch-all-lösenord](#remove-domain-wide-catch-all-password)
@@ -689,6 +691,36 @@ curl BASE_URI/v1/domains/DOMAIN_NAME/verify-smtp \
   -u API_TOKEN:
 ```
 
+### Hämta status för Mail Server Tunnel {#get-mail-server-tunnel-status}
+
+> `GET /v1/domains/DOMAIN_NAME/tunnel`
+
+Returnerar om appen Mail Server Tunnel för domänen är ansluten och om den når din e-postserver.
+
+> Example Request:
+
+```sh
+curl BASE_URI/v1/domains/DOMAIN_NAME/tunnel \
+  -u API_TOKEN:
+```
+
+### Kör ett IMAP-kommando via Mail Server Tunnel {#run-an-imap-command-through-the-mail-server-tunnel}
+
+> `POST /v1/domains/DOMAIN_NAME/tunnel/imap`
+
+Kör ett IMAP-kommando mot e-postservern bakom tunneln. Fjärråtkomst till brevlådan måste vara påslagen i appen. Brevlådans användarnamn och lösenord skickas vidare och lagras inte.
+
+`command`: `list`, `status`, `search`, `fetch`, `download`, `flags`, `move`, `copy`, `delete`, `append`, `mailboxCreate`, `mailboxRename`, `mailboxDelete`
+
+> Example Request:
+
+```sh
+curl -X POST BASE_URI/v1/domains/DOMAIN_NAME/tunnel/imap \
+  -u API_TOKEN: \
+  -H "Content-Type: application/json" \
+  -d '{"command":"fetch","username":"EMAIL","password":"PASSWORD","args":{"path":"INBOX","range":"1:*"}}'
+```
+
 ### Lista domänomfattande catch-all-lösenord {#list-domain-wide-catch-all-passwords}
 
 > `GET /v1/domains/DOMAIN_NAME/catch-all-passwords`
@@ -734,6 +766,7 @@ curl -X DELETE BASE_URI/v1/domains/:domain_name/catch-all-passwords/:token_id \
 | Body Parameter                 | Required | Type                            | Description                                                                                                                                                                                                                                                                                   |
 | ------------------------------ | -------- | ------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `smtp_port`                    | Nej      | String eller Number             | Anpassad port att konfigurera för SMTP-vidarebefordran (standard är `"25"`)                                                                                                                                                                                                                   |
+| `has_tunnel` | Nej | Boolean | Leverera e-post för adresser utan brevlåda eller vidarebefordran till din egen e-postserver via appen Mail Server Tunnel (för servrar bakom CGNAT) |
 | `has_adult_content_protection` | Nej      | Boolean                        | Om skickad e-post som länkar till en webbplats som Cloudflares familjefilter blockerar för vuxenrelaterat innehåll eller skadlig kod ska blockeras (standard är `false`)                                                                                                                      |
 | `has_phishing_protection`      | Nej      | Boolean                        | Föråldrad och ignoreras                                                                                                                                                                                                                                                                       |
 | `has_executable_protection`    | Nej      | Boolean                        | Om skickad e-post med körbara bilagor, till exempel .exe-, .js- eller .bat-filer, ska blockeras (standard är `true`)                                                                                                                                                                          |

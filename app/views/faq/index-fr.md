@@ -46,6 +46,7 @@
   * [Comment utiliser mon propre stockage compatible S3 pour les sauvegardes](#how-do-i-use-my-own-s3-compatible-storage-for-backups)
   * [Comment convertir les sauvegardes SQLite en fichiers EML](#how-do-i-convert-sqlite-backups-to-eml-files)
   * [Supportez-vous l'auto-hébergement](#do-you-support-self-hosting)
+  * [Puis-je héberger mon propre serveur de messagerie derrière un CGNAT ou Starlink](#can-i-self-host-a-mail-server-behind-cgnat-or-starlink)
 * [Configuration Email](#email-configuration)
   * [Comment démarrer et configurer le transfert d'email](#how-do-i-get-started-and-set-up-email-forwarding)
   * [Puis-je utiliser plusieurs échanges MX et serveurs pour un transfert avancé](#can-i-use-multiple-mx-exchanges-and-servers-for-advanced-forwarding)
@@ -1430,6 +1431,10 @@ Les fichiers EML sont organisés par dossier de boîte aux lettres. Le mot de pa
 ### Supportez-vous l’auto-hébergement {#do-you-support-self-hosting}
 
 Oui, depuis mars 2025, nous supportons une option auto-hébergée. Lisez le blog [ici](https://forwardemail.net/blog/docs/self-hosted-solution). Consultez le [guide auto-hébergé](https://forwardemail.net/self-hosted) pour commencer. Et pour ceux qui souhaitent une version plus détaillée étape par étape, voyez nos guides basés sur [Ubuntu](https://forwardemail.net/guides/selfhosted-on-ubuntu) ou [Debian](https://forwardemail.net/guides/selfhosted-on-debian).
+
+### Puis-je héberger mon propre serveur de messagerie derrière un CGNAT ou Starlink {#can-i-self-host-a-mail-server-behind-cgnat-or-starlink}
+
+Oui. Starlink, l'internet 5G à domicile et d'autres fournisseurs qui utilisent le CGNAT bloquent les connexions entrantes et le port 25 ; un serveur de messagerie à domicile ne peut donc pas recevoir de courrier directement. Notre application Mail Server Tunnel garde une connexion sortante ouverte vers nous et remet le courrier de votre domaine à votre propre serveur, sans redirection de port, adresse IP fixe, VPN ni VPS. Si l'application est hors ligne, les expéditeurs reçoivent une réponse temporaire 421 et réessaient ; aucun courrier n'est perdu. Lisez le [guide](https://forwardemail.net/guides/self-hosted-mail-server-behind-cgnat) ou consultez notre [page Starlink](https://forwardemail.net/starlink). Votre domaine doit disposer d'un forfait payant et réussir d'abord la vérification de l'enregistrement TXT, ce qui empêche un autre compte de recevoir votre courrier.
 
 
 ## Configuration Email {#email-configuration}

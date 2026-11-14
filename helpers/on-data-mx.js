@@ -115,6 +115,7 @@ const signMessage = require('#helpers/sign-message');
 const { stuffBareCrDots } = require('#helpers/sign-message');
 const spamScanner = require('#helpers/spam-scanner');
 const withDeadline = require('#helpers/with-deadline');
+const tunnel = require('#helpers/tunnel');
 const updateHeaders = require('#helpers/update-headers');
 const { Emails, Users, SelfTests } = require('#models');
 const { encrypt, decrypt } = require('#helpers/encrypt-decrypt');
@@ -1566,6 +1567,135 @@ async function forward(recipient, headers, session, body) {
     }
 
     return { accepted, bounces, vacationResponder: false };
+  }
+
+  //
+  // Mail Server Tunnel: the domain's own mail server is behind CGNAT (e.g.
+  // Starlink), so the message is handed to the tunnel app its owner runs
+  // beside it, which delivers it locally and answers with that server's
+  // response (see `helpers/tunnel.js`)
+  //
+  if (recipient.tunnel) {
+    try {
+      // (as it is sent, see `stuffBareCrDots`)
+      const unsealed = stuffBareCrDots(Buffer.concat([headers.build(), body]));
+      const sealHeaders = await sealMessage(unsealed, {
+        ...config.signatureData,
+        authResults: session.arc.authResults,
+        cv: session.arc.status.result
+      });
+      const raw = Buffer.concat([sealHeaders, unsealed]);
+
+      const startTime = Date.now();
+      const info = await tunnel.deliver(this.client, {
+        id: recipient.tunnelId,
+        domain: recipient.tunnel,
+        from: session.envelope.mailFrom.address,
+        to: recipient.to,
+        raw,
+        // (the same for a retry of the message, so that the app does not
+        // deliver it twice when only its answer was lost)
+        fingerprint: revHash(key),
+        session: {
+          remote_address: session.remoteAddress,
+          client_hostname:
+            session.resolvedClientHostname || session.clientHostname,
+          helo: session.hostNameAppearsAs,
+          secure: Boolean(session.secure),
+          arrival_date: session.arrivalDate
+        }
+      });
+      const messageTime = Date.now() - startTime;
+
+      logger.info('delivered', {
+        info: {
+          response: info.response,
+          accepted: [recipient.recipient],
+          envelope: {
+            from: session.envelope.mailFrom.address,
+            to: [recipient.recipient]
+          },
+          envelopeTime: session.arrivalTime
+            ? Date.now() - session.arrivalTime - messageTime
+            : 0,
+          messageTime,
+          messageSize: raw.length
+        },
+        is_tunnel: true,
+        ignore_hook: false,
+        resolver: this.resolver,
+        session
+      });
+
+      // (a retry of the message skips this destination from now on)
+      await this.client
+        .set(key, '1', 'PX', config.fingerprintTTL)
+        .catch((err) => logger.fatal(err));
+
+      for (const replacement of Object.keys(recipient.replacements)) {
+        if (!accepted.includes(replacement)) accepted.push(replacement);
+      }
+
+      this.client
+        .incr(`mail_accepted:${session.arrivalDateFormatted}`)
+        .then()
+        .catch((err) => logger.fatal(err));
+
+      return {
+        accepted,
+        bounces,
+        vacationResponder:
+          accepted.length > 0 ? recipient.vacationResponder : false
+      };
+    } catch (err) {
+      // nothing was delivered, so release the claim (see the webhook above)
+      this.client.del(key).catch((err) => logger.fatal(err));
+
+      // (an error of ours, e.g. sealing the message, see `isInternalError`)
+      const isInternal = !err.isTunnel && isInternalError(err);
+      if (isInternal) {
+        err.isCodeBug = true;
+        logger.fatal(err, { session, resolver: this.resolver });
+        if (!err._message) {
+          err._message = err.message;
+          err.message =
+            'An internal server error has occurred, please try again later.';
+        }
+      } else {
+        // (shown to the domain's admins in their logs)
+        err.forwardedFor = [recipient.recipient];
+        logger.warn(err, { session, resolver: this.resolver });
+      }
+
+      if (!err.isTunnel) err.responseCode = getErrorCode(err);
+      if (!err.target) err.target = recipient.host;
+
+      bounces.push({
+        address: recipient.recipient,
+        destination: recipient.to[0],
+        host: recipient.host,
+        err,
+        recipient,
+        isInternal
+      });
+
+      this.client
+        .incr(`mail_rejected:${session.arrivalDateFormatted}`)
+        .then()
+        .catch((err) => logger.fatal(err));
+
+      //
+      // the domain's own mail server refused the message for good, which is
+      // treated as any destination doing so; a tunnel that is not connected
+      // (or a local server that is down) is never held against the sender
+      //
+      if (err.isTunnel && err.responseCode >= 500) {
+        storeRejection.call(this, key, accepted, bounces);
+        await checkBounceForSpam.call(this, bounces[0], headers, session);
+      }
+
+      return { accepted, bounces, vacationResponder: false };
+    }
   }
 
   // NOTE: we don't add to mail_accepted nor mail_rejected counters for webhooks

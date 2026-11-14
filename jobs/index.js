@@ -91,6 +91,13 @@ let jobs = [
     interval: '1h',
     timeout: 0
   },
+  // emails the admins of a domain whose Mail Server Tunnel is down
+  // (see `helpers/check-tunnel-alerts.js`)
+  {
+    name: 'tunnel-alerts',
+    interval: '5m',
+    timeout: 0
+  },
   // this job runs every 5m to check for emails
   // that have a date that differs from created_at by more than 1m
   // and it alerts the user of this once a month as a safeguard

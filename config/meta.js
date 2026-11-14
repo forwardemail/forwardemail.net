@@ -191,6 +191,14 @@ module.exports = function (config, isSitemap = false) {
       `SMTP Integration Examples - Code Samples for All Languages`,
       `SMTP integration examples for Node.js, Python, PHP, Ruby, Go, Java, and more. Copy-paste code samples for reliable email sending with Forward Email. Production-ready code.`
     ],
+    '/starlink': [
+      `Starlink Email Server - Self-Hosted Mail Behind CGNAT ${currentYear}`,
+      `Run a self-hosted email server on Starlink. Receive and send mail behind CGNAT with no port forwarding, static IP, VPN, or VPS. Works with Postfix, Dovecot, and Mailcow.`
+    ],
+    '/guides/self-hosted-mail-server-behind-cgnat': [
+      `Self-Hosted Mail Server Behind CGNAT - Setup Guide ${currentYear}`,
+      `Receive email on your own mail server behind CGNAT. Works on Starlink, T-Mobile 5G home internet, and mobile ISPs. No port forwarding, static IP, VPN, or VPS required.`
+    ],
     '/guides/port-25-blocked-by-isp-workaround': [
       `Port 25 Blocked by ISP - Workaround Solutions ${currentYear}`,
       `Fix ISP blocking port 25 for email. Alternative SMTP ports, relay solutions, and workarounds for residential and business internet connections. Send email from home.`

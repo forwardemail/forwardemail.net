@@ -46,6 +46,7 @@
   * [איך להשתמש באחסון תואם S3 לגיבויים](#how-do-i-use-my-own-s3-compatible-storage-for-backups)
   * [איך להמיר גיבויי SQLite לקבצי EML](#how-do-i-convert-sqlite-backups-to-eml-files)
   * [האם אתם תומכים באירוח עצמי](#do-you-support-self-hosting)
+  * [האם אפשר לארח בעצמי שרת דואר מאחורי CGNAT או Starlink](#can-i-self-host-a-mail-server-behind-cgnat-or-starlink)
 * [הגדרת דואר אלקטרוני](#email-configuration)
   * [איך להתחיל ולהגדיר העברת דואר](#how-do-i-get-started-and-set-up-email-forwarding)
   * [האם אפשר להשתמש בכמה שרתי MX להעברה מתקדמת](#can-i-use-multiple-mx-exchanges-and-servers-for-advanced-forwarding)
@@ -1430,6 +1431,10 @@ Drafts/
 ### האם אתם תומכים באירוח עצמי {#do-you-support-self-hosting}
 
 כן, החל ממרץ 2025, אנו תומכים באפשרות אירוח עצמי. קרא את הבלוג [כאן](https://forwardemail.net/blog/docs/self-hosted-solution). עיין במדריך [אירוח עצמי](https://forwardemail.net/self-hosted) כדי להתחיל. ולמי שמעוניין בגרסה מפורטת יותר שלב אחר שלב ראה את המדריכים שלנו ל[אובונטו](https://forwardemail.net/guides/selfhosted-on-ubuntu) או [דביאן](https://forwardemail.net/guides/selfhosted-on-debian).
+
+### האם אפשר לארח בעצמי שרת דואר מאחורי CGNAT או Starlink {#can-i-self-host-a-mail-server-behind-cgnat-or-starlink}
+
+כן. Starlink, אינטרנט ביתי 5G וספקים אחרים שמשתמשים ב-CGNAT חוסמים חיבורים נכנסים ואת פורט 25, ולכן שרת דואר בבית אינו יכול לקבל דואר ישירות. האפליקציה שלנו Mail Server Tunnel שומרת על חיבור יוצא פתוח אלינו ומוסרת את הדואר של הדומיין שלכם לשרת שלכם, ללא העברת פורטים, כתובת IP קבועה, VPN או VPS. אם האפליקציה אינה מחוברת, השולחים מקבלים תשובה זמנית 421 ומנסים שוב, כך שדואר אינו הולך לאיבוד. קראו את [המדריך](https://forwardemail.net/guides/self-hosted-mail-server-behind-cgnat) או ראו את [עמוד Starlink](https://forwardemail.net/starlink) שלנו. הדומיין שלך חייב להיות בתוכנית בתשלום ולעבור תחילה אימות רשומת TXT, דבר שמונע מחשבון אחר לקבל את הדואר שלך.
 
 
 ## הגדרת דואר אלקטרוני {#email-configuration}

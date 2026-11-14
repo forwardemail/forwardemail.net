@@ -46,6 +46,7 @@
   * [Jak používat vlastní S3-kompatibilní úložiště pro zálohy](#how-do-i-use-my-own-s3-compatible-storage-for-backups)
   * [Jak převést SQLite zálohy na EML soubory](#how-do-i-convert-sqlite-backups-to-eml-files)
   * [Podporujete self-hosting](#do-you-support-self-hosting)
+  * [Mohu provozovat vlastní poštovní server za CGNAT nebo na Starlinku](#can-i-self-host-a-mail-server-behind-cgnat-or-starlink)
 * [Konfigurace emailu](#email-configuration)
   * [Jak začít a nastavit přeposílání emailů](#how-do-i-get-started-and-set-up-email-forwarding)
   * [Mohu použít více MX výměn a serverů pro pokročilé přeposílání](#can-i-use-multiple-mx-exchanges-and-servers-for-advanced-forwarding)
@@ -1430,6 +1431,10 @@ Soubory EML jsou uspořádány podle složek poštovní schránky. Heslo k ZIP a
 ### Podporujete self-hosting {#do-you-support-self-hosting}
 
 Ano, od března 2025 podporujeme možnost self-hostingu. Přečtěte si blog [zde](https://forwardemail.net/blog/docs/self-hosted-solution). Začněte s [návodem pro self-hosting](https://forwardemail.net/self-hosted). A pro zájemce o podrobnější krok za krokem verzi máme naše návody založené na [Ubuntu](https://forwardemail.net/guides/selfhosted-on-ubuntu) nebo [Debianu](https://forwardemail.net/guides/selfhosted-on-debian).
+
+### Mohu provozovat vlastní poštovní server za CGNAT nebo na Starlinku {#can-i-self-host-a-mail-server-behind-cgnat-or-starlink}
+
+Ano. Starlink, domácí 5G internet a další poskytovatelé, kteří používají CGNAT, blokují příchozí spojení a port 25, takže domácí poštovní server nemůže poštu přijímat přímo. Naše aplikace Mail Server Tunnel udržuje odchozí spojení s námi a doručuje poštu pro vaši doménu na váš vlastní server, bez přesměrování portů, statické IP adresy, VPN nebo VPS. Pokud je aplikace offline, odesílatelé dostanou dočasnou odpověď 421 a zkusí to znovu, takže se pošta neztratí. Přečtěte si [návod](https://forwardemail.net/guides/self-hosted-mail-server-behind-cgnat) nebo naši [stránku o Starlinku](https://forwardemail.net/starlink). Vaše doména musí mít placený tarif a nejprve projít ověřením záznamu TXT, což zabrání jinému účtu přijímat vaši poštu.
 
 
 ## Konfigurace e-mailu {#email-configuration}

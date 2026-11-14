@@ -55,6 +55,8 @@
   * [שליפת דומיין](#retrieve-domain)
   * [אימות רשומות דומיין](#verify-domain-records)
   * [אימות רשומות SMTP של דומיין](#verify-domain-smtp-records)
+  * [קבלת מצב Mail Server Tunnel](#get-mail-server-tunnel-status)
+  * [הרצת פקודת IMAP דרך Mail Server Tunnel](#run-an-imap-command-through-the-mail-server-tunnel)
   * [רשימת סיסמאות catch-all כלל-דומיין](#list-domain-wide-catch-all-passwords)
   * [יצירת סיסמת catch-all כלל-דומיין](#create-domain-wide-catch-all-password)
   * [הסרת סיסמת catch-all כלל-דומיין](#remove-domain-wide-catch-all-password)
@@ -689,6 +691,36 @@ curl BASE_URI/v1/domains/DOMAIN_NAME/verify-smtp \
   -u API_TOKEN:
 ```
 
+### קבלת מצב Mail Server Tunnel {#get-mail-server-tunnel-status}
+
+> `GET /v1/domains/DOMAIN_NAME/tunnel`
+
+מחזיר האם האפליקציה Mail Server Tunnel של הדומיין מחוברת והאם היא מצליחה להגיע לשרת הדואר שלכם.
+
+> בקשת דוגמה:
+
+```sh
+curl BASE_URI/v1/domains/DOMAIN_NAME/tunnel \
+  -u API_TOKEN:
+```
+
+### הרצת פקודת IMAP דרך Mail Server Tunnel {#run-an-imap-command-through-the-mail-server-tunnel}
+
+> `POST /v1/domains/DOMAIN_NAME/tunnel/imap`
+
+מריץ פקודת IMAP אחת מול שרת הדואר שמאחורי המנהרה. יש להפעיל באפליקציה גישה מרחוק לתיבת הדואר. שם המשתמש והסיסמה של התיבה מועברים הלאה ואינם נשמרים.
+
+`command`: `list`, `status`, `search`, `fetch`, `download`, `flags`, `move`, `copy`, `delete`, `append`, `mailboxCreate`, `mailboxRename`, `mailboxDelete`
+
+> בקשת דוגמה:
+
+```sh
+curl -X POST BASE_URI/v1/domains/DOMAIN_NAME/tunnel/imap \
+  -u API_TOKEN: \
+  -H "Content-Type: application/json" \
+  -d '{"command":"fetch","username":"EMAIL","password":"PASSWORD","args":{"path":"INBOX","range":"1:*"}}'
+```
+
 ### רשום סיסמאות catch-all כלליות לדומיין {#list-domain-wide-catch-all-passwords}
 
 > `GET /v1/domains/DOMAIN_NAME/catch-all-passwords`
@@ -734,6 +766,7 @@ curl -X DELETE BASE_URI/v1/domains/:domain_name/catch-all-passwords/:token_id \
 | פרמטר גוף                   | חובה | סוג                            | תיאור                                                                                                                                                                                                                                                                                     |
 | ---------------------------- | ---- | ------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `smtp_port`                  | לא   | מחרוזת או מספר                 | פורט מותאם אישית להגדרה עבור העברת SMTP (ברירת מחדל היא `"25"`)                                                                                                                                                                                                                          |
+| `has_tunnel` | לא | בוליאני | מסירת דואר לכתובות ללא תיבת דואר או העברה אל שרת הדואר שלכם באמצעות האפליקציה Mail Server Tunnel (לשרתים מאחורי CGNAT) |
 | `has_adult_content_protection` | לא   | בוליאני                       | האם לחסום הודעות יוצאות עם קישור לאתר שמסנן המשפחה של Cloudflare חוסם בגלל תוכן למבוגרים או תוכנות זדוניות (ברירת מחדל: `false`)                                                                                                                                                         |
 | `has_phishing_protection`    | לא   | בוליאני                       | הוצא משימוש ומתעלמים ממנו                                                                                                                                                                                                                                                               |
 | `has_executable_protection`  | לא   | בוליאני                       | האם לחסום הודעות יוצאות שמצורפים אליהן קבצי הפעלה, כמו קבצי .exe, .js או .bat (ברירת מחדל: `true`)                                                                                                                                                                                      |

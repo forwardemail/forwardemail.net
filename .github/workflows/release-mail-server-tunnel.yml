@@ -1,0 +1,203 @@
+---
+name: Mail Server Tunnel
+
+# Tests the Mail Server Tunnel app (tools/mail-server-tunnel) on Linux, macOS
+# and Windows, and attaches its executables to each release, next to the
+# convert-sqlite-to-eml ones.
+on:
+  push:
+    paths:
+      - "tools/mail-server-tunnel/**"
+      - ".github/workflows/release-mail-server-tunnel.yml"
+  pull_request:
+    paths:
+      - "tools/mail-server-tunnel/**"
+      - ".github/workflows/release-mail-server-tunnel.yml"
+  release:
+    types: [published]
+
+# Default to no permissions
+permissions: {}
+
+jobs:
+  test:
+    runs-on: ${{ matrix.os }}
+    permissions:
+      contents: read
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, ubuntu-24.04-arm, macos-14, windows-latest]
+        node: [22]
+        include:
+          # (the oldest Node.js the app runs with)
+          - os: ubuntu-latest
+            node: 18
+
+    defaults:
+      run:
+        working-directory: tools/mail-server-tunnel
+
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: ${{ matrix.node }}
+
+      # (the versions in package-lock.json, which Dependabot keeps current)
+      - name: Install dependencies
+        run: npm ci
+
+      # A real Postfix and Dovecot for the end-to-end tests (Linux only; the
+      # tests of test/app.js run on every system).
+      - name: Install Postfix and Dovecot
+        if: runner.os == 'Linux'
+        run: |
+          sudo DEBIAN_FRONTEND=noninteractive apt-get update -q
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -q postfix dovecot-imapd dovecot-lmtpd
+          sudo systemctl stop postfix dovecot || true
+
+      # (root starts the test's own Postfix and Dovecot)
+      - name: Run tests (Linux, with Postfix and Dovecot)
+        if: runner.os == 'Linux'
+        run: sudo env "PATH=$PATH" npm test
+
+      - name: Run tests (macOS and Windows)
+        if: runner.os != 'Linux'
+        run: npm test
+
+  build-binaries:
+    if: github.event_name == 'release'
+    needs: test
+    runs-on: ${{ matrix.os }}
+    # This job installs dependencies and runs their code, so it can only read
+    # the repository. The job below attaches what it built to the release.
+    permissions:
+      contents: read
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            artifact: mail-server-tunnel-linux-x64
+          - os: ubuntu-24.04-arm
+            artifact: mail-server-tunnel-linux-arm64
+          - os: macos-14
+            artifact: mail-server-tunnel-darwin-arm64
+          - os: windows-latest
+            artifact: mail-server-tunnel-win-x64
+
+    defaults:
+      run:
+        working-directory: tools/mail-server-tunnel
+
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: 22
+
+      - name: Install dependencies
+        run: npm ci
+
+      # The executable carries the version of the release it is attached to,
+      # which is what its updater compares with the latest release.
+      - name: Set the version to the release's
+        env:
+          TAG: ${{ github.event.release.tag_name }}
+        run: npm version "${TAG#v}" --no-git-tag-version --allow-same-version
+        shell: bash
+
+      - name: Build SEA binary
+        run: npm run build
+
+      - name: Rename binary for release (Linux/macOS)
+        if: runner.os != 'Windows'
+        run: mv dist/mail-server-tunnel dist/${{ matrix.artifact }}
+
+      - name: Rename binary for release (Windows)
+        if: runner.os == 'Windows'
+        run: |
+          Move-Item dist/mail-server-tunnel.exe dist/${{ matrix.artifact }}.exe
+        shell: pwsh
+
+      - name: Test SEA binary (Linux/macOS)
+        if: runner.os != 'Windows'
+        env:
+          TAG: ${{ github.event.release.tag_name }}
+        run: |
+          test "$(./dist/${{ matrix.artifact }} version)" = "${TAG#v}"
+          ./dist/${{ matrix.artifact }} help
+          ./dist/${{ matrix.artifact }} config --paths
+        shell: bash
+
+      - name: Test SEA binary (Windows)
+        if: runner.os == 'Windows'
+        run: |
+          & ".\dist\${{ matrix.artifact }}.exe" version
+          & ".\dist\${{ matrix.artifact }}.exe" help
+          & ".\dist\${{ matrix.artifact }}.exe" config --paths
+        shell: pwsh
+
+      - name: Hand the binary to the upload job
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: ${{ matrix.artifact }}
+          path: tools/mail-server-tunnel/dist/${{ matrix.artifact }}${{ runner.os == 'Windows' && '.exe' || '' }}
+          if-no-files-found: error
+          retention-days: 1
+
+  upload-binaries:
+    needs: build-binaries
+    if: ${{ !cancelled() && github.event_name == 'release' }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    timeout-minutes: 10
+    steps:
+      - name: Collect the binaries
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          path: dist
+          pattern: mail-server-tunnel-*
+          merge-multiple: true
+
+      # The app only installs an update whose checksums name its release and
+      # are signed with the key its updater trusts (the minisign key of the
+      # Forward Email apps, see tools/mail-server-tunnel/lib/update.js).
+      - name: Write the checksums
+        env:
+          TAG: ${{ github.event.release.tag_name }}
+        run: |
+          cd dist
+          sha256sum -- mail-server-tunnel-* | LC_ALL=C sort > mail-server-tunnel-SHA256SUMS.txt
+          echo "# version: ${TAG#v}" >> mail-server-tunnel-SHA256SUMS.txt
+          cat mail-server-tunnel-SHA256SUMS.txt
+
+      - name: Sign the checksums
+        env:
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
+        run: |
+          if [ -z "$TAURI_SIGNING_PRIVATE_KEY" ]; then
+            echo "::warning::TAURI_SIGNING_PRIVATE_KEY is not set, so the checksums are not signed and installed apps will not update themselves to this release"
+            exit 0
+          fi
+          npx --yes @tauri-apps/cli@2.10.1 signer sign dist/mail-server-tunnel-SHA256SUMS.txt
+          test -s dist/mail-server-tunnel-SHA256SUMS.txt.sig
+
+      - name: Upload binaries to release
+        uses: softprops/action-gh-release@3bb12739c298aeb8a4eeaf626c5b8d85266b0e65 # v2
+        with:
+          files: dist/*
+          fail_on_unmatched_files: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

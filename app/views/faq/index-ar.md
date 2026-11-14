@@ -46,6 +46,7 @@
   * [كيف أستخدم تخزين S3 متوافق خاص بي للنسخ الاحتياطية](#how-do-i-use-my-own-s3-compatible-storage-for-backups)
   * [كيف أحول نسخ SQLite الاحتياطية إلى ملفات EML](#how-do-i-convert-sqlite-backups-to-eml-files)
   * [هل تدعمون الاستضافة الذاتية](#do-you-support-self-hosting)
+  * [هل يمكنني استضافة خادم بريد ذاتيًا خلف CGNAT أو Starlink](#can-i-self-host-a-mail-server-behind-cgnat-or-starlink)
 * [تكوين البريد الإلكتروني](#email-configuration)
   * [كيف أبدأ وأُعد إعادة توجيه البريد الإلكتروني](#how-do-i-get-started-and-set-up-email-forwarding)
   * [هل يمكنني استخدام عدة خوادم تبادل MX وإعادة توجيه متقدمة](#can-i-use-multiple-mx-exchanges-and-servers-for-advanced-forwarding)
@@ -1430,6 +1431,10 @@ Drafts/
 ### هل تدعم الاستضافة الذاتية {#do-you-support-self-hosting}
 
 نعم، اعتبارًا من مارس 2025، ندعم خيار الاستضافة الذاتية. اقرأ المدونة [هنا](https://forwardemail.net/blog/docs/self-hosted-solution). اطلع على [دليل الاستضافة الذاتية](https://forwardemail.net/self-hosted) للبدء. وللمهتمين بنسخة أكثر تفصيلاً خطوة بخطوة، راجع أدلتنا الخاصة بـ [أوبونتو](https://forwardemail.net/guides/selfhosted-on-ubuntu) أو [ديبيان](https://forwardemail.net/guides/selfhosted-on-debian).
+
+### هل يمكنني استضافة خادم بريد ذاتيًا خلف CGNAT أو Starlink {#can-i-self-host-a-mail-server-behind-cgnat-or-starlink}
+
+نعم. تحظر Starlink وإنترنت 5G المنزلي ومزودون آخرون يستخدمون CGNAT الاتصالات الواردة والمنفذ 25، لذلك لا يستطيع خادم البريد في المنزل استقبال البريد مباشرة. يُبقي تطبيق Mail Server Tunnel اتصالًا صادرًا مفتوحًا معنا ويسلّم بريد نطاقك إلى خادمك الخاص، دون إعادة توجيه المنافذ أو عنوان IP ثابت أو VPN أو VPS. إذا كان التطبيق غير متصل، يتلقى المرسلون ردًا مؤقتًا 421 ويعيدون المحاولة، فلا يضيع البريد. اقرأ [الدليل](https://forwardemail.net/guides/self-hosted-mail-server-behind-cgnat) أو راجع [صفحة Starlink](https://forwardemail.net/starlink). يجب أن يكون نطاقك على خطة مدفوعة وأن يجتاز التحقق من سجل TXT أولاً، مما يمنع أي حساب آخر من استلام بريدك.
 
 ## إعداد البريد الإلكتروني {#email-configuration}
 

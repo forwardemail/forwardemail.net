@@ -55,6 +55,8 @@
   * [Retrieve domain](#retrieve-domain)
   * [Verify domain records](#verify-domain-records)
   * [Verify domain SMTP records](#verify-domain-smtp-records)
+  * [Get Mail Server Tunnel status](#get-mail-server-tunnel-status)
+  * [Run an IMAP command through the Mail Server Tunnel](#run-an-imap-command-through-the-mail-server-tunnel)
   * [List domain-wide catch-all passwords](#list-domain-wide-catch-all-passwords)
   * [Create domain-wide catch-all password](#create-domain-wide-catch-all-password)
   * [Remove domain-wide catch-all password](#remove-domain-wide-catch-all-password)
@@ -696,6 +698,36 @@ curl BASE_URI/v1/domains/DOMAIN_NAME/verify-smtp \
   -u API_TOKEN:
 ```
 
+### Get Mail Server Tunnel status
+
+> `GET /v1/domains/DOMAIN_NAME/tunnel`
+
+Returns whether the Mail Server Tunnel app for the domain is connected and whether it can reach your mail server.
+
+> Example Request:
+
+```sh
+curl BASE_URI/v1/domains/DOMAIN_NAME/tunnel \
+  -u API_TOKEN:
+```
+
+### Run an IMAP command through the Mail Server Tunnel
+
+> `POST /v1/domains/DOMAIN_NAME/tunnel/imap`
+
+Runs one IMAP command against the mail server behind the tunnel. Remote mailbox access must be turned on in the app. The mailbox username and password are passed through and not stored.
+
+`command`: `list`, `status`, `search`, `fetch`, `download`, `flags`, `move`, `copy`, `delete`, `append`, `mailboxCreate`, `mailboxRename`, `mailboxDelete`
+
+> Example Request:
+
+```sh
+curl -X POST BASE_URI/v1/domains/DOMAIN_NAME/tunnel/imap \
+  -u API_TOKEN: \
+  -H "Content-Type: application/json" \
+  -d '{"command":"fetch","username":"EMAIL","password":"PASSWORD","args":{"path":"INBOX","range":"1:*"}}'
+```
+
 ### List domain-wide catch-all passwords
 
 > `GET /v1/domains/DOMAIN_NAME/catch-all-passwords`
@@ -741,6 +773,7 @@ curl -X DELETE BASE_URI/v1/domains/:domain_name/catch-all-passwords/:token_id \
 | Body Parameter                 | Required | Type                            | Description                                                                                                                                                                                                                                                                                   |
 | ------------------------------ | -------- | ------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `smtp_port`                    | No       | String or Number                | Custom port to configure for SMTP forwarding (default is `"25"`)                                                                                                                                                                                                                              |
+| `has_tunnel`                   | No       | Boolean                         | Deliver mail for addresses without a mailbox or forwarding to your own mail server through the Mail Server Tunnel app (for servers behind CGNAT)                                                                                                                                              |
 | `has_adult_content_protection` | No       | Boolean                         | Whether to block sent mail linking to a site Cloudflare's family filter blocks for adult-related content or malware (defaults to `false`)                                                                                                                                                     |
 | `has_phishing_protection`      | No       | Boolean                         | Deprecated and ignored                                                                                                                                                                                                                                                                        |
 | `has_executable_protection`    | No       | Boolean                         | Whether to block sent mail with executable attachments, such as .exe, .js or .bat files (defaults to `true`)                                                                                                                                                                                  |

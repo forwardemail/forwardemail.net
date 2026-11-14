@@ -46,6 +46,7 @@
   * [ฉันจะใช้ที่เก็บข้อมูลที่เข้ากันได้กับ S3 ของตัวเองสำหรับการสำรองข้อมูลได้อย่างไร](#how-do-i-use-my-own-s3-compatible-storage-for-backups)
   * [ฉันจะแปลงการสำรองข้อมูล SQLite เป็นไฟล์ EML ได้อย่างไร](#how-do-i-convert-sqlite-backups-to-eml-files)
   * [คุณรองรับการโฮสต์ด้วยตนเองไหม](#do-you-support-self-hosting)
+  * [ฉันสามารถโฮสต์เมลเซิร์ฟเวอร์เองหลัง CGNAT หรือ Starlink ได้หรือไม่](#can-i-self-host-a-mail-server-behind-cgnat-or-starlink)
 * [การตั้งค่าอีเมล](#email-configuration)
   * [ฉันจะเริ่มต้นและตั้งค่าการส่งต่ออีเมลได้อย่างไร](#how-do-i-get-started-and-set-up-email-forwarding)
   * [ฉันสามารถใช้ MX หลายตัวและเซิร์ฟเวอร์หลายเครื่องสำหรับการส่งต่อขั้นสูงได้ไหม](#can-i-use-multiple-mx-exchanges-and-servers-for-advanced-forwarding)
@@ -1430,6 +1431,10 @@ Drafts/
 ### Do you support self-hosting {#do-you-support-self-hosting}
 
 ใช่ ตั้งแต่เดือนมีนาคม 2025 เรารองรับตัวเลือกการโฮสต์ด้วยตนเอง อ่านบล็อกได้ที่ [นี่](https://forwardemail.net/blog/docs/self-hosted-solution) ดูคู่มือ [self-hosted guide](https://forwardemail.net/self-hosted) เพื่อเริ่มต้น และสำหรับผู้ที่สนใจเวอร์ชันที่แยกขั้นตอนอย่างละเอียด ดูคู่มือของเราแบบ [Ubuntu](https://forwardemail.net/guides/selfhosted-on-ubuntu) หรือ [Debian](https://forwardemail.net/guides/selfhosted-on-debian)
+
+### ฉันสามารถโฮสต์เมลเซิร์ฟเวอร์เองหลัง CGNAT หรือ Starlink ได้หรือไม่ {#can-i-self-host-a-mail-server-behind-cgnat-or-starlink}
+
+ได้ Starlink อินเทอร์เน็ตบ้าน 5G และผู้ให้บริการรายอื่นที่ใช้ CGNAT จะบล็อกการเชื่อมต่อขาเข้าและพอร์ต 25 เมลเซิร์ฟเวอร์ที่บ้านจึงรับอีเมลโดยตรงไม่ได้ แอป Mail Server Tunnel ของเราจะเปิดการเชื่อมต่อขาออกมายังเราไว้ตลอด และส่งอีเมลของโดเมนคุณไปยังเซิร์ฟเวอร์ของคุณเอง โดยไม่ต้องใช้การส่งต่อพอร์ต ที่อยู่ IP แบบคงที่ VPN หรือ VPS หากแอปออฟไลน์ ผู้ส่งจะได้รับการตอบกลับชั่วคราว 421 และลองใหม่อีกครั้ง อีเมลจึงไม่สูญหาย อ่าน[คู่มือ](https://forwardemail.net/guides/self-hosted-mail-server-behind-cgnat)หรือดู[หน้า Starlink](https://forwardemail.net/starlink) ของเรา โดเมนของคุณต้องใช้แผนแบบชำระเงินและผ่านการยืนยันระเบียน TXT ก่อน ซึ่งป้องกันไม่ให้บัญชีอื่นรับอีเมลของคุณ
 
 ## Email Configuration {#email-configuration}
 

@@ -561,6 +561,11 @@ nav.navbar(class=navbarClasses.join(" "), aria-label=t("Main menu"))
                   class=ctx.pathWithoutLocale === "/guides/raspberry-pi-ftp-server-email-relay-security-camera" ? "active" : ""
                 )
                   = t("Raspberry Pi FTP Server with Email Camera Relay")
+                a.dropdown-item(
+                  href=l("/guides/self-hosted-mail-server-behind-cgnat"),
+                  class=ctx.pathWithoutLocale === "/guides/self-hosted-mail-server-behind-cgnat" ? "active" : ""
+                )
+                  = t("Mail Server Behind CGNAT (Starlink, 5G)")
                 hr.dropdown-divider
                 .dropdown-header= t("Email Setup Guides")
                 .card-columns.small

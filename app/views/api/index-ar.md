@@ -55,6 +55,8 @@
   * [استرجاع نطاق](#retrieve-domain)
   * [التحقق من سجلات النطاق](#verify-domain-records)
   * [التحقق من سجلات SMTP للنطاق](#verify-domain-smtp-records)
+  * [الحصول على حالة Mail Server Tunnel](#get-mail-server-tunnel-status)
+  * [تشغيل أمر IMAP عبر Mail Server Tunnel](#run-an-imap-command-through-the-mail-server-tunnel)
   * [قائمة كلمات مرور التقاط الكل على مستوى النطاق](#list-domain-wide-catch-all-passwords)
   * [إنشاء كلمة مرور التقاط الكل على مستوى النطاق](#create-domain-wide-catch-all-password)
   * [إزالة كلمة مرور التقاط الكل على مستوى النطاق](#remove-domain-wide-catch-all-password)
@@ -689,6 +691,36 @@ curl BASE_URI/v1/domains/DOMAIN_NAME/verify-smtp \
   -u API_TOKEN:
 ```
 
+### الحصول على حالة Mail Server Tunnel {#get-mail-server-tunnel-status}
+
+> `GET /v1/domains/DOMAIN_NAME/tunnel`
+
+يعيد ما إذا كان تطبيق Mail Server Tunnel للنطاق متصلًا وما إذا كان يستطيع الوصول إلى خادم بريدك.
+
+> مثال طلب:
+
+```sh
+curl BASE_URI/v1/domains/DOMAIN_NAME/tunnel \
+  -u API_TOKEN:
+```
+
+### تشغيل أمر IMAP عبر Mail Server Tunnel {#run-an-imap-command-through-the-mail-server-tunnel}
+
+> `POST /v1/domains/DOMAIN_NAME/tunnel/imap`
+
+يشغّل أمر IMAP واحدًا على خادم البريد خلف النفق. يجب تفعيل الوصول عن بُعد إلى صندوق البريد في التطبيق. يُمرَّر اسم المستخدم وكلمة المرور ولا يُخزَّنان.
+
+`command`: `list`, `status`, `search`, `fetch`, `download`, `flags`, `move`, `copy`, `delete`, `append`, `mailboxCreate`, `mailboxRename`, `mailboxDelete`
+
+> مثال طلب:
+
+```sh
+curl -X POST BASE_URI/v1/domains/DOMAIN_NAME/tunnel/imap \
+  -u API_TOKEN: \
+  -H "Content-Type: application/json" \
+  -d '{"command":"fetch","username":"EMAIL","password":"PASSWORD","args":{"path":"INBOX","range":"1:*"}}'
+```
+
 ### قائمة كلمات المرور الشاملة للنطاق {#list-domain-wide-catch-all-passwords}
 
 > `GET /v1/domains/DOMAIN_NAME/catch-all-passwords`
@@ -734,6 +766,7 @@ curl -X DELETE BASE_URI/v1/domains/:domain_name/catch-all-passwords/:token_id \
 | معامل الجسم                   | مطلوب | النوع                            | الوصف                                                                                                                                                                                                                                                                                     |
 | ----------------------------- | ------ | -------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `smtp_port`                   | لا     | نص أو رقم                       | المنفذ المخصص لتكوين إعادة توجيه SMTP (الافتراضي هو `"25"`)                                                                                                                                                                                                                              |
+| `has_tunnel` | لا | منطقي | تسليم بريد العناوين التي ليس لها صندوق بريد أو إعادة توجيه إلى خادم بريدك الخاص عبر تطبيق Mail Server Tunnel (للخوادم خلف CGNAT) |
 | `has_adult_content_protection` | لا     | منطقي                           | ما إذا كان يجب حظر الرسائل المرسلة التي تحتوي على رابط لموقع يحظره فلتر العائلة من Cloudflare بسبب محتوى البالغين أو البرامج الضارة (القيمة الافتراضية `false`)                                                                                                                           |
 | `has_phishing_protection`     | لا     | منطقي                           | مهمل ويتم تجاهله                                                                                                                                                                                                                                                                          |
 | `has_executable_protection`   | لا     | منطقي                           | ما إذا كان يجب حظر الرسائل المرسلة التي تحتوي على مرفقات تنفيذية، مثل ملفات .exe أو .js أو .bat (القيمة الافتراضية `true`)                                                                                                                                                               |

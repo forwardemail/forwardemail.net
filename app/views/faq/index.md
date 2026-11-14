@@ -46,6 +46,7 @@
   * [How do I use my own S3-compatible storage for backups](#how-do-i-use-my-own-s3-compatible-storage-for-backups)
   * [How do I convert SQLite backups to EML files](#how-do-i-convert-sqlite-backups-to-eml-files)
   * [Do you support self-hosting](#do-you-support-self-hosting)
+  * [Can I self-host a mail server behind CGNAT or Starlink](#can-i-self-host-a-mail-server-behind-cgnat-or-starlink)
 * [Email Configuration](#email-configuration)
   * [How do I get started and set up email forwarding](#how-do-i-get-started-and-set-up-email-forwarding)
   * [Can I use multiple MX exchanges and servers for advanced forwarding](#can-i-use-multiple-mx-exchanges-and-servers-for-advanced-forwarding)
@@ -1452,6 +1453,10 @@ EML files are organized by mailbox folder.  The ZIP password is the same as your
 ### Do you support self-hosting
 
 Yes, as of March 2025, we support a self-hosted option. Read the blog [here](https://forwardemail.net/blog/docs/self-hosted-solution). Checkout the [self-hosted guide](https://forwardemail.net/self-hosted) to get started. And for those interested in a more broken down step-by-step version see our [Ubuntu](https://forwardemail.net/guides/selfhosted-on-ubuntu) or [Debian](https://forwardemail.net/guides/selfhosted-on-debian) based guides.
+
+### Can I self-host a mail server behind CGNAT or Starlink
+
+Yes. Starlink, 5G home internet, and other providers that use CGNAT block inbound connections and port 25, so a mail server at home cannot receive mail directly. Our Mail Server Tunnel app keeps an outbound connection open to us and delivers mail for your domain to your own server, with no port forwarding, static IP address, VPN, or VPS. If the app is offline, senders get a temporary 421 response and try again, so mail is not lost. Read the [guide](https://forwardemail.net/guides/self-hosted-mail-server-behind-cgnat) or see our [Starlink page](https://forwardemail.net/starlink). Your domain must be on a paid plan and pass TXT record verification first, which keeps another account from receiving your mail.
 
 
 ## Email Configuration

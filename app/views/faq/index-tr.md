@@ -46,6 +46,7 @@
   * [Yedekler için kendi S3 uyumlu depolamamı nasıl kullanırım](#how-do-i-use-my-own-s3-compatible-storage-for-backups)
   * [SQLite yedeklerini EML dosyalarına nasıl dönüştürürüm](#how-do-i-convert-sqlite-backups-to-eml-files)
   * [Kendi kendine barındırmayı destekliyor musunuz](#do-you-support-self-hosting)
+  * [CGNAT veya Starlink arkasında kendi posta sunucumu barındırabilir miyim](#can-i-self-host-a-mail-server-behind-cgnat-or-starlink)
 * [E-posta Yapılandırması](#email-configuration)
   * [Başlamak ve e-posta yönlendirmeyi ayarlamak için ne yapmalıyım](#how-do-i-get-started-and-set-up-email-forwarding)
   * [Gelişmiş yönlendirme için birden fazla MX değişimi ve sunucu kullanabilir miyim](#can-i-use-multiple-mx-exchanges-and-servers-for-advanced-forwarding)
@@ -1430,6 +1431,10 @@ EML dosyaları posta kutusu klasörlerine göre düzenlenmiştir. ZIP şifresi, 
 ### Kendin Barındırmayı Destekliyor musunuz? {#do-you-support-self-hosting}
 
 Evet, Mart 2025 itibarıyla kendin barındırma seçeneğini destekliyoruz. Blog yazısını [buradan](https://forwardemail.net/blog/docs/self-hosted-solution) okuyabilirsiniz. Başlamak için [kendin barındırma rehberine](https://forwardemail.net/self-hosted) göz atın. Daha ayrıntılı adım adım versiyon için [Ubuntu](https://forwardemail.net/guides/selfhosted-on-ubuntu) veya [Debian](https://forwardemail.net/guides/selfhosted-on-debian) tabanlı rehberlerimize bakabilirsiniz.
+
+### CGNAT veya Starlink arkasında kendi posta sunucumu barındırabilir miyim {#can-i-self-host-a-mail-server-behind-cgnat-or-starlink}
+
+Evet. Starlink, 5G ev interneti ve CGNAT kullanan diğer sağlayıcılar gelen bağlantıları ve 25 numaralı portu engeller; bu yüzden evdeki bir posta sunucusu doğrudan e-posta alamaz. Mail Server Tunnel uygulamamız bize doğru giden bir bağlantıyı açık tutar ve alan adınıza gelen e-postaları kendi sunucunuza teslim eder; port yönlendirme, statik IP adresi, VPN veya VPS gerekmez. Uygulama çevrimdışıysa gönderenler geçici bir 421 yanıtı alır ve yeniden dener, böylece e-posta kaybolmaz. [Kılavuzu](https://forwardemail.net/guides/self-hosted-mail-server-behind-cgnat) okuyun veya [Starlink sayfamıza](https://forwardemail.net/starlink) bakın. Alan adınızın ücretli bir planda olması ve önce TXT kaydı doğrulamasını geçmesi gerekir; bu, başka bir hesabın postanızı almasını engeller.
 
 
 ## E-posta Yapılandırması {#email-configuration}

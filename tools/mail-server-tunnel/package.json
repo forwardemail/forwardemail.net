@@ -1,0 +1,76 @@
+{
+  "name": "@forwardemail/mail-server-tunnel",
+  "description": "Receive email on a self-hosted mail server behind CGNAT (Starlink, 5G home internet, mobile and fiber ISPs without a public IP) with no port forwarding, static IP, VPN or VPS.",
+  "version": "1.0.0",
+  "author": "Forward Email LLC <support@forwardemail.net> (https://forwardemail.net)",
+  "bin": {
+    "mail-server-tunnel": "./index.js"
+  },
+  "bugs": {
+    "url": "https://github.com/forwardemail/forwardemail.net/issues"
+  },
+  "dependencies": {
+    "imapflow": "^1.0.191",
+    "nodemailer": "^7.0.5",
+    "ws": "^8.18.3"
+  },
+  "devDependencies": {
+    "ava": "^6.2.0",
+    "esbuild": "^0.24.0",
+    "postject": "^1.0.0-alpha.6",
+    "smtp-server": "^3.14.0",
+    "xo": "^0.60.0"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "files": [
+    "index.js",
+    "lib"
+  ],
+  "homepage": "https://forwardemail.net/guides/self-hosted-mail-server-behind-cgnat",
+  "keywords": [
+    "5g-home-internet",
+    "carrier-grade-nat",
+    "cgnat",
+    "email",
+    "forward-email",
+    "imap",
+    "mail-server",
+    "port-25",
+    "postfix",
+    "reverse-tunnel",
+    "self-hosted",
+    "smtp",
+    "starlink",
+    "tunnel"
+  ],
+  "license": "MPL-2.0",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/forwardemail/forwardemail.net.git",
+    "directory": "tools/mail-server-tunnel"
+  },
+  "scripts": {
+    "build": "node build.mjs",
+    "lint": "xo",
+    "start": "node index.js",
+    "test": "ava"
+  },
+  "type": "module",
+  "xo": {
+    "prettier": true,
+    "space": true,
+    "rules": {
+      "camelcase": "off",
+      "complexity": "off",
+      "n/prefer-global/buffer": "off",
+      "no-await-in-loop": "off",
+      "no-bitwise": "off",
+      "unicorn/no-await-expression-member": "off",
+      "unicorn/no-process-exit": "off",
+      "unicorn/prefer-top-level-await": "off"
+    }
+  }
+}

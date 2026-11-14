@@ -426,6 +426,23 @@ router
     web.myAccount.ensureUpgradedPlan,
     web.myAccount.testS3Connection
   )
+  // Mail Server Tunnel (for a mail server behind CGNAT, e.g. Starlink)
+  .get(
+    '/domains/:domain_id/tunnel',
+    web.myAccount.retrieveDomain,
+    web.myAccount.ensureDomainAdmin,
+    api.v1.enforcePaidPlan,
+    api.v1.tunnel.status
+  )
+  .post(
+    '/domains/:domain_id/tunnel/imap',
+    web.myAccount.retrieveDomain,
+    web.myAccount.ensureDomainAdmin,
+    api.v1.enforcePaidPlan,
+    web.myAccount.ensureUpgradedPlan,
+    rateLimit(600, 'tunnel imap'),
+    api.v1.tunnel.imap
+  )
   .put(
     '/domains/:domain_id',
     web.myAccount.retrieveDomain,

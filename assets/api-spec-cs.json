@@ -1978,6 +1978,10 @@
             "type": "boolean",
             "description": "Pokud je povoleno, odmítnout příchozí e-maily neodeslané přes TLS"
           },
+          "has_tunnel": {
+            "type": "boolean",
+            "description": "Doručovat poštu pro adresy bez schránky nebo přeposílání na váš vlastní poštovní server přes aplikaci Mail Server Tunnel (pro servery za CGNAT)"
+          },
           "verification_record": {
             "type": "string"
           },
@@ -5945,6 +5949,193 @@
                 "schema": {
                   "type": "string",
                   "example": "You have successfully configured and verified DNS records for outbound SMTP."
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          }
+        }
+      }
+    },
+    "/v1/domains/{domain_id}/tunnel": {
+      "get": {
+        "summary": "Získat stav Mail Server Tunnel",
+        "description": "Vrací, zda je aplikace Mail Server Tunnel pro doménu připojena a zda dosáhne na váš poštovní server.",
+        "operationId": "getTunnelStatus",
+        "tags": [
+          "Domény"
+        ],
+        "parameters": [
+          {
+            "name": "domain_id",
+            "in": "path",
+            "required": true,
+            "description": "Plně kvalifikovaný název domény (FQDN) k ověření",
+            "schema": {
+              "type": "string",
+              "format": "hostname"
+            }
+          }
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Získat stav Mail Server Tunnel",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "has_tunnel": {
+                      "type": "boolean"
+                    },
+                    "is_online": {
+                      "type": "boolean"
+                    },
+                    "connected_at": {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    "hostname": {
+                      "type": "string"
+                    },
+                    "version": {
+                      "type": "string"
+                    },
+                    "platform": {
+                      "type": "string"
+                    },
+                    "has_imap": {
+                      "type": "boolean"
+                    },
+                    "local": {
+                      "type": "object",
+                      "properties": {
+                        "state": {
+                          "type": "string",
+                          "enum": [
+                            "up",
+                            "down"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          }
+        }
+      }
+    },
+    "/v1/domains/{domain_id}/tunnel/imap": {
+      "post": {
+        "summary": "Spustit příkaz IMAP přes Mail Server Tunnel",
+        "description": "Spustí jeden příkaz IMAP na poštovním serveru za tunelem. Vzdálený přístup ke schránce musí být v aplikaci zapnutý. Uživatelské jméno a heslo schránky se pouze předávají a neukládají se.",
+        "operationId": "runTunnelImapCommand",
+        "tags": [
+          "Domény"
+        ],
+        "parameters": [
+          {
+            "name": "domain_id",
+            "in": "path",
+            "required": true,
+            "description": "Plně kvalifikovaný název domény (FQDN) k ověření",
+            "schema": {
+              "type": "string",
+              "format": "hostname"
+            }
+          }
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "command",
+                  "username",
+                  "password"
+                ],
+                "properties": {
+                  "command": {
+                    "type": "string",
+                    "enum": [
+                      "list",
+                      "status",
+                      "search",
+                      "fetch",
+                      "download",
+                      "flags",
+                      "move",
+                      "copy",
+                      "delete",
+                      "append",
+                      "mailboxCreate",
+                      "mailboxRename",
+                      "mailboxDelete"
+                    ]
+                  },
+                  "args": {
+                    "type": "object",
+                    "additionalProperties": true,
+                    "example": {
+                      "path": "INBOX",
+                      "range": "1:*"
+                    }
+                  },
+                  "username": {
+                    "type": "string",
+                    "example": "you@example.com"
+                  },
+                  "password": {
+                    "type": "string",
+                    "format": "password"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Spustit příkaz IMAP přes Mail Server Tunnel",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": true
                 }
               }
             }

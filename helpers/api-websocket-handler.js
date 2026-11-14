@@ -34,6 +34,7 @@ const {
 } = require('#helpers/get-mail-app-releases');
 
 const WS_PATH = '/v1/ws';
+const TUNNEL_WS_PATH = '/v1/tunnel';
 
 // published by every alias password rotation (IMAP, POP3 and SMTP close
 // their sessions on it too)
@@ -209,6 +210,8 @@ class ApiWebSocketHandler {
     // login as the rest of the API (helpers/on-auth.js), which carries the
     // brute-force limits and the banned/disabled/rekey checks
     this.instance = instance || null;
+    // whether the Mail Server Tunnel handler is attached to this server too
+    this.hasTunnel = Boolean(options.hasTunnel);
 
     // Map<aliasId, Set<WebSocket>>
     this.clients = new Map();
@@ -751,6 +754,10 @@ class ApiWebSocketHandler {
     // socket of every `Connection: Upgrade` request before this runs, so one
     // for another path has to be answered and closed here or it stays open
     // (without counting against any connection limit) until the client goes.
+    // (the Mail Server Tunnel has its own handler on this server, see
+    // `helpers/tunnel-websocket-handler.js`)
+    if (pathname === TUNNEL_WS_PATH && this.hasTunnel) return;
+
     if (pathname !== WS_PATH) {
       socket.on('error', () => socket.destroy());
       socket.end('HTTP/1.1 404 Not Found\r\nConnection: close\r\n\r\n');

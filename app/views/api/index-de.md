@@ -55,6 +55,8 @@
   * [Domain abrufen](#retrieve-domain)
   * [Domain-Datensätze verifizieren](#verify-domain-records)
   * [Domain SMTP-Datensätze verifizieren](#verify-domain-smtp-records)
+  * [Status des Mail Server Tunnel abrufen](#get-mail-server-tunnel-status)
+  * [Einen IMAP-Befehl über den Mail Server Tunnel ausführen](#run-an-imap-command-through-the-mail-server-tunnel)
   * [Domainweite Catch-All-Passwörter auflisten](#list-domain-wide-catch-all-passwords)
   * [Domainweites Catch-All-Passwort erstellen](#create-domain-wide-catch-all-password)
   * [Domainweites Catch-All-Passwort entfernen](#remove-domain-wide-catch-all-password)
@@ -689,6 +691,36 @@ curl BASE_URI/v1/domains/DOMAIN_NAME/verify-smtp \
   -u API_TOKEN:
 ```
 
+### Status des Mail Server Tunnel abrufen {#get-mail-server-tunnel-status}
+
+> `GET /v1/domains/DOMAIN_NAME/tunnel`
+
+Gibt zurück, ob die App Mail Server Tunnel für die Domain verbunden ist und ob sie Ihren Mailserver erreicht.
+
+> Beispielanfrage:
+
+```sh
+curl BASE_URI/v1/domains/DOMAIN_NAME/tunnel \
+  -u API_TOKEN:
+```
+
+### Einen IMAP-Befehl über den Mail Server Tunnel ausführen {#run-an-imap-command-through-the-mail-server-tunnel}
+
+> `POST /v1/domains/DOMAIN_NAME/tunnel/imap`
+
+Führt einen IMAP-Befehl auf dem Mailserver hinter dem Tunnel aus. Der Fernzugriff auf Postfächer muss in der App aktiviert sein. Benutzername und Passwort des Postfachs werden durchgereicht und nicht gespeichert.
+
+`command`: `list`, `status`, `search`, `fetch`, `download`, `flags`, `move`, `copy`, `delete`, `append`, `mailboxCreate`, `mailboxRename`, `mailboxDelete`
+
+> Beispielanfrage:
+
+```sh
+curl -X POST BASE_URI/v1/domains/DOMAIN_NAME/tunnel/imap \
+  -u API_TOKEN: \
+  -H "Content-Type: application/json" \
+  -d '{"command":"fetch","username":"EMAIL","password":"PASSWORD","args":{"path":"INBOX","range":"1:*"}}'
+```
+
 ### Domainweite Catch-All-Passwörter auflisten {#list-domain-wide-catch-all-passwords}
 
 > `GET /v1/domains/DOMAIN_NAME/catch-all-passwords`
@@ -734,6 +766,7 @@ curl -X DELETE BASE_URI/v1/domains/:domain_name/catch-all-passwords/:token_id \
 | Body-Parameter                 | Erforderlich | Typ                            | Beschreibung                                                                                                                                                                                                                                                                                   |
 | ----------------------------- | ------------ | ------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `smtp_port`                   | Nein         | String oder Zahl               | Benutzerdefinierter Port zur Konfiguration für SMTP-Weiterleitung (Standard ist `"25"`)                                                                                                                                                                                                       |
+| `has_tunnel` | Nein | Boolean | E-Mails für Adressen ohne Postfach oder Weiterleitung über die App Mail Server Tunnel an Ihren eigenen Mailserver zustellen (für Server hinter CGNAT) |
 | `has_adult_content_protection`| Nein         | Boolean                       | Ob gesendete E-Mails mit Links zu einer Website blockiert werden, die der Familienfilter von Cloudflare wegen Inhalten für Erwachsene oder Malware blockiert (Standard: `false`)                                                                                                            |
 | `has_phishing_protection`     | Nein         | Boolean                       | Veraltet und wird ignoriert                                                                                                                                                                                                                                                                  |
 | `has_executable_protection`   | Nein         | Boolean                       | Ob gesendete E-Mails mit ausführbaren Anhängen wie .exe-, .js- oder .bat-Dateien blockiert werden (Standard: `true`)                                                                                                                                                                        |

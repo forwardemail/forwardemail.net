@@ -46,6 +46,7 @@
   * [Как использовать собственное хранилище, совместимое с S3, для резервных копий](#how-do-i-use-my-own-s3-compatible-storage-for-backups)
   * [Как конвертировать резервные копии SQLite в файлы EML](#how-do-i-convert-sqlite-backups-to-eml-files)
   * [Поддерживаете ли вы самостоятельный хостинг](#do-you-support-self-hosting)
+  * [Могу ли я разместить собственный почтовый сервер за CGNAT или Starlink](#can-i-self-host-a-mail-server-behind-cgnat-or-starlink)
 * [Конфигурация почты](#email-configuration)
   * [Как начать и настроить переадресацию почты](#how-do-i-get-started-and-set-up-email-forwarding)
   * [Можно ли использовать несколько MX и серверов для расширенной переадресации](#can-i-use-multiple-mx-exchanges-and-servers-for-advanced-forwarding)
@@ -1430,6 +1431,10 @@ Drafts/
 ### Поддерживаете ли вы самостоятельный хостинг {#do-you-support-self-hosting}
 
 Да, с марта 2025 года мы поддерживаем вариант самостоятельного хостинга. Читайте блог [здесь](https://forwardemail.net/blog/docs/self-hosted-solution). Ознакомьтесь с [руководством по самостоятельному хостингу](https://forwardemail.net/self-hosted), чтобы начать. А для тех, кто хочет более подробное пошаговое руководство, смотрите наши гайды для [Ubuntu](https://forwardemail.net/guides/selfhosted-on-ubuntu) или [Debian](https://forwardemail.net/guides/selfhosted-on-debian).
+
+### Могу ли я разместить собственный почтовый сервер за CGNAT или Starlink {#can-i-self-host-a-mail-server-behind-cgnat-or-starlink}
+
+Да. Starlink, домашний интернет 5G и другие провайдеры, использующие CGNAT, блокируют входящие соединения и порт 25, поэтому почтовый сервер дома не может принимать почту напрямую. Наше приложение Mail Server Tunnel держит открытым исходящее соединение с нами и доставляет почту вашего домена на ваш собственный сервер без проброса портов, статического IP-адреса, VPN или VPS. Если приложение не в сети, отправители получают временный ответ 421 и повторяют попытку, поэтому почта не теряется. Прочитайте [руководство](https://forwardemail.net/guides/self-hosted-mail-server-behind-cgnat) или посмотрите нашу [страницу о Starlink](https://forwardemail.net/starlink). Ваш домен должен быть на платном тарифе и сначала пройти проверку записи TXT, что не позволяет другой учётной записи получать вашу почту.
 
 ## Настройка электронной почты {#email-configuration}
 

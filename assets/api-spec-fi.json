@@ -1978,6 +1978,10 @@
             "type": "boolean",
             "description": "Kun käytössä, hylkää saapuvat sähköpostit, jotka eivät ole TLS-yhteyden kautta lähetettyjä"
           },
+          "has_tunnel": {
+            "type": "boolean",
+            "description": "Toimita postilaatikottomien ja edelleenlähetyksettömien osoitteiden posti omalle sähköpostipalvelimellesi Mail Server Tunnel -sovelluksen kautta (CGNATin takana oleville palvelimille)"
+          },
           "verification_record": {
             "type": "string"
           },
@@ -5945,6 +5949,193 @@
                 "schema": {
                   "type": "string",
                   "example": "You have successfully configured and verified DNS records for outbound SMTP."
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          }
+        }
+      }
+    },
+    "/v1/domains/{domain_id}/tunnel": {
+      "get": {
+        "summary": "Hae Mail Server Tunnelin tila",
+        "description": "Palauttaa, onko verkkotunnuksen Mail Server Tunnel -sovellus yhdistetty ja tavoittaako se sähköpostipalvelimesi.",
+        "operationId": "getTunnelStatus",
+        "tags": [
+          "Verkkotunnukset"
+        ],
+        "parameters": [
+          {
+            "name": "domain_id",
+            "in": "path",
+            "required": true,
+            "description": "Täysin hyväksytty verkkotunnus (FQDN) vahvistettavaksi",
+            "schema": {
+              "type": "string",
+              "format": "hostname"
+            }
+          }
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Hae Mail Server Tunnelin tila",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "has_tunnel": {
+                      "type": "boolean"
+                    },
+                    "is_online": {
+                      "type": "boolean"
+                    },
+                    "connected_at": {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    "hostname": {
+                      "type": "string"
+                    },
+                    "version": {
+                      "type": "string"
+                    },
+                    "platform": {
+                      "type": "string"
+                    },
+                    "has_imap": {
+                      "type": "boolean"
+                    },
+                    "local": {
+                      "type": "object",
+                      "properties": {
+                        "state": {
+                          "type": "string",
+                          "enum": [
+                            "up",
+                            "down"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          }
+        }
+      }
+    },
+    "/v1/domains/{domain_id}/tunnel/imap": {
+      "post": {
+        "summary": "Suorita IMAP-komento Mail Server Tunnelin kautta",
+        "description": "Suorittaa yhden IMAP-komennon tunnelin takana olevalla sähköpostipalvelimella. Postilaatikon etäkäytön on oltava päällä sovelluksessa. Postilaatikon käyttäjätunnus ja salasana välitetään eteenpäin eikä niitä tallenneta.",
+        "operationId": "runTunnelImapCommand",
+        "tags": [
+          "Verkkotunnukset"
+        ],
+        "parameters": [
+          {
+            "name": "domain_id",
+            "in": "path",
+            "required": true,
+            "description": "Täysin hyväksytty verkkotunnus (FQDN) vahvistettavaksi",
+            "schema": {
+              "type": "string",
+              "format": "hostname"
+            }
+          }
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "command",
+                  "username",
+                  "password"
+                ],
+                "properties": {
+                  "command": {
+                    "type": "string",
+                    "enum": [
+                      "list",
+                      "status",
+                      "search",
+                      "fetch",
+                      "download",
+                      "flags",
+                      "move",
+                      "copy",
+                      "delete",
+                      "append",
+                      "mailboxCreate",
+                      "mailboxRename",
+                      "mailboxDelete"
+                    ]
+                  },
+                  "args": {
+                    "type": "object",
+                    "additionalProperties": true,
+                    "example": {
+                      "path": "INBOX",
+                      "range": "1:*"
+                    }
+                  },
+                  "username": {
+                    "type": "string",
+                    "example": "you@example.com"
+                  },
+                  "password": {
+                    "type": "string",
+                    "format": "password"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Suorita IMAP-komento Mail Server Tunnelin kautta",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": true
                 }
               }
             }

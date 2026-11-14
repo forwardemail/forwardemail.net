@@ -283,6 +283,7 @@ block body
           a.acct-jump-link(href="#manage-team")= t("Manage Team")
           a.acct-jump-link(href="#outbound-smtp")= t("Outbound SMTP Configuration")
           a.acct-jump-link(href="#catch-all-passwords")= t("Catch-all Passwords")
+          a.acct-jump-link(href="#mail-server-tunnel")= t("Mail Server Tunnel")
           a.acct-jump-link(href="#zone-file")= t("Zone File")
           a.acct-jump-link(href="#current-plan")= t("Current Plan")
           a.acct-jump-link(href="#storage-quota")= t("Storage Max Quota Per Alias")
@@ -330,6 +331,49 @@ block body
                     button.confirm-prompt.btn.btn-lg.btn-secondary(
                       type="reset",
                       disabled=isDisabled
+                    )= t("Reset")
+                  li.list-inline-item
+                    button.btn.btn-lg.btn-primary(
+                      type="submit",
+                      disabled=isDisabled
+                    )= t("Save")
+
+      //- Mail Server Tunnel (for a mail server behind CGNAT, e.g. Starlink)
+      if domain.group === 'admin' && !domain.is_global
+        #mail-server-tunnel.row
+          .col
+            form.ajax-form.confirm-prompt.card.border-themed.mb-3(
+              action=ctx.path,
+              method="POST",
+              disabled=isDisabled
+            )
+              input(type="hidden", name="_method", value="PUT")
+              input(type="hidden", name="_section", value="has_tunnel")
+              h2.h6.card-header= t("Mail Server Tunnel")
+              .card-body
+                +planRequired(false)
+                .form-group.form-check.mb-0
+                  input#input-has-tunnel.form-check-input(
+                    type="checkbox",
+                    disabled=isDisabled,
+                    name="has_tunnel",
+                    value="true",
+                    checked=domain.has_tunnel
+                  )
+                  label.form-check-label(for="input-has-tunnel")= t("Deliver mail to my own mail server through the Mail Server Tunnel app")
+                  p.form-text.small.text-black.text-themed-50
+                    != t("For a self-hosted mail server behind CGNAT (Starlink, 5G home internet and other providers without a public IP address). When enabled, mail for addresses of this domain that have no mailbox or forwarding here is handed to the Mail Server Tunnel app running beside your mail server. No port forwarding, static IP address, VPN or VPS is needed.")
+                  p.form-text.small.text-black.text-themed-50.mb-0
+                    != t("While the app is not connected, senders are asked to try again later (421), so mail is deferred and not lost. Domain admins are emailed if it stays offline.")
+                    = " "
+                    = t("To also deliver a mailbox that forwards elsewhere to your mail server, add this domain's name as one of its recipients. It cannot be combined with a custom SMTP port.")
+                    = " "
+                    a(href=l("/guides/self-hosted-mail-server-behind-cgnat"))= t("Download the app and read the guide")
+              .card-footer.text-right
+                ul.list-inline.mb-0
+                  li.list-inline-item
+                    button.confirm-prompt.btn.btn-lg.btn-secondary(
+                      type="reset"
                     )= t("Reset")
                   li.list-inline-item
                     button.btn.btn-lg.btn-primary(
@@ -1267,6 +1311,8 @@ block body
                   label(for="input-port")= t("Port number (SMTP)")
                 #help-port.alert.alert-secondary.small.mb-0
                   = t("Do not modify this unless you know what you are doing.  This will forward all emails to the specific port for all aliases and their recipients.  For example, if you are forwarding to info@example.com, and input port number 1337 here, then our server will forward email to example.com on port 1337 (as opposed to the standard SMTP port of 25).")
+                  = " "
+                  = t("A custom port cannot be combined with Mail Server Tunnel.")
                   if domain.plan === 'free'
                     = " "
                     != t('If you are on the free plan, then you can use the <a href="%s">"forward-email-port"</a> DNS <span class="notranslate">TXT</span> record.', l("/faq#can-i-forward-emails-to-ports-other-than-25-eg-if-my-isp-has-blocked-port-25"))

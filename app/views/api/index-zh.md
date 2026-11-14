@@ -55,6 +55,8 @@
   * [检索域名](#retrieve-domain)
   * [验证域名记录](#verify-domain-records)
   * [验证域名 SMTP 记录](#verify-domain-smtp-records)
+  * [获取 Mail Server Tunnel 状态](#get-mail-server-tunnel-status)
+  * [通过 Mail Server Tunnel 执行 IMAP 命令](#run-an-imap-command-through-the-mail-server-tunnel)
   * [列出域范围通配密码](#list-domain-wide-catch-all-passwords)
   * [创建域范围通配密码](#create-domain-wide-catch-all-password)
   * [移除域范围通配密码](#remove-domain-wide-catch-all-password)
@@ -689,6 +691,36 @@ curl BASE_URI/v1/domains/DOMAIN_NAME/verify-smtp \
   -u API_TOKEN:
 ```
 
+### 获取 Mail Server Tunnel 状态 {#get-mail-server-tunnel-status}
+
+> `GET /v1/domains/DOMAIN_NAME/tunnel`
+
+返回该域名的 Mail Server Tunnel 应用是否已连接，以及它能否访问您的邮件服务器。
+
+> 示例请求：
+
+```sh
+curl BASE_URI/v1/domains/DOMAIN_NAME/tunnel \
+  -u API_TOKEN:
+```
+
+### 通过 Mail Server Tunnel 执行 IMAP 命令 {#run-an-imap-command-through-the-mail-server-tunnel}
+
+> `POST /v1/domains/DOMAIN_NAME/tunnel/imap`
+
+在隧道后面的邮件服务器上执行一条 IMAP 命令。必须在应用中开启远程邮箱访问。邮箱用户名和密码仅被转交，不会被存储。
+
+`command`: `list`, `status`, `search`, `fetch`, `download`, `flags`, `move`, `copy`, `delete`, `append`, `mailboxCreate`, `mailboxRename`, `mailboxDelete`
+
+> 示例请求：
+
+```sh
+curl -X POST BASE_URI/v1/domains/DOMAIN_NAME/tunnel/imap \
+  -u API_TOKEN: \
+  -H "Content-Type: application/json" \
+  -d '{"command":"fetch","username":"EMAIL","password":"PASSWORD","args":{"path":"INBOX","range":"1:*"}}'
+```
+
 ### 列出域名范围内的通配密码 {#list-domain-wide-catch-all-passwords}
 
 > `GET /v1/domains/DOMAIN_NAME/catch-all-passwords`
@@ -734,6 +766,7 @@ curl -X DELETE BASE_URI/v1/domains/:domain_name/catch-all-passwords/:token_id \
 | 请求体参数                    | 必填   | 类型                            | 描述                                                                                                                                                                                                                                                                                       |
 | ----------------------------- | ------ | ------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | `smtp_port`                   | 否     | 字符串或数字                   | 用于配置 SMTP 转发的自定义端口（默认值为 `"25"`）                                                                                                                                                                                                                                         |
+| `has_tunnel` | 否 | 布尔值 | 通过 Mail Server Tunnel 应用，将没有邮箱或转发设置的地址的邮件投递到您自己的邮件服务器（适用于 CGNAT 后面的服务器） |
 | `has_adult_content_protection` | 否     | 布尔值                         | 是否拦截链接到被 Cloudflare 家庭过滤器以成人相关内容或恶意软件为由拦截的网站的已发送邮件（默认为 `false`）                                                                                                                                                                                                       |
 | `has_phishing_protection`     | 否     | 布尔值                         | 已弃用并忽略                                                                                                                                                                                                                                                                  |
 | `has_executable_protection`   | 否     | 布尔值                         | 是否拦截带有可执行文件附件（如 .exe、.js 或 .bat 文件）的已发送邮件（默认为 `true`）                                                                                                                                                                                                                |

@@ -1,0 +1,94 @@
+extends layout
+
+block body
+  - const guide = l("/guides/self-hosted-mail-server-behind-cgnat");
+  - const releases = "https://github.com/forwardemail/forwardemail.net/releases/latest";
+  .container.py-3.py-md-4.py-lg-5
+    .row
+      .col-12.text-center
+        h1= t("Self-Hosted Email Server on Starlink")
+        p.lead= t("Run your own mail server on Starlink. Forward Email receives mail for your domain and hands it to your server through an outbound tunnel, so CGNAT and blocked ports do not matter.")
+        ul.list-inline.mt-3
+          li.list-inline-item
+            a.btn.btn-lg.btn-success(
+              href=releases,
+              target="_blank",
+              rel="noopener noreferrer"
+            )
+              i.fa.fa-download
+              = " "
+              = t("Download Mail Server Tunnel")
+          li.list-inline-item
+            a.btn.btn-lg.btn-dark(href=guide)= t("Read the setup guide")
+      .col-12.mt-3
+        .card
+          .card-body.markdown-body
+            h2#why= t("Why email servers do not work on Starlink")
+            ul
+              li
+                != t('<strong>No inbound connections.</strong> Starlink Residential and Roam plans use CGNAT. Your router gets a private address in <code class="notranslate">100.64.0.0/10</code>, so no other mail server can connect to yours.')
+              li
+                != t("<strong>Port 25 is blocked.</strong> Starlink blocks outbound TCP port 25 for all customers, so your server cannot deliver mail directly.")
+              li
+                != t("<strong>Port forwarding does not help.</strong> Starlink routers have no port forwarding or firewall rules for IPv4 or IPv6.")
+              li
+                != t("<strong>A public IP costs more and still changes.</strong> It is only offered on Priority plans and is assigned dynamically.")
+
+            h2#solution= t("How Forward Email solves it")
+            ol
+              li= t("Verify your domain with its TXT record and point its MX records to Forward Email.")
+              li= t("Run the Mail Server Tunnel app beside your mail server. It opens one outbound connection, which Starlink allows.")
+              li= t("Incoming mail is handed to the app and delivered to your server in seconds.")
+              li= t("Outgoing mail relays through Forward Email on port 587, which Starlink does not block.")
+            p= t("Mail stays on your hardware. Forward Email passes it through memory and does not store it. When the dish loses its connection, senders keep the message and retry, so nothing is lost.")
+
+            h2#compare= t("Compared with the usual workarounds")
+            .table-responsive
+              table.table.table-striped.table-hover
+                thead.thead-dark
+                  tr
+                    th= t("Approach")
+                    th= t("Receives mail")
+                    th= t("Sends mail")
+                    th= t("Extra cost and work")
+                tbody
+                  tr
+                    td
+                      strong= t("Mail Server Tunnel")
+                    td= t("Yes")
+                    td= t("Yes, through relay")
+                    td= t("One app, a few minutes")
+                  tr
+                    td= t("VPS with a WireGuard tunnel")
+                    td= t("Yes")
+                    td= t("Yes")
+                    td= t("Rent and maintain a server, firewall rules, reverse DNS")
+                  tr
+                    td= t("Starlink Priority plan with public IP")
+                    td= t("Yes, with your own router")
+                    td= t("No, port 25 stays blocked")
+                    td= t("Higher monthly price, address still changes")
+                  tr
+                    td= t("IPv6 with your own router")
+                    td= t("Only from IPv6 senders")
+                    td= t("No")
+                    td= t("Router in bypass mode, firewall rules")
+                  tr
+                    td= t("Cloudflare Tunnel or Tailscale Funnel")
+                    td= t("No, web traffic only")
+                    td= t("No")
+                    td= t("Does not apply to email")
+
+            h2#get-started= t("Get started")
+            ol
+              li
+                != t('<a href="%s">Add your domain</a> to Forward Email on a paid plan.', l("/my-account/domains"))
+              li
+                != t('<a href="%s" target="_blank" rel="noopener noreferrer">Download Mail Server Tunnel</a> for Linux, macOS, or Windows.', releases)
+              li
+                != t('Run <code class="notranslate">mail-server-tunnel setup</code> and follow the four questions.')
+            p
+              != t('The <a href="%s">setup guide</a> covers DNS records, Postfix relay settings, remote mailbox access, alerts, and troubleshooting.', guide)
+
+            h2#other-providers= t("Not only Starlink")
+            p= t("The same setup works on T-Mobile Home Internet, other 5G and LTE home internet, mobile hotspots, and any fiber, cable, or wireless provider that uses CGNAT or blocks port 25.")

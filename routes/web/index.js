@@ -638,6 +638,12 @@ localeRouter
     return ctx.render('download');
   })
   .get('/self-hosted', render('self-hosted'))
+  // self-hosted mail server behind CGNAT (see tools/mail-server-tunnel)
+  .get('/starlink', render('starlink'))
+  .get(
+    '/guides/self-hosted-mail-server-behind-cgnat',
+    render('guides/self-hosted-mail-server-behind-cgnat')
+  )
   .get('/resources', render('resources'))
   .get('/guides', render('guides'))
   .get('/projects', render('projects'))

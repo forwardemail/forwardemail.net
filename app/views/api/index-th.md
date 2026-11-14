@@ -55,6 +55,8 @@
   * [ดึงข้อมูลโดเมน](#retrieve-domain)
   * [ยืนยันระเบียนโดเมน](#verify-domain-records)
   * [ยืนยันระเบียน SMTP ของโดเมน](#verify-domain-smtp-records)
+  * [ดูสถานะ Mail Server Tunnel](#get-mail-server-tunnel-status)
+  * [เรียกใช้คำสั่ง IMAP ผ่าน Mail Server Tunnel](#run-an-imap-command-through-the-mail-server-tunnel)
   * [รายการรหัสผ่าน catch-all ทั่วโดเมน](#list-domain-wide-catch-all-passwords)
   * [สร้างรหัสผ่าน catch-all ทั่วโดเมน](#create-domain-wide-catch-all-password)
   * [ลบรหัสผ่าน catch-all ทั่วโดเมน](#remove-domain-wide-catch-all-password)
@@ -689,6 +691,36 @@ curl BASE_URI/v1/domains/DOMAIN_NAME/verify-smtp \
   -u API_TOKEN:
 ```
 
+### ดูสถานะ Mail Server Tunnel {#get-mail-server-tunnel-status}
+
+> `GET /v1/domains/DOMAIN_NAME/tunnel`
+
+ส่งคืนว่าแอป Mail Server Tunnel ของโดเมนเชื่อมต่ออยู่หรือไม่ และเข้าถึงเมลเซิร์ฟเวอร์ของคุณได้หรือไม่
+
+> ตัวอย่างคำขอ:
+
+```sh
+curl BASE_URI/v1/domains/DOMAIN_NAME/tunnel \
+  -u API_TOKEN:
+```
+
+### เรียกใช้คำสั่ง IMAP ผ่าน Mail Server Tunnel {#run-an-imap-command-through-the-mail-server-tunnel}
+
+> `POST /v1/domains/DOMAIN_NAME/tunnel/imap`
+
+เรียกใช้คำสั่ง IMAP หนึ่งคำสั่งกับเมลเซิร์ฟเวอร์ที่อยู่หลังอุโมงค์ ต้องเปิดการเข้าถึงกล่องจดหมายระยะไกลในแอป ชื่อผู้ใช้และรหัสผ่านของกล่องจดหมายจะถูกส่งผ่านเท่านั้นและไม่ถูกจัดเก็บ
+
+`command`: `list`, `status`, `search`, `fetch`, `download`, `flags`, `move`, `copy`, `delete`, `append`, `mailboxCreate`, `mailboxRename`, `mailboxDelete`
+
+> ตัวอย่างคำขอ:
+
+```sh
+curl -X POST BASE_URI/v1/domains/DOMAIN_NAME/tunnel/imap \
+  -u API_TOKEN: \
+  -H "Content-Type: application/json" \
+  -d '{"command":"fetch","username":"EMAIL","password":"PASSWORD","args":{"path":"INBOX","range":"1:*"}}'
+```
+
 ### รายการรหัสผ่าน catch-all ทั่วโดเมน {#list-domain-wide-catch-all-passwords}
 
 > `GET /v1/domains/DOMAIN_NAME/catch-all-passwords`
@@ -734,6 +766,7 @@ curl -X DELETE BASE_URI/v1/domains/:domain_name/catch-all-passwords/:token_id \
 | Body Parameter                 | Required | Type                            | Description                                                                                                                                                                                                                                                                                   |
 | ------------------------------ | -------- | ------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `smtp_port`                    | No       | String or Number                | พอร์ตที่กำหนดเองสำหรับตั้งค่าการส่งต่อ SMTP (ค่าเริ่มต้นคือ `"25"`)                                                                                                                                                                                                                         |
+| `has_tunnel` | No | Boolean | ส่งอีเมลของที่อยู่ที่ไม่มีกล่องจดหมายหรือการส่งต่อไปยังเมลเซิร์ฟเวอร์ของคุณเองผ่านแอป Mail Server Tunnel (สำหรับเซิร์ฟเวอร์หลัง CGNAT) |
 | `has_adult_content_protection` | No       | Boolean                         | จะบล็อกอีเมลที่ส่งซึ่งลิงก์ไปยังเว็บไซต์ที่ตัวกรองสำหรับครอบครัวของ Cloudflare บล็อกเนื่องจากเนื้อหาสำหรับผู้ใหญ่หรือมัลแวร์หรือไม่ (ค่าเริ่มต้นคือ `false`)                                                                                                                                 |
 | `has_phishing_protection`      | No       | Boolean                         | เลิกใช้แล้วและจะถูกละเว้น                                                                                                                                                                                                                                                                   |
 | `has_executable_protection`    | No       | Boolean                         | จะบล็อกอีเมลที่ส่งพร้อมไฟล์แนบที่เป็นไฟล์ปฏิบัติการ เช่น ไฟล์ .exe, .js หรือ .bat หรือไม่ (ค่าเริ่มต้นคือ `true`)                                                                                                                                                                            |

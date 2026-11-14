@@ -46,6 +46,7 @@
   * [Hogyan használhatom saját S3-kompatibilis tárhelyemet biztonsági mentésekhez](#how-do-i-use-my-own-s3-compatible-storage-for-backups)
   * [Hogyan konvertálhatom az SQLite biztonsági mentéseket EML fájlokká](#how-do-i-convert-sqlite-backups-to-eml-files)
   * [Támogatjátok az önálló üzemeltetést](#do-you-support-self-hosting)
+  * [Üzemeltethetek saját levelezőszervert CGNAT vagy Starlink mögött](#can-i-self-host-a-mail-server-behind-cgnat-or-starlink)
 * [Email Beállítások](#email-configuration)
   * [Hogyan kezdjem el és állítsam be az email továbbítást](#how-do-i-get-started-and-set-up-email-forwarding)
   * [Használhatok több MX cserélőt és szervert fejlett továbbításhoz](#can-i-use-multiple-mx-exchanges-and-servers-for-advanced-forwarding)
@@ -1430,6 +1431,10 @@ Az EML fájlok a postaláda mappái szerint vannak rendszerezve. A ZIP jelszó m
 ### Támogatjátok az önálló üzemeltetést? {#do-you-support-self-hosting}
 
 Igen, 2025 márciusa óta támogatjuk az önálló üzemeltetési lehetőséget. Olvasd el a blogot [itt](https://forwardemail.net/blog/docs/self-hosted-solution). Nézd meg az [önálló üzemeltetési útmutatót](https://forwardemail.net/self-hosted) a kezdéshez. Azok számára, akik részletesebb, lépésről lépésre bontott verziót szeretnének, elérhetőek az [Ubuntu](https://forwardemail.net/guides/selfhosted-on-ubuntu) és [Debian](https://forwardemail.net/guides/selfhosted-on-debian) alapú útmutatók.
+
+### Üzemeltethetek saját levelezőszervert CGNAT vagy Starlink mögött {#can-i-self-host-a-mail-server-behind-cgnat-or-starlink}
+
+Igen. A Starlink, az otthoni 5G internet és más, CGNAT-ot használó szolgáltatók blokkolják a bejövő kapcsolatokat és a 25-ös portot, ezért egy otthoni levelezőszerver nem tud közvetlenül levelet fogadni. Mail Server Tunnel alkalmazásunk kimenő kapcsolatot tart nyitva felénk, és a domainjére érkező leveleket az Ön saját szerverére kézbesíti, porttovábbítás, statikus IP-cím, VPN vagy VPS nélkül. Ha az alkalmazás nem elérhető, a feladók ideiglenes 421-es választ kapnak és újrapróbálkoznak, így nem vész el levél. Olvassa el az [útmutatót](https://forwardemail.net/guides/self-hosted-mail-server-behind-cgnat), vagy nézze meg [Starlink oldalunkat](https://forwardemail.net/starlink). A domainnek fizetős csomaggal kell rendelkeznie, és először át kell mennie a TXT rekord ellenőrzésén, ami megakadályozza, hogy egy másik fiók megkapja a leveleit.
 
 
 ## E-mail beállítás {#email-configuration}

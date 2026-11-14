@@ -1978,6 +1978,10 @@
             "type": "boolean",
             "description": "Po włączeniu odrzucaj wiadomości e-mail przychodzące, które nie zostały wysłane przez TLS"
           },
+          "has_tunnel": {
+            "type": "boolean",
+            "description": "Dostarczaj pocztę dla adresów bez skrzynki lub przekierowania na własny serwer poczty przez aplikację Mail Server Tunnel (dla serwerów za CGNAT)"
+          },
           "verification_record": {
             "type": "string"
           },
@@ -5945,6 +5949,193 @@
                 "schema": {
                   "type": "string",
                   "example": "You have successfully configured and verified DNS records for outbound SMTP."
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          }
+        }
+      }
+    },
+    "/v1/domains/{domain_id}/tunnel": {
+      "get": {
+        "summary": "Pobierz stan Mail Server Tunnel",
+        "description": "Zwraca, czy aplikacja Mail Server Tunnel dla domeny jest połączona i czy może połączyć się z Twoim serwerem poczty.",
+        "operationId": "getTunnelStatus",
+        "tags": [
+          "Domeny"
+        ],
+        "parameters": [
+          {
+            "name": "domain_id",
+            "in": "path",
+            "required": true,
+            "description": "W pełni kwalifikowana nazwa domeny (FQDN) do weryfikacji",
+            "schema": {
+              "type": "string",
+              "format": "hostname"
+            }
+          }
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Pobierz stan Mail Server Tunnel",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "has_tunnel": {
+                      "type": "boolean"
+                    },
+                    "is_online": {
+                      "type": "boolean"
+                    },
+                    "connected_at": {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    "hostname": {
+                      "type": "string"
+                    },
+                    "version": {
+                      "type": "string"
+                    },
+                    "platform": {
+                      "type": "string"
+                    },
+                    "has_imap": {
+                      "type": "boolean"
+                    },
+                    "local": {
+                      "type": "object",
+                      "properties": {
+                        "state": {
+                          "type": "string",
+                          "enum": [
+                            "up",
+                            "down"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          }
+        }
+      }
+    },
+    "/v1/domains/{domain_id}/tunnel/imap": {
+      "post": {
+        "summary": "Wykonaj polecenie IMAP przez Mail Server Tunnel",
+        "description": "Wykonuje jedno polecenie IMAP na serwerze poczty za tunelem. Zdalny dostęp do skrzynki musi być włączony w aplikacji. Nazwa użytkownika i hasło skrzynki są tylko przekazywane i nie są przechowywane.",
+        "operationId": "runTunnelImapCommand",
+        "tags": [
+          "Domeny"
+        ],
+        "parameters": [
+          {
+            "name": "domain_id",
+            "in": "path",
+            "required": true,
+            "description": "W pełni kwalifikowana nazwa domeny (FQDN) do weryfikacji",
+            "schema": {
+              "type": "string",
+              "format": "hostname"
+            }
+          }
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "command",
+                  "username",
+                  "password"
+                ],
+                "properties": {
+                  "command": {
+                    "type": "string",
+                    "enum": [
+                      "list",
+                      "status",
+                      "search",
+                      "fetch",
+                      "download",
+                      "flags",
+                      "move",
+                      "copy",
+                      "delete",
+                      "append",
+                      "mailboxCreate",
+                      "mailboxRename",
+                      "mailboxDelete"
+                    ]
+                  },
+                  "args": {
+                    "type": "object",
+                    "additionalProperties": true,
+                    "example": {
+                      "path": "INBOX",
+                      "range": "1:*"
+                    }
+                  },
+                  "username": {
+                    "type": "string",
+                    "example": "you@example.com"
+                  },
+                  "password": {
+                    "type": "string",
+                    "format": "password"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Wykonaj polecenie IMAP przez Mail Server Tunnel",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": true
                 }
               }
             }

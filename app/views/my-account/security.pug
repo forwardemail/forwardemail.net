@@ -213,7 +213,17 @@ block body
       .row
         .col
           include ../_breadcrumbs
-          .card.border-themed.mb-3
+          //- a way to each section (as on a domain's advanced settings)
+          nav.acct-jump.mb-3(aria-label=t("On this page"))
+            span.acct-jump-label= t("On this page")
+            if passport && passport.webauthn
+              a.acct-jump-link(href="#passkey-authentication")= t("Passkey Authentication")
+            if passport && passport.otp
+              a.acct-jump-link(href="#two-factor-authentication")= t("Two-Factor Authentication")
+            a.acct-jump-link(href="#session-management")= t("Session Management")
+            a.acct-jump-link(href="#developer-access")= t("Developer Access")
+            a.acct-jump-link.text-danger(href="#delete-account")= t("Delete Account")
+          #delete-account.card.border-themed.mb-3
             h2.h6.card-header= t("Delete Account")
             - const domainsWithOtherAdmins = domains.some((d) => d.plan === "team" && d.group === "admin" && d.members.some((m) => m.group === "admin" && m.user.id !== user.id));
             if domainsWithOtherAdmins.length > 0
@@ -236,7 +246,7 @@ block body
                   type="button"
                 )= t("Delete Account")
           if passport && passport.webauthn
-            .card.border-themed.mb-3
+            #passkey-authentication.card.border-themed.mb-3
               h2.h6.card-header= t("Passkey Authentication")
               .card-body
                 h5= t("Configure Passkeys")
@@ -268,7 +278,7 @@ block body
                     )= t("Learn more")
 
           if passport && passport.otp
-            .card.border-themed.mb-3
+            #two-factor-authentication.card.border-themed.mb-3
               h2.h6.card-header= t("Two-Factor Authentication")
               .card-body
                 if user[config.passport.fields.otpEnabled]
@@ -294,7 +304,7 @@ block body
                   target="_blank"
                 )= t("Learn more")
 
-          .card.border-themed.mb-3
+          #session-management.card.border-themed.mb-3
             h2.h6.card-header= t("Session Management")
             .card-body
               if !sessionDetails || sessionDetails.length === 0
@@ -359,7 +369,7 @@ block body
                 )
                   button.btn.btn-sm.btn-danger(type="submit")= t("Log out from other devices")
 
-          .card.border-themed
+          #developer-access.card.border-themed
             h2.h6.card-header= t("Developer Access")
             .card-body
               if user[config.userFields.apiTokenDisabled]

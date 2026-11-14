@@ -55,6 +55,8 @@
   * [Recuperar dominio](#retrieve-domain)
   * [Verificar registros de dominio](#verify-domain-records)
   * [Verificar registros SMTP de dominio](#verify-domain-smtp-records)
+  * [Obtener el estado de Mail Server Tunnel](#get-mail-server-tunnel-status)
+  * [Ejecutar un comando IMAP a través de Mail Server Tunnel](#run-an-imap-command-through-the-mail-server-tunnel)
   * [Listar contraseñas catch-all a nivel de dominio](#list-domain-wide-catch-all-passwords)
   * [Crear contraseña catch-all a nivel de dominio](#create-domain-wide-catch-all-password)
   * [Eliminar contraseña catch-all a nivel de dominio](#remove-domain-wide-catch-all-password)
@@ -689,6 +691,36 @@ curl BASE_URI/v1/domains/DOMAIN_NAME/verify-smtp \
   -u API_TOKEN:
 ```
 
+### Obtener el estado de Mail Server Tunnel {#get-mail-server-tunnel-status}
+
+> `GET /v1/domains/DOMAIN_NAME/tunnel`
+
+Devuelve si la aplicación Mail Server Tunnel del dominio está conectada y si puede alcanzar su servidor de correo.
+
+> Solicitud de ejemplo:
+
+```sh
+curl BASE_URI/v1/domains/DOMAIN_NAME/tunnel \
+  -u API_TOKEN:
+```
+
+### Ejecutar un comando IMAP a través de Mail Server Tunnel {#run-an-imap-command-through-the-mail-server-tunnel}
+
+> `POST /v1/domains/DOMAIN_NAME/tunnel/imap`
+
+Ejecuta un comando IMAP en el servidor de correo detrás del túnel. El acceso remoto al buzón debe estar activado en la aplicación. El usuario y la contraseña del buzón se transmiten y no se almacenan.
+
+`command`: `list`, `status`, `search`, `fetch`, `download`, `flags`, `move`, `copy`, `delete`, `append`, `mailboxCreate`, `mailboxRename`, `mailboxDelete`
+
+> Solicitud de ejemplo:
+
+```sh
+curl -X POST BASE_URI/v1/domains/DOMAIN_NAME/tunnel/imap \
+  -u API_TOKEN: \
+  -H "Content-Type: application/json" \
+  -d '{"command":"fetch","username":"EMAIL","password":"PASSWORD","args":{"path":"INBOX","range":"1:*"}}'
+```
+
 ### Listar contraseñas catch-all a nivel de dominio {#list-domain-wide-catch-all-passwords}
 
 > `GET /v1/domains/DOMAIN_NAME/catch-all-passwords`
@@ -734,6 +766,7 @@ curl -X DELETE BASE_URI/v1/domains/:domain_name/catch-all-passwords/:token_id \
 | Parámetro en el cuerpo          | Obligatorio | Tipo                            | Descripción                                                                                                                                                                                                                                                                                  |
 | ------------------------------ | ----------- | ------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `smtp_port`                    | No          | String o Número                 | Puerto personalizado para configurar el reenvío SMTP (el valor predeterminado es `"25"`)                                                                                                                                                                                                   |
+| `has_tunnel` | No | Boolean | Entregar el correo de direcciones sin buzón ni reenvío a su propio servidor de correo mediante la aplicación Mail Server Tunnel (para servidores detrás de CGNAT) |
 | `has_adult_content_protection` | No          | Boolean                        | Si se bloquean los correos enviados con enlaces a un sitio que el filtro familiar de Cloudflare bloquea por contenido para adultos o malware (valor predeterminado: `false`)                                                                                                              |
 | `has_phishing_protection`      | No          | Boolean                        | Obsoleto e ignorado                                                                                                                                                                                                                                                                         |
 | `has_executable_protection`    | No          | Boolean                        | Si se bloquean los correos enviados con archivos adjuntos ejecutables, como archivos .exe, .js o .bat (valor predeterminado: `true`)                                                                                                                                                       |

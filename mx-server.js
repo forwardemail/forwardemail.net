@@ -28,6 +28,7 @@ const onConnect = require('#helpers/on-connect');
 const onData = require('#helpers/on-data');
 const onMailFrom = require('#helpers/on-mail-from');
 const onRcptTo = require('#helpers/on-rcpt-to');
+const tunnel = require('#helpers/tunnel');
 
 const MAX_BYTES = bytes(env.SMTP_MESSAGE_MAX_SIZE);
 
@@ -138,6 +139,7 @@ class MX {
   }
 
   async close() {
+    tunnel.close(this.client);
     await pify(this.server.close).bind(this.server);
   }
 }

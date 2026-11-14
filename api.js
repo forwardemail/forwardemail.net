@@ -20,6 +20,7 @@ const ip = require('ip');
 const API = require('./api-server');
 
 const ApiWebSocketHandler = require('#helpers/api-websocket-handler');
+const TunnelWebSocketHandler = require('#helpers/tunnel-websocket-handler');
 const Users = require('#models/users');
 const { useRevocationClient } = require('#helpers/credential-revocation');
 const apiConfig = require('#config/api');
@@ -44,7 +45,14 @@ const wsHandler = new ApiWebSocketHandler({
   server: api.server,
   client: api.client,
   instance: api,
-  resolver: api.app.context.resolver
+  resolver: api.app.context.resolver,
+  hasTunnel: true
+});
+
+// Attach the Mail Server Tunnel handler (for mail servers behind CGNAT)
+const tunnelHandler = new TunnelWebSocketHandler({
+  server: api.server,
+  client: api.client
 });
 
 const graceful = new Graceful({
@@ -55,7 +63,8 @@ const graceful = new Graceful({
     () => {
       api.isClosing = true;
     },
-    () => wsHandler.close()
+    () => wsHandler.close(),
+    () => tunnelHandler.close()
   ],
   logger
 });

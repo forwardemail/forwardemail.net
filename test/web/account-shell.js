@@ -647,3 +647,68 @@ test('breadcrumbs show the name of a domain as it is', async (t) => {
   // the other parts are still worded
   t.true(crumbs(document).includes('My Account'));
 });
+
+test('a domain with a Mail Server Tunnel shows it in the list and in its advanced settings', async (t) => {
+  await Users.updateOne(
+    { _id: t.context.user._id },
+    { $set: { plan: 'enhanced_protection' } }
+  );
+  const state = {
+    plan: 'enhanced_protection',
+    has_mx_record: true,
+    has_txt_record: true
+  };
+  const tunneled = await makeDomain(t, { ...state, has_tunnel: true });
+  const plain = await makeDomain(t, state);
+
+  const list = await get(t, '/en/my-account/domains');
+  const badges = [...list.querySelectorAll('a.badge')].filter((a) =>
+    a.textContent.includes('Tunnel Enabled')
+  );
+  t.is(badges.length, 1);
+  t.true(
+    badges[0].href.endsWith(
+      `/my-account/domains/${tunneled.name}/advanced-settings#mail-server-tunnel`
+    )
+  );
+  t.false(badges[0].href.includes(plain.name));
+
+  // the setting itself, checked for the one and not for the other
+  const on = await get(
+    t,
+    `/en/my-account/domains/${tunneled.name}/advanced-settings`
+  );
+  t.true(on.querySelector('#mail-server-tunnel #input-has-tunnel').checked);
+  const off = await get(
+    t,
+    `/en/my-account/domains/${plain.name}/advanced-settings`
+  );
+  t.false(off.querySelector('#mail-server-tunnel #input-has-tunnel').checked);
+
+  // and "On this page" leads to it
+  t.true(
+    [...on.querySelectorAll('nav.acct-jump a')].some(
+      (a) =>
+        a.getAttribute('href') === '#mail-server-tunnel' &&
+        a.textContent === 'Mail Server Tunnel'
+    )
+  );
+});
+
+test('profile and security list their sections under "On this page"', async (t) => {
+  for (const path of ['/en/my-account/profile', '/en/my-account/security']) {
+    const page = await get(t, path);
+    const links = [...page.querySelectorAll('nav.acct-jump a')];
+    t.true(links.length >= 3);
+    // each one leads to a section that is on the page
+    for (const link of links) {
+      const id = link.getAttribute('href').slice(1);
+      const section = page.querySelector(`#${id}`);
+      t.truthy(section);
+      t.is(
+        section.querySelector('.card-header').textContent.trim(),
+        link.textContent.trim()
+      );
+    }
+  }
+});

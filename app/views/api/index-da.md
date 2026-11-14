@@ -55,6 +55,8 @@
   * [Hent domæne](#retrieve-domain)
   * [Verificer domæneposter](#verify-domain-records)
   * [Verificer domæne SMTP-poster](#verify-domain-smtp-records)
+  * [Hent status for Mail Server Tunnel](#get-mail-server-tunnel-status)
+  * [Kør en IMAP-kommando gennem Mail Server Tunnel](#run-an-imap-command-through-the-mail-server-tunnel)
   * [List domæne-dækkende catch-all adgangskoder](#list-domain-wide-catch-all-passwords)
   * [Opret domæne-dækkende catch-all adgangskode](#create-domain-wide-catch-all-password)
   * [Fjern domæne-dækkende catch-all adgangskode](#remove-domain-wide-catch-all-password)
@@ -689,6 +691,36 @@ curl BASE_URI/v1/domains/DOMAIN_NAME/verify-smtp \
   -u API_TOKEN:
 ```
 
+### Hent status for Mail Server Tunnel {#get-mail-server-tunnel-status}
+
+> `GET /v1/domains/DOMAIN_NAME/tunnel`
+
+Returnerer, om appen Mail Server Tunnel for domænet er forbundet, og om den kan nå din mailserver.
+
+> Eksempel på forespørgsel:
+
+```sh
+curl BASE_URI/v1/domains/DOMAIN_NAME/tunnel \
+  -u API_TOKEN:
+```
+
+### Kør en IMAP-kommando gennem Mail Server Tunnel {#run-an-imap-command-through-the-mail-server-tunnel}
+
+> `POST /v1/domains/DOMAIN_NAME/tunnel/imap`
+
+Kører én IMAP-kommando mod mailserveren bag tunnelen. Fjernadgang til postkassen skal være slået til i appen. Postkassens brugernavn og adgangskode sendes videre og gemmes ikke.
+
+`command`: `list`, `status`, `search`, `fetch`, `download`, `flags`, `move`, `copy`, `delete`, `append`, `mailboxCreate`, `mailboxRename`, `mailboxDelete`
+
+> Eksempel på forespørgsel:
+
+```sh
+curl -X POST BASE_URI/v1/domains/DOMAIN_NAME/tunnel/imap \
+  -u API_TOKEN: \
+  -H "Content-Type: application/json" \
+  -d '{"command":"fetch","username":"EMAIL","password":"PASSWORD","args":{"path":"INBOX","range":"1:*"}}'
+```
+
 ### Liste over domænedækkende catch-all adgangskoder {#list-domain-wide-catch-all-passwords}
 
 > `GET /v1/domains/DOMAIN_NAME/catch-all-passwords`
@@ -734,6 +766,7 @@ curl -X DELETE BASE_URI/v1/domains/:domain_name/catch-all-passwords/:token_id \
 | Body Parameter                 | Påkrævet | Type                            | Beskrivelse                                                                                                                                                                                                                                                                                   |
 | ------------------------------ | -------- | ------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `smtp_port`                    | Nej      | String eller Number             | Brugerdefineret port til konfiguration af SMTP-videresendelse (standard er `"25"`)                                                                                                                                                                                                            |
+| `has_tunnel` | Nej | Boolean | Lever mail til adresser uden postkasse eller videresendelse til din egen mailserver gennem appen Mail Server Tunnel (til servere bag CGNAT) |
 | `has_adult_content_protection` | Nej      | Boolean                        | Om sendte e-mails med links til et websted, som Cloudflares familiefilter blokerer for voksenindhold eller malware, skal blokeres (standard er `false`)                                                                                                                                       |
 | `has_phishing_protection`      | Nej      | Boolean                        | Forældet og ignoreres                                                                                                                                                                                                                                                                         |
 | `has_executable_protection`    | Nej      | Boolean                        | Om sendte e-mails med eksekverbare vedhæftede filer som .exe-, .js- eller .bat-filer skal blokeres (standard er `true`)                                                                                                                                                                       |

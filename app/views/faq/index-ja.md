@@ -46,6 +46,7 @@
   * [バックアップに自分のS3互換ストレージを使うには](#how-do-i-use-my-own-s3-compatible-storage-for-backups)
   * [SQLiteバックアップをEMLファイルに変換する方法](#how-do-i-convert-sqlite-backups-to-eml-files)
   * [セルフホスティングはサポートしていますか](#do-you-support-self-hosting)
+  * [CGNATやStarlinkの環境でメールサーバーをセルフホストできますか](#can-i-self-host-a-mail-server-behind-cgnat-or-starlink)
 * [メール設定](#email-configuration)
   * [メール転送の開始と設定方法](#how-do-i-get-started-and-set-up-email-forwarding)
   * [複数のMX交換機とサーバーを使った高度な転送は可能ですか](#can-i-use-multiple-mx-exchanges-and-servers-for-advanced-forwarding)
@@ -1430,6 +1431,10 @@ EMLファイルはメールボックスのフォルダごとに整理されて�
 ### セルフホスティングは対応していますか {#do-you-support-self-hosting}
 
 はい、2025年3月現在、セルフホスティングオプションをサポートしています。ブログは[こちら](https://forwardemail.net/blog/docs/self-hosted-solution)をご覧ください。開始するには[セルフホストガイド](https://forwardemail.net/self-hosted)を参照してください。より詳細なステップバイステップ版を希望される方は、[Ubuntu](https://forwardemail.net/guides/selfhosted-on-ubuntu)または[Debian](https://forwardemail.net/guides/selfhosted-on-debian)ベースのガイドをご覧ください。
+
+### CGNATやStarlinkの環境でメールサーバーをセルフホストできますか {#can-i-self-host-a-mail-server-behind-cgnat-or-starlink}
+
+はい。Starlink、5Gホームインターネット、その他CGNATを使うプロバイダーは着信接続とポート25をブロックするため、自宅のメールサーバーは直接メールを受信できません。当社のアプリ Mail Server Tunnel は当社への発信接続を開いたままにし、お客様のドメイン宛てのメールをお客様自身のサーバーに配送します。ポート転送、固定IPアドレス、VPN、VPSは不要です。アプリがオフラインの場合、送信者は一時的な421応答を受け取って再試行するため、メールは失われません。[ガイド](https://forwardemail.net/guides/self-hosted-mail-server-behind-cgnat)または[Starlinkのページ](https://forwardemail.net/starlink)をご覧ください。 ドメインは有料プランに加入し、先にTXTレコードの検証に合格している必要があります。これにより、別のアカウントがお客様のメールを受信することを防ぎます。
 
 
 ## メール設定 {#email-configuration}

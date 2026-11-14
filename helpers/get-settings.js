@@ -57,6 +57,8 @@ async function getSettings(name, resolver, locale = i18n.config.defaultLocale) {
     let allowlist = [];
     let denylist = [];
     let webhookKey;
+    let hasTunnel = false;
+    let tunnelId;
 
     for (const element of records) {
       const record = element.join('').trim(); // join chunks together
@@ -80,7 +82,7 @@ async function getSettings(name, resolver, locale = i18n.config.defaultLocale) {
         verification_record: verifications[0]
       })
         .select(
-          'plan allowlist denylist smtp_port has_adult_content_protection has_executable_protection require_tls_inbound webhook_key'
+          'plan allowlist denylist smtp_port has_adult_content_protection has_executable_protection require_tls_inbound webhook_key has_tunnel'
         )
         .lean()
         .exec();
@@ -91,6 +93,10 @@ async function getSettings(name, resolver, locale = i18n.config.defaultLocale) {
           domain.has_adult_content_protection === true;
         hasExecutableProtection = domain.has_executable_protection !== false;
         requireTlsInbound = domain.require_tls_inbound === true;
+        hasTunnel = domain.has_tunnel === true;
+        // (of the domain this TXT record verifies, and of no other domain of
+        // the same name, see `helpers/tunnel-websocket-handler.js`)
+        if (hasTunnel) tunnelId = domain._id.toString();
         webhookKey = domain.webhook_key;
         //
         // if domain does not yet have a webhook key then create one for it
@@ -149,7 +155,9 @@ async function getSettings(name, resolver, locale = i18n.config.defaultLocale) {
       require_tls_inbound: requireTlsInbound,
       allowlist,
       denylist,
-      webhook_key: webhookKey
+      webhook_key: webhookKey,
+      has_tunnel: hasTunnel,
+      tunnel_id: tunnelId
     };
   } catch (err) {
     // if the error is already a Boom error, re-throw it directly

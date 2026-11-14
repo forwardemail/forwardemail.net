@@ -46,6 +46,7 @@
   * [Hvordan bruger jeg min egen S3-kompatible lagerplads til sikkerhedskopier](#how-do-i-use-my-own-s3-compatible-storage-for-backups)
   * [Hvordan konverterer jeg SQLite-sikkerhedskopier til EML-filer](#how-do-i-convert-sqlite-backups-to-eml-files)
   * [Understøtter I selvhosting](#do-you-support-self-hosting)
+  * [Kan jeg selv hoste en mailserver bag CGNAT eller Starlink](#can-i-self-host-a-mail-server-behind-cgnat-or-starlink)
 * [Email Konfiguration](#email-configuration)
   * [Hvordan kommer jeg i gang og opsætter email videresendelse](#how-do-i-get-started-and-set-up-email-forwarding)
   * [Kan jeg bruge flere MX-udvekslinger og servere til avanceret videresendelse](#can-i-use-multiple-mx-exchanges-and-servers-for-advanced-forwarding)
@@ -1430,6 +1431,10 @@ EML-filer er organiseret efter postkassemappe. ZIP-adgangskoden er den samme som
 ### Do you support self-hosting {#do-you-support-self-hosting}
 
 Ja, fra marts 2025 understøtter vi en selvhostet mulighed. Læs bloggen [her](https://forwardemail.net/blog/docs/self-hosted-solution). Se [selvhostet guide](https://forwardemail.net/self-hosted) for at komme i gang. Og for dem, der er interesserede i en mere opdelt trin-for-trin version, se vores [Ubuntu](https://forwardemail.net/guides/selfhosted-on-ubuntu) eller [Debian](https://forwardemail.net/guides/selfhosted-on-debian) baserede guider.
+
+### Kan jeg selv hoste en mailserver bag CGNAT eller Starlink {#can-i-self-host-a-mail-server-behind-cgnat-or-starlink}
+
+Ja. Starlink, 5G-hjemmeinternet og andre udbydere, der bruger CGNAT, blokerer indgående forbindelser og port 25, så en mailserver derhjemme kan ikke modtage mail direkte. Vores app Mail Server Tunnel holder en udgående forbindelse åben til os og leverer mail for dit domæne til din egen server, uden portvideresendelse, statisk IP-adresse, VPN eller VPS. Hvis appen er offline, får afsendere et midlertidigt 421-svar og prøver igen, så mail går ikke tabt. Læs [guiden](https://forwardemail.net/guides/self-hosted-mail-server-behind-cgnat) eller se vores [Starlink-side](https://forwardemail.net/starlink). Dit domæne skal have et betalt abonnement og først bestå TXT-postbekræftelsen, hvilket forhindrer en anden konto i at modtage din post.
 
 
 ## Email Configuration {#email-configuration}

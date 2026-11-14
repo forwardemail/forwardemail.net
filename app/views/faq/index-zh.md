@@ -46,6 +46,7 @@
   * [如何使用我自己的兼容 S3 的存储进行备份](#how-do-i-use-my-own-s3-compatible-storage-for-backups)
   * [如何将 SQLite 备份转换为 EML 文件](#how-do-i-convert-sqlite-backups-to-eml-files)
   * [你们支持自托管吗](#do-you-support-self-hosting)
+  * [我可以在 CGNAT 或 Starlink 后面自托管邮件服务器吗](#can-i-self-host-a-mail-server-behind-cgnat-or-starlink)
 * [电子邮件配置](#email-configuration)
   * [如何开始并设置邮件转发](#how-do-i-get-started-and-set-up-email-forwarding)
   * [我可以使用多个 MX 交换和服务器进行高级转发吗](#can-i-use-multiple-mx-exchanges-and-servers-for-advanced-forwarding)
@@ -1428,6 +1429,10 @@ EML 文件按邮箱文件夹组织。ZIP 密码与您的 IMAP/别名密码相同
 ### 是否支持自托管 {#do-you-support-self-hosting}
 
 是的，截至 2025 年 3 月，我们支持自托管选项。请阅读博客 [这里](https://forwardemail.net/blog/docs/self-hosted-solution)。查看 [自托管指南](https://forwardemail.net/self-hosted) 以开始使用。对于想要更详细分步骤版本的用户，请参阅我们的 [Ubuntu](https://forwardemail.net/guides/selfhosted-on-ubuntu) 或 [Debian](https://forwardemail.net/guides/selfhosted-on-debian) 基础指南。
+
+### 我可以在 CGNAT 或 Starlink 后面自托管邮件服务器吗 {#can-i-self-host-a-mail-server-behind-cgnat-or-starlink}
+
+可以。Starlink、5G 家庭宽带以及其他使用 CGNAT 的运营商会阻止入站连接和 25 端口，因此家中的邮件服务器无法直接接收邮件。我们的 Mail Server Tunnel 应用会保持一条通往我们的出站连接，并将您域名的邮件投递到您自己的服务器，无需端口转发、静态 IP 地址、VPN 或 VPS。如果应用离线，发件方会收到临时的 421 响应并重试，因此邮件不会丢失。请阅读[指南](https://forwardemail.net/guides/self-hosted-mail-server-behind-cgnat)或查看我们的 [Starlink 页面](https://forwardemail.net/starlink)。 您的域名必须使用付费套餐并先通过 TXT 记录验证，这可以防止其他账户接收您的邮件。
 
 ## 邮件配置 {#email-configuration}
 

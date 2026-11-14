@@ -130,3 +130,52 @@ test('FAQ topic titles and questions link to themselves', async (t) => {
     )
   );
 });
+
+test('GET /:locale/starlink', async (t) => {
+  const { web } = t.context;
+  const res = await web.get('/en/starlink');
+
+  t.is(res.status, 200);
+  t.assert(res.text.includes('Self-Hosted Email Server on Starlink'));
+  t.assert(
+    res.text.includes('/en/guides/self-hosted-mail-server-behind-cgnat')
+  );
+  // (its title and description for search engines, see config/meta.js)
+  t.regex(
+    res.text,
+    /<title>Starlink Email Server - Self-Hosted Mail Behind CGNAT/
+  );
+});
+
+test('GET /:locale/guides/self-hosted-mail-server-behind-cgnat', async (t) => {
+  const { web } = t.context;
+  const res = await web.get('/en/guides/self-hosted-mail-server-behind-cgnat');
+
+  t.is(res.status, 200);
+  t.assert(res.text.includes('Self-Hosted Mail Server Behind CGNAT'));
+  t.assert(res.text.includes('mail-server-tunnel doctor'));
+  t.assert(res.text.includes('mx1.forwardemail.net'));
+  // (the TXT verification record is what keeps mail with its owner)
+  t.assert(res.text.includes('forward-email-site-verification='));
+  t.assert(res.text.includes('The TXT verification record is required.'));
+  // the guide is listed in the navbar and the footer of every page
+  const home = await web.get('/en/privacy');
+  t.assert(
+    home.text.includes('/en/guides/self-hosted-mail-server-behind-cgnat')
+  );
+  t.assert(home.text.includes('/en/starlink'));
+});
+
+test('FAQ answers whether a mail server can be self-hosted behind CGNAT', async (t) => {
+  const { web } = t.context;
+  for (const locale of ['en', 'de', 'ja']) {
+    const res = await web.get(`/${locale}/faq`);
+    t.is(res.status, 200);
+    t.assert(
+      res.text.includes(
+        'id="can-i-self-host-a-mail-server-behind-cgnat-or-starlink"'
+      )
+    );
+    t.assert(res.text.includes('/guides/self-hosted-mail-server-behind-cgnat'));
+  }
+});

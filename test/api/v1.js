@@ -107,6 +107,7 @@ const keys = _.sortBy([
   'has_custom_s3',
   's3_region',
   'require_tls_inbound',
+  'has_tunnel',
   'id',
   'object',
   'created_at',
