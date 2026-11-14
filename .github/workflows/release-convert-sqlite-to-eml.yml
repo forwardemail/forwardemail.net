@@ -26,7 +26,7 @@ jobs:
           - os: ubuntu-24.04-arm
             target: linux-arm64
             artifact: convert-sqlite-to-eml-linux-arm64
-          - os: macos-14
+          - os: macos-15
             target: darwin-arm64
             artifact: convert-sqlite-to-eml-darwin-arm64
           - os: windows-latest
