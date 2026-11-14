@@ -339,7 +339,7 @@
     "@ladjs/pug-lint-config-lad": "0.1.1",
     "@prettier/plugin-pug": "2.5.1",
     "@ronilaukkarinen/gulp-stylelint": "14.1.2",
-    "ava": "5.3.1",
+    "ava": "8.3.0",
     "axios": "1.20.0",
     "babel-eslint": "10.1.0",
     "browserify": "17.0.0",
