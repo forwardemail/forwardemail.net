@@ -46,7 +46,7 @@ graceful.listen();
 // this uses in-memory Map cache for optimization
 const resolver = new Tangerine({
   logger,
-  servers: ['1.1.1.1', '8.8.8.8', '1.0.0.1', '8.8.4.4']
+  servers: ['8.8.8.8', '8.8.4.4', '1.1.1.1', '1.0.0.1']
 });
 
 async function checkDate(date) {

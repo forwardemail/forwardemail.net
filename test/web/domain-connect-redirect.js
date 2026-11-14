@@ -92,8 +92,8 @@ test.beforeEach(async (t) => {
   t.context.dispatcher = getGlobalDispatcher();
   const agent = new MockAgent();
   agent
-    .get('https://cloudflare-dns.com')
-    .intercept({ path: /^\/dns-query/, method: 'GET' })
+    .get('https://dns.google')
+    .intercept({ path: /^\/resolve/, method: 'GET' })
     .reply(200, { Answer: [{ data: `"${PROVIDER}"` }] })
     .persist();
   setGlobalDispatcher(agent);

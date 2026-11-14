@@ -446,7 +446,7 @@ EOF
 }
 
 update_dns_resolvers() {
-  # lots of issues with local resolvers for some cloud providers, so use cloudflare by default
+  # lots of issues with local resolvers for some cloud providers, so use google by default (cloudflare as fallback)
   # this directly affects certbot setup and acme-challenge txt record checks
   if systemctl is-active --quiet systemd-resolved; then
     rm /etc/resolv.conf
@@ -456,14 +456,15 @@ update_dns_resolvers() {
   fi
 
   tee /etc/resolv.conf > /dev/null <<EOF
-nameserver 1.1.1.1
-nameserver 2606:4700:4700::1111
-nameserver 1.0.0.1
-nameserver 2606:4700:4700::1001
 nameserver 8.8.8.8
-nameserver 2001:4860:4860::8888
 nameserver 8.8.4.4
+nameserver 1.1.1.1
+nameserver 2001:4860:4860::8888
 nameserver 2001:4860:4860::8844
+nameserver 1.0.0.1
+nameserver 2606:4700:4700::1111
+nameserver 2606:4700:4700::1001
+options timeout:2 attempts:2
 EOF
 }
 

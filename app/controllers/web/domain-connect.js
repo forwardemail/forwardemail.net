@@ -65,10 +65,10 @@ const TRUSTED_PROVIDER_HOSTS = new Set(
 );
 
 // Discover the Domain Connect API base URL for a domain via DNS-over-HTTPS
-// Queries _domainconnect.<domain> TXT record via Cloudflare DoH
+// Queries _domainconnect.<domain> TXT record via Google DoH
 async function discoverDomainConnectUrl(domain, resolver) {
   try {
-    const url = `https://cloudflare-dns.com/dns-query?name=_domainconnect.${encodeURIComponent(
+    const url = `https://dns.google/resolve?name=_domainconnect.${encodeURIComponent(
       domain
     )}&type=TXT`;
     const { body, statusCode } = await undici.request(url, {

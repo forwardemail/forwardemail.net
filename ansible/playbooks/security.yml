@@ -2660,15 +2660,20 @@
     # https://github.com/Oefenweb/ansible-dns
     - role: dns
       dns_nameservers:
-        # cloudflare and google (ipv4/ipv6 and rotated)
-        - 1.1.1.1
-        - 2606:4700:4700::1111
-        - 1.0.0.1
-        - 2606:4700:4700::1001
+        # google (primary) and cloudflare (fallback)
+        # NOTE: glibc only reads the first three nameservers
         - 8.8.8.8
-        - 2001:4860:4860::8888
         - 8.8.4.4
+        - 1.1.1.1
+        - 2001:4860:4860::8888
         - 2001:4860:4860::8844
+        - 1.0.0.1
+        - 2606:4700:4700::1111
+        - 2606:4700:4700::1001
+      # fail over to the next nameserver after 2s (default is 5s)
+      dns_options:
+        - timeout:2
+        - attempts:2
 
     # NOTE: NTP is now handled by chrony (imported via chrony-timesync.yml above)
     # The legacy oefenweb.ntp role (ntpd) has been removed because:
