@@ -40,7 +40,13 @@ function hasSystemd() {
 
 // Whether this is the standalone executable (and not `node index.js`)
 export function isStandalone() {
-  return !/^node(\.exe)?$/i.test(path.basename(process.execPath));
+  // (asked of Node.js itself: its own executable goes by many names, e.g.
+  // nodejs or node22, and the app's can be renamed)
+  try {
+    return process.getBuiltinModule?.('node:sea')?.isSea() === true;
+  } catch {
+    return false;
+  }
 }
 
 // Where the executable is kept, so that it survives the Downloads folder

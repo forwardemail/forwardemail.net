@@ -211,30 +211,56 @@ alias_database =
       path.join(conf, 'passwd'),
       `${MAILBOX}:{PLAIN}${PASSWORD}\n`
     );
+    // (Dovecot 2.4 has settings of its own for all of this)
+    const version = execFileSync('dovecot', ['--version']).toString();
+    const isLegacy = /^2\.[0-3]\./.test(version);
+    const mailbox = isLegacy
+      ? `${vmail}/%d/%n`
+      : `${vmail}/%{user | domain}/%{user | username}`;
+    const log = path.join(root, 'dovecot.log');
     fs.writeFileSync(
       dovecotConf,
-      `base_dir = ${run}
-state_dir = ${run}
-log_path = ${path.join(root, 'dovecot.log')}
-protocols = imap lmtp
-listen = 127.0.0.1
-ssl = no
-disable_plaintext_auth = no
-auth_mechanisms = plain login
-mail_location = maildir:${vmail}/%d/%n
-first_valid_uid = 1
-first_valid_gid = 1
-default_internal_user = dovecot
-default_login_user = dovenull
+      `${
+        isLegacy
+          ? `disable_plaintext_auth = no
+mail_location = maildir:${mailbox}
 passdb {
   driver = passwd-file
   args = ${path.join(conf, 'passwd')}
 }
 userdb {
   driver = static
-  args = uid=${mail.uid} gid=${mail.gid} home=${vmail}/%d/%n
+  args = uid=${mail.uid} gid=${mail.gid} home=${mailbox}
+}`
+          : `dovecot_config_version = 2.4.0
+dovecot_storage_version = 2.4.0
+auth_allow_cleartext = yes
+mail_driver = maildir
+mail_path = ${mailbox}
+passdb passwd-file {
+  passwd_file_path = ${path.join(conf, 'passwd')}
 }
+userdb static {
+  fields {
+    uid = ${mail.uid}
+    gid = ${mail.gid}
+    home = ${mailbox}
+  }
+}`
+      }
+base_dir = ${run}
+state_dir = ${run}
+log_path = ${log}
+protocols = imap lmtp
+listen = 127.0.0.1
+ssl = no
+auth_mechanisms = plain login
+first_valid_uid = 1
+first_valid_gid = 1
+default_internal_user = dovecot
+default_login_user = dovenull
 service imap-login {
+  chroot =
   inet_listener imap {
     port = ${imapPort}
   }
@@ -244,25 +270,29 @@ service imap-login {
 }
 service lmtp {
   inet_listener lmtp {
-    address = 127.0.0.1
+    ${isLegacy ? 'address' : 'listen'} = 127.0.0.1
     port = ${lmtpPort}
   }
 }
 service anvil {
   chroot =
 }
-service imap-login {
-  chroot =
-}
 `
     );
-    // (its daemon keeps the output open, so none is read)
+    // (its daemon keeps the output open, so it goes to a file)
+    const output = fs.openSync(path.join(root, 'dovecot.out'), 'w');
     const result = spawnSync('dovecot', ['-c', dovecotConf], {
-      stdio: 'ignore'
+      stdio: ['ignore', output, output]
     });
+    fs.closeSync(output);
     if (result.status !== 0) {
+      const read = (file) =>
+        fs.existsSync(file) ? fs.readFileSync(file, 'utf8').trim() : '';
+      const reason = [read(path.join(root, 'dovecot.out')), read(log)]
+        .filter(Boolean)
+        .join('\n');
       server.stop();
-      throw new Error('Dovecot did not start');
+      throw new Error(`Dovecot ${version.trim()} did not start: ${reason}`);
     }
 
     await waitForPort(imapPort);

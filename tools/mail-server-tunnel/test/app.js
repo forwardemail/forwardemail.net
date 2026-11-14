@@ -61,7 +61,13 @@ test.beforeEach((t) => {
 
 test.afterEach.always(async (t) => {
   for (const fn of t.context.cleanup.reverse()) await fn();
-  fs.rmSync(t.context.directory, { recursive: true, force: true });
+  // (on Windows the log of an app that has just ended is let go of late)
+  fs.rmSync(t.context.directory, {
+    recursive: true,
+    force: true,
+    maxRetries: 20,
+    retryDelay: 100
+  });
 });
 
 // A local mail server that stores what it is sent
