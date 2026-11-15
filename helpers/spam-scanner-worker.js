@@ -218,6 +218,22 @@ function clip(value, max) {
 
 const MAX_NAME = 255;
 
+// the host of an address a link shows or goes to ("www.example.com/x" and
+// "https://www.example.com/x" give "www.example.com"), or null (also for
+// one too long to be read whole)
+function hostOf(address) {
+  if (typeof address !== 'string' || address.length > 2048) return null;
+  const text = address.trim();
+  try {
+    const { hostname } = new URL(
+      /^[a-z][a-z\d+.-]*:\/\//i.test(text) ? text : `http://${text}`
+    );
+    return clip(hostname, MAX_NAME) || null;
+  } catch {
+    return null;
+  }
+}
+
 // the bidirectional controls, and those that reverse the text after them
 // (left-to-right and right-to-left override), which hide an extension; the
 // others (embeddings and isolates) are written by mail clients around names
@@ -366,10 +382,13 @@ function summarize(result, { started, withLlm, timedOut }) {
   const finding = (item) => ({
     type: item.type || null,
     // (not a deceptive link's, which quotes the text it shows, from the
-    //  message's body)
+    //  message's body: only the host that text names and the host the link
+    //  goes to)
     message:
       item.type === 'deceptive_link'
-        ? 'A link shows one address but goes to another'
+        ? `A link shows ${hostOf(item.text) || 'one address'} but goes to ${
+            hostOf(item.url) || 'another'
+          }`
         : clip(item.message || item, MAX_MESSAGE),
     ...(item.name ? { name: clip(item.name, MAX_NAME) } : {}),
     ...(item.filename ? { filename: clip(item.filename, MAX_NAME) } : {}),

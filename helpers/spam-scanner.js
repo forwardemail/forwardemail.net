@@ -1217,6 +1217,24 @@ function sessionFields(session = {}) {
   };
 }
 
+// what is logged of the MX server's authentication of a message (null for
+// outbound mail, which has none): its results, the From domain's DMARC
+// policy, whether a signature of the From domain passed, and whether a
+// trusted forwarder's ARC seal passed, which tell a forged From address from
+// a forwarded message
+function authFields(session = {}) {
+  if (!getAuthenticationResults(session)) return null;
+  const result = (value) => printable(value?.status?.result, 20) ?? null;
+  return {
+    spf: result(session.spf),
+    dkim_aligned: Boolean(session.hadAlignedAndPassingDKIM),
+    dmarc: result(session.dmarc),
+    dmarc_policy: printable(session.dmarc?.policy, 20) ?? null,
+    arc: result(session.arc),
+    arc_trusted: Boolean(session.isTrustedArc)
+  };
+}
+
 // (each domain converted once, not once for each recipient: a message may
 //  have a thousand)
 function recipientDomains(rcptTo) {
@@ -1240,7 +1258,8 @@ function recipientDomains(rcptTo) {
 
 //
 // What is written to the console for a message the scanner would mark as
-// spam: the verdict and its tests, the client, the sender (envelope and From
+// spam: the verdict and its tests, the hosts of its deceptive links, the MX
+// server's authentication results, the client, the sender (envelope and From
 // header), the subject without one-time codes, and the recipients' domains;
 // never the body
 //
@@ -1270,6 +1289,12 @@ function logResult(summary, session = {}, blocking = [], options = {}) {
     tests: summary.tests
       .filter((test) => test.score !== 0)
       .map((test) => `${test.name}=${test.score}`),
+    // (the first links that show one host and go to another, by their hosts)
+    links: (summary.findings?.phishing || [])
+      .filter((item) => item.type === 'deceptive_link')
+      .slice(0, 5)
+      .map((item) => item.message),
+    auth: authFields(session),
     language: summary.language,
     llm: summary.llm
       ? {
@@ -1334,6 +1359,10 @@ function getAuthenticationResults(session = {}) {
       ? { result: value.status.result }
       : null;
   const string = (value) => (typeof value === 'string' ? value : undefined);
+  // (how much of the body a signature leaves unsigned, with a body length,
+  //  "l=", shorter than the body: Spam Scanner gives such a signature, and a
+  //  DMARC pass that rests on one alone, no credit)
+  const number = (value) => (typeof value === 'number' ? value : undefined);
   if (
     !status(session.spf) &&
     !status(session.dmarc) &&
@@ -1354,15 +1383,32 @@ function getAuthenticationResults(session = {}) {
         .map((entry) => ({
           status: {
             result: entry.status.result,
-            aligned: string(entry.status.aligned)
+            aligned: string(entry.status.aligned),
+            underSized: number(entry.status.underSized)
           },
           signingDomain: string(entry.signingDomain)
         }))
     },
+    // (without the policy Spam Scanner would count a failure by, so each
+    //  counts in full: the MX server has rejected most mail that fails a
+    //  policy of quarantine or reject by now, and what is left, failing a
+    //  policy of none, is mostly mail with a forged From address;
+    //  `authFields` logs the policy, to tell by)
     dmarc: {
       status: status(session.dmarc) || { result: 'none' },
       domain: string(session.dmarc?.domain),
-      p: string(session.dmarc?.p)
+      p: string(session.dmarc?.p),
+      ...(session.dmarc?.alignment
+        ? {
+            alignment: {
+              dkim: {
+                result: string(session.dmarc.alignment.dkim?.result),
+                underSized: number(session.dmarc.alignment.dkim?.underSized)
+              },
+              spf: { result: string(session.dmarc.alignment.spf?.result) }
+            }
+          }
+        : {})
     },
     arc: { status: status(session.arc) || { result: 'none' } }
   };
@@ -1387,7 +1433,9 @@ function snapshot(session) {
     ...(session.spf ? { spf: session.spf } : {}),
     ...(session.dkim ? { dkim: session.dkim } : {}),
     ...(session.dmarc ? { dmarc: session.dmarc } : {}),
-    ...(session.arc ? { arc: session.arc } : {})
+    ...(session.arc ? { arc: session.arc } : {}),
+    hadAlignedAndPassingDKIM: session.hadAlignedAndPassingDKIM,
+    isTrustedArc: session.isTrustedArc
   };
 }
 

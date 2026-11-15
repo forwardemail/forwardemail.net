@@ -39,7 +39,7 @@ The exception is what outbound mail was already refused for before Spam Scanner 
 * `SPAM_SCANNER_MX_PERCENT` of inbound mail is scanned (10 by default, each message picked at random). Change it and restart the MX servers to scan more or less.
 * The scan runs while the recipients are looked up. In monitor mode the MX server waits at most `SPAM_SCANNER_MX_WAIT` (1 second) for it, then delivers without its headers while the scan finishes and is logged.
 * A scanned message gets `X-Spam-Scanner-Version`, `-Flag`, `-Score`, `-Action`, `-Status`, `-Language` and `-LLM` headers. These replace any a sender added. The standard `X-Spam-*` headers are added only out of monitor mode.
-* The MX server's SPF, DKIM, DMARC and ARC results count toward the score.
+* The MX server's SPF, DKIM, DMARC and ARC results count toward the score. A DMARC failure counts in full whatever the domain's policy: the MX server has already rejected most mail that fails a policy of quarantine or reject. A sender that passes DMARC is not scored for showing its own address over a tracking link, or for invisible characters and styled letters; showing a brand's address that is not its own still counts.
 * Inbound mail is scanned with the default settings, whatever the recipient's domain has set.
 
 ### Outbound mail
@@ -157,7 +157,7 @@ All are in `.env.defaults` and `.env.schema`. A duration under 100 ms (such as `
 
 Spam Scanner writes to the console (pm2's logs), not to the Logs collection:
 
-* `[SPAM_SCANNER] <verdict> {…}`: a message it would mark as spam, reject or block, with the score and tests, blocking findings, the language model's verdict, the client, the envelope sender, the From address, the subject (codes and addresses redacted, links reduced to their host), the recipient domains, and where it was scanned (`received`, `submitted` or `sending`). The body is never logged. These lines are for the monitor-mode trial run.
+* `[SPAM_SCANNER] <verdict> {…}`: a message it would mark as spam, reject or block, with the score and tests, the hosts of links that show one address and go to another, the MX server's authentication results (with the DMARC policy, and whether a trusted forwarder's ARC seal passed), blocking findings, the language model's verdict, the client, the envelope sender, the From address, the subject (codes and addresses redacted, links reduced to their host), the recipient domains, and where it was scanned (`received`, `submitted` or `sending`). The body is never logged. These lines are for the monitor-mode trial run.
 * `[SPAM_SCANNER] stats {…}`: every minute per process. It shows, by where mail was scanned, how many scans were made, not picked, skipped, expired, timed out, stopped and failed, the spam and blocking verdicts, scan times (average, median, p95, p99, slowest; waiting, on the worker, the language model), and errors and warnings.
 * Warnings (scans skipped or timed out, the language model, unchecked mail) and errors are written once a minute at most, with a count.
 * `[ARF]`: abuse reports read.

@@ -452,6 +452,138 @@ test('a From domain the MX server could not authenticate counts toward the score
   t.true(scan.score > plain.score);
 });
 
+// what it gives for a message that passes DMARC for `domain`
+const authenticated = (domain) => ({
+  spf: { status: { result: 'pass' }, domain },
+  dkim: {
+    results: [
+      { signingDomain: domain, status: { result: 'pass', aligned: domain } }
+    ]
+  },
+  dmarc: { status: { result: 'pass' }, domain, p: 'none', policy: 'none' },
+  arc: { status: { result: 'none' } }
+});
+
+test('a sender that passes DMARC may show its own address over a tracking link, but not the address of a brand', async (t) => {
+  captureSpamScannerLog(t);
+  const deceptive = async (lines, auth) => {
+    const scan = await spamScanner.scan(message(lines), {
+      session: { ...session, ...auth },
+      client
+    });
+    return scan.tests.some((item) => item.name === 'DECEPTIVE_LINK');
+  };
+
+  // (a shop's newsletter, through its mailing service's tracking domain)
+  const newsletter = [
+    'From: Shop <news@mail.shop.example>',
+    'To: bob@example.org',
+    'Subject: New this week',
+    'Message-ID: <news@mail.shop.example>',
+    'Date: Sun, 11 Oct 2026 10:00:00 +0000',
+    'Content-Type: text/html; charset=utf-8',
+    '',
+    '<p>See what is new at <a href="https://links.mailer-service.example/c/1">www.shop.example</a></p>'
+  ];
+  t.true(await deceptive(newsletter, {}));
+  t.false(await deceptive(newsletter, authenticated('shop.example')));
+
+  // (a brand's address shown by a sender that is not the brand)
+  const phishing = [
+    'From: Notices <alerts@notice-center.example>',
+    'To: bob@example.org',
+    'Subject: Account notice',
+    'Message-ID: <notice@notice-center.example>',
+    'Date: Sun, 11 Oct 2026 10:00:00 +0000',
+    'Content-Type: text/html; charset=utf-8',
+    '',
+    '<p>Please sign in: <a href="https://notice-center.example/login">www.paypal.com</a></p>'
+  ];
+  t.true(await deceptive(phishing, authenticated('notice-center.example')));
+});
+
+// what it gives for a message whose only passing signature, of the From
+// domain, covers `signed` bytes less than the whole body ("l=")
+const signedInPart = (underSized) => ({
+  spf: { status: { result: 'softfail' }, domain: 'relay.example' },
+  dkim: {
+    results: [
+      {
+        signingDomain: 'example.com',
+        status: { result: 'pass', aligned: 'example.com', underSized }
+      }
+    ]
+  },
+  dmarc: {
+    status: { result: 'pass' },
+    domain: 'example.com',
+    p: 'reject',
+    policy: 'reject',
+    alignment: {
+      spf: { result: false, strict: false },
+      dkim: { result: 'example.com', strict: false, underSized }
+    }
+  },
+  arc: { status: { result: 'none' } }
+});
+
+test('a signature of only part of the body earns no credit for passing', async (t) => {
+  captureSpamScannerLog(t);
+  const names = async (underSized) => {
+    const scan = await spamScanner.scan(HAM, {
+      session: { ...session, ...signedInPart(underSized) },
+      client
+    });
+    return scan.tests.map((item) => item.name);
+  };
+
+  const whole = await names(undefined);
+  t.true(whole.includes('DKIM_PASS'));
+  t.true(whole.includes('DMARC_PASS'));
+  const part = await names(120);
+  t.false(part.includes('DKIM_PASS'));
+  t.false(part.includes('DMARC_PASS'));
+});
+
+test("the log line has the hosts of a deceptive link and the MX server's authentication results", async (t) => {
+  const lines = captureSpamScannerLog(t);
+  await spamScanner.scan(PHISHING, {
+    session: {
+      ...session,
+      ...UNAUTHENTICATED,
+      dmarc: { ...UNAUTHENTICATED.dmarc, policy: 'none' },
+      hadAlignedAndPassingDKIM: false,
+      isTrustedArc: true
+    },
+    client
+  });
+  // (outbound mail has no authentication results)
+  await spamScanner.scan(PHISHING, {
+    session,
+    client,
+    direction: 'outbound'
+  });
+  t.is(lines.length, 2);
+  const [inbound, outbound] = lines.map((line) =>
+    JSON.parse(line.slice(line.indexOf('{')))
+  );
+  t.deepEqual(inbound.links, [
+    'A link shows www.paypal.com but goes to paypa1-secure.example'
+  ]);
+  t.deepEqual(inbound.auth, {
+    spf: 'permerror',
+    dkim_aligned: false,
+    dmarc: 'fail',
+    dmarc_policy: 'none',
+    arc: 'none',
+    arc_trusted: true
+  });
+  t.is(outbound.auth, null);
+  // (the hosts of a link, not the path it shows or goes to)
+  t.false(lines[0].includes('/signin'));
+  t.false(lines[0].includes('/login'));
+});
+
 test('only an explicit false turns monitor mode off', (t) => {
   // (the settings as config reads them from the environment, in one process:
   //  config is loaded again for each value)
