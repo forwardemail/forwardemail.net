@@ -57,6 +57,7 @@ const retryRequest = require('./retry-request');
 const sendSmtpPreventedEmail = require('./send-smtp-prevented-email');
 const spamScanner = require('./spam-scanner');
 const { isPrivateHostResolved } = require('./is-private-host');
+const { isTemporaryDnsError } = require('./is-retryable-error');
 const sendEmail = require('./send-email');
 const updateHeaders = require('./update-headers');
 const { encoder } = require('./encoder-decoder');
@@ -1105,6 +1106,9 @@ async function processEmail({ email, port = 25, resolver, client }) {
     let srsDomain;
     const returnPath = `${domain.return_path}.${punycode.toASCII(domain.name)}`;
     let returnPathResults;
+    // (a lookup that got no answer, e.g. our resolver timing out or being
+    //  throttled, says nothing about the domain's setup)
+    let isLookupFailure = false;
     try {
       returnPathResults = await resolver.resolveCname(returnPath);
       if (
@@ -1114,6 +1118,7 @@ async function processEmail({ email, port = 25, resolver, client }) {
       )
         srsDomain = returnPath;
     } catch (err) {
+      isLookupFailure = isTemporaryDnsError(err);
       logger.warn(err, meta);
     }
 
@@ -1122,8 +1127,11 @@ async function processEmail({ email, port = 25, resolver, client }) {
       //
       // NOTE: this indicates typically an outbound SMTP configuration issue
       //       (as a courtesy send this once a week to the user on a per-domain basis)
+      //       (not when the lookup got no answer: the message is deferred and
+      //       tried again either way)
       //
-      const cache = await client.get(`return_path_check:${domain.id}`);
+      const cache =
+        isLookupFailure || (await client.get(`return_path_check:${domain.id}`));
       if (!cache) {
         await client.set(
           `return_path_check:${domain.id}`,

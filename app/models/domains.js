@@ -66,6 +66,7 @@ const {
   getS3ErrorMessage
 } = require('#helpers/get-s3-client');
 const isTimeoutError = require('#helpers/is-timeout-error');
+const { isTemporaryDnsError } = require('#helpers/is-retryable-error');
 const { encrypt, decrypt } = require('#helpers/encrypt-decrypt');
 const {
   hasReputableDNS,
@@ -1819,7 +1820,8 @@ Domains.pre('save', async function (next) {
       errors.some(
         (error) =>
           (error.code && DNS_RETRY_CODES.has(error.code)) ||
-          isTimeoutError(error)
+          isTimeoutError(error) ||
+          isTemporaryDnsError(error)
       );
 
     if (!hasDNSError) {

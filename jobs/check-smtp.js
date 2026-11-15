@@ -41,6 +41,7 @@ const i18n = require('#helpers/i18n');
 const logger = require('#helpers/logger');
 const setupMongoose = require('#helpers/setup-mongoose');
 const isTimeoutError = require('#helpers/is-timeout-error');
+const { isTemporaryDnsError } = require('#helpers/is-retryable-error');
 
 const breeSharedConfig = sharedConfig('BREE');
 const client = new Redis(breeSharedConfig.redis, logger);
@@ -153,7 +154,9 @@ async function mapper(id) {
       Array.isArray(errors) &&
       errors.some(
         (err) =>
-          (err.code && DNS_RETRY_CODES.has(err.code)) || isTimeoutError(err)
+          (err.code && DNS_RETRY_CODES.has(err.code)) ||
+          isTimeoutError(err) ||
+          isTemporaryDnsError(err)
       );
 
     // return early if DNS error occurred

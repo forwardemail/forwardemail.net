@@ -74,7 +74,7 @@ Each domain's Advanced Settings page has these settings. They apply to mail the 
 | `has_phishing_protection`      | `true`  | No longer a setting: phishing and malware links are always checked and refused. Kept for API clients, and ignored by the web form and API. |
 | `has_virus_protection`         | `true`  | No longer a setting: viruses are refused whenever ClamAV is turned on. Kept for API clients, and ignored by the web form and API.          |
 
-The first time `bree` starts with this version, the `reset-spam-scanner-settings` job turns adult content protection off for every domain, and phishing and virus protection on. It runs once: a `migrations` document in MongoDB marks it done, so an owner who turns adult content protection back on keeps it.
+The first time `bree` starts with this version, the `reset-spam-scanner-settings` job turns adult content protection off for every domain, and phishing and virus protection on. It goes through the domains 1,000 at a time, with a short pause after each batch, and saves where it got to, so a restart goes on from there. It runs once: a `migrations` document in MongoDB marks it done, so an owner who turns adult content protection back on keeps it.
 
 ### Abuse reports
 

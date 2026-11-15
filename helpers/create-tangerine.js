@@ -6,8 +6,6 @@
 const commands = require('@ioredis/commands');
 const Tangerine = require('tangerine');
 
-const env = require('#config/env');
-
 // modern approach inspired by `refix` package
 // <https://github.com/luin/ioredis/issues/983#issuecomment-1448839874>
 // <https://github.com/luin/ioredis/issues/983#issuecomment-1536728696>
@@ -47,6 +45,39 @@ function refix(client, prefix) {
   return proxy;
 }
 
+//
+// The DNS servers of our resolvers: Cloudflare and Google in turn, each
+// lookup starting with the next pair of them, so lookups are spread evenly
+// over both providers and each starts with Cloudflare (and goes on to Google
+// when it does not answer)
+//
+const SERVERS = ['1.1.1.1', '8.8.8.8', '1.0.0.1', '8.8.4.4'];
+
+// (the servers, listed from the next pair each time a lookup lists them)
+class RoundRobinServers extends Set {
+  #start = 0;
+
+  *[Symbol.iterator]() {
+    const servers = [...super.values()];
+    if (servers.length === 0) return;
+    const start = this.#start % servers.length;
+    this.#start = start + 2;
+    for (let i = 0; i < servers.length; i++)
+      yield servers[(start + i) % servers.length];
+  }
+}
+
+// a resolver whose servers are taken in turn (see `SERVERS`), and kept in
+// that order: one that fails is not moved to the end, so Cloudflare stays
+// first
+function roundRobin(tangerine) {
+  tangerine.options.smartRotate = false;
+  tangerine.options.servers = new RoundRobinServers(
+    tangerine.options.servers.values()
+  );
+  return tangerine;
+}
+
 function createTangerine(
   client,
   logger = require('./logger'),
@@ -61,12 +92,15 @@ function createTangerine(
     ({ cachePrefix: prefix, ...options } = options);
   }
 
-  if (!options || typeof options !== 'object')
+  const isDefault = !options || typeof options !== 'object';
+  if (isDefault)
     options = {
-      // speeds up tests x2 if any DNS errors detected
-      timeout: env.NODE_ENV === 'production' ? 10000 : 5000,
-      tries: env.NODE_ENV === 'production' ? 4 : 2,
-      servers: new Set(['8.8.8.8', '8.8.4.4', '1.1.1.1', '1.0.0.1']),
+      // (each try waits twice as long as the one before, so a server that
+      //  does not answer is given up on after 15 seconds and the next one is
+      //  asked; at most a minute for all four)
+      timeout: 5000,
+      tries: 2,
+      servers: new Set(SERVERS),
       setCacheArgs(key, result) {
         return ['PX', Math.round(result.ttl * 1000)];
       }
@@ -98,7 +132,9 @@ function createTangerine(
     ...options
   });
 
-  return tangerine;
+  return isDefault ? roundRobin(tangerine) : tangerine;
 }
 
 module.exports = createTangerine;
+module.exports.SERVERS = SERVERS;
+module.exports.roundRobin = roundRobin;

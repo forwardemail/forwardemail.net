@@ -27,6 +27,7 @@ const sharedConfig = require('@ladjs/shared-config');
 const splitLines = require('split-lines');
 const { fromUrl, parseDomain, ParseResultType } = require('parse-domain');
 const _ = require('#helpers/lodash');
+const { SERVERS, roundRobin } = require('#helpers/create-tangerine');
 const parseRootDomain = require('#helpers/parse-root-domain');
 
 const config = require('#config');
@@ -44,10 +45,15 @@ const graceful = new Graceful({
 graceful.listen();
 
 // this uses in-memory Map cache for optimization
-const resolver = new Tangerine({
-  logger,
-  servers: ['8.8.8.8', '8.8.4.4', '1.1.1.1', '1.0.0.1']
-});
+// (its servers in turn, as our other resolvers, see `createTangerine`)
+const resolver = roundRobin(
+  new Tangerine({
+    logger,
+    timeout: 5000,
+    tries: 2,
+    servers: SERVERS
+  })
+);
 
 async function checkDate(date) {
   const list = `https://s3-us-west-1.amazonaws.com/umbrella-static/top-1m-${date}.csv.zip`;

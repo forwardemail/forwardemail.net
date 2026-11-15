@@ -103,6 +103,13 @@ test.serial(
 
 test.serial('is tried again the next time when it fails', async (t) => {
   await resetSpamScannerSettings.migrations().deleteMany({});
+  const id = new mongoose.Types.ObjectId();
+  await Domains.collection.insertOne({
+    _id: id,
+    name: 'failed.example.com',
+    has_adult_content_protection: true
+  });
+  t.teardown(() => Domains.collection.deleteOne({ _id: id }));
   const { updateMany } = Domains;
   Domains.updateMany = async () => {
     throw new Error('boom');
@@ -118,9 +125,12 @@ test.serial('is tried again the next time when it fails', async (t) => {
     resetSpamScannerSettings
       .migrations()
       .findOne({ _id: resetSpamScannerSettings.ID });
-  t.is(await done(), null);
-  t.is(typeof (await resetSpamScannerSettings()), 'number');
-  t.truthy(await done());
+  // (given up, so the next run takes it at once)
+  const failed = await done();
+  t.is(failed.finished_at, undefined);
+  t.is(await resetSpamScannerSettings(), 1);
+  const finished = await done();
+  t.truthy(finished.finished_at);
 });
 
 test.serial(
@@ -163,6 +173,13 @@ test.serial(
   async (t) => {
     const migrations = resetSpamScannerSettings.migrations();
     await migrations.deleteMany({});
+    const id = new mongoose.Types.ObjectId();
+    await Domains.collection.insertOne({
+      _id: id,
+      name: 'taken.example.com',
+      has_adult_content_protection: true
+    });
+    t.teardown(() => Domains.collection.deleteOne({ _id: id }));
     const { updateMany } = Domains;
     const taken = new Date(Date.now() + 60_000);
     // (while it resets, another process takes its claim, then it fails)
@@ -185,5 +202,100 @@ test.serial(
     });
     t.deepEqual(record.started_at, taken);
     await migrations.deleteMany({});
+  }
+);
+
+// (domains to change, by id in increasing order)
+async function insertDomains(t, count) {
+  const ids = Array.from(
+    { length: count },
+    () => new mongoose.Types.ObjectId()
+  );
+  await Domains.collection.insertMany(
+    ids.map((_id, i) => ({
+      _id,
+      // (unique, as the model sets it)
+      id: _id.toString(),
+      name: `batch-${i}.example.com`,
+      has_adult_content_protection: true
+    }))
+  );
+  t.teardown(() => Domains.collection.deleteMany({ _id: { $in: ids } }));
+  return ids;
+}
+
+test.serial(
+  'changes the domains a batch at a time, never all of them in one update',
+  async (t) => {
+    await resetSpamScannerSettings.migrations().deleteMany({});
+    const ids = await insertDomains(t, 5);
+    const updates = [];
+    mongoose.set('debug', (collection, method, query) => {
+      if (collection === Domains.collection.name && method === 'updateMany')
+        updates.push(query);
+    });
+    t.teardown(() => mongoose.set('debug', false));
+
+    t.is(await resetSpamScannerSettings({ batchSize: 2, pause: 0 }), 5);
+    t.is(updates.length, 3);
+    for (const query of updates) t.true(query._id.$in.length <= 2);
+    const domains = await Domains.collection
+      .find({ _id: { $in: ids } })
+      .toArray();
+    t.true(domains.every((domain) => !domain.has_adult_content_protection));
+    // (and where it got to is kept)
+    const record = await resetSpamScannerSettings
+      .migrations()
+      .findOne({ _id: resetSpamScannerSettings.ID });
+    t.deepEqual(record.last_id, ids.at(-1));
+    t.is(record.modified, 5);
+  }
+);
+
+test.serial(
+  'a run that stopped goes on from its last batch, not from the start',
+  async (t) => {
+    const migrations = resetSpamScannerSettings.migrations();
+    await migrations.deleteMany({});
+    const ids = await insertDomains(t, 4);
+    const { updateMany } = Domains;
+    let calls = 0;
+    Domains.updateMany = function (...args) {
+      if (++calls === 2) throw new Error('stopped');
+      return updateMany.apply(this, args);
+    };
+
+    try {
+      await t.throwsAsync(
+        resetSpamScannerSettings({ batchSize: 2, pause: 0 }),
+        { message: 'stopped' }
+      );
+    } finally {
+      Domains.updateMany = updateMany;
+    }
+
+    const adult = async (id) => {
+      const domain = await Domains.collection.findOne({ _id: id });
+      return domain.has_adult_content_protection;
+    };
+
+    // (the first batch was changed, the second not)
+    t.false(await adult(ids[0]));
+    t.true(await adult(ids[2]));
+
+    // an owner turns adult content protection on again before the next run:
+    // it is not turned off again, as its batch was done
+    await Domains.collection.updateOne(
+      { _id: ids[0] },
+      { $set: { has_adult_content_protection: true } }
+    );
+    t.is(await resetSpamScannerSettings({ batchSize: 2, pause: 0 }), 4);
+    t.true(await adult(ids[0]));
+    t.false(await adult(ids[2]));
+    t.false(await adult(ids[3]));
+    const record = await migrations.findOne({
+      _id: resetSpamScannerSettings.ID
+    });
+    t.truthy(record.finished_at);
   }
 );

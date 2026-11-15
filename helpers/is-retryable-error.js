@@ -81,6 +81,103 @@ const DNS_RETRY_CODES = new Set([
   'ETIMEOUT'
 ]);
 
+//
+// The DNS errors of a lookup that got no answer: our resolver timed out,
+// failed, was refused or throttled (e.g. Cloudflare limiting our servers), or
+// was cancelled. Not ENOTFOUND or ENODATA, which are answers (the name or its
+// records do not exist), nor a name that cannot be looked up (EBADNAME).
+//
+const TEMPORARY_DNS_CODES = new Set([
+  'EADDRGETNETWORKPARAMS',
+  'EAI_AGAIN',
+  'EAI_FAIL',
+  'EBADQUERY',
+  'EBADRESP',
+  'ECANCELLED',
+  'EDESTRUCTION',
+  'EFORMERR',
+  'ELOADIPHLPAPI',
+  'ENOTIMP',
+  'ENOTINITIALIZED',
+  'EREFUSED',
+  'ESERVFAIL',
+  'ETIMEOUT'
+]);
+
+// (codes a lookup also fails with, that other errors have too, e.g. a
+//  connection refused: only from a lookup, see `isLookup`)
+const SHARED_DNS_CODES = new Set([
+  'ECANCELED',
+  'ECONNREFUSED',
+  'EFILE',
+  'ENOMEM',
+  'EOF'
+]);
+
+// whether an error is from a DNS lookup (Node's resolver and Tangerine set its
+// `syscall`, mx-connect its `category`, nodemailer its code)
+function isLookup(err) {
+  return (
+    err.code === 'EDNS' ||
+    err.category === 'dns' ||
+    (typeof err.syscall === 'string' &&
+      /^(?:query|getaddrinfo|gethostbyaddr)/i.test(err.syscall))
+  );
+}
+
+// (the code a lookup error was written with: "queryMx ETIMEOUT example.com",
+//  as Node's resolver and Tangerine write it, or nodemailer's own lookup that
+//  timed out, "DNS lookup for smtp.example.com timed out")
+const REGEX_DNS_QUERY_CODE =
+  /^(?:query[A-Z][A-Za-z]*|getaddrinfo|getHostByAddr) (E[A-Z_]+) /;
+const REGEX_DNS_LOOKUP_TIMED_OUT = /^DNS lookup for \S+ timed out/;
+
+//
+// Whether an error is, or was caused by, a DNS lookup that got no answer (see
+// `TEMPORARY_DNS_CODES`), so it is about our resolver (or the one asked)
+// right now and not about anyone's setup: such a failure is retried, and never
+// emailed to customers as a problem with their domain, alias or message (e.g.
+// the forwarding issue, domain configuration and outbound SMTP emails).
+//
+// Looks at its code, nodemailer's `originalCode` (its EDNS errors), the
+// errors it was made from (`cause`, Tangerine's `error` and `errors`), and,
+// for an error whose code was lost (e.g. stored and read back), its message.
+//
+function isTemporaryDnsError(err, depth = 0) {
+  if (!err || typeof err !== 'object' || depth > 3) return false;
+  for (const code of [err.code, err.originalCode])
+    if (
+      typeof code === 'string' &&
+      (TEMPORARY_DNS_CODES.has(code) ||
+        (SHARED_DNS_CODES.has(code) && isLookup(err)))
+    )
+      return true;
+
+  // (by its message only when it has no code, as when it was stored without
+  //  one: a reply from a mail server can say anything)
+  if (typeof err.code !== 'string')
+    for (const message of [err.message, err._message]) {
+      if (typeof message !== 'string') continue;
+      if (REGEX_DNS_LOOKUP_TIMED_OUT.test(message)) return true;
+      const match = REGEX_DNS_QUERY_CODE.exec(message);
+      if (
+        match &&
+        (TEMPORARY_DNS_CODES.has(match[1]) || SHARED_DNS_CODES.has(match[1]))
+      )
+        return true;
+    }
+
+  if (
+    isTemporaryDnsError(err.cause, depth + 1) ||
+    isTemporaryDnsError(err.error, depth + 1)
+  )
+    return true;
+  return (
+    Array.isArray(err.errors) &&
+    err.errors.some((error) => isTemporaryDnsError(error, depth + 1))
+  );
+}
+
 const MAIL_RETRY_ERROR_CODES = new Set([
   'ECONNRESET',
   'ESOCKET',
@@ -280,5 +377,6 @@ function isRetryableError(err) {
 }
 
 module.exports = isRetryableError;
+module.exports.isTemporaryDnsError = isTemporaryDnsError;
 module.exports.isClosedBeforeResponse = isClosedBeforeResponse;
 module.exports.isRequestTimeout = isRequestTimeout;

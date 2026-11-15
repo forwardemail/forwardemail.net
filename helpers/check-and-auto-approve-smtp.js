@@ -21,6 +21,7 @@ const i18n = require('#helpers/i18n');
 const logger = require('#helpers/logger');
 const _ = require('#helpers/lodash');
 const isTimeoutError = require('#helpers/is-timeout-error');
+const { isTemporaryDnsError } = require('#helpers/is-retryable-error');
 
 // <https://github.com/nodejs/node/blob/08dd4b1723b20d56fbedf37d52e736fe09715f80/lib/dns.js#L296-L320>
 // <https://docs.rs/c-ares/4.0.3/c_ares/enum.Error.html>
@@ -132,7 +133,9 @@ async function checkAndAutoApproveSMTP(options) {
     Array.isArray(errors) &&
     errors.some(
       (err) =>
-        (err.code && DNS_RETRY_CODES.has(err.code)) || isTimeoutError(err)
+        (err.code && DNS_RETRY_CODES.has(err.code)) ||
+        isTimeoutError(err) ||
+        isTemporaryDnsError(err)
     );
 
   const result = {

@@ -30,6 +30,7 @@ const setupMongoose = require('#helpers/setup-mongoose');
 const { Users, Domains } = require('#models');
 const createTangerine = require('#helpers/create-tangerine');
 const isTimeoutError = require('#helpers/is-timeout-error');
+const { isTemporaryDnsError } = require('#helpers/is-retryable-error');
 
 const concurrency = config.env === 'development' ? 1 : os.cpus().length;
 
@@ -190,7 +191,8 @@ graceful.listen();
               errors.some(
                 (err) =>
                   (err.code && DNS_RETRY_CODES.has(err.code)) ||
-                  isTimeoutError(err)
+                  isTimeoutError(err) ||
+                  isTemporaryDnsError(err)
               );
 
             if (!hasDNSError) {
