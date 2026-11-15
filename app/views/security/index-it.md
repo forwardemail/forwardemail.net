@@ -118,6 +118,7 @@ Selezioniamo fornitori di servizi che soddisfano i nostri standard di sicurezza.
 | [DataPacket](https://www.datapacket.com)      | Infrastruttura server      | ❌ No           | [DataPacket Privacy](https://www.datapacket.com/privacy-policy)                                       |
 | [Digital Ocean](https://www.digitalocean.com) | Infrastruttura cloud       | ❌ No           | [DigitalOcean GDPR](https://www.digitalocean.com/legal/gdpr)                                          |
 | [GitHub](https://github.com)                  | Hosting codice sorgente, CI/CD | ✅ Sì        | [GitHub GDPR](https://docs.github.com/en/site-policy/privacy-policies/github-data-protection-agreement) |
+| [Google](https://developers.google.com/speed/public-dns) | Risoluzione DNS | ✅ Sì        | [Google Privacy Frameworks](https://policies.google.com/privacy/frameworks) |
 | [Vultr](https://www.vultr.com)                | Infrastruttura cloud       | ❌ No           | [Vultr GDPR](https://www.vultr.com/legal/eea-gdpr-privacy/)                                           |
 | [Stripe](https://stripe.com)                  | Elaborazione pagamenti     | ✅ Sì           | [Stripe Privacy Center](https://stripe.com/legal/privacy-center)                                      |
 | [PayPal](https://www.paypal.com)              | Elaborazione pagamenti     | ❌ No           | [PayPal Privacy](https://www.paypal.com/uk/legalhub/privacy-full)                                     |

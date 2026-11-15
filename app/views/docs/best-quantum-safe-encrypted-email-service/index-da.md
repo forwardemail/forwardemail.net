@@ -243,6 +243,7 @@ Her er en tabel, der skitserer projekter, vi bruger i vores kildekode og udvikli
 | ----------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
 | [Cloudflare](https://www.cloudflare.com/)       | DNS-udbyder, helbredstjek, load balancers og backup-lagring ved brug af [Cloudflare R2](https://developers.cloudflare.com/r2). |
 | [GitHub](https://github.com/)                   | Hosting af kildekode, CI/CD og projektstyring.                                                                              |
+| [Google](https://developers.google.com/speed/public-dns) | DNS-opslag med [Google Public DNS](https://developers.google.com/speed/public-dns), sammen med Cloudflare. |
 | [Digital Ocean](https://m.do.co/c/a7fe489d1b27) | Dedikeret serverhosting og administrerede databaser.                                                                        |
 | [Vultr](https://www.vultr.com/?ref=7429848)     | Dedikeret serverhosting.                                                                                                    |
 | [DataPacket](https://www.datapacket.com)        | Dedikeret serverhosting.                                                                                                    |

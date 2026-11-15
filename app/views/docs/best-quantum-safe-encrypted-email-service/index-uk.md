@@ -243,6 +243,7 @@ Secondary через з’єднання `WebSocket` дає команду Prima
 | ----------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
 | [Cloudflare](https://www.cloudflare.com/)       | Провайдер DNS, перевірки стану, балансувальники навантаження та резервне зберігання за допомогою [Cloudflare R2](https://developers.cloudflare.com/r2). |
 | [GitHub](https://github.com/)                   | Хостинг вихідного коду, CI/CD та управління проєктами.                                                                       |
+| [Google](https://developers.google.com/speed/public-dns) | Розв'язання DNS через [Google Public DNS](https://developers.google.com/speed/public-dns), разом із Cloudflare. |
 | [Digital Ocean](https://m.do.co/c/a7fe489d1b27) | Хостинг виділених серверів та керовані бази даних.                                                                            |
 | [Vultr](https://www.vultr.com/?ref=7429848)     | Хостинг виділених серверів.                                                                                                  |
 | [DataPacket](https://www.datapacket.com)        | Хостинг виділених серверів.                                                                                                  |

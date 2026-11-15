@@ -144,6 +144,8 @@ Jednoduchost a efektivita tohoto řešení přitáhly pozornost významných vý
 
 **Říjen 2026**: Forward Email vydal [terminálovou aplikaci](/faq#do-you-have-a-terminal-app): příkaz `forwardemail` spouští webmailového klienta (poštu, kalendář, kontakty a nastavení) v terminálu na macOS, Linuxu a Windows a lze ho nainstalovat jako samostatný spustitelný soubor nebo přes npm. Společnost také představila web [TerminalEmail.com](https://terminalemail.com), který srovnává terminálové e-mailové klienty pro Linux, macOS, Windows, BSD a Android podle protokolů, funkcí a instalačních příkazů. Druhý nový web, [PrivacyRatings.com](https://privacyratings.com), hodnotí soukromí aplikací a služeb podle veřejných kritérií, s odkazy na důkazy, které si může ověřit kdokoli, a s automatizovanými bezpečnostními testy.
 
+**Listopad 2026**: Forward Email začal pro DNS dotazy vedle [Cloudflare](https://cloudflare.com) používat také [Google Public DNS](https://developers.google.com/speed/public-dns): [Tangerine](https://github.com/forwardemail/tangerine#readme) v2.2.0 se ptá obou střídavě, každý dotaz začíná u Cloudflare a pokračuje na Google, když Cloudflare neodpoví, takže pomalý nebo omezený překladač už nezdržuje poštu.
+
 
 ## Základní principy {#core-principles}
 

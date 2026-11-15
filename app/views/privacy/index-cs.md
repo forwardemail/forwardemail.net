@@ -250,7 +250,7 @@ Tato část se týká našich e-mailových aplikací pro iOS, Android, macOS, Wi
 
 ## Information Shared {#information-shared}
 
-Vaše informace nesdílíme s žádnými třetími stranami, s výjimkou poskytovatelů služeb, kteří provozují části naší služby, například Cloudflare (ochrana webových stránek a šifrované zálohy), Stripe a PayPal (platby), a služeb, které doručují push notifikace do vašich zařízení (viz [Push notifikace](#push-notifications)).
+Vaše informace nesdílíme s žádnými třetími stranami, s výjimkou poskytovatelů služeb, kteří provozují části naší služby, například Cloudflare (ochrana webových stránek a šifrované zálohy), Google (DNS dotazy, spolu s Cloudflare), Stripe a PayPal (platby), a služeb, které doručují push notifikace do vašich zařízení (viz [Push notifikace](#push-notifications)).
 
 Můžeme být nuceni vyhovět soudně nařízeným právním požadavkům (ale mějte na paměti, že [neshromažďujeme informace uvedené výše v části "Information Not Collected"](#information-not-collected), takže je ani nebudeme schopni poskytnout).
 

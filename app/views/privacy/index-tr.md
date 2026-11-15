@@ -250,7 +250,7 @@ Bu bölüm, iOS, Android, macOS, Windows ve Linux için e-posta uygulamalarımı
 
 ## Paylaşılan Bilgiler {#information-shared}
 
-Hizmetimizin bazı kısımlarını yürüten Cloudflare (web sitesi koruması ve şifrelenmiş yedekler), Stripe ve PayPal (ödemeler) gibi hizmet sağlayıcılar ile cihazlarınıza push bildirimlerini ileten hizmetler (bkz. [Push Bildirimleri](#push-notifications)) dışında bilgilerinizi üçüncü taraflarla paylaşmıyoruz.
+Hizmetimizin bazı kısımlarını yürüten Cloudflare (web sitesi koruması ve şifrelenmiş yedekler), Google (Cloudflare ile birlikte DNS sorguları), Stripe ve PayPal (ödemeler) gibi hizmet sağlayıcılar ile cihazlarınıza push bildirimlerini ileten hizmetler (bkz. [Push Bildirimleri](#push-notifications)) dışında bilgilerinizi üçüncü taraflarla paylaşmıyoruz.
 
 Mahkeme kararıyla gelen yasal taleplere uymamız gerekebilir (ancak [“Toplanmayan Bilgiler” altında belirtilen bilgileri toplamadığımızı](#information-not-collected) unutmayın, bu yüzden baştan sağlayamayız).
 

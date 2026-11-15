@@ -250,7 +250,7 @@ Dette afsnit dækker vores e-mailapps til iOS, Android, macOS, Windows og Linux 
 
 ## Information Shared {#information-shared}
 
-Vi deler ikke dine oplysninger med nogen tredjepart, undtagen tjenesteudbydere, der driver dele af vores tjeneste, såsom Cloudflare (beskyttelse af webstedet og krypterede backups), Stripe og PayPal (betalinger), og de tjenester, der leverer push-notifikationer til dine enheder (se [Push-notifikationer](#push-notifications)).
+Vi deler ikke dine oplysninger med nogen tredjepart, undtagen tjenesteudbydere, der driver dele af vores tjeneste, såsom Cloudflare (beskyttelse af webstedet og krypterede backups), Google (DNS-opslag, sammen med Cloudflare), Stripe og PayPal (betalinger), og de tjenester, der leverer push-notifikationer til dine enheder (se [Push-notifikationer](#push-notifications)).
 
 Vi kan være nødt til og vil efterkomme retskendte juridiske anmodninger (men husk [vi indsamler ikke oplysninger nævnt ovenfor under "Information Not Collected"](#information-not-collected), så vi vil ikke kunne levere dem til at begynde med).
 

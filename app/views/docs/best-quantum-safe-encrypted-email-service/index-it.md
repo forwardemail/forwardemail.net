@@ -243,6 +243,7 @@ Ecco una tabella che illustra i progetti che utilizziamo nel nostro codice sorge
 | ----------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
 | [Cloudflare](https://www.cloudflare.com/)       | Provider DNS, controlli di integrità, bilanciatori di carico e storage di backup usando [Cloudflare R2](https://developers.cloudflare.com/r2). |
 | [GitHub](https://github.com/)                   | Hosting del codice sorgente, CI/CD e gestione del progetto.                                                                   |
+| [Google](https://developers.google.com/speed/public-dns) | Risoluzione DNS con [Google Public DNS](https://developers.google.com/speed/public-dns), insieme a Cloudflare. |
 | [Digital Ocean](https://m.do.co/c/a7fe489d1b27) | Hosting di server dedicati e database gestiti.                                                                                |
 | [Vultr](https://www.vultr.com/?ref=7429848)     | Hosting di server dedicati.                                                                                                   |
 | [DataPacket](https://www.datapacket.com)        | Hosting di server dedicati.                                                                                                   |

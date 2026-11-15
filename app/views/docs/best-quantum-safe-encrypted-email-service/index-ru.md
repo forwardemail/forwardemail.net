@@ -243,6 +243,7 @@ Secondary через соединение `WebSocket` даёт команду Pr
 | ----------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
 | [Cloudflare](https://www.cloudflare.com/)       | Провайдер DNS, проверки состояния, балансировщики нагрузки и резервное хранилище с использованием [Cloudflare R2](https://developers.cloudflare.com/r2). |
 | [GitHub](https://github.com/)                   | Хостинг исходного кода, CI/CD и управление проектами.                                                                          |
+| [Google](https://developers.google.com/speed/public-dns) | Разрешение DNS через [Google Public DNS](https://developers.google.com/speed/public-dns), вместе с Cloudflare. |
 | [Digital Ocean](https://m.do.co/c/a7fe489d1b27) | Хостинг выделенных серверов и управляемые базы данных.                                                                              |
 | [Vultr](https://www.vultr.com/?ref=7429848)     | Хостинг выделенных серверов.                                                                                                    |
 | [DataPacket](https://www.datapacket.com)        | Хостинг выделенных серверов.                                                                                                    |

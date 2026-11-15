@@ -248,7 +248,7 @@
 
 ## Information Shared {#information-shared}
 
-除了运营我们部分服务的服务提供商，例如 Cloudflare（网站保护和加密备份）、Stripe 和 PayPal（支付），以及向您的设备发送推送通知的服务（参见[推送通知](#push-notifications)）之外，我们不会与任何第三方共享您的信息。
+除了运营我们部分服务的服务提供商，例如 Cloudflare（网站保护和加密备份）、Google（DNS 查询，与 Cloudflare 一起）、Stripe 和 PayPal（支付），以及向您的设备发送推送通知的服务（参见[推送通知](#push-notifications)）之外，我们不会与任何第三方共享您的信息。
 
 我们可能需要并将遵守法院的法律请求（但请记住，[我们不收集“未收集信息”部分提到的信息](#information-not-collected)，因此我们根本无法提供这些信息）。
 

@@ -250,7 +250,7 @@ Questa sezione riguarda le nostre app email per iOS, Android, macOS, Windows e L
 
 ## Informazioni Condivise {#information-shared}
 
-Non condividiamo le tue informazioni con terze parti, ad eccezione dei fornitori di servizi che gestiscono parti del nostro servizio, come Cloudflare (protezione del sito web e backup criptati), Stripe e PayPal (pagamenti), e dei servizi che recapitano le notifiche push ai tuoi dispositivi (vedi [Notifiche push](#push-notifications)).
+Non condividiamo le tue informazioni con terze parti, ad eccezione dei fornitori di servizi che gestiscono parti del nostro servizio, come Cloudflare (protezione del sito web e backup criptati), Google (ricerche DNS, insieme a Cloudflare), Stripe e PayPal (pagamenti), e dei servizi che recapitano le notifiche push ai tuoi dispositivi (vedi [Notifiche push](#push-notifications)).
 
 Potremmo doverlo fare e ci conformeremo a richieste legali ordinate da un tribunale (ma tieni presente che [non raccogliamo le informazioni menzionate sopra sotto "Informazioni Non Raccoglite"](#information-not-collected), quindi non saremo in grado di fornirle).
 

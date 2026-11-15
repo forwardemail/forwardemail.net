@@ -243,6 +243,7 @@ Berikut adalah tabel yang menguraikan proyek-proyek yang kami gunakan dalam kode
 | ----------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
 | [Cloudflare](https://www.cloudflare.com/)       | Penyedia DNS, pemeriksaan kesehatan, load balancer, dan penyimpanan cadangan menggunakan [Cloudflare R2](https://developers.cloudflare.com/r2). |
 | [GitHub](https://github.com/)                   | Hosting kode sumber, CI/CD, dan manajemen proyek.                                                                          |
+| [Google](https://developers.google.com/speed/public-dns) | Resolusi DNS dengan [Google Public DNS](https://developers.google.com/speed/public-dns), bersama Cloudflare. |
 | [Digital Ocean](https://m.do.co/c/a7fe489d1b27) | Hosting server khusus dan basis data terkelola.                                                                              |
 | [Vultr](https://www.vultr.com/?ref=7429848)     | Hosting server khusus.                                                                                                    |
 | [DataPacket](https://www.datapacket.com)        | Hosting server khusus.                                                                                                    |

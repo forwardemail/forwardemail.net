@@ -118,6 +118,7 @@ We selecteren dienstverleners die voldoen aan onze beveiligingsnormen. Hieronder
 | [DataPacket](https://www.datapacket.com)      | Serverinfrastructuur       | ❌ Nee              | [DataPacket Privacy](https://www.datapacket.com/privacy-policy)                                         |
 | [Digital Ocean](https://www.digitalocean.com) | Cloudinfrastructuur        | ❌ Nee              | [DigitalOcean GDPR](https://www.digitalocean.com/legal/gdpr)                                            |
 | [GitHub](https://github.com)                  | Broncode hosting, CI/CD    | ✅ Ja               | [GitHub GDPR](https://docs.github.com/en/site-policy/privacy-policies/github-data-protection-agreement) |
+| [Google](https://developers.google.com/speed/public-dns) | DNS-resolutie | ✅ Ja               | [Google Privacy Frameworks](https://policies.google.com/privacy/frameworks) |
 | [Vultr](https://www.vultr.com)                | Cloudinfrastructuur        | ❌ Nee              | [Vultr GDPR](https://www.vultr.com/legal/eea-gdpr-privacy/)                                             |
 | [Stripe](https://stripe.com)                  | Betalingsverwerking        | ✅ Ja               | [Stripe Privacy Center](https://stripe.com/legal/privacy-center)                                        |
 | [PayPal](https://www.paypal.com)              | Betalingsverwerking        | ❌ Nee              | [PayPal Privacy](https://www.paypal.com/uk/legalhub/privacy-full)                                       |

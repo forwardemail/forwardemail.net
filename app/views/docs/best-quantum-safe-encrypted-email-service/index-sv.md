@@ -243,6 +243,7 @@ Här är en tabell som beskriver projekt vi använder i vår källkod och utveck
 | ----------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
 | [Cloudflare](https://www.cloudflare.com/)       | DNS-leverantör, hälsokontroller, lastbalanserare och backup-lagring med hjälp av [Cloudflare R2](https://developers.cloudflare.com/r2). |
 | [GitHub](https://github.com/)                   | Värd för källkod, CI/CD och projektledning.                                                                                  |
+| [Google](https://developers.google.com/speed/public-dns) | DNS-uppslag med [Google Public DNS](https://developers.google.com/speed/public-dns), tillsammans med Cloudflare. |
 | [Digital Ocean](https://m.do.co/c/a7fe489d1b27) | Dedikerad serverhosting och hanterade databaser.                                                                             |
 | [Vultr](https://www.vultr.com/?ref=7429848)     | Dedikerad serverhosting.                                                                                                      |
 | [DataPacket](https://www.datapacket.com)        | Dedikerad serverhosting.                                                                                                      |

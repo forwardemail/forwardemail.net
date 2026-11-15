@@ -118,6 +118,7 @@
 | [DataPacket](https://www.datapacket.com)      | 服务器基础设施             | ❌ 否          | [DataPacket Privacy](https://www.datapacket.com/privacy-policy)                                         |
 | [Digital Ocean](https://www.digitalocean.com) | 云基础设施                 | ❌ 否          | [DigitalOcean GDPR](https://www.digitalocean.com/legal/gdpr)                                            |
 | [GitHub](https://github.com)                  | 源代码托管，CI/CD          | ✅ 是          | [GitHub GDPR](https://docs.github.com/en/site-policy/privacy-policies/github-data-protection-agreement) |
+| [Google](https://developers.google.com/speed/public-dns) | DNS 解析 | ✅ 是          | [Google Privacy Frameworks](https://policies.google.com/privacy/frameworks) |
 | [Vultr](https://www.vultr.com)                | 云基础设施                 | ❌ 否          | [Vultr GDPR](https://www.vultr.com/legal/eea-gdpr-privacy/)                                             |
 | [Stripe](https://stripe.com)                  | 支付处理                   | ✅ 是          | [Stripe Privacy Center](https://stripe.com/legal/privacy-center)                                        |
 | [PayPal](https://www.paypal.com)              | 支付处理                   | ❌ 否          | [PayPal Privacy](https://www.paypal.com/uk/legalhub/privacy-full)                                       |

@@ -144,6 +144,8 @@ Forward Email의 미션은 단순히 이메일 서비스를 제공하는 것을 
 
 **2026년 10월**: Forward Email은 [터미널 앱](/faq#do-you-have-a-terminal-app)을 출시했습니다. `forwardemail` 명령은 macOS, Linux, Windows의 터미널에서 웹메일(메일, 캘린더, 연락처, 설정)을 실행하며, 독립 실행 파일이나 npm으로 설치할 수 있습니다. 이와 함께 Linux, macOS, Windows, BSD, Android용 터미널 이메일 클라이언트를 프로토콜, 기능, 설치 명령별로 비교하는 [TerminalEmail.com](https://terminalemail.com)도 열었습니다. 또 하나의 새 사이트인 [PrivacyRatings.com](https://privacyratings.com)은 공개된 기준에 따라 앱과 서비스의 개인정보 보호 수준을 평가하며, 누구나 확인할 수 있는 근거 링크와 자동화된 보안 테스트를 함께 제공합니다.
 
+**2026년 11월**: Forward Email은 DNS 조회에 [Cloudflare](https://cloudflare.com)와 함께 [Google Public DNS](https://developers.google.com/speed/public-dns)를 사용하기 시작했습니다. [Tangerine](https://github.com/forwardemail/tangerine#readme) v2.2.0은 두 곳에 번갈아 질의하며, 각 조회를 Cloudflare에서 시작하고 Cloudflare가 응답하지 않으면 Google로 넘어가므로, 느리거나 속도 제한된 리졸버가 더 이상 메일을 지연시키지 않습니다.
+
 
 ## 핵심 원칙 {#core-principles}
 

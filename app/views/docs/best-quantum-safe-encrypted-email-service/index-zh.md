@@ -243,6 +243,7 @@
 | ----------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
 | [Cloudflare](https://www.cloudflare.com/)       | DNS 提供商，健康检查，负载均衡器，以及使用 [Cloudflare R2](https://developers.cloudflare.com/r2) 的备份存储。 |
 | [GitHub](https://github.com/)                   | 源代码托管，CI/CD 和项目管理。                                                                          |
+| [Google](https://developers.google.com/speed/public-dns) | 使用 [Google Public DNS](https://developers.google.com/speed/public-dns) 进行 DNS 解析，与 Cloudflare 一起。 |
 | [Digital Ocean](https://m.do.co/c/a7fe489d1b27) | 专用服务器托管和托管数据库。                                                                              |
 | [Vultr](https://www.vultr.com/?ref=7429848)     | 专用服务器托管。                                                                                                    |
 | [DataPacket](https://www.datapacket.com)        | 专用服务器托管。                                                                                                    |

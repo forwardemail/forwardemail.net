@@ -144,6 +144,8 @@ Bu çözümün sadeliği ve etkinliği, Ruby on Rails'in yaratıcısı [David He
 
 **Ekim 2026**: Forward Email bir [terminal uygulaması](/faq#do-you-have-a-terminal-app) yayınladı: `forwardemail` komutu, web posta istemcisini (posta, takvim, kişiler ve ayarlar) macOS, Linux ve Windows'ta bir terminalde çalıştırır ve bağımsız çalıştırılabilir dosya olarak ya da npm üzerinden yüklenebilir. Şirket ayrıca Linux, macOS, Windows, BSD ve Android için terminal e-posta istemcilerini protokollere, özelliklere ve yükleme komutlarına göre karşılaştıran [TerminalEmail.com](https://terminalemail.com) sitesini açtı. İkinci yeni site [PrivacyRatings.com](https://privacyratings.com) ise uygulama ve hizmetlerin gizliliğini kamuya açık ölçütlere göre, herkesin kontrol edebileceği kanıt bağlantıları ve otomatik güvenlik testleriyle puanlıyor.
 
+**Kasım 2026**: Forward Email, DNS sorguları için [Cloudflare](https://cloudflare.com) ile birlikte [Google Public DNS](https://developers.google.com/speed/public-dns) kullanmaya başladı: [Tangerine](https://github.com/forwardemail/tangerine#readme) v2.2.0 ikisine sırayla sorar, her sorguya Cloudflare ile başlar ve Cloudflare yanıt vermediğinde Google'a geçer; böylece yavaş veya sınırlanan bir çözümleyici artık postayı geciktirmez.
+
 
 ## Temel İlkeler {#core-principles}
 

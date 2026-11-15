@@ -4212,6 +4212,7 @@ Sources:
 | **DataPacket**   | ❌ ไม่ใช่                                | <https://www.datapacket.com/privacy-policy>                                                  |
 | **DigitalOcean** | ❌ ไม่ใช่                                | <https://www.digitalocean.com/legal/gdpr>                                                    |
 | **GitHub**       | ✅ ใช่                                   | <https://docs.github.com/en/site-policy/privacy-policies/github-data-protection-agreement>   |
+| **Google**       | ✅ ใช่                                   | <https://policies.google.com/privacy/frameworks>   |
 | **Vultr**        | ❌ ไม่ใช่                                | <https://www.vultr.com/legal/eea-gdpr-privacy/>                                              |
 
 **ใบรับรองโดยละเอียด:**
@@ -4248,6 +4249,13 @@ Sources:
 * โฮสต์ซอร์สโค้ด, CI/CD, และการจัดการโครงการ
 * มีข้อตกลงการปกป้องข้อมูลของ GitHub
 * รายละเอียด: <https://docs.github.com/en/site-policy/privacy-policies/github-data-protection-agreement>
+
+**Google**
+
+* ได้รับการรับรองกรอบความเป็นส่วนตัวข้อมูล (EU-U.S., Swiss-U.S., และ UK Extension)
+* Google Public DNS ใช้ร่วมกับ Cloudflare เพื่อแปลงชื่อโดเมน (ไม่มีการส่งเนื้อหาอีเมล)
+* บันทึกชั่วคราวที่มีที่อยู่ IP จะถูกลบภายใน 24 ถึง 48 ชั่วโมง ส่วนบันทึกถาวรเป็นการสุ่มตัวอย่างและไม่เก็บที่อยู่ IP
+* รายละเอียด: <https://developers.google.com/speed/public-dns/privacy>
 
 **ผู้ประมวลผลการชำระเงิน:**
 
@@ -4322,7 +4330,7 @@ DPA ของเรารายงานการปฏิบัติตาม 
 | **สถานที่ประมวลผล** | United States (Denver, Colorado) |
 | **ระยะเวลาเก็บรักษา** | ดู [อีเมลขาเข้าของโดเมนของฉันถูกประมวลผลและจัดเก็บที่ไหน และนานเท่าใด](#where-is-inbound-email-for-my-domain-processed-and-stored-and-for-how-long) |
 | **กลไกการโอน** | ตามที่กำหนดไว้ในหน้า [Data Processing Agreement](/dpa) และ [GDPR](/gdpr) ของเรา |
-| **ผู้ประมวลผลย่อยของเรา** | ระบุไว้ในหน้า [GDPR](/gdpr) ของเราและใน [DPA](/dpa) (ปัจจุบันได้แก่ Cloudflare, DataPacket, DigitalOcean, GitHub, Vultr, Stripe, และ PayPal) |
+| **ผู้ประมวลผลย่อยของเรา** | ระบุไว้ในหน้า [GDPR](/gdpr) ของเราและใน [DPA](/dpa) (ปัจจุบันได้แก่ Cloudflare, DataPacket, DigitalOcean, GitHub, Google, Vultr, Stripe, และ PayPal) |
 | **ผู้แทนใน EU (Art. 27)** | Osano International Compliance Services Limited, Dublin, Ireland – ที่อยู่เต็มอยู่ในหน้า [GDPR](/gdpr) ของเรา |
 | **ผู้แทนในสหราชอาณาจักร** | Osano UK Compliance LTD, Belfast – ที่อยู่เต็มอยู่ในหน้า [GDPR](/gdpr) ของเรา |
 | **ข้อตกลงประมวลผลข้อมูล** | <https://forwardemail.net/dpa> (ยอมรับพร้อมกับ [Terms](/terms) ของเรา; มีสำเนาที่ลงนามร่วมกันภายใต้ Enterprise License) |
@@ -5731,9 +5739,9 @@ dig example.com txt +short
 
 ### คุณทำการค้นหา DNS บนชื่อโดเมนอย่างไร {#how-do-you-perform-dns-lookups-on-domain-names}
 
-เราได้สร้างโปรเจกต์ซอฟต์แวร์โอเพนซอร์ส :tangerine: [Tangerine](https://github.com/forwardemail/tangerine) และใช้สำหรับการค้นหา DNS เซิร์ฟเวอร์ DNS เริ่มต้นที่ใช้คือ `1.1.1.1` และ `1.0.0.1` และการสืบค้น DNS จะผ่าน [DNS over HTTPS](https://en.wikipedia.org/wiki/DNS_over_HTTPS) ("DoH") ในชั้นแอปพลิเคชัน
+เราได้สร้างโปรเจกต์ซอฟต์แวร์โอเพนซอร์ส :tangerine: [Tangerine](https://github.com/forwardemail/tangerine) และใช้สำหรับการค้นหา DNS เซิร์ฟเวอร์ DNS เริ่มต้นที่ใช้คือ `1.1.1.1`, `8.8.8.8`, `1.0.0.1` และ `8.8.4.4` และการสืบค้น DNS จะผ่าน [DNS over HTTPS](https://en.wikipedia.org/wiki/DNS_over_HTTPS) ("DoH") ในชั้นแอปพลิเคชัน
 
-:tangerine: [Tangerine](https://github.com/tangerine) ใช้ [บริการ DNS สำหรับผู้บริโภคที่เน้นความเป็นส่วนตัวของ CloudFlare โดยค่าเริ่มต้น][cloudflare-dns]
+:tangerine: [Tangerine](https://github.com/tangerine) ใช้ [บริการ DNS สำหรับผู้บริโภคที่เน้นความเป็นส่วนตัวของ CloudFlare โดยค่าเริ่มต้น][cloudflare-dns] เราใช้ร่วมกับ Cloudflare และ [Google Public DNS][google-dns] สลับกัน: การค้นหาแต่ละครั้งเริ่มที่ Cloudflare และไปต่อที่ Google เมื่อ Cloudflare ไม่ตอบ
 
 
 ## บัญชีและการชำระเงิน {#account-and-billing}
@@ -6188,3 +6196,5 @@ Forward Email ยอมรับวิธีการชำระเงินแ
 [gmail-2fa]: https://myaccount.google.com/signinoptions/two-step-verification
 
 [cloudflare-dns]: https://blog.cloudflare.com/announcing-1111/
+
+[google-dns]: https://developers.google.com/speed/public-dns/privacy

@@ -144,6 +144,8 @@
 
 **أكتوبر 2026**: أصدرت Forward Email [تطبيقاً للطرفية](/faq#do-you-have-a-terminal-app): يشغّل الأمر `forwardemail` عميل بريد الويب (البريد والتقويم وجهات الاتصال والإعدادات) في الطرفية على أنظمة macOS و Linux و Windows، ويمكن تثبيته كملف تنفيذي مستقل أو عبر npm. كما أطلقت الشركة موقع [TerminalEmail.com](https://terminalemail.com) الذي يقارن برامج البريد الإلكتروني التي تعمل في الطرفية على أنظمة Linux و macOS و Windows و BSD و Android من حيث البروتوكولات والميزات وأوامر التثبيت. أما الموقع الجديد الثاني، [PrivacyRatings.com](https://privacyratings.com)، فيقيّم خصوصية التطبيقات والخدمات وفق معايير علنية، مع روابط إلى أدلة يمكن لأي شخص التحقق منها واختبارات أمان آلية.
 
+**نوفمبر 2026**: بدأت Forward Email باستخدام [Google Public DNS](https://developers.google.com/speed/public-dns) إلى جانب [Cloudflare](https://cloudflare.com) لاستعلامات DNS: يستعلم [Tangerine](https://github.com/forwardemail/tangerine#readme) v2.2.0 منهما بالتناوب، ويبدأ كل استعلام بـ Cloudflare وينتقل إلى Google عندما لا يستجيب Cloudflare، فلا يؤخر المحلل البطيء أو المقيّد البريد بعد الآن.
+
 
 ## المبادئ الأساسية {#core-principles}
 

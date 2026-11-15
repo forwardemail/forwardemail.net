@@ -118,6 +118,7 @@ Olyan szolgáltatókat választunk, amelyek megfelelnek biztonsági követelmén
 | [DataPacket](https://www.datapacket.com)      | Szerver infrastruktúra     | ❌ Nem         | [DataPacket Adatvédelem](https://www.datapacket.com/privacy-policy)                                     |
 | [Digital Ocean](https://www.digitalocean.com) | Felhő infrastruktúra       | ❌ Nem         | [DigitalOcean GDPR](https://www.digitalocean.com/legal/gdpr)                                            |
 | [GitHub](https://github.com)                  | Forráskód tárolás, CI/CD   | ✅ Igen         | [GitHub GDPR](https://docs.github.com/en/site-policy/privacy-policies/github-data-protection-agreement) |
+| [Google](https://developers.google.com/speed/public-dns) | DNS-feloldás | ✅ Igen         | [Google Privacy Frameworks](https://policies.google.com/privacy/frameworks) |
 | [Vultr](https://www.vultr.com)                | Felhő infrastruktúra       | ❌ Nem         | [Vultr GDPR](https://www.vultr.com/legal/eea-gdpr-privacy/)                                             |
 | [Stripe](https://stripe.com)                  | Fizetésfeldolgozás         | ✅ Igen         | [Stripe Adatvédelmi Központ](https://stripe.com/legal/privacy-center)                                   |
 | [PayPal](https://www.paypal.com)              | Fizetésfeldolgozás         | ❌ Nem         | [PayPal Adatvédelem](https://www.paypal.com/uk/legalhub/privacy-full)                                   |

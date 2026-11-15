@@ -144,6 +144,8 @@ Forward Email נוסדה על ידי **ניקולאס באו** בשנת 2017. ל
 
 **אוקטובר 2026**: Forward Email הוציאה [יישום לטרמינל](/faq#do-you-have-a-terminal-app): הפקודה `forwardemail` מריצה את לקוח הדואר המקוון (דואר, לוח שנה, אנשי קשר והגדרות) בטרמינל ב-macOS, Linux ו-Windows, וניתן להתקין אותה כקובץ הפעלה עצמאי או דרך npm. החברה השיקה גם את [TerminalEmail.com](https://terminalemail.com), אתר שמשווה בין לקוחות דוא"ל לטרמינל עבור Linux, macOS, Windows, BSD ו-Android לפי פרוטוקולים, תכונות ופקודות התקנה. אתר חדש נוסף, [PrivacyRatings.com](https://privacyratings.com), מדרג את רמת הפרטיות של אפליקציות ושירותים לפי קריטריונים פומביים, עם קישורים לראיות שכל אחד יכול לבדוק ובדיקות אבטחה אוטומטיות.
 
+**נובמבר 2026**: Forward Email החלה להשתמש ב-[Google Public DNS](https://developers.google.com/speed/public-dns) לצד [Cloudflare](https://cloudflare.com) לשאילתות DNS: [Tangerine](https://github.com/forwardemail/tangerine#readme) v2.2.0 פונה אליהם לסירוגין, מתחיל כל שאילתה ב-Cloudflare ועובר ל-Google כאשר Cloudflare אינו עונה, כך ששרת DNS איטי או מוגבל כבר אינו מעכב דואר.
+
 
 ## עקרונות יסוד {#core-principles}
 

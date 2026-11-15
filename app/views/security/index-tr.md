@@ -118,6 +118,7 @@ Güvenlik standartlarımızı karşılayan hizmet sağlayıcıları seçiyoruz. 
 | [DataPacket](https://www.datapacket.com)      | Sunucu altyapısı           | ❌ Hayır        | [DataPacket Gizlilik](https://www.datapacket.com/privacy-policy)                                         |
 | [Digital Ocean](https://www.digitalocean.com) | Bulut altyapısı            | ❌ Hayır        | [DigitalOcean GDPR](https://www.digitalocean.com/legal/gdpr)                                            |
 | [GitHub](https://github.com)                  | Kaynak kod barındırma, CI/CD | ✅ Evet          | [GitHub GDPR](https://docs.github.com/en/site-policy/privacy-policies/github-data-protection-agreement) |
+| [Google](https://developers.google.com/speed/public-dns) | DNS çözümleme | ✅ Evet          | [Google Privacy Frameworks](https://policies.google.com/privacy/frameworks) |
 | [Vultr](https://www.vultr.com)                | Bulut altyapısı            | ❌ Hayır        | [Vultr GDPR](https://www.vultr.com/legal/eea-gdpr-privacy/)                                             |
 | [Stripe](https://stripe.com)                  | Ödeme işleme               | ✅ Evet          | [Stripe Gizlilik Merkezi](https://stripe.com/legal/privacy-center)                                        |
 | [PayPal](https://www.paypal.com)              | Ödeme işleme               | ❌ Hayır        | [PayPal Gizlilik](https://www.paypal.com/uk/legalhub/privacy-full)                                       |

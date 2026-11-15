@@ -4214,6 +4214,7 @@ Chi tiết đầy đủ có trên trang tuân thủ GDPR của chúng tôi: <htt
 | **DataPacket**   | ❌ Không                         | <https://www.datapacket.com/privacy-policy>                                                |
 | **DigitalOcean** | ❌ Không                         | <https://www.digitalocean.com/legal/gdpr>                                                  |
 | **GitHub**       | ✅ Có                            | <https://docs.github.com/en/site-policy/privacy-policies/github-data-protection-agreement> |
+| **Google**       | ✅ Có                            | <https://policies.google.com/privacy/frameworks> |
 | **Vultr**        | ❌ Không                         | <https://www.vultr.com/legal/eea-gdpr-privacy/>                                            |
 
 **Chứng nhận chi tiết:**
@@ -4250,6 +4251,13 @@ Chi tiết đầy đủ có trên trang tuân thủ GDPR của chúng tôi: <htt
 * Lưu trữ mã nguồn, CI/CD, và quản lý dự án
 * Có Thỏa thuận Bảo vệ Dữ liệu GitHub
 * Chi tiết: <https://docs.github.com/en/site-policy/privacy-policies/github-data-protection-agreement>
+
+**Google**
+
+* Chứng nhận Khung Bảo mật Dữ liệu (EU-Mỹ, Thụy Sĩ-Mỹ, và Mở rộng Vương quốc Anh)
+* Google Public DNS, được dùng cùng Cloudflare để phân giải tên miền (không gửi nội dung email nào)
+* Nhật ký tạm thời có địa chỉ IP bị xóa trong vòng 24 đến 48 giờ; nhật ký lâu dài được lấy mẫu và không lưu địa chỉ IP
+* Chi tiết: <https://developers.google.com/speed/public-dns/privacy>
 
 **Nhà xử lý thanh toán:**
 
@@ -4324,7 +4332,7 @@ Nếu bạn là bên kiểm soát (hoặc chính bạn là bên xử lý) theo �
 | **Địa điểm xử lý** | United States (Denver, Colorado) |
 | **Thời hạn lưu giữ** | Xem [Email đến cho miền của tôi được xử lý và lưu trữ ở đâu, và trong bao lâu](#where-is-inbound-email-for-my-domain-processed-and-stored-and-for-how-long) |
 | **Cơ chế chuyển dữ liệu** | Như được quy định tại các trang [Thỏa thuận xử lý dữ liệu](/dpa) và [GDPR](/gdpr) của chúng tôi |
-| **Các nhà xử lý phụ của chúng tôi** | Được liệt kê trên trang [GDPR](/gdpr) của chúng tôi và trong [DPA](/dpa) (hiện là Cloudflare, DataPacket, DigitalOcean, GitHub, Vultr, Stripe, và PayPal) |
+| **Các nhà xử lý phụ của chúng tôi** | Được liệt kê trên trang [GDPR](/gdpr) của chúng tôi và trong [DPA](/dpa) (hiện là Cloudflare, DataPacket, DigitalOcean, GitHub, Google, Vultr, Stripe, và PayPal) |
 | **Đại diện tại EU (Điều 27)** | Osano International Compliance Services Limited, Dublin, Ireland – địa chỉ đầy đủ có trên trang [GDPR](/gdpr) của chúng tôi |
 | **Đại diện tại Vương quốc Anh** | Osano UK Compliance LTD, Belfast – địa chỉ đầy đủ có trên trang [GDPR](/gdpr) của chúng tôi |
 | **Thỏa thuận xử lý dữ liệu** | <https://forwardemail.net/dpa> (được chấp nhận cùng [Điều khoản](/terms); một bản có đối ký được cung cấp theo Enterprise License) |
@@ -5733,9 +5741,9 @@ dig example.com txt +short
 
 ### Làm thế nào bạn thực hiện tra cứu DNS trên tên miền {#how-do-you-perform-dns-lookups-on-domain-names}
 
-Chúng tôi đã tạo một dự án phần mềm mã nguồn mở :tangerine: [Tangerine](https://github.com/forwardemail/tangerine) và sử dụng nó để tra cứu DNS. Các máy chủ DNS mặc định được sử dụng là `1.1.1.1` và `1.0.0.1`, và các truy vấn DNS được thực hiện qua [DNS over HTTPS](https://en.wikipedia.org/wiki/DNS_over_HTTPS) ("DoH") ở tầng ứng dụng.
+Chúng tôi đã tạo một dự án phần mềm mã nguồn mở :tangerine: [Tangerine](https://github.com/forwardemail/tangerine) và sử dụng nó để tra cứu DNS. Các máy chủ DNS mặc định được sử dụng là `1.1.1.1`, `8.8.8.8`, `1.0.0.1` và `8.8.4.4`, và các truy vấn DNS được thực hiện qua [DNS over HTTPS](https://en.wikipedia.org/wiki/DNS_over_HTTPS) ("DoH") ở tầng ứng dụng.
 
-:tangerine: [Tangerine](https://github.com/tangerine) sử dụng [dịch vụ DNS dành cho người dùng ưu tiên quyền riêng tư của CloudFlare theo mặc định][cloudflare-dns].
+:tangerine: [Tangerine](https://github.com/tangerine) sử dụng [dịch vụ DNS dành cho người dùng ưu tiên quyền riêng tư của CloudFlare theo mặc định][cloudflare-dns]. Chúng tôi dùng nó luân phiên với Cloudflare và [Google Public DNS][google-dns]: mỗi truy vấn bắt đầu với Cloudflare và chuyển sang Google khi Cloudflare không trả lời.
 
 
 ## Tài khoản và Thanh toán {#account-and-billing}
@@ -6190,3 +6198,5 @@ Tất cả các khoản thanh toán đều được xử lý an toàn qua Stripe
 [gmail-2fa]: https://myaccount.google.com/signinoptions/two-step-verification
 
 [cloudflare-dns]: https://blog.cloudflare.com/announcing-1111/
+
+[google-dns]: https://developers.google.com/speed/public-dns/privacy

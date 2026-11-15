@@ -4215,6 +4215,7 @@ Sources:
 | **DataPacket**   | ❌ 아니요                            | <https://www.datapacket.com/privacy-policy>                                            |
 | **DigitalOcean** | ❌ 아니요                            | <https://www.digitalocean.com/legal/gdpr>                                              |
 | **GitHub**       | ✅ 예                                | <https://docs.github.com/en/site-policy/privacy-policies/github-data-protection-agreement> |
+| **Google**       | ✅ 예                                | <https://policies.google.com/privacy/frameworks> |
 | **Vultr**        | ❌ 아니요                            | <https://www.vultr.com/legal/eea-gdpr-privacy/>                                        |
 
 **상세 인증 내역:**
@@ -4251,6 +4252,13 @@ Sources:
 * 소스 코드 호스팅, CI/CD, 프로젝트 관리
 * GitHub 데이터 보호 계약 제공
 * 상세 정보: <https://docs.github.com/en/site-policy/privacy-policies/github-data-protection-agreement>
+
+**Google**
+
+* 데이터 프라이버시 프레임워크 인증 (EU-US, Swiss-US, UK 확장)
+* Google Public DNS, Cloudflare와 함께 도메인 이름 확인에 사용 (이메일 내용은 전송되지 않음)
+* IP 주소가 포함된 임시 로그는 24~48시간 이내에 삭제되며, 영구 로그는 샘플링되어 IP 주소를 보관하지 않음
+* 상세 정보: <https://developers.google.com/speed/public-dns/privacy>
 
 **결제 처리업체:**
 
@@ -4325,7 +4333,7 @@ Sources:
 | **처리 위치** | United States (Denver, Colorado) |
 | **보관 기간** | [내 도메인의 인바운드 이메일은 어디에서 처리·저장되며, 기간은 얼마나 되나요](#where-is-inbound-email-for-my-domain-processed-and-stored-and-for-how-long) 참조 |
 | **전송 메커니즘** | 당사 [Data Processing Agreement](/dpa) 및 [GDPR](/gdpr) 페이지에 규정된 바와 같음 |
-| **당사의 하위 처리자** | 당사 [GDPR](/gdpr) 페이지 및 [DPA](/dpa)에 기재(현재 Cloudflare, DataPacket, DigitalOcean, GitHub, Vultr, Stripe, PayPal) |
+| **당사의 하위 처리자** | 당사 [GDPR](/gdpr) 페이지 및 [DPA](/dpa)에 기재(현재 Cloudflare, DataPacket, DigitalOcean, GitHub, Google, Vultr, Stripe, PayPal) |
 | **EU 대표(제27조)** | Osano International Compliance Services Limited, Dublin, Ireland – 전체 주소는 당사 [GDPR](/gdpr) 페이지에 기재 |
 | **영국 대표** | Osano UK Compliance LTD, Belfast – 전체 주소는 당사 [GDPR](/gdpr) 페이지에 기재 |
 | **데이터 처리 계약(DPA)** | <https://forwardemail.net/dpa> (당사 [Terms](/terms)와 함께 수락됨; 카운터서명된 사본은 Enterprise License 하에서 제공) |
@@ -5734,9 +5742,9 @@ dig example.com txt +short
 
 ### 도메인 이름에 대해 DNS 조회는 어떻게 수행하나요? {#how-do-you-perform-dns-lookups-on-domain-names}
 
-우리는 오픈 소스 소프트웨어 프로젝트 :tangerine: [Tangerine](https://github.com/forwardemail/tangerine)을 만들어 DNS 조회에 사용합니다. 기본 DNS 서버는 `1.1.1.1`과 `1.0.0.1`이며, DNS 쿼리는 애플리케이션 계층에서 [DNS over HTTPS](https://en.wikipedia.org/wiki/DNS_over_HTTPS) ("DoH")를 통해 수행됩니다.
+우리는 오픈 소스 소프트웨어 프로젝트 :tangerine: [Tangerine](https://github.com/forwardemail/tangerine)을 만들어 DNS 조회에 사용합니다. 기본 DNS 서버는 `1.1.1.1`, `8.8.8.8`, `1.0.0.1`과 `8.8.4.4`이며, DNS 쿼리는 애플리케이션 계층에서 [DNS over HTTPS](https://en.wikipedia.org/wiki/DNS_over_HTTPS) ("DoH")를 통해 수행됩니다.
 
-:tangerine: [Tangerine](https://github.com/tangerine)은 기본적으로 [CloudFlare의 개인정보 보호 우선 소비자 DNS 서비스][cloudflare-dns]를 사용합니다.
+:tangerine: [Tangerine](https://github.com/tangerine)은 기본적으로 [CloudFlare의 개인정보 보호 우선 소비자 DNS 서비스][cloudflare-dns]를 사용합니다. Cloudflare와 [Google Public DNS][google-dns]를 번갈아 사용합니다. 각 조회는 Cloudflare에서 시작하며 Cloudflare가 응답하지 않으면 Google로 넘어갑니다.
 
 
 ## 계정 및 결제 {#account-and-billing}
@@ -6191,3 +6199,5 @@ Forward Email은 다음과 같은 일회성 또는 월간/분기별/연간 결�
 [gmail-2fa]: https://myaccount.google.com/signinoptions/two-step-verification
 
 [cloudflare-dns]: https://blog.cloudflare.com/announcing-1111/
+
+[google-dns]: https://developers.google.com/speed/public-dns/privacy

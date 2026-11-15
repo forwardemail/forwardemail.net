@@ -4215,6 +4215,7 @@ Detail lengkap tersedia di halaman kepatuhan GDPR kami: <https://forwardemail.ne
 | **DataPacket**   | ❌ Tidak                          | <https://www.datapacket.com/privacy-policy>                                              |
 | **DigitalOcean** | ❌ Tidak                          | <https://www.digitalocean.com/legal/gdpr>                                                |
 | **GitHub**       | ✅ Ya                             | <https://docs.github.com/en/site-policy/privacy-policies/github-data-protection-agreement> |
+| **Google**       | ✅ Ya                             | <https://policies.google.com/privacy/frameworks> |
 | **Vultr**        | ❌ Tidak                          | <https://www.vultr.com/legal/eea-gdpr-privacy/>                                          |
 
 **Sertifikasi Detail:**
@@ -4251,6 +4252,13 @@ Detail lengkap tersedia di halaman kepatuhan GDPR kami: <https://forwardemail.ne
 * Hosting kode sumber, CI/CD, dan manajemen proyek
 * Perjanjian Perlindungan Data GitHub tersedia
 * Detail: <https://docs.github.com/en/site-policy/privacy-policies/github-data-protection-agreement>
+
+**Google**
+
+* Bersertifikat Kerangka Privasi Data (EU-AS, Swiss-AS, dan Perluasan UK)
+* Google Public DNS, digunakan bersama Cloudflare untuk me-resolve nama domain (tidak ada konten email yang dikirim)
+* Log sementara dengan alamat IP dihapus dalam 24 hingga 48 jam; log permanen berupa sampel dan tidak menyimpan alamat IP
+* Detail: <https://developers.google.com/speed/public-dns/privacy>
 
 **Pemroses Pembayaran:**
 
@@ -4325,7 +4333,7 @@ Jika Anda adalah pengendali (atau pemroses itu sendiri) berdasarkan Pasal 28 GDP
 | **Lokasi pemrosesan** | United States (Denver, Colorado) |
 | **Retensi** | Lihat [Di mana email masuk untuk domain saya diproses dan disimpan, dan untuk berapa lama](#where-is-inbound-email-for-my-domain-processed-and-stored-and-for-how-long) |
 | **Mekanisme transfer** | Sebagaimana ditetapkan di halaman [Data Processing Agreement](/dpa) dan [GDPR](/gdpr) kami |
-| **Subprosesor kami** | Tercantum di halaman [GDPR](/gdpr) kami dan di [DPA](/dpa) (saat ini Cloudflare, DataPacket, DigitalOcean, GitHub, Vultr, Stripe, dan PayPal) |
+| **Subprosesor kami** | Tercantum di halaman [GDPR](/gdpr) kami dan di [DPA](/dpa) (saat ini Cloudflare, DataPacket, DigitalOcean, GitHub, Google, Vultr, Stripe, dan PayPal) |
 | **Perwakilan UE (Pasal 27)** | Osano International Compliance Services Limited, Dublin, Ireland – alamat lengkap ada di halaman [GDPR](/gdpr) kami |
 | **Perwakilan UK** | Osano UK Compliance LTD, Belfast – alamat lengkap ada di halaman [GDPR](/gdpr) kami |
 | **Perjanjian pemrosesan data** | <https://forwardemail.net/dpa> (diterima bersama [Persyaratan](/terms) kami; salinan yang ditandatangani bersama disediakan di bawah Enterprise License) |
@@ -5734,9 +5742,9 @@ dig example.com txt +short
 
 ### Bagaimana Anda melakukan pencarian DNS pada nama domain {#how-do-you-perform-dns-lookups-on-domain-names}
 
-Kami membuat proyek perangkat lunak sumber terbuka :tangerine: [Tangerine](https://github.com/forwardemail/tangerine) dan menggunakannya untuk pencarian DNS. Server DNS default yang digunakan adalah `1.1.1.1` dan `1.0.0.1`, dan kueri DNS dilakukan melalui [DNS over HTTPS](https://en.wikipedia.org/wiki/DNS_over_HTTPS) ("DoH") pada lapisan aplikasi.
+Kami membuat proyek perangkat lunak sumber terbuka :tangerine: [Tangerine](https://github.com/forwardemail/tangerine) dan menggunakannya untuk pencarian DNS. Server DNS default yang digunakan adalah `1.1.1.1`, `8.8.8.8`, `1.0.0.1` dan `8.8.4.4`, dan kueri DNS dilakukan melalui [DNS over HTTPS](https://en.wikipedia.org/wiki/DNS_over_HTTPS) ("DoH") pada lapisan aplikasi.
 
-:tangerine: [Tangerine](https://github.com/tangerine) menggunakan [layanan DNS konsumen berfokus privasi dari CloudFlare secara default][cloudflare-dns].
+:tangerine: [Tangerine](https://github.com/tangerine) menggunakan [layanan DNS konsumen berfokus privasi dari CloudFlare secara default][cloudflare-dns]. Kami menggunakannya bergantian dengan Cloudflare dan [Google Public DNS][google-dns]: setiap pencarian dimulai dari Cloudflare dan beralih ke Google saat Cloudflare tidak menjawab.
 
 
 ## Akun dan Penagihan {#account-and-billing}
@@ -6191,3 +6199,5 @@ Semua pembayaran diproses dengan aman melalui Stripe atau PayPal. Detail pembaya
 [gmail-2fa]: https://myaccount.google.com/signinoptions/two-step-verification
 
 [cloudflare-dns]: https://blog.cloudflare.com/announcing-1111/
+
+[google-dns]: https://developers.google.com/speed/public-dns/privacy

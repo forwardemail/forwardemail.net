@@ -4215,6 +4215,7 @@ Kompletní podrobnosti jsou k dispozici na naší stránce souladu s GDPR: <http
 | **DataPacket**  | ❌ Ne                                    | <https://www.datapacket.com/privacy-policy>                                              |
 | **DigitalOcean**| ❌ Ne                                    | <https://www.digitalocean.com/legal/gdpr>                                                |
 | **GitHub**      | ✅ Ano                                   | <https://docs.github.com/en/site-policy/privacy-policies/github-data-protection-agreement>|
+| **Google**      | ✅ Ano                                   | <https://policies.google.com/privacy/frameworks>|
 | **Vultr**       | ❌ Ne                                    | <https://www.vultr.com/legal/eea-gdpr-privacy/>                                          |
 
 **Podrobné certifikace:**
@@ -4251,6 +4252,13 @@ Kompletní podrobnosti jsou k dispozici na naší stránce souladu s GDPR: <http
 * Hosting zdrojového kódu, CI/CD a řízení projektů
 * K dispozici GitHub Data Protection Agreement
 * Podrobnosti: <https://docs.github.com/en/site-policy/privacy-policies/github-data-protection-agreement>
+
+**Google**
+
+* Certifikace rámce ochrany osobních údajů (EU-USA, Švýcarsko-USA a rozšíření UK)
+* Google Public DNS, používaný spolu s Cloudflare k překladu doménových jmen (neodesílá se žádný obsah e-mailů)
+* Dočasné záznamy s IP adresou se mažou do 24 až 48 hodin; trvalé záznamy jsou vzorky a žádnou IP adresu neuchovávají
+* Podrobnosti: <https://developers.google.com/speed/public-dns/privacy>
 
 **Zpracovatelé plateb:**
 
@@ -4325,7 +4333,7 @@ Pokud jste správcem (nebo sami zpracovatelem) podle článku 28 GDPR a použív
 | **Místo zpracování** | United States (Denver, Colorado) |
 | **Doba uchování** | Viz [Kde se zpracovává a ukládá příchozí e‑mail pro mou doménu a jak dlouho](#where-is-inbound-email-for-my-domain-processed-and-stored-and-for-how-long) |
 | **Mechanismus předávání** | Jak je stanoveno na našich stránkách [Data Processing Agreement](/dpa) a [GDPR](/gdpr) |
-| **Naši subzpracovatelé** | Uvedeni na naší stránce [GDPR](/gdpr) a v [DPA](/dpa) (aktuálně Cloudflare, DataPacket, DigitalOcean, GitHub, Vultr, Stripe a PayPal) |
+| **Naši subzpracovatelé** | Uvedeni na naší stránce [GDPR](/gdpr) a v [DPA](/dpa) (aktuálně Cloudflare, DataPacket, DigitalOcean, GitHub, Google, Vultr, Stripe a PayPal) |
 | **Zástupce v EU (čl. 27)** | Osano International Compliance Services Limited, Dublin, Irsko – úplná adresa na naší stránce [GDPR](/gdpr) |
 | **Zástupce ve Spojeném království** | Osano UK Compliance LTD, Belfast – úplná adresa na naší stránce [GDPR](/gdpr) |
 | **Dohoda o zpracování údajů** | <https://forwardemail.net/dpa> (přijímá se spolu s našimi [Podmínkami](/terms); podepsaná kopie je poskytována v rámci Enterprise License) |
@@ -5734,9 +5742,9 @@ dig example.com txt +short
 
 ### Jak provádíte DNS dotazy na doménová jména {#how-do-you-perform-dns-lookups-on-domain-names}
 
-Vytvořili jsme open-source softwarový projekt :tangerine: [Tangerine](https://github.com/forwardemail/tangerine) a používáme ho pro DNS dotazy. Výchozí DNS servery jsou `1.1.1.1` a `1.0.0.1`, a DNS dotazy probíhají přes [DNS over HTTPS](https://en.wikipedia.org/wiki/DNS_over_HTTPS) ("DoH") na aplikační vrstvě.
+Vytvořili jsme open-source softwarový projekt :tangerine: [Tangerine](https://github.com/forwardemail/tangerine) a používáme ho pro DNS dotazy. Výchozí DNS servery jsou `1.1.1.1`, `8.8.8.8`, `1.0.0.1` a `8.8.4.4`, a DNS dotazy probíhají přes [DNS over HTTPS](https://en.wikipedia.org/wiki/DNS_over_HTTPS) ("DoH") na aplikační vrstvě.
 
-:tangerine: [Tangerine](https://github.com/tangerine) používá ve výchozím nastavení [CloudFlare službu DNS zaměřenou na soukromí uživatelů][cloudflare-dns].
+:tangerine: [Tangerine](https://github.com/tangerine) používá ve výchozím nastavení [CloudFlare službu DNS zaměřenou na soukromí uživatelů][cloudflare-dns]. Používáme ho střídavě s Cloudflare a [Google Public DNS][google-dns]: každý dotaz začíná u Cloudflare a pokračuje na Google, když Cloudflare neodpoví.
 
 
 ## Účet a fakturace {#account-and-billing}
@@ -6191,3 +6199,5 @@ Všechny platby jsou bezpečně zpracovávány prostřednictvím Stripe nebo Pay
 [gmail-2fa]: https://myaccount.google.com/signinoptions/two-step-verification
 
 [cloudflare-dns]: https://blog.cloudflare.com/announcing-1111/
+
+[google-dns]: https://developers.google.com/speed/public-dns/privacy

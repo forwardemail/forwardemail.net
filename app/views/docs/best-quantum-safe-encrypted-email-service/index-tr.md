@@ -243,6 +243,7 @@ Kaynak kodumuzda ve geliştirme sürecimizde kullandığımız projeleri (alfabe
 | ----------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
 | [Cloudflare](https://www.cloudflare.com/)       | DNS sağlayıcısı, sağlık kontrolleri, yük dengeleyiciler ve [Cloudflare R2](https://developers.cloudflare.com/r2) kullanarak yedek depolama. |
 | [GitHub](https://github.com/)                   | Kaynak kodu barındırma, CI/CD ve proje yönetimi.                                                                            |
+| [Google](https://developers.google.com/speed/public-dns) | [Google Public DNS](https://developers.google.com/speed/public-dns) ile DNS çözümleme, Cloudflare ile birlikte. |
 | [Digital Ocean](https://m.do.co/c/a7fe489d1b27) | Özel sunucu barındırma ve yönetilen veritabanları.                                                                          |
 | [Vultr](https://www.vultr.com/?ref=7429848)     | Özel sunucu barındırma.                                                                                                      |
 | [DataPacket](https://www.datapacket.com)        | Özel sunucu barındırma.                                                                                                      |

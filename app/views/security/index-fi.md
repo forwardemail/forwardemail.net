@@ -118,6 +118,7 @@ Valitsemme palveluntarjoajia, jotka täyttävät turvallisuusvaatimuksemme. Alla
 | [DataPacket](https://www.datapacket.com)      | Palvelininfrastruktuuri    | ❌ Ei           | [DataPacket Privacy](https://www.datapacket.com/privacy-policy)                                     |
 | [Digital Ocean](https://www.digitalocean.com) | Pilvi-infrastruktuuri      | ❌ Ei           | [DigitalOcean GDPR](https://www.digitalocean.com/legal/gdpr)                                        |
 | [GitHub](https://github.com)                  | Lähdekoodin isännöinti, CI/CD | ✅ Kyllä         | [GitHub GDPR](https://docs.github.com/en/site-policy/privacy-policies/github-data-protection-agreement) |
+| [Google](https://developers.google.com/speed/public-dns) | DNS-selvitys | ✅ Kyllä         | [Google Privacy Frameworks](https://policies.google.com/privacy/frameworks) |
 | [Vultr](https://www.vultr.com)                | Pilvi-infrastruktuuri      | ❌ Ei           | [Vultr GDPR](https://www.vultr.com/legal/eea-gdpr-privacy/)                                         |
 | [Stripe](https://stripe.com)                  | Maksujen käsittely         | ✅ Kyllä         | [Stripe Privacy Center](https://stripe.com/legal/privacy-center)                                    |
 | [PayPal](https://www.paypal.com)              | Maksujen käsittely         | ❌ Ei           | [PayPal Privacy](https://www.paypal.com/uk/legalhub/privacy-full)                                   |

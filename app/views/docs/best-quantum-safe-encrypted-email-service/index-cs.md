@@ -243,6 +243,7 @@ Zde je tabulka s projekty, které používáme v našem zdrojovém kódu a vývo
 | ----------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
 | [Cloudflare](https://www.cloudflare.com/)       | Poskytovatel DNS, kontrola stavu, load balancery a zálohovací úložiště pomocí [Cloudflare R2](https://developers.cloudflare.com/r2). |
 | [GitHub](https://github.com/)                   | Hosting zdrojového kódu, CI/CD a řízení projektů.                                                                            |
+| [Google](https://developers.google.com/speed/public-dns) | Překlad DNS pomocí [Google Public DNS](https://developers.google.com/speed/public-dns), vedle Cloudflare. |
 | [Digital Ocean](https://m.do.co/c/a7fe489d1b27) | Hosting dedikovaných serverů a spravované databáze.                                                                           |
 | [Vultr](https://www.vultr.com/?ref=7429848)     | Hosting dedikovaných serverů.                                                                                                |
 | [DataPacket](https://www.datapacket.com)        | Hosting dedikovaných serverů.                                                                                                |

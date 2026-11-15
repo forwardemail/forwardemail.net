@@ -243,6 +243,7 @@ Tässä on taulukko, joka kuvaa lähdekoodissamme ja kehitysprosessissamme käyt
 | ----------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
 | [Cloudflare](https://www.cloudflare.com/)       | DNS-tarjoaja, terveystarkastukset, kuormantasaimet ja varastointivaraukset käyttäen [Cloudflare R2](https://developers.cloudflare.com/r2). |
 | [GitHub](https://github.com/)                   | Lähdekoodin isännöinti, CI/CD ja projektinhallinta.                                                                          |
+| [Google](https://developers.google.com/speed/public-dns) | DNS-selvitys [Google Public DNS:llä](https://developers.google.com/speed/public-dns) Cloudflaren rinnalla. |
 | [Digital Ocean](https://m.do.co/c/a7fe489d1b27) | Omistettu palvelin ja hallinnoidut tietokannat.                                                                              |
 | [Vultr](https://www.vultr.com/?ref=7429848)     | Omistettu palvelin.                                                                                                           |
 | [DataPacket](https://www.datapacket.com)        | Omistettu palvelin.                                                                                                           |

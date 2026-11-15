@@ -250,7 +250,7 @@ Deze sectie gaat over onze e-mailapps voor iOS, Android, macOS, Windows en Linux
 
 ## Informatie Delen {#information-shared}
 
-We delen uw informatie niet met derden, behalve met dienstverleners die onderdelen van onze dienst verzorgen, zoals Cloudflare (websitebeveiliging en versleutelde back-ups), Stripe en PayPal (betalingen), en de diensten die pushmeldingen op uw apparaten afleveren (zie [Pushmeldingen](#push-notifications)).
+We delen uw informatie niet met derden, behalve met dienstverleners die onderdelen van onze dienst verzorgen, zoals Cloudflare (websitebeveiliging en versleutelde back-ups), Google (DNS-zoekopdrachten, samen met Cloudflare), Stripe en PayPal (betalingen), en de diensten die pushmeldingen op uw apparaten afleveren (zie [Pushmeldingen](#push-notifications)).
 
 We kunnen verplicht zijn om te voldoen aan gerechtelijke bevelen (maar houd er rekening mee dat [we geen informatie verzamelen zoals hierboven vermeld onder "Informatie Niet Verzameld"](#information-not-collected), dus we zullen die informatie niet kunnen verstrekken).
 

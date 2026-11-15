@@ -4212,6 +4212,7 @@ Forward Email 对其极少的 2-3 人工程团队访问实施了访问控制，�
 | **DataPacket**   | ❌ 否                           | <https://www.datapacket.com/privacy-policy>                                              |
 | **DigitalOcean** | ❌ 否                           | <https://www.digitalocean.com/legal/gdpr>                                                |
 | **GitHub**       | ✅ 是                           | <https://docs.github.com/en/site-policy/privacy-policies/github-data-protection-agreement> |
+| **Google**       | ✅ 是                           | <https://policies.google.com/privacy/frameworks> |
 | **Vultr**        | ❌ 否                           | <https://www.vultr.com/legal/eea-gdpr-privacy/>                                          |
 
 **详细认证：**
@@ -4248,6 +4249,13 @@ Forward Email 对其极少的 2-3 人工程团队访问实施了访问控制，�
 * 源代码托管、CI/CD 和项目管理
 * 提供 GitHub 数据保护协议
 * 详情：<https://docs.github.com/en/site-policy/privacy-policies/github-data-protection-agreement>
+
+**Google**
+
+* 数据隐私框架认证（欧盟-美国、瑞士-美国及英国扩展）
+* Google Public DNS，与 Cloudflare 一起用于解析域名（不会发送任何邮件内容）
+* 包含 IP 地址的临时日志会在 24 至 48 小时内删除；永久日志为抽样数据，不保留任何 IP 地址
+* 详情：<https://developers.google.com/speed/public-dns/privacy>
 
 **支付处理商：**
 
@@ -4322,7 +4330,7 @@ Forward Email 对其极少的 2-3 人工程团队访问实施了访问控制，�
 | **处理地点** | United States (Denver, Colorado) |
 | **保留期限** | 参见[我的域名的入站邮件在哪里处理和存储，以及保留多久](#where-is-inbound-email-for-my-domain-processed-and-stored-and-for-how-long) |
 | **传输机制** | 如我们的 [Data Processing Agreement](/dpa) 和 [GDPR](/gdpr) 页面所规定 |
-| **我们的分处理者** | 列于我们的 [GDPR](/gdpr) 页面和 [DPA](/dpa) 中（当前为 Cloudflare、DataPacket、DigitalOcean, GitHub, Vultr, Stripe 和 PayPal） |
+| **我们的分处理者** | 列于我们的 [GDPR](/gdpr) 页面和 [DPA](/dpa) 中（当前为 Cloudflare、DataPacket、DigitalOcean, GitHub, Google, Vultr, Stripe 和 PayPal） |
 | **欧盟代表（第 27 条）** | Osano International Compliance Services Limited, Dublin, Ireland – 详址见我们的 [GDPR](/gdpr) 页面 |
 | **英国代表** | Osano UK Compliance LTD, Belfast – 详址见我们的 [GDPR](/gdpr) 页面 |
 | **数据处理协议** | <https://forwardemail.net/dpa>（随我们的[条款](/terms)一并接受；在 Enterprise License 下提供一份会签副本） |
@@ -5731,9 +5739,9 @@ dig example.com txt +short
 
 ### 您如何对域名执行 DNS 查询 {#how-do-you-perform-dns-lookups-on-domain-names}
 
-我们创建了一个开源软件项目 :tangerine: [Tangerine](https://github.com/forwardemail/tangerine) 并用它进行 DNS 查询。默认使用的 DNS 服务器是 `1.1.1.1` 和 `1.0.0.1`，DNS 查询通过应用层的 [DNS over HTTPS](https://en.wikipedia.org/wiki/DNS_over_HTTPS) ("DoH") 进行。
+我们创建了一个开源软件项目 :tangerine: [Tangerine](https://github.com/forwardemail/tangerine) 并用它进行 DNS 查询。默认使用的 DNS 服务器是 `1.1.1.1`、`8.8.8.8`、`1.0.0.1` 和 `8.8.4.4`，DNS 查询通过应用层的 [DNS over HTTPS](https://en.wikipedia.org/wiki/DNS_over_HTTPS) ("DoH") 进行。
 
-:tangerine: [Tangerine](https://github.com/tangerine) 默认使用 [CloudFlare 的隐私优先消费者 DNS 服务][cloudflare-dns]。
+:tangerine: [Tangerine](https://github.com/tangerine) 默认使用 [CloudFlare 的隐私优先消费者 DNS 服务][cloudflare-dns]。我们将其与 Cloudflare 和 [Google Public DNS][google-dns] 轮流使用：每次查询都从 Cloudflare 开始，Cloudflare 未响应时转到 Google。
 
 
 ## 账户与计费 {#account-and-billing}
@@ -6188,3 +6196,5 @@ Forward Email 接受以下一次性或每月/每季度/每年支付方式：
 [gmail-2fa]: https://myaccount.google.com/signinoptions/two-step-verification
 
 [cloudflare-dns]: https://blog.cloudflare.com/announcing-1111/
+
+[google-dns]: https://developers.google.com/speed/public-dns/privacy

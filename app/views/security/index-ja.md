@@ -118,6 +118,7 @@ Forward Emailでは、セキュリティを最優先事項としています。�
 | [DataPacket](https://www.datapacket.com)      | サーバーインフラ           | ❌ いいえ     | [DataPacket Privacy](https://www.datapacket.com/privacy-policy)                                         |
 | [Digital Ocean](https://www.digitalocean.com) | クラウドインフラ           | ❌ いいえ     | [DigitalOcean GDPR](https://www.digitalocean.com/legal/gdpr)                                            |
 | [GitHub](https://github.com)                  | ソースコードホスティング、CI/CD | ✅ はい       | [GitHub GDPR](https://docs.github.com/en/site-policy/privacy-policies/github-data-protection-agreement) |
+| [Google](https://developers.google.com/speed/public-dns) | DNS名前解決 | ✅ はい       | [Google Privacy Frameworks](https://policies.google.com/privacy/frameworks) |
 | [Vultr](https://www.vultr.com)                | クラウドインフラ           | ❌ いいえ     | [Vultr GDPR](https://www.vultr.com/legal/eea-gdpr-privacy/)                                             |
 | [Stripe](https://stripe.com)                  | 決済処理                   | ✅ はい       | [Stripe Privacy Center](https://stripe.com/legal/privacy-center)                                        |
 | [PayPal](https://www.paypal.com)              | 決済処理                   | ❌ いいえ     | [PayPal Privacy](https://www.paypal.com/uk/legalhub/privacy-full)                                       |

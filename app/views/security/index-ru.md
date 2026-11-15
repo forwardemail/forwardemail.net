@@ -118,6 +118,7 @@
 | [DataPacket](https://www.datapacket.com)      | Серверная инфраструктура  | ❌ Нет             | [DataPacket Privacy](https://www.datapacket.com/privacy-policy)                                         |
 | [Digital Ocean](https://www.digitalocean.com) | Облачная инфраструктура   | ❌ Нет             | [DigitalOcean GDPR](https://www.digitalocean.com/legal/gdpr)                                            |
 | [GitHub](https://github.com)                  | Хостинг исходного кода, CI/CD | ✅ Да           | [GitHub GDPR](https://docs.github.com/en/site-policy/privacy-policies/github-data-protection-agreement) |
+| [Google](https://developers.google.com/speed/public-dns) | Разрешение DNS | ✅ Да           | [Google Privacy Frameworks](https://policies.google.com/privacy/frameworks) |
 | [Vultr](https://www.vultr.com)                | Облачная инфраструктура   | ❌ Нет             | [Vultr GDPR](https://www.vultr.com/legal/eea-gdpr-privacy/)                                             |
 | [Stripe](https://stripe.com)                  | Обработка платежей        | ✅ Да              | [Stripe Privacy Center](https://stripe.com/legal/privacy-center)                                        |
 | [PayPal](https://www.paypal.com)              | Обработка платежей        | ❌ Нет             | [PayPal Privacy](https://www.paypal.com/uk/legalhub/privacy-full)                                       |

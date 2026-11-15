@@ -4216,6 +4216,7 @@ Fullstendige detaljer er tilgjengelige på vår GDPR-samsvarsside: <https://forw
 | **DataPacket**   | ❌ Nei                                 | <https://www.datapacket.com/privacy-policy>                                             |
 | **DigitalOcean** | ❌ Nei                                 | <https://www.digitalocean.com/legal/gdpr>                                               |
 | **GitHub**       | ✅ Ja                                  | <https://docs.github.com/en/site-policy/privacy-policies/github-data-protection-agreement> |
+| **Google**       | ✅ Ja                                  | <https://policies.google.com/privacy/frameworks> |
 | **Vultr**        | ❌ Nei                                 | <https://www.vultr.com/legal/eea-gdpr-privacy/>                                         |
 
 **Detaljerte sertifiseringer:**
@@ -4252,6 +4253,13 @@ Fullstendige detaljer er tilgjengelige på vår GDPR-samsvarsside: <https://forw
 * Vert for kildekode, CI/CD og prosjektstyring
 * GitHub Data Protection Agreement tilgjengelig
 * Detaljer: <https://docs.github.com/en/site-policy/privacy-policies/github-data-protection-agreement>
+
+**Google**
+
+* Sertifisert for rammeverk for datavern (EU-USA, Sveits-USA og UK-utvidelse)
+* Google Public DNS, brukt sammen med Cloudflare til å slå opp domenenavn (ikke noe e-postinnhold sendes)
+* Midlertidige logger med IP-adressen slettes innen 24 til 48 timer; permanente logger er stikkprøver uten IP-adresse
+* Detaljer: <https://developers.google.com/speed/public-dns/privacy>
 
 **Betalingsprosessorer:**
 
@@ -4326,7 +4334,7 @@ Hvis du er behandlingsansvarlig (eller selv en databehandler) etter GDPR artikke
 | **Plassering for behandling** | United States (Denver, Colorado) |
 | **Oppbevaringstid** | Se [Hvor behandles og lagres innkommende e-post for domenet mitt, og hvor lenge](#where-is-inbound-email-for-my-domain-processed-and-stored-and-for-how-long) |
 | **Overføringsmekanisme** | Som angitt på våre sider for [Data Processing Agreement](/dpa) og [GDPR](/gdpr) |
-| **Våre underdatabehandlere** | Oppført på vår [GDPR](/gdpr)-side og i [DPA](/dpa) (for tiden Cloudflare, DataPacket, DigitalOcean, GitHub, Vultr, Stripe og PayPal) |
+| **Våre underdatabehandlere** | Oppført på vår [GDPR](/gdpr)-side og i [DPA](/dpa) (for tiden Cloudflare, DataPacket, DigitalOcean, GitHub, Google, Vultr, Stripe og PayPal) |
 | **EU-representant (art. 27)** | Osano International Compliance Services Limited, Dublin, Ireland – full adresse på vår [GDPR](/gdpr)-side |
 | **UK-representant** | Osano UK Compliance LTD, Belfast – full adresse på vår [GDPR](/gdpr)-side |
 | **Databehandleravtale** | <https://forwardemail.net/dpa> (akseptert med våre [Terms](/terms); en motsignert kopi gis under Enterprise License) |
@@ -5735,9 +5743,9 @@ dig example.com txt +short
 
 ### Hvordan utfører dere DNS-oppslag på domenenavn {#how-do-you-perform-dns-lookups-on-domain-names}
 
-Vi har laget et åpen kildekode-programvareprosjekt :tangerine: [Tangerine](https://github.com/forwardemail/tangerine) og bruker det til DNS-oppslag. Standard DNS-servere som brukes er `1.1.1.1` og `1.0.0.1`, og DNS-forespørsler går gjennom [DNS over HTTPS](https://en.wikipedia.org/wiki/DNS_over_HTTPS) ("DoH") på applikasjonslaget.
+Vi har laget et åpen kildekode-programvareprosjekt :tangerine: [Tangerine](https://github.com/forwardemail/tangerine) og bruker det til DNS-oppslag. Standard DNS-servere som brukes er `1.1.1.1`, `8.8.8.8`, `1.0.0.1` og `8.8.4.4`, og DNS-forespørsler går gjennom [DNS over HTTPS](https://en.wikipedia.org/wiki/DNS_over_HTTPS) ("DoH") på applikasjonslaget.
 
-:tangerine: [Tangerine](https://github.com/tangerine) bruker [CloudFlares personvern-første forbruker-DNS-tjeneste som standard][cloudflare-dns].
+:tangerine: [Tangerine](https://github.com/tangerine) bruker [CloudFlares personvern-første forbruker-DNS-tjeneste som standard][cloudflare-dns]. Vi bruker det vekselvis med Cloudflare og [Google Public DNS][google-dns]: hvert oppslag starter hos Cloudflare og går videre til Google når Cloudflare ikke svarer.
 
 
 ## Konto og fakturering {#account-and-billing}
@@ -6192,3 +6200,5 @@ Alle betalinger behandles sikkert gjennom Stripe eller PayPal. Dine betalingsdet
 [gmail-2fa]: https://myaccount.google.com/signinoptions/two-step-verification
 
 [cloudflare-dns]: https://blog.cloudflare.com/announcing-1111/
+
+[google-dns]: https://developers.google.com/speed/public-dns/privacy

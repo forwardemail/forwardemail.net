@@ -37,6 +37,7 @@ Forward Email 是一家注重隐私的公司，致力于保护您的数据。
 | [DataPacket](https://www.datapacket.com/) |                                           :x: 否                    | <https://www.datapacket.com/privacy-policy>                                                |
 | [Digital Ocean](https://digitalocean.com) |                                           :x: 否                    | <https://www.digitalocean.com/legal/gdpr>                                                  |
 | [GitHub](https://github.com)              |                                   :white_check_mark: 是              | <https://docs.github.com/en/site-policy/privacy-policies/github-data-protection-agreement> |
+| [Google](https://developers.google.com/speed/public-dns)              |                                   :white_check_mark: 是              | <https://policies.google.com/privacy/frameworks> |
 | [Vultr](https://www.vultr.com)            |                                           :x: 否                    | <https://www.vultr.com/legal/eea-gdpr-privacy/>                                            |
 | [Stripe](https://stripe.com/)             |                                   :white_check_mark: 是              | <https://stripe.com/legal/privacy-center>                                                  |
 | [PayPal](https://www.paypal.com/us/home)  |                                           :x: 否                    | <https://www.paypal.com/uk/legalhub/privacy-full>                                          |

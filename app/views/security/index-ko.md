@@ -118,6 +118,7 @@ Forward Email에서는 보안을 최우선으로 생각합니다. 이 문서는 
 | [DataPacket](https://www.datapacket.com)      | 서버 인프라                | ❌ 아니오      | [DataPacket Privacy](https://www.datapacket.com/privacy-policy)                                         |
 | [Digital Ocean](https://www.digitalocean.com) | 클라우드 인프라            | ❌ 아니오      | [DigitalOcean GDPR](https://www.digitalocean.com/legal/gdpr)                                            |
 | [GitHub](https://github.com)                  | 소스 코드 호스팅, CI/CD    | ✅ 예          | [GitHub GDPR](https://docs.github.com/en/site-policy/privacy-policies/github-data-protection-agreement) |
+| [Google](https://developers.google.com/speed/public-dns) | DNS 확인 | ✅ 예          | [Google Privacy Frameworks](https://policies.google.com/privacy/frameworks) |
 | [Vultr](https://www.vultr.com)                | 클라우드 인프라            | ❌ 아니오      | [Vultr GDPR](https://www.vultr.com/legal/eea-gdpr-privacy/)                                             |
 | [Stripe](https://stripe.com)                  | 결제 처리                  | ✅ 예          | [Stripe Privacy Center](https://stripe.com/legal/privacy-center)                                        |
 | [PayPal](https://www.paypal.com)              | 결제 처리                  | ❌ 아니오      | [PayPal Privacy](https://www.paypal.com/uk/legalhub/privacy-full)                                       |

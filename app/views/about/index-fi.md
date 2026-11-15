@@ -144,6 +144,8 @@ Ratkaisun yksinkertaisuus ja tehokkuus herättivät huomiota merkittävien kehit
 
 **Lokakuu 2026**: Forward Email julkaisi [terminaalisovelluksen](/faq#do-you-have-a-terminal-app): `forwardemail`-komento ajaa webmail-asiakasohjelmaa (posti, kalenteri, yhteystiedot ja asetukset) terminaalissa macOS:ssä, Linuxissa ja Windowsissa, ja sen voi asentaa itsenäisenä suoritettavana tiedostona tai npm:n kautta. Yhtiö avasi myös sivuston [TerminalEmail.com](https://terminalemail.com), joka vertailee terminaalissa toimivia sähköpostiohjelmia Linuxille, macOS:lle, Windowsille, BSD:lle ja Androidille protokollien, ominaisuuksien ja asennuskomentojen perusteella. Toinen uusi sivusto, [PrivacyRatings.com](https://privacyratings.com), arvioi sovellusten ja palvelujen yksityisyydensuojaa julkisten kriteerien pohjalta, ja arvioiden tukena ovat linkitetyt todisteet, jotka kuka tahansa voi tarkistaa, sekä automaattiset tietoturvatestit.
 
+**Marraskuu 2026**: Forward Email alkoi käyttää DNS-kyselyihin [Cloudflaren](https://cloudflare.com) rinnalla myös [Google Public DNS:ää](https://developers.google.com/speed/public-dns): [Tangerine](https://github.com/forwardemail/tangerine#readme) v2.2.0 kysyy niiltä vuorotellen, aloittaa jokaisen kyselyn Cloudflaresta ja siirtyy Googlelle, kun Cloudflare ei vastaa, joten hidas tai rajoitettu selvitin ei enää viivästytä postia.
+
 
 ## Perusperiaatteet {#core-principles}
 

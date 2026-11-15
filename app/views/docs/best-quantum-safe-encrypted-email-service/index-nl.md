@@ -243,6 +243,7 @@ Hier is een tabel met projecten die we gebruiken in onze broncode en ontwikkelpr
 | ----------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
 | [Cloudflare](https://www.cloudflare.com/)       | DNS-provider, health checks, load balancers en back-upopslag met behulp van [Cloudflare R2](https://developers.cloudflare.com/r2). |
 | [GitHub](https://github.com/)                   | Hosting van broncode, CI/CD en projectbeheer.                                                                              |
+| [Google](https://developers.google.com/speed/public-dns) | DNS-resolutie met [Google Public DNS](https://developers.google.com/speed/public-dns), naast Cloudflare. |
 | [Digital Ocean](https://m.do.co/c/a7fe489d1b27) | Dedicated server hosting en beheerde databases.                                                                             |
 | [Vultr](https://www.vultr.com/?ref=7429848)     | Dedicated server hosting.                                                                                                   |
 | [DataPacket](https://www.datapacket.com)        | Dedicated server hosting.                                                                                                   |

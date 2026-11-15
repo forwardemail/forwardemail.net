@@ -250,7 +250,7 @@ Esta seção abrange nossos aplicativos de email para iOS, Android, macOS, Windo
 
 ## Informação Compartilhada {#information-shared}
 
-Não compartilhamos suas informações com terceiros, exceto com prestadores de serviços que operam partes do nosso serviço, como Cloudflare (proteção do site e backups criptografados), Stripe e PayPal (pagamentos), e com os serviços que entregam notificações push aos seus dispositivos (veja [Notificações Push](#push-notifications)).
+Não compartilhamos suas informações com terceiros, exceto com prestadores de serviços que operam partes do nosso serviço, como Cloudflare (proteção do site e backups criptografados), Google (consultas DNS, junto com a Cloudflare), Stripe e PayPal (pagamentos), e com os serviços que entregam notificações push aos seus dispositivos (veja [Notificações Push](#push-notifications)).
 
 Podemos ser obrigados a cumprir solicitações legais ordenadas por tribunal (mas tenha em mente que [não coletamos as informações mencionadas acima em "Informações Não Coletadas"](#information-not-collected), portanto não poderemos fornecê-las desde o início).
 

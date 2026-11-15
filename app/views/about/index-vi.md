@@ -144,6 +144,8 @@ Dịch vụ đã thu hút các nhà phát triển nổi tiếng, bao gồm [Davi
 
 **Tháng 10 năm 2026**: Forward Email phát hành [ứng dụng terminal](/faq#do-you-have-a-terminal-app): lệnh `forwardemail` chạy webmail (thư, lịch, danh bạ và cài đặt) trong terminal trên macOS, Linux và Windows, và có thể cài đặt dưới dạng tệp thực thi độc lập hoặc qua npm. Công ty cũng ra mắt [TerminalEmail.com](https://terminalemail.com), trang web so sánh các ứng dụng email chạy trong terminal cho Linux, macOS, Windows, BSD và Android theo giao thức, tính năng và lệnh cài đặt. Trang web mới thứ hai, [PrivacyRatings.com](https://privacyratings.com), chấm điểm quyền riêng tư của các ứng dụng và dịch vụ theo tiêu chí công khai, kèm liên kết bằng chứng mà ai cũng có thể kiểm tra và các bài kiểm thử bảo mật tự động.
 
+**Tháng 11 năm 2026**: Forward Email bắt đầu dùng [Google Public DNS](https://developers.google.com/speed/public-dns) cùng với [Cloudflare](https://cloudflare.com) để tra cứu DNS: [Tangerine](https://github.com/forwardemail/tangerine#readme) v2.2.0 hỏi luân phiên cả hai, bắt đầu mỗi truy vấn với Cloudflare và chuyển sang Google khi Cloudflare không trả lời, nên một trình phân giải chậm hoặc bị giới hạn không còn làm chậm thư.
+
 
 ## Nguyên Tắc Cốt Lõi {#core-principles}
 

@@ -250,7 +250,7 @@ Dieser Abschnitt behandelt unsere E-Mail-Apps für iOS, Android, macOS, Windows 
 
 ## Information Shared {#information-shared}
 
-Wir geben Ihre Informationen nicht an Dritte weiter, mit Ausnahme von Dienstleistern, die Teile unseres Dienstes betreiben, wie Cloudflare (Website-Schutz und verschlüsselte Backups), Stripe und PayPal (Zahlungen) sowie den Diensten, die Push-Benachrichtigungen an Ihre Geräte zustellen (siehe [Push-Benachrichtigungen](#push-notifications)).
+Wir geben Ihre Informationen nicht an Dritte weiter, mit Ausnahme von Dienstleistern, die Teile unseres Dienstes betreiben, wie Cloudflare (Website-Schutz und verschlüsselte Backups), Google (DNS-Abfragen, zusammen mit Cloudflare), Stripe und PayPal (Zahlungen) sowie den Diensten, die Push-Benachrichtigungen an Ihre Geräte zustellen (siehe [Push-Benachrichtigungen](#push-notifications)).
 
 Wir können verpflichtet sein und werden gerichtlichen Anordnungen nachkommen (beachten Sie jedoch, dass [wir keine oben unter „Nicht gesammelte Informationen“ genannten Informationen erfassen](#information-not-collected), sodass wir diese von vornherein nicht bereitstellen können).
 

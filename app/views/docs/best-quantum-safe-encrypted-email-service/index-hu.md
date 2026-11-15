@@ -243,6 +243,7 @@ Az alábbi táblázat a forráskódunkban és fejlesztési folyamatunkban haszn�
 | ----------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
 | [Cloudflare](https://www.cloudflare.com/)       | DNS szolgáltató, egészségügyi ellenőrzések, terheléselosztók és biztonsági mentés tárolása a [Cloudflare R2](https://developers.cloudflare.com/r2) használatával. |
 | [GitHub](https://github.com/)                   | Forráskód tárolás, CI/CD és projektmenedzsment.                                                                             |
+| [Google](https://developers.google.com/speed/public-dns) | DNS-feloldás a [Google Public DNS](https://developers.google.com/speed/public-dns) segítségével, a Cloudflare mellett. |
 | [Digital Ocean](https://m.do.co/c/a7fe489d1b27) | Dedikált szerver hoszting és kezelt adatbázisok.                                                                             |
 | [Vultr](https://www.vultr.com/?ref=7429848)     | Dedikált szerver hoszting.                                                                                                   |
 | [DataPacket](https://www.datapacket.com)        | Dedikált szerver hoszting.                                                                                                   |

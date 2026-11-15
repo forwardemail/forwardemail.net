@@ -243,6 +243,7 @@ Voici un tableau présentant les projets que nous utilisons dans notre code sour
 | ----------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
 | [Cloudflare](https://www.cloudflare.com/)       | Fournisseur DNS, contrôles de santé, équilibreurs de charge, et stockage de secours utilisant [Cloudflare R2](https://developers.cloudflare.com/r2). |
 | [GitHub](https://github.com/)                   | Hébergement de code source, CI/CD, et gestion de projet.                                                                     |
+| [Google](https://developers.google.com/speed/public-dns) | Résolution DNS avec [Google Public DNS](https://developers.google.com/speed/public-dns), en plus de Cloudflare. |
 | [Digital Ocean](https://m.do.co/c/a7fe489d1b27) | Hébergement de serveurs dédiés et bases de données gérées.                                                                   |
 | [Vultr](https://www.vultr.com/?ref=7429848)     | Hébergement de serveurs dédiés.                                                                                              |
 | [DataPacket](https://www.datapacket.com)        | Hébergement de serveurs dédiés.                                                                                              |

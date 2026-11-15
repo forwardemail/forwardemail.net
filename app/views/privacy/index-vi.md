@@ -250,7 +250,7 @@ Phần này đề cập đến các ứng dụng email của chúng tôi cho iOS
 
 ## Thông tin được chia sẻ {#information-shared}
 
-Chúng tôi không chia sẻ thông tin của bạn với bất kỳ bên thứ ba nào, ngoại trừ các nhà cung cấp dịch vụ vận hành một số phần trong dịch vụ của chúng tôi, chẳng hạn như Cloudflare (bảo vệ trang web và bản sao lưu được mã hóa), Stripe và PayPal (thanh toán), và các dịch vụ gửi thông báo đẩy đến thiết bị của bạn (xem [Thông báo đẩy](#push-notifications)).
+Chúng tôi không chia sẻ thông tin của bạn với bất kỳ bên thứ ba nào, ngoại trừ các nhà cung cấp dịch vụ vận hành một số phần trong dịch vụ của chúng tôi, chẳng hạn như Cloudflare (bảo vệ trang web và bản sao lưu được mã hóa), Google (tra cứu DNS, cùng với Cloudflare), Stripe và PayPal (thanh toán), và các dịch vụ gửi thông báo đẩy đến thiết bị của bạn (xem [Thông báo đẩy](#push-notifications)).
 
 Chúng tôi có thể cần và sẽ tuân thủ các yêu cầu pháp lý theo lệnh tòa án (nhưng hãy nhớ rằng [chúng tôi không thu thập thông tin được đề cập ở phần "Thông tin không được thu thập"](#information-not-collected), nên chúng tôi sẽ không thể cung cấp nó ngay từ đầu).
 

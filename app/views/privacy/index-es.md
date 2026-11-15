@@ -250,7 +250,7 @@ Esta sección abarca nuestras aplicaciones de correo electrónico para iOS, Andr
 
 ## Información Compartida {#information-shared}
 
-No compartimos su información con terceros, excepto con proveedores de servicios que operan partes de nuestro servicio, como Cloudflare (protección del sitio web y copias de seguridad cifradas), Stripe y PayPal (pagos), y con los servicios que entregan las notificaciones push a sus dispositivos (consulte [Notificaciones Push](#push-notifications)).
+No compartimos su información con terceros, excepto con proveedores de servicios que operan partes de nuestro servicio, como Cloudflare (protección del sitio web y copias de seguridad cifradas), Google (consultas DNS, junto con Cloudflare), Stripe y PayPal (pagos), y con los servicios que entregan las notificaciones push a sus dispositivos (consulte [Notificaciones Push](#push-notifications)).
 
 Podemos necesitar cumplir con solicitudes legales ordenadas por un tribunal (pero tenga en cuenta que [no recopilamos la información mencionada arriba bajo "Información No Recopilada"](#information-not-collected), por lo que no podremos proporcionarla desde un principio).
 

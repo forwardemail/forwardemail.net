@@ -243,6 +243,7 @@ Oto tabela przedstawiająca projekty, których używamy w naszym kodzie źródł
 | ----------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
 | [Cloudflare](https://www.cloudflare.com/)       | Dostawca DNS, kontrole stanu, load balancery oraz zapasowa pamięć masowa za pomocą [Cloudflare R2](https://developers.cloudflare.com/r2). |
 | [GitHub](https://github.com/)                   | Hosting kodu źródłowego, CI/CD oraz zarządzanie projektami.                                                                  |
+| [Google](https://developers.google.com/speed/public-dns) | Rozwiązywanie nazw DNS przez [Google Public DNS](https://developers.google.com/speed/public-dns), obok Cloudflare. |
 | [Digital Ocean](https://m.do.co/c/a7fe489d1b27) | Hosting dedykowanych serwerów i zarządzane bazy danych.                                                                       |
 | [Vultr](https://www.vultr.com/?ref=7429848)     | Hosting dedykowanych serwerów.                                                                                                |
 | [DataPacket](https://www.datapacket.com)        | Hosting dedykowanych serwerów.                                                                                                |

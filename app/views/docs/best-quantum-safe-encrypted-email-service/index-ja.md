@@ -243,6 +243,7 @@ SQLiteのメールボックス内では `Date` 値を [ISO 8601](https://ja.wiki
 | ----------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
 | [Cloudflare](https://www.cloudflare.com/)       | DNSプロバイダー、ヘルスチェック、ロードバランサー、および[Cloudflare R2](https://developers.cloudflare.com/r2)を使用したバックアップストレージ。 |
 | [GitHub](https://github.com/)                   | ソースコードホスティング、CI/CD、およびプロジェクト管理。                                                                    |
+| [Google](https://developers.google.com/speed/public-dns) | [Google Public DNS](https://developers.google.com/speed/public-dns)によるDNS名前解決（Cloudflareと併用）。 |
 | [Digital Ocean](https://m.do.co/c/a7fe489d1b27) | 専用サーバーホスティングおよびマネージドデータベース。                                                                        |
 | [Vultr](https://www.vultr.com/?ref=7429848)     | 専用サーバーホスティング。                                                                                                  |
 | [DataPacket](https://www.datapacket.com)        | 専用サーバーホスティング。                                                                                                  |

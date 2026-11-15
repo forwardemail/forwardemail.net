@@ -144,6 +144,8 @@ La simplicité et l’efficacité de cette solution ont attiré l’attention de
 
 **Octobre 2026** : Forward Email a publié une [application pour le terminal](/faq#do-you-have-a-terminal-app) : la commande `forwardemail` exécute le client webmail (emails, calendrier, contacts et paramètres) dans un terminal sous macOS, Linux et Windows, et s'installe sous forme d'exécutable autonome ou via npm. L'entreprise a aussi lancé [TerminalEmail.com](https://terminalemail.com), un site qui compare les clients de messagerie pour terminal sur Linux, macOS, Windows, BSD et Android selon leurs protocoles, leurs fonctionnalités et leurs commandes d'installation. Un second site, [PrivacyRatings.com](https://privacyratings.com), évalue la confidentialité des applications et des services selon des critères publics, avec des preuves sous forme de liens que chacun peut vérifier et des tests de sécurité automatisés.
 
+**Novembre 2026** : Forward Email a commencé à utiliser [Google Public DNS](https://developers.google.com/speed/public-dns) en plus de [Cloudflare](https://cloudflare.com) pour les recherches DNS : [Tangerine](https://github.com/forwardemail/tangerine#readme) v2.2.0 les interroge à tour de rôle, commence chaque recherche par Cloudflare et passe à Google lorsque Cloudflare ne répond pas, de sorte qu'un résolveur lent ou limité ne retarde plus le courrier.
+
 
 ## Principes fondamentaux {#core-principles}
 

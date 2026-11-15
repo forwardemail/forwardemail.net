@@ -144,6 +144,8 @@ Forward Email 的使命是改变行业对邮件隐私和安全的态度。公司
 
 **2026年10月**：Forward Email 发布了[终端应用](/faq#do-you-have-a-terminal-app)：`forwardemail` 命令可在 macOS、Linux 和 Windows 的终端中运行网页邮件客户端（邮件、日历、联系人和设置），并可作为独立可执行文件或通过 npm 安装。公司还上线了 [TerminalEmail.com](https://terminalemail.com)，按协议、功能和安装命令比较适用于 Linux、macOS、Windows、BSD 和 Android 的终端电子邮件客户端。另一个新网站 [PrivacyRatings.com](https://privacyratings.com) 依据公开标准评估应用和服务的隐私保护，并附有任何人都能核查的证据链接和自动化安全测试。
 
+**2026年11月**：Forward Email 开始在 [Cloudflare](https://cloudflare.com) 之外使用 [Google Public DNS](https://developers.google.com/speed/public-dns) 进行 DNS 查询：[Tangerine](https://github.com/forwardemail/tangerine#readme) v2.2.0 轮流向两者查询，每次查询都从 Cloudflare 开始，Cloudflare 未响应时转到 Google，因此缓慢或被限速的解析器不会再延误邮件。
+
 ## 核心原则 {#core-principles}
 
 自成立以来，Forward Email 一直遵循以下隐私和安全原则：

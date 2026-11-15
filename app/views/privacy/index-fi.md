@@ -250,7 +250,7 @@ Tämä osio koskee sähköpostisovelluksiamme iOS:lle, Androidille, macOS:lle, W
 
 ## Jaettu tieto {#information-shared}
 
-Emme jaa tietojasi kolmansille osapuolille lukuun ottamatta palveluntarjoajia, jotka hoitavat osia palvelustamme, kuten Cloudflare (verkkosivuston suojaus ja salatut varmuuskopiot), Stripe ja PayPal (maksut), sekä palveluita, jotka toimittavat push-ilmoitukset laitteillesi (katso [Push-ilmoitukset](#push-notifications)).
+Emme jaa tietojasi kolmansille osapuolille lukuun ottamatta palveluntarjoajia, jotka hoitavat osia palvelustamme, kuten Cloudflare (verkkosivuston suojaus ja salatut varmuuskopiot), Google (DNS-kyselyt, yhdessä Cloudflaren kanssa), Stripe ja PayPal (maksut), sekä palveluita, jotka toimittavat push-ilmoitukset laitteillesi (katso [Push-ilmoitukset](#push-notifications)).
 
 Saatamme joutua noudattamaan tuomioistuimen määräyksiä (mutta pidä mielessä, että [emme kerää yllä mainittuja tietoja kohdassa "Tietoja, joita ei kerätä"](#information-not-collected), joten emme pysty toimittamaan niitä).
 

@@ -243,6 +243,7 @@ Hier ist eine Tabelle mit Projekten, die wir in unserem Quellcode und Entwicklun
 | ----------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
 | [Cloudflare](https://www.cloudflare.com/)       | DNS-Anbieter, Gesundheitschecks, Load Balancer und Backup-Speicher mit [Cloudflare R2](https://developers.cloudflare.com/r2). |
 | [GitHub](https://github.com/)                   | Hosting von Quellcode, CI/CD und Projektmanagement.                                                                          |
+| [Google](https://developers.google.com/speed/public-dns) | DNS-Auflösung mit [Google Public DNS](https://developers.google.com/speed/public-dns), zusammen mit Cloudflare. |
 | [Digital Ocean](https://m.do.co/c/a7fe489d1b27) | Hosting von dedizierten Servern und verwalteten Datenbanken.                                                                 |
 | [Vultr](https://www.vultr.com/?ref=7429848)     | Hosting von dedizierten Servern.                                                                                             |
 | [DataPacket](https://www.datapacket.com)        | Hosting von dedizierten Servern.                                                                                             |

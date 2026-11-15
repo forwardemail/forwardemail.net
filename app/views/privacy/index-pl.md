@@ -250,7 +250,7 @@ Ta sekcja dotyczy naszych aplikacji pocztowych na systemy iOS, Android, macOS, W
 
 ## Informacje Udostępniane {#information-shared}
 
-Nie udostępniamy Twoich informacji żadnym podmiotom trzecim, z wyjątkiem dostawców usług obsługujących części naszej usługi, takich jak Cloudflare (ochrona witryny i zaszyfrowane kopie zapasowe), Stripe i PayPal (płatności), oraz usług dostarczających powiadomienia push na Twoje urządzenia (zobacz [Powiadomienia push](#push-notifications)).
+Nie udostępniamy Twoich informacji żadnym podmiotom trzecim, z wyjątkiem dostawców usług obsługujących części naszej usługi, takich jak Cloudflare (ochrona witryny i zaszyfrowane kopie zapasowe), Google (zapytania DNS, razem z Cloudflare), Stripe i PayPal (płatności), oraz usług dostarczających powiadomienia push na Twoje urządzenia (zobacz [Powiadomienia push](#push-notifications)).
 
 Możemy być zobowiązani do spełnienia sądowych żądań prawnych (ale pamiętaj, że [nie zbieramy informacji wymienionych powyżej w sekcji "Informacje Nie Zbierane"](#information-not-collected), więc nie będziemy w stanie ich dostarczyć).
 

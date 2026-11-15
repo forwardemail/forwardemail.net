@@ -144,6 +144,8 @@ A megoldás egyszerűsége és hatékonysága felkeltette neves fejlesztők figy
 
 **2026. október**: A Forward Email kiadott egy [terminálos alkalmazást](/faq#do-you-have-a-terminal-app): a `forwardemail` parancs a webmail klienst (levelezés, naptár, névjegyek és beállítások) futtatja a terminálban macOS-en, Linuxon és Windowson, és önálló futtatható fájlként vagy npm-en keresztül telepíthető. A cég elindította a [TerminalEmail.com](https://terminalemail.com) oldalt is, amely protokollok, funkciók és telepítési parancsok szerint hasonlítja össze a terminálban futó e-mail klienseket Linuxra, macOS-re, Windowsra, BSD-re és Androidra. Egy második új oldal, a [PrivacyRatings.com](https://privacyratings.com), nyilvános kritériumok alapján értékeli az alkalmazások és szolgáltatások adatvédelmét, bárki által ellenőrizhető bizonyítékokra mutató linkekkel és automatizált biztonsági tesztekkel.
 
+**2026. november**: A Forward Email a [Cloudflare](https://cloudflare.com) mellett a [Google Public DNS](https://developers.google.com/speed/public-dns) használatát is megkezdte a DNS-lekérdezésekhez: a [Tangerine](https://github.com/forwardemail/tangerine#readme) v2.2.0 felváltva kérdezi őket, minden lekérdezést a Cloudflare-nél kezd, és a Google-nél folytatja, ha a Cloudflare nem válaszol, így egy lassú vagy korlátozott feloldó már nem tartja fel a leveleket.
+
 
 ## Alapelvek {#core-principles}
 

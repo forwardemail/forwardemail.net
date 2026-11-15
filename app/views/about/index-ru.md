@@ -144,6 +144,8 @@ Forward Email был основан **Николасом Боу** в 2017 год
 
 **Октябрь 2026**: Forward Email выпустил [терминальное приложение](/faq#do-you-have-a-terminal-app): команда `forwardemail` запускает клиент веб-почты (почта, календарь, контакты и настройки) в терминале на macOS, Linux и Windows и устанавливается как автономный исполняемый файл или через npm. Компания также открыла сайт [TerminalEmail.com](https://terminalemail.com), который сравнивает почтовые клиенты для терминала в Linux, macOS, Windows, BSD и Android по протоколам, функциям и командам установки. Второй новый сайт, [PrivacyRatings.com](https://privacyratings.com), оценивает конфиденциальность приложений и сервисов по открытым критериям, со ссылками на доказательства, которые может проверить любой, и автоматическими тестами безопасности.
 
+**Ноябрь 2026**: Forward Email начал использовать [Google Public DNS](https://developers.google.com/speed/public-dns) вместе с [Cloudflare](https://cloudflare.com) для DNS-запросов: [Tangerine](https://github.com/forwardemail/tangerine#readme) v2.2.0 опрашивает их поочерёдно, начинает каждый запрос с Cloudflare и переходит к Google, если Cloudflare не отвечает, поэтому медленный или ограничивающий запросы резолвер больше не задерживает почту.
+
 
 ## Основные принципы {#core-principles}
 

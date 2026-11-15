@@ -250,7 +250,7 @@ Cette section concerne nos applications de messagerie pour iOS, Android, macOS, 
 
 ## Informations Partagées {#information-shared}
 
-Nous ne partageons pas vos informations avec des tiers, à l'exception des prestataires qui assurent certaines parties de notre service, comme Cloudflare (protection du site web et sauvegardes chiffrées), Stripe et PayPal (paiements), et des services qui acheminent les notifications push vers vos appareils (voir [Notifications push](#push-notifications)).
+Nous ne partageons pas vos informations avec des tiers, à l'exception des prestataires qui assurent certaines parties de notre service, comme Cloudflare (protection du site web et sauvegardes chiffrées), Google (recherches DNS, avec Cloudflare), Stripe et PayPal (paiements), et des services qui acheminent les notifications push vers vos appareils (voir [Notifications push](#push-notifications)).
 
 Nous pouvons être amenés à nous conformer à des demandes légales ordonnées par un tribunal (mais gardez à l’esprit que [nous ne collectons pas les informations mentionnées ci-dessus sous « Informations Non Collectées »](#information-not-collected), donc nous ne pourrons pas les fournir).
 

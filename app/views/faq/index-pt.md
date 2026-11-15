@@ -4215,6 +4215,7 @@ Detalhes completos estão disponíveis em nossa página de conformidade com o GD
 | **DataPacket**   | ❌ Não                                            | <https://www.datapacket.com/privacy-policy>                                           |
 | **DigitalOcean** | ❌ Não                                            | <https://www.digitalocean.com/legal/gdpr>                                             |
 | **GitHub**       | ✅ Sim                                            | <https://docs.github.com/en/site-policy/privacy-policies/github-data-protection-agreement> |
+| **Google**       | ✅ Sim                                            | <https://policies.google.com/privacy/frameworks> |
 | **Vultr**        | ❌ Não                                            | <https://www.vultr.com/legal/eea-gdpr-privacy/>                                       |
 
 **Certificações Detalhadas:**
@@ -4251,6 +4252,13 @@ Detalhes completos estão disponíveis em nossa página de conformidade com o GD
 * Hospedagem de código-fonte, CI/CD e gerenciamento de projetos
 * Acordo de Proteção de Dados do GitHub disponível
 * Detalhes: <https://docs.github.com/en/site-policy/privacy-policies/github-data-protection-agreement>
+
+**Google**
+
+* Certificado no Framework de Privacidade de Dados (EU-EUA, Suíça-EUA e Extensão do Reino Unido)
+* Google Public DNS, usado junto com a Cloudflare para resolver nomes de domínio (nenhum conteúdo de e-mail é enviado)
+* Os logs temporários com o endereço IP são excluídos em 24 a 48 horas; os logs permanentes são amostrados e não guardam nenhum endereço IP
+* Detalhes: <https://developers.google.com/speed/public-dns/privacy>
 
 **Processadores de Pagamento:**
 
@@ -4325,7 +4333,7 @@ Se for um responsável pelo tratamento (ou também um subcontratante) ao abrigo 
 | **Local de tratamento** | United States (Denver, Colorado) |
 | **Retenção** | Ver [Onde é processado e armazenado o email de entrada do meu domínio e por quanto tempo](#where-is-inbound-email-for-my-domain-processed-and-stored-and-for-how-long) |
 | **Mecanismo de transferência** | Conforme estabelecido nas nossas páginas [Acordo de Tratamento de Dados](/dpa) e [GDPR](/gdpr) |
-| **Os nossos subcontratantes** | Listados na nossa página [GDPR](/gdpr) e no [DPA](/dpa) (atualmente Cloudflare, DataPacket, DigitalOcean, GitHub, Vultr, Stripe e PayPal) |
+| **Os nossos subcontratantes** | Listados na nossa página [GDPR](/gdpr) e no [DPA](/dpa) (atualmente Cloudflare, DataPacket, DigitalOcean, GitHub, Google, Vultr, Stripe e PayPal) |
 | **Representante na UE (Art. 27)** | Osano International Compliance Services Limited, Dublin, Irlanda – morada completa na nossa página [GDPR](/gdpr) |
 | **Representante no Reino Unido** | Osano UK Compliance LTD, Belfast – morada completa na nossa página [GDPR](/gdpr) |
 | **Acordo de tratamento de dados** | <https://forwardemail.net/dpa> (aceite com os nossos [Termos](/terms); uma cópia coassinada é fornecida ao abrigo da Enterprise License) |
@@ -5734,9 +5742,9 @@ dig example.com txt +short
 
 ### Como vocês realizam consultas DNS em nomes de domínio {#how-do-you-perform-dns-lookups-on-domain-names}
 
-Criamos um projeto de software open-source :tangerine: [Tangerine](https://github.com/forwardemail/tangerine) e o usamos para consultas DNS. Os servidores DNS padrão usados são `1.1.1.1` e `1.0.0.1`, e as consultas DNS são feitas através de [DNS sobre HTTPS](https://en.wikipedia.org/wiki/DNS_over_HTTPS) ("DoH") na camada de aplicação.
+Criamos um projeto de software open-source :tangerine: [Tangerine](https://github.com/forwardemail/tangerine) e o usamos para consultas DNS. Os servidores DNS padrão usados são `1.1.1.1`, `8.8.8.8`, `1.0.0.1` e `8.8.4.4`, e as consultas DNS são feitas através de [DNS sobre HTTPS](https://en.wikipedia.org/wiki/DNS_over_HTTPS) ("DoH") na camada de aplicação.
 
-:tangerine: [Tangerine](https://github.com/tangerine) usa o serviço DNS para consumidores focado em privacidade da [CloudFlare por padrão][cloudflare-dns].
+:tangerine: [Tangerine](https://github.com/tangerine) usa o serviço DNS para consumidores focado em privacidade da [CloudFlare por padrão][cloudflare-dns]. Nós o usamos com a Cloudflare e o [Google Public DNS][google-dns] alternadamente: cada consulta começa pela Cloudflare e passa para o Google quando a Cloudflare não responde.
 
 
 ## Conta e Faturamento {#account-and-billing}
@@ -6191,3 +6199,5 @@ Todos os pagamentos são processados com segurança através do Stripe ou PayPal
 [gmail-2fa]: https://myaccount.google.com/signinoptions/two-step-verification
 
 [cloudflare-dns]: https://blog.cloudflare.com/announcing-1111/
+
+[google-dns]: https://developers.google.com/speed/public-dns/privacy

@@ -144,6 +144,8 @@ Forward Email ก่อตั้งโดย **Nicholas Baugh** ในปี 201
 
 **ตุลาคม 2026**: Forward Email เปิดตัว [แอปสำหรับเทอร์มินัล](/faq#do-you-have-a-terminal-app) โดยคำสั่ง `forwardemail` จะรันเว็บเมลไคลเอนต์ (อีเมล ปฏิทิน รายชื่อติดต่อ และการตั้งค่า) ในเทอร์มินัลบน macOS, Linux และ Windows และติดตั้งได้เป็นไฟล์ปฏิบัติการแบบสแตนด์อโลนหรือผ่าน npm บริษัทยังเปิดเว็บไซต์ [TerminalEmail.com](https://terminalemail.com) ซึ่งเปรียบเทียบไคลเอนต์อีเมลสำหรับเทอร์มินัลบน Linux, macOS, Windows, BSD และ Android ตามโปรโตคอล ฟีเจอร์ และคำสั่งติดตั้ง ส่วนเว็บไซต์ใหม่แห่งที่สอง [PrivacyRatings.com](https://privacyratings.com) ประเมินความเป็นส่วนตัวของแอปและบริการตามเกณฑ์สาธารณะ พร้อมลิงก์หลักฐานที่ใครก็ตรวจสอบได้และการทดสอบความปลอดภัยแบบอัตโนมัติ
 
+**พฤศจิกายน 2026**: Forward Email เริ่มใช้ [Google Public DNS](https://developers.google.com/speed/public-dns) ร่วมกับ [Cloudflare](https://cloudflare.com) สำหรับการค้นหา DNS: [Tangerine](https://github.com/forwardemail/tangerine#readme) v2.2.0 สอบถามทั้งสองสลับกัน เริ่มการค้นหาแต่ละครั้งที่ Cloudflare และไปต่อที่ Google เมื่อ Cloudflare ไม่ตอบ ทำให้ตัวแปลงชื่อที่ช้าหรือถูกจำกัดไม่ทำให้อีเมลล่าช้าอีกต่อไป
+
 
 ## หลักการสำคัญ {#core-principles}
 

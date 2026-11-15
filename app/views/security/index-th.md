@@ -118,6 +118,7 @@
 | [DataPacket](https://www.datapacket.com)      | โครงสร้างพื้นฐานเซิร์ฟเวอร์ | ❌ ไม่ใช่           | [DataPacket Privacy](https://www.datapacket.com/privacy-policy)                                         |
 | [Digital Ocean](https://www.digitalocean.com) | โครงสร้างพื้นฐานคลาวด์    | ❌ ไม่ใช่           | [DigitalOcean GDPR](https://www.digitalocean.com/legal/gdpr)                                            |
 | [GitHub](https://github.com)                  | โฮสต์ซอร์สโค้ด, CI/CD      | ✅ ใช่              | [GitHub GDPR](https://docs.github.com/en/site-policy/privacy-policies/github-data-protection-agreement) |
+| [Google](https://developers.google.com/speed/public-dns) | การแปลงชื่อ DNS | ✅ ใช่              | [Google Privacy Frameworks](https://policies.google.com/privacy/frameworks) |
 | [Vultr](https://www.vultr.com)                | โครงสร้างพื้นฐานคลาวด์    | ❌ ไม่ใช่           | [Vultr GDPR](https://www.vultr.com/legal/eea-gdpr-privacy/)                                             |
 | [Stripe](https://stripe.com)                  | การประมวลผลการชำระเงิน    | ✅ ใช่              | [Stripe Privacy Center](https://stripe.com/legal/privacy-center)                                        |
 | [PayPal](https://www.paypal.com)              | การประมวลผลการชำระเงิน    | ❌ ไม่ใช่           | [PayPal Privacy](https://www.paypal.com/uk/legalhub/privacy-full)                                       |

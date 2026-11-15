@@ -249,7 +249,7 @@ This section covers our email apps for iOS, Android, macOS, Windows, and Linux, 
 
 ## Information Shared
 
-We do not share your information with any third parties, except service providers that run parts of our service, such as Cloudflare (website protection and encrypted backups), Stripe and PayPal (payments), and the services that deliver push notifications to your devices (see [Push Notifications](#push-notifications)).
+We do not share your information with any third parties, except service providers that run parts of our service, such as Cloudflare (website protection and encrypted backups), Google (DNS lookups, with Cloudflare), Stripe and PayPal (payments), and the services that deliver push notifications to your devices (see [Push Notifications](#push-notifications)).
 
 We may need to and will comply with court ordered legal requests (but keep in mind [we do not collect information mentioned above under "Information Not Collected"](#information-not-collected), so we will not be able to provide it to begin with).
 

@@ -4215,6 +4215,7 @@ Forward Email реалізує контроль доступу для мінім
 | **DataPacket**   | ❌ Ні                                         | <https://www.datapacket.com/privacy-policy>                                              |
 | **DigitalOcean** | ❌ Ні                                         | <https://www.digitalocean.com/legal/gdpr>                                                |
 | **GitHub**       | ✅ Так                                        | <https://docs.github.com/en/site-policy/privacy-policies/github-data-protection-agreement> |
+| **Google**       | ✅ Так                                        | <https://policies.google.com/privacy/frameworks> |
 | **Vultr**        | ❌ Ні                                         | <https://www.vultr.com/legal/eea-gdpr-privacy/>                                          |
 
 **Детальні сертифікати:**
@@ -4251,6 +4252,13 @@ Forward Email реалізує контроль доступу для мінім
 * Хостинг вихідного коду, CI/CD та управління проєктами
 * Доступна Угода про захист даних GitHub
 * Деталі: <https://docs.github.com/en/site-policy/privacy-policies/github-data-protection-agreement>
+
+**Google**
+
+* Сертифікат Data Privacy Framework (EU-U.S., Swiss-U.S. та UK Extension)
+* Google Public DNS, використовується разом із Cloudflare для розв'язання доменних імен (вміст листів не передається)
+* Тимчасові журнали з IP-адресою видаляються протягом 24–48 годин; постійні журнали є вибіркою і не містять IP-адрес
+* Деталі: <https://developers.google.com/speed/public-dns/privacy>
 
 **Платіжні процесори:**
 
@@ -4325,7 +4333,7 @@ Forward Email реалізує контроль доступу для мінім
 | **Місце обробки** | United States (Denver, Colorado) |
 | **Період зберігання** | Див. [Де обробляється й зберігається вхідна пошта для мого домену, і як довго](#where-is-inbound-email-for-my-domain-processed-and-stored-and-for-how-long) |
 | **Механізм передачі** | Як викладено на наших сторінках [Data Processing Agreement](/dpa) і [GDPR](/gdpr) |
-| **Наші субобробники** | Перелічені на нашій сторінці [GDPR](/gdpr) та в [DPA](/dpa) (наразі Cloudflare, DataPacket, DigitalOcean, GitHub, Vultr, Stripe і PayPal) |
+| **Наші субобробники** | Перелічені на нашій сторінці [GDPR](/gdpr) та в [DPA](/dpa) (наразі Cloudflare, DataPacket, DigitalOcean, GitHub, Google, Vultr, Stripe і PayPal) |
 | **Представник в ЄС (ст. 27)** | Osano International Compliance Services Limited, Дублін, Ірландія – повна адреса на нашій сторінці [GDPR](/gdpr) |
 | **Представник у Великій Британії** | Osano UK Compliance LTD, Белфаст – повна адреса на нашій сторінці [GDPR](/gdpr) |
 | **Угода про обробку даних** | <https://forwardemail.net/dpa> (приймається разом із нашими [Terms](/terms); контрпідписаний примірник надається в межах Enterprise License) |
@@ -5734,9 +5742,9 @@ dig example.com txt +short
 
 ### Як ви виконуєте DNS-запити для доменних імен {#how-do-you-perform-dns-lookups-on-domain-names}
 
-Ми створили проект з відкритим кодом :tangerine: [Tangerine](https://github.com/forwardemail/tangerine) і використовуємо його для DNS-запитів. За замовчуванням використовуються DNS сервери `1.1.1.1` та `1.0.0.1`, а DNS-запити здійснюються через [DNS over HTTPS](https://en.wikipedia.org/wiki/DNS_over_HTTPS) ("DoH") на рівні застосунку.
+Ми створили проект з відкритим кодом :tangerine: [Tangerine](https://github.com/forwardemail/tangerine) і використовуємо його для DNS-запитів. За замовчуванням використовуються DNS сервери `1.1.1.1`, `8.8.8.8`, `1.0.0.1` та `8.8.4.4`, а DNS-запити здійснюються через [DNS over HTTPS](https://en.wikipedia.org/wiki/DNS_over_HTTPS) ("DoH") на рівні застосунку.
 
-:tangerine: [Tangerine](https://github.com/tangerine) за замовчуванням використовує [приватний DNS-сервіс для споживачів від CloudFlare][cloudflare-dns].
+:tangerine: [Tangerine](https://github.com/tangerine) за замовчуванням використовує [приватний DNS-сервіс для споживачів від CloudFlare][cloudflare-dns]. Ми використовуємо його почергово з Cloudflare та [Google Public DNS][google-dns]: кожен запит починається з Cloudflare і переходить до Google, якщо Cloudflare не відповідає.
 
 
 ## Обліковий запис та оплата {#account-and-billing}
@@ -6191,3 +6199,5 @@ Forward Email приймає наступні одноразові або щом
 [gmail-2fa]: https://myaccount.google.com/signinoptions/two-step-verification
 
 [cloudflare-dns]: https://blog.cloudflare.com/announcing-1111/
+
+[google-dns]: https://developers.google.com/speed/public-dns/privacy

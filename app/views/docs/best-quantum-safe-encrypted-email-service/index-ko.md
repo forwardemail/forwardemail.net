@@ -243,6 +243,7 @@ Secondary는 `WebSocket` 연결을 통해 Primary에 백업 실행을 지시하�
 | ----------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
 | [Cloudflare](https://www.cloudflare.com/)       | DNS 제공자, 상태 검사, 로드 밸런서, 그리고 [Cloudflare R2](https://developers.cloudflare.com/r2)를 이용한 백업 스토리지.       |
 | [GitHub](https://github.com/)                   | 소스 코드 호스팅, CI/CD, 그리고 프로젝트 관리.                                                                              |
+| [Google](https://developers.google.com/speed/public-dns) | [Google Public DNS](https://developers.google.com/speed/public-dns)를 이용한 DNS 확인, Cloudflare와 함께. |
 | [Digital Ocean](https://m.do.co/c/a7fe489d1b27) | 전용 서버 호스팅 및 관리형 데이터베이스.                                                                                     |
 | [Vultr](https://www.vultr.com/?ref=7429848)     | 전용 서버 호스팅.                                                                                                            |
 | [DataPacket](https://www.datapacket.com)        | 전용 서버 호스팅.                                                                                                            |

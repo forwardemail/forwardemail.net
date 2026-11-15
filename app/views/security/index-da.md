@@ -118,6 +118,7 @@ Vi vælger omhyggeligt vores tjenesteudbydere for at sikre, at de opfylder vores
 | [DataPacket](https://www.datapacket.com)      | Serverinfrastruktur         | ❌ Nej           | [DataPacket Privacy](https://www.datapacket.com/privacy-policy)                                         |
 | [Digital Ocean](https://www.digitalocean.com) | Cloud-infrastruktur         | ❌ Nej           | [DigitalOcean GDPR](https://www.digitalocean.com/legal/gdpr)                                            |
 | [GitHub](https://github.com)                  | Hosting af kildekode, CI/CD | ✅ Ja            | [GitHub GDPR](https://docs.github.com/en/site-policy/privacy-policies/github-data-protection-agreement) |
+| [Google](https://developers.google.com/speed/public-dns) | DNS-opslag | ✅ Ja            | [Google Privacy Frameworks](https://policies.google.com/privacy/frameworks) |
 | [Vultr](https://www.vultr.com)                | Cloud-infrastruktur         | ❌ Nej           | [Vultr GDPR](https://www.vultr.com/legal/eea-gdpr-privacy/)                                             |
 | [Stripe](https://stripe.com)                  | Betalingsbehandling         | ✅ Ja            | [Stripe Privacy Center](https://stripe.com/legal/privacy-center)                                        |
 | [PayPal](https://www.paypal.com)              | Betalingsbehandling         | ❌ Nej           | [PayPal Privacy](https://www.paypal.com/uk/legalhub/privacy-full)                                       |

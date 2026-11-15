@@ -4215,6 +4215,7 @@ Tam detaylar GDPR uyumluluk sayfamızda mevcuttur: <https://forwardemail.net/gdp
 | **DataPacket**   | ❌ Hayır                               | <https://www.datapacket.com/privacy-policy>                                              |
 | **DigitalOcean** | ❌ Hayır                               | <https://www.digitalocean.com/legal/gdpr>                                                |
 | **GitHub**       | ✅ Evet                                 | <https://docs.github.com/en/site-policy/privacy-policies/github-data-protection-agreement> |
+| **Google**       | ✅ Evet                                 | <https://policies.google.com/privacy/frameworks> |
 | **Vultr**        | ❌ Hayır                               | <https://www.vultr.com/legal/eea-gdpr-privacy/>                                          |
 
 **Detaylı Sertifikalar:**
@@ -4251,6 +4252,13 @@ Tam detaylar GDPR uyumluluk sayfamızda mevcuttur: <https://forwardemail.net/gdp
 * Kaynak kodu barındırma, CI/CD ve proje yönetimi
 * GitHub Veri Koruma Anlaşması mevcut
 * Detaylar: <https://docs.github.com/en/site-policy/privacy-policies/github-data-protection-agreement>
+
+**Google**
+
+* Veri Gizliliği Çerçevesi sertifikalı (AB-ABD, İsviçre-ABD ve Birleşik Krallık Uzantısı)
+* Google Public DNS, alan adlarını çözümlemek için Cloudflare ile birlikte kullanılır (e-posta içeriği gönderilmez)
+* IP adresini içeren geçici günlükler 24–48 saat içinde silinir; kalıcı günlükler örneklemedir ve IP adresi içermez
+* Detaylar: <https://developers.google.com/speed/public-dns/privacy>
 
 **Ödeme İşlemcileri:**
 
@@ -4325,7 +4333,7 @@ Eğer GDPR Madde 28 kapsamında bir veri sorumlusuysanız (veya kendiniz bir ver
 | **İşlemenin yeri** | United States (Denver, Colorado) |
 | **Saklama** | Bkz. [Alan adım için gelen e-postalar nerede işlenir ve depolanır, ve ne kadar süreyle](#where-is-inbound-email-for-my-domain-processed-and-stored-and-for-how-long) |
 | **Aktarım mekanizması** | [Data Processing Agreement](/dpa) ve [GDPR](/gdpr) sayfalarımızda belirtildiği şekilde |
-| **Kendi alt işleyenlerimiz** | [GDPR](/gdpr) sayfamızda ve [DPA](/dpa) içinde listelenmiştir (halen Cloudflare, DataPacket, DigitalOcean, GitHub, Vultr, Stripe ve PayPal) |
+| **Kendi alt işleyenlerimiz** | [GDPR](/gdpr) sayfamızda ve [DPA](/dpa) içinde listelenmiştir (halen Cloudflare, DataPacket, DigitalOcean, GitHub, Google, Vultr, Stripe ve PayPal) |
 | **AB temsilcisi (Mad. 27)** | Osano International Compliance Services Limited, Dublin, İrlanda – tam adres [GDPR](/gdpr) sayfamızda |
 | **Birleşik Krallık temsilcisi** | Osano UK Compliance LTD, Belfast – tam adres [GDPR](/gdpr) sayfamızda |
 | **Veri işleme sözleşmesi** | <https://forwardemail.net/dpa> ([Terms](/terms) ile kabul edilir; imzalı bir kopya Enterprise License kapsamında sağlanır) |
@@ -5734,9 +5742,9 @@ dig example.com txt +short
 
 ### Alan adlarında DNS sorgularını nasıl yapıyorsunuz? {#how-do-you-perform-dns-lookups-on-domain-names}
 
-Açık kaynaklı bir yazılım projesi olan :tangerine: [Tangerine](https://github.com/forwardemail/tangerine)'ı oluşturduk ve DNS sorguları için kullanıyoruz. Varsayılan DNS sunucuları `1.1.1.1` ve `1.0.0.1`'dir ve DNS sorguları uygulama katmanında [DNS over HTTPS](https://en.wikipedia.org/wiki/DNS_over_HTTPS) ("DoH") üzerinden yapılır.
+Açık kaynaklı bir yazılım projesi olan :tangerine: [Tangerine](https://github.com/forwardemail/tangerine)'ı oluşturduk ve DNS sorguları için kullanıyoruz. Varsayılan DNS sunucuları `1.1.1.1`, `8.8.8.8`, `1.0.0.1` ve `8.8.4.4`'tür ve DNS sorguları uygulama katmanında [DNS over HTTPS](https://en.wikipedia.org/wiki/DNS_over_HTTPS) ("DoH") üzerinden yapılır.
 
-:tangerine: [Tangerine](https://github.com/tangerine), varsayılan olarak [CloudFlare'ın gizlilik odaklı tüketici DNS servisini][cloudflare-dns] kullanır.
+:tangerine: [Tangerine](https://github.com/tangerine), varsayılan olarak [CloudFlare'ın gizlilik odaklı tüketici DNS servisini][cloudflare-dns] kullanır. Bunu Cloudflare ve [Google Public DNS][google-dns] ile sırayla kullanıyoruz: her sorgu Cloudflare ile başlar ve Cloudflare yanıt vermediğinde Google'a geçer.
 
 
 ## Hesap ve Faturalandırma {#account-and-billing}
@@ -6191,3 +6199,5 @@ Tüm ödemeler Stripe veya PayPal üzerinden güvenli bir şekilde işlenir. Öd
 [gmail-2fa]: https://myaccount.google.com/signinoptions/two-step-verification
 
 [cloudflare-dns]: https://blog.cloudflare.com/announcing-1111/
+
+[google-dns]: https://developers.google.com/speed/public-dns/privacy

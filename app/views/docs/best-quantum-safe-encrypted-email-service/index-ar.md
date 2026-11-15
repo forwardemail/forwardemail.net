@@ -243,6 +243,7 @@
 | ----------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
 | [Cloudflare](https://www.cloudflare.com/)       | مزود DNS، فحوصات الصحة، موازنات التحميل، وتخزين النسخ الاحتياطية باستخدام [Cloudflare R2](https://developers.cloudflare.com/r2). |
 | [GitHub](https://github.com/)                   | استضافة رمز المصدر، التكامل المستمر/التسليم المستمر، وإدارة المشاريع.                                                                          |
+| [Google](https://developers.google.com/speed/public-dns) | تحليل أسماء DNS باستخدام [Google Public DNS](https://developers.google.com/speed/public-dns)، إلى جانب Cloudflare. |
 | [Digital Ocean](https://m.do.co/c/a7fe489d1b27) | استضافة خوادم مخصصة وقواعد بيانات مُدارة.                                                                              |
 | [Vultr](https://www.vultr.com/?ref=7429848)     | استضافة خوادم مخصصة.                                                                                                    |
 | [DataPacket](https://www.datapacket.com)        | استضافة خوادم مخصصة.                                                                                                    |

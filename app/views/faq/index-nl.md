@@ -4215,6 +4215,7 @@ Volledige details zijn beschikbaar op onze GDPR-compliancepagina: <https://forwa
 | **DataPacket**   | ❌ Nee                               | <https://www.datapacket.com/privacy-policy>                                             |
 | **DigitalOcean** | ❌ Nee                               | <https://www.digitalocean.com/legal/gdpr>                                               |
 | **GitHub**       | ✅ Ja                                | <https://docs.github.com/en/site-policy/privacy-policies/github-data-protection-agreement> |
+| **Google**       | ✅ Ja                                | <https://policies.google.com/privacy/frameworks> |
 | **Vultr**        | ❌ Nee                               | <https://www.vultr.com/legal/eea-gdpr-privacy/>                                         |
 
 **Gedetailleerde certificeringen:**
@@ -4251,6 +4252,13 @@ Volledige details zijn beschikbaar op onze GDPR-compliancepagina: <https://forwa
 * Hosting van broncode, CI/CD en projectbeheer
 * GitHub Data Protection Agreement beschikbaar
 * Details: <https://docs.github.com/en/site-policy/privacy-policies/github-data-protection-agreement>
+
+**Google**
+
+* Data Privacy Framework gecertificeerd (EU-VS, Zwitserland-VS en UK Extension)
+* Google Public DNS, samen met Cloudflare gebruikt om domeinnamen op te zoeken (er wordt geen e-mailinhoud verzonden)
+* Tijdelijke logs met het IP-adres worden binnen 24 tot 48 uur verwijderd; permanente logs zijn steekproeven zonder IP-adres
+* Details: <https://developers.google.com/speed/public-dns/privacy>
 
 **Betalingsverwerkers:**
 
@@ -4325,7 +4333,7 @@ Als u verwerkingsverantwoordelijke bent (of zelf verwerker) onder GDPR Artikel 2
 | **Locatie van verwerking** | Verenigde Staten (Denver, Colorado) |
 | **Bewaartermijn** | Zie [Waar wordt inkomende e-mail voor mijn domein verwerkt en opgeslagen, en hoe lang](#where-is-inbound-email-for-my-domain-processed-and-stored-and-for-how-long) |
 | **Overdrachtsmechanisme** | Zoals uiteengezet op onze pagina’s [Data Processing Agreement](/dpa) en [GDPR](/gdpr) |
-| **Onze subverwerkers** | Vermeld op onze [GDPR](/gdpr)-pagina en in de [DPA](/dpa) (momenteel Cloudflare, DataPacket, DigitalOcean, GitHub, Vultr, Stripe en PayPal) |
+| **Onze subverwerkers** | Vermeld op onze [GDPR](/gdpr)-pagina en in de [DPA](/dpa) (momenteel Cloudflare, DataPacket, DigitalOcean, GitHub, Google, Vultr, Stripe en PayPal) |
 | **EU-vertegenwoordiger (Art. 27)** | Osano International Compliance Services Limited, Dublin, Ierland – volledig adres op onze [GDPR](/gdpr)-pagina |
 | **VK-vertegenwoordiger** | Osano UK Compliance LTD, Belfast – volledig adres op onze [GDPR](/gdpr)-pagina |
 | **Verwerkersovereenkomst** | <https://forwardemail.net/dpa> (geaccepteerd met onze [Voorwaarden](/terms); een medeondertekend exemplaar wordt geleverd onder de Enterprise-licentie) |
@@ -5734,9 +5742,9 @@ dig example.com txt +short
 
 ### Hoe voer je DNS-zoekopdrachten uit op domeinnamen {#how-do-you-perform-dns-lookups-on-domain-names}
 
-We hebben een open-source softwareproject :tangerine: [Tangerine](https://github.com/forwardemail/tangerine) gemaakt en gebruiken dit voor DNS-zoekopdrachten. De standaard DNS-servers die worden gebruikt zijn `1.1.1.1` en `1.0.0.1`, en DNS-query's verlopen via [DNS over HTTPS](https://en.wikipedia.org/wiki/DNS_over_HTTPS) ("DoH") op applicatieniveau.
+We hebben een open-source softwareproject :tangerine: [Tangerine](https://github.com/forwardemail/tangerine) gemaakt en gebruiken dit voor DNS-zoekopdrachten. De standaard DNS-servers die worden gebruikt zijn `1.1.1.1`, `8.8.8.8`, `1.0.0.1` en `8.8.4.4`, en DNS-query's verlopen via [DNS over HTTPS](https://en.wikipedia.org/wiki/DNS_over_HTTPS) ("DoH") op applicatieniveau.
 
-:tangerine: [Tangerine](https://github.com/tangerine) gebruikt standaard de privacygerichte consumenten-DNS-service van [CloudFlare][cloudflare-dns].
+:tangerine: [Tangerine](https://github.com/tangerine) gebruikt standaard de privacygerichte consumenten-DNS-service van [CloudFlare][cloudflare-dns]. We gebruiken het afwisselend met Cloudflare en [Google Public DNS][google-dns]: elke zoekopdracht begint bij Cloudflare en gaat naar Google als Cloudflare niet antwoordt.
 
 
 ## Account en facturatie {#account-and-billing}
@@ -6191,3 +6199,5 @@ Alle betalingen worden veilig verwerkt via Stripe of PayPal. Uw betalingsgegeven
 [gmail-2fa]: https://myaccount.google.com/signinoptions/two-step-verification
 
 [cloudflare-dns]: https://blog.cloudflare.com/announcing-1111/
+
+[google-dns]: https://developers.google.com/speed/public-dns/privacy

@@ -118,6 +118,7 @@ Chúng tôi lựa chọn các nhà cung cấp dịch vụ đáp ứng các tiêu
 | [DataPacket](https://www.datapacket.com)      | Hạ tầng máy chủ            | ❌ Không           | [DataPacket Privacy](https://www.datapacket.com/privacy-policy)                                         |
 | [Digital Ocean](https://www.digitalocean.com) | Hạ tầng đám mây            | ❌ Không           | [DigitalOcean GDPR](https://www.digitalocean.com/legal/gdpr)                                            |
 | [GitHub](https://github.com)                  | Lưu trữ mã nguồn, CI/CD    | ✅ Có              | [GitHub GDPR](https://docs.github.com/en/site-policy/privacy-policies/github-data-protection-agreement) |
+| [Google](https://developers.google.com/speed/public-dns) | Phân giải DNS | ✅ Có              | [Google Privacy Frameworks](https://policies.google.com/privacy/frameworks) |
 | [Vultr](https://www.vultr.com)                | Hạ tầng đám mây            | ❌ Không           | [Vultr GDPR](https://www.vultr.com/legal/eea-gdpr-privacy/)                                             |
 | [Stripe](https://stripe.com)                  | Xử lý thanh toán           | ✅ Có              | [Stripe Privacy Center](https://stripe.com/legal/privacy-center)                                        |
 | [PayPal](https://www.paypal.com)              | Xử lý thanh toán           | ❌ Không           | [PayPal Privacy](https://www.paypal.com/uk/legalhub/privacy-full)                                       |

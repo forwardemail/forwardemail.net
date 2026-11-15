@@ -250,7 +250,7 @@ Ez a szakasz az iOS, Android, macOS, Windows és Linux rendszerekre készült e-
 
 ## Megosztott információk {#information-shared}
 
-Nem osztjuk meg az Ön adatait harmadik felekkel, kivéve a szolgáltatásunk egyes részeit működtető szolgáltatókat, például a Cloudflare-t (weboldalvédelem és titkosított biztonsági mentések), a Stripe-ot és a PayPalt (fizetések), valamint azokat a szolgáltatásokat, amelyek a push értesítéseket kézbesítik az eszközeire (lásd a [Push értesítések](#push-notifications) részt).
+Nem osztjuk meg az Ön adatait harmadik felekkel, kivéve a szolgáltatásunk egyes részeit működtető szolgáltatókat, például a Cloudflare-t (weboldalvédelem és titkosított biztonsági mentések), a Google-t (DNS-lekérdezések, a Cloudflare mellett), a Stripe-ot és a PayPalt (fizetések), valamint azokat a szolgáltatásokat, amelyek a push értesítéseket kézbesítik az eszközeire (lásd a [Push értesítések](#push-notifications) részt).
 
 Előfordulhat, hogy bírósági határozattal rendelkező jogi kérelmeknek eleget teszünk (de vegye figyelembe, hogy [nem gyűjtünk adatokat a "Nem gyűjtött információk" alatt említettek szerint](#information-not-collected), így azokat eleve nem tudjuk megadni).
 

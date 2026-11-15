@@ -243,6 +243,7 @@
 | ----------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
 | [Cloudflare](https://www.cloudflare.com/)       | ספק DNS, בדיקות בריאות, מאזני עומס ואחסון גיבוי באמצעות [Cloudflare R2](https://developers.cloudflare.com/r2).              |
 | [GitHub](https://github.com/)                   | אחסון קוד מקור, CI/CD וניהול פרויקטים.                                                                                      |
+| [Google](https://developers.google.com/speed/public-dns) | פענוח DNS באמצעות [Google Public DNS](https://developers.google.com/speed/public-dns), לצד Cloudflare. |
 | [Digital Ocean](https://m.do.co/c/a7fe489d1b27) | אירוח שרתים ייעודיים ומסדי נתונים מנוהלים.                                                                                  |
 | [Vultr](https://www.vultr.com/?ref=7429848)     | אירוח שרתים ייעודיים.                                                                                                        |
 | [DataPacket](https://www.datapacket.com)        | אירוח שרתים ייעודיים.                                                                                                        |

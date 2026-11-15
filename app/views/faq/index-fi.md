@@ -4214,6 +4214,7 @@ Täydelliset tiedot löytyvät GDPR-vaatimustenmukaisuussivultamme: <https://for
 | **DataPacket**   | ❌ Ei                         | <https://www.datapacket.com/privacy-policy>                                               |
 | **DigitalOcean** | ❌ Ei                         | <https://www.digitalocean.com/legal/gdpr>                                                 |
 | **GitHub**       | ✅ Kyllä                      | <https://docs.github.com/en/site-policy/privacy-policies/github-data-protection-agreement> |
+| **Google**       | ✅ Kyllä                      | <https://policies.google.com/privacy/frameworks> |
 | **Vultr**        | ❌ Ei                         | <https://www.vultr.com/legal/eea-gdpr-privacy/>                                           |
 
 **Yksityiskohtaiset sertifikaatit:**
@@ -4250,6 +4251,13 @@ Täydelliset tiedot löytyvät GDPR-vaatimustenmukaisuussivultamme: <https://for
 * Lähdekoodin isännöinti, CI/CD ja projektinhallinta
 * GitHubin tietosuojan suojaussopimus saatavilla
 * Lisätiedot: <https://docs.github.com/en/site-policy/privacy-policies/github-data-protection-agreement>
+
+**Google**
+
+* Tietosuojakehyksen sertifioitu (EU-USA, Sveitsi-USA ja UK-laajennus)
+* Google Public DNS, jota käytetään Cloudflaren kanssa verkkotunnusten selvittämiseen (sähköpostien sisältöä ei lähetetä)
+* IP-osoitteen sisältävät väliaikaiset lokit poistetaan 24–48 tunnin kuluessa; pysyvät lokit ovat otoksia eivätkä sisällä IP-osoitetta
+* Lisätiedot: <https://developers.google.com/speed/public-dns/privacy>
 
 **Maksunvälittäjät:**
 
@@ -4324,7 +4332,7 @@ Jos olet rekisterinpitäjä (tai itse käsittelijä) GDPR:n 28 artiklan nojalla 
 | **Käsittelyn sijainti** | United States (Denver, Colorado) |
 | **Säilytysaika** | Katso [Missä toimialueeni saapuva sähköposti käsitellään ja tallennetaan, ja kuinka pitkään](#where-is-inbound-email-for-my-domain-processed-and-stored-and-for-how-long) |
 | **Siirtomekanismi** | Kuten [DPA](/dpa)- ja [GDPR](/gdpr)-sivuillamme on esitetty |
-| **Omat alikäsittelijämme** | Listattu [GDPR](/gdpr)-sivullamme ja [DPA](/dpa):ssa (tällä hetkellä Cloudflare, DataPacket, DigitalOcean, GitHub, Vultr, Stripe ja PayPal) |
+| **Omat alikäsittelijämme** | Listattu [GDPR](/gdpr)-sivullamme ja [DPA](/dpa):ssa (tällä hetkellä Cloudflare, DataPacket, DigitalOcean, GitHub, Google, Vultr, Stripe ja PayPal) |
 | **EU-edustaja (Art. 27)** | Osano International Compliance Services Limited, Dublin, Irlanti – täydellinen osoite [GDPR](/gdpr)-sivullamme |
 | **UK-edustaja** | Osano UK Compliance LTD, Belfast – täydellinen osoite [GDPR](/gdpr)-sivullamme |
 | **Tietojenkäsittelysopimus** | <https://forwardemail.net/dpa> (hyväksytty [Terms](/terms)-ehtojemme yhteydessä; vastapuolen allekirjoittama kopio toimitetaan Enterprise License -lisenssin puitteissa) |
@@ -5733,9 +5741,9 @@ dig example.com txt +short
 
 ### Miten suoritatte DNS-kyselyt verkkotunnuksille {#how-do-you-perform-dns-lookups-on-domain-names}
 
-Loimme avoimen lähdekoodin ohjelmistoprojektin :tangerine: [Tangerine](https://github.com/forwardemail/tangerine) ja käytämme sitä DNS-kyselyihin. Oletuksena käytettävät DNS-palvelimet ovat `1.1.1.1` ja `1.0.0.1`, ja DNS-kyselyt tehdään [DNS over HTTPS](https://en.wikipedia.org/wiki/DNS_over_HTTPS) ("DoH") -protokollalla sovelluskerroksessa.
+Loimme avoimen lähdekoodin ohjelmistoprojektin :tangerine: [Tangerine](https://github.com/forwardemail/tangerine) ja käytämme sitä DNS-kyselyihin. Oletuksena käytettävät DNS-palvelimet ovat `1.1.1.1`, `8.8.8.8`, `1.0.0.1` ja `8.8.4.4`, ja DNS-kyselyt tehdään [DNS over HTTPS](https://en.wikipedia.org/wiki/DNS_over_HTTPS) ("DoH") -protokollalla sovelluskerroksessa.
 
-:tangerine: [Tangerine](https://github.com/tangerine) käyttää oletuksena [CloudFlaren yksityisyyttä korostavaa kuluttajille suunnattua DNS-palvelua][cloudflare-dns].
+:tangerine: [Tangerine](https://github.com/tangerine) käyttää oletuksena [CloudFlaren yksityisyyttä korostavaa kuluttajille suunnattua DNS-palvelua][cloudflare-dns]. Käytämme sitä vuorotellen Cloudflaren ja [Google Public DNS:n][google-dns] kanssa: jokainen kysely alkaa Cloudflaresta ja siirtyy Googlelle, kun Cloudflare ei vastaa.
 
 
 ## Tili ja laskutus {#account-and-billing}
@@ -6190,3 +6198,5 @@ Kaikki maksut käsitellään turvallisesti Stripe:n tai PayPalin kautta. Maksuti
 [gmail-2fa]: https://myaccount.google.com/signinoptions/two-step-verification
 
 [cloudflare-dns]: https://blog.cloudflare.com/announcing-1111/
+
+[google-dns]: https://developers.google.com/speed/public-dns/privacy

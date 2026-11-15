@@ -4214,6 +4214,7 @@ SMTP الصادر **غير محدود** و**قائم على السمعة**. تح
 | **DataPacket**   | ❌ لا                         | <https://www.datapacket.com/privacy-policy>                                             |
 | **DigitalOcean** | ❌ لا                         | <https://www.digitalocean.com/legal/gdpr>                                               |
 | **GitHub**       | ✅ نعم                        | <https://docs.github.com/en/site-policy/privacy-policies/github-data-protection-agreement> |
+| **Google**       | ✅ نعم                        | <https://policies.google.com/privacy/frameworks> |
 | **Vultr**        | ❌ لا                         | <https://www.vultr.com/legal/eea-gdpr-privacy/>                                         |
 
 **الشهادات التفصيلية:**
@@ -4250,6 +4251,13 @@ SMTP الصادر **غير محدود** و**قائم على السمعة**. تح
 * استضافة شفرة المصدر، CI/CD، وإدارة المشاريع
 * اتفاقية حماية بيانات GitHub متاحة
 * التفاصيل: <https://docs.github.com/en/site-policy/privacy-policies/github-data-protection-agreement>
+
+**Google**
+
+* معتمد في إطار خصوصية البيانات (الاتحاد الأوروبي-الولايات المتحدة، سويسرا-الولايات المتحدة، والامتداد البريطاني)
+* Google Public DNS، يُستخدم مع Cloudflare لتحليل أسماء النطاقات (لا يُرسل أي محتوى للبريد الإلكتروني)
+* تُحذف السجلات المؤقتة التي تحتوي على عنوان IP خلال 24 إلى 48 ساعة؛ أما السجلات الدائمة فهي عينات لا تحتفظ بأي عنوان IP
+* التفاصيل: <https://developers.google.com/speed/public-dns/privacy>
 
 **معالجات الدفع:**
 
@@ -4324,7 +4332,7 @@ SMTP الصادر **غير محدود** و**قائم على السمعة**. تح
 | **موقع المعالجة** | United States (Denver, Colorado) |
 | **مدة الاحتفاظ** | راجع [أين تتم معالجة البريد الوارد لنطاقي وتخزينه، ولمدة كم من الوقت](#where-is-inbound-email-for-my-domain-processed-and-stored-and-for-how-long) |
 | **آلية النقل** | كما هو منصوص عليه في صفحات [اتفاقية معالجة البيانات](/dpa) و[GDPR](/gdpr) لدينا |
-| **المعالِجون الفرعيون لدينا** | مذكورون في صفحة [GDPR](/gdpr) وفي [DPA](/dpa) (حالياً Cloudflare وDataPacket وDigitalOcean وGitHub وVultr وStripe وPayPal) |
+| **المعالِجون الفرعيون لدينا** | مذكورون في صفحة [GDPR](/gdpr) وفي [DPA](/dpa) (حالياً Cloudflare وDataPacket وDigitalOcean وGitHub وGoogle وVultr وStripe وPayPal) |
 | **الممثل في الاتحاد الأوروبي (المادة 27)** | Osano International Compliance Services Limited، Dublin, Ireland – العنوان الكامل في صفحة [GDPR](/gdpr) لدينا |
 | **الممثل في المملكة المتحدة** | Osano UK Compliance LTD، Belfast – العنوان الكامل في صفحة [GDPR](/gdpr) لدينا |
 | **اتفاقية معالجة البيانات** | <https://forwardemail.net/dpa> (يتم قبولها مع [الشروط](/terms) الخاصة بنا؛ وتُوفَّر نسخة موقعة مقابِلة ضمن Enterprise License) |
@@ -5733,9 +5741,9 @@ dig example.com txt +short
 
 ### كيف تقومون بعمليات بحث DNS على أسماء النطاقات {#how-do-you-perform-dns-lookups-on-domain-names}
 
-أنشأنا مشروع برمجيات مفتوح المصدر :tangerine: [Tangerine](https://github.com/forwardemail/tangerine) ونستخدمه لعمليات بحث DNS. خوادم DNS الافتراضية المستخدمة هي `1.1.1.1` و `1.0.0.1`، وتتم استعلامات DNS عبر [DNS عبر HTTPS](https://en.wikipedia.org/wiki/DNS_over_HTTPS) ("DoH") على طبقة التطبيق.
+أنشأنا مشروع برمجيات مفتوح المصدر :tangerine: [Tangerine](https://github.com/forwardemail/tangerine) ونستخدمه لعمليات بحث DNS. خوادم DNS الافتراضية المستخدمة هي `1.1.1.1`، `8.8.8.8`، `1.0.0.1` و `8.8.4.4`، وتتم استعلامات DNS عبر [DNS عبر HTTPS](https://en.wikipedia.org/wiki/DNS_over_HTTPS) ("DoH") على طبقة التطبيق.
 
-:tangerine: [Tangerine](https://github.com/tangerine) يستخدم [خدمة DNS الخاصة بالمستهلك من CloudFlare التي تركز على الخصوصية بشكل افتراضي][cloudflare-dns].
+:tangerine: [Tangerine](https://github.com/tangerine) يستخدم [خدمة DNS الخاصة بالمستهلك من CloudFlare التي تركز على الخصوصية بشكل افتراضي][cloudflare-dns]. نستخدمه بالتناوب مع Cloudflare و[Google Public DNS][google-dns]: يبدأ كل استعلام بـ Cloudflare وينتقل إلى Google عندما لا يستجيب Cloudflare.
 
 
 ## الحساب والفوترة {#account-and-billing}
@@ -6190,3 +6198,5 @@ Enterprise License هو **$250/month**، ويتم تسعيره وفوترة قي
 [gmail-2fa]: https://myaccount.google.com/signinoptions/two-step-verification
 
 [cloudflare-dns]: https://blog.cloudflare.com/announcing-1111/
+
+[google-dns]: https://developers.google.com/speed/public-dns/privacy

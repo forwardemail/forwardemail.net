@@ -243,6 +243,7 @@ Aquí hay una tabla que describe los proyectos que usamos en nuestro código fue
 | ----------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
 | [Cloudflare](https://www.cloudflare.com/)       | Proveedor DNS, chequeos de salud, balanceadores de carga y almacenamiento de respaldo usando [Cloudflare R2](https://developers.cloudflare.com/r2). |
 | [GitHub](https://github.com/)                   | Hospedaje de código fuente, CI/CD y gestión de proyectos.                                                                    |
+| [Google](https://developers.google.com/speed/public-dns) | Resolución DNS con [Google Public DNS](https://developers.google.com/speed/public-dns), junto con Cloudflare. |
 | [Digital Ocean](https://m.do.co/c/a7fe489d1b27) | Hospedaje de servidores dedicados y bases de datos gestionadas.                                                              |
 | [Vultr](https://www.vultr.com/?ref=7429848)     | Hospedaje de servidores dedicados.                                                                                           |
 | [DataPacket](https://www.datapacket.com)        | Hospedaje de servidores dedicados.                                                                                           |

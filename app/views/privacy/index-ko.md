@@ -250,7 +250,7 @@
 
 ## Information Shared {#information-shared}
 
-우리는 Cloudflare(웹사이트 보호 및 암호화된 백업), Stripe 및 PayPal(결제), 그리고 귀하의 기기로 푸시 알림을 전송하는 서비스([푸시 알림](#push-notifications) 참조) 등 당사 서비스의 일부를 운영하는 서비스 제공업체를 제외하고는 귀하의 정보를 제3자와 공유하지 않습니다.
+우리는 Cloudflare(웹사이트 보호 및 암호화된 백업), Google(DNS 조회, Cloudflare와 함께), Stripe 및 PayPal(결제), 그리고 귀하의 기기로 푸시 알림을 전송하는 서비스([푸시 알림](#push-notifications) 참조) 등 당사 서비스의 일부를 운영하는 서비스 제공업체를 제외하고는 귀하의 정보를 제3자와 공유하지 않습니다.
 
 법원의 명령에 따른 법적 요청이 있을 경우 준수할 수 있으나 ([정보 미수집 항목](#information-not-collected)에서 언급한 정보를 수집하지 않으므로) 처음부터 제공할 수 없음을 유의해 주십시오.
 

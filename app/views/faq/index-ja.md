@@ -4216,6 +4216,7 @@ Sources:
 | **DataPacket**     | ❌ いいえ                                | <https://www.datapacket.com/privacy-policy>                                                |
 | **DigitalOcean**   | ❌ いいえ                                | <https://www.digitalocean.com/legal/gdpr>                                                  |
 | **GitHub**         | ✅ はい                                  | <https://docs.github.com/en/site-policy/privacy-policies/github-data-protection-agreement> |
+| **Google**         | ✅ はい                                  | <https://policies.google.com/privacy/frameworks> |
 | **Vultr**          | ❌ いいえ                                | <https://www.vultr.com/legal/eea-gdpr-privacy/>                                            |
 
 **詳細な認証情報：**
@@ -4252,6 +4253,13 @@ Sources:
 * ソースコードホスティング、CI/CD、プロジェクト管理
 * GitHubデータ保護契約書あり
 * 詳細：<https://docs.github.com/en/site-policy/privacy-policies/github-data-protection-agreement>
+
+**Google**
+
+* データプライバシーフレームワーク認証済み（EU-US、スイス-US、英国拡張）
+* Google Public DNS（Cloudflareと併用し、ドメイン名の名前解決に使用。メールの内容は送信されません）
+* IPアドレスを含む一時ログは24〜48時間以内に削除され、永続ログはサンプリングされたものでIPアドレスを保持しません
+* 詳細：<https://developers.google.com/speed/public-dns/privacy>
 
 **決済プロセッサー：**
 
@@ -4326,7 +4334,7 @@ Sources:
 | **処理場所** | United States (Denver, Colorado) |
 | **保持期間** | [自分のドメイン宛の受信メールはどこで処理・保存され、どれくらいの期間保持されますか](#where-is-inbound-email-for-my-domain-processed-and-stored-and-for-how-long) を参照 |
 | **移転メカニズム** | 当社の [Data Processing Agreement](/dpa) および [GDPR](/gdpr) ページに定めるとおり |
-| **当社のサブプロセッサ** | 当社の [GDPR](/gdpr) ページおよび [DPA](/dpa) に記載（現在 Cloudflare、DataPacket、DigitalOcean、GitHub、Vultr、Stripe、PayPal） |
+| **当社のサブプロセッサ** | 当社の [GDPR](/gdpr) ページおよび [DPA](/dpa) に記載（現在 Cloudflare、DataPacket、DigitalOcean、GitHub、Google、Vultr、Stripe、PayPal） |
 | **EU 代表者（第 27 条）** | Osano International Compliance Services Limited, Dublin, Ireland – 住所の詳細は当社の [GDPR](/gdpr) ページを参照 |
 | **UK 代表者** | Osano UK Compliance LTD, Belfast – 住所の詳細は当社の [GDPR](/gdpr) ページを参照 |
 | **データ処理契約** | <https://forwardemail.net/dpa>（当社の[Terms](/terms) とともに受諾；カウンターサイン済みの写しは Enterprise License の下で提供） |
@@ -5735,9 +5743,9 @@ dig example.com txt +short
 
 ### ドメイン名のDNSルックアップはどのように行っていますか {#how-do-you-perform-dns-lookups-on-domain-names}
 
-オープンソースソフトウェアプロジェクト :tangerine: [Tangerine](https://github.com/forwardemail/tangerine) を作成し、DNSルックアップに使用しています。デフォルトのDNSサーバーは `1.1.1.1` と `1.0.0.1` で、DNSクエリはアプリケーション層の [DNS over HTTPS](https://en.wikipedia.org/wiki/DNS_over_HTTPS) ("DoH") を通じて行われます。
+オープンソースソフトウェアプロジェクト :tangerine: [Tangerine](https://github.com/forwardemail/tangerine) を作成し、DNSルックアップに使用しています。デフォルトのDNSサーバーは `1.1.1.1`、`8.8.8.8`、`1.0.0.1` と `8.8.4.4` で、DNSクエリはアプリケーション層の [DNS over HTTPS](https://en.wikipedia.org/wiki/DNS_over_HTTPS) ("DoH") を通じて行われます。
 
-:tangerine: [Tangerine](https://github.com/tangerine) はデフォルトで [CloudFlareのプライバシー重視の一般消費者向けDNSサービス][cloudflare-dns] を使用しています。
+:tangerine: [Tangerine](https://github.com/tangerine) はデフォルトで [CloudFlareのプライバシー重視の一般消費者向けDNSサービス][cloudflare-dns] を使用しています。Cloudflareと[Google Public DNS][google-dns]を交互に使用しています。各ルックアップはCloudflareから始まり、Cloudflareが応答しない場合はGoogleに移ります。
 
 
 ## アカウントと請求 {#account-and-billing}
@@ -6192,3 +6200,5 @@ Forward Email は以下の一回払いまたは月額・四半期・年額の支
 [gmail-2fa]: https://myaccount.google.com/signinoptions/two-step-verification
 
 [cloudflare-dns]: https://blog.cloudflare.com/announcing-1111/
+
+[google-dns]: https://developers.google.com/speed/public-dns/privacy

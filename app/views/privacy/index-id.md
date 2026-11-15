@@ -250,7 +250,7 @@ Bagian ini mencakup aplikasi email kami untuk iOS, Android, macOS, Windows, dan 
 
 ## Informasi yang Dibagikan {#information-shared}
 
-Kami tidak membagikan informasi Anda dengan pihak ketiga manapun, kecuali dengan penyedia layanan yang menjalankan sebagian layanan kami, seperti Cloudflare (perlindungan situs web dan cadangan terenkripsi), Stripe dan PayPal (pembayaran), serta layanan yang mengirimkan notifikasi push ke perangkat Anda (lihat [Notifikasi Push](#push-notifications)).
+Kami tidak membagikan informasi Anda dengan pihak ketiga manapun, kecuali dengan penyedia layanan yang menjalankan sebagian layanan kami, seperti Cloudflare (perlindungan situs web dan cadangan terenkripsi), Google (pencarian DNS, bersama Cloudflare), Stripe dan PayPal (pembayaran), serta layanan yang mengirimkan notifikasi push ke perangkat Anda (lihat [Notifikasi Push](#push-notifications)).
 
 Kami mungkin perlu dan akan mematuhi permintaan hukum yang diperintahkan pengadilan (tetapi ingat [kami tidak mengumpulkan informasi yang disebutkan di atas dalam "Informasi yang Tidak Dikumpulkan"](#information-not-collected), jadi kami tidak akan dapat memberikannya sejak awal).
 

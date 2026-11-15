@@ -243,6 +243,7 @@ Secondary จะสั่งให้ Primary ผ่านการเชื่�
 | ----------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
 | [Cloudflare](https://www.cloudflare.com/)       | ผู้ให้บริการ DNS, การตรวจสอบสุขภาพ, ตัวโหลดบาลานเซอร์ และการจัดเก็บข้อมูลสำรองโดยใช้ [Cloudflare R2](https://developers.cloudflare.com/r2) |
 | [GitHub](https://github.com/)                   | โฮสต์ซอร์สโค้ด, CI/CD และการจัดการโปรเจกต์                                                                                 |
+| [Google](https://developers.google.com/speed/public-dns) | การแปลงชื่อ DNS ด้วย [Google Public DNS](https://developers.google.com/speed/public-dns) ร่วมกับ Cloudflare |
 | [Digital Ocean](https://m.do.co/c/a7fe489d1b27) | โฮสต์เซิร์ฟเวอร์เฉพาะและฐานข้อมูลที่มีการจัดการ                                                                             |
 | [Vultr](https://www.vultr.com/?ref=7429848)     | โฮสต์เซิร์ฟเวอร์เฉพาะ                                                                                                      |
 | [DataPacket](https://www.datapacket.com)        | โฮสต์เซิร์ฟเวอร์เฉพาะ                                                                                                      |

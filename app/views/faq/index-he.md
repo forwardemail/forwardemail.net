@@ -4215,6 +4215,7 @@ Forward Email מיישם בקרות גישה מקיפות לצוות ההנדס�
 | **DataPacket**   | ❌ לא                       | <https://www.datapacket.com/privacy-policy>                                            |
 | **DigitalOcean** | ❌ לא                       | <https://www.digitalocean.com/legal/gdpr>                                              |
 | **GitHub**       | ✅ כן                       | <https://docs.github.com/en/site-policy/privacy-policies/github-data-protection-agreement> |
+| **Google**       | ✅ כן                       | <https://policies.google.com/privacy/frameworks> |
 | **Vultr**        | ❌ לא                       | <https://www.vultr.com/legal/eea-gdpr-privacy/>                                        |
 
 **תעודות מפורטות:**
@@ -4251,6 +4252,13 @@ Forward Email מיישם בקרות גישה מקיפות לצוות ההנדס�
 * אירוח קוד מקור, CI/CD, וניהול פרויקטים
 * הסכם הגנת נתונים של GitHub זמין
 * פרטים: <https://docs.github.com/en/site-policy/privacy-policies/github-data-protection-agreement>
+
+**Google**
+
+* מוסמך במסגרת פרטיות נתונים (EU-U.S., Swiss-U.S., ו-UK Extension)
+* Google Public DNS, בשימוש יחד עם Cloudflare לפענוח שמות דומיין (לא נשלח תוכן של הודעות דוא"ל)
+* יומנים זמניים עם כתובת ה-IP נמחקים תוך 24 עד 48 שעות; יומנים קבועים הם דגימות ואינם שומרים כתובת IP
+* פרטים: <https://developers.google.com/speed/public-dns/privacy>
 
 **מעבדי תשלום:**
 
@@ -4325,7 +4333,7 @@ Forward Email מיישם בקרות גישה מקיפות לצוות ההנדס�
 | **מיקום העיבוד** | United States (Denver, Colorado) |
 | **תקופת שמירה** | ראו [היכן מעובד ונשמר הדוא״ל הנכנס עבור הדומיין שלי, ולכמה זמן](#where-is-inbound-email-for-my-domain-processed-and-stored-and-for-how-long) |
 | **מנגנון העברה** | כמפורט בעמודי ה-[Data Processing Agreement](/dpa) וה-[GDPR](/gdpr) שלנו |
-| **מעבדי המשנה שלנו** | מפורטים בעמוד ה-[GDPR](/gdpr) וב-[DPA](/dpa) (נכון לעכשיו Cloudflare, DataPacket, DigitalOcean, GitHub, Vultr, Stripe, ו-PayPal) |
+| **מעבדי המשנה שלנו** | מפורטים בעמוד ה-[GDPR](/gdpr) וב-[DPA](/dpa) (נכון לעכשיו Cloudflare, DataPacket, DigitalOcean, GitHub, Google, Vultr, Stripe, ו-PayPal) |
 | **נציג באיחוד האירופי (סעיף 27)** | Osano International Compliance Services Limited, Dublin, Ireland – הכתובת המלאה בעמוד ה-[GDPR](/gdpr) שלנו |
 | **נציג בבריטניה** | Osano UK Compliance LTD, Belfast – הכתובת המלאה בעמוד ה-[GDPR](/gdpr) שלנו |
 | **הסכם עיבוד נתונים** | <https://forwardemail.net/dpa> (מתקבל יחד עם ה-[תנאים](/terms) שלנו; עותק חתום-נגד מסופק תחת Enterprise License) |
@@ -5734,9 +5742,9 @@ dig example.com txt +short
 
 ### איך אתם מבצעים חיפושי DNS על שמות דומיין {#how-do-you-perform-dns-lookups-on-domain-names}
 
-יצרנו פרויקט תוכנה בקוד פתוח :tangerine: [Tangerine](https://github.com/forwardemail/tangerine) ומשתמשים בו לחיפושי DNS. שרתי ה-DNS ברירת המחדל הם `1.1.1.1` ו-`1.0.0.1`, והשאילתות ל-DNS מתבצעות דרך [DNS over HTTPS](https://en.wikipedia.org/wiki/DNS_over_HTTPS) ("DoH") בשכבת היישום.
+יצרנו פרויקט תוכנה בקוד פתוח :tangerine: [Tangerine](https://github.com/forwardemail/tangerine) ומשתמשים בו לחיפושי DNS. שרתי ה-DNS ברירת המחדל הם `1.1.1.1`, `8.8.8.8`, `1.0.0.1` ו-`8.8.4.4`, והשאילתות ל-DNS מתבצעות דרך [DNS over HTTPS](https://en.wikipedia.org/wiki/DNS_over_HTTPS) ("DoH") בשכבת היישום.
 
-:tangerine: [Tangerine](https://github.com/tangerine) משתמש בשירות ה-DNS הפרטי לצרכנים של [CloudFlare כברירת מחדל][cloudflare-dns].
+:tangerine: [Tangerine](https://github.com/tangerine) משתמש בשירות ה-DNS הפרטי לצרכנים של [CloudFlare כברירת מחדל][cloudflare-dns]. אנו משתמשים בו לסירוגין עם Cloudflare ועם [Google Public DNS][google-dns]: כל שאילתה מתחילה ב-Cloudflare ועוברת ל-Google כאשר Cloudflare אינו עונה.
 
 
 ## חשבון וחשבוניות {#account-and-billing}
@@ -6191,3 +6199,5 @@ Forward Email מקבל את שיטות התשלום הבאות לתשלום חד
 [gmail-2fa]: https://myaccount.google.com/signinoptions/two-step-verification
 
 [cloudflare-dns]: https://blog.cloudflare.com/announcing-1111/
+
+[google-dns]: https://developers.google.com/speed/public-dns/privacy

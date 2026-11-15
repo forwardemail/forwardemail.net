@@ -4215,6 +4215,7 @@ A teljes részletek elérhetők a GDPR megfelelőségi oldalunkon: <https://forw
 | **DataPacket**  | ❌ Nem                             | <https://www.datapacket.com/privacy-policy>                                              |
 | **DigitalOcean**| ❌ Nem                             | <https://www.digitalocean.com/legal/gdpr>                                                |
 | **GitHub**      | ✅ Igen                             | <https://docs.github.com/en/site-policy/privacy-policies/github-data-protection-agreement> |
+| **Google**      | ✅ Igen                             | <https://policies.google.com/privacy/frameworks> |
 | **Vultr**       | ❌ Nem                             | <https://www.vultr.com/legal/eea-gdpr-privacy/>                                          |
 
 **Részletes tanúsítványok:**
@@ -4251,6 +4252,13 @@ A teljes részletek elérhetők a GDPR megfelelőségi oldalunkon: <https://forw
 * Forráskód tárolás, CI/CD és projektmenedzsment
 * GitHub Adatvédelmi Megállapodás elérhető
 * Részletek: <https://docs.github.com/en/site-policy/privacy-policies/github-data-protection-agreement>
+
+**Google**
+
+* Adatvédelmi keretrendszer tanúsítva (EU-USA, Svájc-USA és UK kiterjesztés)
+* Google Public DNS, a Cloudflare mellett a domainnevek feloldására (e-mail-tartalmat nem küldünk)
+* Az IP-címet tartalmazó ideiglenes naplókat 24–48 órán belül törlik; a végleges naplók mintavételezettek, és nem tartalmaznak IP-címet
+* Részletek: <https://developers.google.com/speed/public-dns/privacy>
 
 **Fizetési feldolgozók:**
 
@@ -4325,7 +4333,7 @@ Ha GDPR 28. cikke szerinti adatkezelő (vagy magad is adatfeldolgozó) vagy, és
 | **A feldolgozás helye** | United States (Denver, Colorado) |
 | **Megőrzés** | Lásd: [Hol kerül feldolgozásra és tárolásra a domainom bejövő e‑mailje, és mennyi ideig](#where-is-inbound-email-for-my-domain-processed-and-stored-and-for-how-long) |
 | **Átadási mechanizmus** | A [Data Processing Agreement](/dpa) és [GDPR](/gdpr) oldalainkon foglaltak szerint |
-| **Saját alfeldolgozóink** | A [GDPR](/gdpr) oldalunkon és a [DPA](/dpa) dokumentumban felsorolva (jelenleg Cloudflare, DataPacket, DigitalOcean, GitHub, Vultr, Stripe és PayPal) |
+| **Saját alfeldolgozóink** | A [GDPR](/gdpr) oldalunkon és a [DPA](/dpa) dokumentumban felsorolva (jelenleg Cloudflare, DataPacket, DigitalOcean, GitHub, Google, Vultr, Stripe és PayPal) |
 | **EU képviselő (Art. 27)** | Osano International Compliance Services Limited, Dublin, Ireland – a teljes cím a [GDPR](/gdpr) oldalunkon |
 | **UK képviselő** | Osano UK Compliance LTD, Belfast – a teljes cím a [GDPR](/gdpr) oldalunkon |
 | **Adatfeldolgozási megállapodás** | <https://forwardemail.net/dpa> (a [Feltételeinkkel](/terms) együtt elfogadva; ellenjegyzett példány a Vállalati licenc keretében biztosított) |
@@ -5734,9 +5742,9 @@ dig example.com txt +short
 
 ### Hogyan végzitek a DNS lekérdezéseket domain neveken? {#how-do-you-perform-dns-lookups-on-domain-names}
 
-Létrehoztunk egy nyílt forráskódú szoftverprojektet :tangerine: [Tangerine](https://github.com/forwardemail/tangerine) néven, és ezt használjuk DNS lekérdezésekhez. Az alapértelmezett DNS szerverek a `1.1.1.1` és `1.0.0.1`, és a DNS lekérdezések [DNS over HTTPS](https://en.wikipedia.org/wiki/DNS_over_HTTPS) ("DoH") protokollon keresztül történnek az alkalmazás rétegben.
+Létrehoztunk egy nyílt forráskódú szoftverprojektet :tangerine: [Tangerine](https://github.com/forwardemail/tangerine) néven, és ezt használjuk DNS lekérdezésekhez. Az alapértelmezett DNS szerverek a `1.1.1.1`, `8.8.8.8`, `1.0.0.1` és `8.8.4.4`, és a DNS lekérdezések [DNS over HTTPS](https://en.wikipedia.org/wiki/DNS_over_HTTPS) ("DoH") protokollon keresztül történnek az alkalmazás rétegben.
 
-:tangerine: [Tangerine](https://github.com/tangerine) alapértelmezés szerint a [CloudFlare adatvédelmi szempontból elsődleges fogyasztói DNS szolgáltatását][cloudflare-dns] használja.
+:tangerine: [Tangerine](https://github.com/tangerine) alapértelmezés szerint a [CloudFlare adatvédelmi szempontból elsődleges fogyasztói DNS szolgáltatását][cloudflare-dns] használja. Felváltva használjuk a Cloudflare-rel és a [Google Public DNS-sel][google-dns]: minden lekérdezés a Cloudflare-nél kezdődik, és a Google-nél folytatódik, ha a Cloudflare nem válaszol.
 
 
 ## Fiók és Számlázás {#account-and-billing}
@@ -6191,3 +6199,5 @@ Minden fizetés biztonságosan történik a Stripe vagy a PayPal rendszerein ker
 [gmail-2fa]: https://myaccount.google.com/signinoptions/two-step-verification
 
 [cloudflare-dns]: https://blog.cloudflare.com/announcing-1111/
+
+[google-dns]: https://developers.google.com/speed/public-dns/privacy

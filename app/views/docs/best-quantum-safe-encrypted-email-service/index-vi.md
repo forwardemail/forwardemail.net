@@ -243,6 +243,7 @@ Các dự án mà chúng tôi sử dụng trong mã nguồn và quy trình phát
 | ----------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
 | [Cloudflare](https://www.cloudflare.com/)       | Nhà cung cấp DNS, kiểm tra sức khỏe, cân bằng tải và lưu trữ dự phòng sử dụng [Cloudflare R2](https://developers.cloudflare.com/r2). |
 | [GitHub](https://github.com/)                   | Lưu trữ mã nguồn, CI/CD và quản lý dự án.                                                                                    |
+| [Google](https://developers.google.com/speed/public-dns) | Phân giải DNS với [Google Public DNS](https://developers.google.com/speed/public-dns), cùng với Cloudflare. |
 | [Digital Ocean](https://m.do.co/c/a7fe489d1b27) | Lưu trữ máy chủ chuyên dụng và cơ sở dữ liệu được quản lý.                                                                    |
 | [Vultr](https://www.vultr.com/?ref=7429848)     | Lưu trữ máy chủ chuyên dụng.                                                                                                 |
 | [DataPacket](https://www.datapacket.com)        | Lưu trữ máy chủ chuyên dụng.                                                                                                 |

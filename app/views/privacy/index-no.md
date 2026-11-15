@@ -250,7 +250,7 @@ Denne delen gjelder e-postappene våre for iOS, Android, macOS, Windows og Linux
 
 ## Informasjon som deles {#information-shared}
 
-Vi deler ikke informasjonen din med noen tredjepart, bortsett fra tjenesteleverandører som driver deler av tjenesten vår, for eksempel Cloudflare (beskyttelse av nettstedet og krypterte sikkerhetskopier), Stripe og PayPal (betalinger), og tjenestene som leverer push-varsler til enhetene dine (se [Push-varsler](#push-notifications)).
+Vi deler ikke informasjonen din med noen tredjepart, bortsett fra tjenesteleverandører som driver deler av tjenesten vår, for eksempel Cloudflare (beskyttelse av nettstedet og krypterte sikkerhetskopier), Google (DNS-oppslag, sammen med Cloudflare), Stripe og PayPal (betalinger), og tjenestene som leverer push-varsler til enhetene dine (se [Push-varsler](#push-notifications)).
 
 Vi kan bli nødt til å og vil etterkomme rettslige pålegg (men husk at [vi ikke samler inn informasjon nevnt ovenfor under "Informasjon som ikke samles inn"](#information-not-collected), så vi vil ikke kunne gi den i utgangspunktet).
 

@@ -245,13 +245,14 @@ Projects we use in our source code and development process (sorted alphabeticall
 
 ### Providers
 
-| Provider                                        | Purpose                                                                                                                      |
-| ----------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
-| [Cloudflare](https://www.cloudflare.com/)       | DNS provider, health checks, load balancers, and backup storage using [Cloudflare R2](https://developers.cloudflare.com/r2). |
-| [GitHub](https://github.com/)                   | Source code hosting, CI/CD, and project management.                                                                          |
-| [Digital Ocean](https://m.do.co/c/a7fe489d1b27) | Dedicated server hosting and managed databases.                                                                              |
-| [Vultr](https://www.vultr.com/?ref=7429848)     | Dedicated server hosting.                                                                                                    |
-| [DataPacket](https://www.datapacket.com)        | Dedicated server hosting.                                                                                                    |
+| Provider                                                 | Purpose                                                                                                                      |
+| -------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| [Cloudflare](https://www.cloudflare.com/)                | DNS provider, health checks, load balancers, and backup storage using [Cloudflare R2](https://developers.cloudflare.com/r2). |
+| [GitHub](https://github.com/)                            | Source code hosting, CI/CD, and project management.                                                                          |
+| [Google](https://developers.google.com/speed/public-dns) | DNS resolution with [Google Public DNS](https://developers.google.com/speed/public-dns), alongside Cloudflare.               |
+| [Digital Ocean](https://m.do.co/c/a7fe489d1b27)          | Dedicated server hosting and managed databases.                                                                              |
+| [Vultr](https://www.vultr.com/?ref=7429848)              | Dedicated server hosting.                                                                                                    |
+| [DataPacket](https://www.datapacket.com)                 | Dedicated server hosting.                                                                                                    |
 
 
 ## Thoughts
