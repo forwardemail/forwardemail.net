@@ -5,6 +5,8 @@
 
 const Boom = require('@hapi/boom');
 
+const env = require('#config/env');
+
 //
 // Reject requests whose Host (or, behind a trusted proxy, X-Forwarded-Host)
 // is not a plain `host[:port]`.
@@ -49,5 +51,36 @@ function validateHostHeader() {
   };
 }
 
+//
+// The port 80 server (proxy.js) redirects http to https on the Host header it
+// was sent, so `Host: example.com` came back as a redirect to
+// https://example.com.  A host that is not ours (the site, a subdomain of it,
+// or one of the server hostnames) is redirected to the site instead.
+//
+const HOSTS = new Set(
+  [
+    env.WEB_HOST,
+    env.API_HOST,
+    env.CALDAV_HOST,
+    env.CARDDAV_HOST,
+    env.IMAP_HOST,
+    env.POP3_HOST,
+    env.SMTP_HOST,
+    env.MX1_HOST,
+    env.MX2_HOST
+  ].filter(Boolean)
+);
+
+function getRedirectHost(host) {
+  if (isValidHost(host)) {
+    const hostname = host.toLowerCase().replace(/:\d+$/, '').replace(/\.$/, '');
+    if (HOSTS.has(hostname) || hostname.endsWith(`.${env.WEB_HOST}`))
+      return host;
+  }
+
+  return env.WEB_HOST;
+}
+
 module.exports = validateHostHeader;
 module.exports.isValidHost = isValidHost;
+module.exports.getRedirectHost = getRedirectHost;

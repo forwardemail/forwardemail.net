@@ -838,6 +838,17 @@ if true
     );
   });
 
+  it('should allow any redirect domain with an empty whitelist', () => {
+    // (an empty list means no policy, as in the engine that runs the script)
+    for (const redirectDomainWhitelist of [[], null, undefined]) {
+      const validator = new SieveSecurityValidator({ redirectDomainWhitelist });
+      const result = validator.validate('redirect "user@elsewhere.example";');
+      assert.ok(
+        !result.errors.some((e) => e.type === 'redirect_domain_not_whitelisted')
+      );
+    }
+  });
+
   it('should allow legitimate business use cases', () => {
     const legitimateScript = `require ["fileinto", "imap4flags", "vacation"];
 

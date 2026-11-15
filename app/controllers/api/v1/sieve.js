@@ -7,7 +7,7 @@ const Boom = require('@hapi/boom');
 const isSANB = require('is-string-and-not-blank');
 const mongoose = require('mongoose');
 const config = require('#config');
-const { Domains, SieveScripts } = require('#models');
+const { SieveScripts } = require('#models');
 const sieve = require('#helpers/sieve');
 
 /**
@@ -249,9 +249,7 @@ async function createScript(ctx) {
   const securityValidator = new sieve.SieveSecurityValidator({
     maxScriptSize: config.sieve.maxScriptSize,
     maxNestedDepth: config.sieve.maxNestedDepth,
-    maxRedirects: config.sieve.maxRedirects,
-    // Allow redirects to the user's own domains
-    allowedRedirectDomains: await getUserDomains(user._id)
+    maxRedirects: config.sieve.maxRedirects
   });
 
   const securityResult = securityValidator.validate(content);
@@ -318,7 +316,7 @@ async function createScript(ctx) {
  * PUT /v1/sieve-scripts/:script_id
  */
 async function updateScript(ctx) {
-  const { alias, user } = ctx.state;
+  const { alias } = ctx.state;
   const { script_id: scriptId } = ctx.params;
   const { content, description, activate } = ctx.request.body;
 
@@ -372,9 +370,7 @@ async function updateScript(ctx) {
     const securityValidator = new sieve.SieveSecurityValidator({
       maxScriptSize: config.sieve.maxScriptSize,
       maxNestedDepth: config.sieve.maxNestedDepth,
-      maxRedirects: config.sieve.maxRedirects,
-      // Allow redirects to the user's own domains
-      allowedRedirectDomains: await getUserDomains(user._id)
+      maxRedirects: config.sieve.maxRedirects
     });
 
     const securityResult = securityValidator.validate(content);
@@ -566,26 +562,6 @@ async function getActiveScript(ctx) {
     required_capabilities: script.required_capabilities,
     stats: script.stats
   };
-}
-
-/**
- * Helper to get all validated domains for a user (for redirect validation)
- * Only returns domains that:
- * - Have the user as a member
- * - Have has_txt_record: true (domain is verified)
- * - Are on enhanced_protection or team plan (required for IMAP/Sieve)
- */
-async function getUserDomains(userId) {
-  const domains = await Domains.find({
-    'members.user': userId,
-    has_txt_record: true,
-    plan: { $in: ['enhanced_protection', 'team'] }
-  })
-    .select('name')
-    .lean()
-    .exec();
-
-  return domains.map((d) => d.name);
 }
 
 module.exports = {

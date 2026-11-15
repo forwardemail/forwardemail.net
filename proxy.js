@@ -17,12 +17,21 @@ const ip = require('ip');
 const sharedConfig = require('@ladjs/shared-config');
 
 const logger = require('#helpers/logger');
+const { getRedirectHost } = require('#helpers/validate-host-header');
 
 const proxySharedConfig = sharedConfig('PROXY');
 
 const proxy = new ProxyServer({
   ...proxySharedConfig,
   logger
+});
+
+// redirect only to our own hostnames (see helpers/validate-host-header.js)
+const [listener] = proxy.server.listeners('request');
+proxy.server.removeListener('request', listener);
+proxy.server.on('request', (request, response) => {
+  request.headers.host = getRedirectHost(request.headers.host);
+  listener(request, response);
 });
 
 const graceful = new Graceful({ servers: [proxy.server], logger });

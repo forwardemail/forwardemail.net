@@ -934,3 +934,51 @@ test('PUT /v1/sieve-scripts/:script_id rejects security-invalid redirect abuse',
   t.is(response.status, 400);
   t.regex(response.body.message, /sieve_script_security_error|redirect/i);
 });
+
+//
+// `config.sieve.allowedRedirectDomains` is the redirect-domain policy: with
+// none configured a script may redirect anywhere, and with one configured a
+// script that redirects elsewhere is refused when it is saved
+//
+test.serial(
+  'sieve scripts are held to the configured redirect domains',
+  async (t) => {
+    const { api } = t.context;
+    const { alias, domain, pass } = await createTestAlias(t);
+    const auth = createAliasAuth(`${alias.name}@${domain.name}`, pass);
+    const redirect = (address) => `redirect "${address}";\n`;
+
+    // no policy: any domain
+    const open = await api
+      .post('/v1/sieve-scripts')
+      .set('Authorization', auth)
+      .send({ name: 'open', content: redirect('user@elsewhere.example') });
+    t.is(open.status, 200);
+
+    const { allowedRedirectDomains } = config.sieve;
+    config.sieve.allowedRedirectDomains = ['allowed.example'];
+    t.teardown(() => {
+      config.sieve.allowedRedirectDomains = allowedRedirectDomains;
+    });
+
+    const refused = await api
+      .post('/v1/sieve-scripts')
+      .set('Authorization', auth)
+      .send({ name: 'refused', content: redirect('user@elsewhere.example') });
+    t.is(refused.status, 400);
+    t.regex(refused.body.message, /elsewhere\.example/);
+
+    const allowed = await api
+      .post('/v1/sieve-scripts')
+      .set('Authorization', auth)
+      .send({ name: 'allowed', content: redirect('user@allowed.example') });
+    t.is(allowed.status, 200);
+
+    const updated = await api
+      .put(`/v1/sieve-scripts/${allowed.body.id}`)
+      .set('Authorization', auth)
+      .send({ content: redirect('user@elsewhere.example') });
+    t.is(updated.status, 400);
+    t.regex(updated.body.message, /elsewhere\.example/);
+  }
+);

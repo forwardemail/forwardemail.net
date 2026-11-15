@@ -117,10 +117,16 @@ const DEFAULT_SECURITY_CONFIG = {
 class SieveSecurityValidator {
   /**
    * Create a new security validator
-   * @param {Object} config - Security configuration
+   * @param {Object} options - Security configuration
    */
-  constructor(config = {}) {
-    this.config = { ...DEFAULT_SECURITY_CONFIG, ...config };
+  constructor(options = {}) {
+    // (redirects are held to the configured `config.sieve.allowedRedirectDomains`
+    //  on every path that saves a script, as they are when the script runs)
+    this.config = {
+      ...DEFAULT_SECURITY_CONFIG,
+      redirectDomainWhitelist: config.sieve?.allowedRedirectDomains,
+      ...options
+    };
   }
 
   /**
@@ -441,9 +447,11 @@ class SieveSecurityValidator {
     }
 
     // Check domain whitelist
-    if (this.config.redirectDomainWhitelist) {
+    // (an empty list allows all, as in helpers/sieve/engine.js)
+    const whitelist = this.config.redirectDomainWhitelist;
+    if (Array.isArray(whitelist) && whitelist.length > 0) {
       const domain = this.extractDomain(address);
-      if (domain && !this.config.redirectDomainWhitelist.includes(domain)) {
+      if (domain && !whitelist.includes(domain)) {
         result.valid = false;
         result.errors.push({
           type: 'redirect_domain_not_whitelisted',

@@ -325,7 +325,7 @@ class SieveIntegration {
     this.securityValidator = new SieveSecurityValidator({
       maxScriptSize: this.config.maxScriptSize,
       maxRedirects: this.config.maxRedirectsPerScript,
-      allowedRedirectDomains: this.config.allowedRedirectDomains,
+      redirectDomainWhitelist: this.config.allowedRedirectDomains,
       protectedHeaders: this.config.protectedHeaders,
       allowedExtensions: this.config.enabledExtensions
     });
