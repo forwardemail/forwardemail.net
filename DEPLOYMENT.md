@@ -413,6 +413,14 @@ Follow the [Deployment](#deployment) guide below for automatic provisioning and 
     node ansible-playbook ansible/playbooks/dkim.yml --user deploy
     ```
 
+    Publish the key's TXT record at `default._domainkey` of your domain name. To receive spam complaints from mailbox providers that support DKIM-FBL, also publish the feedback loop record (replace `example.com` with your domain name, and the address with your `EMAIL_ABUSE`):
+
+    | Name                               | Type | Value                                          |
+    | ---------------------------------- | ---- | ---------------------------------------------- |
+    | `_feedback._domainkey.example.com` | TXT  | `v=DKIMRFBLv1;ra=mailto:abuse@example.com;c=y` |
+
+    See [Feedback loop DNS record](SPAM_SCANNER.md#feedback-loop-dns-record) for what it does, and [Feedback loop headers](SPAM_SCANNER.md#feedback-loop-headers) for the `CFBL-Address` header outbound mail carries.
+
 21. (Optional) Create a Google application credentials profile file and store it locally. You only need this if you want to support automatic translation. The following command will prompt you for the absolute file path (e.g. `/path/to/client-profile.json`). See the [mandarin][] docs for more information.
 
     ```sh

@@ -2193,7 +2193,11 @@ async function forward(recipient, headers, session, body) {
       ));
     if (reportSender && !isReportBlocked) {
       const field = arfRecipientBlock.createHeader(report);
-      if (field) headers.add(arfRecipientBlock.HEADER, field);
+      if (field) {
+        headers.add(arfRecipientBlock.HEADER, field);
+        // (and asks mailbox providers for those reports, RFC 9477)
+        handleArfReport.addForwardedFeedbackFields(headers, field);
+      }
     }
 
     //

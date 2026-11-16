@@ -13,7 +13,11 @@
 
 const util = require('node:util');
 const { Writable } = require('node:stream');
-const { generateKeyPairSync, randomUUID } = require('node:crypto');
+const {
+  createPublicKey,
+  generateKeyPairSync,
+  randomUUID
+} = require('node:crypto');
 const { Buffer } = require('node:buffer');
 
 const dayjs = require('dayjs-with-plugins');
@@ -27,6 +31,7 @@ const arf = require('spamscanner/arf');
 const test = require('ava');
 const { SMTPServer } = require('smtp-server');
 const { dkimSign } = require('mailauth/lib/dkim/sign');
+const { dkimVerify } = require('mailauth/lib/dkim/verify');
 
 const utils = require('../utils');
 
@@ -40,6 +45,7 @@ const createWebSocketAsPromised = require('#helpers/create-websocket-as-promised
 const env = require('#config/env');
 const logger = require('#helpers/logger');
 const spamScanner = require('#helpers/spam-scanner');
+const { createFeedbackId } = require('#helpers/arf-report');
 const { VERSION_KEY, getDayKey } = require('#helpers/spam-scanner-learned');
 const {
   isBlocked,
@@ -436,6 +442,65 @@ test.serial(
   }
 );
 
+// a report that has nothing of the message but its CFBL-Feedback-ID field,
+// as a mailbox provider may send one (RFC 9477 Section 8.2)
+function feedbackIdReport(value) {
+  return arf
+    .create({
+      feedbackType: 'abuse',
+      userAgent: 'Feedback/1.0',
+      from: FBL_ADDRESS,
+      to: config.abuseEmail,
+      originalMessage: `CFBL-Feedback-ID: ${value}\r\n`,
+      sourceIp: '192.0.2.1'
+    })
+    .replace(
+      'Content-Type: message/rfc822\r\nContent-Disposition: inline',
+      'Content-Type: text/rfc822-headers'
+    );
+}
+
+test.serial(
+  'a report with only the CFBL-Feedback-ID we gave a message a user sent counts against them, and one we did not make counts against no one',
+  async (t) => {
+    const setupResult = await setup(t);
+    const { received, send, sender, email, createEmail } = setupResult;
+    const feedbackId = createFeedbackId(email.id);
+
+    // (the email's ID with the code of another email, and with none)
+    const other = await createEmail();
+    const [, otherCode] = createFeedbackId(other.email.id).split(':');
+    for (const value of [`${email.id}:${otherCode}`, email.id]) {
+      const raw = feedbackIdReport(value);
+      t.true(raw.includes('Content-Type: text/rfc822-headers'));
+      await send(raw, { from: `fbl@${FBL_DOMAIN}` });
+    }
+
+    // (nothing came of them, so the abuse address has them, as before)
+    await pWaitFor(() => received.length === 2, { timeout: ms('20s') });
+    t.deepEqual(await getReports(sender), []);
+
+    // (ours, folded on two lines, as a field may be)
+    await send(
+      feedbackIdReport(
+        `${feedbackId.slice(0, 30)}\r\n ${feedbackId.slice(30)}`
+      ),
+      { from: `fbl@${FBL_DOMAIN}` }
+    );
+    const reports = await getReports(sender);
+    t.is(reports.length, 1);
+    t.is(reports[0].truth_source, TRUTH_SOURCE);
+    t.is(reports[0].category, 'spam');
+    t.is(reports[0].email.toString(), email._id.toString());
+
+    // (and it is not delivered to the abuse address)
+    await new Promise((resolve) => {
+      setTimeout(resolve, 1000);
+    });
+    t.is(received.length, 2);
+  }
+);
+
 test.serial(
   'a virus report counts against the sender and is not learned as spam',
   async (t) => {
@@ -748,6 +813,149 @@ test.serial(
     );
     await pWaitFor(() => received.length === 4, { timeout: ms('20s') });
     t.deepEqual(received[3].to, [`bob@${forwardDomain}`]);
+  }
+);
+
+// (the values of a field of a message's header, each on one line)
+function getFields(raw, name) {
+  return raw
+    .split('\r\n\r\n')[0]
+    .replace(/\r\n[ \t]+/g, ' ')
+    .split('\r\n')
+    .filter((line) => line.toLowerCase().startsWith(`${name.toLowerCase()}:`))
+    .map((line) => line.slice(name.length + 1).trim());
+}
+
+test.serial(
+  'a copy we forward names the abuse address, and a report of its CFBL-Feedback-ID and Message-ID alone stops its sender for its recipient',
+  async (t) => {
+    const setupResult = await setup(t);
+    const { domain, forwardDomain, received, send } = setupResult;
+    // (the abuse address is at the domain we sign with)
+    const { signingDomain, selector, privateKey } = config.signatureData;
+    config.signatureData.signingDomain = domain.name;
+    t.teardown(() => {
+      config.signatureData.signingDomain = signingDomain;
+    });
+    const message = (to, messageId, fields = []) =>
+      [
+        'From: news@sendertest.net',
+        `To: ${to}`,
+        'Subject: Weekly deals',
+        `Message-ID: <${messageId}>`,
+        'Date: Mon, 19 Oct 2026 10:00:00 +0000',
+        ...fields,
+        '',
+        'Deals of the week.',
+        ''
+      ].join('\r\n');
+
+    const messageId = `${randomUUID()}@sendertest.net`;
+    await send(message(`bob@${domain.name}`, messageId), {
+      from: 'news@sendertest.net',
+      to: [`bob@${domain.name}`]
+    });
+    await pWaitFor(() => received.length === 1, { timeout: ms('20s') });
+    const copy = received[0].raw;
+    t.deepEqual(getFields(copy, 'CFBL-Address'), [
+      `${config.abuseEmail}; report=arf`
+    ]);
+    const ids = getFields(copy, 'CFBL-Feedback-ID');
+    t.is(ids.length, 1);
+    // (the X-Forward-Email-Report field of the copy, as the field allows)
+    t.is(
+      ids[0].replace(/\s+/g, ''),
+      getFields(copy, 'X-Forward-Email-Report')[0]
+        .replace(/\s+/g, '')
+        .replace('.', ':')
+    );
+    t.regex(ids[0].replace(/\s+/g, ''), /^[\w:-]+$/);
+
+    // (our signature of the copy passes and covers both fields)
+    const { results } = await dkimVerify(Buffer.from(copy), {
+      async resolver(name, type) {
+        if (type === 'TXT' && name === `${selector}._domainkey.${domain.name}`)
+          return [
+            [
+              `v=DKIM1; k=rsa; p=${createPublicKey(privateKey)
+                .export({ type: 'spki', format: 'der' })
+                .toString('base64')}`
+            ]
+          ];
+        const err = new Error('not found');
+        err.code = 'ENOTFOUND';
+        throw err;
+      }
+    });
+    const ours = results.find((result) => result.signingDomain === domain.name);
+    t.is(ours.status.result, 'pass');
+    const signed = new Set(
+      ours.signingHeaders.keys
+        .split(':')
+        .map((name) => name.trim().toLowerCase())
+    );
+    t.true(signed.has('cfbl-address'));
+    t.true(signed.has('cfbl-feedback-id'));
+
+    // a report with nothing of the copy but that field and a Message-ID
+    // (RFC 9477 Section 8.2): of another message, then of the copy
+    const onlyFields = (id) =>
+      arf
+        .create({
+          feedbackType: 'abuse',
+          userAgent: 'Feedback/1.0',
+          from: FBL_ADDRESS,
+          to: config.abuseEmail,
+          originalMessage: `Message-ID: <${id}>\r\nCFBL-Feedback-ID: ${ids[0]}\r\n`
+        })
+        .replace(
+          'Content-Type: message/rfc822\r\nContent-Disposition: inline',
+          'Content-Type: text/rfc822-headers'
+        );
+    const block = {
+      recipient: `bob@${domain.name}`,
+      destination: `bob@${forwardDomain}`,
+      sender: 'news@sendertest.net'
+    };
+    await send(onlyFields(`${randomUUID()}@sendertest.net`), {
+      from: `fbl@${FBL_DOMAIN}`
+    });
+    t.false(await isBlocked(t.context.client, block));
+    await send(onlyFields(messageId), { from: `fbl@${FBL_DOMAIN}` });
+    t.true(await isBlocked(t.context.client, block));
+
+    // mail that has a feedback loop field of its own, or a signature that
+    // names one, is forwarded as it is
+    await send(
+      message(`carol@${domain.name}`, `${randomUUID()}@sendertest.net`, [
+        'CFBL-Address: fbl@sendertest.net; report=arf'
+      ]),
+      { from: 'news@sendertest.net', to: [`carol@${domain.name}`] }
+    );
+    await send(
+      message(`carol@${domain.name}`, `${randomUUID()}@sendertest.net`, [
+        'DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=other.example;',
+        ' s=x; h=From:To:Subject:CFBL-',
+        ' Address:CFBL-Feedback-ID; bh=AAAA; b=AAAA'
+      ]),
+      { from: 'news@sendertest.net', to: [`carol@${domain.name}`] }
+    );
+    await pWaitFor(
+      () => received.filter((m) => m.to[0].startsWith('carol@')).length === 2,
+      { timeout: ms('20s') }
+    );
+    const [first, second] = received
+      .filter((m) => m.to[0].startsWith('carol@'))
+      .map((m) => m.raw);
+    t.deepEqual(getFields(first, 'CFBL-Address'), [
+      'fbl@sendertest.net; report=arf'
+    ]);
+    t.deepEqual(getFields(first, 'CFBL-Feedback-ID'), []);
+    t.deepEqual(getFields(second, 'CFBL-Address'), []);
+    t.deepEqual(getFields(second, 'CFBL-Feedback-ID'), []);
+    // (each still carries the field a full report brings back)
+    t.is(getFields(first, 'X-Forward-Email-Report').length, 1);
+    t.is(getFields(second, 'X-Forward-Email-Report').length, 1);
   }
 );
 

@@ -4497,6 +4497,8 @@ Forward Email 完全依赖两个关键基础设施提供商，且均未使用第
    * `X-Forward-Email-Session-ID` - 用于调试的会话 ID（仅适用于非生产环境）。
    * `X-Forward-Email-Sender` - 逗号分隔列表，包含原始信封 MAIL FROM 地址（如果非空）、反向 PTR 客户端 FQDN（如果存在）及发送者 IP 地址。
    * `X-Forward-Email-ID` - 仅适用于出站 SMTP，与“我的账户 → 邮件”中存储的邮件 ID 相关联。
+   * `CFBL-Address` - 值为 `abuse@forwardemail.net`。它告知邮箱服务商将垃圾邮件投诉发送到何处（[RFC 9477](https://www.rfc-editor.org/rfc/rfc9477.html)）。我们会将其添加到出站 SMTP 邮件，以及我们转发的、自身没有此类标头的邮件中。出站 SMTP 邮件还带有 `forwardemail.net` 的第二个 DKIM 签名，RFC 要求该地址必须有此签名。
+   * `CFBL-Feedback-ID` - 与 `CFBL-Address` 一起添加，用于在发送给我们的垃圾邮件投诉中识别邮件。
    * `X-Report-Abuse` - 值为 `abuse@forwardemail.net`。
    * `X-Report-Abuse-To` - 值为 `abuse@forwardemail.net`。
    * `X-Complaints-To` - 值为 `abuse@forwardemail.net`。

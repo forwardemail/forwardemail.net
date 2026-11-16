@@ -4500,6 +4500,8 @@ Bu bölüm, yukarıdaki [E-posta iletme sisteminiz nasıl çalışıyor](#how-do
    * `X-Forward-Email-Session-ID` - hata ayıklama amaçlı kullanılan bir oturum kimliği değeri (yalnızca üretim dışı ortamlarda geçerlidir).
    * `X-Forward-Email-Sender` - orijinal zarf MAIL FROM adresini (boş değilse), ters PTR istemci FQDN'sini (varsa) ve gönderenin IP adresini içeren virgülle ayrılmış liste.
    * `X-Forward-Email-ID` - yalnızca giden SMTP için geçerlidir ve Hesabım → E-postalar bölümünde saklanan e-posta kimliği ile ilişkilidir.
+   * `CFBL-Address` - değeri `abuse@forwardemail.net` olur. Posta kutusu sağlayıcılarına spam şikayetlerinin nereye gönderileceğini bildirir ([RFC 9477](https://www.rfc-editor.org/rfc/rfc9477.html)). Bunu giden SMTP postasına ve kendi böyle bir başlığı olmayan, yönlendirdiğimiz postaya ekleriz. Giden SMTP iletileri ayrıca `forwardemail.net` alan adının ikinci bir DKIM imzasını taşır; RFC bu adres için bunu şart koşar.
+   * `CFBL-Feedback-ID` - `CFBL-Address` ile birlikte eklenir. Bize gönderilen spam şikayetlerinde e-postayı tanımlar.
    * `X-Report-Abuse` - değeri `abuse@forwardemail.net` olan başlık.
    * `X-Report-Abuse-To` - değeri `abuse@forwardemail.net` olan başlık.
    * `X-Complaints-To` - değeri `abuse@forwardemail.net` olan başlık.

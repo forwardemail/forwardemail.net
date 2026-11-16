@@ -4501,6 +4501,8 @@ Forward Emailは、セクション889で禁止されている機器を使用し�
    * `X-Forward-Email-Session-ID` - デバッグ目的で使用されるセッションID（非本番環境のみ適用）。
    * `X-Forward-Email-Sender` - 元のエンベロープMAIL FROMアドレス（空でない場合）、リバースPTRクライアントFQDN（存在する場合）、送信者のIPアドレスをカンマ区切りで含むリスト。
    * `X-Forward-Email-ID` - これは送信SMTPにのみ適用され、マイアカウント → メールに保存されているメールIDと関連付けられます。
+   * `CFBL-Address` - 値は `abuse@forwardemail.net` です。メールボックスプロバイダーに迷惑メールの苦情の送信先を伝えます（[RFC 9477](https://www.rfc-editor.org/rfc/rfc9477.html)）。送信SMTPのメールと、同じヘッダーを持たない転送メールに追加します。送信SMTPのメッセージには `forwardemail.net` による2つ目のDKIM署名も付きます。RFCはこのアドレスにその署名を要求しています。
+   * `CFBL-Feedback-ID` - `CFBL-Address` と一緒に追加されます。当社に送られる迷惑メールの苦情の中でメールを識別します。
    * `X-Report-Abuse` - 値は `abuse@forwardemail.net`。
    * `X-Report-Abuse-To` - 値は `abuse@forwardemail.net`。
    * `X-Complaints-To` - 値は `abuse@forwardemail.net`。

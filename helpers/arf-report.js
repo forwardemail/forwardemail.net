@@ -39,6 +39,17 @@
 //    could otherwise have any sender blocked; instead it is blocked for the
 //    destination that reported it alone (`helpers/arf-recipient-block.js`)
 //
+// Mail our SMTP servers send asks for these reports (`addFeedbackFields`,
+// unless `config.arf.cfbl` is off): a CFBL-Address field (RFC 9477) names the
+// abuse address, and a CFBL-Feedback-ID field the email, with a code only we
+// can make.  A mailbox provider may report nothing of a message but that
+// field (RFC 9477 Section 8.2), which is then all a report is counted by.
+// The message is signed by our own domain too (see `getOurSignatureData` in
+// `helpers/sign-message.js`), which the field needs on mail From another
+// domain, and by which providers that read DKIM-FBL records find ours (see
+// "Feedback loop DNS record" in SPAM_SCANNER.md).  A copy our MX servers
+// forward asks the same way (`addForwardedFeedbackFields`).
+//
 // A report sent again is read once; a message we sent counts once for each
 // copy reported (by its X-Forward-Email-ID, not its Message-ID, which a sender
 // may give many messages), a block is made once however often it is
@@ -167,6 +178,146 @@ function getReporter(session) {
         parseRootDomain(result.signingDomain.toLowerCase()) === root
     );
   return signed ? root : null;
+}
+
+//
+// The CFBL-Feedback-ID (RFC 9477 Section 3.3) of an email our SMTP servers
+// send: its ID and a code made of it with a key of its own, so no one else
+// can make the field for an email ("<id>:<code>"; null without the key)
+//
+const FEEDBACK_ID = /^([\da-f]{24}):([\da-f]{32})$/;
+function createFeedbackId(id) {
+  if (!isSANB(env.HELPER_ENCRYPTION_KEY)) return null;
+  const code = crypto
+    .createHmac('sha256', env.HELPER_ENCRYPTION_KEY)
+    .update(`cfbl-feedback-id:${id}`)
+    .digest('hex')
+    .slice(0, 32);
+  return `${id}:${code}`;
+}
+
+// (the ID of the email a CFBL-Feedback-ID of ours names, else null; white
+//  space a field was folded at is no part of it, RFC 9477 Section 5.2)
+function readFeedbackId(value) {
+  if (typeof value !== 'string') return null;
+  const match = FEEDBACK_ID.exec(value.replace(/\s+/g, '').toLowerCase());
+  if (!match) return null;
+  const expected = createFeedbackId(match[1]);
+  return expected &&
+    crypto.timingSafeEqual(Buffer.from(match[0]), Buffer.from(expected))
+    ? match[1]
+    : null;
+}
+
+//
+// The address mailbox providers send complaints about mail we send to (the
+// abuse address, where reports are read), when its domain is the one we sign
+// with: a CFBL-Address counts only with a valid DKIM signature of its domain
+// (RFC 9477 Section 3.1); else null
+//
+function getFeedbackAddress() {
+  // (as `getOurSignatureData` in `helpers/sign-message.js` signs)
+  const { signingDomain, selector, privateKey } = config.signatureData;
+  if (
+    !config.arf.cfbl ||
+    !isSANB(signingDomain) ||
+    !isSANB(selector) ||
+    !isSANB(privateKey)
+  )
+    return null;
+  const address = isSANB(config.abuseEmail)
+    ? config.abuseEmail.trim().toLowerCase()
+    : '';
+  return address.endsWith(`@${signingDomain.toLowerCase()}`) &&
+    !/[\s;<>()",]/.test(address)
+    ? address
+    : null;
+}
+
+// (a CFBL-Address as a sender may set one: an address alone, and the report
+//  format, RFC 9477 Section 5.1)
+const FEEDBACK_ADDRESS =
+  /^[^\s@;<>()",]+@([a-z\d-]+(?:\.[a-z\d-]+)+)(?:\s*;\s*report=(?:arf|xarf))?$/;
+
+//
+// Add our CFBL-Address and CFBL-Feedback-ID fields to the header of a
+// message our SMTP servers send (`headers` as mailsplit reads them)
+//
+// A sender's own CFBL-Address is kept (a message may have several, RFC 9477
+// Section 3.2), but not one at our domain, which our signature would make
+// count, or one that does not read as an address at one domain alone.  A
+// CFBL-Feedback-ID a sender set is replaced by ours (a message has one), so
+// a report of that field alone always names the email, and never one someone
+// else sent; a sender still knows its message by its Message-ID.
+//
+function addFeedbackFields(headers, id) {
+  const address = getFeedbackAddress();
+  if (!address) return false;
+  const ours = address.slice(address.lastIndexOf('@') + 1);
+
+  const lines = headers.get('cfbl-address');
+  const kept = lines.filter((line) => {
+    const match = FEEDBACK_ADDRESS.exec(
+      line
+        .slice(line.indexOf(':') + 1)
+        .replace(/\r?\n[ \t]+/g, ' ')
+        .trim()
+        .toLowerCase()
+    );
+    return match && match[1] !== ours && !match[1].endsWith(`.${ours}`);
+  });
+  if (kept.length !== lines.length) {
+    headers.remove('cfbl-address');
+    // (as they were written and in their order: each is added first)
+    for (const line of kept.reverse())
+      headers.addFormatted('CFBL-Address', line);
+  }
+
+  headers.add('CFBL-Address', `${address}; report=arf`);
+
+  const feedbackId = createFeedbackId(id);
+  if (feedbackId) {
+    headers.remove('cfbl-feedback-id');
+    headers.add('CFBL-Feedback-ID', feedbackId);
+  }
+
+  return true;
+}
+
+//
+// The same on a copy of mail our MX servers forward, which we sign too (see
+// `helpers/send-email.js`): our CFBL-Address, and as its CFBL-Feedback-ID
+// the X-Forward-Email-Report `field` made for the copy (see
+// `helpers/arf-recipient-block.js`; its "." is no character of the field,
+// RFC 9477 Section 5.2, and is written ":"), so a report of that field and
+// the Message-ID alone still blocks its sender for its recipient.
+//
+// Only on mail that says nothing of either field: none in its header, and
+// none named in a DKIM signature it came with, which adding one could break
+// (as RFC 9477 Section 3.1.3 has it for mail signed before we get it).
+//
+function addForwardedFeedbackFields(headers, field) {
+  const address = getFeedbackAddress();
+  if (!address || !isSANB(field)) return false;
+  if (
+    headers.get('cfbl-address').length > 0 ||
+    headers.get('cfbl-feedback-id').length > 0 ||
+    headers
+      .get('dkim-signature')
+      .some((line) => /cfbl-/i.test(line.replace(/\s+/g, '')))
+  )
+    return false;
+  headers.add('CFBL-Address', `${address}; report=arf`);
+  headers.add('CFBL-Feedback-ID', field.replace('.', ':'));
+  return true;
+}
+
+// (the X-Forward-Email-Report field a CFBL-Feedback-ID of a copy we
+//  forwarded holds, else null)
+function readForwardedFeedbackId(value) {
+  return typeof value === 'string'
+    ? value.replace(/\s+/g, '').replace(':', '.')
+    : null;
 }
 
 // the one value of a header field read from the message reported (null for
@@ -312,9 +463,14 @@ async function recordAgainstSender({
 }) {
   const { fields } = analysis;
   const sender = one(fields['x-forward-email-sender']);
-  const id = one(fields['x-forward-email-id']);
   const messageId = normalizeMessageId(one(fields['message-id']));
-  if (!isOurSender(sender) || !id || !messageId) return 'unknown';
+  // (named by our CFBL-Feedback-ID, which may be all of the message a
+  //  report has, or else by the fields our servers set, with its Message-ID)
+  const feedbackId = readFeedbackId(one(fields['cfbl-feedback-id']));
+  const id =
+    feedbackId ||
+    (isOurSender(sender) ? one(fields['x-forward-email-id']) : null);
+  if (!id || (!feedbackId && !messageId)) return 'unknown';
   if (!mongoose.isObjectIdOrHexString(id)) return 'unknown';
 
   // (required here, since the models require helpers that require this)
@@ -323,9 +479,10 @@ async function recordAgainstSender({
     .select('user domain envelope messageId is_bounce is_dsn created_at')
     .lean()
     .exec();
+  // (its Message-ID, when the report has one, is the one reported)
   if (
     !email ||
-    email.messageId !== messageId ||
+    (messageId ? email.messageId !== messageId : !feedbackId) ||
     !email.created_at ||
     Date.now() - new Date(email.created_at).getTime() > config.arf.maxAge
   )
@@ -484,7 +641,11 @@ async function handleArfReport(session, headers, raw) {
     //  could not be made, e.g. without the database, is not lost: the report
     //  is delivered, and read again if it is sent again)
     let blocked = false;
-    const block = one(analysis.fields['x-forward-email-report']);
+    // (or its CFBL-Feedback-ID, which holds the same, when the report has
+    //  no more of the copy)
+    const block =
+      one(analysis.fields['x-forward-email-report']) ||
+      readForwardedFeedbackId(one(analysis.fields['cfbl-feedback-id']));
     if (config.arf.recipientBlock && block) {
       try {
         blocked = await blockFromReport(this.client, this.resolver, block, {
@@ -573,6 +734,10 @@ async function handleArfReport(session, headers, raw) {
 }
 
 module.exports = handleArfReport;
+module.exports.addFeedbackFields = addFeedbackFields;
+module.exports.addForwardedFeedbackFields = addForwardedFeedbackFields;
+module.exports.createFeedbackId = createFeedbackId;
+module.exports.readFeedbackId = readFeedbackId;
 module.exports.getReporter = getReporter;
 module.exports.isOurSender = isOurSender;
 module.exports.isReportType = isReportType;

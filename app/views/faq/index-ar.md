@@ -4499,6 +4499,8 @@ Antrim, BT1 - 5EF
    * `X-Forward-Email-Session-ID` - قيمة معرف الجلسة المستخدمة لأغراض التصحيح (تنطبق فقط في بيئات غير الإنتاج).
    * `X-Forward-Email-Sender` - قائمة مفصولة بفواصل تحتوي على عنوان MAIL FROM الأصلي (إذا لم يكن فارغًا)، واسم المضيف العكسي PTR للعميل (إذا كان موجودًا)، وعنوان IP للمرسل.
    * `X-Forward-Email-ID` - هذا ينطبق فقط على SMTP الصادر ويرتبط بمعرف البريد الإلكتروني المخزن في حسابي → الرسائل الإلكترونية
+   * `CFBL-Address` - بقيمة `abuse@forwardemail.net`. يخبر مزودي صناديق البريد بالمكان الذي تُرسل إليه شكاوى البريد العشوائي ([RFC 9477](https://www.rfc-editor.org/rfc/rfc9477.html)). نضيفه إلى بريد SMTP الصادر، وإلى البريد الذي نعيد توجيهه إذا لم يكن يحمل ترويسة كهذه. تحمل رسائل SMTP الصادرة أيضًا توقيع DKIM ثانيًا باسم `forwardemail.net`، وهو ما يتطلبه RFC لهذا العنوان.
+   * `CFBL-Feedback-ID` - يُضاف مع `CFBL-Address`. يحدد الرسالة في شكاوى البريد العشوائي المرسلة إلينا.
    * `X-Report-Abuse` - بقيمة `abuse@forwardemail.net`.
    * `X-Report-Abuse-To` - بقيمة `abuse@forwardemail.net`.
    * `X-Complaints-To` - بقيمة `abuse@forwardemail.net`.

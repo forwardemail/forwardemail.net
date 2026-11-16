@@ -4500,6 +4500,8 @@ Forward Email은 섹션 889에서 금지된 장비를 사용하지 않는 두 �
    * `X-Forward-Email-Session-ID` - 디버그 용도의 세션 ID 값(비생산 환경에만 적용).
    * `X-Forward-Email-Sender` - 원래 봉투 MAIL FROM 주소(비어 있지 않은 경우), 역방향 PTR 클라이언트 FQDN(존재하는 경우), 발신자 IP 주소를 쉼표로 구분한 목록입니다.
    * `X-Forward-Email-ID` - 아웃바운드 SMTP에만 적용되며, 내 계정 → 이메일에 저장된 이메일 ID와 연관됩니다.
+   * `CFBL-Address` - 값은 `abuse@forwardemail.net`입니다. 메일함 제공업체에 스팸 신고를 보낼 곳을 알려 줍니다([RFC 9477](https://www.rfc-editor.org/rfc/rfc9477.html)). 아웃바운드 SMTP 메일과, 이런 헤더가 없는 전달 메일에 추가합니다. 아웃바운드 SMTP 메시지에는 `forwardemail.net`의 두 번째 DKIM 서명도 포함되며, RFC가 이 주소에 대해 요구하는 서명입니다.
+   * `CFBL-Feedback-ID` - `CFBL-Address`와 함께 추가됩니다. 당사로 전송되는 스팸 신고에서 이메일을 식별합니다.
    * `X-Report-Abuse` - 값은 `abuse@forwardemail.net`입니다.
    * `X-Report-Abuse-To` - 값은 `abuse@forwardemail.net`입니다.
    * `X-Complaints-To` - 값은 `abuse@forwardemail.net`입니다.

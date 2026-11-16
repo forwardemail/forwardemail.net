@@ -4499,6 +4499,8 @@ Phần này mô tả quy trình của chúng tôi liên quan đến lệnh giao 
    * `X-Forward-Email-Session-ID` - giá trị ID phiên dùng cho mục đích gỡ lỗi (chỉ áp dụng trong môi trường không phải sản xuất).
    * `X-Forward-Email-Sender` - danh sách phân tách bằng dấu phẩy chứa địa chỉ MAIL FROM phong bì gốc (nếu không trống), tên máy khách PTR ngược FQDN (nếu có), và địa chỉ IP của người gửi.
    * `X-Forward-Email-ID` - chỉ áp dụng cho SMTP gửi đi và tương ứng với ID email được lưu trong Tài khoản của tôi → Emails
+   * `CFBL-Address` - với giá trị `abuse@forwardemail.net`. Tiêu đề này cho các nhà cung cấp hộp thư biết nơi gửi khiếu nại về thư rác ([RFC 9477](https://www.rfc-editor.org/rfc/rfc9477.html)). Chúng tôi thêm tiêu đề này vào thư SMTP gửi đi và vào thư chúng tôi chuyển tiếp khi thư chưa có tiêu đề như vậy. Các thư SMTP gửi đi cũng mang chữ ký DKIM thứ hai của `forwardemail.net`, mà RFC yêu cầu đối với địa chỉ này.
+   * `CFBL-Feedback-ID` - được thêm cùng với `CFBL-Address`. Tiêu đề này xác định email trong các khiếu nại về thư rác được gửi cho chúng tôi.
    * `X-Report-Abuse` - với giá trị `abuse@forwardemail.net`.
    * `X-Report-Abuse-To` - với giá trị `abuse@forwardemail.net`.
    * `X-Complaints-To` - với giá trị `abuse@forwardemail.net`.

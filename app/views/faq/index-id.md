@@ -4500,6 +4500,8 @@ Bagian ini menjelaskan proses kami terkait dengan perintah protokol SMTP `DATA` 
    * `X-Forward-Email-Session-ID` - nilai ID sesi yang digunakan untuk tujuan debug (hanya berlaku di lingkungan non-produksi).
    * `X-Forward-Email-Sender` - daftar yang dipisahkan koma yang berisi alamat MAIL FROM amplop asli (jika tidak kosong), FQDN PTR terbalik klien (jika ada), dan alamat IP pengirim.
    * `X-Forward-Email-ID` - ini hanya berlaku untuk SMTP keluar dan berkorelasi dengan ID email yang disimpan di Akun Saya → Email
+   * `CFBL-Address` - dengan nilai `abuse@forwardemail.net`. Header ini memberi tahu penyedia kotak surat ke mana keluhan spam harus dikirim ([RFC 9477](https://www.rfc-editor.org/rfc/rfc9477.html)). Kami menambahkannya ke email SMTP keluar dan ke email yang kami teruskan jika email itu belum memiliki header seperti ini. Pesan SMTP keluar juga membawa tanda tangan DKIM kedua dari `forwardemail.net`, yang diwajibkan RFC untuk alamat ini.
+   * `CFBL-Feedback-ID` - ditambahkan bersama `CFBL-Address`. Header ini mengidentifikasi email dalam keluhan spam yang dikirim kepada kami.
    * `X-Report-Abuse` - dengan nilai `abuse@forwardemail.net`.
    * `X-Report-Abuse-To` - dengan nilai `abuse@forwardemail.net`.
    * `X-Complaints-To` - dengan nilai `abuse@forwardemail.net`.

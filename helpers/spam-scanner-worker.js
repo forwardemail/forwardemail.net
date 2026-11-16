@@ -578,6 +578,7 @@ async function updateLearned(task, version) {
 // header fields of the message reported that are read (each at most
 // `MAX_ARF_VALUES` times, of at most `MAX_ARF_VALUE` characters)
 const ARF_FIELDS = new Set([
+  'cfbl-feedback-id',
   'message-id',
   'x-forward-email-id',
   'x-forward-email-report',

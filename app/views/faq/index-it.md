@@ -4501,6 +4501,8 @@ Questa sezione descrive il nostro processo relativo al comando del protocollo SM
    * `X-Forward-Email-Session-ID` - un valore ID sessione usato per scopi di debug (applica solo in ambienti non di produzione).
    * `X-Forward-Email-Sender` - una lista separata da virgole contenente l'indirizzo MAIL FROM originale della busta (se non era vuoto), il FQDN PTR inverso del client (se esiste), e l'indirizzo IP del mittente.
    * `X-Forward-Email-ID` - applicabile solo per SMTP in uscita e corrisponde all'ID email memorizzato in Il Mio Account → Email
+   * `CFBL-Address` - con valore `abuse@forwardemail.net`. Indica ai provider di caselle di posta dove inviare i reclami per spam ([RFC 9477](https://www.rfc-editor.org/rfc/rfc9477.html)). Lo aggiungiamo alla posta SMTP in uscita e alla posta che inoltriamo quando non ha già un'intestazione di questo tipo. I messaggi SMTP in uscita portano anche una seconda firma DKIM di `forwardemail.net`, che l'RFC richiede per questo indirizzo.
+   * `CFBL-Feedback-ID` - aggiunto insieme a `CFBL-Address`. Identifica l'email nei reclami per spam inviati a noi.
    * `X-Report-Abuse` - con valore `abuse@forwardemail.net`.
    * `X-Report-Abuse-To` - con valore `abuse@forwardemail.net`.
    * `X-Complaints-To` - con valore `abuse@forwardemail.net`.

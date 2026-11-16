@@ -59,6 +59,8 @@ const spamScanner = require('./spam-scanner');
 const { isPrivateHostResolved } = require('./is-private-host');
 const { isTemporaryDnsError } = require('./is-retryable-error');
 const sendEmail = require('./send-email');
+const { addFeedbackFields } = require('./arf-report');
+const { getOurSignatureData } = require('./sign-message');
 const updateHeaders = require('./update-headers');
 const { encoder } = require('./encoder-decoder');
 const { encrypt, decrypt } = require('./encrypt-decrypt');
@@ -964,6 +966,9 @@ async function processEmail({ email, port = 25, resolver, client }) {
         email.id
         // data.headers.lines.length
       );
+      // (where mailbox providers send their users' complaints about it,
+      //  RFC 9477, and what names it in them)
+      addFeedbackFields(data.headers, email.id);
     });
 
     // if domain does not have DKIM key/selector then create one
@@ -1077,7 +1082,9 @@ async function processEmail({ email, port = 25, resolver, client }) {
           privateKey: decrypt(domain.dkim_private_key),
           algorithm: 'rsa-sha256',
           canonicalization: 'relaxed/relaxed'
-        }
+        },
+        // (as it is signed when sent, see `helpers/sign-message.js`)
+        ...getOurSignatureData(domain)
       ]
     });
 

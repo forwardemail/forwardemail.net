@@ -375,7 +375,7 @@ To run a single-server instance with Docker instead, see the [self-hosting guide
 
 ### Spam Scanner
 
-[`SPAM_SCANNER.md`](SPAM_SCANNER.md) covers how inbound and outbound mail is scanned, monitor mode, domain settings, abuse reports, the local language model, every setting, and a runbook for deploying, checking, scaling, turning off, and leaving monitor mode.
+[`SPAM_SCANNER.md`](SPAM_SCANNER.md) covers how inbound and outbound mail is scanned, monitor mode, domain settings, abuse reports, the feedback loop headers ([RFC 9477](https://www.rfc-editor.org/rfc/rfc9477.html)) and DNS record (DKIM-FBL) that ask for them, the local language model, every setting, and a runbook for deploying, checking, scaling, turning off, and leaving monitor mode.
 
 
 ## Get help

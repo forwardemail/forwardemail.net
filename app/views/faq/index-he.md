@@ -4500,6 +4500,8 @@ Forward Email מסתמכת בלעדית על שני ספקי תשתית מרכז
    * `X-Forward-Email-Session-ID` - ערך מזהה סשן המשמש לצורכי איתור באגים (חל רק בסביבות לא ייצור).
    * `X-Forward-Email-Sender` - רשימה מופרדת בפסיקים הכוללת את כתובת MAIL FROM המקורית (אם לא הייתה ריקה), את שם המארח ההפוך PTR של הלקוח (אם קיים), ואת כתובת ה-IP של השולח.
    * `X-Forward-Email-ID` - חל רק על SMTP יוצא ומתאים למזהה האימייל המאוחסן ב-My Account → Emails
+   * `CFBL-Address` - עם הערך `abuse@forwardemail.net`. הוא מודיע לספקי תיבות הדואר לאן לשלוח תלונות על ספאם ([RFC 9477](https://www.rfc-editor.org/rfc/rfc9477.html)). אנו מוסיפים אותו לדואר SMTP יוצא, ולדואר שאנו מעבירים כשאין בו כותרת כזו משלו. הודעות SMTP יוצאות נושאות גם חתימת DKIM שנייה של `forwardemail.net`, שה-RFC דורש עבור כתובת זו.
+   * `CFBL-Feedback-ID` - מתווסף יחד עם `CFBL-Address`. הוא מזהה את האימייל בתלונות על ספאם שנשלחות אלינו.
    * `X-Report-Abuse` - עם הערך `abuse@forwardemail.net`.
    * `X-Report-Abuse-To` - עם הערך `abuse@forwardemail.net`.
    * `X-Complaints-To` - עם הערך `abuse@forwardemail.net`.

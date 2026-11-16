@@ -4499,6 +4499,8 @@ Ta sekcja opisuje nasz proces związany z poleceniem protokołu SMTP `DATA` w se
    * `X-Forward-Email-Session-ID` – wartość ID sesji używana do celów debugowania (dotyczy tylko środowisk nieprodukcyjnych).
    * `X-Forward-Email-Sender` – lista oddzielona przecinkami zawierająca oryginalny adres MAIL FROM koperty (jeśli nie był pusty), odwrócony PTR klienta FQDN (jeśli istnieje) oraz adres IP nadawcy.
    * `X-Forward-Email-ID` – dotyczy tylko wychodzącego SMTP i koreluje z ID e-maila przechowywanym w Moje Konto → E-maile
+   * `CFBL-Address` – z wartością `abuse@forwardemail.net`. Informuje dostawców skrzynek pocztowych, dokąd wysyłać skargi na spam ([RFC 9477](https://www.rfc-editor.org/rfc/rfc9477.html)). Dodajemy go do wychodzącej poczty SMTP oraz do poczty, którą przekazujemy, jeśli nie ma ona własnego takiego nagłówka. Wychodzące wiadomości SMTP mają także drugi podpis DKIM domeny `forwardemail.net`, którego RFC wymaga dla tego adresu.
+   * `CFBL-Feedback-ID` – dodawany razem z `CFBL-Address`. Identyfikuje e-mail w skargach na spam wysyłanych do nas.
    * `X-Report-Abuse` – z wartością `abuse@forwardemail.net`.
    * `X-Report-Abuse-To` – z wartością `abuse@forwardemail.net`.
    * `X-Complaints-To` – z wartością `abuse@forwardemail.net`.

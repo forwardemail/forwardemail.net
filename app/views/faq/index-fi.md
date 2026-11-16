@@ -4499,6 +4499,8 @@ Tässä osiossa kuvataan prosessimme liittyen SMTP-protokollan komentoon `DATA` 
    * `X-Forward-Email-Session-ID` – istunnon tunnus debug-tarkoituksiin (käytössä vain ei-tuotantoympäristöissä).
    * `X-Forward-Email-Sender` – pilkuin eroteltu lista, joka sisältää alkuperäisen envelope MAIL FROM -osoitteen (jos se ei ollut tyhjä), käänteisen PTR-asiakkaan FQDN:n (jos olemassa) ja lähettäjän IP-osoitteen.
    * `X-Forward-Email-ID` – soveltuu vain lähtevään SMTP:hen ja vastaa sähköpostin tunnusta, joka on tallennettu Oma tili → Sähköpostit -osiossa.
+   * `CFBL-Address` – arvona `abuse@forwardemail.net`. Se kertoo postilaatikkopalveluille, minne roskapostivalitukset lähetetään ([RFC 9477](https://www.rfc-editor.org/rfc/rfc9477.html)). Lisäämme sen lähtevään SMTP-postiin ja edelleenlähettämäämme postiin, jos viestissä ei ole omaa vastaavaa otsaketta. Lähtevissä SMTP-viesteissä on myös toinen DKIM-allekirjoitus verkkotunnukselta `forwardemail.net`, jota RFC edellyttää tälle osoitteelle.
+   * `CFBL-Feedback-ID` – lisätään yhdessä otsakkeen `CFBL-Address` kanssa. Se yksilöi sähköpostin meille lähetetyissä roskapostivalituksissa.
    * `X-Report-Abuse` – arvolla `abuse@forwardemail.net`.
    * `X-Report-Abuse-To` – arvolla `abuse@forwardemail.net`.
    * `X-Complaints-To` – arvolla `abuse@forwardemail.net`.

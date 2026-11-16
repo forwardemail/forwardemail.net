@@ -1508,6 +1508,13 @@ const config = {
     // day (see `helpers/arf-recipient-block.js`; only an explicit false
     // turns this off)
     recipientBlock: unlessFalse(env.ARF_RECIPIENT_BLOCK),
+    // mail our SMTP servers send asks for these reports: it names the abuse
+    // address in a CFBL-Address field (RFC 9477) and carries our own DKIM
+    // signature too, by which the DKIM-FBL record in our DNS is found; a
+    // copy our MX servers forward names the address too (see
+    // `addFeedbackFields` and `addForwardedFeedbackFields` in
+    // `helpers/arf-report.js`; only an explicit false turns this off)
+    cfbl: unlessFalse(env.ARF_CFBL),
     blockDuration: ms('90d'),
     maxBlocksPerAlias: 100,
     maxBlocksPerAliasPerDay: 20

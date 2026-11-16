@@ -4500,6 +4500,8 @@ Tato sekce popisuje náš proces související s příkazem protokolu SMTP `DATA
    * `X-Forward-Email-Session-ID` – hodnota ID relace používaná pro ladění (platí pouze v neprodukčních prostředích).
    * `X-Forward-Email-Sender` – čárkou oddělený seznam obsahující původní adresu MAIL FROM obálky (pokud nebyla prázdná), reverzní PTR klienta FQDN (pokud existuje) a IP adresu odesílatele.
    * `X-Forward-Email-ID` – platí pouze pro odchozí SMTP a koreluje s ID e-mailu uloženým v Můj účet → E-maily
+   * `CFBL-Address` – s hodnotou `abuse@forwardemail.net`. Sděluje poskytovatelům e-mailových schránek, kam posílat stížnosti na spam ([RFC 9477](https://www.rfc-editor.org/rfc/rfc9477.html)). Přidáváme ji k odchozí poště SMTP a k poště, kterou přeposíláme, pokud takovou hlavičku sama nemá. Odchozí zprávy SMTP nesou také druhý podpis DKIM domény `forwardemail.net`, který RFC pro tuto adresu vyžaduje.
+   * `CFBL-Feedback-ID` – přidává se spolu s `CFBL-Address`. Identifikuje e-mail ve stížnostech na spam, které nám přijdou.
    * `X-Report-Abuse` – s hodnotou `abuse@forwardemail.net`.
    * `X-Report-Abuse-To` – s hodnotou `abuse@forwardemail.net`.
    * `X-Complaints-To` – s hodnotou `abuse@forwardemail.net`.

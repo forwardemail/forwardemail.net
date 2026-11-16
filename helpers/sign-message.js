@@ -5,6 +5,7 @@
 
 const { Buffer } = require('node:buffer');
 
+const isSANB = require('is-string-and-not-blank');
 const { dkimSign } = require('mailauth/lib/dkim/sign');
 
 const combineErrors = require('./combine-errors');
@@ -29,6 +30,25 @@ function stuffBareCrDots(raw) {
   );
 }
 
+//
+// Our own signature too (after the domain's) on mail a domain sends through
+// our SMTP servers: a CFBL-Address at our domain on mail From another one
+// counts only with a valid signature of each (RFC 9477 Section 3.1.3), and
+// mailbox providers find our DKIM-FBL record by it (see `addFeedbackFields`
+// in `helpers/arf-report.js`); not on mail our own domain sends, which its
+// one signature is ours already
+//
+function getOurSignatureData(domain) {
+  const { signingDomain, selector, privateKey } = config.signatureData;
+  return config.arf.cfbl &&
+    isSANB(signingDomain) &&
+    isSANB(selector) &&
+    isSANB(privateKey) &&
+    String(domain.name).toLowerCase() !== signingDomain.toLowerCase()
+    ? [config.signatureData]
+    : [];
+}
+
 async function signMessage(raw, domain) {
   const signResult = await dkimSign(raw, {
     canonicalization: 'relaxed/relaxed',
@@ -43,7 +63,8 @@ async function signMessage(raw, domain) {
             privateKey: decrypt(domain.dkim_private_key),
             algorithm: 'rsa-sha256',
             canonicalization: 'relaxed/relaxed'
-          }
+          },
+          ...getOurSignatureData(domain)
         ]
       : [config.signatureData]
   });
@@ -63,4 +84,5 @@ async function signMessage(raw, domain) {
 }
 
 module.exports = signMessage;
+module.exports.getOurSignatureData = getOurSignatureData;
 module.exports.stuffBareCrDots = stuffBareCrDots;

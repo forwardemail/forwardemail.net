@@ -12,6 +12,8 @@
   * [Mail that is never scanned](#mail-that-is-never-scanned)
   * [Domain settings](#domain-settings)
   * [Abuse reports](#abuse-reports)
+  * [Feedback loop headers](#feedback-loop-headers)
+  * [Feedback loop DNS record](#feedback-loop-dns-record)
 * [Language model](#language-model)
 * [Environment variables](#environment-variables)
 * [Logs and stats](#logs-and-stats)
@@ -92,6 +94,54 @@ A report read:
 * blocks the sender of a message we forwarded, for the reporting alias's forwarding address alone, for 90 days (`ARF_RECIPIENT_BLOCK`). The sender's mail to that address then gets a temporary error (421). The block is listed on the alias's page, where its owner can lift it
 * is learned by every server's classifier as spam (`ARF_LEARN`), within daily limits for each mailbox, account and the whole service. Only the message's features that name no party are learned
 
+### Feedback loop headers
+
+Mail sent through the SMTP servers (SMTP, the API, and resent emails) asks mailbox providers to send their users' spam complaints to `EMAIL_ABUSE` (`ARF_CFBL`, on unless set to `false`). Each message gets:
+
+* `CFBL-Address: abuse@forwardemail.net; report=arf` ([RFC 9477](https://www.rfc-editor.org/rfc/rfc9477.html)), which names where complaints go.
+* `CFBL-Feedback-ID`, which names the email: its ID and a code made with `HELPER_ENCRYPTION_KEY`, so no one else can make one. A provider may report this field alone (RFC 9477 Section 8.2), and the report still counts against the user who sent the email. Without `HELPER_ENCRYPTION_KEY` the field is not added.
+* A second DKIM signature of `DKIM_DOMAIN_NAME`, after the sending domain's own. RFC 9477 Section 3.1.3 requires one from each domain when the address is at another domain than the From address. Both signatures cover both fields. Mail from `DKIM_DOMAIN_NAME` itself keeps its one signature.
+
+What a sender set is handled as follows:
+
+* A `CFBL-Address` at another domain is kept (a message may have several).
+* A `CFBL-Address` at our domain or a subdomain of it is removed, and so is one that is not an address alone. Our signature would otherwise make it count.
+* A `CFBL-Feedback-ID` is replaced by ours (a message has one), so a sender cannot keep a report from being matched, or name an email someone else sent. A sender still knows its message by its `Message-ID`.
+
+The second signature is added whenever the DKIM key is set, and the headers only when `EMAIL_ABUSE` is also an address at `DKIM_DOMAIN_NAME`. The MX and SMTP servers must share `HELPER_ENCRYPTION_KEY`, or a report of `CFBL-Feedback-ID` alone is not matched.
+
+Mail the MX servers forward gets the two headers too, on each copy that carries `X-Forward-Email-Report` (so from a sender that passes DMARC):
+
+* `CFBL-Address` is the same. The copy is already signed by `DKIM_DOMAIN_NAME`, and that signature covers both headers. The sender's own signature does not, which RFC 9477 Section 3.1.3 allows for mail signed before we get it. A provider that asks for both signatures sends no report for these copies.
+* `CFBL-Feedback-ID` holds the `X-Forward-Email-Report` value (its `.` written `:`). A report of that header and the `Message-ID` alone still blocks the sender for that recipient.
+* Mail that already has a `CFBL-Address` or `CFBL-Feedback-ID`, or a DKIM signature that names either, is forwarded as it is. Adding one could break the sender's signature.
+
+Reports that come back are read like any other (see [Abuse reports](#abuse-reports)), so only from addresses in `ARF_REPORTERS`. When a new provider starts sending reports, they are delivered to `EMAIL_ABUSE`. To have them read instead, add the provider's feedback loop address to `ARF_REPORTERS` and its domain to `TRUTH_SOURCES`.
+
+### Feedback loop DNS record
+
+Mailbox providers that support DKIM-FBL ([draft-brotman-dkim-fbl](https://datatracker.ietf.org/doc/draft-brotman-dkim-fbl/)) look up a TXT record under the domain of a passing DKIM signature to find where to send complaints. Publish this record once for `DKIM_DOMAIN_NAME`:
+
+| Name                                    | Type | Value                                               |
+| --------------------------------------- | ---- | --------------------------------------------------- |
+| `_feedback._domainkey.forwardemail.net` | TXT  | `v=DKIMRFBLv1;ra=mailto:abuse@forwardemail.net;c=y` |
+
+On a self-hosted instance, use your own `DKIM_DOMAIN_NAME` in the name and `EMAIL_ABUSE` after `mailto:`.
+
+* `ra` is where reports go. It is at the signing domain, so no verification record is needed for it.
+* `c=y` asks for the reported message with its content, which learning needs. The draft defines only `c=n` (headers only, the default) and uses `c=y` in its examples, and a provider may send only headers either way.
+* There is no `h` tag. It names a header that must be signed on every message, and not every copy the MX servers forward has a `CFBL-Feedback-ID` of ours, so providers would stop reporting those.
+
+The record covers every selector. It applies to mail the SMTP servers send (by the second signature) and to mail the MX servers forward, which `DKIM_DOMAIN_NAME` already signs. Customers add nothing to their own DNS.
+
+Check it with:
+
+```sh
+dig +short TXT _feedback._domainkey.forwardemail.net
+```
+
+DKIM-FBL is an Internet-Draft, not an RFC. Its latest version (06, January 2026) has expired without a successor, so check the draft for changes to the record format before relying on it with a new provider.
+
 
 ## Language model
 
@@ -112,45 +162,46 @@ The model is asked only about close calls (`SPAM_SCANNER_LLM_MODE=auto`): inboun
 
 All are in `.env.defaults` and `.env.schema`. A duration under 100 ms (such as `0`) keeps its default.
 
-| Variable                                | Default                   | Meaning                                                                                                                                     |
-| --------------------------------------- | ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
-| `SPAM_SCANNER_ENABLED`                  | `true`                    | `false`: no scans, except of outbound mail for what blocks it (see `SPAM_SCANNER_OUTBOUND_BLOCK`).                                          |
-| `SPAM_SCANNER_MONITOR_ONLY`             | `true`                    | Only log what would be marked as spam or blocked. Off only when explicitly `false`.                                                         |
-| `SPAM_SCANNER_OUTBOUND_MONITOR_ONLY`    | `true`                    | Out of monitor mode: `false` rejects outbound spam at the reject threshold as it is sent.                                                   |
-| `SPAM_SCANNER_OUTBOUND_BLOCK`           | `true`                    | Refuse outbound mail for a virus, program attachment, blocked link or GTUBE, in monitor mode too. `false` only logs it in monitor mode.     |
-| `SPAM_SCANNER_OUTBOUND_FAIL_CLOSED`     | `true`                    | Out of monitor mode: an outbound message that could not be checked gets a temporary error. `false` sends it unchecked.                      |
-| `SPAM_SCANNER_HEADERS`                  | `true`                    | Add `X-Spam-Scanner-*` headers to inbound mail.                                                                                             |
-| `SPAM_SCANNER_MX_PERCENT`               | `10`                      | Percentage of inbound mail scanned (0 to 100). Read when the MX server starts.                                                              |
-| `SPAM_SCANNER_MX_WAIT`                  | `1s`                      | In monitor mode, the most the MX server waits for a scan before delivering without its headers.                                             |
-| `SPAM_SCANNER_TIMEOUT`                  | `8s`                      | Time limit of a scan that only logs (22s at most).                                                                                          |
-| `SPAM_SCANNER_NETWORK_TIMEOUT`          | `2s`                      | Time limit of each network check (link lookups) of such a scan.                                                                             |
-| `SPAM_SCANNER_OUTBOUND_TIMEOUT`         | `20s`                     | Time limit of a scan that decides what is blocked (22s at most).                                                                            |
-| `SPAM_SCANNER_OUTBOUND_NETWORK_TIMEOUT` | `5s`                      | Time limit of each network check of such a scan.                                                                                            |
-| `SPAM_SCANNER_THREADS`                  | `1`                       | Worker threads per process (each loads the classifier, about 60 MB).                                                                        |
-| `SPAM_SCANNER_MAX_MEMORY`               | `512`                     | Most memory each worker may use (MB).                                                                                                       |
-| `SPAM_SCANNER_SEND_THREADS`             | `2`                       | Worker threads in `smtp-bree`, which scans outbound mail as it is sent.                                                                     |
-| `SPAM_SCANNER_MAX_QUEUE`                | `50`                      | Scans waiting for a worker, beyond which mail goes unscanned (out of monitor mode, outbound mail is then held back with a temporary error). |
-| `SPAM_SCANNER_MAX_SIZE`                 | `25MB`                    | Larger messages are not scanned by scans that only log (`0`: no limit).                                                                     |
-| `SPAM_SCANNER_STATS_INTERVAL`           | `1m`                      | How often each process writes a `[SPAM_SCANNER] stats` line (`0` or `off`: never).                                                          |
-| `SPAM_SCANNER_CLOUDFLARE`               | (empty: on, except tests) | Look link hosts up with Cloudflare's malware (1.1.1.2) and family (1.1.1.3) resolvers.                                                      |
-| `SPAM_SCANNER_CLAMAV`                   | `false`                   | Scan attachments with clamd on its default socket (Ansible does not install ClamAV).                                                        |
-| `SPAM_SCANNER_LLM_MODE`                 | `auto`                    | `auto` (close calls only), `always`, or `off` (also `false`, `0`, `no`).                                                                    |
-| `SPAM_SCANNER_LLM_PORT`                 | `11436`                   | Port of the local Ollama.                                                                                                                   |
-| `SPAM_SCANNER_LLM_URL`                  | (empty: local Ollama)     | Another model server. One on the server itself must be `127.0.0.1` or `localhost` on `SPAM_SCANNER_LLM_PORT`.                               |
-| `SPAM_SCANNER_LLM_API_KEY`              | (empty)                   | Only for a server that requires one.                                                                                                        |
-| `SPAM_SCANNER_LLM_PROVIDER`             | `ollama`                  | See [Spam Scanner's LLM docs](https://spamscanner.net/docs/llm/).                                                                           |
-| `SPAM_SCANNER_LLM_MODEL`                | `spamscanner`             | The model asked for (made by Ansible).                                                                                                      |
-| `SPAM_SCANNER_LLM_BASE_MODEL`           | `gemma4:e2b`              | (Ansible) The model it is made from.                                                                                                        |
-| `SPAM_SCANNER_LLM_MEMORY_MAX`           | `8G`                      | (Ansible) Most memory Ollama may use.                                                                                                       |
-| `SPAM_SCANNER_LLM_PULL`                 | `false`                   | (Ansible) Pull the base model again (otherwise only when missing).                                                                          |
-| `SPAM_SCANNER_LLM_TIMEOUT`              | `3s`                      | Most a model answer may take.                                                                                                               |
-| `SPAM_SCANNER_LLM_MAX_INPUT_CHARS`      | `1500`                    | Characters of a message the model reads.                                                                                                    |
-| `SPAM_SCANNER_LLM_REDACT`               | (empty: unless local)     | Remove personal data before a message goes to the model.                                                                                    |
-| `SPAM_SCANNER_LLM_KEEP_ALIVE`           | `-1m`                     | How long Ollama keeps the model loaded (`-1m`: always).                                                                                     |
-| `ARF_ENABLED`                           | `true`                    | Read abuse reports. `false` delivers them as before.                                                                                        |
-| `ARF_REPORTERS`                         | Yahoo's and Microsoft's   | Feedback loop addresses, comma-separated (`@domain` for any address at that domain).                                                        |
-| `ARF_LEARN`                             | `true`                    | Learn messages reported as spam.                                                                                                            |
-| `ARF_RECIPIENT_BLOCK`                   | `true`                    | Block the sender of mail we forwarded that its recipient reported, for that forwarding address alone.                                       |
+| Variable                                | Default                   | Meaning                                                                                                                                                          |
+| --------------------------------------- | ------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `SPAM_SCANNER_ENABLED`                  | `true`                    | `false`: no scans, except of outbound mail for what blocks it (see `SPAM_SCANNER_OUTBOUND_BLOCK`).                                                               |
+| `SPAM_SCANNER_MONITOR_ONLY`             | `true`                    | Only log what would be marked as spam or blocked. Off only when explicitly `false`.                                                                              |
+| `SPAM_SCANNER_OUTBOUND_MONITOR_ONLY`    | `true`                    | Out of monitor mode: `false` rejects outbound spam at the reject threshold as it is sent.                                                                        |
+| `SPAM_SCANNER_OUTBOUND_BLOCK`           | `true`                    | Refuse outbound mail for a virus, program attachment, blocked link or GTUBE, in monitor mode too. `false` only logs it in monitor mode.                          |
+| `SPAM_SCANNER_OUTBOUND_FAIL_CLOSED`     | `true`                    | Out of monitor mode: an outbound message that could not be checked gets a temporary error. `false` sends it unchecked.                                           |
+| `SPAM_SCANNER_HEADERS`                  | `true`                    | Add `X-Spam-Scanner-*` headers to inbound mail.                                                                                                                  |
+| `SPAM_SCANNER_MX_PERCENT`               | `10`                      | Percentage of inbound mail scanned (0 to 100). Read when the MX server starts.                                                                                   |
+| `SPAM_SCANNER_MX_WAIT`                  | `1s`                      | In monitor mode, the most the MX server waits for a scan before delivering without its headers.                                                                  |
+| `SPAM_SCANNER_TIMEOUT`                  | `8s`                      | Time limit of a scan that only logs (22s at most).                                                                                                               |
+| `SPAM_SCANNER_NETWORK_TIMEOUT`          | `2s`                      | Time limit of each network check (link lookups) of such a scan.                                                                                                  |
+| `SPAM_SCANNER_OUTBOUND_TIMEOUT`         | `20s`                     | Time limit of a scan that decides what is blocked (22s at most).                                                                                                 |
+| `SPAM_SCANNER_OUTBOUND_NETWORK_TIMEOUT` | `5s`                      | Time limit of each network check of such a scan.                                                                                                                 |
+| `SPAM_SCANNER_THREADS`                  | `1`                       | Worker threads per process (each loads the classifier, about 60 MB).                                                                                             |
+| `SPAM_SCANNER_MAX_MEMORY`               | `512`                     | Most memory each worker may use (MB).                                                                                                                            |
+| `SPAM_SCANNER_SEND_THREADS`             | `2`                       | Worker threads in `smtp-bree`, which scans outbound mail as it is sent.                                                                                          |
+| `SPAM_SCANNER_MAX_QUEUE`                | `50`                      | Scans waiting for a worker, beyond which mail goes unscanned (out of monitor mode, outbound mail is then held back with a temporary error).                      |
+| `SPAM_SCANNER_MAX_SIZE`                 | `25MB`                    | Larger messages are not scanned by scans that only log (`0`: no limit).                                                                                          |
+| `SPAM_SCANNER_STATS_INTERVAL`           | `1m`                      | How often each process writes a `[SPAM_SCANNER] stats` line (`0` or `off`: never).                                                                               |
+| `SPAM_SCANNER_CLOUDFLARE`               | (empty: on, except tests) | Look link hosts up with Cloudflare's malware (1.1.1.2) and family (1.1.1.3) resolvers.                                                                           |
+| `SPAM_SCANNER_CLAMAV`                   | `false`                   | Scan attachments with clamd on its default socket (Ansible does not install ClamAV).                                                                             |
+| `SPAM_SCANNER_LLM_MODE`                 | `auto`                    | `auto` (close calls only), `always`, or `off` (also `false`, `0`, `no`).                                                                                         |
+| `SPAM_SCANNER_LLM_PORT`                 | `11436`                   | Port of the local Ollama.                                                                                                                                        |
+| `SPAM_SCANNER_LLM_URL`                  | (empty: local Ollama)     | Another model server. One on the server itself must be `127.0.0.1` or `localhost` on `SPAM_SCANNER_LLM_PORT`.                                                    |
+| `SPAM_SCANNER_LLM_API_KEY`              | (empty)                   | Only for a server that requires one.                                                                                                                             |
+| `SPAM_SCANNER_LLM_PROVIDER`             | `ollama`                  | See [Spam Scanner's LLM docs](https://spamscanner.net/docs/llm/).                                                                                                |
+| `SPAM_SCANNER_LLM_MODEL`                | `spamscanner`             | The model asked for (made by Ansible).                                                                                                                           |
+| `SPAM_SCANNER_LLM_BASE_MODEL`           | `gemma4:e2b`              | (Ansible) The model it is made from.                                                                                                                             |
+| `SPAM_SCANNER_LLM_MEMORY_MAX`           | `8G`                      | (Ansible) Most memory Ollama may use.                                                                                                                            |
+| `SPAM_SCANNER_LLM_PULL`                 | `false`                   | (Ansible) Pull the base model again (otherwise only when missing).                                                                                               |
+| `SPAM_SCANNER_LLM_TIMEOUT`              | `3s`                      | Most a model answer may take.                                                                                                                                    |
+| `SPAM_SCANNER_LLM_MAX_INPUT_CHARS`      | `1500`                    | Characters of a message the model reads.                                                                                                                         |
+| `SPAM_SCANNER_LLM_REDACT`               | (empty: unless local)     | Remove personal data before a message goes to the model.                                                                                                         |
+| `SPAM_SCANNER_LLM_KEEP_ALIVE`           | `-1m`                     | How long Ollama keeps the model loaded (`-1m`: always).                                                                                                          |
+| `ARF_ENABLED`                           | `true`                    | Read abuse reports. `false` delivers them as before.                                                                                                             |
+| `ARF_REPORTERS`                         | Yahoo's and Microsoft's   | Feedback loop addresses, comma-separated (`@domain` for any address at that domain).                                                                             |
+| `ARF_LEARN`                             | `true`                    | Learn messages reported as spam.                                                                                                                                 |
+| `ARF_RECIPIENT_BLOCK`                   | `true`                    | Block the sender of mail we forwarded that its recipient reported, for that forwarding address alone.                                                            |
+| `ARF_CFBL`                              | `true`                    | Add `CFBL-Address` and `CFBL-Feedback-ID` to mail the SMTP servers send (with a second DKIM signature of `DKIM_DOMAIN_NAME`) and to mail the MX servers forward. |
 
 
 ## Logs and stats
@@ -162,12 +213,14 @@ Spam Scanner writes to the console (pm2's logs), not to the Logs collection:
 * Warnings (scans skipped or timed out, the language model, unchecked mail) and errors are written once a minute at most, with a count.
 * `[ARF]`: abuse reports read.
 
+To see the feedback loop headers, send a message through SMTP and view its source: it has `CFBL-Address`, `CFBL-Feedback-ID`, and two `DKIM-Signature` headers (the sending domain's, then `d=forwardemail.net`).
+
 
 ## Runbook
 
 ### Deploying
 
-1. Nothing has to be set: the defaults are monitor mode, 10% of inbound mail, and no ClamAV. To deploy without the language model, set `SPAM_SCANNER_LLM_MODE=off`.
+1. Nothing has to be set: the defaults are monitor mode, 10% of inbound mail, and no ClamAV. To deploy without the language model, set `SPAM_SCANNER_LLM_MODE=off`. Publish the [feedback loop DNS record](#feedback-loop-dns-record) once.
 2. Run the MX and SMTP playbooks (`mx1.yml`, `mx2.yml`, `smtp.yml`). They set up Ollama before the mail servers, and its model loads in the background. A server with too little free memory, or one CPU, skips it with a warning.
 3. Deploy the app as usual (`pm2 deploy`). On its first start, `bree` runs the settings reset once.
 
@@ -192,6 +245,7 @@ Change the variable in `.env.production`, push it with `node ansible-playbook an
 | The language model                                    | `SPAM_SCANNER_LLM_MODE=off`, and run the playbooks to stop Ollama |
 | Reading abuse reports (they are delivered as before)  | `ARF_ENABLED=false`                                               |
 | Blocking senders after reports, or learning from them | `ARF_RECIPIENT_BLOCK=false`, or `ARF_LEARN=false`                 |
+| Feedback loop headers and the second DKIM signature   | `ARF_CFBL=false` (reload `smtp-bree` and `mx`)                    |
 
 ### Workers busy, or mail unchecked
 

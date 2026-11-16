@@ -4500,6 +4500,8 @@ Detta avsnitt beskriver vår process relaterad till SMTP-protokollkommandot `DAT
    * `X-Forward-Email-Session-ID` - ett sessions-ID-värde som används för felsökningsändamål (gäller endast i icke-produktionsmiljöer).
    * `X-Forward-Email-Sender` - en kommaseparerad lista som innehåller den ursprungliga kuvertets MAIL FROM-adress (om den inte var tom), den omvända PTR-klientens FQDN (om den finns), och avsändarens IP-adress.
    * `X-Forward-Email-ID` - detta gäller endast för utgående SMTP och korrelerar till e-post-ID:t som lagras i Mitt Konto → E-post
+   * `CFBL-Address` - med värdet `abuse@forwardemail.net`. Det talar om för postlådeleverantörer vart spamklagomål ska skickas ([RFC 9477](https://www.rfc-editor.org/rfc/rfc9477.html)). Vi lägger till det i utgående SMTP-post och i post som vi vidarebefordrar när den inte har ett sådant huvud själv. Utgående SMTP-meddelanden har också en andra DKIM-signatur från `forwardemail.net`, som RFC:n kräver för den här adressen.
+   * `CFBL-Feedback-ID` - läggs till tillsammans med `CFBL-Address`. Det identifierar e-postmeddelandet i spamklagomål som skickas till oss.
    * `X-Report-Abuse` - med värdet `abuse@forwardemail.net`.
    * `X-Report-Abuse-To` - med värdet `abuse@forwardemail.net`.
    * `X-Complaints-To` - med värdet `abuse@forwardemail.net`.

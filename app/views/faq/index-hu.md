@@ -4500,6 +4500,8 @@ Ez a szakasz leírja az SMTP protokoll `DATA` parancsához kapcsolódó folyamat
    * `X-Forward-Email-Session-ID` – egy munkamenetazonosító érték hibakeresési célokra (csak nem éles környezetben alkalmazandó).
    * `X-Forward-Email-Sender` – vesszővel elválasztott lista, amely tartalmazza az eredeti boríték MAIL FROM címét (ha nem volt üres), a visszafelé mutató PTR kliens FQDN-jét (ha létezik), és a feladó IP-címét.
    * `X-Forward-Email-ID` – ez csak a kimenő SMTP-re vonatkozik, és megfelel a My Account → Emails alatt tárolt e-mail azonosítónak.
+   * `CFBL-Address` – értéke `abuse@forwardemail.net`. Megmondja a postafiók-szolgáltatóknak, hová küldjék a spampanaszokat ([RFC 9477](https://www.rfc-editor.org/rfc/rfc9477.html)). Hozzáadjuk a kimenő SMTP-levelekhez és az általunk továbbított levelekhez, ha azokban nincs saját ilyen fejléc. A kimenő SMTP-üzenetek egy második, `forwardemail.net` nevében készült DKIM-aláírást is hordoznak, amelyet az RFC ehhez a címhez megkövetel.
+   * `CFBL-Feedback-ID` – a `CFBL-Address` fejléccel együtt kerül az üzenetbe. Azonosítja az e-mailt a hozzánk küldött spampanaszokban.
    * `X-Report-Abuse` – értéke `abuse@forwardemail.net`.
    * `X-Report-Abuse-To` – értéke `abuse@forwardemail.net`.
    * `X-Complaints-To` – értéke `abuse@forwardemail.net`.
