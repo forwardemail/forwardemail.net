@@ -908,8 +908,8 @@ importers:
         specifier: 7.3.3
         version: 7.3.3(@emnapi/core@1.10.0)(@emnapi/runtime@1.11.3)
       spamscanner:
-        specifier: 7.0.16
-        version: 7.0.16
+        specifier: 7.0.17
+        version: 7.0.17
       speakingurl:
         specifier: 14.0.1
         version: 14.0.1
@@ -15255,8 +15255,8 @@ packages:
   space-separated-tokens@2.0.2:
     resolution: {integrity: sha512-PEGlAwrG8yXGXRjW32fGbg66JAlOAwbObuqVoJpv/mRgoWDQfgH1wDPvtzWyUSNAXBGSk8h755YDbbcEy3SH2Q==}
 
-  spamscanner@7.0.16:
-    resolution: {integrity: sha512-i2O0fXHmR18H6OY2qVcD0DEa1RW+Ry1vdume+6paIGMxnT4gSx7wJPICVLForMkN2xHFdgWWxV9AO61302+D9g==}
+  spamscanner@7.0.17:
+    resolution: {integrity: sha512-h3sr2siiYjj33dT1xdrOrHhlVL8JPhcmn9Au5AK3uwRbt71UHldMqF+Ggcba79i86BHy8o2MegR4ZwxUpUY9Xg==}
     engines: {node: '>=18'}
     hasBin: true
 
@@ -35651,7 +35651,7 @@ snapshots:
 
   space-separated-tokens@2.0.2: {}
 
-  spamscanner@7.0.16:
+  spamscanner@7.0.17:
     dependencies:
       franc: 6.2.0
       mailauth: 4.13.3

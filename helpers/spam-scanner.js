@@ -55,6 +55,7 @@ const { MessageChannel } = require('node:worker_threads');
 
 const ipaddr = require('ipaddr.js');
 const ms = require('ms');
+const { boolean } = require('boolean');
 
 const config = require('#config');
 const createFamilyResolver = require('#helpers/create-family-resolver');
@@ -82,6 +83,8 @@ const CLOUDFLARE_FAMILY = new Set(FAMILY_SERVERS);
 // linking to more is blocked, so none can be put out of reach of the check
 // (each host is two lookups, cached in Redis; ordinary mail links to far fewer)
 const OUTBOUND_MAX_HOSTS = 250;
+// (milliseconds the lookup of a known sender may take, see `getKnownSenders`)
+const KNOWN_SENDER_TIMEOUT = 250;
 
 // a scan that only logs is stopped once it has run this many of its time
 // limits (the caller stops waiting for it after one), or as soon as another
@@ -1359,6 +1362,27 @@ function getAuthenticationResults(session = {}) {
       ? { result: value.status.result }
       : null;
   const string = (value) => (typeof value === 'string' ? value : undefined);
+  // (a parsed header as plain data a worker can be sent)
+  const plain = (value) => {
+    try {
+      return value === undefined
+        ? undefined
+        : JSON.parse(JSON.stringify(value));
+    } catch {
+      return undefined;
+    }
+  };
+
+  // (with the From domain, by which a forwarder's sealed results are read)
+  const dmarcStatus = (value) =>
+    status(value)
+      ? {
+          ...status(value),
+          ...(string(value.status.header?.d)
+            ? { header: { d: value.status.header.d } }
+            : {})
+        }
+      : null;
   // (how much of the body a signature leaves unsigned, with a body length,
   //  "l=", shorter than the body: Spam Scanner gives such a signature, and a
   //  DMARC pass that rests on one alone, no credit)
@@ -1392,12 +1416,21 @@ function getAuthenticationResults(session = {}) {
     // (without the policy Spam Scanner would count a failure by, so each
     //  counts in full: the MX server has rejected most mail that fails a
     //  policy of quarantine or reject by now, and what is left, failing a
-    //  policy of none, is mostly mail with a forged From address;
-    //  `authFields` logs the policy, to tell by)
+    //  policy of none, is mostly mail with a forged From address, which
+    //  passes neither SPF nor DKIM; a message that passes both, for other
+    //  domains than its From address, is a sender's own mail through its
+    //  other domain or a service, so its failure counts by the policy, as
+    //  little for a policy of none; `authFields` logs the policy, to tell by)
     dmarc: {
-      status: status(session.dmarc) || { result: 'none' },
+      status: dmarcStatus(session.dmarc) || { result: 'none' },
       domain: string(session.dmarc?.domain),
       p: string(session.dmarc?.p),
+      policy:
+        status(session.spf)?.result === 'pass' &&
+        Array.isArray(session.dkim?.results) &&
+        session.dkim.results.some((entry) => entry?.status?.result === 'pass')
+          ? string(session.dmarc?.policy)
+          : undefined,
       ...(session.dmarc?.alignment
         ? {
             alignment: {
@@ -1410,8 +1443,76 @@ function getAuthenticationResults(session = {}) {
           }
         : {})
     },
-    arc: { status: status(session.arc) || { result: 'none' } }
+    // (and what Spam Scanner believes a trusted forwarder's seal by: who
+    //  sealed it and the results it sealed, see `getTrustedArcSealers`)
+    arc: {
+      status: status(session.arc) || { result: 'none' },
+      ...(session.isTrustedArc === true
+        ? {
+            signature: {
+              signingDomain: string(session.arc?.signature?.signingDomain)
+            },
+            chain: [
+              {
+                'arc-seal': {
+                  parsed: {
+                    d: plain(
+                      session.arc?.chain?.at?.(-1)?.['arc-seal']?.parsed?.d
+                    )
+                  }
+                }
+              }
+            ],
+            authenticationResults: plain(session.arc?.authenticationResults)
+          }
+        : {})
+    }
   };
+}
+
+//
+// The forwarder whose ARC seal the MX server trusts for a message (one of
+// `config.truthSources`, see `helpers/is-authenticated-message.js`), for
+// Spam Scanner to believe as well: when the results it sealed show the
+// message passed for its From domain as it got it, forwarding is what broke
+// SPF, DKIM or DMARC, and they do not count
+//
+function getTrustedArcSealers(session = {}) {
+  const sealer = session.arc?.signature?.signingDomain;
+  return session.isTrustedArc === true && typeof sealer === 'string'
+    ? [parseRootDomain(sealer)]
+    : [];
+}
+
+//
+// The From domain of a message that passes DMARC, when it is one of the most
+// visited domains (the allowlist `jobs/update-umbrella.js` keeps, or
+// `config.allowlist`): a known sender to Spam Scanner, whose link to its own
+// domain under a partner's address (a shop's "www.apple.com" over its own
+// click tracking) is no disguise. Not by `helpers/is-allowlisted.js`, which
+// also takes every school's and government's domain; and Spam Scanner takes
+// no provider of mailboxes for one
+//
+async function getKnownSenders(session = {}, client) {
+  const domain =
+    session.dmarc?.status?.result === 'pass' &&
+    typeof session.dmarc.domain === 'string'
+      ? parseRootDomain(session.dmarc.domain.toLowerCase())
+      : '';
+  if (!domain) return [];
+  if (config.allowlist.has(domain)) return [domain];
+  if (typeof client?.get !== 'function') return [];
+  try {
+    // (no longer than a lookup may take: without an answer, not known)
+    const listed = await withDeadline(
+      client.get(`allowlist:${domain}`),
+      KNOWN_SENDER_TIMEOUT,
+      null
+    );
+    return boolean(listed) ? [domain] : [];
+  } catch {
+    return [];
+  }
 }
 
 // what is logged of an SMTP session, as it is when a scan starts (a scan
@@ -1842,6 +1943,9 @@ async function scan(raw, options = {}) {
 
     const authenticationResults =
       direction === 'outbound' ? null : getAuthenticationResults(session);
+    const knownSenders = authenticationResults
+      ? await getKnownSenders(session, client)
+      : [];
     task = {
       raw,
       session: {
@@ -1881,7 +1985,19 @@ async function scan(raw, options = {}) {
               phishing: { maxHosts: OUTBOUND_MAX_HOSTS }
             }
           : authenticationResults
-          ? { authenticationResults }
+          ? {
+              authenticationResults,
+              ...(knownSenders.length > 0
+                ? { phishing: { knownSenders } }
+                : {}),
+              ...(getTrustedArcSealers(session).length > 0
+                ? {
+                    authentication: {
+                      trustedArcSealers: getTrustedArcSealers(session)
+                    }
+                  }
+                : {})
+            }
           : {},
       outbound: direction === 'outbound',
       // (the language model: for inbound mail, and for outbound mail as it is

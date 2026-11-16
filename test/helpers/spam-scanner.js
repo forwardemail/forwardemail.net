@@ -452,6 +452,123 @@ test('a From domain the MX server could not authenticate counts toward the score
   t.true(scan.score > plain.score);
 });
 
+test('failing a policy of none counts little when SPF and DKIM pass for other domains, in full for a forged address', async (t) => {
+  captureSpamScannerLog(t);
+  const raw = message([
+    'From: notices@sender.example',
+    'To: bob@example.org',
+    'Subject: Monthly statement',
+    'Message-ID: <statement@sender.example>',
+    'Date: Sun, 11 Oct 2026 10:00:00 +0000',
+    '',
+    'Your statement is ready.'
+  ]);
+  // (a company's mail through its other domain: SPF and DKIM pass for it,
+  //  neither for the From domain)
+  const other = (policy) => ({
+    spf: { status: { result: 'pass' }, domain: 'sender-mail.example' },
+    dkim: {
+      results: [
+        { signingDomain: 'sender-mail.example', status: { result: 'pass' } }
+      ]
+    },
+    dmarc: {
+      status: { result: 'fail' },
+      domain: 'sender.example',
+      p: policy,
+      policy
+    },
+    arc: { status: { result: 'none' } }
+  });
+  const points = async (auth) => {
+    const scan = await spamScanner.scan(raw, {
+      session: { ...session, ...auth },
+      client
+    });
+    return scan.tests.find((item) => item.name === 'DMARC_FAIL').score;
+  };
+
+  t.is(await points(other('none')), 1);
+  // (not when the domain asks for its failures to be held back)
+  t.is(await points(other('reject')), 3.5);
+  // (nor with one of the two, or neither, as a forged address has)
+  t.is(await points({ ...other('none'), dkim: { results: [] } }), 3.5);
+  t.is(
+    await points({
+      ...other('none'),
+      spf: { status: { result: 'softfail' }, domain: 'sender-mail.example' }
+    }),
+    3.5
+  );
+  t.is(await points({ ...UNAUTHENTICATED }), 3.5);
+});
+
+test("a trusted forwarder's ARC seal goes to the scan with what it sealed, and no other seal", async (t) => {
+  // (as mailauth gives it: the chain is not enumerable)
+  const arc = {
+    status: { result: 'pass' },
+    signature: { signingDomain: 'mail.forwarder-example.com' },
+    authenticationResults: {
+      mta: 'mx.forwarder-example.com',
+      dmarc: { result: 'pass', header: { from: 'sender.example' } }
+    }
+  };
+  Object.defineProperty(arc, 'chain', {
+    value: [
+      { 'arc-seal': { parsed: { d: { value: 'older.example' } } } },
+      { 'arc-seal': { parsed: { d: { value: 'mail.forwarder-example.com' } } } }
+    ]
+  });
+  const forwarded = {
+    ...UNAUTHENTICATED,
+    dmarc: {
+      status: {
+        result: 'fail',
+        header: { from: 'sender.example', d: 'sender.example' }
+      },
+      domain: 'sender.example',
+      p: 'none',
+      policy: 'none'
+    },
+    arc
+  };
+
+  const tasks = [];
+  spamScanner.getPool().run = async (task) => {
+    // (plain data a worker can be sent)
+    tasks.push(structuredClone(task.options));
+    return { isSpam: false };
+  };
+
+  await spamScanner.scan(HAM, {
+    session: { ...session, ...forwarded, isTrustedArc: true },
+    client
+  });
+  // (a seal of anyone else: the MX server does not trust it)
+  await spamScanner.scan(HAM, {
+    session: { ...session, ...forwarded, isTrustedArc: false },
+    client
+  });
+
+  const [trusted, untrusted] = tasks;
+  t.deepEqual(trusted.authentication, {
+    trustedArcSealers: ['forwarder-example.com']
+  });
+  t.deepEqual(trusted.authenticationResults.arc, {
+    status: { result: 'pass' },
+    signature: { signingDomain: 'mail.forwarder-example.com' },
+    chain: [
+      { 'arc-seal': { parsed: { d: { value: 'mail.forwarder-example.com' } } } }
+    ],
+    authenticationResults: arc.authenticationResults
+  });
+  t.is(trusted.authenticationResults.dmarc.status.header.d, 'sender.example');
+  t.is(untrusted.authentication, undefined);
+  t.deepEqual(untrusted.authenticationResults.arc, {
+    status: { result: 'pass' }
+  });
+});
+
 // what it gives for a message that passes DMARC for `domain`
 const authenticated = (domain) => ({
   spf: { status: { result: 'pass' }, domain },
@@ -462,6 +579,87 @@ const authenticated = (domain) => ({
   },
   dmarc: { status: { result: 'pass' }, domain, p: 'none', policy: 'none' },
   arc: { status: { result: 'none' } }
+});
+
+test('the From domain of a message that passes DMARC goes to the scan as a known sender when it is on the allowlist', async (t) => {
+  const tasks = [];
+  spamScanner.getPool().run = async (task) => {
+    tasks.push(structuredClone(task.options));
+    return { isSpam: false };
+  };
+
+  await client.set('allowlist:bigstore-example.com', 'true', 'PX', 60000);
+  t.teardown(() => client.del('allowlist:bigstore-example.com'));
+  const scan = (auth, redis = client) =>
+    spamScanner.scan(HAM, { session: { ...session, ...auth }, client: redis });
+
+  // (by its registrable domain)
+  await scan(authenticated('bigstore-example.com'));
+  await scan(authenticated('Mail.BigStore-Example.com'));
+  // (not a domain that is not on it, nor one that does not pass DMARC,
+  //  nor while the allowlist cannot be read)
+  await scan(authenticated('smallstore-example.com'));
+  await scan({
+    ...authenticated('bigstore-example.com'),
+    dmarc: {
+      status: { result: 'fail' },
+      domain: 'bigstore-example.com',
+      p: 'none',
+      policy: 'none'
+    }
+  });
+  await scan(authenticated('bigstore-example.com'), {
+    async get() {
+      throw new Error('connection is closed');
+    }
+  });
+
+  t.deepEqual(
+    tasks.map((options) => options.phishing),
+    [
+      { knownSenders: ['bigstore-example.com'] },
+      { knownSenders: ['bigstore-example.com'] },
+      undefined,
+      undefined,
+      undefined
+    ]
+  );
+  // (with the authentication results that show it passed)
+  t.is(tasks[0].authenticationResults.dmarc.status.result, 'pass');
+});
+
+test('a known sender may show a partner over its own click tracking, and no one else', async (t) => {
+  captureSpamScannerLog(t);
+  await client.set('allowlist:bigstore-example.com', 'true', 'PX', 60000);
+  t.teardown(() => client.del('allowlist:bigstore-example.com'));
+  const lines = (host) => [
+    'From: Big Store <orders@mail.bigstore-example.com>',
+    'To: bob@example.org',
+    'Subject: Included with your order',
+    'Message-ID: <order@mail.bigstore-example.com>',
+    'Date: Sun, 11 Oct 2026 10:00:00 +0000',
+    'Content-Type: text/html; charset=utf-8',
+    '',
+    `<p>Start your free trial at <a href="https://${host}/c/1">www.apple.com</a></p>`
+  ];
+  const deceptive = async (host, auth) => {
+    const scan = await spamScanner.scan(message(lines(host)), {
+      session: { ...session, ...auth },
+      client
+    });
+    return scan.tests.some((item) => item.name === 'DECEPTIVE_LINK');
+  };
+
+  const own = 'click.mail.bigstore-example.com';
+  t.false(await deceptive(own, authenticated('bigstore-example.com')));
+  // (not a link to anywhere else, nor without passing DMARC)
+  t.true(
+    await deceptive('perks.example', authenticated('bigstore-example.com'))
+  );
+  t.true(await deceptive(own, {}));
+  // (nor a sender that is not on the allowlist)
+  await client.del('allowlist:bigstore-example.com');
+  t.true(await deceptive(own, authenticated('bigstore-example.com')));
 });
 
 test('a sender that passes DMARC may show its own address over a tracking link, but not the address of a brand', async (t) => {
