@@ -11,8 +11,9 @@ Usage: ansible/scripts/test-alerts.sh [--full]
 
 Runs local alert tests. No email, SMS, or GitHub request is sent.
 
-  --full  Also test every alert host in isolated namespaces. This is slower and
-          is only needed after changing hostname or SPF alert code.
+  --full  Also test every alert host in isolated namespaces, and alert delivery
+          through a real Postfix. This is slower and is only needed after
+          changing hostname, SPF or Postfix alert code.
 USAGE
 }
 
@@ -44,6 +45,7 @@ run "$SCRIPT_DIR/test-email-sender-status.sh"
 run "$SCRIPT_DIR/test-pm2-systemd-policy.py"
 run "$SCRIPT_DIR/test-pm2-systemd-notification-runtime.sh"
 run "$SCRIPT_DIR/test-systemd-failure-notification-contract.py"
+run "$SCRIPT_DIR/test-systemd-failure-notification-runtime.sh"
 run "$SCRIPT_DIR/test-alert-policy-rollout.py"
 run "$SCRIPT_DIR/test-systemd-sms-policy-render.sh"
 run "$SCRIPT_DIR/test-status-incident-lifecycle.py"
@@ -54,11 +56,13 @@ if [[ "$FULL" == true ]]; then
   printf '%s\n' 'Running full all-host hostname test...'
   if [[ "$(id -u)" -eq 0 ]]; then
     "$SCRIPT_DIR/test-alert-hostname-runtime.sh"
+    "$SCRIPT_DIR/test-alert-postfix-loop-runtime.sh"
   elif sudo -n true >/dev/null 2>&1; then
     sudo \
       ANSIBLE_COLLECTIONS_PATH="${ANSIBLE_COLLECTIONS_PATH:-}" \
       ANSIBLE_ROLES_PATH="${ANSIBLE_ROLES_PATH:-}" \
       "$SCRIPT_DIR/test-alert-hostname-runtime.sh"
+    sudo "$SCRIPT_DIR/test-alert-postfix-loop-runtime.sh"
   else
     printf '%s\n' 'Run again with sudo for --full.' >&2
     exit 2

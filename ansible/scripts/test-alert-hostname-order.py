@@ -108,7 +108,7 @@ def validate_security_contract():
 
     require(
         content,
-        "myhostname '{{ forwardemail_alert_hostname }}'",
+        "smtp_helo_name '{{ forwardemail_alert_hostname }}'",
         "security.yml",
     )
     require(

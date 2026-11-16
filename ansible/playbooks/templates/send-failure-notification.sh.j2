@@ -88,6 +88,31 @@ MONITOR_EXIT_CODE_VALUE=${MONITOR_EXIT_CODE:-}
 MONITOR_EXIT_STATUS_VALUE=${MONITOR_EXIT_STATUS:-}
 MONITOR_INVOCATION_ID_VALUE=${MONITOR_INVOCATION_ID:-}
 
+# systemd passes MONITOR_* only from version 251, and only to a handler that a
+# single unit triggers; otherwise the failed unit's own result is used (it is
+# kept until the unit is started again).
+if [[ -z "$MONITOR_UNIT_VALUE" && -z "$MONITOR_RESULT_VALUE" ]]; then
+  unit_state=$(timeout --signal=TERM 10 systemctl show "$UNIT_NAME" \
+    --property=Result --property=ExecMainCode --property=ExecMainStatus \
+    --property=InvocationID 2>/dev/null || true)
+  unit_property() {
+    printf '%s\n' "$unit_state" | sed -n "s/^$1=//p" | head -n 1
+  }
+  unit_result=$(unit_property Result)
+  if [[ -n "$unit_result" && "$unit_result" != success ]]; then
+    MONITOR_UNIT_VALUE=$UNIT_NAME
+    MONITOR_RESULT_VALUE=$unit_result
+    case "$(unit_property ExecMainCode)" in
+      1) MONITOR_EXIT_CODE_VALUE=exited ;;
+      2) MONITOR_EXIT_CODE_VALUE=killed ;;
+      3) MONITOR_EXIT_CODE_VALUE=dumped ;;
+    esac
+    MONITOR_EXIT_STATUS_VALUE=$(unit_property ExecMainStatus)
+    MONITOR_INVOCATION_ID_VALUE=$(unit_property InvocationID)
+    log_alert "key=$RATE_LIMIT_KEY monitor_context_from_unit_state result=$unit_result"
+  fi
+fi
+
 if [[ -z "$MONITOR_UNIT_VALUE" || -z "$MONITOR_RESULT_VALUE" ]]; then
   log_alert "key=$RATE_LIMIT_KEY ignored_missing_monitor_context"
   exit 0

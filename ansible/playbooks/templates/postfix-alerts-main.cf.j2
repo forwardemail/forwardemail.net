@@ -3,8 +3,12 @@
 # recipient domain's MX and is independent of Forward Email's submission queue.
 
 compatibility_level = 3.6
-myhostname = {{ forwardemail_alert_hostname }}
-myorigin = $myhostname
+# Postfix bounces mail to a server that greets it with $myhostname ("mail for
+# forwardemail.net loops back to myself"), and on mx1 and mx2 the alert
+# recipient's MX is this server's own name, so $myhostname differs from it.
+# The HELO name stays the alert hostname (SPF and reverse DNS).
+myhostname = alerts.{{ forwardemail_alert_hostname }}
+myorigin = {{ forwardemail_alert_hostname }}
 mydestination =
 relayhost =
 relay_domains =
@@ -29,8 +33,8 @@ alias_database =
 virtual_alias_maps =
 virtual_mailbox_maps =
 
-# Use the hostname as HELO and opportunistic TLS for direct MX delivery.
-smtp_helo_name = $myhostname
+# Use the alert hostname as HELO and opportunistic TLS for direct MX delivery.
+smtp_helo_name = {{ forwardemail_alert_hostname }}
 smtp_tls_security_level = may
 smtp_tls_CAfile = /etc/ssl/certs/ca-certificates.crt
 smtp_tls_loglevel = 0

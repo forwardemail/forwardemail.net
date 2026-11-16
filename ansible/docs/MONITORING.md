@@ -76,6 +76,13 @@ sudo journalctl -u postfix -n 100 --no-pager
 sudo postqueue -p
 ```
 
+When an alert did not arrive, these show what the notifier did with it and how Postfix delivered it:
+
+```bash
+sudo journalctl -t forwardemail-alert --since today -o cat
+sudo journalctl -t postfix/smtp -t postfix/bounce --since today -o cat
+```
+
 For a PM2 alert, also run:
 
 ```bash
@@ -114,7 +121,7 @@ export ALERT_EMAIL_RECIPIENTS=security@forwardemail.net
 
 Postfix delivers alerts straight to each recipient's MX. Forward Email's own MX needs MongoDB and Redis, so when either hangs, alerts to `@forwardemail.net` wait in the queue. Include an address at another provider in `ALERT_EMAIL_RECIPIENTS`, and set the Twilio variables for SMS. Deployment warns when every recipient is `@forwardemail.net`.
 
-The server's configured hostname is used as the Postfix HELO name. Deployment checks SPF before changing Postfix. See the [Ansible alert transport guide](../README.md#alert-transport-and-dns-prerequisites) for DNS requirements.
+The server's configured hostname is used as the Postfix HELO name. Postfix itself is named `alerts.<hostname>`: it bounces mail to a server that greets it with its own name, and on `mx1` and `mx2` the forwardemail.net MX does. Deployment checks SPF before changing Postfix. See the [Ansible alert transport guide](../README.md#alert-transport-and-dns-prerequisites) for DNS requirements.
 
 
 ## Routine monitors

@@ -782,8 +782,9 @@
         assert_postconf alias_database ''
         assert_postconf virtual_alias_maps ''
         assert_postconf virtual_mailbox_maps ''
-        assert_postconf myhostname '{{ forwardemail_alert_hostname }}'
-        assert_postconf smtp_helo_name '$myhostname'
+        assert_postconf myhostname 'alerts.{{ forwardemail_alert_hostname }}'
+        assert_postconf myorigin '{{ forwardemail_alert_hostname }}'
+        assert_postconf smtp_helo_name '{{ forwardemail_alert_hostname }}'
         assert_postconf smtp_address_preference 'ipv4'
         assert_postconf smtp_tls_security_level 'may'
         assert_postconf smtp_tls_CAfile \
