@@ -283,6 +283,190 @@ test('mailboxes are the name of the aliases page, which explains what they are',
   t.notRegex(document.querySelector('.breadcrumb').textContent, /Aliases/);
 });
 
+test('a vanity domain with mailboxes of the account is in the sidebar, and leads to them, not to its setup', async (t) => {
+  const { web, user } = t.context;
+  await Users.updateOne(
+    { _id: user._id },
+    { $set: { plan: 'enhanced_protection' } }
+  );
+  await withDomain(t);
+  // (a vanity domain is run by someone else; its members are its users)
+  const owner = await Users.register(
+    await t.context.userFactory.make(),
+    falso.randPassword()
+  );
+  owner.plan = 'team';
+  await owner.save();
+  const vanity = {
+    plan: 'team',
+    is_global: true,
+    members: [{ user: owner._id, group: 'admin' }],
+    has_mx_record: true,
+    has_txt_record: true
+  };
+  const used = await makeDomain(t, vanity);
+  const unused = await makeDomain(t, vanity);
+  await t.context.aliasFactory
+    .withState({
+      user: user._id,
+      domain: used._id,
+      recipients: [user.email]
+    })
+    .create();
+  const mailboxes = `/en/my-account/domains/${used.name}/aliases`;
+
+  // the sidebar and the card lead to its mailboxes
+  let document = await get(t, '/en/my-account/domains');
+  const link = document.querySelector(
+    `.acct-sidebar a.acct-domain[data-name="${used.name}"]`
+  );
+  t.truthy(link);
+  t.is(link.getAttribute('href'), mailboxes);
+  t.is(
+    document.querySelector(
+      `.acct-sidebar a.acct-domain[data-name="${unused.name}"]`
+    ),
+    null
+  );
+  const card = [...document.querySelectorAll('.acct-domain-card')].find(
+    (c) => c.querySelector('h2 a').textContent.trim() === used.name
+  );
+  t.is(card.querySelector('h2 a').getAttribute('href'), mailboxes);
+  // (nor do its records lead to what only its admins can open)
+  t.false(
+    [...card.querySelectorAll('a[href]')].some((a) =>
+      /\/my-account\/domains\/[^/]+(\/verify-smtp|\/advanced-settings)?$/.test(
+        a.getAttribute('href')
+      )
+    )
+  );
+
+  // its setup sends a member to their mailboxes
+  const res = await web
+    .get(`/en/my-account/domains/${used.name}`)
+    .set('Accept', 'text/html');
+  t.is(res.status, 302);
+  t.is(res.headers.location, mailboxes);
+
+  // where the sidebar lists what a member has there: their mailboxes, logs
+  // and analytics (the DMARC reports of a vanity domain are its admins')
+  document = await get(t, mailboxes);
+  const active = document.querySelector('.acct-sidebar a.acct-domain.active');
+  t.is(active.dataset.name, used.name);
+  t.deepEqual(
+    [
+      ...active.parentElement.querySelectorAll('.acct-sublinks a.acct-link')
+    ].map((a) => a.getAttribute('href')),
+    [
+      mailboxes,
+      `/en/my-account/logs?domains=${used.name}`,
+      `/en/my-account/analytics?domains=${used.name}`
+    ]
+  );
+  t.false(
+    [...card.querySelectorAll('a[href]')].some((a) =>
+      a.getAttribute('href').includes('/dmarc-reports')
+    )
+  );
+});
+
+test('every page of an account renders beside the sidebar: an owner, a member and a vanity domain', async (t) => {
+  const { web, user } = t.context;
+  await Users.updateOne({ _id: user._id }, { $set: { plan: 'team' } });
+  const owner = await Users.register(
+    await t.context.userFactory.make(),
+    falso.randPassword()
+  );
+  owner.plan = 'team';
+  await owner.save();
+  const flags = { plan: 'team', has_mx_record: true, has_txt_record: true };
+  const own = await makeDomain(t, flags);
+  const team = await makeDomain(t, {
+    ...flags,
+    members: [
+      { user: owner._id, group: 'admin' },
+      { user: user._id, group: 'user' }
+    ]
+  });
+  const vanity = await makeDomain(t, {
+    ...flags,
+    is_global: true,
+    members: [{ user: owner._id, group: 'admin' }]
+  });
+  const aliases = {};
+  for (const domain of [own, team, vanity]) {
+    aliases[domain.id] = await t.context.aliasFactory
+      .withState({
+        user: user._id,
+        domain: domain._id,
+        recipients: [user.email]
+      })
+      .create();
+  }
+
+  const paths = [
+    '/my-account/domains',
+    '/my-account/domains/new',
+    '/my-account/emails',
+    '/my-account/logs',
+    '/my-account/analytics',
+    '/my-account/dmarc-reports',
+    '/my-account/profile',
+    '/my-account/billing',
+    '/my-account/security',
+    // what its admin has
+    `/my-account/domains/${own.name}`,
+    `/my-account/domains/${own.name}/advanced-settings`,
+    `/my-account/domains/${own.name}/verify-smtp`
+  ];
+  // what every member has
+  for (const domain of [own, team, vanity])
+    paths.push(
+      `/my-account/domains/${domain.name}/aliases`,
+      `/my-account/domains/${domain.name}/aliases/new`,
+      `/my-account/domains/${domain.name}/aliases/${aliases[domain.id].id}`,
+      `/my-account/logs?domains=${domain.name}`,
+      `/my-account/analytics?domains=${domain.name}`
+    );
+  for (const path of paths) {
+    const res = await web.get(`/en${path}`).set('Accept', 'text/html');
+    t.is(res.status, 200, `${path} -> ${res.headers.location}`);
+    const { document } = new JSDOM(res.text).window;
+    t.truthy(document.querySelector('aside.acct-sidebar'), `${path}`);
+    t.truthy(document.querySelector('#acct-main'), `${path}`);
+    // (the three domains, each leading to what the account has there)
+    for (const domain of [own, team, vanity]) {
+      const link = document.querySelector(
+        `.acct-sidebar a.acct-domain[data-name="${domain.name}"]`
+      );
+      t.truthy(link, `${path}: ${domain.name}`);
+      t.is(
+        link.getAttribute('href'),
+        domain === own
+          ? `/en/my-account/domains/${domain.name}`
+          : `/en/my-account/domains/${domain.name}/aliases`
+      );
+    }
+  }
+
+  // what is for the admins of a domain sends a member to their mailboxes
+  // (its setup) or refuses them
+  for (const domain of [team, vanity]) {
+    const res = await web
+      .get(`/en/my-account/domains/${domain.name}`)
+      .set('Accept', 'text/html');
+    t.is(res.status, 302);
+    t.is(res.headers.location, `/en/my-account/domains/${domain.name}/aliases`);
+    for (const page of ['advanced-settings', 'verify-smtp', 'billing']) {
+      const res = await web
+        .get(`/en/my-account/domains/${domain.name}/${page}`)
+        .set('Accept', 'text/html');
+      t.true(res.status >= 400 && res.status < 500, `${page}: ${res.status}`);
+      t.false(res.text.includes(owner.email), `${page}`);
+    }
+  }
+});
+
 test('the advanced settings page jumps to its sections', async (t) => {
   const domain = await makeDomain(t, {
     has_mx_record: true,

@@ -114,6 +114,8 @@ mixin renderProgressBar(domain, isMobile = false)
 
 //- The DNS records of a domain, each with its status (and a link to fix it)
 mixin domainDns(domain)
+  //- (only an admin of the domain can fix its records)
+  - const dnsFix = (path) => (domain.group === "admin" ? l(path) : false);
   .small.mt-1.mb-1
     //- TXT Record Status
     if domain.has_txt_record
@@ -127,7 +129,7 @@ mixin domainDns(domain)
         i.fa.fa-check-circle.text-success
     else
       a.mr-2.text-reset(
-        href=l(`/my-account/domains/${punycode.toASCII(domain.name)}`),
+        href=dnsFix(`/my-account/domains/${punycode.toASCII(domain.name)}`),
         data-toggle="tooltip",
         data-placement="bottom",
         data-html="true",
@@ -157,7 +159,7 @@ mixin domainDns(domain)
         sup.badge.badge-info.ml-1(style="font-size: 0.6em") i
     else
       a.mr-2.text-reset(
-        href=l(`/my-account/domains/${punycode.toASCII(domain.name)}`),
+        href=dnsFix(`/my-account/domains/${punycode.toASCII(domain.name)}`),
         data-toggle="tooltip",
         data-placement="bottom",
         data-html="true",
@@ -178,7 +180,7 @@ mixin domainDns(domain)
           i.fa.fa-check-circle.text-success
       else
         a.mr-2.text-reset(
-          href=l(`/my-account/domains/${punycode.toASCII(domain.name)}/verify-smtp`),
+          href=dnsFix(`/my-account/domains/${punycode.toASCII(domain.name)}/verify-smtp`),
           data-toggle="tooltip",
           data-placement="bottom",
           data-html="true",
@@ -198,7 +200,7 @@ mixin domainDns(domain)
           i.fa.fa-check-circle.text-success
       else
         a.mr-2.text-reset(
-          href=l(`/my-account/domains/${punycode.toASCII(domain.name)}/verify-smtp`),
+          href=dnsFix(`/my-account/domains/${punycode.toASCII(domain.name)}/verify-smtp`),
           data-toggle="tooltip",
           data-placement="bottom",
           data-html="true",
@@ -219,7 +221,7 @@ mixin domainDns(domain)
             i.fa.fa-check-circle.text-success
         else
           a.mr-2.text-reset(
-            href=l(`/my-account/domains/${punycode.toASCII(domain.name)}/verify-smtp`),
+            href=dnsFix(`/my-account/domains/${punycode.toASCII(domain.name)}/verify-smtp`),
             data-toggle="tooltip",
             data-placement="bottom",
             data-html="true",
@@ -229,7 +231,7 @@ mixin domainDns(domain)
             i.fa.fa-exclamation-circle.text-warning
       else
         a.mr-2.text-reset(
-          href=l(`/my-account/domains/${punycode.toASCII(domain.name)}/verify-smtp`),
+          href=dnsFix(`/my-account/domains/${punycode.toASCII(domain.name)}/verify-smtp`),
           data-toggle="tooltip",
           data-placement="bottom",
           data-html="true",
@@ -263,7 +265,7 @@ mixin domainAction(domain, o)
         = " "
         = o.label
         i.fa.fa-lock.small.ml-auto.pl-2
-    else
+    else if domain.group === 'admin'
       form.confirm-prompt(
         action=billingUrl,
         data-confirm-prompt-title=t("Switch domain plan?"),
@@ -278,6 +280,17 @@ mixin domainAction(domain, o)
           i.fa.fa-fw(class=o.icon)
           = " "
           = o.label
+    else
+      //- (only an admin of the domain can switch its plan)
+      button.btn.acct-action.disabled(
+        class=o.cta ? "btn-primary" : "btn-sm acct-btn",
+        type="button",
+        disabled
+      )
+        i.fa.fa-fw(class=o.icon)
+        = " "
+        = o.label
+        i.fa.fa-lock.small.ml-auto.pl-2
   else
     a.btn.acct-action(class=o.cta ? "btn-primary" : "btn-sm acct-btn", href=l(o.href))
       i.fa.fa-fw(class=o.icon)
@@ -314,6 +327,9 @@ else
       - const base = `/my-account/domains/${punycode.toASCII(domain.name)}`;
       - const isReady = domain.has_mx_record && domain.has_txt_record;
       - const isAdmin = domain.group === "admin";
+      //- (the page of the domain: its setup for an admin, its mailboxes for a
+      //-  member, e.g. of a vanity domain, whose setup is not theirs)
+      - const home = isAdmin ? base : `${base}/aliases`;
       - const needsSetup = !domain.is_global && isAdmin && !isReady;
       - const needsSending = !domain.is_global && isAdmin && isReady && domain.plan !== "free" && !(domain.has_dkim_record && domain.has_spf_record && domain.has_dmarc_record);
       //- 1-Click Setup, unless the DNS provider of the domain is known not to
@@ -325,11 +341,13 @@ else
       )
         .acct-card-head
           h2.h5.acct-card-title.mb-0
-            a.text-reset.text-break(href=l(base))= domain.name
+            a.text-reset.text-break(href=l(home))= domain.name
           ul.list-inline.mb-0.acct-card-badges
             if needsSetup || (!domain.is_global && !isReady && !isAdmin)
               li.list-inline-item
-                a.badge.badge-danger.text-uppercase(href=l(base))
+                a.badge.badge-danger.text-uppercase(
+                  href=isAdmin ? l(base) : false
+                )
                   i.fa.fa-fw.fa-times
                   = " "
                   = t("Setup Required")
@@ -351,7 +369,7 @@ else
                 if isReady
                   a.badge.text-uppercase(
                     class=domain.plan === "free" && user.plan === "free" ? "badge-danger" : "badge-warning",
-                    href=domain.plan === "free" ? l(base) : l(`/my-account/domains/${domain.name}/aliases`)
+                    href=domain.plan === "free" ? l(home) : l(`${base}/aliases`)
                   )= titleize(humanize(domain.plan))
                 else
                   span.badge.text-uppercase(
@@ -471,7 +489,9 @@ else
               +domainAction(domain, { href: `/my-account/emails?domain=${domain.name}`, icon: "fa-envelope", label: t("Emails"), locked: true, modal: "#modal-upgrade-logs", switch: t("To unlock outbound SMTP email for this domain, you need to switch its plan.") })
             +domainAction(domain, { href: `/my-account/logs?domains=${domain.name}`, icon: "fa-stream", label: t("Logs"), locked: true, modal: "#modal-upgrade-logs", switch: t("To unlock logs for this domain, you need to switch its plan. Don't worry &ndash; there is no extra cost.") })
             +domainAction(domain, { href: `/my-account/analytics?domains=${domain.name}`, icon: "fa-chart-area", label: t("Analytics"), locked: true, modal: "#modal-upgrade-analytics", switch: t("To unlock analytics for this domain, you need to switch its plan. Don't worry &ndash; there is no extra cost.") })
-            +domainAction(domain, { href: `/my-account/dmarc-reports?domains=${domain.name}`, icon: "fa-shield-alt", label: t("DMARC Reports"), locked: true, modal: "#modal-upgrade-analytics", switch: t("To unlock DMARC reports for this domain, you need to switch its plan. Don't worry &ndash; there is no extra cost.") })
+            //- (the DMARC reports of a vanity domain are for site admins only)
+            if !domain.is_global || user.group === 'admin'
+              +domainAction(domain, { href: `/my-account/dmarc-reports?domains=${domain.name}`, icon: "fa-shield-alt", label: t("DMARC Reports"), locked: true, modal: "#modal-upgrade-analytics", switch: t("To unlock DMARC reports for this domain, you need to switch its plan. Don't worry &ndash; there is no extra cost.") })
             if isAdmin
               if !needsSetup
                 a.btn.btn-sm.acct-btn.acct-action(href=l(base))

@@ -54,14 +54,6 @@ test.beforeEach(async (t) => {
 
 test.afterEach.always(utils.teardownWebServer);
 
-// the menus of the page name the signed-in user, who is random
-function normalizeUser(html, user) {
-  return html
-    .split(user.email)
-    .join('user@example.com')
-    .replace(/(class="acct-avatar" aria-hidden="true">)[^<]*/g, '$1U');
-}
-
 test('GET otp/login > successful', async (t) => {
   // get test server
   const { web } = t.context;
@@ -70,12 +62,49 @@ test('GET otp/login > successful', async (t) => {
   const res = await web.get(`/en${config.loginOtpRoute}`);
 
   t.is(res.status, 200);
+  // (the page names nothing of the account, whose user is random)
   t.snapshot(
-    normalizeUser(
-      utils.normalizeBuildHashes(res.text.replace(/<head>[\S\s]*<\/head>/, '')),
-      t.context.user
-    )
+    utils.normalizeBuildHashes(res.text.replace(/<head>[\S\s]*<\/head>/, ''))
   );
+});
+
+test('a session that owes its second factor is shown nothing of the account', async (t) => {
+  const { web, user } = t.context;
+  const name = `Name ${crypto.randomUUID()}`;
+  await Users.updateOne(
+    { _id: user._id },
+    { $set: { [config.passport.fields.displayName]: name, group: 'admin' } }
+  );
+
+  // the page that asks for the passcode, a public page, and a page of the
+  // account that does not exist (no route sends it to the passcode)
+  for (const path of [
+    `/en${config.loginOtpRoute}`,
+    '/en/faq',
+    `/en/my-account/${crypto.randomUUID()}`,
+    `/en/admin/${crypto.randomUUID()}`
+  ]) {
+    const res = await web.get(path).set('Accept', 'text/html');
+    if (res.status >= 300 && res.status < 400) continue;
+    t.false(res.text.includes(name), `${path}`);
+    t.false(res.text.includes(user.email), `${path}`);
+    t.false(res.text.includes('acct-menu-user'), `${path}`);
+    t.false(res.text.includes('acct-sidebar'), `${path}`);
+    t.false(res.text.includes('navbar-dropdown-admin'), `${path}`);
+  }
+
+  // once it is given, they are
+  const res = await web.post(`/en${config.loginOtpRoute}`).send({
+    passcode: authenticator.generate(user[config.passport.fields.otpToken])
+  });
+  t.is(res.status, 200);
+  const page = await web
+    .get('/en/my-account/profile')
+    .set('Accept', 'text/html');
+  t.is(page.status, 200);
+  t.true(page.text.includes(name));
+  t.true(page.text.includes('acct-sidebar'));
+  t.true(page.text.includes('navbar-dropdown-admin'));
 });
 
 test('POST otp/login > successful', async (t) => {
@@ -449,11 +478,9 @@ test('GET otp/keys > successful', async (t) => {
   const res = await web.get(`/en${config.otpRoutePrefix}/keys`);
 
   t.is(res.status, 200);
+  // (the page names nothing of the account, whose user is random)
   t.snapshot(
-    normalizeUser(
-      utils.normalizeBuildHashes(res.text.replace(/<head>[\S\s]*<\/head>/, '')),
-      t.context.user
-    )
+    utils.normalizeBuildHashes(res.text.replace(/<head>[\S\s]*<\/head>/, ''))
   );
 });
 

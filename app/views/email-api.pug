@@ -93,7 +93,13 @@ html.h-100.no-js(
 
     //- set the user to be used by CabinJS
     if config.env !== 'test'
-      if user
+      //- (as in layout.pug: by its id alone before the second factor)
+      if user && ctx.isOtpPending
+        script(defer, nonce=nonce).
+          window.USER = {
+            id: !{json(user.id)},
+          };
+      else if user
         script(defer, nonce=nonce).
           window.USER = {
             id: !{json(user.id)},

@@ -185,7 +185,14 @@ html.h-100.no-js(
       if config.env !== 'test'
         //- FWD-01-007: Use json() helper for safe JS interpolation to prevent
         //- XSS via user-controlled displayName or email breaking out of string context
-        if user
+        //- (a session that still owes its second factor is named by its id
+        //- alone, see `isOtpPending` in config/web.js)
+        if user && ctx.isOtpPending
+          script(defer, nonce=nonce).
+            window.USER = {
+              id: !{json(user.id)},
+            };
+        else if user
           script(defer, nonce=nonce).
             window.USER = {
               id: !{json(user.id)},

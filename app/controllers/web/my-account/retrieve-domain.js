@@ -61,6 +61,25 @@ async function retrieveDomain(ctx, next) {
   }
 
   //
+  // the setup of a domain is only for its admins, so a member (e.g. of a
+  // vanity domain) is sent to their mailboxes there (before the records are
+  // looked up and the domain saved, which takes long for a vanity domain)
+  //
+  if (
+    ctx.method === 'GET' &&
+    member.group !== 'admin' &&
+    ctx.pathWithoutLocale === `/my-account/domains/${id}` &&
+    ctx.accepts('html')
+  ) {
+    ctx.redirect(
+      ctx.state.l(
+        `/my-account/domains/${punycode.toASCII(ctx.state.domain.name)}/aliases`
+      )
+    );
+    return;
+  }
+
+  //
   // if we're on the advanced settings page, then calculate alias_count for each member
   // and also lookup DKIM, DMARC, and Return-Path if the user has SMTP Outbound Configuration
   //

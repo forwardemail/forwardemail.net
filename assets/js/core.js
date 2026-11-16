@@ -297,8 +297,13 @@ $(() => {
   }
 
   const statuses = new Map();
-  for (const option of document.querySelectorAll('#acct-find-list option'))
+  const homes = new Map();
+  for (const option of document.querySelectorAll('#acct-find-list option')) {
     statuses.set(option.value, option.dataset.status);
+    // (its setup for an admin, its mailboxes for a member)
+    if (option.dataset.href) homes.set(option.value, option.dataset.href);
+  }
+
   const listed = new Set(
     [...document.querySelectorAll('.acct-sidebar a.acct-domain')].map(
       (a) => a.dataset.name
@@ -322,7 +327,8 @@ $(() => {
   for (const name of names) {
     const link = document.createElement('a');
     link.className = 'acct-link acct-domain';
-    link.href = `${recent.dataset.base}/${encodeURIComponent(name)}`;
+    link.href =
+      homes.get(name) || `${recent.dataset.base}/${encodeURIComponent(name)}`;
     const dot = document.createElement('span');
     dot.className = dots[statuses.get(name)] || dots.ready;
     dot.setAttribute('aria-hidden', 'true');
@@ -334,6 +340,19 @@ $(() => {
   }
 
   recent.classList.remove('d-none');
+});
+
+// Signing out forgets the domains viewed last in this browser (their names
+// would stay behind for whoever uses it next).
+$('body').on('click.forgetRecentDomains', 'a[href$="/logout"]', () => {
+  try {
+    for (const key of Object.keys(window.localStorage))
+      if (key.startsWith('fe:recent-domains:'))
+        window.localStorage.removeItem(key);
+  } catch (err) {
+    // (storage is off in this browser: nothing was remembered)
+    logger.debug(err);
+  }
 });
 
 // Share dialog (see assets/js/share.js)
@@ -593,8 +612,11 @@ window.addEventListener(
           return;
         }
 
-        // Open the provider's apply page in a new tab
-        window.open(response.body.applyUrl, '_blank');
+        // Open the provider's apply page in a new tab (an https page, which
+        // gets no handle on this one: it could send it somewhere else)
+        if (!/^https:\/\//i.test(response.body.applyUrl))
+          throw new Error('An error occurred. Please try again.');
+        window.open(response.body.applyUrl, '_blank', 'noopener');
         // Show a modal telling the user to verify after applying DNS changes
         await Swal.fire({
           title: 'DNS Setup In Progress',
@@ -611,10 +633,13 @@ window.addEventListener(
         // from the list of domains, continue on the page of the domain,
         // which has the Verify button
         const next = $form.attr('data-next-url');
+        // (a path of this site only, as the browser reads it: it drops tabs
+        // and newlines, so "/\t/host" would lead to another site)
         if (
           typeof next === 'string' &&
-          // (a path of this site only)
-          /^\/[^/\\]/.test(next)
+          /^\/[^/\\]/.test(next) &&
+          new URL(next, window.location.origin).origin ===
+            window.location.origin
         )
           window.location.href = next;
       } catch (err) {

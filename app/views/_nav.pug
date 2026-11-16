@@ -787,7 +787,8 @@ nav.navbar(class=navbarClasses.join(" "), aria-label=t("Main menu"))
         //- (the same links as the account sidebar, see _account-nav.pug)
         if user
           //- links that show if you're an admin
-          if user.group === 'admin'
+          //- (not before the second factor of the session)
+          if user.group === 'admin' && !acctOtpPending
             li.nav-item.dropdown.ml-xl-1.mt-1.mt-lg-0
               form.mb-0
                 a#navbar-dropdown-admin.btn.dropdown-toggle.d-block.text-left(
@@ -822,11 +823,13 @@ nav.navbar(class=navbarClasses.join(" "), aria-label=t("Main menu"))
               .dropdown-menu.dropdown-menu-right.acct-menu(
                 aria-labelledby="navbar-dropdown-my-account"
               )
-                .acct-menu-user
-                  span.acct-avatar(aria-hidden="true")= (user[config.passport.fields.displayName] || user.email || "?").trim().charAt(0).toUpperCase()
-                  span.acct-user-text
-                    span.acct-user-name.notranslate= user[config.passport.fields.displayName] || user.email
-                    span.acct-user-meta= t(titleize(humanize(user.plan || "free")))
+                //- (not before the second factor of the session)
+                if !acctOtpPending
+                  .acct-menu-user
+                    span.acct-avatar(aria-hidden="true")= (user[config.passport.fields.displayName] || user.email || "?").trim().charAt(0).toUpperCase()
+                    span.acct-user-text
+                      span.acct-user-name.notranslate= user[config.passport.fields.displayName] || user.email
+                      span.acct-user-meta= t(titleize(humanize(user.plan || "free")))
                 +acctMenuItem({ href: "https://mail.forwardemail.net", external: true, icon: "fa-inbox", label: t("Webmail") })
                 +acctMenuItem({ href: "/my-account/domains", icon: "fa-globe", label: t("Domains"), on: ctx.pathWithoutLocale.startsWith("/my-account/domains") })
                 +acctMenuItem({ href: "/my-account/domains/new", icon: "fa-plus-circle", label: t("Add domain"), on: ctx.pathWithoutLocale === "/my-account/domains/new" })

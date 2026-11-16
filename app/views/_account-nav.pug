@@ -7,12 +7,15 @@
 
 - const acctPath = ctx.pathWithoutLocale || "";
 - const acctSignedIn = Boolean(user);
+//- A session that still owes its second factor is shown nothing of the
+//- account (see `isOtpPending` in config/web.js).
+- const acctOtpPending = acctSignedIn && Boolean(ctx.isOtpPending);
 - const acctIsAdminUser = acctSignedIn && user.group === "admin";
 - const acctInAdmin = acctIsAdminUser && (acctPath === "/admin" || acctPath.startsWith("/admin/"));
 - const acctInAccount = acctSignedIn && (acctPath === "/my-account" || acctPath.startsWith("/my-account/"));
 //- The sidebar sits beside every page of My Account and Admin, except the
 //- print layouts of the receipts (.pdf and .html).
-- const acctShell = (acctInAdmin || acctInAccount) && !isPDF && !acctPath.endsWith(".pdf") && !acctPath.endsWith(".html");
+- const acctShell = (acctInAdmin || acctInAccount) && !acctOtpPending && !isPDF && !acctPath.endsWith(".pdf") && !acctPath.endsWith(".html");
 - const acctOn = (prefix) => acctPath === prefix || acctPath.startsWith(`${prefix}/`);
 
 //- The domain whose page the visitor is on (a domain page names the domain by
@@ -24,8 +27,13 @@
 - if (acctDomainMatch && !["new", "aliases"].includes(acctDomainMatch[1])) { try { acctDomainKey = decodeURIComponent(acctDomainMatch[1]).toLowerCase(); } catch { acctDomainKey = acctDomainMatch[1].toLowerCase(); } }
 - const acctDomain = acctDomainKey ? acctDomains.find((d) => d.id === acctDomainKey || d.name.toLowerCase() === acctDomainKey || punycode.toASCII(d.name).toLowerCase() === acctDomainKey) : null;
 - const acctOwnDomains = acctDomains.filter((d) => !d.is_global);
+//- (and the vanity domains the account has mailboxes at, or is an admin of)
+- const acctSideDomains = acctDomains.filter((d) => !d.is_global || d.group === "admin" || d.has_global_aliases);
 - const acctDomainStatus = (d) => (d.is_global ? "global" : d.has_mx_record && d.has_txt_record ? "ready" : "setup");
 - const acctDomainBase = (d) => `/my-account/domains/${punycode.toASCII(d.name)}`;
+//- The page of a domain: its setup for an admin, its mailboxes for a member
+//- (e.g. of a vanity domain), whose setup is not theirs.
+- const acctDomainHome = (d) => (d.group === "admin" ? acctDomainBase(d) : `${acctDomainBase(d)}/aliases`);
 
 //- The links of My Account. `on` marks the page the visitor is on.
 - const acctActivity = [ { href: "/my-account/emails", icon: "fa-envelope", label: t("Emails"), on: acctOn("/my-account/emails") }, { href: "/my-account/logs", icon: "fa-stream", label: t("Logs"), on: acctOn("/my-account/logs") }, { href: "/my-account/analytics", icon: "fa-chart-area", label: t("Analytics"), on: acctOn("/my-account/analytics") }, { href: "/my-account/dmarc-reports", icon: "fa-shield-alt", label: t("DMARC Reports"), on: acctOn("/my-account/dmarc-reports") } ];
@@ -51,7 +59,8 @@
     if (!d.is_global) links.push({ href: `/my-account/emails?domain=${d.name}`, icon: "fa-envelope", label: t("Emails"), ...lock(t("To unlock outbound SMTP email for this domain, you need to switch its plan.")) });
     links.push({ href: `/my-account/logs?domains=${d.name}`, icon: "fa-stream", label: t("Logs"), ...lock(t("To unlock logs for this domain, you need to switch its plan. Don't worry &ndash; there is no extra cost.")) });
     links.push({ href: `/my-account/analytics?domains=${d.name}`, icon: "fa-chart-area", label: t("Analytics"), ...lock(t("To unlock analytics for this domain, you need to switch its plan. Don't worry &ndash; there is no extra cost.")) });
-    links.push({ href: `/my-account/dmarc-reports?domains=${d.name}`, icon: "fa-shield-alt", label: t("DMARC Reports"), ...lock(t("To unlock DMARC reports for this domain, you need to switch its plan. Don't worry &ndash; there is no extra cost.")) });
+    // (the DMARC reports of a vanity domain are for site admins only)
+    if (!d.is_global || user.group === "admin") links.push({ href: `/my-account/dmarc-reports?domains=${d.name}`, icon: "fa-shield-alt", label: t("DMARC Reports"), ...lock(t("To unlock DMARC reports for this domain, you need to switch its plan. Don't worry &ndash; there is no extra cost.")) });
     if (isAdmin) links.push({ href: `${base}/advanced-settings#manage-team`, icon: "fa-users", label: t("Team"), on: false });
     if (isAdmin) links.push({ href: `${base}/advanced-settings`, icon: "fa-tools", label: t("Settings"), on: acctPath === `${cur}/advanced-settings` });
     return links;

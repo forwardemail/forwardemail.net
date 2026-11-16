@@ -963,6 +963,17 @@ module.exports = (redis) => ({
     // rendered for a 4xx such as a 429, shows it, see app/views/500.pug)
     app.use((ctx, next) => {
       Object.defineProperty(ctx.state.ctx, 'status', { get: () => ctx.status });
+      // whether the session still owes its second factor: the views then
+      // show nothing of the account (the same check as `ensureOtp` of
+      // @ladjs/policies and `retrieve-domains.js`)
+      Object.defineProperty(ctx.state.ctx, 'isOtpPending', {
+        get: () =>
+          Boolean(
+            ctx.state.user &&
+              ctx.state.user[config.passport.fields.otpEnabled] &&
+              !(ctx.session && ctx.session.otp)
+          )
+      });
       return next();
     });
 

@@ -12,12 +12,12 @@
 - const acctDefaultId = user[config.userFields.defaultDomain] ? String(user[config.userFields.defaultDomain]) : "";
 - const acctTime = (d) => (d.created_at ? new Date(d.created_at).getTime() : 0);
 //- (a few of the domains that need setup, so that they leave room for the rest)
-- const acctSetupFirst = acctOwnDomains.filter((d) => acctDomainStatus(d) === "setup").sort((a, b) => acctTime(b) - acctTime(a)).slice(0, 3);
+- const acctSetupFirst = acctSideDomains.filter((d) => acctDomainStatus(d) === "setup").sort((a, b) => acctTime(b) - acctTime(a)).slice(0, 3);
 - const acctRank = (d) => (d.id === acctDefaultId ? 0 : acctSetupFirst.includes(d) ? 1 : 2);
-- const acctSorted = [...acctOwnDomains].sort((a, b) => acctRank(a) - acctRank(b) || acctTime(b) - acctTime(a) || a.name.localeCompare(b.name));
+- const acctSorted = [...acctSideDomains].sort((a, b) => acctRank(a) - acctRank(b) || acctTime(b) - acctTime(a) || a.name.localeCompare(b.name));
 - const acctListed = acctSorted.slice(0, 8);
-- if (acctDomain && !acctDomain.is_global && !acctListed.includes(acctDomain)) acctListed.push(acctDomain);
-- const acctMany = acctOwnDomains.length > acctListed.length;
+- if (acctDomain && !acctListed.includes(acctDomain)) acctListed.push(acctDomain);
+- const acctMany = acctSideDomains.length > acctListed.length;
 - const acctSections = acctInAdmin ? acctAdminGroups.flatMap((g) => g.items) : [{ label: t("Domains"), on: acctPath === "/my-account/domains" || acctPath === "/my-account/domains/new" || acctPath.startsWith("/my-account/domains/aliases") }, ...acctActivity, ...acctProfile];
 - const acctCurrent = acctInAdmin ? t("Admin") : acctDomain ? acctDomain.name : (acctSections.find((item) => item.on) || { label: t("My Account") }).label;
 - const acctSwitch = acctInAdmin ? { href: "/my-account/domains", icon: "fa-arrow-left", label: t("My Account") } : null;
@@ -98,8 +98,12 @@ aside.acct-sidebar.d-print-none
                 spellcheck="false"
               )
               datalist#acct-find-list
-                each d in acctOwnDomains.slice(0, 500)
-                  option(value=d.name, data-status=acctDomainStatus(d))
+                each d in acctSideDomains.slice(0, 500)
+                  option(
+                    value=d.name,
+                    data-status=acctDomainStatus(d),
+                    data-href=l(acctDomainHome(d))
+                  )
             //- the domains viewed last in this browser, filled in by the page
             #acct-recent.acct-recent.d-none(
               data-user=user.id,
@@ -110,7 +114,7 @@ aside.acct-sidebar.d-print-none
             - const dStatus = acctDomainStatus(d);
             - const dActive = acctDomain && acctDomain.id === d.id;
             a.acct-link.acct-domain(
-              href=l(acctDomainBase(d)),
+              href=l(acctDomainHome(d)),
               class=dActive ? "active" : false,
               aria-current=dActive ? "page" : false,
               data-name=d.name
@@ -132,11 +136,11 @@ aside.acct-sidebar.d-print-none
               .acct-sublinks
                 each item in acctDomainLinks(d)
                   +acctLink(item)
-          if acctOwnDomains.length > acctListed.length
+          if acctSideDomains.length > acctListed.length
             a.acct-more(href=l("/my-account/domains"))
               = t("See all")
               = " "
-              span.notranslate= acctOwnDomains.length
+              span.notranslate= acctSideDomains.length
               = " "
               = t("Domains")
 

@@ -20,7 +20,7 @@ const { JSDOM } = require('jsdom');
 const utils = require('../utils');
 
 const config = require('#config');
-const { Users } = require('#models');
+const { Domains, Users } = require('#models');
 
 test.before(utils.setupMongoose);
 test.after.always(utils.teardownMongoose);
@@ -260,6 +260,43 @@ test('a member who is not an admin of the domain gets no settings, setup or team
   t.false(card.textContent.includes(admin.email));
   t.false(card.innerHTML.includes(admin.email));
   t.truthy(card.querySelector('a[href$="/aliases"]'));
+});
+
+test('a member who is not an admin is not asked to switch the plan of a free domain', async (t) => {
+  const { web, user } = t.context;
+  await upgrade(t);
+  const admin = await Users.register(
+    await t.context.userFactory.make(),
+    falso.randPassword()
+  );
+  admin.plan = 'team';
+  await admin.save();
+  const domain = await makeDomain(t, {
+    plan: 'team',
+    members: [
+      { user: admin._id, group: 'admin' },
+      { user: user._id, group: 'user' }
+    ],
+    has_mx_record: false,
+    has_txt_record: false
+  });
+  // (a domain cannot be changed to free with members, but some were)
+  await Domains.updateOne({ _id: domain._id }, { $set: { plan: 'free' } });
+
+  const res = await web.get('/en/my-account/domains');
+  t.is(res.status, 200);
+  const card = cardOf(new JSDOM(res.text).window.document, domain);
+  t.truthy(card);
+  // (its billing, setup and outbound SMTP are for its admins)
+  t.is(card.querySelector('form[action$="/billing"]'), null);
+  t.false(
+    [...card.querySelectorAll('a[href]')].some((a) =>
+      /\/my-account\/domains\/[^/]+(\/verify-smtp|\/billing[^/]*)?$/.test(
+        a.getAttribute('href')
+      )
+    )
+  );
+  t.true(card.querySelectorAll('button.acct-action[disabled]').length > 0);
 });
 
 test('a vanity domain keeps its logs, analytics and DMARC reports', async (t) => {
