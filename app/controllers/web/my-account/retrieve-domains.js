@@ -82,7 +82,7 @@ async function retrieveDomains(ctx, next) {
     Domains.find(query)
       .populate(
         'members.user',
-        `id email plan ${config.passport.fields.displayName} ${config.userFields.isBanned}`
+        `id email plan is_enterprise ${config.passport.fields.displayName} ${config.userFields.isBanned}`
       )
       .sort('name') // A-Z domains
       .lean()
@@ -119,12 +119,14 @@ async function retrieveDomains(ctx, next) {
           domain: { $in: globalDomainIds }
         });
 
+  const enterpriseUserIds = new Set();
   let i = ctx.state.domains.length;
   while (i--) {
     const domain = ctx.state.domains[i];
 
     let x = domain.members.length;
     let member;
+    let isEnterprise = false;
     while (x--) {
       const m = domain.members[x];
 
@@ -136,6 +138,17 @@ async function retrieveDomains(ctx, next) {
 
       // omit properties we don't need to share
       delete m.user[config.userFields.isBanned];
+
+      // a Team plan domain with an enterprise admin is covered by that account
+      // (a user in several domains can be one object, so its ID is kept)
+      if (m.user.is_enterprise) enterpriseUserIds.add(m.user.id);
+      delete m.user.is_enterprise;
+      if (
+        enterpriseUserIds.has(m.user.id) &&
+        m.group === 'admin' &&
+        domain.plan === 'team'
+      )
+        isEnterprise = true;
 
       // check if there was a match for the current member (logged in user)
       if (m.user.id === ctx.state.user.id) member = m;
@@ -169,6 +182,13 @@ async function retrieveDomains(ctx, next) {
 
     // set a `group` virtual helper alias to the member's group
     domain.group = member.group;
+
+    // (shown as the "Enterprise" plan on the site, to its other admins too,
+    // but not to its members that are not admins)
+    if (isEnterprise && !ctx.api && member.group === 'admin') {
+      domain.is_enterprise = true;
+      ctx.state.isEnterpriseTeamAdmin = true;
+    }
   }
 
   if (ctx.api) return next();

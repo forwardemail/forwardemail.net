@@ -9,6 +9,7 @@ const paginate = require('koa-ctx-paginate');
 const _ = require('#helpers/lodash');
 
 const config = require('#config');
+const { getNextDueAt } = require('#helpers/enterprise-billing');
 const { getPaymentNetAmount } = require('#helpers/format-payment-amount');
 const getSmtpReputationSummary = require('#helpers/get-smtp-reputation-summary');
 
@@ -18,12 +19,29 @@ const setPaginationHeaders = require('#helpers/set-pagination-headers');
 async function listBilling(ctx) {
   let { payments } = ctx.state;
 
+  //
+  // an enterprise account is billed by invoice: its Billing page shows when
+  // the next payment is due and the last one an admin recorded
+  //
+  const enterprise = ctx.state.user.is_enterprise
+    ? {
+        nextDueAt: getNextDueAt(ctx.state.user),
+        lastPayment: _.last(
+          _.sortBy(
+            payments.filter((payment) => payment.method === 'enterprise'),
+            ['invoice_at']
+          )
+        )
+      }
+    : null;
+
   const itemCount = payments.length;
   const pageCount = Math.ceil(itemCount / ctx.query.limit);
 
   // sort payments
   let sortFn;
-  if (isSANB(ctx.query.sort)) {
+  // (not by what is internal to a payment of an enterprise account)
+  if (isSANB(ctx.query.sort) && !ctx.query.sort.includes('enterprise_')) {
     sortFn = ctx.query.sort.toLowerCase().includes('amount_formatted')
       ? getPaymentNetAmount
       : (p) => p[ctx.query.sort.replace(/^-/, '')];
@@ -69,6 +87,7 @@ async function listBilling(ctx) {
       smtpReputation: (await canSendSmtp(ctx.state.user))
         ? await getSmtpReputationSummary(ctx.state.user)
         : null,
+      enterprise,
       payments,
       pageCount,
       itemCount,

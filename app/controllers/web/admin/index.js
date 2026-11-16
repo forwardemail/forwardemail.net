@@ -12,6 +12,7 @@ const logs = require('./logs');
 const allowlist = require('./allowlist');
 const denylist = require('./denylist');
 const emails = require('./emails');
+const enterprise = require('./enterprise');
 const inquiries = require('./inquiries');
 const payments = require('./payments');
 const jobs = require('./jobs');
@@ -27,6 +28,7 @@ module.exports = {
   allowlist,
   denylist,
   emails,
+  enterprise,
   inquiries,
   payments,
   jobs,

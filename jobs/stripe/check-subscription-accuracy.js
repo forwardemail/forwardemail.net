@@ -323,6 +323,13 @@ async function mapper(customer) {
   user = await Users.findById(user._id).lean().exec();
 
   //
+  // an enterprise account is billed by invoice: a subscription it still has
+  // is canceled by jobs/enterprise-billing-reminder.js, and it gets none of
+  // the notices below
+  //
+  if (user?.is_enterprise) return;
+
+  //
   // BUG FIX: Check if user is on free plan but has an active/trialing subscription
   // This handles the edge case where webhook doesn't fire or user doesn't complete redirect
   //

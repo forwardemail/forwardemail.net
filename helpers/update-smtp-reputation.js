@@ -75,6 +75,9 @@ const USER_FIELDS = [
   'email',
   'plan',
   config.userFields.planExpiresAt,
+  // (an enterprise account is paying since its start date)
+  'is_enterprise',
+  'enterprise_start_date',
   config.userFields.smtpLimit,
   config.userFields.smtpThrottledAt,
   config.userFields.smtpThrottledDays,

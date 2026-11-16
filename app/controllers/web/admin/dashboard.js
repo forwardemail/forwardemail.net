@@ -23,6 +23,10 @@ const timezone = new Intl.DateTimeFormat().resolvedOptions().timeZone;
 const models = { Users, Domains };
 const loadedLocales = {};
 
+// what the MRR of a user is read from (see `getUserMRR`)
+const USER_MRR_FIELDS =
+  'plan is_enterprise enterprise_billing_frequency enterprise_billing_amount';
+
 // Plan pricing in dollars per month
 const PLAN_PRICES = {
   enhanced_protection: 3,
@@ -36,10 +40,94 @@ for (const locale of locales) {
 }
 
 //
-// Get MRR for a user based on their plan
+// Get MRR for a user based on their plan (or for the plan of a payment)
 //
-function getUserMRR(plan) {
-  return PLAN_PRICES[plan] || 0;
+function getUserMRR(user) {
+  if (typeof user === 'string') return PLAN_PRICES[user] || 0;
+  // (an enterprise account is billed by invoice, see below)
+  if (user.is_enterprise) return getEnterpriseUserMRR(user);
+  return PLAN_PRICES[user.plan] || 0;
+}
+
+//
+// Enterprise accounts are billed by invoice (see `is_enterprise` in the user
+// model).  The MRR of one is what it is billed per month (an annual amount
+// over 12 months), not the price of the Team plan it is on, so they are
+// left out of the counts of the plans below and added on their own.
+//
+// (their billing has no history: a past month counts the accounts that had
+// started by then, at what they are billed now)
+//
+function getEnterpriseUserMRR(user) {
+  if (!Number.isFinite(user.enterprise_billing_amount)) return 0;
+  return (
+    user.enterprise_billing_amount /
+    100 /
+    (user.enterprise_billing_frequency === 'annual' ? 12 : 1)
+  );
+}
+
+async function getEnterpriseUsers(date) {
+  return Users.find({
+    is_enterprise: true,
+    [config.userFields.isBanned]: { $ne: true },
+    [config.userFields.isRemoved]: { $ne: true },
+    enterprise_start_date: { $lte: date }
+  })
+    .select(
+      'enterprise_start_date enterprise_billing_frequency enterprise_billing_amount'
+    )
+    .lean()
+    .exec();
+}
+
+async function getEnterpriseMRR(date) {
+  const users = await getEnterpriseUsers(date);
+  return Math.round(_.sumBy(users, getEnterpriseUserMRR));
+}
+
+// Dollars received from enterprise accounts in each month (the payments an
+// admin recorded for them)
+async function getEnterpriseRevenue() {
+  const docs = await Payments.aggregate([
+    { $match: { method: 'enterprise' } },
+    {
+      $group: {
+        _id: {
+          $dateToString: { format: '%Y/%m', date: '$invoice_at', timezone }
+        },
+        total: { $sum: '$amount' }
+      }
+    },
+    { $sort: { _id: 1 } }
+  ]);
+  return docs.map((doc) => [doc._id, Math.round(doc.total / 100)]);
+}
+
+//
+// MRR at a date: of the accounts on each plan at its price, plus that of
+// the enterprise accounts (`isCurrent` counts every plan that has not
+// expired, whenever it started)
+//
+async function getMRR(date, isCurrent = false) {
+  const query = {
+    is_enterprise: { $ne: true },
+    ...(isCurrent ? {} : { [config.userFields.planSetAt]: { $lte: date } }),
+    [config.userFields.planExpiresAt]: { $gte: date }
+  };
+  const [enhancedCount, teamCount, enterprise] = await Promise.all([
+    Users.countDocuments({ plan: 'enhanced_protection', ...query }),
+    Users.countDocuments({ plan: 'team', ...query }),
+    getEnterpriseMRR(date)
+  ]);
+
+  return {
+    enterprise,
+    total:
+      enhancedCount * PLAN_PRICES.enhanced_protection +
+      teamCount * PLAN_PRICES.team +
+      enterprise
+  };
 }
 
 //
@@ -50,11 +138,14 @@ async function getMRRBreakdown(startDate, endDate) {
   const end = dayjs(endDate).endOf('day').toDate();
 
   // Get new customers (first payment ever) with their plan info
+  // (enterprise accounts are counted by their start date below)
   const newCustomerPayments = await Payments.aggregate([
     {
       $match: {
         invoice_at: { $gte: start, $lte: end },
-        method: { $nin: ['free_beta_program', 'plan_conversion'] }
+        method: {
+          $nin: ['free_beta_program', 'plan_conversion', 'enterprise']
+        }
       }
     },
     {
@@ -101,13 +192,13 @@ async function getMRRBreakdown(startDate, endDate) {
     plan: { $in: ['enhanced_protection', 'team'] },
     [config.userFields.planExpiresAt]: { $gte: start, $lte: end }
   })
-    .select('plan')
+    .select(USER_MRR_FIELDS)
     .lean();
 
   // Calculate actual churn MRR based on each user's plan
   let churnMRR = 0;
   for (const user of churnedUsers) {
-    churnMRR += getUserMRR(user.plan);
+    churnMRR += getUserMRR(user);
   }
 
   // Get upgrades (users who increased their plan)
@@ -116,7 +207,10 @@ async function getMRRBreakdown(startDate, endDate) {
       $match: {
         invoice_at: { $gte: start, $lte: end },
         plan: 'team',
-        method: { $nin: ['free_beta_program', 'plan_conversion'] }
+        // (an account that became enterprise is counted below)
+        method: {
+          $nin: ['free_beta_program', 'plan_conversion', 'enterprise']
+        }
       }
     },
     {
@@ -144,7 +238,7 @@ async function getMRRBreakdown(startDate, endDate) {
   ]);
 
   // Expansion MRR from upgrades (team price - enhanced_protection price)
-  const expansionMRR =
+  let expansionMRR =
     upgrades.length * (PLAN_PRICES.team - PLAN_PRICES.enhanced_protection);
 
   // Get downgrades
@@ -153,7 +247,10 @@ async function getMRRBreakdown(startDate, endDate) {
       $match: {
         invoice_at: { $gte: start, $lte: end },
         plan: 'enhanced_protection',
-        method: { $nin: ['free_beta_program', 'plan_conversion'] }
+        // (an account that became enterprise is counted below)
+        method: {
+          $nin: ['free_beta_program', 'plan_conversion', 'enterprise']
+        }
       }
     },
     {
@@ -184,6 +281,34 @@ async function getMRRBreakdown(startDate, endDate) {
   const contractionMRR =
     downgrades.length * (PLAN_PRICES.team - PLAN_PRICES.enhanced_protection);
 
+  //
+  // Enterprise accounts that started in the period: new MRR for a customer
+  // that had not paid before, and expansion over the plan they paid for
+  // until then for one that had
+  //
+  const enterpriseUsers = await getEnterpriseUsers(end);
+  for (const user of enterpriseUsers) {
+    if (new Date(user.enterprise_start_date).getTime() < start.getTime())
+      continue;
+    const mrr = getEnterpriseUserMRR(user);
+
+    const previous = await Payments.findOne({
+      user: user._id,
+      invoice_at: { $lt: start },
+      method: { $nin: ['free_beta_program', 'plan_conversion', 'enterprise'] }
+    })
+      .sort({ invoice_at: -1 })
+      .select('plan')
+      .lean()
+      .exec();
+    if (previous) expansionMRR += Math.max(0, mrr - getUserMRR(previous.plan));
+    else newMRR += mrr;
+  }
+
+  // (enterprise amounts are not whole dollars per month)
+  newMRR = Math.round(newMRR);
+  expansionMRR = Math.round(expansionMRR);
+
   return {
     newMRR,
     expansionMRR,
@@ -197,24 +322,8 @@ async function getMRRBreakdown(startDate, endDate) {
 // Get current MRR based on active paying users
 //
 async function getCurrentMRR() {
-  const now = new Date();
-
-  // Count active paying users by plan
-  const [enhancedCount, teamCount] = await Promise.all([
-    Users.countDocuments({
-      plan: 'enhanced_protection',
-      [config.userFields.planExpiresAt]: { $gte: now }
-    }),
-    Users.countDocuments({
-      plan: 'team',
-      [config.userFields.planExpiresAt]: { $gte: now }
-    })
-  ]);
-
-  return (
-    enhancedCount * PLAN_PRICES.enhanced_protection +
-    teamCount * PLAN_PRICES.team
-  );
+  const { total } = await getMRR(new Date(), true);
+  return total;
 }
 
 //
@@ -232,13 +341,13 @@ async function getChurnMetrics() {
       $lte: now.toDate()
     }
   })
-    .select('plan')
+    .select(USER_MRR_FIELDS)
     .lean();
 
   // Calculate actual churned revenue based on each user's plan
   let churnedRevenue = 0;
   for (const user of churnedUsers) {
-    churnedRevenue += getUserMRR(user.plan);
+    churnedRevenue += getUserMRR(user);
   }
 
   // Get active users 30 days ago with their plans
@@ -247,13 +356,13 @@ async function getChurnMetrics() {
     [config.userFields.planSetAt]: { $lte: thirtyDaysAgo },
     [config.userFields.planExpiresAt]: { $gte: thirtyDaysAgo }
   })
-    .select('plan')
+    .select(USER_MRR_FIELDS)
     .lean();
 
   // Calculate actual MRR 30 days ago
   let previousMRR = 0;
   for (const user of activeUsers30DaysAgo) {
-    previousMRR += getUserMRR(user.plan);
+    previousMRR += getUserMRR(user);
   }
 
   // Current active paying users
@@ -366,22 +475,9 @@ async function getForecastedMRR(months = 12) {
   const historicalMRR = [];
   for (let i = 5; i >= 0; i--) {
     const monthEnd = i === 0 ? now : now.subtract(i, 'month').endOf('month');
-    const [enhancedCount, teamCount] = await Promise.all([
-      Users.countDocuments({
-        plan: 'enhanced_protection',
-        [config.userFields.planSetAt]: { $lte: monthEnd.toDate() },
-        [config.userFields.planExpiresAt]: { $gte: monthEnd.toDate() }
-      }),
-      Users.countDocuments({
-        plan: 'team',
-        [config.userFields.planSetAt]: { $lte: monthEnd.toDate() },
-        [config.userFields.planExpiresAt]: { $gte: monthEnd.toDate() }
-      })
-    ]);
-    historicalMRR.push(
-      enhancedCount * PLAN_PRICES.enhanced_protection +
-        teamCount * PLAN_PRICES.team
-    );
+
+    const { total } = await getMRR(monthEnd.toDate());
+    historicalMRR.push(total);
   }
 
   const currentMRR = historicalMRR[historicalMRR.length - 1];
@@ -411,7 +507,10 @@ async function getForecastedMRR(months = 12) {
       $match: {
         kind: 'one-time',
         invoice_at: { $gte: twelveMonthsAgo, $lte: now.toDate() },
-        method: { $nin: ['free_beta_program', 'plan_conversion'] }
+        // (enterprise accounts are in the MRR above at what they are billed)
+        method: {
+          $nin: ['free_beta_program', 'plan_conversion', 'enterprise']
+        }
       }
     },
     {
@@ -845,37 +944,30 @@ async function getDeliverabilityChart(ctx) {
 async function getMRRChart() {
   const now = dayjs();
   const data = [];
+  const enterprise = [];
 
   // Get MRR for each of the past 12 months
   for (let i = 11; i >= 0; i--) {
     const monthEnd = i === 0 ? now : now.subtract(i, 'month').endOf('month');
     const dateString = monthEnd.format('YYYY/MM');
 
-    // Count active users at end of month
-    const [enhancedCount, teamCount] = await Promise.all([
-      Users.countDocuments({
-        plan: 'enhanced_protection',
-        [config.userFields.planSetAt]: { $lte: monthEnd.toDate() },
-        [config.userFields.planExpiresAt]: { $gte: monthEnd.toDate() }
-      }),
-      Users.countDocuments({
-        plan: 'team',
-        [config.userFields.planSetAt]: { $lte: monthEnd.toDate() },
-        [config.userFields.planExpiresAt]: { $gte: monthEnd.toDate() }
-      })
-    ]);
+    // MRR at end of month (the first of the current month is `now`)
 
-    const mrr =
-      enhancedCount * PLAN_PRICES.enhanced_protection +
-      teamCount * PLAN_PRICES.team;
-    data.push([dateString, mrr]);
+    const mrr = await getMRR(monthEnd.toDate());
+    data.push([dateString, mrr.total]);
+    enterprise.push([dateString, mrr.enterprise]);
   }
 
   return {
+    // (the total first: the ARR, forecast and growth figures read it)
     series: [
       {
         name: 'MRR',
         data
+      },
+      {
+        name: 'Enterprise',
+        data: enterprise
       }
     ],
     chart: {
@@ -901,7 +993,7 @@ async function getMRRChart() {
         formatter: (value) => `$${numeral(value).format('0,0')}`
       }
     },
-    colors: ['#20C1ED']
+    colors: ['#20C1ED', '#6f42c1']
   };
 }
 
@@ -917,9 +1009,13 @@ async function getARRChart() {
       {
         name: 'ARR',
         data: mrrChart.series[0].data.map(([date, mrr]) => [date, mrr * 12])
+      },
+      {
+        name: 'Enterprise',
+        data: mrrChart.series[1].data.map(([date, mrr]) => [date, mrr * 12])
       }
     ],
-    colors: ['#8CC63F']
+    colors: ['#8CC63F', '#6f42c1']
   };
 }
 
@@ -944,13 +1040,13 @@ async function getChurnChart() {
         $lte: monthEnd.toDate()
       }
     })
-      .select('plan')
+      .select(USER_MRR_FIELDS)
       .lean();
 
     // Calculate churned MRR
     let churnedMRR = 0;
     for (const user of churnedUsers) {
-      churnedMRR += getUserMRR(user.plan);
+      churnedMRR += getUserMRR(user);
     }
 
     // Active users at start of month with their plans
@@ -959,13 +1055,13 @@ async function getChurnChart() {
       [config.userFields.planSetAt]: { $lte: monthStart.toDate() },
       [config.userFields.planExpiresAt]: { $gte: monthStart.toDate() }
     })
-      .select('plan')
+      .select(USER_MRR_FIELDS)
       .lean();
 
     // Calculate starting MRR
     let startMRR = 0;
     for (const user of activeAtStart) {
-      startMRR += getUserMRR(user.plan);
+      startMRR += getUserMRR(user);
     }
 
     const userChurnRate =
@@ -1217,22 +1313,8 @@ async function getARPUChart() {
     });
 
     // Get MRR at end of month
-    const [enhancedCount, teamCount] = await Promise.all([
-      Users.countDocuments({
-        plan: 'enhanced_protection',
-        [config.userFields.planSetAt]: { $lte: monthEnd.toDate() },
-        [config.userFields.planExpiresAt]: { $gte: monthEnd.toDate() }
-      }),
-      Users.countDocuments({
-        plan: 'team',
-        [config.userFields.planSetAt]: { $lte: monthEnd.toDate() },
-        [config.userFields.planExpiresAt]: { $gte: monthEnd.toDate() }
-      })
-    ]);
 
-    const mrr =
-      enhancedCount * PLAN_PRICES.enhanced_protection +
-      teamCount * PLAN_PRICES.team;
+    const { total: mrr } = await getMRR(monthEnd.toDate());
     const arpu = activeUsers > 0 ? mrr / activeUsers : 0;
 
     data.push([dateString, Math.round(arpu * 100) / 100]);
@@ -1291,22 +1373,8 @@ async function getNRRChart() {
     );
 
     // Get MRR at start of month
-    const [enhancedCount, teamCount] = await Promise.all([
-      Users.countDocuments({
-        plan: 'enhanced_protection',
-        [config.userFields.planSetAt]: { $lte: monthStart.toDate() },
-        [config.userFields.planExpiresAt]: { $gte: monthStart.toDate() }
-      }),
-      Users.countDocuments({
-        plan: 'team',
-        [config.userFields.planSetAt]: { $lte: monthStart.toDate() },
-        [config.userFields.planExpiresAt]: { $gte: monthStart.toDate() }
-      })
-    ]);
 
-    const startMRR =
-      enhancedCount * PLAN_PRICES.enhanced_protection +
-      teamCount * PLAN_PRICES.team;
+    const { total: startMRR } = await getMRR(monthStart.toDate());
     const endMRR =
       startMRR +
       breakdown.expansionMRR -
@@ -1404,7 +1472,8 @@ async function getBody(ctx) {
     quickRatioChart,
     ltvChart,
     arpuChart,
-    nrrChart
+    nrrChart,
+    enterpriseUsers
   ] = await Promise.all([
     Users.countDocuments({ [config.userFields.hasVerifiedEmail]: true }),
     Domains.countDocuments({
@@ -1429,6 +1498,9 @@ async function getBody(ctx) {
     getRefunds(30),
     getReactivations(),
     (async () => {
+      // (payments of enterprise accounts are one-time payments: they are in
+      // the total, and on a line of their own)
+      const enterprise = await getEnterpriseRevenue();
       const docs = await Payments.aggregate([
         {
           $match: {
@@ -1454,6 +1526,10 @@ async function getBody(ctx) {
         {
           name: 'Total',
           data: docs.map((doc) => [doc._id, Math.round(doc.total / 100)])
+        },
+        {
+          name: 'Enterprise',
+          data: enterprise
         }
       ];
       return {
@@ -1475,7 +1551,7 @@ async function getBody(ctx) {
             format: 'y/M'
           }
         },
-        colors: ['#20C1ED']
+        colors: ['#20C1ED', '#6f42c1']
       };
     })(),
     (async () => {
@@ -1530,7 +1606,7 @@ async function getBody(ctx) {
     })(),
     (async () => {
       // Revenue chart (payments over time grouped by invoice_at)
-      const [docs, stripe, paypal] = await Promise.all([
+      const [docs, stripe, paypal, enterprise] = await Promise.all([
         Payments.aggregate([
           {
             $match: {
@@ -1566,7 +1642,8 @@ async function getBody(ctx) {
                   'unknown',
                   'paypal',
                   'free_beta_program',
-                  'plan_conversion'
+                  'plan_conversion',
+                  'enterprise'
                 ]
               }
             }
@@ -1613,7 +1690,9 @@ async function getBody(ctx) {
               _id: 1
             }
           }
-        ])
+        ]),
+        // Enterprise (billed by invoice)
+        getEnterpriseRevenue()
       ]);
 
       const series = [
@@ -1628,6 +1707,10 @@ async function getBody(ctx) {
         {
           name: 'PayPal',
           data: paypal.map((doc) => [doc._id, Math.round(doc.total / 100)])
+        },
+        {
+          name: 'Enterprise',
+          data: enterprise
         }
       ];
 
@@ -1650,7 +1733,7 @@ async function getBody(ctx) {
             format: 'y/M'
           }
         },
-        colors: ['#20C1ED', '#269C32', '#ffc107']
+        colors: ['#20C1ED', '#269C32', '#ffc107', '#6f42c1']
       };
     })(),
     // Growth chart
@@ -1786,8 +1869,14 @@ async function getBody(ctx) {
     getQuickRatioChart(),
     getLTVChart(),
     getARPUChart(),
-    getNRRChart()
+    getNRRChart(),
+    getEnterpriseUsers(new Date())
   ]);
+
+  // (of the MRR above)
+  const enterpriseMRR = Math.round(
+    _.sumBy(enterpriseUsers, getEnterpriseUserMRR)
+  );
 
   // Calculate ARR
   const array = currentMRR * 12;
@@ -1861,6 +1950,21 @@ async function getBody(ctx) {
       {
         selector: '#metrics-mrr',
         value: currentMRR ? numeral(currentMRR).format('$0,0') : '-'
+      },
+      {
+        selector: '#metrics-enterprise-mrr',
+        value: enterpriseMRR ? numeral(enterpriseMRR).format('$0,0') : '-'
+      },
+      {
+        selector: '#metrics-enterprise-arr',
+        value: enterpriseMRR ? numeral(enterpriseMRR * 12).format('$0,0') : '-'
+      },
+      {
+        selector: '#metrics-enterprise-customers',
+        value:
+          enterpriseUsers.length > 0
+            ? numeral(enterpriseUsers.length).format('0,0')
+            : '-'
       },
       {
         selector: '#metrics-arr',

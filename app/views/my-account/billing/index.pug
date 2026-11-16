@@ -95,7 +95,54 @@ block body
 
     .container.py-3.py-sm-5.position-relative
       .row.d-flex.flex-row.align-content-between.flex-wrap.align-items-stretch
-        if user.plan !== 'free'
+        //- an enterprise account is billed by invoice: nothing to pay or renew here, only where its billing stands
+        if user.is_enterprise
+          .col-12.col-lg-6.d-flex
+            #enterprise-billing.d-flex.flex-column.flex-grow-1.align-items-center.rounded-lg.text-center
+              - const enterpriseDue = enterprise.nextDueAt ? enterprise.nextDueAt.getTime() : null;
+              - const enterpriseDay = (date) => dayjs.utc(date).format("M/D/YY");
+              if enterpriseDue !== null && enterpriseDue <= Date.now()
+                h3
+                  i.fa.fa-money-check.text-warning
+                  = " "
+                  = t("Payment due")
+                .alert.alert-warning
+                  != t('Your payment was due on <strong class="notranslate">%s</strong>.', enterpriseDay(enterprise.nextDueAt))
+                  = " "
+                  = t("If you already sent it, it shows here once we record it.")
+              else
+                h3
+                  i.fa.fa-check-circle.text-success
+                  = " "
+                  = t("Paid up")
+                if enterpriseDue !== null
+                  .alert.alert-secondary
+                    != t('Next payment due on <strong class="notranslate">%s</strong>.', enterpriseDay(enterprise.nextDueAt))
+              ul.list-group.w-100.text-left.mb-3
+                li.list-group-item.d-flex.justify-content-between.align-items-center
+                  = t("Billing")
+                  strong
+                    if user.enterprise_billing_frequency === 'monthly'
+                      = t("Monthly by invoice")
+                    else if user.enterprise_billing_frequency === 'annual'
+                      = t("Annually by invoice")
+                    else
+                      = t("By invoice")
+                if Number.isFinite(user.enterprise_billing_amount)
+                  li.list-group-item.d-flex.justify-content-between.align-items-center
+                    = user.enterprise_billing_frequency === "monthly" ? t("Amount per month") : t("Amount per year")
+                    strong.notranslate= numeral(user.enterprise_billing_amount / 100).format("$0,0.00")
+                li.list-group-item.d-flex.justify-content-between.align-items-center
+                  = t("Last payment")
+                  if enterprise.lastPayment
+                    a.notranslate(
+                      href=l(`/my-account/billing/${enterprise.lastPayment.reference}`)
+                    )= `${numeral(enterprise.lastPayment.amount / 100).format("$0,0.00")} · ${enterpriseDay(enterprise.lastPayment.invoice_at)}`
+                  else
+                    span.text-muted= t("None yet")
+              .small.text-muted
+                != t('Questions about an invoice or a payment? <a href="%s">Contact us</a>.', l("/help"))
+        else if user.plan !== 'free'
           .col-12.col-lg-6.d-flex
             .d-flex.flex-column.flex-grow-1.align-items-center.rounded-lg
               h2.mb-0
@@ -151,14 +198,20 @@ block body
               if user.plan === "free"
                 .alert.alert-warning.small.text-center
                   != t("You don't need to upgrade unless you add custom domain names.")
-            h2= t(titleize(humanize(user.plan)))
-            .small.text-muted.text-uppercase.mb-3
-              != t('Plan started on <span class="notranslate" data-time="%d" data-time-style="false">%s</span>', new Date(user[config.userFields.planSetAt]).getTime(), dayjs(user[config.userFields.planSetAt]).format("M/D/YY"))
-            button.btn.btn-sm.btn-dark.btn-success(
-              type="button",
-              data-toggle="modal",
-              data-target="#modal-change-plan"
-            )= t("Change Plan")
+            if user.is_enterprise
+              h2= t("Enterprise")
+              .small.text-muted.text-uppercase.mb-3
+                != t('Plan started on <span class="notranslate" data-time="%d" data-time-style="false">%s</span>', new Date(user[config.userFields.planSetAt]).getTime(), dayjs(user[config.userFields.planSetAt]).format("M/D/YY"))
+              .alert.alert-success.small.text-center.mb-0= t("Your account is on the Enterprise plan and is billed by invoice. There is nothing to pay or renew here.")
+            else
+              h2= t(titleize(humanize(user.plan)))
+              .small.text-muted.text-uppercase.mb-3
+                != t('Plan started on <span class="notranslate" data-time="%d" data-time-style="false">%s</span>', new Date(user[config.userFields.planSetAt]).getTime(), dayjs(user[config.userFields.planSetAt]).format("M/D/YY"))
+              button.btn.btn-sm.btn-dark.btn-success(
+                type="button",
+                data-toggle="modal",
+                data-target="#modal-change-plan"
+              )= t("Change Plan")
 
     //- STORAGE UPGRADE SECTION
     .container.py-3.py-sm-5
@@ -166,34 +219,36 @@ block body
         .col
           h3.text-center.mb-3= t("Add-ons")
       .row
-        .col-md-6
-          form.ajax-form.confirm-prompt(
-            method="POST",
-            action=l("/my-account/billing/upgrade-request"),
-            data-confirm-prompt-title=t("Upgrade Request: Storage"),
-            data-confirm-prompt-html=t("We will email you a secure payment link for more storage. Storage upgrades are a manual process: once you have paid, reply to that email so we can confirm the increase. Ready to proceed?")
-          )
-            input(type="hidden", name="kind", value="storage_limit")
-            .card.border-themed
-              h2.h6.card-header= t("Storage Upgrade")
-              .card-body.pb-0
-                p
-                  strong= t("Current:")
-                  = " "
-                  = bytes(user.max_quota_per_alias)
-                .form-group
-                  label(for="storage-upgrade-option")= t("Storage Upgrade Amount:")
-                  select#storage-upgrade-option.form-control(
-                    name="upgrade_option",
-                    required
-                  )
-                    option(value="", disabled, selected)= t("Choose your storage upgrade...")
-                    each amount in [10,20,30,40,50]
-                      option(value=`+${amount} GB`)= `+${amount} GB`
-                    option(value="Other")= t("Other")
-              .card-footer
-                button.btn.btn-success.btn-lg.btn-block(type="submit")
-                  = t("Request Upgrade")
+        //- (storage of an enterprise account is part of its invoice)
+        if !user.is_enterprise
+          .col-md-6
+            form.ajax-form.confirm-prompt(
+              method="POST",
+              action=l("/my-account/billing/upgrade-request"),
+              data-confirm-prompt-title=t("Upgrade Request: Storage"),
+              data-confirm-prompt-html=t("We will email you a secure payment link for more storage. Storage upgrades are a manual process: once you have paid, reply to that email so we can confirm the increase. Ready to proceed?")
+            )
+              input(type="hidden", name="kind", value="storage_limit")
+              .card.border-themed
+                h2.h6.card-header= t("Storage Upgrade")
+                .card-body.pb-0
+                  p
+                    strong= t("Current:")
+                    = " "
+                    = bytes(user.max_quota_per_alias)
+                  .form-group
+                    label(for="storage-upgrade-option")= t("Storage Upgrade Amount:")
+                    select#storage-upgrade-option.form-control(
+                      name="upgrade_option",
+                      required
+                    )
+                      option(value="", disabled, selected)= t("Choose your storage upgrade...")
+                      each amount in [10,20,30,40,50]
+                        option(value=`+${amount} GB`)= `+${amount} GB`
+                      option(value="Other")= t("Other")
+                .card-footer
+                  button.btn.btn-success.btn-lg.btn-block(type="submit")
+                    = t("Request Upgrade")
         if smtpReputation
           .col-md-6.mt-3.mt-md-0
             +smtpReputationCard(smtpReputation)

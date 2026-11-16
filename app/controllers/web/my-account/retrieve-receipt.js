@@ -25,10 +25,23 @@ async function retrieveReceipt(ctx) {
     index === -1 ? cleanReference : cleanReference.slice(index + 1)
   ).toUpperCase();
 
-  ctx.state.payment = await Payments.findOne({
-    reference,
-    user: ctx.state.user._id
-  });
+  //
+  // a reference an admin entered for an enterprise payment can have dashes
+  // of its own (e.g. an invoice number, or one that starts with a date), so
+  // the whole of it is looked up first, then without the date a PDF or HTML
+  // receipt starts with, then as before (what follows the last dash)
+  //
+  for (const candidate of new Set([
+    cleanReference.toUpperCase(),
+    cleanReference.replace(/^\d{4}-\d{2}-\d{2}-/, '').toUpperCase(),
+    reference
+  ])) {
+    ctx.state.payment = await Payments.findOne({
+      reference: candidate,
+      user: ctx.state.user._id
+    });
+    if (ctx.state.payment) break;
+  }
 
   if (!ctx.state.payment)
     throw Boom.badRequest(ctx.translateError('PAYMENT_REFERENCE_INVALID'));

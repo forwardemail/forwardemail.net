@@ -157,6 +157,9 @@ async function retrieveDomain(ctx, next) {
       }
     }
 
+    // (a Team plan domain of an enterprise account, see `retrieveDomains`)
+    if (ctx.state.domain.is_enterprise) domain.is_enterprise = true;
+
     ctx.state.domain = domain;
   }
 

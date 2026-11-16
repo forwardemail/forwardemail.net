@@ -54,6 +54,9 @@ async function mapper(id) {
   // return early if user changed to free plan
   if (user.plan === 'free') return;
 
+  // an enterprise account is always on the Team plan (see the user model)
+  if (user.is_enterprise) return;
+
   // return early if user now has subscription
   if (
     isSANB(user[config.userFields.stripeSubscriptionID]) ||
@@ -88,6 +91,8 @@ async function run() {
   try {
     const ids = await Users.distinct('_id', {
       plan: { $in: ['enhanced_protection', 'team'] },
+      // (an enterprise account is billed by invoice, see the user model)
+      is_enterprise: { $ne: true },
       [config.userFields.stripeSubscriptionID]: {
         $exists: false
       },

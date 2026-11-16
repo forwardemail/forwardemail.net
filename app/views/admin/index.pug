@@ -64,6 +64,28 @@ block body
             #metrics-quick-ratio.h3.font-weight-bold.text-warning: i.fa.fa-spin.fa-spinner.small.text-muted
             small.text-muted= t("Growth Efficiency")
 
+    //- Enterprise Metrics Row (accounts billed by invoice, part of the MRR and ARR above)
+    .row.mb-3
+      .col-md-4.col-sm-6.mb-3.mb-md-0
+        .card.h-100
+          .card-body.text-center
+            h6.card-subtitle.mb-2.text-muted= t("Enterprise MRR")
+            #metrics-enterprise-mrr.h3.font-weight-bold.text-primary: i.fa.fa-spin.fa-spinner.small.text-muted
+            small.text-muted= t("Billed by invoice, per month")
+      .col-md-4.col-sm-6.mb-3.mb-md-0
+        .card.h-100
+          .card-body.text-center
+            h6.card-subtitle.mb-2.text-muted= t("Enterprise ARR")
+            #metrics-enterprise-arr.h3.font-weight-bold.text-success: i.fa.fa-spin.fa-spinner.small.text-muted
+            small.text-muted= t("Billed by invoice, per year")
+      .col-md-4.col-sm-6
+        .card.h-100
+          .card-body.text-center
+            h6.card-subtitle.mb-2.text-muted= t("Enterprise Customers")
+            #metrics-enterprise-customers.h3.font-weight-bold.text-info: i.fa.fa-spin.fa-spinner.small.text-muted
+            small.text-muted
+              a(href=l("/admin/enterprise"))= t("View all")
+
     //- Customer & Churn Metrics Row
     .row.mb-3
       .col-md-2.col-sm-4.mb-3.mb-md-0

@@ -143,8 +143,15 @@ async function syncStripePayments() {
     try {
       const missed = await Payments.find({
         user: user._id,
+        // (a payment of an enterprise account was recorded by an admin)
         method: {
-          $nin: ['unknown', 'paypal', 'free_beta_program', 'plan_conversion']
+          $nin: [
+            'unknown',
+            'paypal',
+            'free_beta_program',
+            'plan_conversion',
+            'enterprise'
+          ]
         },
         stripe_payment_intent_id: { $exists: false }
       })

@@ -12,7 +12,7 @@ const config = require('#config');
 //
 // Fields that must be selected on a user for paid tenure
 //
-const PAID_SINCE_USER_FIELDS = `plan ${config.userFields.planExpiresAt}`;
+const PAID_SINCE_USER_FIELDS = `plan ${config.userFields.planExpiresAt} is_enterprise enterprise_start_date`;
 
 //
 // Add a payment's duration the same way plan expiry does (calendar months)
@@ -129,10 +129,22 @@ async function getPaidSince(user, now = new Date()) {
         .exec();
   if (!candidate || !isPlanActive(candidate, now)) return null;
 
+  //
+  // an enterprise account pays by invoice since its start date, so its
+  // payments are not among the ones read below: it is paying since that
+  // date, or since before it when its own payments cover up to it
+  //
+  const enterpriseSince =
+    candidate.is_enterprise &&
+    candidate.enterprise_start_date &&
+    new Date(candidate.enterprise_start_date).getTime() <= now.getTime()
+      ? new Date(candidate.enterprise_start_date)
+      : null;
+
   const payments = await Payments.find({
     user: user._id,
     method: { $ne: 'free_beta_program' },
-    invoice_at: { $lte: now }
+    invoice_at: { $lte: enterpriseSince || now }
   })
     .select(
       'user amount amount_refunded is_refund_credit_allowed method invoice_at duration'
@@ -140,6 +152,9 @@ async function getPaidSince(user, now = new Date()) {
     .sort({ invoice_at: 1, _id: 1 })
     .lean()
     .exec();
+
+  if (enterpriseSince)
+    return getOwnPaidSince(payments, enterpriseSince) || enterpriseSince;
 
   return getOwnPaidSince(payments, now);
 }

@@ -829,7 +829,7 @@ nav.navbar(class=navbarClasses.join(" "), aria-label=t("Main menu"))
                     span.acct-avatar(aria-hidden="true")= (user[config.passport.fields.displayName] || user.email || "?").trim().charAt(0).toUpperCase()
                     span.acct-user-text
                       span.acct-user-name.notranslate= user[config.passport.fields.displayName] || user.email
-                      span.acct-user-meta= t(titleize(humanize(user.plan || "free")))
+                      span.acct-user-meta= t(user.is_enterprise || isEnterpriseTeamAdmin ? "Enterprise" : titleize(humanize(user.plan || "free")))
                 +acctMenuItem({ href: "https://mail.forwardemail.net", external: true, icon: "fa-inbox", label: t("Webmail") })
                 +acctMenuItem({ href: "/my-account/domains", icon: "fa-globe", label: t("Domains"), on: ctx.pathWithoutLocale.startsWith("/my-account/domains") })
                 +acctMenuItem({ href: "/my-account/domains/new", icon: "fa-plus-circle", label: t("Add domain"), on: ctx.pathWithoutLocale === "/my-account/domains/new" })

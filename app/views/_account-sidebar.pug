@@ -3,7 +3,9 @@
 //- is a bar under the navbar that opens the same links as a list.
 - const acctName = user[config.passport.fields.displayName] || user.email;
 - const acctInitial = (acctName || "?").trim().charAt(0).toUpperCase();
-- const acctPlanName = t(titleize(humanize(user.plan || "free")));
+//- (an enterprise account, and the other admins of its Team plan domains)
+- const acctEnterprise = user.is_enterprise || isEnterpriseTeamAdmin;
+- const acctPlanName = t(acctEnterprise ? "Enterprise" : titleize(humanize(user.plan || "free")));
 - const acctNeedsSetup = acctOwnDomains.filter((d) => acctDomainStatus(d) === "setup").length;
 //- Up to this many domains are listed; the page of domains lists the rest.
 //- The default domain of the profile comes first, then domains that still
@@ -50,7 +52,7 @@ aside.acct-sidebar.d-print-none
           else
             span.acct-user-meta
               = acctPlanName
-        if !acctInAdmin && user.plan === "free"
+        if !acctInAdmin && user.plan === "free" && !acctEnterprise
           span.badge.badge-danger.text-uppercase.ml-auto= t("Upgrade")
 
       if acctInAdmin

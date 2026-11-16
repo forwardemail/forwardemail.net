@@ -13,6 +13,10 @@ const STORAGE_CHECKOUT_URL =
   'https://checkout.forwardemail.net/b/fZu5kE9al2Yj6iP25Fa3u0b';
 
 async function upgradeBillingRequest(ctx) {
+  // (an enterprise account is billed by invoice, not with payment links)
+  if (ctx.state.user.is_enterprise)
+    throw Boom.badRequest(ctx.translateError('ENTERPRISE_BILLING'));
+
   const { kind, upgrade_option } = ctx.request.body;
 
   //

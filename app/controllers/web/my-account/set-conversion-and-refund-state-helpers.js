@@ -32,8 +32,10 @@ async function setConversionAndRefundStateHelpers(ctx, next) {
             {
               user: ctx.state.user._id,
               plan: ctx.state.user.plan,
+              // (a payment of an enterprise account was not charged here,
+              // so it is not refunded here either)
               method: {
-                $nin: ['free_beta_program', 'plan_conversion']
+                $nin: ['free_beta_program', 'plan_conversion', 'enterprise']
               },
               invoice_at: {
                 // NOTE: must be greater than 30 days ago or after their plan was set

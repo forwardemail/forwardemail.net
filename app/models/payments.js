@@ -17,6 +17,8 @@ const mongooseCommonPlugin = require('mongoose-common-plugin');
 const pify = require('pify');
 const pug = require('pug');
 const titleize = require('titleize');
+const { encode } = require('html-entities');
+const { isURL } = require('@forwardemail/validator');
 const webResourceInliner = require('web-resource-inliner');
 const wkhtmltopdf = require('wkhtmltopdf');
 
@@ -269,6 +271,9 @@ const Payments = new mongoose.Schema({
       'free_beta_program',
       // if we convert between plans
       'plan_conversion',
+      // recorded by an admin for an enterprise account, which is billed by
+      // invoice (see `is_enterprise` in the user model)
+      'enterprise',
       // Used to debit Canadian bank accounts through the Automated Clearing Settlement System (ACSS)
       'acss_debit',
       // A buy now, pay later payment method in the US
@@ -446,10 +451,45 @@ const Payments = new mongoose.Schema({
   is_refund_credit_allowed: {
     type: Boolean,
     default: false
+  },
+  //
+  // For a payment of an enterprise account (method `enterprise`), all of it
+  // internal: where the payment can be found (e.g. its page on Mercury or
+  // Stripe), notes, the start of the billing period it was recorded as
+  // paying for, and the admin that recorded it
+  //
+  enterprise_tracking_url: {
+    type: String,
+    trim: true,
+    maxlength: 2048,
+    // (a link an admin clicks, so only https, never e.g. `javascript:`)
+    validate: (value) =>
+      !value || isURL(value, { protocols: ['https'], require_protocol: true })
+  },
+  enterprise_notes: {
+    type: String,
+    trim: true,
+    maxlength: 1000
+  },
+  enterprise_period_due_at: Date,
+  // what the payment is for, as an admin worded it (the customer sees it on
+  // the receipt in place of the description below)
+  enterprise_description: {
+    type: String,
+    trim: true,
+    maxlength: 200
+  },
+  enterprise_created_by: {
+    type: mongoose.Schema.ObjectId,
+    ref: 'Users'
   }
 });
 
 Payments.virtual('description').get(function () {
+  // (the description is shown as HTML, and this one was typed in)
+  if (this.method === 'enterprise' && this.enterprise_description)
+    return encode(this.enterprise_description);
+
   const duration = dayjs()
     .add(this.duration, 'millisecond')
     .locale(this.locale)
@@ -459,7 +499,8 @@ Payments.virtual('description').get(function () {
     this.locale,
     capitalize(this.kind),
     duration,
-    titleize(humanize(this.plan))
+    // (an enterprise account is on the Team plan)
+    titleize(humanize(this.method === 'enterprise' ? this.method : this.plan))
   );
 });
 
@@ -614,6 +655,13 @@ Payments.index({ user: 1, created_at: -1 }); // User payments with default sort
 
 Payments.plugin(mongooseCommonPlugin, {
   object: 'payment',
+  // (internal, see above)
+  omitExtraFields: [
+    'enterprise_tracking_url',
+    'enterprise_notes',
+    'enterprise_period_due_at',
+    'enterprise_created_by'
+  ],
   defaultLocale: i18n.config.defaultLocale
 });
 

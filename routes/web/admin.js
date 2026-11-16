@@ -60,6 +60,20 @@ router
   .get('/users', paginate.middleware(10, 50), web.admin.users.list)
   .get('/users/:id', web.admin.users.retrieve)
   .put('/users/:id', web.admin.users.update)
+  .put('/users/:id/enterprise', web.admin.enterprise.update)
+  .post('/users/:id/enterprise/payments', web.admin.enterprise.createPayment)
+  .put(
+    '/users/:id/enterprise/payments/:payment_id',
+    web.admin.enterprise.updatePayment
+  )
+  .delete(
+    '/users/:id/enterprise/payments/:payment_id',
+    web.admin.enterprise.removePayment
+  )
+
+  // enterprise customers (all of them on one sheet)
+  .get('/enterprise', paginate.middleware(25, 50), web.admin.enterprise.list)
+  .put('/enterprise', web.admin.enterprise.updateAll)
   .post('/users/:id/login', web.admin.users.login)
   .delete('/users/:id', web.admin.users.remove)
 

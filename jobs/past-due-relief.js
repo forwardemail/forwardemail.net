@@ -108,6 +108,8 @@ async function mapper(user) {
     for await (const user of Users.find({
       [config.userFields.hasVerifiedEmail]: true,
       [config.userFields.isBanned]: false,
+      // (an enterprise account is billed by invoice, see the user model)
+      is_enterprise: { $ne: true },
       plan: {
         $in: ['enhanced_protection', 'team']
       },

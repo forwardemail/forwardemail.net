@@ -59,7 +59,15 @@ include ../../_pagination
               href=l(`/admin/domains?name=${encodeURIComponent(user.email)}`)
             )= user.domain_count
             td.align-middle= user.alias_count
-            td.align-middle= titleize(humanize(user.plan))
+            td.align-middle
+              if user.is_enterprise
+                span.badge.badge-success Enterprise
+                if user.enterprise_next_due_at
+                  small.d-block(
+                    class=new Date(user.enterprise_next_due_at).getTime() <= Date.now() ? "text-danger" : "text-muted"
+                  )= `due ${dayjs.utc(user.enterprise_next_due_at).format("M/D/YY")}`
+              else
+                = titleize(humanize(user.plan))
             td.align-middle= titleize(humanize(user.group))
             td.align-middle.text-center
               form.ajax-form.confirm-prompt.d-inline-block(

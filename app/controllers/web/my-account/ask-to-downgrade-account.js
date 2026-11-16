@@ -19,6 +19,8 @@ const { Domains } = require('#models');
 async function shouldAskToDowngradeAccount(ctx) {
   const { user } = ctx.state;
   if (!user || user.plan === 'free') return false;
+  // (an enterprise account is always on the Team plan)
+  if (user.is_enterprise) return false;
   if (
     !(new Date(user[config.userFields.planExpiresAt]).getTime() >= Date.now())
   )

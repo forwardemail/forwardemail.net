@@ -27,6 +27,10 @@ const { STRIPE_MAPPING, PAYPAL_MAPPING, PAYMENT_DURATIONS } = config.payments;
 
 async function createDomainBilling(ctx) {
   try {
+    // an enterprise account is billed by invoice, so it has no checkout
+    if (ctx.state.user.is_enterprise)
+      throw Boom.badRequest(ctx.translateError('ENTERPRISE_BILLING'));
+
     //
     // validate form body
     //

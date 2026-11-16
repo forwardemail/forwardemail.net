@@ -64,6 +64,9 @@ async function mapper(user) {
   // if on free plan then ignore
   if (user.plan === 'free') return;
 
+  // an enterprise account is billed by invoice (see the user model)
+  if (user.is_enterprise) return;
+
   // run a quick save of the user to update fields
   // (e.g. and remove expiration notice dates if plan expires in future)
   await user.save();
@@ -261,6 +264,8 @@ async function mapper(user) {
     for await (const user of Users.find({
       plan: { $in: ['enhanced_protection', 'team'] },
       group: 'user',
+      // (an enterprise account is billed by invoice, see the user model)
+      is_enterprise: { $ne: true },
       [config.userFields.isBanned]: false,
       [config.userFields.hasVerifiedEmail]: true,
       [config.userFields.planExpiresAt]: {

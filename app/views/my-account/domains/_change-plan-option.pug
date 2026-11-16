@@ -10,7 +10,7 @@
 //-
 mixin changePlanOption(domain, plan)
   - const billingUrl = l(`/my-account/domains/${punycode.toASCII(domain.name)}/billing`);
-  if plan === 'free' && domain.plan !== 'free' && domain.group === 'admin' && user.plan !== 'free' && new Date(user[config.userFields.planExpiresAt]).getTime() >= Date.now() && paidAdminDomainCount === 1 && !hasGlobalAliases
+  if plan === 'free' && domain.plan !== 'free' && domain.group === 'admin' && user.plan !== 'free' && !user.is_enterprise && new Date(user[config.userFields.planExpiresAt]).getTime() >= Date.now() && paidAdminDomainCount === 1 && !hasGlobalAliases
     form.confirm-prompt.m-0(
       action=billingUrl,
       method="GET",

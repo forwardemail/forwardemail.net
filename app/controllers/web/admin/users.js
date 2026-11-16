@@ -9,15 +9,17 @@ const bytes = require('@forwardemail/bytes');
 const isSANB = require('is-string-and-not-blank');
 const paginate = require('koa-ctx-paginate');
 const { boolean } = require('boolean');
+const { getRevision } = require('./enterprise');
 const _ = require('#helpers/lodash');
 
 const assertAllowedMongoQuery = require('#helpers/assert-no-blocked-mongo-operators');
 const isEmail = require('#helpers/is-email');
 const getAllowedSort = require('#helpers/get-allowed-sort');
-const { Domains, Users } = require('#models');
+const { Domains, Payments, Users } = require('#models');
 // Const { removeUserAliasBackups } = require('#helpers/remove-alias-backup');
 const clearAliasQuotaCache = require('#helpers/clear-alias-quota-cache');
 const config = require('#config');
+const enterpriseBilling = require('#helpers/enterprise-billing');
 const getUserSmtpLimit = require('#helpers/get-user-smtp-limit');
 const stripe = require('#helpers/stripe');
 
@@ -33,6 +35,7 @@ const USER_SORT_FIELDS = new Set([
   'plan',
   'group',
   'has_passed_kyc',
+  'is_enterprise',
   'max_quota_per_alias',
   'smtp_limit',
   'smtp_reputation_tier',
@@ -113,6 +116,7 @@ async function list(ctx) {
   // effective outbound SMTP threshold (earned tier, manual floor or restriction)
   for (const user of users) {
     user.smtp_effective_limit = getUserSmtpLimit(user);
+    user.enterprise_next_due_at = enterpriseBilling.getNextDueAt(user);
   }
 
   const pageCount = Math.ceil(itemCount / ctx.query.limit);
@@ -141,6 +145,20 @@ async function retrieve(ctx) {
   if (!ctx.state.result) {
     throw Boom.notFound(ctx.translateError('INVALID_USER'));
   }
+
+  ctx.state.enterpriseNextDueAt = enterpriseBilling.getNextDueAt(
+    ctx.state.result
+  );
+  ctx.state.enterpriseRev = getRevision(ctx.state.result);
+  // (payments admins recorded for an enterprise account)
+  ctx.state.enterprisePayments = await Payments.find({
+    user: ctx.state.result._id,
+    method: 'enterprise'
+  })
+    .sort({ invoice_at: -1 })
+    .limit(500)
+    .lean()
+    .exec();
 
   return ctx.render('admin/users/retrieve');
 }

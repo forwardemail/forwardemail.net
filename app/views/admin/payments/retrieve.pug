@@ -27,6 +27,29 @@ block body
                       tr
                         th= t("Method")
                         td= titleize(humanize(payment.method))
+                      //- recorded by an admin for an enterprise account (internal)
+                      if payment.method === 'enterprise'
+                        if payment.enterprise_tracking_url
+                          tr
+                            th Tracking link
+                            td.text-break
+                              a(
+                                href=payment.enterprise_tracking_url,
+                                target="_blank",
+                                rel="noopener noreferrer nofollow"
+                              )= payment.enterprise_tracking_url
+                        if payment.enterprise_description
+                          tr
+                            th Description
+                            td.text-break= payment.enterprise_description
+                        if payment.enterprise_notes
+                          tr
+                            th Notes
+                            td.text-break= payment.enterprise_notes
+                        if payment.enterprise_period_due_at
+                          tr
+                            th Pays for the period due
+                            td= dayjs.utc(payment.enterprise_period_due_at).format("YYYY-MM-DD")
                       if payment.plan
                         tr
                           th= t("Plan")

@@ -356,14 +356,16 @@ else
                 a.badge.badge-secondary.text-uppercase(
                   href=l(`${base}/aliases`)
                 )= t("Vanity Domain")
-            else if (domain.plan === user.plan || domain.plan === 'team') && user.plan !== 'free'
+            else if domain.is_enterprise || ((domain.plan === user.plan || domain.plan === 'team') && user.plan !== 'free')
+              //- (a Team plan domain of an enterprise account)
+              - const domainPlanName = domain.is_enterprise ? "Enterprise" : titleize(humanize(domain.plan));
               li.list-inline-item
                 if isReady
                   a.badge.badge-success.text-uppercase(
                     href=l(`${base}/aliases`)
-                  )= titleize(humanize(domain.plan))
+                  )= domainPlanName
                 else
-                  span.badge.badge-success.text-uppercase= titleize(humanize(domain.plan))
+                  span.badge.badge-success.text-uppercase= domainPlanName
             else
               li.list-inline-item
                 if isReady

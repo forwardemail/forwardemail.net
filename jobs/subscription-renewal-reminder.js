@@ -365,6 +365,8 @@ async function mapper(user) {
         { [config.userFields.paypalSubscriptionID]: { $exists: true } }
       ],
       [config.userFields.isBanned]: false,
+      // (an enterprise account is billed by invoice, see the user model)
+      is_enterprise: { $ne: true },
       [config.userFields.hasVerifiedEmail]: true
     })
       .lean()

@@ -30,5 +30,8 @@ block body
                 placeholder=t("Search by first name, last name, or email")
               )
             button.btn.btn-success(type="submit")= t("Search")
+            a.btn.btn-link(
+              href=l(`/admin/users?mongodb_query=${encodeURIComponent('{"is_enterprise":true}')}`)
+            ) Enterprise customers
         #table-users
           include ./_table

@@ -62,6 +62,11 @@ include ../../_pagination
                       = "("
                       code.text-muted= member.user.id
                       = ")"
+                      if member.user.is_enterprise
+                        = " "
+                        a.badge.badge-success(
+                          href=l(`/admin/users/${member.user.id}`)
+                        ) Enterprise
               td.align-middle.text-center
                 a(href=l(`/admin/domains/${domain.id}/aliases`))= domain.alias_count
               td.align-middle.text-center

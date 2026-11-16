@@ -77,7 +77,12 @@ const PAYMENT_DETAIL_FIELDS = {
   refunded_at: 1,
   stripe_payment_intent_id: 1,
   paypal_transaction_id: 1,
-  is_legacy_paypal: 1
+  is_legacy_paypal: 1,
+  // (of a payment recorded for an enterprise account)
+  enterprise_tracking_url: 1,
+  enterprise_notes: 1,
+  enterprise_description: 1,
+  enterprise_period_due_at: 1
 };
 
 async function list(ctx) {

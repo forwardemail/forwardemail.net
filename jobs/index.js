@@ -76,6 +76,12 @@ let jobs = [
     interval: '1h',
     timeout: 0
   },
+  // remind admins when a payment of an enterprise account is due
+  {
+    name: 'enterprise-billing-reminder',
+    interval: '1h',
+    timeout: 0
+  },
   {
     name: 'banned-user-abuse',
     interval: '1h',

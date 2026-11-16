@@ -814,6 +814,8 @@ module.exports = {
   PLAN_ALREADY_ACTIVE: 'This plan is already active, please refresh.',
   UPGRADE_PLAN: 'Upgrade Plan',
   INVALID_PLAN: 'Invalid plan selected.',
+  ENTERPRISE_BILLING:
+    'Your account is on the Enterprise plan and is billed by invoice.  Please <a class="font-weight-bold" href="/help">contact us</a> to make changes.',
   REMOVE_MEMBERS_BEFORE_PLAN_CHANGE:
     'Please remove all invited members to the domain before changing plans.',
   PLAN_UPGRADE_REQUIRED:

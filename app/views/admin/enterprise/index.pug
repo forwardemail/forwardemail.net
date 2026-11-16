@@ -1,0 +1,198 @@
+extends ../../layout
+
+block body
+  - const sheetDate = (date) => (date ? dayjs.utc(date).format("YYYY-MM-DD") : "");
+  - const sheetAmount = (cents) => numeral(cents / 100).format("$0,0.00");
+  - const sheetInput = (cents) => (Number.isFinite(cents) ? (cents / 100).toFixed(2) : "");
+  .container-fluid.py-3
+    .row.mt-1
+      .col
+        include ../../_breadcrumbs
+        .card.border-themed.mb-3
+          .card-body
+            .d-flex.flex-wrap.align-items-center
+              h1.h5.mb-0.mr-3 Enterprise customers
+              span.badge.badge-secondary.mr-2= `${itemCount} total`
+              if counts.overdue > 0
+                span.badge.badge-danger.mr-2= `${counts.overdue} overdue`
+              if counts.soon > 0
+                span.badge.badge-warning.mr-2= `${counts.soon} due within 7 days`
+            p.small.text-muted.mt-2.mb-0 Customers whose payment is due come first. Change what you need in any number of rows, then save once at the bottom: every row is checked first, and nothing is saved if one of them has a mistake. To record a payment, fill in the date it was received; an empty amount is the customer's billing amount. To mark a customer as enterprise (or not), open them in #[a(href=l("/admin/users")) Users].
+        if users.length === 0
+          .alert.alert-info No enterprise customers yet. Open a customer in #[a(href=l("/admin/users")) Users] and check "Enterprise customer".
+        else
+          form#form-enterprise.ajax-form.confirm-prompt(
+            action=ctx.path,
+            method="POST",
+            data-confirm-prompt-title="Save the sheet?",
+            data-confirm-prompt-html="Every changed row is saved, and a payment is recorded for each row with a date received."
+          )
+            input(type="hidden", name="_method", value="PUT")
+            .table-responsive
+              table.table.table-bordered.table-sm.table-hover.mb-0
+                thead.thead-dark
+                  tr
+                    th.align-middle(scope="col", rowspan=2) Customer
+                    th.text-center(scope="colgroup", colspan=5) Billing
+                    th.text-center(scope="colgroup", colspan=6) Record a payment
+                  tr
+                    th(scope="col") Frequency
+                    th(scope="col") Amount
+                    th(scope="col") Start date
+                    th(scope="col") Frequency last paid
+                    th(scope="col") Notes
+                    th(scope="col") Date received
+                    th(scope="col") Amount
+                    th(scope="col") Reference #
+                    th(scope="col") Description
+                    th(scope="col") Tracking link
+                    th(scope="col") Pays for
+                tbody
+                  each customer in users
+                    - const id = customer.id;
+                    tr(
+                      class=customer.status === "overdue" ? "table-danger" : customer.status === "soon" ? "table-warning" : false
+                    )
+                      th.align-middle(scope="row", style="min-width: 14rem")
+                        a.d-block.text-break(href=l(`/admin/users/${id}`))= customer.email
+                        if customer[config.passport.fields.displayName]
+                          small.d-block.font-weight-normal.text-muted= customer[config.passport.fields.displayName]
+                        small.d-block.font-weight-normal
+                          if customer.status === 'overdue'
+                            strong.text-danger= `Due since ${sheetDate(customer.next_due_at)}`
+                          else if customer.next_due_at
+                            = `Next due ${sheetDate(customer.next_due_at)}`
+                        if customer.last_payment
+                          small.d-block.font-weight-normal.text-muted= `Last payment ${sheetAmount(customer.last_payment.amount)} on ${sheetDate(customer.last_payment.invoice_at)}`
+                        if isSANB(customer[config.userFields.stripeSubscriptionID]) || isSANB(customer[config.userFields.paypalSubscriptionID])
+                          small.d-block.text-danger Still has a Stripe or PayPal subscription
+                        input(
+                          type="hidden",
+                          name=`rev__${id}`,
+                          value=customer.rev
+                        )
+                        input(
+                          type="hidden",
+                          name=`due_at__${id}`,
+                          value=sheetDate(customer.next_due_at)
+                        )
+                      td.align-middle
+                        select.form-control.form-control-sm(
+                          name=`enterprise_billing_frequency__${id}`,
+                          required,
+                          aria-label="Frequency",
+                          style="min-width: 7rem"
+                        )
+                          option(
+                            value="monthly",
+                            selected=customer.enterprise_billing_frequency === "monthly"
+                          ) Monthly
+                          option(
+                            value="annual",
+                            selected=customer.enterprise_billing_frequency === "annual"
+                          ) Annual
+                      td.align-middle
+                        input.form-control.form-control-sm(
+                          type="number",
+                          min=0,
+                          step="0.01",
+                          name=`enterprise_billing_amount__${id}`,
+                          value=sheetInput(customer.enterprise_billing_amount),
+                          aria-label="Billing amount",
+                          style="min-width: 7rem"
+                        )
+                      td.align-middle
+                        input.form-control.form-control-sm(
+                          type="date",
+                          name=`enterprise_start_date__${id}`,
+                          value=sheetDate(customer.enterprise_start_date),
+                          required,
+                          aria-label="Start date"
+                        )
+                      td.align-middle
+                        input.form-control.form-control-sm(
+                          type="date",
+                          name=`enterprise_last_paid_at__${id}`,
+                          value=sheetDate(customer.enterprise_last_paid_at),
+                          aria-label="Frequency last paid"
+                        )
+                      td.align-middle
+                        textarea.form-control.form-control-sm(
+                          name=`enterprise_notes__${id}`,
+                          rows=1,
+                          maxlength=5000,
+                          aria-label="Notes",
+                          style="min-width: 12rem"
+                        )= customer.enterprise_notes || ""
+                      td.align-middle
+                        input.form-control.form-control-sm(
+                          type="date",
+                          name=`paid_at__${id}`,
+                          max=dayjs.utc().add(1, "day").format("YYYY-MM-DD"),
+                          aria-label="Date received"
+                        )
+                      td.align-middle
+                        input.form-control.form-control-sm(
+                          type="number",
+                          min=0,
+                          step="0.01",
+                          name=`amount__${id}`,
+                          placeholder=sheetInput(customer.enterprise_billing_amount),
+                          aria-label="Payment amount",
+                          style="min-width: 7rem"
+                        )
+                      td.align-middle
+                        input.form-control.form-control-sm(
+                          type="text",
+                          name=`reference__${id}`,
+                          maxlength=64,
+                          aria-label="Reference number",
+                          style="min-width: 8rem"
+                        )
+                      td.align-middle
+                        input.form-control.form-control-sm(
+                          type="text",
+                          name=`description__${id}`,
+                          maxlength=200,
+                          placeholder="Usual description",
+                          aria-label="Description",
+                          style="min-width: 12rem"
+                        )
+                      td.align-middle
+                        input.form-control.form-control-sm(
+                          type="url",
+                          name=`tracking_url__${id}`,
+                          maxlength=2048,
+                          placeholder="https://",
+                          aria-label="Tracking link",
+                          style="min-width: 10rem"
+                        )
+                      td.align-middle
+                        if customer.next_due_at
+                          .form-check
+                            input.form-check-input(
+                              type="checkbox",
+                              id=`input-mark-paid-${id}`,
+                              name=`mark_paid__${id}`,
+                              value="true",
+                              checked=customer.status !== "ok"
+                            )
+                            label.form-check-label.small.text-nowrap(
+                              for=`input-mark-paid-${id}`
+                            )= `Period due ${sheetDate(customer.next_due_at)}`
+                        //- (last in its row: a row that arrives without it is not saved)
+                        input(type="hidden", name=`row__${id}`, value="true")
+            input(type="hidden", name="rows", value=users.length)
+            .d-flex.flex-wrap.align-items-center.justify-content-between.mt-3
+              small.text-muted.mb-2 "Frequency last paid" is a date in the billing period last paid for. Checking "Pays for" sets it for you. A payment gets a receipt on the customer's Billing page with its date, reference and amount (no receipt is emailed); the notes and the tracking link are internal.
+              .mb-2
+                button.btn.btn-secondary.mr-2(type="reset")= t("Reset")
+                button.btn.btn-primary(type="submit") Save all
+          if pageCount > 1
+            nav.mt-3(aria-label="Page navigation")
+              ul.pagination.justify-content-center
+                each page in pages
+                  li.page-item(
+                    class=page.number === ctx.query.page ? "active" : false
+                  )
+                    a.page-link(href=page.url)= page.number

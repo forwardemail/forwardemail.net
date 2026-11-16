@@ -330,6 +330,8 @@ async function mapper(id) {
             [config.userFields.paypalTrialSentAt]: { $exists: false }
           }
         ],
+        // (an enterprise account is billed by invoice, see the user model)
+        is_enterprise: { $ne: true },
         ...(lastId ? { _id: { $gt: lastId } } : {})
       };
 

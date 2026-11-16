@@ -49,6 +49,7 @@ const {
   decryptIfEncrypted,
   hashToken
 } = require('#helpers/encrypt-decrypt');
+const enterpriseBilling = require('#helpers/enterprise-billing');
 const getUbuntuMembersMap = require('#helpers/get-ubuntu-members-map');
 const i18n = require('#helpers/i18n');
 const isDenylisted = require('#helpers/is-denylisted');
@@ -80,6 +81,15 @@ const omitExtraFields = [
   ..._.without(mongooseOmitCommonFields.underscored.keys, 'email'),
   'has_passed_kyc',
   'passkeys',
+  // (enterprise billing is for admins: notes and payment links are internal)
+  'is_enterprise',
+  'enterprise_start_date',
+  'enterprise_billing_frequency',
+  'enterprise_billing_amount',
+  'enterprise_notes',
+  'enterprise_last_paid_at',
+  'enterprise_reminder_due_at',
+  'enterprise_reminder_sent_at',
   config.userFields.domainCount,
   config.userFields.aliasCount,
   // TODO: change to allowlist
@@ -227,6 +237,45 @@ const Users = new mongoose.Schema({
     default: false,
     index: true
   },
+
+  //
+  // Enterprise accounts are billed by invoice instead of through Stripe or
+  // PayPal.  An admin sets this in Admin > Users: the account is then always
+  // on the Team plan, its plan does not expire, and it gets no billing
+  // emails (see the plan expiry hook below).  Admins are reminded when a
+  // payment is due (see jobs/enterprise-billing-reminder.js), and record
+  // its payments (payments with the method `enterprise`).
+  //
+  is_enterprise: {
+    type: Boolean,
+    default: false,
+    index: true
+  },
+  // the first billing period starts on this date
+  enterprise_start_date: Date,
+  enterprise_billing_frequency: {
+    type: String,
+    enum: enterpriseBilling.FREQUENCIES
+  },
+  // per billing period
+  enterprise_billing_amount: {
+    type: Number, // cents (not dollars)
+    min: 0,
+    max: enterpriseBilling.MAX_AMOUNT,
+    validate: (value) => Number.isInteger(value)
+  },
+  // internal (never shown to the customer)
+  enterprise_notes: {
+    type: String,
+    trim: true,
+    maxlength: 5000
+  },
+  // a date in the billing period last paid for
+  // (the next payment is due at the start of the period after it)
+  enterprise_last_paid_at: Date,
+  // the due date admins were last reminded of, and when
+  enterprise_reminder_due_at: Date,
+  enterprise_reminder_sent_at: Date,
 
   // Session Management (rudimentary)
   sessions: [String], // simple Array of session ID's currently signed in
@@ -988,6 +1037,29 @@ Users.pre('save', async function (next) {
     return next();
   }
 
+  //
+  // An enterprise account is billed by invoice: it is always on the Team
+  // plan, which does not expire, so nothing that looks at the plan or its
+  // expiry (payment reminders, past due notices, paid features) treats it
+  // as unpaid.  It is also not rate limited, and the date its plan started
+  // stays what it was (e.g. when a late webhook of a payment from before
+  // would move it).
+  //
+  if (user.is_enterprise) {
+    user.plan = 'team';
+    if (!user.isNew) user.unmarkModified(config.userFields.planSetAt);
+    user[config.userFields.isRateLimitWhitelisted] = true;
+    user[config.userFields.hasVerifiedEmail] = true;
+    user[config.userFields.planExpiresAt] = dayjs().add(50, 'year').toDate();
+    user[config.userFields.apiPastDueSentAt] = undefined;
+    user[config.userFields.apiRestrictedSentAt] = undefined;
+    user[config.userFields.paymentReminderInitialSentAt] = undefined;
+    user[config.userFields.paymentReminderFollowUpSentAt] = undefined;
+    user[config.userFields.paymentReminderFinalNoticeSentAt] = undefined;
+    user[config.userFields.paymentReminderTerminationNoticeSentAt] = undefined;
+    return next();
+  }
+
   // If user has a paid plan then consider their email verified
   if (user.plan !== 'free') user[config.userFields.hasVerifiedEmail] = true;
 
@@ -1049,8 +1121,11 @@ Users.pre('save', async function (next) {
     }
 
     // Payments must match the user's current plan
+    // (not the ones recorded while it was an enterprise account: those
+    // were for invoices, not for time on the plan)
     const payments = allPayments.filter(
       (payment) =>
+        payment.method !== 'enterprise' &&
         payment.plan === user.plan &&
         new Date(payment.invoice_at).getTime() >=
           new Date(user[config.userFields.planSetAt]).getTime()

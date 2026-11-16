@@ -232,6 +232,24 @@ async function retrieveDomainBilling(ctx) {
     ctx.pathWithoutLocale === '/my-account/billing/make-payment';
   const isEnableAutoRenew =
     ctx.pathWithoutLocale === '/my-account/billing/enable-auto-renew';
+
+  //
+  // an enterprise account is billed by invoice and is always on the Team
+  // plan: it cannot change its plan, pay or subscribe here, and a checkout
+  // from before it became one is not applied (its domains can still be
+  // changed to any plan, since the Team plan covers them all)
+  //
+  if (
+    ctx.state.user.is_enterprise &&
+    (isAccountUpgrade ||
+      isMakePayment ||
+      isEnableAutoRenew ||
+      isSANB(ctx.query.session_id) ||
+      isSANB(ctx.query.paypal_order_id) ||
+      isSANB(ctx.query.paypal_subscription_id))
+  )
+    throw Boom.badRequest(ctx.translateError('ENTERPRISE_BILLING'));
+
   let redirectTo = ctx.state.l(
     isAccountUpgrade ||
       isMakePayment ||

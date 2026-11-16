@@ -9,7 +9,11 @@ block body
           input(type="hidden", name="_method", value="PUT")
           .card.border-themed
             .card-header.bg-dark.text-white.d-flex.justify-content-between.align-items-center
-              h4.mb-0= result.id
+              h4.mb-0
+                = result.id
+                if result.is_enterprise
+                  = " "
+                  a.badge.badge-success(href="#enterprise") Enterprise
               a.btn.btn-sm.btn-light(href=l(`/admin/logs?user=${result.id}`))
                 i.fa.fa-fw.fa-list-alt
                 = " "
@@ -57,3 +61,273 @@ block body
             .card-footer.text-right
               button.btn.btn-secondary(type="reset")= t("Reset")
               button.btn.btn-primary(type="submit")= t("Save")
+
+        //- Enterprise billing (billed by invoice, see `is_enterprise` in the user model)
+        - const enterpriseDate = (date) => (date ? dayjs.utc(date).format("YYYY-MM-DD") : "");
+        - const enterpriseAmount = (cents) => numeral(cents / 100).format("$0,0.00");
+        form#enterprise.ajax-form.confirm-prompt.mt-3(
+          action=l(`/admin/users/${result.id}/enterprise`),
+          method="POST",
+          data-confirm-prompt-title="Save enterprise billing?",
+          data-confirm-prompt-html="If Enterprise customer is checked, this account moves to the Team plan and any Stripe or PayPal subscription it has is canceled. If you uncheck it for an enterprise customer, their Team plan starts over today and normal billing resumes."
+        )
+          input(type="hidden", name="_method", value="PUT")
+          input(type="hidden", name="rev", value=enterpriseRev)
+          .card.border-themed
+            .card-header.d-flex.justify-content-between.align-items-center
+              h4.mb-0 Enterprise
+              a.btn.btn-sm.btn-light(href=l("/admin/enterprise"))
+                i.fa.fa-fw.fa-building
+                = " "
+                = "All enterprise customers"
+            .card-body
+              p.small.text-muted An enterprise account is billed by invoice. It is always on the Team plan, is not billed through Stripe or PayPal (a subscription is canceled when this is turned on), is not rate limited, and gets no billing emails. The date its plan started is kept. Reminders that a payment is due go to #{ config.supportEmail }. When this is turned off the Team plan starts over from that day and is billed like any other account.
+              .form-group.form-check
+                input#input-is-enterprise.form-check-input(
+                  type="checkbox",
+                  name="is_enterprise",
+                  value="true",
+                  checked=result.is_enterprise
+                )
+                label.form-check-label(for="input-is-enterprise") Enterprise customer
+              .form-row
+                .form-group.col-md-6
+                  label(for="input-enterprise-start-date") Enterprise start date
+                  input#input-enterprise-start-date.form-control(
+                    type="date",
+                    name="enterprise_start_date",
+                    value=enterpriseDate(result.enterprise_start_date)
+                  )
+                  small.form-text.text-muted The first billing period starts on this date.
+                .form-group.col-md-6
+                  label(for="input-enterprise-billing-frequency") Enterprise billing frequency
+                  select#input-enterprise-billing-frequency.form-control(
+                    name="enterprise_billing_frequency"
+                  )
+                    option(value="")
+                    option(
+                      value="monthly",
+                      selected=result.enterprise_billing_frequency === "monthly"
+                    ) Monthly
+                    option(
+                      value="annual",
+                      selected=result.enterprise_billing_frequency === "annual"
+                    ) Annual
+              .form-row
+                .form-group.col-md-6
+                  label(for="input-enterprise-billing-amount") Enterprise billing amount
+                  .input-group
+                    .input-group-prepend
+                      span.input-group-text $
+                    input#input-enterprise-billing-amount.form-control(
+                      type="number",
+                      min=0,
+                      step="0.01",
+                      name="enterprise_billing_amount",
+                      value=Number.isFinite(result.enterprise_billing_amount) ? (result.enterprise_billing_amount / 100).toFixed(2) : ""
+                    )
+                  small.form-text.text-muted US dollars per billing period.
+                .form-group.col-md-6
+                  label(for="input-enterprise-last-paid-at") Enterprise frequency last paid
+                  input#input-enterprise-last-paid-at.form-control(
+                    type="date",
+                    name="enterprise_last_paid_at",
+                    value=enterpriseDate(result.enterprise_last_paid_at)
+                  )
+                  small.form-text.text-muted A date in the billing period last paid for. The next payment is due at the start of the period after it.
+              .form-group
+                label(for="textarea-enterprise-notes") Enterprise notes
+                textarea#textarea-enterprise-notes.form-control(
+                  name="enterprise_notes",
+                  rows=4,
+                  maxlength=5000
+                )= result.enterprise_notes || ""
+                small.form-text.text-muted Internal. The customer never sees these.
+              if result.is_enterprise && (isSANB(result[config.userFields.stripeSubscriptionID]) || isSANB(result[config.userFields.paypalSubscriptionID]))
+                .alert.alert-danger This account still has a Stripe or PayPal subscription. Save to cancel it.
+              if enterpriseNextDueAt
+                .alert.mb-0(
+                  class=enterpriseNextDueAt.getTime() <= Date.now() ? "alert-danger" : "alert-info"
+                )
+                  = enterpriseNextDueAt.getTime() <= Date.now() ? "Payment due since " : "Next payment due on "
+                  strong= enterpriseDate(enterpriseNextDueAt)
+                  if Number.isFinite(result.enterprise_billing_amount)
+                    = ` (${enterpriseAmount(result.enterprise_billing_amount)})`
+            .card-footer.text-right
+              button.btn.btn-primary(type="submit")= t("Save")
+
+        if result.is_enterprise || enterprisePayments.length > 0
+          .card.border-themed.mt-3
+            .card-header
+              h4.mb-0 Enterprise payments
+            .card-body
+              p.small.text-muted These are payments like any other: they are listed in Payments, and the customer finds a receipt for each on their Billing page (no receipt is emailed). The tracking link and the notes are internal.
+              if enterprisePayments.length === 0
+                .alert.alert-info No payments recorded yet.
+              else
+                .table-responsive
+                  table.table.table-hover.table-bordered.table-sm
+                    thead.thead-dark
+                      tr
+                        th(scope="col") Date received
+                        th(scope="col") Reference #
+                        th(scope="col") Amount
+                        th(scope="col") Description
+                        th(scope="col") Tracking link
+                        th(scope="col") Notes
+                        th(scope="col") Recorded
+                        th(scope="col")= t("Actions")
+                    tbody
+                      each payment in enterprisePayments
+                        tr
+                          td.align-middle= enterpriseDate(payment.invoice_at)
+                          td.align-middle.text-break
+                            a(href=l(`/admin/payments/${payment._id}`)): code= payment.reference
+                          td.align-middle= enterpriseAmount(payment.amount)
+                          td.align-middle
+                            form.ajax-form.form-inline.flex-nowrap(
+                              action=l(`/admin/users/${result.id}/enterprise/payments/${payment._id}`),
+                              method="POST"
+                            )
+                              input(type="hidden", name="_method", value="PUT")
+                              input.form-control.form-control-sm.mr-1(
+                                type="text",
+                                name="description",
+                                maxlength=200,
+                                value=payment.enterprise_description || "",
+                                placeholder="Usual description",
+                                aria-label="Description",
+                                style="min-width: 12rem"
+                              )
+                              button.btn.btn-sm.btn-primary(type="submit")= t("Save")
+                          td.align-middle.text-break
+                            if payment.enterprise_tracking_url
+                              a(
+                                href=payment.enterprise_tracking_url,
+                                target="_blank",
+                                rel="noopener noreferrer nofollow"
+                              )= payment.enterprise_tracking_url
+                          td.align-middle.text-break= payment.enterprise_notes
+                          td.align-middle= enterpriseDate(payment.created_at)
+                          td.align-middle
+                            form.ajax-form.confirm-prompt.d-inline-block(
+                              action=l(`/admin/users/${result.id}/enterprise/payments/${payment._id}`),
+                              method="POST"
+                            )
+                              input(
+                                type="hidden",
+                                name="_method",
+                                value="DELETE"
+                              )
+                              button.btn.btn-sm.btn-danger(
+                                type="submit",
+                                data-toggle="tooltip",
+                                data-title=t("Remove")
+                              ): i.fa.fa-fw.fa-remove
+              if result.is_enterprise
+                //- several payments are recorded at once (a row without a date is left out)
+                form.ajax-form.confirm-prompt(
+                  action=l(`/admin/users/${result.id}/enterprise/payments`),
+                  method="POST",
+                  data-confirm-prompt-title="Record these payments?",
+                  data-confirm-prompt-html="A payment is recorded for each row with a date received."
+                )
+                  h5 Record payments
+                  p.small.text-muted Fill in a row for each payment and leave the rest empty. An empty amount is the billing amount. The reference (invoice, reference or transaction number) and the description are shown on the receipt; leave them empty for the usual ones. The tracking link and the notes are internal.
+                  input(type="hidden", name="rev", value=enterpriseRev)
+                  if enterpriseNextDueAt
+                    input(
+                      type="hidden",
+                      name="due_at",
+                      value=enterpriseDate(enterpriseNextDueAt)
+                    )
+                  .table-responsive
+                    table.table.table-bordered.table-sm
+                      thead.thead-light
+                        tr
+                          th(scope="col") #
+                          th(scope="col") Date received
+                          th(scope="col") Amount
+                          th(scope="col") Reference #
+                          th(scope="col") Description
+                          th(scope="col") Tracking link
+                          th(scope="col") Notes
+                          if enterpriseNextDueAt
+                            th(scope="col") Pays for a period
+                      tbody
+                        each n in [1, 2, 3, 4, 5, 6]
+                          tr
+                            th.align-middle(scope="row")= n
+                            td.align-middle
+                              input.form-control.form-control-sm(
+                                type="date",
+                                name=`paid_at__${n}`,
+                                max=dayjs.utc().add(1, "day").format("YYYY-MM-DD"),
+                                aria-label=`Date received, payment ${n}`
+                              )
+                            td.align-middle
+                              input.form-control.form-control-sm(
+                                type="number",
+                                min=0,
+                                step="0.01",
+                                name=`amount__${n}`,
+                                placeholder=Number.isFinite(result.enterprise_billing_amount) ? (result.enterprise_billing_amount / 100).toFixed(2) : "",
+                                aria-label=`Amount, payment ${n}`,
+                                style="min-width: 7rem"
+                              )
+                            td.align-middle
+                              input.form-control.form-control-sm(
+                                type="text",
+                                name=`reference__${n}`,
+                                maxlength=64,
+                                aria-label=`Reference number, payment ${n}`,
+                                style="min-width: 8rem"
+                              )
+                            td.align-middle
+                              input.form-control.form-control-sm(
+                                type="text",
+                                name=`description__${n}`,
+                                maxlength=200,
+                                placeholder="Usual description",
+                                aria-label=`Description, payment ${n}`,
+                                style="min-width: 12rem"
+                              )
+                            td.align-middle
+                              input.form-control.form-control-sm(
+                                type="url",
+                                name=`tracking_url__${n}`,
+                                maxlength=2048,
+                                placeholder="https://",
+                                aria-label=`Tracking link, payment ${n}`,
+                                style="min-width: 10rem"
+                              )
+                            td.align-middle
+                              input.form-control.form-control-sm(
+                                type="text",
+                                name=`notes__${n}`,
+                                maxlength=1000,
+                                placeholder="e.g. Check received via mail",
+                                aria-label=`Notes, payment ${n}`,
+                                style="min-width: 12rem"
+                              )
+                            if enterpriseNextDueAt
+                              td.align-middle.text-center
+                                input(
+                                  type="checkbox",
+                                  name=`mark_paid__${n}`,
+                                  value="true",
+                                  checked=n === 1 && enterpriseNextDueAt.getTime() <= Date.now() + ms("7d"),
+                                  aria-label=`Payment ${n} pays for a billing period`
+                                )
+                            //- (last in its row)
+                            input(
+                              type="hidden",
+                              name=`payment_row__${n}`,
+                              value="true"
+                            )
+                  if enterpriseNextDueAt
+                    p.small.text-muted
+                      = "A checked payment pays for the billing period that is due, starting with the one due on "
+                      strong= enterpriseDate(enterpriseNextDueAt)
+                      = ". With several checked, each pays for the period after the one before it, from the top row down."
+                  button.btn.btn-success(type="submit") Record payments

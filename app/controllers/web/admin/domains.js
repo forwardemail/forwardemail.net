@@ -120,7 +120,7 @@ async function list(ctx) {
       .limit(ctx.query.limit)
       .skip(ctx.paginate.skip)
       .sort(getAllowedSort(ctx.query.sort, DOMAIN_SORT_FIELDS, '-created_at'))
-      .populate('members.user', 'id email')
+      .populate('members.user', 'id email is_enterprise')
       .lean()
       .exec(),
     Domains.countDocuments(query)

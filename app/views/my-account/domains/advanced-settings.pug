@@ -532,7 +532,7 @@ block body
             #current-plan.card.border-themed.mb-3
               h2.h6.card-header= t("Current Plan")
               .card-body
-                .alert.alert-success.small.mb-0!= t('This domain is currently on the <span class="notranslate">%s</span> plan. Visit your <a class="alert-link" href="%s">Billing</a> page and our <a class="alert-link" href="%s">Pricing</a> page to learn more and compare plans.', t(titleize(humanize(domain.plan))), l("/my-account/billing"), l(`/private-business-email?domain=${domain.name}`))
+                .alert.alert-success.small.mb-0!= t('This domain is currently on the <span class="notranslate">%s</span> plan. Visit your <a class="alert-link" href="%s">Billing</a> page and our <a class="alert-link" href="%s">Pricing</a> page to learn more and compare plans.', t(domain.is_enterprise ? "Enterprise" : titleize(humanize(domain.plan))), l("/my-account/billing"), l(`/private-business-email?domain=${domain.name}`))
               .card-footer.text-right
                 .btn-group
                   button.btn.btn-lg.btn-primary.dropdown-toggle(
