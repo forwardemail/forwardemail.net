@@ -156,6 +156,60 @@ block body
             .card-footer.text-right
               button.btn.btn-primary(type="submit")= t("Save")
 
+        //- the signed agreement of an enterprise customer (one PDF)
+        - const enterpriseAgreement = result.enterprise_agreement && result.enterprise_agreement.uploaded_at ? result.enterprise_agreement : null;
+        if result.is_enterprise || enterpriseAgreement
+          #enterprise-agreement.card.border-themed.mt-3
+            .card-header
+              h4.mb-0 Enterprise agreement
+            .card-body
+              p.small.text-muted The signed agreement (e.g. the PDF from DocuSign). Admins download it here, and the customer downloads it from their Billing page for as long as their account is enterprise. Nobody else can, and it is not part of the account as the API returns it.
+              if enterpriseAgreement
+                .d-flex.flex-wrap.align-items-center.mb-3
+                  a.btn.btn-primary.mr-2.mb-2(
+                    href=l(`/admin/users/${result.id}/enterprise/agreement`),
+                    download
+                  )
+                    i.fa.fa-fw.fa-download
+                    = " "
+                    = "Download"
+                  form.ajax-form.confirm-prompt.d-inline-block.mr-3.mb-2(
+                    action=l(`/admin/users/${result.id}/enterprise/agreement`),
+                    method="POST",
+                    data-confirm-prompt-title="Remove the agreement?",
+                    data-confirm-prompt-html="The customer can no longer download it either."
+                  )
+                    input(type="hidden", name="_method", value="DELETE")
+                    button.btn.btn-outline-danger(type="submit")
+                      i.fa.fa-fw.fa-remove
+                      = " "
+                      = "Remove"
+                  span.mb-2.text-break
+                    strong= enterpriseAgreement.name
+                    = ` (${bytes(enterpriseAgreement.size)}, uploaded ${enterpriseDate(enterpriseAgreement.uploaded_at)})`
+              else
+                .alert.alert-info No agreement uploaded yet.
+              if result.is_enterprise
+                form.confirm-prompt(
+                  action=l(`/admin/users/${result.id}/enterprise/agreement`),
+                  method="POST",
+                  enctype="multipart/form-data",
+                  data-confirm-prompt-title=enterpriseAgreement ? "Replace the agreement?" : "Upload the agreement?",
+                  data-confirm-prompt-html="The customer will be able to download this file from their Billing page."
+                )
+                  .form-group
+                    label(for="input-enterprise-agreement")= enterpriseAgreement ? "Replace it with another PDF" : "Upload a PDF"
+                    input#input-enterprise-agreement.form-control-file(
+                      type="file",
+                      name="agreement",
+                      accept="application/pdf,.pdf",
+                      required
+                    )
+                    small.form-text.text-muted A PDF of up to 10 MB.
+                  button.btn.btn-success(type="submit")= enterpriseAgreement ? "Replace agreement" : "Upload agreement"
+              else
+                p.small.text-muted.mb-0 This account is no longer enterprise, so the customer cannot download the agreement. Mark the account as enterprise to replace it.
+
         if result.is_enterprise || enterprisePayments.length > 0
           .card.border-themed.mt-3
             .card-header

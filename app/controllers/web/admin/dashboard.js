@@ -601,6 +601,9 @@ async function getReactivations() {
         from: 'users',
         localField: 'user',
         foreignField: '_id',
+        // (not the PDF of an enterprise account, see `enterprise_agreement` in
+        // the user model: it is large and never needed here)
+        pipeline: [{ $project: { 'enterprise_agreement.data': 0 } }],
         as: 'userInfo'
       }
     },

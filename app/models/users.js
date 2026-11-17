@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
+const { Buffer } = require('node:buffer');
 const crypto = require('node:crypto');
 const { isIP } = require('node:net');
 const { promisify } = require('node:util');
@@ -90,6 +91,7 @@ const omitExtraFields = [
   'enterprise_last_paid_at',
   'enterprise_reminder_due_at',
   'enterprise_reminder_sent_at',
+  'enterprise_agreement',
   config.userFields.domainCount,
   config.userFields.aliasCount,
   // TODO: change to allowlist
@@ -276,6 +278,36 @@ const Users = new mongoose.Schema({
   // the due date admins were last reminded of, and when
   enterprise_reminder_due_at: Date,
   enterprise_reminder_sent_at: Date,
+  //
+  // the signed enterprise agreement (one PDF, e.g. from DocuSign): an admin
+  // uploads it, and it is downloaded by admins and by the customer from
+  // their Billing page while the account is enterprise
+  //
+  enterprise_agreement: {
+    //
+    // (not read with the account: only a download selects it, so read the
+    // other paths by name, since selecting `enterprise_agreement` as a
+    // whole brings the file with it, and set them by name too, since
+    // assigning the whole object without `data` removes the file)
+    //
+    data: {
+      type: Buffer,
+      select: false,
+      validate: (value) =>
+        !value || value.length <= enterpriseBilling.MAX_AGREEMENT_SIZE
+    },
+    name: {
+      type: String,
+      trim: true,
+      maxlength: 255
+    },
+    size: Number,
+    uploaded_at: Date,
+    uploaded_by: {
+      type: mongoose.Schema.ObjectId,
+      ref: 'Users'
+    }
+  },
 
   // Session Management (rudimentary)
   sessions: [String], // simple Array of session ID's currently signed in

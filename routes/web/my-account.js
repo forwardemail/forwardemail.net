@@ -150,6 +150,12 @@ router
     rateLimit(100, 'create domain billing'),
     web.myAccount.createDomainBilling
   )
+  // (the agreement of an enterprise account, before receipts by reference)
+  .get(
+    '/billing/enterprise-agreement',
+    rateLimit(90, 'retrieve receipt'),
+    web.myAccount.retrieveEnterpriseAgreement
+  )
   .get(
     '/billing/:reference',
     rateLimit(90, 'retrieve receipt'),

@@ -19,6 +19,9 @@ const UNITS = { monthly: 'month', annual: 'year' };
 // the most a billing period or a payment can be (cents, $10,000,000)
 const MAX_AMOUNT = 1_000_000_000;
 
+// the most the agreement of an account can be (bytes, 10 MB)
+const MAX_AGREEMENT_SIZE = 10 * 1024 * 1024;
+
 /**
  * Start of the next billing period an enterprise account has not paid for.
  *
@@ -123,5 +126,6 @@ module.exports = {
   getNextDueAt,
   cancelSubscriptions,
   FREQUENCIES: Object.keys(UNITS),
-  MAX_AMOUNT
+  MAX_AMOUNT,
+  MAX_AGREEMENT_SIZE
 };

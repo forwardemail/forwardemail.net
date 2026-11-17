@@ -8,6 +8,7 @@ const bytes = require('@forwardemail/bytes');
 const paginate = require('koa-ctx-paginate');
 
 const createMultipart = require('#helpers/multipart');
+const enterpriseBilling = require('#helpers/enterprise-billing');
 const policies = require('#helpers/policies');
 const web = require('#controllers/web');
 
@@ -18,6 +19,15 @@ const router = new Router({ prefix: '/admin' });
 const upload = createMultipart(
   { limits: { files: 3, fileSize: bytes('51MB') } },
   { maxTotalBytes: bytes('160MB') }
+);
+
+//
+// the agreement of an enterprise customer is one PDF (kept on the account,
+// so well under the 16 MB a document can be)
+//
+const agreementUpload = createMultipart(
+  { limits: { files: 1, fileSize: enterpriseBilling.MAX_AGREEMENT_SIZE } },
+  { maxTotalBytes: enterpriseBilling.MAX_AGREEMENT_SIZE + bytes('1MB') }
 );
 
 router
@@ -69,6 +79,21 @@ router
   .delete(
     '/users/:id/enterprise/payments/:payment_id',
     web.admin.enterprise.removePayment
+  )
+
+  // the signed agreement of an enterprise customer (one PDF)
+  .get(
+    '/users/:id/enterprise/agreement',
+    web.admin.enterprise.retrieveAgreement
+  )
+  .post(
+    '/users/:id/enterprise/agreement',
+    agreementUpload.single('agreement'),
+    web.admin.enterprise.uploadAgreement
+  )
+  .delete(
+    '/users/:id/enterprise/agreement',
+    web.admin.enterprise.removeAgreement
   )
 
   // enterprise customers (all of them on one sheet)

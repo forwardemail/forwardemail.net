@@ -140,6 +140,15 @@ block body
                     )= `${numeral(enterprise.lastPayment.amount / 100).format("$0,0.00")} · ${enterpriseDay(enterprise.lastPayment.invoice_at)}`
                   else
                     span.text-muted= t("None yet")
+              //- (the signed agreement an admin uploaded, theirs to download)
+              if user.enterprise_agreement && user.enterprise_agreement.uploaded_at
+                a.btn.btn-outline-dark.btn-sm.mb-3(
+                  href=l("/my-account/billing/enterprise-agreement"),
+                  download
+                )
+                  i.fa.fa-fw.fa-download
+                  = " "
+                  = t("Download enterprise agreement (PDF)")
               .small.text-muted
                 != t('Questions about an invoice or a payment? <a href="%s">Contact us</a>.', l("/help"))
         else if user.plan !== 'free'

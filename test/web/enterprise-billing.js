@@ -16,6 +16,7 @@ const fs = require('node:fs');
 const os = require('node:os');
 const path = require('node:path');
 const process = require('node:process');
+const { Buffer } = require('node:buffer');
 
 const dayjs = require('dayjs-with-plugins');
 const falso = require('@ngneat/falso');
@@ -1519,4 +1520,240 @@ test('a payment is only ever shown to the account it belongs to', async (t) => {
 
   const kept = await Payments.findById(payment._id).lean().exec();
   t.is(kept.enterprise_description, undefined);
+});
+
+//
+// The signed agreement of an enterprise customer is a PDF an admin uploads.
+// Admins download it, and so does that customer while their account is
+// enterprise; nobody else does, and it is not part of the account anywhere
+// else.
+//
+test('the enterprise agreement is for admins and its own customer only', async (t) => {
+  const { customer } = t.context;
+  const pdf = Buffer.concat([
+    Buffer.from('%PDF-1.7\n'),
+    Buffer.from('agreement-of-this-test-'.repeat(200)),
+    Buffer.from('\n%%EOF\n')
+  ]);
+  const upload = (user, buffer = pdf, name = 'Signed Agreement.pdf', type) =>
+    t.context.web
+      .post(`/en/admin/users/${user.id}/enterprise/agreement`)
+      .set('Accept', 'application/json')
+      .attach('agreement', buffer, {
+        filename: name,
+        contentType: type || 'application/pdf'
+      });
+  const download = (agent, path) =>
+    agent
+      .get(path)
+      .buffer(true)
+      .parse((res, callback) => {
+        const chunks = [];
+        res.on('data', (chunk) => chunks.push(chunk));
+        res.on('end', () => callback(null, Buffer.concat(chunks)));
+      });
+  const adminPath = `/en/admin/users/${customer.id}/enterprise/agreement`;
+  const customerPath = '/en/my-account/billing/enterprise-agreement';
+
+  // not for an account that is not enterprise
+  t.is(await status(upload(customer)), 400);
+  t.is(await status(setEnterprise(t, customer)), 200);
+
+  // only a PDF, by what is in it, of up to 10 MB
+  t.is(
+    await status(
+      t.context.web.post(adminPath).set('Accept', 'application/json').send({})
+    ),
+    400
+  );
+  for (const buffer of [
+    Buffer.from('<html><script>alert(1)</script></html>'),
+    Buffer.from('%PDF-1.7 without an end'),
+    Buffer.concat([Buffer.from('MZ'), pdf]),
+    Buffer.alloc(0)
+  ])
+    t.is(await status(upload(customer, buffer)), 400);
+  const large = await upload(
+    customer,
+    Buffer.concat([
+      pdf,
+      Buffer.alloc(11 * 1024 * 1024, 32),
+      Buffer.from('%%EOF')
+    ])
+  );
+  t.true([400, 413].includes(large.status), `${large.status}`);
+  // (and one that is only just over it)
+  t.is(
+    await status(
+      upload(
+        customer,
+        Buffer.concat([
+          pdf,
+          Buffer.alloc(10 * 1024 * 1024, 32),
+          Buffer.from('%%EOF')
+        ])
+      )
+    ),
+    400
+  );
+  let raw = await Users.collection.findOne({ _id: customer._id });
+  t.is(raw.enterprise_agreement, undefined);
+
+  // uploaded, under a name that is safe in a path and in a header
+  t.is(
+    await status(
+      upload(customer, pdf, '../../etc/"Signed\r\nAgreement" (ACME) <2026>.PDF')
+    ),
+    200
+  );
+  raw = await Users.collection.findOne({ _id: customer._id });
+  t.true(pdf.equals(Buffer.from(raw.enterprise_agreement.data.buffer)));
+  t.is(raw.enterprise_agreement.size, pdf.length);
+  t.is(raw.enterprise_agreement.name, '_Signed_Agreement_ (ACME) _2026_.pdf');
+  t.is(String(raw.enterprise_agreement.uploaded_by), t.context.user.id);
+
+  // the file is not read with the account, nor part of it as the API
+  // returns it
+  const doc = await Users.findById(customer._id);
+  t.is(doc.enterprise_agreement.data, undefined);
+  t.is(doc.enterprise_agreement.size, pdf.length);
+  const lean = await Users.findById(customer._id).lean().exec();
+  t.is(lean.enterprise_agreement.data, undefined);
+  const json = JSON.stringify(doc.toObject());
+  t.false(json.includes('enterprise_agreement'));
+  t.false(json.includes('Signed'));
+  // (even when the file was read with it)
+  const full = await Users.findById(customer._id).select(
+    '+enterprise_agreement.data'
+  );
+  t.true(pdf.equals(full.enterprise_agreement.data));
+  t.is(full.toObject().enterprise_agreement, undefined);
+  t.false(JSON.stringify(full).includes('enterprise_agreement'));
+  // (and saving the account as it is read keeps the file)
+  doc[config.passport.fields.givenName] = 'Renamed';
+  await doc.save();
+  raw = await Users.collection.findOne({ _id: customer._id });
+  t.true(pdf.equals(Buffer.from(raw.enterprise_agreement.data.buffer)));
+
+  // an admin downloads it, as a file that is not shown in the page or kept
+  let res = await download(t.context.web, adminPath);
+  t.is(res.status, 200);
+  t.true(pdf.equals(res.body));
+  t.is(res.headers['content-type'], 'application/pdf');
+  t.regex(res.headers['content-disposition'], /^attachment; filename="/);
+  t.notRegex(res.headers['content-disposition'], /[\r\n]/);
+  t.is(res.headers['x-content-type-options'], 'nosniff');
+  t.is(res.headers['content-security-policy'], "default-src 'none'; sandbox");
+  t.regex(res.headers['cache-control'], /no-store/);
+  const page = await t.context.web.get(`/en/admin/users/${customer.id}`);
+  t.true(page.text.includes('_Signed_Agreement_ (ACME) _2026_.pdf'));
+  t.true(page.text.includes(`href="${adminPath}"`));
+
+  // the customer downloads it from their Billing page
+  const owner = await signIn(t, customer, t.context.customerPassword);
+  const billing = await owner.get('/en/my-account/billing');
+  t.true(billing.text.includes(`href="${customerPath}"`));
+  res = await download(owner, customerPath);
+  t.is(res.status, 200);
+  t.true(pdf.equals(res.body));
+  t.regex(res.headers['content-disposition'], /^attachment; filename="/);
+
+  // but changes nothing of it, and does not reach it as an admin does
+  t.is(
+    await status(owner.get(adminPath).set('Accept', 'application/json')),
+    401
+  );
+  t.is(
+    await status(
+      owner
+        .post(adminPath)
+        .set('Accept', 'application/json')
+        .attach('agreement', Buffer.from('%PDF-1.7\nmine\n%%EOF'), 'mine.pdf')
+    ),
+    401
+  );
+  t.is(
+    await status(owner.delete(adminPath).set('Accept', 'application/json')),
+    401
+  );
+
+  // another enterprise customer has no agreement, and never gets this one
+  const password = falso.randPassword();
+  let other = await t.context.userFactory.make();
+  other = await Users.register(other, password);
+  other[config.userFields.hasSetPassword] = true;
+  other[config.userFields.hasVerifiedEmail] = true;
+  other = await other.save();
+  const stranger = await signIn(t, other, password);
+  for (const isEnterprise of [false, true]) {
+    if (isEnterprise) t.is(await status(setEnterprise(t, other)), 200);
+    res = await download(
+      stranger.set('Accept', 'application/json'),
+      customerPath
+    );
+    t.is(res.status, 404);
+    t.false(res.body.includes('agreement-of-this-test'));
+    t.is(
+      await status(stranger.get(adminPath).set('Accept', 'application/json')),
+      401
+    );
+    const theirs = await stranger
+      .get('/en/my-account/billing')
+      .set('Accept', 'text/html');
+    t.true(theirs.text.includes('</html>'));
+    t.false(theirs.text.includes(customerPath));
+  }
+
+  // nor someone who is not signed in
+  const anonymous = await request(t.context._web.server)
+    .get(customerPath)
+    .set('Accept', 'application/json');
+  t.true(anonymous.body.redirectTo.includes('/login'));
+  t.false(anonymous.text.includes('agreement-of-this-test'));
+  t.is(
+    await status(
+      request(t.context._web.server)
+        .get(adminPath)
+        .set('Accept', 'application/json')
+    ),
+    401
+  );
+
+  // replaced by another upload
+  const second = Buffer.concat([pdf, Buffer.from('second\n%%EOF\n')]);
+  t.is(await status(upload(customer, second, 'second.pdf')), 200);
+  res = await download(owner, customerPath);
+  t.true(second.equals(res.body));
+
+  // once the account is no longer enterprise the customer does not get it
+  // (admins still do)
+  t.is(await status(setEnterprise(t, customer, { is_enterprise: '' })), 200);
+  res = await download(owner.set('Accept', 'application/json'), customerPath);
+  t.is(res.status, 404);
+  t.false(res.body.includes('agreement-of-this-test'));
+  const after = await owner
+    .get('/en/my-account/billing')
+    .set('Accept', 'text/html');
+  t.true(after.text.includes('</html>'));
+  t.false(after.text.includes(customerPath));
+  res = await download(t.context.web, adminPath);
+  t.is(res.status, 200);
+  t.true(second.equals(res.body));
+  t.is(await status(upload(customer)), 400);
+
+  // removed by an admin: nothing of it is left on the account
+  t.is(
+    await status(
+      t.context.web.delete(adminPath).set('Accept', 'application/json')
+    ),
+    200
+  );
+  raw = await Users.collection.findOne({ _id: customer._id });
+  t.is(raw.enterprise_agreement, undefined);
+  t.is(
+    await status(
+      t.context.web.get(adminPath).set('Accept', 'application/json')
+    ),
+    404
+  );
 });

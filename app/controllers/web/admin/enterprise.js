@@ -4,6 +4,7 @@
  */
 
 const crypto = require('node:crypto');
+const { Buffer } = require('node:buffer');
 
 const Boom = require('@hapi/boom');
 const RE2 = require('re2');
@@ -17,6 +18,7 @@ const { isURL } = require('@forwardemail/validator');
 const _ = require('#helpers/lodash');
 const config = require('#config');
 const enterpriseBilling = require('#helpers/enterprise-billing');
+const sendEnterpriseAgreement = require('#helpers/send-enterprise-agreement');
 const { Payments, Users } = require('#models');
 
 //
@@ -38,7 +40,8 @@ const RESERVED_REFERENCES = new Set([
   'UPDATE-CARD',
   'ENABLE-AUTO-RENEW',
   'UPGRADE-REQUEST',
-  'MANAGE-PAYMENTS'
+  'MANAGE-PAYMENTS',
+  'ENTERPRISE-AGREEMENT'
 ]);
 
 // a value of a form field (a repeated field is an array, and is refused)
@@ -731,8 +734,106 @@ async function updateAll(ctx) {
   );
 }
 
+//
+// The signed agreement of an enterprise customer (one PDF, e.g. from
+// DocuSign, see `enterprise_agreement` in the user model): admins upload,
+// replace, download and remove it here, and the customer downloads it from
+// their Billing page
+//
+const PDF_START = Buffer.from('%PDF-');
+const PDF_END = Buffer.from('%%EOF');
+
+// what the file was called, without anything a path or a header is made of
+function getAgreementName(name) {
+  const base = (typeof name === 'string' ? name : '')
+    .split(/[/\\]/)
+    .pop()
+    .normalize('NFKC')
+    .replace(/\.pdf$/i, '')
+    .replace(/[^\w .()-]+/g, '_')
+    .replace(/^[. ]+/, '')
+    .slice(0, 100)
+    .trim();
+  return `${base || 'enterprise-agreement'}.pdf`;
+}
+
+async function uploadAgreement(ctx) {
+  const user = await getUser(ctx);
+
+  if (!user.is_enterprise)
+    throw Boom.badRequest('This account is not marked as enterprise');
+
+  // (taken off the request so that its name is not written to the logs)
+  const file = ctx.file || ctx.request.file;
+  delete ctx.file;
+  delete ctx.request.file;
+  if (!file || !Buffer.isBuffer(file.buffer) || file.buffer.length === 0)
+    throw Boom.badRequest('Choose a PDF to upload');
+
+  if (file.buffer.length > enterpriseBilling.MAX_AGREEMENT_SIZE)
+    throw Boom.badRequest('The agreement must be 10 MB or less');
+
+  //
+  // a PDF by what is in it (not by its name or the type the browser gave,
+  // which are whatever the sender says): it starts with the PDF header and
+  // ends with the end-of-file marker
+  //
+  if (
+    !file.buffer.subarray(0, PDF_START.length).equals(PDF_START) ||
+    !file.buffer.subarray(-1024).includes(PDF_END)
+  )
+    throw Boom.badRequest('The agreement must be a PDF');
+
+  user.enterprise_agreement = {
+    data: file.buffer,
+    name: getAgreementName(file.originalname),
+    size: file.buffer.length,
+    uploaded_at: new Date(),
+    uploaded_by: ctx.state.user._id
+  };
+  await user.save();
+
+  ctx.logger.info('enterprise agreement uploaded', {
+    admin: ctx.state.user.id,
+    customer: user.id,
+    size: file.buffer.length
+  });
+
+  respond(ctx, 'Enterprise agreement uploaded');
+}
+
+async function retrieveAgreement(ctx) {
+  const user = await getUser(ctx);
+
+  ctx.logger.info('enterprise agreement downloaded', {
+    admin: ctx.state.user.id,
+    customer: user.id
+  });
+
+  await sendEnterpriseAgreement(ctx, user._id);
+}
+
+async function removeAgreement(ctx) {
+  const user = await getUser(ctx);
+
+  // (the file is not read with the account, so it is removed by its path)
+  await Users.findByIdAndUpdate(user._id, {
+    $unset: { enterprise_agreement: 1 }
+  });
+
+  ctx.logger.info('enterprise agreement removed', {
+    admin: ctx.state.user.id,
+    customer: user.id
+  });
+
+  respond(ctx, 'Enterprise agreement removed');
+}
+
 module.exports = {
   update,
+  uploadAgreement,
+  retrieveAgreement,
+  removeAgreement,
   createPayment,
   updatePayment,
   removePayment,

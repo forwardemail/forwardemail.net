@@ -47,6 +47,7 @@ const retrieveDomains = require('./retrieve-domains');
 const retrieveInvite = require('./retrieve-invite');
 const inviteLanding = require('./invite-landing');
 const retrieveProfile = require('./retrieve-profile');
+const retrieveEnterpriseAgreement = require('./retrieve-enterprise-agreement');
 const retrieveReceipt = require('./retrieve-receipt');
 const sortedDomains = require('./sorted-domains');
 const resendVerification = require('./resend-verification');
@@ -130,6 +131,7 @@ module.exports = {
   retrieveInvite,
   inviteLanding,
   retrieveProfile,
+  retrieveEnterpriseAgreement,
   retrieveReceipt,
   sortedDomains,
   resendVerification,
