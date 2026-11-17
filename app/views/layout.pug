@@ -111,7 +111,7 @@ html.h-100.no-js(
     main#main-content.flex-grow-1.d-flex.flex-column.flex-grow-1(
       role="main",
       tabindex="-1",
-      class=acctShell ? "acct-shell" : false
+      class=acctShell ? (acctFolded ? "acct-shell acct-shell--folded" : "acct-shell") : false
     )
       //- My Account and Admin pages sit beside the account sidebar. (The
       //- body is declared twice so that other pages keep their markup as is.)

@@ -188,6 +188,57 @@ $acct-sidebar-width: 15.5rem;
   }
 }
 
+// From lg the sidebar folds to a strip as wide as the button that opens it
+// again, and the page takes the room (the choice is kept for the session,
+// see POST /my-account/sidebar). Below lg the bar above opens the links.
+.acct-sidebar-fold {
+  display: none;
+}
+
+@media (min-width: 992px) {
+  .acct-sidebar-fold {
+    display: flex;
+    justify-content: flex-end;
+    padding: 0.5rem 0.75rem 0;
+  }
+
+  .acct-sidebar-fold-btn {
+    padding: 0.25rem 0.4rem;
+    line-height: 1;
+    color: var(--app-fg-secondary);
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: 0.375rem;
+
+    &:hover,
+    &:focus-visible {
+      color: var(--app-fg-primary);
+      background: var(--app-bg-sunken);
+      border-color: var(--app-border);
+    }
+  }
+
+  .acct-shell--folded {
+    .acct-sidebar {
+      flex-basis: 3rem;
+      width: 3rem;
+    }
+
+    .acct-sidebar-inner {
+      display: none;
+    }
+
+    .acct-sidebar-fold {
+      justify-content: center;
+      padding: 0.5rem 0 0;
+    }
+
+    .acct-sidebar-fold-btn .fa {
+      transform: rotate(180deg);
+    }
+  }
+}
+
 .acct-user {
   display: flex;
   gap: 0.65rem;

@@ -19,6 +19,7 @@ const ms = require('ms');
 const paginate = require('koa-ctx-paginate');
 const pify = require('pify');
 const render = require('koa-views-render');
+const { boolean } = require('boolean');
 // const utils = require('@forwardemail/passport-fido2-webauthn/lib/utils');
 const {
   SessionChallengeStore
@@ -662,6 +663,12 @@ router
     ctx.redirect(ctx.state.l('/my-account'));
   })
   .post('/timezone', web.myAccount.updateTimezone)
+  // the account sidebar, folded or not, for the rest of the session
+  .post('/sidebar', (ctx) => {
+    ctx.session.acct_sidebar_folded = boolean(ctx.request.body.folded);
+    if (ctx.accepts('html')) ctx.redirect('back');
+    else ctx.body = { folded: ctx.session.acct_sidebar_folded };
+  })
   .delete('/security', web.myAccount.resetAPIToken)
   .get(
     '/security/api-token',

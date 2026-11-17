@@ -974,6 +974,11 @@ module.exports = (redis) => ({
               !(ctx.session && ctx.session.otp)
           )
       });
+      // whether the account sidebar was left folded in this session (see
+      // POST /my-account/sidebar and app/views/_account-nav.pug)
+      Object.defineProperty(ctx.state.ctx, 'isSidebarFolded', {
+        get: () => Boolean(ctx.session && ctx.session.acct_sidebar_folded)
+      });
       return next();
     });
 

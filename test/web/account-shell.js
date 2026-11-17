@@ -896,3 +896,98 @@ test('profile and security list their sections under "On this page"', async (t) 
     }
   }
 });
+
+test('the sidebar folds away, and stays as it was left for the session', async (t) => {
+  const { web } = t.context;
+  await withDomain(t);
+
+  const state = (document) => {
+    const form = document.querySelector('form.acct-sidebar-fold');
+    return {
+      folded: document
+        .querySelector('#main-content')
+        .classList.contains('acct-shell--folded'),
+      // what pressing the button asks for, and what it says of the links
+      next: form.querySelector('input[name="folded"]').value,
+      expanded: form.querySelector('button').getAttribute('aria-expanded'),
+      label: form.querySelector('button').getAttribute('aria-label'),
+      action: form.getAttribute('action'),
+      controls: document.querySelector(
+        `#${form.querySelector('button').getAttribute('aria-controls')}`
+      )
+    };
+  };
+
+  // open at first, with a button that folds it
+  const open = state(await get(t, '/en/my-account/domains'));
+  t.false(open.folded);
+  t.is(open.next, 'true');
+  t.is(open.expanded, 'true');
+  t.is(open.label, 'Hide sidebar');
+  t.is(open.action, '/en/my-account/sidebar');
+  t.truthy(open.controls.querySelector('a'));
+
+  // folded in place by the script, which tells the server
+  const res = await web
+    .post(open.action)
+    .set('Accept', 'application/json')
+    .send({ folded: true });
+  t.is(res.status, 200);
+  t.deepEqual(res.body, { folded: true });
+
+  // every page after it is drawn folded, with a button that opens it
+  for (const path of [
+    '/en/my-account/domains',
+    '/en/my-account/security',
+    '/en/my-account/billing'
+  ]) {
+    const folded = state(await get(t, path));
+    t.true(folded.folded, `${path}`);
+    t.is(folded.next, 'false', `${path}`);
+    t.is(folded.expanded, 'false', `${path}`);
+    t.is(folded.label, 'Show sidebar', `${path}`);
+  }
+
+  // without JavaScript the button posts the form, and the page comes back
+  const back = await web
+    .post('/en/my-account/sidebar')
+    .set('Accept', 'text/html')
+    .set('Referer', `${new URL(res.request.url).origin}/en/my-account/security`)
+    .type('form')
+    .send({ folded: 'false' });
+  t.is(back.status, 302);
+  t.is(back.headers.location, '/en/my-account/security');
+  t.false(state(await get(t, '/en/my-account/security')).folded);
+});
+
+test('an admin page keeps the sidebar as it was left too', async (t) => {
+  const { web, user } = t.context;
+  user.group = 'admin';
+  await user.save();
+  await web
+    .post('/en/my-account/sidebar')
+    .set('Accept', 'application/json')
+    .send({ folded: true });
+  const document = await get(t, '/en/admin');
+  t.true(
+    document
+      .querySelector('#main-content')
+      .classList.contains('acct-shell--folded')
+  );
+  t.truthy(document.querySelector('form.acct-sidebar-fold'));
+});
+
+test('a page outside an account is never folded, and has no button', async (t) => {
+  const { web } = t.context;
+  await web
+    .post('/en/my-account/sidebar')
+    .set('Accept', 'application/json')
+    .send({ folded: true });
+  const document = await get(t, '/en/faq');
+  t.false(
+    document
+      .querySelector('#main-content')
+      .classList.contains('acct-shell--folded')
+  );
+  t.is(document.querySelector('form.acct-sidebar-fold'), null);
+});

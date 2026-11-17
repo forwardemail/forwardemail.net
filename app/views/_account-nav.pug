@@ -16,6 +16,9 @@
 //- The sidebar sits beside every page of My Account and Admin, except the
 //- print layouts of the receipts (.pdf and .html).
 - const acctShell = (acctInAdmin || acctInAccount) && !acctOtpPending && !isPDF && !acctPath.endsWith(".pdf") && !acctPath.endsWith(".html");
+//- From the lg breakpoint the sidebar folds to a narrow strip, and stays as
+//- it was left for the rest of the session (see POST /my-account/sidebar).
+- const acctFolded = acctShell && Boolean(ctx.isSidebarFolded);
 - const acctOn = (prefix) => acctPath === prefix || acctPath.startsWith(`${prefix}/`);
 
 //- The domain whose page the visitor is on (a domain page names the domain by

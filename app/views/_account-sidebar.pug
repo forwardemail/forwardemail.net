@@ -36,7 +36,22 @@ aside.acct-sidebar.d-print-none
     span.acct-sidebar-toggle-label= acctCurrent
     i.fa.fa-chevron-down.acct-sidebar-toggle-caret.ml-auto
   #acct-sidebar-nav.collapse.d-lg-block
-    nav.acct-sidebar-inner(
+    //- Folds the sidebar away and opens it again (from the lg breakpoint;
+    //- below it the bar above does). A form, so that it works without
+    //- JavaScript; with it, core.js folds the sidebar in place.
+    form.acct-sidebar-fold(action=l("/my-account/sidebar"), method="POST")
+      input(type="hidden", name="folded", value=acctFolded ? "false" : "true")
+      button.acct-sidebar-fold-btn(
+        type="submit",
+        aria-controls="acct-sidebar-links",
+        aria-expanded=acctFolded ? "false" : "true",
+        title=acctFolded ? t("Show sidebar") : t("Hide sidebar"),
+        aria-label=acctFolded ? t("Show sidebar") : t("Hide sidebar"),
+        data-label-show=t("Show sidebar"),
+        data-label-hide=t("Hide sidebar")
+      )
+        i.fa.fa-fw.fa-angle-double-left(aria-hidden="true")
+    nav#acct-sidebar-links.acct-sidebar-inner(
       aria-label=acctInAdmin ? t("Admin") : t("My Account")
     )
       //- who is signed in

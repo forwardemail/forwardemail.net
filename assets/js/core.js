@@ -970,6 +970,31 @@ window.addEventListener(
       debounce(domainKeyup, 300)
     );
 
+    // The account sidebar folds away in place, and the server keeps how it
+    // was left for the session, so the next page is drawn that way (without
+    // JavaScript the form posts and the page comes back folded)
+    $body.on('submit.acctSidebarFold', 'form.acct-sidebar-fold', function (ev) {
+      ev.preventDefault();
+      const $form = $(this);
+      const $input = $form.find('input[name="folded"]');
+      const folded = $input.val() === 'true';
+      $('#main-content').toggleClass('acct-shell--folded', folded);
+      $input.val(folded ? 'false' : 'true');
+      const $button = $form.find('button');
+      const label = $button.attr(
+        folded ? 'data-label-show' : 'data-label-hide'
+      );
+      $button
+        .attr('aria-expanded', folded ? 'false' : 'true')
+        .attr('aria-label', label)
+        .attr('title', label);
+      // (charts and tables size themselves to the room they now have)
+      window.dispatchEvent(new window.Event('resize'));
+      sendRequest({ folded }, $form.attr('action')).catch((err) =>
+        logger.error(err)
+      );
+    });
+
     // a vanity domain only forwards mail: while one is picked in the new
     // mailbox form, its storage option is greyed out and says why
     $body.on('change.vanityStorage', '#select-alias-domain', function () {
