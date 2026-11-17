@@ -40,7 +40,10 @@ const SQLite = require('../../sqlite-server');
 const config = require('#config');
 const createWebSocketAsPromised = require('#helpers/create-websocket-as-promised');
 const logger = require('#helpers/logger');
-const { MAX_DKIM_SIGNATURES } = require('#helpers/is-authenticated-message');
+const {
+  MAX_DKIM_BODY_HASHES,
+  MAX_DKIM_SIGNATURES
+} = require('#helpers/is-authenticated-message');
 const { MAX_SEPARATORS } = require('#helpers/get-unsafe-address-header');
 
 let getPort;
@@ -211,10 +214,10 @@ async function setupForwarding(t) {
   return { domain, received, send, port: smtp.server.address().port };
 }
 
-function dkimSignature(i) {
-  return `DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=acme-mail.net; s=s${i}; l=${
-    100_000 + i
-  }; h=from:to:subject; bh=AAAA; b=AAAA`;
+// a signature with a body length of its own (so a body hash of its own),
+// unless `tags` are given in its place
+function dkimSignature(i, tags = `l=${100_000 + i};`) {
+  return `DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=acme-mail.net; s=s${i}; ${tags} h=from:to:subject; bh=AAAA; b=AAAA`;
 }
 
 function message(domain, { headers = [], from = 'sender@acme-mail.net' } = {}) {
@@ -231,25 +234,61 @@ function message(domain, { headers = [], from = 'sender@acme-mail.net' } = {}) {
 
 test('refuses a message with more DKIM-Signature headers than the limit', async (t) => {
   const { domain, received, send } = await setupForwarding(t);
+  // (all hashing the body the same way)
   const headers = Array.from({ length: MAX_DKIM_SIGNATURES + 1 }, (_, i) =>
-    dkimSignature(i)
+    dkimSignature(i, '')
   );
 
   const err = await t.throwsAsync(send(message(domain, { headers })));
   t.is(err.responseCode, 421);
-  t.regex(err.message, /DKIM-Signature headers/);
+  t.regex(err.message, /more than 50 DKIM-Signature headers/);
   t.is(received.length, 0);
 });
 
-test('accepts a message with DKIM-Signature headers within the limit', async (t) => {
+test('refuses a message whose DKIM-Signature headers need more body hashes than the limit', async (t) => {
   const { domain, received, send } = await setupForwarding(t);
-  const headers = Array.from({ length: MAX_DKIM_SIGNATURES }, (_, i) =>
-    dkimSignature(i)
+  // a body length of its own each, folded as a signer may
+  const headers = Array.from({ length: MAX_DKIM_BODY_HASHES + 1 }, (_, i) =>
+    dkimSignature(i, `l =\r\n ${100_000 + i} ;`)
   );
 
-  await send(message(domain, { headers }));
+  const err = await t.throwsAsync(send(message(domain, { headers })));
+  t.is(err.responseCode, 421);
+  t.regex(err.message, /more than 10 different body hashes/);
+  t.is(received.length, 0);
+});
+
+test('accepts a message with DKIM-Signature headers within the limits', async (t) => {
+  const { domain, received, send } = await setupForwarding(t);
+  await send(
+    message(domain, {
+      headers: Array.from({ length: MAX_DKIM_BODY_HASHES }, (_, i) =>
+        dkimSignature(i)
+      )
+    })
+  );
   await pWaitFor(() => received.length === 1, { timeout: ms('10s') });
   t.pass();
+});
+
+test('accepts a message signed for many domains that hash the body the same way', async (t) => {
+  const { domain, received, send } = await setupForwarding(t);
+  // a sender that signs once for each domain of its group: more signatures
+  // than body hashes may be, and one body hash for all of them (spelled
+  // differently, or left to its default)
+  const headers = Array.from({ length: MAX_DKIM_SIGNATURES }, (_, i) =>
+    dkimSignature(i, '')
+      .replace('d=acme-mail.net', `d=brand${i}.acme-mail.net`)
+      .replace(
+        'c=relaxed/relaxed',
+        ['c=relaxed/relaxed', 'c=simple/Relaxed', 'c=relaxed / relaxed'][i % 3]
+      )
+  );
+  t.true(headers.length > MAX_DKIM_BODY_HASHES);
+
+  const used = await timed(() => send(message(domain, { headers })));
+  await pWaitFor(() => received.length === 1, { timeout: ms('10s') });
+  t.true(used.cpu < 2000, `${Math.round(used.cpu)}ms of CPU`);
 });
 
 // a value folded into lines of `width` characters

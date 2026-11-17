@@ -32,7 +32,7 @@ const MAX_ARRAY_LENGTH = 5;
 // value of a header that occurs more than once, see `helpers/get-headers.js`)
 //
 // (these are the message's own headers shown on the log page, such as a
-//  chain of Received headers or up to 10 DKIM-Signature headers, so the
+//  chain of Received headers or up to 50 DKIM-Signature headers, so the
 //  general array limit above would hide most of them)
 //
 const MAX_REPEATED_HEADER_VALUES = 50;

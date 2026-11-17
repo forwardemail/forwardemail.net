@@ -9,9 +9,14 @@ const { Buffer } = require('node:buffer');
 const isSANB = require('is-string-and-not-blank');
 const { spf } = require('mailauth/lib/spf');
 const { authenticate } = require('mailauth');
+const parseDkimHeaders = require('mailauth/lib/parse-dkim-headers');
 const isEmail = require('#helpers/is-email');
 const { createBoundedResolver } = require('#helpers/authentication-limits');
-const { checkFromLimits, countFields } = require('#helpers/header-limits');
+const {
+  checkFromLimits,
+  countFields,
+  headerFields
+} = require('#helpers/header-limits');
 const _ = require('#helpers/lodash');
 
 const SMTPError = require('#helpers/smtp-error');
@@ -35,9 +40,19 @@ const UBUNTU_DOMAINS = Object.keys(config.ubuntuTeamMapping);
 // signature or DNS record is checked, so N signatures with distinct `l=`
 // values hash the whole body N times: one ~1 MB message with 1000 bogus
 // signatures pinned an MX process for over 20 seconds.  Legitimate mail
-// carries a handful (the author's domain, an ESP, a list or two).
+// is hashed a few ways at most, however many signatures it has: a sender
+// signing once for each domain of its group (16 of them, relayed through an
+// email security gateway) hashes the body once for all of them.
 //
-const MAX_DKIM_SIGNATURES = 10;
+const MAX_DKIM_BODY_HASHES = 10;
+
+//
+// Each signature also has the header canonicalized, and its key looked up
+// and its signature checked where its body hash matches (the lookups are
+// limited for the message, see `helpers/authentication-limits`): 50 of them
+// on the longest header we read take less than the body hashes above.
+//
+const MAX_DKIM_SIGNATURES = 50;
 
 //
 // DNS errors fetching a DKIM key that may clear on a retry
@@ -72,6 +87,39 @@ function countHeaderFields(headers, name) {
   return countFields(headers.headers, name);
 }
 
+//
+// How many DKIM-Signature fields a header has, and how many body hashes
+// mailauth computes for them (see `messageHeaders` in
+// mailauth/lib/dkim/dkim-verifier, read here as it reads them: one for each
+// body canonicalization, hash algorithm and `l=` length among them)
+//
+function countDkimSignatures(headers) {
+  const bodyHashes = new Set();
+  let signatures = 0;
+  if (!headers?.headers) return { signatures, bodyHashes: 0 };
+  for (const field of headerFields(headers.headers)) {
+    if (field.name !== 'dkim-signature') continue;
+    signatures++;
+    // (no need to read more of them than may be)
+    if (signatures > MAX_DKIM_SIGNATURES) break;
+    const { parsed } = parseDkimHeaders(
+      Buffer.from(field.lines.join('\r\n'), 'latin1')
+    );
+    const algorithm = parsed?.a?.value || '';
+    const canonicalization = parsed?.c?.value || '';
+    const length = parsed?.l?.value;
+    bodyHashes.add(
+      [
+        (canonicalization.split('/')[1] || 'simple').toLowerCase().trim(),
+        algorithm.split('-').pop().toLowerCase().trim(),
+        length && !Number.isNaN(Number(length)) ? length : ''
+      ].join(':')
+    );
+  }
+
+  return { signatures, bodyHashes: bodyHashes.size };
+}
+
 function hasMultipleFromHeaders(headers) {
   return countHeaderFields(headers, 'from') > 1;
 }
@@ -86,9 +134,15 @@ async function isAuthenticatedMessage(headers, body, session, resolver) {
       ignore_hook: true
     });
 
-  if (countHeaderFields(headers, 'dkim-signature') > MAX_DKIM_SIGNATURES)
+  const dkim = countDkimSignatures(headers);
+  if (
+    dkim.signatures > MAX_DKIM_SIGNATURES ||
+    dkim.bodyHashes > MAX_DKIM_BODY_HASHES
+  )
     throw new SMTPError(
-      `The email sent has more than ${MAX_DKIM_SIGNATURES} DKIM-Signature headers`,
+      dkim.signatures > MAX_DKIM_SIGNATURES
+        ? `The email sent has more than ${MAX_DKIM_SIGNATURES} DKIM-Signature headers`
+        : `The email sent has DKIM-Signature headers with more than ${MAX_DKIM_BODY_HASHES} different body hashes`,
       {
         // temporary on purpose, so this can be relaxed without bouncing mail
         responseCode: 421,
@@ -495,3 +549,4 @@ async function isAuthenticatedMessage(headers, body, session, resolver) {
 
 module.exports = isAuthenticatedMessage;
 module.exports.MAX_DKIM_SIGNATURES = MAX_DKIM_SIGNATURES;
+module.exports.MAX_DKIM_BODY_HASHES = MAX_DKIM_BODY_HASHES;
