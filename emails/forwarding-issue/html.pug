@@ -20,14 +20,14 @@ block content
           .card-body
             p.card-text
               if isMailbox
-                = t("A message sent to this alias could not be stored in its mailbox.")
+                = t("A message sent to this mailbox could not be stored.")
               else if isWebhook
-                = t("A message sent to this alias could not be delivered to one of its webhooks.")
+                = t("A message sent to this mailbox could not be delivered to one of its webhooks.")
               else
-                = t("A message sent to this alias could not be forwarded to one of its recipients.")
+                = t("A message sent to this mailbox could not be forwarded to one of its recipients.")
             ul.list-unstyled
               li
-                strong= t("Alias")
+                strong= t("Mailbox")
                 = ": "
                 code= alias
               if !isMailbox
@@ -58,9 +58,9 @@ block content
                 = t("The receiving server kept deferring the message for %s, so delivery to it was stopped.", retryWindow)
                 = " "
               if status === 'delivered_to_others'
-                = t("The alias's other recipients received the message.")
+                = t("The mailbox's other recipients received the message.")
               else if status === 'not_delivered'
-                = t("This alias did not receive the message. Other recipients of the same email did, so the sender was not sent a bounce.")
+                = t("This mailbox did not receive the message. Other recipients of the same email did, so the sender was not sent a bounce.")
               else
                 = t("The message was not delivered, and the sender received a bounce.")
             if error
@@ -94,13 +94,13 @@ block content
                 if mailboxIssue === "quota"
                   = t("Free up storage in this mailbox or in the domain's other mailboxes (they share storage), or add storage to the account.")
                 else if isRateLimit
-                  = t("No change is needed on this alias or its storage. The limit resets on its own, by midnight UTC at the latest. If you need this message, ask the sender to send it again.")
+                  = t("No change is needed on this mailbox or its storage. The limit resets on its own, by midnight UTC at the latest. If you need this message, ask the sender to send it again.")
                 else
                   = t("See the error above. If you need this message, ask the sender to send it again.")
               else if isWebhook
-                = t("Make sure the webhook URL is correct and responds with a success status, or remove it from the alias.")
+                = t("Make sure the webhook URL is correct and responds with a success status, or remove it from the mailbox.")
               else
-                = t("Update or remove this forwarding recipient in the alias settings. If the address is correct, contact the provider that hosts it.")
+                = t("Update or remove this forwarding recipient in the mailbox settings. If the address is correct, contact the provider that hosts it.")
             if isRateLimit
               a.btn.btn-lg.btn-block.btn-primary(
                 href=`${config.urls.web}/${locale}/faq#do-you-have-rate-limiting`,
@@ -110,7 +110,7 @@ block content
               a.btn.btn-lg.btn-block.btn-primary(
                 href=`${config.urls.web}/${locale}/my-account/domains/${punycode.toASCII(domainName)}/aliases`,
                 role="button"
-              )= t("Edit aliases")
+              )= t("Edit mailboxes")
           .card-footer.small.text-muted.text-center
             if isMailbox
               = t("This email is sent at most once every %s for the same mailbox and reason.", interval)

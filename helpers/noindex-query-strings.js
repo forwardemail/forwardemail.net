@@ -5,6 +5,8 @@
 
 const isbot = require('isbot');
 
+const config = require('#config');
+
 /**
  * Noindex Query Strings Middleware
  *
@@ -25,6 +27,16 @@ const isbot = require('isbot');
 function noindexQueryStrings(ctx, next) {
   // Only process GET/HEAD requests (search engines primarily use these)
   if (ctx.method !== 'GET' && ctx.method !== 'HEAD') {
+    return next();
+  }
+
+  //
+  // A self-hosted instance serves the same pages as forwardemail.net (the
+  // home page, pricing, FAQ, guides) under its own hostname, so none of it
+  // is indexed: a copy otherwise ranks next to, or above, the original
+  //
+  if (config.isSelfHosted) {
+    ctx.set('X-Robots-Tag', 'noindex');
     return next();
   }
 

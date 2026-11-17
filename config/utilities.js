@@ -2993,33 +2993,328 @@ const descTemplates = [
     `Professional ${desc} for ${noun.toLowerCase()} with custom domains. Send and receive as you@yourdomain.com with IMAP, POP3, SMTP, and encrypted storage.`
 ];
 
+//
+// One page per noun ("Email Hosting for Churches"). There used to be fifteen
+// for each (email masking, bulk email, an email API and so on, all "Free"),
+// 7,000 pages that differed by a headline: those now redirect to the one page
+// (see `useCaseRedirects` in routes/web/index.js).
+//
+const thinUseCases = new Set();
+const useCaseRedirects = {};
+const useCaseSuffixes = [
+  'email-forwarding',
+  'email-provider',
+  'email-service',
+  'email-newsletters',
+  'email-api',
+  'email-masking',
+  'email-marketing',
+  'bulk-email-service',
+  'mass-email-service',
+  'email-automation',
+  'email-security',
+  'email-management',
+  'email-platform',
+  'email-solutions'
+];
+
+// (a hand-written page for the same noun, by path or by headline, stays the
+//  noun's page, and the others redirect to it)
+const useCaseTitles = new Map(
+  Object.entries(useCases).map(([route, [title]]) => [title, route])
+);
+
 for (const [nounIdx, noun] of nouns.entries()) {
-  for (const [titleIdx, title] of [
-    'Free Email Forwarding',
-    'Free Email Provider',
-    'Free Email Hosting',
-    'Free Email Service',
-    'Free Email Newsletters',
-    'Free Email API',
-    'Free Email Masking',
-    'Free Email Marketing',
-    'Free Bulk Email Service',
-    'Free Mass Email Service',
-    // NEW: Additional title variations (5 more)
-    'Free Email Automation',
-    'Free Email Security',
-    'Free Email Management',
-    'Free Email Platform',
-    'Free Email Solutions'
-  ].entries()) {
-    let desc = title.toLowerCase().replace('free', '').trim();
-    if (desc === 'email api') desc = 'an email API';
-    else if (desc === 'email provider') desc = 'an email platform';
-    const templateIdx = (nounIdx + titleIdx) % descTemplates.length;
-    useCases[`/${dashify(noun)}-${dashify(title.replace('Free', '').trim())}`] =
-      [`${title} for ${noun}`, descTemplates[templateIdx](desc, noun)];
+  const title = `Email Hosting for ${noun}`;
+  const own = `/${dashify(noun)}-email-hosting`;
+  const route = useCases[own] ? own : useCaseTitles.get(title) || own;
+  if (!useCases[route]) {
+    useCases[route] = [
+      title,
+      descTemplates[nounIdx % descTemplates.length]('email hosting', noun)
+    ];
+    thinUseCases.add(route);
+  }
+
+  for (const suffix of ['email-hosting', ...useCaseSuffixes]) {
+    const from = `/${dashify(noun)}-${suffix}`;
+    if (!useCases[from]) useCaseRedirects[from] = route;
   }
 }
+
+//
+// What a page says beyond its headline. A programmatic page with an entry
+// here is its own canonical page and is listed in the sitemap; one without
+// (see `thinUseCases`) stays canonical to /private-business-email.
+// Each entry: a heading, paragraphs, and example addresses with what they
+// are for.
+//
+const useCaseContent = {
+  '/attorneys-and-law-firms-email-hosting': {
+    heading: 'One mailbox per matter, at one flat price',
+    paragraphs: [
+      'A firm adds mailboxes as fast as it opens matters, and most providers bill for each one. Forward Email charges a flat rate for unlimited domains and mailboxes, so a mailbox per matter or per client costs nothing extra.',
+      'Each mailbox is stored in its own encrypted file, unlocked by its password. Staff use the mail apps they already know over IMAP, POP3, and SMTP, with calendars and contacts over CalDAV and CardDAV.'
+    ],
+    addresses: [
+      [
+        'intake@yourfirm.com',
+        'Forward new client inquiries to every partner at once.'
+      ],
+      [
+        'billing@yourfirm.com',
+        'Keep invoices and payment questions out of personal inboxes.'
+      ],
+      [
+        'smith-v-jones@yourfirm.com',
+        'Give a matter its own mailbox, then archive and download it when the matter closes.'
+      ],
+      [
+        'firstname@yourfirm.com',
+        'Give each attorney and paralegal an address on the firm domain.'
+      ]
+    ]
+  },
+  '/accountants-email-hosting': {
+    heading: 'Client documents in, without a shared inbox',
+    paragraphs: [
+      'Tax season brings a year of mail in three months. Storage is pooled across every mailbox on the account and more can be added when needed, so a busy mailbox borrows from a quiet one.',
+      'A flat rate covers unlimited domains and mailboxes. A practice that runs payroll, bookkeeping, and tax under separate names keeps each on its own domain in one account.'
+    ],
+    addresses: [
+      [
+        'documents@yourpractice.com',
+        'One address for clients to send statements and receipts.'
+      ],
+      [
+        'payroll@yourpractice.com',
+        'Forward to whoever runs payroll this month, and change it in seconds.'
+      ],
+      [
+        'clientname@yourpractice.com',
+        'Give a large client a dedicated address that reaches the right team.'
+      ],
+      [
+        'hello@yourpractice.com',
+        'Publish one contact address and forward it to the front desk.'
+      ]
+    ]
+  },
+  '/real-estate-agent-email-hosting': {
+    heading: 'An address that stays yours when you change brokerages',
+    paragraphs: [
+      'An agent who uses the brokerage address loses it, and every contact who has it, on moving to another brokerage. An address on a domain the agent owns moves with the agent.',
+      'Start with free forwarding to an inbox already in use, and add a mailbox when sending from the domain matters. Any number of domains fit in one account, so a domain per listing is practical.'
+    ],
+    addresses: [
+      [
+        'you@yourname.com',
+        'The address on signs and cards, whichever brokerage is on them.'
+      ],
+      [
+        'offers@yourname.com',
+        'Forward offers to the agent and the transaction coordinator together.'
+      ],
+      [
+        'info@123mainstreet.com',
+        'Give a listing its own domain and address, then retire it after closing.'
+      ],
+      ['team@yourname.com', 'One address that reaches everyone on the team.']
+    ]
+  },
+  '/restaurants-email-hosting': {
+    heading: 'Reservations, catering, and suppliers, each in the right hands',
+    paragraphs: [
+      'A restaurant needs a few role addresses more than it needs a mailbox per employee. Each address can forward to several people, and the list changes as the staff does, without a new address on the menu.',
+      'Forwarding is free. A paid plan adds mailboxes and sending from the domain, at one flat rate for every address and every location.'
+    ],
+    addresses: [
+      [
+        'reservations@yourrestaurant.com',
+        'Forward to the host stand and the manager on duty.'
+      ],
+      [
+        'catering@yourrestaurant.com',
+        'Keep event inquiries in one place from first email to deposit.'
+      ],
+      [
+        'orders@yourrestaurant.com',
+        'Receive supplier confirmations and invoices away from guest mail.'
+      ],
+      [
+        'jobs@yourrestaurant.com',
+        'Collect applications without publishing a personal address.'
+      ]
+    ]
+  },
+  '/churches-email-hosting': {
+    heading: 'Addresses for every ministry, on a volunteer budget',
+    paragraphs: [
+      'Volunteers change every year and the addresses should not. A role address such as youth@ forwards to whoever serves this year, and the congregation keeps writing to the same place.',
+      'Forwarding is free for any number of addresses. A paid plan covers unlimited mailboxes at one flat rate, so staff and ministry leaders can each have one.'
+    ],
+    addresses: [
+      ['office@yourchurch.org', 'Forward to the administrator and a backup.'],
+      [
+        'pastor@yourchurch.org',
+        'An address that passes to the next pastor without changing.'
+      ],
+      ['youth@yourchurch.org', 'Reach every youth leader with one message.'],
+      [
+        'giving@yourchurch.org',
+        'Keep donation receipts and questions with the treasurer.'
+      ]
+    ]
+  },
+  '/non-profits-email-hosting': {
+    heading: 'Professional addresses without a per-seat bill',
+    paragraphs: [
+      'Per-user pricing punishes an organization for adding volunteers and board members. A flat rate covers unlimited domains and mailboxes, so each of them can have an address on the organization domain.',
+      'The service is open source, and its security audits are published. Role addresses forward to several people, so a campaign or a committee has one address that outlasts whoever staffs it.'
+    ],
+    addresses: [
+      ['donate@yourcause.org', 'Forward donor questions to development staff.'],
+      [
+        'volunteer@yourcause.org',
+        'One address for sign-ups, read by every coordinator.'
+      ],
+      [
+        'board@yourcause.org',
+        'Reach the whole board without maintaining a list by hand.'
+      ],
+      [
+        'press@yourcause.org',
+        'Route media requests to the people cleared to answer them.'
+      ]
+    ]
+  },
+  '/photographers-email-hosting': {
+    heading: 'Your name on the address, not your mail provider',
+    paragraphs: [
+      'A booking inquiry sent from an address on the studio domain looks like a business. Forwarding to an existing inbox is free, and a mailbox adds sending as that address.',
+      'Messages up to 50 MB are accepted, which covers contracts, shot lists, and proofs sent by clients.'
+    ],
+    addresses: [
+      ['bookings@yourstudio.com', 'Keep inquiries apart from everything else.'],
+      ['hello@yourstudio.com', 'The address on the website and the watermark.'],
+      [
+        'invoices@yourstudio.com',
+        'Send and receive invoices from an address that is not personal.'
+      ],
+      [
+        'weddings@yourstudio.com',
+        'Split the business by type of work without another account.'
+      ]
+    ]
+  },
+  '/construction-companies-email-hosting': {
+    heading: 'A mailbox per project, closed out with the job',
+    paragraphs: [
+      'Bids, change orders, and inspections pile up by project. With unlimited mailboxes at a flat rate, each project gets an address that the superintendent, the project manager, and the office all receive.',
+      'When a job closes, its mailbox can be downloaded as an archive and removed. Field staff read mail in the mail app already on their phones.'
+    ],
+    addresses: [
+      [
+        'bids@yourcompany.com',
+        'Collect invitations to bid and subcontractor quotes.'
+      ],
+      [
+        'oak-street@yourcompany.com',
+        'One address per job site, forwarded to everyone on it.'
+      ],
+      [
+        'ap@yourcompany.com',
+        'Send supplier invoices straight to accounts payable.'
+      ],
+      ['safety@yourcompany.com', 'A standing address for incident reports.']
+    ]
+  },
+  '/schools-email-hosting': {
+    heading: 'Addresses for staff, departments, and alumni',
+    paragraphs: [
+      'A school adds and removes addresses every term. A flat rate for unlimited domains and mailboxes removes the count from the budget, and the API can create and remove addresses from the school roster.',
+      'Alumni keep a school address for life with forwarding: mail to the address goes to whichever inbox the graduate uses now.'
+    ],
+    addresses: [
+      ['admissions@yourschool.edu', 'Forward to the admissions team.'],
+      [
+        'firstname.lastname@yourschool.edu',
+        'Staff mailboxes that work in any mail app.'
+      ],
+      ['classof2026@yourschool.edu', 'One address that reaches a whole class.'],
+      [
+        'name@alumni.yourschool.edu',
+        'A lifelong forwarding address for graduates.'
+      ]
+    ]
+  },
+  '/consultants-email-hosting': {
+    heading: 'One account for every client-facing address',
+    paragraphs: [
+      'Clients often ask a consultant to use an address on their domain or a separate one for the engagement. Any number of domains and addresses fit in one account at the same price, each forwarding to one inbox or kept in its own mailbox.',
+      'When an engagement ends, its mailbox can be downloaded and removed.'
+    ],
+    addresses: [
+      ['you@yourname.com', 'The permanent address, on a domain that is yours.'],
+      [
+        'you@yourpractice.com',
+        'A second domain for the practice, in the same account.'
+      ],
+      [
+        'clientname@yourpractice.com',
+        'An address per client that keeps their mail apart.'
+      ],
+      [
+        'invoices@yourpractice.com',
+        'Billing mail that does not get lost among project mail.'
+      ]
+    ]
+  },
+  '/digital-agencies-email-hosting': {
+    heading: 'Run email for every client domain from one account',
+    paragraphs: [
+      'An agency sets up email for each site it launches. Unlimited domains are included at one price, and the API and webhooks handle setup, so a new client domain takes a few DNS records.',
+      'The Team plan adds members and permissions for the people who manage those domains.'
+    ],
+    addresses: [
+      [
+        'hello@clientdomain.com',
+        'Forward a new client site to its owner on launch day.'
+      ],
+      [
+        'forms@clientdomain.com',
+        'Send contact form mail from the client domain over SMTP.'
+      ],
+      [
+        'support@youragency.com',
+        'One address that reaches everyone on the account team.'
+      ],
+      [
+        'clientname@youragency.com',
+        'An address per client for approvals and feedback.'
+      ]
+    ]
+  },
+  '/e-commerce-email-hosting': {
+    heading: 'Order, support, and returns mail from your own domain',
+    paragraphs: [
+      'A store needs addresses that customers reply to and mail that arrives. Sending over SMTP and the API is signed with DKIM and aligned with SPF and DMARC for the store domain.',
+      'Webhooks deliver incoming mail to the store backend as JSON, so a reply to an order email can open a ticket. Every brand and storefront domain fits in one account.'
+    ],
+    addresses: [
+      [
+        'orders@yourstore.com',
+        'Send confirmations and receive replies to them.'
+      ],
+      [
+        'support@yourstore.com',
+        'Forward to the whole support team or to a help desk by webhook.'
+      ],
+      ['returns@yourstore.com', 'Keep return requests apart from new orders.'],
+      ['wholesale@yourstore.com', 'A separate door for trade customers.']
+    ]
+  }
+};
 
 // AI and LLM use cases
 useCases['/ai-email-automation'] = [
@@ -3038,6 +3333,20 @@ useCases['/claude-email-tool'] = [
   'Claude Email Tool',
   'Connect Forward Email to Claude as a tool to manage your email with natural language.'
 ];
+
+//
+// A hand-written page whose path ends as the programmatic ones do has only a
+// headline too: as before, it is canonical to /private-business-email and
+// not in the sitemap
+//
+for (const route of Object.keys(useCases)) {
+  if (
+    ['email-hosting', ...useCaseSuffixes].some((suffix) =>
+      route.endsWith(`-${suffix}`)
+    )
+  )
+    thinUseCases.add(route);
+}
 
 module.exports = {
   _,
@@ -3078,6 +3387,9 @@ module.exports = {
   highlightWords,
   randomstring,
   useCases,
+  thinUseCases,
+  useCaseContent,
+  useCaseRedirects,
   decrypt,
   formatPaymentAmount,
   formatPaymentNetAmount,

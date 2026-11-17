@@ -1,5 +1,8 @@
 extends ../layout
 
+block preheader
+  = t("Add your domain, update its DNS records, and your email starts working with Forward Email.")
+
 block content
   .container.mt-3
     .row
@@ -29,7 +32,7 @@ block content
               include ../_upgrade
             .p-3
               h2.h4!= t("Your Account")
-              p.card-text!= t("Manage your aliases, domains, settings, and security.")
+              p.card-text!= t("Manage your mailboxes, domains, settings, and security.")
               a.btn.btn-lg.btn-dark(
                 href=`${config.urls.web}/${locale}/my-account`
               )

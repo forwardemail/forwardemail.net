@@ -5,7 +5,7 @@
 -
   const featureRows = [
     {
-      title: t("Unlimited domains and aliases"),
+      title: t("Unlimited domains and email addresses"),
       badge: t("100% Free")
     },
     {
@@ -28,6 +28,13 @@
       text: t("Tested by Cure53, with the full report published."),
       href: `${config.urls.web}/pentest-report_forward-email.pdf`,
       link: t("Read the security audit"),
+      external: true
+    },
+    {
+      title: t("Technical whitepaper"),
+      text: t("How mail is received, encrypted, stored, and sent."),
+      href: `${config.urls.web}/technical-whitepaper.pdf`,
+      link: t("Read the whitepaper"),
       external: true
     },
     {

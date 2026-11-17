@@ -304,6 +304,13 @@ let jobs = [
     interval: '1h',
     timeout: 0
   },
+  // one-time email to the addresses free plan domains without an account
+  // forward to (sends nothing unless FREE_PLAN_INTRO_LIMIT is set)
+  {
+    name: 'free-plan-intro',
+    interval: '1h',
+    timeout: 0
+  },
   // feature reminder for users not taking advantage of IMAP/SMTP
   {
     name: 'feature-reminder',

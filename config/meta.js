@@ -29,6 +29,8 @@ const {
   nsProviders,
   platforms,
   getServersOrClientsList,
+  thinUseCases,
+  useCaseContent,
   useCases
 } = require('#config/utilities');
 
@@ -455,25 +457,9 @@ module.exports = function (config, isSitemap = false) {
   ];
 
   if (isSitemap) {
-    const titleSlugs = [
-      'Free Email Forwarding',
-      'Free Email Provider',
-      'Free Email Hosting',
-      'Free Email Service',
-      'Free Email Newsletters',
-      'Free Email API',
-      'Free Email Masking',
-      'Free Email Marketing',
-      'Free Bulk Email Service',
-      'Free Mass Email Service',
-      'Free Email Automation',
-      'Free Email Security',
-      'Free Email Management',
-      'Free Email Platform',
-      'Free Email Solutions'
-    ].map((s) => dashify(s.replace('Free', '').trim()));
+    // (a page that is only a headline is listed once it has content of its own)
     for (const key of Object.keys(useCases)) {
-      if (titleSlugs.some((s) => key.endsWith(s))) continue;
+      if (thinUseCases.has(key) && !useCaseContent[key]) continue;
       meta[key] = useCases[key];
     }
   } else {

@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
+const crypto = require('node:crypto');
+
 const { encrypt, decrypt } = require('./encrypt-decrypt');
 
 const config = require('#config');
@@ -71,7 +73,19 @@ function generateListUnsubscribeHeader(email, template, locale = 'en') {
   return `<${url}>`;
 }
 
+//
+// What is kept of an address without an account, in place of the address
+// (see app/models/email-opt-outs.js and app/models/free-plan-intros.js)
+//
+function hashEmail(email) {
+  return crypto
+    .createHash('sha256')
+    .update(email.toLowerCase().trim())
+    .digest('hex');
+}
+
 module.exports = {
+  hashEmail,
   generateUnsubscribeToken,
   parseUnsubscribeToken,
   generateUnsubscribeLink,

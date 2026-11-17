@@ -56,7 +56,9 @@ if domains.length > 0
     .text-muted.small.text-center
       .small!= t('Please note that MX and <span class="notranslate">TXT</span> statuses may be inaccurate.')
       if domains.some(d => d.ignore_mx_check)
-        .small (i) = MX check ignored
+        .small
+          = "(i) = "
+          = t("MX check ignored")
       if domains.some(d => d.plan !== 'free' && !d.has_spf_record)
         .small
           != emoji("warning")

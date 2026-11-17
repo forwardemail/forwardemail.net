@@ -109,7 +109,7 @@ function tellWhyRefused(client, addresses, rootDomain, err) {
             locals: {
               message: `${
                 err.html || _.escape(err.message)
-              }  Paid plans start at only $3/mo for unlimited domains, aliases, and more.`,
+              }  Paid plans start at only $3/mo for unlimited domains, mailboxes, and more.`,
               locale: 'en'
             }
           });
@@ -126,6 +126,28 @@ function tellWhyRefused(client, addresses, rootDomain, err) {
       else if (sent === 0) await client.del(domainKey);
     })
     .catch((_err) => logger.fatal(_err, { rootDomain }));
+}
+
+//
+// Queues the addresses a free plan domain's records forward to for the
+// one-time email about what the service includes (jobs/free-plan-intro.js
+// sends it, at most once per address, and only while a limit is set)
+//
+function queueFreePlanIntro(client, addresses, rootDomain) {
+  if (!(config.freePlanIntroLimit > 0)) return;
+  const emails = getRecordEmails(addresses, rootDomain);
+  if (emails.length === 0) return;
+  // (the job empties the queue each hour; it expires by itself if the job
+  //  is not running, so it cannot grow without end)
+  client
+    .pipeline()
+    .sadd(
+      config.freePlanIntroQueue,
+      emails.map((addr) => `${rootDomain} ${addr}`)
+    )
+    .pexpire(config.freePlanIntroQueue, ms('3h'))
+    .exec()
+    .catch((err) => logger.fatal(err, { rootDomain }));
 }
 
 function parseFilter(address) {
@@ -935,6 +957,8 @@ async function getForwardingAddresses(
     // or move
     //
     tellWhyRefused(this.client, addresses, rootDomain, obj.notice);
+  } else if (isFreePlanDomain && addresses.length > 0) {
+    queueFreePlanIntro(this.client, addresses, rootDomain);
   }
 
   // store if address is ignored or not

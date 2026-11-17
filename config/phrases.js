@@ -383,9 +383,12 @@ module.exports = {
   FREE_EMAIL: 'Learn more',
   RECENTLY_BLOCKED:
     'The target <span class="notranslate">%s</span> has recently blocked this IP address, please try again in 1 hour.',
-  CANNOT_CREATE_CATCHALL_ON_GLOBAL: 'Cannot create catch-all on global domain.',
-  CANNOT_CREATE_REGEX_ON_GLOBAL: 'Cannot create regex on global domain.',
-  CANNOT_USE_IMAP_ON_GLOBAL: 'Cannot use IMAP on global domain.',
+  CANNOT_CREATE_CATCHALL_ON_GLOBAL:
+    'Vanity domains are shared, so they cannot have a catch-all. <a class="font-weight-bold" href="/my-account/domains/new">Add your own domain name</a> to use one.',
+  CANNOT_CREATE_REGEX_ON_GLOBAL:
+    'Vanity domains are shared, so they cannot use regular expressions. <a class="font-weight-bold" href="/my-account/domains/new">Add your own domain name</a> to use them.',
+  CANNOT_USE_IMAP_ON_GLOBAL:
+    'Vanity domains only forward mail. To store mail (IMAP, POP3, CalDAV, and CardDAV) and send it, <a class="font-weight-bold" href="/my-account/domains/new">add your own domain name</a>. To forward only, uncheck the storage option and try again.',
   CANNOT_CREATE_CATCHALL_ON_DOMAIN:
     'Cannot create catch-all on domain due to large alias volume size.',
   CANNOT_CREATE_REGEX_ON_DOMAIN:

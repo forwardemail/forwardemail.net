@@ -1,5 +1,8 @@
 extends ../layout
 
+block preheader
+  = t("Upgrade this domain to Enhanced Protection to resume forwarding. Senders are told to retry until then.")
+
 block content
   .container.mt-3
     .row
@@ -9,7 +12,6 @@ block content
             != t("Email forwarding is paused")
           .card-body.p-0
             .p-3.text-center
-              h1.h3= t("Email forwarding is paused")
               p.card-text!= t('Upgrade <span class="font-weight-bold notranslate">%s</span> to Enhanced Protection to resume service.', domain)
               a.btn.btn-lg.btn-success(
                 href=`${config.urls.web}/${locale}/my-account/domains/new?domain=${domain}`
@@ -23,7 +25,7 @@ block content
                 = " "
                 != t('Visit <a href="%s">your domains</a> and click "Change Plan" for this domain to complete setup.', `${config.urls.web}/${locale}/my-account/domains`)
                 = " "
-                != t("Don't worry, the setup process is only two steps!")
+                != t("Setup takes two steps.")
             .p-3.text-center
               h2.h5= t("Why do you require a paid plan?")
               p.small.card-text.mb-0
@@ -34,11 +36,9 @@ block content
                 else if isDisposable
                   != t('Your domain name includes reserved keywords such as "mail", "disposable", and "inbox".')
                 = " "
-                = t("We require domains with this extension to upgrade to a paid plan by March 31, 2023.")
+                = t("These domains need a paid plan, which keeps spam, phishing, and malware off the service.")
                 = " "
-                = t("This is an effort in order to reduce spam, phishing, malware, and malicious email.")
-                = " "
-                = t("Our goal is to protect our customers, ensure deliverablity, and maintain a high-quality service.")
+                = t("It protects deliverability for every domain that forwards mail through us.")
             .p-3.text-center
               h2.h5= t("What are the benefits of a paid plan?")
               p.small.card-text= t("Unlimited domains, secure inbox privacy, opt-in recipient verification, 99.99% service uptime, custom spam filtering, and more.")
@@ -52,7 +52,7 @@ block content
                 = " "
                 = t("Anyone with a computer can lookup your forwarding configuration in a terminal if you are on the Free plan.")
                 = " "
-                = t("Unlike the Free plan, the Enhanced plan uses a cryptographically generated random string to store your forwarding configuration privately.")
+                = t("Unlike the Free plan, the Enhanced Protection plan uses a cryptographically generated random string to store your forwarding configuration privately.")
               ul.list-inline.mb-0.my-auto
                 li.list-inline-item
                   h5.mb-3= t("Free")
@@ -66,11 +66,9 @@ block content
             .p-3.text-center
               h2.h5= t("What will happen if I don't upgrade?")
               p.small.card-text
-                = t("Email forwarding will be suspended and you may not receive emails.")
+                = t("Until you upgrade, senders are told to retry later.")
                 = " "
-                = t("If you do not upgrade, then we will respond to email messages attempting to be delivered with a retry status code.")
-                = " "
-                = t("Senders will eventually stop retrying and you may miss important emails.")
+                = t("Senders stop retrying after a few days, and their emails are then lost.")
             .p-3.text-center
               h2.h5= t("Do you offer unlimited domains for one price?")
               p.small.card-text!= t('<span class="font-weight-bold">Yes.</span> Regardless of which plan you are on, you will pay only one monthly rate &ndash; which covers all of your domains.')
@@ -98,7 +96,7 @@ block content
                 )= t("Register new domain")
             .p-3.text-center
               h2.h5!= t("How do I upgrade to a paid plan?")
-              p.small.card-text!= t("Simply click the button below to upgrade in minutes.")
+              p.small.card-text!= t("Click the button below. It takes a few minutes.")
               a.btn.btn-lg.btn-success(
                 href=`${config.urls.web}/${locale}/my-account/domains/new?domain=${domain}`
               )= t("Upgrade Now")

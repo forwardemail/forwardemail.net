@@ -24,6 +24,12 @@ html(lang=locale)
     //- readers that show the message inside their own page (webmail, Gmail)
     //- drop <body> and its styles, so the width is set here as well
     .email-wrapper
+      //- the line an inbox shows after the subject; without one it shows the
+      //- header and the card title, which repeat the subject
+      .email-preheader(
+        style="display: none; max-height: 0; max-width: 0; overflow: hidden; opacity: 0; mso-hide: all"
+      )
+        block preheader
       block body
         block messages
           include _messages

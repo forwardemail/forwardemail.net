@@ -286,7 +286,7 @@ mixin fePricingDetail
             .fe-plan__head
               h3.fe-display-sm.fe-plan__name= fePlans.enterprise.name
               p.fe-plan__line
-                != t('For <a href="%s" class="text-themed font-weight-bold">education</a>, <a href="%s" class="text-themed font-weight-bold">universities</a>, <a href="%s" class="text-themed font-weight-bold">alumni</a>, <a href="%s" class="text-themed font-weight-bold">healthcare</a>, <a href="%s" class="text-themed font-weight-bold">government</a>, and custom implementations', l("/education-email-hosting-forwarding"), l("/universities-email-service"), l("/alumni-email-forwarding"), l("/healthcare-email-hosting-forwarding-hipaa"), l("/government-email-hosting-forwarding"))
+                != t('For <a href="%s" class="text-themed font-weight-bold">education</a>, <a href="%s" class="text-themed font-weight-bold">universities</a>, <a href="%s" class="text-themed font-weight-bold">alumni</a>, <a href="%s" class="text-themed font-weight-bold">healthcare</a>, <a href="%s" class="text-themed font-weight-bold">government</a>, and custom implementations', l("/education-email-hosting-forwarding"), l("/universities-email-hosting"), l("/alumni-email-forwarding"), l("/healthcare-email-hosting-forwarding-hipaa"), l("/government-email-hosting-forwarding"))
               +fePlanPrice(fePlans.enterprise.price)
               a.fe-btn.fe-btn--subtle.fe-btn--md.fe-btn--block(
                 href=fePlans.enterprise.href

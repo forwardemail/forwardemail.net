@@ -10,7 +10,7 @@ const titleize = require('titleize');
 
 const config = require('#config');
 const logger = require('#helpers/logger');
-const { parseUnsubscribeToken } = require('#helpers/unsubscribe');
+const { hashEmail, parseUnsubscribeToken } = require('#helpers/unsubscribe');
 
 /**
  * Handle unsubscribe requests (both GET and POST)
@@ -43,8 +43,25 @@ async function unsubscribe(ctx) {
   const user = await Users.findOne({ email: email.toLowerCase() });
 
   if (!user) {
-    // For POST requests (mail client one-click), return success even if user not found
-    // This prevents information disclosure and follows RFC 8058 recommendations
+    //
+    // An address without an account (a free plan domain forwards to it, and
+    // it was sent a notice about that domain): its choice is kept by a hash
+    // of the address, and helpers/email.js holds to it
+    //
+    try {
+      const { EmailOptOuts } = ctx.models || require('#models');
+      const hash = hashEmail(email);
+      const optOut =
+        (await EmailOptOuts.findOne({ hash })) || new EmailOptOuts({ hash });
+      if (template) optOut.templates.addToSet(template);
+      else optOut.all = true;
+      await optOut.save();
+    } catch (err) {
+      logger.error(err, { template });
+      if (ctx.method !== 'POST')
+        throw Boom.badRequest(ctx.translateError('UNKNOWN_ERROR'));
+    }
+
     if (ctx.method === 'POST') {
       ctx.status = 200;
       ctx.body = 'OK';

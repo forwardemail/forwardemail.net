@@ -1,0 +1,135 @@
+extends ../layout
+
+//- Sent once to each address a free plan domain without an account forwards
+//- to (see jobs/free-plan-intro.js): `domain` is that domain's name.
+block preheader
+  = t("Thank you for using Forward Email. It is email hosting, mailboxes, an email API, and apps now, not only forwarding.")
+
+//- A video as an email can show one: its poster (the same image the site
+//- shows, with a play button drawn into it since mail clients cannot layer
+//- one: img/video/<file>-play.jpg), linked to where the site plays it, and a
+//- button that says how long it is. The files and lengths are those of
+//- app/views/_fe-video.pug.
+mixin introVideo(file, href, label)
+  a.d-block.mb-3(href=href)
+    img.rounded(
+      src=manifest(`img/video/${file}-play.jpg`),
+      width=560,
+      alt=label,
+      style="max-width: 100%; height: auto; border: 0"
+    )
+  a.btn.btn-primary(href=href)
+    != "&#9654;"
+    = " "
+    = label
+
+//- A row of the lists below: a name, what it is, and where to read more
+mixin introRow(title, text, href, link)
+  .email-feature
+    span.email-check.text-success!= "&#10003;"
+    = " "
+    span.email-feature-title= title
+    br
+    span.small= text
+    = " "
+    a.small.font-weight-bold.text-nowrap(href=href)
+      = link
+      = " "
+      != "&rarr;"
+
+block content
+  - const safeDomain = _.escape(domain);
+  - const web = `${config.urls.web}/${locale}`;
+  - const faq = `${web}/faq`;
+  .container.mt-3
+    .row
+      .col-12
+        .card.border-dark.d-block.text-center
+          h1.h5.card-header= t("Forward Email is more than forwarding now")
+          .card-body.text-center.p-0
+            .p-3
+              p.card-text
+                strong= t("Thank you for using Forward Email.")
+                = " "
+                != t('Mail for <strong class="notranslate">%s</strong> reaches this address through us. The DNS records of the domain set that up.', safeDomain)
+              p.card-text!= t('Most people know us as a forwarding service. Forward Email is complete email infrastructure now: <a href="%s">email hosting</a> with <a href="%s">encrypted mailboxes</a>, <a href="%s">sending over SMTP</a>, an <a href="%s">email API</a>, and <a href="%s">enterprise support</a>.', `${web}/private-business-email`, `${faq}#do-you-support-receiving-email-with-imap`, `${faq}#do-you-support-sending-email-with-smtp`, `${web}/email-api`, `${faq}#what-is-included-in-the-enterprise-license`)
+              p.card-text.mb-0= t("This is a one-time email about what the service includes now. You will not receive it again.")
+            .p-3.bg-light
+              h2.h4= t("Forward Email in two minutes")
+              p.card-text
+                = t("A short tour of forwarding, encrypted mailboxes, sending, calendars and contacts, and the API.")
+                = " "
+                a.font-weight-bold(href=`${faq}#what-is-forward-email`)= t("What is Forward Email?")
+              +introVideo("forward-email", `${web}#video`, t("Watch the video (1:58)"))
+            .p-3
+              h2.h4= t("Features")
+              include ../_features
+            .p-3.bg-light
+              h2.h4= t("New apps for every device")
+              p.card-text
+                != t('Forward Email has its own <a href="%s">apps for macOS, Windows, Linux, Android, and iOS</a>, and <a href="%s">webmail</a> for any browser. They come with a mailbox on the Enhanced Protection plan.', `${faq}#do-you-have-desktop-and-mobile-apps`, `${faq}#do-you-offer-a-webmail-client`)
+              +introVideo("forward-email-apps", `${web}/download#video`, t("Watch the apps video (1:49)"))
+              .mt-3
+                a.btn.btn-outline-dark(href=`${web}/download`)= t("See all downloads")
+            .p-3
+              h2.h4= t("Your inbox in a terminal")
+              p.card-text
+                != t('The <a href="%s">same app runs in any terminal</a>, with the mouse, keyboard shortcuts, and desktop notifications. Install it with one command.', `${faq}#do-you-have-a-terminal-app`)
+              +introVideo("forward-email-terminal", `${web}/download#video-terminal`, t("Watch the terminal video (1:44)"))
+              p.card-text.mt-3.mb-0
+                != t('Comparing clients? <a href="%s" target="_blank" rel="noopener noreferrer" class="font-weight-bold notranslate">Terminal Email</a> is our guide to terminal email clients for Linux, macOS, Windows, BSD, and Android.', "https://terminalemail.com")
+            .p-3.bg-light
+              h2.h4= t("Much less spam")
+              p.card-text
+                != t('<a href="%s" target="_blank" rel="noopener noreferrer" class="font-weight-bold notranslate">Spam Scanner</a>, our open-source spam filter, runs on our mail servers. You should see a drastic improvement in spam, phishing, and scam mail.', "https://spamscanner.net")
+              a.btn.btn-outline-dark(
+                href=`${faq}#how-do-you-protect-against-spam-and-abuse`
+              )= t("How we filter spam")
+            .p-3
+              h2.h4= t("Coming in 2027, at no extra cost")
+              .text-left
+                +introRow(t("A datacenter in the EU"), t("Mail for your domain processed and stored in the European Union."), `${faq}#can-i-keep-my-email-processing-and-storage-in-the-eu-data-residency`, t("EU data residency"))
+                +introRow(t("Any email provider in our apps and webmail"), t("Add accounts from any IMAP and SMTP service beside your Forward Email mailboxes."), `${web}/download`, t("The apps"))
+                +introRow(t("Newsletters and campaigns, built in"), t("Manage lists and send campaigns from your account."), `${faq}#do-you-support-newsletters-or-mailing-lists-for-marketing-related-email`, t("Newsletters today"))
+              p.card-text.mt-3.mb-0
+                strong= t("All of these come at no extra cost.")
+            .p-3.bg-light
+              h2.h4= t("Keep your address private")
+              p.card-text= t("On the free plan, the address your mail forwards to is readable in public DNS records unless the record is encrypted. The free TXT Record Encryptor hides it, and a paid plan removes it from DNS.")
+              a.btn.btn-lg.btn-primary(href=`${web}/encrypt`)= t("Encrypt your record")
+            .p-3
+              h2.h4= t("Also from our team")
+              .text-left
+                +introRow("Privacy Ratings", t("Rates email providers, VPNs, browsers, and password managers against public privacy criteria."), "https://privacyratings.com", "privacyratings.com")
+                +introRow("Attestium", t("Checks that a server runs the code that was published, so open source can be verified."), "https://attestium.com", "attestium.com")
+                +introRow("Spam Scanner", t("The open-source spam filter that runs on our servers, for Node.js and mail servers such as Postfix."), "https://spamscanner.net", "spamscanner.net")
+            .p-3.bg-light
+              h2.h4= t("Product updates and community")
+              p.card-text= t("New features are announced in the newsletter and on X. The Event Feed lists releases, status incidents, and articles, and you can subscribe to it in your calendar. The newsletter comes with a free account.")
+              ul.list-inline.mb-0
+                li.list-inline-item.mb-2
+                  a.btn.btn-outline-dark(href=`${web}/register`)= t("Create a free account")
+                li.list-inline-item.mb-2
+                  a.btn.btn-outline-dark(
+                    href="https://x.com/fwdemail",
+                    target="_blank",
+                    rel="noopener noreferrer"
+                  )= t("Follow on X")
+                li.list-inline-item.mb-2
+                  a.btn.btn-outline-dark(href=`${web}/event-feed`)= t("Event Feed")
+                li.list-inline-item.mb-2
+                  a.btn.btn-outline-dark(
+                    href="https://github.com/forwardemail",
+                    target="_blank",
+                    rel="noopener noreferrer"
+                  )= t("GitHub")
+                li.list-inline-item.mb-2
+                  a.btn.btn-outline-dark(
+                    href="https://matrix.to/#/#forwardemail:matrix.org",
+                    target="_blank",
+                    rel="noopener noreferrer"
+                  )= t("Matrix Chat")
+          .card-footer.small.text-muted
+            = t("Sent once because the DNS records of this domain forward mail to this address.")
+            = " "
+            = t("Reply to this email with any questions.")

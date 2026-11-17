@@ -371,7 +371,7 @@ mixin planPriceWas(amount)
             .h3.text-center.font-weight-normal.mb-3
               = t("Enterprise")
             p.text-center.mb-3.small
-              != t('For <a href="%s" class="text-themed font-weight-bold">education</a>, <a href="%s" class="text-themed font-weight-bold">universities</a>, <a href="%s" class="text-themed font-weight-bold">alumni</a>, <a href="%s" class="text-themed font-weight-bold">healthcare</a>, <a href="%s" class="text-themed font-weight-bold">government</a>, and custom implementations', l("/education-email-hosting-forwarding"), l("/universities-email-service"), l("/alumni-email-forwarding"), l("/healthcare-email-hosting-forwarding-hipaa"), l("/government-email-hosting-forwarding"))
+              != t('For <a href="%s" class="text-themed font-weight-bold">education</a>, <a href="%s" class="text-themed font-weight-bold">universities</a>, <a href="%s" class="text-themed font-weight-bold">alumni</a>, <a href="%s" class="text-themed font-weight-bold">healthcare</a>, <a href="%s" class="text-themed font-weight-bold">government</a>, and custom implementations', l("/education-email-hosting-forwarding"), l("/universities-email-hosting"), l("/alumni-email-forwarding"), l("/healthcare-email-hosting-forwarding-hipaa"), l("/government-email-hosting-forwarding"))
             .lead.text-center.mb-3.text-nowrap
               +planPrice(planPricing.enterprise)
             a.btn.btn-block.btn-success.font-weight-bold(href=l("/help"))

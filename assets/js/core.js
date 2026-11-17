@@ -970,6 +970,19 @@ window.addEventListener(
       debounce(domainKeyup, 300)
     );
 
+    // a vanity domain only forwards mail: while one is picked in the new
+    // mailbox form, its storage option is greyed out and says why
+    $body.on('change.vanityStorage', '#select-alias-domain', function () {
+      const $form = $(this).closest('form');
+      const isVanity =
+        String($(this).find('option:selected').attr('data-is-global')) ===
+        'true';
+      const $storage = $form.find('#input-has-imap');
+      if (isVanity) $storage.prop('checked', false);
+      $storage.prop('disabled', isVanity);
+      $form.find('#vanity-storage-hint').toggleClass('d-none', !isVanity);
+    });
+
     const $btnPrint = $('#btn-print');
     if ($btnPrint.length > 0)
       $body.on('keyup keydown', function (ev) {

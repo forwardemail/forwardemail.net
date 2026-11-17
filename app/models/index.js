@@ -11,6 +11,8 @@ const Domains = require('./domains');
 const Inquiries = require('./inquiries');
 const Logs = require('./logs');
 const Payments = require('./payments');
+const EmailOptOuts = require('./email-opt-outs');
+const FreePlanIntros = require('./free-plan-intros');
 const SelfTests = require('./self-tests');
 const UpgradeReminders = require('./upgrade-reminders');
 const Users = require('./users');
@@ -39,6 +41,8 @@ module.exports = {
   Inquiries,
   Logs,
   Payments,
+  EmailOptOuts,
+  FreePlanIntros,
   SelfTests,
   UpgradeReminders,
   Users,

@@ -52,7 +52,7 @@ block body
               i.fa.fa-search-plus
 
   //- Bots are included deliberately: the h1 carries the per-route useCases
-  //- headline, which is the SEO content of all 7,252 programmatic pages.
+  //- headline of every use case page.
   //- ?pricing=true no longer drops the hero: the redesigned hero is compact,
   //- so the "jump to pricing" nav link still lands the table in view while
   //- the page opens on the new surface (matches isFePricingPage in
@@ -81,6 +81,23 @@ block body
   //- Own .fe-landing wrapper, without --flush: only the hero above (which is
   //- conditional) pulls up under the transparent bar.
   include _fe-marketing
+  //- What a use case page says beyond its headline (see `useCaseContent` in
+  //- config/utilities.js): the reason it is a page of its own.
+  - const useCase = useCaseContent[ctx.pathWithoutLocale];
+  if useCase
+    .fe-landing.no-search
+      section.fe-section.fe-surface-light.fe-section--pad.fe-marketing(
+        aria-labelledby="fe-use-case-title"
+      )
+        .fe-container
+          .fe-marketing__head
+            h2#fe-use-case-title.fe-display-lg.fe-marketing__title= t(useCase.heading)
+          each paragraph in useCase.paragraphs
+            p.fe-text= t(paragraph)
+          ul.fe-grid.fe-grid--md-2
+            each address in useCase.addresses
+              +feTile(address[0])
+                = t(address[1])
   #learn-more.fe-landing.no-search(data-ignore-hash-change)
     +feMarketing
   include _tti

@@ -23,14 +23,17 @@ footer.email-footer
           li.list-inline-item.small: a.text-muted(
             href=`${config.urls.web}/${locale}/terms`
           )= t("Terms")
-    if user && _.isObject(user)
+    //- (an email to an address without an account has the link too: the
+    //- address is kept from further emails by the link alone)
+    if unsubscribeUrl
       .row
         .col-12.text-center.small
-          if unsubscribeUrl
-            a.small.text-muted(href=unsubscribeUrl)
-              != t("Unsubscribe")
-          else
-            a.small.text-muted(
-              href=`${config.urls.web}/${locale}/my-account/profile`
-            )
-              != t("Unsubscribe")
+          a.small.text-muted(href=unsubscribeUrl)
+            != t("Unsubscribe")
+    else if user && _.isObject(user)
+      .row
+        .col-12.text-center.small
+          a.small.text-muted(
+            href=`${config.urls.web}/${locale}/my-account/profile`
+          )
+            != t("Unsubscribe")

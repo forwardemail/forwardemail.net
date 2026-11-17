@@ -1060,6 +1060,9 @@ Hello.
     await pWaitFor(() => received.length === 1, { timeout: ms('10s') });
     t.deepEqual(received[0], [`test@${IP_ADDRESS}`]);
     t.true(asked.includes(fresh));
+    // (no address is queued for the one-time free plan email unless a limit
+    //  is set, see jobs/free-plan-intro.js)
+    t.is(await t.context.client.scard(config.freePlanIntroQueue), 0);
 
     // (.online is an extension the free plan takes: a domain on it that was
     //  registered more than 90 days ago gets mail, as on any other)
@@ -1120,9 +1123,21 @@ Hello.
     const unknown = `unknown-${randomUUID().slice(0, 8)}.com`;
     archive.set(unknown, 'error');
     await addDomain(unknown);
+    config.freePlanIntroLimit = 10;
     await send(unknown);
     await pWaitFor(() => received.length === 4, { timeout: ms('10s') });
     t.deepEqual(received[3], [`test@${IP_ADDRESS}`]);
+    // (with a limit set, the address its records forward to is queued for
+    //  the one-time email, with the domain it gets mail for)
+    await pWaitFor(
+      async () =>
+        (await t.context.client.sismember(
+          config.freePlanIntroQueue,
+          `${unknown} test@${IP_ADDRESS}`
+        )) === 1,
+      { timeout: ms('10s') }
+    );
+    config.freePlanIntroLimit = 0;
     t.true(asked.includes(unknown));
     t.false(isTold(unknown));
 
@@ -1222,6 +1237,7 @@ Hello.
     t.is(received.length, 4);
   } finally {
     config.newDomainNoticeEndsAt = newDomainNoticeEndsAt;
+    config.freePlanIntroLimit = 0;
     getPreviousDomainUse.CDX_URL = CDX_URL;
     await new Promise((resolve) => {
       cdx.close(resolve);

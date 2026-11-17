@@ -61,7 +61,8 @@ if alias
           each domain, i in allDomains || domains
             option(
               value=domain.id,
-              selected=domainQuery && domainQuery === domain.name
+              selected=domainQuery && domainQuery === domain.name,
+              data-is-global=domain.is_global ? "true" : false
             )
               = domain.name
               if !domain.plan || domain.plan === 'free'
@@ -128,17 +129,26 @@ if alias
     = " "
     = t("We do not support forwarding recursively more than one level deep. If you forward recursively more than one level deep, then your desired configuration may not work as intended.")
 if !domain || !domain.is_global && (!isUbuntuAlias || domain.group === 'admin')
+  //- A vanity domain only forwards mail. While one is picked in the domain
+  //- list above, the storage option is greyed out and says why (core.js
+  //- follows the list as it changes).
+  - const selectableDomains = domain ? [] : allDomains || domains || [];
+  - const selectedDomain = selectableDomains.find((d) => domainQuery && domainQuery === d.name) || selectableDomains[0];
+  - const isVanitySelected = Boolean(selectedDomain && selectedDomain.is_global);
   .form-group.form-check
     input#input-has-imap.form-check-input(
       type="checkbox",
       name="has_imap",
-      checked=alias ? alias.has_imap : false,
+      checked=!isVanitySelected && alias ? alias.has_imap : false,
+      disabled=isVanitySelected,
       value="true"
     )
     label.form-check-label(for="input-has-imap")
       = "IMAP/POP3/CalDAV/CardDAV"
       = " "
       span.text-muted= t("(optional)")
+    if selectableDomains.some((d) => d.is_global)
+      #vanity-storage-hint.small.text-muted(class=isVanitySelected ? "" : "d-none")!= t('Vanity domains only forward mail. Storage needs your own domain name: <a href="%s">add your domain</a>.', l("/my-account/domains/new"))
   .alert.alert-success
     strong= t("Recommended:")
     = " "

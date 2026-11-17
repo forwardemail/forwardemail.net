@@ -18,7 +18,7 @@ const { decode } = require('html-entities');
 const isEmail = require('./is-email');
 const getEmailLocals = require('./get-email-locals');
 const logger = require('./logger');
-const { generateUnsubscribeLink } = require('./unsubscribe');
+const { generateUnsubscribeLink, hashEmail } = require('./unsubscribe');
 const _ = require('./lodash');
 
 const config = require('#config');
@@ -74,6 +74,53 @@ const email = new Email({
 });
 
 let conn;
+
+// emails an account needs, which cannot be unsubscribed from
+const criticalTemplates = new Set([
+  'verify',
+  'reset-password',
+  'change-email',
+  'account-update',
+  'domain-update',
+  'recovery',
+  'payment',
+  'payment-reminder',
+  'alert',
+  'inquiry',
+  'inquiry-response',
+  'storage-upgrade'
+]);
+
+// the addresses in the To, Cc and Bcc headers of a message
+function getRecipients(message) {
+  const emails = [];
+  for (const key of ['to', 'cc', 'bcc']) {
+    if (isEmail(message[key])) {
+      emails.push(message[key].toLowerCase());
+    } else if (_.isArray(message[key])) {
+      for (const addr of message[key]) {
+        if (isEmail(addr)) emails.push(addr.toLowerCase());
+      }
+    }
+  }
+
+  return emails;
+}
+
+// takes the addresses that unsubscribed out of those headers
+function removeRecipients(message, optedOutEmails) {
+  for (const key of ['to', 'cc', 'bcc']) {
+    if (isEmail(message[key])) {
+      if (optedOutEmails.includes(message[key].toLowerCase()))
+        delete message[key];
+    } else if (_.isArray(message[key])) {
+      message[key] = message[key].filter((v) =>
+        isEmail(v) ? !optedOutEmails.includes(v.toLowerCase()) : true
+      );
+      if (_.isEmpty(message[key])) delete message[key];
+    }
+  }
+}
 
 // what is logged for an email: never the bodies or attachment contents
 // (logging the whole payload serialized every report and attachment into
@@ -131,22 +178,16 @@ module.exports = async (data) => {
     // and if a value is returned (e.g. non null) then continue along
     // otherwise the user specifically opted out from these emails
     //
+    const isCriticalEmail =
+      typeof data?.template === 'string' &&
+      criticalTemplates.has(data.template);
+
     if (
       _.isObject(data.message) &&
       typeof data?.template === 'string' &&
       config.optOutTemplates.includes(data.template)
     ) {
-      const emails = [];
-      for (const key of ['to', 'cc', 'bcc']) {
-        if (isEmail(data?.message[key])) {
-          emails.push(data.message[key].toLowerCase());
-        } else if (_.isArray(data.message[key])) {
-          for (const addr of data.message[key]) {
-            if (isEmail(addr)) emails.push(addr.toLowerCase());
-          }
-        }
-      }
-
+      const emails = getRecipients(data.message);
       if (emails.length > 0) {
         if (!conn)
           conn = mongoose.connections.find(
@@ -159,17 +200,33 @@ module.exports = async (data) => {
           },
           opt_out_templates: data.template
         });
-        for (const key of ['to', 'cc', 'bcc']) {
-          if (isEmail(data?.message[key])) {
-            if (optedOutEmails.includes(data.message[key].toLowerCase()))
-              delete data.message[key];
-          } else if (_.isArray(data.message[key])) {
-            data.message[key] = data.message[key].filter((v) =>
-              isEmail(v) ? !optedOutEmails.includes(v.toLowerCase()) : true
-            );
-            if (_.isEmpty(data.message[key])) delete data.message[key];
-          }
-        }
+        removeRecipients(data.message, optedOutEmails);
+      }
+    }
+
+    //
+    // An address without an account that unsubscribed (see the unsubscribe
+    // controller) is not sent what it unsubscribed from either: every email
+    // with an unsubscribe link, or the one kind it was sent
+    //
+    if (
+      _.isObject(data.message) &&
+      typeof data?.template === 'string' &&
+      !isCriticalEmail
+    ) {
+      const emails = getRecipients(data.message);
+      if (emails.length > 0) {
+        // (required here: the models require this helper)
+        const EmailOptOuts = require('#models/email-opt-outs');
+        const hashes = await EmailOptOuts.distinct('hash', {
+          hash: { $in: emails.map((email) => hashEmail(email)) },
+          $or: [{ all: true }, { templates: data.template }]
+        });
+        if (hashes.length > 0)
+          removeRecipients(
+            data.message,
+            emails.filter((email) => hashes.includes(hashEmail(email)))
+          );
       }
     }
 
@@ -212,25 +269,6 @@ module.exports = async (data) => {
 
     // Only add unsubscribe headers if we have a recipient email
     // and this is not a critical account email (like password reset, verification, etc.)
-    const criticalTemplates = [
-      'verify',
-      'reset-password',
-      'change-email',
-      'account-update',
-      'domain-update',
-      'recovery',
-      'payment',
-      'payment-reminder',
-      'alert',
-      'inquiry',
-      'inquiry-response',
-      'storage-upgrade'
-    ];
-
-    const isCriticalEmail =
-      typeof data?.template === 'string' &&
-      criticalTemplates.includes(data.template);
-
     if (recipientEmail && !isCriticalEmail) {
       // Determine the locale from data.locals or default to 'en'
       const locale = data?.locals?.locale || 'en';

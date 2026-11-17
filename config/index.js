@@ -1663,6 +1663,11 @@ const config = {
   friendlyFromEmail: env.EMAIL_FRIENDLY_FROM,
   securityEmail: env.EMAIL_SECURITY,
   isSelfHosted: env.SELF_HOSTED,
+  // one-time email for free plan domains without an account: how many are
+  // sent per hour (zero, or anything that is not a whole number, sends
+  // none, see jobs/free-plan-intro.js)
+  freePlanIntroLimit: Number.parseInt(env.FREE_PLAN_INTRO_LIMIT, 10) || 0,
+  freePlanIntroQueue: 'free_plan_intro_queue',
   email: {
     // NOTE: preview must be `false` (not an object) when PREVIEW_EMAIL is false
     // otherwise email-templates will still call preview-email and write files to /tmp

@@ -6,12 +6,12 @@
   h2.h3= t("Need real-time alerts and logs?")
   p.card-text
     = " "
-    != t('<strong>Upgrading will unlock <a href="%s" target="_blank">real-time alerts and logs</a> and <a href="%s" target="_blank">outbound SMTP support</a></strong>.', `${config.urls.web}/faq#do-you-store-error-logs`, `${config.urls.web}/guides/send-email-with-custom-domain-smtp`)
+    != t('<strong>Upgrading will unlock <a href="%s" target="_blank">real-time alerts and logs</a> and <a href="%s" target="_blank">outbound SMTP support</a></strong>.', `${config.urls.web}/${emailLocale}/faq#do-you-store-error-logs`, `${config.urls.web}/${emailLocale}/guides/send-email-with-custom-domain-smtp`)
     = " "
-    != t("Outbound SMTP support means you can send email using any alias with your custom domain name.")
+    != t("Outbound SMTP support means you can send email from any address at your custom domain name.")
   .d-block.mb-1
     a.btn.btn-lg.btn-primary(
-      href=typeof domain !== "undefined" && domain && domain.name ? `${config.urls.web}/${emailLocale}/my-account/domains/${punycode.toASCII(domain.name)}/billing?plan=enhanced_protection` : `${config.urls.web}/my-account/billing/upgrade?plan=enhanced_protection`,
+      href=typeof domain !== "undefined" && domain && domain.name ? `${config.urls.web}/${emailLocale}/my-account/domains/${punycode.toASCII(domain.name)}/billing?plan=enhanced_protection` : `${config.urls.web}/${emailLocale}/my-account/billing/upgrade?plan=enhanced_protection`,
       role="button"
     )
       = t("Upgrade for $3")
@@ -65,10 +65,10 @@
     = " "
     = t("The cost is only $3 per month and supports our roadmap, server infrastructure, and the open-source community.")
   p.card-text.font-weight-bold
-    = t("Upgrading includes unlimited domains and aliases, real-time alerts and logs, outbound SMTP access, and more.")
+    = t("Upgrading includes unlimited domains and mailboxes, real-time alerts and logs, outbound SMTP access, and more.")
   .d-block.mb-1
     a.btn.btn-lg.btn-primary(
-      href=typeof domain !== "undefined" && domain && domain.name ? `${config.urls.web}/${emailLocale}/my-account/domains/${punycode.toASCII(domain.name)}/billing?plan=enhanced_protection` : `${config.urls.web}/my-account/billing/upgrade?plan=enhanced_protection`,
+      href=typeof domain !== "undefined" && domain && domain.name ? `${config.urls.web}/${emailLocale}/my-account/domains/${punycode.toASCII(domain.name)}/billing?plan=enhanced_protection` : `${config.urls.web}/${emailLocale}/my-account/billing/upgrade?plan=enhanced_protection`,
       role="button"
     )
       = t("Upgrade for $3")

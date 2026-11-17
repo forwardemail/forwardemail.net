@@ -41,6 +41,9 @@ const {
   developerDocs,
   nsProviders,
   platforms,
+  thinUseCases,
+  useCaseContent,
+  useCaseRedirects,
   useCases
 } = require('#config/utilities');
 const { web } = require('#controllers');
@@ -812,15 +815,13 @@ for (const route of Object.keys(useCases)) {
     web.myAccount.retrieveDomains,
     web.myAccount.sortedDomains,
     (ctx, next) => {
-      // Determine if this is a static (hand-written) use case or a programmatic one
-      const isStaticUseCase =
-        !/-(email-forwarding|email-provider|email-hosting|email-service|email-newsletters|email-api|email-masking|email-marketing|bulk-email-service|mass-email-service|email-automation|email-security|email-management|email-platform|email-solutions)$/.test(
-          ctx.pathWithoutLocale
-        );
+      // A page that is only a headline (see `thinUseCases`) is canonical to
+      // /private-business-email unless it has content of its own (see
+      // `useCaseContent`); every other use case is its own canonical page
+      const hasOwnContent =
+        !thinUseCases.has(route) || Boolean(useCaseContent[route]);
 
-      // Static use cases get self-referencing canonical (unique content)
-      // Programmatic pages canonicalize to /private-business-email (thin/duplicate content)
-      ctx.state.canonical = isStaticUseCase
+      ctx.state.canonical = hasOwnContent
         ? `${config.urls.web}/${ctx.locale}${ctx.pathWithoutLocale}`
         : `${config.urls.web}/${ctx.locale}/private-business-email`;
 
@@ -829,6 +830,14 @@ for (const route of Object.keys(useCases)) {
     loadTtiSummary,
     render('pricing')
   );
+}
+
+// the fourteen other pages each noun used to have
+for (const [from, to] of Object.entries(useCaseRedirects)) {
+  localeRouter.get(from, (ctx) => {
+    ctx.status = 301;
+    ctx.redirect(`${ctx.state.l(to)}${ctx.search}`);
+  });
 }
 
 for (const doc of developerDocs) {

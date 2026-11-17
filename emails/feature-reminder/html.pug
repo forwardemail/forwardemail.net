@@ -1,5 +1,8 @@
 extends ../layout
 
+block preheader
+  = t("Webmail, apps, storage, sending, calendars, contacts, and the API are part of your plan.")
+
 block content
   -
     const whatsNew = [
@@ -31,7 +34,7 @@ block content
       },
       {
         title: t("MCP Server"),
-        text: t("Manage email, domains, aliases, contacts, and calendars from AI assistants."),
+        text: t("Manage email, domains, mailboxes, contacts, and calendars from AI assistants."),
         href: `${config.urls.web}/${locale}/blog/docs/mcp`,
         link: t("Learn more")
       }
@@ -201,7 +204,7 @@ block content
             //- Account and support
             .p-3.bg-light.text-center
               h2.h4= t("Your Account")
-              p.card-text= t("Manage your aliases, domains, settings, and security.")
+              p.card-text= t("Manage your mailboxes, domains, settings, and security.")
               ul.list-inline.mb-0
                 li.list-inline-item.mb-2
                   a.btn.btn-lg.btn-dark(

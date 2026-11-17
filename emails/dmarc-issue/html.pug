@@ -58,7 +58,7 @@ block content
             .p-3
               h2.h5= t("What will happen if I don't resolve this?")
               p.card-text
-                != t('We have rewritten your email using a <a href="%s" class="font-weight-bold" target="_blank" rel="noopener noreferrer">friendly-from</a> approach.', `${config.urls.web}/faq#how-do-you-handle-email-delivery-issues`)
+                != t('We have rewritten your email using a <a href="%s" class="font-weight-bold" target="_blank" rel="noopener noreferrer">friendly-from</a> approach.', `${config.urls.web}/${locale}/faq#how-do-you-handle-email-delivery-issues`)
                 = " "
                 = t('This means that your emails will get forwarded with a different "From" header and an added "Reply-To" header.')
                 = " "

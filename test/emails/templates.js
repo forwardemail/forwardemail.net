@@ -9,6 +9,7 @@ const path = require('node:path');
 const Email = require('email-templates');
 const nodemailer = require('nodemailer');
 const pug = require('pug');
+const sharp = require('sharp');
 const test = require('ava');
 const { JSDOM } = require('jsdom');
 
@@ -122,6 +123,7 @@ const templates = [
   'domain-onboard',
   'domain-verified',
   'feature-reminder',
+  'free-plan-intro',
   'holiday-2025',
   'launch',
   'past-due-relief',
@@ -150,6 +152,14 @@ for (const template of templates) {
 const callerLocals = {
   'self-test': { locale: 'en' },
   'phishing-alert': { locale: 'en', domain: 'example.com' },
+  'free-plan-intro': { locale: 'en', domain: 'example.com' },
+  'upgrade-reminder': {
+    locale: 'en',
+    domain: 'example.xyz',
+    isGood: false,
+    isDisposable: false,
+    isRestricted: false
+  },
   'welcome-mailbox': { locale: 'en', aliasAddress: 'hello@example.com' },
   'past-due-relief': { user: { ...user, plan: 'enhanced_protection' } }
 };
@@ -177,6 +187,7 @@ for (const template of [
   'phishing-alert',
   'past-due-relief',
   'feature-reminder',
+  'free-plan-intro',
   'welcome-mailbox'
 ]) {
   test(`${template} links webmail, the download page, and the security audit`, async (t) => {
@@ -189,6 +200,172 @@ for (const template of [
     t.false(html.includes('years and counting'));
   });
 }
+
+test('the one-time free plan email names the domain and what to do next', async (t) => {
+  const info = await renderer.send({
+    template: 'free-plan-intro',
+    message: { to: user.email },
+    locals: callerLocals['free-plan-intro']
+  });
+  const { subject, html } = JSON.parse(info.message);
+  t.true(subject.endsWith('example.com forwards mail with Forward Email'));
+  const content = body(html);
+  t.true(content.includes('example.com'));
+  t.true(content.includes(`${config.urls.web}/en/encrypt`));
+  t.true(content.includes(`${config.urls.web}/en/register`));
+  // (the tour, the apps and the terminal app: each video's poster, linked
+  //  to where the site plays it, and Terminal Email)
+  const { document } = new JSDOM(content).window;
+  for (const [file, href] of [
+    ['forward-email', `${config.urls.web}/en#video`],
+    ['forward-email-apps', `${config.urls.web}/en/download#video`],
+    ['forward-email-terminal', `${config.urls.web}/en/download#video-terminal`]
+  ]) {
+    const links = [...document.querySelectorAll(`a[href="${href}"]`)];
+    t.is(links.length, 2, `${file}`);
+    const poster = links[0].querySelector('img');
+    t.regex(
+      poster.getAttribute('src'),
+      new RegExp(`/img/video/${file}-play(-[\\da-f]+)?\\.jpg$`),
+      `${file}`
+    );
+    t.truthy(poster.getAttribute('alt'));
+  }
+
+  t.truthy(document.querySelector('a[href="https://terminalemail.com"]'));
+
+  // (a mail client cannot layer a play button over a picture, so each
+  //  poster has one drawn into its middle: blue on white, where the plain
+  //  poster is dark)
+  for (const file of [
+    'forward-email',
+    'forward-email-apps',
+    'forward-email-terminal'
+  ]) {
+    const dir = path.join(__dirname, '..', '..', 'assets', 'img', 'video');
+    const middle = (name) =>
+      sharp(path.join(dir, name))
+        .extract({ left: 636, top: 356, width: 8, height: 8 })
+        .raw()
+        .toBuffer();
+    const [r, g, b] = await middle(`${file}-play.jpg`);
+    t.true(b > 190 && r < 90 && g < 140, `${file} ${r},${g},${b}`);
+    const { width, height } = await sharp(
+      path.join(dir, `${file}-play.jpg`)
+    ).metadata();
+    t.deepEqual([width, height], [1280, 720], `${file}`);
+  }
+
+  // (it thanks them, says what the service is now, and links each part to
+  //  its page or its answer in the FAQ)
+  t.true(content.includes('Thank you for using Forward Email.'));
+  for (const href of [
+    `${config.urls.web}/en/private-business-email`,
+    `${config.urls.web}/en/email-api`,
+    `${config.urls.web}/en/faq#do-you-support-receiving-email-with-imap`,
+    `${config.urls.web}/en/faq#do-you-support-sending-email-with-smtp`,
+    `${config.urls.web}/en/faq#what-is-included-in-the-enterprise-license`,
+    `${config.urls.web}/en/faq#how-do-you-protect-against-spam-and-abuse`,
+    `${config.urls.web}/en/faq#can-i-keep-my-email-processing-and-storage-in-the-eu-data-residency`,
+    `${config.urls.web}/en/faq#do-you-support-newsletters-or-mailing-lists-for-marketing-related-email`,
+    'https://privacyratings.com',
+    'https://attestium.com',
+    'https://spamscanner.net',
+    'https://github.com/forwardemail',
+    'https://matrix.to/#/#forwardemail:matrix.org'
+  ])
+    t.truthy(document.querySelector(`a[href="${href}"]`), `${href}`);
+  t.true(content.includes('Coming in 2027, at no extra cost'));
+  // (where updates are: X and the Event Feed, which a calendar can follow)
+  t.true(content.includes('https://x.com/fwdemail'));
+  t.true(content.includes(`${config.urls.web}/en/event-feed`));
+  t.false(content.includes('/blog/docs"'));
+  t.true(content.includes(`${config.urls.web}/technical-whitepaper.pdf`));
+  // (it says it is sent once)
+  t.true(content.includes('You will not receive it again'));
+});
+
+test('the upgrade reminder gives no deadline that has passed, and one name for what happened', async (t) => {
+  const info = await renderer.send({
+    template: 'upgrade-reminder',
+    message: { to: user.email },
+    locals: callerLocals['upgrade-reminder']
+  });
+  const { subject, html } = JSON.parse(info.message);
+  t.true(subject.endsWith('Email forwarding paused for example.xyz'));
+  t.false(html.includes('March 31'));
+  t.notRegex(html, /upgrade to a paid plan by/);
+  t.false(html.includes('suspended'));
+  t.false(html.includes('deliverablity'));
+  // (the heading is not repeated under itself)
+  t.is(html.split('Email forwarding is paused').length - 1, 1);
+});
+
+test('an email opens in the inbox list with a line of its own', async (t) => {
+  const html = await render('welcome');
+  const { document } = new JSDOM(html).window;
+  const preheader = document.querySelector('.email-preheader');
+  t.truthy(preheader);
+  t.regex(preheader.getAttribute('style'), /display:\s*none/);
+  t.true(preheader.textContent.includes('Add your domain'));
+  // (before the header, which is what was shown otherwise)
+  t.is(preheader.nextElementSibling, document.querySelector('.email-header'));
+  // an email without one renders an empty, hidden line
+  const alert = new JSDOM(await render('alert')).window.document;
+  t.is(alert.querySelector('.email-preheader').textContent.trim(), '');
+});
+
+test('the domain emails share one verification status block', async (t) => {
+  for (const template of [
+    'domain-onboard',
+    'domain-verified',
+    'domain-configuration-issue'
+  ]) {
+    const html = await render(template, {
+      domain: { ...domain, plan: 'enhanced_protection' }
+    });
+    t.is(html.split('Verification Status').length - 1, 1, `${template}`);
+    t.true(html.includes('DMARC'), `${template}`);
+  }
+});
+
+test('an ignored MX check is noted on the dark panel, in its own line', async (t) => {
+  const html = await render('domain-onboard', {
+    domain: { ...domain, ignore_mx_check: true, has_mx_record: false }
+  });
+  const { document } = new JSDOM(html).window;
+  const note = [...document.querySelectorAll('.bg-dark .text-white')].find(
+    (element) => element.textContent.includes('MX check ignored')
+  );
+  t.truthy(note);
+  t.is(note.textContent.trim(), '(i) = MX check ignored');
+});
+
+test('emails call a mailbox a mailbox', async (t) => {
+  const verified = await render('domain-verified', {
+    domain: { ...domain, plan: 'enhanced_protection', has_mx_record: true }
+  });
+  t.true(verified.includes('Manage mailboxes'));
+  t.false(verified.includes('Manage aliases'));
+  const welcome = await render('welcome');
+  t.true(welcome.includes('Manage your mailboxes'));
+});
+
+test('the footer has the unsubscribe link without an account too', async (t) => {
+  const unsubscribeUrl = `${config.urls.web}/en/unsubscribe/token`;
+  const footerOf = (html) => html.slice(html.lastIndexOf('<footer'));
+  // (an address without an account: no `user`)
+  const intro = await renderAsCaller('free-plan-intro', { unsubscribeUrl });
+  t.true(footerOf(intro).includes(`href="${unsubscribeUrl}"`));
+  // an account, as before
+  const welcome = await render('welcome', { unsubscribeUrl });
+  t.true(footerOf(welcome).includes(`href="${unsubscribeUrl}"`));
+  const account = await render('welcome');
+  t.true(footerOf(account).includes('/en/my-account/profile"'));
+  // an email that cannot be unsubscribed from, to no account: no link
+  const alert = await renderAsCaller('free-plan-intro');
+  t.false(footerOf(alert).includes('Unsubscribe'));
+});
 
 test('links follow the recipient locale', async (t) => {
   const html = body(await renderAsCaller('self-test', { locale: 'de' }));

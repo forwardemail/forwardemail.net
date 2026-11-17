@@ -1,5 +1,8 @@
 extends ../layout
 
+block preheader
+  = t("Open the web app, download the apps, or set up your email client.")
+
 block content
   -
     const mailboxSections = [
@@ -30,7 +33,7 @@ block content
         links: [
           {
             href: `${config.urls.web}/${locale}/my-account/domains`,
-            text: t("Create Aliases & Mailboxes")
+            text: t("Create Mailboxes")
           },
           {
             href: `${config.urls.web}/${locale}/my-account/security`,
