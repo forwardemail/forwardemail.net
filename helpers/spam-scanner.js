@@ -1224,8 +1224,9 @@ function sessionFields(session = {}) {
 // outbound mail, which has none): its results, the From domain's DMARC
 // policy, whether a signature of the From domain passed, and whether a
 // trusted forwarder's ARC seal passed, which tell a forged From address from
-// a forwarded message
-function authFields(session = {}) {
+// a forwarded message; and whether its From domain went to the scan as a
+// known sender (see `getKnownSenders`)
+function authFields(session = {}, knownSender = false) {
   if (!getAuthenticationResults(session)) return null;
   const result = (value) => printable(value?.status?.result, 20) ?? null;
   return {
@@ -1234,7 +1235,8 @@ function authFields(session = {}) {
     dmarc: result(session.dmarc),
     dmarc_policy: printable(session.dmarc?.policy, 20) ?? null,
     arc: result(session.arc),
-    arc_trusted: Boolean(session.isTrustedArc)
+    arc_trusted: Boolean(session.isTrustedArc),
+    known_sender: Boolean(knownSender)
   };
 }
 
@@ -1268,7 +1270,7 @@ function recipientDomains(rcptTo) {
 //
 // (`blocked`: refused for `blocking` as it was submitted)
 function logResult(summary, session = {}, blocking = [], options = {}) {
-  const { stage = null, blocked = false } = options;
+  const { stage = null, blocked = false, knownSender = false } = options;
   const line = {
     direction: summary.direction,
     // (nothing is rejected, blocked or filed in monitor mode, but for
@@ -1297,7 +1299,7 @@ function logResult(summary, session = {}, blocking = [], options = {}) {
       .filter((item) => item.type === 'deceptive_link')
       .slice(0, 5)
       .map((item) => item.message),
-    auth: authFields(session),
+    auth: authFields(session, knownSender),
     language: summary.language,
     llm: summary.llm
       ? {
@@ -1740,6 +1742,8 @@ async function scan(raw, options = {}) {
     // (declared before the timer that reads it, so it can never read it
     //  before it is made, e.g. when what comes between throws)
     let task = null;
+    // (whether the From domain went to the scan as a known sender)
+    let knownSender = false;
     let timer = setTimeout(() => {
       // (one whose result can refuse a message, also in monitor mode, is
       //  stopped at its time limit: its caller does not wait for it longer,
@@ -1946,6 +1950,7 @@ async function scan(raw, options = {}) {
     const knownSenders = authenticationResults
       ? await getKnownSenders(session, client)
       : [];
+    knownSender = knownSenders.length > 0;
     task = {
       raw,
       session: {
@@ -2127,6 +2132,7 @@ async function scan(raw, options = {}) {
             try {
               logResult(summary, session, blocking, {
                 stage: options.stage || direction,
+                knownSender,
                 // (not one its caller no longer waited for, which did not
                 //  block the message)
                 blocked:

@@ -640,7 +640,7 @@ test('a known sender may show a partner over its own click tracking, and no one 
     'Date: Sun, 11 Oct 2026 10:00:00 +0000',
     'Content-Type: text/html; charset=utf-8',
     '',
-    `<p>Start your free trial at <a href="https://${host}/c/1">www.apple.com</a></p>`
+    `<p>Start your free trial at <a href="https://${host}/c/1">https://www.apple.com/account</a></p>`
   ];
   const deceptive = async (host, auth) => {
     const scan = await spamScanner.scan(message(lines(host)), {
@@ -774,12 +774,41 @@ test("the log line has the hosts of a deceptive link and the MX server's authent
     dmarc: 'fail',
     dmarc_policy: 'none',
     arc: 'none',
-    arc_trusted: true
+    arc_trusted: true,
+    known_sender: false
   });
   t.is(outbound.auth, null);
   // (the hosts of a link, not the path it shows or goes to)
   t.false(lines[0].includes('/signin'));
   t.false(lines[0].includes('/login'));
+  // (and whether its From domain went to the scan as a known sender)
+  await client.set('allowlist:bigstore-example.com', 'true', 'PX', 60000);
+  t.teardown(() => client.del('allowlist:bigstore-example.com'));
+  const marked = message([
+    'From: Big Store <orders@mail.bigstore-example.com>',
+    'To: bob@example.org',
+    'Subject: Test',
+    'Message-ID: <test@mail.bigstore-example.com>',
+    'Date: Sun, 11 Oct 2026 10:00:00 +0000',
+    '',
+    'XJS*C4JDBQADN1.NSBN3*2IDNEN*GTUBE-STANDARD-ANTI-UBE-TEST-EMAIL*C.34X'
+  ]);
+  for (const [domain, known] of [
+    ['bigstore-example.com', true],
+    ['smallstore-example.com', false]
+  ]) {
+    lines.length = 0;
+
+    await spamScanner.scan(marked, {
+      session: { ...session, ...authenticated(domain) },
+      client
+    });
+    t.is(lines.length, 1);
+    t.is(
+      JSON.parse(lines[0].slice(lines[0].indexOf('{'))).auth.known_sender,
+      known
+    );
+  }
 });
 
 test('only an explicit false turns monitor mode off', (t) => {
@@ -2175,6 +2204,100 @@ test('outbound blocking: viruses, programs, malware and adult links, GTUBE', asy
     ['infected']
   );
   t.deepEqual(spamScanner.getOutboundBlockingMessages(null), []);
+});
+
+test('a scan never requests or connects to an address a message links to, only looks its host names up', async (t) => {
+  // (a link may unsubscribe, confirm or pay with one request)
+  config.spamScanner.cloudflare = true;
+  captureSpamScannerLog(t);
+  const connections = [];
+  const server = net.createServer((socket) => {
+    connections.push('connected');
+    socket.destroy();
+  });
+  server.listen(0, '127.0.0.1');
+  await once(server, 'listening');
+  t.teardown(() => server.close());
+  const { port } = server.address();
+  const asked = [];
+  const fake = {
+    async resolve4(name) {
+      asked.push(name);
+      return ['192.0.2.1'];
+    }
+  };
+  const resolvers = spamScanner.getResolvers(client, fake);
+  resolvers.malware = fake;
+  resolvers.family = fake;
+  const address = (name) => `http://127.0.0.1:${port}/${name}?token=1`;
+  const page = (kind) =>
+    [
+      `<meta http-equiv="refresh" content="0; url=${address(
+        `${kind}-refresh`
+      )}">`,
+      `<link rel="stylesheet" href="${address(`${kind}-style`)}">`,
+      `<a href="${address(`${kind}-link`)}">https://www.paypal.com/signin</a>`,
+      `<a href="http://${kind}.links.example:${port}/unsubscribe?token=1">Unsubscribe</a>`,
+      `<img src="${address(`${kind}-image`)}">`,
+      `<iframe src="${address(`${kind}-frame`)}"></iframe>`,
+      `<form action="${address(
+        `${kind}-form`
+      )}" method="post"><button>Confirm</button></form>`
+    ].join('');
+  const raw = message([
+    'From: News <list@news.example>',
+    'To: bob@example.org',
+    `Subject: Confirm at ${address('subject')}`,
+    'Message-ID: <links@news.example>',
+    'Date: Sun, 11 Oct 2026 10:00:00 +0000',
+    `List-Unsubscribe: <${address('unsubscribe')}>`,
+    'List-Unsubscribe-Post: List-Unsubscribe=One-Click',
+    'MIME-Version: 1.0',
+    'Content-Type: multipart/mixed; boundary="b"',
+    '',
+    '--b',
+    'Content-Type: text/html; charset=utf-8',
+    '',
+    page('body'),
+    '--b',
+    'Content-Type: text/html; name="page.html"',
+    'Content-Disposition: attachment; filename="page.html"',
+    '',
+    page('attached'),
+    '--b',
+    'Content-Type: text/calendar; name="invite.ics"',
+    'Content-Disposition: attachment; filename="invite.ics"',
+    '',
+    'BEGIN:VCALENDAR',
+    'BEGIN:VEVENT',
+    `URL:${address('calendar')}`,
+    'END:VEVENT',
+    'END:VCALENDAR',
+    '--b--',
+    ''
+  ]);
+
+  // (as it is received, with and without the MX server's authentication
+  //  results, and as it is submitted and sent)
+  await spamScanner.scan(raw, {
+    session: { ...session, ...authenticated('news.example') },
+    client,
+    protection: LINKS
+  });
+  await spamScanner.scan(raw, { session, client, protection: LINKS });
+  await spamScanner.scan(raw, {
+    client,
+    direction: 'outbound',
+    protection: LINKS,
+    enforce: true
+  });
+  // (it read them: their host names were looked up)
+  t.true(asked.includes('body.links.example'));
+  t.true(asked.includes('attached.links.example'));
+  // (none of the connections a request would open came in, also not a
+  //  moment later)
+  await setTimeout(300);
+  t.deepEqual(connections, []);
 });
 
 test('a scan says whether every link host was looked up', async (t) => {

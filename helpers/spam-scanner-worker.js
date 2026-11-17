@@ -752,6 +752,7 @@ async function analyzeArf(message, { learn = false, maxFeatures = 0 } = {}) {
 //  see Spam Scanner's DEFAULT_SCORES)
 const NO_PROGRAMS = {
   executable: 0,
+  scriptAttachment: 0,
   disguisedExecutable: 0,
   doubleExtension: 0,
   rtlOverride: 0,
