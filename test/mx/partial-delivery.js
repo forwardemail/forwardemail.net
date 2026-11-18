@@ -477,7 +477,7 @@ test.serial(
     t.is(message.to, ctx.admin.email);
     t.true(
       message.html.includes(
-        'This alias did not receive the message. Other recipients of the same email did, so the sender was not sent a bounce.'
+        'This mailbox did not receive the message. Other recipients of the same email did, so the sender was not sent a bounce.'
       )
     );
   }

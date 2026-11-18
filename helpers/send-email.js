@@ -418,24 +418,41 @@ async function sendEmail(
   }
 
   try {
-    return await deliver(
-      {
-        session,
-        cache,
-        target,
-        port,
-        envelope,
-        raw,
-        resolver,
-        client,
-        publicKey,
-        smimeCertificate,
-        hasWkdDisabled,
-        forwardedFor
-      },
-      email,
-      domain
-    );
+    const options = {
+      session,
+      cache,
+      target,
+      port,
+      envelope,
+      raw,
+      resolver,
+      client,
+      publicKey,
+      smimeCertificate,
+      hasWkdDisabled,
+      forwardedFor
+    };
+    try {
+      return await deliver(options, email, domain);
+    } catch (err) {
+      //
+      // a server that offers SMTPUTF8 and still refuses the sender of a
+      // message announced with it is sent the message once more as it was
+      // before we announced it (whatever that answers is the result)
+      //
+      if (
+        !envelope.smtpUtf8 ||
+        err.command !== 'MAIL FROM' ||
+        err.isSessionLimit
+      )
+        throw err;
+      logger.warn(err, { session, resolver });
+      return await deliver(
+        { ...options, envelope: _.omit(envelope, ['smtpUtf8']) },
+        email,
+        domain
+      );
+    }
   } finally {
     release();
   }

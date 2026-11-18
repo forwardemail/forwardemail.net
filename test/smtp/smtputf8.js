@@ -137,10 +137,13 @@ async function createServer(t, options = {}) {
   if (!getPort) await pWaitFor(() => Boolean(getPort), { timeout: ms('30s') });
   const port = await getPort();
   const received = [];
+  // (every MAIL FROM command, also of a session that was refused)
+  const mails = [];
   const commands = new Map();
   const record = (data, prefix, line) => {
     if (data?.tnx === 'command' && data.command === 'MAIL')
       commands.set(data.cid, line);
+    if (data?.tnx === 'command' && data.command === 'MAIL') mails.push(line);
   };
 
   const server = new SMTPServer({
@@ -177,7 +180,7 @@ async function createServer(t, options = {}) {
   });
   await pify(server.listen.bind(server))(port);
   t.teardown(() => pify(server.close.bind(server))());
-  return { port, received };
+  return { port, received, mails };
 }
 
 // the lines of the header section, as the bytes that were received
@@ -206,11 +209,34 @@ function getRaw({ alias, domain }, lines = []) {
   );
 }
 
-async function send(t, { user, resolver }, port, message) {
+// queues the message and delivers it, and returns how that ended
+async function deliver({ user, resolver }, port, message) {
   const email = await Emails.queue({ message, user: user._id });
-  await processEmail({ email, port, resolver, client });
-  const sent = await Emails.findById(email._id).lean().exec();
-  t.is(sent.status, 'sent', JSON.stringify(sent.rejectedErrors));
+  try {
+    await processEmail({ email, port, resolver, client });
+  } catch {}
+
+  return Emails.findById(email._id).lean().exec();
+}
+
+async function send(t, context, port, message) {
+  const email = await deliver(context, port, message);
+  t.is(email.status, 'sent', JSON.stringify(email.rejectedErrors));
+}
+
+async function sendRefused(t, context, port, message) {
+  const email = await deliver(context, port, message);
+  t.is(email.status, 'bounced');
+}
+
+// refuses a sender announced with SMTPUTF8 (or every sender)
+function refuseMailFrom(always) {
+  return (address, session, fn) => {
+    if (!always && !address.args.SMTPUTF8) return fn();
+    const err = new Error('Sender address rejected');
+    err.responseCode = 550;
+    fn(err);
+  };
 }
 
 test('a message with a Unicode From address is announced with SMTPUTF8', async (t) => {
@@ -318,4 +344,56 @@ test('a message with ASCII headers is not announced with SMTPUTF8', async (t) =>
     );
     t.regex(lines.join('\n'), ASCII);
   }
+});
+
+test('a server that refuses a sender announced with SMTPUTF8 gets the message without it', async (t) => {
+  const context = await setup(t);
+  const { alias, domain } = context;
+  const { port, received, mails } = await createServer(t, {
+    onMailFrom: refuseMailFrom(false)
+  });
+
+  await send(t, context, port, { raw: getRaw(context) });
+
+  // announced first, then sent once more as it was before
+  t.is(mails.length, 2);
+  t.regex(mails[0], / SMTPUTF8\b/);
+  t.notRegex(mails[1], /SMTPUTF8/);
+  t.is(received.length, 1);
+  t.false(received[0].envelope.smtpUtf8);
+  t.true(
+    getHeaderLines(received[0].raw).includes(
+      `From: Bücher <${alias.name}@${domain.name}>`
+    )
+  );
+});
+
+test('a sender that is refused either way is not tried a third time', async (t) => {
+  const context = await setup(t);
+  const { port, received, mails } = await createServer(t, {
+    onMailFrom: refuseMailFrom(true)
+  });
+
+  await sendRefused(t, context, port, { raw: getRaw(context) });
+
+  t.is(mails.length, 2);
+  t.is(received.length, 0);
+});
+
+test('a refused sender of a message with ASCII headers is tried once', async (t) => {
+  const context = await setup(t);
+  const { alias, domain } = context;
+  const { port, received, mails } = await createServer(t, {
+    onMailFrom: refuseMailFrom(true)
+  });
+
+  await sendRefused(t, context, port, {
+    from: `${alias.name}@${domain.name}`,
+    to: 'test@test.com',
+    subject: 'Test',
+    text: 'Test'
+  });
+
+  t.is(mails.length, 1);
+  t.is(received.length, 0);
 });
