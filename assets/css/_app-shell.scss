@@ -188,11 +188,24 @@ $acct-sidebar-width: 15.5rem;
 
 @media (min-width: 992px) {
   .acct-sidebar {
+    position: relative;
     border-right: 1px solid var(--app-border);
     border-bottom: 0;
-    // (covers the few pixels between the navbar and the sidebar, where the
-    // page showed through as a gap above it)
-    box-shadow: 0 -0.25rem 0 var(--app-bg-raised);
+
+    // Covers the few pixels between the navbar and the sidebar, where the
+    // page showed through as a gap above it: the sidebar's background and
+    // its border, carried up to the navbar (a shadow carried the background
+    // only, so the border stopped short of the top).
+    &::before {
+      position: absolute;
+      top: -0.25rem;
+      right: -1px;
+      left: 0;
+      height: 0.25rem;
+      content: "";
+      background: var(--app-bg-raised);
+      border-right: 1px solid var(--app-border);
+    }
   }
 
   // sticky to the navbar, with its own scroll for a long list of domains
