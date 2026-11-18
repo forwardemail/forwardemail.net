@@ -213,9 +213,7 @@ p.text-center.d-lg-none
         if !domain.is_global && domain.group === 'admin'
           th.align-middle.d-none.d-lg-table-cell.text-center(scope="col")= t("SMTP Usage")
         th.align-middle.d-none.d-lg-table-cell(scope="col")= t("Recipients")
-        th.text-center.text-md-left.align-middle.d-none.d-lg-table-cell(
-          scope="col"
-        )= t("Quick Links")
+        th.align-middle.d-none.d-lg-table-cell(scope="col")= t("Quick Links")
     tbody
       if domain && domain.aliases && (domain.aliases.length === 0 || (isSANB(ctx.query.q) && !domain.aliases.find(a => a.name === ctx.query.q.split('@')[0].toLowerCase().trim() || a.recipients.find(r => r === ctx.query.q.toLowerCase().trim()))))
         tr
@@ -718,7 +716,7 @@ p.text-center.d-lg-none
                             )
                               i.fa.fa-fw.fa-refresh
 
-                ul.list-inline.mb-0
+                ul.alias-links
                   li.list-inline-item
                     a.btn.btn-sm.btn-link.text-themed.btn-block(
                       href=`/my-account/domains/${punycode.toASCII(domain.name)}/aliases/${alias.id}`
@@ -988,8 +986,8 @@ p.text-center.d-lg-none
                             data-title=t("Resend verification email")
                           )
                             i.fa.fa-fw.fa-refresh
-            td.align-middle.d-none.d-lg-table-cell(data-width="20%")
-              ul.list-inline.mb-0
+            td.align-middle.d-none.d-lg-table-cell
+              ul.alias-links
                 li.list-inline-item
                   a.btn.btn-sm.btn-link.text-themed.btn-block(
                     href=`/my-account/domains/${punycode.toASCII(domain.name)}/aliases/${alias.id}`

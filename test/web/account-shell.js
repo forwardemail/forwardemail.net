@@ -991,3 +991,44 @@ test('a page outside an account is never folded, and has no button', async (t) =
   );
   t.is(document.querySelector('form.acct-sidebar-fold'), null);
 });
+
+test('the links of a mailbox are one list, in the phone row and in the Quick Links column', async (t) => {
+  await Users.updateOne(
+    { _id: t.context.user._id },
+    { $set: { plan: 'enhanced_protection' } }
+  );
+  const domain = await makeDomain(t, {
+    plan: 'enhanced_protection',
+    has_mx_record: true,
+    has_txt_record: true
+  });
+  await t.context.aliasFactory
+    .withState({
+      user: t.context.user._id,
+      domain: domain._id,
+      name: 'hello',
+      recipients: [t.context.user.email]
+    })
+    .create();
+  const document = await get(
+    t,
+    `/en/my-account/domains/${domain.name}/aliases`
+  );
+  const lists = [...document.querySelectorAll('#table-aliases ul.alias-links')];
+  // (one below lg, in the row of the mailbox, and one in its own column)
+  t.is(lists.length, 2);
+  for (const list of lists) {
+    const labels = new Set(
+      [...list.querySelectorAll('a.btn, button.btn')].map((element) =>
+        element.textContent.trim()
+      )
+    );
+    t.true(labels.has('Edit'));
+    t.true(labels.has('Delete'));
+    // every link has an icon ahead of its words, which the list lines up
+    for (const element of list.querySelectorAll('a.btn, button.btn'))
+      t.truthy(element.querySelector('i.fa, i.fas'));
+  }
+
+  t.truthy(lists[1].closest('td.d-lg-table-cell'));
+});
