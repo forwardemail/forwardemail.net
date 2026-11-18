@@ -419,7 +419,13 @@ function summarize(result, { started, withLlm, timedOut }) {
     action: result.action,
     tests: (result.tests || []).map((test) => ({
       name: String(test.name),
-      score: round(test.score)
+      score: round(test.score),
+      // (the brand a display name claims and the domain it came from, which
+      //  quotes no address or text of the message: to tell by which names
+      //  the test is wrong, in monitor mode)
+      ...(test.name === 'FROM_NAME_BRAND' && test.description
+        ? { description: clip(test.description, MAX_MESSAGE) }
+        : {})
     })),
     language: result.language || null,
     classification: results.classification

@@ -1299,6 +1299,15 @@ function logResult(summary, session = {}, blocking = [], options = {}) {
       .filter((item) => item.type === 'deceptive_link')
       .slice(0, 5)
       .map((item) => item.message),
+    // (the first hosts that imitate or name a brand, with the brand)
+    lookalikes: (summary.findings?.phishing || [])
+      .filter((item) => item.type === 'homograph')
+      .slice(0, 5)
+      .map((item) => item.message),
+    // (the brand a display name claims, and the domain it came from)
+    names: summary.tests
+      .filter((test) => test.description)
+      .map((test) => test.description),
     auth: authFields(session, knownSender),
     language: summary.language,
     llm: summary.llm

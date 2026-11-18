@@ -45,12 +45,24 @@ jobs:
           gitleaks version
 
       - name: Run gitleaks
+        env:
+          PR_BASE: ${{ github.event.pull_request.base.sha }}
         run: |
-          BASE="${{ github.event.before || github.event.pull_request.base.sha }}"
-          NULL_SHA="0000000000000000000000000000000000000000"
-          if [ -z "$BASE" ] || [ "$BASE" = "$NULL_SHA" ]; then
-            # New branch, tag, or force-push — scan the full history
-            gitleaks detect --source . --verbose
+          # What was pushed, and nothing else: with no --log-opts gitleaks
+          # reads `git log --all`, every branch of the repository, so a
+          # release's tag failed for a test fixture on a branch that was
+          # never merged.
+          if [ -n "$PR_BASE" ]; then
+            # a pull request: its own commits
+            SINCE="$PR_BASE"
           else
-            gitleaks detect --source . --verbose --log-opts="${BASE}..HEAD"
+            # a push: every commit since the release before it (from HEAD^,
+            # as a release's own tag is on HEAD). Not since
+            # `github.event.before`: that commit is gone after a force-push,
+            # it is all zeros for a new branch or tag, and a run cancelled by
+            # the next push (see `concurrency`) left its commits unscanned.
+            SINCE="$(git describe --tags --abbrev=0 --match 'v*' HEAD^ 2>/dev/null || true)"
           fi
+
+          # (no release before it: all of its history)
+          gitleaks detect --source . --verbose --log-opts="--full-history ${SINCE:+$SINCE..}HEAD"

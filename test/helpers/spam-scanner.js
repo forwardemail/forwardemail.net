@@ -768,6 +768,14 @@ test("the log line has the hosts of a deceptive link and the MX server's authent
   t.deepEqual(inbound.links, [
     'A link shows www.paypal.com but goes to paypa1-secure.example'
   ]);
+  // (and the brand its display name claims, with the domain it came from)
+  t.deepEqual(inbound.names, [
+    'Display name says "paypal" but the message is from paypa1-secure.example'
+  ]);
+  // (and the host that imitates a brand, with the brand)
+  t.deepEqual(inbound.lookalikes, [
+    '"paypa1-secure.example" imitates paypal by swapping characters'
+  ]);
   t.deepEqual(inbound.auth, {
     spf: 'permerror',
     dkim_aligned: false,
@@ -4573,8 +4581,21 @@ test('a kept verdict on a close call is checked again with the language model as
     )
   );
 
+  // (a close call as it is scanned again too: the lookalike domain and the
+  //  display name without the link that shows another address, which
+  //  together are past the reject threshold with no model to ask)
+  const closeCall = message([
+    'From: "PayPal" <service@paypa1-secure.example>',
+    'To: bob@example.org',
+    'Subject: Your account is suspended',
+    'Message-ID: <close-call@paypa1-secure.example>',
+    'Date: Sun, 11 Oct 2026 10:00:00 +0000',
+    'Content-Type: text/html; charset=utf-8',
+    '',
+    '<p>Dear customer, verify your account now: <a href="http://paypa1-secure.example/login">here</a></p>'
+  ]);
   const check = await spamScanner.checkOutbound({
-    message: PHISHING,
+    message: closeCall,
     stored: stored({ score: 12 }),
     envelope: ENVELOPE,
     client
@@ -4585,7 +4606,7 @@ test('a kept verdict on a close call is checked again with the language model as
   t.false(spamScanner.needsLanguageModel(check.stored));
 
   // (outbound mail as it is submitted: without the language model)
-  await spamScanner.scan(PHISHING, {
+  await spamScanner.scan(closeCall, {
     direction: 'outbound',
     client,
     enforce: true
