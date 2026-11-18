@@ -23548,5 +23548,7 @@
   "The passwords generated for these aliases still work.  Generate a new password for each one to replace them:": "これらのエイリアス用に生成されたパスワードは引き続き使用できます。置き換えるには、それぞれに新しいパスワードを生成してください:",
   "Change Owner": "所有者を変更",
   "The owner of an alias manages it and is sent its notices.  Passwords generated for the alias keep working, so generate a new one if its past owner should no longer sign in.": "エイリアスの所有者は、そのエイリアスを管理し、その通知を受け取ります。  エイリアス用に生成されたパスワードは引き続き使えるため、以前の所有者がサインインできないようにするには新しいパスワードを生成してください。",
-  "The owner of this alias cannot be changed.": "このエイリアスの所有者は変更できません。"
+  "The owner of this alias cannot be changed.": "このエイリアスの所有者は変更できません。",
+  "Get it from the App Store or Google Play, or install the build directly, exactly as it left CI.": "Get it from the App Store or Google Play, or install the build directly, exactly as it left CI.",
+  "For sideloading with AltStore or Xcode": "For sideloading with AltStore or Xcode"
 }

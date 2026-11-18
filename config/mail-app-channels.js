@@ -130,8 +130,8 @@ const channels = [
     key: 'app-store',
     platform: 'ios',
     name: 'App Store',
-    state: 'soon',
-    url: null
+    state: 'live',
+    url: 'https://apps.apple.com/us/app/forward-email-private-mail/id6762636323'
   },
   // ---- Terminal ----
   // The `forwardemail` command (docs/CLI.md in the app repository). The two

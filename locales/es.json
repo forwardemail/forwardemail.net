@@ -23548,5 +23548,7 @@
   "The passwords generated for these aliases still work.  Generate a new password for each one to replace them:": "Las contraseñas generadas para estos alias siguen funcionando. Genere una nueva contraseña para cada uno para reemplazarlas:",
   "Change Owner": "Cambiar propietario",
   "The owner of an alias manages it and is sent its notices.  Passwords generated for the alias keep working, so generate a new one if its past owner should no longer sign in.": "El propietario de un alias lo administra y recibe sus avisos.  Las contraseñas generadas para el alias siguen funcionando, así que genere una nueva si su propietario anterior ya no debe iniciar sesión.",
-  "The owner of this alias cannot be changed.": "No se puede cambiar el propietario de este alias."
+  "The owner of this alias cannot be changed.": "No se puede cambiar el propietario de este alias.",
+  "Get it from the App Store or Google Play, or install the build directly, exactly as it left CI.": "Get it from the App Store or Google Play, or install the build directly, exactly as it left CI.",
+  "For sideloading with AltStore or Xcode": "For sideloading with AltStore or Xcode"
 }

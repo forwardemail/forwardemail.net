@@ -23548,5 +23548,7 @@
   "The passwords generated for these aliases still work.  Generate a new password for each one to replace them:": "Bu takma adlar için oluşturulan parolalar hâlâ çalışıyor. Bunları değiştirmek için her biri için yeni bir parola oluşturun:",
   "Change Owner": "Sahibi Değiştir",
   "The owner of an alias manages it and is sent its notices.  Passwords generated for the alias keep working, so generate a new one if its past owner should no longer sign in.": "Bir takma adın sahibi onu yönetir ve bildirimlerini alır.  Takma ad için oluşturulan şifreler çalışmaya devam eder; önceki sahibinin artık oturum açmaması gerekiyorsa yeni bir şifre oluşturun.",
-  "The owner of this alias cannot be changed.": "Bu takma adın sahibi değiştirilemez."
+  "The owner of this alias cannot be changed.": "Bu takma adın sahibi değiştirilemez.",
+  "Get it from the App Store or Google Play, or install the build directly, exactly as it left CI.": "Get it from the App Store or Google Play, or install the build directly, exactly as it left CI.",
+  "For sideloading with AltStore or Xcode": "For sideloading with AltStore or Xcode"
 }

@@ -23548,5 +23548,7 @@
   "The passwords generated for these aliases still work.  Generate a new password for each one to replace them:": "הסיסמאות שנוצרו עבור כינויים אלה עדיין פועלות. צרו סיסמה חדשה לכל אחד מהם כדי להחליף אותן:",
   "Change Owner": "שינוי בעלים",
   "The owner of an alias manages it and is sent its notices.  Passwords generated for the alias keep working, so generate a new one if its past owner should no longer sign in.": "הבעלים של כינוי מנהל אותו ומקבל את ההודעות שלו.  סיסמאות שנוצרו עבור הכינוי ממשיכות לפעול, ולכן צרו סיסמה חדשה אם הבעלים הקודם לא אמור להתחבר עוד.",
-  "The owner of this alias cannot be changed.": "לא ניתן לשנות את הבעלים של כינוי זה."
+  "The owner of this alias cannot be changed.": "לא ניתן לשנות את הבעלים של כינוי זה.",
+  "Get it from the App Store or Google Play, or install the build directly, exactly as it left CI.": "Get it from the App Store or Google Play, or install the build directly, exactly as it left CI.",
+  "For sideloading with AltStore or Xcode": "For sideloading with AltStore or Xcode"
 }
