@@ -123,7 +123,7 @@ patchedDependencies:
     hash: ivvnat6z6lfxrarkzfhj3i4ud4
     path: patches/mongoose@6.13.10.patch
   nodemailer@10.1.7:
-    hash: 6q7mhcx4x2ma6gzq5nfio7ecoe
+    hash: sb6ea4b7i4ezxrysvjmkpdadci
     path: patches/nodemailer@10.1.7.patch
   passport-local-mongoose@7.1.2:
     hash: 4u6un2gdtpdcneospbyj7t7oti
@@ -732,7 +732,7 @@ importers:
         version: 1.3.7
       nodemailer:
         specifier: 10.1.7
-        version: 10.1.7(patch_hash=6q7mhcx4x2ma6gzq5nfio7ecoe)
+        version: 10.1.7(patch_hash=sb6ea4b7i4ezxrysvjmkpdadci)
       numeral:
         specifier: 2.0.6
         version: 2.0.6
@@ -22790,7 +22790,7 @@ snapshots:
       gelf: 2.0.1
       libmime: 5.3.7
       msgpack-js: 0.3.0
-      nodemailer: 10.1.7(patch_hash=6q7mhcx4x2ma6gzq5nfio7ecoe)
+      nodemailer: 10.1.7(patch_hash=sb6ea4b7i4ezxrysvjmkpdadci)
       npmlog: 7.0.1
       punycode.js: 2.3.1
 
@@ -22842,7 +22842,7 @@ snapshots:
       msgpack5: 6.1.0
       node-forge: 1.4.2
       node-html-parser: 7.1.0
-      nodemailer: 10.1.7(patch_hash=6q7mhcx4x2ma6gzq5nfio7ecoe)
+      nodemailer: 10.1.7(patch_hash=sb6ea4b7i4ezxrysvjmkpdadci)
       npmlog: 7.0.1
       openpgp: 6.1.1
       pem-jwk: 2.0.0
@@ -22885,7 +22885,7 @@ snapshots:
       mongodb: 4.17.2
       msgpack-js: 0.3.0
       mx-connect: 1.5.6
-      nodemailer: 10.1.7(patch_hash=6q7mhcx4x2ma6gzq5nfio7ecoe)
+      nodemailer: 10.1.7(patch_hash=sb6ea4b7i4ezxrysvjmkpdadci)
       npmlog: 7.0.1
       prom-client: 15.1.3
       punycode: 2.3.1
@@ -22917,7 +22917,7 @@ snapshots:
       mongodb: 4.17.2
       msgpack-js: 0.3.0
       mx-connect: 1.6.0
-      nodemailer: 10.1.7(patch_hash=6q7mhcx4x2ma6gzq5nfio7ecoe)
+      nodemailer: 10.1.7(patch_hash=sb6ea4b7i4ezxrysvjmkpdadci)
       npmlog: 7.0.1
       prom-client: 15.1.3
       punycode: 2.3.1
@@ -25900,7 +25900,7 @@ snapshots:
       html-to-text: 9.0.5
       juice: 11.1.1
       lodash: 4.18.1
-      nodemailer: 10.1.7(patch_hash=6q7mhcx4x2ma6gzq5nfio7ecoe)
+      nodemailer: 10.1.7(patch_hash=sb6ea4b7i4ezxrysvjmkpdadci)
     optionalDependencies:
       preview-email: 3.4.0
     transitivePeerDependencies:
@@ -28696,7 +28696,7 @@ snapshots:
       libmime: 5.3.7
       libqp: 2.1.1
       mailsplit: 5.4.5(patch_hash=jw77yhm5w45vhxhiw5ykxpthzy)
-      nodemailer: 10.1.7(patch_hash=6q7mhcx4x2ma6gzq5nfio7ecoe)
+      nodemailer: 10.1.7(patch_hash=sb6ea4b7i4ezxrysvjmkpdadci)
       pino: 9.7.0
       socks: 2.8.10
 
@@ -30242,7 +30242,7 @@ snapshots:
       ipaddr.js: 2.2.0
       joi: 18.3.1
       libmime: 5.3.7
-      nodemailer: 10.1.7(patch_hash=6q7mhcx4x2ma6gzq5nfio7ecoe)
+      nodemailer: 10.1.7(patch_hash=sb6ea4b7i4ezxrysvjmkpdadci)
       punycode.js: 2.3.1
       tldts: 7.0.17
       undici: 7.30.1(patch_hash=plt46fxkqjnltfj3haaqgdhexy)
@@ -30255,7 +30255,7 @@ snapshots:
       ipaddr.js: 2.3.0
       joi: 18.3.1
       libmime: 5.3.7
-      nodemailer: 10.1.7(patch_hash=6q7mhcx4x2ma6gzq5nfio7ecoe)
+      nodemailer: 10.1.7(patch_hash=sb6ea4b7i4ezxrysvjmkpdadci)
       punycode.js: 2.3.1
       tldts: 7.0.19
       undici: 7.30.1(patch_hash=plt46fxkqjnltfj3haaqgdhexy)
@@ -30268,7 +30268,7 @@ snapshots:
       ipaddr.js: 2.3.0
       joi: 18.3.1
       libmime: 5.3.7
-      nodemailer: 10.1.7(patch_hash=6q7mhcx4x2ma6gzq5nfio7ecoe)
+      nodemailer: 10.1.7(patch_hash=sb6ea4b7i4ezxrysvjmkpdadci)
       punycode.js: 2.3.1
       tldts: 7.0.21
       undici: 7.30.1(patch_hash=plt46fxkqjnltfj3haaqgdhexy)
@@ -30281,7 +30281,7 @@ snapshots:
       ipaddr.js: 2.3.0
       joi: 18.3.1
       libmime: 5.3.7
-      nodemailer: 10.1.7(patch_hash=6q7mhcx4x2ma6gzq5nfio7ecoe)
+      nodemailer: 10.1.7(patch_hash=sb6ea4b7i4ezxrysvjmkpdadci)
       punycode.js: 2.3.1
       tldts: 7.0.24
       undici: 7.30.1(patch_hash=plt46fxkqjnltfj3haaqgdhexy)
@@ -30294,7 +30294,7 @@ snapshots:
       ipaddr.js: 2.4.0
       joi: 18.3.1
       libmime: 5.3.8
-      nodemailer: 10.1.7(patch_hash=6q7mhcx4x2ma6gzq5nfio7ecoe)
+      nodemailer: 10.1.7(patch_hash=sb6ea4b7i4ezxrysvjmkpdadci)
       punycode.js: 2.3.1
       tldts: 7.0.30
       undici: 7.30.1(patch_hash=plt46fxkqjnltfj3haaqgdhexy)
@@ -30307,7 +30307,7 @@ snapshots:
       ipaddr.js: 2.2.0
       joi: 17.13.9
       libmime: 5.3.6
-      nodemailer: 10.1.7(patch_hash=6q7mhcx4x2ma6gzq5nfio7ecoe)
+      nodemailer: 10.1.7(patch_hash=sb6ea4b7i4ezxrysvjmkpdadci)
       punycode.js: 2.3.1
       tldts: 7.0.1
       undici: 7.30.1(patch_hash=plt46fxkqjnltfj3haaqgdhexy)
@@ -30322,7 +30322,7 @@ snapshots:
       iconv-lite: 0.7.3
       libmime: 5.4.2
       linkify-it: 5.0.2
-      nodemailer: 10.1.7(patch_hash=6q7mhcx4x2ma6gzq5nfio7ecoe)
+      nodemailer: 10.1.7(patch_hash=sb6ea4b7i4ezxrysvjmkpdadci)
       punycode.js: 2.3.1
       tlds: 1.261.0
 
@@ -30335,7 +30335,7 @@ snapshots:
       iconv-lite: 0.7.3
       libmime: 5.4.2
       linkify-it: 5.0.2
-      nodemailer: 10.1.7(patch_hash=6q7mhcx4x2ma6gzq5nfio7ecoe)
+      nodemailer: 10.1.7(patch_hash=sb6ea4b7i4ezxrysvjmkpdadci)
       punycode.js: 2.3.1
       tlds: 1.261.0
 
@@ -31970,7 +31970,7 @@ snapshots:
 
   node-releases@2.0.54: {}
 
-  nodemailer@10.1.7(patch_hash=6q7mhcx4x2ma6gzq5nfio7ecoe): {}
+  nodemailer@10.1.7(patch_hash=sb6ea4b7i4ezxrysvjmkpdadci): {}
 
   nodemon@3.1.10:
     dependencies:
@@ -33590,7 +33590,7 @@ snapshots:
       fixpack: 4.0.0
       get-port: 5.1.1
       mailparser: 3.9.17
-      nodemailer: 10.1.7(patch_hash=6q7mhcx4x2ma6gzq5nfio7ecoe)
+      nodemailer: 10.1.7(patch_hash=sb6ea4b7i4ezxrysvjmkpdadci)
       open: 7.4.2
       p-event: 4.2.0
       p-wait-for: 3.2.0
@@ -35561,13 +35561,13 @@ snapshots:
   smtp-server@3.18.4:
     dependencies:
       ipv6-normalize: 1.0.1
-      nodemailer: 10.1.7(patch_hash=6q7mhcx4x2ma6gzq5nfio7ecoe)
+      nodemailer: 10.1.7(patch_hash=sb6ea4b7i4ezxrysvjmkpdadci)
       punycode.js: 2.3.1
 
   smtp-server@3.19.3:
     dependencies:
       ipv6-normalize: 1.0.1
-      nodemailer: 10.1.7(patch_hash=6q7mhcx4x2ma6gzq5nfio7ecoe)
+      nodemailer: 10.1.7(patch_hash=sb6ea4b7i4ezxrysvjmkpdadci)
       punycode.js: 2.3.1
 
   snappy@7.3.3(@emnapi/core@1.10.0)(@emnapi/runtime@1.11.3):

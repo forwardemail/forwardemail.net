@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
+const { Buffer } = require('node:buffer');
 const punycode = require('node:punycode');
 
 const isSANB = require('is-string-and-not-blank');
@@ -59,6 +60,43 @@ function punycodeEnvelopeAddress(address) {
     return `${localPart}@${punycode.toASCII(domainPart)}`;
   } catch {
     return address;
+  }
+}
+
+const UTF8_DECODER = new TextDecoder('utf8', { fatal: true });
+
+//
+// RFC 6531 Section 3.2: a message with UTF-8 in its header section (e.g. a
+// From address written as "info@bücher.example", or a subject that is not an
+// encoded word) is an internationalized message, and is announced as one
+// with the SMTPUTF8 parameter of MAIL FROM to a server that offers it.
+// (the envelope stays ASCII either way, see `punycodeEnvelopeAddress`)
+//
+function hasUtf8Headers(raw) {
+  if (!Buffer.isBuffer(raw)) return false;
+  let hasNonAscii = false;
+  let end = raw.length;
+  for (let i = 0; i < raw.length; i++) {
+    if (raw[i] > 0x7f) hasNonAscii = true;
+    // (the header section ends at the first empty line)
+    else if (
+      raw[i] === 0x0a &&
+      (raw[i + 1] === 0x0a || (raw[i + 1] === 0x0d && raw[i + 2] === 0x0a))
+    ) {
+      end = i;
+      break;
+    }
+  }
+
+  if (!hasNonAscii) return false;
+
+  // (bytes of another charset, e.g. Latin-1, are not UTF-8 headers, and a
+  // server may refuse them in a message that says it is internationalized)
+  try {
+    UTF8_DECODER.decode(raw.subarray(0, end));
+    return true;
+  } catch {
+    return false;
   }
 }
 
@@ -315,7 +353,13 @@ async function sendEmail(
   envelope = {
     ...envelope,
     to: punycodeEnvelopeAddress(envelope.to),
-    ...(envelope.from ? { from: punycodeEnvelopeAddress(envelope.from) } : {})
+    ...(envelope.from ? { from: punycodeEnvelopeAddress(envelope.from) } : {}),
+    //
+    // a server without SMTPUTF8 gets the message as it always did (most
+    // accept UTF-8 headers regardless, and refusing to send it would bounce
+    // mail that is delivered today)
+    //
+    ...(hasUtf8Headers(raw) ? { smtpUtf8: true } : {})
   };
 
   // check against denylist

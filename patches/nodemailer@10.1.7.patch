@@ -93,6 +93,21 @@ index 8333b1f2f193b91ef44efc5945ddfb87ae8d078b..e27c7d198d69174be194383fa74487fb
              buf = Buffer.from('.\r\n');
          }
          else if (this.lastByte === 0x0d) {
+diff --git a/dist/cjs/smtp-connection/index.js b/dist/cjs/smtp-connection/index.js
+index 81a614980fa9381af142409c1291ab890d4c8d42..845d701efc73870bc1ecb5a73179fccc5c6c7a75 100644
+--- a/dist/cjs/smtp-connection/index.js
++++ b/dist/cjs/smtp-connection/index.js
+@@ -1248,7 +1248,9 @@ class SMTPConnection extends node_events_1.EventEmitter {
+         }
+         // check if the sender address uses only ASCII characters,
+         // otherwise require usage of SMTPUTF8 extension
+-        if (/[\x80-\uFFFF]/.test(this._envelope.from)) {
++        // (also when the caller says the message itself needs it, RFC 6531: one with
++        // UTF-8 in its header section, whose envelope may still be all ASCII)
++        if (this._envelope.smtpUtf8 || /[\x80-\uFFFF]/.test(this._envelope.from)) {
+             useSmtpUtf8 = true;
+         }
+         for (let i = 0, len = this._envelope.to.length; i < len; i++) {
 diff --git a/dist/esm/smtp-connection/data-stream.js b/dist/esm/smtp-connection/data-stream.js
 index d2bd5f40bc17d53c1993716866cdfb9b6f437d9f..6128d3482e3d1a5c6aa2a74083f40cb3c1dbaf2f 100644
 --- a/dist/esm/smtp-connection/data-stream.js
@@ -188,3 +203,18 @@ index d2bd5f40bc17d53c1993716866cdfb9b6f437d9f..6128d3482e3d1a5c6aa2a74083f40cb3
              buf = Buffer.from('.\r\n');
          }
          else if (this.lastByte === 0x0d) {
+diff --git a/dist/esm/smtp-connection/index.js b/dist/esm/smtp-connection/index.js
+index bf372a4c5dab454322e89a23dc8fb55ea5c0168a..ebd44fce21e4ef598b66593705b9008395255b42 100644
+--- a/dist/esm/smtp-connection/index.js
++++ b/dist/esm/smtp-connection/index.js
+@@ -1210,7 +1210,9 @@ class SMTPConnection extends EventEmitter {
+         }
+         // check if the sender address uses only ASCII characters,
+         // otherwise require usage of SMTPUTF8 extension
+-        if (/[\x80-\uFFFF]/.test(this._envelope.from)) {
++        // (also when the caller says the message itself needs it, RFC 6531: one with
++        // UTF-8 in its header section, whose envelope may still be all ASCII)
++        if (this._envelope.smtpUtf8 || /[\x80-\uFFFF]/.test(this._envelope.from)) {
+             useSmtpUtf8 = true;
+         }
+         for (let i = 0, len = this._envelope.to.length; i < len; i++) {
