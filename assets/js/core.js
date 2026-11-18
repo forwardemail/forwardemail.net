@@ -847,6 +847,16 @@ window.addEventListener(
       }
     });
 
+    // Change the owner of an alias: the dialog is for the alias whose button
+    // opened it, with its owner selected
+    $body.on('show.bs.modal', '#modal-alias-owner', function (ev) {
+      const $button = $(ev.relatedTarget);
+      const $modal = $(this);
+      $modal.find('form').attr('action', $button.attr('data-action'));
+      $modal.find('code').text($button.attr('data-alias'));
+      $modal.find('select').val($button.attr('data-owner'));
+    });
+
     //
     // any modals with embedded <iframe> we can assume need reset
     // (this also supports lazyframe lazy loaded videos)

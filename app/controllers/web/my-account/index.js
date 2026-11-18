@@ -73,6 +73,7 @@ const verifySMTP = require('./verify-smtp');
 const generateAliasPassword = require('./generate-alias-password');
 const downloadAliasBackup = require('./download-alias-backup');
 const cloneAlias = require('./clone-alias');
+const changeAliasOwner = require('./change-alias-owner');
 const createCatchAllPassword = require('./create-catch-all-password');
 const removeCatchAllPassword = require('./remove-catch-all-password');
 const changeModulusLength = require('./change-modulus-length');
@@ -157,6 +158,7 @@ module.exports = {
   generateAliasPassword,
   downloadAliasBackup,
   cloneAlias,
+  changeAliasOwner,
   createCatchAllPassword,
   removeCatchAllPassword,
   changeModulusLength,

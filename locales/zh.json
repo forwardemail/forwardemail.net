@@ -23545,5 +23545,8 @@
   "If you check this, then links in mail you send are checked with <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"%s\">Cloudflare's family filter</a>, and mail linking to a site it blocks for adult-related content or malware is not sent. Off by default.": "勾选此项后，您发送的邮件中的链接将通过 <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"%s\">Cloudflare 家庭过滤器</a>进行检查，链接到被其以成人相关内容或恶意软件为由拦截的网站的邮件将不会发送。默认关闭。",
   "If you uncheck this, then mail you send with <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"%s\">executable</a> attachments, such as .exe, .js or .bat files (also inside archives), is no longer blocked. On by default.": "取消勾选此项后，您发送的带有<a target=\"_blank\" rel=\"noopener noreferrer\" href=\"%s\">可执行文件</a>附件（如 .exe、.js 或 .bat 文件，包括压缩包内的文件）的邮件将不再被拦截。默认开启。",
   "Mail is always scanned for spam, and links in mail you send are always checked with <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"%s\">Cloudflare's malware filter</a>: mail linking to a site it blocks for phishing or malware is not sent.": "邮件始终会进行垃圾邮件扫描，您发送的邮件中的链接也始终会通过 <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"%s\">Cloudflare 恶意软件过滤器</a>进行检查：链接到被其以网络钓鱼或恶意软件为由拦截的网站的邮件将不会发送。",
-  "The passwords generated for these aliases still work.  Generate a new password for each one to replace them:": "为这些别名生成的密码仍然有效。请为每个别名生成新密码以替换它们:"
+  "The passwords generated for these aliases still work.  Generate a new password for each one to replace them:": "为这些别名生成的密码仍然有效。请为每个别名生成新密码以替换它们:",
+  "Change Owner": "更改所有者",
+  "The owner of an alias manages it and is sent its notices.  Passwords generated for the alias keep working, so generate a new one if its past owner should no longer sign in.": "别名的所有者管理该别名并接收其通知。  为该别名生成的密码仍然有效，因此如果不应再让之前的所有者登录，请生成新密码。",
+  "The owner of this alias cannot be changed.": "无法更改此别名的所有者。"
 }

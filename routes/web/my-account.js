@@ -491,6 +491,18 @@ router
     rateLimit(20, 'clone alias'),
     web.myAccount.cloneAlias
   )
+  // (an admin of a team gives an alias to another member, or takes it)
+  .post(
+    '/domains/:domain_id/aliases/:alias_id/owner',
+    web.myAccount.retrieveDomain,
+    web.myAccount.ensureDomainAdmin,
+    web.myAccount.ensureTeamPlan,
+    web.myAccount.ensureUpgradedPlan,
+    web.myAccount.retrieveAlias,
+    web.myAccount.ensureAliasAdmin,
+    rateLimit(100, 'change alias owner'),
+    web.myAccount.changeAliasOwner
+  )
   .get(
     '/domains/:domain_id/billing',
     web.myAccount.retrieveDomain,

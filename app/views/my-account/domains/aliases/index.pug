@@ -3,6 +3,41 @@ extends ../../../layout
 block body
   include ../../../_modal-storage
   include ../_modal-domain
+
+  //- Change Owner (see app/controllers/web/my-account/change-alias-owner.js):
+  //- one dialog, which assets/js/core.js fills in for the alias whose button
+  //- opened it
+  if domain.group === 'admin' && domain.plan === 'team' && !domain.is_global && domain.members.length > 1
+    #modal-alias-owner.modal.fade(
+      tabindex="-1",
+      role="dialog",
+      aria-labelledby="modal-alias-owner-title",
+      aria-hidden="true"
+    )
+      .modal-dialog(role="document")
+        .modal-content
+          .modal-header.text-center.d-block
+            h4#modal-alias-owner-title.d-inline-block.ml-4= t("Change Owner")
+            button.close(
+              type="button",
+              data-dismiss="modal",
+              aria-label="Close"
+            )
+              span(aria-hidden="true") &times;
+          .modal-body.text-center
+            form.ajax-form.d-block(method="POST")
+              p.markdown-body
+                code.notranslate.text-break
+              p.alert.alert-primary.small= t("The owner of an alias manages it and is sent its notices.  Passwords generated for the alias keep working, so generate a new one if its past owner should no longer sign in.")
+              .form-group
+                select.form-control(
+                  name="user",
+                  required,
+                  aria-labelledby="modal-alias-owner-title"
+                )
+                  each member in _.sortBy(domain.members, (member) => member.user.email)
+                    option(value=member.user.id)= `${member.user.email} (${member.group === "admin" ? t("Admin") : t("User")})`
+              button.btn.btn-success.btn-block.btn-lg(type="submit")= t("Change Owner")
   //- include ../_modal-openpgp-example
 
   //- Domain Tokens

@@ -1045,6 +1045,7 @@ module.exports = {
   ERRORS_OCCURRED: 'The following errors occurred:',
   RESET_TOKEN_EXPIRED:
     'The reset token has already expired. Please start a new <a href="/forgot-password">Forgot Password</a> request to continue.',
+  ALIAS_OWNER_CHANGE_NOT_ALLOWED: 'The owner of this alias cannot be changed.',
   REASSIGNED_ALIAS_OWNERSHIP:
     'We have reassigned ownership of the following aliases to you:',
   REASSIGNED_ALIASES_HAVE_PASSWORDS:

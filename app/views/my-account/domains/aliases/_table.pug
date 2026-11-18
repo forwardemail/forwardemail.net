@@ -249,6 +249,8 @@ p.text-center.d-lg-none
           - const canClone = !domain.is_global && domain.plan !== "free";
           - const cloneHasPassword = Array.isArray(alias.tokens) && alias.tokens.length > 0;
           - const cloneHasMailbox = cloneHasPassword && alias.has_imap;
+          //- (as app/controllers/web/my-account/change-alias-owner.js)
+          - const canChangeOwner = domain.group === "admin" && domain.plan === "team" && !domain.is_global && !isUbuntuRelatedAlias && domain.members.length > 1;
           tr
             td.align-middle
               //- Download Backup
@@ -850,6 +852,20 @@ p.text-center.d-lg-none
                         i.fa.fa-clone
                         = " "
                         = t("Clone")
+                  //- Change Owner (also in the desktop list below)
+                  if canChangeOwner
+                    li.list-inline-item
+                      button.btn.btn-sm.btn-link.text-themed.btn-block(
+                        type="button",
+                        data-toggle="modal",
+                        data-target="#modal-alias-owner",
+                        data-action=l(`/my-account/domains/${punycode.toASCII(domain.name)}/aliases/${alias.id}/owner`),
+                        data-alias=`${alias.name}@${domain.name}`,
+                        data-owner=alias.user.id
+                      )
+                        i.fa.fa-user-edit
+                        = " "
+                        = t("Change Owner")
 
             td.align-middle.d-none.d-lg-table-cell
               if isSANB(alias.description)
@@ -1123,5 +1139,19 @@ p.text-center.d-lg-none
                       i.fa.fa-clone
                       = " "
                       = t("Clone")
+                //- Change Owner (also in the mobile list above)
+                if canChangeOwner
+                  li.list-inline-item
+                    button.btn.btn-sm.btn-link.text-themed.btn-block(
+                      type="button",
+                      data-toggle="modal",
+                      data-target="#modal-alias-owner",
+                      data-action=l(`/my-account/domains/${punycode.toASCII(domain.name)}/aliases/${alias.id}/owner`),
+                      data-alias=`${alias.name}@${domain.name}`,
+                      data-owner=alias.user.id
+                    )
+                      i.fa.fa-user-edit
+                      = " "
+                      = t("Change Owner")
 
 +paginate('#table-aliases')
