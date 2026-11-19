@@ -178,6 +178,29 @@
   color: var(--fe-fg-secondary);
 }
 
+// Store links (App Store, Google Play) promoted above the download rows.
+.fe-download-card__stores {
+  display: flex;
+  gap: var(--fe-space-3);
+  flex-wrap: wrap;
+  padding-bottom: var(--fe-space-4);
+  margin-bottom: var(--fe-space-2);
+  border-bottom: 1px solid var(--fe-border-subtle);
+}
+
+.fe-btn--store {
+  flex: 1 1 0;
+  min-width: 0;
+  height: 44px;
+  color: var(--fe-l-000);
+  background-color: var(--fe-primary);
+}
+
+.fe-btn--store:hover {
+  color: var(--fe-l-000);
+  filter: brightness(1.08);
+}
+
 // Everything under the rows: notes, live channels, planned channels. One
 // wrapper takes the auto margin so the foot sits at the bottom of the card
 // however many of the three it holds.

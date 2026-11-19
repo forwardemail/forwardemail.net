@@ -75,6 +75,10 @@ mixin feDownloadCard(platform)
 
     const liveChannels = platform.channels.filter((channel) => channel.state === "live");
     const soonChannels = platform.channels.filter((channel) => channel.state === "soon");
+    // Store channels (App Store, Google Play) are live channels with a URL
+    // and no command, promoted above the direct download rows.
+    const storeChannels = liveChannels.filter((channel) => channel.url && !channel.command);
+    const otherChannels = liveChannels.filter((channel) => !channel.url || channel.command);
   //- The id is the target of the hero's manual override without JavaScript.
   li.fe-panel.fe-download-card(id=`fe-download-${platform.key}`)
     .fe-download-card__head
@@ -84,23 +88,37 @@ mixin feDownloadCard(platform)
         h3.fe-display-sm.fe-download-card__title= meta.name
         span.fe-download-card__requires= meta.requires
 
+    //- Prominent store links above the direct downloads, so visitors see the
+    //- primary install path first.
+    if storeChannels.length > 0
+      .fe-download-card__stores
+        each channel in storeChannels
+          a.fe-btn.fe-btn--store(href=channel.url, rel="noopener noreferrer")
+            if channel.key === "app-store"
+              i.fab.fa-apple(aria-hidden="true")
+            else if channel.key === "google-play"
+              i.fab.fa-google-play(aria-hidden="true")
+            else
+              i.fa.fa-store(aria-hidden="true")
+            span= channel.name
+
     ul.fe-download-rows
       each option in platform.options
         +feDownloadRow(option)
 
     //- Everything below the rows sits at the foot of the card, so the cards
     //- in a row line up even when one platform has more builds than another.
-    if notes.length > 0 || liveChannels.length > 0 || soonChannels.length > 0
+    if notes.length > 0 || otherChannels.length > 0 || soonChannels.length > 0
       .fe-download-card__foot
         if notes.length > 0
           ul.fe-download-card__notes
             each note in notes
               li.fe-text.fe-download-card__note= note
 
-        //- Live channels: other ways to get this platform's build today.
-        if liveChannels.length > 0
+        //- Live channels that are not stores: package managers, Obtainium, etc.
+        if otherChannels.length > 0
           ul.fe-download-card__channels
-            each channel in liveChannels
+            each channel in otherChannels
               +feDownloadChannel(channel)
 
         //- Planned distribution channels (stores, package managers) that are
