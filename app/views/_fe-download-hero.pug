@@ -44,7 +44,7 @@ mixin feDownloadHero
             url: option.url,
             arch: option.arch,
             fileName: option.fileName,
-            meta: [option.arch === "universal" ? null : archLabels[option.arch], option.size]
+            meta: [option.arch === "universal" ? null : archLabels[option.arch], option.isPrevious ? option.version : null, option.size]
               .filter(Boolean)
               .join(" · "),
             switchLabel: option.arch === "universal" ? null : t("Get the %s build instead", archLabels[option.arch])

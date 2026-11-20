@@ -2,7 +2,9 @@
 //- Desktop and mobile are separate sections because the install path differs:
 //- a desktop download is a file you open, a mobile one needs a step the
 //- platform puts in your way. Structure follows helpers/get-app-downloads.js,
-//- so a platform with no assets in the release simply does not render.
+//- so a platform with no assets in the release simply does not render. A file
+//- the latest release shipped without comes from the release before it, and
+//- its row names that version.
 
 //- One downloadable file. The row itself is the link, so the whole strip is a
 //- tap target; the checksum control has to sit outside it because a button
@@ -19,7 +21,7 @@ mixin feDownloadRow(option)
       span.fe-download-row__format.fe-code= formatLabels[option.format]
       span.fe-download-row__size.fe-numeral
         if option.size
-          = option.size
+          = option.isPrevious && option.version ? `${option.version} · ${option.size}` : option.size
         else
           = t("GitHub")
       span.fe-icon-tile.fe-icon-tile--sm.fe-icon-tile--round.fe-icon-tile--primary.fe-download-row__go(

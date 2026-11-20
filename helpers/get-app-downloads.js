@@ -282,6 +282,13 @@ function parseDigest(digest) {
 /**
  * Turn a release into the structure the download page renders.
  *
+ * A release is published once its desktop builds pass, so a failed mobile or
+ * terminal build leaves the latest release without those files. Each file the
+ * latest release lacks is taken from the newest earlier release that has it
+ * (`release.previous`, newest first), so a failed build keeps offering the
+ * last good version instead of removing that download from the page. Such an
+ * option is marked `isPrevious` and carries its own `version`.
+ *
  * Called with a null release (GitHub unreachable, Redis cold, or the fetch
  * failing) it falls back to the checked-in snapshot above, so every download
  * still points directly at a real file with a real checksum rather than at
@@ -293,24 +300,36 @@ function parseDigest(digest) {
  * @returns {Object}
  */
 function getAppDownloads(release) {
-  if (
-    !release ||
-    !Array.isArray(release.assets) ||
-    release.assets.length === 0
-  ) {
-    // A release object with no assets (the tag exists but CI is still
-    // uploading) degrades the same way a failed fetch does, so it takes the
-    // snapshot too rather than rendering a page of /releases links.
-    release = FALLBACK_RELEASE;
-  }
+  // The latest release, then the ones before it, keeping only those that
+  // carry files. The first is the release the page presents; the rest only
+  // fill in files it lacks.
+  let releases = [release, ...((release && release.previous) || [])].filter(
+    (r) => r && Array.isArray(r.assets) && r.assets.length > 0
+  );
+
+  // Nothing usable from GitHub (a failed fetch, or a release with no assets
+  // and no earlier one to fall back to) takes the snapshot rather than
+  // rendering a page of /releases links.
+  if (releases.length === 0) releases = [FALLBACK_RELEASE];
+
+  [release] = releases;
 
   const assets = release && Array.isArray(release.assets) ? release.assets : [];
   const isLive = assets.length > 0;
   const claimed = new Set();
 
   const options = MATRIX.map((entry) => {
-    const asset = assets.find((a) => entry.match.test(a.name));
-    if (asset) claimed.add(asset.name);
+    let source = null;
+    let asset = null;
+    for (const candidate of releases) {
+      asset = candidate.assets.find((a) => entry.match.test(a.name));
+      if (asset) {
+        source = candidate;
+        break;
+      }
+    }
+
+    if (asset && source === release) claimed.add(asset.name);
     return {
       group: entry.group,
       platform: entry.platform,
@@ -323,7 +342,11 @@ function getAppDownloads(release) {
       fileName: asset ? asset.name : null,
       size: asset ? formatSize(asset.size) : null,
       sizeBytes: asset ? asset.size : null,
-      sha256: asset ? parseDigest(asset.digest) : null
+      sha256: asset ? parseDigest(asset.digest) : null,
+      // The release this file came from, which is an earlier one than the
+      // page's when the latest release shipped without this file.
+      version: source && source.tagName ? source.tagName : null,
+      isPrevious: Boolean(source) && source !== release
     };
   }).filter((option) => option.isDirect || !isLive);
 

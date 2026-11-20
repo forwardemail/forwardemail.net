@@ -50,6 +50,13 @@ const GITHUB_API_BASE = 'https://api.github.com';
 // <https://github.com/forwardemail/mail.forwardemail.net>
 const MAIL_APP_REPO = 'forwardemail/mail.forwardemail.net';
 
+// How many earlier releases are kept alongside the latest one. A release is
+// published once its desktop builds pass, so a failed mobile or terminal
+// build leaves the latest release without those files. The /download page
+// then offers the newest earlier build of each missing file instead of
+// dropping it (see helpers/get-app-downloads.js).
+const PREVIOUS_RELEASES = 3;
+
 /**
  * Parse a GitHub release into a standardized format
  * @param {Object} release - Release object from GitHub API
@@ -94,7 +101,106 @@ function parseRelease(release) {
 }
 
 /**
- * Fetch the latest release from the mail app repository over the GitHub API.
+ * GET a path under the mail app repository from the GitHub API.
+ *
+ * @param {string} path - e.g. `releases/latest`
+ * @returns {Promise<*>} - the parsed JSON body, or null on a 404 or an error
+ *   response (which is logged)
+ */
+async function fetchFromGitHub(path) {
+  const headers = {
+    Accept: 'application/vnd.github+json',
+    'Accept-Encoding': ACCEPT_ENCODING,
+    'User-Agent': 'ForwardEmail/1.0',
+    'X-GitHub-Api-Version': '2022-11-28'
+  };
+
+  // Use GitHub token if available for higher rate limits (5000 req/hr)
+  if (env.GITHUB_OCTOKIT_TOKEN) {
+    headers.Authorization = `Bearer ${env.GITHUB_OCTOKIT_TOKEN}`;
+  }
+
+  const response = await undici.fetch(
+    `${GITHUB_API_BASE}/repos/${MAIL_APP_REPO}/${path}`,
+    {
+      method: 'GET',
+      headers,
+      // (never decodes Brotli, see helpers/refuse-unsafe-encoding.js)
+      dispatcher: getDispatcher(),
+      // Bound the outbound call. This runs inline on a /download view whenever
+      // the Redis cache is cold, so without this a slow or hung GitHub API would
+      // stall that request (and the background poller) for undici's full default
+      // timeout. On abort the callers return null and the page falls back to the
+      // checked-in release snapshot.
+      signal: AbortSignal.timeout(ms('10s'))
+    }
+  );
+
+  if (!response.ok) {
+    // 404 means no releases exist yet — not an error
+    if (response.status === 404) {
+      logger.debug('No releases found for mail app repository');
+      return null;
+    }
+
+    const errorText = await response.text();
+    logger.error(
+      new Error(`GitHub API error: ${response.status} ${response.statusText}`),
+      { extra: { errorText, repo: MAIL_APP_REPO, path } }
+    );
+    return null;
+  }
+
+  return response.json();
+}
+
+/**
+ * Fetch the published releases that came before the latest one, newest first,
+ * trimmed to what the download page reads. Best effort: any failure returns
+ * an empty list, which only means a file missing from the latest release has
+ * no earlier build to fall back to.
+ *
+ * @param {Object} latest - the parsed latest release
+ * @returns {Promise<Object[]>}
+ */
+async function fetchPreviousReleases(latest) {
+  try {
+    const data = await fetchFromGitHub('releases?per_page=10');
+    if (!Array.isArray(data)) return [];
+
+    return data
+      .map((release) => parseRelease(release))
+      .filter(
+        (release) =>
+          release &&
+          !release.draft &&
+          !release.prerelease &&
+          release.id !== latest.id &&
+          release.assets.length > 0 &&
+          typeof release.publishedAt === 'string' &&
+          // only releases older than the latest: never offer a newer build
+          // that GitHub does not (yet) call the latest
+          (!latest.publishedAt || release.publishedAt < latest.publishedAt)
+      )
+      .sort((a, b) => (a.publishedAt < b.publishedAt ? 1 : -1))
+      .slice(0, PREVIOUS_RELEASES)
+      .map((release) => ({
+        tagName: release.tagName,
+        htmlUrl: release.htmlUrl,
+        publishedAt: release.publishedAt,
+        assets: release.assets
+      }));
+  } catch (err) {
+    logger.error(err, {
+      extra: { message: 'Failed to fetch previous mail app releases' }
+    });
+    return [];
+  }
+}
+
+/**
+ * Fetch the latest release from the mail app repository over the GitHub API,
+ * with the few releases before it attached as `previous`.
  * This is the uncached `compute` behind getLatestMailAppRelease's single-flight
  * lock, so it takes no arguments and never touches Redis itself.
  *
@@ -103,59 +209,16 @@ function parseRelease(release) {
  */
 async function fetchLatestReleaseFromGitHub() {
   try {
-    // Fetch only the latest release (single API call, minimal rate limit impact)
-    const url = `${GITHUB_API_BASE}/repos/${MAIL_APP_REPO}/releases/latest`;
-
-    const headers = {
-      Accept: 'application/vnd.github+json',
-      'Accept-Encoding': ACCEPT_ENCODING,
-      'User-Agent': 'ForwardEmail/1.0',
-      'X-GitHub-Api-Version': '2022-11-28'
-    };
-
-    // Use GitHub token if available for higher rate limits (5000 req/hr)
-    if (env.GITHUB_OCTOKIT_TOKEN) {
-      headers.Authorization = `Bearer ${env.GITHUB_OCTOKIT_TOKEN}`;
-    }
-
-    const response = await undici.fetch(url, {
-      method: 'GET',
-      headers,
-      // (never decodes Brotli, see helpers/refuse-unsafe-encoding.js)
-      dispatcher: getDispatcher(),
-      // Bound the outbound call. This runs inline on a /download view whenever
-      // the Redis cache is cold, so without this a slow or hung GitHub API would
-      // stall that request (and the background poller) for undici's full default
-      // timeout. On abort the catch below returns null and the page falls back
-      // to the checked-in release snapshot.
-      signal: AbortSignal.timeout(ms('10s'))
-    });
-
-    if (!response.ok) {
-      // 404 means no releases exist yet — not an error
-      if (response.status === 404) {
-        logger.debug('No releases found for mail app repository');
-        return null;
-      }
-
-      const errorText = await response.text();
-      logger.error(
-        new Error(
-          `GitHub API error: ${response.status} ${response.statusText}`
-        ),
-        { extra: { errorText, repo: MAIL_APP_REPO } }
-      );
-      return null;
-    }
-
-    const data = await response.json();
+    const data = await fetchFromGitHub('releases/latest');
 
     // Skip drafts
-    if (data.draft) {
+    if (!data || data.draft) {
       return null;
     }
 
-    return parseRelease(data);
+    const release = parseRelease(data);
+    if (release) release.previous = await fetchPreviousReleases(release);
+    return release;
   } catch (err) {
     logger.error(err, {
       extra: { message: 'Failed to fetch mail app release' }
@@ -173,8 +236,9 @@ async function fetchLatestReleaseFromGitHub() {
  * @param {Object} options.client - Redis client (required for caching)
  * @param {boolean} [options.forceRefresh] - Skip the cached value and refetch
  *   (still single-flighted); used by the background poller
- * @returns {Promise<Object|null>} - Latest parsed release, or null when the
- *   fetch failed and nothing is cached (the caller falls back to the snapshot)
+ * @returns {Promise<Object|null>} - Latest parsed release (its `previous`
+ *   array holds the few releases before it), or null when the fetch failed
+ *   and nothing is cached (the caller falls back to the snapshot)
  */
 async function getLatestMailAppRelease(options = {}) {
   const { client, forceRefresh = false } = options;

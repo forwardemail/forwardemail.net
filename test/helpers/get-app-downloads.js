@@ -220,3 +220,112 @@ test('renders the terminal client once a release carries its executables', (t) =
     ['desktop', 'mobile', 'terminal']
   );
 });
+
+// A release is published once its desktop builds pass, so a failed mobile or
+// terminal build leaves the latest release without those files. The page
+// used to drop those downloads until the next good release.
+
+// the snapshot's assets, renamed and re-addressed as another version's
+function releaseAt(tagName, keep = () => true) {
+  const from = fallbackRelease.tagName.replace(/^v/, '');
+  const to = tagName.replace(/^v/, '');
+  return {
+    tagName,
+    htmlUrl: `${channelConfig.REPO_URL}/releases/tag/${tagName}`,
+    publishedAt: '2030-01-01T00:00:00Z',
+    assets: fallbackRelease.assets
+      .filter((asset) => keep(asset))
+      .map((asset) => ({
+        ...asset,
+        name: asset.name.replace(from, to),
+        browserDownloadUrl: asset.browserDownloadUrl
+          .replace(`/${fallbackRelease.tagName}/`, `/${tagName}/`)
+          .replace(from, to)
+      }))
+  };
+}
+
+const isMobileBuild = (asset) => /\.(apk|aab|ipa)$/i.test(asset.name);
+
+test('offers the previous release for files the latest release shipped without', (t) => {
+  const downloads = getAppDownloads({
+    ...releaseAt('v9.9.9', (asset) => !isMobileBuild(asset)),
+    previous: [releaseAt('v9.9.8'), releaseAt('v9.9.7')]
+  });
+
+  // the page is still the latest release
+  t.is(downloads.version, 'v9.9.9');
+  t.regex(downloads.checksumsUrl, /\/v9\.9\.9\/SHA256SUMS\.txt$/);
+
+  // every download the snapshot offers is still offered
+  t.deepEqual(
+    downloads.options.map((o) => [o.platform, o.format, o.arch]),
+    getAppDownloads(null).options.map((o) => [o.platform, o.format, o.arch])
+  );
+
+  for (const option of downloads.options) {
+    t.true(option.isDirect);
+    if (option.group === 'mobile') {
+      // from the newest earlier release, and marked as such
+      t.true(option.isPrevious);
+      t.is(option.version, 'v9.9.8');
+      t.regex(option.url, /\/releases\/download\/v9\.9\.8\//);
+      t.regex(option.fileName, /9\.9\.8/);
+    } else {
+      t.false(option.isPrevious);
+      t.is(option.version, 'v9.9.9');
+      t.regex(option.url, /\/releases\/download\/v9\.9\.9\//);
+    }
+  }
+
+  const mobile = downloads.groups.find((group) => group.key === 'mobile');
+  t.deepEqual(
+    mobile.platforms.map((platform) => platform.key),
+    ['android', 'ios']
+  );
+  t.is(mobile.platforms[0].recommended.version, 'v9.9.8');
+});
+
+test('skips an earlier release that lacks the file too', (t) => {
+  const downloads = getAppDownloads({
+    ...releaseAt('v9.9.9', (asset) => !isMobileBuild(asset)),
+    previous: [
+      releaseAt('v9.9.8', (asset) => !isMobileBuild(asset)),
+      releaseAt('v9.9.7')
+    ]
+  });
+
+  const apk = downloads.options.find((option) => option.format === 'apk');
+  t.is(apk.version, 'v9.9.7');
+  t.true(apk.isPrevious);
+});
+
+test('presents the previous release when the latest has no files at all', (t) => {
+  const downloads = getAppDownloads({
+    tagName: 'v9.9.9',
+    htmlUrl: 'https://example.com',
+    assets: [],
+    previous: [releaseAt('v9.9.8')]
+  });
+
+  t.is(downloads.version, 'v9.9.8');
+  t.regex(downloads.releaseUrl, /\/releases\/tag\/v9\.9\.8$/);
+  t.true(downloads.options.length > 0);
+  for (const option of downloads.options) {
+    t.is(option.version, 'v9.9.8');
+    // it is the release the page presents, so nothing is marked as older
+    t.false(option.isPrevious);
+  }
+});
+
+test('drops a file no release carries, and tolerates a release without `previous`', (t) => {
+  for (const previous of [undefined, null, []]) {
+    const downloads = getAppDownloads({
+      ...releaseAt('v9.9.9', (asset) => !isMobileBuild(asset)),
+      previous
+    });
+    t.is(downloads.version, 'v9.9.9');
+    t.false(downloads.groups.some((group) => group.key === 'mobile'));
+    t.true(downloads.options.every((option) => !option.isPrevious));
+  }
+});

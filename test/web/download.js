@@ -454,3 +454,75 @@ test.serial(
     }
   }
 );
+
+// A release is published once its desktop builds pass, so a failed mobile
+// build leaves the latest release without the Android and iOS files. Those
+// cards used to disappear from the page until the next good release.
+test.serial(
+  'a file the latest release shipped without is offered from the release before it',
+  async (t) => {
+    const isMobileBuild = (asset) => /\.(apk|aab|ipa)$/i.test(asset.name);
+    const previousTag = 'v0.0.1';
+    const previous = {
+      tagName: previousTag,
+      htmlUrl: `${channelConfig.REPO_URL}/releases/tag/${previousTag}`,
+      publishedAt: '2020-01-01T00:00:00Z',
+      assets: fallbackRelease.assets
+        .filter((asset) => isMobileBuild(asset))
+        .map((asset) => ({
+          ...asset,
+          browserDownloadUrl: asset.browserDownloadUrl.replace(
+            `/${fallbackRelease.tagName}/`,
+            `/${previousTag}/`
+          )
+        }))
+    };
+    const html = await getDownloadPage(t, {
+      ...releaseWithTerminal,
+      assets: releaseWithTerminal.assets.filter(
+        (asset) => !isMobileBuild(asset)
+      ),
+      previous: [previous]
+    });
+    const { document } = new JSDOM(html).window;
+    const rows = (key) => [
+      ...document.querySelectorAll(`#fe-download-${key} .fe-download-row`)
+    ];
+
+    // the Android and iOS cards are still there, serving the earlier files
+    // and naming the version they are
+    for (const key of ['android', 'ios']) {
+      t.true(rows(key).length > 0, `${key} has downloads`);
+      for (const row of rows(key)) {
+        t.regex(
+          row.querySelector('a.fe-download-row__link').getAttribute('href'),
+          /\/releases\/download\/v0\.0\.1\//
+        );
+        t.regex(
+          row.querySelector('.fe-download-row__size').textContent,
+          /^v0\.0\.1 · [\d.]+ [KM]B$/
+        );
+      }
+    }
+
+    // the files the latest release does have are untouched
+    for (const key of ['macos', 'windows', 'linux']) {
+      t.true(rows(key).length > 0, `${key} has downloads`);
+      for (const row of rows(key)) {
+        t.true(
+          row
+            .querySelector('a.fe-download-row__link')
+            .getAttribute('href')
+            .includes(`/releases/download/${fallbackRelease.tagName}/`)
+        );
+        t.notRegex(
+          row.querySelector('.fe-download-row__size').textContent,
+          /v\d/
+        );
+      }
+    }
+
+    // and the page is still the latest release
+    t.true(html.includes(fallbackRelease.tagName));
+  }
+);
