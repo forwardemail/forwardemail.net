@@ -1,5 +1,13 @@
 docker-compose*.yml
-node_modules
+**/node_modules
 ssl
 test
 Dockerfile*
+# runtime configuration and secrets never go into an image (a self-hosted
+# install mounts its own .env), only the defaults and schema the app reads
+.env
+.env.*
+!.env.defaults
+!.env.schema
+# the self-hosted CLI's build output
+self-hosting/cli/dist

@@ -7,6 +7,7 @@ const punycode = require('node:punycode');
 const { Buffer } = require('node:buffer');
 
 const config = require('#config');
+const env = require('#config/env');
 
 // the TTL we suggest on the setup pages (60 minutes)
 const TTL = 3600;
@@ -24,6 +25,28 @@ function getExchanges() {
   return config.isSelfHosted
     ? config.exchanges
     : ['mx1.forwardemail.net', 'mx2.forwardemail.net'];
+}
+
+//
+// The hosts of the SRV records: a self-hosted install's own servers (one name
+// for each, e.g. imap.example.com, or the one name of a "lite" install)
+//
+function getServiceHosts() {
+  if (!config.isSelfHosted)
+    return {
+      imap: 'imap.forwardemail.net',
+      smtp: 'smtp.forwardemail.net',
+      pop3: 'pop3.forwardemail.net',
+      caldav: 'caldav.forwardemail.net',
+      carddav: 'carddav.forwardemail.net'
+    };
+  return {
+    imap: env.IMAP_HOST,
+    smtp: env.SMTP_HOST,
+    pop3: env.POP3_HOST,
+    caldav: env.CALDAV_HOST,
+    carddav: env.CARDDAV_HOST
+  };
 }
 
 //
@@ -65,12 +88,13 @@ function getDnsRecords(domain, user, existingTXT = []) {
   // sending mail, mailboxes, and autodiscovery are on paid plans
   if (!isPaid) return records;
 
+  // (a self-hosted install sends from the servers its MX records point at)
+  const spf = config.isSelfHosted ? 'mx' : 'include:spf.forwardemail.net';
   records.push({
     name,
     type: 'TXT',
-    value: 'v=spf1 include:spf.forwardemail.net -all',
-    comment:
-      'SPF: a name has one SPF record, so if you already have one, add include:spf.forwardemail.net to it instead'
+    value: `v=spf1 ${spf} -all`,
+    comment: `SPF: a name has one SPF record, so if you already have one, add ${spf} to it instead`
   });
 
   if (domain.dkim_key_selector && domain.dkim_public_key) {
@@ -93,39 +117,44 @@ function getDnsRecords(domain, user, existingTXT = []) {
       comment: 'Return-Path'
     });
 
-  records.push(
-    {
-      name: `_dmarc.${name}`,
-      type: 'TXT',
-      value: `v=DMARC1; p=reject; pct=100; rua=mailto:dmarc-${
-        domain.id || domain._id
-      }@${config.webHost};`,
-      comment:
-        'DMARC: a name has one DMARC record, so if you already have one, replace it with this one'
-    },
-    {
-      name: `autoconfig.${name}`,
-      type: 'CNAME',
-      value: 'autoconfig.forwardemail.net',
-      comment: 'Email client autodiscovery (CNAME and SRV records)'
-    },
-    {
-      name: `autodiscover.${name}`,
-      type: 'CNAME',
-      value: 'autodiscover.forwardemail.net'
-    }
-  );
+  records.push({
+    name: `_dmarc.${name}`,
+    type: 'TXT',
+    value: `v=DMARC1; p=reject; pct=100; rua=mailto:dmarc-${
+      domain.id || domain._id
+    }@${config.webHost};`,
+    comment:
+      'DMARC: a name has one DMARC record, so if you already have one, replace it with this one'
+  });
+
+  // (autoconfig.forwardemail.net and autodiscover.forwardemail.net describe
+  // Forward Email's own servers, so a self-hosted install has the SRV records)
+  if (!config.isSelfHosted)
+    records.push(
+      {
+        name: `autoconfig.${name}`,
+        type: 'CNAME',
+        value: 'autoconfig.forwardemail.net',
+        comment: 'Email client autodiscovery (CNAME and SRV records)'
+      },
+      {
+        name: `autodiscover.${name}`,
+        type: 'CNAME',
+        value: 'autodiscover.forwardemail.net'
+      }
+    );
 
   // RFC 6186 (email) and RFC 6764 (CalDAV and CardDAV) for the secure
   // protocols (the records with a target of "." that say a plaintext protocol
   // is not offered are optional, and some providers refuse that target)
+  const hosts = getServiceHosts();
   for (const [service, priority, weight, port, target] of [
-    ['_imaps._tcp', 0, 1, 993, 'imap.forwardemail.net'],
-    ['_submissions._tcp', 0, 1, 465, 'smtp.forwardemail.net'],
-    ['_submission._tcp', 5, 1, 587, 'smtp.forwardemail.net'],
-    ['_pop3s._tcp', 10, 1, 995, 'pop3.forwardemail.net'],
-    ['_caldavs._tcp', 0, 1, 443, 'caldav.forwardemail.net'],
-    ['_carddavs._tcp', 0, 1, 443, 'carddav.forwardemail.net']
+    ['_imaps._tcp', 0, 1, 993, hosts.imap],
+    ['_submissions._tcp', 0, 1, 465, hosts.smtp],
+    ['_submission._tcp', 5, 1, 587, hosts.smtp],
+    ['_pop3s._tcp', 10, 1, 995, hosts.pop3],
+    ['_caldavs._tcp', 0, 1, 443, hosts.caldav],
+    ['_carddavs._tcp', 0, 1, 443, hosts.carddav]
   ]) {
     records.push({
       name: `${service}.${name}`,

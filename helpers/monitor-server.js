@@ -230,7 +230,7 @@ function monitorServer() {
   if (
     env.NODE_ENV === 'development' ||
     env.NODE_ENV === 'test' ||
-    env.isSelfHosted
+    env.SELF_HOSTED
   )
     return;
   if (!env.ENABLE_MONITOR_SERVER) return;

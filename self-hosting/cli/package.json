@@ -1,0 +1,56 @@
+{
+  "name": "@forwardemail/selfhost",
+  "description": "Set up and run a small self-hosted Forward Email mail server (Mac mini, Raspberry Pi 5, small VPS)",
+  "version": "0.1.0",
+  "author": "Forward Email LLC <support@forwardemail.net> (https://forwardemail.net)",
+  "bin": {
+    "forwardemail-selfhost": "dist/cli.cjs"
+  },
+  "bugs": {
+    "url": "https://github.com/forwardemail/forwardemail.net/issues"
+  },
+  "dependencies": {
+    "@clack/prompts": "0.9.1"
+  },
+  "devDependencies": {
+    "@types/node": "22.10.2",
+    "esbuild": "0.24.2",
+    "postject": "1.0.0-alpha.6",
+    "typescript": "5.7.2"
+  },
+  "engines": {
+    "node": ">=20.12"
+  },
+  "files": [
+    "dist/cli.cjs"
+  ],
+  "homepage": "https://github.com/forwardemail/forwardemail.net/tree/master/self-hosting/cli",
+  "keywords": [
+    "cli",
+    "forwardemail",
+    "imap",
+    "mail-server",
+    "self-hosted",
+    "smtp"
+  ],
+  "license": "BUSL-1.1",
+  "main": "dist/cli.cjs",
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "esbuild"
+    ]
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/forwardemail/forwardemail.net.git",
+    "directory": "self-hosting/cli"
+  },
+  "scripts": {
+    "build": "node build.mjs",
+    "build:sea": "node build.mjs --sea",
+    "dev": "node build.mjs && node dist/cli.cjs",
+    "test": "node --test --experimental-strip-types test/*.test.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "type": "module"
+}

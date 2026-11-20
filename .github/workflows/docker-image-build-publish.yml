@@ -6,6 +6,9 @@ on:
   #     - 'v*'  # Trigger the workflow on tags starting with 'v', for example v1.0.0
   release:
     types: [published]  # Trigger the workflow on new releases
+  # a manual run publishes an image tagged with the branch's name (e.g.
+  # `master`, for testing before a release) and leaves `latest` alone
+  workflow_dispatch:
 
 # Restrict permissions to the minimum required
 permissions:
@@ -17,13 +20,17 @@ jobs:
     runs-on: ${{ matrix.os }}
     continue-on-error: false
     timeout-minutes: 30
+    # each architecture builds on a native runner (native modules such as
+    # better-sqlite3-multiple-ciphers and re2 compile far too slowly under
+    # QEMU), and the `merge` job joins them into one multi-arch tag
     strategy:
       fail-fast: false
       matrix:
-        os:
-          - ubuntu-latest
-        node_version:
-          - "18.20.4"
+        include:
+          - os: ubuntu-latest
+            arch: amd64
+          - os: ubuntu-24.04-arm
+            arch: arm64
     env:
       AUTH_GITHUB_ENABLED: "false"
       AUTH_GOOGLE_ENABLED: "false"
@@ -70,14 +77,52 @@ jobs:
           # (the name of the release's tag is read from the environment: text
           # interpolated into this script would run as part of it)
           IMAGE="ghcr.io/${GITHUB_REPOSITORY}-selfhosted"
-          IMAGE_NAME="${IMAGE}:${GITHUB_REF_NAME}"
-          docker build -f self-hosting/Dockerfile-selfhosted -t "$IMAGE_NAME" .
+          # (a branch's name may have slashes, which a tag may not)
+          TAG="${GITHUB_REF_NAME//\//-}"
 
-          # Tag the image as 'latest' to update the latest tag
-          docker tag "$IMAGE_NAME" "${IMAGE}:latest"
-
-          # Push both the versioned and latest tags to GitHub Container Registry
-          docker push "$IMAGE_NAME"
-          docker push "${IMAGE}:latest"
+          # an architecture-specific tag, which the `merge` job below joins
+          # with the others into the versioned and `latest` tags
+          docker buildx build \
+            --platform "linux/${ARCH}" \
+            -f self-hosting/Dockerfile-selfhosted \
+            -t "${IMAGE}:${TAG}-${ARCH}" \
+            --provenance=false \
+            --push \
+            .
         env:
-          DOCKER_CLI_EXPERIMENTAL: enabled
+          ARCH: ${{ matrix.arch }}
+
+  # joins the images of every architecture into one multi-arch manifest, so
+  # that `docker pull` picks the right one on x86, Apple Silicon and Raspberry Pi
+  # (it only runs when every architecture built, so `latest` is never left
+  # pointing at an image without arm64 or amd64)
+  merge:
+    needs: build-and-publish
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@8d2750c68a42422c14e847fe6c8ac0403b4cbd6f # v3
+
+      - name: Log into GitHub Container Registry
+        uses: docker/login-action@c94ce9fb468520275223c153574b00df6fe4bcc9 # v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create and push the multi-arch manifest
+        run: |
+          IMAGE="ghcr.io/${GITHUB_REPOSITORY}-selfhosted"
+          TAG="${GITHUB_REF_NAME//\//-}"
+          # only a release moves `latest`
+          LATEST=()
+          if [ "${GITHUB_EVENT_NAME}" = "release" ]; then
+            LATEST=(-t "${IMAGE}:latest")
+          fi
+          docker buildx imagetools create \
+            -t "${IMAGE}:${TAG}" \
+            "${LATEST[@]}" \
+            "${IMAGE}:${TAG}-amd64" \
+            "${IMAGE}:${TAG}-arm64"
+          docker buildx imagetools inspect "${IMAGE}:${TAG}"

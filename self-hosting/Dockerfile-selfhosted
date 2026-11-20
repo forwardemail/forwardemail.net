@@ -4,6 +4,11 @@ WORKDIR /app
 
 ENV SELF_HOSTED=true
 
+# Puppeteer's Chrome would be downloaded to /root/.cache, which the final stage
+# never copies, and Chrome for Testing has no linux/arm64 build at all (which
+# fails the install on arm64), so it is not downloaded
+ENV PUPPETEER_SKIP_DOWNLOAD=true
+
 # Install build tools required by native Node.js modules that use node-gyp
 # (diskusage, iconv, node-snowball, re2, better-sqlite3-multiple-ciphers, etc.)
 # Also includes libcurl4-openssl-dev for node-libcurl's fallback-to-build

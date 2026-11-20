@@ -474,6 +474,32 @@ if (boolean(process.env.SELF_HOSTED)) {
       interval: '10m',
       timeout: '10m'
     },
+    //
+    // unlocks emails orphaned by a crash or restart and moves deferred
+    // emails back into the queue (without it deferred mail is never retried)
+    //
+    {
+      name: 'unlock-emails',
+      interval: '1m',
+      timeout: 0,
+      longRunning: true
+    },
+    // retention of the outbound queue and logs (`EMAIL_RETENTION`, `LOG_RETENTION`)
+    {
+      name: 'delete-emails',
+      interval: '1h',
+      timeout: '1h'
+    },
+    {
+      name: 'delete-logs',
+      interval: '1h',
+      timeout: 0
+    },
+    {
+      name: 'cleanup-expired-sessions',
+      interval: '1h',
+      timeout: 0
+    },
     {
       name: 'parse-logs',
       interval: '5m',

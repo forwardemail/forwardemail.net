@@ -276,7 +276,7 @@ services:
     command: ["node", "sqlite-bree.js"]
     volumes:
       - ./ssl:/app/ssl/
-      - /mnt/${SQLITE_STORAGE_PATH}:/mnt/${SQLITE_STORAGE_PATH}
+      - ./sqlite-data:/mnt/${SQLITE_STORAGE_PATH}
       - ./.env:/app/.env
     restart: unless-stopped
     extra_hosts:
@@ -300,7 +300,7 @@ services:
     hostname: mx.${DOMAIN}
     volumes:
       - ./ssl:/app/ssl/
-      - /mnt/${SQLITE_STORAGE_PATH}:/mnt/${SQLITE_STORAGE_PATH}
+      - ./sqlite-data:/mnt/${SQLITE_STORAGE_PATH}
       - ./.env:/app/.env
     healthcheck:
       test: "nc -z 127.0.0.1 25"

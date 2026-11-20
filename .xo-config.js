@@ -7,13 +7,15 @@ module.exports = {
   prettier: true,
   space: true,
   extends: ['xo-lass'],
+  // (a package of its own, in TypeScript, checked with its own `tsc`)
+  ignores: ['self-hosting/cli/**'],
   rules: {
     'no-warning-comments': 'off',
     'unicorn/prefer-top-level-await': 'off',
     'unicorn/no-process-exit': 'off',
     'max-depth': 'off',
     'no-await-in-loop': 'off',
-    'complexity': 'off'
+    complexity: 'off'
   },
   overrides: [
     {

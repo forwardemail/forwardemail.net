@@ -1,0 +1,88 @@
+#
+# Forward Email "lite": a small self-hosted install for one box (a Mac mini, a
+# Raspberry Pi 5, a small VPS) with a domain or two and a few mailboxes.
+#
+# Three containers instead of one for each process:
+# - app:     every Forward Email process, run by `self-hosting/lite/supervisor.js`
+#            (MX, IMAP, SMTP, the outbound queue, the SQLite mailbox server and
+#            its worker, the job scheduler and the web interface)
+# - mongodb: accounts, domains, aliases and the outbound queue
+# - redis:   cache, sessions, locks and pub/sub between the processes
+#
+# One hostname (`MAIL_HOST`, e.g. mail.example.com) serves MX, IMAP, SMTP and
+# the web interface, so one certificate covers everything, and the processes
+# reach each other on 127.0.0.1 inside the app container.
+#
+# Plain port mappings, no host networking, so this runs the same under Docker
+# on macOS (OrbStack, Colima, Docker Desktop) and on Linux.
+#
+# Expects, next to this file:
+#   .env        (see `env.example`)
+#   ssl/        privkey.pem, fullchain.pem, chain.pem and dkim.key
+#   data/       created on first start (mailboxes, MongoDB, Redis)
+#
+
+name: forwardemail
+
+services:
+  app:
+    image: ghcr.io/forwardemail/forwardemail.net-selfhosted:${FE_VERSION:-latest}
+    command: ["node", "self-hosting/lite/supervisor.js"]
+    hostname: ${MAIL_HOST:?set MAIL_HOST in .env}
+    restart: unless-stopped
+    # (the supervisor stops the others before the SQLite server, each of which
+    # may take a while to finish what it is doing)
+    stop_grace_period: 2m
+    # (the host side of each can be changed in .env, e.g. HTTPS_HOST_PORT=8443
+    # when something else on the box already listens on 443)
+    ports:
+      - "${MX_HOST_PORT:-25}:25"            # MX (inbound mail from other servers)
+      - "${SMTP_HOST_PORT:-465}:465"        # SMTP submission (implicit TLS)
+      - "${IMAP_HOST_PORT:-993}:993"        # IMAP (implicit TLS)
+      - "${HTTPS_HOST_PORT:-443}:3000"      # web interface (TLS)
+    volumes:
+      - ./.env:/app/.env:ro
+      - ./ssl:/app/ssl:ro
+      - ./data/mailboxes:/mnt/sqlite_storage
+    extra_hosts:
+      # the processes reach each other (and the SQLite server's WebSocket,
+      # whose certificate is for this name) inside this container
+      - "${MAIL_HOST}:127.0.0.1"
+    environment:
+      LITE_SERVICES: ${LITE_SERVICES:-}
+    healthcheck:
+      test: ["CMD-SHELL", "nc -z 127.0.0.1 25 && nc -z 127.0.0.1 465 && nc -z 127.0.0.1 993 && nc -z 127.0.0.1 3000"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 3m
+    depends_on:
+      mongodb:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  # neither is published on the host: only the app container can reach them
+  mongodb:
+    image: mongo:8.0
+    restart: unless-stopped
+    volumes:
+      - ./data/mongo:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping').ok"]
+      interval: 10s
+      timeout: 10s
+      retries: 10
+      start_period: 30s
+
+  redis:
+    image: redis:7.4-alpine
+    restart: unless-stopped
+    command: ["redis-server", "--appendonly", "yes", "--save", "60", "1000"]
+    volumes:
+      - ./data/redis:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 10

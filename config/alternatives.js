@@ -3882,9 +3882,12 @@ for (const name of Object.keys(obj)) {
 
 //
 // only run puppeteer if we're on the web server
+// (and not on a self-hosted install: its image has no Chrome, and a "lite"
+// install runs every process on a host named WEB_HOST)
 //
 if (
   env.NODE_ENV !== 'test' &&
+  !env.SELF_HOSTED &&
   (env.NODE_ENV !== 'production' || env.WEB_HOST === os.hostname())
 ) {
   (async () => {
