@@ -58,7 +58,7 @@ sudo systemctl start disk-encryption-monitor.service; sudo journalctl -u disk-en
 
 ## Authorized SSH keys
 
-`authorized-keys-monitor` runs on every server whenever a file in `/root/.ssh`, `/home/devops/.ssh` or `/home/deploy/.ssh`, or `sshd_config`, changes, and every 5 minutes. The only keys allowed are the two that `security.yml` sets for `devops` and `deploy` (`~/.ssh/id_rsa.pub` and `~/.ssh/id_rsa_2.pub` on the machine that runs Ansible), listed in `/etc/security-monitor/authorized-keys.conf`; `root` may have them too, from the first run. The check reads every account's `authorized_keys` and `authorized_keys2`, and any other file `AuthorizedKeysFile` names. It fails for:
+`authorized-keys-monitor` runs on every server whenever a file in `/root/.ssh`, `/home/devops/.ssh` or `/home/deploy/.ssh`, or `sshd_config`, changes, and every 5 minutes. The only keys allowed are the two that `security.yml` sets for `devops` and `deploy` (`~/.ssh/id_rsa.pub` and `~/.ssh/id_rsa_2.pub` on the machine that runs Ansible) and the team keys in `team_ssh_keys` (titanism and shaunwarman), listed in `/etc/security-monitor/authorized-keys.conf`; `root` may have them too, from the first run. The check reads every account's `authorized_keys` and `authorized_keys2`, and any other file `AuthorizedKeysFile` names. It fails for:
 
 * any other key, for any account
 * an allowed key with options (`command=`, `from=` and so on)

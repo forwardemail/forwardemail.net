@@ -36,6 +36,13 @@
   vars:
     copy_local_key: "{{ lookup('file', lookup('env','HOME') + '/.ssh/id_rsa.pub') }}"
     copy_local_key_2: "{{ lookup('file', lookup('env','HOME') + '/.ssh/id_rsa_2.pub') }}"
+    # Team keys added to the servers by hand (https://github.com/<user>.keys).
+    # authorized-keys-monitor allows them as well as the two keys above.
+    team_ssh_keys:
+      # titanism SHA256:OPTNSZuWC0deeu7IG4PpyDFHp1awCThrPnPNFz1W/7g
+      - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDGLgdif2p3fSQDAOFDklgJNdrCuUtSqI30E6X0QM2lEHwQL8Rju3sRq/x6qoLDrKf3a3kGQC6SKQM34SwvXRlnkLEj5l/FB/QEPNExfFnqWKFi4ptTQG30/AZCwCEkgZIAucWldx7hQlLQpZS3N5hIyuzlm/XJXQ7dPlysT2DG6RZynekePbUCuSVrHu/AkxvXFiwNXhML7cC7BId8rnb362mXJ9KPumJCwG/0gnhVf85oUJtoa4YOXIywGq9OzFW0i6lhHKtWdgbeIrqgyLdhQqauqjXdHX4qeGx3fgZpI5WB6Zep1xXd86/3Qy7dkOMo+FBiBmIDxiiBwYgcfGy0Je6NbB/JyUKROWhwvjWIrjR284sDufkBqdpCwVYxL/yvsO59IoHqM01wYQT4901urJpNoqP0wOnepz+j7bG6o2mAKyF9chRhC5EA+9+qQmK1EWW/8yq/E+HtJxlHmPShHMZsDeRiHngzqiAXc6Zn+0yi0ubA/aagoftcwJlqVd0=
+      # shaunwarman SHA256:WPS/46dy50y/7VxWBDy9w0Flnym4IFDYhQJ+JDjKEvU
+      - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIP4z28b8mpXy03jDeMJxfcukHFztCWgsrzufwA6UVcIY
     alert_email_sender: "{{ lookup('env', 'ALERT_EMAIL_FROM') | default('mailerdaemon@forwardemail.net', true) }}"
     alert_email_recipients: "{{ lookup('env', 'ALERT_EMAIL_RECIPIENTS') | default(lookup('env', 'MSMTP_RCPTS') | default('security@forwardemail.net', true), true) }}"
     twilio_account_sid: "{{ lookup('env', 'TWILIO_ACCOUNT_SID') }}"
@@ -1451,15 +1458,15 @@
         force: no
 
     # The only SSH keys allowed on the server: the two keys set below for the
-    # devops and deploy users (root logs in with them on the first run).
-    # authorized-keys-monitor alerts on every other key.
+    # devops and deploy users (root logs in with them on the first run), and
+    # team_ssh_keys.  authorized-keys-monitor alerts on every other key.
     - name: Create authorized SSH keys list
       copy:
         dest: /etc/security-monitor/authorized-keys.conf
         content: |
           # Managed by Ansible (security.yml): user, key type, key
           {% for user in ['root', 'devops', 'deploy'] %}
-          {% for key in [copy_local_key, copy_local_key_2] %}
+          {% for key in [copy_local_key, copy_local_key_2] + team_ssh_keys %}
           {{ user }} {{ key.split()[:2] | join(' ') }}
           {% endfor %}
           {% endfor %}

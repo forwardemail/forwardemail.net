@@ -96,6 +96,7 @@ plays = [
         "vars": {
             "copy_local_key": f"{{{{ lookup('file', '{root}/allowed1.pub') }}}}",
             "copy_local_key_2": f"{{{{ lookup('file', '{root}/allowed2.pub') }}}}",
+            "team_ssh_keys": play["vars"]["team_ssh_keys"],
         },
         "tasks": [allowed],
     }
@@ -115,6 +116,8 @@ for host, units in (
         "tasks": sms,
     })
 yaml.safe_dump(plays, open(f"{root}/render.yml", "w", encoding="utf-8"))
+with open(f"{root}/team.keys", "w", encoding="utf-8") as team:
+    team.write("".join(f"{key}\n" for key in play["vars"]["team_ssh_keys"]))
 EOF_RENDER
 if ! ANSIBLE_LOCAL_TEMP="$TEST_ROOT/ansible-local" \
   ANSIBLE_REMOTE_TEMP="$TEST_ROOT/ansible-remote" \
@@ -130,7 +133,15 @@ for user in root devops deploy; do
       fail "the rendered list lacks $name for $user"
   done
 done
-[[ "$(grep -vc '^#' "$ALLOWED")" -eq 6 ]] || fail 'the rendered list has other keys'
+# The team keys (titanism and shaunwarman) are allowed for each user too.
+[[ "$(wc -l < "$TEST_ROOT/team.keys")" -eq 2 ]] || fail 'expected two team keys'
+while read -r type team_key; do
+  for user in root devops deploy; do
+    grep -Fxq "$user $type $team_key" "$ALLOWED" ||
+      fail "the rendered list lacks a team key for $user"
+  done
+done < "$TEST_ROOT/team.keys"
+[[ "$(grep -vc '^#' "$ALLOWED")" -eq 12 ]] || fail 'the rendered list has other keys'
 # Every host texts for unauthorized keys, not only the SMS hosts.
 [[ "$(cat "$TEST_ROOT/sms-ns1.forwardemail.net")" == 'authorized-keys-monitor.service' ]] ||
   fail 'a host without SMS units does not text for unauthorized keys'
@@ -278,8 +289,11 @@ body_has() {
   }
 }
 
-# The deployed keys pass, with any comment, and send nothing.
+# The deployed keys pass, with any comment, and send nothing; so do the team
+# keys added by hand.
 clean_host
+sed 's/$/ added-by-hand/' "$TEST_ROOT/team.keys" >> "$HOMES/home/devops/.ssh/authorized_keys"
+cat "$TEST_ROOT/team.keys" >> "$HOMES/root/.ssh/authorized_keys"
 check 0
 grep -Fxq 'every authorized_keys entry is one that security.yml deployed' \
   "$MOCK_ROOT/stdout" || fail 'no success message'
