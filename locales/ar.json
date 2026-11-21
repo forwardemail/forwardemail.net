@@ -23550,5 +23550,8 @@
   "The owner of an alias manages it and is sent its notices.  Passwords generated for the alias keep working, so generate a new one if its past owner should no longer sign in.": "مالك الاسم المستعار يديره وتُرسل إليه إشعاراته.  كلمات المرور التي أُنشئت للاسم المستعار تظل تعمل، لذا أنشئ كلمة مرور جديدة إذا كان يجب ألا يسجّل مالكه السابق الدخول بعد الآن.",
   "The owner of this alias cannot be changed.": "لا يمكن تغيير مالك هذا الاسم المستعار.",
   "Get it from the App Store or Google Play, or install the build directly, exactly as it left CI.": "Get it from the App Store or Google Play, or install the build directly, exactly as it left CI.",
-  "For sideloading with AltStore or Xcode": "For sideloading with AltStore or Xcode"
+  "For sideloading with AltStore or Xcode": "For sideloading with AltStore or Xcode",
+  "Added:": "أُضيف:",
+  "Removed:": "أُزيل:",
+  "and %d more": "و%d أخرى"
 }

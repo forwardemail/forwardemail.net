@@ -23550,5 +23550,8 @@
   "The owner of an alias manages it and is sent its notices.  Passwords generated for the alias keep working, so generate a new one if its past owner should no longer sign in.": "Bir takma adın sahibi onu yönetir ve bildirimlerini alır.  Takma ad için oluşturulan şifreler çalışmaya devam eder; önceki sahibinin artık oturum açmaması gerekiyorsa yeni bir şifre oluşturun.",
   "The owner of this alias cannot be changed.": "Bu takma adın sahibi değiştirilemez.",
   "Get it from the App Store or Google Play, or install the build directly, exactly as it left CI.": "Get it from the App Store or Google Play, or install the build directly, exactly as it left CI.",
-  "For sideloading with AltStore or Xcode": "For sideloading with AltStore or Xcode"
+  "For sideloading with AltStore or Xcode": "For sideloading with AltStore or Xcode",
+  "Added:": "Eklendi:",
+  "Removed:": "Kaldırıldı:",
+  "and %d more": "ve %d tane daha"
 }

@@ -23550,5 +23550,8 @@
   "The owner of an alias manages it and is sent its notices.  Passwords generated for the alias keep working, so generate a new one if its past owner should no longer sign in.": "Chủ sở hữu của một bí danh quản lý bí danh đó và nhận các thông báo của nó.  Mật khẩu đã tạo cho bí danh vẫn hoạt động, vì vậy hãy tạo mật khẩu mới nếu chủ sở hữu trước không được đăng nhập nữa.",
   "The owner of this alias cannot be changed.": "Không thể thay đổi chủ sở hữu của bí danh này.",
   "Get it from the App Store or Google Play, or install the build directly, exactly as it left CI.": "Get it from the App Store or Google Play, or install the build directly, exactly as it left CI.",
-  "For sideloading with AltStore or Xcode": "For sideloading with AltStore or Xcode"
+  "For sideloading with AltStore or Xcode": "For sideloading with AltStore or Xcode",
+  "Added:": "Đã thêm:",
+  "Removed:": "Đã xóa:",
+  "and %d more": "và %d mục khác"
 }

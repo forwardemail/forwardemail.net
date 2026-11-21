@@ -29,6 +29,22 @@ block content
                             em.text-muted= t("(redacted)")
                           else if typeof field.current === 'boolean'
                             span= field.current ? t("Enabled") : t("Disabled")
+                          else if Array.isArray(field.current) && field.current.every((v) => typeof v === "string")
+                            //- the entries added and removed (e.g. of the allowlist or denylist)
+                            - const before = Array.isArray(field.previous) ? field.previous : [];
+                            - const added = field.current.filter((v) => !before.includes(v));
+                            - const removed = before.filter((v) => !field.current.includes(v));
+                            each change in [{ label: t("Added:"), values: added }, { label: t("Removed:"), values: removed }]
+                              if change.values.length > 0
+                                div
+                                  strong= change.label
+                                  = " "
+                                  span.notranslate= change.values.slice(0, 20).join(", ")
+                                  if change.values.length > 20
+                                    = " "
+                                    span= t("and %d more", change.values.length - 20)
+                            if added.length === 0 && removed.length === 0
+                              span= t("%d items", field.current.length)
                           else if Array.isArray(field.current)
                             span= t("%d items", field.current.length)
                           else

@@ -23550,5 +23550,8 @@
   "The owner of an alias manages it and is sent its notices.  Passwords generated for the alias keep working, so generate a new one if its past owner should no longer sign in.": "Ejeren af et alias administrerer det og får dets meddelelser.  Adgangskoder, der er genereret til aliasset, virker fortsat, så generér en ny, hvis den tidligere ejer ikke længere skal kunne logge ind.",
   "The owner of this alias cannot be changed.": "Ejeren af dette alias kan ikke ændres.",
   "Get it from the App Store or Google Play, or install the build directly, exactly as it left CI.": "Get it from the App Store or Google Play, or install the build directly, exactly as it left CI.",
-  "For sideloading with AltStore or Xcode": "For sideloading with AltStore or Xcode"
+  "For sideloading with AltStore or Xcode": "For sideloading with AltStore or Xcode",
+  "Added:": "Tilføjet:",
+  "Removed:": "Fjernet:",
+  "and %d more": "og %d mere"
 }

@@ -23550,5 +23550,8 @@
   "The owner of an alias manages it and is sent its notices.  Passwords generated for the alias keep working, so generate a new one if its past owner should no longer sign in.": "Ägaren av ett alias hanterar det och får dess aviseringar.  Lösenord som genererats för aliaset fungerar fortfarande, så generera ett nytt om den tidigare ägaren inte längre ska kunna logga in.",
   "The owner of this alias cannot be changed.": "Ägaren av detta alias kan inte ändras.",
   "Get it from the App Store or Google Play, or install the build directly, exactly as it left CI.": "Get it from the App Store or Google Play, or install the build directly, exactly as it left CI.",
-  "For sideloading with AltStore or Xcode": "For sideloading with AltStore or Xcode"
+  "For sideloading with AltStore or Xcode": "For sideloading with AltStore or Xcode",
+  "Added:": "Tillagt:",
+  "Removed:": "Borttaget:",
+  "and %d more": "och %d till"
 }

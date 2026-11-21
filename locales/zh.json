@@ -23550,5 +23550,8 @@
   "The owner of an alias manages it and is sent its notices.  Passwords generated for the alias keep working, so generate a new one if its past owner should no longer sign in.": "别名的所有者管理该别名并接收其通知。  为该别名生成的密码仍然有效，因此如果不应再让之前的所有者登录，请生成新密码。",
   "The owner of this alias cannot be changed.": "无法更改此别名的所有者。",
   "Get it from the App Store or Google Play, or install the build directly, exactly as it left CI.": "Get it from the App Store or Google Play, or install the build directly, exactly as it left CI.",
-  "For sideloading with AltStore or Xcode": "For sideloading with AltStore or Xcode"
+  "For sideloading with AltStore or Xcode": "For sideloading with AltStore or Xcode",
+  "Added:": "已添加：",
+  "Removed:": "已删除：",
+  "and %d more": "以及另外 %d 项"
 }

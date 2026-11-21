@@ -880,3 +880,68 @@ test('an expired card subscription links to updating the payment method', async 
     )
   );
 });
+
+// The email used to say only how many entries a list had ("12 items"), so an
+// admin could not tell what was added to or removed from the denylist.
+test('a list change in the domain update email names the entries added and removed', async (t) => {
+  const many = Array.from({ length: 25 }, (_, i) => `spam${i}.example.net`);
+  const html = await render('domain-update', {
+    domainUpdates: [
+      {
+        name: 'denylist',
+        text: 'Denylist',
+        previous: ['*.ug', 'old.example.org', 'kept.example.com'],
+        current: ['*.ug', 'kept.example.com', 'plarium.example', ...many],
+        changedByEmail: 'jane@example.com',
+        isAdmin: false,
+        isSystem: false
+      },
+      {
+        name: 'allowlist',
+        text: 'Allowlist',
+        previous: ['a.example.com'],
+        current: ['a.example.com'],
+        isSystem: true
+      }
+    ]
+  });
+  const { window } = new JSDOM(html);
+  const rows = [...window.document.querySelectorAll('tbody tr')];
+  const change = (name) =>
+    rows
+      .find((row) => row.textContent.includes(name))
+      .querySelectorAll('td')[1]
+      .textContent.replace(/\s+/g, ' ')
+      .trim();
+
+  const denylist = change('denylist');
+  t.true(denylist.startsWith('Added: plarium.example, spam0.example.net,'));
+  // at most 20 are listed
+  t.true(denylist.includes('spam18.example.net and 6 more'));
+  t.false(denylist.includes('spam19.example.net'));
+  t.true(denylist.endsWith('Removed: old.example.org'));
+  // entries that stayed are not listed
+  t.false(denylist.includes('kept.example.com'));
+  t.false(denylist.includes('*.ug'));
+
+  // a list that did not change still shows its size
+  t.is(change('allowlist'), '1 items');
+  window.close();
+});
+
+test('the domain update email names list changes in the domain admins language', async (t) => {
+  const html = await render('domain-update', {
+    locale: 'de',
+    domainUpdates: [
+      {
+        name: 'denylist',
+        text: 'Denylist',
+        previous: ['old.example.org'],
+        current: ['new.example.org'],
+        isSystem: true
+      }
+    ]
+  });
+  t.true(html.includes('Hinzugefügt:'));
+  t.true(html.includes('Entfernt:'));
+});

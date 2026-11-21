@@ -2,6 +2,18 @@ include ../../_sort-header
 include ../../_pagination
 include ../_list-filters
 
+//- an address in a log: clicking it copies it (like any other code on the
+//- site), and the filter icon next to it shows only logs with that address
+mixin logAddress(address)
+  span.small: code= address
+  a.small.ml-1.text-muted(
+    href=getFilterUrl({ q: address }),
+    title=t("Filter by"),
+    aria-label=t("Filter by")
+  ): i.fa.fa-filter(
+    aria-hidden="true"
+  )
+
 .table-responsive
   table#table-logs.table.table-hover.table-bordered.table-sm
     thead.thead-dark
@@ -76,9 +88,7 @@ include ../_list-filters
                   li
                     span.badge.badge-pill.badge-dark= t("MAIL FROM")
                     = " "
-                    a.small(
-                      href=getFilterUrl({ q: log.meta.session.envelope.mailFrom.address })
-                    ): code= log.meta.session.envelope.mailFrom.address
+                    +logAddress(log.meta.session.envelope.mailFrom.address)
                 //- RCPT TO
                 if log.meta && log.meta.session && log.meta.session.envelope && log.meta.session.envelope.rcptTo && _.isArray(log.meta.session.envelope.rcptTo) && !_.isEmpty(log.meta.session.envelope.rcptTo)
                   li
@@ -87,7 +97,7 @@ include ../_list-filters
                     ul.list-inline.d-inline-block.mb-0
                       each rcpt in log.meta.session.envelope.rcptTo
                         li.list-inline-item
-                          a.small(href=getFilterUrl({ q: rcpt.address })): code= rcpt.address
+                          +logAddress(rcpt.address)
                 //- Delivered To / Forwarded To (destination)
                 if destAddrs.length > 0
                   li
@@ -102,9 +112,7 @@ include ../_list-filters
                   li
                     span.badge.badge-pill.badge-primary= t("From")
                     = " "
-                    a.small(
-                      href=getFilterUrl({ q: log.meta.session.originalFromAddress })
-                    ): code= log.meta.session.originalFromAddress
+                    +logAddress(log.meta.session.originalFromAddress)
                 else if log.meta && log.meta.session && log.meta.session.headers && log.meta.session.headers.From
                   li
                     span.badge.badge-pill.badge-primary= t("From")

@@ -23550,5 +23550,8 @@
   "The owner of an alias manages it and is sent its notices.  Passwords generated for the alias keep working, so generate a new one if its past owner should no longer sign in.": "Владелец псевдонима управляет им и получает его уведомления.  Пароли, созданные для псевдонима, продолжают работать, поэтому создайте новый, если прежний владелец больше не должен входить.",
   "The owner of this alias cannot be changed.": "Владельца этого псевдонима нельзя изменить.",
   "Get it from the App Store or Google Play, or install the build directly, exactly as it left CI.": "Get it from the App Store or Google Play, or install the build directly, exactly as it left CI.",
-  "For sideloading with AltStore or Xcode": "For sideloading with AltStore or Xcode"
+  "For sideloading with AltStore or Xcode": "For sideloading with AltStore or Xcode",
+  "Added:": "Добавлено:",
+  "Removed:": "Удалено:",
+  "and %d more": "и ещё %d"
 }

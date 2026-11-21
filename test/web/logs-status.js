@@ -261,6 +261,39 @@ test('the sender and recipients of a log filter the list for them', async (t) =>
   );
 });
 
+// Clicking an address used to filter the list, while its tooltip said "Click
+// to copy" (and copying is what every other address on the site does). The
+// address copies again, and a filter icon next to it filters.
+test('an address in a log copies when clicked, and its filter icon filters', async (t) => {
+  const id = await createLog(t);
+  const document = await getPage(t);
+  const row = getRows(document)[id];
+  const log = getCell(document, row, 'Log');
+
+  // no address is inside a link, so a click copies instead of leaving the page
+  for (const code of log.querySelectorAll('code'))
+    t.is(code.closest('a'), null);
+
+  // each filter icon follows the address it filters for
+  const filters = [...log.querySelectorAll('a[title="Filter by"]')];
+  t.deepEqual(
+    filters.map((a) => a.getAttribute('href')),
+    [
+      '/en/my-account/logs?q=sender%40example.net',
+      `/en/my-account/logs?q=alice%40${encodeURIComponent(
+        t.context.domain.name
+      )}`
+    ]
+  );
+  for (const filter of filters)
+    t.is(
+      filter.getAttribute('href'),
+      `/en/my-account/logs?q=${encodeURIComponent(
+        filter.previousElementSibling.textContent
+      )}`
+    );
+});
+
 test('a 200 filters for webhook deliveries and a 250 for the others', async (t) => {
   const webhook = await createLog(t, {
     meta: { is_webhook: true, info: { response: 'OK' } }

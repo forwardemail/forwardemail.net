@@ -23550,5 +23550,8 @@
   "The owner of an alias manages it and is sent its notices.  Passwords generated for the alias keep working, so generate a new one if its past owner should no longer sign in.": "별칭의 소유자는 별칭을 관리하고 해당 알림을 받습니다.  별칭에 대해 생성된 비밀번호는 계속 작동하므로, 이전 소유자가 더 이상 로그인하지 못하게 하려면 새 비밀번호를 생성하세요.",
   "The owner of this alias cannot be changed.": "이 별칭의 소유자는 변경할 수 없습니다.",
   "Get it from the App Store or Google Play, or install the build directly, exactly as it left CI.": "Get it from the App Store or Google Play, or install the build directly, exactly as it left CI.",
-  "For sideloading with AltStore or Xcode": "For sideloading with AltStore or Xcode"
+  "For sideloading with AltStore or Xcode": "For sideloading with AltStore or Xcode",
+  "Added:": "추가됨:",
+  "Removed:": "제거됨:",
+  "and %d more": "외 %d개"
 }
