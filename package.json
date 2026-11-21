@@ -579,7 +579,8 @@
       "google-gax>@grpc/grpc-js": "1.14.6",
       "unified-engine>yaml": "2.9.0",
       "@types/minimatch>minimatch": "10.2.5",
-      "@typescript-eslint/eslint-plugin>eslint": "8.39.0"
+      "@typescript-eslint/eslint-plugin>eslint": "8.39.0",
+      "node-libcurl>nan": "2.30.0"
     },
     "patchedDependencies": {
       "mailauth@4.11.0": "patches/mailauth@4.11.0.patch",
