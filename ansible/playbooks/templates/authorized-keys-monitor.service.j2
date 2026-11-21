@@ -1,0 +1,17 @@
+[Unit]
+Description=Authorized SSH Keys Monitor
+Documentation=https://github.com/forwardemail/forwardemail.net
+After=local-fs.target
+OnFailure=failure-notification@%n.service
+# Every change to a key file runs a check (the path unit triggers it).
+StartLimitIntervalSec=0
+
+[Service]
+Type=oneshot
+TimeoutStartSec=180
+ExecStart=/usr/local/bin/authorized-keys-monitor.sh
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=authorized-keys-monitor
+User=root
+Group=root

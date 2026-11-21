@@ -14,6 +14,7 @@ Only a small set of important services also sends an **SMS**. Text messages are 
 | MongoDB or its health check on `logs.forwardemail.net`        | Yes   | Yes                     | Yes                |
 | Valkey or its health check on `redis.forwardemail.net`        | Yes   | Yes                     | Yes                |
 | PM2 startup or PM2 health check on a Node.js server           | Yes   | Yes                     | Yes                |
+| An SSH key that `security.yml` did not deploy, on any server  | Yes   | Yes                     | No                 |
 | Timers, package updates, Unbound, backups, and other services | Yes   | No                      | No                 |
 
 A successful, stale, malformed, or mismatched systemd event sends no alert. This prevents messages like the earlier `fwupd-refresh.service` alert that mixed an old successful run with an empty failure result.
@@ -52,6 +53,32 @@ sudo journalctl -u mongod-health-check.service -n 100 --no-pager
 
 ```bash
 sudo systemctl start disk-encryption-monitor.service; sudo journalctl -u disk-encryption-monitor.service -n 20 --no-pager
+```
+
+
+## Authorized SSH keys
+
+`authorized-keys-monitor` runs on every server whenever a file in `/root/.ssh`, `/home/devops/.ssh` or `/home/deploy/.ssh`, or `sshd_config`, changes, and every 5 minutes. The only keys allowed are the two that `security.yml` sets for `devops` and `deploy` (`~/.ssh/id_rsa.pub` and `~/.ssh/id_rsa_2.pub` on the machine that runs Ansible), listed in `/etc/security-monitor/authorized-keys.conf`; `root` may have them too, from the first run. The check reads every account's `authorized_keys` and `authorized_keys2`, and any other file `AuthorizedKeysFile` names. It fails for:
+
+* any other key, for any account
+* an allowed key with options (`command=`, `from=` and so on)
+* a line that is not a key
+* sshd taking keys from somewhere else: `AuthorizedKeysCommand`, `AuthorizedPrincipalsFile`, `AuthorizedPrincipalsCommand` or `TrustedUserCAKeys`
+
+A failure is a security incident. It sends the failure email and an SMS from every server where the Twilio variables are set, not only the SMS servers above, and a separate email with a report:
+
+* each key: its type, SHA256 and MD5 fingerprints, comment, options and line
+* what changed in each file since the last check, and the file's owner, mode and times
+* who changed the file: the auditd records (process, user, `auid`, TTY and session) and the login of that session with its IP
+* every login with the key in the last 30 days, with its IP
+* who is logged in, the SSH connections, `last`, and each IP with its reverse DNS and whether it is in `authorized-ips.conf`
+* the SSH, sudo and shell command logs since the last check
+
+It is sent every 10 minutes until the key is removed, then one "resolved" email is sent. The report and a copy of each file are kept in `/var/lib/authorized-keys-monitor/incidents`. No request leaves the server for the report except reverse DNS. To change a key, change it on the machine that runs Ansible, run `security.yml`, and remove the old key from the servers.
+
+```bash
+sudo systemctl start authorized-keys-monitor.service; sudo journalctl -u authorized-keys-monitor.service -n 50 --no-pager
+sudo ls /var/lib/authorized-keys-monitor/incidents
 ```
 
 

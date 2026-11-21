@@ -51,6 +51,7 @@ run "$SCRIPT_DIR/test-systemd-sms-policy-render.sh"
 run "$SCRIPT_DIR/test-status-incident-lifecycle.py"
 run "$SCRIPT_DIR/test-database-health-check.sh"
 run "$SCRIPT_DIR/test-disk-encryption-monitor.sh"
+run "$SCRIPT_DIR/test-authorized-keys-monitor.sh"
 
 if [[ "$FULL" == true ]]; then
   printf '%s\n' 'Running full all-host hostname test...'

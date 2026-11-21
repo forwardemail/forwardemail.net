@@ -1,0 +1,14 @@
+[Unit]
+Description=Authorized SSH Keys Monitor (runs when a key file or sshd_config changes)
+Documentation=https://github.com/forwardemail/forwardemail.net
+
+[Path]
+PathChanged=/root/.ssh
+PathChanged=/home/devops/.ssh
+PathChanged=/home/deploy/.ssh
+PathChanged=/etc/ssh/sshd_config
+PathChanged=/etc/ssh/sshd_config.d
+Unit=authorized-keys-monitor.service
+
+[Install]
+WantedBy=paths.target

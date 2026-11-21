@@ -285,6 +285,17 @@
         - always
         - forwardemail-alert-policy
 
+    # An SSH key that security.yml did not deploy is a security incident: every
+    # host with the Twilio variables set texts, not only the database and PM2
+    # hosts.
+    - name: Text unauthorized SSH keys from every host
+      ansible.builtin.set_fact:
+        forwardemail_sms_services: >-
+          {{ forwardemail_sms_services + ['authorized-keys-monitor.service'] }}
+      tags:
+        - always
+        - forwardemail-alert-policy
+
     - name: Derive public systemd incident reporter state
       ansible.builtin.set_fact:
         forwardemail_systemd_incident_component: >-
@@ -396,6 +407,15 @@
         daemon_reload: yes
         name: disk-encryption-monitor.timer
         state: restarted
+
+    - name: Restart authorized keys monitor
+      systemd:
+        daemon_reload: yes
+        name: "{{ item }}"
+        state: restarted
+      loop:
+        - authorized-keys-monitor.path
+        - authorized-keys-monitor.timer
   tasks:
     # Ensure netplan is installed and protected from removal
     - name: Ensure netplan is installed
@@ -1037,10 +1057,10 @@
         msg: >-
           This host has no approved MongoDB, Logs, Redis, or PM2 systemd SMS
           units. Every genuine systemd failure remains email-enabled, while SMS
-          is disabled.
+          is sent only for unauthorized SSH keys.
       when:
         - twilio_values_present | int == 4
-        - forwardemail_sms_services | length == 0
+        - forwardemail_sms_services == ['authorized-keys-monitor.service']
 
     - name: Report disabled public systemd incident mode
       ansible.builtin.debug:
@@ -1430,6 +1450,23 @@
         group: root
         force: no
 
+    # The only SSH keys allowed on the server: the two keys set below for the
+    # devops and deploy users (root logs in with them on the first run).
+    # authorized-keys-monitor alerts on every other key.
+    - name: Create authorized SSH keys list
+      copy:
+        dest: /etc/security-monitor/authorized-keys.conf
+        content: |
+          # Managed by Ansible (security.yml): user, key type, key
+          {% for user in ['root', 'devops', 'deploy'] %}
+          {% for key in [copy_local_key, copy_local_key_2] %}
+          {{ user }} {{ key.split()[:2] | join(' ') }}
+          {% endfor %}
+          {% endfor %}
+        mode: '0600'
+        owner: root
+        group: root
+
     # Create state directories for monitoring systems
     - name: Create Lynis audit monitor state directory
       file:
@@ -1560,6 +1597,14 @@
         group: root
         mode: '0755'
 
+    - name: Deploy authorized keys monitor script
+      copy:
+        src: "{{ playbook_dir }}/files/authorized-keys-monitor.sh"
+        dest: /usr/local/bin/authorized-keys-monitor.sh
+        owner: root
+        group: root
+        mode: '0755'
+
     - name: Deploy system resource monitor script
       copy:
         src: "{{ playbook_dir }}/files/system-resource-monitor.sh"
@@ -1659,6 +1704,19 @@
         group: root
         mode: '0644'
       notify: Restart disk encryption monitor timer
+
+    - name: Deploy authorized keys monitor units
+      template:
+        src: "{{ playbook_dir }}/templates/authorized-keys-monitor.{{ item }}.j2"
+        dest: "/etc/systemd/system/authorized-keys-monitor.{{ item }}"
+        owner: root
+        group: root
+        mode: '0644'
+      loop:
+        - service
+        - timer
+        - path
+      notify: Restart authorized keys monitor
 
     - name: Deploy system resource monitor service
       template:
@@ -1844,6 +1902,18 @@
         daemon_reload: yes
         enabled: yes
         state: started
+
+    # Fails (email and SMS) every 5 minutes, and whenever a key file changes,
+    # until every SSH key is one set below
+    - name: Enable and start authorized keys monitor
+      systemd:
+        name: "{{ item }}"
+        daemon_reload: yes
+        enabled: yes
+        state: started
+      loop:
+        - authorized-keys-monitor.path
+        - authorized-keys-monitor.timer
 
     - name: Enable and start system resource monitor timer
       systemd:

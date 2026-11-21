@@ -1,0 +1,11 @@
+[Unit]
+Description=Authorized SSH Keys Monitor Timer
+Documentation=https://github.com/forwardemail/forwardemail.net
+
+[Timer]
+OnBootSec=2min
+OnUnitActiveSec=5min
+AccuracySec=30s
+
+[Install]
+WantedBy=timers.target
