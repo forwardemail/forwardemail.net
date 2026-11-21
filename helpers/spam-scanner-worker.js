@@ -14,7 +14,8 @@
 // library this project depends on already) and `helpers/printable` (which
 // has no dependencies): the settings come in `workerData`, and the link
 // lookups Spam Scanner makes go through the main thread (Tangerine and
-// Redis) over a message port.  Every link of a message, and of what it
+// Redis) over a message port, as do the images it does not read itself for
+// QR codes (WebP, progressive JPEG), which the main thread reads (sharp).  Every link of a message, and of what it
 // carries, is read and checked by Spam Scanner alone, by the domain's
 // settings (see `protectionOf` in `helpers/spam-scanner.js`).
 //
@@ -93,6 +94,39 @@ function resolve4(name, servers) {
   });
 }
 
+// how long an image is waited for, and the largest one sent to be read
+const IMAGE_WAIT = 2000;
+const MAX_IMAGE_BYTES = 5_000_000;
+
+//
+// An image Spam Scanner does not read itself, for the QR codes in it (see
+// its `decodeImage` option), read by the main thread (see `decodeImage` in
+// `helpers/spam-scanner.js`) over the port of the task that asked: its
+// pixels, or null for one it could not read in time
+//
+function decodeImage(image) {
+  const task = tasks.getStore();
+  if (
+    !task?.port ||
+    !ArrayBuffer.isView(image) ||
+    image.byteLength > MAX_IMAGE_BYTES
+  )
+    return Promise.resolve(null);
+  const id = `image:${++task.images}`;
+  return new Promise((resolve) => {
+    const timer = setTimeout(() => {
+      if (!task.pending.has(id)) return;
+      task.pending.delete(id);
+      resolve(null);
+    }, IMAGE_WAIT);
+    task.pending.set(id, (decoded) => {
+      clearTimeout(timer);
+      resolve(decoded);
+    });
+    task.port.postMessage({ id, image });
+  });
+}
+
 function onLookup(task, message) {
   // (what was learned from abuse reports, see `requestLearned`)
   if (message && typeof message === 'object' && 'learned' in message) {
@@ -100,10 +134,16 @@ function onLookup(task, message) {
     return;
   }
 
-  const { id, addresses } = message || {};
+  const { id, addresses, decoded } = message || {};
   const resolve = task.pending.get(id);
   if (!resolve) return;
   task.pending.delete(id);
+  // (an image read, see `decodeImage`, or not)
+  if (typeof id === 'string') {
+    resolve(decoded && typeof decoded === 'object' ? decoded : null);
+    return;
+  }
+
   // (`null` is a failed lookup, which Spam Scanner does not cache)
   resolve(Array.isArray(addresses) ? addresses : null);
 }
@@ -163,6 +203,8 @@ function getScanner(withLlm) {
       // (answered by the main thread, see `helpers/spam-scanner.js`)
       resolve4
     },
+    // (images it does not read itself, read by the main thread)
+    decodeImage,
     timeout: settings.networkTimeout
   };
 
@@ -799,6 +841,7 @@ module.exports = async function ({
   const task = {
     port: port || null,
     lookups: 0,
+    images: 0,
     pending: new Map(),
     timedOut: false
   };

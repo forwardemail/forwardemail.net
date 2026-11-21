@@ -628,6 +628,104 @@ test('the From domain of a message that passes DMARC goes to the scan as a known
   t.is(tasks[0].authenticationResults.dmarc.status.result, 'pass');
 });
 
+test('an outbound scan says its sender signed in, so its From address is genuine for link checks; an inbound one does not', async (t) => {
+  const tasks = [];
+  spamScanner.getPool().run = async (task) => {
+    tasks.push(structuredClone(task.options));
+    return { isSpam: false };
+  };
+
+  await spamScanner.scan(HAM, { client, direction: 'outbound' });
+  await spamScanner.scan(HAM, { client, direction: 'outbound', blocks: true });
+  await spamScanner.scan(HAM, {
+    session: { ...session, ...authenticated('example.com') },
+    client
+  });
+  t.deepEqual(
+    tasks.map((options) => options.phishing?.authenticatedSender),
+    [true, true, undefined]
+  );
+});
+
+test('the main thread reads an image a worker sends for its QR codes, in grayscale and within its limit, and nothing that is no image', async (t) => {
+  const sharp = require('sharp');
+  const webp = await sharp({
+    create: {
+      width: 40,
+      height: 30,
+      channels: 4,
+      background: { r: 0, g: 0, b: 0, alpha: 0 }
+    }
+  })
+    .webp()
+    .toBuffer();
+  const decoded = await spamScanner.decodeImage(new Uint8Array(webp));
+  t.is(decoded.width, 40);
+  t.is(decoded.height, 30);
+  t.is(decoded.channels, 1);
+  t.is(decoded.data.length, 40 * 30);
+  // (transparent is white)
+  t.true(decoded.data.every((value) => value === 255));
+
+  const large = await sharp({
+    create: { width: 3000, height: 2000, channels: 3, background: '#fff' }
+  })
+    .webp()
+    .toBuffer();
+  t.is(await spamScanner.decodeImage(large), null);
+  t.is(await spamScanner.decodeImage(Buffer.from('not an image')), null);
+  // (two at a time at most)
+  const three = await Promise.all(
+    [webp, webp, webp].map((image) => spamScanner.decodeImage(image))
+  );
+  t.deepEqual(
+    three.map((decoded) => decoded?.width ?? null),
+    [40, 40, null]
+  );
+  const after = await spamScanner.decodeImage(webp);
+  t.is(after.width, 40);
+  t.is(await spamScanner.decodeImage(new Uint8Array(0)), null);
+  t.is(await spamScanner.decodeImage('image'), null);
+});
+
+test('a QR code in a WebP image is read through the main thread', async (t) => {
+  captureSpamScannerLog(t);
+  const sharp = require('sharp');
+  const QRCode = require('qrcode');
+  const png = await QRCode.toBuffer('https://qr-login.example/mailbox', {
+    scale: 4
+  });
+  const webp = await sharp(png).webp({ lossless: true }).toBuffer();
+  const raw = message([
+    'From: IT Desk <it@notice-center.example>',
+    'To: bob@example.org',
+    'Subject: Keep your mailbox',
+    'Message-ID: <qr@notice-center.example>',
+    'Date: Sun, 11 Oct 2026 10:00:00 +0000',
+    'MIME-Version: 1.0',
+    'Content-Type: multipart/mixed; boundary="b"',
+    '',
+    '--b',
+    'Content-Type: text/plain',
+    '',
+    'Scan the code with your phone to keep your mailbox.',
+    '--b',
+    'Content-Type: image/webp; name="code.webp"',
+    'Content-Transfer-Encoding: base64',
+    '',
+    webp.toString('base64'),
+    '--b--',
+    ''
+  ]);
+  const scan = await spamScanner.scan(raw, {
+    session,
+    direction: 'inbound',
+    client
+  });
+  t.truthy(scan);
+  t.true(scan.tests.some((item) => item.name === 'QR_CODE_LINK'));
+});
+
 test('a known sender may show a partner over its own click tracking, and no one else', async (t) => {
   captureSpamScannerLog(t);
   await client.set('allowlist:bigstore-example.com', 'true', 'PX', 60000);
@@ -683,8 +781,13 @@ test('a sender that passes DMARC may show its own address over a tracking link, 
     '',
     '<p>See what is new at <a href="https://links.mailer-service.example/c/1">www.shop.example</a></p>'
   ];
-  t.true(await deceptive(newsletter, {}));
   t.false(await deceptive(newsletter, authenticated('shop.example')));
+  // (and a brand's page it shows counts from one that does not pass)
+  const partner = [
+    ...newsletter.slice(0, -1),
+    '<p>See what is new at <a href="https://links.mailer-service.example/c/1">www.apple.com/iphone/</a></p>'
+  ];
+  t.true(await deceptive(partner, {}));
 
   // (a brand's address shown by a sender that is not the brand)
   const phishing = [

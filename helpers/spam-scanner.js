@@ -462,6 +462,55 @@ function trackedQueue(queue) {
   };
 }
 
+// how long an image a worker sends is read for (it waits two seconds, see
+// `IMAGE_WAIT` in `helpers/spam-scanner-worker.js`), its pixels at most (as
+// Spam Scanner reads at most), and how many are read at once (sharp reads
+// them in libuv's threads, which this process shares with its other work)
+const IMAGE_DEADLINE = 1500;
+const MAX_IMAGE_PIXELS = 2_500_000;
+const MAX_DECODING = 2;
+let decoding = 0;
+let sharp;
+
+//
+// An image Spam Scanner does not read itself (WebP, progressive JPEG), for
+// the QR codes in it: its pixels in grayscale, over white where it is
+// transparent, or null for one that is no image or larger than
+// `MAX_IMAGE_PIXELS`, or while `MAX_DECODING` are read (sharp reads it here,
+// in the main thread: off the event loop, and never in a worker, where it
+// must be loaded first here)
+//
+async function decodeImage(image) {
+  if (
+    !ArrayBuffer.isView(image) ||
+    image.byteLength === 0 ||
+    decoding >= MAX_DECODING
+  )
+    return null;
+  decoding++;
+  try {
+    sharp ??= require('sharp');
+    const { data, info } = await sharp(
+      Buffer.from(image.buffer, image.byteOffset, image.byteLength),
+      { limitInputPixels: MAX_IMAGE_PIXELS, failOn: 'none' }
+    )
+      .flatten({ background: '#ffffff' })
+      .greyscale()
+      .raw()
+      .toBuffer({ resolveWithObject: true });
+    return {
+      width: info.width,
+      height: info.height,
+      channels: info.channels,
+      data: new Uint8Array(data.buffer, data.byteOffset, data.byteLength)
+    };
+  } catch {
+    return null;
+  } finally {
+    decoding--;
+  }
+}
+
 function getPool() {
   if (pool) return pool;
   const Piscina = require('piscina');
@@ -1877,6 +1926,20 @@ async function scan(raw, options = {}) {
       ? config.spamScanner.outboundNetworkTimeout
       : config.spamScanner.networkTimeout;
     port.on('message', async (message) => {
+      // (a worker asks for an image to be read, see `decodeImage`)
+      if (message && typeof message === 'object' && 'image' in message) {
+        const decoded = await withDeadline(
+          decodeImage(message.image),
+          IMAGE_DEADLINE,
+          null
+        );
+        try {
+          port.postMessage({ id: message.id, decoded });
+        } catch {}
+
+        return;
+      }
+
       // (a worker asks for what was learned, see `refreshLearned`)
       if (message && typeof message === 'object' && 'learned' in message) {
         try {
@@ -1988,15 +2051,19 @@ async function scan(raw, options = {}) {
       },
       // outbound: every link host Spam Scanner reads in the whole message
       // and in what it carries, up to `OUTBOUND_MAX_HOSTS`, and longer for
-      // link checks out of monitor mode; inbound: the MX server's
-      // authentication results
+      // link checks out of monitor mode, from a sender who signed in, whose
+      // From address is genuine for link checks as one that passes DMARC
+      // is; inbound: the MX server's authentication results
       options:
         direction === 'outbound'
           ? {
               ...(refuses
                 ? { timeout: config.spamScanner.outboundNetworkTimeout }
                 : {}),
-              phishing: { maxHosts: OUTBOUND_MAX_HOSTS }
+              phishing: {
+                maxHosts: OUTBOUND_MAX_HOSTS,
+                authenticatedSender: true
+              }
             }
           : authenticationResults
           ? {
@@ -3383,6 +3450,7 @@ module.exports = {
   checkOutbound,
   createRejection,
   countSkipped,
+  decodeImage,
   errorOften,
   flushStats,
   holdUnchecked,
