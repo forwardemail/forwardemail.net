@@ -94,20 +94,8 @@ block body
                 .alert.alert-warning.small!= t("One-time payments will extend your plan duration independently from your current subscription.")
               if hasPlanExpired
                 .alert.alert-danger
-                  //-
-                  //- NOTE: if it is over a year then we need to specify the # of months
-                  //-       and we could use thresholds from dayjs but this is simpler
-                  //-       <https://day.js.org/docs/en/customization/relative-time>
-                  //-       (but note we don't want to specify # months if not a complete month)
-                  //-
-                  - let str = dayjs(user[config.userFields.planExpiresAt]).locale(locale).fromNow(true);
-                  //- subtract years difference and if there are > 0 months then add affix
-                  - const years = dayjs().diff(user[config.userFields.planExpiresAt], "years");
-                  if years > 0
-                    - const months = dayjs().diff(dayjs(user[config.userFields.planExpiresAt]).add(years, "years"), "months");
-                    if months > 0
-                      - str += ` ${t("and")} ${dayjs().add(months, "months").locale(locale).fromNow(true)}`;
-                  != t('Your account is <strong class="notranslate">%s</strong> past due.', str)
+                  //- (worded by getPastDueDuration in the controller, shared with its flash messages)
+                  != t('Your account is <strong class="notranslate">%s</strong> past due.', pastDueDuration)
               if isEnableAutoRenew && !hasPlanExpired
                 .alert.alert-primary!= t('Don\'t worry &ndash; <strong>you will <u>not</u> be charged</strong> until your plan expires on <span class="notranslate dayjs" data-time="%d" data-time-style="false">%s</span>.', new Date(user[config.userFields.planExpiresAt]).getTime(), dayjs(user[config.userFields.planExpiresAt]).tz(user.timezone === 'Etc/Unknown' ? 'UTC' : user.timezone).format("M/D/YY"))
               form#form-billing(

@@ -3,6 +3,9 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
+const { randomUUID } = require('node:crypto');
+
+const Redis = require('ioredis-mock');
 const sinon = require('sinon');
 const test = require('ava');
 const undici = require('undici');
@@ -147,3 +150,80 @@ test.serial('no latest release means no release at all', async (t) => {
   // the earlier releases are only looked up for a latest release
   t.is(stub.callCount, 1);
 });
+
+// The API server's release poller writes the cached release every 15 minutes.
+// While any API process ran code from before `previous` existed, it kept
+// writing releases without it under the shared key, so /download never had
+// an earlier build to fall back to.
+test.serial(
+  'a release cached by older code is not served without its earlier releases',
+  async (t) => {
+    const client = new Redis({ keyPrefix: randomUUID() });
+    t.teardown(() => client.disconnect());
+    // what the older code caches: a release with no `previous`
+    await client.set(
+      'mail_app:github_releases',
+      JSON.stringify({ tagName: 'v9.9.9', assets: [] })
+    );
+
+    stubGitHub(t, { latest: () => json(latest), list: () => json(list) });
+    const release = await getLatestMailAppRelease({ client });
+
+    t.is(release.tagName, 'v9.9.9');
+    t.deepEqual(
+      release.previous.map((previous) => previous.tagName),
+      ['v9.9.8', 'v9.9.6', 'v9.9.5']
+    );
+    // and the older code's entry is left to the older code
+    t.is(
+      JSON.parse(await client.get('mail_app:github_releases')).previous,
+      undefined
+    );
+  }
+);
+
+test.serial(
+  'the earlier releases are looked up once per latest release, and again after a failure',
+  async (t) => {
+    const client = new Redis({ keyPrefix: randomUUID() });
+    t.teardown(() => client.disconnect());
+
+    // the lookup fails, then lists nothing older: the latest release still
+    // comes back each time, and nothing is cached for the earlier releases
+    let listing = () => json({ message: 'rate limited' }, 403);
+    const stub = stubGitHub(t, {
+      latest: () => json(latest),
+      list: () => listing()
+    });
+    let release = await getLatestMailAppRelease({ client, forceRefresh: true });
+    t.is(release.tagName, 'v9.9.9');
+    t.deepEqual(release.previous, []);
+
+    listing = () => json([latest]);
+    release = await getLatestMailAppRelease({ client, forceRefresh: true });
+    t.deepEqual(release.previous, []);
+
+    // the next poll tries again, and this time it works
+    listing = () => json(list);
+    release = await getLatestMailAppRelease({ client, forceRefresh: true });
+    t.deepEqual(
+      release.previous.map((previous) => previous.tagName),
+      ['v9.9.8', 'v9.9.6', 'v9.9.5']
+    );
+
+    // later polls only fetch the latest release
+    const before = stub.callCount;
+    release = await getLatestMailAppRelease({ client, forceRefresh: true });
+    t.is(stub.callCount, before + 1);
+    t.is(release.previous.length, 3);
+
+    // and a new latest release gets its own lookup
+    const next = githubRelease(12, '9.9.10', DESKTOP);
+    stub.callsFake(async (url) =>
+      url.endsWith('/releases/latest') ? json(next) : json([next, ...list])
+    );
+    release = await getLatestMailAppRelease({ client, forceRefresh: true });
+    t.is(release.tagName, 'v9.9.10');
+    t.is(release.previous[0].tagName, 'v9.9.9');
+  }
+);

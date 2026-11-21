@@ -235,6 +235,17 @@ for (const channel of CHANNELS.channels) {
 }
 
 /**
+ * Whether a channel is a live store (App Store, Google Play): a link to
+ * install from, not a command to paste. The card shows these as buttons.
+ *
+ * @param {Object} channel - from config/mail-app-channels.js
+ * @returns {boolean}
+ */
+function isStoreChannel(channel) {
+  return channel.state === 'live' && Boolean(channel.url) && !channel.command;
+}
+
+/**
  * The channels a platform's card lists, in config order. "na" channels are
  * recorded in the config but never rendered.
  *
@@ -386,7 +397,14 @@ function getAppDownloads(release) {
           smartScreen: CHANNELS.signing[platform] === 'reputation'
         };
       })
-      .filter((platform) => platform.options.length > 0)
+      // A platform with a live store (App Store, Google Play) keeps its card
+      // and store button even when no release carries a file for it, so a
+      // failed build never hides the way to install the app.
+      .filter(
+        (platform) =>
+          platform.options.length > 0 ||
+          platform.channels.some((channel) => isStoreChannel(channel))
+      )
   })).filter((group) => group.platforms.length > 0);
 
   const sums = assets.find((a) => /^sha256sums\.txt$/i.test(a.name));

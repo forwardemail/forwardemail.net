@@ -68,40 +68,54 @@ const SIGN_IN_PAGE = new RegExp(
 );
 
 //
-// how long the user's plan has been past due, in words
-// (e.g. "20 days", "a month", or "a year and 3 months")
+// a whole number of days, months or years in the words of a locale
+// (e.g. "a month" or "11 months"); these are the words dayjs uses for
+// relative time, without its rounding (which says "a year" for 11 months)
 //
-// NOTE: if it is over a year then we need to specify the # of months
-//       and we could use thresholds from dayjs but this is simpler
-//       <https://day.js.org/docs/en/customization/relative-time>
-//       (but note we don't want to specify # months if not a complete month)
+function getUnitWords(locale, unit, count) {
+  const words =
+    dayjs().locale(locale).$locale().relativeTime || dayjs.en.relativeTime;
+  const key = count === 1 ? unit : unit + unit;
+  const format = words[key];
+  return typeof format === 'string'
+    ? format.replace('%d', count)
+    : format(count, true, key, false);
+}
+
+//
+// how long the user's plan has been past due, in words
+// (e.g. "20 days", "a month", or "a year and 6 months")
+//
+// NOTE: this counts whole years and months instead of using `fromNow`,
+//       which rounds to the nearest unit: a year and 6 months past due read
+//       "2 years and 6 months", and a year and 11 months "2 years and a year"
+//       (a month is not counted until it is complete, and under a month it
+//       is the number of days)
 //
 function getPastDueDuration(ctx) {
-  let str = dayjs(ctx.state.user[config.userFields.planExpiresAt])
-    .locale(ctx.locale)
-    .fromNow(true);
-  // subtract years difference and if there are > 0 months then add affix
-  const years = dayjs().diff(
-    ctx.state.user[config.userFields.planExpiresAt],
-    'years'
-  );
-  if (years > 0) {
-    const months = dayjs().diff(
-      dayjs(ctx.state.user[config.userFields.planExpiresAt]).add(
-        years,
-        'years'
-      ),
-      'months'
-    );
+  const expiresAt = dayjs(ctx.state.user[config.userFields.planExpiresAt]);
+  const now = dayjs();
+  const years = now.diff(expiresAt, 'year');
+  const months = now.diff(expiresAt.add(years, 'year'), 'month');
 
-    if (months > 0)
-      str += ` ${ctx.translate('AND')} ${dayjs()
-        .add(months, 'months')
-        .locale(ctx.locale)
-        .fromNow(true)}`;
+  if (years > 0) {
+    const str = getUnitWords(ctx.locale, 'y', years);
+    return months > 0
+      ? `${str} ${ctx.translate('AND')} ${getUnitWords(
+          ctx.locale,
+          'M',
+          months
+        )}`
+      : str;
   }
 
-  return str;
+  if (months > 0) return getUnitWords(ctx.locale, 'M', months);
+
+  const days = now.diff(expiresAt, 'day', true);
+  if (days >= 1) return getUnitWords(ctx.locale, 'd', Math.round(days));
+
+  // under a day (e.g. "3 hours")
+  return expiresAt.locale(ctx.locale).fromNow(true);
 }
 
 const BILLING_PAGE = new RegExp(
@@ -593,6 +607,9 @@ async function retrieveDomainBilling(ctx) {
           header: ctx.translate('BILLING')
         });
       }
+
+      // (the page says how long the plan has been past due)
+      ctx.state.pastDueDuration = getPastDueDuration(ctx);
 
       return ctx.render('my-account/domains/billing');
     }

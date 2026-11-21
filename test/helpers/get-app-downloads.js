@@ -325,7 +325,41 @@ test('drops a file no release carries, and tolerates a release without `previous
       previous
     });
     t.is(downloads.version, 'v9.9.9');
-    t.false(downloads.groups.some((group) => group.key === 'mobile'));
+    t.false(downloads.options.some((option) => option.group === 'mobile'));
     t.true(downloads.options.every((option) => !option.isPrevious));
   }
+});
+
+// The App Store and Google Play buttons sit on the Android and iOS cards. A
+// card used to render only when a release carried a file for it, so a failed
+// mobile build hid the store buttons too.
+test('keeps the Android and iOS cards and their store buttons when no release has a mobile file', (t) => {
+  const downloads = getAppDownloads(
+    releaseAt('v9.9.9', (asset) => !isMobileBuild(asset))
+  );
+  const mobile = downloads.groups.find((group) => group.key === 'mobile');
+  t.truthy(mobile);
+  t.deepEqual(
+    mobile.platforms.map((platform) => platform.key),
+    ['android', 'ios']
+  );
+  for (const platform of mobile.platforms) {
+    t.deepEqual(platform.options, []);
+    t.is(platform.recommended, null);
+    t.true(
+      platform.channels.some(
+        (channel) =>
+          channel.state === 'live' &&
+          ['app-store', 'google-play'].includes(channel.key)
+      )
+    );
+  }
+
+  // a platform with no files and no store still does not render
+  const desktop = downloads.groups.find((group) => group.key === 'desktop');
+  const noDesktop = getAppDownloads(
+    releaseAt('v9.9.9', (asset) => isMobileBuild(asset))
+  );
+  t.truthy(desktop);
+  t.false(noDesktop.groups.some((group) => group.key === 'desktop'));
 });

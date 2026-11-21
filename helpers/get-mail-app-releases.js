@@ -19,12 +19,26 @@ const {
 } = require('#helpers/refuse-unsafe-encoding');
 const singleFlightCache = require('#helpers/single-flight-cache');
 
-// Redis cache key for mail app releases
-const CACHE_KEY = 'mail_app:github_releases';
+// Redis cache key for mail app releases. The "v2" is because the cached
+// release gained `previous`: a process still running the older code keeps
+// polling and writing the unversioned key every 15 minutes, and sharing it
+// would have kept handing this code a release without `previous` (so the
+// /download fallback never applied until every server was restarted).
+const CACHE_KEY = 'mail_app:github_releases:v2';
+
+// Redis cache key (suffixed with the latest release's id) for the releases
+// before it. They rarely change, so they are looked up once an hour per latest
+// release instead of on every poll, which keeps most polls at one GitHub
+// request (the unauthenticated limit is 60 an hour, shared by every process on
+// a server). The hour bounds how long a build attached late to an earlier
+// release goes unseen. A failed or empty lookup is not cached, so the next
+// poll tries again.
+const PREVIOUS_CACHE_KEY = 'mail_app:previous_releases';
+const PREVIOUS_CACHE_TTL_SECONDS = Math.ceil(ms('1h') / 1000);
 
 // Redis key for the single-flight lock guarding the GitHub fetch, so a cold
 // cache under load (or several workers polling) makes one request, not many.
-const CACHE_LOCK_KEY = 'mail_app:github_releases:lock';
+const CACHE_LOCK_KEY = 'mail_app:github_releases:v2:lock';
 
 // Redis key for the last known release fingerprint (tag + assets + body hash)
 const LAST_RELEASE_KEY = 'mail_app:last_release_fingerprint';
@@ -156,17 +170,15 @@ async function fetchFromGitHub(path) {
 
 /**
  * Fetch the published releases that came before the latest one, newest first,
- * trimmed to what the download page reads. Best effort: any failure returns
- * an empty list, which only means a file missing from the latest release has
- * no earlier build to fall back to.
+ * trimmed to what the download page reads.
  *
  * @param {Object} latest - the parsed latest release
- * @returns {Promise<Object[]>}
+ * @returns {Promise<Object[]|null>} - null when the lookup failed
  */
-async function fetchPreviousReleases(latest) {
+async function fetchPreviousReleasesFromGitHub(latest) {
   try {
     const data = await fetchFromGitHub('releases?per_page=10');
-    if (!Array.isArray(data)) return [];
+    if (!Array.isArray(data)) return null;
 
     return data
       .map((release) => parseRelease(release))
@@ -194,20 +206,45 @@ async function fetchPreviousReleases(latest) {
     logger.error(err, {
       extra: { message: 'Failed to fetch previous mail app releases' }
     });
-    return [];
+    return null;
   }
+}
+
+/**
+ * The releases before the latest one, cached per latest release (see
+ * PREVIOUS_CACHE_KEY). Best effort: a failed lookup returns an empty list,
+ * which only means a file missing from the latest release has no earlier
+ * build to fall back to until the next poll.
+ *
+ * @param {Object} latest - the parsed latest release
+ * @param {Object} [client] - Redis client
+ * @returns {Promise<Object[]>}
+ */
+async function getPreviousReleases(latest, client) {
+  const previous = await singleFlightCache(client, {
+    cacheKey: `${PREVIOUS_CACHE_KEY}:${latest.id}`,
+    ttlSeconds: PREVIOUS_CACHE_TTL_SECONDS,
+    // an empty list (GitHub briefly listing nothing older) is looked up
+    // again rather than kept, and so is a cached value that is not a list
+    shouldCache: (value) => Array.isArray(value) && value.length > 0,
+    logger,
+    compute: () => fetchPreviousReleasesFromGitHub(latest)
+  });
+  return Array.isArray(previous) ? previous : [];
 }
 
 /**
  * Fetch the latest release from the mail app repository over the GitHub API,
  * with the few releases before it attached as `previous`.
  * This is the uncached `compute` behind getLatestMailAppRelease's single-flight
- * lock, so it takes no arguments and never touches Redis itself.
+ * lock. The latest release is always fetched; only the releases before it are
+ * read through Redis.
  *
+ * @param {Object} [client] - Redis client
  * @returns {Promise<Object|null>} - Latest parsed release, or null on a draft,
  *   a 404 (no releases yet), a timeout, or any fetch/parse error
  */
-async function fetchLatestReleaseFromGitHub() {
+async function fetchLatestReleaseFromGitHub(client) {
   try {
     const data = await fetchFromGitHub('releases/latest');
 
@@ -217,7 +254,7 @@ async function fetchLatestReleaseFromGitHub() {
     }
 
     const release = parseRelease(data);
-    if (release) release.previous = await fetchPreviousReleases(release);
+    if (release) release.previous = await getPreviousReleases(release, client);
     return release;
   } catch (err) {
     logger.error(err, {
@@ -255,7 +292,7 @@ async function getLatestMailAppRelease(options = {}) {
     contended: 'skip',
     forceRefresh,
     logger,
-    compute: fetchLatestReleaseFromGitHub
+    compute: () => fetchLatestReleaseFromGitHub(client)
   });
 }
 

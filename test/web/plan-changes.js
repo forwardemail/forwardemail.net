@@ -338,6 +338,11 @@ test('changing the last paid domain to Free does not offer the account downgrade
   t.false(text.includes('Downgrade your account too?'));
 });
 
+// A plan set 50 days ago for one calendar month expired 19 to 22 days ago,
+// depending on how long that month was (20 only when it had 30 days). The
+// tests below expected exactly 20 and failed for a month at a time.
+const DAYS_PAST_DUE = '(?:19|2[0-2])';
+
 async function loginExpired(t, since, duration) {
   const { user, password } = await makeUser(
     t,
@@ -358,7 +363,7 @@ test('switching plans while past due by less than a month says how many days (no
   const res = await click(t, '/en/my-account/billing/upgrade?plan=team');
   t.is(res.headers.location, '/en/my-account/billing/make-payment');
   const text = await follow(t, res);
-  t.true(text.includes('20 days</span> past due'));
+  t.regex(text, new RegExp(`\\b${DAYS_PAST_DUE} days</span> past due`));
   t.false(text.includes('months'));
   const user = await Users.findById(t.context.user._id).lean().exec();
   t.is(user.plan, 'enhanced_protection');
@@ -375,6 +380,49 @@ test('switching plans while past due by over a year says the years and months', 
   t.true(text.includes('a year and 2 months</span> past due'));
 });
 
+// The past due time used to be dayjs's `fromNow`, which rounds to the nearest
+// unit, with the leftover months added on: 11 months read "a year", a year
+// and 6 months "2 years and 6 months", and a year and 11 months "2 years and
+// a year". Each plan below is set for a month (28 to 31 days), so the past
+// due time sits in the middle of the month it is named for whatever today is.
+for (const [title, since, expected, wrong] of [
+  ['11 months', `${30 + 350}d`, '11 months', 'a year'],
+  [
+    'a year and 6 months',
+    `${30 + 365 + 196}d`,
+    'a year and 6 months',
+    '2 years'
+  ],
+  [
+    'a year and 11 months',
+    `${30 + 365 + 350}d`,
+    'a year and 11 months',
+    '2 years'
+  ]
+]) {
+  test(`past due by ${title} says ${expected}`, async (t) => {
+    await loginExpired(t, since, '30d');
+
+    const res = await click(t, '/en/my-account/billing/upgrade?plan=team');
+    t.is(res.headers.location, '/en/my-account/billing/make-payment');
+    const text = await follow(t, res);
+    t.true(text.includes(`${expected}</span> past due`));
+    t.false(text.includes(`>${wrong}`));
+
+    // and the make payment page says the same
+    const page = await t.context.web
+      .get('/en/my-account/billing/make-payment')
+      .set('Accept', 'text/html');
+    t.is(page.status, 200);
+    t.true(
+      page.text.includes(
+        `Your account is <strong class="notranslate">${expected}</strong> past due.`
+      )
+    );
+    t.false(page.text.includes(`<strong class="notranslate">${wrong}`));
+  });
+}
+
 test('enabling auto-renew while past due still says how long', async (t) => {
   await loginExpired(t, '50d', '30d');
   await createDomain(t, 'enhanced_protection');
@@ -382,7 +430,7 @@ test('enabling auto-renew while past due still says how long', async (t) => {
   const res = await click(t, '/en/my-account/billing/enable-auto-renew');
   t.is(res.headers.location, '/en/my-account/billing/make-payment');
   const text = await follow(t, res);
-  t.true(text.includes('20 days</strong> past due'));
+  t.regex(text, new RegExp(`\\b${DAYS_PAST_DUE} days</strong> past due`));
 });
 
 test('the past due time is in Norwegian on the Norwegian site', async (t) => {
@@ -391,8 +439,8 @@ test('the past due time is in Norwegian on the Norwegian site', async (t) => {
   const res = await click(t, '/no/my-account/billing/upgrade?plan=team');
   t.is(res.headers.location, '/no/my-account/billing/make-payment');
   const text = await follow(t, res);
-  t.true(text.includes('20 dager</span>'));
-  t.false(text.includes('20 days'));
+  t.regex(text, new RegExp(`\\b${DAYS_PAST_DUE} dager</span>`));
+  t.notRegex(text, new RegExp(`\\b${DAYS_PAST_DUE} days`));
 });
 
 // the flash messages shown on the next page (after an XHR form submission)

@@ -2,7 +2,8 @@
 //- Desktop and mobile are separate sections because the install path differs:
 //- a desktop download is a file you open, a mobile one needs a step the
 //- platform puts in your way. Structure follows helpers/get-app-downloads.js,
-//- so a platform with no assets in the release simply does not render. A file
+//- so a platform with no assets in the release simply does not render (unless
+//- it has a live store, whose button always shows). A file
 //- the latest release shipped without comes from the release before it, and
 //- its row names that version.
 
@@ -69,7 +70,7 @@ mixin feDownloadCard(platform)
     if (platform.key === "windows" && platform.smartScreen) notes.push(t("Installers are signed. While the new certificate builds reputation, SmartScreen may still warn on first run: choose More info, then Run anyway."));
     if (platform.key === "windows" && hasBuild("exe", "arm64") && !hasBuild("msi", "arm64")) notes.push(t("No .msi for ARM64; the .exe installer covers it."));
     if (platform.key === "linux" && hasBuild("deb", "arm64") && !hasBuild("appimage", "arm64")) notes.push(t("No AppImage for ARM64. The .deb and .rpm builds update themselves through the in-app updater; the Snap updates through snapd."));
-    if (platform.key === "android") notes.push(t("Android asks you to allow installs from your browser the first time."));
+    if (platform.key === "android" && platform.options.length > 0) notes.push(t("Android asks you to allow installs from your browser the first time."));
     if (platform.key === "ios" && !platform.channels.some((ch) => ch.key === "app-store" && ch.state === "live")) notes.push(t("The iOS build is not signed for direct install. Sideload it with AltStore, Sideloadly, or Xcode."));
     if (platform.key === "terminal") notes.push(t("The standalone builds update themselves. The Linux builds need glibc; on Alpine and other musl systems, use npm."));
     if (platform.key === "terminal" && !platform.signed) notes.push(t("The Windows executables are not code-signed yet, so SmartScreen may warn on first run: choose More info, then Run anyway."));
@@ -104,9 +105,10 @@ mixin feDownloadCard(platform)
               i.fa.fa-store(aria-hidden="true")
             span= channel.name
 
-    ul.fe-download-rows
-      each option in platform.options
-        +feDownloadRow(option)
+    if platform.options.length > 0
+      ul.fe-download-rows
+        each option in platform.options
+          +feDownloadRow(option)
 
     //- Everything below the rows sits at the foot of the card, so the cards
     //- in a row line up even when one platform has more builds than another.

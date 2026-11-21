@@ -25,7 +25,7 @@ const bootstrapSource = read(
 
 // The release /download renders from, cached in Redis by
 // helpers/get-mail-app-releases.js
-const CACHE_KEY = 'mail_app:github_releases';
+const CACHE_KEY = 'mail_app:github_releases:v2';
 
 // The checked-in release snapshot, without the terminal app's executables
 // and with them
@@ -524,5 +524,37 @@ test.serial(
 
     // and the page is still the latest release
     t.true(html.includes(fallbackRelease.tagName));
+  }
+);
+
+// The App Store and Google Play buttons used to vanish with the files when no
+// release had a mobile build.
+test.serial(
+  'the store buttons show when no release has a mobile file',
+  async (t) => {
+    const isMobileBuild = (asset) => /\.(apk|aab|ipa)$/i.test(asset.name);
+    const html = await getDownloadPage(t, {
+      ...releaseWithTerminal,
+      assets: releaseWithTerminal.assets.filter(
+        (asset) => !isMobileBuild(asset)
+      ),
+      previous: []
+    });
+    const { document } = new JSDOM(html).window;
+
+    for (const [key, store] of [
+      ['android', 'google-play'],
+      ['ios', 'app-store']
+    ]) {
+      const card = document.querySelector(`#fe-download-${key}`);
+      t.truthy(card, `${key} card`);
+      const channel = channelConfig.channels.find((c) => c.key === store);
+      t.truthy(
+        card.querySelector(`.fe-download-card__stores a[href="${channel.url}"]`)
+      );
+      // no empty list of files, and no note about installing a file
+      t.is(card.querySelector('.fe-download-rows'), null);
+      t.false(card.textContent.includes('allow installs from your browser'));
+    }
   }
 );
