@@ -236,6 +236,40 @@ test('a phishing message is logged and gets X-Spam-Scanner headers, and nothing 
   t.deepEqual(spamScanner.getOutboundBlockingMessages(scan), []);
 });
 
+test('wanted mail is logged only with SPAM_SCANNER_LOG_ALL, as not spam with its score', async (t) => {
+  const lines = captureSpamScannerLog(t);
+  const scanHam = () =>
+    spamScanner.scan(HAM, { session, direction: 'inbound', client });
+
+  const first = await scanHam();
+  t.false(first.isSpam);
+  t.deepEqual(lines, []);
+
+  config.spamScanner.logAll = true;
+  const scan = await scanHam();
+  t.false(scan.isSpam);
+  t.is(lines.length, 1);
+  t.true(lines[0].startsWith('[SPAM_SCANNER] not spam {'));
+  const logged = JSON.parse(lines[0].slice(lines[0].indexOf('{')));
+  t.false(logged.is_spam);
+  t.is(logged.score, scan.score);
+  t.is(logged.threshold, scan.threshold);
+  t.deepEqual(
+    logged.tests,
+    scan.tests
+      .filter((test) => test.score !== 0)
+      .map((test) => `${test.name}=${test.score}`)
+  );
+  t.is(logged.direction, 'inbound');
+  t.deepEqual(logged.rcpt_to_domains, ['example.org']);
+  t.false(lines[0].includes('bob@'));
+
+  // (spam is logged as before)
+  await spamScanner.scan(PHISHING, { session, direction: 'inbound', client });
+  t.is(lines.length, 2);
+  t.true(lines[1].startsWith('[SPAM_SCANNER] would mark as spam {'));
+});
+
 test('out of monitor mode the SpamAssassin headers are added too', async (t) => {
   config.spamScanner.monitorOnly = false;
   captureSpamScannerLog(t);

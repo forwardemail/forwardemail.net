@@ -1306,6 +1306,8 @@ const config = {
     outboundBlock: unlessFalse(env.SPAM_SCANNER_OUTBOUND_BLOCK),
     // add X-Spam-Scanner-* headers to inbound mail
     headers: boolean(env.SPAM_SCANNER_HEADERS),
+    // log every scan's result, not only spam and blocked mail
+    logAll: boolean(env.SPAM_SCANNER_LOG_ALL),
     // the share of inbound mail (MX) scanned, 0 to 100 (each message is
     // picked at random as it is received; 0 scans none, 100 all)
     // (false, off or no: 0)

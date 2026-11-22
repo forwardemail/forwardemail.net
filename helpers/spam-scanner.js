@@ -1405,6 +1405,8 @@ function logResult(summary, session = {}, blocking = [], options = {}) {
         ]
       : [])
   ];
+  // (wanted mail, logged with `logAll`)
+  if (verdicts.length === 0) verdicts.push('not spam');
   console.log(
     `[SPAM_SCANNER] ${verdicts.join(' and ')} ${JSON.stringify(line)}`
   );
@@ -2187,7 +2189,8 @@ async function scan(raw, options = {}) {
           noteLlm(summary);
           // (each message it would mark as spam or block is logged, in
           //  monitor mode instead of being rejected, blocked or filed as spam,
-          //  but for what is refused as it is submitted, see `blocksOutbound`)
+          //  but for what is refused as it is submitted, see `blocksOutbound`;
+          //  and every other message too with `logAll`, as "not spam")
           const blocking = getOutboundBlockingMessages(summary);
           // (one that ran past its time limit, no longer waited for, is
           //  late, and its result still counted; the MX wait is the MX
@@ -2204,7 +2207,11 @@ async function scan(raw, options = {}) {
           });
           // (a line that cannot be written does not lose the result, nor
           //  count it again as failed)
-          if (summary.isSpam || blocking.length > 0) {
+          if (
+            summary.isSpam ||
+            blocking.length > 0 ||
+            config.spamScanner.logAll
+          ) {
             try {
               logResult(summary, session, blocking, {
                 stage: options.stage || direction,
