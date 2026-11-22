@@ -44,7 +44,7 @@ fi
 grep -Fxq 'OnFailure=failure-notification@%n.service' \
   "$TEST_ROOT/authorized-keys-monitor.service"
 grep -Fxq 'OnUnitActiveSec=5min' "$TEST_ROOT/authorized-keys-monitor.timer"
-for watched in /root/.ssh /home/devops/.ssh /home/deploy/.ssh; do
+for watched in /root/.ssh /home/devops/.ssh /home/deploy/.ssh /home/ubuntu/.ssh; do
   grep -Fxq "PathChanged=$watched" "$TEST_ROOT/authorized-keys-monitor.path"
 done
 
@@ -127,7 +127,7 @@ if ! ANSIBLE_LOCAL_TEMP="$TEST_ROOT/ansible-local" \
   exit 1
 fi
 ALLOWED="$TEST_ROOT/authorized-keys.conf"
-for user in root devops deploy; do
+for user in root devops deploy ubuntu; do
   for name in allowed1 allowed2; do
     grep -Fxq "$user $(key "$name")" "$ALLOWED" ||
       fail "the rendered list lacks $name for $user"
@@ -136,12 +136,12 @@ done
 # The team keys (titanism and shaunwarman) are allowed for each user too.
 [[ "$(wc -l < "$TEST_ROOT/team.keys")" -eq 2 ]] || fail 'expected two team keys'
 while read -r type team_key; do
-  for user in root devops deploy; do
+  for user in root devops deploy ubuntu; do
     grep -Fxq "$user $type $team_key" "$ALLOWED" ||
       fail "the rendered list lacks a team key for $user"
   done
 done < "$TEST_ROOT/team.keys"
-[[ "$(grep -vc '^#' "$ALLOWED")" -eq 12 ]] || fail 'the rendered list has other keys'
+[[ "$(grep -vc '^#' "$ALLOWED")" -eq 16 ]] || fail 'the rendered list has other keys'
 # Every host texts for unauthorized keys, not only the SMS hosts.
 [[ "$(cat "$TEST_ROOT/sms-ns1.forwardemail.net")" == 'authorized-keys-monitor.service' ]] ||
   fail 'a host without SMS units does not text for unauthorized keys'
@@ -151,13 +151,15 @@ done < "$TEST_ROOT/team.keys"
 # A host: accounts, sshd settings, auditd records, the journal and sessions.
 HOMES="$TEST_ROOT/fs"
 install -d -m 0700 "$HOMES/root/.ssh" "$HOMES/home/devops/.ssh" \
-  "$HOMES/home/deploy/.ssh" "$HOMES/home/backup/.ssh" "$HOMES/etc/ssh/sshd_config.d" \
+  "$HOMES/home/deploy/.ssh" "$HOMES/home/ubuntu/.ssh" "$HOMES/home/backup/.ssh" \
+  "$HOMES/etc/ssh/sshd_config.d" \
   "$HOMES/etc/ssh/keys" "$HOMES/log"
 cat > "$MOCK_ROOT/passwd" <<EOF_PASSWD
 root:x:0:0:root:$HOMES/root:/bin/bash
 daemon:x:1:1:daemon:/usr/sbin:/usr/sbin/nologin
 devops:x:1000:1000::$HOMES/home/devops:/bin/bash
 deploy:x:1001:1001::$HOMES/home/deploy:/bin/bash
+ubuntu:x:1003:1003:Ubuntu:$HOMES/home/ubuntu:/bin/bash
 backup:x:1002:1002::$HOMES/home/backup:/bin/bash
 EOF_PASSWD
 
@@ -242,7 +244,9 @@ printf '%s\n' '# Authorized IP addresses' '192.0.2.50' > "$AUTHORIZED_KEYS_KNOWN
 
 DEPLOY_KEYS="$HOMES/home/deploy/.ssh/authorized_keys"
 # A server as security.yml leaves it: the two keys for devops and deploy (and
-# root from the first run), the default sshd key settings, no auditd record.
+# root from the first run), a team key for ubuntu (where the cloud provider
+# puts the key picked when the server is made), the default sshd key
+# settings, no auditd record.
 clean_host() {
   rm -rf "$AUTHORIZED_KEYS_STATE_DIR" "$MOCK_ROOT/alerts" "$MOCK_ROOT/body.html" \
     "$HOMES/etc/ssh/sshd_config.d"/* "$HOMES/etc/ssh/keys"/* \
@@ -252,6 +256,7 @@ clean_host() {
     "$HOMES/home/devops/.ssh/authorized_keys" "$DEPLOY_KEYS"; do
     cat "$TEST_ROOT/allowed1.pub" "$TEST_ROOT/allowed2.pub" > "$file"
   done
+  head -n 1 "$TEST_ROOT/team.keys" > "$HOMES/home/ubuntu/.ssh/authorized_keys"
   printf '%s\n' 'Include /etc/ssh/sshd_config.d/*.conf' \
     '#AuthorizedKeysFile .ssh/authorized_keys .ssh/authorized_keys2' \
     'PermitRootLogin no' > "$HOMES/etc/ssh/sshd_config"
@@ -377,6 +382,11 @@ grep -Fxq "authorized-keys-resolved-$INCIDENT|[RESOLVED] Unauthorized SSH key on
 check 0
 [[ "$(wc -l < "$MOCK_ROOT/alerts")" -eq 3 ]] || fail 'a second resolved email'
 
+# Any other key for ubuntu still fails.
+clean_host
+key rogue >> "$HOMES/home/ubuntu/.ssh/authorized_keys"
+check 1 "unauthorized ssh-ed25519 key $ROGUE_FP for user ubuntu, ${HOMES//[^A-Za-z0-9._\/@:+=, -]/_}/home/ubuntu/.ssh/authorized_keys line 2"
+
 # A deployed key with options (a forced command, a from= list) fails too.
 clean_host
 printf 'from="192.0.2.0/24",command="/bin/sh -c \\"id\\"" %s devops\n' "$(key allowed1)" \
@@ -480,4 +490,4 @@ notify disk-encryption-monitor.service
   fail 'a host without SMS units texted for another monitor'
 
 printf '%s\n' \
-  'PASS: authorized keys monitor renders as verified systemd units and the allowed key list from security.yml, passes the deployed keys, and for any other key (any account, authorized_keys2, a drop-in key file), a deployed key with options, an unreadable entry, or sshd keys from a command, principals or a user CA fails with an escaped HTML report (key, fingerprints, diff, auditd writer and session IP, logins with the key, IPs with reverse DNS, evidence kept), alerts until fixed, emails once when resolved, and texts from every host'
+  'PASS: authorized keys monitor renders as verified systemd units and the allowed key list from security.yml, passes the deployed keys (and the team keys for ubuntu), and for any other key (any account, authorized_keys2, a drop-in key file), a deployed key with options, an unreadable entry, or sshd keys from a command, principals or a user CA fails with an escaped HTML report (key, fingerprints, diff, auditd writer and session IP, logins with the key, IPs with reverse DNS, evidence kept), alerts until fixed, emails once when resolved, and texts from every host'

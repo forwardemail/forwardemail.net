@@ -1459,13 +1459,17 @@
 
     # The only SSH keys allowed on the server: the two keys set below for the
     # devops and deploy users (root logs in with them on the first run), and
-    # team_ssh_keys.  authorized-keys-monitor alerts on every other key.
+    # team_ssh_keys.  They are allowed for ubuntu too: the cloud image's default
+    # account, where the provider puts the key picked when the server is made
+    # (it already has passwordless sudo, so this grants nothing new).
+    # authorized-keys-monitor alerts on every other key, and on any key for
+    # any other account.
     - name: Create authorized SSH keys list
       copy:
         dest: /etc/security-monitor/authorized-keys.conf
         content: |
           # Managed by Ansible (security.yml): user, key type, key
-          {% for user in ['root', 'devops', 'deploy'] %}
+          {% for user in ['root', 'devops', 'deploy', 'ubuntu'] %}
           {% for key in [copy_local_key, copy_local_key_2] + team_ssh_keys %}
           {{ user }} {{ key.split()[:2] | join(' ') }}
           {% endfor %}
