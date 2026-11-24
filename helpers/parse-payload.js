@@ -2092,32 +2092,28 @@ async function handlePayload(data, ws) {
                       delivery.folder === 'INBOX' ? 0 : 1
                     )
                   : [{ folder: 'INBOX', flags: [], create: false }];
-              const targetFolder = sieveDelivery.folder || 'INBOX';
+              //
+              // Spam (Spam Scanner, out of monitor mode: the MX server
+              // passes `isSpam`, see `imap()` in on-data-mx.js) is filed in
+              // the spam folder instead of INBOX, unless a Sieve script chose
+              // where it goes with keep or fileinto (a user's own rules win,
+              // see `isFiled`): "Spam", or the mailbox's other \Junk
+              // folder ("Junk" in older mailboxes, see `getJunkMailbox`),
+              // created as "Spam" if the user deleted it, as a Sieve
+              // `fileinto` creates its folder (also when it is stored for
+              // later in the temporary mailbox, see
+              // `helpers/sync-temporary-mailbox.js`)
+              //
+              const isSpamFolder =
+                payload.isSpam === true &&
+                !sieveResult.isFiled &&
+                sieveDelivery.folder === 'INBOX';
+              const targetFolder = isSpamFolder
+                ? 'Spam'
+                : sieveDelivery.folder || 'INBOX';
               const targetFlags = sieveDelivery.flags || [];
-
-              //
-              // TODO: once Spam Scanner is out of monitor mode, the MX server
-              //       passes `isSpam` (see `imap()` in on-data-mx.js): file
-              //       the message in the Junk folder, unless a Sieve script
-              //       chose a folder (a user's own rules win), and only if
-              //       the mailbox still has one (Junk can be deleted; the
-              //       message then stays in INBOX); a message stored for
-              //       later without `session.db` needs the same where it is
-              //       written to its mailbox
-              //
-              // (change `const targetFolder` above to `let`, and require
-              // `#models/mailboxes`)
-              //
-              // if (
-              //   payload.isSpam === true &&
-              //   sieveResult.deliveries.length === 0 &&
-              //   session.db
-              // ) {
-              //   const junk = await Mailboxes.findOne(this, session, {
-              //     specialUse: '\\Junk'
-              //   });
-              //   if (junk) targetFolder = junk.path;
-              // }
+              const createFolder =
+                isSpamFolder || sieveDelivery.create || false;
 
               // Use modified raw message if header changes were applied (editheader extension)
               // NOTE: use a per-alias copy so encryption (S/MIME, PGP) below
@@ -2197,7 +2193,8 @@ async function handlePayload(data, ws) {
                       retries: 0,
 
                       // Sieve fileinto :create flag - auto-create folder if it doesn't exist
-                      createFolder: sieveDelivery.create || false
+                      // (and the spam folder, see `isSpamFolder`)
+                      createFolder
                     }
                   );
                   appendedToMainDb = true;
@@ -2273,7 +2270,7 @@ async function handlePayload(data, ws) {
                         selected: false,
                         checkForExisting: true,
                         retries: 0,
-                        createFolder: sieveDelivery.create || false
+                        createFolder
                       }
                     );
                     // Successfully wrote to main DB, skip tmp fallback

@@ -124,6 +124,34 @@ function hasMultipleFromHeaders(headers) {
   return countHeaderFields(headers, 'from') > 1;
 }
 
+//
+// Whether a truth source's mail server (by its forward-confirmed hostname)
+// relayed the message for domains whose inbound mail it relays to us with the
+// original envelope sender (`config.inboundRelayDomains`, e.g. a Google
+// Workspace routing rule for some of a domain's users): SPF here is then
+// checked against the relay, which checked the sender itself
+//
+function isInboundRelay(session) {
+  if (config.inboundRelayDomains.size === 0) return false;
+  const client = session.resolvedRootClientHostname;
+  if (!isSANB(client) || !config.truthSources.has(client.toLowerCase()))
+    return false;
+  const rcptTo = session.envelope?.rcptTo;
+  return (
+    Array.isArray(rcptTo) &&
+    rcptTo.length > 0 &&
+    rcptTo.every((rcpt) => {
+      if (!isSANB(rcpt?.address) || !rcpt.address.includes('@')) return false;
+      const host = rcpt.address
+        .slice(rcpt.address.lastIndexOf('@') + 1)
+        .toLowerCase();
+      return [...config.inboundRelayDomains].some(
+        (domain) => host === domain || host.endsWith(`.${domain}`)
+      );
+    })
+  );
+}
+
 async function isAuthenticatedMessage(headers, body, session, resolver) {
   // RFC 5322 permits exactly one From field. Reject before authentication so a
   // malformed message cannot produce mailauth's boolean false DMARC result and
@@ -507,9 +535,15 @@ async function isAuthenticatedMessage(headers, body, session, resolver) {
     );
   }
 
+  // (mail relayed for a domain that has its inbound mail relayed is not
+  //  rejected for SPF, nor scored for it by Spam Scanner, see
+  //  `getAuthenticationResults` in `helpers/spam-scanner.js`)
+  session.isInboundRelay = isInboundRelay(session);
+
   // if no DMARC and SPF had hardfail and no aligned DKIM then reject
   // NOTE: it'd be nice if we alerted admins of SPF permerror due to SPF misconfiguration
   if (
+    !session.isInboundRelay &&
     session.spf.status.result === 'fail' &&
     session.dmarc &&
     session.dmarc.status &&

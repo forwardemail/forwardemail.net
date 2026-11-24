@@ -4,10 +4,12 @@
  */
 
 //
-// Spam Scanner on the MX server, in monitor mode (helpers/spam-scanner.js):
-// every forwarded copy gets X-Spam-Scanner-* headers (a sender's own are
-// replaced), a message it would mark as spam is only logged and still
-// delivered, and a scan that fails does not stop delivery.
+// Spam Scanner on the MX server (helpers/spam-scanner.js): every forwarded
+// copy gets X-Spam-Scanner-* headers (a sender's own are replaced), and a
+// scan that fails does not stop delivery.  In monitor mode a message it would
+// mark as spam is only logged and still delivered; out of it, spam is filed
+// in the spam folder of IMAP mailboxes, and a message at the reject threshold
+// is deferred (421).
 //
 
 const http = require('node:http');
@@ -24,12 +26,14 @@ const nodemailer = require('nodemailer');
 const pWaitFor = require('p-wait-for');
 const pify = require('pify');
 const test = require('ava');
+const { ImapFlow } = require('imapflow');
 const { SMTPServer } = require('smtp-server');
 
 const utils = require('../utils');
 
 const { captureSpamScannerLog, captureSpamScannerStats } = utils;
 
+const IMAP = require('../../imap-server');
 const MX = require('../../mx-server');
 const SQLite = require('../../sqlite-server');
 
@@ -79,7 +83,7 @@ test.beforeEach(async (t) => {
 test.afterEach.always(async (t) => {
   config.spamScanner.mxPercent = t.context.mxPercent;
   await spamScanner.reset();
-  for (const key of ['mx', 'target']) {
+  for (const key of ['mx', 'target', 'imap']) {
     if (!t.context[key]) continue;
     try {
       await t.context[key].close();
@@ -743,3 +747,261 @@ test('a webhook gets the X-Spam-Scanner headers in place of the sender’s', asy
   t.is(bodies[0].headers.Subject, 'Your account is suspended');
   t.is(bodies[0].headers['X-Report-Abuse-To'], undefined);
 });
+
+//
+// Out of monitor mode, with each scan's result set by the test (a summary as
+// `scan` gives it: X-Spam-Scanner-* headers, and the SpamAssassin ones a
+// client or filter acts on)
+//
+function enforceWithScore(t, score) {
+  const { monitorOnly } = config.spamScanner;
+  const { scan } = spamScanner;
+  config.spamScanner.monitorOnly = false;
+  let scans = 0;
+  spamScanner.scan = async () => {
+    scans++;
+    const isSpam = score >= 5;
+    const status = `${isSpam ? 'Yes' : 'No'}, score=${score.toFixed(
+      1
+    )} required=5.0 tests=TEST_SPAM`;
+    return {
+      version: spamScanner.getVersion(),
+      direction: 'inbound',
+      isSpam,
+      score,
+      threshold: 5,
+      rejectThreshold: 15,
+      action: score >= 15 ? 'reject' : isSpam ? 'add header' : 'no action',
+      status,
+      standardHeaders: [
+        ['X-Spam-Flag', isSpam ? 'YES' : 'NO'],
+        ['X-Spam-Status', status]
+      ]
+    };
+  };
+
+  t.teardown(() => {
+    config.spamScanner.monitorOnly = monitorOnly;
+    spamScanner.scan = scan;
+  });
+  return () => scans;
+}
+
+// a message, by its Message-ID
+function spamLines(domain, id, to = `bob@${domain.name}`) {
+  return [
+    `To: ${to}`,
+    'From: sender@test.com',
+    'Subject: Cheap meds',
+    `Message-ID: <${id}@test.com>`,
+    'Date: Sun, 11 Oct 2026 10:00:00 +0000',
+    '',
+    'Buy now'
+  ];
+}
+
+//
+// A mailbox on the domain, and the number of messages in each of its folders
+// over IMAP (logging in creates its folders: INBOX, Spam and the others)
+//
+async function setupMailbox(t, domain, user, name = 'box') {
+  if (!t.context.imap) {
+    const imap = new IMAP(
+      {
+        client: t.context.client,
+        subscriber: t.context.subscriber,
+        wsp: t.context.wsp
+      },
+      false
+    );
+    t.context.imap = imap;
+    t.context.imapPort = await getPort();
+    await imap.listen(t.context.imapPort);
+  }
+
+  const alias = await t.context.aliasFactory
+    .withState({
+      name,
+      user: user._id,
+      domain: domain._id,
+      recipients: [],
+      has_imap: true
+    })
+    .create();
+  const pass = await alias.createToken();
+  await alias.save();
+
+  async function withClient(fn) {
+    const client = new ImapFlow({
+      host: IP_ADDRESS,
+      port: t.context.imapPort,
+      secure: false,
+      auth: { user: `${name}@${domain.name}`, pass },
+      tls,
+      logger: false
+    });
+    await client.connect();
+    try {
+      return await fn(client);
+    } finally {
+      await client.logout();
+    }
+  }
+
+  async function count(path) {
+    return withClient(async (client) => {
+      const status = await client.status(path, { messages: true });
+      return status.messages;
+    });
+  }
+
+  t.is(await count('INBOX'), 0);
+  return { address: `${name}@${domain.name}`, count, withClient };
+}
+
+test.serial(
+  'out of monitor mode spam is filed in the Spam folder of a mailbox, with its headers',
+  async (t) => {
+    const { domain, send, user } = await setup(t);
+    const box = await setupMailbox(t, domain, user);
+    enforceWithScore(t, 8);
+    const id = randomUUID();
+    await send(spamLines(domain, id, box.address), box.address);
+    await pWaitFor(async () => (await box.count('Spam')) === 1, {
+      timeout: ms('30s'),
+      interval: ms('500')
+    });
+    t.is(await box.count('INBOX'), 0);
+    const raw = await box.withClient(async (client) => {
+      const lock = await client.getMailboxLock('Spam');
+      try {
+        const message = await client.fetchOne('*', { source: true });
+        return message.source.toString();
+      } finally {
+        lock.release();
+      }
+    });
+    t.deepEqual(headerValues(raw, 'X-Spam-Scanner-Flag'), ['YES']);
+    t.deepEqual(headerValues(raw, 'X-Spam-Scanner-Score'), ['8']);
+    t.deepEqual(headerValues(raw, 'X-Spam-Flag'), ['YES']);
+  }
+);
+
+test.serial(
+  'a mailbox whose spam folder is "Junk" gets spam there, and one without a spam folder gets it in a new "Spam" folder',
+  async (t) => {
+    const { domain, send, user } = await setup(t);
+    const box = await setupMailbox(t, domain, user);
+    await box.withClient((client) => client.mailboxRename('Spam', 'Junk'));
+    enforceWithScore(t, 8);
+    await send(spamLines(domain, randomUUID(), box.address), box.address);
+    await pWaitFor(async () => (await box.count('Junk')) === 1, {
+      timeout: ms('30s'),
+      interval: ms('500')
+    });
+    t.is(await box.count('INBOX'), 0);
+
+    await box.withClient((client) => client.mailboxDelete('Junk'));
+    await send(spamLines(domain, randomUUID(), box.address), box.address);
+    await pWaitFor(
+      async () =>
+        box.withClient(async (client) => {
+          const list = await client.list();
+          return list.some((m) => m.path === 'Spam');
+        }),
+      { timeout: ms('30s'), interval: ms('500') }
+    );
+    await pWaitFor(async () => (await box.count('Spam')) === 1, {
+      timeout: ms('30s'),
+      interval: ms('500')
+    });
+    t.is(await box.count('INBOX'), 0);
+    const specialUse = await box.withClient(async (client) => {
+      const list = await client.list();
+      return list.find((m) => m.path === 'Spam').specialUse;
+    });
+    t.is(specialUse, '\\Junk');
+  }
+);
+
+test.serial(
+  'out of monitor mode a wanted message goes to INBOX, and spam below the reject threshold is forwarded with its headers',
+  async (t) => {
+    const { domain, received, send, user } = await setup(t);
+    const box = await setupMailbox(t, domain, user);
+    enforceWithScore(t, 1);
+    await send(spamLines(domain, randomUUID(), box.address), box.address);
+    await pWaitFor(async () => (await box.count('INBOX')) === 1, {
+      timeout: ms('30s'),
+      interval: ms('500')
+    });
+    t.is(await box.count('Spam'), 0);
+
+    enforceWithScore(t, 8);
+    const id = randomUUID();
+    await send(spamLines(domain, id));
+    const copy = () => received.find((raw) => raw.includes(`<${id}@test.com>`));
+    await pWaitFor(() => Boolean(copy()), { timeout: ms('20s') });
+    t.deepEqual(headerValues(copy(), 'X-Spam-Scanner-Flag'), ['YES']);
+    t.deepEqual(headerValues(copy(), 'X-Spam-Flag'), ['YES']);
+    t.regex(headerValues(copy(), 'X-Spam-Status')[0], /^Yes, score=8\.0/);
+  }
+);
+
+test.serial(
+  'out of monitor mode a message at the reject threshold is deferred (421, no score) for a mailbox and a forward, and in monitor mode delivered',
+  async (t) => {
+    const { domain, received, send, user } = await setup(t);
+    const box = await setupMailbox(t, domain, user);
+    const scans = enforceWithScore(t, 20);
+    for (const to of [box.address, `bob@${domain.name}`]) {
+      const err = await t.throwsAsync(
+        send(spamLines(domain, randomUUID(), to), to)
+      );
+      t.is(err.responseCode, 421);
+      t.regex(
+        err.response,
+        /detected as spam by Spam Scanner, please try again later/
+      );
+      t.false(err.response.includes('20'));
+    }
+
+    t.is(scans(), 2);
+    t.is(received.length, 0);
+    t.is(await box.count('INBOX'), 0);
+    t.is(await box.count('Spam'), 0);
+
+    config.spamScanner.monitorOnly = true;
+    await send(spamLines(domain, randomUUID()));
+    await pWaitFor(() => received.length === 1, { timeout: ms('20s') });
+    // (monitor mode: nothing a client or filter acts on)
+    t.deepEqual(headerValues(received[0], 'X-Spam-Flag'), []);
+  }
+);
+
+test.serial(
+  'out of monitor mode the GTUBE test string, scanned for real, is deferred (421)',
+  async (t) => {
+    withColdStartTime(t);
+    const { domain, received, send } = await setup(t);
+    const { monitorOnly } = config.spamScanner;
+    config.spamScanner.monitorOnly = false;
+    t.teardown(() => {
+      config.spamScanner.monitorOnly = monitorOnly;
+    });
+    const err = await t.throwsAsync(
+      send([
+        `To: bob@${domain.name}`,
+        'From: sender@test.com',
+        'Subject: Test spam mail (GTUBE)',
+        `Message-ID: <${randomUUID()}@test.com>`,
+        'Date: Sun, 11 Oct 2026 10:00:00 +0000',
+        '',
+        'XJS*C4JDBQADN1.NSBN3*2IDNEN*GTUBE-STANDARD-ANTI-UBE-TEST-EMAIL*C.34X'
+      ])
+    );
+    t.is(err.responseCode, 421);
+    t.regex(err.response, /detected as spam by Spam Scanner/);
+    t.is(received.length, 0);
+  }
+);

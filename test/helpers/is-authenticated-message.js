@@ -182,3 +182,92 @@ test('authenticating a message does not seal it', async (t) => {
   t.is(session.arc.status.result, 'none');
   t.regex(session.arc.authResults, /dkim=pass/);
 });
+
+//
+// Mail for a domain whose inbound mail a truth source relays with the
+// original envelope sender (`INBOUND_RELAY_DOMAINS`, e.g. a Google Workspace
+// routing rule): SPF checked against the relay fails for a sender with -all
+// and no DMARC record, though the relay checked the sender itself.
+//
+test.serial(
+  'mail a truth source relays for an inbound relay domain is not rejected for an SPF hard fail, nor scored for it',
+  async (t) => {
+    const { getAuthenticationResults } = require('#helpers/spam-scanner');
+    const raw = Buffer.from(
+      [
+        'From: dev@lists.example.org',
+        'To: shawn@relayed.example',
+        'Subject: [PATCH] fix',
+        'Message-ID: <relay@lists.example.org>',
+        'Date: Mon, 19 Oct 2026 10:00:00 +0000',
+        '',
+        'A patch.',
+        ''
+      ].join('\r\n')
+    );
+    const resolver = {
+      async resolve(name, type) {
+        if (type === 'TXT' && name.toLowerCase() === 'lists.example.org')
+          return [['v=spf1 ip4:198.51.100.1 -all']];
+        throw dnsError('ENOTFOUND');
+      }
+    };
+    const relayed = (rcptTo, root = 'relay.example') => ({
+      remoteAddress: '192.0.2.20',
+      hostNameAppearsAs: `mail.${root}`,
+      resolvedClientHostname: `mail.${root}`,
+      resolvedRootClientHostname: root,
+      originalFromAddress: 'dev@lists.example.org',
+      originalFromAddressDomain: 'lists.example.org',
+      originalFromAddressRootDomain: 'example.org',
+      envelope: {
+        mailFrom: { address: 'dev-bounces@lists.example.org' },
+        rcptTo: rcptTo.map((address) => ({ address }))
+      }
+    });
+    const check = async (session) => {
+      const { headers, body } = await split(raw);
+      try {
+        await isAuthenticatedMessage(headers, body, session, resolver);
+      } catch (err) {
+        return err;
+      }
+    };
+
+    const hardFail = /failed SPF validation .* SPF hard fail policy/;
+    // (rejected without the settings)
+    const rejected = await check(relayed(['shawn@relayed.example']));
+    t.regex(rejected.message, hardFail);
+
+    config.truthSources.add('relay.example');
+    config.inboundRelayDomains.add('relayed.example');
+    try {
+      for (const rcptTo of [
+        ['shawn@relayed.example'],
+        ['a@relayed.example', 'b@sub.relayed.example']
+      ]) {
+        const session = relayed(rcptTo);
+
+        t.is(await check(session), undefined);
+        t.true(session.isInboundRelay);
+        t.is(session.spf.status.result, 'fail');
+        // (Spam Scanner is not given the SPF result checked against the relay)
+        t.is(getAuthenticationResults(session).spf.status.result, 'none');
+      }
+
+      // (still rejected from a server that is not a truth source, or with a
+      //  recipient of another domain)
+      for (const session of [
+        relayed(['shawn@relayed.example'], 'other.example'),
+        relayed(['shawn@relayed.example', 'bob@example.com'])
+      ]) {
+        const err = await check(session);
+        t.regex(err.message, hardFail);
+        t.false(session.isInboundRelay);
+      }
+    } finally {
+      config.truthSources.delete('relay.example');
+      config.inboundRelayDomains.delete('relayed.example');
+    }
+  }
+);

@@ -2445,6 +2445,91 @@ test('a scan never requests or connects to an address a message links to, only l
   t.deepEqual(connections, []);
 });
 
+test('links to the archive.today web archive are not malware links, though Cloudflare blocks it', async (t) => {
+  config.spamScanner.cloudflare = true;
+  captureSpamScannerLog(t);
+  const asked = [];
+  // (Cloudflare's resolvers block every name here, as they do archive.ph)
+  const blocking = {
+    async resolve4(name) {
+      asked.push(name);
+      return ['0.0.0.0'];
+    }
+  };
+  const resolvers = spamScanner.getResolvers(client, {
+    async resolve4() {
+      return ['192.0.2.1'];
+    }
+  });
+  const { malware, family } = resolvers;
+  resolvers.malware = blocking;
+  resolvers.family = blocking;
+  t.teardown(() => {
+    resolvers.malware = malware;
+    resolvers.family = family;
+  });
+  const links = (...urls) =>
+    message([
+      'From: alice@example.com',
+      'To: bob@example.org',
+      'Subject: an article',
+      'Message-ID: <archive@example.com>',
+      'Date: Sun, 11 Oct 2026 10:00:00 +0000',
+      'Content-Type: text/html; charset=utf-8',
+      '',
+      urls.map((url) => `<a href="${url}">${url}</a>`).join(' ')
+    ]);
+  const outbound = async (raw) =>
+    spamScanner.getOutboundBlockingMessages(
+      await spamScanner.scan(raw, {
+        client,
+        direction: 'outbound',
+        protection: LINKS,
+        enforce: true
+      })
+    );
+
+  const archives = [
+    'https://archive.ph/AbCdE',
+    'https://archive.is/AbCdE',
+    'https://archive.today/AbCdE',
+    'https://archive.li/AbCdE',
+    'https://archive.vn/AbCdE',
+    'https://archive.fo/AbCdE',
+    'https://archive.md/AbCdE',
+    'https://www.ARCHIVE.PH/AbCdE'
+  ];
+  t.deepEqual(await outbound(links(...archives)), []);
+  const inbound = await spamScanner.scan(links(...archives), {
+    session,
+    client,
+    protection: LINKS
+  });
+  t.false(JSON.stringify(inbound.tests).includes('MALICIOUS_DOMAIN'));
+  t.false(
+    asked.some((name) => /archive\.(?:ph|is|today|li|vn|fo|md)$/i.test(name))
+  );
+
+  // (only the archive's own names: a name ending like one, or one with it
+  //  as a subdomain, is still checked)
+  const others = await outbound(
+    links(
+      'https://notarchive.ph/x',
+      'https://archive.ph.evil.example/x',
+      'https://archive.example/x'
+    )
+  );
+  for (const host of [
+    'notarchive.ph',
+    'archive.ph.evil.example',
+    'archive.example'
+  ])
+    t.true(
+      others.some((text) => text.includes(host)),
+      `${host} is still blocked`
+    );
+});
+
 test('a scan says whether every link host was looked up', async (t) => {
   config.spamScanner.cloudflare = true;
   captureSpamScannerLog(t);
@@ -4718,11 +4803,12 @@ test('a kept verdict on a close call is checked again with the language model as
     )
   );
 
-  // (a close call as it is scanned again too: the lookalike domain and the
-  //  display name without the link that shows another address, which
-  //  together are past the reject threshold with no model to ask)
+  // (a close call as it is scanned again too: the lookalike domain of the
+  //  link and the display name, without the link that shows another address
+  //  or a From domain that imitates the brand, which together are past the
+  //  reject threshold with no model to ask)
   const closeCall = message([
-    'From: "PayPal" <service@paypa1-secure.example>',
+    'From: "PayPal" <service@account-notice.example>',
     'To: bob@example.org',
     'Subject: Your account is suspended',
     'Message-ID: <close-call@paypa1-secure.example>',

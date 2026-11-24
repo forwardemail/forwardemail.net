@@ -930,14 +930,14 @@ async function imap(alias, headers, session, body, _spamScan) {
             ? session.arrivalDate
             : session.arrivalDate.toISOString(),
         raw: Buffer.concat([sealHeaders, unsealed]),
-        //
-        // TODO: once out of monitor mode, file spam in the Junk folder (see
-        //       `isSpam` in the `tmp` action of `helpers/parse-payload.js`),
-        //       but not for our own addresses (see `isOurAddress`)
-        //
-        // ...(!config.spamScanner.monitorOnly && _spamScan?.isSpam
-        //   ? { isSpam: true }
-        //   : {}),
+        // out of monitor mode, spam is filed in the spam folder (see `isSpam`
+        // in the `tmp` action of `helpers/parse-payload.js`), but not for
+        // our own addresses (see `isOurAddress`)
+        ...(spamScanner.isEnforcing() &&
+        _spamScan?.isSpam === true &&
+        !spamScanner.isOurAddress(alias.address)
+          ? { isSpam: true }
+          : {}),
         timeout: ms('1m')
       },
       1
@@ -1078,6 +1078,27 @@ function getBounceGreylistDuration(bounceInfo, isAllowlisted) {
   return ms(isAllowlisted ? '10m' : '1h');
 }
 
+//
+// Whether a message is a mailing list's, delivered by the list's own server
+// when that server is allowlisted (e.g. lists.example.org, with example.org
+// in `ALLOWLIST`): its List-Id is of the domain of the envelope sender, which
+// SPF passed for. A destination's spam verdict on it is on the list's mail,
+// so neither the list nor the people who posted to it are denylisted for it.
+//
+function isAllowlistedListMail(headers, session) {
+  if (!session.isAllowlisted || session.spf?.status?.result !== 'pass')
+    return false;
+  const listId = headers.getFirst('list-id');
+  if (!isSANB(listId)) return false;
+  const id = (/<([^<>\s]+)>/.exec(listId)?.[1] ?? listId).trim().toLowerCase();
+  const sender = session.envelope?.mailFrom?.address;
+  if (!isFQDN(id) || !isSANB(sender) || !isEmail(sender)) return false;
+  return (
+    parseRootDomain(id) ===
+    parseRootDomain(parseHostFromDomainOrAddress(sender))
+  );
+}
+
 async function checkBounceForSpam(bounce, headers, session) {
   //
   // if the bounce error was a code bug then
@@ -1170,6 +1191,7 @@ async function checkBounceForSpam(bounce, headers, session) {
   // also note that `true` here indicates it must be SPF or DKIM aligned metadata (since users could otherwise spoof and we could denylist incorrectly)
   //
   const attributes = await getAttributes(headers, session, this.resolver, true);
+  const isListMail = isAllowlistedListMail(headers, session);
 
   //
   // NOTE: we don't denylist attributes that are allowlisted as it would have no impact
@@ -1330,7 +1352,7 @@ async function checkBounceForSpam(bounce, headers, session) {
       //   err.headers = headers;
       //   logger.fatal(err);
       // } else if (!isAttributeAllowlisted) {
-      if (!isAttributeAllowlisted) {
+      if (!isAttributeAllowlisted && !isListMail) {
         let shouldDenylist = false;
         if (isEmail(attr) && count >= 5) {
           shouldDenylist = true;
@@ -3154,10 +3176,12 @@ async function onDataMX(session, headers, body) {
   }
 
   //
-  // Spam Scanner (see `helpers/spam-scanner.js`), in monitor mode: it only
-  // logs what it would mark as spam and adds X-Spam-Scanner-* headers.  It
+  // Spam Scanner (see `helpers/spam-scanner.js`): it adds X-Spam-Scanner-*
+  // headers, and in monitor mode only logs what it would mark as spam; out of
+  // it, spam is filed in the spam folder of IMAP mailboxes, and a message at
+  // the reject threshold is deferred (421, see below), never rejected.  It
   // runs while the recipients are looked up, scans the message as it was
-  // received, and never rejects (an error or a timeout resolves to null).
+  // received, and an error or a timeout resolves to null (delivered as is).
   //
   // (stopped when the message is rejected, or goes nowhere, before then)
   // (not mail only to our own addresses, or our own signed mail, see
@@ -3273,34 +3297,22 @@ async function onDataMX(session, headers, body) {
   );
 
   //
-  // TODO: once out of monitor mode, defer spam that would be forwarded with a
-  //       temporary error (421), so the sender retries and a wrong decision
-  //       can be undone; IMAP recipients still get it (in their Junk folder,
-  //       see `imap()`); leave these deferrals out of
-  //       `sendForwardingIssueEmails` (which would tell the alias owner and
-  //       the domain's admins its destination is broken), mind that past
-  //       `partialDeliveryRetryWindow` a partly delivered message is accepted
-  //       (and these copies dropped), and decide whether webhooks are
-  //       deferred too
+  // out of monitor mode, a message at Spam Scanner's reject threshold (15 by
+  // default) is deferred with a temporary error (421), for every recipient,
+  // so a legitimate sender retries and a wrong decision can be undone (it is
+  // scanned again then); it is never rejected outright, and the response has
+  // no score, which would help tune spam to pass
+  // (spam below it is delivered: in the spam folder of IMAP mailboxes, see
+  //  `imap()`, and forwarded with the X-Spam-* headers, so the destination
+  //  can file it as spam)
+  // (mail only to our own addresses is not scanned, see `shouldScanInbound`)
   //
-  // if (
-  //   !config.spamScanner.monitorOnly &&
-  //   spamScan?.isSpam &&
-  //   data.normalized.length > 0
-  // ) {
-  //   const err = new SMTPError(
-  //     'The message was detected as spam by Spam Scanner, please try again later; for more information visit https://spamscanner.net',
-  //     { responseCode: 421, ignoreHook: true }
-  //   );
-  //   // (not for our own addresses, see `isOurAddress`)
-  //   const ours = data.normalized.filter((recipient) =>
-  //     spamScanner.isOurAddress(recipient.recipient)
-  //   );
-  //   for (const recipient of data.normalized)
-  //     if (!ours.includes(recipient))
-  //       data.bounces.push({ address: recipient.recipient, err });
-  //   data.normalized = ours;
-  // }
+  if (delivered && spamScanner.isRejectedInbound(spamScan)) {
+    throw new SMTPError(
+      'The message was detected as spam by Spam Scanner, please try again later; for more information visit https://spamscanner.net',
+      { responseCode: 421, ignoreHook: true }
+    );
+  }
 
   //
   // a mailbox that more than one recipient reaches (e.g. an address and its
@@ -3696,3 +3708,4 @@ function combineBounceErrors(bounces, summary) {
 module.exports = onDataMX;
 module.exports.updateMXHeaders = updateMXHeaders;
 module.exports.getDeliveryOutcome = getDeliveryOutcome;
+module.exports.checkBounceForSpam = checkBounceForSpam;

@@ -53,7 +53,10 @@ const {
   unblock
 } = require('#helpers/arf-recipient-block');
 const { isDestinationIssue } = require('#helpers/send-forwarding-issue-emails');
-const { getDeliveryOutcome } = require('#helpers/on-data-mx');
+const {
+  checkBounceForSpam,
+  getDeliveryOutcome
+} = require('#helpers/on-data-mx');
 
 let getPort;
 import('get-port').then((obj) => {
@@ -1106,3 +1109,108 @@ test('a recipient block does not hold up a permanent error for the rest of a mes
   // (and alone, the block is a temporary error)
   t.is(getDeliveryOutcome(session, [], [blocked]).err.responseCode, 421);
 });
+
+//
+// A destination's spam bounces of mail a mailing list delivered (e.g. a
+// list forwarded to a mailbox provider) are its verdict on the list's
+// mail: from an allowlisted list server, neither the list nor the people who
+// posted to it are denylisted for them, as they would be for anyone's mail
+//
+test.serial(
+  'spam bounces of mailing list mail from an allowlisted list server denylist neither the list nor its posters',
+  async (t) => {
+    const { client } = t.context;
+    const id = randomUUID();
+    const poster = `dev-${id}@poster.example.net`;
+    const list = `devel-bounces-${id}@lists.example.net`;
+    const headersOf = async (extra) => {
+      const { Splitter } = require('mailsplit');
+      const splitter = new Splitter();
+      let headers;
+      splitter.on('data', (data) => {
+        if (data.type === 'node' && data.root) headers = data.headers;
+      });
+      const done = new Promise((resolve, reject) => {
+        splitter.once('end', resolve);
+        splitter.once('error', reject);
+      });
+      splitter.end(
+        [
+          `From: ${poster}`,
+          'To: devel@lists.example.net',
+          ...extra,
+          'Subject: [PATCH] fix',
+          '',
+          'A patch.',
+          ''
+        ].join('\r\n')
+      );
+      await done;
+      return headers;
+    };
+
+    const session = (spf = 'pass') => ({
+      isAllowlisted: true,
+      remoteAddress: '192.0.2.30',
+      resolvedClientHostname: 'mail.lists.example.net',
+      resolvedRootClientHostname: 'example.net',
+      originalFromAddress: poster,
+      originalFromAddressDomain: 'poster.example.net',
+      originalFromAddressRootDomain: 'example.net',
+      signingDomains: new Set(['poster.example.net', 'lists.example.net']),
+      spf: { status: { result: spf } },
+      envelope: { mailFrom: { address: list }, rcptTo: [] },
+      arrivalDateFormatted: `list-${id}`,
+      fingerprint: `list-${id}`
+    });
+    const resolver = {
+      async reverse() {
+        throw new Error('ENOTFOUND');
+      },
+      async resolve() {
+        throw new Error('ENOTFOUND');
+      }
+    };
+    const bounces = async (headers, mx) => {
+      for (let i = 0; i < 10; i++) {
+        await checkBounceForSpam.call(
+          { client, resolver },
+          {
+            err: Object.assign(new Error('550 5.7.1 unsolicited mail'), {
+              truthSource: 'gmail.com',
+              bounceInfo: { category: 'spam', action: 'reject' }
+            })
+          },
+          headers,
+          mx
+        );
+      }
+    };
+
+    const listHeaders = await headersOf([
+      'List-Id: Development list <devel.lists.example.net>'
+    ]);
+    await bounces(listHeaders, session());
+    t.is(await client.get(`denylist:${poster}`), null);
+    t.is(await client.get(`denylist:${list}`), null);
+
+    // (but mail without a List-Id of the envelope sender's domain, or whose
+    //  envelope sender SPF did not pass for, is)
+    for (const [headers, mx] of [
+      [await headersOf([]), session()],
+      [
+        await headersOf(['List-Id: <devel.lists.other.example.org>']),
+        session()
+      ],
+      [listHeaders, session('softfail')]
+    ]) {
+      await client.del(`denylist:${poster}`, `denylist:${list}`);
+      mx.arrivalDateFormatted = `${mx.arrivalDateFormatted}-${randomUUID()}`;
+      await bounces(headers, mx);
+      t.truthy(await client.get(`denylist:${poster}`));
+      t.truthy(await client.get(`denylist:${list}`));
+    }
+
+    await client.del(`denylist:${poster}`, `denylist:${list}`);
+  }
+);

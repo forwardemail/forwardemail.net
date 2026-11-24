@@ -1260,6 +1260,21 @@ const config = {
       : []
   ),
 
+  //
+  // domains whose inbound mail a truth source's mail servers relay to us
+  // with the original envelope sender (e.g. a Google Workspace routing rule
+  // for some of a domain's users), see `helpers/is-authenticated-message.js`
+  //
+  inboundRelayDomains: new Set(
+    _.isArray(env.INBOUND_RELAY_DOMAINS)
+      ? env.INBOUND_RELAY_DOMAINS.map((key) => key.toLowerCase().trim())
+      : isSANB(env.INBOUND_RELAY_DOMAINS)
+      ? env.INBOUND_RELAY_DOMAINS.split(',').map((key) =>
+          key.toLowerCase().trim()
+        )
+      : []
+  ),
+
   smtpSpamSuspensionWindow: ms(env.SMTP_SPAM_SUSPENSION_WINDOW || '1h'),
   smtpSpamSuspensionSpamThreshold: Math.max(
     1,
@@ -1294,7 +1309,9 @@ const config = {
     enabled: boolean(env.SPAM_SCANNER_ENABLED),
     // only log, and add X-Spam-Scanner-* headers; never reject, block,
     // defer or file a message as spam, inbound or outbound (only an explicit
-    // false turns this off: a mistyped value must not start rejecting mail)
+    // false turns this off: a mistyped value must not start rejecting mail;
+    // then inbound spam is filed in the spam folder of IMAP mailboxes, and
+    // inbound mail at the reject threshold is deferred, 421)
     monitorOnly: unlessFalse(env.SPAM_SCANNER_MONITOR_ONLY),
     // outbound spam (at the reject threshold) is only logged, not rejected
     // as smtp-bree sends it (only an explicit false turns this off)

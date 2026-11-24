@@ -247,6 +247,20 @@ describe('Sieve delivery of the actions of a script (RFC 5228)', () => {
     assert.strictEqual(result.isKeptIfNotRedirected, true);
   });
 
+  it('says whether the script chose where the message is stored, so spam is filed in the spam folder only when it did not (see parse-payload.js)', async () => {
+    for (const [script, isFiled] of [
+      ['', false],
+      ['require "copy"; redirect :copy "other@example.net";', false],
+      ['keep;', true],
+      ['require "fileinto"; fileinto "Work";', true],
+      ['require ["fileinto", "copy"]; fileinto :copy "Work";', true],
+      ['discard;', false]
+    ]) {
+      const result = await run(script);
+      assert.strictEqual(result.isFiled, isFiled, script);
+    }
+  });
+
   it('keeps the message with redirect :copy (RFC 3894)', async () => {
     const result = await run(
       'require "copy"; redirect :copy "other@example.net";'

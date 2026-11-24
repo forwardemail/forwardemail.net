@@ -376,6 +376,9 @@ class SieveIntegration {
       // INBOX when no redirect could be sent, see parse-payload.js)
       keepFlags: [],
       isKeptIfNotRedirected: false,
+      // (whether the script chose where it is stored, with keep or fileinto:
+      // spam is then not filed in the spam folder, see parse-payload.js)
+      isFiled: false,
       reject: null,
       redirects: [],
       vacation: null,
@@ -581,6 +584,8 @@ class SieveIntegration {
       const isImplicitKeep =
         filterResult.implicitKeep || (!isCancelled && !isRedirected);
       result.keepFlags = filterResult.flags || [];
+      result.isFiled =
+        Boolean(filterResult.keep) || filterResult.fileinto.length > 0;
       // (a redirect alone cancelled it: if it cannot be sent, the message is
       // kept after all, see parse-payload.js)
       result.isKeptIfNotRedirected = !isImplicitKeep && !isCancelled;

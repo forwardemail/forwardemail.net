@@ -79,6 +79,28 @@ const { createSecurityResolver, FAMILY_SERVERS, SECURITY_SERVERS } =
 const CLOUDFLARE_MALWARE = new Set(SECURITY_SERVERS);
 const CLOUDFLARE_FAMILY = new Set(FAMILY_SERVERS);
 
+// names that Cloudflare's malware and family resolvers block as a whole but
+// that are not malware: the archive.today web archive, which keeps copies of
+// any page (phishing ones among them), so a link to it (e.g. a news article
+// someone saved) is not a malware link, and outbound mail with one is not
+// blocked; these names and their subdomains are not asked of either resolver
+const CLOUDFLARE_EXCLUDED = new Set([
+  'archive.today',
+  'archive.ph',
+  'archive.is',
+  'archive.li',
+  'archive.vn',
+  'archive.fo',
+  'archive.md'
+]);
+
+function isCloudflareExcluded(name) {
+  const labels = name.toLowerCase().replace(/\.$/, '').split('.');
+  for (let i = 0; i < labels.length - 1; i++)
+    if (CLOUDFLARE_EXCLUDED.has(labels.slice(i).join('.'))) return true;
+  return false;
+}
+
 // the link hosts of an outbound message that are looked up: a message
 // linking to more is blocked, so none can be put out of reach of the check
 // (each host is two lookups, cached in Redis; ordinary mail links to far fewer)
@@ -598,6 +620,9 @@ function resolve4(name, servers, owner = null) {
     : CLOUDFLARE_FAMILY.has(first)
     ? 'family'
     : 'default';
+  // (not blocked, see `CLOUDFLARE_EXCLUDED`)
+  if (kind !== 'default' && isCloudflareExcluded(lookupAs))
+    return Promise.resolve([]);
   const key = `${kind}:${lookupAs}`;
   // (shared once it is being made, or when this scan would wait its turn
   //  anyway: one still waiting for another scan's turn is made at once by a
@@ -1382,16 +1407,22 @@ function logResult(summary, session = {}, blocking = [], options = {}) {
   };
   const outbound = summary.direction === 'outbound';
   // (outbound spam is rejected at the reject threshold, not at the one
-  //  inbound spam is filed as spam at)
-  const wouldReject =
-    outbound &&
+  //  inbound spam is filed as spam at; inbound mail at it is deferred out of
+  //  monitor mode, see `isRejectedInbound`)
+  const atReject =
     typeof summary.score === 'number' &&
     typeof summary.rejectThreshold === 'number' &&
     summary.score >= summary.rejectThreshold;
+  const wouldReject = outbound && atReject;
   line.would_reject = wouldReject;
+  const inboundEnforced = !outbound && isEnforcing();
   const verdicts = [
     ...(wouldReject
       ? ['would reject as spam']
+      : inboundEnforced && atReject
+      ? ['deferred as spam']
+      : inboundEnforced && summary.isSpam
+      ? ['marked as spam']
       : summary.isSpam
       ? ['would mark as spam']
       : []),
@@ -1456,10 +1487,15 @@ function getAuthenticationResults(session = {}) {
   )
     return null;
   return {
-    spf: {
-      status: status(session.spf) || { result: 'none' },
-      domain: string(session.spf?.domain)
-    },
+    // (none for mail relayed for a domain that has its inbound mail relayed,
+    //  whose SPF was checked against the relay, see
+    //  `helpers/is-authenticated-message.js`)
+    spf: session.isInboundRelay
+      ? { status: { result: 'none' } }
+      : {
+          status: status(session.spf) || { result: 'none' },
+          domain: string(session.spf?.domain)
+        },
     dkim: {
       results: (Array.isArray(session.dkim?.results)
         ? session.dkim.results
@@ -3097,6 +3133,20 @@ function isOutboundSpam(stored) {
   return stored.score >= stored.reject_threshold;
 }
 
+//
+// Whether an inbound message is deferred as spam (421, see `onDataMX`): out
+// of monitor mode, at the reject threshold (spam below it is filed in the
+// spam folder of IMAP mailboxes)
+//
+function isRejectedInbound(summary) {
+  return (
+    isEnforcing() &&
+    typeof summary?.score === 'number' &&
+    typeof summary.rejectThreshold === 'number' &&
+    summary.score >= summary.rejectThreshold
+  );
+}
+
 // the most the language model's verdict of spam adds to a score, as Spam
 // Scanner weighs it
 const LLM_SPAM_WEIGHT = 6;
@@ -3465,6 +3515,7 @@ module.exports = {
   isEnforcing,
   isLlmPaused,
   isOurAddress,
+  isRejectedInbound,
   isSampledInbound,
   needsLanguageModel,
   shouldScanInbound,
