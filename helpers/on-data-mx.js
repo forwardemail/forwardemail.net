@@ -3184,10 +3184,11 @@ async function onDataMX(session, headers, body) {
   // received, and an error or a timeout resolves to null (delivered as is).
   //
   // (stopped when the message is rejected, or goes nowhere, before then)
-  // (not mail only to our own addresses, or our own signed mail, see
-  //  `shouldScanInbound`, nor a message already to be rejected for Gmail's
-  //  authentication policy below; and only SPAM_SCANNER_MX_PERCENT of the
-  //  rest, picked at random, see `isSampledInbound`)
+  // (not mail only to our abuse address, or our own signed mail to our own
+  //  addresses, see `shouldScanInbound`, nor a message already to be
+  //  rejected for Gmail's authentication policy below; and only
+  //  SPAM_SCANNER_MX_PERCENT of the rest, picked at random, see
+  //  `isSampledInbound`)
   const spamScanAbort = new AbortController();
   const spamScanning =
     !shouldRejectUnauthenticatedGmail &&
@@ -3305,9 +3306,16 @@ async function onDataMX(session, headers, body) {
   // (spam below it is delivered: in the spam folder of IMAP mailboxes, see
   //  `imap()`, and forwarded with the X-Spam-* headers, so the destination
   //  can file it as spam)
-  // (mail only to our own addresses is not scanned, see `shouldScanInbound`)
+  // (nor is a message to our abuse address, whose reports must arrive, see
+  //  `isAbuseAddress`; its other recipients' copies are filed as spam)
   //
-  if (delivered && spamScanner.isRejectedInbound(spamScan)) {
+  if (
+    delivered &&
+    spamScanner.isRejectedInbound(spamScan) &&
+    !session.envelope.rcptTo.some((rcpt) =>
+      spamScanner.isAbuseAddress(rcpt?.address)
+    )
+  ) {
     throw new SMTPError(
       'The message was detected as spam by Spam Scanner, please try again later; for more information visit https://spamscanner.net',
       { responseCode: 421, ignoreHook: true }

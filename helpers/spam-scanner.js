@@ -2964,14 +2964,25 @@ function shouldScanOutbound(envelope, domainName) {
 }
 
 //
-// Whether an inbound message is scanned: all but mail only to our own
-// addresses (`isOurAddress`), and mail from our own domain that proves it
-// (a passing DKIM signature of our domain aligned with the From address, as
-// our system mail has; a From address alone can be forged), so that neither
-// is ever deferred or filed as spam; not mail forwarded with its From
-// rewritten to our no-reply address, whose content is someone else's
-// (by root domain: were WEB_HOST a subdomain, as for a staging server, its
-// parent domain's mail would count too)
+// Whether an address is our abuse address (`abuseEmail`), the one abuse
+// reports and the spam and phishing they forward come to
+//
+function isAbuseAddress(address) {
+  if (!isOurAddress(address) || typeof config.abuseEmail !== 'string')
+    return false;
+  const local = config.abuseEmail.split('@')[0].trim().toLowerCase();
+  return local !== '' && address.trim().toLowerCase().split('@')[0] === local;
+}
+
+//
+// Whether an inbound message is scanned: all but mail only to our abuse
+// address (`isAbuseAddress`), whose reports carry the spam and phishing
+// they report, and our own mail to our own addresses (`isOurAddress`) that
+// proves it is ours (a passing DKIM signature of our domain aligned with the
+// From address, as our system mail has; a From address alone can be forged);
+// not mail forwarded with its From rewritten to our no-reply address, whose
+// content is someone else's (by root domain: were WEB_HOST a subdomain, as
+// for a staging server, its parent domain's mail would count too)
 //
 function shouldScanInbound(session = {}) {
   const ours = getOurDomain();
@@ -2979,8 +2990,9 @@ function shouldScanInbound(session = {}) {
   const rcptTo = Array.isArray(session?.envelope?.rcptTo)
     ? session.envelope.rcptTo
     : [];
-  if (rcptTo.length > 0 && rcptTo.every((rcpt) => isOurAddress(rcpt?.address)))
-    return false;
+  if (rcptTo.length === 0) return true;
+  if (rcptTo.every((rcpt) => isAbuseAddress(rcpt?.address))) return false;
+  if (!rcptTo.every((rcpt) => isOurAddress(rcpt?.address))) return true;
   // (by root domain, as the From address and signature are read)
   const root = toDomain(parseRootDomain(ours));
   const from =
@@ -3514,6 +3526,7 @@ module.exports = {
   isCurrent,
   isEnforcing,
   isLlmPaused,
+  isAbuseAddress,
   isOurAddress,
   isRejectedInbound,
   isSampledInbound,

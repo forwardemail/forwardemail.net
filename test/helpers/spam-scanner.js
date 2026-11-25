@@ -4587,22 +4587,35 @@ test('which inbound messages are scanned', (t) => {
   const rcpt = (...addresses) => ({
     envelope: { rcptTo: addresses.map((address) => ({ address })) }
   });
+  const abuse = config.abuseEmail;
   t.true(spamScanner.shouldScanInbound(rcpt('bob@example.org')));
   t.true(spamScanner.shouldScanInbound({}));
-  // (not mail only to our own addresses)
-  t.false(spamScanner.shouldScanInbound(rcpt(config.abuseEmail)));
-  t.false(
+  // (not mail only to our abuse address, also written in capitals)
+  t.false(spamScanner.shouldScanInbound(rcpt(abuse)));
+  t.false(spamScanner.shouldScanInbound(rcpt(abuse.toUpperCase(), abuse)));
+  t.true(spamScanner.isAbuseAddress(abuse.toUpperCase()));
+  t.false(spamScanner.isAbuseAddress(`abuse@another.example`));
+  t.false(spamScanner.isAbuseAddress(config.supportEmail));
+  // (but mail to our other addresses from anyone else, or to our abuse
+  //  address and another, is)
+  t.true(spamScanner.shouldScanInbound(rcpt(config.supportEmail)));
+  t.true(
     spamScanner.shouldScanInbound(
       rcpt(`anyone@${ours.toUpperCase()}`, config.supportEmail)
     )
   );
-  t.true(
-    spamScanner.shouldScanInbound(rcpt(config.abuseEmail, 'bob@example.org'))
-  );
+  t.true(spamScanner.shouldScanInbound(rcpt(abuse, 'bob@example.org')));
+  t.true(spamScanner.shouldScanInbound(rcpt(abuse, config.supportEmail)));
 
-  // (nor mail from our own domain with its passing, aligned DKIM signature)
-  const signed = (signingDomain, fromRoot = ours, result = 'pass') => ({
-    ...rcpt('bob@example.org'),
+  // (nor our own mail to our own addresses, with its passing, aligned DKIM
+  //  signature of our domain)
+  const signed = (
+    signingDomain,
+    fromRoot = ours,
+    result = 'pass',
+    to = config.supportEmail
+  ) => ({
+    ...rcpt(to),
     originalFromAddressRootDomain: fromRoot,
     alignedDKIMResults: [{ signingDomain, status: { result } }]
   });
@@ -4610,11 +4623,15 @@ test('which inbound messages are scanned', (t) => {
   // (a subdomain signing, where WEB_HOST is a registrable domain)
   if (ours.includes('.'))
     t.false(spamScanner.shouldScanInbound(signed(`mail.${ours}`)));
+  // (our own mail to anyone else is scanned)
+  t.true(
+    spamScanner.shouldScanInbound(signed(ours, ours, 'pass', 'bob@example.org'))
+  );
   // (a From address of ours alone, or signed by another domain, or a failing
   //  signature, is scanned)
   t.true(
     spamScanner.shouldScanInbound({
-      ...rcpt('bob@example.org'),
+      ...rcpt(config.supportEmail),
       originalFromAddressRootDomain: ours,
       alignedDKIMResults: []
     })

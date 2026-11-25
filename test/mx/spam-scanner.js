@@ -235,12 +235,12 @@ async function setup(t) {
       tls
     });
     return transporter.sendMail({
-      envelope: { from: 'sender@test.com', to: [to] },
+      envelope: { from: 'sender@test.com', to: [to].flat() },
       raw: lines.join('\r\n')
     });
   }
 
-  return { domain, received, resolver, send, user };
+  return { domain, forwardDomain, received, resolver, send, user };
 }
 
 // a scan has the inbound time limit, which a cold worker (loading the
@@ -656,15 +656,24 @@ test('only SPAM_SCANNER_MX_PERCENT of inbound mail is scanned, picked at random,
   t.is(stats.length, 1);
 });
 
-test('mail only to our own addresses is not scanned, and forged headers still go', async (t) => {
+test('mail only to our abuse address is not scanned, and forged headers still go; mail to our other addresses is', async (t) => {
   const lines = captureSpamScannerLog(t);
-  const { domain, received, send } = await setup(t);
-  // (the alias's domain as ours, WEB_HOST)
+  const { domain, forwardDomain, received, send, user } = await setup(t);
+  // (the alias's domain as ours, WEB_HOST, with its abuse address)
   const { webHost } = config;
   config.webHost = domain.name.toUpperCase();
   t.teardown(() => {
     config.webHost = webHost;
   });
+  const abuse = `${config.abuseEmail.split('@')[0]}@${domain.name}`;
+  await t.context.aliasFactory
+    .withState({
+      name: abuse.split('@')[0],
+      user: user._id,
+      domain: domain._id,
+      recipients: [`abuse@${forwardDomain}`]
+    })
+    .create();
   let scans = 0;
   const { scan } = spamScanner;
   spamScanner.scan = (...args) => {
@@ -676,9 +685,9 @@ test('mail only to our own addresses is not scanned, and forged headers still go
     spamScanner.scan = scan;
   });
 
-  await send([
+  const message = (to) => [
     'X-Spam-Scanner-Flag: NO',
-    `To: bob@${domain.name}`,
+    `To: ${to}`,
     'From: "PayPal" <sender@test.com>',
     'Subject: Your account is suspended',
     `Message-ID: <${randomUUID()}@test.com>`,
@@ -686,12 +695,22 @@ test('mail only to our own addresses is not scanned, and forged headers still go
     'Content-Type: text/html; charset=utf-8',
     '',
     '<p>Dear customer, verify your account now: <a href="http://paypa1-secure.example/login">https://www.paypal.com/signin</a></p>'
-  ]);
+  ];
+
+  // (to another address of ours, from anyone else: scanned, with headers)
+  await send(message(`bob@${domain.name}`));
   await pWaitFor(() => received.length === 1, { timeout: ms('20s') });
-  t.is(scans, 0);
-  t.deepEqual(headerValues(received[0], 'X-Spam-Scanner-Flag'), []);
-  t.deepEqual(headerValues(received[0], 'X-Spam-Scanner-Version'), []);
-  t.is(lines.length, 0);
+  t.is(scans, 1);
+  t.is(headerValues(received[0], 'X-Spam-Scanner-Version').length, 1);
+  const logged = lines.length;
+
+  // (to our abuse address alone: not scanned, and the forged header removed)
+  await send(message(abuse), abuse);
+  await pWaitFor(() => received.length === 2, { timeout: ms('20s') });
+  t.is(scans, 1);
+  t.deepEqual(headerValues(received[1], 'X-Spam-Scanner-Flag'), []);
+  t.deepEqual(headerValues(received[1], 'X-Spam-Scanner-Version'), []);
+  t.is(lines.length, logged);
 });
 
 test('a webhook gets the X-Spam-Scanner headers in place of the sender’s', async (t) => {
@@ -976,6 +995,37 @@ test.serial(
     await pWaitFor(() => received.length === 1, { timeout: ms('20s') });
     // (monitor mode: nothing a client or filter acts on)
     t.deepEqual(headerValues(received[0], 'X-Spam-Flag'), []);
+  }
+);
+
+test.serial(
+  'out of monitor mode a message at the reject threshold to our abuse address and another is not deferred, and the other copy is marked as spam',
+  async (t) => {
+    const { domain, forwardDomain, received, send, user } = await setup(t);
+    const { webHost } = config;
+    config.webHost = domain.name;
+    t.teardown(() => {
+      config.webHost = webHost;
+    });
+    const abuse = `${config.abuseEmail.split('@')[0]}@${domain.name}`;
+    await t.context.aliasFactory
+      .withState({
+        name: abuse.split('@')[0],
+        user: user._id,
+        domain: domain._id,
+        recipients: [`abuse@${forwardDomain}`]
+      })
+      .create();
+    const scans = enforceWithScore(t, 20);
+    const id = randomUUID();
+    await send(spamLines(domain, id), [abuse, `bob@${domain.name}`]);
+    const copies = () =>
+      received.filter((raw) => raw.includes(`<${id}@test.com>`));
+    await pWaitFor(() => copies().length > 0, { timeout: ms('20s') });
+    t.is(scans(), 1);
+    t.true(
+      copies().every((raw) => headerValues(raw, 'X-Spam-Flag')[0] === 'YES')
+    );
   }
 );
 
