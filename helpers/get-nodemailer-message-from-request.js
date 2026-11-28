@@ -9,8 +9,6 @@ const { Libmime } = require('libmime');
 
 const _ = require('#helpers/lodash');
 
-const EMOJI_HEADERS = ['from', 'to', 'cc', 'bcc', 'subject', 'replyTo'];
-
 // NOTE: tested to be safe using the following package:
 //       <https://github.com/fastify/safe-regex2>
 const EMOJI_REGEX =
@@ -98,29 +96,19 @@ function getNodemailerMessageFromRequest(ctx) {
   if (_.isObject(message.dsn)) message.dsn = _.pick(message.dsn, DSN_FIELDS);
 
   //
-  // users may forget to programmatically encode their emoji
-  // so we do this automatically for them for specific headers
-  // - from
-  // - to
-  // - cc
-  // - bcc
-  // - subject
-  // - replyTo
+  // The from, to, cc, bcc, subject and replyTo fields are passed on as they
+  // came. Nodemailer encodes whatever is not ASCII in them (emoji included)
+  // as it builds each header.
   //
-  for (const header of EMOJI_HEADERS) {
-    if (isSANB(message[header])) {
-      const matches = message[header].match(EMOJI_REGEX);
-      if (!matches || !Array.isArray(matches)) continue;
-      for (const match of matches) {
-        message[header] = message[header].replaceAll(
-          match,
-          libmime.encodeWord(match)
-        );
-      }
-    }
-  }
+  // Emoji in these fields used to be turned into encoded-words here first.
+  // The pattern for "emoji" also covers kana, dashes and curly quotes, so a
+  // subject that mixed those with any other non-ASCII text (kanji, accents,
+  // Cyrillic) was encoded twice, once here and once by Nodemailer, and
+  // recipients saw the inner "=?UTF-8?Q?...?=" as text.
+  // <https://github.com/forwardemail/mail.forwardemail.net/issues/130>
+  //
 
-  // additionally we attempt to parse the body if there was a regex match
+  // a raw message is sent as it is, so emoji in its headers are encoded here
   if (isSANB(message.raw)) {
     const hasEmojiRegex = EMOJI_REGEX.test(message.raw);
     if (hasEmojiRegex) {
