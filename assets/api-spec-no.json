@@ -9433,7 +9433,7 @@
     "/v1/domains/{domain_id}/allowlist": {
       "put": {
         "summary": "Oppdater tillatelseslisten for domener",
-        "description": "Erstatt tillatelseslisten for et domene. Tillatelseslisten begrenser innkommende e-post til kun de angitte avsenderne. Hver oppføring må være en gyldig IP-adresse, et fullstendig kvalifisert domenenavn (FQDN), en e-postadresse eller et jokertegndomene på toppnivå (f.eks. `*.com`). Maksimalt 1000 oppføringer er tillatt. Wildcard public-suffix-regler kan inneholde flere etiketter, for eksempel `*.gov.co` og `*.gov.br`; de matcher avsendere under akkurat det suffikset.",
+        "description": "Erstatt tillatelseslisten for et domene. Tillatelseslisten begrenser innkommende e-post til kun de angitte avsenderne. Hver oppføring må være en gyldig IP-adresse, et fullstendig kvalifisert domenenavn (FQDN), en e-postadresse eller et jokertegndomene på toppnivå (f.eks. `*.com`). Maksimalt 1000 oppføringer er tillatt. Wildcard public-suffix-regler kan inneholde flere etiketter, for eksempel `*.gov.co` og `*.gov.br`; de matcher avsendere under akkurat det suffikset. Et jokertegndomene som `*.example.com` lagres som `example.com`, som dekker domenet og underdomenene. Hvis en oppføring ikke er gyldig, lagres ingenting, og 400-feilen viser de ugyldige oppføringene.",
         "operationId": "updateDomainAllowlist",
         "tags": [
           "Domener"
@@ -9466,7 +9466,7 @@
                     "items": {
                       "type": "string"
                     },
-                    "description": "Matrise med tillatelseslistede avsendere (IP-adresser, FQDN-er, e-postadresser eller jokertegn-TLD-er som `*.com`). Send inn en tom matrise for å tømme tillatelseslisten. Wildcard public-suffix-regler kan inneholde flere etiketter, for eksempel `*.gov.co` og `*.gov.br`; de matcher avsendere under akkurat det suffikset."
+                    "description": "Matrise med tillatelseslistede avsendere (IP-adresser, FQDN-er, e-postadresser eller jokertegn-TLD-er som `*.com`). Send inn en tom matrise for å tømme tillatelseslisten. Wildcard public-suffix-regler kan inneholde flere etiketter, for eksempel `*.gov.co` og `*.gov.br`; de matcher avsendere under akkurat det suffikset. Et jokertegndomene som `*.example.com` lagres som `example.com`, som dekker domenet og underdomenene. Hvis en oppføring ikke er gyldig, lagres ingenting, og 400-feilen viser de ugyldige oppføringene."
                   }
                 },
                 "required": [
@@ -9505,7 +9505,7 @@
     "/v1/domains/{domain_id}/denylist": {
       "put": {
         "summary": "Oppdater domeneavvistliste",
-        "description": "Erstatt avvisningslisten for et domene. E-post fra avsendere på avvisningslisten vil bli avvist. Hver oppføring må være en gyldig IP-adresse, et fullstendig kvalifisert domenenavn (FQDN), en e-postadresse eller et jokertegndomene på toppnivå (f.eks. `*.com`). Maksimalt 1000 oppføringer er tillatt. Wildcard public-suffix-regler kan inneholde flere etiketter, for eksempel `*.gov.co` og `*.gov.br`; de matcher avsendere under akkurat det suffikset.",
+        "description": "Erstatt avvisningslisten for et domene. E-post fra avsendere på avvisningslisten vil bli avvist. Hver oppføring må være en gyldig IP-adresse, et fullstendig kvalifisert domenenavn (FQDN), en e-postadresse eller et jokertegndomene på toppnivå (f.eks. `*.com`). Maksimalt 1000 oppføringer er tillatt. Wildcard public-suffix-regler kan inneholde flere etiketter, for eksempel `*.gov.co` og `*.gov.br`; de matcher avsendere under akkurat det suffikset. Et jokertegndomene som `*.example.com` lagres som `example.com`, som dekker domenet og underdomenene. Hvis en oppføring ikke er gyldig, lagres ingenting, og 400-feilen viser de ugyldige oppføringene.",
         "operationId": "updateDomainDenylist",
         "tags": [
           "Domener"
@@ -9538,7 +9538,7 @@
                     "items": {
                       "type": "string"
                     },
-                    "description": "Matrise med avsendere på avvisningslisten (IP-adresser, FQDN-er, e-postadresser eller jokertegn-TLD-er som `*.com`). Send inn en tom matrise for å tømme avvisningslisten. Wildcard public-suffix-regler kan inneholde flere etiketter, for eksempel `*.gov.co` og `*.gov.br`; de matcher avsendere under akkurat det suffikset."
+                    "description": "Matrise med avsendere på avvisningslisten (IP-adresser, FQDN-er, e-postadresser eller jokertegn-TLD-er som `*.com`). Send inn en tom matrise for å tømme avvisningslisten. Wildcard public-suffix-regler kan inneholde flere etiketter, for eksempel `*.gov.co` og `*.gov.br`; de matcher avsendere under akkurat det suffikset. Et jokertegndomene som `*.example.com` lagres som `example.com`, som dekker domenet og underdomenene. Hvis en oppføring ikke er gyldig, lagres ingenting, og 400-feilen viser de ugyldige oppføringene."
                   }
                 },
                 "required": [

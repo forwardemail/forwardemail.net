@@ -23553,5 +23553,7 @@
   "For sideloading with AltStore or Xcode": "For sideloading with AltStore or Xcode",
   "Added:": "Přidáno:",
   "Removed:": "Odebráno:",
-  "and %d more": "a %d dalších"
+  "and %d more": "a %d dalších",
+  "A wildcard such as <code class='alert-link notranslate'>*.example.com</code> is saved as <code class='alert-link notranslate'>example.com</code>, which covers it and all of its subdomains.": "Zástupný znak jako <code class='alert-link notranslate'>*.example.com</code> se uloží jako <code class='alert-link notranslate'>example.com</code>, což pokrývá tuto doménu i všechny její subdomény.",
+  "Nothing was saved. These entries are not valid IP addresses, domain names, wildcards (e.g. <span class=\"notranslate\">*.example.com</span> or <span class=\"notranslate\">*.uk</span>), or email addresses: <span class=\"notranslate\">%s</span>": "Nic nebylo uloženo. Tyto položky nejsou platné IP adresy, názvy domén, zástupné znaky (např. <span class=\"notranslate\">*.example.com</span> nebo <span class=\"notranslate\">*.uk</span>) ani e-mailové adresy: <span class=\"notranslate\">%s</span>"
 }

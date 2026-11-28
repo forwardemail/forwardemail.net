@@ -9433,7 +9433,7 @@
     "/v1/domains/{domain_id}/allowlist": {
       "put": {
         "summary": "Perbarui daftar domain yang diizinkan",
-        "description": "Ganti daftar yang diizinkan untuk suatu domain. Daftar yang diizinkan membatasi email masuk hanya untuk pengirim yang ditentukan. Setiap entri harus berupa alamat IP yang valid, nama domain yang sepenuhnya memenuhi syarat (FQDN), alamat email, atau domain tingkat atas wildcard (misalnya `*.com`). Maksimum 1000 entri diperbolehkan. Aturan public-suffix bertanda wildcard dapat berisi beberapa label, misalnya `*.gov.co` dan `*.gov.br`; mereka mencocokkan pengirim di bawah sufiks tersebut secara tepat.",
+        "description": "Ganti daftar yang diizinkan untuk suatu domain. Daftar yang diizinkan membatasi email masuk hanya untuk pengirim yang ditentukan. Setiap entri harus berupa alamat IP yang valid, nama domain yang sepenuhnya memenuhi syarat (FQDN), alamat email, atau domain tingkat atas wildcard (misalnya `*.com`). Maksimum 1000 entri diperbolehkan. Aturan public-suffix bertanda wildcard dapat berisi beberapa label, misalnya `*.gov.co` dan `*.gov.br`; mereka mencocokkan pengirim di bawah sufiks tersebut secara tepat. Domain wildcard seperti `*.example.com` disimpan sebagai `example.com`, yang mencakup domain tersebut dan subdomainnya. Jika ada entri yang tidak valid, tidak ada yang disimpan dan galat 400 mencantumkan entri yang tidak valid.",
         "operationId": "updateDomainAllowlist",
         "tags": [
           "Domain"
@@ -9466,7 +9466,7 @@
                     "items": {
                       "type": "string"
                     },
-                    "description": "Array pengirim yang diizinkan (alamat IP, FQDN, alamat email, atau TLD wildcard seperti `*.com`). Berikan array kosong untuk menghapus daftar yang diizinkan. Aturan public-suffix bertanda wildcard dapat berisi beberapa label, misalnya `*.gov.co` dan `*.gov.br`; mereka mencocokkan pengirim di bawah sufiks tersebut secara tepat."
+                    "description": "Array pengirim yang diizinkan (alamat IP, FQDN, alamat email, atau TLD wildcard seperti `*.com`). Berikan array kosong untuk menghapus daftar yang diizinkan. Aturan public-suffix bertanda wildcard dapat berisi beberapa label, misalnya `*.gov.co` dan `*.gov.br`; mereka mencocokkan pengirim di bawah sufiks tersebut secara tepat. Domain wildcard seperti `*.example.com` disimpan sebagai `example.com`, yang mencakup domain tersebut dan subdomainnya. Jika ada entri yang tidak valid, tidak ada yang disimpan dan galat 400 mencantumkan entri yang tidak valid."
                   }
                 },
                 "required": [
@@ -9505,7 +9505,7 @@
     "/v1/domains/{domain_id}/denylist": {
       "put": {
         "summary": "Perbarui daftar penolakan domain",
-        "description": "Ganti daftar hitam untuk suatu domain. Email dari pengirim yang ada dalam daftar hitam akan ditolak. Setiap entri harus berupa alamat IP yang valid, nama domain yang sepenuhnya memenuhi syarat (FQDN), alamat email, atau domain tingkat atas wildcard (misalnya `*.com`). Maksimal 1000 entri diperbolehkan. Aturan public-suffix bertanda wildcard dapat berisi beberapa label, misalnya `*.gov.co` dan `*.gov.br`; mereka mencocokkan pengirim di bawah sufiks tersebut secara tepat.",
+        "description": "Ganti daftar hitam untuk suatu domain. Email dari pengirim yang ada dalam daftar hitam akan ditolak. Setiap entri harus berupa alamat IP yang valid, nama domain yang sepenuhnya memenuhi syarat (FQDN), alamat email, atau domain tingkat atas wildcard (misalnya `*.com`). Maksimal 1000 entri diperbolehkan. Aturan public-suffix bertanda wildcard dapat berisi beberapa label, misalnya `*.gov.co` dan `*.gov.br`; mereka mencocokkan pengirim di bawah sufiks tersebut secara tepat. Domain wildcard seperti `*.example.com` disimpan sebagai `example.com`, yang mencakup domain tersebut dan subdomainnya. Jika ada entri yang tidak valid, tidak ada yang disimpan dan galat 400 mencantumkan entri yang tidak valid.",
         "operationId": "updateDomainDenylist",
         "tags": [
           "Domain"
@@ -9538,7 +9538,7 @@
                     "items": {
                       "type": "string"
                     },
-                    "description": "Array pengirim yang masuk daftar hitam (alamat IP, FQDN, alamat email, atau TLD wildcard seperti `*.com`). Berikan array kosong untuk menghapus daftar hitam. Aturan public-suffix bertanda wildcard dapat berisi beberapa label, misalnya `*.gov.co` dan `*.gov.br`; mereka mencocokkan pengirim di bawah sufiks tersebut secara tepat."
+                    "description": "Array pengirim yang masuk daftar hitam (alamat IP, FQDN, alamat email, atau TLD wildcard seperti `*.com`). Berikan array kosong untuk menghapus daftar hitam. Aturan public-suffix bertanda wildcard dapat berisi beberapa label, misalnya `*.gov.co` dan `*.gov.br`; mereka mencocokkan pengirim di bawah sufiks tersebut secara tepat. Domain wildcard seperti `*.example.com` disimpan sebagai `example.com`, yang mencakup domain tersebut dan subdomainnya. Jika ada entri yang tidak valid, tidak ada yang disimpan dan galat 400 mencantumkan entri yang tidak valid."
                   }
                 },
                 "required": [

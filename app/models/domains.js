@@ -1168,20 +1168,39 @@ Domains.pre('validate', async function (next) {
   }
 });
 
+//
+// An allowlist or denylist entry as it is stored (lowercase, a domain name in
+// ASCII), or undefined if it is not one: an IP address, an email address, a
+// wildcard public-suffix rule (e.g. `*.uk` or `*.gov.co`, see
+// `helpers/normalize-wildcard-tld.js`), or a domain name, which covers its
+// subdomains as well (so `*.example.com` is stored as `example.com`)
+//
+function normalizeListEntry(value) {
+  if (typeof value !== 'string') return;
+  const entry = value.toLowerCase().trim();
+  if (!entry) return;
+  if (isIP(entry) || isEmail(entry)) return entry;
+  const wildcard = normalizeWildcardTLD(entry);
+  if (wildcard) return wildcard;
+  let name;
+  try {
+    name = punycode.toASCII(entry.startsWith('*.') ? entry.slice(2) : entry);
+  } catch {
+    return;
+  }
+
+  if (isFQDN(name)) return name;
+}
+
+Domains.statics.normalizeListEntry = normalizeListEntry;
+
 Domains.pre('validate', function (next) {
   for (const key of ['allowlist', 'denylist']) {
     if (!Array.isArray(this[key])) this[key] = [];
 
-    // cleanup allowlist/denylist
-    this[key] = _.compact(_.uniq(this[key].map((v) => v.toLowerCase().trim())));
-
-    // Normalize valid wildcard public-suffix rules (including compound ICANN
-    // and PSL private suffixes), then retain only supported entry types.
-    this[key] = this[key]
-      .map((v) => normalizeWildcardTLD(v) || v)
-      .filter(
-        (v) => isIP(v) || isFQDN(v) || isEmail(v) || normalizeWildcardTLD(v)
-      );
+    // (an entry saved before it was checked as it is now is dropped, see
+    // `update-allowlist-and-denylist.js` for what is refused when sent)
+    this[key] = _.compact(_.uniq(this[key].map((v) => normalizeListEntry(v))));
 
     // can have at most 1000 entries in each list (arbitrary, can increase later)
     if (this[key].length > 1000)

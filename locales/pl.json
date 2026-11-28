@@ -23553,5 +23553,7 @@
   "For sideloading with AltStore or Xcode": "For sideloading with AltStore or Xcode",
   "Added:": "Dodano:",
   "Removed:": "Usunięto:",
-  "and %d more": "i %d więcej"
+  "and %d more": "i %d więcej",
+  "A wildcard such as <code class='alert-link notranslate'>*.example.com</code> is saved as <code class='alert-link notranslate'>example.com</code>, which covers it and all of its subdomains.": "Symbol wieloznaczny, taki jak <code class='alert-link notranslate'>*.example.com</code>, jest zapisywany jako <code class='alert-link notranslate'>example.com</code>, co obejmuje tę domenę i wszystkie jej subdomeny.",
+  "Nothing was saved. These entries are not valid IP addresses, domain names, wildcards (e.g. <span class=\"notranslate\">*.example.com</span> or <span class=\"notranslate\">*.uk</span>), or email addresses: <span class=\"notranslate\">%s</span>": "Nic nie zostało zapisane. Te wpisy nie są prawidłowymi adresami IP, nazwami domen, symbolami wieloznacznymi (np. <span class=\"notranslate\">*.example.com</span> lub <span class=\"notranslate\">*.uk</span>) ani adresami e-mail: <span class=\"notranslate\">%s</span>"
 }

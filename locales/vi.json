@@ -23553,5 +23553,7 @@
   "For sideloading with AltStore or Xcode": "For sideloading with AltStore or Xcode",
   "Added:": "Đã thêm:",
   "Removed:": "Đã xóa:",
-  "and %d more": "và %d mục khác"
+  "and %d more": "và %d mục khác",
+  "A wildcard such as <code class='alert-link notranslate'>*.example.com</code> is saved as <code class='alert-link notranslate'>example.com</code>, which covers it and all of its subdomains.": "Ký tự đại diện như <code class='alert-link notranslate'>*.example.com</code> được lưu thành <code class='alert-link notranslate'>example.com</code>, bao gồm tên miền đó và tất cả tên miền phụ của nó.",
+  "Nothing was saved. These entries are not valid IP addresses, domain names, wildcards (e.g. <span class=\"notranslate\">*.example.com</span> or <span class=\"notranslate\">*.uk</span>), or email addresses: <span class=\"notranslate\">%s</span>": "Không có gì được lưu. Các mục sau không phải là địa chỉ IP, tên miền, ký tự đại diện (ví dụ <span class=\"notranslate\">*.example.com</span> hoặc <span class=\"notranslate\">*.uk</span>) hoặc địa chỉ email hợp lệ: <span class=\"notranslate\">%s</span>"
 }

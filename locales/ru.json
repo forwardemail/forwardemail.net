@@ -23553,5 +23553,7 @@
   "For sideloading with AltStore or Xcode": "For sideloading with AltStore or Xcode",
   "Added:": "Добавлено:",
   "Removed:": "Удалено:",
-  "and %d more": "и ещё %d"
+  "and %d more": "и ещё %d",
+  "A wildcard such as <code class='alert-link notranslate'>*.example.com</code> is saved as <code class='alert-link notranslate'>example.com</code>, which covers it and all of its subdomains.": "Подстановочный знак, например <code class='alert-link notranslate'>*.example.com</code>, сохраняется как <code class='alert-link notranslate'>example.com</code>, что охватывает этот домен и все его поддомены.",
+  "Nothing was saved. These entries are not valid IP addresses, domain names, wildcards (e.g. <span class=\"notranslate\">*.example.com</span> or <span class=\"notranslate\">*.uk</span>), or email addresses: <span class=\"notranslate\">%s</span>": "Ничего не сохранено. Эти записи не являются допустимыми IP-адресами, доменными именами, подстановочными знаками (например, <span class=\"notranslate\">*.example.com</span> или <span class=\"notranslate\">*.uk</span>) или адресами электронной почты: <span class=\"notranslate\">%s</span>"
 }

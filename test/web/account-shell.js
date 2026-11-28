@@ -491,6 +491,77 @@ test('the advanced settings page jumps to its sections', async (t) => {
   }
 });
 
+test('a wildcard domain added to the denylist shows in it once saved, and an entry that is not valid is refused', async (t) => {
+  await Users.updateOne(
+    { _id: t.context.user._id },
+    { $set: { plan: 'enhanced_protection' } }
+  );
+  const domain = await makeDomain(t, {
+    plan: 'enhanced_protection',
+    has_mx_record: true,
+    has_txt_record: true
+  });
+  const path = `/en/my-account/domains/${domain.name}`;
+
+  const saved = await t.context.web
+    .post(`${path}/denylist`)
+    .set('Accept', 'application/json')
+    .send({ denylist: '*.Example.org\nnews.example.net, 192.0.2.1' });
+  t.is(saved.status, 200);
+
+  const document = await get(t, `${path}/advanced-settings`);
+  t.deepEqual(document.querySelector('#textarea-denylist').value.split('\n'), [
+    'example.org',
+    'news.example.net',
+    '192.0.2.1'
+  ]);
+
+  // (each label is for a field of the page)
+  for (const label of document.querySelectorAll('label[for]')) {
+    const id = label.getAttribute('for');
+    t.truthy(document.querySelector(`[id="${id}"]`), `label for ${id}`);
+  }
+
+  const refused = await t.context.web
+    .post(`${path}/denylist`)
+    .set('Accept', 'application/json')
+    .send({ denylist: 'example.com\nnot_a_domain' });
+  t.is(refused.status, 400);
+  t.regex(refused.body.message, /not_a_domain/);
+  const { denylist } = await Domains.findById(domain._id).lean();
+  t.deepEqual(denylist, ['example.org', 'news.example.net', '192.0.2.1']);
+});
+
+test('a pending email change can be sent again or cancelled from the profile', async (t) => {
+  const { userFields } = config;
+  await Users.updateOne(
+    { _id: t.context.user._id },
+    {
+      $set: {
+        [userFields.changeEmailNewAddress]: `new-${randomUUID()}@example.com`,
+        [userFields.changeEmailToken]: randomUUID(),
+        [userFields.changeEmailTokenExpiresAt]: new Date(Date.now() + 60_000)
+      }
+    }
+  );
+  const document = await get(t, '/en/my-account/profile');
+  for (const action of ['resend-email-change', 'cancel-email-change']) {
+    const form = document.querySelector(`form[action$="/${action}"]`);
+    t.truthy(form, `${action} form`);
+    // (a click in a link to a section only scrolls to it: the form is not sent)
+    t.is(form.closest('a, nav'), null, `${action} is not in a link`);
+  }
+
+  const res = await t.context.web
+    .put('/en/my-account/profile/cancel-email-change')
+    .set('Accept', 'application/json')
+    .send({});
+  t.is(res.status, 200);
+  const user = await Users.findById(t.context.user._id).lean();
+  t.falsy(user[userFields.changeEmailNewAddress]);
+  t.falsy(user[userFields.changeEmailToken]);
+});
+
 test('the locked links of a free domain ask first, like the cards of the list', async (t) => {
   const domain = await makeDomain(t, {
     has_mx_record: true,

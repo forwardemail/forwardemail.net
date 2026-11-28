@@ -9433,7 +9433,7 @@
     "/v1/domains/{domain_id}/allowlist": {
       "put": {
         "summary": "Aggiorna la lista dei domini consentiti",
-        "description": "Sostituisci la lista di mittenti consentiti per un dominio. La lista di mittenti consentiti limita la posta in entrata ai soli mittenti specificati. Ogni voce deve essere un indirizzo IP valido, un nome di dominio completo (FQDN), un indirizzo email o un dominio di primo livello jolly (ad esempio, *.com). È consentito un massimo di 1000 voci. Le regole di public-suffix con wildcard possono contenere più label, per esempio `*.gov.co` e `*.gov.br`; corrispondono ai mittenti sotto quel suffisso esatto.",
+        "description": "Sostituisci la lista di mittenti consentiti per un dominio. La lista di mittenti consentiti limita la posta in entrata ai soli mittenti specificati. Ogni voce deve essere un indirizzo IP valido, un nome di dominio completo (FQDN), un indirizzo email o un dominio di primo livello jolly (ad esempio, *.com). È consentito un massimo di 1000 voci. Le regole di public-suffix con wildcard possono contenere più label, per esempio `*.gov.co` e `*.gov.br`; corrispondono ai mittenti sotto quel suffisso esatto. Un dominio jolly come `*.example.com` viene salvato come `example.com`, che copre il dominio e i suoi sottodomini. Se una voce non è valida, non viene salvato nulla e l'errore 400 elenca le voci non valide.",
         "operationId": "updateDomainAllowlist",
         "tags": [
           "Domini"
@@ -9466,7 +9466,7 @@
                     "items": {
                       "type": "string"
                     },
-                    "description": "Array di mittenti consentiti (indirizzi IP, FQDN, indirizzi email o TLD jolly come `*.com`). Passare un array vuoto per cancellare l'elenco dei mittenti consentiti. Le regole di public-suffix con wildcard possono contenere più label, per esempio `*.gov.co` e `*.gov.br`; corrispondono ai mittenti sotto quel suffisso esatto."
+                    "description": "Array di mittenti consentiti (indirizzi IP, FQDN, indirizzi email o TLD jolly come `*.com`). Passare un array vuoto per cancellare l'elenco dei mittenti consentiti. Le regole di public-suffix con wildcard possono contenere più label, per esempio `*.gov.co` e `*.gov.br`; corrispondono ai mittenti sotto quel suffisso esatto. Un dominio jolly come `*.example.com` viene salvato come `example.com`, che copre il dominio e i suoi sottodomini. Se una voce non è valida, non viene salvato nulla e l'errore 400 elenca le voci non valide."
                   }
                 },
                 "required": [
@@ -9505,7 +9505,7 @@
     "/v1/domains/{domain_id}/denylist": {
       "put": {
         "summary": "Aggiorna la lista nera del dominio",
-        "description": "Sostituisci l'elenco di mittenti bloccati per un dominio. Le email provenienti da mittenti presenti nell'elenco verranno rifiutate. Ogni voce deve essere un indirizzo IP valido, un nome di dominio completo (FQDN), un indirizzo email o un dominio di primo livello jolly (ad esempio, *.com). È consentito un massimo di 1000 voci. Le regole di public-suffix con wildcard possono contenere più label, per esempio `*.gov.co` e `*.gov.br`; corrispondono ai mittenti sotto quel suffisso esatto.",
+        "description": "Sostituisci l'elenco di mittenti bloccati per un dominio. Le email provenienti da mittenti presenti nell'elenco verranno rifiutate. Ogni voce deve essere un indirizzo IP valido, un nome di dominio completo (FQDN), un indirizzo email o un dominio di primo livello jolly (ad esempio, *.com). È consentito un massimo di 1000 voci. Le regole di public-suffix con wildcard possono contenere più label, per esempio `*.gov.co` e `*.gov.br`; corrispondono ai mittenti sotto quel suffisso esatto. Un dominio jolly come `*.example.com` viene salvato come `example.com`, che copre il dominio e i suoi sottodomini. Se una voce non è valida, non viene salvato nulla e l'errore 400 elenca le voci non valide.",
         "operationId": "updateDomainDenylist",
         "tags": [
           "Domini"
@@ -9538,7 +9538,7 @@
                     "items": {
                       "type": "string"
                     },
-                    "description": "Array di mittenti bloccati (indirizzi IP, FQDN, indirizzi email o TLD jolly come `*.com`). Passare un array vuoto per cancellare l'elenco dei mittenti bloccati. Le regole di public-suffix con wildcard possono contenere più label, per esempio `*.gov.co` e `*.gov.br`; corrispondono ai mittenti sotto quel suffisso esatto."
+                    "description": "Array di mittenti bloccati (indirizzi IP, FQDN, indirizzi email o TLD jolly come `*.com`). Passare un array vuoto per cancellare l'elenco dei mittenti bloccati. Le regole di public-suffix con wildcard possono contenere più label, per esempio `*.gov.co` e `*.gov.br`; corrispondono ai mittenti sotto quel suffisso esatto. Un dominio jolly come `*.example.com` viene salvato come `example.com`, che copre il dominio e i suoi sottodomini. Se una voce non è valida, non viene salvato nulla e l'errore 400 elenca le voci non valide."
                   }
                 },
                 "required": [

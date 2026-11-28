@@ -3475,15 +3475,38 @@ test('updates domain denylist via API', async (t) => {
 
     t.is(res.status, 200);
     t.deepEqual(_.sortBy(Object.keys(res.body)), keys);
+    // (a wildcard domain is saved as the domain, which covers its subdomains)
     t.deepEqual(res.body.denylist, [
       '10.0.0.1',
       'spam.example.com',
       'spammer@example.com',
       '*.gov.co',
       '*.gov.br',
-      '*.blogspot.com'
+      '*.blogspot.com',
+      'example.com'
     ]);
     t.deepEqual(res.body.allowlist, []);
+  }
+
+  // an entry that is not valid is refused, and nothing is saved
+  {
+    const res = await t.context.api
+      .put('/v1/domains/testdomain-denylist.com/denylist')
+      .auth(user[config.userFields.apiToken])
+      .set('Content-Type', 'application/json')
+      .set('Accept', 'application/json')
+      .send({
+        denylist: ['192.168.1.1', 'not a domain', '*.', 42]
+      });
+
+    t.is(res.status, 400);
+    t.regex(res.body.message, /Nothing was saved/);
+    t.regex(res.body.message, /not a domain/);
+    t.regex(res.body.message, /42/);
+    const domain = await Domains.findOne({ name: 'testdomain-denylist.com' })
+      .lean()
+      .exec();
+    t.is(domain.denylist.length, 7);
   }
 
   // update denylist with new entries (replaces previous)

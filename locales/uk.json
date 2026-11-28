@@ -23553,5 +23553,7 @@
   "For sideloading with AltStore or Xcode": "For sideloading with AltStore or Xcode",
   "Added:": "Додано:",
   "Removed:": "Видалено:",
-  "and %d more": "і ще %d"
+  "and %d more": "і ще %d",
+  "A wildcard such as <code class='alert-link notranslate'>*.example.com</code> is saved as <code class='alert-link notranslate'>example.com</code>, which covers it and all of its subdomains.": "Шаблон на кшталт <code class='alert-link notranslate'>*.example.com</code> зберігається як <code class='alert-link notranslate'>example.com</code>, що охоплює цей домен і всі його піддомени.",
+  "Nothing was saved. These entries are not valid IP addresses, domain names, wildcards (e.g. <span class=\"notranslate\">*.example.com</span> or <span class=\"notranslate\">*.uk</span>), or email addresses: <span class=\"notranslate\">%s</span>": "Нічого не збережено. Ці записи не є дійсними IP-адресами, доменними іменами, шаблонами (наприклад, <span class=\"notranslate\">*.example.com</span> або <span class=\"notranslate\">*.uk</span>) чи адресами електронної пошти: <span class=\"notranslate\">%s</span>"
 }

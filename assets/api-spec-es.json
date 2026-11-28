@@ -9433,7 +9433,7 @@
     "/v1/domains/{domain_id}/allowlist": {
       "put": {
         "summary": "Actualizar la lista de dominios permitidos",
-        "description": "Reemplaza la lista de permitidos de un dominio. Esta lista restringe el correo entrante únicamente a los remitentes especificados. Cada entrada debe ser una dirección IP válida, un nombre de dominio completo (FQDN), una dirección de correo electrónico o un dominio de nivel superior comodín (por ejemplo, `*.com`). Se permite un máximo de 1000 entradas. Las reglas de sufijo público con comodín pueden contener varias etiquetas, por ejemplo `*.gov.co` y `*.gov.br`; coinciden con remitentes bajo ese sufijo exacto.",
+        "description": "Reemplaza la lista de permitidos de un dominio. Esta lista restringe el correo entrante únicamente a los remitentes especificados. Cada entrada debe ser una dirección IP válida, un nombre de dominio completo (FQDN), una dirección de correo electrónico o un dominio de nivel superior comodín (por ejemplo, `*.com`). Se permite un máximo de 1000 entradas. Las reglas de sufijo público con comodín pueden contener varias etiquetas, por ejemplo `*.gov.co` y `*.gov.br`; coinciden con remitentes bajo ese sufijo exacto. Un dominio comodín como `*.example.com` se guarda como `example.com`, que cubre ese dominio y sus subdominios. Si alguna entrada no es válida, no se guarda nada y el error 400 enumera las entradas no válidas.",
         "operationId": "updateDomainAllowlist",
         "tags": [
           "Dominios"
@@ -9466,7 +9466,7 @@
                     "items": {
                       "type": "string"
                     },
-                    "description": "Matriz de remitentes permitidos (direcciones IP, nombres de dominio completos, direcciones de correo electrónico o dominios de nivel superior comodín como `*.com`). Pase una matriz vacía para borrar la lista de permitidos. Las reglas de sufijo público con comodín pueden contener varias etiquetas, por ejemplo `*.gov.co` y `*.gov.br`; coinciden con remitentes bajo ese sufijo exacto."
+                    "description": "Matriz de remitentes permitidos (direcciones IP, nombres de dominio completos, direcciones de correo electrónico o dominios de nivel superior comodín como `*.com`). Pase una matriz vacía para borrar la lista de permitidos. Las reglas de sufijo público con comodín pueden contener varias etiquetas, por ejemplo `*.gov.co` y `*.gov.br`; coinciden con remitentes bajo ese sufijo exacto. Un dominio comodín como `*.example.com` se guarda como `example.com`, que cubre ese dominio y sus subdominios. Si alguna entrada no es válida, no se guarda nada y el error 400 enumera las entradas no válidas."
                   }
                 },
                 "required": [
@@ -9505,7 +9505,7 @@
     "/v1/domains/{domain_id}/denylist": {
       "put": {
         "summary": "Actualizar la lista de dominios bloqueados",
-        "description": "Sustituya la lista negra de un dominio. Los correos de remitentes bloqueados serán rechazados. Cada entrada debe ser una dirección IP válida, un nombre de dominio completo (FQDN), una dirección de correo electrónico o un dominio de nivel superior comodín (p. ej., `*.com`). Se permite un máximo de 1000 entradas. Las reglas de sufijo público con comodín pueden contener varias etiquetas, por ejemplo `*.gov.co` y `*.gov.br`; coinciden con remitentes bajo ese sufijo exacto.",
+        "description": "Sustituya la lista negra de un dominio. Los correos de remitentes bloqueados serán rechazados. Cada entrada debe ser una dirección IP válida, un nombre de dominio completo (FQDN), una dirección de correo electrónico o un dominio de nivel superior comodín (p. ej., `*.com`). Se permite un máximo de 1000 entradas. Las reglas de sufijo público con comodín pueden contener varias etiquetas, por ejemplo `*.gov.co` y `*.gov.br`; coinciden con remitentes bajo ese sufijo exacto. Un dominio comodín como `*.example.com` se guarda como `example.com`, que cubre ese dominio y sus subdominios. Si alguna entrada no es válida, no se guarda nada y el error 400 enumera las entradas no válidas.",
         "operationId": "updateDomainDenylist",
         "tags": [
           "Dominios"
@@ -9538,7 +9538,7 @@
                     "items": {
                       "type": "string"
                     },
-                    "description": "Matriz de remitentes bloqueados (direcciones IP, nombres de dominio completos, direcciones de correo electrónico o dominios de nivel superior comodín como `*.com`). Pase una matriz vacía para borrar la lista de bloqueo. Las reglas de sufijo público con comodín pueden contener varias etiquetas, por ejemplo `*.gov.co` y `*.gov.br`; coinciden con remitentes bajo ese sufijo exacto."
+                    "description": "Matriz de remitentes bloqueados (direcciones IP, nombres de dominio completos, direcciones de correo electrónico o dominios de nivel superior comodín como `*.com`). Pase una matriz vacía para borrar la lista de bloqueo. Las reglas de sufijo público con comodín pueden contener varias etiquetas, por ejemplo `*.gov.co` y `*.gov.br`; coinciden con remitentes bajo ese sufijo exacto. Un dominio comodín como `*.example.com` se guarda como `example.com`, que cubre ese dominio y sus subdominios. Si alguna entrada no es válida, no se guarda nada y el error 400 enumera las entradas no válidas."
                   }
                 },
                 "required": [

@@ -9433,7 +9433,7 @@
     "/v1/domains/{domain_id}/allowlist": {
       "put": {
         "summary": "Aktualisierung der Domain-Zulassungsliste",
-        "description": "Ersetzen Sie die Zulassungsliste für eine Domain. Die Zulassungsliste beschränkt eingehende E-Mails auf die angegebenen Absender. Jeder Eintrag muss eine gültige IP-Adresse, ein vollqualifizierter Domainname (FQDN), eine E-Mail-Adresse oder eine Wildcard-Top-Level-Domain (z. B. `*.com`) sein. Maximal 1000 Einträge sind zulässig. Wildcard-Public-Suffix-Regeln können mehrere Labels enthalten, zum Beispiel `*.gov.co` und `*.gov.br`; sie stimmen mit Absendern unter genau diesem Suffix überein.",
+        "description": "Ersetzen Sie die Zulassungsliste für eine Domain. Die Zulassungsliste beschränkt eingehende E-Mails auf die angegebenen Absender. Jeder Eintrag muss eine gültige IP-Adresse, ein vollqualifizierter Domainname (FQDN), eine E-Mail-Adresse oder eine Wildcard-Top-Level-Domain (z. B. `*.com`) sein. Maximal 1000 Einträge sind zulässig. Wildcard-Public-Suffix-Regeln können mehrere Labels enthalten, zum Beispiel `*.gov.co` und `*.gov.br`; sie stimmen mit Absendern unter genau diesem Suffix überein. Eine Platzhalter-Domain wie `*.example.com` wird als `example.com` gespeichert, was diese Domain und ihre Subdomains abdeckt. Ist ein Eintrag ungültig, wird nichts gespeichert und der Fehler 400 listet die ungültigen Einträge auf.",
         "operationId": "updateDomainAllowlist",
         "tags": [
           "Domänen"
@@ -9466,7 +9466,7 @@
                     "items": {
                       "type": "string"
                     },
-                    "description": "Array von zulässigen Absendern (IP-Adressen, FQDNs, E-Mail-Adressen oder Wildcard-TLDs wie `*.com`). Übergeben Sie ein leeres Array, um die Zulassungsliste zu leeren. Wildcard-Public-Suffix-Regeln können mehrere Labels enthalten, zum Beispiel `*.gov.co` und `*.gov.br`; sie stimmen mit Absendern unter genau diesem Suffix überein."
+                    "description": "Array von zulässigen Absendern (IP-Adressen, FQDNs, E-Mail-Adressen oder Wildcard-TLDs wie `*.com`). Übergeben Sie ein leeres Array, um die Zulassungsliste zu leeren. Wildcard-Public-Suffix-Regeln können mehrere Labels enthalten, zum Beispiel `*.gov.co` und `*.gov.br`; sie stimmen mit Absendern unter genau diesem Suffix überein. Eine Platzhalter-Domain wie `*.example.com` wird als `example.com` gespeichert, was diese Domain und ihre Subdomains abdeckt. Ist ein Eintrag ungültig, wird nichts gespeichert und der Fehler 400 listet die ungültigen Einträge auf."
                   }
                 },
                 "required": [
@@ -9505,7 +9505,7 @@
     "/v1/domains/{domain_id}/denylist": {
       "put": {
         "summary": "Aktualisierung der Domain-Sperrliste",
-        "description": "Ersetzen Sie die Sperrliste durch eine Domain. E-Mails von gesperrten Absendern werden abgewiesen. Jeder Eintrag muss eine gültige IP-Adresse, ein vollqualifizierter Domainname (FQDN), eine E-Mail-Adresse oder eine Wildcard-Top-Level-Domain (z. B. `*.com`) sein. Maximal 1000 Einträge sind zulässig. Wildcard-Public-Suffix-Regeln können mehrere Labels enthalten, zum Beispiel `*.gov.co` und `*.gov.br`; sie stimmen mit Absendern unter genau diesem Suffix überein.",
+        "description": "Ersetzen Sie die Sperrliste durch eine Domain. E-Mails von gesperrten Absendern werden abgewiesen. Jeder Eintrag muss eine gültige IP-Adresse, ein vollqualifizierter Domainname (FQDN), eine E-Mail-Adresse oder eine Wildcard-Top-Level-Domain (z. B. `*.com`) sein. Maximal 1000 Einträge sind zulässig. Wildcard-Public-Suffix-Regeln können mehrere Labels enthalten, zum Beispiel `*.gov.co` und `*.gov.br`; sie stimmen mit Absendern unter genau diesem Suffix überein. Eine Platzhalter-Domain wie `*.example.com` wird als `example.com` gespeichert, was diese Domain und ihre Subdomains abdeckt. Ist ein Eintrag ungültig, wird nichts gespeichert und der Fehler 400 listet die ungültigen Einträge auf.",
         "operationId": "updateDomainDenylist",
         "tags": [
           "Domänen"
@@ -9538,7 +9538,7 @@
                     "items": {
                       "type": "string"
                     },
-                    "description": "Array von gesperrten Absendern (IP-Adressen, FQDNs, E-Mail-Adressen oder Wildcard-TLDs wie `*.com`). Übergeben Sie ein leeres Array, um die Sperrliste zu leeren. Wildcard-Public-Suffix-Regeln können mehrere Labels enthalten, zum Beispiel `*.gov.co` und `*.gov.br`; sie stimmen mit Absendern unter genau diesem Suffix überein."
+                    "description": "Array von gesperrten Absendern (IP-Adressen, FQDNs, E-Mail-Adressen oder Wildcard-TLDs wie `*.com`). Übergeben Sie ein leeres Array, um die Sperrliste zu leeren. Wildcard-Public-Suffix-Regeln können mehrere Labels enthalten, zum Beispiel `*.gov.co` und `*.gov.br`; sie stimmen mit Absendern unter genau diesem Suffix überein. Eine Platzhalter-Domain wie `*.example.com` wird als `example.com` gespeichert, was diese Domain und ihre Subdomains abdeckt. Ist ein Eintrag ungültig, wird nichts gespeichert und der Fehler 400 listet die ungültigen Einträge auf."
                   }
                 },
                 "required": [

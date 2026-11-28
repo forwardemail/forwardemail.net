@@ -23553,5 +23553,7 @@
   "For sideloading with AltStore or Xcode": "For sideloading with AltStore or Xcode",
   "Added:": "أُضيف:",
   "Removed:": "أُزيل:",
-  "and %d more": "و%d أخرى"
+  "and %d more": "و%d أخرى",
+  "A wildcard such as <code class='alert-link notranslate'>*.example.com</code> is saved as <code class='alert-link notranslate'>example.com</code>, which covers it and all of its subdomains.": "يتم حفظ حرف البدل مثل <code class='alert-link notranslate'>*.example.com</code> باسم <code class='alert-link notranslate'>example.com</code>، والذي يشمل هذا النطاق وجميع نطاقاته الفرعية.",
+  "Nothing was saved. These entries are not valid IP addresses, domain names, wildcards (e.g. <span class=\"notranslate\">*.example.com</span> or <span class=\"notranslate\">*.uk</span>), or email addresses: <span class=\"notranslate\">%s</span>": "لم يتم حفظ أي شيء. هذه الإدخالات ليست عناوين IP أو أسماء نطاقات أو أحرف بدل (مثل <span class=\"notranslate\">*.example.com</span> أو <span class=\"notranslate\">*.uk</span>) أو عناوين بريد إلكتروني صالحة: <span class=\"notranslate\">%s</span>"
 }

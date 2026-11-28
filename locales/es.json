@@ -23553,5 +23553,7 @@
   "For sideloading with AltStore or Xcode": "For sideloading with AltStore or Xcode",
   "Added:": "Añadido:",
   "Removed:": "Eliminado:",
-  "and %d more": "y %d más"
+  "and %d more": "y %d más",
+  "A wildcard such as <code class='alert-link notranslate'>*.example.com</code> is saved as <code class='alert-link notranslate'>example.com</code>, which covers it and all of its subdomains.": "Un comodín como <code class='alert-link notranslate'>*.example.com</code> se guarda como <code class='alert-link notranslate'>example.com</code>, que cubre ese dominio y todos sus subdominios.",
+  "Nothing was saved. These entries are not valid IP addresses, domain names, wildcards (e.g. <span class=\"notranslate\">*.example.com</span> or <span class=\"notranslate\">*.uk</span>), or email addresses: <span class=\"notranslate\">%s</span>": "No se guardó nada. Estas entradas no son direcciones IP, nombres de dominio, comodines (p. ej., <span class=\"notranslate\">*.example.com</span> o <span class=\"notranslate\">*.uk</span>) ni direcciones de correo electrónico válidos: <span class=\"notranslate\">%s</span>"
 }

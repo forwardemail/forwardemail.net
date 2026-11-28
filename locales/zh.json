@@ -23553,5 +23553,7 @@
   "For sideloading with AltStore or Xcode": "For sideloading with AltStore or Xcode",
   "Added:": "已添加：",
   "Removed:": "已删除：",
-  "and %d more": "以及另外 %d 项"
+  "and %d more": "以及另外 %d 项",
+  "A wildcard such as <code class='alert-link notranslate'>*.example.com</code> is saved as <code class='alert-link notranslate'>example.com</code>, which covers it and all of its subdomains.": "像 <code class='alert-link notranslate'>*.example.com</code> 这样的通配符会保存为 <code class='alert-link notranslate'>example.com</code>，涵盖该域名及其所有子域名。",
+  "Nothing was saved. These entries are not valid IP addresses, domain names, wildcards (e.g. <span class=\"notranslate\">*.example.com</span> or <span class=\"notranslate\">*.uk</span>), or email addresses: <span class=\"notranslate\">%s</span>": "未保存任何内容。以下条目不是有效的 IP 地址、域名、通配符（例如 <span class=\"notranslate\">*.example.com</span> 或 <span class=\"notranslate\">*.uk</span>）或电子邮件地址：<span class=\"notranslate\">%s</span>"
 }

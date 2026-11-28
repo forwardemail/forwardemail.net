@@ -23553,5 +23553,7 @@
   "For sideloading with AltStore or Xcode": "For sideloading with AltStore or Xcode",
   "Added:": "Adicionado:",
   "Removed:": "Removido:",
-  "and %d more": "e mais %d"
+  "and %d more": "e mais %d",
+  "A wildcard such as <code class='alert-link notranslate'>*.example.com</code> is saved as <code class='alert-link notranslate'>example.com</code>, which covers it and all of its subdomains.": "Um curinga como <code class='alert-link notranslate'>*.example.com</code> é salvo como <code class='alert-link notranslate'>example.com</code>, o que abrange esse domínio e todos os seus subdomínios.",
+  "Nothing was saved. These entries are not valid IP addresses, domain names, wildcards (e.g. <span class=\"notranslate\">*.example.com</span> or <span class=\"notranslate\">*.uk</span>), or email addresses: <span class=\"notranslate\">%s</span>": "Nada foi salvo. Estas entradas não são endereços IP, nomes de domínio, curingas (por exemplo, <span class=\"notranslate\">*.example.com</span> ou <span class=\"notranslate\">*.uk</span>) ou endereços de e-mail válidos: <span class=\"notranslate\">%s</span>"
 }

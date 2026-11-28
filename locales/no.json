@@ -23553,5 +23553,7 @@
   "For sideloading with AltStore or Xcode": "For sideloading with AltStore or Xcode",
   "Added:": "Lagt til:",
   "Removed:": "Fjernet:",
-  "and %d more": "og %d til"
+  "and %d more": "og %d til",
+  "A wildcard such as <code class='alert-link notranslate'>*.example.com</code> is saved as <code class='alert-link notranslate'>example.com</code>, which covers it and all of its subdomains.": "Et jokertegn som <code class='alert-link notranslate'>*.example.com</code> lagres som <code class='alert-link notranslate'>example.com</code>, som dekker domenet og alle underdomenene.",
+  "Nothing was saved. These entries are not valid IP addresses, domain names, wildcards (e.g. <span class=\"notranslate\">*.example.com</span> or <span class=\"notranslate\">*.uk</span>), or email addresses: <span class=\"notranslate\">%s</span>": "Ingenting ble lagret. Disse oppføringene er ikke gyldige IP-adresser, domenenavn, jokertegn (f.eks. <span class=\"notranslate\">*.example.com</span> eller <span class=\"notranslate\">*.uk</span>) eller e-postadresser: <span class=\"notranslate\">%s</span>"
 }

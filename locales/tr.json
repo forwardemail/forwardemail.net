@@ -23553,5 +23553,7 @@
   "For sideloading with AltStore or Xcode": "For sideloading with AltStore or Xcode",
   "Added:": "Eklendi:",
   "Removed:": "Kaldırıldı:",
-  "and %d more": "ve %d tane daha"
+  "and %d more": "ve %d tane daha",
+  "A wildcard such as <code class='alert-link notranslate'>*.example.com</code> is saved as <code class='alert-link notranslate'>example.com</code>, which covers it and all of its subdomains.": "<code class='alert-link notranslate'>*.example.com</code> gibi bir joker karakter <code class='alert-link notranslate'>example.com</code> olarak kaydedilir; bu, o alan adını ve tüm alt alan adlarını kapsar.",
+  "Nothing was saved. These entries are not valid IP addresses, domain names, wildcards (e.g. <span class=\"notranslate\">*.example.com</span> or <span class=\"notranslate\">*.uk</span>), or email addresses: <span class=\"notranslate\">%s</span>": "Hiçbir şey kaydedilmedi. Bu girdiler geçerli IP adresleri, alan adları, joker karakterler (ör. <span class=\"notranslate\">*.example.com</span> veya <span class=\"notranslate\">*.uk</span>) veya e-posta adresleri değil: <span class=\"notranslate\">%s</span>"
 }

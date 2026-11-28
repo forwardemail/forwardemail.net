@@ -23553,5 +23553,7 @@
   "For sideloading with AltStore or Xcode": "For sideloading with AltStore or Xcode",
   "Added:": "Ditambahkan:",
   "Removed:": "Dihapus:",
-  "and %d more": "dan %d lainnya"
+  "and %d more": "dan %d lainnya",
+  "A wildcard such as <code class='alert-link notranslate'>*.example.com</code> is saved as <code class='alert-link notranslate'>example.com</code>, which covers it and all of its subdomains.": "Wildcard seperti <code class='alert-link notranslate'>*.example.com</code> disimpan sebagai <code class='alert-link notranslate'>example.com</code>, yang mencakup domain tersebut dan semua subdomainnya.",
+  "Nothing was saved. These entries are not valid IP addresses, domain names, wildcards (e.g. <span class=\"notranslate\">*.example.com</span> or <span class=\"notranslate\">*.uk</span>), or email addresses: <span class=\"notranslate\">%s</span>": "Tidak ada yang disimpan. Entri berikut bukan alamat IP, nama domain, wildcard (mis. <span class=\"notranslate\">*.example.com</span> atau <span class=\"notranslate\">*.uk</span>), atau alamat email yang valid: <span class=\"notranslate\">%s</span>"
 }

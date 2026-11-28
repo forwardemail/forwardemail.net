@@ -23553,5 +23553,7 @@
   "For sideloading with AltStore or Xcode": "For sideloading with AltStore or Xcode",
   "Added:": "เพิ่ม:",
   "Removed:": "นำออก:",
-  "and %d more": "และอีก %d รายการ"
+  "and %d more": "และอีก %d รายการ",
+  "A wildcard such as <code class='alert-link notranslate'>*.example.com</code> is saved as <code class='alert-link notranslate'>example.com</code>, which covers it and all of its subdomains.": "ไวลด์การ์ดอย่าง <code class='alert-link notranslate'>*.example.com</code> จะถูกบันทึกเป็น <code class='alert-link notranslate'>example.com</code> ซึ่งครอบคลุมโดเมนนั้นและโดเมนย่อยทั้งหมด",
+  "Nothing was saved. These entries are not valid IP addresses, domain names, wildcards (e.g. <span class=\"notranslate\">*.example.com</span> or <span class=\"notranslate\">*.uk</span>), or email addresses: <span class=\"notranslate\">%s</span>": "ไม่มีการบันทึกใดๆ รายการเหล่านี้ไม่ใช่ที่อยู่ IP ชื่อโดเมน ไวลด์การ์ด (เช่น <span class=\"notranslate\">*.example.com</span> หรือ <span class=\"notranslate\">*.uk</span>) หรือที่อยู่อีเมลที่ถูกต้อง: <span class=\"notranslate\">%s</span>"
 }

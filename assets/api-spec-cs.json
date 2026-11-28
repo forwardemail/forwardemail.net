@@ -9433,7 +9433,7 @@
     "/v1/domains/{domain_id}/allowlist": {
       "put": {
         "summary": "Aktualizovat seznam povolených domén",
-        "description": "Nahraďte seznam povolených adres pro doménu. Seznam povolených adres omezuje příchozí poštu pouze na zadané odesílatele. Každá položka musí být platná IP adresa, plně kvalifikovaný název domény (FQDN), e-mailová adresa nebo zástupná doména nejvyšší úrovně (např. `*.com`). Povoleno je maximálně 1000 položek. Pravidla public-suffix s wildcardem mohou obsahovat více štítků, například `*.gov.co` a `*.gov.br`; odpovídají odesílatelům pod tímto přesným sufixem.",
+        "description": "Nahraďte seznam povolených adres pro doménu. Seznam povolených adres omezuje příchozí poštu pouze na zadané odesílatele. Každá položka musí být platná IP adresa, plně kvalifikovaný název domény (FQDN), e-mailová adresa nebo zástupná doména nejvyšší úrovně (např. `*.com`). Povoleno je maximálně 1000 položek. Pravidla public-suffix s wildcardem mohou obsahovat více štítků, například `*.gov.co` a `*.gov.br`; odpovídají odesílatelům pod tímto přesným sufixem. Zástupná doména jako `*.example.com` se uloží jako `example.com`, což pokrývá tuto doménu i její subdomény. Pokud některá položka není platná, nic se neuloží a chyba 400 vypíše neplatné položky.",
         "operationId": "updateDomainAllowlist",
         "tags": [
           "Domény"
@@ -9466,7 +9466,7 @@
                     "items": {
                       "type": "string"
                     },
-                    "description": "Pole odesílatelů na seznamu povolených (IP adresy, FQDN, e-mailové adresy nebo zástupné znaky TLD, například `*.com`). Předáním prázdného pole vymažete seznam povolených. Pravidla public-suffix s wildcardem mohou obsahovat více štítků, například `*.gov.co` a `*.gov.br`; odpovídají odesílatelům pod tímto přesným sufixem."
+                    "description": "Pole odesílatelů na seznamu povolených (IP adresy, FQDN, e-mailové adresy nebo zástupné znaky TLD, například `*.com`). Předáním prázdného pole vymažete seznam povolených. Pravidla public-suffix s wildcardem mohou obsahovat více štítků, například `*.gov.co` a `*.gov.br`; odpovídají odesílatelům pod tímto přesným sufixem. Zástupná doména jako `*.example.com` se uloží jako `example.com`, což pokrývá tuto doménu i její subdomény. Pokud některá položka není platná, nic se neuloží a chyba 400 vypíše neplatné položky."
                   }
                 },
                 "required": [
@@ -9505,7 +9505,7 @@
     "/v1/domains/{domain_id}/denylist": {
       "put": {
         "summary": "Aktualizovat seznam zakázaných domén",
-        "description": "Nahraďte seznam zakázaných adres pro doménu. Pošta od odesílatelů na seznamu zakázaných adres bude odmítnuta. Každý záznam musí být platná IP adresa, plně kvalifikovaný název domény (FQDN), e-mailová adresa nebo zástupný znak domény nejvyšší úrovně (např. `*.com`). Povolen je maximálně 1000 záznamů. Pravidla public-suffix s wildcardem mohou obsahovat více štítků, například `*.gov.co` a `*.gov.br`; odpovídají odesílatelům pod tímto přesným sufixem.",
+        "description": "Nahraďte seznam zakázaných adres pro doménu. Pošta od odesílatelů na seznamu zakázaných adres bude odmítnuta. Každý záznam musí být platná IP adresa, plně kvalifikovaný název domény (FQDN), e-mailová adresa nebo zástupný znak domény nejvyšší úrovně (např. `*.com`). Povolen je maximálně 1000 záznamů. Pravidla public-suffix s wildcardem mohou obsahovat více štítků, například `*.gov.co` a `*.gov.br`; odpovídají odesílatelům pod tímto přesným sufixem. Zástupná doména jako `*.example.com` se uloží jako `example.com`, což pokrývá tuto doménu i její subdomény. Pokud některá položka není platná, nic se neuloží a chyba 400 vypíše neplatné položky.",
         "operationId": "updateDomainDenylist",
         "tags": [
           "Domény"
@@ -9538,7 +9538,7 @@
                     "items": {
                       "type": "string"
                     },
-                    "description": "Pole odesílatelů na seznamu zakázaných adres (IP adresy, FQDN, e-mailové adresy nebo zástupné TLD, například `*.com`). Předejte prázdné pole pro vymazání seznamu zakázaných adres. Pravidla public-suffix s wildcardem mohou obsahovat více štítků, například `*.gov.co` a `*.gov.br`; odpovídají odesílatelům pod tímto přesným sufixem."
+                    "description": "Pole odesílatelů na seznamu zakázaných adres (IP adresy, FQDN, e-mailové adresy nebo zástupné TLD, například `*.com`). Předejte prázdné pole pro vymazání seznamu zakázaných adres. Pravidla public-suffix s wildcardem mohou obsahovat více štítků, například `*.gov.co` a `*.gov.br`; odpovídají odesílatelům pod tímto přesným sufixem. Zástupná doména jako `*.example.com` se uloží jako `example.com`, což pokrývá tuto doménu i její subdomény. Pokud některá položka není platná, nic se neuloží a chyba 400 vypíše neplatné položky."
                   }
                 },
                 "required": [

@@ -965,6 +965,8 @@ module.exports = {
   PAYMENT_REFUNDED: 'Payment has been successfully refunded.',
   RECEIPT: 'Receipt',
   MAKE_PAYMENT: 'Make Payment',
+  INVALID_ALLOWLIST_DENYLIST_ENTRIES:
+    'Nothing was saved. These entries are not valid IP addresses, domain names, wildcards (e.g. <span class="notranslate">*.example.com</span> or <span class="notranslate">*.uk</span>), or email addresses: <span class="notranslate">%s</span>',
   ALLOWLIST_DENYLIST_EXCEEDS_LIMIT:
     "The domain's custom allowlist or denylist exceeds the limit of <span class='notranslate'>%d</span> entries.",
   ALLOWLIST_DOMAIN_NOT_ALLOWED:

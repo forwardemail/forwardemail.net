@@ -23553,5 +23553,7 @@
   "For sideloading with AltStore or Xcode": "For sideloading with AltStore or Xcode",
   "Added:": "Tilføjet:",
   "Removed:": "Fjernet:",
-  "and %d more": "og %d mere"
+  "and %d more": "og %d mere",
+  "A wildcard such as <code class='alert-link notranslate'>*.example.com</code> is saved as <code class='alert-link notranslate'>example.com</code>, which covers it and all of its subdomains.": "Et jokertegn som <code class='alert-link notranslate'>*.example.com</code> gemmes som <code class='alert-link notranslate'>example.com</code>, hvilket dækker domænet og alle dets underdomæner.",
+  "Nothing was saved. These entries are not valid IP addresses, domain names, wildcards (e.g. <span class=\"notranslate\">*.example.com</span> or <span class=\"notranslate\">*.uk</span>), or email addresses: <span class=\"notranslate\">%s</span>": "Intet blev gemt. Disse poster er ikke gyldige IP-adresser, domænenavne, jokertegn (f.eks. <span class=\"notranslate\">*.example.com</span> eller <span class=\"notranslate\">*.uk</span>) eller e-mailadresser: <span class=\"notranslate\">%s</span>"
 }

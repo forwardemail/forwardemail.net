@@ -9433,7 +9433,7 @@
     "/v1/domains/{domain_id}/allowlist": {
       "put": {
         "summary": "Zaktualizuj listę dozwolonych domen",
-        "description": "Zastąp listę dozwolonych dla domeny. Lista dozwolonych ogranicza pocztę przychodzącą tylko do określonych nadawców. Każdy wpis musi zawierać prawidłowy adres IP, w pełni kwalifikowaną nazwę domeny (FQDN), adres e-mail lub wieloznaczną domenę najwyższego poziomu (np. `*.com`). Dozwolone jest maksymalnie 1000 wpisów. Reguły public-suffix z wildcard mogą zawierać wiele etykiet, na przykład `*.gov.co` i `*.gov.br`; dopasowują nadawców w obrębie dokładnie tego sufiksu.",
+        "description": "Zastąp listę dozwolonych dla domeny. Lista dozwolonych ogranicza pocztę przychodzącą tylko do określonych nadawców. Każdy wpis musi zawierać prawidłowy adres IP, w pełni kwalifikowaną nazwę domeny (FQDN), adres e-mail lub wieloznaczną domenę najwyższego poziomu (np. `*.com`). Dozwolone jest maksymalnie 1000 wpisów. Reguły public-suffix z wildcard mogą zawierać wiele etykiet, na przykład `*.gov.co` i `*.gov.br`; dopasowują nadawców w obrębie dokładnie tego sufiksu. Domena wieloznaczna, taka jak `*.example.com`, jest zapisywana jako `example.com`, co obejmuje tę domenę i jej subdomeny. Jeśli którykolwiek wpis jest nieprawidłowy, nic nie zostanie zapisane, a błąd 400 wymieni nieprawidłowe wpisy.",
         "operationId": "updateDomainAllowlist",
         "tags": [
           "Domeny"
@@ -9466,7 +9466,7 @@
                     "items": {
                       "type": "string"
                     },
-                    "description": "Tablica nadawców z listy dozwolonych (adresy IP, nazwy w pełni kwalifikowane (FQDN), adresy e-mail lub wieloznaczne domeny najwyższego poziomu (TLD), takie jak `*.com`). Przekaż pustą tablicę, aby wyczyścić listę dozwolonych. Reguły public-suffix z wildcard mogą zawierać wiele etykiet, na przykład `*.gov.co` i `*.gov.br`; dopasowują nadawców w obrębie dokładnie tego sufiksu."
+                    "description": "Tablica nadawców z listy dozwolonych (adresy IP, nazwy w pełni kwalifikowane (FQDN), adresy e-mail lub wieloznaczne domeny najwyższego poziomu (TLD), takie jak `*.com`). Przekaż pustą tablicę, aby wyczyścić listę dozwolonych. Reguły public-suffix z wildcard mogą zawierać wiele etykiet, na przykład `*.gov.co` i `*.gov.br`; dopasowują nadawców w obrębie dokładnie tego sufiksu. Domena wieloznaczna, taka jak `*.example.com`, jest zapisywana jako `example.com`, co obejmuje tę domenę i jej subdomeny. Jeśli którykolwiek wpis jest nieprawidłowy, nic nie zostanie zapisane, a błąd 400 wymieni nieprawidłowe wpisy."
                   }
                 },
                 "required": [
@@ -9505,7 +9505,7 @@
     "/v1/domains/{domain_id}/denylist": {
       "put": {
         "summary": "Zaktualizuj listę zablokowanych domen",
-        "description": "Zmień listę zablokowanych dla domeny. Wiadomości od nadawców z listy zablokowanych będą odrzucane. Każdy wpis musi zawierać prawidłowy adres IP, w pełni kwalifikowaną nazwę domeny (FQDN), adres e-mail lub wieloznaczną domenę najwyższego poziomu (np. `*.com`). Dozwolone jest maksymalnie 1000 wpisów. Reguły public-suffix z wildcard mogą zawierać wiele etykiet, na przykład `*.gov.co` i `*.gov.br`; dopasowują nadawców w obrębie dokładnie tego sufiksu.",
+        "description": "Zmień listę zablokowanych dla domeny. Wiadomości od nadawców z listy zablokowanych będą odrzucane. Każdy wpis musi zawierać prawidłowy adres IP, w pełni kwalifikowaną nazwę domeny (FQDN), adres e-mail lub wieloznaczną domenę najwyższego poziomu (np. `*.com`). Dozwolone jest maksymalnie 1000 wpisów. Reguły public-suffix z wildcard mogą zawierać wiele etykiet, na przykład `*.gov.co` i `*.gov.br`; dopasowują nadawców w obrębie dokładnie tego sufiksu. Domena wieloznaczna, taka jak `*.example.com`, jest zapisywana jako `example.com`, co obejmuje tę domenę i jej subdomeny. Jeśli którykolwiek wpis jest nieprawidłowy, nic nie zostanie zapisane, a błąd 400 wymieni nieprawidłowe wpisy.",
         "operationId": "updateDomainDenylist",
         "tags": [
           "Domeny"
@@ -9538,7 +9538,7 @@
                     "items": {
                       "type": "string"
                     },
-                    "description": "Tablica zablokowanych nadawców (adresy IP, nazwy w pełni kwalifikowane (FQDN), adresy e-mail lub wieloznaczne domeny najwyższego poziomu (TLD), takie jak `*.com`). Przekaż pustą tablicę, aby wyczyścić listę zablokowanych. Reguły public-suffix z wildcard mogą zawierać wiele etykiet, na przykład `*.gov.co` i `*.gov.br`; dopasowują nadawców w obrębie dokładnie tego sufiksu."
+                    "description": "Tablica zablokowanych nadawców (adresy IP, nazwy w pełni kwalifikowane (FQDN), adresy e-mail lub wieloznaczne domeny najwyższego poziomu (TLD), takie jak `*.com`). Przekaż pustą tablicę, aby wyczyścić listę zablokowanych. Reguły public-suffix z wildcard mogą zawierać wiele etykiet, na przykład `*.gov.co` i `*.gov.br`; dopasowują nadawców w obrębie dokładnie tego sufiksu. Domena wieloznaczna, taka jak `*.example.com`, jest zapisywana jako `example.com`, co obejmuje tę domenę i jej subdomeny. Jeśli którykolwiek wpis jest nieprawidłowy, nic nie zostanie zapisane, a błąd 400 wymieni nieprawidłowe wpisy."
                   }
                 },
                 "required": [

@@ -22,28 +22,33 @@ async function updateAllowlistAndDenylist(ctx, next) {
 
   // Support both string input (web textarea: comma/space/newline delimited)
   // and array input (API: JSON array of strings)
+  let entries = [];
   if (Array.isArray(ctx.request.body[kind])) {
-    ctx.state.domain[kind] = _.compact(
-      _.uniq(
-        _.map(ctx.request.body[kind], (v) =>
-          typeof v === 'string' ? v.toLowerCase().trim() : ''
-        )
-      )
+    entries = ctx.request.body[kind].filter(
+      (v) => typeof v !== 'string' || isSANB(v)
     );
   } else if (isSANB(ctx.request.body[kind])) {
-    ctx.state.domain[kind] = _.compact(
-      _.uniq(
-        _.map(
-          splitByComma(splitLines(ctx.request.body[kind]).join(' '))
-            .join(' ')
-            .split(' '),
-          (v) => v.toLowerCase()
-        )
+    entries = _.compact(
+      splitByComma(splitLines(ctx.request.body[kind]).join(' '))
+        .join(' ')
+        .split(' ')
+    );
+  }
+
+  // an entry that is not valid is refused, not left out without a word
+  // (it was not saved, and did not show in the list once saved)
+  const invalid = entries.filter((v) => !Domains.normalizeListEntry(v));
+  if (invalid.length > 0)
+    throw Boom.badRequest(
+      ctx.translateError(
+        'INVALID_ALLOWLIST_DENYLIST_ENTRIES',
+        _.uniq(invalid.map((v) => _.escape(String(v)))).join(', ')
       )
     );
-  } else {
-    ctx.state.domain[kind] = [];
-  }
+
+  ctx.state.domain[kind] = _.uniq(
+    entries.map((v) => Domains.normalizeListEntry(v))
+  );
 
   ctx.state.domain.locale = ctx.locale;
   ctx.state.domain.skip_verification = true;

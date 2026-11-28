@@ -23553,5 +23553,7 @@
   "For sideloading with AltStore or Xcode": "For sideloading with AltStore or Xcode",
   "Added:": "추가됨:",
   "Removed:": "제거됨:",
-  "and %d more": "외 %d개"
+  "and %d more": "외 %d개",
+  "A wildcard such as <code class='alert-link notranslate'>*.example.com</code> is saved as <code class='alert-link notranslate'>example.com</code>, which covers it and all of its subdomains.": "<code class='alert-link notranslate'>*.example.com</code> 같은 와일드카드는 <code class='alert-link notranslate'>example.com</code>(으)로 저장되며, 해당 도메인과 모든 하위 도메인에 적용됩니다.",
+  "Nothing was saved. These entries are not valid IP addresses, domain names, wildcards (e.g. <span class=\"notranslate\">*.example.com</span> or <span class=\"notranslate\">*.uk</span>), or email addresses: <span class=\"notranslate\">%s</span>": "아무것도 저장되지 않았습니다. 다음 항목은 유효한 IP 주소, 도메인 이름, 와일드카드(예: <span class=\"notranslate\">*.example.com</span> 또는 <span class=\"notranslate\">*.uk</span>) 또는 이메일 주소가 아닙니다: <span class=\"notranslate\">%s</span>"
 }

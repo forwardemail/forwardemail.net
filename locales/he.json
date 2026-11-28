@@ -23553,5 +23553,7 @@
   "For sideloading with AltStore or Xcode": "For sideloading with AltStore or Xcode",
   "Added:": "נוסף:",
   "Removed:": "הוסר:",
-  "and %d more": "ועוד %d"
+  "and %d more": "ועוד %d",
+  "A wildcard such as <code class='alert-link notranslate'>*.example.com</code> is saved as <code class='alert-link notranslate'>example.com</code>, which covers it and all of its subdomains.": "תו כללי כמו <code class='alert-link notranslate'>*.example.com</code> נשמר כ-<code class='alert-link notranslate'>example.com</code>, מה שמכסה את הדומיין ואת כל תתי-הדומיינים שלו.",
+  "Nothing was saved. These entries are not valid IP addresses, domain names, wildcards (e.g. <span class=\"notranslate\">*.example.com</span> or <span class=\"notranslate\">*.uk</span>), or email addresses: <span class=\"notranslate\">%s</span>": "שום דבר לא נשמר. הרשומות הבאות אינן כתובות IP, שמות דומיין, תווים כלליים (לדוגמה <span class=\"notranslate\">*.example.com</span> או <span class=\"notranslate\">*.uk</span>) או כתובות דוא״ל תקינים: <span class=\"notranslate\">%s</span>"
 }

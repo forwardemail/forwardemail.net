@@ -23553,5 +23553,7 @@
   "For sideloading with AltStore or Xcode": "For sideloading with AltStore or Xcode",
   "Added:": "Toegevoegd:",
   "Removed:": "Verwijderd:",
-  "and %d more": "en nog %d"
+  "and %d more": "en nog %d",
+  "A wildcard such as <code class='alert-link notranslate'>*.example.com</code> is saved as <code class='alert-link notranslate'>example.com</code>, which covers it and all of its subdomains.": "Een wildcard zoals <code class='alert-link notranslate'>*.example.com</code> wordt opgeslagen als <code class='alert-link notranslate'>example.com</code>, wat dat domein en al zijn subdomeinen omvat.",
+  "Nothing was saved. These entries are not valid IP addresses, domain names, wildcards (e.g. <span class=\"notranslate\">*.example.com</span> or <span class=\"notranslate\">*.uk</span>), or email addresses: <span class=\"notranslate\">%s</span>": "Er is niets opgeslagen. Deze items zijn geen geldige IP-adressen, domeinnamen, wildcards (bijv. <span class=\"notranslate\">*.example.com</span> of <span class=\"notranslate\">*.uk</span>) of e-mailadressen: <span class=\"notranslate\">%s</span>"
 }

@@ -9433,7 +9433,7 @@
     "/v1/domains/{domain_id}/allowlist": {
       "put": {
         "summary": "Mettre à jour la liste blanche des domaines",
-        "description": "Modifiez la liste blanche d'un domaine. Cette liste blanche restreint la réception des courriels aux seuls expéditeurs spécifiés. Chaque entrée doit correspondre à une adresse IP valide, un nom de domaine pleinement qualifié (FQDN), une adresse courriel ou un domaine de premier niveau générique (par exemple, `*.com`). Le nombre d'entrées autorisé est de 1 000. Les règles de public-suffix avec caractère générique peuvent contenir plusieurs étiquettes, par exemple `*.gov.co` et `*.gov.br` ; elles correspondent aux expéditeurs sous ce suffixe exact.",
+        "description": "Modifiez la liste blanche d'un domaine. Cette liste blanche restreint la réception des courriels aux seuls expéditeurs spécifiés. Chaque entrée doit correspondre à une adresse IP valide, un nom de domaine pleinement qualifié (FQDN), une adresse courriel ou un domaine de premier niveau générique (par exemple, `*.com`). Le nombre d'entrées autorisé est de 1 000. Les règles de public-suffix avec caractère générique peuvent contenir plusieurs étiquettes, par exemple `*.gov.co` et `*.gov.br` ; elles correspondent aux expéditeurs sous ce suffixe exact. Un domaine générique comme `*.example.com` est enregistré sous la forme `example.com`, ce qui couvre ce domaine et ses sous-domaines. Si une entrée n'est pas valide, rien n'est enregistré et l'erreur 400 liste les entrées non valides.",
         "operationId": "updateDomainAllowlist",
         "tags": [
           "Domaines"
@@ -9466,7 +9466,7 @@
                     "items": {
                       "type": "string"
                     },
-                    "description": "Tableau des expéditeurs autorisés (adresses IP, noms de domaine pleinement qualifiés, adresses e-mail ou extensions génériques telles que `*.com`). Indiquez un tableau vide pour effacer la liste blanche. Les règles de public-suffix avec caractère générique peuvent contenir plusieurs étiquettes, par exemple `*.gov.co` et `*.gov.br` ; elles correspondent aux expéditeurs sous ce suffixe exact."
+                    "description": "Tableau des expéditeurs autorisés (adresses IP, noms de domaine pleinement qualifiés, adresses e-mail ou extensions génériques telles que `*.com`). Indiquez un tableau vide pour effacer la liste blanche. Les règles de public-suffix avec caractère générique peuvent contenir plusieurs étiquettes, par exemple `*.gov.co` et `*.gov.br` ; elles correspondent aux expéditeurs sous ce suffixe exact. Un domaine générique comme `*.example.com` est enregistré sous la forme `example.com`, ce qui couvre ce domaine et ses sous-domaines. Si une entrée n'est pas valide, rien n'est enregistré et l'erreur 400 liste les entrées non valides."
                   }
                 },
                 "required": [
@@ -9505,7 +9505,7 @@
     "/v1/domains/{domain_id}/denylist": {
       "put": {
         "summary": "Mise à jour de la liste noire des domaines",
-        "description": "Modifiez la liste noire d'un domaine. Les courriels provenant d'expéditeurs figurant sur cette liste seront rejetés. Chaque entrée doit correspondre à une adresse IP valide, un nom de domaine pleinement qualifié (FQDN), une adresse courriel ou un domaine de premier niveau générique (par exemple, `*.com`). Le nombre d'entrées autorisé est de 1 000. Les règles de public-suffix avec caractère générique peuvent contenir plusieurs étiquettes, par exemple `*.gov.co` et `*.gov.br` ; elles correspondent aux expéditeurs sous ce suffixe exact.",
+        "description": "Modifiez la liste noire d'un domaine. Les courriels provenant d'expéditeurs figurant sur cette liste seront rejetés. Chaque entrée doit correspondre à une adresse IP valide, un nom de domaine pleinement qualifié (FQDN), une adresse courriel ou un domaine de premier niveau générique (par exemple, `*.com`). Le nombre d'entrées autorisé est de 1 000. Les règles de public-suffix avec caractère générique peuvent contenir plusieurs étiquettes, par exemple `*.gov.co` et `*.gov.br` ; elles correspondent aux expéditeurs sous ce suffixe exact. Un domaine générique comme `*.example.com` est enregistré sous la forme `example.com`, ce qui couvre ce domaine et ses sous-domaines. Si une entrée n'est pas valide, rien n'est enregistré et l'erreur 400 liste les entrées non valides.",
         "operationId": "updateDomainDenylist",
         "tags": [
           "Domaines"
@@ -9538,7 +9538,7 @@
                     "items": {
                       "type": "string"
                     },
-                    "description": "Tableau des expéditeurs bloqués (adresses IP, noms de domaine pleinement qualifiés, adresses e-mail ou extensions génériques telles que `*.com`). Indiquez un tableau vide pour effacer la liste noire. Les règles de public-suffix avec caractère générique peuvent contenir plusieurs étiquettes, par exemple `*.gov.co` et `*.gov.br` ; elles correspondent aux expéditeurs sous ce suffixe exact."
+                    "description": "Tableau des expéditeurs bloqués (adresses IP, noms de domaine pleinement qualifiés, adresses e-mail ou extensions génériques telles que `*.com`). Indiquez un tableau vide pour effacer la liste noire. Les règles de public-suffix avec caractère générique peuvent contenir plusieurs étiquettes, par exemple `*.gov.co` et `*.gov.br` ; elles correspondent aux expéditeurs sous ce suffixe exact. Un domaine générique comme `*.example.com` est enregistré sous la forme `example.com`, ce qui couvre ce domaine et ses sous-domaines. Si une entrée n'est pas valide, rien n'est enregistré et l'erreur 400 liste les entrées non valides."
                   }
                 },
                 "required": [

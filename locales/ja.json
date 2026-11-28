@@ -23553,5 +23553,7 @@
   "For sideloading with AltStore or Xcode": "For sideloading with AltStore or Xcode",
   "Added:": "追加:",
   "Removed:": "削除:",
-  "and %d more": "ほか %d 件"
+  "and %d more": "ほか %d 件",
+  "A wildcard such as <code class='alert-link notranslate'>*.example.com</code> is saved as <code class='alert-link notranslate'>example.com</code>, which covers it and all of its subdomains.": "<code class='alert-link notranslate'>*.example.com</code> のようなワイルドカードは <code class='alert-link notranslate'>example.com</code> として保存され、そのドメインとすべてのサブドメインが対象になります。",
+  "Nothing was saved. These entries are not valid IP addresses, domain names, wildcards (e.g. <span class=\"notranslate\">*.example.com</span> or <span class=\"notranslate\">*.uk</span>), or email addresses: <span class=\"notranslate\">%s</span>": "何も保存されませんでした。次のエントリは有効な IP アドレス、ドメイン名、ワイルドカード（例: <span class=\"notranslate\">*.example.com</span> や <span class=\"notranslate\">*.uk</span>）、メールアドレスではありません: <span class=\"notranslate\">%s</span>"
 }

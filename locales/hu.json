@@ -23553,5 +23553,7 @@
   "For sideloading with AltStore or Xcode": "For sideloading with AltStore or Xcode",
   "Added:": "Hozzáadva:",
   "Removed:": "Eltávolítva:",
-  "and %d more": "és még %d"
+  "and %d more": "és még %d",
+  "A wildcard such as <code class='alert-link notranslate'>*.example.com</code> is saved as <code class='alert-link notranslate'>example.com</code>, which covers it and all of its subdomains.": "Egy helyettesítő karakteres bejegyzés, például <code class='alert-link notranslate'>*.example.com</code>, <code class='alert-link notranslate'>example.com</code> formában kerül mentésre, amely lefedi a domaint és annak összes aldomainjét.",
+  "Nothing was saved. These entries are not valid IP addresses, domain names, wildcards (e.g. <span class=\"notranslate\">*.example.com</span> or <span class=\"notranslate\">*.uk</span>), or email addresses: <span class=\"notranslate\">%s</span>": "Semmi sem lett mentve. Ezek a bejegyzések nem érvényes IP-címek, domainnevek, helyettesítő karakteres bejegyzések (pl. <span class=\"notranslate\">*.example.com</span> vagy <span class=\"notranslate\">*.uk</span>) vagy e-mail-címek: <span class=\"notranslate\">%s</span>"
 }

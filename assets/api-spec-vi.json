@@ -9433,7 +9433,7 @@
     "/v1/domains/{domain_id}/allowlist": {
       "put": {
         "summary": "Cập nhật danh sách cho phép tên miền",
-        "description": "Thay thế danh sách cho phép (allowlist) cho một tên miền. Danh sách này giới hạn thư đến chỉ dành cho người gửi được chỉ định. Mỗi mục nhập phải là địa chỉ IP hợp lệ, tên miền đủ điều kiện (FQDN), địa chỉ email hoặc tên miền cấp cao nhất dạng ký tự đại diện (ví dụ: `*.com`). Số lượng mục nhập tối đa được cho phép là 1000. Các quy tắc public-suffix với ký tự đại diện có thể chứa nhiều nhãn, ví dụ `*.gov.co` và `*.gov.br`; chúng khớp với người gửi nằm dưới đúng hậu tố đó.",
+        "description": "Thay thế danh sách cho phép (allowlist) cho một tên miền. Danh sách này giới hạn thư đến chỉ dành cho người gửi được chỉ định. Mỗi mục nhập phải là địa chỉ IP hợp lệ, tên miền đủ điều kiện (FQDN), địa chỉ email hoặc tên miền cấp cao nhất dạng ký tự đại diện (ví dụ: `*.com`). Số lượng mục nhập tối đa được cho phép là 1000. Các quy tắc public-suffix với ký tự đại diện có thể chứa nhiều nhãn, ví dụ `*.gov.co` và `*.gov.br`; chúng khớp với người gửi nằm dưới đúng hậu tố đó. Tên miền ký tự đại diện như `*.example.com` được lưu thành `example.com`, bao gồm tên miền đó và các tên miền phụ của nó. Nếu có mục nào không hợp lệ, không có gì được lưu và lỗi 400 sẽ liệt kê các mục không hợp lệ.",
         "operationId": "updateDomainAllowlist",
         "tags": [
           "Tên miền"
@@ -9466,7 +9466,7 @@
                     "items": {
                       "type": "string"
                     },
-                    "description": "Mảng các địa chỉ người gửi được cho phép (địa chỉ IP, tên miền đầy đủ, địa chỉ email hoặc tên miền cấp cao nhất dạng ký tự đại diện như `*.com`). Truyền vào một mảng rỗng để xóa danh sách cho phép. Các quy tắc public-suffix với ký tự đại diện có thể chứa nhiều nhãn, ví dụ `*.gov.co` và `*.gov.br`; chúng khớp với người gửi nằm dưới đúng hậu tố đó."
+                    "description": "Mảng các địa chỉ người gửi được cho phép (địa chỉ IP, tên miền đầy đủ, địa chỉ email hoặc tên miền cấp cao nhất dạng ký tự đại diện như `*.com`). Truyền vào một mảng rỗng để xóa danh sách cho phép. Các quy tắc public-suffix với ký tự đại diện có thể chứa nhiều nhãn, ví dụ `*.gov.co` và `*.gov.br`; chúng khớp với người gửi nằm dưới đúng hậu tố đó. Tên miền ký tự đại diện như `*.example.com` được lưu thành `example.com`, bao gồm tên miền đó và các tên miền phụ của nó. Nếu có mục nào không hợp lệ, không có gì được lưu và lỗi 400 sẽ liệt kê các mục không hợp lệ."
                   }
                 },
                 "required": [
@@ -9505,7 +9505,7 @@
     "/v1/domains/{domain_id}/denylist": {
       "put": {
         "summary": "Cập nhật danh sách cấm tên miền",
-        "description": "Thay thế danh sách cấm cho một tên miền. Thư từ người gửi nằm trong danh sách cấm sẽ bị từ chối. Mỗi mục phải là địa chỉ IP hợp lệ, tên miền đủ điều kiện (FQDN), địa chỉ email hoặc tên miền cấp cao nhất dạng ký tự đại diện (ví dụ: `*.com`). Số lượng mục tối đa được cho phép là 1000. Các quy tắc public-suffix với ký tự đại diện có thể chứa nhiều nhãn, ví dụ `*.gov.co` và `*.gov.br`; chúng khớp với người gửi nằm dưới đúng hậu tố đó.",
+        "description": "Thay thế danh sách cấm cho một tên miền. Thư từ người gửi nằm trong danh sách cấm sẽ bị từ chối. Mỗi mục phải là địa chỉ IP hợp lệ, tên miền đủ điều kiện (FQDN), địa chỉ email hoặc tên miền cấp cao nhất dạng ký tự đại diện (ví dụ: `*.com`). Số lượng mục tối đa được cho phép là 1000. Các quy tắc public-suffix với ký tự đại diện có thể chứa nhiều nhãn, ví dụ `*.gov.co` và `*.gov.br`; chúng khớp với người gửi nằm dưới đúng hậu tố đó. Tên miền ký tự đại diện như `*.example.com` được lưu thành `example.com`, bao gồm tên miền đó và các tên miền phụ của nó. Nếu có mục nào không hợp lệ, không có gì được lưu và lỗi 400 sẽ liệt kê các mục không hợp lệ.",
         "operationId": "updateDomainDenylist",
         "tags": [
           "Tên miền"
@@ -9538,7 +9538,7 @@
                     "items": {
                       "type": "string"
                     },
-                    "description": "Mảng chứa các địa chỉ người gửi bị cấm (địa chỉ IP, tên miền đầy đủ, địa chỉ email hoặc tên miền cấp cao nhất dạng ký tự đại diện như `*.com`). Truyền vào một mảng rỗng để xóa danh sách cấm. Các quy tắc public-suffix với ký tự đại diện có thể chứa nhiều nhãn, ví dụ `*.gov.co` và `*.gov.br`; chúng khớp với người gửi nằm dưới đúng hậu tố đó."
+                    "description": "Mảng chứa các địa chỉ người gửi bị cấm (địa chỉ IP, tên miền đầy đủ, địa chỉ email hoặc tên miền cấp cao nhất dạng ký tự đại diện như `*.com`). Truyền vào một mảng rỗng để xóa danh sách cấm. Các quy tắc public-suffix với ký tự đại diện có thể chứa nhiều nhãn, ví dụ `*.gov.co` và `*.gov.br`; chúng khớp với người gửi nằm dưới đúng hậu tố đó. Tên miền ký tự đại diện như `*.example.com` được lưu thành `example.com`, bao gồm tên miền đó và các tên miền phụ của nó. Nếu có mục nào không hợp lệ, không có gì được lưu và lỗi 400 sẽ liệt kê các mục không hợp lệ."
                   }
                 },
                 "required": [

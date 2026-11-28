@@ -23553,5 +23553,7 @@
   "For sideloading with AltStore or Xcode": "For sideloading with AltStore or Xcode",
   "Added:": "Ajouté :",
   "Removed:": "Supprimé :",
-  "and %d more": "et %d de plus"
+  "and %d more": "et %d de plus",
+  "A wildcard such as <code class='alert-link notranslate'>*.example.com</code> is saved as <code class='alert-link notranslate'>example.com</code>, which covers it and all of its subdomains.": "Un caractère générique comme <code class='alert-link notranslate'>*.example.com</code> est enregistré sous la forme <code class='alert-link notranslate'>example.com</code>, ce qui couvre ce domaine et tous ses sous-domaines.",
+  "Nothing was saved. These entries are not valid IP addresses, domain names, wildcards (e.g. <span class=\"notranslate\">*.example.com</span> or <span class=\"notranslate\">*.uk</span>), or email addresses: <span class=\"notranslate\">%s</span>": "Rien n'a été enregistré. Ces entrées ne sont pas des adresses IP, des noms de domaine, des caractères génériques (par ex. <span class=\"notranslate\">*.example.com</span> ou <span class=\"notranslate\">*.uk</span>) ou des adresses e-mail valides : <span class=\"notranslate\">%s</span>"
 }

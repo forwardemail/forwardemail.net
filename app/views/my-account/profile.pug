@@ -88,24 +88,24 @@ block body
         if user[config.passport.fields.githubProfileID] || user[config.passport.fields.googleProfileID]
           a.acct-jump-link(href="#connected-accounts")= t("Connected Accounts")
         a.acct-jump-link(href="#company-information")= t("Company Information")
-          if user[config.userFields.changeEmailNewAddress]
-            .alert.alert-warning(role="alert")
-              ul.list-inline.mb-0
-                li.list-inline-item.mb-3.mb-md-0!= t("Email change confirmation link has been sent to: <span class='notranslate font-weight-bold'>%s</span>", _.escape(user[config.userFields.changeEmailNewAddress]))
-                li.list-inline-item
-                  form.ajax-form.confirm-prompt(
-                    action=`${ctx.path}/resend-email-change`,
-                    method="POST"
-                  )
-                    input(type="hidden", name="_method", value="PUT")
-                    button.btn.btn-dark.btn-sm(type="submit")= t("Resend email")
-                li.list-inline-item
-                  form.ajax-form.confirm-prompt(
-                    action=`${ctx.path}/cancel-email-change`,
-                    method="POST"
-                  )
-                    input(type="hidden", name="_method", value="PUT")
-                    button.btn.btn-danger.btn-sm(type="submit")= t("Cancel change")
+      if user[config.userFields.changeEmailNewAddress]
+        .alert.alert-warning(role="alert")
+          ul.list-inline.mb-0
+            li.list-inline-item.mb-3.mb-md-0!= t("Email change confirmation link has been sent to: <span class='notranslate font-weight-bold'>%s</span>", _.escape(user[config.userFields.changeEmailNewAddress]))
+            li.list-inline-item
+              form.ajax-form.confirm-prompt(
+                action=`${ctx.path}/resend-email-change`,
+                method="POST"
+              )
+                input(type="hidden", name="_method", value="PUT")
+                button.btn.btn-dark.btn-sm(type="submit")= t("Resend email")
+            li.list-inline-item
+              form.ajax-form.confirm-prompt(
+                action=`${ctx.path}/cancel-email-change`,
+                method="POST"
+              )
+                input(type="hidden", name="_method", value="PUT")
+                button.btn.btn-danger.btn-sm(type="submit")= t("Cancel change")
       .row
         .col-md
           form.ajax-form.confirm-prompt(action=ctx.path, method="POST")

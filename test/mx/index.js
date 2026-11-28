@@ -2178,8 +2178,15 @@ test('domain denylist should block conventional and compound public-suffix sende
       has_smtp: true,
       resolver,
       smtp_port: serverPort.toString(),
-      // Add a conventional domain and compound public suffixes to the denylist
-      denylist: ['spam-domain.com', '*.gov.co', '*.gov.br']
+      // Add a conventional domain, compound public suffixes, a wildcard domain
+      // and a subdomain to the denylist
+      denylist: [
+        'spam-domain.com',
+        '*.gov.co',
+        '*.gov.br',
+        '*.spam-wildcard.com',
+        'mail.spam-sub.com'
+      ]
     })
     .create();
 
@@ -2286,9 +2293,14 @@ This should be blocked by denylist
 
   // The model must retain and the MX path must enforce compound public suffix
   // rules in addition to conventional domain entries.
+  // (a domain entry, as `*.spam-wildcard.com` is saved, covers the domain
+  // and its subdomains)
   for (const sender of [
     'agency@department.gov.co',
-    'agency@department.gov.br'
+    'agency@department.gov.br',
+    'anyone@spam-wildcard.com',
+    'anyone@news.spam-wildcard.com',
+    'anyone@deep.mail.spam-sub.com'
   ]) {
     smtpError = null;
     const transporter = await createTransporter();

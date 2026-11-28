@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
+const punycode = require('node:punycode');
+
 const isSANB = require('is-string-and-not-blank');
 const ms = require('ms');
 const pMap = require('p-map');
@@ -26,10 +28,32 @@ const isSilentBanned = require('#helpers/is-silent-banned');
 const logger = require('#helpers/logger');
 const matchesWildcardTLD = require('#helpers/matches-wildcard-tld');
 const parseHostFromDomainOrAddress = require('#helpers/parse-host-from-domain-or-address');
-const parseRootDomain = require('#helpers/parse-root-domain');
 const parseUsername = require('#helpers/parse-username');
 const { hasSrsReverse, useSrsReverse } = require('#helpers/srs-reverse');
 const { encrypt } = require('#helpers/encrypt-decrypt');
+
+//
+// Whether a host is in a domain's allowlist or denylist: the host itself or a
+// domain it is under (an entry `example.com` covers `mail.example.com`), or a
+// wildcard public-suffix rule it is under (e.g. `*.uk`).  Entries are stored
+// with domain names in ASCII (see `normalizeListEntry` in the Domains model).
+//
+function matchesDomainEntry(host, list) {
+  if (!isSANB(host)) return false;
+  let name;
+  try {
+    name = punycode.toASCII(host.toLowerCase().trim());
+  } catch {
+    return false;
+  }
+
+  const labels = name.split('.');
+  for (let i = 0; i < labels.length; i++) {
+    if (list.includes(labels.slice(i).join('.'))) return true;
+  }
+
+  return matchesWildcardTLD(name, list);
+}
 
 //
 // Whether an earlier attempt of this message already relayed it to an
@@ -130,155 +154,71 @@ async function getRecipients(session) {
         //
         // NOTE: section is for a domain's specific allowlist and denylist
         //
-        // has to match at least one of the following for allowlist to pass:
-        // - session.remoteAddress
-        // - session.resolvedClientHostname
-        // - session.resolvedRootClientHostname
-        // - session.originalFromAddress
+        // An entry is matched by any of the following:
+        // - session.remoteAddress (an IP address)
+        // - session.resolvedClientHostname (or its root)
+        // - session.originalFromAddress (an email address, or its domain)
+        // - the envelope sender (an email address, or its domain)
         //
-        if (customAllowlist.length > 0) {
-          let pass = false;
-          if (customAllowlist.includes(session.remoteAddress)) pass = true;
-          else if (
-            session.resolvedClientHostname &&
-            customAllowlist.includes(session.resolvedClientHostname)
+        // A domain name entry matches that domain and its subdomains, and a
+        // wildcard public-suffix rule (e.g. `*.uk`) the domains under it
+        // (see `matchesDomainEntry` below)
+        //
+        const isListed = (list) => {
+          if (list.includes(session.remoteAddress)) return true;
+
+          if (
+            matchesDomainEntry(
+              session.resolvedClientHostname ||
+                session.resolvedRootClientHostname,
+              list
+            )
           )
-            pass = true;
-          else if (session.resolvedRootClientHostname) {
+            return true;
+
+          if (session.originalFromAddress) {
+            if (list.includes(session.originalFromAddress)) return true;
             if (
-              customAllowlist.includes(session.resolvedRootClientHostname) ||
-              session.resolvedRootClientHostname === env.WEB_HOST
-            ) {
-              pass = true;
-              // Check wildcard TLD (endsWith so *.uk matches .co.uk, .org.uk, etc.)
-            } else if (
-              matchesWildcardTLD(
-                session.resolvedRootClientHostname,
-                customAllowlist
+              matchesDomainEntry(
+                session.originalFromAddress.split('@')[1],
+                list
               )
-            ) {
-              pass = true;
-            }
+            )
+              return true;
           }
 
-          if (
-            !pass &&
-            session.originalFromAddress &&
-            customAllowlist.includes(session.originalFromAddress)
-          )
-            pass = true;
-
-          if (!pass && session.originalFromAddress) {
-            // check if the domain or root portion of the `session.originalFromAddress` matches
-            const fromDomain = session.originalFromAddress.split('@')[1];
-            const fromRoot = parseRootDomain(fromDomain);
-            if (customAllowlist.includes(fromDomain)) pass = true;
-            else if (customAllowlist.includes(fromRoot)) pass = true;
-            // Check wildcard TLD (endsWith so *.uk matches .co.uk, .org.uk, etc.)
-            else if (matchesWildcardTLD(fromDomain, customAllowlist))
-              pass = true;
-          }
-
-          // Check MAIL FROM / envelope sender (email)
-          if (!pass && isSANB(session.envelope.mailFrom.address)) {
+          if (isSANB(session.envelope.mailFrom.address)) {
             const envelopeSender = checkSRS(
               session.envelope.mailFrom.address
             ).toLowerCase();
-            if (customAllowlist.includes(envelopeSender)) pass = true;
-
-            if (!pass) {
-              const envelopeDomain =
-                parseHostFromDomainOrAddress(envelopeSender);
-              const envelopeRoot = parseRootDomain(envelopeDomain);
-              if (customAllowlist.includes(envelopeDomain)) pass = true;
-              else if (customAllowlist.includes(envelopeRoot)) pass = true;
-              // Check wildcard TLD (endsWith so *.uk matches .co.uk, .org.uk, etc.)
-              else if (matchesWildcardTLD(envelopeDomain, customAllowlist))
-                pass = true;
-            }
-          }
-
-          if (!pass)
-            throw new SMTPError(
-              `Your IP address, client hostname, From header, or envelope sender is not yet allowlisted by admins of ${domain}`,
-              { ignore_hook: true }
-            );
-        }
-
-        if (customDenylist.length > 0) {
-          let pass = true;
-
-          // Check IP address
-          if (customDenylist.includes(session.remoteAddress)) pass = false;
-
-          // Check resolved client hostname
-          if (
-            pass &&
-            session.resolvedClientHostname &&
-            customDenylist.includes(session.resolvedClientHostname)
-          )
-            pass = false;
-
-          // Check resolved root client hostname
-          if (pass && session.resolvedRootClientHostname) {
-            if (customDenylist.includes(session.resolvedRootClientHostname)) {
-              pass = false;
-              // Check wildcard TLD (endsWith so *.uk matches .co.uk, .org.uk, etc.)
-            } else if (
-              matchesWildcardTLD(
-                session.resolvedRootClientHostname,
-                customDenylist
+            if (list.includes(envelopeSender)) return true;
+            if (
+              matchesDomainEntry(
+                parseHostFromDomainOrAddress(envelopeSender),
+                list
               )
-            ) {
-              pass = false;
-            }
+            )
+              return true;
           }
 
-          // Check original From address (email)
-          if (
-            pass &&
-            session.originalFromAddress &&
-            customDenylist.includes(session.originalFromAddress)
-          )
-            pass = false;
+          return false;
+        };
 
-          // Check domain and root domain of From address
-          if (pass && session.originalFromAddress) {
-            const fromDomain = session.originalFromAddress.split('@')[1];
-            const fromRoot = parseRootDomain(fromDomain);
-            if (customDenylist.includes(fromDomain)) pass = false;
-            else if (customDenylist.includes(fromRoot)) pass = false;
-            // Check wildcard TLD (endsWith so *.uk matches .co.uk, .org.uk, etc.)
-            else if (matchesWildcardTLD(fromDomain, customDenylist))
-              pass = false;
-          }
+        if (
+          customAllowlist.length > 0 &&
+          session.resolvedRootClientHostname !== env.WEB_HOST &&
+          !isListed(customAllowlist)
+        )
+          throw new SMTPError(
+            `Your IP address, client hostname, From header, or envelope sender is not yet allowlisted by admins of ${domain}`,
+            { ignore_hook: true }
+          );
 
-          // Check MAIL FROM / envelope sender (email)
-          if (pass && isSANB(session.envelope.mailFrom.address)) {
-            const envelopeSender = checkSRS(
-              session.envelope.mailFrom.address
-            ).toLowerCase();
-            if (customDenylist.includes(envelopeSender)) pass = false;
-
-            // Check domain and root domain of envelope sender
-            if (pass) {
-              const envelopeDomain =
-                parseHostFromDomainOrAddress(envelopeSender);
-              const envelopeRoot = parseRootDomain(envelopeDomain);
-              if (customDenylist.includes(envelopeDomain)) pass = false;
-              else if (customDenylist.includes(envelopeRoot)) pass = false;
-              // Check wildcard TLD (endsWith so *.uk matches .co.uk, .org.uk, etc.)
-              else if (matchesWildcardTLD(envelopeDomain, customDenylist))
-                pass = false;
-            }
-          }
-
-          if (!pass)
-            throw new SMTPError(
-              `Your IP address, client hostname, From header, or envelope sender was denylisted by admins of ${domain}`,
-              { ignore_hook: true }
-            );
-        }
+        if (customDenylist.length > 0 && isListed(customDenylist))
+          throw new SMTPError(
+            `Your IP address, client hostname, From header, or envelope sender was denylisted by admins of ${domain}`,
+            { ignore_hook: true }
+          );
 
         // get all forwarding addresses for individual address
         const {

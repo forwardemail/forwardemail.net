@@ -9433,7 +9433,7 @@
     "/v1/domains/{domain_id}/allowlist": {
       "put": {
         "summary": "Domain engedélyezőlista frissítése",
-        "description": "Cserélje le egy domain engedélyezőlistáját. Az engedélyezőlista a bejövő leveleket csak a megadott feladókra korlátozza. Minden bejegyzésnek érvényes IP-címnek, teljesen minősített domainnévnek (FQDN), e-mail címnek vagy helyettesítő karakterrel jelölt legfelső szintű domainnek (pl. `*.com`) kell lennie. Legfeljebb 1000 bejegyzés engedélyezett. A wildcard public-suffix szabályok több címkét is tartalmazhatnak, például `*.gov.co` és `*.gov.br`; ezek illeszkednek az adott pontos utótag alatt lévő küldőkhöz.",
+        "description": "Cserélje le egy domain engedélyezőlistáját. Az engedélyezőlista a bejövő leveleket csak a megadott feladókra korlátozza. Minden bejegyzésnek érvényes IP-címnek, teljesen minősített domainnévnek (FQDN), e-mail címnek vagy helyettesítő karakterrel jelölt legfelső szintű domainnek (pl. `*.com`) kell lennie. Legfeljebb 1000 bejegyzés engedélyezett. A wildcard public-suffix szabályok több címkét is tartalmazhatnak, például `*.gov.co` és `*.gov.br`; ezek illeszkednek az adott pontos utótag alatt lévő küldőkhöz. Egy helyettesítő karakteres domain, például `*.example.com`, `example.com` formában kerül mentésre, amely lefedi a domaint és aldomainjeit. Ha bármelyik bejegyzés érvénytelen, semmi sem kerül mentésre, és a 400-as hiba felsorolja az érvénytelen bejegyzéseket.",
         "operationId": "updateDomainAllowlist",
         "tags": [
           "Domainek"
@@ -9466,7 +9466,7 @@
                     "items": {
                       "type": "string"
                     },
-                    "description": "Engedélyezett feladók tömbje (IP-címek, FQDN-ek, e-mail-címek vagy helyettesítő TLD-k, például `*.com`). Adjon meg egy üres tömböt az engedélyezőlista törléséhez. A wildcard public-suffix szabályok több címkét is tartalmazhatnak, például `*.gov.co` és `*.gov.br`; ezek illeszkednek az adott pontos utótag alatt lévő küldőkhöz."
+                    "description": "Engedélyezett feladók tömbje (IP-címek, FQDN-ek, e-mail-címek vagy helyettesítő TLD-k, például `*.com`). Adjon meg egy üres tömböt az engedélyezőlista törléséhez. A wildcard public-suffix szabályok több címkét is tartalmazhatnak, például `*.gov.co` és `*.gov.br`; ezek illeszkednek az adott pontos utótag alatt lévő küldőkhöz. Egy helyettesítő karakteres domain, például `*.example.com`, `example.com` formában kerül mentésre, amely lefedi a domaint és aldomainjeit. Ha bármelyik bejegyzés érvénytelen, semmi sem kerül mentésre, és a 400-as hiba felsorolja az érvénytelen bejegyzéseket."
                   }
                 },
                 "required": [
@@ -9505,7 +9505,7 @@
     "/v1/domains/{domain_id}/denylist": {
       "put": {
         "summary": "Domain tiltólista frissítése",
-        "description": "Cserélje le egy domain tiltólistáját. A tiltólistán szereplő feladóktól érkező leveleket a rendszer elutasítja. Minden bejegyzésnek érvényes IP-címnek, teljes domainnévnek (FQDN), e-mail címnek vagy helyettesítő karakterrel jelölt legfelső szintű domainnek (pl. `*.com`) kell lennie. Legfeljebb 1000 bejegyzés engedélyezett. A wildcard public-suffix szabályok több címkét is tartalmazhatnak, például `*.gov.co` és `*.gov.br`; ezek illeszkednek az adott pontos utótag alatt lévő küldőkhöz.",
+        "description": "Cserélje le egy domain tiltólistáját. A tiltólistán szereplő feladóktól érkező leveleket a rendszer elutasítja. Minden bejegyzésnek érvényes IP-címnek, teljes domainnévnek (FQDN), e-mail címnek vagy helyettesítő karakterrel jelölt legfelső szintű domainnek (pl. `*.com`) kell lennie. Legfeljebb 1000 bejegyzés engedélyezett. A wildcard public-suffix szabályok több címkét is tartalmazhatnak, például `*.gov.co` és `*.gov.br`; ezek illeszkednek az adott pontos utótag alatt lévő küldőkhöz. Egy helyettesítő karakteres domain, például `*.example.com`, `example.com` formában kerül mentésre, amely lefedi a domaint és aldomainjeit. Ha bármelyik bejegyzés érvénytelen, semmi sem kerül mentésre, és a 400-as hiba felsorolja az érvénytelen bejegyzéseket.",
         "operationId": "updateDomainDenylist",
         "tags": [
           "Domainek"
@@ -9538,7 +9538,7 @@
                     "items": {
                       "type": "string"
                     },
-                    "description": "A tiltott listán szereplő feladók tömbje (IP-címek, FQDN-ek, e-mail-címek vagy helyettesítő TLD-k, például `*.com`). Adjon át egy üres tömböt a tiltott lista törléséhez. A wildcard public-suffix szabályok több címkét is tartalmazhatnak, például `*.gov.co` és `*.gov.br`; ezek illeszkednek az adott pontos utótag alatt lévő küldőkhöz."
+                    "description": "A tiltott listán szereplő feladók tömbje (IP-címek, FQDN-ek, e-mail-címek vagy helyettesítő TLD-k, például `*.com`). Adjon át egy üres tömböt a tiltott lista törléséhez. A wildcard public-suffix szabályok több címkét is tartalmazhatnak, például `*.gov.co` és `*.gov.br`; ezek illeszkednek az adott pontos utótag alatt lévő küldőkhöz. Egy helyettesítő karakteres domain, például `*.example.com`, `example.com` formában kerül mentésre, amely lefedi a domaint és aldomainjeit. Ha bármelyik bejegyzés érvénytelen, semmi sem kerül mentésre, és a 400-as hiba felsorolja az érvénytelen bejegyzéseket."
                   }
                 },
                 "required": [
