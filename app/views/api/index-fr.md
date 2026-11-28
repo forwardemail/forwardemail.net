@@ -511,7 +511,7 @@ Notez qu'à l'exception de `envelope` et `dkim` (puisque nous les définissons a
 
 Vous devez soit passer l'option unique `raw` avec votre email complet brut incluant les en-têtes **ou** passer les options individuelles du corps ci-dessous.
 
-Ce point de terminaison API encodera automatiquement les emojis pour vous s'ils sont trouvés dans les en-têtes (par exemple une ligne d'objet `Subject: 🤓 Hello` est automatiquement convertie en `Subject: =?UTF-8?Q?=F0=9F=A4=93?= Hello`). Notre objectif était de créer une API email extrêmement conviviale et à l'épreuve des erreurs pour les développeurs.
+Ce point de terminaison de l'API encode pour vous les caractères non ASCII des en-têtes, comme les emojis, les lettres accentuées et le texte chinois ou japonais, aussi bien pour les paramètres du corps ci-dessous que pour un message `raw` (par exemple, `Subject: 🤓 Hello` est envoyé sous la forme `Subject: =?UTF-8?Q?=F0=9F=A4=93_Hello?=`). Notre objectif était de créer une API e-mail conviviale pour les développeurs et à l'épreuve des erreurs.
 
 **Authentification :** Ce point de terminaison supporte à la fois [l'authentification par token API](#api-token-authentication-recommended-for-most-endpoints) et [l'authentification par identifiants d'alias](#alias-credentials-authentication-for-outbound-email). Voir la section [Authentification](#authentication) ci-dessus pour plus de détails.
 

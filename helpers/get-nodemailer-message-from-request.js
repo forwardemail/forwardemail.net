@@ -6,15 +6,173 @@
 const Boom = require('@hapi/boom');
 const isSANB = require('is-string-and-not-blank');
 const { Libmime } = require('libmime');
+const MimeNode = require('nodemailer/lib/mime-node');
+const addressParser = require('nodemailer/lib/addressparser');
+const { quoteString } = require('nodemailer/lib/mime-funcs');
 
 const _ = require('#helpers/lodash');
-
-// NOTE: tested to be safe using the following package:
-//       <https://github.com/fastify/safe-regex2>
-const EMOJI_REGEX =
-  /(\u00A9|\u00AE|[\u2000-\u3300]|\uD83C[\uD000-\uDFFF]|\uD83D[\uD000-\uDFFF]|\uD83E[\uD000-\uDFFF])/gm;
+const {
+  ADDRESS_HEADERS,
+  MAX_LENGTH
+} = require('#helpers/get-unsafe-address-header');
 
 const libmime = new Libmime();
+
+// RFC 5322 header fields are ASCII; this matches any character that is not
+const NON_ASCII_REGEX = /[\u0080-\uFFFF]/;
+
+// fields with a structure of their own (ids, URLs, parameters, trace and
+// signature fields) that an encoded-word can not go in, left as they are
+const STRUCTURED_FIELDS =
+  /^(?:content-|list-|arc-|dkim-|message-id$|in-reply-to$|references$|received$|authentication-results$)/;
+
+// the address fields Nodemailer itself parses (any other is plain text to it)
+const NODEMAILER_ADDRESS_FIELDS = new Set([
+  'from',
+  'sender',
+  'to',
+  'cc',
+  'bcc',
+  'reply-to'
+]);
+
+// decoded text, or the text as it was if it decodes to nothing (e.g. bad
+// base64), with control characters (CR and LF included) as spaces
+function decodeText(value) {
+  const decoded = libmime.decodeWords(value);
+  if (!decoded.trim()) return value;
+  // eslint-disable-next-line no-control-regex
+  return decoded.replace(/[\u0000-\u001F\u007F]+/g, ' ');
+}
+
+// a name may already hold encoded-words, so it is decoded before encoding
+function decodeNames(addresses) {
+  for (const address of addresses) {
+    if (address.name) address.name = decodeText(address.name);
+    if (Array.isArray(address.group)) decodeNames(address.group);
+  }
+
+  return addresses;
+}
+
+// an address field the way Nodemailer builds From or To (only display names
+// are encoded, once)
+function encodeAddresses(value) {
+  return new MimeNode()._convertAddresses(decodeNames(addressParser(value)));
+}
+
+// parsed addresses back to a string Nodemailer parses the same way (a name is
+// quoted, so a decoded "," or "<" in it stays part of the name)
+function formatAddresses(addresses) {
+  const quote = (name) => quoteString(name);
+  return addresses
+    .map((address) => {
+      if (Array.isArray(address.group))
+        return `${quote(address.name || '')}:${formatAddresses(
+          address.group
+        )};`;
+      if (!address.address) return '';
+      return address.name
+        ? `${quote(address.name)} <${address.address}>`
+        : address.address;
+    })
+    .filter(Boolean)
+    .join(', ');
+}
+
+//
+// Nodemailer encodes the non-ASCII text of a field, but it takes text that is
+// already an encoded-word as it is: in a value that mixes the two it encodes
+// the encoded-word a second time, and an encoded display name ends up inside
+// quotes (where RFC 2047 does not allow one). So encoded-words in a field are
+// decoded first and Nodemailer encodes the whole value once.
+//
+const hasEncodedWord = (value) =>
+  typeof value === 'string' && value.includes('=?');
+
+function decodeAddresses(value) {
+  if (Array.isArray(value)) return value.map((v) => decodeAddresses(v));
+  if (hasEncodedWord(value))
+    return formatAddresses(decodeNames(addressParser(value)));
+  if (_.isPlainObject(value) && hasEncodedWord(value.name))
+    return { ...value, name: decodeText(value.name) };
+  return value;
+}
+
+function decodeHeader(key, value) {
+  const name = String(key).trim().toLowerCase();
+  if (NODEMAILER_ADDRESS_FIELDS.has(name)) return decodeAddresses(value);
+  if (STRUCTURED_FIELDS.test(name)) return value;
+  if (Array.isArray(value)) return value.map((v) => decodeHeader(key, v));
+  if (typeof value !== 'string') return value;
+  //
+  // Nodemailer would encode the whole value of any other address field
+  // (Disposition-Notification-To, Errors-To, Resent-*, ...) address and all,
+  // so it is built here like From and sent as it is
+  //
+  if (ADDRESS_HEADERS.has(name)) {
+    if (!hasEncodedWord(value) && !NON_ASCII_REGEX.test(value)) return value;
+    const text = encodeAddresses(value);
+    // (a prepared value is not cleaned by Nodemailer, so it never has CR or LF)
+    return text && !/[\r\n]/.test(text)
+      ? { prepared: true, foldLines: true, value: text }
+      : value;
+  }
+
+  return hasEncodedWord(value) ? decodeText(value) : value;
+}
+
+//
+// Encode the non-ASCII text in the header fields of a raw message as RFC 2047
+// encoded-words, the same way Nodemailer encodes it for a message it builds
+// (display names in address fields, words in unstructured fields). An address
+// itself is never encoded (a UTF-8 one needs SMTPUTF8). The body, and the
+// header of a message with nothing to encode, are left as they are.
+//
+function encodeRawHeaders(raw) {
+  // a message that starts with an empty line has no header section, otherwise
+  // it ends at the first empty line (or at the end of a message with no body)
+  if (/^\r?\n/.test(raw)) return raw;
+  const match = raw.match(/\r?\n\r?\n/);
+  const end = match ? match.index : raw.length;
+  const head = raw.slice(0, end);
+  if (!NON_ASCII_REGEX.test(head)) return raw;
+
+  const newline = /\r\n/.test(match ? match[0] : head) ? '\r\n' : '\n';
+  const node = new MimeNode();
+
+  // a line that starts with whitespace continues the field above it
+  const fields = [];
+  for (const line of head.split(/\r?\n/)) {
+    if (/^[ \t]/.test(line) && fields.length > 0)
+      fields[fields.length - 1] += newline + line;
+    else fields.push(line);
+  }
+
+  const encoded = fields.map((field) => {
+    const index = field.indexOf(':');
+    // (a field over the size limit is left for the header checks to refuse)
+    if (index <= 0 || field.length > MAX_LENGTH || !NON_ASCII_REGEX.test(field))
+      return field;
+    const key = field.slice(0, index);
+    const name = key.trim().toLowerCase();
+    if (STRUCTURED_FIELDS.test(name)) return field;
+    const value = field
+      .slice(index + 1)
+      .replace(/\r?\n(?=[ \t])/g, '')
+      .trim();
+    // encoded-words already in the value are decoded first, so they are not
+    // encoded a second time (in an address field only display names are)
+    const text = ADDRESS_HEADERS.has(name)
+      ? encodeAddresses(value)
+      : node._encodeHeaderValue(key, decodeText(value));
+    // (a field with nothing Nodemailer could keep is left as it was)
+    if (!text) return field;
+    return libmime.foldLines(`${key}: ${text}`, 76).replace(/\r\n/g, newline);
+  });
+
+  return encoded.join(newline) + raw.slice(end);
+}
 
 const DSN_FIELDS = ['id', 'return', 'notify', 'recipient'];
 
@@ -74,8 +232,7 @@ function getNodemailerMessageFromRequest(ctx) {
     message.requireTLS = message.requireTLSExtensionEnabled;
   delete message.requireTLSExtensionEnabled;
 
-  // (of a JSON body: it is read as text for its emoji below, and by what
-  // queues the email)
+  // (of a JSON body: it is read as text by what queues the email)
   if (
     message.subject !== undefined &&
     message.subject !== null &&
@@ -96,9 +253,9 @@ function getNodemailerMessageFromRequest(ctx) {
   if (_.isObject(message.dsn)) message.dsn = _.pick(message.dsn, DSN_FIELDS);
 
   //
-  // The from, to, cc, bcc, subject and replyTo fields are passed on as they
-  // came. Nodemailer encodes whatever is not ASCII in them (emoji included)
-  // as it builds each header.
+  // The from, to, cc, bcc, subject and replyTo fields are passed on as plain
+  // text (see decodeAddresses above). Nodemailer encodes whatever is not
+  // ASCII in them (emoji included) as it builds each header.
   //
   // Emoji in these fields used to be turned into encoded-words here first.
   // The pattern for "emoji" also covers kana, dashes and curly quotes, so a
@@ -108,35 +265,33 @@ function getNodemailerMessageFromRequest(ctx) {
   // <https://github.com/forwardemail/mail.forwardemail.net/issues/130>
   //
 
-  // a raw message is sent as it is, so emoji in its headers are encoded here
-  if (isSANB(message.raw)) {
-    const hasEmojiRegex = EMOJI_REGEX.test(message.raw);
-    if (hasEmojiRegex) {
-      //
-      // detect the position of the line break in headers
-      // if the match is before, then replace, otherwise if it's after then don't
-      //
-      let index;
-      let delimiter;
-      if (message.raw.indexOf('\n\n')) {
-        index = message.raw.indexOf('\n\n');
-        delimiter = '\n\n';
-      } else if (message.raw.indexOf('\r\n\r\n')) {
-        index = message.raw.indexOf('\r\n\r\n');
-        delimiter = '\r\n\r\n';
-      }
-
-      if (index && delimiter) {
-        let subject = message.raw.slice(0, index);
-        const body = message.raw.slice(index + delimiter.length);
-        for (const match of message.raw.matchAll(EMOJI_REGEX)) {
-          subject = subject.replaceAll(match[0], libmime.encodeWord(match[0]));
-        }
-
-        message.raw = [subject, body].join(delimiter);
-      }
-    }
+  if (hasEncodedWord(message.subject))
+    message.subject = decodeText(message.subject);
+  for (const key of ['from', 'sender', 'to', 'cc', 'bcc', 'replyTo']) {
+    if (message[key] !== undefined)
+      message[key] = decodeAddresses(message[key]);
   }
+
+  // custom headers, as an object or as a list of { key, value } (a prepared
+  // value is sent as it is by Nodemailer, so it is left alone)
+  if (_.isPlainObject(message.headers)) {
+    message.headers = _.mapValues(message.headers, (value, key) =>
+      _.isPlainObject(value) ? value : decodeHeader(key, value)
+    );
+  } else if (Array.isArray(message.headers)) {
+    message.headers = message.headers.map((header) =>
+      _.isPlainObject(header) && !_.isPlainObject(header.value)
+        ? { ...header, value: decodeHeader(header.key, header.value) }
+        : header
+    );
+  }
+
+  //
+  // A raw message is sent as it is, so its header fields are encoded here.
+  // Without this a field with UTF-8 in it (e.g. "Subject: 😊 Hi") goes out
+  // as 8-bit text, and the subject stored for the email is read as Latin-1.
+  //
+  if (isSANB(message.raw)) message.raw = encodeRawHeaders(message.raw);
 
   // ensure `message.attachments` is an Array if it was set
   if (

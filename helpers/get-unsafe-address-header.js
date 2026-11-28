@@ -410,6 +410,8 @@ async function getUnsafeAddressHeader(message) {
 }
 
 module.exports = getUnsafeAddressHeader;
+module.exports.ADDRESS_HEADERS = ADDRESS_HEADERS;
+module.exports.MAX_LENGTH = MAX_LENGTH;
 module.exports.MAX_SEPARATORS = MAX_SEPARATORS;
 module.exports.MAX_EMBEDDED_DEPTH = MAX_EMBEDDED_DEPTH;
 module.exports.MAX_HEADER_WORK = MAX_HEADER_WORK;

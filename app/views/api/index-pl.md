@@ -511,7 +511,7 @@ Z wyjątkiem `envelope` i `dkim` (które ustawiamy automatycznie za Ciebie), obs
 
 Powinieneś przekazać albo pojedynczą opcję `raw` z surową pełną wiadomością email wraz z nagłówkami **lub** przekazać poszczególne opcje parametrów ciała poniżej.
 
-Ten endpoint API automatycznie zakoduje emoji, jeśli zostaną znalezione w nagłówkach (np. temat `Subject: 🤓 Hello` zostanie automatycznie przekonwertowany na `Subject: =?UTF-8?Q?=F0=9F=A4=93?= Hello`). Naszym celem było stworzenie przyjaznego dla programistów i odpornego na błędy API email.
+Ten punkt końcowy API koduje za Ciebie znaki spoza ASCII w nagłówkach, takie jak emoji, litery z akcentami oraz tekst chiński lub japoński, zarówno dla poniższych parametrów treści, jak i dla wiadomości `raw` (np. `Subject: 🤓 Hello` zostaje wysłany jako `Subject: =?UTF-8?Q?=F0=9F=A4=93_Hello?=`). Naszym celem było stworzenie przyjaznego dla programistów i odpornego na błędy API e-mail.
 
 **Uwierzytelnianie:** Ten endpoint obsługuje zarówno [uwierzytelnianie tokenem API](#api-token-authentication-recommended-for-most-endpoints), jak i [uwierzytelnianie poświadczeniami aliasu](#alias-credentials-authentication-for-outbound-email). Szczegóły znajdziesz w sekcji [Uwierzytelnianie](#authentication) powyżej.
 

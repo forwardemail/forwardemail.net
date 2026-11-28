@@ -516,7 +516,7 @@ Note that with the exception of `envelope` and `dkim` (since we set those automa
 
 You should either pass the single option of `raw` with your raw full email including headers **or** pass individual body parameter options below.
 
-This API endpoint will automatically encode emojis for you if they are found in the headers (e.g. a subject line of `Subject: 🤓 Hello` gets converted to `Subject: =?UTF-8?Q?=F0=9F=A4=93?= Hello` automatically).  Our goal was to make a developer-friendly and dummy-proof email API.
+This API endpoint encodes non-ASCII characters in headers for you, such as emojis, accented letters and Chinese or Japanese text, both for the body parameters below and for a `raw` message (e.g. `Subject: 🤓 Hello` is sent as `Subject: =?UTF-8?Q?=F0=9F=A4=93_Hello?=`). Our goal was to make a developer-friendly and dummy-proof email API.
 
 **Authentication:** This endpoint supports both [API token authentication](#api-token-authentication-recommended-for-most-endpoints) and [alias credentials authentication](#alias-credentials-authentication-for-outbound-email). See the [Authentication](#authentication) section above for details.
 

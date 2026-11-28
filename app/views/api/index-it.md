@@ -511,7 +511,7 @@ Nota che, fatta eccezione per `envelope` e `dkim` (poiché li impostiamo automat
 
 Devi passare o l'unica opzione `raw` con la tua email completa raw inclusi gli header **oppure** passare i singoli parametri del corpo elencati di seguito.
 
-Questo endpoint API codificherà automaticamente le emoji per te se sono presenti negli header (es. una riga oggetto `Subject: 🤓 Hello` viene convertita automaticamente in `Subject: =?UTF-8?Q?=F0=9F=A4=93?= Hello`). Il nostro obiettivo è stato creare un'API email estremamente amichevole per gli sviluppatori e a prova di errore.
+Questo endpoint dell'API codifica per te i caratteri non ASCII nelle intestazioni, come emoji, lettere accentate e testo cinese o giapponese, sia per i parametri del corpo qui sotto sia per un messaggio `raw` (ad esempio, `Subject: 🤓 Hello` viene inviato come `Subject: =?UTF-8?Q?=F0=9F=A4=93_Hello?=`). Il nostro obiettivo era creare un'API email semplice per gli sviluppatori e a prova di errore.
 
 **Autenticazione:** Questo endpoint supporta sia [l'autenticazione con token API](#api-token-authentication-recommended-for-most-endpoints) sia [l'autenticazione con credenziali alias](#alias-credentials-authentication-for-outbound-email). Consulta la sezione [Autenticazione](#authentication) sopra per i dettagli.
 

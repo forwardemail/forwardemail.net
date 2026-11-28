@@ -511,7 +511,7 @@ E-posta oluşturma API'miz Nodemailer'ın mesaj seçenek yapılandırmasından e
 
 Ya başlıklar dahil tam ham e-postanızı içeren tek bir `raw` seçeneğini geçmelisiniz **veya** aşağıdaki bireysel gövde parametre seçeneklerini kullanmalısınız.
 
-Bu API uç noktası, başlıklarda emoji bulunursa bunları otomatik olarak kodlar (örneğin `Subject: 🤓 Hello` konusu otomatik olarak `Subject: =?UTF-8?Q?=F0=9F=A4=93?= Hello` olarak dönüştürülür). Amacımız son derece geliştirici dostu ve hata yapmaya karşı dayanıklı bir e-posta API'si sağlamaktı.
+Bu API uç noktası, emojiler, aksanlı harfler ve Çince ya da Japonca metin gibi başlıklardaki ASCII dışı karakterleri sizin için kodlar; bu hem aşağıdaki gövde parametreleri hem de bir `raw` mesajı için geçerlidir (ör. `Subject: 🤓 Hello`, `Subject: =?UTF-8?Q?=F0=9F=A4=93_Hello?=` olarak gönderilir). Amacımız geliştirici dostu ve hataya dayanıklı bir e-posta API'si oluşturmaktı.
 
 **Kimlik Doğrulama:** Bu uç nokta hem [API token kimlik doğrulamasını](#api-token-authentication-recommended-for-most-endpoints) hem de [takma ad kimlik bilgileri kimlik doğrulamasını](#alias-credentials-authentication-for-outbound-email) destekler. Detaylar için yukarıdaki [Kimlik Doğrulama](#authentication) bölümüne bakınız.
 

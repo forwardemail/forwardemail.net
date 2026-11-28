@@ -511,7 +511,7 @@ curl BASE_URI/v1/emails?limit=1 \
 
 ヘッダーを含む生の完全なメールを `raw` オプションで渡すか、以下の個別の本文パラメータを渡してください。
 
-このAPIはヘッダー内に絵文字があれば自動的にエンコードします（例：`Subject: 🤓 Hello` は自動的に `Subject: =?UTF-8?Q?=F0=9F=A4=93?= Hello` に変換されます）。開発者に優しく、ミスを防ぐメールAPIを目指しています。
+このAPIエンドポイントは、絵文字、アクセント付き文字、中国語や日本語のテキストなど、ヘッダー内のASCII以外の文字を自動的にエンコードします。これは下記の本文パラメータでも `raw` メッセージでも同じです（例：`Subject: 🤓 Hello` は `Subject: =?UTF-8?Q?=F0=9F=A4=93_Hello?=` として送信されます）。開発者に優しく、ミスを防ぐメールAPIを目指しています。
 
 **認証:** このエンドポイントは [APIトークン認証](#api-token-authentication-recommended-for-most-endpoints) と [エイリアス認証](#alias-credentials-authentication-for-outbound-email) の両方をサポートしています。詳細は上記の [認証](#authentication) セクションを参照してください。
 

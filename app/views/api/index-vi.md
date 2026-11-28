@@ -511,7 +511,7 @@ Lưu ý rằng ngoại trừ `envelope` và `dkim` (vì chúng tôi tự động
 
 Bạn nên truyền một tùy chọn duy nhất `raw` với email thô đầy đủ của bạn bao gồm cả headers **hoặc** truyền các tùy chọn tham số thân riêng lẻ dưới đây.
 
-Endpoint API này sẽ tự động mã hóa emoji cho bạn nếu chúng được tìm thấy trong headers (ví dụ: dòng chủ đề `Subject: 🤓 Hello` sẽ được chuyển thành `Subject: =?UTF-8?Q?=F0=9F=A4=93?= Hello` một cách tự động). Mục tiêu của chúng tôi là tạo ra một API email thân thiện với nhà phát triển và dễ sử dụng.
+Endpoint API này tự mã hóa các ký tự không phải ASCII trong tiêu đề cho bạn, chẳng hạn như emoji, chữ có dấu và văn bản tiếng Trung hoặc tiếng Nhật, cho cả các tham số body bên dưới lẫn tin nhắn `raw` (ví dụ: `Subject: 🤓 Hello` được gửi dưới dạng `Subject: =?UTF-8?Q?=F0=9F=A4=93_Hello?=`). Mục tiêu của chúng tôi là tạo ra một API email thân thiện với nhà phát triển và chống sai sót.
 
 **Xác thực:** Endpoint này hỗ trợ cả [xác thực token API](#api-token-authentication-recommended-for-most-endpoints) và [xác thực thông tin đăng nhập bí danh](#alias-credentials-authentication-for-outbound-email). Xem phần [Xác thực](#authentication) phía trên để biết chi tiết.
 

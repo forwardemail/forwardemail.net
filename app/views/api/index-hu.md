@@ -511,7 +511,7 @@ Vegye figyelembe, hogy az `envelope` és `dkim` kivételével (mivel ezeket auto
 
 Vagy az egyetlen `raw` opciót kell megadnia a teljes nyers e-maillel, beleértve a fejlécet **vagy** az egyes törzsi paramétereket külön-külön.
 
-Ez az API végpont automatikusan kódolja az emojikat, ha azok a fejlécben találhatók (pl. a `Subject: 🤓 Hello` tárgy automatikusan `Subject: =?UTF-8?Q?=F0=9F=A4=93?= Hello` formátumra konvertálódik). Célunk egy rendkívül fejlesztőbarát és hibabiztos e-mail API létrehozása volt.
+Ez az API-végpont kódolja helyetted a fejlécekben lévő nem ASCII karaktereket, például az emojikat, az ékezetes betűket és a kínai vagy japán szöveget, az alábbi törzsparamétereknél és a `raw` üzeneteknél egyaránt (pl. a `Subject: 🤓 Hello` `Subject: =?UTF-8?Q?=F0=9F=A4=93_Hello?=` formában kerül elküldésre). Célunk egy fejlesztőbarát és bolondbiztos e-mail API létrehozása volt.
 
 **Hitelesítés:** Ez a végpont támogatja mind az [API tokenes hitelesítést](#api-token-authentication-recommended-for-most-endpoints), mind az [alias hitelesítést](#alias-credentials-authentication-for-outbound-email). Részletekért lásd a fentebb található [Hitelesítés](#authentication) szakaszt.
 

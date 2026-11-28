@@ -511,7 +511,7 @@ Všimněte si, že s výjimkou `envelope` a `dkim` (které nastavujeme automatic
 
 Měli byste buď předat jedinou možnost `raw` s vaším surovým plným emailem včetně hlaviček **nebo** předat jednotlivé parametry těla níže.
 
-Tento API endpoint automaticky zakóduje emoji, pokud jsou nalezeny v hlavičkách (např. předmět `Subject: 🤓 Hello` se automaticky převede na `Subject: =?UTF-8?Q?=F0=9F=A4=93?= Hello`). Naším cílem bylo vytvořit extrémně přívětivé a odolné API pro vývojáře.
+Tento koncový bod API za vás zakóduje znaky mimo ASCII v hlavičkách, jako jsou emoji, písmena s diakritikou a čínský nebo japonský text, a to jak u parametrů těla níže, tak u zprávy `raw` (např. `Subject: 🤓 Hello` se odešle jako `Subject: =?UTF-8?Q?=F0=9F=A4=93_Hello?=`). Naším cílem bylo vytvořit e-mailové API přívětivé pro vývojáře a odolné vůči chybám.
 
 **Autentizace:** Tento endpoint podporuje jak [autentizaci pomocí API tokenu](#api-token-authentication-recommended-for-most-endpoints), tak [autentizaci pomocí aliasových přihlašovacích údajů](#alias-credentials-authentication-for-outbound-email). Podrobnosti viz sekce [Autentizace](#authentication) výše.
 

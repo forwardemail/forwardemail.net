@@ -511,7 +511,7 @@ curl BASE_URI/v1/emails?limit=1 \
 
 您应当传递单个 `raw` 选项，包含带有头部的完整原始邮件 **或者** 传递下面的单独正文参数选项。
 
-如果在头部发现表情符号（例如主题行 `Subject: 🤓 Hello`），此 API 端点会自动为您编码表情符号，转换为 `Subject: =?UTF-8?Q?=F0=9F=A4=93?= Hello`。我们的目标是打造一个友好且防呆的开发者邮件 API。
+此 API 端点会自动为您编码头部中的非 ASCII 字符，例如表情符号、带重音的字母以及中文或日文文本，下面的正文参数和 `raw` 邮件都适用（例如 `Subject: 🤓 Hello` 会以 `Subject: =?UTF-8?Q?=F0=9F=A4=93_Hello?=` 的形式发送）。我们的目标是打造一个友好且防呆的开发者邮件 API。
 
 **认证：** 此端点支持 [API 令牌认证](#api-token-authentication-recommended-for-most-endpoints) 和 [别名凭据认证](#alias-credentials-authentication-for-outbound-email)。详情请参见上方的 [认证](#authentication) 部分。
 

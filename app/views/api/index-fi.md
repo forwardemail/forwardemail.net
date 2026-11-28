@@ -511,7 +511,7 @@ Huomaa, että lukuun ottamatta `envelope` ja `dkim` (koska asetamme ne automaatt
 
 Sinun tulee joko antaa yksittäinen `raw`-vaihtoehto, joka sisältää koko raakadatan sähköpostista otsikoineen **tai** antaa yksittäiset runkoparametrit alla.
 
-Tämä API-päätepiste koodaa automaattisesti emojit, jos niitä löytyy otsikoista (esim. otsikkorivi `Subject: 🤓 Hello` muunnetaan automaattisesti muotoon `Subject: =?UTF-8?Q?=F0=9F=A4=93?= Hello`). Tavoitteemme oli tehdä kehittäjäystävällinen ja virheenkestävä sähköpostin API.
+Tämä API-päätepiste koodaa puolestasi otsakkeiden ei-ASCII-merkit, kuten emojit, aksentilliset kirjaimet sekä kiinan- tai japaninkielisen tekstin, sekä alla oleville runkoparametreille että `raw`-viestille (esim. `Subject: 🤓 Hello` lähetetään muodossa `Subject: =?UTF-8?Q?=F0=9F=A4=93_Hello?=`). Tavoitteenamme oli tehdä kehittäjäystävällinen ja virheenkestävä sähköposti-API.
 
 **Autentikointi:** Tämä päätepiste tukee sekä [API-tunnisteautentikointia](#api-token-authentication-recommended-for-most-endpoints) että [alias-tunnistetietojen autentikointia](#alias-credentials-authentication-for-outbound-email). Katso yllä oleva [Autentikointi](#authentication) -osio yksityiskohtia varten.
 

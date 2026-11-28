@@ -511,7 +511,7 @@ Let op dat we, met uitzondering van `envelope` en `dkim` (aangezien wij die auto
 
 Je moet óf de enkele optie `raw` doorgeven met je ruwe volledige e-mail inclusief headers **of** de individuele body parameter opties hieronder.
 
-Deze API endpoint codeert automatisch emoji's voor je als ze in de headers worden gevonden (bijv. een onderwerpregel `Subject: 🤓 Hello` wordt automatisch omgezet naar `Subject: =?UTF-8?Q?=F0=9F=A4=93?= Hello`). Ons doel was een uiterst ontwikkelaarsvriendelijke en foutbestendige e-mail API te maken.
+Dit API-eindpunt codeert niet-ASCII-tekens in headers voor u, zoals emoji's, letters met accenten en Chinese of Japanse tekst, zowel voor de body-parameters hieronder als voor een `raw`-bericht (bijv. `Subject: 🤓 Hello` wordt verzonden als `Subject: =?UTF-8?Q?=F0=9F=A4=93_Hello?=`). Ons doel was een ontwikkelaarsvriendelijke en foolproof e-mail-API te maken.
 
 **Authenticatie:** Deze endpoint ondersteunt zowel [API token authenticatie](#api-token-authentication-recommended-for-most-endpoints) als [alias credentials authenticatie](#alias-credentials-authentication-for-outbound-email). Zie de sectie [Authenticatie](#authentication) hierboven voor details.
 

@@ -511,7 +511,7 @@ Merk at med unntak av `envelope` og `dkim` (siden vi setter disse automatisk for
 
 Du bør enten sende det enkeltalternativet `raw` med din rå fullstendige e-post inkludert headere **eller** sende individuelle kroppparameter-alternativer nedenfor.
 
-Dette API-endepunktet vil automatisk kode emojis for deg hvis de finnes i headerne (f.eks. en emnelinje `Subject: 🤓 Hello` konverteres automatisk til `Subject: =?UTF-8?Q?=F0=9F=A4=93?= Hello`). Målet vårt var å lage et ekstremt utviklervennlig og idiot-sikkert e-post-API.
+Dette API-endepunktet koder ikke-ASCII-tegn i headere for deg, for eksempel emojier, bokstaver med aksenter og kinesisk eller japansk tekst, både for body-parameterne nedenfor og for en `raw`-melding (f.eks. sendes `Subject: 🤓 Hello` som `Subject: =?UTF-8?Q?=F0=9F=A4=93_Hello?=`). Målet vårt var å lage et utviklervennlig og idiotsikkert e-post-API.
 
 **Autentisering:** Dette endepunktet støtter både [API-token autentisering](#api-token-authentication-recommended-for-most-endpoints) og [alias-legitimasjonsautentisering](#alias-credentials-authentication-for-outbound-email). Se [Autentisering](#authentication) seksjonen ovenfor for detaljer.
 

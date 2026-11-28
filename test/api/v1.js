@@ -772,10 +772,13 @@ Test`.trim()
   t.is(res.status, 200);
 
   // validate header From was converted properly
+  // (unfolded, as the address may be folded onto the next line)
   t.true(
-    res.body.message.includes(
-      `From: =?UTF-8?Q?=F0=9F=98=8A?= Test <${alias.name}@${domain.name}>`
-    )
+    res.body.message
+      .replace(/\r?\n[ \t]+/g, ' ')
+      .includes(
+        `From: =?UTF-8?Q?=F0=9F=98=8A_Test?= <${alias.name}@${domain.name}>`
+      )
   );
   t.is(
     res.body.headers.From,
@@ -788,9 +791,12 @@ Test`.trim()
   const email = await Emails.findOne({ id: res.body.id });
   const message = await Emails.getMessage(email.message, true);
   t.true(
-    message.includes(
-      `From: =?UTF-8?Q?=F0=9F=98=8A?= Test <${alias.name}@${domain.name}>`
-    )
+    message
+      .toString()
+      .replace(/\r?\n[ \t]+/g, ' ')
+      .includes(
+        `From: =?UTF-8?Q?=F0=9F=98=8A_Test?= <${alias.name}@${domain.name}>`
+      )
   );
 
   // validate envelope
@@ -822,6 +828,48 @@ Test`.trim()
 
   // validate date
   t.is(new Date(res.body.date).getTime(), date.getTime());
+
+  //
+  // a raw message with CRLF line endings and one non-ASCII header field
+  // (each non-ASCII field is encoded, not just emoji)
+  //
+  {
+    const res = await t.context.api
+      .post('/v1/emails')
+      .auth(user[config.userFields.apiToken])
+      .set('Content-Type', 'application/json')
+      .set('Accept', 'application/json')
+      .send({
+        raw: `From: ${alias.name}@${domain.name}\r\nTo: test@foo.com\r\nSubject: 送信テスト\r\n\r\nTest`
+      });
+    t.is(res.status, 200);
+    t.true(
+      res.body.message.includes('Subject: =?UTF-8?B?6YCB5L+h44OG44K544OI?=\r\n')
+    );
+    t.is(res.body.subject, '送信テスト');
+    t.is(res.body.headers.Subject, '送信テスト');
+  }
+
+  //
+  // text that is already encoded, in whole or in part, is encoded once
+  //
+  {
+    const res = await t.context.api
+      .post('/v1/emails')
+      .auth(user[config.userFields.apiToken])
+      .set('Content-Type', 'application/json')
+      .set('Accept', 'application/json')
+      .send({
+        from: `=?UTF-8?Q?Zo=C3=AB?= <${alias.name}@${domain.name}>`,
+        to: 'test@foo.com',
+        subject: `=?UTF-8?Q?Hi?= ${emoji('blush')} 送信テスト`,
+        text: 'test'
+      });
+    t.is(res.status, 200);
+    t.is(res.body.subject, `Hi ${emoji('blush')} 送信テスト`);
+    t.is(res.body.headers.Subject, `Hi ${emoji('blush')} 送信テスト`);
+    t.is(res.body.headers.From, `Zoë <${alias.name}@${domain.name}>`);
+  }
 
   //
   // create an email using `from` and `subject` nodemailer options
@@ -858,7 +906,7 @@ Test`.trim()
     // validate header From was converted properly
     t.is(
       res.body.headers.From,
-      `"${emoji('blush')} Test" <${alias.name}@${domain.name}>`
+      `${emoji('blush')} Test <${alias.name}@${domain.name}>`
     );
     t.is(res.body.headers.Subject, `${emoji('blush')} testing this`);
     const from = res.body.message.match(

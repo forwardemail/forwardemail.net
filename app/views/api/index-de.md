@@ -511,7 +511,7 @@ Beachten Sie, dass wir mit Ausnahme von `envelope` und `dkim` (da wir diese auto
 
 Sie sollten entweder die einzelne Option `raw` mit Ihrer rohen vollständigen E-Mail inklusive Header übergeben **oder** die einzelnen Body-Parameter-Optionen unten angeben.
 
-Dieser API-Endpunkt kodiert Emojis automatisch für Sie, wenn sie in den Headern gefunden werden (z. B. wird eine Betreffzeile `Subject: 🤓 Hello` automatisch in `Subject: =?UTF-8?Q?=F0=9F=A4=93?= Hello` umgewandelt). Unser Ziel war es, eine entwicklerfreundliche und narrensichere E-Mail-API zu schaffen.
+Dieser API-Endpunkt kodiert Nicht-ASCII-Zeichen in den Headern automatisch für Sie, etwa Emojis, Buchstaben mit Akzenten sowie chinesischen oder japanischen Text, sowohl für die Body-Parameter unten als auch für eine `raw`-Nachricht (z. B. wird `Subject: 🤓 Hello` als `Subject: =?UTF-8?Q?=F0=9F=A4=93_Hello?=` gesendet). Unser Ziel war es, eine entwicklerfreundliche und narrensichere E-Mail-API zu schaffen.
 
 **Authentifizierung:** Dieser Endpunkt unterstützt sowohl die [API-Token-Authentifizierung](#api-token-authentication-recommended-for-most-endpoints) als auch die [Alias-Anmeldeinformationen-Authentifizierung](#alias-credentials-authentication-for-outbound-email). Details finden Sie im Abschnitt [Authentifizierung](#authentication) oben.
 

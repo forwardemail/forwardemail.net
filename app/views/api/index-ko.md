@@ -511,7 +511,7 @@ curl BASE_URI/v1/emails?limit=1 \
 
 헤더를 포함한 전체 원시 이메일을 `raw` 단일 옵션으로 전달하거나, 아래 개별 본문 파라미터 옵션을 전달해야 합니다.
 
-이 API 엔드포인트는 헤더에 이모지가 포함된 경우 자동으로 인코딩합니다(예: `Subject: 🤓 Hello`는 자동으로 `Subject: =?UTF-8?Q?=F0=9F=A4=93?= Hello`로 변환). 개발자 친화적이고 실수 방지에 중점을 둔 이메일 API를 목표로 합니다.
+이 API 엔드포인트는 이모지, 악센트가 있는 문자, 중국어 또는 일본어 텍스트 등 헤더의 비 ASCII 문자를 자동으로 인코딩합니다. 아래 본문 매개변수와 `raw` 메시지 모두에 적용됩니다(예: `Subject: 🤓 Hello`는 `Subject: =?UTF-8?Q?=F0=9F=A4=93_Hello?=`로 전송됩니다). 저희의 목표는 개발자 친화적이고 실수를 방지하는 이메일 API를 만드는 것이었습니다.
 
 **인증:** 이 엔드포인트는 [API 토큰 인증](#api-token-authentication-recommended-for-most-endpoints)과 [별칭 자격 증명 인증](#alias-credentials-authentication-for-outbound-email)을 모두 지원합니다. 자세한 내용은 위의 [인증](#authentication) 섹션을 참고하세요.
 

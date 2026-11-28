@@ -511,7 +511,7 @@ Perlu dicatat bahwa kecuali `envelope` dan `dkim` (karena kami mengaturnya secar
 
 Anda harus mengirimkan opsi tunggal `raw` dengan email mentah lengkap Anda termasuk header **atau** mengirimkan opsi parameter body individual di bawah ini.
 
-Endpoint API ini akan secara otomatis mengkodekan emoji untuk Anda jika ditemukan di header (misalnya baris subjek `Subject: 🤓 Hello` akan dikonversi menjadi `Subject: =?UTF-8?Q?=F0=9F=A4=93?= Hello` secara otomatis). Tujuan kami adalah membuat API email yang sangat ramah pengembang dan mudah digunakan.
+Endpoint API ini mengodekan karakter non-ASCII di header untuk Anda, seperti emoji, huruf beraksen, dan teks Tionghoa atau Jepang, baik untuk parameter body di bawah maupun untuk pesan `raw` (misalnya, `Subject: 🤓 Hello` dikirim sebagai `Subject: =?UTF-8?Q?=F0=9F=A4=93_Hello?=`). Tujuan kami adalah membuat API email yang ramah pengembang dan anti-salah.
 
 **Otentikasi:** Endpoint ini mendukung baik [otentikasi token API](#api-token-authentication-recommended-for-most-endpoints) maupun [otentikasi kredensial alias](#alias-credentials-authentication-for-outbound-email). Lihat bagian [Authentication](#authentication) di atas untuk detailnya.
 
